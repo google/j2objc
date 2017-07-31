@@ -35,7 +35,8 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
   if (length < 0) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
   }
-  IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
+  IOSObjectArray *array =  ARGC_allocateObject([IOSObjectArray class], length * sizeof(id), nil);
+#if !__has_feature(objc_arc)
   if (!retained) {
     // It is important that this autorelease occurs here and NOT as part of the
     // return statement of one of the public methods. When such a public method
@@ -43,8 +44,9 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
     // subsequent retain in the caller) even though this code is compiled as
     // non-ARC. Such behavior would allow our isRetained_ field to remain false
     // even when this array has a strong reference.
-    [array autorelease];
+    (void)AUTORELEASE(array);
   }
+#endif
   array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
   array->isRetained_ = retained;
@@ -54,14 +56,19 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
 static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
     jint length, IOSClass *type, jboolean retained, const id *objects) {
   IOSObjectArray *array = IOSObjectArray_CreateArray(length, type, retained);
+#if !__has_feature(objc_arc)
   if (retained) {
+#endif
     for (jint i = 0; i < length; i++) {
-      array->buffer_[i] = [objects[i] retain];
+      array->buffer_[i] = RETAIN_(objects[i]);
     }
-  } else {
+#if !__has_feature(objc_arc)
+  }
+  else {
     memcpy(array->buffer_, objects, length * sizeof(id));
   }
-  return array;
+#endif
+    return array;
 }
 
 @implementation IOSObjectArray
@@ -104,8 +111,8 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
                             lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type {
-  return [IOSArray_NewArrayWithDimensions(
-      self, dimensionCount, dimensionLengths, type) autorelease];
+  return AUTORELEASE(IOSArray_NewArrayWithDimensions(
+      self, dimensionCount, dimensionLengths, type));
 }
 
 + (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
@@ -142,8 +149,7 @@ static inline id IOSObjectArray_checkValue(
 static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id value) {
 #if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
   if (value && ![array->elementType_ isInstance:value]) {
-    [value autorelease];
-    ThrowArrayStoreException(array, value);
+    ThrowArrayStoreException(array, AUTORELEASE(value));
   }
 #endif
 }
@@ -153,7 +159,7 @@ static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id v
 static inline void IOSObjectArray_checkIndexRetainedValue(jint size, jint index, id value) {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (index < 0 || index >= size) {
-    [value autorelease];
+    (void)AUTORELEASE(value);
     IOSArray_throwOutOfBoundsWithMsg(size, index);
   }
 #endif
@@ -164,21 +170,24 @@ id IOSObjectArray_Set(
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
   if (array->isRetained_) {
-    return JreAutoreleasedAssign(&array->buffer_[index], [value retain]);
+    return JreAutoreleasedAssign(&array->buffer_[index], RETAIN_(value));
   } else {
     return array->buffer_[index] = value;
   }
 }
 
-id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id value) {
+
+id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value) {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
   if (array->isRetained_) {
     return JreAutoreleasedAssign(&array->buffer_[index], value);
   } else {
-    return array->buffer_[index] = [value autorelease];
+    return array->buffer_[index] = AUTORELEASE(value);
   }
 }
+
+#ifndef J2OBJC_USE_GC
 
 id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   // Index is checked when accessing the JreArrayRef.
@@ -189,6 +198,7 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
     return *ref.pValue = value;
   }
 }
+#endif
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
   return IOSObjectArray_Set(self, index, value);
@@ -202,7 +212,7 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   }
 }
 
-static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length) {
+static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, jint length) {
   jint releaseStart = dest;
   jint releaseEnd = dest + length;
   jint retainStart = src;
@@ -217,11 +227,11 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
     releaseEnd = tmp;
   }
   for (jint i = releaseStart; i < releaseEnd; i++) {
-    [buffer[i] autorelease];
+    (void)AUTORELEASE(buffer[i]);
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
   for (jint i = retainStart; i < retainEnd; i++) {
-    [buffer[i] retain];
+    (void)RETAIN_(buffer[i]);
   }
 }
 
@@ -243,23 +253,30 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
 #endif
 
   if (self == dest) {
+#if !__has_feature(objc_arc)
     if (dest->isRetained_) {
+#endif
       DoRetainedMove(buffer_, offset, dstOffset, length);
+#if !__has_feature(objc_arc)
     } else {
       memmove(buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
     }
+#endif
   } else {
+#if !__has_feature(objc_arc)
     if (dest->isRetained_) {
+#endif
       if (skipElementCheck) {
         for (jint i = 0; i < length; i++) {
-          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [buffer_[i + offset] retain]);
+          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], RETAIN_(buffer_[i + offset]));
         }
       } else {
         for (jint i = 0; i < length; i++) {
           id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [newElement retain]);
+          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], RETAIN_(newElement));
         }
       }
+#if !__has_feature(objc_arc)
     } else {
       if (skipElementCheck) {
         memcpy(dest->buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
@@ -269,13 +286,14 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
         }
       }
     }
+#endif
   }
 }
 
 - (id)copyWithZone:(NSZone *)zone {
   IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_, true);
   for (jint i = 0; i < size_; i++) {
-    result->buffer_[i] = [buffer_[i] retain];
+    result->buffer_[i] = RETAIN_(buffer_[i]);
   }
   return result;
 }
@@ -284,10 +302,11 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
   return (NSString *) [buffer_[index] description];
 }
 
+#if !__has_feature(objc_arc)
 - (id)retain {
   if (!isRetained_) {
     for (jint i = 0; i < size_; i++) {
-      [buffer_[i] retain];
+      RETAIN_(buffer_[i]);
     }
     isRetained_ = true;
   }
@@ -302,6 +321,7 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
   }
   [super dealloc];
 }
+#endif
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(__unsafe_unretained id *)stackbuf

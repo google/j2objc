@@ -43,8 +43,8 @@ static IOSClass *IOSClass_forName(const char *name) {
 }
 
 typedef struct _JNIMethodSignature {
-  IOSClass *returnType;
-  IOSObjectArray *paramTypes;
+  __unsafe_unretained IOSClass *returnType;
+  __unsafe_unretained IOSObjectArray *paramTypes;
 } JNIMethodSignature;
 
 static IOSClass *JNIParseTypeSignature(const char *sig, const char **next) {
@@ -122,7 +122,7 @@ NSString *JNIFormatMethodSignature(JNIMethodSignature sig) {
   return result;
 }
 
-__attribute__ ((unused)) static inline id null_chk(void *p) {
+__attribute__ ((unused)) static inline void* null_chk(void* p) {
 #if !defined(J2OBJC_DISABLE_NIL_CHECKS)
   if (__builtin_expect(!p, 0)) {
     JreThrowNullPointerException();
@@ -266,7 +266,7 @@ static jboolean IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
 }
 
 static jobject NewGlobalRef(JNIEnv *env, jobject obj) {
-  return [(__bridge id)obj retain];
+  return RETAIN_(obj);
 }
 
 static jobject NewLocalRef(JNIEnv *env, jobject obj) {
@@ -274,7 +274,7 @@ static jobject NewLocalRef(JNIEnv *env, jobject obj) {
 }
 
 static void DeleteGlobalRef(JNIEnv *env, jobject globalRef) {
-  [(__bridge id)globalRef autorelease];
+  (void)AUTORELEASE(globalRef);
 }
 
 static void DeleteLocalRef(JNIEnv *env, jobject localRef) {
@@ -537,7 +537,7 @@ static jobject AllocObject(JNIEnv *env, jclass clazz) {
       || [clazz isArray] || [clazz isEnum]) {
     @throw create_JavaLangInstantiationException_initWithNSString_([clazz getName]);
   }
-  return [[clazz.objcClass alloc] autorelease];
+  return AUTORELEASE([clazz.objcClass alloc]);
 }
 
 static jobject NewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {

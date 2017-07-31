@@ -22,6 +22,9 @@
 #import "J2ObjC_types.h"
 
 #define J2OBJC_USE_GC 1
+#ifdef J2OBJC_USE_GC
+#import "ARGC.h"
+#endif
 
 @class IOSClass;
 
@@ -42,9 +45,10 @@
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 #  define AUTORELEASE(x) x
-#  define RELEASE_(x) x
+#  define RELEASE_(x) 
 #  define RETAIN_(x) x
 #  define RETAIN_AND_AUTORELEASE(x) x
+#  define DEALLOC_(x)
 # else
 #  define ARCBRIDGE
 #  define ARCBRIDGE_TRANSFER
@@ -53,6 +57,7 @@
 #  define RELEASE_(x) [x release]
 #  define RETAIN_(x) [x retain]
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
+#  define DEALLOC_(x) [x dealloc]
 # endif
 
 #ifdef J2OBJC_DISABLE_ALL_CHECKS
@@ -71,11 +76,50 @@ CF_EXTERN_C_BEGIN
 void JreThrowNullPointerException() __attribute__((noreturn));
 void JreThrowClassCastException() __attribute__((noreturn));
 
+#ifdef J2OBJC_USE_GC
+@class JavaLangObject;
+__attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
+    id old = *pIvar;
+    *pIvar = value;
+    return old;
+}
+
+__attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *pIvar, id value) {
+    id old = *pIvar;
+    *pIvar = value;
+    return old;
+}
+
+#define JreNativeFieldAssign            JreStrongAssign
+#define JreNativeFieldAssignAndConsume  JreStrongAssignAndConsume
+
+__attribute__((always_inline)) inline id JreObjectFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
+    id old = *pIvar;
+    ARGC_assignARGCObject(pIvar, (JavaLangObject*)value);
+    return old;
+}
+
+__attribute__((always_inline)) inline id JreObjectFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
+    id old = *pIvar;
+    ARGC_assignARGCObject(pIvar, (JavaLangObject*)value);
+    return old;
+}
+
+__attribute__((always_inline)) inline id JreGenericFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
+    id old = *pIvar;
+    ARGC_assignGenericObject(pIvar, value);
+    return old;
+}
+
+__attribute__((always_inline)) inline id JreGenericFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
+    id old = *pIvar;
+    ARGC_assignGenericObject(pIvar, value);
+    return old;
+}
+
+#else
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
-
-#ifdef J2OBJC_USE_GC
-id JreUnknownAssign(__strong id *pIvar, id value);
 #endif
 
 id JreLoadVolatileId(volatile_id *pVar);
@@ -115,19 +159,14 @@ __attribute__((always_inline)) inline void JrePrintNilChkCountAtExit() {}
 
 CF_EXTERN_C_END
 
-#if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
-    id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  [*pIvar autorelease];
-  return *pIvar = value;
+    ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
+  return *pIvar = AUTORELEASE(value);
 }
-#endif
 
-#if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
-  return [[value retain] autorelease];
+  return AUTORELEASE(RETAIN_(value));
 }
-#endif
 
 /*!
  * Utility macro for passing an argument that contains a comma.
@@ -240,20 +279,29 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return cls; \
   }
 
-#if __has_feature(objc_arc)
+#ifdef J2OBJC_USE_GC
+#define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \
+__attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+return Jre##REF##FieldAssign(&instance->FIELD, value); \
+}\
+__attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
+CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
+return Jre##REF##FieldAssignAndConsume(&instance->FIELD, value); \
+}
+#elif __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
     return instance->FIELD = value; \
   }
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreStrongAssign(&instance->FIELD, value); \
-  }\
-  __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
-        CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-    return JreStrongAssignAndConsume(&instance->FIELD, value); \
-  }
+__attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+return JreStrongAssign(&instance->FIELD, value); \
+}\
+__attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
+CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
+return JreStrongAssignAndConsume(&instance->FIELD, value); \
+}
 #endif
 
 #define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
@@ -268,9 +316,13 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  *
  * @define J2OBJC_ETERNAL_SINGLETON
  */
+#ifdef J2OBJC_USE_GC
+#define J2OBJC_ETERNAL_SINGLETON
+#else
 #define J2OBJC_ETERNAL_SINGLETON \
   - (id)retain { return self; } \
   - (oneway void)release {} \
   - (id)autorelease { return self; }
+#endif
 
 #endif // _J2OBJC_COMMON_H_

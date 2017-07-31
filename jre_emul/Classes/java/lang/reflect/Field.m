@@ -54,9 +54,9 @@
 + (instancetype)fieldWithIvar:(Ivar)ivar
                     withClass:(IOSClass *)aClass
                  withMetadata:(const J2ObjcFieldInfo *)metadata {
-  return [[[JavaLangReflectField alloc] initWithIvar:ivar
+  return AUTORELEASE([[JavaLangReflectField alloc] initWithIvar:ivar
                                            withClass:aClass
-                                        withMetadata:metadata] autorelease];
+                                        withMetadata:metadata]);
 }
 
 - (NSString *)getName {
@@ -67,9 +67,9 @@
     return [NSString stringWithUTF8String:metadata_->name];
   } else {
     // Remove the trailing "_" from instance fields.
-    return [[[NSString alloc] initWithBytes:metadata_->name
+    return AUTORELEASE([[NSString alloc] initWithBytes:metadata_->name
                                      length:strlen(metadata_->name) - 1
-                                   encoding:NSUTF8StringEncoding] autorelease];
+                                   encoding:NSUTF8StringEncoding]);
   }
 }
 
@@ -95,6 +95,10 @@ static IOSClass *GetErasedFieldType(JavaLangReflectField *field) {
   return JreClassForString(field->metadata_->type);
 }
 
+id AGRG_getARGCField(id object, Ivar ivar_, int* err);
+void AGRG_setARGCField(id object, Ivar ivar_, id value);
+
+
 static void ReadRawValue(
     J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *toType) {
   IOSClass *type = GetErasedFieldType(field);
@@ -114,18 +118,11 @@ static void ReadRawValue(
     if (![field->declaringClass_ isInstance:object]) {
       @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
     }
-    if (field->ivar_) {
-      [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
-    } else {
-      // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
-      SEL getter = NSSelectorFromString([NSString stringWithFormat:@"__%@", [field getName]]);
-      if (getter && [object respondsToSelector:getter]) {
-        rawValue->asId = [object performSelector:getter];
-      } else {
-        // It's a final instance field, return its constant value.
-        *rawValue = field->metadata_->constantValue;
+      int err;
+      AGRG_getARGCField(object, field->ivar_, &err);
+      if (err) {
+          *rawValue = field->metadata_->constantValue;
       }
-    }
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
     @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
@@ -153,16 +150,9 @@ static void SetWithRawValue(
     if (IsFinal(field) && !field->accessible_) {
       @throw create_JavaLangIllegalAccessException_initWithNSString_(@"Cannot set final field");
     }
-    if (field->ivar_) {
-      [type __writeRawValue:rawValue toAddress:((char *)object) + ivar_getOffset(field->ivar_)];
-    } else {
-      // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
-      SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%@:", [field getName]]);
-      if (setter && [object respondsToSelector:setter]) {
-        [object performSelector:setter withObject:rawValue->asId];
-      }
-      // else: It's a final instance field, return without any side effects.
-    }
+      
+      AGRG_setARGCField(object, field->ivar_, rawValue->asId);
+      
   }
 }
 
@@ -237,7 +227,7 @@ static void SetWithRawValue(
   }
   SetWithRawValue(&rawValue, self, object, fieldType);
   if (needsRetain) {
-    RETAIN_(value);
+    (void)RETAIN_(value);
   }
 }
 
@@ -299,11 +289,11 @@ static void SetWithRawValue(
                                                 withNSString:genericSignature];
   id<JavaLangReflectType> result = parser->fieldType_;
   if (result) {
-    [[result retain] autorelease];
+    (void)AUTORELEASE(RETAIN_(result));
   } else {
     result = [self getType];
   }
-  [parser release];
+  RELEASE_(parser);
   return result;
 }
 

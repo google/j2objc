@@ -156,6 +156,7 @@ public class J2ObjC {
    * @param args command-line arguments: flags and source file names
    */
   public static void main(String[] args) {
+	  
     if (args.length == 0) {
       Options.help(true);
     }
@@ -173,6 +174,10 @@ public class J2ObjC {
       ErrorUtil.error(e.getMessage());
       System.exit(1);
     }
+
+	  if (true) {
+		  options.setMemoryManagementOption(Options.MemoryManagementOption.GC);
+	  }
 
     run(files, options);
 

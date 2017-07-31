@@ -26,8 +26,9 @@ id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...);
 id JreStrAppendStrong(__strong id *lhs, const char *types, ...);
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...);
 id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...);
+#ifndef J2OBJC_USE_GC
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...);
-
+#endif
 CF_EXTERN_C_END
 
 /*!
@@ -167,7 +168,28 @@ CF_EXTERN_C_END
     return CLASS##_values_[CLASS##_Enum_##CONSTANT]; \
   }
 
+#ifdef J2OBJC_USE_GC
 #define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
+  BOXED_INC_AND_DEC_INNER_EX(CNAME, VALUE_METHOD, TYPE, OPNAME, OP)
+
+#else
+#define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
+  BOXED_INC_AND_DEC_INNER_EX(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Array##CNAME(JreArrayRef ref) { \
+    nil_chk(*ref.pValue); \
+    return IOSObjectArray_SetRef( \
+                                 ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
+  } \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Array##CNAME(JreArrayRef ref) { \
+    nil_chk(*ref.pValue); \
+    TYPE *original = *ref.pValue; \
+    IOSObjectArray_SetRef( \
+                          ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
+    return original; \
+  }
+#endif
+
+#define BOXED_INC_AND_DEC_INNER_EX(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##CNAME( \
       __unsafe_unretained TYPE **value) { \
     nil_chk(*value); \
@@ -190,11 +212,6 @@ CF_EXTERN_C_END
     nil_chk(original); \
     return JreVolatileStrongAssign(value, \
         TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
-  } \
-  __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Array##CNAME(JreArrayRef ref) { \
-    nil_chk(*ref.pValue); \
-    return IOSObjectArray_SetRef( \
-        ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##CNAME( \
       __unsafe_unretained TYPE **value) { \
@@ -222,13 +239,6 @@ CF_EXTERN_C_END
     TYPE *original = JreLoadVolatileId(value); \
     nil_chk(original); \
     JreVolatileStrongAssign(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
-    return original; \
-  } \
-  __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Array##CNAME(JreArrayRef ref) { \
-    nil_chk(*ref.pValue); \
-    TYPE *original = *ref.pValue; \
-    IOSObjectArray_SetRef( \
-        ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
     return original; \
   }
 
@@ -272,7 +282,7 @@ CF_EXTERN_C_END
  * @param OP A macro that takes two parameters and prints the operation.
  * @param OP_LTYPE The cast type for the left hand side of the operation.
  */
-#define BOXED_COMPOUND_ASSIGN( \
+#define BOXED_COMPOUND_ASSIGN_EX( \
     CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE) \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##Assign##CNAME( \
       __unsafe_unretained BOXED_TYPE **lhs, RTYPE rhs) { \
@@ -299,13 +309,21 @@ CF_EXTERN_C_END
     nil_chk(lhsValue); \
     return JreVolatileStrongAssign(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[lhsValue VALUE_METHOD], rhs)))); \
-  } \
+  } 
+
+#ifdef J2OBJC_USE_GC
+#define BOXED_COMPOUND_ASSIGN(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE) \
+    BOXED_COMPOUND_ASSIGN_EX(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE)
+#else
+#define BOXED_COMPOUND_ASSIGN(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE) \
+    BOXED_COMPOUND_ASSIGN_EX(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE)
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignArray##CNAME( \
       JreArrayRef lhs, RTYPE rhs) { \
     nil_chk(*lhs.pValue); \
     return IOSObjectArray_SetRef(lhs, BOXED_TYPE##_valueOfWith##CNAME##_( \
         (TYPE)(OP((OP_LTYPE)[*((BOXED_TYPE **)lhs.pValue) VALUE_METHOD], rhs)))); \
   }
+#endif
 
 // This macros are used in the boxed primitive header files.
 #define BOXED_COMPOUND_ASSIGN_ARITHMETIC(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE) \

@@ -688,6 +688,7 @@
 		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
+		784EDCD61F2B7C5900FFC3E4 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 784EDCD51F2B7C5900FFC3E4 /* libstdc++.tbd */; };
 		78A56A861F1E07C400F3BA1A /* ListResourceBundleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A851F1E07C400F3BA1A /* ListResourceBundleTest.m */; };
 		78A56A881F1E07E000F3BA1A /* ObservableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A871F1E07E000F3BA1A /* ObservableTest.m */; };
 		78A56A8A1F1E085800F3BA1A /* ResourceBundleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A891F1E085800F3BA1A /* ResourceBundleTest.m */; };
@@ -754,7 +755,6 @@
 		78A56B051F1E179D00F3BA1A /* SSLEngineResultHandshakeStatusTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B041F1E179D00F3BA1A /* SSLEngineResultHandshakeStatusTest.m */; };
 		78A56B071F1E17AC00F3BA1A /* SSLPeerUnverifiedExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B061F1E17AC00F3BA1A /* SSLPeerUnverifiedExceptionTest.m */; };
 		78A56B091F1E17BB00F3BA1A /* SSLSessionBindingEventTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B081F1E17BB00F3BA1A /* SSLSessionBindingEventTest.m */; };
-		78A56B0A1F1E192900F3BA1A /* java_GC.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A831F1DF95E00F3BA1A /* java_GC.m */; };
 		78A56B0C1F1E369A00F3BA1A /* GCTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B0B1F1E369A00F3BA1A /* GCTest.m */; };
 /* End PBXBuildFile section */
 
@@ -773,19 +773,26 @@
 			remoteGlobalIDString = 06619384155848D70004DAFE;
 			remoteInfo = jre_emul;
 		};
-		0672198B1559BFC500645E1B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0661937C155848D70004DAFE /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 067219231559BF3600645E1B;
-			remoteInfo = "j2objc build";
-		};
 		06E4E35E197F11D1005DDE69 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0661937C155848D70004DAFE /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 06E4E35A197F1172005DDE69;
 			remoteInfo = "j2objc build tests";
+		};
+		785E93341F25EBE1005DE785 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 78C49A611F222ABA0099E72B;
+			remoteInfo = ARGC;
+		};
+		789598C01F260C0700D08F11 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0661937C155848D70004DAFE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 067219231559BF3600645E1B;
+			remoteInfo = "j2objc build";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -3763,7 +3770,25 @@
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
-		78A56A831F1DF95E00F3BA1A /* java_GC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = java_GC.m; sourceTree = "<group>"; };
+		784EDCCE1F2B737400FFC3E4 /* ARGC-copy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ARGC-copy.m"; sourceTree = "<group>"; };
+		784EDCCF1F2B737400FFC3E4 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGC.h; sourceTree = "<group>"; };
+		784EDCD01F2B737400FFC3E4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ARGC.mm; sourceTree = "<group>"; };
+		784EDCD11F2B737400FFC3E4 /* ARGCArray_ARGCObjectArray_mm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCArray_ARGCObjectArray_mm.h; sourceTree = "<group>"; };
+		784EDCD21F2B737400FFC3E4 /* ARGCArrayUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCArrayUtil.h; sourceTree = "<group>"; };
+		784EDCD31F2B737400FFC3E4 /* ARGCObjectArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCObjectArray.h; sourceTree = "<group>"; };
+		784EDCD41F2B737400FFC3E4 /* ARGCObjectArray.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ARGCObjectArray.mm; sourceTree = "<group>"; };
+		784EDCD51F2B7C5900FFC3E4 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
+		785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ARC+GC.xcodeproj"; path = "../../../9Folders/hd4/airnote-ios-library/ARC+GC/ARC+GC.xcodeproj"; sourceTree = "<group>"; };
+		789598C61F26ECD100D08F11 /* IOSMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSMetadata.h; sourceTree = "<group>"; };
+		789598C71F26ECD100D08F11 /* IOSProxyClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSProxyClass.h; sourceTree = "<group>"; };
+		789598C81F26ECD200D08F11 /* IOSProxyClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSProxyClass.m; sourceTree = "<group>"; };
+		789598C91F26ECD200D08F11 /* java_lang_Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = java_lang_Thread.h; sourceTree = "<group>"; };
+		789598CA1F26ECD200D08F11 /* java_lang_Thread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = java_lang_Thread.m; sourceTree = "<group>"; };
+		789598CB1F26ECD200D08F11 /* JavaThrowable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaThrowable.h; sourceTree = "<group>"; };
+		789598CC1F26ECD200D08F11 /* JavaThrowable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaThrowable.m; sourceTree = "<group>"; };
+		789598CD1F26ECD200D08F11 /* JreRetainedWith.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreRetainedWith.h; sourceTree = "<group>"; };
+		789598CE1F26ECD200D08F11 /* JreRetainedWith.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreRetainedWith.m; sourceTree = "<group>"; };
+		789598CF1F26ECD200D08F11 /* jvm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jvm.m; sourceTree = "<group>"; };
 		78A56A841F1E07C400F3BA1A /* ListResourceBundleTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListResourceBundleTest.h; path = org/apache/harmony/tests/java/util/ListResourceBundleTest.h; sourceTree = "<group>"; };
 		78A56A851F1E07C400F3BA1A /* ListResourceBundleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListResourceBundleTest.m; path = org/apache/harmony/tests/java/util/ListResourceBundleTest.m; sourceTree = "<group>"; };
 		78A56A871F1E07E000F3BA1A /* ObservableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObservableTest.m; path = org/apache/harmony/tests/java/util/ObservableTest.m; sourceTree = "<group>"; };
@@ -3851,6 +3876,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				784EDCD61F2B7C5900FFC3E4 /* libstdc++.tbd in Frameworks */,
 				069C24381E9EEFFF00CE6BAF /* libiconv.tbd in Frameworks */,
 				069C24371E9EEFF500CE6BAF /* libicucore.tbd in Frameworks */,
 				069C24361E9EEFD800CE6BAF /* libz.tbd in Frameworks */,
@@ -3896,6 +3922,7 @@
 		0661937A155848D70004DAFE = {
 			isa = PBXGroup;
 			children = (
+				785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */,
 				78A56B0E1F1E384400F3BA1A /* GCTest.java */,
 				78A56B0D1F1E36AA00F3BA1A /* GCTest.h */,
 				78A56B0B1F1E369A00F3BA1A /* GCTest.m */,
@@ -3921,6 +3948,7 @@
 		06619387155848D70004DAFE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				784EDCD51F2B7C5900FFC3E4 /* libstdc++.tbd */,
 				066899691E9EE12900DDD10B /* libiconv.tbd */,
 				066899671E9EE12000DDD10B /* libz.tbd */,
 				0620F4F91BB60C3900626242 /* libicucore.tbd */,
@@ -3939,6 +3967,17 @@
 		0661938A155848D70004DAFE /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				784EDCCD1F2B737400FFC3E4 /* ARGC */,
+				789598C61F26ECD100D08F11 /* IOSMetadata.h */,
+				789598C71F26ECD100D08F11 /* IOSProxyClass.h */,
+				789598C81F26ECD200D08F11 /* IOSProxyClass.m */,
+				789598C91F26ECD200D08F11 /* java_lang_Thread.h */,
+				789598CA1F26ECD200D08F11 /* java_lang_Thread.m */,
+				789598CB1F26ECD200D08F11 /* JavaThrowable.h */,
+				789598CC1F26ECD200D08F11 /* JavaThrowable.m */,
+				789598CD1F26ECD200D08F11 /* JreRetainedWith.h */,
+				789598CE1F26ECD200D08F11 /* JreRetainedWith.m */,
+				789598CF1F26ECD200D08F11 /* jvm.m */,
 				069FC49D1AF2A2290095A289 /* AbstractStringBuilder.h */,
 				0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */,
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
@@ -4021,7 +4060,6 @@
 				0671FC1618529E28005D9D56 /* NSNumber+JavaNumber.m */,
 				066193E4155849F80004DAFE /* NSObject+JavaObject.h */,
 				066193E5155849F80004DAFE /* NSObject+JavaObject.m */,
-				78A56A831F1DF95E00F3BA1A /* java_GC.m */,
 				066193E6155849F80004DAFE /* NSString+JavaString.h */,
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
 				066B71F617B94DC100A4CBBD /* objc-sync.h */,
@@ -7000,6 +7038,28 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		784EDCCD1F2B737400FFC3E4 /* ARGC */ = {
+			isa = PBXGroup;
+			children = (
+				784EDCCE1F2B737400FFC3E4 /* ARGC-copy.m */,
+				784EDCCF1F2B737400FFC3E4 /* ARGC.h */,
+				784EDCD01F2B737400FFC3E4 /* ARGC.mm */,
+				784EDCD11F2B737400FFC3E4 /* ARGCArray_ARGCObjectArray_mm.h */,
+				784EDCD21F2B737400FFC3E4 /* ARGCArrayUtil.h */,
+				784EDCD31F2B737400FFC3E4 /* ARGCObjectArray.h */,
+				784EDCD41F2B737400FFC3E4 /* ARGCObjectArray.mm */,
+			);
+			path = ARGC;
+			sourceTree = "<group>";
+		};
+		785E93311F25EBE0005DE785 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				785E93351F25EBE1005DE785 /* ARGC.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
@@ -7062,7 +7122,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				0672198C1559BFC500645E1B /* PBXTargetDependency */,
+				789598C11F260C0700D08F11 /* PBXTargetDependency */,
 			);
 			name = jre_emul;
 			productName = JreEmulation;
@@ -7116,6 +7176,12 @@
 			mainGroup = 0661937A155848D70004DAFE;
 			productRefGroup = 06619386155848D70004DAFE /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 785E93311F25EBE0005DE785 /* Products */;
+					ProjectRef = 785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				06619384155848D70004DAFE /* jre_emul */,
@@ -7126,6 +7192,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		785E93351F25EBE1005DE785 /* ARGC.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ARGC.framework;
+			remoteRef = 785E93341F25EBE1005DE785 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0620F4E41BB60A6100626242 /* Resources */ = {
@@ -7463,7 +7539,6 @@
 				062028A81D512E78001EE455 /* DoubleTest.m in Sources */,
 				78A56A9C1F1E09E100F3BA1A /* PriorityQueueTest.m in Sources */,
 				062026461D512CA1001EE455 /* OldRandomAccessFileTest.m in Sources */,
-				78A56B0A1F1E192900F3BA1A /* java_GC.m in Sources */,
 				062028041D512DED001EE455 /* StringTest.m in Sources */,
 				0620263C1D512CA1001EE455 /* OldLineNumberReaderTest.m in Sources */,
 				062029B21D514671001EE455 /* TextAttributeTest.m in Sources */,
@@ -7922,15 +7997,15 @@
 			target = 06619384155848D70004DAFE /* jre_emul */;
 			targetProxy = 0620F4EC1BB60A6100626242 /* PBXContainerItemProxy */;
 		};
-		0672198C1559BFC500645E1B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 067219231559BF3600645E1B /* j2objc build */;
-			targetProxy = 0672198B1559BFC500645E1B /* PBXContainerItemProxy */;
-		};
 		06E4E35F197F11D1005DDE69 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 06E4E35A197F1172005DDE69 /* jre_emul translate tests */;
 			targetProxy = 06E4E35E197F11D1005DDE69 /* PBXContainerItemProxy */;
+		};
+		789598C11F260C0700D08F11 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 067219231559BF3600645E1B /* j2objc build */;
+			targetProxy = 789598C01F260C0700D08F11 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -8025,6 +8100,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_TESTABILITY = YES;
@@ -8056,6 +8132,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -8080,6 +8157,7 @@
 			buildSettings = {
 				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -8104,6 +8182,7 @@
 			buildSettings = {
 				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
