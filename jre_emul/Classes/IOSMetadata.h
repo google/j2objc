@@ -29,7 +29,8 @@
 
 // A raw value is the union of all possible native types.
 typedef union {
-  void *asId;
+  __unsafe_unretained id asId;
+    void* asPointer;
   char asChar;
   unichar asUnichar;
   short asShort;

@@ -28,10 +28,12 @@
 
 @implementation JavaLangReflectAccessibleObject
 
+J2OBJC_IGNORE_DESIGNATED_BEGIN
 - (instancetype)init {
   JavaLangReflectAccessibleObject_init(self);
   return self;
 }
+J2OBJC_IGNORE_DESIGNATED_END
 
 void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self) {
   NSObject_init(self);

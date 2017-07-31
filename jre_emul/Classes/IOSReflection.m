@@ -37,7 +37,7 @@ const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   // Can't use respondsToSelector here because that will search superclasses.
   Method metadataMethod = cls ? JreFindClassMethod(cls, @selector(__metadata)) : NULL;
   if (metadataMethod) {
-    const J2ObjcClassInfo *metadata = (const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
+    const J2ObjcClassInfo *metadata = (__bridge const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
     // We don't use any Java based assert or throwables here because this function is called during
     // IOSClass construction under mutual exclusion so causing any other IOSClass to be initialized
     // would result in deadlock.
@@ -61,7 +61,9 @@ static IOSClass *ParseNextClass(const char **strPtr) {
                                              encoding:NSUTF8StringEncoding];
     *strPtr = delimitor + 1;
     IOSClass *result = [IOSClass classForIosName:name];
+#if !__has_feature(objc_arc)
     [name release];
+#endif
     return result;
   }
   IOSClass *primitiveType = [IOSClass primitiveClassForChar:c];

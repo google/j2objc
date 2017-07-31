@@ -123,7 +123,7 @@ public final class AsyncPipedNSInputStreamAdapter {
 
       // If the stream buffer cannot accommodate this chunk, we need to extract the leftover.
       if (written < len) {
-        leftoverData_ = [[NSData alloc] initWithBytes:(ptr + written) length:(len - written)];
+        JreGenericFieldAssign(&leftoverData_, [[NSData alloc] initWithBytes:(ptr + written) length:(len - written)]);
       }
     ]-*/;
 
@@ -175,8 +175,9 @@ public final class AsyncPipedNSInputStreamAdapter {
         // written < 0 means the stream is closed, do nothing in that case.
 
         // Do not use autorelease to reduce memory pressure.
-        [leftoverData_ release];
-        leftoverData_ = [nextLeftover retain];
+        JreGenericFieldAssign(&leftoverData_, nextLeftover);
+        //[leftoverData_ release];
+        //leftoverData_ = [nextLeftover retain];
 
         // Close if needed.
         if (closeAfterLeftoverCleared_ && !leftoverData_) {
@@ -189,7 +190,7 @@ public final class AsyncPipedNSInputStreamAdapter {
 
     /** Spawns a new thread to use a runloop to handle the asynchronous data requests. */
     native void start() /*-[
-      waitForStreamOpenLock_ = [[NSCondition alloc] init];
+      JreGenericFieldAssign(&waitForStreamOpenLock_, [[NSCondition alloc] init]);
       [waitForStreamOpenLock_ lock];
       [NSThread detachNewThreadSelector:@selector(run) toTarget:self withObject:nil];
       [waitForStreamOpenLock_ wait];
@@ -218,8 +219,8 @@ public final class AsyncPipedNSInputStreamAdapter {
       [(NSOutputStream *)nativeOutputStream_ removeFromRunLoop:[NSRunLoop currentRunLoop]
                                                        forMode:NSRunLoopCommonModes];
       [(NSOutputStream *)nativeOutputStream_ setDelegate:nil];
-      [delegate_ release];
-      delegate_ = nil;
+      JreGenericFieldAssign(&delegate_, nil);
+      //delegate_ = nil;
       threadForClosing_ = nil;
 
       // Stop the runloop. After the runloop exits, -run will exit, and the thread will terminate.
@@ -337,8 +338,8 @@ public final class AsyncPipedNSInputStreamAdapter {
     ComGoogleJ2objcIoAsyncPipedNSInputStreamAdapter_OutputStreamAdapter *adapter;
     adapter = [[ComGoogleJ2objcIoAsyncPipedNSInputStreamAdapter_OutputStreamAdapter alloc]
         initWithComGoogleJ2objcIoAsyncPipedNSInputStreamAdapter_Delegate:delegate
-        withId:(NSInputStream *)readStreamRef
-        withId:(NSOutputStream *)writeStreamRef];
+        withId:(__bridge NSInputStream *)readStreamRef
+        withId:(__bridge NSOutputStream *)writeStreamRef];
 
     // Both readStreamRef and writeStreamRef now have retain count of 2 as they are retained by the
     // adapter. We have no more use of writeStreamRef, so call release once. We will take care of
@@ -348,9 +349,9 @@ public final class AsyncPipedNSInputStreamAdapter {
     [adapter start];
 
     // adapter is now retained by its own dedicated thread.
-    [adapter autorelease];
+    (void)AUTORELEASE(adapter);
 
     // Autorelease the underlying CFReadStream object.
-    return [(NSInputStream *)readStreamRef autorelease];
+    return AUTORELEASE((__bridge NSInputStream *)readStreamRef);
   ]-*/;
 }

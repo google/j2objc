@@ -1237,7 +1237,7 @@ public class HashMap<K,V>
                                             count:(NSUInteger)len {
           NSUInteger objCount =
               [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
-          for (id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
+          for (__unsafe_unretained id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
             *e = ((JavaUtilHashMap_HashMapEntry *) *e)->key_;
           }
           return objCount;
@@ -1307,7 +1307,7 @@ public class HashMap<K,V>
                                             count:(NSUInteger)len {
           NSUInteger objCount =
               [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
-          for (id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
+          for (__unsafe_unretained id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
             *e = ((JavaUtilHashMap_HashMapEntry *) *e)->value_;
           }
           return objCount;
@@ -1550,7 +1550,7 @@ public class HashMap<K,V>
         state->extra[1] = 0;
       }
       NSUInteger position = state->extra[0];
-      JavaUtilHashMap_HashMapEntry *entry = (JavaUtilHashMap_HashMapEntry *) state->extra[1];
+      __unsafe_unretained JavaUtilHashMap_HashMapEntry *entry = (__bridge __unsafe_unretained JavaUtilHashMap_HashMapEntry *)(void*) state->extra[1];
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;
       while (objCount < len) {

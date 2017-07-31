@@ -475,11 +475,11 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     CFStringEncoding encoding =
         (CFStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
-    NSString *result = (NSString *)CFStringCreateWithBytes(
+    NSString *result = (__bridge NSString *)CFStringCreateWithBytes(
         NULL, (const UInt8 *)value->buffer_ + offset, count, encoding, true);
     // CFString can return nil if there are invalid bytes in the input.
     if (result) {
-      return [result autorelease];
+      return AUTORELEASE(result);
     }
   }
   JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
@@ -536,7 +536,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encoding) {
-  CFStringRef cfStr = (CFStringRef)self;
+  CFStringRef cfStr = (__bridge CFStringRef)self;
   CFIndex strLength = CFStringGetLength(cfStr);
   CFIndex max_length = CFStringGetMaximumSizeForEncoding(strLength, encoding);
   jboolean includeBOM = (encoding == kCFStringEncodingUTF16);
@@ -1116,7 +1116,7 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 
 #define NSString_CaseInsensitiveComparator_serialVersionUID 8575799808933029326LL
 
-@interface NSString_CaseInsensitiveComparator : NSObject
+@interface NSString_CaseInsensitiveComparator : JavaLangObject
     < JavaUtilComparator, JavaIoSerializable >
 @end
 

@@ -38,8 +38,8 @@
 
 + (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
                                 metadata:(const J2ObjcMethodInfo *)metadata {
-  return [[[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
-                                                       metadata:metadata] autorelease];
+  return AUTORELEASE([[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
+                                                       metadata:metadata]);
 }
 
 static bool IsStatic(const J2ObjcMethodInfo *metadata) {
@@ -70,7 +70,7 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
                                                    withNSString:genericSignature
                                               withIOSClassArray:rawExceptions];
     id<JavaLangReflectType> result = [LibcoreReflectTypes getType:parser->returnType_];
-    [parser release];
+    RELEASE_(parser);
     return result;
   }
   return [self getReturnType];

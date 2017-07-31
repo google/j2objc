@@ -568,7 +568,7 @@ extern "C" {
 void printRefCount(id obj) {
     NSLog(@"ref: %d -> %@", (int)NSExtraRefCount(obj), obj);
 }
-fgxgxfgxfg
+
     void ARGC_initARGCObject(id obj) {
         ((ObjP)obj)->_gc_info.initialize();
     }
@@ -622,8 +622,6 @@ fgxgxfgxfg
     }
 
 }
-
-
 
 id JreLoadVolatileId(volatile_id *pVar) {
     return *pVar;

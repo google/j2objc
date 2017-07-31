@@ -149,7 +149,7 @@ jstring Java_java_lang_Integer_toString__I(JNIEnv *env, jclass cls, jint i) {
   jboolean negative = i < 0;
   jboolean small = negative ? i > -100 : i < 100;
   if (small) {
-    NSString **smallValues = negative ? SMALL_NEG_VALUES : SMALL_NONNEG_VALUES;
+    __strong NSString ** smallValues = negative ? SMALL_NEG_VALUES : SMALL_NONNEG_VALUES;
 
     if (negative) {
       i = -i;

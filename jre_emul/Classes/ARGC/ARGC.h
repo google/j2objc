@@ -5,6 +5,9 @@
 //  Copyright © 2017 DAE HOON JI. All rights reserved.
 //
 
+#ifndef __ARGC_H__
+#define __ARGC_H__
+
 #import <Foundation/Foundation.h>
 
 #ifdef __cplusplus
@@ -61,3 +64,4 @@ void ARGC_requestGC();
 };
 #endif
 
+#endif // __ARGC_H__

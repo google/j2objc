@@ -28,7 +28,7 @@ typedef struct JreStringBuilder {
   jint count_;
 } JreStringBuilder;
 
-@interface JavaLangAbstractStringBuilder : NSObject < JavaLangAppendable, JavaLangCharSequence > {
+@interface JavaLangAbstractStringBuilder : JavaLangObject < JavaLangAppendable, JavaLangCharSequence > {
  @package
   JreStringBuilder delegate_;
 }

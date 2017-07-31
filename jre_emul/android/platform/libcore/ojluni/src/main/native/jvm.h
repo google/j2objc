@@ -633,7 +633,7 @@ typedef struct {
  * Structure to pass one provider description to JVM
  */
 typedef struct {
-    jstring                       name;
+    __unsafe_unretained jstring   name;
     JVM_DTraceProbe*              probes;
     jint                          probe_count;
     JVM_DTraceInterfaceAttributes providerAttributes;

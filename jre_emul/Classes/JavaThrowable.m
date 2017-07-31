@@ -54,13 +54,13 @@
 
 - (void)dealloc {
   free(frames_);
-  [super dealloc];
+  DEALLOC_(dealloc);
 }
 
 @end
 
 jobject Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
-  return [[[RawStack alloc] init] autorelease];
+  return AUTORELEASE([[RawStack alloc] init]);
 }
 
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
@@ -93,7 +93,7 @@ jarray Java_java_lang_Throwable_nativeGetStackTrace(
       if (!ShouldFilterStackElement(element)) {
         [frames addObject:element];
       }
-      [element release];
+      RELEASE_(element);
     }
     JavaLangStackTraceElement *element = [frames lastObject];
     // Remove initial Method.invoke(), so app's main method is last.
@@ -111,5 +111,5 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   //   . otherwise, it's "class-name".
   NSString *clsName = [[self java_getClass] getName];
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
-  [self initWithName:[[self class] description] reason:reason userInfo:nil];
+  (void)[self initWithName:[[self class] description] reason:reason userInfo:nil];
 }

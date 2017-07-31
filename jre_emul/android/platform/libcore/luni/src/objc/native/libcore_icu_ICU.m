@@ -33,7 +33,7 @@ jarray Java_libcore_icu_ICU_getAvailableCalendarLocalesNative(JNIEnv *env, jclas
     if ([locale objectForKey:NSLocaleCalendar]) {
       [localesWithCalendarFormats addObject:localeId];
     }
-    [locale release];
+    RELEASE_(locale);
   }
   return [IOSObjectArray arrayWithNSArray:localesWithCalendarFormats type:NSString_class_()];
 }
@@ -53,7 +53,7 @@ jarray Java_libcore_icu_ICU_getAvailableDateFormatLocalesNative(JNIEnv *env, jcl
     if (dateFormat) {
       [localesWithDateFormats addObject:localeId];
     }
-    [locale release];
+    RELEASE_(locale);
   }
   return [IOSObjectArray arrayWithNSArray:localesWithDateFormats type:NSString_class_()];
 }
@@ -73,7 +73,7 @@ jarray Java_libcore_icu_ICU_getAvailableNumberFormatLocalesNative(JNIEnv *env, j
     if (numberFormat) {
       [localesWithNumberFormats addObject:localeId];
     }
-    [locale release];
+    RELEASE_(locale);
   }
   return [IOSObjectArray arrayWithNSArray:localesWithNumberFormats type:NSString_class_()];
 }
@@ -115,7 +115,7 @@ jstring Java_libcore_icu_ICU_getDisplayCountryNative(
     JNIEnv *env, jclass cls, jstring targetLanguageTag, jstring languageTag) {
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
   NSString *country = [locale displayNameForKey:NSLocaleCountryCode value:targetLanguageTag];
-  [locale release];
+  RELEASE_(locale);
   return (country) ? country : targetLanguageTag;
 }
 
@@ -123,7 +123,7 @@ jstring Java_libcore_icu_ICU_getDisplayLanguageNative(
     JNIEnv *env, jclass cls, jstring targetLanguageTag, jstring languageTag) {
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
   NSString *language = [locale displayNameForKey:NSLocaleLanguageCode value:targetLanguageTag];
-  [locale release];
+  RELEASE_(locale);
   return (language) ? language : targetLanguageTag;
 }
 
@@ -131,7 +131,7 @@ jstring Java_libcore_icu_ICU_getDisplayVariantNative(
     JNIEnv *env, jclass cls, jstring targetLanguageTag, jstring languageTag) {
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
   NSString *variant = [locale displayNameForKey:NSLocaleVariantCode value:targetLanguageTag];
-  [locale release];
+  RELEASE_(locale);
   return (variant) ? variant : targetLanguageTag;
 }
 
@@ -201,7 +201,7 @@ jboolean Java_libcore_icu_ICU_initLocaleDataNative(
     JNIEnv *env, jclass cls, jstring languageTag, jobject resultP) {
   LibcoreIcuLocaleData *result = (LibcoreIcuLocaleData *)resultP;
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
-  CFLocaleRef cfLocale = (CFLocaleRef)locale;
+  CFLocaleRef cfLocale = (__bridge CFLocaleRef)locale;
   NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
   [dateFormatter setLocale:locale];
   IOSClass *stringClass = NSString_class_();
@@ -337,36 +337,36 @@ jboolean Java_libcore_icu_ICU_initLocaleDataNative(
   result->groupingSeparator_ = GetNumberPropChar(nf, kCFNumberFormatterGroupingSeparator, ',');
   result->patternSeparator_ = ';';  // There is no iOS API to fetch a locale-specific version.
   LibcoreIcuLocaleData_setAndConsume_percent_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterPercentSymbol));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterPercentSymbol));
   result->perMill_ = GetNumberPropChar(nf, kCFNumberFormatterPerMillSymbol, '0');
   result->monetarySeparator_ = GetNumberPropChar(nf, kCFNumberFormatterCurrencyGroupingSeparator, ',');
   LibcoreIcuLocaleData_setAndConsume_minusSign_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterMinusSign));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterMinusSign));
   LibcoreIcuLocaleData_setAndConsume_exponentSeparator_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterExponentSymbol));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterExponentSymbol));
   LibcoreIcuLocaleData_setAndConsume_infinity_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInfinitySymbol));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInfinitySymbol));
   LibcoreIcuLocaleData_setAndConsume_NaN_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterNaNSymbol));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterNaNSymbol));
   LibcoreIcuLocaleData_setAndConsume_currencySymbol_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterCurrencySymbol));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterCurrencySymbol));
   LibcoreIcuLocaleData_setAndConsume_internationalCurrencySymbol_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInternationalCurrencySymbol));
+      result, (__bridge NSString*)CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInternationalCurrencySymbol));
   CFRelease(nf);
 
   // Number formats.
   nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterDecimalStyle);
   CFStringRef formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
-  LibcoreIcuLocaleData_setAndConsume_integerPattern_(result, (NSString *)formatStr);
-  LibcoreIcuLocaleData_set_numberPattern_(result, (NSString *)formatStr);
+  LibcoreIcuLocaleData_setAndConsume_integerPattern_(result, (__bridge NSString *)formatStr);
+  LibcoreIcuLocaleData_set_numberPattern_(result, (__bridge NSString *)formatStr);
   CFRelease(nf);
   nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterCurrencyStyle);
   formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
-  LibcoreIcuLocaleData_setAndConsume_currencyPattern_(result, (NSString *)formatStr);
+  LibcoreIcuLocaleData_setAndConsume_currencyPattern_(result, (__bridge NSString *)formatStr);
   CFRelease(nf);
   nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterPercentStyle);
   formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
-  LibcoreIcuLocaleData_setAndConsume_percentPattern_(result, (NSString *)formatStr);
+  LibcoreIcuLocaleData_setAndConsume_percentPattern_(result, (__bridge NSString *)formatStr);
   CFRelease(nf);
 
   // Calendar data.
@@ -380,7 +380,7 @@ jboolean Java_libcore_icu_ICU_initLocaleDataNative(
   LibcoreIcuLocaleData_set_minimalDaysInFirstWeek_(result, minimalDays);
   [calendar setLocale:currentLocale];
 
-  [locale release];
-  [dateFormatter release];
+  RELEASE_(locale);
+  RELEASE_(dateFormatter);
   return true;
 }

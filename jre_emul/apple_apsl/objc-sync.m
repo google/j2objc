@@ -63,7 +63,7 @@ done:
 
 typedef struct SyncData {
     struct SyncData* nextData;
-    id               object;
+    __unsafe_unretained id object;
     int              threadCount;  // number of THREADS using this block
     pthread_mutex_t  mutex;
     pthread_cond_t   conditionVariable;
