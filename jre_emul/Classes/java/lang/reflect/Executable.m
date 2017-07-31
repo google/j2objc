@@ -41,8 +41,8 @@
 #import "objc/runtime.h"
 
 @interface JavaLangReflectExecutable () {
-  _Atomic(IOSObjectArray *) params_;
-  _Atomic(IOSObjectArray *) paramTypes_;
+  __unsafe_unretained IOSObjectArray * params_;
+  __unsafe_unretained IOSObjectArray * paramTypes_;
 }
 @end
 
@@ -86,13 +86,13 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 
 - (IOSObjectArray *)getParameterTypesInternal {
-  IOSObjectArray *result = __c11_atomic_load(&paramTypes_, __ATOMIC_ACQUIRE);
+  IOSObjectArray *result = paramTypes_;
   if (!result) {
     @synchronized(self) {
-      result = __c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED);
+      result = paramTypes_;
       if (!result) {
-        result = [JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx)) retain];
-        __c11_atomic_store(&paramTypes_, result, __ATOMIC_RELEASE);
+        result = RETAIN_(JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx)));
+        paramTypes_ = AUTORELEASE(result);
       }
     }
   }
@@ -108,10 +108,10 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 
 - (IOSObjectArray *)getParametersInternal {
-  IOSObjectArray *result = __c11_atomic_load(&params_, __ATOMIC_ACQUIRE);
+  IOSObjectArray *result = params_;
   if (!result) {
     @synchronized(self) {
-      result = __c11_atomic_load(&params_, __ATOMIC_RELAXED);
+      result = params_;
       if (!result) {
         IOSObjectArray *paramTypes = [self getParameterTypesInternal];
         jint nParams = paramTypes->size_;
@@ -123,7 +123,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
                   name, 0, self, i);
           IOSObjectArray_Set(result, i, param);
         }
-        __c11_atomic_store(&params_, result, __ATOMIC_RELEASE);
+        params_ = AUTORELEASE(result);
       }
     }
   }
@@ -270,10 +270,12 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
   return [class_ hash] ^ (NSUInteger)metadata_;
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
-  [__c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED) release];
+  RELEASE_(paramTypes_);
   [super dealloc];
 }
+#endif
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
@@ -340,8 +342,8 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
   IOSObjectArray *exceptionTypes = JreParseClassList(
       JrePtrAtIndex(self->ptrTable_, metadata->exceptionsIdx));
   LibcoreReflectGenericSignatureParser *parser =
-      [[[LibcoreReflectGenericSignatureParser alloc]
-        initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];
+      AUTORELEASE([[LibcoreReflectGenericSignatureParser alloc]
+        initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()]);
   if (isMethod) {
     [parser parseForMethodWithJavaLangReflectGenericDeclaration:self
                                                    withNSString:signatureAttribute
@@ -352,10 +354,10 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
                                                         withNSString:signatureAttribute
                                                    withIOSClassArray:exceptionTypes];
   }
-  return [[[GenericInfo alloc] init:parser->exceptionTypes_
+  return AUTORELEASE([[GenericInfo alloc] init:parser->exceptionTypes_
                          parameters:parser->parameterTypes_
                          returnType:parser->returnType_
-                     typeParameters:parser->formalTypeParameters_] autorelease];
+                     typeParameters:parser->formalTypeParameters_]);
 }
 
 @end
@@ -367,14 +369,15 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
          returnType:(id<JavaLangReflectType>)returnType
      typeParameters:(IOSObjectArray *)typeParameters {
   if ((self = [super init])) {
-    genericExceptionTypes_ = [exceptions retain];
-    genericParameterTypes_ = [parameters retain];
-    genericReturnType_ = [returnType retain];
-    formalTypeParameters_ = [typeParameters retain];
+    genericExceptionTypes_ = RETAIN_(exceptions);
+    genericParameterTypes_ = RETAIN_(parameters);
+    genericReturnType_ = RETAIN_(returnType);
+    formalTypeParameters_ = RETAIN_(typeParameters);
   }
   return self;
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
   [genericExceptionTypes_ release];
   [genericParameterTypes_ release];
@@ -382,5 +385,6 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
   [formalTypeParameters_ release];
   [super dealloc];
 }
+#endif
 
 @end

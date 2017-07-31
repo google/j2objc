@@ -30,7 +30,7 @@
     if (length < 0) { \
       @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]); \
     } \
-    IOS##U_NAME##Array *array = NSAllocateObject( \
+    IOS##U_NAME##Array *array = ARGC_allocateObject( \
         [IOS##U_NAME##Array class], length * sizeof(C_TYPE), nil); \
     array->size_ = length; \
     return array; \
@@ -48,7 +48,7 @@
   } \
   \
   + (instancetype)arrayWithLength:(NSUInteger)length { \
-    return [IOS##U_NAME##Array_NewArray((jint)length) autorelease]; \
+    return AUTORELEASE(IOS##U_NAME##Array_NewArray((jint)length)); \
   } \
   \
   + (instancetype)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
@@ -56,12 +56,11 @@
   } \
   \
   + (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
-    return [IOS##U_NAME##Array_NewArrayWith##U_NAME##s((jint)count, buf) autorelease]; \
+    return AUTORELEASE(IOS##U_NAME##Array_NewArrayWith##U_NAME##s((jint)count, buf)); \
   } \
   \
   + (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths { \
-    return [IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil) \
-        autorelease]; \
+    return AUTORELEASE(IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil)); \
   } \
 + (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths \
     __attribute__((objc_method_family(none), ns_returns_retained)) { \
@@ -166,7 +165,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, jchar)
   if (length > 0) {
     [string getCharacters:array->buffer_ range:NSMakeRange(0, length)];
   }
-  return [array autorelease];
+  return AUTORELEASE(array);
 }
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
@@ -188,7 +187,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, jbyte)
   if (length > 0) {
     [data getBytes:array->buffer_ length:length];
   }
-  return [array autorelease];
+  return AUTORELEASE(array);
 }
 
 - (void)getBytes:(jbyte *)buffer

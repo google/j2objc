@@ -30,7 +30,7 @@
 #import "objc/runtime.h"
 
 @interface IOSConcreteClass () {
-  _Atomic(IOSObjectArray *) interfaces_;
+  __unsafe_unretained IOSObjectArray * interfaces_;
 }
 @end
 
@@ -139,7 +139,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
   }
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:constructors
                                                        type:JavaLangReflectConstructor_class_()];
-  [constructors release];
+  RELEASE_(constructors);
   return result;
 }
 
@@ -168,15 +168,18 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = __c11_atomic_load(&interfaces_, __ATOMIC_ACQUIRE);
+  IOSObjectArray *result = interfaces_;
   if (!result) {
     @synchronized(self) {
-      result = __c11_atomic_load(&interfaces_, __ATOMIC_RELAXED);
+        IOSObjectArray *result = interfaces_;
+        if (result) {
+            return result;
+        }
       if (!result) {
         unsigned int count;
-        Protocol **protocolList = class_copyProtocolList(class_, &count);
+        __unsafe_unretained Protocol **protocolList = class_copyProtocolList(class_, &count);
         result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
-        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
+          interfaces_ = result;
         free(protocolList);
       }
     }

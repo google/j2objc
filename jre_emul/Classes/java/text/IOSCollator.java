@@ -40,7 +40,7 @@ public class IOSCollator extends Collator {
   }
 
   private native void initNativeLocale(Locale locale) /*-[
-    self->nsLocale_ = [[NSLocale alloc] initWithLocaleIdentifier:[locale description]];
+    JreNativeFieldAssign(&self->nsLocale_, [[NSLocale alloc] initWithLocaleIdentifier:[locale description]]);
   ]-*/;
 
   @Override
