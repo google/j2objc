@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -52,7 +53,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   private final ExecutableElement element;
   private final TypeDeclaration typeDecl;
   private final HashMap<String, VariableElement> localVariableTable;
-
+  private final boolean sourceDebugging;
 
   public MethodTranslator(ParserEnvironment parserEnv, TranslationEnvironment translationEnv,
                           ExecutableElement element, TypeDeclaration typeDecl,
@@ -62,11 +63,12 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     this.element = element;
     this.typeDecl = typeDecl;
     this.localVariableTable = localVariableTable;
+    this.sourceDebugging = translationEnv.options().emitLineDirectives();
   }
 
   protected void visitChildren(final AstNode node, Consumer<TreeNode> builder) {
     for (AstNode child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-      builder.accept(child.acceptVisitor(this, null));
+      builder.accept(copySourcePosition(child, child.acceptVisitor(this, null)));
     }
   }
 
@@ -80,10 +82,27 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     for (AstNode child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
       TreeNode tn = child.acceptVisitor(this, null);
       if (tn != null) {
+        copySourcePosition(child, tn);
         return tn;
       }
     }
     return null;
+  }
+
+  private TreeNode copySourcePosition(AstNode child, TreeNode node) {
+    if (sourceDebugging) {
+      int offset = -1;
+      if (child instanceof com.strobel.decompiler.languages.java.ast.Expression) {
+        offset = ((com.strobel.decompiler.languages.java.ast.Expression) child).getOffset();
+      } else if (child instanceof com.strobel.decompiler.languages.java.ast.Statement) {
+        offset = ((com.strobel.decompiler.languages.java.ast.Statement) child).getOffset();
+      }
+      // Approximate length based on decompilation text.
+      int length = child.getText().length();
+      int line = child.getStartLocation().line();
+      node.setPosition(new SourcePosition(offset, length, line));
+    }
+    return node;
   }
 
   @Override
