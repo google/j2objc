@@ -85,12 +85,12 @@ define compile_rule
 $(1)/%.o: $(2)/%.mm $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling++ $(DT_TOOLCHAIN_DIR) '$$<'
-	clang++ -x objective-c++ -std=gnu++11 -I$(DT_TOOLCHAIN_DIR)/usr/include/c++/v1 $(5) -MD -c '$$<' -o '$$@'
+	clang++ -x objective-c++ -fno-objc-arc -std=gnu++11 -I$(DT_TOOLCHAIN_DIR)/usr/include/c++/v1 $(5) -MD -c '$$<' -o '$$@'
 
 $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling   '$$<'
-	@$(3) -std=c11 $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
+	@$(3) -std=c11 -fobjc-arc $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
 
 endef
 

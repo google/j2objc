@@ -89,7 +89,7 @@ public final class NetworkInterface extends Object {
     }
 
     typedef struct {
-      IOSByteArray *result;
+      __unsafe_unretained IOSByteArray *result;
       int index;
     } GetIpv6AddressesData;
     ]-*/;
