@@ -17,6 +17,7 @@
 //  Created by Tom Ball on 8/15/13.
 //
 
+#import "NSObject+JavaObject.h"
 #import "IOSReference.h"
 
 #import "IOSClass.h"
@@ -33,9 +34,7 @@
 #define SUPPORTS_SOFT_REFERENCES 1
 #endif
 
-#if !defined(J2OBJC_USE_GC)
-
-#if !defined(J2OBJC_USE_GC) && __has_feature(objc_arc)
+#if __has_feature(objc_arc)
 #error "IOSReference is not built with ARC"
 #endif
 
@@ -68,6 +67,7 @@
 
 
 @implementation IOSReference
+
 
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference);
 static void EnsureReferentSubclass(id referent);
@@ -369,4 +369,4 @@ static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
 
 @end
 
-#endif
+

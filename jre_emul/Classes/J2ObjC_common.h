@@ -77,7 +77,9 @@ void JreThrowNullPointerException() __attribute__((noreturn));
 void JreThrowClassCastException() __attribute__((noreturn));
 
 #ifdef J2OBJC_USE_GC
-@class JavaLangObject;
+@interface JavaLangObject : ARGCObject
+@end
+
 __attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
     id old = *pIvar;
     *pIvar = value;
@@ -161,7 +163,7 @@ CF_EXTERN_C_END
 
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  JreGenericAssign(pIvar, AUTORELEASE(value));
+  JreGenericFieldAssign(pIvar, AUTORELEASE(value));
     return value;
 }
 

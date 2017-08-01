@@ -132,19 +132,8 @@ public class GenerationBatch {
   private void processJarFile(String filename) {
     File f = findJarFile(filename);
     if (f == null) {
-    // { zee
-			File dir = new File(filename);
-			if (!dir.isDirectory()) {
-	// } zee 
       ErrorUtil.error("No such file: " + filename);
       return;
-	// { zee
-	}
-			options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
-			List<InputFile> inputFiles = Lists.newArrayList();
-			oz_getJavaFiles(inputFiles, dir, dir.getAbsolutePath().replace('\\', '/'));
-			return;
-	// } zee
     }
 
     // Warn if source debugging is specified for a jar file, since native debuggers
@@ -191,6 +180,18 @@ public class GenerationBatch {
     }
   }
 
+  	public void oz_registerNativeFiles(List<String> srcArgs) {
+  		for (String filename : srcArgs) {
+			File dir = new File(filename);
+			if (dir.isDirectory()) {
+				options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+				List<InputFile> inputFiles = Lists.newArrayList();
+				oz_getJavaFiles(inputFiles, dir, dir.getAbsolutePath().replace('\\', '/'));
+				return;
+			}
+  		}
+  	}
+  	
 	private void oz_getJavaFiles(List<InputFile> inputFiles, File f, String pathPrefix) {
 		File files[] = f.listFiles();
 		for (int i = 0; i < files.length; i++) {
@@ -289,7 +290,7 @@ public class GenerationBatch {
   @VisibleForTesting
   public void addSource(InputFile file) {
 		if (oz_parser != null) {
-			Oz.processAutoMethodMapRegister(oz_parser, file, options);
+			//Oz.processAutoMethodMapRegister(oz_parser, file, options);
 		}
     inputs.add(ProcessingContext.fromFile(file, options));
   }

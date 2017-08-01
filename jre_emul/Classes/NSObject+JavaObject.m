@@ -231,4 +231,7 @@ static void doWait(id obj, long long timeout) {
 @implementation JreObjectCategoryDummy
 @end
 
+@implementation JavaLangObject
+@end
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)

@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Oz;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
@@ -104,6 +105,7 @@ public class InputFilePreprocessor {
       // The parser found and reported one or more errors.
       return;
     }
+    
     String qualifiedName = parseResult.mainTypeName();
     if (shouldMapHeaders) {
       options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");

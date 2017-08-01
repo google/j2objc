@@ -1,7 +1,18 @@
 package com.google.devtools.j2objc;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.lang.model.element.ExecutableElement;
@@ -11,6 +22,7 @@ import javax.lang.model.type.TypeMirror;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.CatchClause;
@@ -23,10 +35,13 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
+import com.google.devtools.j2objc.pipeline.GenerationBatch.Oz_InputFile;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
@@ -233,7 +248,6 @@ public class Oz {
 		if (pureObjCMap.indexOf(arg) < 0) {
 			pureObjCMap.add(arg);
 		}
-		//pureObjCMap.put(arg, arg);
 	}
 
 	public static void processAutoMethodMapRegister(Parser parser, InputFile file, Options options) {
@@ -241,10 +255,18 @@ public class Oz {
 			return;
 		}
 
+		//System.out.println("gen " + file.getUnitName());
 		CompilationUnit unit = parser.parse(file);
 		new NoWithSuffixMethodRegister(unit, options).run();
 	}
 
+//	public static void processAutoMethodMapRegister(InputFile file, CompilationUnit unit, Options options) {
+//		if (!isPureObjC(file.getUnitName())) {
+//			return;
+//		}
+//		new NoWithSuffixMethodRegister(unit, options).run();
+//	}
+	
 	static public class NoWithSuffixMethodRegister extends UnitTreeVisitor {
 
 		StringBuilder sb = new StringBuilder();
@@ -354,15 +376,19 @@ public class Oz {
 			return false;
 		}
 		path = path.substring(0, p);
+		return isPureObjFolder(path);
+	}
+
+	private static boolean isPureObjFolder(String path) {
 		for (String s : pureObjCMap) {
 			if (path.startsWith(s)) {
 				return true;
 			}
 		}
 		return false;
-		//return pureObjCMap.get(path) != null;
 	}
 
+	
 //	public static boolean isPureObjC(ElementUtil util, TypeElement type) {
 //		String s = util.getBinaryName(type);
 //		boolean res = isPureObjC(s);
@@ -422,4 +448,180 @@ public class Oz {
 		return map.get(res);
 	}
 
+	
+	
+	public static class SourceList extends ArrayList<String> {
+		
+		private String root;
+		private Options options;
+
+		public SourceList(Options options) {
+			this.options = options;
+		}
+
+		public boolean add(String filename) {
+			File f = new File(filename);
+			if (f.isDirectory()) {
+				options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+				root = f.getAbsolutePath() + '/';
+				this.addFolder(f);
+			}
+			else {
+				this.addSource(filename);
+			}
+			return true;
+		}
+		
+		void addSource(String filename) {
+			super.add(filename);
+		}
+
+		private void addSource(File f) {
+			if (f.isDirectory()) {
+				addFolder(f);
+			}
+			else if (f.getName().endsWith(".java")) {
+				String filepath = f.getAbsolutePath();
+				String filename = filepath.substring(root.length());
+				this.addSource(filename);
+			}
+		}
+	
+		private void addFolder(File f) {
+			File files[] = f.listFiles();
+			for (File f2 : files) {
+				addSource(f2);
+			}
+		}
+	
+	    
+
+		public class Oz_InputFile implements InputFile {
+			private final String path, fsPath, unitPath;
+	
+			public Oz_InputFile(String fsPath, String path0) {
+				this.fsPath = fsPath;
+				this.path = path0.replace('\\', '/');
+				this.unitPath = path.substring(fsPath.length() + 1);
+				// System.out.println(this.fsPath + "!" + unitPath);
+			}
+	
+			@Override
+			public boolean exists() {
+				return new File(path).exists();
+			}
+	
+			@Override
+			public InputStream getInputStream() throws IOException {
+				return new FileInputStream(new File(path));
+			}
+	
+			@Override
+			public Reader openReader(Charset charset) throws IOException {
+				return new InputStreamReader(getInputStream(), charset);
+			}
+	
+			public String getPath() {
+				return path;
+			}
+	
+			public String getContainingPath() {
+				return fsPath;
+			}
+	
+			@Override
+			public String getUnitName() {
+				return unitPath;
+			}
+	
+			@Override
+			public String getBasename() {
+				return unitPath.substring(unitPath.lastIndexOf('/') + 1);
+			}
+	
+			@Override
+			public long lastModified() {
+				return new File(path).lastModified();
+			}
+	
+			@Override
+			public String toString() {
+				return getPath();
+			}
+	
+			@Override
+			public String getAbsolutePath() {
+				return path;
+			}
+	
+			@Override
+			public String getOriginalLocation() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+	
+		}
+
+	
+		
+		
+	}
+
+	public static class Preprocessor  {
+		
+		private String root;
+		private com.google.devtools.j2objc.util.Parser parser;
+		private Options options;
+		int inPureObjC; 
+
+		public Preprocessor(com.google.devtools.j2objc.util.Parser parser, Options options) {
+			this.parser = parser;
+			this.options = options;
+		}
+		
+		private void addFolder(File f) {
+			File files[] = f.listFiles();
+			for (File f2 : files) {
+				addSource(f2);
+			}
+		}
+		
+		private void addSource(File f) {
+			String filepath = f.getAbsolutePath();
+			String filename = filepath.substring(root.length());
+			if (f.isDirectory()) {
+				boolean isPureObjFolder = isPureObjFolder(filename);
+				if (isPureObjFolder) {
+					inPureObjC ++;
+					addFolder(f);
+					inPureObjC --;
+				}
+				else {
+					addFolder(f);
+				}
+			}
+			else if (f.getName().endsWith(".java")) {
+				if (root == null || inPureObjC > 0) {
+					Oz.processAutoMethodMapRegister(parser, new RegularInputFile(filepath, filename), options);
+				}
+			}
+		}
+	
+		public void preprocess(List<String> srcArgs) {
+	  		for (String filename : srcArgs) {
+				File f = new File(filename);
+				if (f.isDirectory()) {
+					root = f.getAbsolutePath() + '/';
+					inPureObjC = 0;
+					this.addFolder(f);
+				}
+				else {
+					root = "";
+					inPureObjC = 1;
+					addSource(f);
+				}
+	  		}
+		}
+	}
 }
+

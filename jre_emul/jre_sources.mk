@@ -15,6 +15,7 @@
 # or classes from non-public packages (like libcore.*).
 
 NATIVE_ARGC_SOURCES = \
+  ARGC/IOSReference.mm \
   ARGC/ARGC.mm 
 
 
@@ -30,7 +31,6 @@ NATIVE_JRE_SOURCES_CORE = \
   IOSPrimitiveClass.m \
   IOSProtocolClass.m \
   IOSProxyClass.m \
-  IOSReference.m \
   IOSReflection.m \
   J2ObjC_common.m \
   J2ObjC_icu.m \

@@ -91,15 +91,16 @@ public class J2ObjC {
     File strippedSourcesDir = null;
     Parser parser = null;
     try {
-      // zee { src 의 pure-objc 를 먼저 확인하기 위한 조치.
-      parser = createParser(options);
-      List<ProcessingContext> srcInputs = Lists.newArrayList();
+        parser = createParser(options);
+      //* zee { src 의 pure-objc 를 먼저 확인하기 위한 조치.
       List<String> srcArgs = options.fileUtil().getSourcePathEntries();
-      new GenerationBatch(options, parser).processFileArgs(srcArgs);
+      Oz.Preprocessor list = new Oz.Preprocessor(parser, options);
+      list.preprocess(srcArgs);
+      list.preprocess(fileArgs);
       //*/
 
       List<ProcessingContext> inputs = Lists.newArrayList();
-      GenerationBatch batch = new GenerationBatch(options, null);
+      GenerationBatch batch = new GenerationBatch(options, parser);
       batch.processFileArgs(fileArgs);
       inputs.addAll(batch.getInputs());
       if (ErrorUtil.errorCount() > 0) {
@@ -165,6 +166,13 @@ public class J2ObjC {
    * @param args command-line arguments: flags and source file names
    */
   public static void main(String[] args) {
+	  
+	  for (int i = 0; i < args.length; i ++) {
+		  System.out.print(args[i]);
+		  System.out.print(" ");
+	  }
+	  System.out.println(new File(".").getAbsolutePath());
+	  System.out.println("===================================================");
 	  
     if (args.length == 0) {
       Options.help(true);

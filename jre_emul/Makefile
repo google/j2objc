@@ -150,7 +150,7 @@ DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
 $(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
-$(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m | translate
+$(CLASS_DIR)/%.o__not_used: $(EMULATION_CLASS_DIR)/%.m | translate
 	@mkdir -p $(@D)
 	@echo clang -c $<
 	@$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) $(SDK_FLAGS) -c $< -o $@

@@ -570,6 +570,10 @@ extern "C" {
     void JreRetainedWithRelease(id parent, id child);
     void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
     
+    int ARGC_retainCount(id obj) {
+        return NSExtraRefCount(obj);
+    }
+    
     void printRefCount(id obj) {
         NSLog(@"ref: %d -> %@", (int)NSExtraRefCount(obj), obj);
     }

@@ -152,6 +152,7 @@ abstract class FileProcessor {
   private void processCompiledSource(ProcessingContext input,
       com.google.devtools.j2objc.ast.CompilationUnit unit) {
     InputFile file = input.getFile();
+    
     if (closureQueue != null) {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }

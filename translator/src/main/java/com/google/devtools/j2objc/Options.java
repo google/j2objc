@@ -358,7 +358,7 @@ public class Options {
   private class ArgProcessor {
 
     private boolean processingSourceFiles = false;
-    private List<String> sourceFiles = new ArrayList<>();
+    private List<String> sourceFiles = new Oz.SourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();

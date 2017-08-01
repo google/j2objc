@@ -53,8 +53,6 @@
 
 
 #ifdef J2OBJC_USE_GC
-@interface JavaLangObject : ARGCObject
-@end
 
 __attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
 #pragma unused(self)

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Oz;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
@@ -49,6 +50,8 @@ import com.google.j2objc.annotations.RetainedLocalRef;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -200,6 +203,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
       // same field.
       return isStrong ? "JreVolatileStrongAssign" : "JreAssignVolatile"
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
+    }
+    
+    Element enc = var.getEnclosingElement();
+    if (Oz.isPureObjC(enc.asType())) {
+    	return null;
     }
 
     String funcName = null;
