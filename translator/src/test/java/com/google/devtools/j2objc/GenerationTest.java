@@ -579,9 +579,9 @@ public class GenerationTest extends TestCase {
   /**
    * Removes a file from the tmp directory,
    */
-  protected void removeFile(String relativePath) {
+  protected void removeFile(String relativePath) throws IOException {
     if (!new File(tempDir, relativePath).delete()) {
-
+      throw new IOException("failed deleting " + relativePath);
     }
   }
 
