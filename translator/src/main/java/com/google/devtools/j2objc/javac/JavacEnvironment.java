@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.DiagnosticCollector;
@@ -58,6 +59,22 @@ class JavacEnvironment implements ParserEnvironment {
     symbolTable = Symtab.instance(context);
     javacElements = JavacElements.instance(context);
     javacTypes = JavacTypes.instance(context);
+  }
+
+  TypeMirror resolvePrimitiveType(String signature) {
+    switch (signature) {
+      case "B": return symbolTable.byteType;
+      case "C": return symbolTable.charType;
+      case "D": return symbolTable.doubleType;
+      case "F": return symbolTable.floatType;
+      case "I": return symbolTable.intType;
+      case "J": return symbolTable.longType;
+      case "S": return symbolTable.shortType;
+      case "V": return symbolTable.voidType;
+      case "Z": return symbolTable.booleanType;
+      default:
+        return null;
+    }
   }
 
   @Override

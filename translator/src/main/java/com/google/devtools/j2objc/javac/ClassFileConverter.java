@@ -48,7 +48,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
-import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.sun.tools.javac.code.Symbol;
@@ -388,14 +387,5 @@ public class ClassFileConverter {
     convertBodyDeclaration(enumConstDecl, element);
     /* TODO(user): set ExecutablePair */
     return enumConstDecl;
-  }
-
-  private TypeElement resolve(AstType type) {
-    String fqn = type.toTypeReference().getErasedSignature();
-    Element element = parserEnv.resolve(fqn);
-    if (element == null || !(element instanceof TypeElement)) {
-      throw new AssertionError("failed resolving type: " + fqn);
-    }
-    return (TypeElement) element;
   }
 }

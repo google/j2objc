@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -30,11 +31,13 @@ import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.strobel.decompiler.languages.java.ast.AstNode;
+import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.BlockStatement;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.patterns.Pattern;
 import java.util.HashMap;
 import java.util.function.Consumer;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -318,7 +321,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitSimpleType(
       com.strobel.decompiler.languages.java.ast.SimpleType node, Void data) {
-    return visitChildren(node);
+    return Type.newType(resolve(node));
   }
 
   @Override
@@ -543,5 +546,30 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitLocalTypeDeclarationStatement(
       com.strobel.decompiler.languages.java.ast.LocalTypeDeclarationStatement node, Void data) {
     return visitChildren(node);
+  }
+
+  private TypeMirror resolve(AstType type) {
+    return resolve(type.toTypeReference().getErasedSignature());
+  }
+
+  private TypeMirror resolve(String signature) {
+    if (signature.startsWith("[")) {
+      // Multi-dimension arrays will recurse.
+      TypeMirror componentType = resolve(signature.substring(1));
+      return parserEnv.typeUtilities().getArrayType(componentType);
+    }
+    if (signature.length() == 1) {
+      TypeMirror primitiveType = ((JavacEnvironment) parserEnv).resolvePrimitiveType(signature);
+      if (primitiveType != null) {
+        return primitiveType;
+      }
+    }
+    Element element = parserEnv.resolve(signature);
+    if (element == null) {
+      // Should never happen, since all types for the classfile this method
+      // is from should have been previously loaded by javac.
+      throw new AssertionError("failed resolving type: " + signature);
+    }
+    return element.asType();
   }
 }
