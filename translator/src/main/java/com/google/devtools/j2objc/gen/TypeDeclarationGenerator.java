@@ -181,7 +181,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
       return nameTable.getFullName(supertype);
     }
-    return this.isInterfaceType() ? "NSObject" : "JavaLangObject";
+    return (this.isInterfaceType() || Oz.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
   }
 
   private List<String> getInterfaceNames() {
@@ -278,7 +278,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (options.useGC() && typeUtil.isARGCField(varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+        if (options.useGC() && !Oz.inPureObjCMode() && typeUtil.isARGCField(varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
         	print("ARGC_FIELD_REF ");
         }
         else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {

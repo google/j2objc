@@ -58,7 +58,7 @@ public class Options {
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private boolean zee_noPackageDeirectories = false;
-  private MemoryManagementOption memoryManagementOption = null;
+  private static MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
@@ -74,7 +74,7 @@ public class Options {
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = -1;
   private String processors = null;
-  private boolean disallowInheritedConstructors = false;
+  private boolean disallowInheritedConstructors = true;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
@@ -84,8 +84,10 @@ public class Options {
   private boolean reportJavadocWarnings = false;
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
-  private String bootclasspath = System.getProperty("sun.boot.class.path");
   private String annotationsJar = null;
+
+  // Property not defined in Java 9, so use empty bootclasspath.
+  private String bootclasspath = System.getProperty("sun.boot.class.path", "");
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
@@ -156,7 +158,7 @@ public class Options {
   /**
    * Types of memory management to be used by translated code.
    */
-  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
+  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC, GC }
 
   /**
    * What languages can be generated.
@@ -410,10 +412,10 @@ public class Options {
         addPrefixOption(getArgValue(args, arg));
       } else if (arg.equals("--pure-objc")) {
     	  // @zee
-          if (++nArg == args.length) {
-            usage("----pure-objc requires an argument");
-          }
-          Oz.addPureObjC(args[nArg]);
+//          if (++nArg == args.length) {
+//            usage("----pure-objc requires an argument");
+//          }
+          Oz.addPureObjC(args.next());
       } else if (arg.equals("--prefixes")) {
         packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
@@ -429,6 +431,8 @@ public class Options {
         ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
+      } else if (arg.equals("-use-gc")) {
+          checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
     	  /* @zee
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
@@ -526,16 +530,16 @@ public class Options {
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.equals("-debugSource")) {
-        if (++nArg == args.length) {
-          usage("-singleSource requires an argument");
-        }
+//        if (++nArg == args.length) {
+//          usage("-singleSource requires an argument");
+//        }
         // Handle aliasing of version numbers as supported by javac.
-        oz_debugSource = args[nArg].replace('\\', '/');
+        oz_debugSource = args.next().replace('\\', '/');
 		if (!oz_debugSource.endsWith(".java")) {
 			oz_debugSource += ".java";
 		}
       } else if (arg.equals("-!debugSource")) {
-        ++nArg;
+        args.next();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -595,7 +599,7 @@ public class Options {
 
     // Pull source version from system properties if it is not passed with -source flag.
     if (sourceVersion == null) {
-      sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
+      sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
     }
 
     if (isJDT()) {
@@ -696,14 +700,18 @@ public class Options {
     this.language = language;
   }
 
-  public boolean useReferenceCounting() {
+  public static boolean useReferenceCounting() {
     return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
 
-  public boolean useARC() {
+  public static boolean useARC() {
     return memoryManagementOption == MemoryManagementOption.ARC;
   }
 
+  public static boolean useGC() {
+	    return memoryManagementOption == MemoryManagementOption.GC;
+	  }
+  
   public MemoryManagementOption getMemoryManagementOption() {
     return memoryManagementOption;
   }

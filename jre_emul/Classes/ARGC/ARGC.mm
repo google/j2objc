@@ -33,7 +33,7 @@ public:
     int32_t slotIndex() {
         return _gc_context >> (32+4);
     }
-
+    
     void setSlotIndex(int64_t index) {
         index <<= (32+4);
         while (true) {
@@ -44,7 +44,7 @@ public:
             }
         }
     }
-
+    
     // External Reference Counting;
     
     int32_t refCount() {
@@ -54,13 +54,13 @@ public:
     void incRefCount() {
         _gc_context ++;
     }
-
+    
     int32_t decRefCount() {
         int32_t cnt = (int32_t)(--_gc_context);
         assert(cnt >= 0);
         return cnt;
     }
-
+    
     // State;
     
     BOOL isStrongReachable() {
@@ -76,7 +76,7 @@ public:
         }
         return false;
     }
-
+    
     BOOL isPhantom() {
         return (_gc_context & INT_MIN) != 0;
     }
@@ -127,8 +127,9 @@ public:
     
     ARGC() {
         RefContext::change_generation();
+        JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
     }
-
+    
     int size() {
         return _cntRef;
     }
@@ -136,7 +137,7 @@ public:
     void doGC();
     
     static void markInstance(ObjP obj);
-
+    
     static void markInstanceEx(id obj);
     
     static int32_t getExternalRefCount(ObjP obj) {
@@ -156,7 +157,7 @@ public:
             _instance.addStrongRef(obj);
         }
     }
-
+    
     static BOOL inGC() {
         return _instance._inGC;
     }
@@ -178,12 +179,12 @@ public:
             _instance.addPhantom(obj);
         }
     }
-
+    
     static BOOL isReachable(ObjP obj) {
         return obj->_gc_info.isStrongReachable();
     }
     
-
+    
     static BOOL isPublished(ObjP obj) {
         return obj->_gc_info.slotIndex() >= 0;
     }
@@ -197,7 +198,7 @@ public:
             [obj dealloc];
         }
     }
-
+    
     static void releaseReferenceCountAndPublish(ObjP obj) {
         if (NSDecrementExtraRefCountWasZero(obj)) {
             [obj dealloc];
@@ -206,7 +207,7 @@ public:
             _instance.addStrongRef(obj);
         }
     }
-
+    
     static const scan_offset_t* getScanOffsets(Class clazz) {
         ScanOffsetArray* scanOffsets = _instance.makeScanOffsets(clazz);
         return scanOffsets->offsets;
@@ -217,7 +218,7 @@ private:
     RefSlot* newBucket() {
         return (RefSlot*)malloc(_1M);
     }
-
+    
     static BOOL unregisterRef(ObjP obj) {
         int idxSlot = obj->_gc_info.slotIndex();
         if (idxSlot < 0) {
@@ -277,6 +278,7 @@ private:
     ObjP _phantomQ = NULL;
     RefSlot* _table[1024];
     NSMutableDictionary* _scanOffsetCache;
+    Class JavaLangRefReference_class;
     BOOL _inGC = FALSE;
 };
 
@@ -321,6 +323,7 @@ static scan_offset_t _emptyFields[1] = { 0 };
 - (void)dealloc
 {
     ARGC::deallocInstance(self);
+    [super dealloc];
 }
 
 - (instancetype)retain
@@ -371,7 +374,7 @@ ScanOffsetArray* ARGC::makeScanOffsets(Class clazz) {
         }
         
         int cntARGC = 0;
-        if (![clazz isSubclassOf JavaLangRefReference]) {
+        if (![clazz isSubclassOfClass:JavaLangRefReference_class]) {
             id clone = NSAllocateObject(clazz, 0, NULL);
             int cntObjField = 0;
             
@@ -458,7 +461,7 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, id newValue) {
     if (*pField == newValue) {
         return;
     }
-
+    
     std::atomic<id>* field = (std::atomic<id>*)pField;
     if (newValue != NULL) {
         if (ARGC::isJavaObject(newValue)) {
@@ -494,7 +497,7 @@ void ARGC::doGC() {
     }
     
     RefContext::change_generation();
-
+    
     int idxSlot = _cntRef;
     RefSlot* pScan = getRefSlot(idxSlot);
     for (; idxSlot > 0; ) {
@@ -544,7 +547,7 @@ void ARGC::doGC() {
         reclaimInstance(dead);
         dead = next;
     }
-
+    
     if (GC_DEBUG) {
         NSLog(@"total alive %d -> %d", idxSlot, (int)this->_cntRef);
     }
@@ -566,15 +569,15 @@ extern "C" {
     id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
     void JreRetainedWithRelease(id parent, id child);
     void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
-
-void printRefCount(id obj) {
-    NSLog(@"ref: %d -> %@", (int)NSExtraRefCount(obj), obj);
-}
-
+    
+    void printRefCount(id obj) {
+        NSLog(@"ref: %d -> %@", (int)NSExtraRefCount(obj), obj);
+    }
+    
     void ARGC_initARGCObject(id obj) {
         ((ObjP)obj)->_gc_info.initialize();
     }
-
+    
     void ARGC_genericRetain(id obj) {
         if (ARGC::isJavaObject(obj)) {
             ARGC::retainReferenceCount(obj);
@@ -583,11 +586,11 @@ void printRefCount(id obj) {
             [obj retain];
         }
     }
-
+    
     uintptr_t* ARGC_toVolatileIdPtr(ARGC_FIELD_REF id* ptr) {
         return (uintptr_t*)ptr;
     }
-
+    
     id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) {
         return ARGC::allocateInstance(cls, extraBytes, zone);
     }
@@ -622,7 +625,7 @@ void printRefCount(id obj) {
             // else: It's a final instance field, return without any side effects.
         }
     }
-
+    
 }
 
 id JreLoadVolatileId(volatile_id *pVar) {
