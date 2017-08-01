@@ -15,7 +15,6 @@
 typedef uint16_t scan_offset_t;
 
 typedef ARGCObject* ObjP;
-typedef void (*ARGCObjectFiledVisitor)(id obj);
 typedef std::atomic<ObjP> RefSlot;
 
 static const int _1M = 1024*1024;
@@ -105,7 +104,7 @@ int64_t RefContext::reachable_mark = 0;
 @public
     RefContext _gc_info;
 }
-- (void) forEachObjectField: (ARGCObjectFiledVisitor) visitor;
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor;
 
 @end
 
@@ -128,6 +127,7 @@ public:
     
     ARGC() {
         RefContext::change_generation();
+        JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
     }
 
     int size() {
@@ -278,6 +278,7 @@ private:
     ObjP _phantomQ = NULL;
     RefSlot* _table[1024];
     NSMutableDictionary* _scanOffsetCache;
+    Class JavaLangRefReference_class;
     BOOL _inGC = FALSE;
 };
 
@@ -322,6 +323,7 @@ static scan_offset_t _emptyFields[1] = { 0 };
 - (void)dealloc
 {
     ARGC::deallocInstance(self);
+    [super dealloc];
 }
 
 - (instancetype)retain
@@ -340,7 +342,7 @@ static scan_offset_t _emptyFields[1] = { 0 };
     return [super autorelease];
 }
 
-- (void) forEachObjectField: (ARGCObjectFiledVisitor) visitor
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor
 {
     const scan_offset_t* scanOffsets = ARGC::getScanOffsets([self class]);
     while (true) {
@@ -370,36 +372,39 @@ ScanOffsetArray* ARGC::makeScanOffsets(Class clazz) {
         if (res != NULL) {
             return res;
         }
-        id clone = NSAllocateObject(clazz, 0, NULL);
-        int cntObjField = 0;
         
-        for (Class cls = clazz; cls && cls != [NSObject class]; ) {
-            unsigned int ivarCount;
-            Ivar *ivars = class_copyIvarList(cls, &ivarCount);
-            for (unsigned int i = 0; i < ivarCount; i++) {
-                Ivar ivar = ivars[i];
-                const char *ivarType = ivar_getTypeEncoding(ivar);
-                if (*ivarType == '@') {
-                    ptrdiff_t offset = ivar_getOffset(ivar);
-                    _offset_buf[cntObjField] = offset / sizeof(ObjP);
-                    id obj = [[[NSObject alloc] retain] retain];
-                    id* pField = (id *)((char *)clone + offset);
-                    _test_obj_buf[cntObjField] = *pField = obj;
-                    cntObjField ++;
-                }
-            }
-            free(ivars);
-            cls = class_getSuperclass(cls);
-        }
-        
-        NSDeallocateObject(clone);
         int cntARGC = 0;
-        for (int i = 0; i < cntObjField; i ++) {
-            scan_offset_t offset = _offset_buf[i];
-            id field = _test_obj_buf[i];
-            NSUInteger cntRef = NSExtraRefCount(field);
-            if (cntRef > 1) {
-                _offset_buf[cntARGC++] = offset;
+        if (![clazz isSubclassOfClass:JavaLangRefReference_class]) {
+            id clone = NSAllocateObject(clazz, 0, NULL);
+            int cntObjField = 0;
+            
+            for (Class cls = clazz; cls && cls != [NSObject class]; ) {
+                unsigned int ivarCount;
+                Ivar *ivars = class_copyIvarList(cls, &ivarCount);
+                for (unsigned int i = 0; i < ivarCount; i++) {
+                    Ivar ivar = ivars[i];
+                    const char *ivarType = ivar_getTypeEncoding(ivar);
+                    if (*ivarType == '@') {
+                        ptrdiff_t offset = ivar_getOffset(ivar);
+                        _offset_buf[cntObjField] = offset / sizeof(ObjP);
+                        id obj = [[[NSObject alloc] retain] retain];
+                        id* pField = (id *)((char *)clone + offset);
+                        _test_obj_buf[cntObjField] = *pField = obj;
+                        cntObjField ++;
+                    }
+                }
+                free(ivars);
+                cls = class_getSuperclass(cls);
+            }
+            
+            NSDeallocateObject(clone);
+            for (int i = 0; i < cntObjField; i ++) {
+                scan_offset_t offset = _offset_buf[i];
+                id field = _test_obj_buf[i];
+                NSUInteger cntRef = NSExtraRefCount(field);
+                if (cntRef > 1) {
+                    _offset_buf[cntARGC++] = offset;
+                }
             }
         }
         

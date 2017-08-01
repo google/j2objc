@@ -123,6 +123,19 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
   return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, type);
 }
 
+#ifdef J2OBJC_USE_GC
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor {
+    ARGC_FIELD_REF id*pItem = buffer_ + 0;
+    for (int i = size_; --i >= 0; ) {
+        ARGC_FIELD_REF id obj = *pItem++;
+        if (obj != NULL) {
+            visitor(obj);
+        }
+    }
+
+}
+#endif
+
 - (id)objectAtIndex:(NSUInteger)index {
   IOSArray_checkIndex(size_, (jint)index);
   return buffer_[index];
@@ -216,10 +229,10 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
 
 static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, jint length) {
 #ifdef J2OBJC_USE_GC
-    __unsafe_unretained *pSrc = buffer + src;
-    __unsafe_unretained *pDst = buffer + dest;
+    ARGC_FIELD_REF id *pSrc = buffer + src;
+    ARGC_FIELD_REF id *pDst = buffer + dest;
     while (--length >= 0) {
-        JreGenericFieldAssign(pDst, pSrc);
+        JreGenericFieldAssign(pDst++, *pSrc++);
     }
 #else
   jint releaseStart = dest;
@@ -303,7 +316,7 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
 - (id)copyWithZone:(NSZone *)zone {
   IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_, true);
 #ifdef J2OBJC_USE_GC
-    for (jint i = 0; i < size; i++) {
+    for (jint i = 0; i < size_; i++) {
         JreGenericFieldAssign(result->buffer_ + i, buffer_[i]);
     }
 #else

@@ -38,6 +38,8 @@ extern "C" {
 
     
 #define ARGC_FIELD_REF __unsafe_unretained
+
+typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj);
     
 /* replace filed with newValue and returns old value. */
 void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, ARGCObject* newValue);
@@ -52,7 +54,7 @@ void ARGC_collectGarbage();
 void ARGC_requestGC();
 
 /* wake garbage collection thread. */
-    id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone);
+id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone);
 
 
 #define ARGC_FIELD(type, name)
