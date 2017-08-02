@@ -92,7 +92,7 @@ Inet6AddressImpl_getHostByAddr0(JNIEnv *env, jobject this,
         /*
          * For IPv4 addresses construct a sockaddr_in structure.
          */
-        if ((*env)->GetArrayLength(env, addrArray) == 4) {
+        if ((*env)->GetArrayLength(env, (jarray)addrArray) == 4) {
             jint addr;
             (*env)->GetByteArrayRegion(env, addrArray, 0, 4, caddr);
             addr = ((caddr[0]<<24) & 0xff000000);
@@ -282,7 +282,7 @@ Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
      * If it's an IPv4 address, ICMP won't work with IPv4 mapped address,
      * therefore, let's delegate to the Inet4Address method.
      */
-    sz = (*env)->GetArrayLength(env, addrArray);
+    sz = (*env)->GetArrayLength(env, (jarray)addrArray);
     if (sz == 4) {
       return Inet4AddressImpl_isReachable0(env, this,
                                                          addrArray,
