@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
 import java.io.IOException;
 
 /**
@@ -203,5 +202,16 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertTranslation(translation, inner1);
     assertTranslation(translation, inner2);
     assertTrue(translation.indexOf(inner2) < translation.indexOf(inner1));
+  }
+
+  public void testDuplicateTypeName() throws IOException {
+    addSourceFile("package bar.foo; public interface A {}", "bar/foo/A.java");
+    options.getPackagePrefixes().addPrefix("foo.bar", "XX");
+    options.getPackagePrefixes().addPrefix("bar.foo", "XX");
+    String s = translateSourceFile(
+        "package foo.bar; interface B extends bar.foo.A {}  public class A implements B {}",
+        "foo.bar.A", "foo/bar/A.m");
+    assertTrue(ErrorUtil.getErrorMessages().contains("Duplicate type name found in XXA->XXB->XXA"));
+    assertTrue(ErrorUtil.errorCount() > 0);
   }
 }
