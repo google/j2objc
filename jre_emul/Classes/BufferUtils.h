@@ -26,7 +26,7 @@
 static inline char *BytesRW(id object) {
   nil_chk(object);
   if ([object isKindOfClass:[IOSByteArray class]]) {
-      return (char *)IOSByteArray_GetRef(object, 0);
+    return (char *)((IOSByteArray *)object)->buffer_;
   } else if ([object isKindOfClass:[JavaNioBuffer class]]) {
     // All buffer concrete classes have byteBuffer at the same
     // offset by explicit design.
