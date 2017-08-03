@@ -80,6 +80,7 @@ public class GenerationTest extends TestCase {
   protected Parser parser;
   protected Options options;
   private CodeReferenceMap deadCodeMap = null;
+  private List<String> javacFlags = new ArrayList<>();
 
   static {
     // Prevents errors and warnings from being printed to the console.
@@ -207,7 +208,7 @@ public class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileAsClassFile(String name, String source) throws IOException {
-    return compileAsClassFile(name, source, "-parameters");
+    return compileAsClassFile(name, source, javacFlags.toArray(new String[0]));
   }
 
   /**
@@ -678,6 +679,15 @@ public class GenerationTest extends TestCase {
       jar.close();
     }
   }
+
+  /**
+   * Enables both javac and j2objc gidebugging support in a test.
+   */
+  protected void enableDebuggingSupport() {
+    javacFlags.add("-parameters");
+    javacFlags.add("-g");
+  }
+
 
   // Empty test so Bazel won't report a "no tests" error.
   public void testNothing() {}
