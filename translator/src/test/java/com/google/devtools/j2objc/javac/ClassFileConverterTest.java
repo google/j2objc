@@ -28,6 +28,7 @@ public class ClassFileConverterTest extends GenerationTest {
   protected void setUp() throws IOException {
     super.setUp();
     options.setTranslateClassfiles(true);
+    enableDebuggingSupport();
   }
 
   public void testEmptyInterface() throws IOException {
