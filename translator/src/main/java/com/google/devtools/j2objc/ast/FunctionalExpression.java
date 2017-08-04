@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
@@ -24,9 +25,10 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class FunctionalExpression extends Expression {
 
-  private TypeMirror typeMirror;
-  private TypeElement typeElement;
+  private TypeMirror typeMirror = null;
+  private TypeElement typeElement = null;
   private List<TypeMirror> targetTypes = new ArrayList<>();
+  private ExecutablePair descriptor = ExecutablePair.NULL;
   protected ChildLink<Expression> lambdaOuterArg = ChildLink.create(Expression.class, this);
   protected ChildList<Expression> lambdaCaptureArgs = ChildList.create(Expression.class, this);
 
@@ -38,6 +40,7 @@ public abstract class FunctionalExpression extends Expression {
     typeMirror = other.getTypeMirror();
     typeElement = other.getTypeElement();
     targetTypes.addAll(other.getTargetTypes());
+    descriptor = other.getDescriptor();
     lambdaOuterArg.copyFrom(other.getLambdaOuterArg());
     lambdaCaptureArgs.copyFrom(other.getLambdaCaptureArgs());
   }
@@ -67,6 +70,15 @@ public abstract class FunctionalExpression extends Expression {
 
   public FunctionalExpression addTargetType(TypeMirror t) {
     targetTypes.add(t);
+    return this;
+  }
+
+  public ExecutablePair getDescriptor() {
+    return descriptor;
+  }
+
+  public FunctionalExpression setDescriptor(ExecutablePair e) {
+    descriptor = e;
     return this;
   }
 

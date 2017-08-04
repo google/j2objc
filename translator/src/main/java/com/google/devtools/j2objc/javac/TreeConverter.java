@@ -125,6 +125,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.code.TypeTag;
+import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
@@ -152,6 +153,7 @@ import javax.tools.JavaFileObject;
 public class TreeConverter {
   private final JCTree.JCCompilationUnit unit;
   private final JavacEnvironment env;
+  private final Types types;
   private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
@@ -189,6 +191,7 @@ public class TreeConverter {
   private TreeConverter(JCTree.JCCompilationUnit javacUnit, JavacEnvironment javacEnv) {
     unit = javacUnit;
     env = javacEnv;
+    types = Types.instance(javacEnv.getContext());
   }
 
   private TreeNode convert(Object obj) {
@@ -780,7 +783,10 @@ public class TreeConverter {
     for (TypeMirror type : node.targets) {
       newNode.addTargetType(type);
     }
-    return newNode.setTypeMirror(node.type);
+    return newNode.setTypeMirror(node.type)
+        .setDescriptor(new ExecutablePair(
+            (ExecutableElement) types.findDescriptorSymbol(node.targets.head.tsym),
+            (ExecutableType) node.getDescriptorType(types)));
   }
 
   private TreeNode convertIdent(JCTree.JCIdent node) {

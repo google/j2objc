@@ -152,4 +152,23 @@ public class DefaultMethodsTest extends TestCase {
     assertTrue(methodNames.contains("f"));
     assertTrue(methodNames.contains("notF"));
   }
+
+  interface X {
+    int f();
+    int g();
+  }
+
+  interface Y extends X {
+    default int f() {
+      return 1;
+    }
+  }
+
+  public static int acceptY(Y y) {
+    return y.g();
+  }
+
+  public void testDefaultMethodOverrideToCreateFunctionalInterface() {
+    assertEquals(13, acceptY(() -> 13));
+  }
 }

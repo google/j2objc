@@ -54,7 +54,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -76,8 +75,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
     private final FunctionalExpression node;
     private final TypeElement lambdaType;
     private final TypeMirror typeMirror;
-    private ExecutableElement functionalInterface;
-    private ExecutableType functionalInterfaceType;
+    private final ExecutablePair descriptor;
     private TypeDeclaration typeDecl;
     private GeneratedExecutableElement implElement;
     private MethodDeclaration implDecl;
@@ -87,30 +85,12 @@ public class LambdaRewriter extends UnitTreeVisitor {
       this.node = node;
       lambdaType = node.getTypeElement();
       typeMirror = node.getTypeMirror();
-      resolveFunctionalInterface();
+      descriptor = node.getDescriptor();
       createTypeDeclaration();
       createImplementation();
       createCreation();
       removeCastExpression();
       replaceNode();
-    }
-
-    public void resolveFunctionalInterface() {
-      typeUtil.visitTypeHierarchy(typeMirror, baseType -> {
-        TypeElement element = (TypeElement) baseType.asElement();
-        if (element.getKind().isClass()) {
-          return true;
-        }
-        for (ExecutableElement method : ElementUtil.getMethods(element)) {
-          if (!ElementUtil.isDefault(method) && !ElementUtil.isStatic(method)) {
-            functionalInterface = method;
-            functionalInterfaceType = typeUtil.asMemberOf(baseType, method);
-            return false;
-          }
-        }
-        return true;
-      });
-      assert functionalInterface != null : "Could not find functional interface for " + typeMirror;
     }
 
     private void createTypeDeclaration() {
@@ -120,9 +100,9 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     private void createImplementation() {
-      String selector = nameTable.getMethodSelector(functionalInterface);
+      String selector = nameTable.getMethodSelector(descriptor.element());
       implElement = GeneratedExecutableElement.newMethodWithSelector(
-          selector, functionalInterface.getReturnType(), lambdaType);
+          selector, descriptor.element().getReturnType(), lambdaType);
       implDecl = new MethodDeclaration(implElement);
       typeDecl.addBodyDeclaration(implDecl);
     }
@@ -171,7 +151,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
 
     private Block asImplementationBlock(Expression expr) {
       Block block = new Block();
-      if (TypeUtil.isVoid(functionalInterface.getReturnType())) {
+      if (TypeUtil.isVoid(descriptor.element().getReturnType())) {
         block.addStatement(new ExpressionStatement(expr));
       } else {
         block.addStatement(new ReturnStatement(expr));
@@ -189,7 +169,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     private Iterator<VariableElement> createParameters() {
-      List<? extends TypeMirror> paramTypes = functionalInterfaceType.getParameterTypes();
+      List<? extends TypeMirror> paramTypes = descriptor.type().getParameterTypes();
       List<VariableElement> params = new ArrayList<>(paramTypes.size());
       int i = 0;
       for (TypeMirror type : paramTypes) {
