@@ -36,11 +36,13 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.languages.java.ast.AstNode;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.BlockStatement;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.patterns.Pattern;
+import com.sun.tools.javac.code.Symbol;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.lang.model.element.Element;
@@ -104,26 +106,24 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   }
 
   private TypeMirror resolve(AstType type) {
-    return resolve(type.toTypeReference().getErasedSignature());
+    return resolve(type.toTypeReference());
   }
 
-  private TypeMirror resolve(String signature) {
-    if (signature.startsWith("[")) {
+  private TypeMirror resolve(TypeReference typeRef) {
+    if (typeRef.isArray()) {
       // Multi-dimension arrays will recurse.
-      TypeMirror componentType = resolve(signature.substring(1));
+      TypeMirror componentType = resolve(typeRef.getElementType());
       return parserEnv.typeUtilities().getArrayType(componentType);
     }
-    if (signature.length() == 1) {
-      TypeMirror primitiveType = ((JavacEnvironment) parserEnv).resolvePrimitiveType(signature);
-      if (primitiveType != null) {
-        return primitiveType;
-      }
+    if (typeRef.isPrimitive() || typeRef.isVoid()) {
+      return ((JavacEnvironment) parserEnv).resolvePrimitiveType(typeRef.getSignature());
     }
-    Element element = parserEnv.resolve(signature);
-    if (element == null) {
+    String typeName = typeRef.getFullName();
+    Element element = parserEnv.resolve(typeName);
+    if (element instanceof TypeElement && ((Symbol.ClassSymbol) element).classfile == null) {
       // Should never happen, since all types for the classfile this method
       // is from should have been previously loaded by javac.
-      throw new AssertionError("failed resolving type: " + signature);
+      throw new AssertionError("failed resolving type: " + typeName);
     }
     return element.asType();
   }
