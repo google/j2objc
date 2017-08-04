@@ -660,20 +660,42 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
-//  public void testConvertVars() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  public int run(int yip) {",
-//        "    int i = 42;",
-//        "    if (i < yip) {",
-//        "      i = yip;",
-//        "    }",
-//        "    return i;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualASTSrcClassfile(type, source);
-//  }
+  // TODO(user): also try wrapper classes such as Integer, etc.
+  public void testVarDecl() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int yip) {",
+        "    int i;",
+        "    if (yip < 42) {",
+        "      i = yip;",
+        "    } else {",
+        "      i = 42;",
+        "    }",
+        "    return i;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testVarDeclInit() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int yip) {",
+        "    int i = 0;",
+        "    if (yip < 42) {",
+        "      i = yip;",
+        "    } else {",
+        "      i = 42;",
+        "    }",
+        "    return i;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
 }
