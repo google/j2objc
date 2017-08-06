@@ -15,11 +15,11 @@
 # or classes from non-public packages (like libcore.*).
 
 NATIVE_ARGC_SOURCES = \
-  ARGC/IOSReference.mm \
   ARGC/ARGC.mm 
 
 
 NATIVE_JRE_SOURCES_CORE = \
+  IOSReference.m \
   DebugUtils.m \
   FastPointerLookup.m \
   IOSArray.m \
@@ -1734,6 +1734,7 @@ EMULATED_JAVA_SOURCES = \
 
 # All non-generated headers that should be made public.
 PUBLIC_NATIVE_HEADERS = \
+  ARGC/ARGC.h \
   IOSArray.h \
   IOSClass.h \
   IOSMetadata.h \

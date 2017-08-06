@@ -30,7 +30,7 @@
 #import "objc/runtime.h"
 
 @interface IOSConcreteClass () {
-  __unsafe_unretained IOSObjectArray * interfaces_;
+   IOSObjectArray * interfaces_;
 }
 @end
 
@@ -62,7 +62,9 @@
 - (IOSClass *)getSuperclass {
   // Number and Throwable are special cases where its superclass doesn't match Java's.
   const char *clsName = class_getName(class_);
-  if (strcmp("NSNumber", clsName) == 0 || strcmp("JavaLangThrowable", clsName) == 0) {
+  if (strcmp("NSNumber", clsName) == 0
+      || strcmp("JavaLangThrowable", clsName) == 0
+      ) {
     return NSObject_class_();
   }
   Class superclass = [class_ superclass];
@@ -171,7 +173,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
   IOSObjectArray *result = interfaces_;
   if (!result) {
     @synchronized(self) {
-        IOSObjectArray *result = interfaces_;
+        result = interfaces_;
         if (result) {
             return result;
         }
@@ -179,7 +181,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
         unsigned int count;
         __unsafe_unretained Protocol **protocolList = class_copyProtocolList(class_, &count);
         result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
-          interfaces_ = result;
+          interfaces_ = RETAIN_(result);
         free(protocolList);
       }
     }
@@ -189,8 +191,9 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [class_ release];
-  [super dealloc];
+  RELEASE_(interfaces_);
+  RELEASE_(class_);
+  DEALLOC_(super);
 }
 #endif
 

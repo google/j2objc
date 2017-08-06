@@ -740,7 +740,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(__unsafe_unretained Proto
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
-    Protocol *protocol = list[i];
+    __unsafe_unretained Protocol *protocol = list[i];
     // It is not uncommon for protocols to be added to classes like NSObject using categories. Here
     // we filter out any protocols that aren't translated from Java interfaces.
     if (IsJavaInterface(protocol)) {
@@ -1101,7 +1101,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
 }
 
 - (void)__readRawValue:(J2ObjcRawValue *)rawValue fromAddress:(const void *)addr {
-  rawValue->asPointer = (void*)addr;
+  rawValue->asPointer = *(void**)addr;
 }
 
 - (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr {
@@ -1118,6 +1118,7 @@ OS_INLINE id FastObjectLookup(FastPointerLookup_t *lookup, __unsafe_unretained i
     J2ObjcRawValue v;
     v.asId = key;
     v.asPointer = FastPointerLookup(lookup, v.asPointer);
+    ARGC_strongRetain(v.asId);
     return v.asId;
 }
 
@@ -1125,6 +1126,7 @@ OS_INLINE bool FastObjectLookupAddMapping(FastPointerLookup_t *lookup, __unsafe_
     J2ObjcRawValue k, v;
     k.asId = key;
     v.asId = value;
+    ARGC_strongRetain(value);
     return FastPointerLookupAddMapping(lookup, k.asPointer, v.asPointer);
 }
 
@@ -1154,6 +1156,8 @@ static jboolean IsStringType(Class cls) {
   return false;
 }
 
+void ARGC_strongRetain(id obj);
+
 static IOSClass* ClassLookup(Class cls) {
   //Class cls = (Class)clsPtr;
   if (IsStringType(cls)) {
@@ -1166,6 +1170,7 @@ static IOSClass* ClassLookup(Class cls) {
     return stringClass;
   }
   IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
+    ARGC_strongRetain(result);
   return result;
 }
 
@@ -1260,6 +1265,14 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
                           "emulation library. Try adding the -force_load linker flag."];
     }
 
+#ifdef J2OBJC_USE_GC
+      FastObjectLookupAddMapping(&classLookup, [JavaLangObject class], NSObject_class_());
+      FastObjectLookupAddMapping(&classLookup, [ARGCObject class], NSObject_class_());
+#endif
+//      || strcmp("JavaLangObject", clsName) == 0
+//      || strcmp("ARGCObject", clsName) == 0
+      
+      
     J2OBJC_SET_INITIALIZED(IOSClass)
   }
 }
@@ -1432,7 +1445,14 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   return &_IOSClass;
 }
 
+void ARGC_deallocClass(IOSClass*);
+
++(instancetype)alloc {
+    return [super alloc];
+}
+
 - (void)dealloc {
+    ARGC_deallocClass(self);
   @throw create_JavaLangAssertionError_initWithId_(
       [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
 #if !__has_feature(objc_arc)

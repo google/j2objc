@@ -95,7 +95,7 @@ static IOSClass *GetErasedFieldType(JavaLangReflectField *field) {
   return JreClassForString(field->metadata_->type);
 }
 
-id AGRG_getARGCField(id object, Ivar ivar_, int* err);
+BOOL AGRG_getARGCField(id object, Ivar ivar_, J2ObjcRawValue *rawValue);
 void AGRG_setARGCField(id object, Ivar ivar_, id value);
 
 
@@ -118,11 +118,24 @@ static void ReadRawValue(
     if (![field->declaringClass_ isInstance:object]) {
       @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
     }
-      int err;
-      AGRG_getARGCField(object, field->ivar_, &err);
-      if (err) {
-          *rawValue = field->metadata_->constantValue;
+      if (field->ivar_) {
+          [type __readRawValue:rawValue fromAddress:((char *)(__bridge void*)object) + ivar_getOffset(field->ivar_)];
+      } else {
+          // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
+          SEL getter = NSSelectorFromString([NSString stringWithFormat:@"__%@", [field getName]]);
+          if (getter && [object respondsToSelector:getter]) {
+              rawValue->asPointer = ((void*(*)(id, SEL))[object methodForSelector:getter])(object, getter);
+          } else {
+              // It's a final instance field, return its constant value.
+              *rawValue = field->metadata_->constantValue;
+          }
       }
+//      
+//      int err;
+//      AGRG_getARGCField(object, field->ivar_, &err);
+//      if (err) {
+//          *rawValue = field->metadata_->constantValue;
+//      }
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
     @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
@@ -130,7 +143,7 @@ static void ReadRawValue(
 }
 
 static void SetWithRawValue(
-    J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *fromType) {
+    J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *fromType, BOOL needsRetain) {
   IOSClass *type = GetErasedFieldType(field);
   if (!type) {
     // Reflection stripped, assume the caller knows the correct type.
@@ -139,19 +152,52 @@ static void SetWithRawValue(
   if (![fromType __convertRawValue:rawValue toType:type]) {
     @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
   }
+
   if (IsStatic(field)) {
     if (IsFinal(field) && !field->accessible_) {
       @throw create_JavaLangIllegalAccessException_initWithNSString_(
           @"Cannot set static final field");
     }
-    [type __writeRawValue:rawValue toAddress:field->ptrTable_[field->metadata_->staticRefIdx]];
+      void* pValue = (void*)field->ptrTable_[field->metadata_->staticRefIdx];
+      if (needsRetain) {
+#ifdef J2OBJC_USE_GC
+          JreStrongAssign((__strong id*)pValue, rawValue->asId);
+#else
+          [type __writeRawValue:rawValue toAddress:pValue];
+          RETAIN_(rawValue->asId);
+#endif
+      }
+      else {
+          [type __writeRawValue:rawValue toAddress:pValue];
+      }
   } else {
     nil_chk(object);
     if (IsFinal(field) && !field->accessible_) {
       @throw create_JavaLangIllegalAccessException_initWithNSString_(@"Cannot set final field");
     }
-      
-      AGRG_setARGCField(object, field->ivar_, rawValue->asId);
+      if (field->ivar_) {
+          void* pValue = ((char *)(__bridge void*)object) + ivar_getOffset(field->ivar_);
+          if (needsRetain) {
+#ifdef J2OBJC_USE_GC
+              JreGenericFieldAssign((__unsafe_unretained id*)pValue, rawValue->asId);
+#else
+              [type __writeRawValue:rawValue toAddress:pValue];
+              RETAIN_(rawValue->asId);
+#endif
+          }
+          else {
+              [type __writeRawValue:rawValue toAddress:pValue];
+          }
+      } else {
+          // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
+          SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%@:", [field getName]]);
+          if (setter && [object respondsToSelector:setter]) {
+              ((void(*)(id, SEL, void*))[object methodForSelector:setter])(object, setter, rawValue->asPointer);
+              //[object performSelector:setter withObject:rawValue->asId];
+          }
+          // else: It's a final instance field, return without any side effects.
+      }
+      //AGRG_setARGCField(object, field->ivar_, rawValue->asId);
       
   }
 }
@@ -217,58 +263,60 @@ static void SetWithRawValue(
   // If ivar_ is NULL and the field is not static then the field is a mapped
   // class "virtual" field.
   jboolean needsRetain = ![fieldType isPrimitive] && (ivar_ || IsStatic(self));
-  if (needsRetain) {
-    AUTORELEASE([self getWithId:object]);
-  }
+#ifdef J2OBJC_USE_GC
+    if (needsRetain) {
+        AUTORELEASE([self getWithId:object]);
+    }
+#endif
   J2ObjcRawValue rawValue;
   if (![fieldType __unboxValue:value toRawValue:&rawValue]) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
                         initWithNSString:@"field type mismatch"]);
   }
-  SetWithRawValue(&rawValue, self, object, fieldType);
-  if (needsRetain) {
-    (void)RETAIN_(value);
-  }
+  SetWithRawValue(&rawValue, self, object, fieldType, needsRetain);
+//  if (needsRetain) {
+//    (void)RETAIN_(value);
+//  }
 }
 
 - (void)setBooleanWithId:(id)object withBoolean:(jboolean)value {
   J2ObjcRawValue rawValue = { .asBOOL = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass booleanClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass booleanClass], false);
 }
 
 - (void)setByteWithId:(id)object withByte:(jbyte)value {
   J2ObjcRawValue rawValue = { .asChar = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass byteClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass byteClass], false);
 }
 
 - (void)setCharWithId:(id)object withChar:(jchar)value {
   J2ObjcRawValue rawValue = { .asUnichar = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass charClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass charClass], false);
 }
 
 - (void)setDoubleWithId:(id)object withDouble:(jdouble)value {
   J2ObjcRawValue rawValue = { .asDouble = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass doubleClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass doubleClass], false);
 }
 
 - (void)setFloatWithId:(id)object withFloat:(jfloat)value {
   J2ObjcRawValue rawValue = { .asFloat = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass floatClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass floatClass], false);
 }
 
 - (void)setIntWithId:(id)object withInt:(jint)value {
   J2ObjcRawValue rawValue = { .asInt = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass intClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass intClass], false);
 }
 
 - (void)setLongWithId:(id)object withLong:(jlong)value {
   J2ObjcRawValue rawValue = { .asLong = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass longClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass longClass], false);
 }
 
 - (void)setShortWithId:(id)object withShort:(jshort)value {
   J2ObjcRawValue rawValue = { .asShort = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass shortClass]);
+  SetWithRawValue(&rawValue, self, object, [IOSClass shortClass], false);
 }
 
 

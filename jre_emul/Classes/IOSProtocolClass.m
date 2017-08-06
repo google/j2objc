@@ -25,7 +25,7 @@
 
 @interface IOSProtocolClass () {
   Protocol *protocol_;
-  __unsafe_unretained IOSObjectArray * interfaces_;
+  IOSObjectArray * interfaces_;
 }
 @end
 

@@ -48,7 +48,7 @@
 }
 
 - (instancetype)initWithDeclaringClass:(IOSClass *)aClass
-                              metadata:(const J2ObjcMethodInfo *)metadata;
+                              metadata:(const J2ObjcMethodInfo *)metadata NS_RETURNS_RETAINED;
 
 - (NSString *)getName;
 

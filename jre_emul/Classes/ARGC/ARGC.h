@@ -39,13 +39,13 @@ extern "C" {
     
 #define ARGC_FIELD_REF __unsafe_unretained
 
-typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj);
+typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj, int depth);
     
 /* replace filed with newValue and returns old value. */
-void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, ARGCObject* newValue);
+void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained ARGCObject* newValue);
 
 /* replace filed with newValue and returns old value. */
-void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, id newValue);
+void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
 
 /* execute garbage collection. */
 void ARGC_collectGarbage();
@@ -54,9 +54,10 @@ void ARGC_collectGarbage();
 void ARGC_requestGC();
 
 /* wake garbage collection thread. */
-id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone);
+id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED;
 
-
+id ARGC_globalLock(__unsafe_unretained id obj) NS_RETURNS_RETAINED;
+id ARGC_globalUnlock(__unsafe_unretained id obj) NS_RETURNS_RETAINED;
 #define ARGC_FIELD(type, name)
 #define ARGC_PROXY_FIELD(type, name)
 #define ARGC_SYNTHESIZE(type, name)

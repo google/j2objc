@@ -27,6 +27,7 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/NegativeArraySizeException.h"
 
+
 // Defined in IOSArray.m
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
@@ -103,10 +104,15 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
                                      type:array->elementType_];
 }
 
+void ARGC_genericRetain(id obj);
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
   IOSObjectArray *result = IOSObjectArray_CreateArray((jint)count, type, false);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
+    for (jint i = 0; i < count; i++) {
+        ARGC_genericRetain(result->buffer_[i]);
+    }
+    
   return result;
 }
 
@@ -124,12 +130,12 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 #ifdef J2OBJC_USE_GC
-- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor {
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth {
     ARGC_FIELD_REF id*pItem = buffer_ + 0;
     for (int i = size_; --i >= 0; ) {
         ARGC_FIELD_REF id obj = *pItem++;
         if (obj != NULL) {
-            visitor(obj);
+            visitor(obj, depth);
         }
     }
 
@@ -184,22 +190,30 @@ id IOSObjectArray_Set(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
+#ifndef J2OBJC_USE_GC
   if (array->isRetained_) {
+#endif
     return JreAutoreleasedAssign(&array->buffer_[index], RETAIN_(value));
+#ifndef J2OBJC_USE_GC
   } else {
     return array->buffer_[index] = value;
   }
+#endif
 }
 
 
 id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value) {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
+#ifndef J2OBJC_USE_GC
   if (array->isRetained_) {
+#endif
     return JreAutoreleasedAssign(&array->buffer_[index], value);
+#ifndef J2OBJC_USE_GC
   } else {
     return array->buffer_[index] = AUTORELEASE(value);
   }
+#endif
 }
 
 #ifndef J2OBJC_USE_GC
@@ -219,11 +233,11 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   return IOSObjectArray_Set(self, index, value);
 }
 
-- (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {
+- (void)getObjects:(__unsafe_unretained NSObject **)buffer length:(NSUInteger)length {
   IOSArray_checkIndex(size_, (jint)length - 1);
   for (NSUInteger i = 0; i < length; i++) {
     id element = buffer_[i];
-    buffer[i] = element;
+    JreGenericFieldAssign(&buffer[i], element);
   }
 }
 
@@ -231,8 +245,17 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
 #ifdef J2OBJC_USE_GC
     ARGC_FIELD_REF id *pSrc = buffer + src;
     ARGC_FIELD_REF id *pDst = buffer + dest;
-    while (--length >= 0) {
-        JreGenericFieldAssign(pDst++, *pSrc++);
+    if (dest < src) {
+        while (--length >= 0) {
+            JreGenericFieldAssign(pDst++, *pSrc++);
+        }
+    }
+    else {
+        pSrc += length;
+        pDst += length;
+        while (--length >= 0) {
+            JreGenericFieldAssign(--pDst, *--pSrc);
+        }
     }
 #else
   jint releaseStart = dest;

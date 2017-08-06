@@ -689,6 +689,7 @@
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 		784EDCD61F2B7C5900FFC3E4 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 784EDCD51F2B7C5900FFC3E4 /* libstdc++.tbd */; };
+		78A49C0A1F3178D7004A995A /* IterableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A49C081F3174FB004A995A /* IterableTest.m */; };
 		78A56A861F1E07C400F3BA1A /* ListResourceBundleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A851F1E07C400F3BA1A /* ListResourceBundleTest.m */; };
 		78A56A881F1E07E000F3BA1A /* ObservableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A871F1E07E000F3BA1A /* ObservableTest.m */; };
 		78A56A8A1F1E085800F3BA1A /* ResourceBundleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A891F1E085800F3BA1A /* ResourceBundleTest.m */; };
@@ -2327,7 +2328,7 @@
 		068677E8166C345F005A5AD7 /* Pattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pattern.h; path = build_result/Classes/java/util/regex/Pattern.h; sourceTree = "<group>"; };
 		068677E9166C345F005A5AD7 /* Pattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pattern.m; path = build_result/Classes/java/util/regex/Pattern.m; sourceTree = "<group>"; };
 		06898A7617BAF8C400D7B114 /* IOSReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSReference.h; sourceTree = "<group>"; };
-		06898A7817BAFAB400D7B114 /* IOSReference.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSReference.mm; sourceTree = "<group>"; };
+		06898A7817BAFAB400D7B114 /* IOSReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReference.m; sourceTree = "<group>"; };
 		0692DF5E1AE8560300C14F19 /* jni.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jni.m; sourceTree = "<group>"; };
 		069371F61A327DDB008ACC7F /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64.h; path = build_result/Classes/android/util/Base64.h; sourceTree = "<group>"; };
 		069371F71A327DDB008ACC7F /* Base64.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64.m; path = build_result/Classes/android/util/Base64.m; sourceTree = "<group>"; };
@@ -3764,7 +3765,6 @@
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
 		784304A01F30A60500C50719 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGC.h; sourceTree = "<group>"; };
-		784304A11F30AFA800C50719 /* IOSReference.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSReference.mm; sourceTree = "<group>"; };
 		784EDCCE1F2B737400FFC3E4 /* ARGC-copy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ARGC-copy.m"; sourceTree = "<group>"; };
 		784EDCD01F2B737400FFC3E4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ARGC.mm; sourceTree = "<group>"; };
 		784EDCD11F2B737400FFC3E4 /* ARGCArray_ARGCObjectArray_mm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCArray_ARGCObjectArray_mm.h; sourceTree = "<group>"; };
@@ -3782,6 +3782,8 @@
 		789598CD1F26ECD200D08F11 /* JreRetainedWith.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreRetainedWith.h; sourceTree = "<group>"; };
 		789598CE1F26ECD200D08F11 /* JreRetainedWith.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreRetainedWith.m; sourceTree = "<group>"; };
 		789598CF1F26ECD200D08F11 /* jvm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jvm.m; sourceTree = "<group>"; };
+		78A49C081F3174FB004A995A /* IterableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IterableTest.m; path = com/google/j2objc/IterableTest.m; sourceTree = "<group>"; };
+		78A49C091F3174FB004A995A /* ObjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectTest.m; path = com/google/j2objc/ObjectTest.m; sourceTree = "<group>"; };
 		78A56A841F1E07C400F3BA1A /* ListResourceBundleTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListResourceBundleTest.h; path = org/apache/harmony/tests/java/util/ListResourceBundleTest.h; sourceTree = "<group>"; };
 		78A56A851F1E07C400F3BA1A /* ListResourceBundleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListResourceBundleTest.m; path = org/apache/harmony/tests/java/util/ListResourceBundleTest.m; sourceTree = "<group>"; };
 		78A56A871F1E07E000F3BA1A /* ObservableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObservableTest.m; path = org/apache/harmony/tests/java/util/ObservableTest.m; sourceTree = "<group>"; };
@@ -4019,7 +4021,7 @@
 				06ED3D4817D163F80014750E /* IOSProtocolClass.h */,
 				06ED3D4917D163F80014750E /* IOSProtocolClass.m */,
 				06898A7617BAF8C400D7B114 /* IOSReference.h */,
-				06898A7817BAFAB400D7B114 /* IOSReference.mm */,
+				06898A7817BAFAB400D7B114 /* IOSReference.m */,
 				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
 				06AFD3DA183D3F4D001C90C6 /* IOSReflection.m */,
 				06B1E04F17F6403100F8940B /* Iterable.h */,
@@ -6265,6 +6267,8 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				78A49C081F3174FB004A995A /* IterableTest.m */,
+				78A49C091F3174FB004A995A /* ObjectTest.m */,
 				067FC8261EFAE8F2001D0627 /* EnvironmentUtil.m */,
 				067FC8221EFAE858001D0627 /* ReentrantLockTest.m */,
 				067FC8231EFAE858001D0627 /* ReentrantReadWriteLockTest.m */,
@@ -7033,7 +7037,6 @@
 		784EDCCD1F2B737400FFC3E4 /* ARGC */ = {
 			isa = PBXGroup;
 			children = (
-				784304A11F30AFA800C50719 /* IOSReference.mm */,
 				784304A01F30A60500C50719 /* ARGC.h */,
 				784EDCCE1F2B737400FFC3E4 /* ARGC-copy.m */,
 				784EDCD01F2B737400FFC3E4 /* ARGC.mm */,
@@ -7280,6 +7283,7 @@
 				069C24041E9EEEF700CE6BAF /* SimpleTimeZoneTest.m in Sources */,
 				062026441D512CA1001EE455 /* OldPushbackInputStreamTest.m in Sources */,
 				062028CF1D512E89001EE455 /* BigIntegerMultiplyTest.m in Sources */,
+				78A49C0A1F3178D7004A995A /* IterableTest.m in Sources */,
 				069C24281E9EEF7B00CE6BAF /* CRC32Test.m in Sources */,
 				78A56AAA1F1E0A6200F3BA1A /* EventObjectTest.m in Sources */,
 				062029361D512F25001EE455 /* MessageDigestTest.m in Sources */,
@@ -8248,7 +8252,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = NO;
-				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -8310,7 +8314,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = NO;
-				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

@@ -41,8 +41,8 @@
 #import "objc/runtime.h"
 
 @interface JavaLangReflectExecutable () {
-  __unsafe_unretained IOSObjectArray * params_;
-  __unsafe_unretained IOSObjectArray * paramTypes_;
+  IOSObjectArray * params_;
+  IOSObjectArray * paramTypes_;
 }
 @end
 
@@ -273,7 +273,8 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 #if !__has_feature(objc_arc)
 - (void)dealloc {
   RELEASE_(paramTypes_);
-  [super dealloc];
+  RELEASE_(params_);
+  DEALLOC_(super);
 }
 #endif
 

@@ -241,6 +241,8 @@ static NSUInteger CountObjectArgs(const char *types) {
   return numObjs;
 }
 
+id ARGC_strongRetainAutorelease(id obj);
+
 // Computes the capacity for the buffer.
 static jint ComputeCapacity(const char *types, va_list va, __unsafe_unretained NSString **objDescriptions) {
   jint capacity = 0;
@@ -287,7 +289,7 @@ static jint ComputeCapacity(const char *types, va_list va, __unsafe_unretained N
         {
           NSString *description = [va_arg(va, id) description];
           if (description) {
-            *(objDescriptions++) = description;
+            *(objDescriptions++) = ARGC_strongRetainAutorelease(description);
             capacity += CFStringGetLength((CFStringRef)description);
           } else {
             *(objDescriptions++) = nil;
@@ -345,12 +347,12 @@ NSString *JreStrcat(const char *types, ...) {
   va_end(va);
 
   // Create a string builder and fill it.
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
+  JreStringBuilder* sb = [[JreStringBuilder alloc]init];
+  JreStringBuilder_initWithCapacity(sb, capacity);
   va_start(va, types);
-  AppendArgs(types, va, objDescriptions, &sb);
+  AppendArgs(types, va, objDescriptions, sb);
   va_end(va);
-  return JreStringBuilder_toStringAndDealloc(&sb);
+  return JreStringBuilder_toStringAndDealloc(sb);
 }
 
 id JreStrAppendInner(id lhs, const char *types, va_list va) {
@@ -369,12 +371,12 @@ id JreStrAppendInner(id lhs, const char *types, va_list va) {
     capacity += 4;
   }
 
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
-  JreStringBuilder_appendString(&sb, lhsDescription);
-  AppendArgs(types, va, objDescriptions, &sb);
+    JreStringBuilder* sb = [[JreStringBuilder alloc]init];
+  JreStringBuilder_initWithCapacity(sb, capacity);
+  JreStringBuilder_appendString(sb, lhsDescription);
+  AppendArgs(types, va, objDescriptions, sb);
 
-  return JreStringBuilder_toStringAndDealloc(&sb);
+  return JreStringBuilder_toStringAndDealloc(sb);
 }
 
 id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...) {

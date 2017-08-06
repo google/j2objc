@@ -100,6 +100,8 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
 
+    //NSLog(@"%@", self);
+    
   [self invoke:invocation object:object];
 
   IOSClass *returnType = [self getReturnType];

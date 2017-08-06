@@ -81,13 +81,11 @@ void JreThrowClassCastException() __attribute__((noreturn));
 @end
 
 __attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
-    id old = *pIvar;
     *pIvar = value;
     return value;
 }
 
 __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *pIvar, id value) {
-    id old = *pIvar;
     *pIvar = value;
     return value;
 }
@@ -96,25 +94,21 @@ __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *
 #define JreNativeFieldAssignAndConsume  JreStrongAssignAndConsume
 
 __attribute__((always_inline)) inline id JreObjectFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
-    id old = *pIvar;
-    ARGC_assignARGCObject(pIvar, (JavaLangObject*)value);
+    ARGC_assignARGCObject(pIvar, value);
     return value;
 }
 
 __attribute__((always_inline)) inline id JreObjectFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
-    id old = *pIvar;
-    ARGC_assignARGCObject(pIvar, (JavaLangObject*)value);
+    ARGC_assignARGCObject(pIvar, value);
     return value;
 }
 
 __attribute__((always_inline)) inline id JreGenericFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
-    id old = *pIvar;
     ARGC_assignGenericObject(pIvar, value);
     return value;
 }
 
 __attribute__((always_inline)) inline id JreGenericFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
-    id old = *pIvar;
     ARGC_assignGenericObject(pIvar, value);
     return value;
 }
@@ -125,18 +119,18 @@ id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 #endif
 
 id JreLoadVolatileId(volatile_id *pVar);
-id JreAssignVolatileId(volatile_id *pVar, id value);
-id JreVolatileStrongAssign(volatile_id *pIvar, id value);
-jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
-id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
+id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
+id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
+jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, __unsafe_unretained id expected, __unsafe_unretained id newValue);
+id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
 
-id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
-id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
-void JreRetainedWithRelease(id parent, id child);
-void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
+id JreRetainedWithAssign(id parent, __strong id *pIvar, __unsafe_unretained id value);
+id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, __unsafe_unretained id value);
+void JreRetainedWithRelease(__unsafe_unretained id parent, __unsafe_unretained id child);
+void JreVolatileRetainedWithRelease(__unsafe_unretained id parent, volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
@@ -163,7 +157,8 @@ CF_EXTERN_C_END
 
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  JreGenericFieldAssign(pIvar, AUTORELEASE(value));
+    AUTORELEASE(value);
+    JreGenericFieldAssign(pIvar, value);
     return value;
 }
 

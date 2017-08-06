@@ -61,6 +61,8 @@
   return self;
 }
 
+void printRefCount(id obj);
+
 - (void)viewDidAppear:(BOOL)animated {
   CGRect textFrame = self.textPane.frame;
   textFrame.size.height -= 20;
@@ -69,6 +71,11 @@
   [self.saveButton setEnabled:NO];
   [self.logPane setDelegate:self];
 
+    NSObject* c = [[NSObject alloc] init];
+    printRefCount(c);
+    printRefCount([c init]);
+    ARGC_requestGC();
+    
   // Redirect all stdout and stderr output to the log pane.
   JRELogOutputStream *logStream = [[JRELogOutputStream alloc] initWithJRELogPane:self.logPane];
   JavaIoPrintStream *printStream =
@@ -91,6 +98,7 @@
     id<OrgJunitInternalJUnitSystem> junitSystem =
         AUTORELEASE([[OrgJunitInternalRealSystem alloc] init]);
     [testRunner runMainWithOrgJunitInternalJUnitSystem:junitSystem withNSStringArray:testClasses];
+      NSLog(@"Test done");
     self.testThread = nil;
   });
 }

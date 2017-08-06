@@ -39,6 +39,7 @@ void ARGC_genericRetain(id obj);
 
 #endif
 
+id ARGC_cloneInstance(id);
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
 
@@ -47,8 +48,8 @@ void ARGC_genericRetain(id obj);
     @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
   }
 
-#ifdef J2OBJC_USE_GC
-    id clone = [self copy];
+#if 0 //def J2OBJC_USE_GC
+    id clone = ARGC_cloneInstance(self);//[super copyWithZone:NULL];
 #else
   // Use the Java getClass method because it returns the class we want in case
   // self's class hass been swizzled by a WeakReference or RetainedWith field.
@@ -56,13 +57,13 @@ void ARGC_genericRetain(id obj);
   size_t instanceSize = class_getInstanceSize(cls);
   // We don't want to copy the NSObject portion of the object, in particular the
   // isa pointer, because it may contain the retain count.
-  size_t nsObjectSize = class_getInstanceSize([NSObject class]);
+  size_t nsObjectSize = class_getInstanceSize([JavaLangObject class]);
 
   // Deliberately not calling "init" on the cloned object. To match Java's
   // behavior we simply copy the data. However we must additionally retain all
   // fields with object type.
   id clone = AUTORELEASE([cls alloc]);
-  memcpy((char *)clone + nsObjectSize, (char *)self + nsObjectSize, instanceSize - nsObjectSize);
+  memcpy((char *)(__bridge void*)clone + nsObjectSize, (char *)(__bridge void*)self + nsObjectSize, instanceSize - nsObjectSize);
 
   // Reflectively examine all the fields for the object's type and retain any
   // object fields.
@@ -74,7 +75,7 @@ void ARGC_genericRetain(id obj);
       const char *ivarType = ivar_getTypeEncoding(ivar);
       if (*ivarType == '@') {
         ptrdiff_t offset = ivar_getOffset(ivar);
-        id field = *(id *)((char *)clone + offset);
+        __unsafe_unretained id field = *(__unsafe_unretained id *)(void*)((char *)(__bridge void*)clone + offset);
 #ifdef J2OBJC_USE_GC
         if (field != NULL) ARGC_genericRetain(field);
 #else
@@ -232,6 +233,14 @@ static void doWait(id obj, long long timeout) {
 @end
 
 @implementation JavaLangObject
+- (IOSClass *)getSuperclass {
+    return NSObject_class_();
+}
+
 @end
+J2OBJC_EMPTY_STATIC_INIT(JavaLangObject)
+J2OBJC_TYPE_LITERAL_HEADER(JavaLangObject)
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangObject)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)

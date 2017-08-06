@@ -110,7 +110,7 @@
  * @throws IndexOutOfBoundsException
  * if the specified length is greater than the array size.
  */
-- (void)getObjects:(NSObject **)buffer length:(NSUInteger)length;
+- (void)getObjects:(__unsafe_unretained NSObject **)buffer length:(NSUInteger)length;
 
 @end
 

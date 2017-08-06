@@ -75,12 +75,13 @@ id<JavaUtilSpliterator> JavaLangIterable_spliterator(id<JavaLangIterable> self) 
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaLangIterable)
 
+#ifndef J2OBJC_USE_GC
 NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id<JavaLangIterable> obj, NSFastEnumerationState *state,
     __unsafe_unretained id *stackbuf, NSUInteger len) {
   SEL hasNextSel = @selector(hasNext);
   SEL nextSel = @selector(next);
-  __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
+  id iter = (ARCBRIDGE id) (void *) state->extra[0];
   if (!iter) {
     static unsigned long no_mutation = 1;
     state->mutationsPtr = &no_mutation;
@@ -102,3 +103,4 @@ NSUInteger JreDefaultFastEnumeration(
   }
   return objCount;
 }
+#endif
