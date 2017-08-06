@@ -206,7 +206,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
     
     Element enc = var.getEnclosingElement();
-    if (Oz.isPureObjC(enc.asType())) {
+
+    if (Oz.isPureObjC(enc.asType()) || Oz.isPureObjC(type)) {
     	return null;
     }
 

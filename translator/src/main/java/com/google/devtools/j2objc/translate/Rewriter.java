@@ -59,7 +59,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.NoRefCounting;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -317,9 +317,9 @@ public class Rewriter extends UnitTreeVisitor {
     VariableDeclarationFragment firstVarNode = field.getFragment(0);
     if (typeUtil.isString(fieldType)) {
       node.addAttribute("copy");
-    } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {
+    } else if (!options.useGC() && ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), NoRefCounting.class)) {
       if (node.hasAttribute("strong")) {
-        ErrorUtil.error(field, "Weak field annotation conflicts with strong Property attribute");
+        ErrorUtil.error(field, "NoRefCounting field annotation conflicts with strong Property attribute");
         return;
       }
       node.addAttribute("weak");

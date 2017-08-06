@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.Oz;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
@@ -142,7 +143,8 @@ public final class TypeUtil {
   }
 
   public static boolean isDeclaredType(TypeMirror t) {
-    return t.getKind() == TypeKind.DECLARED;
+	  TypeKind k = t.getKind();
+    return k == TypeKind.DECLARED;
   }
 
   public static ElementKind getDeclaredTypeKind(TypeMirror t) {
@@ -219,12 +221,22 @@ public final class TypeUtil {
   }
   
   public String getArgcFieldType(TypeMirror t) {
+	  if (Oz.inPureObjCMode() || Oz.isPureObjC(t)) {
+		  return "Native";
+	  }
 	  TypeElement e = asTypeElement(t);
+	  if (e == null) {
+		  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
+		  if (tp != null) {
+			return "Generic";
+		  }
+	  }
 	  if (TypeUtil.isInterface(t) || e == javaObject) {
 		  return "Generic";
 	  }
 	  while (e != null) {
-		  if (e == this.javaNumber  || e == javaThrowable || e == this.javaString) {
+		  if (e == this.javaNumber  || e == javaThrowable
+		  ||  e == javaClass || e == this.javaString) {
 			  return "Native";
 		  }
 		  TypeMirror m = e.getSuperclass();

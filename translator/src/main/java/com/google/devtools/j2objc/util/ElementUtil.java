@@ -365,12 +365,15 @@ public final class ElementUtil {
   }
 
   public static boolean isWeakReference(VariableElement var) {
-    return hasNamedAnnotation(var, "Weak")
+    return hasNamedAnnotation(var, "NoRefCounting")
         || hasWeakPropertyAttribute(var)
         || (var instanceof GeneratedVariableElement && ((GeneratedVariableElement) var).isWeak());
   }
 
   public boolean isWeakOuterType(TypeElement type) {
+	  if (Options.useGC()) {
+		  return false;
+	  }
     if (type instanceof LambdaTypeElement) {
       return ((LambdaTypeElement) type).isWeakOuter();
     } else if (isAnonymous(type)) {

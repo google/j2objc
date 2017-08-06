@@ -396,7 +396,7 @@ public class Oz {
 //	}
 	
 	public static boolean isPureObjC(TypeMirror type) {
-		String s = type.toString().replace('.', '/');// TypeUtil.getBinaryName(type).substring(1);
+		String s = type.toString().replace('.', '/');
 		boolean res = isPureObjC(s);
 		return res;
 	}

@@ -166,8 +166,16 @@ public class AnnotationRewriter extends UnitTreeVisitor {
 
       VariableElement param = GeneratedVariableElement.newParameter(propName, memberType, null);
       constructorDecl.addParameter(new SingleVariableDeclaration(param));
-      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + propName + ")" : propName;
-      stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
+      if (options.useGC() && TypeUtil.isReferenceType(memberType)) {
+	      String rhs = propName;
+			String fType = typeUtil.getArgcFieldType(memberType);
+			String funcName = "Jre" + fType + "FieldAssign";
+	      stmts.add(new NativeStatement(funcName + "(&self->" + fieldName + ", " + rhs + ");"));
+      }
+      else {
+	      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + propName + ")" : propName;
+	      stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
+      }
     }
 
     stmts.add(new NativeStatement("return self;"));
