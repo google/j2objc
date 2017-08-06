@@ -28,11 +28,11 @@
 // to hook the referent object's dealloc method, so the reference's
 // field is zeroed and, optionally, a copy of the referent is queued
 // in the associated reference queue.
-@interface IOSReference : JavaLangObject
+@interface IOSReference : NSObject
 
 // Methods should only be called by java.lang.ref.Reference.
-+ (void)initReferent:(JavaLangRefReference *)reference;
 + (id)getReferent:(JavaLangRefReference *)reference;
++ (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)obj;
 + (void)clearReferent:(JavaLangRefReference *)reference;
 
 // Test-only method to fake a low-memory condition.

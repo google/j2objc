@@ -26,6 +26,7 @@
 
 package java.lang.ref;
 
+import com.google.j2objc.annotations.NoRefCounting;
 import com.google.j2objc.annotations.Weak;
 
 /*-[
@@ -44,7 +45,7 @@ import com.google.j2objc.annotations.Weak;
 
 public abstract class Reference<T> {
 
-    @Weak
+    @NoRefCounting
     volatile T referent;         /* Treated specially by GC */
     @Weak
     final ReferenceQueue<? super T> queue;
@@ -141,9 +142,8 @@ public abstract class Reference<T> {
     }
 
     Reference(T referent, ReferenceQueue<? super T> queue) {
-        this.referent = referent;
         this.queue = queue;
-        initReferent();
+        initReferent(referent);
     }
 
     @Override
@@ -151,7 +151,7 @@ public abstract class Reference<T> {
       clear();
     }
 
-    private native void initReferent() /*-[
-      [IOSReference initReferent:self];
+    private native void initReferent(Object referent) /*-[
+      [IOSReference initReferent:self withReferent:referent];
     ]-*/;
 }

@@ -206,7 +206,7 @@ public class FloatingDecimal{
 
         @Override
         public native void appendTo(Object buf) /*-[
-          JreStringBuilder_appendString((__bridge JreStringBuilder *)buf, image_);
+          JreStringBuilder_appendString((JreStringBuilder *)buf, image_);
         ]-*/;
 
         @Override
@@ -304,7 +304,7 @@ public class FloatingDecimal{
         public native void appendTo(Object buf) /*-[
           jint len = SunMiscFloatingDecimal_BinaryToASCIIBuffer_getCharsWithCharArray_(
               self, buffer_);
-          JreStringBuilder_appendCharArraySubset((__bridge JreStringBuilder *)buf, buffer_, 0, len);
+          JreStringBuilder_appendCharArraySubset((JreStringBuilder *)buf, buffer_, 0, len);
         ]-*/;
 
         @Override

@@ -152,12 +152,12 @@ package java.lang;
 
     @Override
     public synchronized native int length() /*-[
-      return self->delegate_.count_;
+      return self->count_;
     ]-*/;
 
     @Override
     public synchronized native int capacity() /*-[
-      return self->delegate_.bufferSize_;
+      return self->bufferSize_;
     ]-*/;
 
 
@@ -248,7 +248,7 @@ package java.lang;
     }
 
     public synchronized native StringBuffer append(String str) /*-[
-      JreStringBuilder_appendString(&self->delegate_, str);
+      JreStringBuilder_appendString(self, str);
       return self;
     ]-*/;
 
@@ -277,7 +277,7 @@ package java.lang;
      * @since 1.4
      */
     public synchronized native StringBuffer append(StringBuffer sb) /*-[
-      JreStringBuilder_appendStringBuffer(&self->delegate_, sb);
+      JreStringBuilder_appendStringBuffer(self, sb);
       return self;
     ]-*/;
 
@@ -312,7 +312,7 @@ package java.lang;
      */
     @Override
     public synchronized native StringBuffer append(CharSequence s) /*-[
-      JreStringBuilder_appendCharSequence(&self->delegate_, s);
+      JreStringBuilder_appendCharSequence(self, s);
       return self;
     ]-*/;
 
@@ -322,12 +322,12 @@ package java.lang;
      */
     @Override
     public synchronized native StringBuffer append(CharSequence s, int start, int end) /*-[
-      JreStringBuilder_appendCharSequenceSubset(&self->delegate_, s, start, end);
+      JreStringBuilder_appendCharSequenceSubset(self, s, start, end);
       return self;
     ]-*/;
 
     public synchronized native StringBuffer append(char[] str) /*-[
-      JreStringBuilder_appendCharArray(&self->delegate_, str);
+      JreStringBuilder_appendCharArray(self, str);
       return self;
     ]-*/;
 
@@ -335,7 +335,7 @@ package java.lang;
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public synchronized native StringBuffer append(char[] str, int offset, int len) /*-[
-      JreStringBuilder_appendCharArraySubset(&self->delegate_, str, offset, len);
+      JreStringBuilder_appendCharArraySubset(self, str, offset, len);
       return self;
     ]-*/;
 
@@ -345,12 +345,12 @@ package java.lang;
 
     @Override
     public synchronized native StringBuffer append(char c) /*-[
-      JreStringBuilder_appendChar(&self->delegate_, c);
+      JreStringBuilder_appendChar(self, c);
       return self;
     ]-*/;
 
     public synchronized native StringBuffer append(int i) /*-[
-      JreStringBuilder_appendInt(&self->delegate_, i);
+      JreStringBuilder_appendInt(self, i);
       return self;
     ]-*/;
 
@@ -362,17 +362,17 @@ package java.lang;
     }
 
     public synchronized native StringBuffer append(long lng) /*-[
-      JreStringBuilder_appendLong(&self->delegate_, lng);
+      JreStringBuilder_appendLong(self, lng);
       return self;
     ]-*/;
 
     public synchronized native StringBuffer append(float f) /*-[
-      JreStringBuilder_appendFloat(&self->delegate_, f);
+      JreStringBuilder_appendFloat(self, f);
       return self;
     ]-*/;
 
     public synchronized native StringBuffer append(double d) /*-[
-      JreStringBuilder_appendDouble(&self->delegate_, d);
+      JreStringBuilder_appendDouble(self, d);
       return self;
     ]-*/;
 
@@ -381,7 +381,7 @@ package java.lang;
      * @since      1.2
      */
     public synchronized native StringBuffer delete(int start, int end) /*-[
-      JreStringBuilder_delete(&self->delegate_, start, end);
+      JreStringBuilder_delete(self, start, end);
       return self;
     ]-*/;
 
@@ -390,7 +390,7 @@ package java.lang;
      * @since      1.2
      */
     public synchronized native StringBuffer deleteCharAt(int index) /*-[
-      JreStringBuilder_deleteCharAt(&self->delegate_, index);
+      JreStringBuilder_deleteCharAt(self, index);
       return self;
     ]-*/;
 
@@ -399,7 +399,7 @@ package java.lang;
      * @since      1.2
      */
     public synchronized native StringBuffer replace(int start, int end, String str) /*-[
-      JreStringBuilder_replace(&self->delegate_, start, end, str);
+      JreStringBuilder_replace(self, start, end, str);
       return self;
     ]-*/;
 
@@ -435,7 +435,7 @@ package java.lang;
      * @since      1.2
      */
     public synchronized native StringBuffer insert(int index, char[] str, int offset, int len) /*-[
-      JreStringBuilder_insertCharArraySubset(&self->delegate_, index, str, offset, len);
+      JreStringBuilder_insertCharArraySubset(self, index, str, offset, len);
       return self;
     ]-*/;
 
@@ -450,7 +450,7 @@ package java.lang;
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public synchronized native StringBuffer insert(int offset, String str) /*-[
-      JreStringBuilder_insertString(&self->delegate_, offset, str);
+      JreStringBuilder_insertString(self, offset, str);
       return self;
     ]-*/;
 
@@ -458,7 +458,7 @@ package java.lang;
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public synchronized native StringBuffer insert(int offset, char[] str) /*-[
-      JreStringBuilder_insertCharArray(&self->delegate_, offset, str);
+      JreStringBuilder_insertCharArray(self, offset, str);
       return self;
     ]-*/;
 
@@ -476,7 +476,7 @@ package java.lang;
      */
     public synchronized native StringBuffer insert(int dstOffset, CharSequence s,
             int start, int end) /*-[
-      JreStringBuilder_insertCharSequence(&self->delegate_, dstOffset, s, start, end);
+      JreStringBuilder_insertCharSequence(self, dstOffset, s, start, end);
       return self;
     ]-*/;
 
@@ -491,7 +491,7 @@ package java.lang;
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public synchronized native StringBuffer insert(int offset, char c) /*-[
-      JreStringBuilder_insertChar(&self->delegate_, offset, c);
+      JreStringBuilder_insertChar(self, offset, c);
       return self;
     ]-*/;
 
@@ -562,13 +562,13 @@ package java.lang;
      * @since   JDK1.0.2
      */
     public synchronized native StringBuffer reverse() /*-[
-      JreStringBuilder_reverse(&self->delegate_);
+      JreStringBuilder_reverse(self);
       return self;
     ]-*/;
 
     @Override
     public synchronized native String toString() /*-[
-      return JreStringBuilder_toString(&self->delegate_);
+      return JreStringBuilder_toString(self);
     ]-*/;
 
     /**
