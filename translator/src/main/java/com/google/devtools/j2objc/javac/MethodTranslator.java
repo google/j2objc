@@ -16,10 +16,12 @@ package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SourcePosition;
@@ -33,13 +35,11 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.languages.java.ast.AstNode;
 import com.strobel.decompiler.languages.java.ast.AstType;
-import com.strobel.decompiler.languages.java.ast.BlockStatement;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.patterns.Pattern;
 import com.sun.tools.javac.code.Symbol;
@@ -59,14 +59,14 @@ import javax.lang.model.type.TypeMirror;
  * @author Manvith Narahari
  */
 class MethodTranslator implements IAstVisitor<Void, TreeNode> {
-  private final ParserEnvironment parserEnv;
+  private final JavacEnvironment parserEnv;
   private final TranslationEnvironment translationEnv;
   private final ExecutableElement executableElement;
   private final TypeDeclaration typeDecl;
   private final Map<String, VariableElement> localVariableTable;
   private final boolean sourceDebugging;
 
-  public MethodTranslator(ParserEnvironment parserEnv, TranslationEnvironment translationEnv,
+  public MethodTranslator(JavacEnvironment parserEnv, TranslationEnvironment translationEnv,
                           ExecutableElement executableElement, TypeDeclaration typeDecl,
                           Map<String, VariableElement> localVariableTable) {
     this.parserEnv = parserEnv;
@@ -116,7 +116,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       return parserEnv.typeUtilities().getArrayType(componentType);
     }
     if (typeRef.isPrimitive() || typeRef.isVoid()) {
-      return ((JavacEnvironment) parserEnv).resolvePrimitiveType(typeRef.getSignature());
+      return parserEnv.resolvePrimitiveType(typeRef.getSignature());
     }
     String typeName = typeRef.getFullName();
     Element element = parserEnv.resolve(typeName);
@@ -249,11 +249,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitIfElseStatement(
       com.strobel.decompiler.languages.java.ast.IfElseStatement node, Void data) {
-    com.strobel.decompiler.languages.java.ast.Expression ifExpr = node.getCondition();
-    com.strobel.decompiler.languages.java.ast.Statement trueBlock = node.getTrueStatement();
     IfStatement ifStatement = new IfStatement()
-        .setExpression((Expression) ifExpr.acceptVisitor(this, null))
-        .setThenStatement((Statement) trueBlock.acceptVisitor(this, null));
+        .setExpression((Expression) node.getCondition().acceptVisitor(this, null))
+        .setThenStatement((Statement) node.getTrueStatement().acceptVisitor(this, null));
     com.strobel.decompiler.languages.java.ast.Statement falseBlock = node.getFalseStatement();
     if (falseBlock != null) {
       ifStatement.setElseStatement((Statement) falseBlock.acceptVisitor(this, null));
@@ -276,9 +274,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitReturnStatement(
       com.strobel.decompiler.languages.java.ast.ReturnStatement node, Void data) {
-    ReturnStatement returnStatement = new ReturnStatement();
-    visitChildren(node, (TreeNode tn) -> returnStatement.setExpression((Expression) tn));
-    return returnStatement;
+    return new ReturnStatement((Expression) node.getExpression().acceptVisitor(this, null));
   }
 
   @Override
@@ -326,9 +322,8 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitVariableDeclaration(
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
-    //TODO(user): modifiers
+    //TODO(user): modifiers/multiple declaration
     AstType astType = node.getType();
-    //TODO(user): may have more than one init if multiple declaration
     com.strobel.decompiler.languages.java.ast.VariableInitializer init =
         (com.strobel.decompiler.languages.java.ast.VariableInitializer) astType.getNextSibling();
     Type type = (Type) astType.acceptVisitor(this, null);
@@ -343,8 +338,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitVariableInitializer(
       com.strobel.decompiler.languages.java.ast.VariableInitializer node, Void data) {
-    com.strobel.decompiler.languages.java.ast.Expression expr = node.getInitializer();
-    return expr.acceptVisitor(this, null);
+    return node.getInitializer().acceptVisitor(this, null);
   }
 
   @Override
@@ -367,7 +361,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitMethodDeclaration(
       com.strobel.decompiler.languages.java.ast.MethodDeclaration node, Void data) {
-    return visitBlockStatement((BlockStatement) node.getLastChild(), data);
+    return node.getBody().acceptVisitor(this, null);
   }
 
   @Override
@@ -379,7 +373,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitConstructorDeclaration(
       com.strobel.decompiler.languages.java.ast.ConstructorDeclaration node, Void data) {
-    return visitBlockStatement((BlockStatement) node.getLastChild(), data);
+    return node.getBody().acceptVisitor(this, null);
   }
 
   @Override
@@ -454,9 +448,10 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       com.strobel.decompiler.languages.java.ast.BinaryOperatorExpression node, Void data) {
     Expression leftExpr = (Expression) node.getLeft().acceptVisitor(this, null);
     Expression rightExpr = (Expression) node.getRight().acceptVisitor(this, null);
+    TypeMirror type = translationEnv.typeUtil()
+        .wideningPrimitiveConversion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror());
     InfixExpression binaryExpr = new InfixExpression()
-        //TODO(user): casting/promotion?
-        .setTypeMirror(leftExpr.getTypeMirror())
+        .setTypeMirror(type)
         .addOperand(leftExpr)
         .addOperand(rightExpr);
     switch (node.getOperator()) {
@@ -556,7 +551,16 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitConditionalExpression(
       com.strobel.decompiler.languages.java.ast.ConditionalExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    Expression conditionExpr = (Expression) node.getCondition().acceptVisitor(this, null);
+    Expression trueExpr = (Expression) node.getTrueExpression().acceptVisitor(this, null);
+    Expression falseExpr = (Expression) node.getFalseExpression().acceptVisitor(this, null);
+    TypeMirror type = translationEnv.typeUtil()
+        .wideningPrimitiveConversion(trueExpr.getTypeMirror(), falseExpr.getTypeMirror());
+    return new ConditionalExpression()
+        .setTypeMirror(type)
+        .setExpression(conditionExpr)
+        .setThenExpression(trueExpr)
+        .setElseExpression(falseExpr);
   }
 
   @Override
@@ -653,7 +657,8 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitParenthesizedExpression(
       com.strobel.decompiler.languages.java.ast.ParenthesizedExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    Expression innerExpr = (Expression) node.getExpression().acceptVisitor(this, null);
+    return ParenthesizedExpression.parenthesize(innerExpr);
   }
 
   @Override

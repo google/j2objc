@@ -257,6 +257,17 @@ public final class TypeUtil {
     return javacTypes.isSubsignature(m1, m2);
   }
 
+  /**
+   * If converting from type2 to type1 is a widening primitive conversion, then type1 is returned.
+   * Otherwise type2 is returned.
+   * @param type1 a primitive type
+   * @param type2 a primitive type
+   * @return the wider primitive type
+   */
+  public TypeMirror wideningPrimitiveConversion(TypeMirror type1, TypeMirror type2) {
+    return isAssignable(type2, type1) ? type1 : type2;
+  }
+
   public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
     if (isGeneratedType(t)) {
       if (t instanceof GeneratedTypeElement.Mirror) {

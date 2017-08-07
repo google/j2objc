@@ -660,7 +660,6 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
-  // TODO(user): also try wrapper classes such as Integer, etc.
   public void testVarDecl() throws IOException {
     String type = "foo.bar.Test";
     String source = String.join("\n",
@@ -693,6 +692,180 @@ public class ClassFileConverterTest extends GenerationTest {
         "      i = 42;",
         "    }",
         "    return i;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testIf() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int i, int j) {",
+        "    int k = 0;",
+        "    if (i < j) {",
+        "      k = 1;",
+        "    }",
+        "    return k;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testElseIf() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int i, int j) {",
+        "    int k = 0;",
+        "    if (i < j) {",
+        "      k = -1;",
+        "    } else if (j < i) {",
+        "      k = 1;",
+        "    } else if (i < 0) {",
+        "      k = -1;",
+        "    } else if (0 < i) {",
+        "      k = 1;",
+        "    } else {",
+        "      k = 0;",
+        "    }",
+        "    return k;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testVarDeclString() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  String run(String yip) {",
+        "    String s;",
+        "    if (yip == \"hello\") {",
+        "      s = \"world\";",
+        "    } else {",
+        "      s = yip;",
+        "    }",
+        "    return s;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testVarDeclInitString() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  String run(String yip) {",
+        "    String s = \"hello\";",
+        "    if (yip == \"hello\") {",
+        "      s = \"world\";",
+        "    } else {",
+        "      s = yip;",
+        "    }",
+        "    return s;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testMultiVariableDeclAssign() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int i, int j, int k) {",
+        "    int a = 1, b = 2, c = 3;",
+        "    int x = a + i;",
+        "    int y = b + j;",
+        "    int z = c + k;",
+        "    z += (y += x);",
+        "    return a + b + c + x + y + z;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testBinaryOperator() throws IOException {
+    String type = "foo.bar.Binary";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Binary {",
+        "  boolean coverage(int a, int b) {",
+        "    int c = (a & b) | (a ^ b);",
+        "    int d = a + b - c * a / b % c << a >> b >>> c;",
+        "    boolean e = (a < b && b <= c) || (c > b && b >= a);",
+        "    return a == b || (c != d && e);",
+        "  }",
+        "  int parenthesis(int a, int b, int c, int d, int e, int f, int g) {",
+        "    return a * (b + (c << (d & (e | (f ^ g)))));",
+        "  }",
+        "  double promotion(byte a, short b, int c, long d, float e, double f) {",
+        "    long g = a * b / c * d;",
+        "    long h = d * (c / (b * a));",
+        "    float i = g * e;",
+        "    double j = h / f;",
+        "    float k = e * g;",
+        "    double l = f / h;",
+        "    double m = i + j;",
+        "    double n = l + k;",
+//        "    String o = \"Hello\" + m;",
+//        "    String p = n + \"World\";",
+//        "    return o + p;",
+        "    return m + n;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testTernaryOperator() throws IOException {
+    String type = "foo.bar.Ternary";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Ternary {",
+        "  int ternary(int a, int b, boolean c) {",
+        "    return c ? a : b;",
+        "  }",
+        "  int promotion1(byte a, short b, boolean c) {",
+        "    short x = c ? a : b;",
+        "    short y = c ? b : a;",
+        "    return x + y;",
+        "  }",
+        "  int promotion2(short a, int b, boolean c) {",
+        "    int x = c ? a : b;",
+        "    int y = c ? b : a;",
+        "    return x + y;",
+        "  }",
+        "  long promotion3(int a, long b, boolean c) {",
+        "    long x = c ? a : b;",
+        "    long y = c ? b : a;",
+        "    return x + y;",
+        "  }",
+        "  double promotion4(float a, double b, boolean c) {",
+        "    double x = c ? a : b;",
+        "    double y = c ? b : a;",
+        "    return x + y;",
+        "  }",
+        "  float promotion5(long a, float b, boolean c) {",
+        "    float x = c ? a : b;",
+        "    float y = c ? b : a;",
+        "    return x + y;",
+        "  }",
+        "  double promotion6(long a, double b, boolean c) {",
+        "    double x = c ? a : b;",
+        "    double y = c ? b : a;",
+        "    return x + y;",
         "  }",
         "}"
     );
