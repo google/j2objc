@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.util.ErrorUtil;
 
 import java.io.IOException;
 
@@ -36,6 +38,14 @@ public class OcniExtractorTest extends GenerationTest {
         "- (void)test {",
         "  Example_test(self);",
         "}");
+  }
+
+  public void testBadNativeCodeBlock_badEndDelimiter() throws IOException {
+    CompilationUnit unit = maybeCompileType(
+        "Example", "public class Example { native void test() /*-[ ]*/; }");
+
+    assertTrue(ErrorUtil.getErrorMessages()
+        .contains("Error finding OCNI closing delimiter for OCNI comment at line 1"));
   }
 
   public void testHeaderOcniBlock() throws IOException {

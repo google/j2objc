@@ -1292,6 +1292,10 @@ public class TreeConverter {
         BlockComment ocniComment = new BlockComment();
         ocniComment.setSourceRange(startPos, endPos - startPos);
         unit.getCommentList().add(ocniComment);
+      } else {
+        int lineNum = unit.getLineNumber(startPos);
+        ErrorUtil.error("Error finding OCNI closing delimiter for OCNI comment at line " + lineNum);
+        break;
       }
     }
   }

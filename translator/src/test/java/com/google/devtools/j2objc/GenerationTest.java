@@ -177,6 +177,13 @@ public class GenerationTest extends TestCase {
     return name.replace('.', '/') + ".java";
   }
 
+  protected CompilationUnit maybeCompileType(String name, String source) {
+    String mainTypeName = name.substring(name.lastIndexOf('.') + 1);
+    String path = typeNameToSource(name);
+    parser.setEnableDocComments(options.docCommentsEnabled());
+    return parser.parse(mainTypeName, path, source);
+  }
+
   /**
    * Compiles Java source, as contained in a source file.
    *
@@ -185,11 +192,8 @@ public class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileType(String name, String source) {
-    String mainTypeName = name.substring(name.lastIndexOf('.') + 1);
-    String path = typeNameToSource(name);
     int errors = ErrorUtil.errorCount();
-    parser.setEnableDocComments(options.docCommentsEnabled());
-    CompilationUnit unit = parser.parse(mainTypeName, path, source);
+    CompilationUnit unit = maybeCompileType(name, source);
     if (ErrorUtil.errorCount() > errors) {
       int newErrorCount = ErrorUtil.errorCount() - errors;
       String info = String.format(
