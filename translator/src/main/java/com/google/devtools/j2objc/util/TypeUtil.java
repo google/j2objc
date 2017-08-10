@@ -302,6 +302,17 @@ public final class TypeUtil {
     return javacTypes.getArrayType(componentType);
   }
 
+  public ArrayType getArrayType(TypeMirror componentType, int dims) {
+    if (dims < 1) {
+      throw new IllegalArgumentException("dims must be greater than or equal to 1");
+    }
+    if (dims == 1) {
+      return getArrayType(componentType);
+    } else {
+      return getArrayType(getArrayType(componentType), dims - 1);
+    }
+  }
+
   boolean isGeneratedType(TypeMirror type) {
     return type instanceof AbstractTypeMirror;
   }

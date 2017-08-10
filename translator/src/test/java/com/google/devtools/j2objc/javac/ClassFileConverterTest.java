@@ -784,8 +784,8 @@ public class ClassFileConverterTest extends GenerationTest {
         "package foo.bar;",
         "class Test {",
         "  int run(int i, int j, int k) {",
-        "    int a = 1, b = 2, c = 3;",
-        "    int x = a + i;",
+        "    final int a = i + 1, b = j + 2, c = k + 3;",
+        "    final int x = a + i;",
         "    int y = b + j;",
         "    int z = c + k;",
         "    z += (y += x);",
@@ -802,26 +802,23 @@ public class ClassFileConverterTest extends GenerationTest {
         "package foo.bar;",
         "class Binary {",
         "  boolean coverage(int a, int b) {",
-        "    int c = (a & b) | (a ^ b);",
-        "    int d = a + b - c * a / b % c << a >> b >>> c;",
-        "    boolean e = (a < b && b <= c) || (c > b && b >= a);",
+        "    final int c = (a & b) | (a ^ b);",
+        "    final int d = a + b - c * a / b % c << a >> b >>> c;",
+        "    final boolean e = (a < b && b <= c) || (c > b && b >= a);",
         "    return a == b || (c != d && e);",
         "  }",
         "  int parenthesis(int a, int b, int c, int d, int e, int f, int g) {",
         "    return a * (b + (c << (d & (e | (f ^ g)))));",
         "  }",
         "  double promotion(byte a, short b, int c, long d, float e, double f) {",
-        "    long g = a * b / c * d;",
-        "    long h = d * (c / (b * a));",
-        "    float i = g * e;",
-        "    double j = h / f;",
-        "    float k = e * g;",
-        "    double l = f / h;",
-        "    double m = i + j;",
-        "    double n = l + k;",
-//        "    String o = \"Hello\" + m;",
-//        "    String p = n + \"World\";",
-//        "    return o + p;",
+        "    final long g = a * b / c * d;",
+        "    final long h = d * (c / (b * a));",
+        "    final float i = g * e;",
+        "    final double j = h / f;",
+        "    final float k = e * g;",
+        "    final double l = f / h;",
+        "    final double m = i + j;",
+        "    final double n = l + k;",
         "    return m + n;",
         "  }",
         "}"
@@ -838,37 +835,156 @@ public class ClassFileConverterTest extends GenerationTest {
         "    return c ? a : b;",
         "  }",
         "  int promotion1(byte a, short b, boolean c) {",
-        "    short x = c ? a : b;",
-        "    short y = c ? b : a;",
+        "    final short x = c ? a : b;",
+        "    final short y = c ? b : a;",
         "    return x + y;",
         "  }",
         "  int promotion2(short a, int b, boolean c) {",
-        "    int x = c ? a : b;",
-        "    int y = c ? b : a;",
+        "    final int x = c ? a : b;",
+        "    final int y = c ? b : a;",
         "    return x + y;",
         "  }",
         "  long promotion3(int a, long b, boolean c) {",
-        "    long x = c ? a : b;",
-        "    long y = c ? b : a;",
+        "    final long x = c ? a : b;",
+        "    final long y = c ? b : a;",
         "    return x + y;",
         "  }",
         "  double promotion4(float a, double b, boolean c) {",
-        "    double x = c ? a : b;",
-        "    double y = c ? b : a;",
+        "    final double x = c ? a : b;",
+        "    final double y = c ? b : a;",
         "    return x + y;",
         "  }",
         "  float promotion5(long a, float b, boolean c) {",
-        "    float x = c ? a : b;",
-        "    float y = c ? b : a;",
+        "    final float x = c ? a : b;",
+        "    final float y = c ? b : a;",
         "    return x + y;",
         "  }",
         "  double promotion6(long a, double b, boolean c) {",
-        "    double x = c ? a : b;",
-        "    double y = c ? b : a;",
+        "    final double x = c ? a : b;",
+        "    final double y = c ? b : a;",
         "    return x + y;",
         "  }",
         "}"
     );
     assertEqualASTSrcClassfile(type, source);
   }
+
+  public void testNull() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  String returnNull() {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testBasicArrays() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  void createArrayInt(int[] arr, int size) {",
+        "    final int[] arrnew = new int[size];",
+        "    arrnew[0] = arr[0];",
+        "  }",
+        "  void createArrayString(String[] arr, int size) {",
+        "    final String[] arrnew = new String[size];",
+        "    arrnew[0] = arr[0];",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testMultidimensionalArrays() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  void createArray1(int[][][] arr, int size) {",
+        "    final int[][][] arrnew = new int[size][size + 1][size + 2];",
+        "    arrnew[0] = arr[0];",
+        "    arrnew[size - 1] = arr[size - 1];",
+        "    arrnew[size - 1][size - 1][size - 1] = arr[size - 1][size - 1][size - 1];",
+        "  }",
+        "  void createArray2(int[][][][] arr, int size) {",
+        "    final int[][][][] arrnew = new int[size][size][][];",
+        "    arrnew[0] = new int[size][][];",
+        "    arrnew[size - 1] = arr[size - 1];",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testArrayInitializers() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int[] createArrayInit1(int[] arr) {",
+        "    final int[] arrnew = {1, 2, 3, 4, 5};",
+        "    arr = new int[] {6, 7, 8, 9, 10};",
+        "    return arrnew;",
+        "  }",
+        "  int[][][] createArrayInit2(int[][][] arr) {",
+        "    final int[][][] arrnew = {{{1, 2}, {3}}, {{4, 5}}};",
+        "    arr = new int[][][] {{{6, 7}, {8}}, {{9, 10}}};",
+        "    return arrnew;",
+        "  }",
+        "  int[][][] createArrayInit3(int[][][] arr) {",
+        "    final int[][][] arrnew = {{new int[2], null}, new int[1][]};",
+        "    arr = new int[][][] {{new int[2], null}, new int[1][]};",
+        "    return arrnew;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testArraySubtyping() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  Object[] createArray(int size) {",
+        "    final Object[] arrnew = new String[size];",
+        "    return arrnew;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+//  public void testThis() throws IOException {
+//    String type = "foo.bar.Point";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "class Point {",
+//        "  int x;",
+//        "  int y;",
+//        "  Point(int x, int y) {",
+//        "    this.x = x;",
+//        "    this.y = y;",
+//        "  }",
+//        "  Point(int z) {",
+//        "    this(z, z);",
+//        "  }",
+//        "  int getX() {",
+//        "    return this.x;",
+//        "  }",
+//        "  int getY() {",
+//        "    return this.y;",
+//        "  }",
+//        "  Point identity() {",
+//        "    return this;",
+//        "  }",
+//        "}"
+//    );
+//    assertEqualASTSrcClassfile(type, source);
+//  }
 }

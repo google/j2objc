@@ -14,6 +14,10 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.devtools.j2objc.ast.ArrayAccess;
+import com.google.devtools.j2objc.ast.ArrayCreation;
+import com.google.devtools.j2objc.ast.ArrayInitializer;
+import com.google.devtools.j2objc.ast.ArrayType;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
@@ -21,12 +25,14 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
@@ -39,12 +45,15 @@ import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.languages.java.ast.AstNode;
+import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.patterns.Pattern;
 import com.sun.tools.javac.code.Symbol;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -171,19 +180,18 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitNullReferenceExpression(
       com.strobel.decompiler.languages.java.ast.NullReferenceExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    return new NullLiteral(translationEnv.typeUtil().getNull());
   }
 
   @Override
   public TreeNode visitThisReferenceExpression(
       com.strobel.decompiler.languages.java.ast.ThisReferenceExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    return new ThisExpression().setTypeMirror(typeDecl.getTypeElement().asType());
   }
 
   @Override
   public TreeNode visitSuperReferenceExpression(
       com.strobel.decompiler.languages.java.ast.SuperReferenceExpression node, Void data) {
-    //TODO(user): arguments, super.someMethod, etc
     TypeMirror objType = translationEnv.typeUtil().getJavaObject().asType();
     TypeMirror nodeType = typeDecl.getTypeElement().asType();
     assert !parserEnv.typeUtilities().isSameType(objType, nodeType);
@@ -274,7 +282,8 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitReturnStatement(
       com.strobel.decompiler.languages.java.ast.ReturnStatement node, Void data) {
-    return new ReturnStatement((Expression) node.getExpression().acceptVisitor(this, null));
+    return new ReturnStatement()
+        .setExpression((Expression) node.getExpression().acceptVisitor(this, null));
   }
 
   @Override
@@ -322,15 +331,16 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitVariableDeclaration(
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
-    //TODO(user): modifiers/multiple declaration
+    //TODO(user): multiple declaration array weirdness: (float arr1, float[] arr2)[][]
     AstType astType = node.getType();
     com.strobel.decompiler.languages.java.ast.VariableInitializer init =
         (com.strobel.decompiler.languages.java.ast.VariableInitializer) astType.getNextSibling();
     Type type = (Type) astType.acceptVisitor(this, null);
     Expression expr = (Expression) init.acceptVisitor(this, null);
     String varName = init.getName();
-    VariableElement elem = GeneratedVariableElement
-        .newLocalVar(varName, type.getTypeMirror(), executableElement);
+    GeneratedVariableElement elem =
+        GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
+    elem.addModifiers(node.getModifiers());
     localVariableTable.put(varName, elem);
     return new VariableDeclarationStatement(elem, expr);
   }
@@ -421,7 +431,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitComposedType(
       com.strobel.decompiler.languages.java.ast.ComposedType node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    return Type.newType(resolve(node));
   }
 
   @Override
@@ -533,7 +543,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitIndexerExpression(
       com.strobel.decompiler.languages.java.ast.IndexerExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    return new ArrayAccess()
+        .setArray((Expression) node.getTarget().acceptVisitor(this, null))
+        .setIndex((Expression) node.getArgument().acceptVisitor(this, null));
   }
 
   @Override
@@ -566,7 +578,10 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitArrayInitializerExpression(
       com.strobel.decompiler.languages.java.ast.ArrayInitializerExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    List<Expression> expressions = node.getElements().stream()
+        .map(e -> (Expression) e.acceptVisitor(this, null))
+        .collect(Collectors.toList());
+    return new ArrayInitializer().setExpressions(expressions);
   }
 
   @Override
@@ -578,7 +593,26 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitArrayCreationExpression(
       com.strobel.decompiler.languages.java.ast.ArrayCreationExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    Type baseType = (Type) node.getType().acceptVisitor(this, null);
+    AstNodeCollection<com.strobel.decompiler.languages.java.ast.Expression> dimexprs
+        = node.getDimensions();
+    com.strobel.decompiler.languages.java.ast.ArrayInitializerExpression init
+        = node.getInitializer();
+    ArrayType arrayType = new ArrayType(translationEnv.typeUtil().getArrayType(
+        baseType.getTypeMirror(), dimexprs.size() + node.getAdditionalArraySpecifiers().size()));
+    if (init.isNull()) {
+      List<Expression> dimensions = dimexprs.stream()
+          .map(e -> (Expression) e.acceptVisitor(this, null))
+          .collect(Collectors.toList());
+      return new ArrayCreation()
+          .setType(arrayType)
+          .setDimensions(dimensions);
+    } else {
+      ArrayInitializer arrayInit = (ArrayInitializer) init.acceptVisitor(this, null);
+      return new ArrayCreation()
+          .setType(arrayType)
+          .setInitializer(arrayInit.setTypeMirror(arrayType.getTypeMirror()));
+    }
   }
 
   @Override
