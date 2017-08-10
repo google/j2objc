@@ -26,9 +26,9 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+
 import sun.security.util.DerInputStream;
 import sun.security.util.DerOutputStream;
-import sun.security.util.DerValue;
 
 /**
  * Shared base classe for public and private RSA key implementations for iOS.
@@ -41,6 +41,10 @@ public abstract class IosRSAKey implements RSAKey, Key {
   static final String PUBLIC_KEY_TAG = "com.google.j2objc.security.publickey";
   static final String PRIVATE_KEY_TAG = "com.google.j2objc.security.privatekey";
   private static final long serialVersionUID = 1L;
+  
+  public IosRSAKey() { 
+	  
+  }
 
   public IosRSAKey(BigInteger modulus) {
     this.modulus = modulus;
@@ -72,13 +76,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
     return iosSecKey;
   }
 
-  private static native long decode(byte[] encoded) /*-[
-    CFDataRef data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault,
-        (const UInt8 *)encoded->buffer_, encoded->size_, kCFAllocatorNull);
-    jlong secKey = (jlong) SecCertificateCreateWithData(NULL, data);
-    CFRelease(data);
-    return secKey;
-  ]-*/;
 
   protected abstract void decodeParameters();
 
@@ -102,33 +99,19 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     public IosRSAPublicKey(byte[] encoded) {
-      this(toPublicKeySpec(encoded));
+    	try {
+    	 iosSecKey = createPublicSecKeyRef (encoded);
+    	} catch (Exception e) {
+    		 throw new ProviderException(e); // Should never happen.
+		}
     }
 
     @Override
     long getSecKeyRef() {
-      if (iosSecKey == 0L) {
-        iosSecKey = createPublicKey();
-      }
       return iosSecKey;
     }
 
-    private long createPublicKey() {
-      try (DerOutputStream out = new DerOutputStream()) {
-        out.putInteger(getModulus());
-        out.putInteger(getPublicExponent());
-
-        // https://stackoverflow.com/questions/2922622/how-to-get-the-size-of-a-rsa-key-in-java
-        int bitLength = getModulus().bitLength();
-        int keySize = ((bitLength + 127) / 128) * 128;
-
-        return createPublicSecKeyRef(
-            new DerValue(DerValue.tag_Sequence, out.toByteArray()).toByteArray(), keySize);
-      } catch (IOException e) {
-        throw new ProviderException(e); // Should never happen.
-      }
-    }
-
+   
     @Override
     public native byte[] getEncoded() /*-[
       NSData *publicKey = nil;
@@ -149,6 +132,8 @@ public abstract class IosRSAKey implements RSAKey, Key {
       if (result == noErr && publicKey.length > 0) {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)publicKey.bytes count:publicKey.length];
         [publicKey release];
+      } else {
+      	  NSLog (@"PublicKey getEncoded error %d", (int) result);
       }
       return bytes;
     ]-*/;
@@ -195,7 +180,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
     ]-*/
 
-    private native long createPublicSecKeyRef(byte[] bytes, int keySizeInBits) /*-[
+    private native long createPublicSecKeyRef(byte[] bytes) /*-[
       NSData *publicKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
                                                  length:bytes->size_];
 
@@ -209,11 +194,9 @@ public abstract class IosRSAKey implements RSAKey, Key {
         @throw create_JavaSecurityProviderException_initWithNSString_(msg);
       }
 
+
       // Store key in keychain.
       publicKeyQuery = getQuery();  // remove if not necessary
-      NSNumber *keySize = [NSNumber numberWithInt:keySizeInBits];
-      publicKeyQuery[(id)kSecAttrEffectiveKeySize] = keySize;
-      publicKeyQuery[(id)kSecAttrKeySizeInBits] = keySize;
       publicKeyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanFalse;
       publicKeyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanFalse;
       publicKeyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
@@ -235,41 +218,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       return (jlong)secKeyRef;
     ]-*/;
 
-    private static RSAPublicKeySpec toPublicKeySpec(byte[] encoded) {
-     try {
-        DerInputStream input = new DerInputStream(encoded);
-        if (input.peekByte() == DerValue.tag_Sequence) {
-          DerValue[] values = input.getSequence(2);
-
-          /* Check for a PKCS #12 SubjectPublicKeyInfo ASN.1 type, and
-           * extract its public key if found:
-           *
-           * SubjectPublicKeyInfo ::= SEQUENCE {
-           *   algorithm AlgorithmIdentifier,
-           *   subjectPublicKey BIT STRING
-           * }
-           */
-          if (values.length == 2 && values[1].getTag() == DerValue.tag_BitString) {
-            input = new DerInputStream(values[1].getBitString());
-            values = input.getSequence(2);
-          }
-
-          /* Sequence should be PKCS #1 RSAPublicKey ASN.1 type:
-           *
-           * RSAPublicKey ::= SEQUENCE {
-           *   INTEGER modulus,
-           *   INTEGER exponent
-           * }
-           */
-          BigInteger modulus = values[0].getBigInteger();
-          BigInteger exponent = values[1].getBigInteger();
-          return new RSAPublicKeySpec(modulus, exponent);
-        }
-      } catch (IOException e) {
-        // Fall-through.
-      }
-      return null;  // Unknown format.
-    }
+   
   }
 
   /**
@@ -292,8 +241,23 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     public IosRSAPrivateKey(byte[] encoded) {
-      this(decode(encoded));
+    	iosSecKey = createPrivatSecKeyRef(encoded); 
     }
+    
+
+    /*-[
+    NSMutableDictionary *getPrivateQuery() {
+      NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
+          dataUsingEncoding:NSUTF8StringEncoding];
+
+      NSMutableDictionary *query = [NSMutableDictionary dictionary];
+      query[(id)kSecClass] = (id)kSecClassKey;
+      query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
+      query[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPrivate;
+      query[(id)kSecAttrApplicationTag] = privateTag;
+      return query;
+    }
+    ]-*/
 
     @Override
     public native byte[] getEncoded() /*-[
@@ -343,5 +307,51 @@ public abstract class IosRSAKey implements RSAKey, Key {
         throw new AssertionError("failed decoding key parameters: " + e);
       }
     }
+    /**
+     * This method adds a private key to the keychain and returns the key-reference
+     * The format of the bytes are apply format.
+     * 
+     * @param bytes
+     * @return
+     */
+    private native long createPrivatSecKeyRef(byte[] bytes) /*-[
+    NSData * privateKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
+                                               length:bytes->size_];
+
+    // Delete any previous key definition.
+    NSMutableDictionary *keyQuery = getPrivateQuery();
+    OSStatus status = SecItemDelete((CFDictionaryRef) keyQuery);
+    if (status != errSecSuccess && status != errSecItemNotFound) {
+      NSString *msg = [NSString stringWithFormat:
+          @"Problem removing previous public key from the keychain, OSStatus == %d",
+          (int)status];
+      @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+    }
+
+    // Store key in keychain.
+
+    keyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanTrue;
+    keyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanFalse;
+    keyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
+    keyQuery[(id)kSecAttrCanSign] = (id)kCFBooleanTrue;
+    keyQuery[(id)kSecAttrCanVerify] = (id)kCFBooleanTrue;
+    keyQuery[(id)kSecAttrCanUnwrap] = (id)kCFBooleanFalse;
+    keyQuery[(id)kSecAttrCanWrap] = (id)kCFBooleanTrue;
+    keyQuery[(id)kSecReturnRef] = (id)kCFBooleanTrue;
+    keyQuery[(id)kSecValueData] = privateKey;
+    SecKeyRef secKeyRef = NULL;
+    OSStatus result = SecItemAdd((CFDictionaryRef)keyQuery, (CFTypeRef *)&secKeyRef);
+    if (result != errSecSuccess) {
+      NSString *msg = [NSString stringWithFormat:
+          @"Problem adding the public key to the keychain, OSStatus == %d", (int)status];
+      @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+    }
+
+    [privateKey release];
+    return (jlong)secKeyRef;
+  ]-*/;
+    
+    
+    
   }
 }
