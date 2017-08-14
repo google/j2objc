@@ -38,15 +38,13 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
 
   @Override
   public native KeyPair generateKeyPair() /*-[
-  
-
-	// Keys have to be deleted first, else the method will retrive previous keys.
+  	// Keys have to be deleted first, else the method will retrieve previous keys.
     // Delete any Public previous key definition.
     [self deleteKey:ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
-    				   keyClass:kSecAttrKeyClassPublic];
+    	   keyClass:kSecAttrKeyClassPublic];
     				   
     [self deleteKey:ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
-    				   keyClass:kSecAttrKeyClassPrivate];
+    	   keyClass:kSecAttrKeyClassPrivate];
   
     // Requested keypair attributes.
     NSMutableDictionary * keyPairAttr = [[NSMutableDictionary alloc] init];
@@ -92,7 +90,7 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
   ]-*/;
   
   /*-[
-  -(BOOL) deleteKey:(NSString *)tag   
+  -(void) deleteKey:(NSString *)tag   
   		   keyClass:(CFStringRef) keyClass {
   		   
     NSData *publicTag = [tag dataUsingEncoding:NSUTF8StringEncoding];
@@ -102,12 +100,17 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
     query[(id)kSecAttrKeyClass] = (id)keyClass;
     query[(id)kSecAttrApplicationTag] = tag;
-	OSStatus status2 = SecItemDelete((CFDictionaryRef) query);
-    if (status2 != errSecSuccess && status2 != errSecItemNotFound) {
-        NSLog (@"Problem removing previous public key from the keychain, OSStatus == %d", (int)status2);
-        return false;
+	OSStatus status = SecItemDelete((CFDictionaryRef) query);
+    if (status != errSecSuccess && status != errSecItemNotFound) {
+        NSString *msg = [NSString stringWithFormat:
+          @"Problem removing previous public key from the keychain, OSStatus == %d",
+          (int)status];
+          NSLog (@"%@", msg);
+          //TODO(tball):  @throw is causing this error error
+          // mplicit declaration of function 'create_JavaSecurityProviderException_initWithNSString_' is invalid in C99
+          // [-Werror,-Wimplicit-function-declaration]
+          // @throw create_JavaSecurityProviderException_initWithNSString_(msg);
     }
-    return true;
   }
   ]-*/
 
