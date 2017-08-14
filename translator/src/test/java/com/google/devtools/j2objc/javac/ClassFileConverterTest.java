@@ -225,24 +225,24 @@ public class ClassFileConverterTest extends GenerationTest {
         "  static final byte c = 17;",
         "  static final short d = 42;",
         "  static final int e = 1984;",
-        "  static final long f = 87539319;",
+        "  static final long f = 87539319L;",
+        "  static final float g = 3.14F;",
        /* TODO(user): format specifiers, casts, floating point roundoff
-        * "  static final float g = 3.14f;",
         * "  static final float h = (float) 3.14;",
-        * "  static final double gh = 3.14f;", */
-        "  static final double i = 2.718;",
+        * "  static final double gh = 3.14F;", */
+        "  static final double i = 2.718D;",
         "  static final String j = \"Hello\";",
         "  final boolean aa = true;",
         "  final char bb = 'H';",
         "  final byte cc = 17;",
         "  final short dd = 42;",
         "  final int ee = 1984;",
-        "  final long ff = 87539319;",
+        "  final long ff = 87539319L;",
+        "  final float gg = 3.14F;",
        /* TODO(user): format specifiers, casts, floating point roundoff
-        * "  final float gg = 3.14f;",
         * "  final float hh = (float) 3.14;",
-        * "  final double ghgh = 3.14f;", */
-        "  final double ii = 2.718;",
+        * "  final double ghgh = 3.14F;", */
+        "  final double ii = 2.718D;",
         "  final String jj = \"Hello\";",
         "}"
     );
@@ -286,7 +286,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //    );
 //    assertEqualSignatureSrcClassfile(type, source);
 //  }
-
+//
 /* TODO(user): enum constants are created in static initializer; executable pairs not complete
  * cite example: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html */
 //  public void testInitializedEnum() throws IOException {
@@ -322,7 +322,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //    );
 //    assertEqualSignatureSrcClassfile(type, source);
 //  }
-
+//
 //  public void testPredefinedAnnotations() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
@@ -649,6 +649,38 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
+  public void testPrimitiveExpressions() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  byte getbyte() { return 127; }",
+        "  short getshort() { return 32767; }",
+       /* We use 2^31 - 2 and 2^63 - 2 because 2^31 - 1 and 2^63 - 1 get decompiled to
+        * Integer.MAX_VALUE and Long.MAX_VALUE (also for MIN_VALUE) */
+        "  int getint() { return 2147483646; }",
+        "  long getlong() { return 9223372036854775806L; }",
+        "  float getfloat() { return -123.456F; }",
+        "  double getdouble() { return -123.456D; }",
+        "  boolean getboolean() { return true; }",
+        "  char getchar() { return 'H'; }",
+        "  String getString() { return \"Hello\"; }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testNull() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  String returnNull() { return null; }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
   public void testLookupVars() throws IOException {
     String type = "foo.bar.Test";
     String source = String.join("\n",
@@ -692,48 +724,6 @@ public class ClassFileConverterTest extends GenerationTest {
         "      i = 42;",
         "    }",
         "    return i;",
-        "  }",
-        "}"
-    );
-    assertEqualASTSrcClassfile(type, source);
-  }
-
-  public void testIf() throws IOException {
-    String type = "foo.bar.Test";
-    String source = String.join("\n",
-        "package foo.bar;",
-        "class Test {",
-        "  int run(int i, int j) {",
-        "    int k = 0;",
-        "    if (i < j) {",
-        "      k = 1;",
-        "    }",
-        "    return k;",
-        "  }",
-        "}"
-    );
-    assertEqualASTSrcClassfile(type, source);
-  }
-
-  public void testElseIf() throws IOException {
-    String type = "foo.bar.Test";
-    String source = String.join("\n",
-        "package foo.bar;",
-        "class Test {",
-        "  int run(int i, int j) {",
-        "    int k = 0;",
-        "    if (i < j) {",
-        "      k = -1;",
-        "    } else if (j < i) {",
-        "      k = 1;",
-        "    } else if (i < 0) {",
-        "      k = -1;",
-        "    } else if (0 < i) {",
-        "      k = 1;",
-        "    } else {",
-        "      k = 0;",
-        "    }",
-        "    return k;",
         "  }",
         "}"
     );
@@ -790,6 +780,47 @@ public class ClassFileConverterTest extends GenerationTest {
         "    int z = c + k;",
         "    z += (y += x);",
         "    return a + b + c + x + y + z;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testUnaryOperators() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+//        //TODO(user): decompiled code seems needlessly verbose for this test
+//        "  int unaryPlusMinus(byte i) {",
+//        "    int j = +i;",
+//        "    int k = -j;",
+//        "    return j + k;",
+//        "  }",
+//        "  int prePostIncrementDecrement() {",
+//        "    int i = 0;",
+//        "    ++i;",
+//        "    --i;",
+//        "    i++;",
+//        "    i--;",
+//        "    int j = ++i;",
+//        "    j = --i;",
+//        "    j = i++;",
+//        "    j = i--;",
+//        "    final int[] k = {0};",
+//        "    ++k[0];",
+//        "    --k[0];",
+//        "    k[0]++;",
+//        "    k[0]--;",
+//        "    return k[0] + i + j;",
+//        "  }",
+        "  int bitwiseComplement(int a) {",
+        "    final int b = ~a;",
+        "    return ~(a + b);",
+        "  }",
+        "  boolean logicalNegation(boolean a) {",
+        "    final boolean b = !a;",
+        "    return (!a || !b) && !b;",
         "  }",
         "}"
     );
@@ -869,13 +900,19 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
-  public void testNull() throws IOException {
+  public void testWrapperClasses() throws IOException {
     String type = "foo.bar.Test";
     String source = String.join("\n",
         "package foo.bar;",
         "class Test {",
-        "  String returnNull() {",
-        "    return null;",
+        "  Integer unary(Integer i) {",
+        "    final Integer j = -i;",
+        "    final Integer k = -j;",
+        "    return j + k;",
+        "  }",
+        "  Long binary(Long i, Byte j) {",
+        "    final Long k = i + j;",
+        "    return j + k;",
         "  }",
         "}"
     );
@@ -960,6 +997,139 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
+  public void testIf() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int i, int j) {",
+        "    int k = 0;",
+        "    if (i < j) {",
+        "      k = 1;",
+        "    }",
+        "    return k;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testElseIf() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int i, int j) {",
+        "    int k = 0;",
+        "    if (i < j) {",
+        "      k = -1;",
+        "    } else if (j < i) {",
+        "      k = 1;",
+        "    } else if (i < 0) {",
+        "      k = -1;",
+        "    } else if (0 < i) {",
+        "      k = 1;",
+        "    } else {",
+        "      k = 0;",
+        "    }",
+        "    return k;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testWhile() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  void while1() {",
+        "    while (true) {}",
+        "  }",
+        "  void while2(int i) {",
+        "    while (i < 100) {",
+        "      ++i;",
+        "    }",
+        "  }",
+        "  void while3(int i) {",
+        "    while (i < 100) {",
+        "      if (++i == 50) {",
+        "        continue;",
+        "      }",
+        "      if (i == 42) {",
+        "        break;",
+        "      }",
+        "    }",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+//  //TODO(user): may not have do while loops
+//  public void testDoWhile() throws IOException {
+//    String type = "foo.bar.Test";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "class Test {",
+//        "  int run() {",
+//        "  }",
+//        "}"
+//    );
+//    assertEqualASTSrcClassfile(type, source);
+//  }
+//
+//  public void testFor() throws IOException {
+//    String type = "foo.bar.Test";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "class Test {",
+//        "  int run() {",
+//        "  }",
+//        "}"
+//    );
+//    assertEqualASTSrcClassfile(type, source);
+//  }
+//
+//  //TODO(user): may not have for each loops
+//  public void testForEach() throws IOException {
+//    String type = "foo.bar.Test";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "class Test {",
+//        "  int run() {",
+//        "  }",
+//        "}"
+//    );
+//    assertEqualASTSrcClassfile(type, source);
+//  }
+//
+//  public void testNestedLoopsLabeledBranches() throws IOException {
+//    String type = "foo.bar.Test";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "class Test {",
+//        "  int run() {",
+//        "  }",
+//        "}"
+//    );
+//    assertEqualASTSrcClassfile(type, source);
+//  }
+//
+//  //TODO(user): may not be decompiled properly
+//  public void testSwitch() throws IOException {
+//    String type = "foo.bar.Test";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "class Test {",
+//        "  int run() {",
+//        "  }",
+//        "}"
+//    );
+//    assertEqualASTSrcClassfile(type, source);
+//  }
+//
 //  public void testThis() throws IOException {
 //    String type = "foo.bar.Point";
 //    String source = String.join("\n",

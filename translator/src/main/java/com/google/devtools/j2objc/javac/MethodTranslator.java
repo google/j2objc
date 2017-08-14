@@ -20,13 +20,17 @@ import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.ArrayType;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SourcePosition;
@@ -38,12 +42,15 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.strobel.assembler.metadata.TypeReference;
+import com.strobel.core.StringUtilities;
 import com.strobel.decompiler.languages.java.ast.AstNode;
 import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
@@ -70,6 +77,7 @@ import javax.lang.model.type.TypeMirror;
 class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   private final JavacEnvironment parserEnv;
   private final TranslationEnvironment translationEnv;
+  private final TypeUtil typeUtil;
   private final ExecutableElement executableElement;
   private final TypeDeclaration typeDecl;
   private final Map<String, VariableElement> localVariableTable;
@@ -80,6 +88,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
                           Map<String, VariableElement> localVariableTable) {
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
+    this.typeUtil = translationEnv.typeUtil();
     this.executableElement = executableElement;
     this.typeDecl = typeDecl;
     this.localVariableTable = localVariableTable;
@@ -180,7 +189,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitNullReferenceExpression(
       com.strobel.decompiler.languages.java.ast.NullReferenceExpression node, Void data) {
-    return new NullLiteral(translationEnv.typeUtil().getNull());
+    return new NullLiteral(typeUtil.getNull());
   }
 
   @Override
@@ -192,14 +201,14 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitSuperReferenceExpression(
       com.strobel.decompiler.languages.java.ast.SuperReferenceExpression node, Void data) {
-    TypeMirror objType = translationEnv.typeUtil().getJavaObject().asType();
+    TypeMirror objType = typeUtil.getJavaObject().asType();
     TypeMirror nodeType = typeDecl.getTypeElement().asType();
     assert !parserEnv.typeUtilities().isSameType(objType, nodeType);
     TypeElement superClass = TranslationUtil.getSuperType(typeDecl);
     SuperConstructorInvocation superCall = null;
     for (ExecutableElement exec : ElementUtil.getConstructors(superClass)) {
       if (exec.getParameters().size() == 0) {
-        ExecutableType execType = translationEnv.typeUtil()
+        ExecutableType execType = typeUtil
             .asMemberOf((DeclaredType) superClass.asType(), exec);
         superCall = new SuperConstructorInvocation()
             .setExecutablePair(new ExecutablePair(exec, execType));
@@ -233,13 +242,23 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitBreakStatement(
       com.strobel.decompiler.languages.java.ast.BreakStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    String label = node.getLabel();
+    if (StringUtilities.isNullOrEmpty(label)) {
+      return new BreakStatement();
+    } else {
+      return new BreakStatement().setLabel(new SimpleName(label));
+    }
   }
 
   @Override
   public TreeNode visitContinueStatement(
       com.strobel.decompiler.languages.java.ast.ContinueStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    String label = node.getLabel();
+    if (StringUtilities.isNullOrEmpty(label)) {
+      return new ContinueStatement();
+    } else {
+      return new ContinueStatement().setLabel(new SimpleName(label));
+    }
   }
 
   @Override
@@ -331,7 +350,6 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitVariableDeclaration(
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
-    //TODO(user): multiple declaration array weirdness: (float arr1, float[] arr2)[][]
     AstType astType = node.getType();
     com.strobel.decompiler.languages.java.ast.VariableInitializer init =
         (com.strobel.decompiler.languages.java.ast.VariableInitializer) astType.getNextSibling();
@@ -437,14 +455,15 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitWhileStatement(
       com.strobel.decompiler.languages.java.ast.WhileStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    return new WhileStatement()
+        .setExpression((Expression) node.getCondition().acceptVisitor(this, null))
+        .setBody((Statement) node.getEmbeddedStatement().acceptVisitor(this, null));
   }
 
   @Override
   public TreeNode visitPrimitiveExpression(
       com.strobel.decompiler.languages.java.ast.PrimitiveExpression node, Void data) {
-    Expression expr = TreeUtil.newLiteral(node.getValue(), translationEnv.typeUtil());
-    return expr;
+    return TreeUtil.newLiteral(node.getValue(), typeUtil);
   }
 
   @Override
@@ -458,75 +477,85 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       com.strobel.decompiler.languages.java.ast.BinaryOperatorExpression node, Void data) {
     Expression leftExpr = (Expression) node.getLeft().acceptVisitor(this, null);
     Expression rightExpr = (Expression) node.getRight().acceptVisitor(this, null);
-    TypeMirror type = translationEnv.typeUtil()
-        .wideningPrimitiveConversion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror());
     InfixExpression binaryExpr = new InfixExpression()
-        .setTypeMirror(type)
         .addOperand(leftExpr)
         .addOperand(rightExpr);
     switch (node.getOperator()) {
       case BITWISE_AND:
-        binaryExpr.setOperator(InfixExpression.Operator.AND);
+        binaryExpr.setOperator(InfixExpression.Operator.AND).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case BITWISE_OR:
-        binaryExpr.setOperator(InfixExpression.Operator.OR);
+        binaryExpr.setOperator(InfixExpression.Operator.OR).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case EXCLUSIVE_OR:
-        binaryExpr.setOperator(InfixExpression.Operator.XOR);
+        binaryExpr.setOperator(InfixExpression.Operator.XOR).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case LOGICAL_AND:
-        binaryExpr.setOperator(InfixExpression.Operator.CONDITIONAL_AND);
+        binaryExpr.setOperator(InfixExpression.Operator.CONDITIONAL_AND)
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case LOGICAL_OR:
-        binaryExpr.setOperator(InfixExpression.Operator.CONDITIONAL_OR);
+        binaryExpr.setOperator(InfixExpression.Operator.CONDITIONAL_OR)
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case GREATER_THAN:
         binaryExpr.setOperator(InfixExpression.Operator.GREATER)
-            .setTypeMirror(translationEnv.typeUtil().getBoolean());
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case GREATER_THAN_OR_EQUAL:
         binaryExpr.setOperator(InfixExpression.Operator.GREATER_EQUALS)
-            .setTypeMirror(translationEnv.typeUtil().getBoolean());
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case LESS_THAN:
         binaryExpr.setOperator(InfixExpression.Operator.LESS)
-            .setTypeMirror(translationEnv.typeUtil().getBoolean());
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case LESS_THAN_OR_EQUAL:
         binaryExpr.setOperator(InfixExpression.Operator.LESS_EQUALS)
-            .setTypeMirror(translationEnv.typeUtil().getBoolean());
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case EQUALITY:
         binaryExpr.setOperator(InfixExpression.Operator.EQUALS)
-            .setTypeMirror(translationEnv.typeUtil().getBoolean());
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case INEQUALITY:
         binaryExpr.setOperator(InfixExpression.Operator.NOT_EQUALS)
-            .setTypeMirror(translationEnv.typeUtil().getBoolean());
+            .setTypeMirror(typeUtil.getBoolean());
         break;
       case ADD:
-        binaryExpr.setOperator(InfixExpression.Operator.PLUS);
+        binaryExpr.setOperator(InfixExpression.Operator.PLUS).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case SUBTRACT:
-        binaryExpr.setOperator(InfixExpression.Operator.MINUS);
+        binaryExpr.setOperator(InfixExpression.Operator.MINUS).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case MULTIPLY:
-        binaryExpr.setOperator(InfixExpression.Operator.TIMES);
+        binaryExpr.setOperator(InfixExpression.Operator.TIMES).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case DIVIDE:
-        binaryExpr.setOperator(InfixExpression.Operator.DIVIDE);
+        binaryExpr.setOperator(InfixExpression.Operator.DIVIDE).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case MODULUS:
-        binaryExpr.setOperator(InfixExpression.Operator.REMAINDER);
+        binaryExpr.setOperator(InfixExpression.Operator.REMAINDER).setTypeMirror(
+            typeUtil.binaryNumericPromotion(leftExpr.getTypeMirror(), rightExpr.getTypeMirror()));
         break;
       case SHIFT_LEFT:
-        binaryExpr.setOperator(InfixExpression.Operator.LEFT_SHIFT);
+        binaryExpr.setOperator(InfixExpression.Operator.LEFT_SHIFT)
+            .setTypeMirror(typeUtil.unaryNumericPromotion(leftExpr.getTypeMirror()));
         break;
       case SHIFT_RIGHT:
-        binaryExpr.setOperator(InfixExpression.Operator.RIGHT_SHIFT_SIGNED);
+        binaryExpr.setOperator(InfixExpression.Operator.RIGHT_SHIFT_SIGNED)
+            .setTypeMirror(typeUtil.unaryNumericPromotion(leftExpr.getTypeMirror()));
         break;
       case UNSIGNED_SHIFT_RIGHT:
-        binaryExpr.setOperator(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED);
+        binaryExpr.setOperator(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)
+            .setTypeMirror(typeUtil.unaryNumericPromotion(leftExpr.getTypeMirror()));
         break;
       default:
         throw new AssertionError("Unsupported infix operator: " + node.getOperator());
@@ -557,7 +586,49 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitUnaryOperatorExpression(
       com.strobel.decompiler.languages.java.ast.UnaryOperatorExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    Expression expr = (Expression) node.getExpression().acceptVisitor(this, null);
+    switch (node.getOperator()) {
+      case NOT:
+        return new PrefixExpression()
+            .setTypeMirror(expr.getTypeMirror())
+            .setOperator(PrefixExpression.Operator.NOT)
+            .setOperand(expr);
+      case BITWISE_NOT:
+        return new PrefixExpression()
+            .setTypeMirror(typeUtil.unaryNumericPromotion(expr.getTypeMirror()))
+            .setOperator(PrefixExpression.Operator.COMPLEMENT)
+            .setOperand(expr);
+      case PLUS:
+        return new PrefixExpression()
+            .setTypeMirror(typeUtil.unaryNumericPromotion(expr.getTypeMirror()))
+            .setOperator(PrefixExpression.Operator.POSITIVE)
+            .setOperand(expr);
+      case MINUS:
+        return new PrefixExpression()
+            .setTypeMirror(typeUtil.unaryNumericPromotion(expr.getTypeMirror()))
+            .setOperator(PrefixExpression.Operator.NEGATIVE)
+            .setOperand(expr);
+      case INCREMENT:
+        return new PrefixExpression()
+            .setTypeMirror(expr.getTypeMirror())
+            .setOperator(PrefixExpression.Operator.INCREMENT)
+            .setOperand(expr);
+      case DECREMENT:
+        return new PrefixExpression()
+            .setTypeMirror(expr.getTypeMirror())
+            .setOperator(PrefixExpression.Operator.DECREMENT)
+            .setOperand(expr);
+      case POST_INCREMENT:
+        return new PostfixExpression()
+            .setOperator(PostfixExpression.Operator.INCREMENT)
+            .setOperand(expr);
+      case POST_DECREMENT:
+        return new PostfixExpression()
+            .setOperator(PostfixExpression.Operator.DECREMENT)
+            .setOperand(expr);
+      default:
+        throw new AssertionError("Unsupported unary operator: " + node.getOperator());
+    }
   }
 
   @Override
@@ -566,10 +637,10 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     Expression conditionExpr = (Expression) node.getCondition().acceptVisitor(this, null);
     Expression trueExpr = (Expression) node.getTrueExpression().acceptVisitor(this, null);
     Expression falseExpr = (Expression) node.getFalseExpression().acceptVisitor(this, null);
-    TypeMirror type = translationEnv.typeUtil()
-        .wideningPrimitiveConversion(trueExpr.getTypeMirror(), falseExpr.getTypeMirror());
+    TypeMirror trueType = trueExpr.getTypeMirror();
+    TypeMirror falseType = falseExpr.getTypeMirror();
     return new ConditionalExpression()
-        .setTypeMirror(type)
+        .setTypeMirror(typeUtil.inferConditionalExpressionType(trueType, falseType))
         .setExpression(conditionExpr)
         .setThenExpression(trueExpr)
         .setElseExpression(falseExpr);
@@ -598,7 +669,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
         = node.getDimensions();
     com.strobel.decompiler.languages.java.ast.ArrayInitializerExpression init
         = node.getInitializer();
-    ArrayType arrayType = new ArrayType(translationEnv.typeUtil().getArrayType(
+    ArrayType arrayType = new ArrayType(typeUtil.getArrayType(
         baseType.getTypeMirror(), dimexprs.size() + node.getAdditionalArraySpecifiers().size()));
     if (init.isNull()) {
       List<Expression> dimensions = dimexprs.stream()

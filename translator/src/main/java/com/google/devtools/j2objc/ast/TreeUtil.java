@@ -400,7 +400,15 @@ public class TreeUtil {
     } else if (value instanceof Character) {
       return new CharacterLiteral((Character) value, typeUtil);
     } else if (value instanceof Number) {
-      return new NumberLiteral((Number) value, typeUtil).setToken(value.toString());
+      String token = value.toString();
+      if (value instanceof Long) {
+        token += "L";
+      } else if (value instanceof Float) {
+        token += "F";
+      } else if (value instanceof Double) {
+        token += "D";
+      }
+      return new NumberLiteral((Number) value, typeUtil).setToken(token);
     } else if (value instanceof String) {
       return new StringLiteral((String) value, typeUtil);
     }

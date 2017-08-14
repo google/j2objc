@@ -258,14 +258,60 @@ public final class TypeUtil {
   }
 
   /**
-   * If converting from type2 to type1 is a widening primitive conversion, then type1 is returned.
-   * Otherwise type2 is returned.
-   * @param type1 a primitive type
-   * @param type2 a primitive type
-   * @return the wider primitive type
+   * If type is a byte TypeMirror, short TypeMirror, or char TypeMirror, an int TypeMirror is
+   * returned. Otherwise, type is returned. See jls-5.6.1.
+   * @param type a numeric type
+   * @return the result of unary numeric promotion applied to type
    */
-  public TypeMirror wideningPrimitiveConversion(TypeMirror type1, TypeMirror type2) {
-    return isAssignable(type2, type1) ? type1 : type2;
+  public TypeMirror unaryNumericPromotion(TypeMirror type) {
+    TypeKind t = type.getKind();
+    if (t == TypeKind.DECLARED) {
+      t = env.typeUtilities().unboxedType(type).getKind();
+    }
+    if (t == TypeKind.BYTE || t == TypeKind.SHORT || t == TypeKind.CHAR) {
+      return getInt();
+    } else {
+      return type;
+    }
+  }
+
+  /**
+   * If either type is a double TypeMirror, a double TypeMirror is returned.
+   * Otherwise, if either type is a float TypeMirror, a float TypeMirror is returned.
+   * Otherwise, if either type is a long TypeMirror, a long TypeMirror is returned.
+   * Otherwise, an int TypeMirror is returned. See jls-5.6.2.
+   * @param type1 a numeric type
+   * @param type2 a numeric type
+   * @return the result of binary numeric promotion applied to type1 and type2
+   */
+  public TypeMirror binaryNumericPromotion(TypeMirror type1, TypeMirror type2) {
+    TypeKind t1 = type1.getKind();
+    TypeKind t2 = type2.getKind();
+    if (t1 == TypeKind.DECLARED) {
+      t1 = env.typeUtilities().unboxedType(type1).getKind();
+    }
+    if (t2 == TypeKind.DECLARED) {
+      t2 = env.typeUtilities().unboxedType(type2).getKind();
+    }
+    if (t1 == TypeKind.DOUBLE || t2 == TypeKind.DOUBLE) {
+      return getDouble();
+    } else if (t1 == TypeKind.FLOAT || t2 == TypeKind.FLOAT) {
+      return getFloat();
+    } else if (t1 == TypeKind.LONG || t2 == TypeKind.LONG) {
+      return getLong();
+    } else {
+      return getInt();
+    }
+  }
+
+  /**
+   * TODO(user): See jls-5.6.2 and jls-15.25.
+   * @param trueType the type of the true expression
+   * @param falseType the type of the false expression
+   * @return the inferred type of the conditional expression
+   */
+  public TypeMirror inferConditionalExpressionType(TypeMirror trueType, TypeMirror falseType) {
+    return isAssignable(trueType, falseType) ? falseType : trueType;
   }
 
   public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
