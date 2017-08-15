@@ -286,10 +286,12 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
 
 - (id)retain {
   if (!isRetained_) {
+    // Set isRetained_ before retaining the elements to avoid infinite loop if two arrays happen to
+    // contain each other.
+    isRetained_ = true;
     for (jint i = 0; i < size_; i++) {
       [buffer_[i] retain];
     }
-    isRetained_ = true;
   }
   return [super retain];
 }
