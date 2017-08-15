@@ -99,11 +99,11 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     public IosRSAPublicKey(byte[] encoded) {
-        try {
-    	    iosSecKey = createPublicSecKeyRef (encoded);
-        } catch (Exception exp) {
-            throw new ProviderException(exp); // Should never happen.
-        }
+      try {
+        iosSecKey = createPublicSecKeyRef (encoded);
+       } catch (Exception exp) {
+         throw new ProviderException(exp); // Should never happen.
+       }
     }
 
     @Override
@@ -180,7 +180,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       return query;
     }
     ]-*/
-
+ 
     private native long createPublicSecKeyRef(byte[] bytes) /*-[
       NSData *publicKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
                                                  length:bytes->size_];
