@@ -129,18 +129,6 @@ void ARGC_genericRetain(id obj);
   return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, type);
 }
 
-#ifdef J2OBJC_USE_GC
-- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth {
-    ARGC_FIELD_REF id*pItem = buffer_ + 0;
-    for (int i = size_; --i >= 0; ) {
-        ARGC_FIELD_REF id obj = *pItem++;
-        if (obj != NULL) {
-            visitor(obj, depth);
-        }
-    }
-
-}
-#endif
 
 - (id)objectAtIndex:(NSUInteger)index {
   IOSArray_checkIndex(size_, (jint)index);

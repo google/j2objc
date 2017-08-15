@@ -273,8 +273,10 @@ static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   GetMethodsFromClass(self, methodMap, false);
+    //@autoreleasepool {
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
       type:JavaLangReflectMethod_class_()];
+    //}
 }
 
 // Return the constructors declared by this class.  Superclass constructors

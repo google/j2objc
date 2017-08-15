@@ -26,7 +26,7 @@ static void unalignedPointer(void *ptr) {
       [NSString stringWithFormat:@"Cannot perform atomic access on unaligned address %p", ptr]);
 }
 
-#define PTR(OBJ, OFFSET) (uintptr_t)(((uintptr_t)OBJ) + OFFSET)
+#define PTR(OBJ, OFFSET) (uintptr_t)(((uintptr_t)(__bridge void*)OBJ) + OFFSET)
 #define CHECK_ADDR(TYPE, PTR) \
   if (sizeof(volatile_##TYPE) != sizeof(TYPE) \
       || (PTR & (__alignof__(volatile_##TYPE) - 1)) != 0) { \
@@ -56,12 +56,12 @@ static void unalignedPointer(void *ptr) {
 #define GET_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  return JreLoadVolatileId((volatile_id *)ptr);
+  return JreLoadVolatileId((volatile_id *)(void*)ptr);
 
 #define PUT_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  JreVolatileStrongAssign((volatile_id *)ptr, newValue);
+  JreVolatileStrongAssign((volatile_id *)(void*)ptr, newValue);
 
 
 // Native method implementations.
@@ -128,7 +128,6 @@ jboolean Java_sun_misc_Unsafe_compareAndSwapLong(
       (volatile_jlong *)ptr, &expectedValue, newValue, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
 }
 
-
 /*
  * Method:    compareAndSwapObject
  * Signature: (Ljava/lang/Object;JLjava/lang/Object;Ljava/lang/Object;)Z
@@ -137,7 +136,8 @@ jboolean Java_sun_misc_Unsafe_compareAndSwapObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject expectedValue, jobject newValue) {
   uintptr_t ptr = PTR(obj, offset);
   CHECK_ADDR(id, ptr)
-  return JreCompareAndSwapVolatileStrongId((volatile_id *)ptr, expectedValue, newValue);
+    assert(!class_isMetaClass([obj class]));
+  return JreCompareAndSwapVolatileStrongId((volatile_id *)(void*)ptr, expectedValue, newValue);
 }
 
 
@@ -625,7 +625,9 @@ void Java_sun_misc_Unsafe_putLongVolatile(
  * Signature: (Ljava/lang/Object;J)Ljava/lang/Object;
  */
 jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, jlong offset) {
-  GET_OBJECT_IMPL()
+    uintptr_t ptr = PTR(obj, offset);
+    CHECK_ADDR(id, ptr)
+    return *(__unsafe_unretained jobject *)(void*)ptr;
 }
 
 /*
@@ -634,8 +636,12 @@ jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, j
  */
 jobject Java_sun_misc_Unsafe_getObjectVolatile(
     JNIEnv *env, jobject self, jobject obj, jlong offset) {
-  GET_OBJECT_IMPL()
+    uintptr_t ptr = PTR(obj, offset);
+    CHECK_ADDR(id, ptr)
+    return JreLoadVolatileId((volatile_id *)(void*)ptr);
 }
+
+void ARGC_pubObject(jobject obj, uintptr_t ptr, jobject newValue);
 
 /*
  * Method:    putObject
@@ -643,7 +649,9 @@ jobject Java_sun_misc_Unsafe_getObjectVolatile(
  */
 void Java_sun_misc_Unsafe_putObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+    uintptr_t ptr = PTR(obj, offset);
+    CHECK_ADDR(id, ptr)
+    ARGC_pubObject(obj, ptr, newValue);
 }
 
 /*
@@ -652,7 +660,9 @@ void Java_sun_misc_Unsafe_putObject(
  */
 void Java_sun_misc_Unsafe_putOrderedObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+    uintptr_t ptr = PTR(obj, offset);
+    CHECK_ADDR(id, ptr)
+    ARGC_pubObject(obj, ptr, newValue);
 }
 
 
@@ -662,7 +672,9 @@ void Java_sun_misc_Unsafe_putOrderedObject(
  */
 void Java_sun_misc_Unsafe_putObjectVolatile(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+    uintptr_t ptr = PTR(obj, offset);
+    CHECK_ADDR(id, ptr)
+    ARGC_pubObject(obj, ptr, newValue);
 }
 
 

@@ -129,7 +129,7 @@ class MemoryBlock {
 
     public static native MemoryBlock allocate(int byteCount) /*-[
       IOSByteArray *array = [IOSByteArray arrayWithLength:byteCount];
-      long long address = (long long) (uintptr_t) array->buffer_;
+      long long address = (long long) (void *) array->buffer_;
       return AUTORELEASE(
           [[JavaNioMemoryBlock_NonMovableHeapBlock alloc] initWithByteArray:array
                                                                    withLong:address

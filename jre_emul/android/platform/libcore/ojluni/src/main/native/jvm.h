@@ -615,8 +615,8 @@ JVM_SupportsCX8(void);
  */
 typedef struct {
     jmethodID method;
-    jstring   function;
-    jstring   name;
+    __unsafe_unretained jstring   function;
+    __unsafe_unretained jstring   name;
     void*            reserved[4];     // for future use
 } JVM_DTraceProbe;
 

@@ -62,6 +62,7 @@
 }
 
 void printRefCount(id obj);
+void ARGC_executeGC(int interval);
 
 - (void)viewDidAppear:(BOOL)animated {
   CGRect textFrame = self.textPane.frame;
@@ -74,7 +75,7 @@ void printRefCount(id obj);
     NSObject* c = [[NSObject alloc] init];
     printRefCount(c);
     printRefCount([c init]);
-    ARGC_requestGC();
+    ARGC_executeGC(1000);
     
   // Redirect all stdout and stderr output to the log pane.
   JRELogOutputStream *logStream = [[JRELogOutputStream alloc] initWithJRELogPane:self.logPane];

@@ -212,12 +212,23 @@ public final class TypeUtil {
     return typeElement != null && !isInterface(t) && isNone(typeElement.getSuperclass());
   }
 
-  public boolean isARGCField(TypeMirror t) {
+  public boolean isARGCFieldEx(TypeElement owner, TypeMirror t) {
+	  if (getArgcFieldType(owner.asType()) == "Native") {
+		  return false;
+	  }
+	  
 	  if (isPrimitiveOrVoid(t)) {
 		  return false;
 	  }
 	  
 	  return getArgcFieldType(t) != "Native";
+  }
+  
+  public String getArgcFieldTypeEx(TypeElement owner, TypeMirror t) {
+	  if (getArgcFieldType(owner.asType()) == "Native") {
+		  return "Native";
+	  }
+	  return getArgcFieldType(t);
   }
   
   public String getArgcFieldType(TypeMirror t) {

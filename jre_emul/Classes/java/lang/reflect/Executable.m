@@ -41,7 +41,7 @@
 #import "objc/runtime.h"
 
 @interface JavaLangReflectExecutable () {
-  IOSObjectArray * params_;
+  __weak IOSObjectArray * params_;
   IOSObjectArray * paramTypes_;
 }
 @end
@@ -108,7 +108,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 
 - (IOSObjectArray *)getParametersInternal {
-  IOSObjectArray *result = params_;
+  __strong IOSObjectArray *result = params_;
   if (!result) {
     @synchronized(self) {
       result = params_;
@@ -123,7 +123,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
                   name, 0, self, i);
           IOSObjectArray_Set(result, i, param);
         }
-        params_ = AUTORELEASE(result);
+        params_ = result;
       }
     }
   }

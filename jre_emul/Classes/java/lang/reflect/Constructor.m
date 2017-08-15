@@ -55,6 +55,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   fillArgs(invocation);
   id newInstance;
   @try {
+      @autoreleasepool {
     if (isFactory) {
       [invocation invokeWithTarget:cls];
       [invocation getReturnValue:&newInstance];
@@ -62,6 +63,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
       newInstance = AUTORELEASE([cls alloc]);
       [invocation invokeWithTarget:newInstance];
     }
+      }
   }
   @catch (JavaLangThrowable *e) {
     @throw create_JavaLangReflectInvocationTargetException_initWithJavaLangThrowable_(e);
@@ -77,12 +79,14 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   }
 
   return NewInstance(self, ^(NSInvocation *invocation) {
+      @autoreleasepool {
     for (jint i = 0; i < argCount; i++) {
       J2ObjcRawValue arg;
       if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
         @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"argument type mismatch");
       }
       [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
+        }
     }
   });
 }

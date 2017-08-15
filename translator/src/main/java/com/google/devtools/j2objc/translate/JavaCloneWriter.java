@@ -109,7 +109,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
       boolean isWeak = ElementUtil.isWeakReference(var);
       boolean isVolatile = ElementUtil.isVolatile(var);
       if (isVolatile) {
-        adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
+    	  if (!options.useGC()) {
+    		  adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
+    	  }
       } else if (isWeak) {
         adjustments.add(createReleaseStatement(var));
       }

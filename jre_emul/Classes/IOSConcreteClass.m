@@ -170,7 +170,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = interfaces_;
+    IOSObjectArray *result = interfaces_;
   if (!result) {
     @synchronized(self) {
         result = interfaces_;

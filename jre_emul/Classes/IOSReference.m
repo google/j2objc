@@ -46,17 +46,22 @@
 
 @interface IOSReference() {
     NSPointerArray* refArray_;
-    void* referentAddr;
+    void* referentAddr_;
 }
 @end
 
 @implementation IOSReference
 
 static int assocKey;
-static NSMutableArray* softRefArray_ = NULL;
+static NSMutableArray* g_softRefArray_ = NULL;
 
 //#define DBGLog(...) NSLog(__VAR_ARGS__)
 #define DBGLog(...) //NSLog(__VAR_ARGS__)
+
+#define USE_WEAK_REF_ARRAY 1
+
+void ARGC_markWeakRef(id referent);
+BOOL ARGC_isAliveObject(__unsafe_unretained ARGCObject* reference);
 
 + (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)referent
 {
@@ -64,24 +69,25 @@ static NSMutableArray* softRefArray_ = NULL;
         return;
     }
     @synchronized (self) {
-        if (softRefArray_ == NULL) {
-            softRefArray_ = [[NSMutableArray alloc]init];
+        if (g_softRefArray_ == NULL) {
+            g_softRefArray_ = [[NSMutableArray alloc]init];
         }
         if ([[[referent class] description] isEqualToString:@"IOSConcreteClass"]) {
             DBGLog(@"Adding ref: %p %@", referent, [referent class]);
         }
+        ARGC_markWeakRef(referent);
         
         DBGLog(@"Adding ref: %p %@", referent, [referent class]);
         IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
         if (rm == NULL) {
             rm = [[IOSReference alloc]init];
-            rm->referentAddr = (__bridge void*)referent;
+            rm->referentAddr_ = (__bridge void*)referent;
             objc_setAssociatedObject(referent, &assocKey, rm, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
         DBGLog(@"Add ref: %p: %p %@", rm, referent, [referent class]);
         *(__weak id*)(void*)&reference->referent_ = referent;
         if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
-            [softRefArray_ addObject:referent];
+            [g_softRefArray_ addObject:referent];
         }
         [rm->refArray_ addPointer:(void*)reference];
     }
@@ -111,28 +117,45 @@ void ARGC_retainExternalWeakRef(id obj);
 
 + (void)clearReferent:(JavaLangRefReference *)reference
 {
-    *(__weak id*)(void*)&reference->referent_ = NULL;
-//    @synchronized (self) {
-//        id referent = *(__weak id*)(void*)&reference->referent_;
-//        if (referent != NULL) {
-//            IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
-//            if (rm != NULL) {
-//                [rm->refArray_ removePointer:reference];
-//            }
-//        }
-//    }
+    if (USE_WEAK_REF_ARRAY) {
+        *(__weak id*)(void*)&reference->referent_ = NULL;
+    }
+    else {
+        @synchronized (self) {
+            id referent = *(__unsafe_unretained id*)(void*)&reference->referent_;
+            if (referent == NULL) {
+                return;
+            }
+            reference->referent_ = NULL;
+            IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
+            if (rm == NULL) {
+                return;
+            }
+            for (int i = (int)rm->refArray_.count; --i > 0; ) {
+                if (reference == [rm->refArray_ pointerAtIndex:i]) {
+                    [rm->refArray_ removePointerAtIndex:i];
+                    break;
+                }
+            }
+        }
+    }
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
     @synchronized (self) {
-        [softRefArray_ removeAllObjects];
+        [g_softRefArray_ removeAllObjects];
     };
     ARGC_collectGarbage();
 }
 
 - (instancetype)init
 {
-    refArray_ = [NSPointerArray weakObjectsPointerArray];
+    if (USE_WEAK_REF_ARRAY) {
+        refArray_ = [NSPointerArray weakObjectsPointerArray];
+    }
+    else {
+        refArray_ = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory] ;
+    }
     return self;
 }
 
@@ -140,19 +163,38 @@ void ARGC_strongRetain(id);
 
 - (void)dealloc
 {
-    @autoreleasepool {
-    for (__strong JavaLangRefReference *reference in self->refArray_) {
-        if (reference != NULL) {
-            /* objc_loadWeakRef에 의해 refCount가 1 증가했다. 이를 사후 반영*/
-            if (POST_INC_WEAK_LOAD) {
-                ARGC_retainExternalWeakRef(reference);
+    dispatch_time_t next_t = dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC / 1000);
+    __strong NSPointerArray* array = self->refArray_;
+    void* referentAddr = self->referentAddr_;
+    
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^
+    @autoreleasepool
+    {
+        if (USE_WEAK_REF_ARRAY) {
+            for (__strong JavaLangRefReference *reference in array) {
+                if (reference != NULL) {//ARGC_isAliveObject(reference)) {
+                    /* objc_loadWeakRef에 의해 refCount가 1 증가했다. 이를 사후 반영*/
+                    if (POST_INC_WEAK_LOAD) {
+                        ARGC_retainExternalWeakRef(reference);
+                    }
+                    DBGLog(@"Remove ref: %p(%p)", referentAddr, reference);
+                    [reference clear];
+                    [reference enqueue];
+                }
             }
-            DBGLog(@"Remove ref: %p(%p)", self->referentAddr, reference);
-            [reference clear];
-            [reference enqueue];
         }
-    }
-    }
+        else {
+            @synchronized (self) {
+                for (__unsafe_unretained JavaLangRefReference *reference in array) {
+                    if (reference != NULL) {
+                        DBGLog(@"Remove ref: %p(%p)", referentAddr, reference);
+                        reference->referent_ = NULL;
+                        [reference enqueue];
+                    }
+                }
+            }
+        }
+    };
 }
 
 @end

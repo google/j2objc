@@ -101,9 +101,8 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
   }
 
     //NSLog(@"%@", self);
-    
+    @autoreleasepool {
   [self invoke:invocation object:object];
-
   IOSClass *returnType = [self getReturnType];
   if (returnType == [IOSClass voidClass]) {
     return nil;
@@ -111,6 +110,7 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
   J2ObjcRawValue returnValue;
   [invocation getReturnValue:&returnValue];
   return [returnType __boxValue:&returnValue];
+    }
 }
 
 - (void)jniInvokeWithId:(id)object
@@ -121,11 +121,13 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
     [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
   }
 
+    // jni에서 호출되는 함수. autorelease pool을 사용하지 않는다.
+    //@autoreleasepool {
   [self invoke:invocation object:object];
-
   if (result) {
     [invocation getReturnValue:result];
   }
+    //}
 }
 
 // Creates a unique method selector by prepending the class name.
@@ -154,8 +156,10 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
       class_addMethod(cls, sel, method_getImplementation(method), method_getTypeEncoding(method));
     }
   }
-  [invocation setSelector:sel];
-  return invocation;
+
+    [invocation setSelector:sel];
+
+    return invocation;
 }
 
 - (void)invoke:(NSInvocation *)invocation object:(id)object {
@@ -208,6 +212,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 }
 
 - (id)getDefaultValue {
+    @autoreleasepool {
   if ([self->class_ isAnnotation]) {
     // Invoke the class method for this method name plus "Default". For example, if this
     // method is named "foo", then return the result from "fooDefault".
@@ -225,6 +230,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
       return [[self getReturnType] __boxValue:&returnValue];
     }
   }
+    }
   return nil;
 }
 

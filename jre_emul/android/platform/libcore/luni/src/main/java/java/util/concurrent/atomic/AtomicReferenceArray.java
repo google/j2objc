@@ -102,7 +102,7 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
             JreStrcat("$I", @"index ", i));
       }
     }
-uintptr_t* ARGC_toVolatileIdPtr(ARGC_FIELD_REF id*);
+volatile_id* ARGC_toVolatileIdPtr(ARGC_FIELD_REF id*);
 
     static inline volatile_id *GetPtrUnchecked(
         JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {

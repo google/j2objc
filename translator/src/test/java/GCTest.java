@@ -2,8 +2,11 @@
 public class GCTest {
 	static Object staticNSObjectField;
 	static GCTest staticField;
+    static volatile GCTest staticVolatile;
+    
 	Object instanceNSObjectField;
 	GCTest instanceField;
+    volatile GCTest instanceVolatile;
     String str;
     boolean sealed;
     Integer no;
@@ -25,6 +28,8 @@ public class GCTest {
         this.obj = unknown;
 		this.instanceNSObjectField = unknown;
 		this.instanceNSObjectField = this;
+        this.instanceVolatile = this;
+        staticVolatile = this;
 	}
 	
 }

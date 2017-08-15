@@ -201,13 +201,14 @@ public class OperatorRewriter extends UnitTreeVisitor {
       // We can't use the "AndConsume" optimization for volatile objects because that might leave
       // the newly created object vulnerable to being deallocated by another thread assigning to the
       // same field.
-      return isStrong ? "JreVolatileStrongAssign" : "JreAssignVolatile"
+      return isStrong ? (options.useGC() && ElementUtil.isStatic(var) ? "JreVolatileNativeAssign" :  "JreVolatileStrongAssign") : "JreAssignVolatile"
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
     }
     
     Element enc = var.getEnclosingElement();
 
-    if (Oz.isPureObjC(enc.asType()) || Oz.isPureObjC(type)) {
+    if (typeUtil.getArgcFieldType(enc.asType()) == "Native"
+    ||   Oz.isPureObjC(enc.asType()) || Oz.isPureObjC(type)) {
     	return null;
     }
 

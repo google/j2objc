@@ -25,7 +25,7 @@
 
 @interface IOSProtocolClass () {
   Protocol *protocol_;
-  IOSObjectArray * interfaces_;
+  IOSObjectArray* interfaces_;
 }
 @end
 
@@ -113,19 +113,19 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = interfaces_;
-  if (!result) {
-    @synchronized(self) {
-      result = interfaces_;
-      if (!result) {
-        unsigned int count;
-        __unsafe_unretained Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
-        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
-        interfaces_ = result;
-        free(protocolList);
-      }
+    IOSObjectArray *result = interfaces_;
+    if (!result) {
+        @synchronized(self) {
+            result = interfaces_;
+            if (!result) {
+                unsigned int count;
+                __unsafe_unretained Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
+                result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+                interfaces_ = result;
+                free(protocolList);
+            }
+        }
     }
-  }
   return result;
 }
 

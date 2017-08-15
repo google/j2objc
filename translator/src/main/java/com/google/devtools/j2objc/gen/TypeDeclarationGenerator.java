@@ -278,7 +278,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (options.useGC() && typeUtil.isARGCField(varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+        if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
         	print("ARGC_FIELD_REF ");
         }
         else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
@@ -480,7 +480,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String isVolatile = ElementUtil.isVolatile(var) ? "_VOLATILE" : "";
       if (options.useGC() && isVolatile.length() == 0) {
       	println(UnicodeUtils.format("J2OBJC_FIELD_SETTER(%s, %s, %s, %s)",
-                typeName, typeUtil.getArgcFieldType(var.asType()),  fieldName, typeStr));
+                typeName, typeUtil.getArgcFieldTypeEx(typeElement, var.asType()),  fieldName, typeStr));
       }
       else {
     	println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",

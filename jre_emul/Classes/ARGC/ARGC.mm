@@ -10,41 +10,42 @@
 #import "../IOSClass.h"
 #import <atomic>
 
-#define J2OBJC_SMART_GC 1
-static const int MAX_TOUCH_DEPTH = 512;
-#ifdef DEBUG
-static int GC_DEBUG = 0;
-static int GC_DEBUG_ROOTS = 0;
-#else
-#define GC_DEBUG 0
-#define GC_DEBUG_ROOTS 0
-#endif
-static int DEBUG_SN = -1;
-static BOOL GC_DEBUG_SHOW_DEALLOC = 0;
-static BOOL IN_GC_SCANNING = 0;
-static void* GC_DEBUG_INSTANCE = (void*)-1;
-#define GC_TRACE(obj) (GC_DEBUG && (GC_DEBUG_INSTANCE == (void*)-1 || obj == GC_DEBUG_INSTANCE))
+#define GC_DEBUG 1
 
-#pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
+#if !GC_DEBUG
+#pragma GCC optimize ("O3")
+#pragma clang optimize on
+#else
+#pragma clang optimize off
+#endif
+
+static const int MAX_TOUCH_DEPTH = 512;
+static const int SCAN_BUFF_SIZE = 4096;
+
+
+FOUNDATION_EXPORT int GC_LOG_RC = 0;
+FOUNDATION_EXPORT int GC_LOG_ROOTS = 0;
+FOUNDATION_EXPORT int GC_LOG_ALIVE = 0;
+FOUNDATION_EXPORT int GC_LOG_ALLOC = 0;
+FOUNDATION_EXPORT void* GC_TRACE_REF = (void*)-1;
+FOUNDATION_EXPORT void* GC_TRACE_CLASS = (void*)-1;
+#define GC_TRACE(obj, flag) (GC_DEBUG && (obj == GC_TRACE_REF || (flag) || [obj class] == GC_TRACE_CLASS))
+
 
 typedef uint16_t scan_offset_t;
-
 typedef ARGCObject* ObjP;
 typedef std::atomic<ObjP> RefSlot;
 
 static const int _1M = 1024*1024;
 static const int REFS_IN_BUCKET = _1M / sizeof(ObjP);
 
-extern "C" {
-    id ARGC_cloneInstance(id);
-};
-
-static const int64_t REF_COUNT_MASK = 0xFFFFFFF;
-static const int64_t SCANNED_FLAG = 0x4000LL * 0x10000;
-static const int64_t UNREACHABLE_FLAG = 0x8000LL * 0x10000;
-static const int64_t REACHABLE_MASK = 0xFC000LL * 0x10000;
+static const int64_t REF_COUNT_MASK = 0xfffFFFF;
+static const int64_t REF_COUNT_OVERFLOW_GUARD = 0x4000LL * 0x10000;
+static const int64_t WEAK_REF_FLAG = 0x8000LL * 0x10000;
+static const int64_t REACHABLE_MASK = 0xF0000LL * 0x10000;
 static const int SLOT_INDEX_SHIFT = (32+4);
 static const int64_t SLOT_INDEX_MASK = (uint64_t)-1 << SLOT_INDEX_SHIFT;
+
 
 class RefContext {
 public:
@@ -57,7 +58,7 @@ public:
          즉, 정상적인 경우, 객체가 해제될 상태에서 객체가 살아 남아 있는 상태가
          GC가 동작되어야 할 상황이다.
          */
-        _gc_context = SLOT_INDEX_MASK | SCANNED_FLAG | reachable_mark | 1;
+        _gc_context = SLOT_INDEX_MASK | REF_COUNT_OVERFLOW_GUARD | reachable_mark | 1;
     }
     
     // RefSlot Management;
@@ -105,55 +106,63 @@ public:
     
     // State;
 
-    BOOL isAlreadyScanned() {
-        return __isAlreadyScanned(_gc_context);
-    }
-    
+//    BOOL isAlreadyScanned() {
+//        return __isAlreadyScanned(_gc_context);
+//    }
+//    
     BOOL isReachable() {
         return __isReachable(_gc_context);
     }
 
-    BOOL isScanned() {
-        return (_gc_context & SCANNED_FLAG) != 0;
+//    BOOL isScanned() {
+//        return (_gc_context & SCANNED_FLAG) != 0;
+//    }
+//    
+//    BOOL isScannedReachable() {
+//        return __isScannedReachable(_gc_context);
+//    }
+    
+//    BOOL markUnreachable() {
+//        while (true) {
+//            int64_t v = _gc_context;
+//            if (__isAlreadyScanned(v)) {
+//                return !__isReachable(v);
+//            }
+//            int64_t new_v = (v & ~REACHABLE_MASK) | UNREACHABLE_FLAG;
+//            if (_gc_context.compare_exchange_strong(v, new_v)) {
+//                return true;
+//            }
+//        }
+//    }
+    
+//    BOOL touchReachable() {
+//        while (true) {
+//            int64_t v = _gc_context;
+//            if (__isAlreadyScanned(v)) {
+//                return __isReachable(v);
+//            }
+//            int64_t new_v = (v & ~REACHABLE_MASK) | reachable_mark;
+//            if (_gc_context.compare_exchange_strong(v, new_v)) {
+//                return true;
+//            }
+//        }
+//    }
+    
+    void markWeakRef() {
+        _gc_context |= WEAK_REF_FLAG;
     }
     
-    BOOL isScannedReachable() {
-        return __isScannedReachable(_gc_context);
+    BOOL isWeakRef() {
+        return (_gc_context & WEAK_REF_FLAG) != 0;
     }
-    
-    BOOL markUnreachable() {
-        while (true) {
-            int64_t v = _gc_context;
-            if (__isAlreadyScanned(v)) {
-                return !__isReachable(v);
-            }
-            int64_t new_v = (v & ~REACHABLE_MASK) | UNREACHABLE_FLAG;
-            if (_gc_context.compare_exchange_strong(v, new_v)) {
-                return true;
-            }
-        }
-    }
-    
-    BOOL touchReachable() {
-        while (true) {
-            int64_t v = _gc_context;
-            if (__isAlreadyScanned(v)) {
-                return __isReachable(v);
-            }
-            int64_t new_v = (v & ~REACHABLE_MASK) | reachable_mark;
-            if (_gc_context.compare_exchange_strong(v, new_v)) {
-                return true;
-            }
-        }
-    }
-    
+
     BOOL markScannedReachable() {
         while (true) {
             int64_t v = _gc_context;
-            if (__isScannedReachable(v)) {
+            if (__isReachable(v)) {
                 return false;
             }
-            int64_t new_v = (v & ~REACHABLE_MASK) | SCANNED_FLAG | reachable_mark;
+            int64_t new_v = (v & ~REACHABLE_MASK) | reachable_mark;
             if (_gc_context.compare_exchange_strong(v, new_v)) {
                 return true;
             }
@@ -179,12 +188,12 @@ private:
         return (v & reachable_mark) != 0;
     }
     
-    static BOOL __isAlreadyScanned(int64_t v) {
-        return (v & (UNREACHABLE_FLAG | reachable_mark)) != 0;
-    }
-    static BOOL __isScannedReachable(int64_t v) {
-        return (v & reachable_mark) != 0 && (v & SCANNED_FLAG) != 0;
-    }
+//    static BOOL __isAlreadyScanned(int64_t v) {
+//        return (v & (UNREACHABLE_FLAG | reachable_mark)) != 0;
+//    }
+//    static BOOL __isScannedReachable(int64_t v) {
+//        return (v & reachable_mark) != 0 && (v & SCANNED_FLAG) != 0;
+//    }
     
     std::atomic<int64_t> _gc_context;
     static volatile int64_t reachable_mark;
@@ -192,14 +201,6 @@ private:
 
 volatile int64_t RefContext::reachable_mark = 0;
 
-@interface NSObject(ARGCObject)
-@end
-@implementation NSObject(ARGCObject)
-- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth
-{
-    // do nothing
-}
-@end
 
 
 @interface ARGCObject()
@@ -236,6 +237,8 @@ volatile int64_t RefContext::reachable_mark = 0;
 @implementation ScanOffsetArray
 @end
 
+static const int USE_AUTORELEASE_OLD = 0;
+
 
 //##############################################################
 
@@ -243,10 +246,14 @@ volatile int64_t RefContext::reachable_mark = 0;
 class ARGC {
 public:
     static ARGC _instance;
+    std::atomic_int GC_IN_SCANNING;
     
     ARGC() {
         RefContext::change_generation();
         JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
+        //GC_TRACE_CLASS = objc_lookUpClass("JavaUtilZipZStreamRef");
+        GC_TRACE_CLASS = objc_lookUpClass("JavaUtilConcurrentLocksAbstractQueuedSynchronizer");
+        obj_array_class = [IOSObjectArray class];
         deallocInstance = dealloc_now;
         _scanOffsetCache = [[NSMutableDictionary alloc] init];
         tableLock = [[NSObject alloc]init];
@@ -261,34 +268,58 @@ public:
     void doGC();
 
     static void markInstance(ObjP obj) {
-        touchInstance(obj, 0);
+        if (GC_DEBUG && obj == GC_TRACE_REF) {
+            int a = 3;
+            a ++;
+        }
+        if (!obj->_gc_info.isReachable()) {
+            markRootInstance(obj);
+        }
     }
     
     static void touchInstance(ObjP obj) {
-        touchInstance(obj, 0);
+        if (GC_DEBUG && obj == GC_TRACE_REF) {
+            int a = 3;
+            a ++;
+        }
+        if (!obj->_gc_info.isReachable()) {
+            markRootInstance(obj);
+        }
     }
-    
-    static void markInstance(ObjP obj, int depth);
 
+    static void markRootInstance(ObjP obj);
+    
+    static void markArrayItems(id array);
+    
+    static void scanInstances(id* pItem, int cntItem, ObjP* scanBuff, ObjP* pBuffEnd);
+    
+    /*
+     static void markInstance(ObjP obj, int depth);
+     
     static void touchInstance(ObjP obj, int depth);
     
     static void markInstanceEx(id obj, int depth);
     
     static void touchInstanceEx(id obj, int depth);
+    */
     
     static int32_t getExternalRefCount(ObjP obj) {
         return obj->_gc_info.refCount();
     }
     
-    static void releaseExternalReference(ObjP obj) {
+    static BOOL releaseExternalReference(ObjP obj) {
         int cnt = obj->_gc_info.decRefCount();
-        if (GC_DEBUG && cnt < 0) {
+        if (cnt == REF_COUNT_MASK) {
             /**
-             App 종료 시? AutoReleasePool 을 정리하면서, WeakReference 등의 외부 참조 개수가 0 이하로 줄어드는 문제 발생한다.
+             App 또는 Thread 종료 시? AutoReleasePool 을 정리하면서, WeakReference 등의 외부 참조 개수가 0 이하로 줄어드는 문제 발생한다.
              이유를 알 수 없다.
              */
-            NSLog(@"release Ext --- %p %d(%d) %@", obj, (int)NSExtraRefCount(obj), obj->_gc_info.refCount(), [obj class]);
+            NSLog(@"over release %p %d(%d) %@", obj, (int)NSExtraRefCount(obj), obj->_gc_info.refCount(), [obj class]);
+            obj->_gc_info.incRefCount();
+            GC_TRACE_REF = obj;
+            return false;
         }
+        return true;
     }
     
     static void retainExternalReference(ObjP obj) {
@@ -308,18 +339,20 @@ public:
     }
     
     ObjP allocateInstance(Class cls, NSUInteger extraBytes, NSZone* zone) {
-        getScanOffsets(cls);
         size_t instanceSize = class_getInstanceSize(cls);
         if (instanceSize < argcObjectSize) {
             extraBytes = argcObjectSize - instanceSize;
         }
         
         ObjP obj = (ObjP)NSAllocateObject(cls, extraBytes, zone);
-        if (GC_DEBUG) NSLog(@"alloc %p %@", obj, cls);
+        if (GC_TRACE(obj, (GC_LOG_ALLOC || GC_LOG_RC))) {
+            NSLog(@"alloc %p %@", obj, cls);
+        }
+        registerScanOffsets(cls);
         obj->_gc_info.initialize();
         _cntAllocated ++;
 //        if (obj->sn_ == DEBUG_SN) {
-//            GC_DEBUG_INSTANCE = (void *)obj;
+//            GC_TRACE_REF = (void *)obj;
 //            NSLog(@"DEBUG_SN found");
 //        }
         // refCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
@@ -337,7 +370,7 @@ public:
     
     static void retainReferenceCount(id obj) {
         retainReferenceCountEx(obj);
-        if (GC_DEBUG) NSLog(@"retain --- %p %d(?) %@", obj, (int)NSExtraRefCount(obj), [obj class]);
+        checkRefCount(obj, @"retain ----");
     }
 
     static void retainReferenceCountEx(ARGCObject* obj) {
@@ -345,13 +378,11 @@ public:
     }
     
     static void releaseReferenceCount(id obj) {
-        if (isJavaObject(obj)) {
-            releaseReferenceCountAndPublish(obj);
-        }
-        else {
-            if (GC_DEBUG) NSLog(@"release --- %p %d(?) %@", obj, (int)NSExtraRefCount(obj) - 1, [obj class]);
-            releaseReferenceCountEx(obj);
-        }
+            if (releaseReferenceCountEx(obj)) {
+                if (GC_DEBUG && isJavaObject(obj)) {
+                    checkRefCount(obj, @"release ---");
+                }
+            }
     }
     
     static BOOL releaseReferenceCountEx(id obj) {
@@ -368,24 +399,28 @@ public:
         return false;
     }
 
-    static BOOL releaseReferenceCountAndPublish(ObjP obj) {
-        if (releaseReferenceCountEx(obj)) {
-            checkRefCount(obj, @"release Pub");
-//            if (!isPublished(obj)) {
-//                _instance.addStrongRef(obj);
-//            }
-            return true;
+    static void releaseReferenceCountAndPublish(ObjP obj) {
+        if (USE_AUTORELEASE_OLD) {
+            ARGC::retainExternalReference(obj);
+            [obj autorelease];
         }
-        return false;
+        else
+        if (releaseReferenceCountEx(obj)) {
+            checkRefCount(obj, @"release ***");
+            touchInstance(obj);
+        }
     }
     
     static const scan_offset_t* getScanOffsets(Class clazz) {
-        ScanOffsetArray* scanOffsets = _instance.makeScanOffsets(clazz);
+        ScanOffsetArray* scanOffsets = _instance._scanOffsetCache[clazz];
+        if (scanOffsets == NULL) {
+            return NULL;
+        }
         return scanOffsets->offsets;
     }
     
     static void checkRefCount(ObjP obj, NSString* tag) {
-        if (GC_DEBUG) {
+        if (GC_TRACE(obj, GC_LOG_RC)) {
             NSLog(@"%@ %p %d(%d) %@", tag, obj, (int)NSExtraRefCount(obj), obj->_gc_info.refCount(), [obj class]);
             if ((int)NSExtraRefCount(obj) < (int)obj->_gc_info.refCount() - 1) {
                 // 멀티쓰레드환경이라 두 값의 비교가 정확하지 않다. 관련 정보를 적는다.
@@ -404,12 +439,23 @@ private:
     static void dealloc_now(ObjP obj);
     
     RefSlot* newBucket() {
-        return (RefSlot*)malloc(_1M);
+        RefSlot* pMem = (RefSlot*)malloc(_1M);
+        memset(pMem, 0, _1M);
+        return pMem;
+    }
+    
+    void checkSlotIndex(int idxSlot, std::atomic_int* pCount) {
+        if (GC_DEBUG) {
+            if (idxSlot > *pCount) {
+                @synchronized (tableLock) {
+                    assert(idxSlot <= *pCount);
+                }
+            }
+        }
     }
     
     BOOL unregisterRef(ObjP obj) {
         int idxSlot = obj->_gc_info.slotIndex();
-        assert(idxSlot <= _cntRef);
         RefSlot* pSlot = getRefSlot(idxSlot);
         if (pSlot->compare_exchange_strong(obj, NULL)) {
             return true;
@@ -419,14 +465,14 @@ private:
     }
     
     RefSlot* getRefSlot(int index) {
-        assert(index <= _cntRef);
+        checkSlotIndex(index, &_cntRef);
         int idxBucket = index / REFS_IN_BUCKET;
         int idxRef = index % REFS_IN_BUCKET;
         return _table[idxBucket] + idxRef;
     }
     
     RefSlot* getPhantomSlot(int index) {
-        assert(index <= _cntPhantom);
+        checkSlotIndex(index, &_cntPhantom);
         int idxBucket = index / REFS_IN_BUCKET;
         int idxRef = index % REFS_IN_BUCKET;
         return _phantomeTable[idxBucket] + idxRef;
@@ -434,7 +480,7 @@ private:
     
     void addStrongRef(ObjP obj) {
         @synchronized (tableLock) {
-            int index = _cntRef ++;
+            int index = _cntRef;
             obj->_gc_info.setSlotIndex(index);
             
             int idxBucket = index / REFS_IN_BUCKET;
@@ -447,31 +493,32 @@ private:
                 }
             }
             row[idxRef] = obj;
+            // 반드시 obj 추가후 _cntRef 증가.
+            _cntRef ++;
         }
     }
     
     void reclaimInstance(id obj) {
-        if (GC_DEBUG && GC_DEBUG_SHOW_DEALLOC) {
+        if (GC_TRACE(obj, GC_LOG_ALLOC)) {
             NSLog(@"dealloc: %p %@", obj, [obj class]);
         }
         NSDeallocateObject(obj);
         _cntDeallocated ++;
     }
     
-    void addPhantom(ObjP dead, BOOL inGCThread) {
+    void addPhantom(ObjP dead, BOOL isThreadSafe) {
         //assert(NULL == *getRefSlot(dead->_gc_info.slotIndex()));
         ARGCPhantom* obj = (ARGCPhantom*)dead;
 
-        if (inGCThread) {
-            if (NSExtraRefCount(obj) <= 0) {
-                reclaimInstance(obj);
-            }
-            else {
-                // Append phantom, call delloc later.
-                obj->_next = _phantomQ;
-                _phantomQ = obj;
-                // call finalize methods ??
-            }
+        if (isThreadSafe && NSExtraRefCount(obj) <= 0) {
+            reclaimInstance(obj);
+            //}
+//            else {
+//                // Append phantom, call delloc later.
+//                obj->_next = _phantomQ;
+//                _phantomQ = obj;
+//                // call finalize methods ??
+//            }
         }
         else {
             @synchronized (tableLock) {
@@ -490,21 +537,23 @@ private:
         }
     }
     
-    ScanOffsetArray* makeScanOffsets(Class clazz);
+    ScanOffsetArray* registerScanOffsets(Class clazz);
     
     size_t argcObjectSize;
     std::atomic_int _cntRef;
+    std::atomic_int _cntPhantom;
     std::atomic_int _cntAllocated;
     std::atomic_int _cntDeallocated;
-    ARGCPhantom* _phantomQ = NULL;
+    std::atomic_int _cntMarkingThread;
+    std::atomic_int _cntDellocThread;
     //std::atomic<ARGCPhantom* > _sharedPantomQ;
     RefSlot* _table[1024];
     RefSlot* _phantomeTable[1024];
-    std::atomic_int _cntPhantom;
     NSMutableDictionary* _scanOffsetCache;
     Class JavaLangRefReference_class;
     NSObject* tableLock;
     NSObject* scanLock;
+    Class obj_array_class;
     
     BOOL _inGC = FALSE;
 };
@@ -512,7 +561,7 @@ private:
 
 ARGC ARGC::_instance;
 static scan_offset_t _emptyFields[1] = { 0 };
-
+static int64_t gc_interval = 0;
 
 
 @implementation ARGCObject
@@ -539,11 +588,26 @@ static scan_offset_t _emptyFields[1] = { 0 };
 }
 
 
+extern "C" {
+    id ARGC_cloneInstance(id);
+};
+
 - (id)copy
 {
     return ARGC_cloneInstance(self);
 }
 
+- (BOOL) isStrongReachable
+{
+    return self->_gc_info.isReachable();
+}
+
+- (void) markARGCFields
+{
+    ARGC::markRootInstance(self);
+}
+
+#pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
 - (void)dealloc
 {
     ARGC::ARGCVisitor fn = ARGC::_instance.deallocInstance;
@@ -555,7 +619,7 @@ static scan_offset_t _emptyFields[1] = { 0 };
 {
     ARGC::retainExternalReference(self);
     ARGC::retainReferenceCountEx(self);
-    ARGC::checkRefCount(self, @"retain Ext");
+    ARGC::checkRefCount(self, @"retain  Ext");
     return self;
 }
 
@@ -563,10 +627,20 @@ static scan_offset_t _emptyFields[1] = { 0 };
 - (BOOL)retainWeakReference
 {
     if ([super retainWeakReference]) {
-        ARGC::retainExternalReference(self);
         // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
-        //ARGC::checkRefCount(self, @"retainWeak");
+        if (self->_gc_info.isReachable()) {
+            self->_gc_info.incRefCount();
+        }
+        else if (ARGC::_instance.GC_IN_SCANNING) {
+            ARGC::retainExternalReference(self);
+        }
+        else {
+            //NSLog(@"retainWeakReference on unreachable %p", self);
+            return false;
+        }
+        //NSLog(@"retainWeakReference on %p", self);
         return true;
+        //}
     }
     return false;
 }
@@ -581,6 +655,9 @@ static scan_offset_t _emptyFields[1] = { 0 };
 
 - (instancetype)autorelease
 {
+    if (GC_TRACE(self, 0)) {
+        ARGC::checkRefCount(self, @"autorelease");
+    }
     return [super autorelease];
 }
 
@@ -602,15 +679,13 @@ static scan_offset_t _emptyFields[1] = { 0 };
 @end
 
 
-ScanOffsetArray* ARGC::makeScanOffsets(Class clazz) {
+ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
     scan_offset_t _offset_buf[4096];
     id _test_obj_buf[4096];
-    ScanOffsetArray* res = _scanOffsetCache[clazz];
-    if (res != NULL) {
-        return res;
-    }
+    ScanOffsetArray* res;
+    
     @synchronized (_scanOffsetCache) {
-        res = (ScanOffsetArray*)_scanOffsetCache[clazz];
+        ScanOffsetArray* res = _instance._scanOffsetCache[clazz];
         if (res != NULL) {
             return res;
         }
@@ -627,8 +702,8 @@ ScanOffsetArray* ARGC::makeScanOffsets(Class clazz) {
                 Ivar ivar = ivars[i];
                 const char *ivarType = ivar_getTypeEncoding(ivar);
                 if (*ivarType == '@') {
-                    if (cls == JavaLangRefReference_class && !referentSkipped) {
-                        //NSLog(@"Refernce.%s field skipped", ivar_getName(ivar));
+                    if (cls == JavaLangRefReference_class) {
+                        NSLog(@"Refernce.%s field check", ivar_getName(ivar));
                         //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
                         //continue;
                     }
@@ -663,14 +738,21 @@ ScanOffsetArray* ARGC::makeScanOffsets(Class clazz) {
     return res;
 }
 
+/*
 void ARGC::markInstance(ObjP obj, int depth) {
     if (!obj->_gc_info.markScannedReachable()) {
         return;
     }
-    [obj forEachObjectField: markInstanceEx inDepth: ++depth];
+    markRootIntance(&obj, 1);
 }
 
 void ARGC::markInstanceEx(id obj, int depth) {
+    if (GC_DEBUG) {
+        if ([obj class] == [IOSObjectArray class] && (int)NSExtraRefCount(obj) > 0) {
+            int a = 3;
+            a ++;
+        }
+    }
     if (isJavaObject(obj)) {
         markInstance(obj, depth);
     }
@@ -684,6 +766,12 @@ void ARGC::touchInstance(ObjP obj, int depth) {
 }
 
 void ARGC::touchInstanceEx(id obj, int depth) {
+    if (GC_DEBUG) {
+        if ([obj class] == [IOSObjectArray class] && (int)NSExtraRefCount(obj) > 0) {
+            int a = 3;
+            a ++;
+        }
+    }
     if (isJavaObject(obj)) {
         if (depth > MAX_TOUCH_DEPTH
         &&  ((ObjP)obj)->_gc_info.touchReachable()) {
@@ -692,20 +780,12 @@ void ARGC::touchInstanceEx(id obj, int depth) {
         touchInstance(obj, depth);
     }
 }
+*/
 
 
 void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, ObjP newValue) {
     if (*pField == newValue) {
         return;
-    }
-    
-    if (newValue != NULL) {
-        assert(ARGC::isJavaObject(newValue));
-        /**
-         In progress scanning, if the value is not scanned yet but the owner is marked,
-         value may not scanned after assign.
-         */
-        ARGC::touchInstance(newValue);
     }
     
     std::atomic<ObjP>* field = (std::atomic<ObjP>*)pField;
@@ -714,13 +794,13 @@ void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, ObjP newValue) {
         return;
     }
     if (newValue != NULL) {
+        assert(ARGC::isJavaObject(newValue));
         ARGC::retainReferenceCount(newValue);
+        ARGC::touchInstance(newValue);
     }
     if (oldValue != NULL) {
         assert(ARGC::isJavaObject(oldValue));
-        if (ARGC::releaseReferenceCountAndPublish(oldValue)) {
-            ARGC::touchInstance(oldValue);
-        };
+        ARGC::releaseReferenceCountAndPublish(oldValue);
     }
 }
 
@@ -730,6 +810,7 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, id newValue) {
     }
     
     std::atomic<id>* field = (std::atomic<id>*)pField;
+    id oldValue = field->exchange(newValue);
     if (newValue != NULL) {
         if (ARGC::isJavaObject(newValue)) {
             ARGC::touchInstance(newValue);
@@ -740,18 +821,19 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, id newValue) {
         }
     }
     
-    id oldValue = field->exchange(newValue);
     
     if (oldValue != NULL) {
         if (ARGC::isJavaObject(oldValue)) {
-            if (ARGC::releaseReferenceCountAndPublish(oldValue)) {
-                ARGC::touchInstance(oldValue);
-            };
+            ARGC::releaseReferenceCountAndPublish(oldValue);
+        }
+        else if (USE_AUTORELEASE_OLD) {
+            [oldValue autorelease];
         }
         else {
             [oldValue release];
         }
     }
+    return;
 }
 
 
@@ -787,25 +869,135 @@ void ARGC::dealloc_in_scan(ObjP obj) {
 }
 
 void ARGC::dealloc_now(ObjP obj) {
+    _instance._cntDellocThread ++;
     if (ARGC::_instance.unregisterRef(obj)) {
         [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
-        _instance.addPhantom(obj, false);
+        _instance.addPhantom(obj, true);
     }
     else {
         //NSLog(@"Add Phantom now %p, %@", obj, [obj class]);
         //_instance.addStrongRef(obj);
     }
+    _instance._cntDellocThread --;
 }
+
+void ARGC::scanInstances(id* pItem, int cntItem, ObjP* scanBuff, ObjP* pBuffEnd)
+{
+    
+    ObjP* pScanBuff = scanBuff;
+    for (int i = cntItem; --i >= 0; pItem++) {
+        ObjP obj = *pItem;
+        if (obj == NULL) {
+            continue;
+        }
+        
+        *pScanBuff ++ = obj;
+        while (pScanBuff > scanBuff) {
+            obj = *--pScanBuff;
+            Class cls = [obj class];
+            if (cls == _instance.obj_array_class) {
+                if (!obj->_gc_info.markScannedReachable()) {
+                    continue;
+                }
+                ARGC::checkRefCount(obj, @"mark__ scan");
+                
+                IOSObjectArray* array = (IOSObjectArray*)obj;
+                if (pScanBuff >= pBuffEnd) {
+                    markArrayItems(array);
+                }
+                else {
+                    scanInstances(array->buffer_, array->size_, pScanBuff, pBuffEnd);
+                }
+            }
+            else {
+                const scan_offset_t* scanOffsets = ARGC::getScanOffsets(cls);
+                if (scanOffsets == NULL) {
+                    continue;
+                }
+                if (!obj->_gc_info.markScannedReachable()) {
+                    continue;
+                }
+                ARGC::checkRefCount(obj, @"mark__ scan");
+                for (scan_offset_t offset; (offset = *scanOffsets++) != 0; ) {
+                    id field = *((id *)obj + offset);
+                    if (field) {
+                        if (pScanBuff >= pBuffEnd) {
+                            [field markARGCFields];
+                        }
+                        else if (![field isStrongReachable]) {
+                            *pScanBuff ++ = field;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void ARGC::markRootInstance(ObjP obj) {
+    _instance._cntMarkingThread ++;
+    assert(_instance.GC_IN_SCANNING);
+    if (obj->_gc_info.markScannedReachable()) {
+        //ARGC::checkRefCount(obj, @"mark__ Root");
+        
+        const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
+        ObjP scanBuff[OBJ_STACK_SIZ];
+        ObjP* pBuffEnd = scanBuff + OBJ_STACK_SIZ;
+        
+        assert(obj->_gc_info.isReachable());
+        if (GC_DEBUG && obj == GC_TRACE_REF) {
+            int a = 3;
+            a ++;
+        }
+        
+        Class cls = [obj class];
+        if (cls == _instance.obj_array_class) {
+            IOSObjectArray* array = (IOSObjectArray*)obj;
+            scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd);
+        }
+        else {
+            const scan_offset_t* scanOffsets = ARGC::getScanOffsets(cls);
+            assert (scanOffsets != NULL);
+            scan_offset_t offset;
+            while ((offset = *scanOffsets++) != 0) {
+                id* field = ((id *)obj + offset);
+                scanInstances(field, 1, scanBuff, pBuffEnd);
+            }
+        }
+    }
+    _instance._cntMarkingThread --;
+}
+
+void ARGC::markArrayItems(id obj) {
+    _instance._cntMarkingThread ++;
+    IOSObjectArray* array = (IOSObjectArray*)obj;
+    const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
+    ObjP scanBuff[OBJ_STACK_SIZ];
+    ObjP* pBuffEnd = scanBuff + OBJ_STACK_SIZ;
+    scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd);
+    _instance._cntMarkingThread --;
+}
+
+
 
 void ARGC::doGC() {
     if (_cntRef == 0) {
         return;
     }
-    NSMutableDictionary<Class, Counter*>* roots = GC_DEBUG_ROOTS ? [NSMutableDictionary new] : NULL;
+    NSMutableDictionary<Class, Counter*>* roots =
+        (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
     @synchronized (scanLock) {
+        GC_IN_SCANNING = 1;
         RefContext::change_generation();
         deallocInstance.exchange(dealloc_in_scan);
+        while (_cntDellocThread > 0) {
+            NSLog(@"waiting dealloc threads %d", (int)_cntDellocThread);
+        }
         
+        
+//        const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
+//        ObjP scanBuff[OBJ_STACK_SIZ];
+//        ObjP* pBuffEnd = scanBuff + OBJ_STACK_SIZ;
         int idxSlot = 0;
         int cntRoot = 0;
         RefSlot* pScan;
@@ -818,56 +1010,73 @@ void ARGC::doGC() {
                 int idx = obj->_gc_info.slotIndex();
                 assert(idx == idxSlot);
                 if (getExternalRefCount(obj) > 0) {
-                    
-                    Counter* v = roots[[obj class]];
-                    if (v == NULL) {
-                        roots[[obj class]] = v = [Counter new];
+                    markRootInstance(obj);
+                    if (GC_DEBUG) {
+                        cntRoot ++;
+                        if (GC_DEBUG && GC_LOG_ROOTS > 0) {
+                            Counter* v = roots[[obj class]];
+                            if (v == NULL) {
+                                roots[[obj class]] = v = [Counter new];
+                            }
+                            v->count ++;
+                        }
                     }
-                    v->count ++;
-                    cntRoot ++;
-                    
-                    touchInstance(obj);
+                    //scanInstances((id*)(void*)pScan, 1, scanBuff, pBuffEnd);
                 }
 //                else {
 //                    obj->_gc_info.markUnreachable();
 //                }
             }
         }
-        if (GC_DEBUG_ROOTS) {
+        
+        int cntScan = idxSlot;
+        @synchronized(tableLock) {
+            [tableLock java_waitWithLong:10 withInt:0];
+        }
+        GC_IN_SCANNING = 0;
+        @synchronized(tableLock) {
+            [tableLock java_waitWithLong:10 withInt:0];
+        }
+
+        while (_cntMarkingThread > 0) {
+            NSLog(@"waiting scanning done.");
+        }
+        
+        if (GC_DEBUG && GC_LOG_ROOTS > 0) {
             for (Class c in roots) {
                 int cnt = roots[c]->count;
-                if (cnt > 100) {
+                if (cnt >= GC_LOG_ROOTS) {
                     NSLog(@"root %d %@", cnt, c);
                 }
             }
+            [roots removeAllObjects];
         }
-        int cntScan = idxSlot;
 
-        for (idxSlot = 0; idxSlot < cntScan; idxSlot ++, pScan++) {
-            if ((idxSlot % REFS_IN_BUCKET) == 0) {
-                pScan = getRefSlot(idxSlot);
-            }
-            if ((obj = *pScan) != NULL) {
-                if (!obj->_gc_info.markUnreachable()
-                    &&  !obj->_gc_info.isScanned()) {
-                    touchInstance(obj);
-                }
-            }
-        }
+//        for (idxSlot = 0; idxSlot < cntScan; idxSlot ++, pScan++) {
+//            if ((idxSlot % REFS_IN_BUCKET) == 0) {
+//                pScan = getRefSlot(idxSlot);
+//            }
+//            if ((obj = *pScan) != NULL) {
+//                if (!obj->_gc_info.markUnreachable()
+//                    &&  !obj->_gc_info.isScanned()) {
+//                    touchInstance(obj);
+//                }
+//            }
+//        }
         
         
-        deallocInstance.exchange(dealloc_in_collecting);
-        IN_GC_SCANNING = true;
+ //       deallocInstance.exchange(dealloc_in_collecting);
         int cntAlive = 0;
         int cntAlivedGenerarion = 0;
         RefSlot* pAlive = _table[0];
         for (idxSlot = 0; true; idxSlot ++, pScan++) {
-            if (idxSlot >= cntScan) {
+            if (GC_DEBUG && idxSlot == cntScan) {
                 cntAlivedGenerarion = cntAlive;
             }
             
             if (idxSlot >= _cntRef) {
                 @synchronized (tableLock) {
+                    assert(idxSlot <= _cntRef);
                     if (idxSlot == _cntRef) {
                         _cntRef = cntAlive;
                     }
@@ -877,47 +1086,73 @@ void ARGC::doGC() {
             if ((idxSlot % REFS_IN_BUCKET) == 0) {
                 pScan = getRefSlot(idxSlot);
             }
-            obj = pScan->exchange(NULL);
+            
+            if (idxSlot == cntAlive) {
+                obj = *pScan;
+            }
+            else {
+                obj = pScan->exchange(NULL);
+            }
+            
             if (obj == NULL) {
                 continue;
+            }
+            
+            if (GC_DEBUG && roots != NULL) {
+                Counter* v = roots[[obj class]];
+                if (v == NULL) {
+                    roots[[obj class]] = v = [Counter new];
+                }
+                v->count ++;
             }
             /*
              주의. 현재 obj 가 다른 쓰레드에 의해 삭제될 수 있다.
              */
             if (!obj->_gc_info.isReachable()) {
+                if (idxSlot == cntAlive) {
+                    if (!pScan->compare_exchange_strong(obj, NULL)) {
+                        continue;
+                    }
+                }
                 assert(getExternalRefCount(obj) <= 0);
-                addPhantom(obj, true);
+                /*
+                 referent 가 삭제될 때, 참조하는 Reference를 enque 시키게 되는데,
+                 해당 Reference가 Unreachable 상태인 경우, 
+                 associatedObject 인 IOSReference dealloc 처리과정에서,
+                 StrongReachable 상태로 잠시 바뀌며, 다시 부활(?)하는 문제가 발생한다.
+                 부활 과정에서 이미 Unreachble 로 삭제된 다른 객체를 참조할 수 있다.
+                 */
+                addPhantom(obj, true);//!obj->_gc_info.isWeakRef());
                 continue;
             }
             
-            if (!obj->_gc_info.isScanned()) {
-                markInstance(obj);
-            }
+            //if (!obj->_gc_info.isScanned()) {
+            //    markInstance(obj);
+            //}
             
             if ((cntAlive % REFS_IN_BUCKET) == 0) {
                 pAlive = getRefSlot(cntAlive);
             }
-            assert(*pAlive == NULL);
-            *pAlive ++ = obj;
-            obj->_gc_info.setSlotIndex(cntAlive ++);
-            if (GC_DEBUG) {
-                NSLog(@"alive %@, %d", obj, (int)NSExtraRefCount(obj));
+            if (idxSlot != cntAlive) {
+                assert(*pAlive == NULL);
+                *pAlive = obj;
+                obj->_gc_info.setSlotIndex(cntAlive);
             }
+            else {
+                assert(*pAlive == obj || *pAlive == NULL);
+            }
+            pAlive ++;
+            cntAlive ++;
+            ARGC::checkRefCount(obj, @"alive in gc");
         }
         
         deallocInstance.exchange(dealloc_now);
-        
-        ARGCPhantom*  dead = this->_phantomQ;
-        this->_phantomQ = NULL;
-        for (;dead != NULL;) {
-            ARGCPhantom*  next = dead->_next;
-            reclaimInstance(dead);
-            dead = next;
-        }
-
+        //int cntPhantom = _cntPhantom;
+        //@autoreleasepool {
         for (int idxSlot = 0; true; idxSlot++) {
             if (idxSlot >= _cntPhantom) {
                 @synchronized (tableLock) {
+                    assert(idxSlot <= _cntPhantom);
                     if (idxSlot == _cntPhantom) {
                         _cntPhantom = 0;
                     }
@@ -926,31 +1161,87 @@ void ARGC::doGC() {
             }
             RefSlot* pSlot = getPhantomSlot(idxSlot);
             obj = *pSlot;
-            reclaimInstance(dead);
+            if (false && obj->_gc_info.isWeakRef()) {
+                obj->_gc_info.incRefCount();
+                while (NSExtraRefCount(obj) > 0) {
+                    NSDecrementExtraRefCountWasZero(obj);
+                }
+                [obj autorelease];
+            }
+            else {
+                reclaimInstance(obj);
+            }
         }
 
-        IN_GC_SCANNING = false;
-
-        if (GC_DEBUG_ROOTS) {
-            NSLog(@"scan: %d root: %d alive:%d", cntScan, cntRoot, cntAlivedGenerarion);
+        ////}
+        
+        if (GC_DEBUG) {
+            if (GC_DEBUG && GC_LOG_ALIVE > 0) {
+                for (Class c in roots) {
+                    int cnt = roots[c]->count;
+                    if (cnt >= GC_LOG_ALIVE) {
+                        NSLog(@"alive %d %@", cnt, c);
+                    }
+                }
+                [roots removeAllObjects];
+            }
+            
+            NSLog(@"scan: %d root: %d alive:%d/%d", cntScan, cntRoot, cntAlivedGenerarion, cntAlive);
+        }
+        else {
+            NSLog(@"scan: %d", cntScan);
         }
     }
     
 
 }
 
-void ARGC_requestGC() {
-    dispatch_time_t interval = dispatch_time(DISPATCH_TIME_NOW, 1ull * NSEC_PER_SEC);
-    void (^SCAN)() = ^{
-        ARGC::_instance.doGC();
-        ARGC_requestGC();
-    };
-
-    dispatch_after(interval , dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), SCAN);
-}
 
 extern "C" {
+    void ARGC_loopGC() {
+        void (^SCAN)() = ^{
+            ARGC::_instance.doGC();
+            ARGC_loopGC();
+        };
+        
+        if (gc_interval > 0) {
+            dispatch_time_t next_t = dispatch_time(DISPATCH_TIME_NOW, gc_interval * NSEC_PER_SEC / 1000);
+            dispatch_after(next_t, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), SCAN);
+        }
+    }
+
+    void ARGC_executeGC(int t) {
+        int64_t prev_interval = gc_interval;
+        if (GC_DEBUG) {
+            t /= 10;
+        }
+        gc_interval = t;
+        if (prev_interval <= 0) {
+            ARGC_loopGC();
+            
+        }
+    }
+    
     id ARGC_cloneInstance(id);
+    
+    void ARGC_markWeakRef(id referent) {
+        if (ARGC::isJavaObject(referent)) {
+            ((ARGCObject*)referent)->_gc_info.markWeakRef();
+        }
+    }
+    
+    BOOL ARGC_isAliveObject(ARGCObject* reference) {
+        if (reference == NULL) {
+            return false;
+        }
+        if (reference->_gc_info.isReachable() || ARGC::_instance.GC_IN_SCANNING) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
     
     //typedef id volatile_id;
     
@@ -961,17 +1252,36 @@ extern "C" {
     id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
     void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
     void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
-    void JreReleaseVolatile(volatile_id *pVar);
+    //void JreReleaseVolatile(volatile_id *pVar);
     
     id JreRetainedWithAssign(id parent, __strong id *pIvar, __unsafe_unretained id value);
     id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, __unsafe_unretained id value);
     void JreRetainedWithRelease(__unsafe_unretained id parent, __unsafe_unretained id child);
     void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
+    void ARGC_genericRetain(id obj);
+    void ARGC_genericRelease(id obj);
+    
+    FOUNDATION_EXPORT void gc_trace(int64_t addr) {
+        GC_TRACE_REF = (void*)addr;
+        GC_LOG_ROOTS = 0;
+        GC_LOG_ALLOC = 0;
+        GC_LOG_RC = 0;
+    }
+    
+    void ARGC_pubObject(id obj, id* ptr, id newValue) {
+        if (class_isMetaClass([obj class])) {
+            JreExchangeVolatileStrongId(ptr, newValue);
+        }
+        else {
+            ARGC_assignGenericObject(ptr, newValue);
+        }
+    }
+    
     
     void ARGC_retainExternalWeakRef(id obj) {
         if (ARGC::isJavaObject(obj)) {
             ARGC::retainExternalReference(obj);
-            ARGC::checkRefCount(obj, @"retainWeak");
+            ARGC::checkRefCount(obj, @"retainWeak ");
         }
     }
     
@@ -985,7 +1295,7 @@ extern "C" {
     }
     
     id ARGC_globalUnlock(id obj) {
-        [obj release];
+        [obj autorelease];
         return obj;
     }
     
@@ -998,7 +1308,13 @@ extern "C" {
     }
     
     void printRefCount(id obj) {
-        NSLog(@"ref: %d -> %@", (int)NSExtraRefCount(obj), obj);
+        if (ARGC::isJavaObject(obj)) {
+            NSLog(@"%p %d(%d) %@", obj, (int)NSExtraRefCount(obj),
+              obj->_gc_info.refCount(), [obj class]);
+        }
+        else {
+            NSLog(@"%p %d(?) %@", obj, (int)NSExtraRefCount(obj), [obj class]);
+        }
     }
     
     void ARGC_initARGCObject(id obj) {
@@ -1030,7 +1346,7 @@ extern "C" {
             ARGC::releaseReferenceCountAndPublish(oldRef);
         }
         else {
-            [oldRef release];
+            [oldRef autorelease];
         }
     }
     
@@ -1101,7 +1417,7 @@ extern "C" {
     }
     
     void ARGC_deallocClass(IOSClass* cls) {
-        if (GC_DEBUG) NSLog(@"dealloc cls %@", cls);
+        NSLog(@"dealloc cls %@", cls);
         int a = 3;
     }
     
@@ -1123,31 +1439,46 @@ id JreAssignVolatileId(volatile_id *pVar, id value) {
     return value;
 }
 
-id JreVolatileStrongAssign(volatile_id *pVar, id newValue) {
+id JreVolatileNativeAssign(volatile_id *pVar, id newValue) {
     std::atomic<id>* field = (std::atomic<id>*)pVar;
-    [newValue retain];//ARGC_genericRetain(newValue);
+    [newValue retain];
     id oldValue = field->exchange(newValue);
-    //ARGC_assignGenericObject(pIvar, value);
-    //[oldValue autorelease];
+    [oldValue autorelease];
     return newValue;
 }
 
-bool JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue) {
-    std::atomic<id>* field = (std::atomic<id>*)pVar;
-    if (newValue) {
-        [newValue retain];//ARGC_genericRetain(newValue);
-    }
-    bool res =  field->compare_exchange_strong(expected, newValue);
-    if (res) {
-        if (expected) {
-            // arc 사용 시에는 이미 id 가 caller 측에서 사용되고 있으므로
-            // autoreleae 를 할 필요가 없다 [expected autorelease];
+id JreVolatileStrongAssign(volatile_id *pVar, id newValue) {
+    ARGC_assignGenericObject((id*)pVar, newValue);
+    return newValue;
+}
+
+bool JreCompareAndSwapVolatileStrongId(volatile_id *ptr, id expected, id newValue) {
+//    if (class_isMetaClass([obj class])) {
+//        std::atomic<id>* field = (std::atomic<id>*)pVar;
+//        if (newValue) {
+//            [newValue retain];//ARGC_genericRetain(newValue);
+//        }
+//        bool res =  field->compare_exchange_strong(expected, newValue);
+//        if (res) {
+//            if (expected) {
+//                [expected autorelease];
+//            }
+//        }
+//        else if (newValue) {
+//            [newValue autorelease];//ARGC_genericRelease(newValue);
+//        }
+//        return res;
+//    }
+//    else
+    {
+        std::atomic<id>* field = (std::atomic<id>*)ptr;
+        bool res =  field->compare_exchange_strong(expected, newValue);
+        if (res) {
+            if (newValue) ARGC_genericRetain(newValue);
+            if (expected) ARGC_genericRelease(expected);
         }
+        return res;
     }
-    else if (newValue) {
-        [newValue release];//ARGC_genericRelease(newValue);
-    }
-    return res;
 }
 
 id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
@@ -1162,13 +1493,13 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
     return oldValue;
 }
 
-void JreReleaseVolatile(volatile_id *pVar) {
-    [*(id*)pVar release];// ARGC::releaseReferenceCount(*pVar);
-    // This is only called from a dealloc method, so we can assume there are no
-    // concurrent threads with access to this address. Therefore, synchronization
-    // is unnecessary.
-    //RELEASE_(*(id *));
-}
+//void JreReleaseVolatile(volatile_id *pVar) {
+//    [*(id*)pVar release];// ARGC::releaseReferenceCount(*pVar);
+//    // This is only called from a dealloc method, so we can assume there are no
+//    // concurrent threads with access to this address. Therefore, synchronization
+//    // is unnecessary.
+//    //RELEASE_(*(id *));
+//}
 
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {
     std::atomic<id>* pDst = (std::atomic<id>*)pVar;
@@ -1219,4 +1550,50 @@ void start_GC() {
         ARGC::_instance.doGC();
     });
 }
+
+
+
+
+@interface NSObject(ARGCObject)
+@end
+@implementation NSObject(ARGCObject)
+- (void) markARGCFields
+{
+    // do nothing
+}
+
+- (BOOL) isStrongReachable
+{
+    return true;
+}
+
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth
+{
+    // do nothing
+}
+@end
+
+
+
+@interface IOSObjectArray(ARGCObject)
+@end
+@implementation IOSObjectArray(ARGCObject)
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth {
+    ARGC_FIELD_REF id*pItem = buffer_ + 0;
+    for (int i = size_; --i >= 0; ) {
+        ARGC_FIELD_REF id obj = *pItem++;
+        if (obj != NULL) {
+            visitor(obj, depth);
+        }
+    }
+    
+}
+
+- (void) markARGCFields
+{
+    ARGC::markArrayItems(self);
+}
+
+@end
+
 
