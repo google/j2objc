@@ -786,6 +786,31 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
+  public void testAssignment() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int j) {",
+        "    int i = 42;",
+        "    i += j;",
+        "    i -= j;",
+        "    i *= j;",
+        "    i /= j;",
+        "    i %= j;",
+        "    i <<= j;",
+        "    i >>= j;",
+        "    i >>>= j;",
+        "    i &= j;",
+        "    i |= j;",
+        "    i ^= j;",
+        "    return i;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
   public void testUnaryOperators() throws IOException {
     String type = "foo.bar.Test";
     String source = String.join("\n",
@@ -1067,26 +1092,48 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
-//  //TODO(user): may not have do while loops
-//  public void testDoWhile() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  int run() {",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualASTSrcClassfile(type, source);
-//  }
-//
+  public void testDoWhile() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  void doWhile1(int i, int j) {",
+        "    do {",
+        "      i += j;",
+        "    } while (i < 100);",
+        "  }",
+        "  void doWhile2(int i) {",
+        "    do {",
+        "      if (++i == 50) {",
+        "        continue;",
+        "      }",
+        "      if (i == 42) {",
+        "        break;",
+        "      }",
+        "    } while (i < 100);",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
 //  public void testFor() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
 //        "package foo.bar;",
 //        "class Test {",
-//        "  int run() {",
+//        "  void for1() {",
+//        "    for (;;) {}",
 //        "  }",
+//        "  void for2() {",
+//        "    for (int i = 0; i < 10; i++) {}",
+//        "  }",
+//        "  void for2(int j) {",
+//        "    for (int i = 0; i < 10; i++) {",
+//        "      j += i;",
+//        "    }",
+//        "  }",
+////        break, continue, multiple init update
 //        "}"
 //    );
 //    assertEqualASTSrcClassfile(type, source);

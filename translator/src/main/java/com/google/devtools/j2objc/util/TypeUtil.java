@@ -266,7 +266,8 @@ public final class TypeUtil {
   public TypeMirror unaryNumericPromotion(TypeMirror type) {
     TypeKind t = type.getKind();
     if (t == TypeKind.DECLARED) {
-      t = env.typeUtilities().unboxedType(type).getKind();
+      type = javacTypes.unboxedType(type);
+      t = type.getKind();
     }
     if (t == TypeKind.BYTE || t == TypeKind.SHORT || t == TypeKind.CHAR) {
       return getInt();
@@ -288,10 +289,10 @@ public final class TypeUtil {
     TypeKind t1 = type1.getKind();
     TypeKind t2 = type2.getKind();
     if (t1 == TypeKind.DECLARED) {
-      t1 = env.typeUtilities().unboxedType(type1).getKind();
+      t1 = javacTypes.unboxedType(type1).getKind();
     }
     if (t2 == TypeKind.DECLARED) {
-      t2 = env.typeUtilities().unboxedType(type2).getKind();
+      t2 = javacTypes.unboxedType(type2).getKind();
     }
     if (t1 == TypeKind.DOUBLE || t2 == TypeKind.DOUBLE) {
       return getDouble();

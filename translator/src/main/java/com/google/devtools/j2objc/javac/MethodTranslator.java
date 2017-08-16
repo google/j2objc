@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ContinueStatement;
+import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
@@ -264,7 +265,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitDoWhileStatement(
       com.strobel.decompiler.languages.java.ast.DoWhileStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    return new DoStatement()
+        .setExpression((Expression) node.getCondition().acceptVisitor(this, null))
+        .setBody((Statement) node.getEmbeddedStatement().acceptVisitor(this, null));
   }
 
   @Override
@@ -351,13 +354,15 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitVariableDeclaration(
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
     AstType astType = node.getType();
-    com.strobel.decompiler.languages.java.ast.VariableInitializer init =
-        (com.strobel.decompiler.languages.java.ast.VariableInitializer) astType.getNextSibling();
+    AstNodeCollection<com.strobel.decompiler.languages.java.ast.VariableInitializer> inits
+        = node.getVariables();
+    assert inits.hasSingleElement();
+    com.strobel.decompiler.languages.java.ast.VariableInitializer init = inits.firstOrNullObject();
     Type type = (Type) astType.acceptVisitor(this, null);
     Expression expr = (Expression) init.acceptVisitor(this, null);
     String varName = init.getName();
-    GeneratedVariableElement elem =
-        GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
+    GeneratedVariableElement elem
+        = GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
     elem.addModifiers(node.getModifiers());
     localVariableTable.put(varName, elem);
     return new VariableDeclarationStatement(elem, expr);

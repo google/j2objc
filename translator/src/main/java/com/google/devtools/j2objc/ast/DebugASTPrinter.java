@@ -334,7 +334,8 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.printIndent();
     sb.print("do ");
     node.getBody().accept(this);
-    sb.print(" while (");
+    sb.printIndent();
+    sb.print("while (");
     node.getExpression().accept(this);
     sb.println(");");
     return false;
