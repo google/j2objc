@@ -15,6 +15,7 @@
 # or classes from non-public packages (like libcore.*).
 
 NATIVE_JRE_SOURCES_CORE = \
+  Bits.m \
   DebugUtils.m \
   FastPointerLookup.m \
   FileDescriptor_md.m \
@@ -33,6 +34,7 @@ NATIVE_JRE_SOURCES_CORE = \
   J2ObjC_icu.m \
   JavaThrowable.m \
   JreRetainedWith.m \
+  MappedByteBuffer.m \
   NSCopying+JavaCloneable.m \
   NSDataInputStream.m \
   NSDataOutputStream.m \
@@ -59,6 +61,7 @@ NATIVE_JRE_SOURCES_CORE = \
   jni_util.m \
   jvm.m \
   libcore_icu_ICU.m \
+  libcore_io_Memory.m \
   objc-sync.m \
   sun_misc_Unsafe.m
 
@@ -425,6 +428,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/atomic/AtomicInteger.java \
   java/util/concurrent/atomic/AtomicLong.java \
   java/util/concurrent/atomic/AtomicReference.java \
+  java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
   java/util/concurrent/locks/AbstractOwnableSynchronizer.java \
   java/util/concurrent/locks/AbstractQueuedSynchronizer.java \
   java/util/concurrent/locks/Condition.java \
@@ -519,24 +523,23 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/math/MutableBigInteger.java \
   java/math/SignedMutableBigInteger.java \
   java/net/NetFactory.java \
-  java/nio/ByteArrayBuffer.java \
+  java/nio/Bits.java \
   java/nio/ByteBufferAsCharBuffer.java \
   java/nio/ByteBufferAsDoubleBuffer.java \
   java/nio/ByteBufferAsFloatBuffer.java \
   java/nio/ByteBufferAsIntBuffer.java \
   java/nio/ByteBufferAsLongBuffer.java \
   java/nio/ByteBufferAsShortBuffer.java \
-  java/nio/CharArrayBuffer.java \
-  java/nio/CharSequenceAdapter.java \
+  java/nio/CharBufferSpliterator.java \
   java/nio/DirectByteBuffer.java \
-  java/nio/DoubleArrayBuffer.java \
-  java/nio/FileDescriptorChannel.java \
-  java/nio/FloatArrayBuffer.java \
-  java/nio/IntArrayBuffer.java \
-  java/nio/IoVec.java \
-  java/nio/LongArrayBuffer.java \
-  java/nio/MemoryBlock.java \
-  java/nio/ShortArrayBuffer.java \
+  java/nio/HeapByteBuffer.java \
+  java/nio/HeapCharBuffer.java \
+  java/nio/HeapDoubleBuffer.java \
+  java/nio/HeapFloatBuffer.java \
+  java/nio/HeapIntBuffer.java \
+  java/nio/HeapLongBuffer.java \
+  java/nio/HeapShortBuffer.java \
+  java/nio/StringCharBuffer.java \
   java/nio/charset/Charsets.java \
   java/nio/charset/ModifiedUtf8.java \
   java/text/CalendarBuilder.java \
@@ -628,8 +631,10 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
   sun/nio/ch/DirectBuffer.java \
+  sun/nio/cs/HistoricallyNamedCharset.java \
   sun/nio/ch/Interruptible.java \
   sun/nio/cs/StreamDecoder.java \
+  sun/nio/cs/StreamEncoder.java \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/misc/ReflectUtil.java \
@@ -851,7 +856,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicLongFieldUpdater.java \
   java/util/concurrent/atomic/AtomicMarkableReference.java \
   java/util/concurrent/atomic/AtomicReferenceArray.java \
-  java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
   java/util/concurrent/atomic/AtomicStampedReference.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/Lock.java \
@@ -862,7 +866,6 @@ JAVA_PRIVATE_SOURCES_CONCURRENT =
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/ChannelFactoryImpl.java \
-  java/nio/channels/AcceptPendingException.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
   java/nio/channels/AsynchronousCloseException.java \
@@ -880,9 +883,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/FileLockInterruptionException.java \
   java/nio/channels/GatheringByteChannel.java \
   java/nio/channels/IllegalBlockingModeException.java \
-  java/nio/channels/IllegalChannelGroupException.java \
   java/nio/channels/IllegalSelectorException.java \
-  java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
@@ -893,19 +894,16 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/OverlappingFileLockException.java \
   java/nio/channels/Pipe.java \
   java/nio/channels/ReadableByteChannel.java \
-  java/nio/channels/ReadPendingException.java \
   java/nio/channels/ScatteringByteChannel.java \
   java/nio/channels/SeekableByteChannel.java \
   java/nio/channels/SelectableChannel.java \
   java/nio/channels/SelectionKey.java \
   java/nio/channels/Selector.java \
   java/nio/channels/ServerSocketChannel.java \
-  java/nio/channels/ShutdownChannelGroupException.java \
   java/nio/channels/SocketChannel.java \
   java/nio/channels/UnresolvedAddressException.java \
   java/nio/channels/UnsupportedAddressTypeException.java \
   java/nio/channels/WritableByteChannel.java \
-  java/nio/channels/WritePendingException.java \
   java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/channels/spi/AbstractSelectableChannel.java \
   java/nio/channels/spi/AbstractSelectionKey.java \
@@ -919,15 +917,6 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/lang/UnsatisfiedLinkError.java \
   java/net/ProtocolFamily.java \
   java/net/StandardProtocolFamily.java \
-  java/nio/ChannelUtils.java \
-  java/nio/DatagramChannelImpl.java \
-  java/nio/FileChannelImpl.java \
-  java/nio/PipeImpl.java \
-  java/nio/SelectionKeyImpl.java \
-  java/nio/SelectorImpl.java \
-  java/nio/SelectorProviderImpl.java \
-  java/nio/ServerSocketChannelImpl.java \
-  java/nio/SocketChannelImpl.java \
   sun/misc/IoTrace.java \
   sun/misc/LRUCache.java \
   sun/net/NetHooks.java \
@@ -941,6 +930,10 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/DatagramSocketAdaptor.java \
   sun/nio/ch/DefaultSelectorProvider.java \
   sun/nio/ch/ExtendedSocketOption.java \
+  sun/nio/ch/FileChannelImpl.java \
+  sun/nio/ch/FileLockTable.java \
+  sun/nio/ch/FileLockImpl.java \
+  sun/nio/ch/FileKey.java \
   sun/nio/ch/FileDescriptorHolderSocketImpl.java \
   sun/nio/ch/FileDispatcherImpl.java \
   sun/nio/ch/FileDispatcher.java \
@@ -951,6 +944,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/NativeDispatcher.java \
   sun/nio/ch/NativeObject.java \
   sun/nio/ch/NativeThread.java \
+  sun/nio/ch/NativeThreadSet.java \
   sun/nio/ch/Net.java \
   sun/nio/ch/OptionKey.java \
   sun/nio/ch/PipeImpl.java \
@@ -975,7 +969,9 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
 NATIVE_JRE_SOURCES_CHANNELS = \
   DatagramChannelImpl.m \
   DatagramDispatcher.m \
+  FileChannelImpl.m \
   FileDispatcherImpl.m \
+  FileKey.m \
   Inet4AddressImpl.m \
   Inet6AddressImpl.m \
   InheritedChannel.m \
@@ -1594,7 +1590,6 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   java/util/zip/ZipConstants64.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
-  libcore/io/HeapBufferIterator.java \
   libcore/net/url/JarHandler.java \
   libcore/net/url/JarURLConnectionImpl.java \
   libcore/util/CountingOutputStream.java \

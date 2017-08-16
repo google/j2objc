@@ -155,7 +155,6 @@ class SocketChannelImpl
         }
     }
 
-    /* TODO(user): Enable after java.nio.channels is updated to Android Nougat.
     @Override
     public SocketAddress getRemoteAddress() throws IOException {
         synchronized (stateLock) {
@@ -164,7 +163,6 @@ class SocketChannelImpl
             return remoteAddress;
         }
     }
-    */
 
     @Override
     public <T> SocketChannel setOption(SocketOption<T> name, T value)
@@ -802,7 +800,6 @@ class SocketChannelImpl
         }
     }
 
-    /* TODO(user): Enable after java.nio.channel is updated to Android Nougat.
     @Override
     public SocketChannel shutdownInput() throws IOException {
         synchronized (stateLock) {
@@ -836,7 +833,6 @@ class SocketChannelImpl
             return this;
         }
     }
-    */
 
     public boolean isInputOpen() {
         synchronized (stateLock) {

@@ -194,7 +194,7 @@ public abstract class SelectorProvider {
     public abstract DatagramChannel openDatagramChannel()
         throws IOException;
 
-    /* TODO(user): Enable after java.nio.channel is updated to Android Nougat.
+    /**
      * Opens a datagram channel.
      *
      * @param   family
@@ -208,9 +208,9 @@ public abstract class SelectorProvider {
      *          If an I/O error occurs
      *
      * @since 1.7
+     */
     public abstract DatagramChannel openDatagramChannel(ProtocolFamily family)
         throws IOException;
-     */
 
     /**
      * Opens a pipe. </p>

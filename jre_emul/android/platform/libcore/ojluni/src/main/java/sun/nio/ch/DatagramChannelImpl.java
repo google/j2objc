@@ -31,7 +31,6 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
 import java.nio.channels.spi.*;
 import java.util.*;
@@ -176,7 +175,6 @@ class DatagramChannelImpl
         }
     }
 
-    /* TODO(user): Enable after java.nio.channel is updated to Android Nougat.
     @Override
     public SocketAddress getRemoteAddress() throws IOException {
         synchronized (stateLock) {
@@ -185,7 +183,6 @@ class DatagramChannelImpl
             return remoteAddress;
         }
     }
-    */
 
     @Override
     public <T> DatagramChannel setOption(SocketOption<T> name, T value)
@@ -431,7 +428,7 @@ class DatagramChannelImpl
                                         int rem, int pos)
         throws IOException
     {
-        int n = receive0(fd, ((MappedByteBuffer)bb).address() + pos, rem,
+        int n = receive0(fd, ((DirectBuffer)bb).address() + pos, rem,
                          isConnected());
         if (n > 0)
             bb.position(pos + n);

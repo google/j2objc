@@ -51,7 +51,7 @@ public class ServerSocket implements Closeable {
 
     private boolean isClosed;
 
-    private InetAddress localAddress;
+    // private InetAddress localAddress;
 
     /**
      * Constructs a new unbound {@code ServerSocket}.
@@ -114,9 +114,9 @@ public class ServerSocket implements Closeable {
 
     /**
      * Read the cached isBound and localAddress state from the underlying OS socket.
-     */
+    */
     private void readBackBindState() throws SocketException {
-        localAddress = NetworkBridge.getSocketLocalAddress(impl.fd);
+        // localAddress = NetworkBridge.getSocketLocalAddress(impl.fd);
         isBound = true;
     }
 
@@ -173,7 +173,7 @@ public class ServerSocket implements Closeable {
         if (!isBound()) {
             return null;
         }
-        return localAddress;
+        return impl.getInetAddress();
     }
 
     /**
@@ -353,7 +353,7 @@ public class ServerSocket implements Closeable {
         if (!isBound()) {
             return null;
         }
-        return new InetSocketAddress(localAddress, getLocalPort());
+        return new InetSocketAddress(getInetAddress(), getLocalPort());
     }
 
     /**

@@ -156,7 +156,7 @@ static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, jboolean *isCo
 
 static void *GetDirectBufferAddress(JNIEnv *env, jobject buf) {
   nil_chk(buf);
-  return (void *) ((JavaNioBuffer *) buf)->effectiveDirectAddress_;
+  return (void *) ((JavaNioBuffer *) buf)->address_;
 }
 
 static jlong GetDirectBufferCapacity(JNIEnv *env, jobject buf) {
