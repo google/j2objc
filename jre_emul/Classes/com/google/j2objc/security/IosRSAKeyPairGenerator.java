@@ -26,6 +26,7 @@ import java.security.spec.RSAKeyGenParameterSpec;
 
 /*-[
 #import "com/google/j2objc/security/IosRSAKey.h"
+#import "com/google/j2objc/security/IosRSAKeyFactory.h"
 ]-*/
 
 public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
@@ -37,6 +38,14 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
 
   @Override
   public native KeyPair generateKeyPair() /*-[
+  	// Keys have to be deleted first, else the method will retrieve previous keys.
+    // Delete any Public previous key definition.
+    [self deleteKey:ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
+    	   keyClass:kSecAttrKeyClassPublic];
+    				   
+    [self deleteKey:ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
+    	   keyClass:kSecAttrKeyClassPrivate];
+  
     // Requested keypair attributes.
     NSMutableDictionary * keyPairAttr = [[NSMutableDictionary alloc] init];
     NSMutableDictionary *publicKeyAttr = [[NSMutableDictionary alloc] init];
@@ -74,10 +83,36 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     JavaSecurityKeyPair *keyPair =
         AUTORELEASE([[JavaSecurityKeyPair alloc] initWithJavaSecurityPublicKey:publicKey
                                                     withJavaSecurityPrivateKey:privateKey]);
+
     [publicKey release];
     [privateKey release];
     return keyPair;
   ]-*/;
+  
+  /*-[
+  -(void) deleteKey:(NSString *)tag   
+  		   keyClass:(CFStringRef) keyClass {
+  		   
+    NSData *publicTag = [tag dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSMutableDictionary *query = [NSMutableDictionary dictionary];
+    query[(id)kSecClass] = (id)kSecClassKey;
+    query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
+    query[(id)kSecAttrKeyClass] = (id)keyClass;
+    query[(id)kSecAttrApplicationTag] = tag;
+	OSStatus status = SecItemDelete((CFDictionaryRef) query);
+    if (status != errSecSuccess && status != errSecItemNotFound) {
+        NSString *msg = [NSString stringWithFormat:
+          @"Problem removing previous public key from the keychain, OSStatus == %d",
+          (int)status];
+          NSLog (@"%@", msg);
+          //TODO(tball):  @throw is causing this error error
+          // mplicit declaration of function 'create_JavaSecurityProviderException_initWithNSString_' is invalid in C99
+          // [-Werror,-Wimplicit-function-declaration]
+          // @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+    }
+  }
+  ]-*/
 
   @Override
   public void initialize(int keySize, SecureRandom random) {

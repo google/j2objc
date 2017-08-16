@@ -51,6 +51,10 @@ public class IosRSAKeyFactory extends KeyFactorySpi {
   @Override
   protected PrivateKey engineGeneratePrivate(KeySpec keySpec)
       throws InvalidKeySpecException {
+	  //The KeySpec for Private Key is PKCS8
+	if (keySpec instanceof PKCS8EncodedKeySpec ) {
+	  return new IosRSAKey.IosRSAPrivateKey(((PKCS8EncodedKeySpec) keySpec).getEncoded());  
+	}
     if (keySpec instanceof X509EncodedKeySpec) {
       X509EncodedKeySpec x509Spec = (X509EncodedKeySpec) keySpec;
       return new IosRSAKey.IosRSAPrivateKey(x509Spec.getEncoded());
@@ -58,7 +62,8 @@ public class IosRSAKeyFactory extends KeyFactorySpi {
       return new IosRSAKey.IosRSAPrivateKey((RSAPrivateKeySpec) keySpec);
     }
     throw new InvalidKeySpecException(
-        "Must use RSAPublicKeySpec; was " + keySpec.getClass().getName());
+        "Must use PKCS8EncodedKeySpec, X509EncodedKeySpec or RSAPrivateKeySpec; was "
+            + keySpec.getClass().getName());
   }
 
   @Override
@@ -217,5 +222,4 @@ public class IosRSAKeyFactory extends KeyFactorySpi {
           "Key must be an RSA public or private key; was " + key.getClass().getName());
     }
   }
-
 }
