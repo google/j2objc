@@ -25,8 +25,9 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 
 /*-[
-#import "com/google/j2objc/security/IosRSAKey.h"
-#import "com/google/j2objc/security/IosRSAKeyFactory.h"
+#include "com/google/j2objc/security/IosRSAKey.h"
+#include "com/google/j2objc/security/IosRSAKeyFactory.h"
+#include "java/security/ProviderException.h"
 ]-*/
 
 public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
@@ -38,14 +39,13 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
 
   @Override
   public native KeyPair generateKeyPair() /*-[
-  	// Keys have to be deleted first, else the method will retrieve previous keys.
-    // Delete any Public previous key definition.
+    // Delete any previous key definition.
     [self deleteKey:ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
-    	   keyClass:kSecAttrKeyClassPublic];
-    				   
+        keyClass:kSecAttrKeyClassPublic];
+
     [self deleteKey:ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
-    	   keyClass:kSecAttrKeyClassPrivate];
-  
+        keyClass:kSecAttrKeyClassPrivate];
+
     // Requested keypair attributes.
     NSMutableDictionary * keyPairAttr = [[NSMutableDictionary alloc] init];
     NSMutableDictionary *publicKeyAttr = [[NSMutableDictionary alloc] init];
@@ -88,11 +88,10 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     [privateKey release];
     return keyPair;
   ]-*/;
-  
+
   /*-[
-  -(void) deleteKey:(NSString *)tag   
-  		   keyClass:(CFStringRef) keyClass {
-  		   
+  - (void) deleteKey:(NSString *)tag
+            keyClass:(CFStringRef) keyClass {
     NSData *publicTag = [tag dataUsingEncoding:NSUTF8StringEncoding];
 
     NSMutableDictionary *query = [NSMutableDictionary dictionary];
@@ -100,16 +99,15 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
     query[(id)kSecAttrKeyClass] = (id)keyClass;
     query[(id)kSecAttrApplicationTag] = tag;
-	OSStatus status = SecItemDelete((CFDictionaryRef) query);
+    OSStatus status = SecItemDelete((CFDictionaryRef) query);
     if (status != errSecSuccess && status != errSecItemNotFound) {
-        NSString *msg = [NSString stringWithFormat:
-          @"Problem removing previous public key from the keychain, OSStatus == %d",
-          (int)status];
-          NSLog (@"%@", msg);
-          //TODO(tball):  @throw is causing this error error
-          // mplicit declaration of function 'create_JavaSecurityProviderException_initWithNSString_' is invalid in C99
-          // [-Werror,-Wimplicit-function-declaration]
-          // @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+      NSString *msg = [NSString stringWithFormat:
+          @"Problem removing previous public key from the keychain, OSStatus: %d", (int)status];
+      @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+#else
+      NSLog(@"macOS keychain support not implemented, OSStatus: %d", (int)status);
+#endif
     }
   }
   ]-*/

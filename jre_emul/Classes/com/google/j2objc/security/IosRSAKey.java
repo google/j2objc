@@ -20,18 +20,19 @@ package com.google.j2objc.security;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Key;
-import java.security.ProviderException;
 import java.security.interfaces.RSAKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
-
 import sun.security.util.DerInputStream;
 
+/*-[
+#include "java/security/ProviderException.h"
+]-*/
 
 /**
- * Shared base classe for public and private RSA key implementations for iOS.
+ * Public and private RSA key implementations for iOS.
  */
 public abstract class IosRSAKey implements RSAKey, Key {
 
@@ -41,10 +42,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
   static final String PUBLIC_KEY_TAG = "com.google.j2objc.security.publickey";
   static final String PRIVATE_KEY_TAG = "com.google.j2objc.security.privatekey";
   private static final long serialVersionUID = 1L;
-  
-  private IosRSAKey() { 
-	  
-  }
 
   public IosRSAKey(BigInteger modulus) {
     this.modulus = modulus;
@@ -76,7 +73,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
     return iosSecKey;
   }
 
-
   protected abstract void decodeParameters();
 
   /**
@@ -99,11 +95,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     public IosRSAPublicKey(byte[] encoded) {
-      try {
-        iosSecKey = createPublicSecKeyRef (encoded);
-       } catch (Exception exp) {
-         throw new ProviderException(exp); // Should never happen.
-       }
+      super(createPublicSecKeyRef(encoded));
     }
 
     @Override
@@ -111,7 +103,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
       return iosSecKey;
     }
 
-   
     @Override
     public native byte[] getEncoded() /*-[
       NSData *publicKey = nil;
@@ -133,7 +124,8 @@ public abstract class IosRSAKey implements RSAKey, Key {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)publicKey.bytes count:publicKey.length];
         [publicKey release];
       } else {
-          NSString *msg = [NSString stringWithFormat:@"PublicKey getEncoded error %d",  (int)status];
+          NSString *msg =
+              [NSString stringWithFormat:@"PublicKey getEncoded error %d", (int)status];
           @throw create_JavaSecurityProviderException_initWithNSString_(msg);
       }
       return bytes;
@@ -176,12 +168,11 @@ public abstract class IosRSAKey implements RSAKey, Key {
       query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
       query[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPublic;
       query[(id)kSecAttrApplicationTag] = publicTag;
-
       return query;
     }
     ]-*/
- 
-    private native long createPublicSecKeyRef(byte[] bytes) /*-[
+
+    private static native long createPublicSecKeyRef(byte[] bytes) /*-[
       NSData *publicKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
                                                  length:bytes->size_];
 
@@ -209,16 +200,18 @@ public abstract class IosRSAKey implements RSAKey, Key {
       SecKeyRef secKeyRef = NULL;
       OSStatus result = SecItemAdd((CFDictionaryRef)publicKeyQuery, (CFTypeRef *)&secKeyRef);
       if (result != errSecSuccess) {
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
         NSString *msg = [NSString stringWithFormat:
-            @"Problem adding the public key to the keychain, OSStatus == %d", (int)result];
+            @"Problem adding the public key to the keychain, OSStatus: %d", (int)result];
         @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+#else
+        NSLog(@"macOS keychain support not implemented, OSStatus: %d", (int)result);
+#endif
       }
 
       [publicKey release];
       return (jlong)secKeyRef;
     ]-*/;
-
-   
   }
 
   /**
@@ -241,9 +234,8 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     public IosRSAPrivateKey(byte[] encoded) {
-    	iosSecKey = createPrivatSecKeyRef(encoded); 
+      super(createPrivateSecKeyRef(encoded));
     }
-    
 
     /*-[
     NSMutableDictionary *getPrivateQuery() {
@@ -307,48 +299,50 @@ public abstract class IosRSAKey implements RSAKey, Key {
         throw new AssertionError("failed decoding key parameters: " + e);
       }
     }
+
     /**
      * This method adds a private key to the keychain and returns the key-reference
      * The format of the bytes are apple format.
-     * 
+     *
      */
-    private native long createPrivatSecKeyRef(byte[] bytes) /*-[
-    NSData * privateKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
-                                                 length:bytes->size_];
+    private static native long createPrivateSecKeyRef(byte[] bytes) /*-[
+      NSData * privateKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
+                                                   length:bytes->size_];
 
-    // Delete any previous key definition.
-    NSMutableDictionary *keyQuery = getPrivateQuery();
-    OSStatus status = SecItemDelete((CFDictionaryRef) keyQuery);
-    if (status != errSecSuccess && status != errSecItemNotFound) {
-      NSString *msg = [NSString stringWithFormat:
-          @"Problem removing previous public key from the keychain, OSStatus == %d",
-          (int)status];
-      @throw create_JavaSecurityProviderException_initWithNSString_(msg);
-    }
+      // Delete any previous key definition.
+      NSMutableDictionary *keyQuery = getPrivateQuery();
+      OSStatus status = SecItemDelete((CFDictionaryRef) keyQuery);
+      if (status != errSecSuccess && status != errSecItemNotFound) {
+        NSString *msg = [NSString stringWithFormat:
+            @"Problem removing previous public key from the keychain, OSStatus == %d",
+            (int)status];
+        @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+      }
 
-    // Store key in keychain.
-    keyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecAttrCanSign] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecAttrCanVerify] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecAttrCanUnwrap] = (id)kCFBooleanFalse;
-    keyQuery[(id)kSecAttrCanWrap] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecReturnRef] = (id)kCFBooleanTrue;
-    keyQuery[(id)kSecValueData] = privateKey;
-    SecKeyRef secKeyRef = NULL;
-    OSStatus osStatus = SecItemAdd((CFDictionaryRef)keyQuery, (CFTypeRef *)&secKeyRef);
-    if (osStatus != errSecSuccess) {
-      NSString *msg = [NSString stringWithFormat:
-          @"Problem adding the public key to the keychain, OSStatus == %d", (int)osStatus];
-      @throw create_JavaSecurityProviderException_initWithNSString_(msg);
-    }
+      // Store key in keychain.
+      keyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecAttrCanSign] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecAttrCanVerify] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecAttrCanUnwrap] = (id)kCFBooleanFalse;
+      keyQuery[(id)kSecAttrCanWrap] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecReturnRef] = (id)kCFBooleanTrue;
+      keyQuery[(id)kSecValueData] = privateKey;
+      SecKeyRef secKeyRef = NULL;
+      OSStatus osStatus = SecItemAdd((CFDictionaryRef)keyQuery, (CFTypeRef *)&secKeyRef);
+      if (osStatus != errSecSuccess) {
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+        NSString *msg = [NSString stringWithFormat:
+            @"Problem adding the public key to the keychain, OSStatus: %d", (int)osStatus];
+        @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+#else
+        NSLog(@"macOS keychain support not implemented, OSStatus: %d", (int)osStatus);
+#endif
+      }
 
-    [privateKey release];
-    return (jlong)secKeyRef;
-  ]-*/;
-    
-    
-    
+      [privateKey release];
+      return (jlong)secKeyRef;
+    ]-*/;
   }
 }
