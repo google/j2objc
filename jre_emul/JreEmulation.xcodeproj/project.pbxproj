@@ -8288,6 +8288,7 @@
 					../dist/lib,
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fobjc-arc-exceptions";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-ljunit",
@@ -8347,6 +8348,7 @@
 					build_result,
 					../dist/lib,
 				);
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-ljunit",

@@ -207,8 +207,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     
     Element enc = var.getEnclosingElement();
 
-    if (typeUtil.getArgcFieldType(enc.asType()) == "Native"
-    ||   Oz.isPureObjC(enc.asType()) || Oz.isPureObjC(type)) {
+    if (typeUtil.getArgcFieldTypeEx(enc, type) == "Native") {
     	return null;
     }
 

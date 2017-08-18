@@ -39,6 +39,9 @@
                                                             metadata:metadata]);
 }
 
+void ARGC_strongRetain(id obj);
+void ARGC_autorelease(id obj);
+
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
   SEL selector = self->metadata_->selector;
   Class cls = self->class_.objcClass;
@@ -55,15 +58,17 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   fillArgs(invocation);
   id newInstance;
   @try {
-      @autoreleasepool {
+      //@autoreleasepool {
     if (isFactory) {
       [invocation invokeWithTarget:cls];
       [invocation getReturnValue:&newInstance];
     } else {
-      newInstance = AUTORELEASE([cls alloc]);
+        // Is NSInvocation has ARC bug?? If Exception throws in invocation, newInstance is so early deallocated. 
+        ARGC_strongRetain(newInstance = [cls alloc]);
       [invocation invokeWithTarget:newInstance];
+        ARGC_autorelease(newInstance);
     }
-      }
+      //}
   }
   @catch (JavaLangThrowable *e) {
     @throw create_JavaLangReflectInvocationTargetException_initWithJavaLangThrowable_(e);
@@ -79,14 +84,14 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   }
 
   return NewInstance(self, ^(NSInvocation *invocation) {
-      @autoreleasepool {
+      //@autoreleasepool {
     for (jint i = 0; i < argCount; i++) {
       J2ObjcRawValue arg;
       if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
         @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"argument type mismatch");
       }
       [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
-        }
+        //}
     }
   });
 }

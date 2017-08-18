@@ -224,7 +224,7 @@ public final class TypeUtil {
 	  return getArgcFieldType(t) != "Native";
   }
   
-  public String getArgcFieldTypeEx(TypeElement owner, TypeMirror t) {
+  public String getArgcFieldTypeEx(Element owner, TypeMirror t) {
 	  if (getArgcFieldType(owner.asType()) == "Native") {
 		  return "Native";
 	  }
@@ -232,7 +232,10 @@ public final class TypeUtil {
   }
   
   public String getArgcFieldType(TypeMirror t) {
-	  if (Oz.inPureObjCMode() || Oz.isPureObjC(t)) {
+	  if (TypeUtil.isInterface(t)) {
+		  return "Generic";
+	  }
+	  if (Oz.isPureObjC(t)) {
 		  return "Native";
 	  }
 	  TypeElement e = asTypeElement(t);
@@ -242,7 +245,7 @@ public final class TypeUtil {
 			return "Generic";
 		  }
 	  }
-	  if (TypeUtil.isInterface(t) || e == javaObject) {
+	  if (e == javaObject) {
 		  return "Generic";
 	  }
 	  while (e != null) {

@@ -53,14 +53,14 @@
 @implementation IOSReference
 
 static int assocKey;
-static NSMutableArray* g_softRefArray_ = NULL;
+static NSMutableSet* g_softRefSet_ = NULL;
 
 //#define DBGLog(...) NSLog(__VAR_ARGS__)
 #define DBGLog(...) //NSLog(__VAR_ARGS__)
 
 #define USE_WEAK_REF_ARRAY 1
 
-void ARGC_markWeakRef(id referent);
+//void ARGC_markWeakRef(id referent);
 BOOL ARGC_isAliveObject(__unsafe_unretained ARGCObject* reference);
 
 + (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)referent
@@ -69,13 +69,13 @@ BOOL ARGC_isAliveObject(__unsafe_unretained ARGCObject* reference);
         return;
     }
     @synchronized (self) {
-        if (g_softRefArray_ == NULL) {
-            g_softRefArray_ = [[NSMutableArray alloc]init];
+        if (g_softRefSet_ == NULL) {
+            g_softRefSet_ = [[NSMutableSet alloc]init];
         }
         if ([[[referent class] description] isEqualToString:@"IOSConcreteClass"]) {
             DBGLog(@"Adding ref: %p %@", referent, [referent class]);
         }
-        ARGC_markWeakRef(referent);
+        //ARGC_markWeakRef(referent);
         
         DBGLog(@"Adding ref: %p %@", referent, [referent class]);
         IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
@@ -87,7 +87,7 @@ BOOL ARGC_isAliveObject(__unsafe_unretained ARGCObject* reference);
         DBGLog(@"Add ref: %p: %p %@", rm, referent, [referent class]);
         *(__weak id*)(void*)&reference->referent_ = referent;
         if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
-            [g_softRefArray_ addObject:referent];
+            [g_softRefSet_ addObject:referent];
         }
         [rm->refArray_ addPointer:(void*)reference];
     }
@@ -115,35 +115,49 @@ void ARGC_retainExternalWeakRef(id obj);
 #endif
 }
 
-+ (void)clearReferent:(JavaLangRefReference *)reference
-{
-    if (USE_WEAK_REF_ARRAY) {
-        *(__weak id*)(void*)&reference->referent_ = NULL;
+void removeSoftReference(JavaLangRefReference *reference) {
+    id referent = *(__weak id*)(void*)&reference->referent_;
+    if (referent == NULL) {
+        return;
     }
-    else {
-        @synchronized (self) {
-            id referent = *(__unsafe_unretained id*)(void*)&reference->referent_;
-            if (referent == NULL) {
-                return;
+    IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
+    if (rm == NULL) {
+        return;
+    }
+    @synchronized (rm) {
+        int cntRef = 0;
+        for (int i = (int)rm->refArray_.count; --i > 0; ) {
+            id p = [rm->refArray_ pointerAtIndex:i];
+            if (p == NULL) {
+                continue;
             }
-            reference->referent_ = NULL;
-            IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
-            if (rm == NULL) {
-                return;
+            if (reference == p) {
+                [rm->refArray_ removePointerAtIndex:i];
             }
-            for (int i = (int)rm->refArray_.count; --i > 0; ) {
-                if (reference == [rm->refArray_ pointerAtIndex:i]) {
-                    [rm->refArray_ removePointerAtIndex:i];
-                    break;
-                }
+            else {
+                cntRef ++;
             }
         }
+        if (cntRef == 0) {
+            objc_setAssociatedObject(referent, &assocKey, NULL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            [g_softRefSet_ removeObject:referent];
+        }
+    }
+}
+
++ (void)clearReferent:(JavaLangRefReference *)reference
+{
+    if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
+        removeSoftReference(reference);
+    }
+    if (USE_WEAK_REF_ARRAY) {
+        *(__weak id*)(void*)&reference->referent_ = NULL;
     }
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
     @synchronized (self) {
-        [g_softRefArray_ removeAllObjects];
+        [g_softRefSet_ removeAllObjects];
     };
     ARGC_collectGarbage();
 }

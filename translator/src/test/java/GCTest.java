@@ -1,5 +1,5 @@
 
-public class GCTest {
+public class GCTest implements Cloneable {
 	static Object staticNSObjectField;
 	static GCTest staticField;
     static volatile GCTest staticVolatile;
@@ -8,6 +8,7 @@ public class GCTest {
 	GCTest instanceField;
     volatile GCTest instanceVolatile;
     String str;
+    Cloneable cc;
     boolean sealed;
     Integer no;
     Exception ex;
@@ -30,6 +31,7 @@ public class GCTest {
 		this.instanceNSObjectField = this;
         this.instanceVolatile = this;
         staticVolatile = this;
+        cc = this;
 	}
 	
 }

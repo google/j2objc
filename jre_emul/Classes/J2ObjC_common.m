@@ -62,6 +62,7 @@ id nil_chk(id __unsafe_unretained p) {
 }
 #endif
 
+#ifndef J2OBJC_USE_GC
 void JreFinalize(id self) {
   @try {
     [self java_finalize];
@@ -72,6 +73,22 @@ void JreFinalize(id self) {
               withJavaLangThrowable:e];
   }
 }
+#else
+void JreFinalize(id self) {
+}
+
+void JreFinalizeEx(id self) {
+    @try {
+        [self java_finalize];
+    } @catch (JavaLangThrowable *e) {
+        [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
+         logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
+         withNSString:@"Uncaught exception in finalizer"
+         withJavaLangThrowable:e];
+    }
+}
+#endif
+
 
 #ifndef J2OBJC_USE_GC
 id JreStrongAssign(__strong id *pIvar, id value) {

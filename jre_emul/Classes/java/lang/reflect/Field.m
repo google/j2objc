@@ -179,7 +179,12 @@ static void SetWithRawValue(
           void* pValue = ((char *)(__bridge void*)object) + ivar_getOffset(field->ivar_);
           if (needsRetain) {
 #ifdef J2OBJC_USE_GC
-              JreGenericFieldAssign((__unsafe_unretained id*)pValue, rawValue->asId);
+              if (![object isKindOfClass:[ARGCObject class]] ) {
+                  JreStrongAssign((__strong id*)pValue, rawValue->asId);
+              }
+              else {
+                  JreGenericFieldAssign((__unsafe_unretained id*)pValue, rawValue->asId);
+              }
 #else
               [type __writeRawValue:rawValue toAddress:pValue];
               RETAIN_(rawValue->asId);

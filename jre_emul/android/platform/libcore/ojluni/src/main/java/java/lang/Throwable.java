@@ -965,6 +965,9 @@ public class Throwable extends NSException implements Serializable {
             // empty stack traces.
             stackTrace = new StackTraceElement[0];
         }
+        if (this.cause == this) {
+            this.cause = UNSET_CAUSE;
+        }
     }
 
     /**

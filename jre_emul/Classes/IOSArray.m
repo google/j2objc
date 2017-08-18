@@ -32,7 +32,7 @@ static id NewArrayWithDimensionsAndComponentTypes(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths,
     IOSClass * const *componentTypes) {
   jint size = *dimensionLengths;
-  __unsafe_unretained IOSClass *componentType = *componentTypes;
+   IOSClass *componentType = *componentTypes;
 
   // If dimension of 1, just return a regular array.
   if (dimensionCount == 1) {
@@ -46,10 +46,11 @@ static id NewArrayWithDimensionsAndComponentTypes(
       return [self newArrayWithLength:size];
     }
   }
+    
 
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
-  __unsafe_unretained id subarrays[size];
+   id subarrays[size];
   for (jint i = 0; i < size; i++) {
     subarrays[i] = AUTORELEASE(NewArrayWithDimensionsAndComponentTypes(
         self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1));
@@ -63,10 +64,10 @@ id IOSArray_NewArrayWithDimensions(
     @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
   }
 
-  __unsafe_unretained IOSClass *componentTypes[dimensionCount];
+  IOSClass *componentTypes[dimensionCount];
   componentTypes[dimensionCount - 1] = type;
   for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
-    __unsafe_unretained IOSClass *last = componentTypes[i + 1];
+    IOSClass *last = componentTypes[i + 1];
     if (last) {
       componentTypes[i] = IOSClass_arrayOf(last);
     } else {
