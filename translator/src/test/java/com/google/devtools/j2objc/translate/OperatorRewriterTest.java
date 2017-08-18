@@ -215,4 +215,60 @@ public class OperatorRewriterTest extends GenerationTest {
         "FOUNDATION_EXPORT volatile_id Test_lazyStaticStr;",
         "J2OBJC_STATIC_FIELD_OBJ_VOLATILE(Test, lazyStaticStr, NSString *)");
   }
+
+  public void testRetaineLocal_synchronizedBlock() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+        + "  class Foo {}"
+        + "  Foo f = new Foo();"
+        + "  void test(String s1, char c1) {"
+        + "    Foo f1 = new Foo(), f2 = f;"
+        + "    synchronized(f1) {"
+        + "      f1 = f2;"
+        + "      Foo f3 = f2;"
+        + "      s1 = \"foo\";"
+        + "      c1 = 'a';"
+        + "      synchronized(f3) {"
+        + "        f3 = f1;"
+        + "      }"
+        + "      synchronized(f3) {"
+        + "        f3 = f2;"
+        + "      }"
+        + "    }"
+        + "    f2 = f1;"
+        + "  }"
+        + "}", "Test", "Test.m");
+    assertTranslation(translation, "Test_Foo *f2 = f_;");
+    assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
+    assertTranslation(translation, "Test_Foo *f3 = f2;");
+    assertTranslation(translation, "s1 = @\"foo\";");
+    assertTranslation(translation, "c1 = 'a';");
+    assertTranslation(translation, "f3 = JreRetainedLocalValue(f1);");
+    assertTranslation(translation, "f3 = JreRetainedLocalValue(f2);");
+    assertTranslation(translation, "f2 = f1;");
+  }
+
+  public void testRetainedLocal_returnWithinSynchronizedMethodOrBlock() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+        + "  class Foo {}"
+        + "  Foo f = new Foo();"
+        + "  String test1(String s1, char c1) {"
+        + "    synchronized(s1) {"
+        + "      return s1;"
+        + "    }"
+        + "  }"
+        + "  synchronized Foo test2() {"
+        + "    Foo f1 = f;"
+        + "    return f1;"
+        + "  }"
+        + "  synchronized int test3() {"
+        + "    int val = 1;"
+        + "    return val;"
+        + "  }"
+        + "}", "Test", "Test.m");
+    assertTranslation(translation, "return JreRetainedLocalValue(s1);");
+    assertTranslation(translation, "return JreRetainedLocalValue(f1)");
+    assertTranslation(translation, "return val;");
+  }
 }
