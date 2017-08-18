@@ -24,8 +24,10 @@ import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.DoStatement;
+import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.NullLiteral;
@@ -34,6 +36,7 @@ import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -42,6 +45,8 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -58,6 +63,7 @@ import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.patterns.Pattern;
 import com.sun.tools.javac.code.Symbol;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -353,19 +359,20 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitVariableDeclaration(
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
+    VariableDeclarationStatement varDecl =  new VariableDeclarationStatement()
+        .setModifiers(ElementUtil.fromModifierSet(new HashSet<>(node.getModifiers())));
     AstType astType = node.getType();
-    AstNodeCollection<com.strobel.decompiler.languages.java.ast.VariableInitializer> inits
-        = node.getVariables();
-    assert inits.hasSingleElement();
-    com.strobel.decompiler.languages.java.ast.VariableInitializer init = inits.firstOrNullObject();
     Type type = (Type) astType.acceptVisitor(this, null);
-    Expression expr = (Expression) init.acceptVisitor(this, null);
-    String varName = init.getName();
-    GeneratedVariableElement elem
-        = GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
-    elem.addModifiers(node.getModifiers());
-    localVariableTable.put(varName, elem);
-    return new VariableDeclarationStatement(elem, expr);
+    for (com.strobel.decompiler.languages.java.ast.VariableInitializer init : node.getVariables()) {
+      Expression expr = (Expression) init.acceptVisitor(this, null);
+      String varName = init.getName();
+      GeneratedVariableElement elem
+          = GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
+      elem.addModifiers(node.getModifiers());
+      localVariableTable.put(varName, elem);
+      varDecl.addFragment(new VariableDeclarationFragment(elem, expr));
+    }
+    return varDecl;
   }
 
   @Override
@@ -743,13 +750,44 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitForStatement(
       com.strobel.decompiler.languages.java.ast.ForStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    ForStatement forStatement = new ForStatement();
+    for (com.strobel.decompiler.languages.java.ast.Statement init : node.getInitializers()) {
+      TreeNode stmt = init.acceptVisitor(this, null);
+      if (stmt instanceof VariableDeclarationStatement) {
+        VariableDeclarationStatement varDeclStmt = (VariableDeclarationStatement) stmt;
+        VariableDeclarationExpression varDeclExpr = new VariableDeclarationExpression()
+            .setType(Type.newType(varDeclStmt.getTypeMirror()));
+        for (VariableDeclarationFragment varFrag : varDeclStmt.getFragments()) {
+          varDeclExpr.addFragment(varFrag.copy());
+        }
+        forStatement.addInitializer(varDeclExpr);
+      } else {
+        forStatement.addInitializer(((ExpressionStatement) stmt).getExpression().copy());
+      }
+    }
+    forStatement.setExpression((Expression) node.getCondition().acceptVisitor(this, null));
+    for (com.strobel.decompiler.languages.java.ast.Statement updater : node.getIterators()) {
+      TreeNode stmt = updater.acceptVisitor(this, null);
+      forStatement.addUpdater(((ExpressionStatement) stmt).getExpression().copy());
+    }
+    forStatement.setBody((Statement) node.getEmbeddedStatement().acceptVisitor(this, null));
+    return forStatement;
   }
 
   @Override
   public TreeNode visitForEachStatement(
       com.strobel.decompiler.languages.java.ast.ForEachStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    EnhancedForStatement forStatement = new EnhancedForStatement();
+    AstType astType = node.getVariableType();
+    Type type = (Type) astType.acceptVisitor(this, null);
+    String varName = node.getVariableName();
+    GeneratedVariableElement elem
+        = GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
+    elem.addModifiers(node.getVariableModifiers());
+    localVariableTable.put(varName, elem);
+    return forStatement.setParameter(new SingleVariableDeclaration(elem))
+        .setExpression((Expression) node.getInExpression().acceptVisitor(this, null))
+        .setBody((Statement) node.getEmbeddedStatement().acceptVisitor(this, null));
   }
 
   @Override

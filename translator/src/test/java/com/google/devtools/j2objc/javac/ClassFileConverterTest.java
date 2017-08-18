@@ -1117,42 +1117,118 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
-//  public void testFor() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  void for1() {",
-//        "    for (;;) {}",
-//        "  }",
-//        "  void for2() {",
-//        "    for (int i = 0; i < 10; i++) {}",
-//        "  }",
-//        "  void for2(int j) {",
-//        "    for (int i = 0; i < 10; i++) {",
-//        "      j += i;",
-//        "    }",
-//        "  }",
-////        break, continue, multiple init update
-//        "}"
-//    );
-//    assertEqualASTSrcClassfile(type, source);
-//  }
-//
-//  //TODO(user): may not have for each loops
-//  public void testForEach() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  int run() {",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualASTSrcClassfile(type, source);
-//  }
-//
-//  public void testNestedLoopsLabeledBranches() throws IOException {
+  public void testFor() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        // for loops with empty initializers, conditions, or updaters are converted to while loops
+        "  void for1 () {",
+        "    for (int i = 0; i < 10; ++i) {}",
+        "  }",
+        "  void for2 (int j) {",
+        "    for (int i = 0; i < 10; ++i) {",
+        "      j += i;",
+        "    }",
+        "  }",
+        "  void for3 (int k) {",
+        "    for (int i = 0, j = 10; i < 10 && j > 0; ++i, --j) {",
+        "      k += i + j;",
+        "    }",
+        "  }",
+        "  void for4 (int i, int j, int k) {",
+        "    for (i = 0, j = 10; i < 10 && j > 0; ++i, --j) {",
+        "      k += i + j;",
+        "    }",
+        "  }",
+        "  void for5 (int k) {",
+        "    for (int i = 0, j = 10; i < 10 && j > 0; i += 5, j /= 5) {",
+        "      k += i + j;",
+        "    }",
+        "  }",
+        "  void for6 (int i, int j, int k) {",
+        "    for (i = 0, j = 10; i < 10 && j > 0; i += 5, j /= 5) {",
+        "      k += i + j;",
+        "    }",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testForEach() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int foreach1(int[] arr) {",
+        "    int sum = 0;",
+        "    for (final int i : arr) {",
+        "      sum += i;",
+        "    }",
+        "    return sum;",
+        "  }",
+        "  int foreach2(String[] arr) {",
+        "    int sum = 0;",
+        "    for (final String i : arr) {",
+        "      ++sum;",
+        "    }",
+        "    return sum;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+  public void testNestedLoops() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  void nested1(boolean[][] arr, int i, int j, int len) {",
+        "    int sum = 0;",
+        "    while (i < len) {",
+        "      while (j < len) {",
+        "        sum += i*j;",
+        "        if (arr[i][j]) {",
+        "          break;",
+        "        }",
+        "        ++j;",
+        "      }",
+        "      ++i;",
+        "    }",
+        "  }",
+        "  void nested2(boolean[][] arr, int len) {",
+        "    int sum = 0;",
+        "    for (int i = 0; i < len; ++i) {",
+        "      for (int j = 0; j < len; ++j) {",
+        "        sum += i*j;",
+        "        if (arr[i][j]) {",
+        "          break;",
+        "        }",
+        "      }",
+        "    }",
+        "  }",
+        "  void nested3(boolean[][] arr, int i, int j, int len) {",
+        "    int sum = 0;",
+        "    while (i < len) {",
+        "      while (j < len) {",
+        "        sum += i*j;",
+        "        if (arr[i][j]) {",
+        "          continue;",
+        "        }",
+        "        ++j;",
+        "      }",
+        "      ++i;",
+        "    }",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
+//  //TODO(user): run above nested loop test but with labeled outer loops
+//  public void testLabeledBranches() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
 //        "package foo.bar;",
