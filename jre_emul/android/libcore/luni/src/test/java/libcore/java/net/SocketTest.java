@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -34,7 +33,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 public class SocketTest extends junit.framework.TestCase {
     // See http://b/2980559.
@@ -267,13 +265,14 @@ public class SocketTest extends junit.framework.TestCase {
         server.shutdown();
     }
 
-    // http://b/5534202
-    public void testAvailable() throws Exception {
-        for (int i = 0; i < 100; i++) {
-            assertAvailableReturnsZeroAfterSocketReadsAllData();
-            Logger.getAnonymousLogger().finest("Success on rep " + i);
-        }
-    }
+    // J2ObjC b/64848117
+//    // http://b/5534202
+//    public void testAvailable() throws Exception {
+//        for (int i = 0; i < 100; i++) {
+//            assertAvailableReturnsZeroAfterSocketReadsAllData();
+//            Logger.getAnonymousLogger().finest("Success on rep " + i);
+//        }
+//    }
 
     private void assertAvailableReturnsZeroAfterSocketReadsAllData() throws Exception {
         final byte[] data = "foo".getBytes();

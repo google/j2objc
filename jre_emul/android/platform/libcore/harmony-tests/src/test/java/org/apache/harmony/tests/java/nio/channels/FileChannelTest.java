@@ -2582,46 +2582,47 @@ public class FileChannelTest extends TestCase {
         assertTrue(Arrays.equals(expectedContent, resultContent));
     }
 
-    /**
-     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
-     */
-    public void test_transferFromLReadableByteChannelJJ_DatagramChannel()
-            throws Exception {
-        // connects two datagramChannels.
-        datagramChannelReceiver = DatagramChannel.open();
-        datagramChannelReceiver.socket().bind(
-                new InetSocketAddress(InetAddress.getLocalHost(), 0));
-        datagramChannelSender = DatagramChannel.open();
-        datagramChannelSender.socket().bind(
-                new InetSocketAddress(InetAddress.getLocalHost(), 0));
-        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
-        datagramChannelReceiver.connect(datagramChannelSender.socket()
-                .getLocalSocketAddress());
-        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
-        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
-        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
-        // sends data from datagramChannelSender to datagramChannelReceiver.
-        datagramChannelSender.send(writeBuffer, datagramChannelReceiver
-                .socket().getLocalSocketAddress());
-        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
-
-        // transfers data from datagramChannelReceiver to fileChannel.
-        long result = writeOnlyFileChannel.transferFrom(
-                datagramChannelReceiver, 0, CONTENT_AS_BYTES_LENGTH);
-        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
-        assertEquals(0, writeOnlyFileChannel.position());
-        writeOnlyFileChannel.close();
-
-        // gets content from file.
-        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
-        assertEquals(CONTENT_AS_BYTES_LENGTH, fileOfWriteOnlyFileChannel
-                .length());
-        byte[] resultContent = new byte[CONTENT_AS_BYTES_LENGTH];
-        fis.read(resultContent);
-
-        // compares contents.
-        assertTrue(Arrays.equals(CONTENT_AS_BYTES, resultContent));
-    }
+    // J2ObjC b/64848117
+//    /**
+//     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+//     */
+//    public void test_transferFromLReadableByteChannelJJ_DatagramChannel()
+//            throws Exception {
+//        // connects two datagramChannels.
+//        datagramChannelReceiver = DatagramChannel.open();
+//        datagramChannelReceiver.socket().bind(
+//                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+//        datagramChannelSender = DatagramChannel.open();
+//        datagramChannelSender.socket().bind(
+//                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+//        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
+//        datagramChannelReceiver.connect(datagramChannelSender.socket()
+//                .getLocalSocketAddress());
+//        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
+//        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+//        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
+//        // sends data from datagramChannelSender to datagramChannelReceiver.
+//        datagramChannelSender.send(writeBuffer, datagramChannelReceiver
+//                .socket().getLocalSocketAddress());
+//        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
+//
+//        // transfers data from datagramChannelReceiver to fileChannel.
+//        long result = writeOnlyFileChannel.transferFrom(
+//                datagramChannelReceiver, 0, CONTENT_AS_BYTES_LENGTH);
+//        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+//        assertEquals(0, writeOnlyFileChannel.position());
+//        writeOnlyFileChannel.close();
+//
+//        // gets content from file.
+//        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+//        assertEquals(CONTENT_AS_BYTES_LENGTH, fileOfWriteOnlyFileChannel
+//                .length());
+//        byte[] resultContent = new byte[CONTENT_AS_BYTES_LENGTH];
+//        fis.read(resultContent);
+//
+//        // compares contents.
+//        assertTrue(Arrays.equals(CONTENT_AS_BYTES, resultContent));
+//    }
 
     /**
      * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
@@ -2984,54 +2985,55 @@ public class FileChannelTest extends TestCase {
         }
     }
 
-    /**
-     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
-     */
-    public void test_transferToJJLWritableByteChannel_DatagramChannel()
-            throws Exception {
-        // inits data to file.
-        writeDataToFile(fileOfReadOnlyFileChannel);
-
-        // connects two datagramChannel
-        datagramChannelReceiver = DatagramChannel.open();
-        datagramChannelReceiver.socket().bind(
-                new InetSocketAddress(InetAddress.getLocalHost(), 0));
-        datagramChannelSender = DatagramChannel.open();
-        datagramChannelSender.socket().bind(
-                new InetSocketAddress(InetAddress.getLocalHost(), 0));
-        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
-        datagramChannelSender.connect(datagramChannelReceiver.socket()
-                .getLocalSocketAddress());
-        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
-        datagramChannelReceiver.connect(datagramChannelSender.socket()
-                .getLocalSocketAddress());
-
-        // transfers data from fileChannel to datagramChannelSender
-        long result = readOnlyFileChannel.transferTo(0,
-                CONTENT_AS_BYTES_LENGTH, datagramChannelSender);
-        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
-        assertEquals(0, readOnlyFileChannel.position());
-        readOnlyFileChannel.close();
-        datagramChannelSender.close();
-
-        // gets contents from datagramChannelReceiver
-        ByteBuffer readBuffer = ByteBuffer.allocate(CONTENT_AS_BYTES_LENGTH);
-        long beginTime = System.currentTimeMillis();
-        int totalRead = 0;
-        while (totalRead < CONTENT_AS_BYTES_LENGTH) {
-            totalRead += datagramChannelReceiver.read(readBuffer);
-            if (System.currentTimeMillis() - beginTime > TIME_OUT) {
-                break;
-            }
-        }
-        assertEquals(CONTENT_AS_BYTES_LENGTH, totalRead);
-
-        // compares contents.
-        readBuffer.flip();
-        for (int i = 0; i < CONTENT_AS_BYTES_LENGTH; i++) {
-            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
-        }
-    }
+    // J2ObjC b/64848117
+//    /**
+//     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+//     */
+//    public void test_transferToJJLWritableByteChannel_DatagramChannel()
+//            throws Exception {
+//        // inits data to file.
+//        writeDataToFile(fileOfReadOnlyFileChannel);
+//
+//        // connects two datagramChannel
+//        datagramChannelReceiver = DatagramChannel.open();
+//        datagramChannelReceiver.socket().bind(
+//                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+//        datagramChannelSender = DatagramChannel.open();
+//        datagramChannelSender.socket().bind(
+//                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+//        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
+//        datagramChannelSender.connect(datagramChannelReceiver.socket()
+//                .getLocalSocketAddress());
+//        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
+//        datagramChannelReceiver.connect(datagramChannelSender.socket()
+//                .getLocalSocketAddress());
+//
+//        // transfers data from fileChannel to datagramChannelSender
+//        long result = readOnlyFileChannel.transferTo(0,
+//                CONTENT_AS_BYTES_LENGTH, datagramChannelSender);
+//        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+//        assertEquals(0, readOnlyFileChannel.position());
+//        readOnlyFileChannel.close();
+//        datagramChannelSender.close();
+//
+//        // gets contents from datagramChannelReceiver
+//        ByteBuffer readBuffer = ByteBuffer.allocate(CONTENT_AS_BYTES_LENGTH);
+//        long beginTime = System.currentTimeMillis();
+//        int totalRead = 0;
+//        while (totalRead < CONTENT_AS_BYTES_LENGTH) {
+//            totalRead += datagramChannelReceiver.read(readBuffer);
+//            if (System.currentTimeMillis() - beginTime > TIME_OUT) {
+//                break;
+//            }
+//        }
+//        assertEquals(CONTENT_AS_BYTES_LENGTH, totalRead);
+//
+//        // compares contents.
+//        readBuffer.flip();
+//        for (int i = 0; i < CONTENT_AS_BYTES_LENGTH; i++) {
+//            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+//        }
+//    }
 
     /**
      * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)

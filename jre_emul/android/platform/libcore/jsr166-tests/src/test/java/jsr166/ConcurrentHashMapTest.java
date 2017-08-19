@@ -8,6 +8,7 @@
 
 package jsr166;
 
+import com.google.j2objc.annotations.AutoreleasePool;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -169,7 +170,7 @@ public class ConcurrentHashMapTest extends JSR166TestCase {
             m.put(Collections.singletonList(new BI(i)), true);
         }
 
-        for (int i = 0; i < size; i++) {
+        for (@AutoreleasePool int i = 0; i < size; i++) {
             LexicographicList<BI> bis = new LexicographicList<BI>(new BI(i));
             assertTrue(m.containsKey(bis));
         }
