@@ -1412,11 +1412,14 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   return &_IOSClass;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
 - (void)dealloc {
   @throw create_JavaLangAssertionError_initWithId_(
       [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
-  [super dealloc];
+  // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
 }
+#pragma clang diagnostic pop
 
 @end
 
