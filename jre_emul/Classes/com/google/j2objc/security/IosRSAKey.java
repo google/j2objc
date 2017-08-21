@@ -20,16 +20,15 @@ package com.google.j2objc.security;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Key;
+import java.security.ProviderException;
 import java.security.interfaces.RSAKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import sun.security.util.DerInputStream;
-
-/*-[
-#include "java/security/ProviderException.h"
-]-*/
+import sun.security.util.DerOutputStream;
+import sun.security.util.DerValue;
 
 /**
  * Public and private RSA key implementations for iOS.
@@ -100,7 +99,22 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     long getSecKeyRef() {
+      if (iosSecKey == 0L && publicExponent != null && modulus != null) {
+        iosSecKey = createPublicKey();
+      }
       return iosSecKey;
+    }
+
+    private long createPublicKey() {
+      try (DerOutputStream out = new DerOutputStream()) {
+        out.putInteger(getModulus());
+        out.putInteger(getPublicExponent());
+
+        return createPublicSecKeyRef(
+            new DerValue(DerValue.tag_Sequence, out.toByteArray()).toByteArray());
+      } catch (IOException e) {
+        throw new ProviderException(e); // Should never happen.
+      }
     }
 
     @Override
@@ -147,14 +161,20 @@ public abstract class IosRSAKey implements RSAKey, Key {
       }
       try {
         DerInputStream in = new DerInputStream(bytes);
-        in.getBitString(); // Ignore: bitstring of mod + exp.
-        in.getBitString();
-        modulus = new BigInteger(in.getBitString());
-        in.getBitString();
-        publicExponent = new BigInteger(in.getBitString());
+        if (in.peekByte() == DerValue.tag_BitString) {
+          // Strip headers.
+          in.getBitString(); // Ignore: bitstring of mod + exp.
+          in.getBitString();
+          modulus = new BigInteger(in.getBitString());
+          in.getBitString();
+          publicExponent = new BigInteger(in.getBitString());
+        } else {
+          DerValue[] values = in.getSequence(2);
+          publicExponent = values[0].getBigInteger();
+          modulus = values[1].getBigInteger();
+        }
       } catch (IOException e) {
-        // Should never happen, since bytes are extracted from a valid iOS secKeyRef.
-        throw new AssertionError("failed decoding key parameters: " + e);
+        throw new ProviderException("failed decoding public key parameters: " + e);
       }
     }
 
@@ -295,8 +315,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
         in.getBitString();
         privateExponent = new BigInteger(in.getBitString());
       } catch (IOException e) {
-        // Should never happen, since bytes are extracted from a valid iOS secKeyRef.
-        throw new AssertionError("failed decoding key parameters: " + e);
+        throw new ProviderException("failed decoding private key parameters: " + e);
       }
     }
 

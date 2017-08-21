@@ -242,6 +242,7 @@ TEST_SOURCES := \
     com/google/j2objc/java8/TypeMethodReferenceTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/charset/CharsetTest.java \
+    com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
     com/google/j2objc/security/IosRSAKeyTest.java \
     com/google/j2objc/security/IosRSASignatureTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
@@ -759,6 +760,7 @@ SUITE_SOURCES = \
     jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
     com/google/j2objc/java8/SmallTests.java \
+    com/google/j2objc/security/IosSecurityProviderTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/text/LargeTests.java \
     libcore/java/text/SmallTests.java \

@@ -174,6 +174,9 @@ run-concurrency-tests: link resources $(TEST_BIN)
 run-io-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.io.SmallTests
 
+run-ios-security-provider-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.security.IosSecurityProviderTests
+
 run-json-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore org.json.SmallTests
 

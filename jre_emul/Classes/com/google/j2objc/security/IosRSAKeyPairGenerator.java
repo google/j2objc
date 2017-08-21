@@ -53,19 +53,18 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
 
     NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PUBLIC_KEY_TAG()
                          dataUsingEncoding:NSUTF8StringEncoding];
-    [publicKeyAttr setObject:publicTag forKey:(id)kSecAttrApplicationTag];
-    [publicKeyAttr setObject:@YES forKey:(id)kSecAttrIsPermanent];
+    publicKeyAttr[(id)kSecAttrApplicationTag] = publicTag;
+    publicKeyAttr[(id)kSecAttrIsPermanent] = (id)kCFBooleanTrue;
 
     NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PRIVATE_KEY_TAG()
                           dataUsingEncoding:NSUTF8StringEncoding];
-    [privateKeyAttr setObject:privateTag forKey:(id)kSecAttrApplicationTag];
-    [privateKeyAttr setObject:@YES forKey:(id)kSecAttrIsPermanent];
+    privateKeyAttr[(id)kSecAttrApplicationTag] = publicTag;
+    privateKeyAttr[(id)kSecAttrIsPermanent] = (id)kCFBooleanTrue;
 
-    [keyPairAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
-    [keyPairAttr setObject:[NSNumber numberWithUnsignedInteger:keySize_]
-                    forKey:(id)kSecAttrKeySizeInBits];
-    [keyPairAttr setObject:privateKeyAttr forKey:(id)kSecPrivateKeyAttrs];
-    [keyPairAttr setObject:publicKeyAttr forKey:(id)kSecPublicKeyAttrs];
+    keyPairAttr[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
+    keyPairAttr[(id)kSecAttrKeySizeInBits] = [NSNumber numberWithUnsignedInteger:keySize_];
+    keyPairAttr[(id)kSecPublicKeyAttrs] = publicKeyAttr;
+    keyPairAttr[(id)kSecPublicKeyAttrs] = privateKeyAttr;
 
     SecKeyRef publicKeyRef = NULL;
     SecKeyRef privateKeyRef = NULL;
@@ -92,13 +91,13 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
   /*-[
   - (void) deleteKey:(NSString *)tag
             keyClass:(CFStringRef) keyClass {
-    NSData *publicTag = [tag dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *tagBytes = [tag dataUsingEncoding:NSUTF8StringEncoding];
 
     NSMutableDictionary *query = [NSMutableDictionary dictionary];
     query[(id)kSecClass] = (id)kSecClassKey;
     query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
     query[(id)kSecAttrKeyClass] = (id)keyClass;
-    query[(id)kSecAttrApplicationTag] = tag;
+    query[(id)kSecAttrApplicationTag] = tagBytes;
     OSStatus status = SecItemDelete((CFDictionaryRef) query);
     if (status != errSecSuccess && status != errSecItemNotFound) {
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
