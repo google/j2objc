@@ -468,6 +468,12 @@ public final class ElementUtil {
         method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
   }
 
+  public static VariableElement findField(TypeElement type, String name) {
+    return Iterables.getFirst(Iterables.filter(
+        filterEnclosedElements(type, VariableElement.class, ElementKind.FIELD), 
+        field -> getName(field).equals(name)), null);
+  }
+
   public static Iterable<TypeMirror> asTypes(Iterable<? extends Element> elements) {
     return Iterables.transform(elements, elem -> elem.asType());
   }

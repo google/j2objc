@@ -72,6 +72,11 @@ public class ConstructorInvocation extends Statement {
   public List<Expression> getArguments() {
     return arguments;
   }
+  
+  public ConstructorInvocation setArguments(List<Expression> args) {
+    arguments.replaceAll(args);
+    return this;
+  }
 
   public ConstructorInvocation addArgument(Expression arg) {
     arguments.add(arg);

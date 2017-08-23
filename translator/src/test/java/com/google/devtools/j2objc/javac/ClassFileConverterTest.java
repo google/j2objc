@@ -1252,32 +1252,32 @@ public class ClassFileConverterTest extends GenerationTest {
 //    );
 //    assertEqualASTSrcClassfile(type, source);
 //  }
-//
-//  public void testThis() throws IOException {
-//    String type = "foo.bar.Point";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Point {",
-//        "  int x;",
-//        "  int y;",
-//        "  Point(int x, int y) {",
-//        "    this.x = x;",
-//        "    this.y = y;",
-//        "  }",
-//        "  Point(int z) {",
-//        "    this(z, z);",
-//        "  }",
-//        "  int getX() {",
-//        "    return this.x;",
-//        "  }",
-//        "  int getY() {",
-//        "    return this.y;",
-//        "  }",
-//        "  Point identity() {",
-//        "    return this;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualASTSrcClassfile(type, source);
-//  }
+
+  public void testThis() throws IOException {
+    String type = "foo.bar.Point";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Point {",
+        "  int x;",
+        "  int y;",
+        "  Point(int x, int y) {",
+        "    this.x = x;",
+        "    this.y = y;",
+        "  }",
+        "  Point(int z) {",
+        "    this(z, z);",
+        "  }",
+        "  int getX() {",
+        "    return this.x;",
+        "  }",
+        "  int getY() {",
+        "    return this.y;",
+        "  }",
+        "  Point identity() {",
+        "    return this;",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
 }

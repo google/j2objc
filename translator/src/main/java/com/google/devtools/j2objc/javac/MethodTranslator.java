@@ -22,11 +22,13 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
@@ -42,6 +44,7 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -52,15 +55,18 @@ import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.core.StringUtilities;
 import com.strobel.decompiler.languages.java.ast.AstNode;
 import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
+import com.strobel.decompiler.languages.java.ast.Keys;
 import com.strobel.decompiler.patterns.Pattern;
 import com.sun.tools.javac.code.Symbol;
 import java.util.HashSet;
@@ -69,6 +75,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -83,7 +90,6 @@ import javax.lang.model.type.TypeMirror;
  */
 class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   private final JavacEnvironment parserEnv;
-  private final TranslationEnvironment translationEnv;
   private final TypeUtil typeUtil;
   private final ExecutableElement executableElement;
   private final TypeDeclaration typeDecl;
@@ -94,7 +100,6 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
                           ExecutableElement executableElement, TypeDeclaration typeDecl,
                           Map<String, VariableElement> localVariableTable) {
     this.parserEnv = parserEnv;
-    this.translationEnv = translationEnv;
     this.typeUtil = translationEnv.typeUtil();
     this.executableElement = executableElement;
     this.typeDecl = typeDecl;
@@ -155,7 +160,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
 
   @Override
   public TreeNode visitComment(com.strobel.decompiler.languages.java.ast.Comment node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    // Procyon only adds comment nodes to report decompilation errors.
+    ErrorUtil.error(node.getContent());
+    return null;
   }
 
   @Override
@@ -166,7 +173,38 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitInvocationExpression(
       com.strobel.decompiler.languages.java.ast.InvocationExpression node, Void data) {
-    return visitChild(node);
+    TreeNode target = node.getTarget().acceptVisitor(this, null);
+    if (target.getKind() == Kind.THIS_EXPRESSION) {
+      ThisExpression cons = (ThisExpression) target;
+      TypeElement type = (TypeElement) ((DeclaredType) cons.getTypeMirror()).asElement();
+      List<Expression> args = node.getArguments().stream()
+          .map(e -> (Expression) e.acceptVisitor(this, null))
+          .collect(Collectors.toList());
+      MethodDefinition methodDef = (MethodDefinition) node.getUserData(Keys.MEMBER_REFERENCE);
+      ExecutableElement sym = findConstructor(type, methodDef);
+      ConstructorInvocation newNode = new ConstructorInvocation()
+          .setExecutablePair(new ExecutablePair(sym))
+          .setArguments(args);
+      return newNode;
+    }
+    if (target.getKind() == Kind.SUPER_CONSTRUCTOR_INVOCATION) {
+      return target;
+    }
+    throw new AssertionError("not implemented");
+  }
+  
+  private ExecutableElement findConstructor(TypeElement type, MethodDefinition methodDef) {
+    String signature = methodDef.getSignature();
+    String erasedSignature = methodDef.getErasedSignature();
+    for (Element e : type.getEnclosedElements()) {
+      if (e.getKind() == ElementKind.CONSTRUCTOR) {
+        String sig = typeUtil.getReferenceSignature((ExecutableElement) e);
+        if (sig.equals(signature) || sig.equals(erasedSignature)) {
+          return (ExecutableElement) e;
+        }
+      }
+    }
+    throw new AssertionError("failed constructor lookup: " + type.getQualifiedName() + signature);
   }
 
   @Override
@@ -184,7 +222,14 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitMemberReferenceExpression(
       com.strobel.decompiler.languages.java.ast.MemberReferenceExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    TreeNode member = node.getFirstChild().acceptVisitor(this, null);
+    if (member.getKind() == Kind.THIS_EXPRESSION) {
+      ThisExpression thisExpr = (ThisExpression) member;
+      TypeElement type = (TypeElement) ((DeclaredType) thisExpr.getTypeMirror()).asElement();
+      VariableElement field = ElementUtil.findField(type, node.getMemberName());
+      return new FieldAccess(field, thisExpr);
+    }
+    throw new AssertionError("not implemented");
   }
 
   @Override
