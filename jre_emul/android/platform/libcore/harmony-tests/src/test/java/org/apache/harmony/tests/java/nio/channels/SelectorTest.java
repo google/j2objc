@@ -211,15 +211,16 @@ public class SelectorTest extends TestCase {
         selector.selectNow();
     }
 
+    // J2ObjC b/64848117
     /**
      * @tests java.nio.channel.Selector#select()
      */
-    public void test_select() throws IOException {
-        assert_select_OP_ACCEPT(SelectType.NULL, 0);
-        assert_select_OP_CONNECT(SelectType.NULL, 0);
-        assert_select_OP_READ(SelectType.NULL, 0);
-        assert_select_OP_WRITE(SelectType.NULL, 0);
-    }
+//    public void test_select() throws IOException {
+//        assert_select_OP_ACCEPT(SelectType.NULL, 0);
+//        assert_select_OP_CONNECT(SelectType.NULL, 0);
+//        assert_select_OP_READ(SelectType.NULL, 0);
+//        assert_select_OP_WRITE(SelectType.NULL, 0);
+//    }
 
     /**
      * @tests java.nio.channel.Selector#select()
@@ -228,20 +229,21 @@ public class SelectorTest extends TestCase {
         assert_select_SelectorClosed(SelectType.NULL, 0);
     }
 
+    // J2ObjC b/64848117
     /**
      * @tests java.nio.channel.Selector#select(long)
      */
-    public void test_selectJ() throws IOException {
-        assert_select_OP_ACCEPT(SelectType.TIMEOUT, 0);
-        assert_select_OP_CONNECT(SelectType.TIMEOUT, 0);
-        assert_select_OP_READ(SelectType.TIMEOUT, 0);
-        assert_select_OP_WRITE(SelectType.TIMEOUT, 0);
-
-        assert_select_OP_ACCEPT(SelectType.TIMEOUT, WAIT_TIME);
-        assert_select_OP_CONNECT(SelectType.TIMEOUT, WAIT_TIME);
-        assert_select_OP_READ(SelectType.TIMEOUT, WAIT_TIME);
-        assert_select_OP_WRITE(SelectType.TIMEOUT, WAIT_TIME);
-    }
+//    public void test_selectJ() throws IOException {
+//        assert_select_OP_ACCEPT(SelectType.TIMEOUT, 0);
+//        assert_select_OP_CONNECT(SelectType.TIMEOUT, 0);
+//        assert_select_OP_READ(SelectType.TIMEOUT, 0);
+//        assert_select_OP_WRITE(SelectType.TIMEOUT, 0);
+//
+//        assert_select_OP_ACCEPT(SelectType.TIMEOUT, WAIT_TIME);
+//        assert_select_OP_CONNECT(SelectType.TIMEOUT, WAIT_TIME);
+//        assert_select_OP_READ(SelectType.TIMEOUT, WAIT_TIME);
+//        assert_select_OP_WRITE(SelectType.TIMEOUT, WAIT_TIME);
+//    }
 
     /**
      * @tests java.nio.channel.Selector#select(long)
