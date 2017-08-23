@@ -379,8 +379,8 @@ clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 test: compile-tests copy-test-resources
-	java -classpath $(TEST_CLASSPATH) -Xss4m -ea junit.textui.TestRunner \
-	  com.google.devtools.j2objc.SmallTests
+	java -classpath $(TEST_CLASSPATH) -Xss4m -XX:+UseParallelGC \
+	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
