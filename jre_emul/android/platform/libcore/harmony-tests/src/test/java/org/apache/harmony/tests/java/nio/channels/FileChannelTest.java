@@ -2943,8 +2943,13 @@ public class FileChannelTest extends TestCase {
 
         // connects two socketChannels.
         socketChannelReceiver = SocketChannel.open();
-        socketChannelReceiver.socket().bind(
-                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        try {
+          socketChannelReceiver.socket().bind(
+                  new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        } catch (BindException e) {
+          // Continuous build environment doesn't support localhost sockets.
+          return;
+        }
         serverSocketChannel = ServerSocketChannel.open();
         try {
           serverSocketChannel.socket().bind(

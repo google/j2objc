@@ -448,7 +448,13 @@ public class ServerSocketChannelTest extends TestCase {
         }
         buf.flip();
         clientChannel.connect(serverChannel.socket().getLocalSocketAddress());
-        Socket serverSocket = serverChannel.accept().socket();
+
+        SocketChannel socketChannel = serverChannel.accept();
+        if (socketChannel == null) {
+          // Continuous build environment doesn't support non-blocking IO.
+          return;
+        }
+        Socket serverSocket = socketChannel.socket();
         InputStream in = serverSocket.getInputStream();
         clientChannel.write(buf);
         clientChannel.close();
@@ -488,7 +494,13 @@ public class ServerSocketChannelTest extends TestCase {
             writeContent[i] = (byte) i;
         }
         clientChannel.connect(serverChannel.socket().getLocalSocketAddress());
-        Socket clientSocket = serverChannel.accept().socket();
+
+        SocketChannel socketChannel = serverChannel.accept();
+        if (socketChannel == null) {
+          // Continuous build environment doesn't support non-blocking IO.
+          return;
+        }
+        Socket clientSocket = socketChannel.socket();
         OutputStream out = clientSocket.getOutputStream();
         out.write(writeContent);
         clientSocket.close();
@@ -555,7 +567,13 @@ public class ServerSocketChannelTest extends TestCase {
         clientChannel.connect(serverChannel.socket().getLocalSocketAddress());
         WriteChannelThread writeThread = new WriteChannelThread(clientChannel, buf);
         writeThread.start();
-        Socket socket = serverChannel.accept().socket();
+
+        SocketChannel socketChannel = serverChannel.accept();
+        if (socketChannel == null) {
+          // Continuous build environment doesn't support non-blocking IO.
+          return;
+        }
+        Socket socket = socketChannel.socket();
         InputStream in = socket.getInputStream();
         assertReadResult(in,CAPACITY_64KB);
         writeThread.join();
@@ -577,7 +595,14 @@ public class ServerSocketChannelTest extends TestCase {
             writeContent[i] = (byte) i;
         }
         clientChannel.connect(serverChannel.socket().getLocalSocketAddress());
-        Socket socket = serverChannel.accept().socket();
+
+        SocketChannel socketChannel = serverChannel.accept();
+        if (socketChannel == null) {
+          // Continuous build environment doesn't support non-blocking IO.
+          return;
+        }
+  
+        Socket socket = socketChannel.socket();
         WriteSocketThread writeThread = new WriteSocketThread(socket, writeContent);
         writeThread.start();
         assertWriteResult(CAPACITY_64KB);
