@@ -38,6 +38,7 @@ import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.strobel.decompiler.languages.java.ast.TypeDeclaration;
 import java.io.IOException;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * JVM class file model, which uses a Procyon TypeDefinition as a delegate.
@@ -166,24 +167,22 @@ public class ClassFile {
 
   private String signature(MethodDeclaration method) {
     StringBuilder sb = new StringBuilder();
-    signature(method.getParameters(), sb);
+    sb.append(signature(method.getParameters()));
     sb.append(signature(method.getReturnType()));
     return sb.toString();
   }
 
   private String signature(ConstructorDeclaration cons) {
     StringBuilder sb = new StringBuilder();
-    signature(cons.getParameters(), sb);
+    sb.append(signature(cons.getParameters()));
     sb.append('V');
     return sb.toString();
   }
 
-  private void signature(AstNodeCollection<ParameterDeclaration> parameters, StringBuilder sb) {
-    sb.append('(');
-    for (ParameterDeclaration param : parameters) {
-      sb.append(signature(param.getType()));
-    }
-    sb.append(')');
+  private String signature(AstNodeCollection<ParameterDeclaration> parameters) {
+    return parameters.stream()
+        .map(p -> signature(p.getType()))
+        .collect(Collectors.joining("", "(", ")"));
   }
 
   private String signature(AstType type) {
