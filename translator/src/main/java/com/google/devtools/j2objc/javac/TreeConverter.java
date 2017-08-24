@@ -684,7 +684,7 @@ public class TreeConverter {
         default:  // value doesn't need to be changed.
       }
     }
-    return newNode.setConstantValue(value);
+    return value != null ? newNode.setConstantValue(value) : newNode;
   }
 
   private TreeNode convertExpressionStatement(JCTree.JCExpressionStatement node) {
