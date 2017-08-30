@@ -100,6 +100,14 @@ $(TRANSLATED_OBJC): $(TRANSLATE_ARTIFACT)
 $(TRANSLATED_OBJC_ARC): $(TRANSLATE_ARTIFACT_ARC)
 	@:
 
+DIST_JRE_EMUL_LIB = $(DIST_LIB_MACOSX_DIR)/libjre_emul.a
+$(DIST_JRE_EMUL_LIB): jre_emul_dist
+	@:
+
+DIST_JUNIT_LIB = $(DIST_LIB_MACOSX_DIR)/libjunit.a
+$(DIST_JUNIT_LIB): junit_dist
+	@:
+
 ifdef GENERATE_TEST_COVERAGE
 TEST_JOCC += -ftest-coverage -fprofile-arcs
 endif
@@ -238,8 +246,7 @@ $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	xcrun cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
-$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
-        ../dist/lib/macosx/libjre_emul.a ../dist/lib/macosx/libjunit.a
+$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(DIST_JRE_EMUL_LIB) $(DIST_JUNIT_LIB)
 	@echo Building test executable...
 	@echo "  " $(TEST_JOCC) $(LINK_FLAGS) ...
 	@$(TEST_JOCC) $(LINK_FLAGS) -o $@ $(TEST_OBJS)
@@ -248,8 +255,8 @@ $(ALL_TESTS_SOURCE): tests.mk
 	@mkdir -p $(@D)
 	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
 
-$(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
-	@$(J2OBJCC) -o $@ -ljre_emul -ObjC -Os $?
+$(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m $(DIST_JRE_EMUL_LIB)
+	@$(J2OBJCC) -o $@ -ljre_emul -ObjC -Os Tests/JreInitialization.m
 
 $(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2objc/%.java
 	@mkdir -p $(@D)
