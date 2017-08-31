@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.ast.AnnotationTest;
+import com.google.devtools.j2objc.ast.InfixExpressionTest;
 import com.google.devtools.j2objc.ast.LambdaExpressionTest;
 import com.google.devtools.j2objc.ast.MethodReferenceTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
@@ -34,7 +36,6 @@ import com.google.devtools.j2objc.gen.TypeDeclarationGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
 import com.google.devtools.j2objc.javac.ClassFileConverterTest;
 import com.google.devtools.j2objc.javac.JavacTreeConverterTest;
-import com.google.devtools.j2objc.jdt.TreeConverterTest;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripperTest;
 import com.google.devtools.j2objc.pipeline.TranslationProcessorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
@@ -99,6 +100,7 @@ public class SmallTests {
   private static final Class<?>[] smallTestClasses = new Class[] {
     AbstractMethodRewriterTest.class,
     AnnotationRewriterTest.class,
+    AnnotationTest.class,
     AnonymousClassConverterTest.class,
     ArrayAccessTest.class,
     ArrayCreationTest.class,
@@ -123,6 +125,7 @@ public class SmallTests {
     GwtConverterTest.class,
     HeaderImportCollectorTest.class,
     ImplementationImportCollectorTest.class,
+    InfixExpressionTest.class,
     InitializationNormalizerTest.class,
     InnerClassExtractorTest.class,
     J2ObjCIncompatibleStripperTest.class,
@@ -161,7 +164,6 @@ public class SmallTests {
     StaticVarRewriterTest.class,
     SuperMethodInvocationRewriterTest.class,
     SwitchRewriterTest.class,
-    TreeConverterTest.class,
     TypeDeclarationGeneratorTest.class,
     TypeImplementationGeneratorTest.class,
     TypeUseAnnotationTest.class,

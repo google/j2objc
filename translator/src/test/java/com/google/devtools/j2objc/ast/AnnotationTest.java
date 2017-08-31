@@ -12,16 +12,15 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.jdt;
+package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.IOException;
 
 /**
- * Tests for {@link TreeConverter}.
+ * Tests for {@link Annotation}.
  */
-public class TreeConverterTest extends GenerationTest {
+public class AnnotationTest extends GenerationTest {
 
   // Issue 470: ClassCastException converting annotation with simple members.
   public void testAnnotationTypeMemberConversion() throws IOException {
@@ -50,18 +49,5 @@ public class TreeConverterTest extends GenerationTest {
         + "@Retention(RUNTIME) @Target({FIELD, METHOD}) public @interface Elements { "
         + "Simple[] value(); }", "Elements", "Elements.h");
     assertTranslation(translation, "@property (readonly) IOSObjectArray *value;");
-  }
-
-  public void testVeryDeeplyNextedExpression() throws IOException {
-    StringBuilder sb = new StringBuilder("return i == -1");
-    // Create a 2000 node deep infix expression.
-    for (int i = 0; i < 2000; i++) {
-      sb.append(" || i == " + i);
-    }
-    sb.append(";");
-    String exprStr = sb.toString();
-    String translation = translateSourceFile(UnicodeUtils.format(
-        "class Test { boolean test(int i) { %s } }", exprStr), "Test", "Test.m");
-    assertTranslation(translation, exprStr);
   }
 }

@@ -193,39 +193,6 @@ JAVA_SOURCES = \
 	javac/JavacParser.java \
 	javac/MemoryFileObject.java \
 	javac/TreeConverter.java \
-	jdt/AbstractBinding.java \
-	jdt/AbstractTypeBinding.java \
-	jdt/AnnotationPreProcessor.java \
-	jdt/BindingConverter.java \
-	jdt/GeneratedMethodBinding.java \
-	jdt/GeneratedPackageBinding.java \
-	jdt/GeneratedTypeBinding.java \
-	jdt/GeneratedVariableBinding.java \
-	jdt/JdtAnnotationMirror.java \
-	jdt/JdtAnnotationValue.java \
-	jdt/JdtArrayType.java \
-	jdt/JdtDeclaredType.java \
-	jdt/JdtElement.java \
-	jdt/JdtElements.java \
-	jdt/JdtExecutableElement.java \
-	jdt/JdtExecutableType.java \
-	jdt/JdtIntersectionType.java \
-	jdt/JdtJ2ObjCIncompatibleStripper.java \
-	jdt/JdtNoType.java \
-	jdt/JdtNativeType.java \
-	jdt/JdtNullType.java \
-	jdt/JdtPackageElement.java \
-	jdt/JdtParser.java \
-	jdt/JdtPrimitiveType.java \
-	jdt/JdtTypeElement.java \
-	jdt/JdtTypeMirror.java \
-	jdt/JdtTypeParameterElement.java \
-	jdt/JdtTypes.java \
-	jdt/JdtTypeVariable.java \
-	jdt/JdtVariableElement.java \
-	jdt/JdtWildcardType.java \
-	jdt/StringName.java \
-	jdt/TreeConverter.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \
 	pipeline/GenerationBatch.java \
