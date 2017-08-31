@@ -36,7 +36,6 @@ import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -44,7 +43,6 @@ import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * The set of tool properties, initialized by the command-line arguments.
@@ -76,7 +74,6 @@ public class Options {
   private boolean disallowInheritedConstructors = true;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
-  private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
   private String lintArgument = null;
@@ -169,119 +166,6 @@ public class Options {
 
     public String suffix() {
       return suffix;
-    }
-  }
-
-  /**
-   * Xlint options and their associated JDT parser warnings.
-   */
-  public static enum LintOption {
-    CAST(JavaCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK),
-    DEPRECATION(JavaCore.COMPILER_PB_DEPRECATION),
-    DEP_ANN(JavaCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION),
-    EMPTY(JavaCore.COMPILER_PB_EMPTY_STATEMENT),
-    FALLTHROUGH(JavaCore.COMPILER_PB_FALLTHROUGH_CASE),
-    FINALLY(JavaCore.COMPILER_PB_FINALLY_BLOCK_NOT_COMPLETING),
-    RAWTYPES(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE),
-    SERIAL(JavaCore.COMPILER_PB_MISSING_SERIAL_VERSION),
-    STATIC(JavaCore.COMPILER_PB_STATIC_ACCESS_RECEIVER),
-    UNCHECKED(JavaCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION),
-    VARARGS(JavaCore.COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST),
-
-    // Default JDT warnings that don't have javac equivalents. These are included since
-    // all unspecified warnings are turned off in JdtParser.
-    ASSERT_IDENTIFIER(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER),
-    CHAR_CONCAT(JavaCore.COMPILER_PB_CHAR_ARRAY_IN_STRING_CONCATENATION),
-    COMPARE_IDENTICAL(JavaCore.COMPILER_PB_COMPARING_IDENTICAL),
-    DEAD_CODE(JavaCore.COMPILER_PB_DEAD_CODE),
-    DISCOURAGED(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE),
-    ENUM_IDENTIFIER(JavaCore.COMPILER_PB_ENUM_IDENTIFIER),
-    FINAL_BOUND(JavaCore.COMPILER_PB_FINAL_PARAMETER_BOUND),
-    FORBIDDEN(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE),
-    INCOMPLETE_ENUM_SWITCH(JavaCore.COMPILER_PB_INCOMPLETE_ENUM_SWITCH),
-    INTERFACE_ANNOTATON(JavaCore.COMPILER_PB_ANNOTATION_SUPER_INTERFACE),
-    INTERFACE_NON_INHERITED(JavaCore.COMPILER_PB_INCOMPATIBLE_NON_INHERITED_INTERFACE_METHOD),
-    MASKED_CATCH(JavaCore.COMPILER_PB_HIDDEN_CATCH_BLOCK),
-    METHOD_WITH_CONSTRUCTOR_NAME(JavaCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME),
-    NO_EFFECT_ASSIGN(JavaCore.COMPILER_PB_NO_EFFECT_ASSIGNMENT),
-    NULL_REFERENCE(JavaCore.COMPILER_PB_NULL_REFERENCE),
-    NULL_UNCHECKED_CONVERSION(JavaCore.COMPILER_PB_NULL_UNCHECKED_CONVERSION),
-    PARAMTER_ANNOTATION_DROPPED(JavaCore.COMPILER_PB_NONNULL_PARAMETER_ANNOTATION_DROPPED),
-    PKG_DEFAULT_METHOD(JavaCore.COMPILER_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD),
-    REDUNDANT_NULL_ANNOTATION(JavaCore.COMPILER_PB_REDUNDANT_NULL_ANNOTATION),
-    RESOURCE_LEAK(JavaCore.COMPILER_PB_UNCLOSED_CLOSEABLE),
-    TYPE_HIDING(JavaCore.COMPILER_PB_TYPE_PARAMETER_HIDING),
-    UNUSED_IMPORT(JavaCore.COMPILER_PB_UNUSED_IMPORT),
-    UNUSED_LABEL(JavaCore.COMPILER_PB_UNUSED_LABEL),
-    UNUSED_LOCAL(JavaCore.COMPILER_PB_UNUSED_LOCAL),
-    UNUSED_PRIVATE(JavaCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER),
-    UNUSED_TYPE_ARGS(JavaCore.COMPILER_PB_UNUSED_TYPE_ARGUMENTS_FOR_METHOD_INVOCATION),
-    WARNING_TOKEN(JavaCore.COMPILER_PB_UNHANDLED_WARNING_TOKEN);
-
-    private final String jdtFlag;
-
-    private LintOption(String jdtFlag) {
-      this.jdtFlag = jdtFlag;
-    }
-
-    public String jdtFlag() {
-      return jdtFlag;
-    }
-
-    static LintOption parseName(String name) {
-      if (name.startsWith("-")) {
-        name = name.substring(1);
-      }
-      for (LintOption option : values()) {
-        if (option.name().toLowerCase().equals(name)) {
-          return option;
-        }
-      }
-      return null;
-    }
-
-    static EnumSet<LintOption> parse(String flag) {
-      if (flag.equals("-Xlint") || flag.equals("-Xlint:all")) {
-        return EnumSet.allOf(LintOption.class);
-      }
-      if (flag.equals("-Xlint:none")) {
-        return EnumSet.noneOf(LintOption.class);
-      }
-      if (!flag.startsWith("-Xlint:")) {
-        ErrorUtil.error("invalid flag: " + flag);
-      }
-      String flagList = flag.substring("-Xlint:".length());
-      String[] flags =
-          flagList.contains(",") ? flagList.split(",") : new String[] { flagList };
-      boolean hasMinusOption = false;
-      for (String f : flags) {
-        if (f.startsWith("-")) {
-          hasMinusOption = true;
-          break;
-        }
-      }
-      EnumSet<LintOption> result =
-          hasMinusOption ? EnumSet.allOf(LintOption.class) : EnumSet.noneOf(LintOption.class);
-      for (String f : flags) {
-        if (f.equals("all")) {
-          result.addAll(EnumSet.allOf(LintOption.class));
-          continue;
-        }
-        if (f.equals("none")) {
-          result.clear();
-          continue;
-        }
-        LintOption option = parseName(f);
-        if (option == null) {
-          ErrorUtil.error("invalid flag: " + flag);
-        }
-        if (f.startsWith("-")) {
-          result.remove(option);
-        } else {
-          result.add(option);
-        }
-      }
-      return result;
     }
   }
 
@@ -478,7 +362,6 @@ public class Options {
         nullability = true;
       } else if (arg.startsWith("-Xlint")) {
         lintArgument = arg;
-        lintOptions = LintOption.parse(arg);
       } else if (arg.equals("-Xtranslate-bootclasspath")) {
         translateBootclasspath = true;
       } else if (arg.equals("-Xdump-ast")) {
@@ -847,10 +730,6 @@ public class Options {
   @VisibleForTesting
   public void setNullability(boolean b) {
     nullability = b;
-  }
-
-  public EnumSet<LintOption> lintOptions() {
-    return lintOptions;
   }
 
   public String lintArgument() {

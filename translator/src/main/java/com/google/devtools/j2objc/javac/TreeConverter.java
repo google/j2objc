@@ -502,7 +502,7 @@ public class TreeConverter {
     Assignment newNode = new Assignment();
     String operatorName = node.getOperator().getSimpleName().toString() + "=";
     return newNode
-        .setOperator(Assignment.Operator.fromJdtOperatorName(operatorName))
+        .setOperator(Assignment.Operator.fromOperatorName(operatorName))
         .setLeftHandSide((Expression) convert(node.getVariable()))
         .setRightHandSide((Expression) convert(node.getExpression()));
   }
