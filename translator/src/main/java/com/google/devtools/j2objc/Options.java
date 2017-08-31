@@ -88,9 +88,6 @@ public class Options {
   // Property not defined in Java 9, so use empty bootclasspath.
   private String bootclasspath = System.getProperty("sun.boot.class.path", "");
 
-  // TODO(tball): remove after front-end conversion is complete.
-  private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
-
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup(fileUtil);
@@ -113,7 +110,6 @@ public class Options {
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
   private static final String TIMING_INFO_ARG = "--timing-info";
-  private static final String ENV_FRONT_END_FLAG = "J2OBJC_FRONT_END";
 
   // TODO(tball): remove obsolete flags once projects stop using them.
   private static final Set<String> obsoleteFlags = Sets.newHashSet(
@@ -173,20 +169,6 @@ public class Options {
 
     public String suffix() {
       return suffix;
-    }
-  }
-
-  // TODO(tball): remove after front-end conversion is complete.
-  private static enum FrontEnd {
-    JDT, JAVAC;
-
-    static FrontEnd defaultFrontEnd() {
-      String envFlag = System.getenv(ENV_FRONT_END_FLAG);
-      if (envFlag != null) {
-        ErrorUtil.warning("Environment variable " + ENV_FRONT_END_FLAG
-                          + " is being ignored. JAVAC is the only available frontend.");
-      }
-      return JAVAC;
     }
   }
 
@@ -499,8 +481,6 @@ public class Options {
         lintOptions = LintOption.parse(arg);
       } else if (arg.equals("-Xtranslate-bootclasspath")) {
         translateBootclasspath = true;
-      } else if (arg.equals("-Xuse-javac")) {
-        javaFrontEnd = FrontEnd.JAVAC;
       } else if (arg.equals("-Xdump-ast")) {
         dumpAST = true;
       } else if (arg.equals("-Xtranslate-classfiles")) {
@@ -571,15 +551,10 @@ public class Options {
       sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
     }
 
-    if (isJDT()) {
-      // Java 6 had a 1G max heap limit, removed in Java 7.
-      if (batchTranslateMaximum == -1) {  // Not set by flag.
-        batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
-      }
-    } else {
-      // javac performs best when all sources are compiled by one task.
-      batchTranslateMaximum = Integer.MAX_VALUE;
-    }
+    // javac performs best when all sources are compiled by one task.
+    // TODO(kstanger): This renders the --batch-translate-max flag useless. It was previously useful
+    // for tuning the JDT parser. We may want to clean and simplify our batching code now.
+    batchTranslateMaximum = Integer.MAX_VALUE;
   }
 
   /**
@@ -896,11 +871,6 @@ public class Options {
 
   public boolean translateBootclasspathFiles() {
     return translateBootclasspath;
-  }
-
-  // TODO(kstanger): remove after front-end conversion is complete.
-  public boolean isJDT() {
-    return javaFrontEnd == FrontEnd.JDT;
   }
 
   // Unreleased experimental project.

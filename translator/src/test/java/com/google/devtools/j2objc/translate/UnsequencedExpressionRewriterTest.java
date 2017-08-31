@@ -120,23 +120,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { int i = 0, j = i++ + i, k = j, l = --k - k, m = 1; } }",
         "Test", "Test.m");
-    if (options.isJDT()) {
-      assertTranslatedLines(translation,
-          "jint i = 0;",
-          "jint unseq$1 = i++;",
-          "jint j = unseq$1 + i, k = j;",
-          "jint unseq$2 = --k;",
-          "jint l = unseq$2 - k, m = 1;");
-    } else {
-      assertTranslatedLines(translation,
-          "jint i = 0;",
-          "jint unseq$1 = i++;",
-          "jint j = unseq$1 + i;",
-          "jint k = j;",
-          "jint unseq$2 = --k;",
-          "jint l = unseq$2 - k;",
-          "jint m = 1;");
-    }
+    assertTranslatedLines(translation,
+        "jint i = 0;",
+        "jint unseq$1 = i++;",
+        "jint j = unseq$1 + i;",
+        "jint k = j;",
+        "jint unseq$2 = --k;",
+        "jint l = unseq$2 - k;",
+        "jint m = 1;");
   }
 
   public void testAssertStatement() throws IOException {
@@ -155,31 +146,18 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test() { int i = 0, j = 0, k = 0; "
         + "for (i = i++ + i++, j = i++ + i++, k = i++ + i++;;) { } } }",
         "Test", "Test.m");
-    if (options.isJDT()) {
-      assertTranslatedLines(translation,
-          "jint i = 0, j = 0, k = 0;",
-          "jint unseq$1 = i++;",
-          "jint unseq$2 = i++;",
-          "i = unseq$1 + unseq$2;",
-          "jint unseq$3 = i++;",
-          "j = unseq$3 + i++;",
-          "jint unseq$4 = i++;",
-          "for (k = unseq$4 + i++; ; ) {",
-          "}");
-    } else {
-      assertTranslatedLines(translation,
-          "jint i = 0;",
-          "jint j = 0;",
-          "jint k = 0;",
-          "jint unseq$1 = i++;",
-          "jint unseq$2 = i++;",
-          "i = unseq$1 + unseq$2;",
-          "jint unseq$3 = i++;",
-          "j = unseq$3 + i++;",
-          "jint unseq$4 = i++;",
-          "for (k = unseq$4 + i++; ; ) {",
-          "}");
-    }
+    assertTranslatedLines(translation,
+        "jint i = 0;",
+        "jint j = 0;",
+        "jint k = 0;",
+        "jint unseq$1 = i++;",
+        "jint unseq$2 = i++;",
+        "i = unseq$1 + unseq$2;",
+        "jint unseq$3 = i++;",
+        "j = unseq$3 + i++;",
+        "jint unseq$4 = i++;",
+        "for (k = unseq$4 + i++; ; ) {",
+        "}");
   }
 
   public void testForInitWithDeclaration() throws IOException {

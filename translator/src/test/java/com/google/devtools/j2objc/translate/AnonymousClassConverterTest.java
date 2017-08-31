@@ -358,16 +358,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "create_Test_A_1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
-    String param0 = options.isJDT() ? "param0" : "i";
-    String superOuter = options.isJDT() ? "superOuter$" : "x0";
     assertTranslatedLines(translation,
         "void Test_A_1_initWithTest_A_withTest_B_withTest_B_withInt_("
-          + "Test_A_1 *self, Test_A *outer$, Test_B *capture$0, Test_B *" + superOuter + ", "
-          + "jint " + param0 + ") {",
+          + "Test_A_1 *self, Test_A *outer$, Test_B *capture$0, Test_B *x0, jint i) {",
         "  JreStrongAssign(&self->this$1_, outer$);",
         "  JreStrongAssign(&self->val$b_, capture$0);",
-        "  Test_B_Inner_initWithTest_B_withInt_(self, nil_chk(" + superOuter + "), " + param0
-          + ");",
+        "  Test_B_Inner_initWithTest_B_withInt_(self, nil_chk(x0), i);",
         "}");
   }
 
@@ -408,12 +404,11 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "}");
 
-    String param0 = options.isJDT() ? "param0" : "n";
     // Verify Color_1 constructor.
     assertTranslatedLines(impl,
         "void Color_1_initWithInt_withNSString_withInt_("
-          + "Color_1 *self, jint " + param0 + ", NSString *__name, jint __ordinal) {",
-        "  Color_initWithInt_withNSString_withInt_(self, " + param0 + ", __name, __ordinal);",
+          + "Color_1 *self, jint n, NSString *__name, jint __ordinal) {",
+        "  Color_initWithInt_withNSString_withInt_(self, n, __name, __ordinal);",
         "}");
 
     // Verify constant initialization.
@@ -476,12 +471,11 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
         "Test", "Test.m");
-    String param0 = options.isJDT() ? "param0" : "t";
     assertTranslation(translation, "create_Test_1_initWithNSString_(@\"foo\")");
-    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)" + param0 + " {");
+    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)t {");
     assertTranslatedLines(translation,
-        "void Test_1_initWithNSString_(Test_1 *self, NSString *" + param0 + ") {",
-        "  Test_initWithId_(self, " + param0 + ");",
+        "void Test_1_initWithNSString_(Test_1 *self, NSString *t) {",
+        "  Test_initWithId_(self, t);",
         "}");
   }
 
@@ -499,18 +493,16 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "create_Test_2_initWithNSString_withNSObjectArray_(@\"foo\", "
         + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
-    String param0 = options.isJDT() ? "param0" : "fmt";
-    String param1 = options.isJDT() ? "param1" : "args";
     // check the generated constructors.
     assertTranslatedLines(translation,
         "void Test_1_initWithNSString_withNSObjectArray_("
-          + "Test_1 *self, NSString *" + param0 + ", IOSObjectArray *" + param1 + ") {",
-        "  Test_initWithNSString_withNSObjectArray_(self, " + param0 + ", " + param1 + ");",
+          + "Test_1 *self, NSString *fmt, IOSObjectArray *args) {",
+        "  Test_initWithNSString_withNSObjectArray_(self, fmt, args);",
         "}");
     assertTranslatedLines(translation,
         "void Test_2_initWithNSString_withNSObjectArray_("
-          + "Test_2 *self, NSString *" + param0 + ", IOSObjectArray *" + param1 + ") {",
-        "  Test_initWithNSString_withNSObjectArray_(self, " + param0 + ", " + param1 + ");",
+          + "Test_2 *self, NSString *fmt, IOSObjectArray *args) {",
+        "  Test_initWithNSString_withNSObjectArray_(self, fmt, args);",
         "}");
   }
 
@@ -520,14 +512,13 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "static class B { String s;  I test(Test t, int i) { "
         + "return () -> t.new A() { public String toString() { return s + i; } }; } } }",
         "Test", "Test.m");
-    String superOuter = options.isJDT() ? "superOuter$" : "x0";
     assertTranslation(translation,
         "static Test_B_1 *create_Test_B_1_initWithTest_B_withInt_withTest_("
-        + "Test_B *outer$, jint capture$0, Test *" + superOuter + ");");
+        + "Test_B *outer$, jint capture$0, Test *x0);");
     assertTranslation(translation,
         "return create_Test_B_1_initWithTest_B_withInt_withTest_(this$0_, val$i_, val$t_);");
     // The super outer must be nil_chk'ed in the anonymous constructor.
-    assertTranslation(translation, "Test_A_initWithTest_(self, nil_chk(" + superOuter + "));");
+    assertTranslation(translation, "Test_A_initWithTest_(self, nil_chk(x0));");
   }
 
   public void testSuperclassHasCapturedVariables() throws IOException {
@@ -543,15 +534,13 @@ public class AnonymousClassConverterTest extends GenerationTest {
   }
 
   public void testGenericConstructorCalledByAnonymousClass() throws IOException {
-    if (!options.isJDT()) {
-      // JDT fails with "could not find constructor".
-      String translation = translateSourceFile(
-          "class Test { <T> Test(T t) {} Test create() { return new Test(\"foo\") {}; } }",
-          "Test", "Test.m");
-      assertTranslatedLines(translation,
-          "void Test_1_initWithId_(Test_1 *self, id t) {",
-          "  Test_initWithId_(self, t);",
-          "}");
-    }
+    // JDT fails with "could not find constructor".
+    String translation = translateSourceFile(
+        "class Test { <T> Test(T t) {} Test create() { return new Test(\"foo\") {}; } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "void Test_1_initWithId_(Test_1 *self, id t) {",
+        "  Test_initWithId_(self, t);",
+        "}");
   }
 }

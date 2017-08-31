@@ -200,22 +200,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Example_Bar, FOO, NSString *)");
   }
 
-  public void testMultipleVariableDeclarations() throws IOException {
-    String source = "String one, two;";
-    List<Statement> stmts = translateStatements(source);
-    if (options.isJDT()) {
-      // TODO(tball): remove test and this JDT block when javac conversion is complete.
-      String result = generateStatement(stmts.get(0));
-      assertEquals("NSString *one, *two;", result);
-    } else {
-      assertEquals(2, stmts.size());
-      String result = generateStatement(stmts.get(0));
-      assertEquals("NSString *one;", result);
-      result = generateStatement(stmts.get(1));
-      assertEquals("NSString *two;", result);
-    }
-  }
-
   public void testObjectDeclaration() throws IOException {
     List<Statement> stmts = translateStatements("Object o;");
     assertEquals(1, stmts.size());

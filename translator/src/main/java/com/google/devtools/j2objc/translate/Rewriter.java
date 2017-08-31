@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -221,44 +220,6 @@ public class Rewriter extends UnitTreeVisitor {
     VariableElement var = node.getVariableElement();
     if (ElementUtil.hasNullableAnnotation(var) || ElementUtil.hasNonnullAnnotation(var)) {
       unit.setHasNullabilityAnnotations();
-    }
-  }
-
-  @Override
-  public void endVisit(VariableDeclarationStatement node) {
-    if (options.isJDT()) {
-      ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-          rewriteExtraDimensions(node.getFragments());
-      if (newDeclarations != null) {
-        List<Statement> statements = ((Block) node.getParent()).getStatements();
-        int location = 0;
-        while (location < statements.size() && !node.equals(statements.get(location))) {
-          location++;
-        }
-        for (Integer dimensions : newDeclarations.keySet()) {
-          List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
-          VariableDeclarationStatement newDecl = new VariableDeclarationStatement(fragments.get(0));
-          newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
-          statements.add(++location, newDecl);
-        }
-      }
-    }
-  }
-
-  @Override
-  public void endVisit(FieldDeclaration node) {
-    if (options.isJDT()) {
-      ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-          rewriteExtraDimensions(node.getFragments());
-      if (newDeclarations != null) {
-        List<BodyDeclaration> bodyDecls = TreeUtil.asDeclarationSublist(node);
-        for (Integer dimensions : newDeclarations.keySet()) {
-          List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
-          FieldDeclaration newDecl = new FieldDeclaration(fragments.get(0));
-          newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
-          bodyDecls.add(newDecl);
-        }
-      }
     }
   }
 
