@@ -223,8 +223,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
     return false;
   }
 
-  private static void rewriteRetainedLocal(Expression expr) {
-    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
+  private void rewriteRetainedLocal(Expression expr) {
+    if (options.useARC() || expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
       return;
     }
     FunctionElement element =
@@ -235,7 +235,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void handleRetainedLocal(VariableElement var, Expression rhs) {
-    if (options.useReferenceCounting() && isRetainedLocal(var)) {
+    if (isRetainedLocal(var)) {
       rewriteRetainedLocal(rhs);
     }
   }
