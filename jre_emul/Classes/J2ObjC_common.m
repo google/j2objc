@@ -364,7 +364,7 @@ NSString *JreStrcat(const char *types, ...) {
   va_end(va);
 
   // Create a string builder and fill it.
-  JreStringBuilder* sb = [[JreStringBuilder alloc]init];
+  JreStringBuilder* sb = [JreStringBuilder alloc];
   JreStringBuilder_initWithCapacity(sb, capacity);
   va_start(va, types);
   AppendArgs(types, va, objDescriptions, sb);
@@ -388,7 +388,7 @@ id JreStrAppendInner(id lhs, const char *types, va_list va) {
     capacity += 4;
   }
 
-    JreStringBuilder* sb = [[JreStringBuilder alloc]init];
+    JreStringBuilder* sb = [JreStringBuilder alloc];
   JreStringBuilder_initWithCapacity(sb, capacity);
   JreStringBuilder_appendString(sb, lhsDescription);
   AppendArgs(types, va, objDescriptions, sb);

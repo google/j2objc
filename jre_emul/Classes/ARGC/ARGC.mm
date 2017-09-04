@@ -10,7 +10,7 @@
 #import "../IOSClass.h"
 #import <atomic>
 
-#define GC_DEBUG 1
+#define GC_DEBUG 0
 
 #if !GC_DEBUG
 #pragma GCC optimize ("O3")
@@ -320,7 +320,6 @@ public:
     }
     
     void doGC();
-
 //    static void markInstance(ObjP obj) {
 //        if (GC_DEBUG && obj == GC_TRACE_REF) {
 //            int a = 3;
@@ -447,15 +446,16 @@ public:
             releaseReferenceCountEx((ObjP)obj);
             return;
         }
-        if (NSDecrementExtraRefCountWasZero(obj)) {
-            // 주의) NSExtraRefCount() 사용해선 안된다.
-            // NSExtraRefCount(__NSCFConstantString*) 는 항상 0을 반환.
-            NSUInteger rc = [obj retainCount];
-            if (rc <= 1) {
-                //assert(!isJavaObject(obj) || getExternalRefCount((ARGCObject*)obj) <= 0);
-                    [obj dealloc];
-            }
-        }
+        [obj release];
+//        if (NSDecrementExtraRefCountWasZero(obj)) {
+//            // 주의) NSExtraRefCount() 사용해선 안된다.
+//            // NSExtraRefCount(__NSCFConstantString*) 는 항상 0을 반환.
+//            NSUInteger rc = [obj retainCount];
+//            //if (rc <= 1) {
+//                //assert(!isJavaObject(obj) || getExternalRefCount((ARGCObject*)obj) <= 0);
+//                    [obj dealloc];
+//            //}
+//        }
     }
     
     static BOOL releaseReferenceCountEx(ObjP obj) {
@@ -464,8 +464,8 @@ public:
         }
         // 주의) NSExtraRefCount() 사용해선 안된다.
         // NSExtraRefCount(__NSCFConstantString*) 는 항상 0을 반환.
-        NSUInteger rc = [obj retainCount];
-        if (rc <= 1) {
+        //NSUInteger rc = [obj retainCount];
+        //if (rc <= 1) {
             //assert(!isJavaObject(obj) || getExternalRefCount((ARGCObject*)obj) <= 0);
             if (!obj->_gc_info.isFinalized()) {
                 // GC에서 일괄 수행.
@@ -477,7 +477,7 @@ public:
                 }
                 [obj dealloc];
             }
-        }
+        //}
         return false;
     }
     
@@ -583,10 +583,11 @@ private:
         }
     }
     
-    void reclaimInstance(id obj) {
+    void reclaimInstance(ObjP obj) {
         if (GC_TRACE(obj, GC_LOG_ALLOC)) {
             NSLog(@"dealloc: %p %@", obj, [obj class]);
         }
+        //[obj call_super_dealloc];
         NSDeallocateObject(obj);
         _cntDeallocated ++;
         mayHaveGarbage = true;
@@ -599,8 +600,8 @@ private:
             NSLog(@"dealloc: %p %@", obj, [obj class]);
         }
 
-        if (isThreadSafe && NSExtraRefCount(obj) <= 0) {
-            reclaimInstance(obj);
+        if (isThreadSafe && NSExtraRefCount(dead) <= 0) {
+            reclaimInstance(dead);
         }
         else {
             @synchronized (tableLock) {
@@ -966,6 +967,9 @@ void ARGC::dealloc_in_scan(ObjP obj) {
 
 void ARGC::dealloc_now(ObjP obj) {
     _instance._cntDellocThread ++;
+    if (GC_DEBUG &&  obj == GC_TRACE_REF) {
+        int a = 3;
+    }
         [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
         _instance.addPhantom(obj, true);
     _instance._cntDellocThread --;
@@ -1028,7 +1032,7 @@ void ARGC::markRootInstance(ObjP obj, BOOL isStrong) {
     _instance._cntMarkingThread ++;
     assert(gc_state >= SCANNING);
     if (obj->_gc_info.markReachable(isStrong)) {
-        //ARGC::checkRefCount(obj, @"mark__ Root");
+        ARGC::checkRefCount(obj, @"mark__ Root");
         
         const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
         ObjP scanBuff[OBJ_STACK_SIZ];

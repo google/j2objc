@@ -54,7 +54,7 @@
 
 - (void)dealloc {
   free(frames_);
-  DEALLOC_(dealloc);
+  DEALLOC_(super);
 }
 
 @end
