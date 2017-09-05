@@ -28,6 +28,7 @@
 
 @class IOSClass;
 @class JavaLangReflectConstructor;
+@class JavaLangReflectField;
 @class JavaLangReflectMethod;
 
 // An empty class info struct to be used by certain kinds of class objects like
@@ -54,6 +55,12 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 
 // Field and method lookup functions.
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName);
+// Find a field declared in the given class
+JavaLangReflectField *FindDeclaredField(
+    IOSClass *iosClass, NSString *name, jboolean publicOnly);
+// Find a field declared in the given class or its hierarchy
+JavaLangReflectField *FindField(
+    IOSClass *iosClass, NSString *name, jboolean publicOnly);
 // Find a method or constructor declared in the given class.
 JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
     IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes);

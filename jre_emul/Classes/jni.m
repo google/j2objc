@@ -26,6 +26,7 @@
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
+#include "IOSReflection.h"
 #include "java/lang/ClassNotFoundException.h"
 #include "java/lang/InstantiationException.h"
 #include "java/lang/Throwable.h"
@@ -458,7 +459,7 @@ static void ExceptionClear(JNIEnv *env) {
 
 static jfieldID GetFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
   IOSClass *iosClass = (IOSClass *) clazz;
-  JavaLangReflectField *field = [iosClass getDeclaredField:[NSString stringWithUTF8String:name]];
+  JavaLangReflectField *field = FindField(iosClass, [NSString stringWithUTF8String:name], false);
   return (jfieldID) field;
 }
 

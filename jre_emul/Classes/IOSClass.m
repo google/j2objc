@@ -883,38 +883,9 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   };
 }
 
-JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
-  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
-  const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
-  if (fieldMeta && (!publicOnly || (fieldMeta->modifiers & JavaLangReflectModifier_PUBLIC) != 0)) {
-    Ivar ivar = class_getInstanceVariable(iosClass.objcClass, fieldMeta->name);
-    return [JavaLangReflectField fieldWithIvar:ivar
-                                     withClass:iosClass
-                                  withMetadata:fieldMeta];
-  }
-  return nil;
-}
-
-static JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
-  while (iosClass) {
-    JavaLangReflectField *field = findDeclaredField(iosClass, name, true);
-    if (field) {
-      return field;
-    }
-    for (IOSClass *p in [iosClass getInterfacesInternal]) {
-      JavaLangReflectField *field = findField(p, name);
-      if (field) {
-        return field;
-      }
-    }
-    iosClass = [iosClass getSuperclass];
-  }
-  return nil;
-}
-
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   nil_chk(name);
-  JavaLangReflectField *field = findDeclaredField(self, name, false);
+  JavaLangReflectField *field = FindDeclaredField(self, name, false);
   if (field) {
     return field;
   }
@@ -923,7 +894,7 @@ static JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
 
 - (JavaLangReflectField *)getField:(NSString *)name {
   nil_chk(name);
-  JavaLangReflectField *field = findField(self, name);
+  JavaLangReflectField *field = FindField(self, name, true);
   if (field) {
     return field;
   }
