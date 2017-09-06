@@ -123,18 +123,6 @@ public class FileUtil {
     return end != -1 ? basename.substring(0, end) : basename;
   }
 
-  // TODO(tball): remove when Parser extraction is complete.
-  public static String getQualifiedMainTypeName(InputFile file,
-      org.eclipse.jdt.core.dom.CompilationUnit unit) {
-    String qualifiedName = getMainTypeName(file);
-    org.eclipse.jdt.core.dom.PackageDeclaration packageDecl = unit.getPackage();
-    if (packageDecl != null) {
-      String packageName = packageDecl.getName().getFullyQualifiedName();
-      qualifiedName = packageName + "." + qualifiedName;
-    }
-    return qualifiedName;
-  }
-
   public static String getQualifiedMainTypeName(InputFile file, CompilationUnit unit) {
     String qualifiedName = getMainTypeName(file);
     PackageDeclaration packageDecl = unit.getPackage();

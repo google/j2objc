@@ -16,13 +16,10 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.List;
+import javax.tools.ToolProvider;
 
 /**
  * Tests for {@link ObjectiveCImplementationGenerator}.
@@ -721,19 +718,9 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "import com.google.j2objc.annotations.ObjectiveCName;",
         "src/foo/bar/mumble/package-info.java");
 
-    List<String> compileArgs = Lists.newArrayList();
-    compileArgs.add("-classpath");
-    compileArgs.add(System.getProperty("java.class.path"));
-    compileArgs.add("-encoding");
-    compileArgs.add(options.fileUtil().getCharset().name());
-    compileArgs.add("-source");
-    compileArgs.add("1.7");
-    compileArgs.add(tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
-    org.eclipse.jdt.internal.compiler.batch.Main batchCompiler =
-        new org.eclipse.jdt.internal.compiler.batch.Main(
-            new PrintWriter(System.out), new PrintWriter(System.err),
-            false, Collections.emptyMap(), null);
-    batchCompiler.compile(compileArgs.toArray(new String[0]));
+    ToolProvider.getSystemJavaCompiler().run(
+        null, null, System.err,
+        tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
     options.fileUtil().getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
     String translation = translateSourceFile("package foo.bar.mumble;\n"
         + "public class Test {}",
