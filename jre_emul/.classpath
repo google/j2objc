@@ -9,7 +9,6 @@
 	<classpathentry kind="src" path="android/libcore/luni/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/luni/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/support/src/test/java"/>
-	<classpathentry kind="src" path="android/libcore/xml/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/archive/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/java"/>
