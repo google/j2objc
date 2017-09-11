@@ -913,10 +913,10 @@ public interface XmlPullParser {
         throws XmlPullParserException;
 
     /**
-     * Get next parsing event - element content wil be coalesced and only one
+     * Get next parsing event - element content will be coalesced and only one
      * TEXT event must be returned for whole element content
      * (comments and processing instructions will be ignored and entity references
-     * must be expanded or exception mus be thrown if entity reference can not be expanded).
+     * must be expanded or exception must be thrown if entity reference can not be expanded).
      * If element content is empty (content is "") then no TEXT event will be reported.
      *
      * <p><b>NOTE:</b> empty element (such as &lt;tag/>) will be reported
@@ -1052,7 +1052,7 @@ public interface XmlPullParser {
      * If current event is START_TAG then if next element is TEXT then element content is returned
      * or if next event is END_TAG then empty string is returned, otherwise exception is thrown.
      * After calling this function successfully parser will be positioned on END_TAG.
-     * 
+     *
      * <p>The motivation for this function is to allow to parse consistently both
      * empty elements and elements that has non empty content, for example for input: <ol>
      * <li>&lt;tag&gt;foo&lt;/tag&gt;

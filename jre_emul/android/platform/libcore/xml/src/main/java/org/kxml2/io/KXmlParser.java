@@ -163,6 +163,9 @@ public class KXmlParser implements XmlPullParser, Closeable {
     private boolean degenerated;
     private int attributeCount;
 
+    // true iff. we've encountered the START_TAG of an XML element at depth == 0;
+    private boolean parsedTopLevelStartTag;
+
     /*
      * The current element's attributes arranged in groups of 4:
      * i + 0 = attribute namespace URI
@@ -416,6 +419,9 @@ public class KXmlParser implements XmlPullParser, Closeable {
                 break;
             case DOCDECL:
                 readDoctype(justOneToken);
+                if (parsedTopLevelStartTag) {
+                    throw new XmlPullParserException("Unexpected token", this, null);
+                }
                 break;
 
             default:
@@ -468,7 +474,7 @@ public class KXmlParser implements XmlPullParser, Closeable {
 
         search:
         while (true) {
-            if (position + delimiter.length >= limit) {
+            if (position + delimiter.length > limit) {
                 if (start < position && returnText) {
                     if (result == null) {
                         result = new StringBuilder();
@@ -598,6 +604,7 @@ public class KXmlParser implements XmlPullParser, Closeable {
         }
 
         read('>');
+        skip();
     }
 
     /**
@@ -756,6 +763,9 @@ public class KXmlParser implements XmlPullParser, Closeable {
                     depth++;
                 } else if (c == ')') {
                     depth--;
+                } else if (c == -1) {
+                    throw new XmlPullParserException(
+                            "Unterminated element content spec", this, null);
                 }
                 position++;
                 c = peekCharacter();
@@ -857,7 +867,9 @@ public class KXmlParser implements XmlPullParser, Closeable {
                 position++;
                 // TODO: does this do escaping correctly?
                 String value = readValue((char) c, true, true, ValueContext.ATTRIBUTE);
-                position++;
+                if (peekCharacter() == c) {
+                    position++;
+                }
                 defineAttributeDefault(elementName, attributeName, value);
             }
         }
@@ -907,7 +919,9 @@ public class KXmlParser implements XmlPullParser, Closeable {
         if (quote == '"' || quote == '\'') {
             position++;
             entityValue = readValue((char) quote, true, false, ValueContext.ENTITY_DECLARATION);
-            position++;
+            if (peekCharacter() == quote) {
+                position++;
+            }
         } else if (readExternalId(true, false)) {
             /*
              * Map external entities to the empty string. This is dishonest,
@@ -1109,7 +1123,7 @@ public class KXmlParser implements XmlPullParser, Closeable {
                 attributes[i + 3] = readValue(delimiter, true, throwOnResolveFailure,
                         ValueContext.ATTRIBUTE);
 
-                if (delimiter != ' ') {
+                if (delimiter != ' ' && peekCharacter() == delimiter) {
                     position++; // end quote
                 }
             } else if (relaxed) {
@@ -1121,6 +1135,9 @@ public class KXmlParser implements XmlPullParser, Closeable {
         }
 
         int sp = depth++ * 4;
+        if (depth == 1) {
+            parsedTopLevelStartTag = true;
+        }
         elementStack = ensureCapacity(elementStack, sp + 4);
         elementStack[sp + 3] = name;
 
@@ -1424,12 +1441,15 @@ public class KXmlParser implements XmlPullParser, Closeable {
         int c = peekCharacter();
         if (c != expected) {
             checkRelaxed("expected: '" + expected + "' actual: '" + ((char) c) + "'");
+            if (c == -1) {
+                return; // On EOF, don't move position beyond limit
+            }
         }
         position++;
     }
 
     private void read(char[] chars) throws IOException, XmlPullParserException {
-        if (position + chars.length >= limit && !fillBuffer(chars.length)) {
+        if (position + chars.length > limit && !fillBuffer(chars.length)) {
             checkRelaxed("expected: '" + new String(chars) + "' but was EOF");
             return;
         }
@@ -1586,6 +1606,7 @@ public class KXmlParser implements XmlPullParser, Closeable {
         this.reader = reader;
 
         type = START_DOCUMENT;
+        parsedTopLevelStartTag = false;
         name = null;
         namespace = null;
         degenerated = false;

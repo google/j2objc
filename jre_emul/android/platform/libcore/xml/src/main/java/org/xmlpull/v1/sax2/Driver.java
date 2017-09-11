@@ -8,15 +8,13 @@ import java.io.IOException;
 import java.io.Reader;
 
 // not J2ME classes -- remove if you want to run in MIDP devices
-//import java.net.URL;
-//import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 
 // not J2ME classes
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.DTDHandler;
@@ -38,7 +36,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * SAX2 Driver that pulls events from XmlPullParser
- * and comverts them into SAX2 callbacks.
+ * and converts them into SAX2 callbacks.
  *
  * @author <a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a>
  */
@@ -289,6 +287,7 @@ public class Driver implements Locator, XMLReader, Attributes
                         errorHandler.fatalError(saxException);
                         return;
                     }
+                    // NOTE: replace with Connection to run in J2ME environment
                     try {
                         final URL url = new URL(systemId);
                         stream = url.openStream();
@@ -402,13 +401,12 @@ public class Driver implements Locator, XMLReader, Attributes
                         //++level;
 
                         break;
-                    case XmlPullParser.TEXT: {
-                          final char[] chars = pp.getTextCharacters(holderForStartAndLength);
-                          contentHandler.characters(chars,
-                                                    holderForStartAndLength[0], //start
-                                                    holderForStartAndLength[1] //len
-                                                   );
-                        }
+                    case XmlPullParser.TEXT:
+                        final char[] chars = pp.getTextCharacters(holderForStartAndLength);
+                        contentHandler.characters(chars,
+                                                  holderForStartAndLength[0], //start
+                                                  holderForStartAndLength[1] //len
+                                                 );
                         break;
                     case XmlPullParser.END_TAG:
                         //--level;
