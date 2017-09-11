@@ -114,9 +114,21 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/java/text/Support_MessageFormat.java \
     org/apache/harmony/tests/java/text/Support_SimpleDateFormat.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
+    org/apache/harmony/tests/org/xml/sax/support/BrokenInputStream.java \
+    org/apache/harmony/tests/org/xml/sax/support/DoNothingParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/DoNothingXMLReader.java \
     org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockFilter.java \
     org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockReader.java \
     org/apache/harmony/tests/org/xml/sax/support/MockResolver.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoAccessParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoAccessXMLReader.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoInstanceParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoInstanceXMLReader.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
     tests/security/interfaces/Util.java \
@@ -718,6 +730,25 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/ext/Attributes2ImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/ext/DefaultHandler2Test.java \
+    org/apache/harmony/tests/org/xml/sax/ext/Locator2ImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/HandlerBaseTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/AttributeListImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/AttributesImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/DefaultHandlerTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/LocatorImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/NamespaceSupportTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/ParserAdapterTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/ParserFactoryTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/XMLFilterImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderAdapterTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
+    org/apache/harmony/tests/org/xml/sax/InputSourceTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXNotRecognizedExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXNotSupportedExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXParseExceptionTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/json/JSONArrayTest.java \
     org/json/JSONObjectTest.java \

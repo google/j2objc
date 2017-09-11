@@ -636,6 +636,37 @@
 		062B4F2C1ED76C1200D4E7D8 /* OldManifestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062B4F241ED76C1200D4E7D8 /* OldManifestTest.m */; };
 		062B4F2E1ED76C4A00D4E7D8 /* ReferenceQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062B4F2D1ED76C4A00D4E7D8 /* ReferenceQueueTest.m */; };
 		062B4F301ED76CC200D4E7D8 /* Support_Xml.m in Sources */ = {isa = PBXBuildFile; fileRef = 062B4F2F1ED76CC200D4E7D8 /* Support_Xml.m */; };
+		063A62C61F672637001DC971 /* HandlerBaseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C01F672637001DC971 /* HandlerBaseTest.m */; };
+		063A62C71F672637001DC971 /* InputSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C11F672637001DC971 /* InputSourceTest.m */; };
+		063A62C81F672637001DC971 /* SAXExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C21F672637001DC971 /* SAXExceptionTest.m */; };
+		063A62C91F672637001DC971 /* SAXNotRecognizedExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C31F672637001DC971 /* SAXNotRecognizedExceptionTest.m */; };
+		063A62CA1F672637001DC971 /* SAXNotSupportedExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C41F672637001DC971 /* SAXNotSupportedExceptionTest.m */; };
+		063A62CB1F672637001DC971 /* SAXParseExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C51F672637001DC971 /* SAXParseExceptionTest.m */; };
+		063A62D81F67267C001DC971 /* BrokenInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62CC1F67267C001DC971 /* BrokenInputStream.m */; };
+		063A62D91F67267C001DC971 /* DoNothingParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62CD1F67267C001DC971 /* DoNothingParser.m */; };
+		063A62DA1F67267C001DC971 /* DoNothingXMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62CE1F67267C001DC971 /* DoNothingXMLReader.m */; };
+		063A62DB1F67267C001DC971 /* MockFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62CF1F67267C001DC971 /* MockFilter.m */; };
+		063A62DC1F67267C001DC971 /* MockParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D01F67267C001DC971 /* MockParser.m */; };
+		063A62DD1F67267C001DC971 /* MockReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D11F67267C001DC971 /* MockReader.m */; };
+		063A62DE1F67267C001DC971 /* NoAccessParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D21F67267C001DC971 /* NoAccessParser.m */; };
+		063A62DF1F67267C001DC971 /* NoAccessXMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D31F67267C001DC971 /* NoAccessXMLReader.m */; };
+		063A62E01F67267C001DC971 /* NoInstanceParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D41F67267C001DC971 /* NoInstanceParser.m */; };
+		063A62E11F67267C001DC971 /* NoInstanceXMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D51F67267C001DC971 /* NoInstanceXMLReader.m */; };
+		063A62E21F67267C001DC971 /* NoSubclassParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D61F67267C001DC971 /* NoSubclassParser.m */; };
+		063A62E31F67267C001DC971 /* NoSubclassXMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62D71F67267C001DC971 /* NoSubclassXMLReader.m */; };
+		063A62E71F67269E001DC971 /* Attributes2ImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62E41F67269E001DC971 /* Attributes2ImplTest.m */; };
+		063A62E81F67269E001DC971 /* DefaultHandler2Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62E51F67269E001DC971 /* DefaultHandler2Test.m */; };
+		063A62E91F67269E001DC971 /* Locator2ImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62E61F67269E001DC971 /* Locator2ImplTest.m */; };
+		063A62F41F6726C1001DC971 /* AttributeListImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62EA1F6726C1001DC971 /* AttributeListImplTest.m */; };
+		063A62F51F6726C1001DC971 /* AttributesImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62EB1F6726C1001DC971 /* AttributesImplTest.m */; };
+		063A62F61F6726C1001DC971 /* DefaultHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62EC1F6726C1001DC971 /* DefaultHandlerTest.m */; };
+		063A62F71F6726C1001DC971 /* LocatorImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62ED1F6726C1001DC971 /* LocatorImplTest.m */; };
+		063A62F81F6726C1001DC971 /* NamespaceSupportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62EE1F6726C1001DC971 /* NamespaceSupportTest.m */; };
+		063A62F91F6726C1001DC971 /* ParserAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62EF1F6726C1001DC971 /* ParserAdapterTest.m */; };
+		063A62FA1F6726C1001DC971 /* ParserFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62F01F6726C1001DC971 /* ParserFactoryTest.m */; };
+		063A62FB1F6726C1001DC971 /* XMLFilterImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62F11F6726C1001DC971 /* XMLFilterImplTest.m */; };
+		063A62FC1F6726C1001DC971 /* XMLReaderAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62F21F6726C1001DC971 /* XMLReaderAdapterTest.m */; };
+		063A62FD1F6726C1001DC971 /* XMLReaderFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62F31F6726C1001DC971 /* XMLReaderFactoryTest.m */; };
 		0656AEED1E9EF66900DB98B4 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066899691E9EE12900DDD10B /* libiconv.tbd */; };
 		06574A1A1A8EAF0B000A3616 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06574A1C1A8EAF84000A3616 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06574A1B1A8EAF84000A3616 /* QuartzCore.framework */; };
@@ -1460,6 +1491,37 @@
 		062B4F2D1ED76C4A00D4E7D8 /* ReferenceQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReferenceQueueTest.m; path = libcore/java/lang/ref/ReferenceQueueTest.m; sourceTree = "<group>"; };
 		062B4F2F1ED76CC200D4E7D8 /* Support_Xml.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Xml.m; path = tests/support/Support_Xml.m; sourceTree = "<group>"; };
 		062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSArray_PackagePrivate.h; sourceTree = "<group>"; };
+		063A62C01F672637001DC971 /* HandlerBaseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HandlerBaseTest.m; path = org/apache/harmony/tests/org/xml/sax/HandlerBaseTest.m; sourceTree = "<group>"; };
+		063A62C11F672637001DC971 /* InputSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputSourceTest.m; path = org/apache/harmony/tests/org/xml/sax/InputSourceTest.m; sourceTree = "<group>"; };
+		063A62C21F672637001DC971 /* SAXExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXExceptionTest.m; path = org/apache/harmony/tests/org/xml/sax/SAXExceptionTest.m; sourceTree = "<group>"; };
+		063A62C31F672637001DC971 /* SAXNotRecognizedExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXNotRecognizedExceptionTest.m; path = org/apache/harmony/tests/org/xml/sax/SAXNotRecognizedExceptionTest.m; sourceTree = "<group>"; };
+		063A62C41F672637001DC971 /* SAXNotSupportedExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXNotSupportedExceptionTest.m; path = org/apache/harmony/tests/org/xml/sax/SAXNotSupportedExceptionTest.m; sourceTree = "<group>"; };
+		063A62C51F672637001DC971 /* SAXParseExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXParseExceptionTest.m; path = org/apache/harmony/tests/org/xml/sax/SAXParseExceptionTest.m; sourceTree = "<group>"; };
+		063A62CC1F67267C001DC971 /* BrokenInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BrokenInputStream.m; path = org/apache/harmony/tests/org/xml/sax/support/BrokenInputStream.m; sourceTree = "<group>"; };
+		063A62CD1F67267C001DC971 /* DoNothingParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoNothingParser.m; path = org/apache/harmony/tests/org/xml/sax/support/DoNothingParser.m; sourceTree = "<group>"; };
+		063A62CE1F67267C001DC971 /* DoNothingXMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoNothingXMLReader.m; path = org/apache/harmony/tests/org/xml/sax/support/DoNothingXMLReader.m; sourceTree = "<group>"; };
+		063A62CF1F67267C001DC971 /* MockFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockFilter.m; path = org/apache/harmony/tests/org/xml/sax/support/MockFilter.m; sourceTree = "<group>"; };
+		063A62D01F67267C001DC971 /* MockParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockParser.m; path = org/apache/harmony/tests/org/xml/sax/support/MockParser.m; sourceTree = "<group>"; };
+		063A62D11F67267C001DC971 /* MockReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockReader.m; path = org/apache/harmony/tests/org/xml/sax/support/MockReader.m; sourceTree = "<group>"; };
+		063A62D21F67267C001DC971 /* NoAccessParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoAccessParser.m; path = org/apache/harmony/tests/org/xml/sax/support/NoAccessParser.m; sourceTree = "<group>"; };
+		063A62D31F67267C001DC971 /* NoAccessXMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoAccessXMLReader.m; path = org/apache/harmony/tests/org/xml/sax/support/NoAccessXMLReader.m; sourceTree = "<group>"; };
+		063A62D41F67267C001DC971 /* NoInstanceParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoInstanceParser.m; path = org/apache/harmony/tests/org/xml/sax/support/NoInstanceParser.m; sourceTree = "<group>"; };
+		063A62D51F67267C001DC971 /* NoInstanceXMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoInstanceXMLReader.m; path = org/apache/harmony/tests/org/xml/sax/support/NoInstanceXMLReader.m; sourceTree = "<group>"; };
+		063A62D61F67267C001DC971 /* NoSubclassParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSubclassParser.m; path = org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.m; sourceTree = "<group>"; };
+		063A62D71F67267C001DC971 /* NoSubclassXMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSubclassXMLReader.m; path = org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.m; sourceTree = "<group>"; };
+		063A62E41F67269E001DC971 /* Attributes2ImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Attributes2ImplTest.m; path = org/apache/harmony/tests/org/xml/sax/ext/Attributes2ImplTest.m; sourceTree = "<group>"; };
+		063A62E51F67269E001DC971 /* DefaultHandler2Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultHandler2Test.m; path = org/apache/harmony/tests/org/xml/sax/ext/DefaultHandler2Test.m; sourceTree = "<group>"; };
+		063A62E61F67269E001DC971 /* Locator2ImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Locator2ImplTest.m; path = org/apache/harmony/tests/org/xml/sax/ext/Locator2ImplTest.m; sourceTree = "<group>"; };
+		063A62EA1F6726C1001DC971 /* AttributeListImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AttributeListImplTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/AttributeListImplTest.m; sourceTree = "<group>"; };
+		063A62EB1F6726C1001DC971 /* AttributesImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AttributesImplTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/AttributesImplTest.m; sourceTree = "<group>"; };
+		063A62EC1F6726C1001DC971 /* DefaultHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultHandlerTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/DefaultHandlerTest.m; sourceTree = "<group>"; };
+		063A62ED1F6726C1001DC971 /* LocatorImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocatorImplTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/LocatorImplTest.m; sourceTree = "<group>"; };
+		063A62EE1F6726C1001DC971 /* NamespaceSupportTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NamespaceSupportTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/NamespaceSupportTest.m; sourceTree = "<group>"; };
+		063A62EF1F6726C1001DC971 /* ParserAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserAdapterTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/ParserAdapterTest.m; sourceTree = "<group>"; };
+		063A62F01F6726C1001DC971 /* ParserFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserFactoryTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/ParserFactoryTest.m; sourceTree = "<group>"; };
+		063A62F11F6726C1001DC971 /* XMLFilterImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLFilterImplTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/XMLFilterImplTest.m; sourceTree = "<group>"; };
+		063A62F21F6726C1001DC971 /* XMLReaderAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderAdapterTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderAdapterTest.m; sourceTree = "<group>"; };
+		063A62F31F6726C1001DC971 /* XMLReaderFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderFactoryTest.m; path = org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.m; sourceTree = "<group>"; };
 		064914311AC47ED000E98733 /* FastPointerLookup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastPointerLookup.h; sourceTree = "<group>"; };
 		064914321AC47ED000E98733 /* FastPointerLookup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FastPointerLookup.m; sourceTree = "<group>"; };
 		064914331AC47ED000E98733 /* J2ObjC_source.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_source.h; sourceTree = "<group>"; };
@@ -3748,8 +3810,6 @@
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
 		6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6A77143A1E3957B10038F773 /* LocaleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleTest.m; path = org/apache/harmony/tests/java/util/LocaleTest.m; sourceTree = "<group>"; };
-		6A7BD4FC1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncPipedNSInputStreamAdapter.h; path = build_result/Classes/com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.h; sourceTree = "<group>"; };
-		6A7BD4FD1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapter.m; path = build_result/Classes/com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.m; sourceTree = "<group>"; };
 		6A7BD4FE1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncPipedNSInputStreamAdapterTest.h; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.h; sourceTree = "<group>"; };
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
@@ -4074,8 +4134,6 @@
 				06C73E5419180CC8001D3CC8 /* AsynchronousCloseException.m */,
 				06C73EDA19180D6D001D3CC8 /* AsynchronousCloseMonitor.h */,
 				06C73EDB19180D6D001D3CC8 /* AsynchronousCloseMonitor.m */,
-				6A7BD4FC1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.h */,
-				6A7BD4FD1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.m */,
 				06F2912018972E1600676F1D /* AtomicBoolean.h */,
 				06F2912118972E1600676F1D /* AtomicBoolean.m */,
 				06721ADD1559CB9200645E1B /* AtomicInteger.h */,
@@ -5997,8 +6055,6 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */,
-				06C143BC1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m */,
 				0620280D1D512E03001EE455 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */,
@@ -6057,6 +6113,9 @@
 				067B13131EEDC3DC0013CBAF /* AtomicStampedReferenceTest.m */,
 				0620268B1D512D08001EE455 /* AttributedCharacterIteratorAttributeTest.m */,
 				069C23DD1E9EEECA00CE6BAF /* AttributedStringTest.m */,
+				063A62EA1F6726C1001DC971 /* AttributeListImplTest.m */,
+				063A62E41F67269E001DC971 /* Attributes2ImplTest.m */,
+				063A62EB1F6726C1001DC971 /* AttributesImplTest.m */,
 				065F96341DAC03F900807A81 /* Base64Test.m */,
 				062024F01D512AA2001EE455 /* Base64Test.m */,
 				0620271B1D512D82001EE455 /* BeanDescriptorTest.m */,
@@ -6076,6 +6135,7 @@
 				067B13141EEDC3DC0013CBAF /* BlockingQueueTest.m */,
 				062027AD1D512DED001EE455 /* BooleanTest.m */,
 				062028931D512E78001EE455 /* BoundedGenericMethodsTests.m */,
+				063A62CC1F67267C001DC971 /* BrokenInputStream.m */,
 				062027021D512D47001EE455 /* BufferedSinkTest.m */,
 				062027031D512D47001EE455 /* BufferedSourceTest.m */,
 				062027041D512D47001EE455 /* BufferTest.m */,
@@ -6153,6 +6213,8 @@
 				0620268D1D512D08001EE455 /* DecimalFormatSymbolsTest.m */,
 				069C23E21E9EEECA00CE6BAF /* DecimalFormatTest.m */,
 				0620268E1D512D08001EE455 /* DecimalFormatTest.m */,
+				063A62E51F67269E001DC971 /* DefaultHandler2Test.m */,
+				063A62EC1F6726C1001DC971 /* DefaultHandlerTest.m */,
 				062029A21D512FFE001EE455 /* DefaultMethodsTest.m */,
 				069C24121E9EEF7B00CE6BAF /* DeflaterInputStreamTest.m */,
 				062026D21D512D17001EE455 /* DeflaterInputStreamTest.m */,
@@ -6164,6 +6226,8 @@
 				0620252F1D512B37001EE455 /* Dispatcher.m */,
 				062028D81D512EBD001EE455 /* DocumentBuilderFactoryTest.m */,
 				062026FA1D512D37001EE455 /* DocumentBuilderTest.m */,
+				063A62CD1F67267C001DC971 /* DoNothingParser.m */,
+				063A62CE1F67267C001DC971 /* DoNothingXMLReader.m */,
 				0620288D1D512E78001EE455 /* DoubleTest.m */,
 				062026551D512CBE001EE455 /* DoubleTest.m */,
 				062029211D512F25001EE455 /* ECFieldF2mTest.m */,
@@ -6239,6 +6303,7 @@
 				069C24161E9EEF7B00CE6BAF /* GZIPOutputStreamTest.m */,
 				062026D61D512D17001EE455 /* GZIPOutputStreamTest.m */,
 				0620267E1D512D08001EE455 /* Handler.m */,
+				063A62C01F672637001DC971 /* HandlerBaseTest.m */,
 				062028D51D512EBD001EE455 /* HashMapTest.m */,
 				0620281A1D512E03001EE455 /* HashSetTest.m */,
 				062028D61D512EBD001EE455 /* HashtableTest.m */,
@@ -6259,6 +6324,7 @@
 				069C24181E9EEF7B00CE6BAF /* InflaterOutputStreamTest.m */,
 				069C24191E9EEF7B00CE6BAF /* InflaterTest.m */,
 				062026D71D512D17001EE455 /* InflaterTest.m */,
+				063A62C11F672637001DC971 /* InputSourceTest.m */,
 				069C24081E9EEF7B00CE6BAF /* InputStreamReaderTest.m */,
 				062025C71D512CA1001EE455 /* InputStreamReaderTest.m */,
 				062027BC1D512DED001EE455 /* InstantiationExceptionTest.m */,
@@ -6268,9 +6334,11 @@
 				062027201D512D82001EE455 /* IntrospectorTest.m */,
 				062029291D512F25001EE455 /* InvalidKeySpecExceptionTest.m */,
 				0620292A1D512F25001EE455 /* InvalidParameterSpecExceptionTest.m */,
+				06C143BC1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m */,
 				067B13401EEDEA600013CBAF /* IosRSAKeyTest.m */,
 				067B13391EEDE95C0013CBAF /* IosRSASignatureTest.m */,
 				067B133A1EEDE95C0013CBAF /* IosSecureRandomImplTest.m */,
+				06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */,
 				067B133B1EEDE95C0013CBAF /* IosSHAMessageDigestTest.m */,
 				0612B9451F4381750069EF58 /* IterableTest.m */,
 				0620253B1D512B37001EE455 /* JniTest.m */,
@@ -6302,6 +6370,8 @@
 				062025A61D512C8E001EE455 /* LocaleDataTest.m */,
 				6A77143A1E3957B10038F773 /* LocaleTest.m */,
 				0620281E1D512E03001EE455 /* LocaleTest.m */,
+				063A62E61F67269E001DC971 /* Locator2ImplTest.m */,
+				063A62ED1F6726C1001DC971 /* LocatorImplTest.m */,
 				067FC8201EFAE75E001D0627 /* LockSupportTest.m */,
 				062027BF1D512DED001EE455 /* LongTest.m */,
 				062028991D512E78001EE455 /* MalformedParameterizedTypeExceptionTest.m */,
@@ -6341,6 +6411,7 @@
 				062027C11D512DED001EE455 /* MockEnum2.m */,
 				0620275B1D512D9D001EE455 /* MockFakeEvent.m */,
 				0620275C1D512D9D001EE455 /* MockFakeListener.m */,
+				063A62CF1F67267C001DC971 /* MockFilter.m */,
 				0620275D1D512D9D001EE455 /* MockFoo.m */,
 				0620275E1D512D9D001EE455 /* MockFooButton.m */,
 				0620275F1D512D9D001EE455 /* MockFooChild.m */,
@@ -6357,10 +6428,12 @@
 				062027651D512D9D001EE455 /* MockJavaBean.m */,
 				062027661D512D9D001EE455 /* MockNullSubClass.m */,
 				062027671D512D9D001EE455 /* MockNullSuperClass.m */,
+				063A62D01F67267C001DC971 /* MockParser.m */,
 				062027681D512D9D001EE455 /* MockPropertyChangeEvent.m */,
 				062027691D512D9D001EE455 /* MockPropertyChangeListener.m */,
 				0620276A1D512D9D001EE455 /* MockPropertyChangeListener2.m */,
 				0620276B1D512D9D001EE455 /* MockPropertyChangeValidListener.m */,
+				063A62D11F67267C001DC971 /* MockReader.m */,
 				062028DE1D512EBD001EE455 /* MockResolver.m */,
 				062025301D512B37001EE455 /* MockResponse.m */,
 				06C143851F46135100CABE9A /* MockServerSocketChannel.m */,
@@ -6379,17 +6452,24 @@
 				062028691D512E3E001EE455 /* MyKeyPairGeneratorSpi.m */,
 				0620286A1D512E3E001EE455 /* MyMessageDigest1.m */,
 				0620286B1D512E3E001EE455 /* MySignature1.m */,
+				063A62EE1F6726C1001DC971 /* NamespaceSupportTest.m */,
 				062025A71D512C8E001EE455 /* NativeDecimalFormatTest.m */,
 				0620252E1D512B37001EE455 /* NativeTimeZoneTest.m */,
 				062025231D512B37001EE455 /* NativeUtil.m */,
 				062027C21D512DED001EE455 /* NegativeArraySizeExceptionTest.m */,
 				062026731D512D08001EE455 /* NetworkInterfaceTest.m */,
+				063A62D21F67267C001DC971 /* NoAccessParser.m */,
+				063A62D31F67267C001DC971 /* NoAccessXMLReader.m */,
 				062026801D512D08001EE455 /* NoArrayTest.m */,
 				06C143871F46135100CABE9A /* NoConnectionPendingExceptionTest.m */,
+				063A62D41F67267C001DC971 /* NoInstanceParser.m */,
+				063A62D51F67267C001DC971 /* NoInstanceXMLReader.m */,
 				06C143881F46135100CABE9A /* NonReadableChannelExceptionTest.m */,
 				06C143891F46135100CABE9A /* NonWritableChannelExceptionTest.m */,
 				062025971D512C8E001EE455 /* NoPackageTest.m */,
 				062026901D512D08001EE455 /* NormalizerTest.m */,
+				063A62D61F67267C001DC971 /* NoSubclassParser.m */,
+				063A62D71F67267C001DC971 /* NoSubclassXMLReader.m */,
 				0620281F1D512E03001EE455 /* NoSuchElementExceptionTest.m */,
 				062027C31D512DED001EE455 /* NoSuchFieldErrorTest.m */,
 				062027C41D512DED001EE455 /* NoSuchFieldExceptionTest.m */,
@@ -6519,7 +6599,9 @@
 				062027221D512D82001EE455 /* ParameterDescriptorTest.m */,
 				0620289D1D512E78001EE455 /* ParameterizedTypeTest.m */,
 				069C23E61E9EEECA00CE6BAF /* ParsePositionTest.m */,
+				063A62EF1F6726C1001DC971 /* ParserAdapterTest.m */,
 				062028DA1D512EBD001EE455 /* ParserConfigurationExceptionTest.m */,
+				063A62F01F6726C1001DC971 /* ParserFactoryTest.m */,
 				062028F91D512EDB001EE455 /* ParsingTest.m */,
 				0620284B1D512E21001EE455 /* Pattern2Test.m */,
 				0620284C1D512E21001EE455 /* PatternSyntaxExceptionTest.m */,
@@ -6572,6 +6654,10 @@
 				0620272C1D512D82001EE455 /* SampleBean.m */,
 				0620272D1D512D82001EE455 /* SampleEvent.m */,
 				0620272E1D512D82001EE455 /* SampleListener.m */,
+				063A62C21F672637001DC971 /* SAXExceptionTest.m */,
+				063A62C31F672637001DC971 /* SAXNotRecognizedExceptionTest.m */,
+				063A62C41F672637001DC971 /* SAXNotSupportedExceptionTest.m */,
+				063A62C51F672637001DC971 /* SAXParseExceptionTest.m */,
 				062028DB1D512EBD001EE455 /* SAXParserTestSupport.m */,
 				0612B8E21F4373740069EF58 /* ScheduledExecutorSubclassTest.m */,
 				0612B8E31F4373740069EF58 /* ScheduledExecutorTest.m */,
@@ -6736,7 +6822,10 @@
 				062028A11D512E78001EE455 /* WildcardTypeTest.m */,
 				069C24471E9EF09900CE6BAF /* X509Certificate2Test.m */,
 				069C243F1E9EF04900CE6BAF /* X509CertificateTest.m */,
+				063A62F11F6726C1001DC971 /* XMLFilterImplTest.m */,
 				062028FC1D512EDB001EE455 /* XmlPullParserFactoryTest.m */,
+				063A62F21F6726C1001DC971 /* XMLReaderAdapterTest.m */,
+				063A62F31F6726C1001DC971 /* XMLReaderFactoryTest.m */,
 				062026E01D512D17001EE455 /* Zip64FileTest.m */,
 				069C241A1E9EEF7B00CE6BAF /* ZipEntryTest.m */,
 				062026E11D512D17001EE455 /* ZipEntryTest.m */,
@@ -7072,12 +7161,14 @@
 				062026441D512CA1001EE455 /* OldPushbackInputStreamTest.m in Sources */,
 				062028CF1D512E89001EE455 /* BigIntegerMultiplyTest.m in Sources */,
 				069C24281E9EEF7B00CE6BAF /* CRC32Test.m in Sources */,
+				063A62D81F67267C001DC971 /* BrokenInputStream.m in Sources */,
 				062029361D512F25001EE455 /* MessageDigestTest.m in Sources */,
 				067FC8211EFAE75E001D0627 /* LockSupportTest.m in Sources */,
 				062029861D512F41001EE455 /* Support_TestResource_en_US.m in Sources */,
 				062026B91D512D08001EE455 /* CharsetDecoderTest.m in Sources */,
 				0620273F1D512D82001EE455 /* IndexedPropertyDescriptorTest.m in Sources */,
 				0620270E1D512D47001EE455 /* BufferedSinkTest.m in Sources */,
+				063A62D91F67267C001DC971 /* DoNothingParser.m in Sources */,
 				0612B9291F4374A30069EF58 /* FormattableFlagsTest.m in Sources */,
 				0612B9091F4373740069EF58 /* LinkedBlockingDequeTest.m in Sources */,
 				062028481D512E03001EE455 /* VectorTest.m in Sources */,
@@ -7094,6 +7185,7 @@
 				0612B9501F4381AF0069EF58 /* MockAbstractSelector.m in Sources */,
 				062026EE1D512D17001EE455 /* OldAndroidDeflateTest.m in Sources */,
 				062027511D512D82001EE455 /* FakeFox01.m in Sources */,
+				063A62E91F67269E001DC971 /* Locator2ImplTest.m in Sources */,
 				062027E21D512DED001EE455 /* ClassNotFoundExceptionTest.m in Sources */,
 				062028B41D512E78001EE455 /* MalformedParameterizedTypeExceptionTest.m in Sources */,
 				062026391D512CA1001EE455 /* OldInputStreamReaderTest.m in Sources */,
@@ -7109,6 +7201,7 @@
 				069C23F41E9EEECA00CE6BAF /* MessageFormatTest.m in Sources */,
 				06E4E832197F1E4E005DDE69 /* JREAppDelegate.m in Sources */,
 				069C23F31E9EEECA00CE6BAF /* FieldPositionTest.m in Sources */,
+				063A62C71F672637001DC971 /* InputSourceTest.m in Sources */,
 				062027EA1D512DED001EE455 /* IllegalMonitorStateExceptionTest.m in Sources */,
 				062026B31D512D08001EE455 /* OldDirectIntBufferTest.m in Sources */,
 				0620277B1D512D9D001EE455 /* MockInterface.m in Sources */,
@@ -7138,6 +7231,7 @@
 				062026F21D512D17001EE455 /* OldZipExceptionTest.m in Sources */,
 				062028831D512E3E001EE455 /* MySignature1.m in Sources */,
 				062026481D512CA1001EE455 /* OldSequenceInputStreamTest.m in Sources */,
+				063A62E01F67267C001DC971 /* NoInstanceParser.m in Sources */,
 				0612B9001F4373740069EF58 /* ExchangerTest.m in Sources */,
 				0620287C1D512E3E001EE455 /* SecureRandom2Test.m in Sources */,
 				062029A01D512F6A001EE455 /* SerializationTester.m in Sources */,
@@ -7153,6 +7247,7 @@
 				062027731D512D9D001EE455 /* MockFakeListener.m in Sources */,
 				0612B94C1F4381AF0069EF58 /* AbstractInterruptibleChannelTest.m in Sources */,
 				069C242A1E9EEF7B00CE6BAF /* DeflaterOutputStreamTest.m in Sources */,
+				063A62FB1F6726C1001DC971 /* XMLFilterImplTest.m in Sources */,
 				062028FF1D512EDB001EE455 /* JSONStringerTest.m in Sources */,
 				062028E91D512EBD001EE455 /* DocumentBuilderFactoryTest.m in Sources */,
 				0612B9261F4374A30069EF58 /* AbstractMapTest.m in Sources */,
@@ -7176,6 +7271,7 @@
 				062029831D512F41001EE455 /* Support_SetTest.m in Sources */,
 				069C242D1E9EEF7B00CE6BAF /* GZIPOutputStreamTest.m in Sources */,
 				062027101D512D47001EE455 /* BufferTest.m in Sources */,
+				063A62F91F6726C1001DC971 /* ParserAdapterTest.m in Sources */,
 				062028C91D512E89001EE455 /* BigIntegerAndTest.m in Sources */,
 				0620261B1D512CA1001EE455 /* OldAndroidFileTest.m in Sources */,
 				062028EE1D512EBD001EE455 /* MockHandler.m in Sources */,
@@ -7192,11 +7288,13 @@
 				0612B8F91F4373740069EF58 /* CopyOnWriteArrayListTest.m in Sources */,
 				062029B01D512FFE001EE455 /* TypeMethodReferenceTest.m in Sources */,
 				0620287B1D512E3E001EE455 /* PublicKeyTest.m in Sources */,
+				063A62CB1F672637001DC971 /* SAXParseExceptionTest.m in Sources */,
 				062028301D512E03001EE455 /* ArrayListTest.m in Sources */,
 				069C24031E9EEEF700CE6BAF /* GregorianCalendarTest.m in Sources */,
 				062027811D512D9D001EE455 /* MockPropertyChangeListener2.m in Sources */,
 				062025AF1D512C8E001EE455 /* PackagePrefixesTest.m in Sources */,
 				062025491D512B37001EE455 /* FieldTest.m in Sources */,
+				063A62E21F67267C001DC971 /* NoSubclassParser.m in Sources */,
 				069C24301E9EEF7B00CE6BAF /* InflaterTest.m in Sources */,
 				0612B9051F4373740069EF58 /* ForkJoinTask8Test.m in Sources */,
 				062027F41D512DED001EE455 /* NegativeArraySizeExceptionTest.m in Sources */,
@@ -7219,6 +7317,7 @@
 				067FC8241EFAE858001D0627 /* ReentrantLockTest.m in Sources */,
 				062028EB1D512EBD001EE455 /* ParserConfigurationExceptionTest.m in Sources */,
 				062026F81D512D17001EE455 /* ZipOutputStreamTest.m in Sources */,
+				063A62C91F672637001DC971 /* SAXNotRecognizedExceptionTest.m in Sources */,
 				0620287F1D512E3E001EE455 /* SignatureTest.m in Sources */,
 				062028741D512E3E001EE455 /* KeyPairTest.m in Sources */,
 				069C24231E9EEF7B00CE6BAF /* GregorianCalendarTest.m in Sources */,
@@ -7234,12 +7333,14 @@
 				062026AF1D512D08001EE455 /* Handler.m in Sources */,
 				0620261E1D512CA1001EE455 /* OldAndroidOutputStreamWriterTest.m in Sources */,
 				062029471D512F25001EE455 /* PSSParameterSpecTest.m in Sources */,
+				063A62C81F672637001DC971 /* SAXExceptionTest.m in Sources */,
 				062026F01D512D17001EE455 /* OldAndroidZipStreamTest.m in Sources */,
 				06C143BF1F46406900CABE9A /* IosSecurityProviderTests.m in Sources */,
 				062029A91D512FFE001EE455 /* CreationReferenceTest.m in Sources */,
 				0620277A1D512D9D001EE455 /* MockFooSubSub.m in Sources */,
 				062B4F271ED76C1200D4E7D8 /* OldJarEntryTest.m in Sources */,
 				06E4E834197F1E4E005DDE69 /* JRELogOutputStream.m in Sources */,
+				063A62C61F672637001DC971 /* HandlerBaseTest.m in Sources */,
 				0612B9461F4381750069EF58 /* IterableTest.m in Sources */,
 				062029701D512F41001EE455 /* Support_ASimpleInputStream.m in Sources */,
 				069C24331E9EEF7B00CE6BAF /* ZipFileTest.m in Sources */,
@@ -7267,6 +7368,7 @@
 				062028461D512E03001EE455 /* TreeSetTest.m in Sources */,
 				0620297C1D512F41001EE455 /* Support_MapTest2.m in Sources */,
 				062026F31D512D17001EE455 /* SmallTests.m in Sources */,
+				063A62DD1F67267C001DC971 /* MockReader.m in Sources */,
 				062026341D512CA1001EE455 /* OldFileWriterTest.m in Sources */,
 				062B4F131ED76B8D00D4E7D8 /* OldErrorManagerTest.m in Sources */,
 				0620250B1D512ACA001EE455 /* MemoryTest.m in Sources */,
@@ -7314,6 +7416,7 @@
 				062026AD1D512D08001EE455 /* URLStreamHandlerFactoryTest.m in Sources */,
 				062026511D512CA1001EE455 /* StreamTokenizerTest.m in Sources */,
 				062027861D512D9D001EE455 /* MockHomonymySubjectBeanInfo.m in Sources */,
+				063A62F51F6726C1001DC971 /* AttributesImplTest.m in Sources */,
 				067FC8271EFAE8F2001D0627 /* EnvironmentUtil.m in Sources */,
 				0620260D1D512CA1001EE455 /* FileInputStreamTest.m in Sources */,
 				062029741D512F41001EE455 /* Support_CollectionTest.m in Sources */,
@@ -7353,19 +7456,23 @@
 				062028AC1D512E78001EE455 /* AccessibleObjectTest.m in Sources */,
 				062027E01D512DED001EE455 /* ByteTest.m in Sources */,
 				062026A01D512D08001EE455 /* CookiesTest.m in Sources */,
+				063A62E81F67269E001DC971 /* DefaultHandler2Test.m in Sources */,
 				062026BF1D512D08001EE455 /* DecimalFormatTest.m in Sources */,
 				0612B93B1F4374C60069EF58 /* SSLExceptionTest.m in Sources */,
 				062025BD1D512C8E001EE455 /* LocaleDataTest.m in Sources */,
 				062027141D512D47001EE455 /* RealBufferedSinkTest.m in Sources */,
 				062026401D512CA1001EE455 /* OldObjectStreamFieldTest.m in Sources */,
 				0620255E1D512B37001EE455 /* QueueDispatcher.m in Sources */,
+				063A62F41F6726C1001DC971 /* AttributeListImplTest.m in Sources */,
 				062028541D512E21001EE455 /* PatternTest.m in Sources */,
 				062028EC1D512EBD001EE455 /* SAXParserTestSupport.m in Sources */,
+				063A62DA1F67267C001DC971 /* DoNothingXMLReader.m in Sources */,
 				0620260A1D512CA1001EE455 /* CharArrayWriterTest.m in Sources */,
 				062028771D512E3E001EE455 /* MessageDigest2Test.m in Sources */,
 				069C24241E9EEF7B00CE6BAF /* SimpleTimeZoneTest.m in Sources */,
 				0620299C1D512F57001EE455 /* MessageDigestTestSHA512.m in Sources */,
 				062027EE1D512DED001EE455 /* InstantiationExceptionTest.m in Sources */,
+				063A62F81F6726C1001DC971 /* NamespaceSupportTest.m in Sources */,
 				062025531D512B37001EE455 /* ReflectionTest.m in Sources */,
 				062027FF1D512DED001EE455 /* ShortTest.m in Sources */,
 				062026C81D512D08001EE455 /* EventObjectTest.m in Sources */,
@@ -7410,6 +7517,7 @@
 				062027881D512D9D001EE455 /* MockHomonymySubjectBeanInfo.m in Sources */,
 				062028BC1D512E78001EE455 /* WildcardTypeTest.m in Sources */,
 				062027551D512D82001EE455 /* FakeFox04.m in Sources */,
+				063A62FC1F6726C1001DC971 /* XMLReaderAdapterTest.m in Sources */,
 				062027171D512D47001EE455 /* TestUtil.m in Sources */,
 				0620277F1D512D9D001EE455 /* MockPropertyChangeEvent.m in Sources */,
 				062027801D512D9D001EE455 /* MockPropertyChangeListener.m in Sources */,
@@ -7446,6 +7554,7 @@
 				069C24251E9EEF7B00CE6BAF /* Adler32Test.m in Sources */,
 				062027F01D512DED001EE455 /* InterruptedExceptionTest.m in Sources */,
 				062028851D512E3E001EE455 /* TestKeyPair.m in Sources */,
+				063A62F61F6726C1001DC971 /* DefaultHandlerTest.m in Sources */,
 				062028321D512E03001EE455 /* CollectionsTest.m in Sources */,
 				062025861D512B77001EE455 /* ProxyTest.m in Sources */,
 				0620255B1D512B37001EE455 /* Dispatcher.m in Sources */,
@@ -7471,12 +7580,14 @@
 				06C143BD1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m in Sources */,
 				0612B9081F4373740069EF58 /* JSR166TestCase.m in Sources */,
 				062026241D512CA1001EE455 /* OldAndroidStringReaderTest.m in Sources */,
+				063A62E71F67269E001DC971 /* Attributes2ImplTest.m in Sources */,
 				062028C81D512E89001EE455 /* BigIntegerAddTest.m in Sources */,
 				06DE64D11E3AC09F00DACBF7 /* TimeZoneTest.m in Sources */,
 				069C24271E9EEF7B00CE6BAF /* CheckedOutputStreamTest.m in Sources */,
 				0612B9171F4373740069EF58 /* ThreadPoolExecutorTest.m in Sources */,
 				069C23ED1E9EEECA00CE6BAF /* AttributedStringTest.m in Sources */,
 				062028441D512E03001EE455 /* TooManyListenersExceptionTest.m in Sources */,
+				063A62DE1F67267C001DC971 /* NoAccessParser.m in Sources */,
 				069C24511E9EF14E00CE6BAF /* MyCRL.m in Sources */,
 				0620266B1D512CBE001EE455 /* ConstructorTest.m in Sources */,
 				062026501D512CA1001EE455 /* SmallTests.m in Sources */,
@@ -7487,6 +7598,7 @@
 				062026411D512CA1001EE455 /* OldOutputStreamTest.m in Sources */,
 				0620260C1D512CA1001EE455 /* FileDescriptorTest.m in Sources */,
 				062029791D512F41001EE455 /* Support_GetPutFieldsDeprecated.m in Sources */,
+				063A62E11F67267C001DC971 /* NoInstanceXMLReader.m in Sources */,
 				062029761D512F41001EE455 /* Support_Field.m in Sources */,
 				0620274B1D512D82001EE455 /* MisprintListenerr.m in Sources */,
 				062029901D512F41001EE455 /* Support_Resources.m in Sources */,
@@ -7604,6 +7716,7 @@
 				062028841D512E3E001EE455 /* SpiEngUtils.m in Sources */,
 				062027FB1D512DED001EE455 /* NumberTest.m in Sources */,
 				062B4F161ED76B8D00D4E7D8 /* OldLevelTest.m in Sources */,
+				063A62FA1F6726C1001DC971 /* ParserFactoryTest.m in Sources */,
 				062027F71D512DED001EE455 /* NoSuchMethodErrorTest.m in Sources */,
 				062026211D512CA1001EE455 /* OldAndroidPushbackReaderTest.m in Sources */,
 				062028091D512DED001EE455 /* VirtualMachineErrorTest.m in Sources */,
@@ -7615,6 +7728,7 @@
 				062026BE1D512D08001EE455 /* DecimalFormatSymbolsTest.m in Sources */,
 				0620298C1D512F41001EE455 /* Support_TimeZone.m in Sources */,
 				0612B8EF1F4373740069EF58 /* AbstractQueueTest.m in Sources */,
+				063A62E31F67267C001DC971 /* NoSubclassXMLReader.m in Sources */,
 				0620293C1D512F25001EE455 /* ECFieldFpTest.m in Sources */,
 				062028D21D512E89001EE455 /* BigIntegerSubtractTest.m in Sources */,
 				0612B92E1F4374A30069EF58 /* TimerTest.m in Sources */,
@@ -7630,6 +7744,7 @@
 				062028E71D512EBD001EE455 /* HashtableTest.m in Sources */,
 				062028E61D512EBD001EE455 /* HashMapTest.m in Sources */,
 				0620298E1D512F41001EE455 /* Support_UnmodifiableMapTest.m in Sources */,
+				063A62CA1F672637001DC971 /* SAXNotSupportedExceptionTest.m in Sources */,
 				06CBF5231AFBEB1E00CA582D /* dalvik_system_JniTest.cpp in Sources */,
 				062029421D512F25001EE455 /* EllipticCurveTest.m in Sources */,
 				0620273B1D512D82001EE455 /* AllTests.m in Sources */,
@@ -7644,6 +7759,7 @@
 				062028CD1D512E89001EE455 /* BigIntegerDivideTest.m in Sources */,
 				062025581D512B37001EE455 /* TestAnnotation.m in Sources */,
 				062025BB1D512C8E001EE455 /* AllJreTests.java in Sources */,
+				063A62DF1F67267C001DC971 /* NoAccessXMLReader.m in Sources */,
 				062027541D512D82001EE455 /* FakeFox02BeanInfo.m in Sources */,
 				062029AD1D512FFE001EE455 /* LambdaTest.m in Sources */,
 				062B4F2E1ED76C4A00D4E7D8 /* ReferenceQueueTest.m in Sources */,
@@ -7684,6 +7800,7 @@
 				0612B90F1F4373740069EF58 /* RecursiveActionTest.m in Sources */,
 				069C242C1E9EEF7B00CE6BAF /* GZIPInputStreamTest.m in Sources */,
 				0620298D1D512F41001EE455 /* Support_UnmodifiableCollectionTest.m in Sources */,
+				063A62DC1F67267C001DC971 /* MockParser.m in Sources */,
 				062026B41D512D08001EE455 /* OldDirectShortBufferTest.m in Sources */,
 				062025841D512B77001EE455 /* WeakReferenceTest.m in Sources */,
 				06DE64D31E3AC4B600DACBF7 /* TimeZoneTest.m in Sources */,
@@ -7702,6 +7819,7 @@
 				062026CC1D512D08001EE455 /* OldTimeZoneTest.m in Sources */,
 				062028BB1D512E78001EE455 /* UndeclaredThrowableExceptionTests.m in Sources */,
 				069C23DB1E9EEE3E00CE6BAF /* FileTest.m in Sources */,
+				063A62F71F6726C1001DC971 /* LocatorImplTest.m in Sources */,
 				062026EC1D512D17001EE455 /* LargeTests.m in Sources */,
 				062024F91D512AA2001EE455 /* TextUtilsTest.m in Sources */,
 				0612B8F71F4373740069EF58 /* ConcurrentSkipListSubMapTest.m in Sources */,
@@ -7724,6 +7842,7 @@
 				062027DE1D512DED001EE455 /* AssertionErrorTest.m in Sources */,
 				062028CC1D512E89001EE455 /* BigIntegerConvertTest.m in Sources */,
 				062028B71D512E78001EE455 /* ModifierTest.m in Sources */,
+				063A62DB1F67267C001DC971 /* MockFilter.m in Sources */,
 				062028B31D512E78001EE455 /* GenericReflectionTestsBase.m in Sources */,
 				0620255A1D512B37001EE455 /* NativeTimeZoneTest.m in Sources */,
 				062029751D512F41001EE455 /* Support_Configuration.m in Sources */,
@@ -7746,6 +7865,7 @@
 				062028A91D512E78001EE455 /* FloatTest.m in Sources */,
 				062026231D512CA1001EE455 /* OldAndroidStreamTokenizerTest.m in Sources */,
 				0620260B1D512CA1001EE455 /* DataOutputStreamTest.m in Sources */,
+				063A62FD1F6726C1001DC971 /* XMLReaderFactoryTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
