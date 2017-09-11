@@ -10,7 +10,6 @@ package org.xml.sax.helpers;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
 /**
  * Create a new instance of a class by name.
  *
@@ -39,11 +38,16 @@ class NewInstance {
      *
      * Package private so this code is not exposed at the API level.
      */
-    static Object newInstance (String className)
+    static Object newInstance (ClassLoader classLoader, String className)
         throws ClassNotFoundException, IllegalAccessException,
             InstantiationException
     {
-        Class driverClass = Class.forName(className);
+        Class driverClass;
+        if (classLoader == null) {
+            driverClass = Class.forName(className);
+        } else {
+            driverClass = classLoader.loadClass(className);
+        }
         return driverClass.newInstance();
     }
 
@@ -66,10 +70,10 @@ class NewInstance {
             return (ClassLoader) m.invoke(Thread.currentThread());
         } catch (IllegalAccessException e) {
             // assert(false)
-            throw new AssertionError(e.getMessage());
+            throw new UnknownError(e.getMessage());
         } catch (InvocationTargetException e) {
             // assert(e.getTargetException() instanceof SecurityException)
-            throw new AssertionError(e.getMessage());
+            throw new UnknownError(e.getMessage());
         }
     }
 }

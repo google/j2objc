@@ -206,6 +206,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/ThreadLocal.java \
   java/lang/Throwable.java \
   java/lang/TypeNotPresentException.java \
+  java/lang/UnknownError.java \
   java/lang/UnsupportedOperationException.java \
   java/lang/VirtualMachineError.java \
   java/lang/Void.java \

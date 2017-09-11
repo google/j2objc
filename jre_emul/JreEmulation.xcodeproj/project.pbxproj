@@ -1490,8 +1490,6 @@
 		0649A5ED1AE0778600DE2494 /* CookiePolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookiePolicy.m; path = build_result/Classes/java/net/CookiePolicy.m; sourceTree = "<group>"; };
 		0649A5EE1AE0778600DE2494 /* CookieStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookieStore.h; path = build_result/Classes/java/net/CookieStore.h; sourceTree = "<group>"; };
 		0649A5EF1AE0778600DE2494 /* CookieStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookieStore.m; path = build_result/Classes/java/net/CookieStore.m; sourceTree = "<group>"; };
-		0649A5F01AE0778600DE2494 /* CookieStoreImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookieStoreImpl.h; path = build_result/Classes/java/net/CookieStoreImpl.h; sourceTree = "<group>"; };
-		0649A5F11AE0778600DE2494 /* CookieStoreImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookieStoreImpl.m; path = build_result/Classes/java/net/CookieStoreImpl.m; sourceTree = "<group>"; };
 		0649A5F21AE0778600DE2494 /* NoRouteToHostException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoRouteToHostException.h; path = build_result/Classes/java/net/NoRouteToHostException.h; sourceTree = "<group>"; };
 		0649A5F31AE0778600DE2494 /* NoRouteToHostException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoRouteToHostException.m; path = build_result/Classes/java/net/NoRouteToHostException.m; sourceTree = "<group>"; };
 		0649A5F41AE0778600DE2494 /* SecureCacheResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecureCacheResponse.h; path = build_result/Classes/java/net/SecureCacheResponse.h; sourceTree = "<group>"; };
@@ -1504,34 +1502,12 @@
 		0649A5FB1AE0778600DE2494 /* URLDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URLDecoder.m; path = build_result/Classes/java/net/URLDecoder.m; sourceTree = "<group>"; };
 		0649A5FC1AE0778600DE2494 /* Channels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Channels.h; path = build_result/Classes/java/nio/channels/Channels.h; sourceTree = "<group>"; };
 		0649A5FD1AE0778600DE2494 /* Channels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Channels.m; path = build_result/Classes/java/nio/channels/Channels.m; sourceTree = "<group>"; };
-		0649A5FE1AE0778600DE2494 /* DatagramChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatagramChannelImpl.h; path = build_result/Classes/java/nio/DatagramChannelImpl.h; sourceTree = "<group>"; };
-		0649A5FF1AE0778600DE2494 /* DatagramChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramChannelImpl.m; path = build_result/Classes/java/nio/DatagramChannelImpl.m; sourceTree = "<group>"; };
 		0649A6001AE0778600DE2494 /* DirectByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectByteBuffer.h; path = build_result/Classes/java/nio/DirectByteBuffer.h; sourceTree = "<group>"; };
 		0649A6011AE0778600DE2494 /* DirectByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectByteBuffer.m; path = build_result/Classes/java/nio/DirectByteBuffer.m; sourceTree = "<group>"; };
-		0649A6021AE0778600DE2494 /* FileChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileChannelImpl.h; path = build_result/Classes/java/nio/FileChannelImpl.h; sourceTree = "<group>"; };
-		0649A6031AE0778600DE2494 /* FileChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileChannelImpl.m; path = build_result/Classes/java/nio/FileChannelImpl.m; sourceTree = "<group>"; };
-		0649A6041AE0778600DE2494 /* FileDescriptorChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileDescriptorChannel.h; path = build_result/Classes/java/nio/FileDescriptorChannel.h; sourceTree = "<group>"; };
-		0649A6051AE0778600DE2494 /* FileDescriptorChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileDescriptorChannel.m; path = build_result/Classes/java/nio/FileDescriptorChannel.m; sourceTree = "<group>"; };
-		0649A6061AE0778600DE2494 /* IoVec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IoVec.h; path = build_result/Classes/java/nio/IoVec.h; sourceTree = "<group>"; };
-		0649A6071AE0778600DE2494 /* IoVec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IoVec.m; path = build_result/Classes/java/nio/IoVec.m; sourceTree = "<group>"; };
 		0649A6081AE0778600DE2494 /* MappedByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MappedByteBuffer.h; path = build_result/Classes/java/nio/MappedByteBuffer.h; sourceTree = "<group>"; };
 		0649A6091AE0778600DE2494 /* MappedByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MappedByteBuffer.m; path = build_result/Classes/java/nio/MappedByteBuffer.m; sourceTree = "<group>"; };
-		0649A60A1AE0778600DE2494 /* MemoryBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemoryBlock.h; path = build_result/Classes/java/nio/MemoryBlock.h; sourceTree = "<group>"; };
-		0649A60B1AE0778700DE2494 /* MemoryBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MemoryBlock.m; path = build_result/Classes/java/nio/MemoryBlock.m; sourceTree = "<group>"; };
 		0649A60E1AE0778700DE2494 /* NioUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NioUtils.h; path = build_result/Classes/java/nio/NioUtils.h; sourceTree = "<group>"; };
 		0649A60F1AE0778700DE2494 /* NioUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NioUtils.m; path = build_result/Classes/java/nio/NioUtils.m; sourceTree = "<group>"; };
-		0649A6101AE0778700DE2494 /* PipeImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PipeImpl.h; path = build_result/Classes/java/nio/PipeImpl.h; sourceTree = "<group>"; };
-		0649A6111AE0778700DE2494 /* PipeImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PipeImpl.m; path = build_result/Classes/java/nio/PipeImpl.m; sourceTree = "<group>"; };
-		0649A6121AE0778700DE2494 /* SelectionKeyImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectionKeyImpl.h; path = build_result/Classes/java/nio/SelectionKeyImpl.h; sourceTree = "<group>"; };
-		0649A6131AE0778700DE2494 /* SelectionKeyImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectionKeyImpl.m; path = build_result/Classes/java/nio/SelectionKeyImpl.m; sourceTree = "<group>"; };
-		0649A6141AE0778700DE2494 /* SelectorImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectorImpl.h; path = build_result/Classes/java/nio/SelectorImpl.h; sourceTree = "<group>"; };
-		0649A6151AE0778700DE2494 /* SelectorImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectorImpl.m; path = build_result/Classes/java/nio/SelectorImpl.m; sourceTree = "<group>"; };
-		0649A6161AE0778700DE2494 /* SelectorProviderImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectorProviderImpl.h; path = build_result/Classes/java/nio/SelectorProviderImpl.h; sourceTree = "<group>"; };
-		0649A6171AE0778700DE2494 /* SelectorProviderImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectorProviderImpl.m; path = build_result/Classes/java/nio/SelectorProviderImpl.m; sourceTree = "<group>"; };
-		0649A6181AE0778700DE2494 /* ServerSocketChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerSocketChannelImpl.h; path = build_result/Classes/java/nio/ServerSocketChannelImpl.h; sourceTree = "<group>"; };
-		0649A6191AE0778700DE2494 /* ServerSocketChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerSocketChannelImpl.m; path = build_result/Classes/java/nio/ServerSocketChannelImpl.m; sourceTree = "<group>"; };
-		0649A61A1AE0778700DE2494 /* SocketChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketChannelImpl.h; path = build_result/Classes/java/nio/SocketChannelImpl.h; sourceTree = "<group>"; };
-		0649A61B1AE0778700DE2494 /* SocketChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketChannelImpl.m; path = build_result/Classes/java/nio/SocketChannelImpl.m; sourceTree = "<group>"; };
 		0649A61C1AE077D200DE2494 /* AlgorithmParameterGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParameterGenerator.h; path = build_result/Classes/java/security/AlgorithmParameterGenerator.h; sourceTree = "<group>"; };
 		0649A61D1AE077D300DE2494 /* AlgorithmParameterGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParameterGenerator.m; path = build_result/Classes/java/security/AlgorithmParameterGenerator.m; sourceTree = "<group>"; };
 		0649A61E1AE077D300DE2494 /* AlgorithmParameterGeneratorSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParameterGeneratorSpi.h; path = build_result/Classes/java/security/AlgorithmParameterGeneratorSpi.h; sourceTree = "<group>"; };
@@ -1744,19 +1720,11 @@
 		0649A6EF1AE0796400DE2494 /* SecretKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecretKey.m; path = build_result/Classes/javax/crypto/SecretKey.m; sourceTree = "<group>"; };
 		0649A6F01AE0796400DE2494 /* Modifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Modifier.h; path = build_result/Classes/javax/lang/model/element/Modifier.h; sourceTree = "<group>"; };
 		0649A6F11AE0796400DE2494 /* Modifier.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Modifier.m; path = build_result/Classes/javax/lang/model/element/Modifier.m; sourceTree = "<group>"; };
-		0649A6F21AE0796400DE2494 /* DefaultServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultServerSocketFactory.h; path = build_result/Classes/javax/net/DefaultServerSocketFactory.h; sourceTree = "<group>"; };
-		0649A6F31AE0796400DE2494 /* DefaultServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultServerSocketFactory.m; path = build_result/Classes/javax/net/DefaultServerSocketFactory.m; sourceTree = "<group>"; };
-		0649A6F41AE0796400DE2494 /* DefaultSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSocketFactory.h; path = build_result/Classes/javax/net/DefaultSocketFactory.h; sourceTree = "<group>"; };
-		0649A6F51AE0796400DE2494 /* DefaultSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultSocketFactory.m; path = build_result/Classes/javax/net/DefaultSocketFactory.m; sourceTree = "<group>"; };
 		0649A6F61AE0796400DE2494 /* ServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ServerSocketFactory.h; path = build_result/Classes/javax/net/ServerSocketFactory.h; sourceTree = "<group>"; };
 		0649A6F71AE0796400DE2494 /* ServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ServerSocketFactory.m; path = build_result/Classes/javax/net/ServerSocketFactory.m; sourceTree = "<group>"; };
 		0649A6F81AE0796400DE2494 /* SocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SocketFactory.h; path = build_result/Classes/javax/net/SocketFactory.h; sourceTree = "<group>"; };
 		0649A6F91AE0796400DE2494 /* SocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SocketFactory.m; path = build_result/Classes/javax/net/SocketFactory.m; sourceTree = "<group>"; };
 		0649A6FA1AE0796500DE2494 /* ssl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ssl; path = build_result/Classes/javax/net/ssl; sourceTree = "<group>"; };
-		0649A6FB1AE0796500DE2494 /* DefaultSSLServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSSLServerSocketFactory.h; path = build_result/Classes/javax/net/ssl/DefaultSSLServerSocketFactory.h; sourceTree = "<group>"; };
-		0649A6FC1AE0796500DE2494 /* DefaultSSLServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultSSLServerSocketFactory.m; path = build_result/Classes/javax/net/ssl/DefaultSSLServerSocketFactory.m; sourceTree = "<group>"; };
-		0649A6FD1AE0796500DE2494 /* DefaultSSLSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSSLSocketFactory.h; path = build_result/Classes/javax/net/ssl/DefaultSSLSocketFactory.h; sourceTree = "<group>"; };
-		0649A6FE1AE0796500DE2494 /* DefaultSSLSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultSSLSocketFactory.m; path = build_result/Classes/javax/net/ssl/DefaultSSLSocketFactory.m; sourceTree = "<group>"; };
 		0649A6FF1AE0796500DE2494 /* HandshakeCompletedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HandshakeCompletedEvent.h; path = build_result/Classes/javax/net/ssl/HandshakeCompletedEvent.h; sourceTree = "<group>"; };
 		0649A7001AE0796500DE2494 /* HandshakeCompletedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HandshakeCompletedEvent.m; path = build_result/Classes/javax/net/ssl/HandshakeCompletedEvent.m; sourceTree = "<group>"; };
 		0649A7011AE0796500DE2494 /* HandshakeCompletedListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HandshakeCompletedListener.h; path = build_result/Classes/javax/net/ssl/HandshakeCompletedListener.h; sourceTree = "<group>"; };
@@ -1841,12 +1809,6 @@
 		0649A7501AE0799100DE2494 /* TypeVariableImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeVariableImpl.m; path = build_result/Classes/libcore/reflect/TypeVariableImpl.m; sourceTree = "<group>"; };
 		0649A7511AE0799100DE2494 /* WildcardTypeImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WildcardTypeImpl.h; path = build_result/Classes/libcore/reflect/WildcardTypeImpl.h; sourceTree = "<group>"; };
 		0649A7521AE0799100DE2494 /* WildcardTypeImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = WildcardTypeImpl.m; path = build_result/Classes/libcore/reflect/WildcardTypeImpl.m; sourceTree = "<group>"; };
-		0649A7531AE079CD00DE2494 /* ASN1Integer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Integer.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Integer.h; sourceTree = "<group>"; };
-		0649A7541AE079CD00DE2494 /* ASN1Integer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Integer.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Integer.m; sourceTree = "<group>"; };
-		0649A7551AE079CD00DE2494 /* PrivateKeyImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivateKeyImpl.h; path = build_result/Classes/org/apache/harmony/security/PrivateKeyImpl.h; sourceTree = "<group>"; };
-		0649A7561AE079CD00DE2494 /* PrivateKeyImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PrivateKeyImpl.m; path = build_result/Classes/org/apache/harmony/security/PrivateKeyImpl.m; sourceTree = "<group>"; };
-		0649A7571AE079CD00DE2494 /* PublicKeyImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PublicKeyImpl.h; path = build_result/Classes/org/apache/harmony/security/PublicKeyImpl.h; sourceTree = "<group>"; };
-		0649A7581AE079CD00DE2494 /* PublicKeyImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PublicKeyImpl.m; path = build_result/Classes/org/apache/harmony/security/PublicKeyImpl.m; sourceTree = "<group>"; };
 		0649A7591AE07A4100DE2494 /* JSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSON.h; path = build_result/Classes/org/json/JSON.h; sourceTree = "<group>"; };
 		0649A75A1AE07A4100DE2494 /* JSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSON.m; path = build_result/Classes/org/json/JSON.m; sourceTree = "<group>"; };
 		0649A75B1AE07A4100DE2494 /* JSONArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONArray.h; path = build_result/Classes/org/json/JSONArray.h; sourceTree = "<group>"; };
@@ -2195,7 +2157,6 @@
 		06721A561559C99E00645E1B /* Logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Logger.m; path = build_result/Classes/java/util/logging/Logger.m; sourceTree = "<group>"; };
 		06721A571559C99E00645E1B /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogManager.m; path = build_result/Classes/java/util/logging/LogManager.m; sourceTree = "<group>"; };
 		06721A581559C99E00645E1B /* LogRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogRecord.m; path = build_result/Classes/java/util/logging/LogRecord.m; sourceTree = "<group>"; };
-		06721A5A1559C99E00645E1B /* MapEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapEntry.m; path = build_result/Classes/java/util/MapEntry.m; sourceTree = "<group>"; };
 		06721A5B1559C99E00645E1B /* NoSuchElementException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchElementException.m; path = build_result/Classes/java/util/NoSuchElementException.m; sourceTree = "<group>"; };
 		06721A5C1559C99E00645E1B /* PriorityQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PriorityQueue.m; path = build_result/Classes/java/util/PriorityQueue.m; sourceTree = "<group>"; };
 		06721A5D1559C99E00645E1B /* Properties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Properties.m; path = build_result/Classes/java/util/Properties.m; sourceTree = "<group>"; };
@@ -2278,7 +2239,6 @@
 		06721AF41559CB9200645E1B /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogManager.h; path = build_result/Classes/java/util/logging/LogManager.h; sourceTree = "<group>"; };
 		06721AF51559CB9200645E1B /* LogRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogRecord.h; path = build_result/Classes/java/util/logging/LogRecord.h; sourceTree = "<group>"; };
 		06721AF71559CB9200645E1B /* Map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Map.h; path = build_result/Classes/java/util/Map.h; sourceTree = "<group>"; };
-		06721AF81559CB9200645E1B /* MapEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEntry.h; path = build_result/Classes/java/util/MapEntry.h; sourceTree = "<group>"; };
 		06721AF91559CB9200645E1B /* NoSuchElementException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchElementException.h; path = build_result/Classes/java/util/NoSuchElementException.h; sourceTree = "<group>"; };
 		06721AFA1559CB9200645E1B /* PriorityQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityQueue.h; path = build_result/Classes/java/util/PriorityQueue.h; sourceTree = "<group>"; };
 		06721AFB1559CB9200645E1B /* Properties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Properties.h; path = build_result/Classes/java/util/Properties.h; sourceTree = "<group>"; };
@@ -2370,22 +2330,8 @@
 		067855C4169F37710042431C /* BigDecimal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BigDecimal.m; path = build_result/Classes/java/math/BigDecimal.m; sourceTree = "<group>"; };
 		067855C5169F37710042431C /* BigInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BigInteger.h; path = build_result/Classes/java/math/BigInteger.h; sourceTree = "<group>"; };
 		067855C6169F37710042431C /* BigInteger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BigInteger.m; path = build_result/Classes/java/math/BigInteger.m; sourceTree = "<group>"; };
-		067855C7169F37710042431C /* BitLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BitLevel.h; path = build_result/Classes/java/math/BitLevel.h; sourceTree = "<group>"; };
-		067855C8169F37710042431C /* BitLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BitLevel.m; path = build_result/Classes/java/math/BitLevel.m; sourceTree = "<group>"; };
-		067855C9169F37710042431C /* Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conversion.h; path = build_result/Classes/java/math/Conversion.h; sourceTree = "<group>"; };
-		067855CA169F37710042431C /* Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Conversion.m; path = build_result/Classes/java/math/Conversion.m; sourceTree = "<group>"; };
-		067855CB169F37710042431C /* Division.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Division.h; path = build_result/Classes/java/math/Division.h; sourceTree = "<group>"; };
-		067855CC169F37710042431C /* Division.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Division.m; path = build_result/Classes/java/math/Division.m; sourceTree = "<group>"; };
-		067855CD169F37710042431C /* Elementary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Elementary.h; path = build_result/Classes/java/math/Elementary.h; sourceTree = "<group>"; };
-		067855CE169F37710042431C /* Elementary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Elementary.m; path = build_result/Classes/java/math/Elementary.m; sourceTree = "<group>"; };
-		067855CF169F37710042431C /* Logical.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logical.h; path = build_result/Classes/java/math/Logical.h; sourceTree = "<group>"; };
-		067855D0169F37710042431C /* Logical.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Logical.m; path = build_result/Classes/java/math/Logical.m; sourceTree = "<group>"; };
 		067855D1169F37710042431C /* MathContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathContext.h; path = build_result/Classes/java/math/MathContext.h; sourceTree = "<group>"; };
 		067855D2169F37710042431C /* MathContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MathContext.m; path = build_result/Classes/java/math/MathContext.m; sourceTree = "<group>"; };
-		067855D3169F37710042431C /* Multiplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Multiplication.h; path = build_result/Classes/java/math/Multiplication.h; sourceTree = "<group>"; };
-		067855D4169F37710042431C /* Multiplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Multiplication.m; path = build_result/Classes/java/math/Multiplication.m; sourceTree = "<group>"; };
-		067855D5169F37710042431C /* Primality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Primality.h; path = build_result/Classes/java/math/Primality.h; sourceTree = "<group>"; };
-		067855D6169F37710042431C /* Primality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Primality.m; path = build_result/Classes/java/math/Primality.m; sourceTree = "<group>"; };
 		067855D7169F37710042431C /* RoundingMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoundingMode.h; path = build_result/Classes/java/math/RoundingMode.h; sourceTree = "<group>"; };
 		067855D8169F37710042431C /* RoundingMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoundingMode.m; path = build_result/Classes/java/math/RoundingMode.m; sourceTree = "<group>"; };
 		067A99561954DF06009171DD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -2855,8 +2801,6 @@
 		06C73E0819180C9A001D3CC8 /* UnknownHostException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnknownHostException.m; path = build_result/Classes/java/net/UnknownHostException.m; sourceTree = "<group>"; };
 		06C73E0919180C9A001D3CC8 /* UnknownServiceException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnknownServiceException.h; path = build_result/Classes/java/net/UnknownServiceException.h; sourceTree = "<group>"; };
 		06C73E0A19180C9A001D3CC8 /* UnknownServiceException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnknownServiceException.m; path = build_result/Classes/java/net/UnknownServiceException.m; sourceTree = "<group>"; };
-		06C73E4119180CB4001D3CC8 /* ByteArrayBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ByteArrayBuffer.h; path = build_result/Classes/java/nio/ByteArrayBuffer.h; sourceTree = "<group>"; };
-		06C73E4219180CB4001D3CC8 /* ByteArrayBuffer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ByteArrayBuffer.m; path = build_result/Classes/java/nio/ByteArrayBuffer.m; sourceTree = "<group>"; };
 		06C73E4319180CB4001D3CC8 /* ByteBufferAsCharBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ByteBufferAsCharBuffer.h; path = build_result/Classes/java/nio/ByteBufferAsCharBuffer.h; sourceTree = "<group>"; };
 		06C73E4419180CB4001D3CC8 /* ByteBufferAsCharBuffer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ByteBufferAsCharBuffer.m; path = build_result/Classes/java/nio/ByteBufferAsCharBuffer.m; sourceTree = "<group>"; };
 		06C73E4519180CB4001D3CC8 /* ByteBufferAsDoubleBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ByteBufferAsDoubleBuffer.h; path = build_result/Classes/java/nio/ByteBufferAsDoubleBuffer.h; sourceTree = "<group>"; };
@@ -3016,8 +2960,6 @@
 		06C73EDF19180D6D001D3CC8 /* DeleteOnExit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DeleteOnExit.m; path = build_result/Classes/libcore/io/DeleteOnExit.m; sourceTree = "<group>"; };
 		06C73EE019180D6D001D3CC8 /* GaiException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GaiException.h; path = build_result/Classes/libcore/io/GaiException.h; sourceTree = "<group>"; };
 		06C73EE119180D6D001D3CC8 /* GaiException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GaiException.m; path = build_result/Classes/libcore/io/GaiException.m; sourceTree = "<group>"; };
-		06C73EE219180D6D001D3CC8 /* HeapBufferIterator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeapBufferIterator.h; path = build_result/Classes/libcore/io/HeapBufferIterator.h; sourceTree = "<group>"; };
-		06C73EE319180D6D001D3CC8 /* HeapBufferIterator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HeapBufferIterator.m; path = build_result/Classes/libcore/io/HeapBufferIterator.m; sourceTree = "<group>"; };
 		06C73EE419180D6D001D3CC8 /* IoBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IoBridge.h; path = build_result/Classes/libcore/io/IoBridge.h; sourceTree = "<group>"; };
 		06C73EE519180D6D001D3CC8 /* IoBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IoBridge.m; path = build_result/Classes/libcore/io/IoBridge.m; sourceTree = "<group>"; };
 		06C73EE619180D6D001D3CC8 /* Memory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Memory.h; path = build_result/Classes/libcore/io/Memory.h; sourceTree = "<group>"; };
@@ -3062,74 +3004,6 @@
 		06C73F0D19180D90001D3CC8 /* MutableLong.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MutableLong.m; path = build_result/Classes/libcore/util/MutableLong.m; sourceTree = "<group>"; };
 		06C73F0E19180D90001D3CC8 /* SneakyThrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SneakyThrow.h; path = build_result/Classes/libcore/util/SneakyThrow.h; sourceTree = "<group>"; };
 		06C73F0F19180D90001D3CC8 /* SneakyThrow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SneakyThrow.m; path = build_result/Classes/libcore/util/SneakyThrow.m; sourceTree = "<group>"; };
-		06C73F1019180DB7001D3CC8 /* ASN1Any.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Any.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Any.h; sourceTree = "<group>"; };
-		06C73F1119180DB7001D3CC8 /* ASN1Any.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Any.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Any.m; sourceTree = "<group>"; };
-		06C73F1219180DB7001D3CC8 /* ASN1Choice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Choice.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Choice.h; sourceTree = "<group>"; };
-		06C73F1319180DB7001D3CC8 /* ASN1Choice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Choice.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Choice.m; sourceTree = "<group>"; };
-		06C73F1419180DB7001D3CC8 /* ASN1Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Constants.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Constants.h; sourceTree = "<group>"; };
-		06C73F1519180DB7001D3CC8 /* ASN1Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Constants.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Constants.m; sourceTree = "<group>"; };
-		06C73F1619180DB7001D3CC8 /* ASN1Constructed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Constructed.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Constructed.h; sourceTree = "<group>"; };
-		06C73F1719180DB7001D3CC8 /* ASN1Constructed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Constructed.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Constructed.m; sourceTree = "<group>"; };
-		06C73F1819180DB7001D3CC8 /* ASN1Exception.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Exception.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Exception.h; sourceTree = "<group>"; };
-		06C73F1919180DB7001D3CC8 /* ASN1Exception.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Exception.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Exception.m; sourceTree = "<group>"; };
-		06C73F1A19180DB7001D3CC8 /* ASN1Explicit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Explicit.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Explicit.h; sourceTree = "<group>"; };
-		06C73F1B19180DB7001D3CC8 /* ASN1Explicit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Explicit.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Explicit.m; sourceTree = "<group>"; };
-		06C73F1C19180DB7001D3CC8 /* ASN1Oid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Oid.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Oid.h; sourceTree = "<group>"; };
-		06C73F1D19180DB7001D3CC8 /* ASN1Oid.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Oid.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Oid.m; sourceTree = "<group>"; };
-		06C73F1E19180DB7001D3CC8 /* ASN1Primitive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Primitive.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Primitive.h; sourceTree = "<group>"; };
-		06C73F1F19180DB7001D3CC8 /* ASN1Primitive.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Primitive.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Primitive.m; sourceTree = "<group>"; };
-		06C73F2019180DB7001D3CC8 /* ASN1Sequence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Sequence.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Sequence.h; sourceTree = "<group>"; };
-		06C73F2119180DB7001D3CC8 /* ASN1Sequence.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Sequence.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Sequence.m; sourceTree = "<group>"; };
-		06C73F2219180DB7001D3CC8 /* ASN1SequenceOf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1SequenceOf.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1SequenceOf.h; sourceTree = "<group>"; };
-		06C73F2319180DB7001D3CC8 /* ASN1SequenceOf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1SequenceOf.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1SequenceOf.m; sourceTree = "<group>"; };
-		06C73F2419180DB7001D3CC8 /* ASN1Set.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Set.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Set.h; sourceTree = "<group>"; };
-		06C73F2519180DB7001D3CC8 /* ASN1Set.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Set.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Set.m; sourceTree = "<group>"; };
-		06C73F2619180DB7001D3CC8 /* ASN1SetOf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1SetOf.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1SetOf.h; sourceTree = "<group>"; };
-		06C73F2719180DB7001D3CC8 /* ASN1SetOf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1SetOf.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1SetOf.m; sourceTree = "<group>"; };
-		06C73F2819180DB7001D3CC8 /* ASN1StringType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1StringType.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1StringType.h; sourceTree = "<group>"; };
-		06C73F2919180DB7001D3CC8 /* ASN1StringType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1StringType.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1StringType.m; sourceTree = "<group>"; };
-		06C73F2A19180DB7001D3CC8 /* ASN1Time.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Time.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Time.h; sourceTree = "<group>"; };
-		06C73F2B19180DB7001D3CC8 /* ASN1Time.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Time.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Time.m; sourceTree = "<group>"; };
-		06C73F2C19180DB7001D3CC8 /* ASN1Type.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Type.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Type.h; sourceTree = "<group>"; };
-		06C73F2D19180DB7001D3CC8 /* ASN1Type.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Type.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Type.m; sourceTree = "<group>"; };
-		06C73F2E19180DB7001D3CC8 /* ASN1TypeCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1TypeCollection.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1TypeCollection.h; sourceTree = "<group>"; };
-		06C73F2F19180DB7001D3CC8 /* ASN1TypeCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1TypeCollection.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1TypeCollection.m; sourceTree = "<group>"; };
-		06C73F3019180DB7001D3CC8 /* ASN1UTCTime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1UTCTime.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1UTCTime.h; sourceTree = "<group>"; };
-		06C73F3119180DB7001D3CC8 /* ASN1UTCTime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1UTCTime.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1UTCTime.m; sourceTree = "<group>"; };
-		06C73F3219180DB7001D3CC8 /* ASN1ValueCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1ValueCollection.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1ValueCollection.h; sourceTree = "<group>"; };
-		06C73F3319180DB7001D3CC8 /* ASN1ValueCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1ValueCollection.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1ValueCollection.m; sourceTree = "<group>"; };
-		06C73F3419180DB8001D3CC8 /* BerInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BerInputStream.h; path = build_result/Classes/org/apache/harmony/security/asn1/BerInputStream.h; sourceTree = "<group>"; };
-		06C73F3519180DB8001D3CC8 /* BerInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BerInputStream.m; path = build_result/Classes/org/apache/harmony/security/asn1/BerInputStream.m; sourceTree = "<group>"; };
-		06C73F3619180DB8001D3CC8 /* BerOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BerOutputStream.h; path = build_result/Classes/org/apache/harmony/security/asn1/BerOutputStream.h; sourceTree = "<group>"; };
-		06C73F3719180DB8001D3CC8 /* BerOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BerOutputStream.m; path = build_result/Classes/org/apache/harmony/security/asn1/BerOutputStream.m; sourceTree = "<group>"; };
-		06C73F3819180DB8001D3CC8 /* BitString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BitString.h; path = build_result/Classes/org/apache/harmony/security/asn1/BitString.h; sourceTree = "<group>"; };
-		06C73F3919180DB8001D3CC8 /* BitString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BitString.m; path = build_result/Classes/org/apache/harmony/security/asn1/BitString.m; sourceTree = "<group>"; };
-		06C73F3A19180DB8001D3CC8 /* DerInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DerInputStream.h; path = build_result/Classes/org/apache/harmony/security/asn1/DerInputStream.h; sourceTree = "<group>"; };
-		06C73F3B19180DB8001D3CC8 /* DerInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DerInputStream.m; path = build_result/Classes/org/apache/harmony/security/asn1/DerInputStream.m; sourceTree = "<group>"; };
-		06C73F3C19180DB8001D3CC8 /* DerOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DerOutputStream.h; path = build_result/Classes/org/apache/harmony/security/asn1/DerOutputStream.h; sourceTree = "<group>"; };
-		06C73F3D19180DB8001D3CC8 /* DerOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DerOutputStream.m; path = build_result/Classes/org/apache/harmony/security/asn1/DerOutputStream.m; sourceTree = "<group>"; };
-		06C73F3E19180DB8001D3CC8 /* ObjectIdentifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ObjectIdentifier.h; path = build_result/Classes/org/apache/harmony/security/asn1/ObjectIdentifier.h; sourceTree = "<group>"; };
-		06C73F3F19180DB8001D3CC8 /* ObjectIdentifier.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ObjectIdentifier.m; path = build_result/Classes/org/apache/harmony/security/asn1/ObjectIdentifier.m; sourceTree = "<group>"; };
-		06C73F4219180DE7001D3CC8 /* Engine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Engine.h; path = build_result/Classes/org/apache/harmony/security/fortress/Engine.h; sourceTree = "<group>"; };
-		06C73F4319180DE7001D3CC8 /* Engine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Engine.m; path = build_result/Classes/org/apache/harmony/security/fortress/Engine.m; sourceTree = "<group>"; };
-		06C73F4419180DE7001D3CC8 /* SecurityAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecurityAccess.h; path = build_result/Classes/org/apache/harmony/security/fortress/SecurityAccess.h; sourceTree = "<group>"; };
-		06C73F4519180DE7001D3CC8 /* SecurityAccess.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecurityAccess.m; path = build_result/Classes/org/apache/harmony/security/fortress/SecurityAccess.m; sourceTree = "<group>"; };
-		06C73F4619180DE7001D3CC8 /* Services.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Services.h; path = build_result/Classes/org/apache/harmony/security/fortress/Services.h; sourceTree = "<group>"; };
-		06C73F4719180DE7001D3CC8 /* Services.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Services.m; path = build_result/Classes/org/apache/harmony/security/fortress/Services.m; sourceTree = "<group>"; };
-		06C73F4819180DE8001D3CC8 /* ObjectIdentifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ObjectIdentifier.h; path = build_result/Classes/org/apache/harmony/security/utils/ObjectIdentifier.h; sourceTree = "<group>"; };
-		06C73F4919180DE8001D3CC8 /* ObjectIdentifier.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ObjectIdentifier.m; path = build_result/Classes/org/apache/harmony/security/utils/ObjectIdentifier.m; sourceTree = "<group>"; };
-		06C73F4A19180DE8001D3CC8 /* AttributeTypeAndValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AttributeTypeAndValue.h; path = build_result/Classes/org/apache/harmony/security/x501/AttributeTypeAndValue.h; sourceTree = "<group>"; };
-		06C73F4B19180DE8001D3CC8 /* AttributeTypeAndValue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AttributeTypeAndValue.m; path = build_result/Classes/org/apache/harmony/security/x501/AttributeTypeAndValue.m; sourceTree = "<group>"; };
-		06C73F4C19180DE8001D3CC8 /* AttributeTypeAndValueComparator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AttributeTypeAndValueComparator.h; path = build_result/Classes/org/apache/harmony/security/x501/AttributeTypeAndValueComparator.h; sourceTree = "<group>"; };
-		06C73F4D19180DE8001D3CC8 /* AttributeTypeAndValueComparator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AttributeTypeAndValueComparator.m; path = build_result/Classes/org/apache/harmony/security/x501/AttributeTypeAndValueComparator.m; sourceTree = "<group>"; };
-		06C73F4E19180DE8001D3CC8 /* AttributeValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AttributeValue.h; path = build_result/Classes/org/apache/harmony/security/x501/AttributeValue.h; sourceTree = "<group>"; };
-		06C73F4F19180DE8001D3CC8 /* AttributeValue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AttributeValue.m; path = build_result/Classes/org/apache/harmony/security/x501/AttributeValue.m; sourceTree = "<group>"; };
-		06C73F5019180DE8001D3CC8 /* DirectoryString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DirectoryString.h; path = build_result/Classes/org/apache/harmony/security/x501/DirectoryString.h; sourceTree = "<group>"; };
-		06C73F5119180DE8001D3CC8 /* DirectoryString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DirectoryString.m; path = build_result/Classes/org/apache/harmony/security/x501/DirectoryString.m; sourceTree = "<group>"; };
-		06C73F5219180DE8001D3CC8 /* Name.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Name.h; path = build_result/Classes/org/apache/harmony/security/x501/Name.h; sourceTree = "<group>"; };
-		06C73F5319180DE8001D3CC8 /* Name.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Name.m; path = build_result/Classes/org/apache/harmony/security/x501/Name.m; sourceTree = "<group>"; };
-		06C73F5419180DE8001D3CC8 /* DNParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DNParser.h; path = build_result/Classes/org/apache/harmony/security/x509/DNParser.h; sourceTree = "<group>"; };
-		06C73F5519180DE8001D3CC8 /* DNParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DNParser.m; path = build_result/Classes/org/apache/harmony/security/x509/DNParser.m; sourceTree = "<group>"; };
 		06C73F5719180E64001D3CC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		06C73F5919180E6D001D3CC8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		06CBF5221AFBEB1E00CA582D /* dalvik_system_JniTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dalvik_system_JniTest.cpp; path = android/libcore/luni/src/test/native/dalvik_system_JniTest.cpp; sourceTree = SOURCE_ROOT; };
@@ -3157,34 +3031,20 @@
 		06DD32A016A13FA000AD7ACE /* ByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ByteBuffer.m; path = build_result/Classes/java/nio/ByteBuffer.m; sourceTree = "<group>"; };
 		06DD32A116A13FA000AD7ACE /* ByteOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteOrder.h; path = build_result/Classes/java/nio/ByteOrder.h; sourceTree = "<group>"; };
 		06DD32A216A13FA000AD7ACE /* ByteOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ByteOrder.m; path = build_result/Classes/java/nio/ByteOrder.m; sourceTree = "<group>"; };
-		06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharArrayBuffer.h; path = build_result/Classes/java/nio/CharArrayBuffer.h; sourceTree = "<group>"; };
-		06DD32A416A13FA000AD7ACE /* CharArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharArrayBuffer.m; path = build_result/Classes/java/nio/CharArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32A516A13FA000AD7ACE /* CharBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharBuffer.h; path = build_result/Classes/java/nio/CharBuffer.h; sourceTree = "<group>"; };
 		06DD32A616A13FA000AD7ACE /* CharBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharBuffer.m; path = build_result/Classes/java/nio/CharBuffer.m; sourceTree = "<group>"; };
-		06DD32A716A13FA000AD7ACE /* CharSequenceAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharSequenceAdapter.h; path = build_result/Classes/java/nio/CharSequenceAdapter.h; sourceTree = "<group>"; };
-		06DD32A816A13FA000AD7ACE /* CharSequenceAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharSequenceAdapter.m; path = build_result/Classes/java/nio/CharSequenceAdapter.m; sourceTree = "<group>"; };
-		06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DoubleArrayBuffer.h; path = build_result/Classes/java/nio/DoubleArrayBuffer.h; sourceTree = "<group>"; };
-		06DD32AA16A13FA000AD7ACE /* DoubleArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoubleArrayBuffer.m; path = build_result/Classes/java/nio/DoubleArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DoubleBuffer.h; path = build_result/Classes/java/nio/DoubleBuffer.h; sourceTree = "<group>"; };
 		06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoubleBuffer.m; path = build_result/Classes/java/nio/DoubleBuffer.m; sourceTree = "<group>"; };
-		06DD32AD16A13FA000AD7ACE /* FloatArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloatArrayBuffer.h; path = build_result/Classes/java/nio/FloatArrayBuffer.h; sourceTree = "<group>"; };
-		06DD32AE16A13FA000AD7ACE /* FloatArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FloatArrayBuffer.m; path = build_result/Classes/java/nio/FloatArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32AF16A13FA000AD7ACE /* FloatBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloatBuffer.h; path = build_result/Classes/java/nio/FloatBuffer.h; sourceTree = "<group>"; };
 		06DD32B016A13FA000AD7ACE /* FloatBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FloatBuffer.m; path = build_result/Classes/java/nio/FloatBuffer.m; sourceTree = "<group>"; };
-		06DD32B316A13FA000AD7ACE /* IntArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntArrayBuffer.h; path = build_result/Classes/java/nio/IntArrayBuffer.h; sourceTree = "<group>"; };
-		06DD32B416A13FA000AD7ACE /* IntArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntArrayBuffer.m; path = build_result/Classes/java/nio/IntArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32B516A13FA000AD7ACE /* IntBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntBuffer.h; path = build_result/Classes/java/nio/IntBuffer.h; sourceTree = "<group>"; };
 		06DD32B616A13FA000AD7ACE /* IntBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntBuffer.m; path = build_result/Classes/java/nio/IntBuffer.m; sourceTree = "<group>"; };
 		06DD32B716A13FA000AD7ACE /* InvalidMarkException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvalidMarkException.h; path = build_result/Classes/java/nio/InvalidMarkException.h; sourceTree = "<group>"; };
 		06DD32B816A13FA000AD7ACE /* InvalidMarkException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvalidMarkException.m; path = build_result/Classes/java/nio/InvalidMarkException.m; sourceTree = "<group>"; };
-		06DD32B916A13FA000AD7ACE /* LongArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LongArrayBuffer.h; path = build_result/Classes/java/nio/LongArrayBuffer.h; sourceTree = "<group>"; };
-		06DD32BA16A13FA000AD7ACE /* LongArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongArrayBuffer.m; path = build_result/Classes/java/nio/LongArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32BB16A13FA000AD7ACE /* LongBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LongBuffer.h; path = build_result/Classes/java/nio/LongBuffer.h; sourceTree = "<group>"; };
 		06DD32BC16A13FA000AD7ACE /* LongBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongBuffer.m; path = build_result/Classes/java/nio/LongBuffer.m; sourceTree = "<group>"; };
 		06DD32BD16A13FA000AD7ACE /* ReadOnlyBufferException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadOnlyBufferException.h; path = build_result/Classes/java/nio/ReadOnlyBufferException.h; sourceTree = "<group>"; };
 		06DD32BE16A13FA000AD7ACE /* ReadOnlyBufferException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadOnlyBufferException.m; path = build_result/Classes/java/nio/ReadOnlyBufferException.m; sourceTree = "<group>"; };
-		06DD32DB16A13FA000AD7ACE /* ShortArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortArrayBuffer.h; path = build_result/Classes/java/nio/ShortArrayBuffer.h; sourceTree = "<group>"; };
-		06DD32DC16A13FA000AD7ACE /* ShortArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShortArrayBuffer.m; path = build_result/Classes/java/nio/ShortArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32DD16A13FA000AD7ACE /* ShortBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortBuffer.h; path = build_result/Classes/java/nio/ShortBuffer.h; sourceTree = "<group>"; };
 		06DD32DE16A13FA000AD7ACE /* ShortBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShortBuffer.m; path = build_result/Classes/java/nio/ShortBuffer.m; sourceTree = "<group>"; };
 		06DD332816A13FBB00AD7ACE /* ParseException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParseException.h; path = build_result/Classes/java/text/ParseException.h; sourceTree = "<group>"; };
@@ -3204,8 +3064,6 @@
 		06DD333B16A1406A00AD7ACE /* GregorianCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GregorianCalendar.m; path = build_result/Classes/java/util/GregorianCalendar.m; sourceTree = "<group>"; };
 		06DD333E16A1406A00AD7ACE /* LinkedHashSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkedHashSet.h; path = build_result/Classes/java/util/LinkedHashSet.h; sourceTree = "<group>"; };
 		06DD333F16A1406A00AD7ACE /* LinkedHashSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedHashSet.m; path = build_result/Classes/java/util/LinkedHashSet.m; sourceTree = "<group>"; };
-		06DD334016A1406A00AD7ACE /* MiniEnumSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MiniEnumSet.h; path = build_result/Classes/java/util/MiniEnumSet.h; sourceTree = "<group>"; };
-		06DD334116A1406A00AD7ACE /* MiniEnumSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MiniEnumSet.m; path = build_result/Classes/java/util/MiniEnumSet.m; sourceTree = "<group>"; };
 		06DD334216A1406A00AD7ACE /* SimpleTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimpleTimeZone.h; path = build_result/Classes/java/util/SimpleTimeZone.h; sourceTree = "<group>"; };
 		06DD334316A1406A00AD7ACE /* SimpleTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimpleTimeZone.m; path = build_result/Classes/java/util/SimpleTimeZone.m; sourceTree = "<group>"; };
 		06DD334416A1406A00AD7ACE /* TimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZone.h; path = build_result/Classes/java/util/TimeZone.h; sourceTree = "<group>"; };
@@ -3228,10 +3086,6 @@
 		06DE64AB1E3AB90500DACBF7 /* DataEnqueuedOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataEnqueuedOutputStream.m; path = build_result/Classes/com/google/j2objc/net/DataEnqueuedOutputStream.m; sourceTree = "<group>"; };
 		06DE64AC1E3AB90500DACBF7 /* IOSCharset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSCharset.h; path = build_result/Classes/com/google/j2objc/nio/charset/IOSCharset.h; sourceTree = "<group>"; };
 		06DE64AD1E3AB90500DACBF7 /* IOSCharset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSCharset.m; path = build_result/Classes/com/google/j2objc/nio/charset/IOSCharset.m; sourceTree = "<group>"; };
-		06DE64AE1E3AB90500DACBF7 /* IOSCharsetDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSCharsetDecoder.h; path = build_result/Classes/com/google/j2objc/nio/charset/IOSCharsetDecoder.h; sourceTree = "<group>"; };
-		06DE64AF1E3AB90500DACBF7 /* IOSCharsetDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSCharsetDecoder.m; path = build_result/Classes/com/google/j2objc/nio/charset/IOSCharsetDecoder.m; sourceTree = "<group>"; };
-		06DE64B01E3AB90500DACBF7 /* IOSCharsetEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSCharsetEncoder.h; path = build_result/Classes/com/google/j2objc/nio/charset/IOSCharsetEncoder.h; sourceTree = "<group>"; };
-		06DE64B11E3AB90500DACBF7 /* IOSCharsetEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSCharsetEncoder.m; path = build_result/Classes/com/google/j2objc/nio/charset/IOSCharsetEncoder.m; sourceTree = "<group>"; };
 		06DE64B21E3AB90500DACBF7 /* ReflectionStrippedError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReflectionStrippedError.h; path = build_result/Classes/com/google/j2objc/ReflectionStrippedError.h; sourceTree = "<group>"; };
 		06DE64B31E3AB90500DACBF7 /* ReflectionStrippedError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReflectionStrippedError.m; path = build_result/Classes/com/google/j2objc/ReflectionStrippedError.m; sourceTree = "<group>"; };
 		06DE64B41E3AB90500DACBF7 /* IosRSASignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IosRSASignature.h; path = build_result/Classes/com/google/j2objc/security/IosRSASignature.h; sourceTree = "<group>"; };
@@ -3310,16 +3164,12 @@
 		06ED3D6517D164AF0014750E /* Deprecated.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Deprecated.m; path = build_result/Classes/java/lang/Deprecated.m; sourceTree = "<group>"; };
 		06ED3D6617D164AF0014750E /* IllegalMonitorStateException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalMonitorStateException.h; path = build_result/Classes/java/lang/IllegalMonitorStateException.h; sourceTree = "<group>"; };
 		06ED3D6717D164AF0014750E /* IllegalMonitorStateException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IllegalMonitorStateException.m; path = build_result/Classes/java/lang/IllegalMonitorStateException.m; sourceTree = "<group>"; };
-		06ED3D6817D164AF0014750E /* Override.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Override.h; path = build_result/Classes/java/lang/Override.h; sourceTree = "<group>"; };
-		06ED3D6917D164AF0014750E /* Override.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Override.m; path = build_result/Classes/java/lang/Override.m; sourceTree = "<group>"; };
 		06ED3D6A17D164AF0014750E /* Package.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Package.h; path = build_result/Classes/java/lang/Package.h; sourceTree = "<group>"; };
 		06ED3D6B17D164AF0014750E /* Package.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Package.m; path = build_result/Classes/java/lang/Package.m; sourceTree = "<group>"; };
 		06ED3D6C17D164AF0014750E /* SafeVarargs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SafeVarargs.h; path = build_result/Classes/java/lang/SafeVarargs.h; sourceTree = "<group>"; };
 		06ED3D6D17D164AF0014750E /* SafeVarargs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SafeVarargs.m; path = build_result/Classes/java/lang/SafeVarargs.m; sourceTree = "<group>"; };
 		06ED3D6E17D164AF0014750E /* SecurityManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecurityManager.h; path = build_result/Classes/java/lang/SecurityManager.h; sourceTree = "<group>"; };
 		06ED3D6F17D164AF0014750E /* SecurityManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecurityManager.m; path = build_result/Classes/java/lang/SecurityManager.m; sourceTree = "<group>"; };
-		06ED3D7017D164AF0014750E /* SuppressWarnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SuppressWarnings.h; path = build_result/Classes/java/lang/SuppressWarnings.h; sourceTree = "<group>"; };
-		06ED3D7117D164AF0014750E /* SuppressWarnings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SuppressWarnings.m; path = build_result/Classes/java/lang/SuppressWarnings.m; sourceTree = "<group>"; };
 		06ED3D7217D164DC0014750E /* AnnotatedElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotatedElement.h; path = build_result/Classes/java/lang/reflect/AnnotatedElement.h; sourceTree = "<group>"; };
 		06ED3D7317D164DC0014750E /* AnnotatedElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AnnotatedElement.m; path = build_result/Classes/java/lang/reflect/AnnotatedElement.m; sourceTree = "<group>"; };
 		06ED3D7417D164DC0014750E /* GenericArrayType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericArrayType.h; path = build_result/Classes/java/lang/reflect/GenericArrayType.h; sourceTree = "<group>"; };
@@ -3371,8 +3221,6 @@
 		06ED3DA417D165510014750E /* PermissionCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PermissionCollection.m; path = build_result/Classes/java/security/PermissionCollection.m; sourceTree = "<group>"; };
 		06ED3DA517D165510014750E /* Permissions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Permissions.h; path = build_result/Classes/java/security/Permissions.h; sourceTree = "<group>"; };
 		06ED3DA617D165510014750E /* Permissions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Permissions.m; path = build_result/Classes/java/security/Permissions.m; sourceTree = "<group>"; };
-		06ED3DA717D165510014750E /* PermissionsHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PermissionsHash.h; path = build_result/Classes/java/security/PermissionsHash.h; sourceTree = "<group>"; };
-		06ED3DA817D165510014750E /* PermissionsHash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PermissionsHash.m; path = build_result/Classes/java/security/PermissionsHash.m; sourceTree = "<group>"; };
 		06ED3DA917D165510014750E /* Principal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Principal.h; path = build_result/Classes/java/security/Principal.h; sourceTree = "<group>"; };
 		06ED3DAA17D165510014750E /* Principal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Principal.m; path = build_result/Classes/java/security/Principal.m; sourceTree = "<group>"; };
 		06ED3DAB17D165510014750E /* PrivilegedAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivilegedAction.h; path = build_result/Classes/java/security/PrivilegedAction.h; sourceTree = "<group>"; };
@@ -3819,8 +3667,6 @@
 		06F2913118972E1700676F1D /* AtomicReferenceFieldUpdater.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AtomicReferenceFieldUpdater.m; path = build_result/Classes/java/util/concurrent/atomic/AtomicReferenceFieldUpdater.m; sourceTree = "<group>"; };
 		06F2913218972E1700676F1D /* AtomicStampedReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AtomicStampedReference.h; path = build_result/Classes/java/util/concurrent/atomic/AtomicStampedReference.h; sourceTree = "<group>"; };
 		06F2913318972E1700676F1D /* AtomicStampedReference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AtomicStampedReference.m; path = build_result/Classes/java/util/concurrent/atomic/AtomicStampedReference.m; sourceTree = "<group>"; };
-		06F2913418972E1700676F1D /* Fences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Fences.h; path = build_result/Classes/java/util/concurrent/atomic/Fences.h; sourceTree = "<group>"; };
-		06F2913518972E1700676F1D /* Fences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Fences.m; path = build_result/Classes/java/util/concurrent/atomic/Fences.m; sourceTree = "<group>"; };
 		06F2913618972E2E00676F1D /* AbstractOwnableSynchronizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractOwnableSynchronizer.h; path = build_result/Classes/java/util/concurrent/locks/AbstractOwnableSynchronizer.h; sourceTree = "<group>"; };
 		06F2913718972E2E00676F1D /* AbstractOwnableSynchronizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractOwnableSynchronizer.m; path = build_result/Classes/java/util/concurrent/locks/AbstractOwnableSynchronizer.m; sourceTree = "<group>"; };
 		06F2913818972E2E00676F1D /* AbstractQueuedLongSynchronizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractQueuedLongSynchronizer.h; path = build_result/Classes/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.h; sourceTree = "<group>"; };
@@ -4222,44 +4068,6 @@
 				067219CF1559C87100645E1B /* ArrayStoreException.m */,
 				06C73D8B19180C0C001D3CC8 /* ArrayUtils.h */,
 				06C73D8C19180C0C001D3CC8 /* ArrayUtils.m */,
-				06C73F1019180DB7001D3CC8 /* ASN1Any.h */,
-				06C73F1119180DB7001D3CC8 /* ASN1Any.m */,
-				06C73F1219180DB7001D3CC8 /* ASN1Choice.h */,
-				06C73F1319180DB7001D3CC8 /* ASN1Choice.m */,
-				06C73F1419180DB7001D3CC8 /* ASN1Constants.h */,
-				06C73F1519180DB7001D3CC8 /* ASN1Constants.m */,
-				06C73F1619180DB7001D3CC8 /* ASN1Constructed.h */,
-				06C73F1719180DB7001D3CC8 /* ASN1Constructed.m */,
-				06C73F1819180DB7001D3CC8 /* ASN1Exception.h */,
-				06C73F1919180DB7001D3CC8 /* ASN1Exception.m */,
-				06C73F1A19180DB7001D3CC8 /* ASN1Explicit.h */,
-				06C73F1B19180DB7001D3CC8 /* ASN1Explicit.m */,
-				0649A7531AE079CD00DE2494 /* ASN1Integer.h */,
-				0649A7541AE079CD00DE2494 /* ASN1Integer.m */,
-				06C73F1C19180DB7001D3CC8 /* ASN1Oid.h */,
-				06C73F1D19180DB7001D3CC8 /* ASN1Oid.m */,
-				06C73F1E19180DB7001D3CC8 /* ASN1Primitive.h */,
-				06C73F1F19180DB7001D3CC8 /* ASN1Primitive.m */,
-				06C73F2019180DB7001D3CC8 /* ASN1Sequence.h */,
-				06C73F2119180DB7001D3CC8 /* ASN1Sequence.m */,
-				06C73F2219180DB7001D3CC8 /* ASN1SequenceOf.h */,
-				06C73F2319180DB7001D3CC8 /* ASN1SequenceOf.m */,
-				06C73F2419180DB7001D3CC8 /* ASN1Set.h */,
-				06C73F2519180DB7001D3CC8 /* ASN1Set.m */,
-				06C73F2619180DB7001D3CC8 /* ASN1SetOf.h */,
-				06C73F2719180DB7001D3CC8 /* ASN1SetOf.m */,
-				06C73F2819180DB7001D3CC8 /* ASN1StringType.h */,
-				06C73F2919180DB7001D3CC8 /* ASN1StringType.m */,
-				06C73F2A19180DB7001D3CC8 /* ASN1Time.h */,
-				06C73F2B19180DB7001D3CC8 /* ASN1Time.m */,
-				06C73F2C19180DB7001D3CC8 /* ASN1Type.h */,
-				06C73F2D19180DB7001D3CC8 /* ASN1Type.m */,
-				06C73F2E19180DB7001D3CC8 /* ASN1TypeCollection.h */,
-				06C73F2F19180DB7001D3CC8 /* ASN1TypeCollection.m */,
-				06C73F3019180DB7001D3CC8 /* ASN1UTCTime.h */,
-				06C73F3119180DB7001D3CC8 /* ASN1UTCTime.m */,
-				06C73F3219180DB7001D3CC8 /* ASN1ValueCollection.h */,
-				06C73F3319180DB7001D3CC8 /* ASN1ValueCollection.m */,
 				06721B331559CC0300645E1B /* AssertionError.h */,
 				067219D01559C87100645E1B /* AssertionError.m */,
 				06C73E5319180CC8001D3CC8 /* AsynchronousCloseException.h */,
@@ -4310,12 +4118,6 @@
 				064FB7AC172707D700DC0D51 /* Attributes2Impl.m */,
 				064FB7D61727081D00DC0D51 /* AttributesImpl.h */,
 				064FB7D71727081D00DC0D51 /* AttributesImpl.m */,
-				06C73F4A19180DE8001D3CC8 /* AttributeTypeAndValue.h */,
-				06C73F4B19180DE8001D3CC8 /* AttributeTypeAndValue.m */,
-				06C73F4C19180DE8001D3CC8 /* AttributeTypeAndValueComparator.h */,
-				06C73F4D19180DE8001D3CC8 /* AttributeTypeAndValueComparator.m */,
-				06C73F4E19180DE8001D3CC8 /* AttributeValue.h */,
-				06C73F4F19180DE8001D3CC8 /* AttributeValue.m */,
 				06C73DA719180C6E001D3CC8 /* Authenticator.h */,
 				06C73DA819180C6E001D3CC8 /* Authenticator.m */,
 				06ED3D5F17D164AF0014750E /* AutoCloseable.h */,
@@ -4334,22 +4136,14 @@
 				06ED3D9517D165510014750E /* BasicPermission.m */,
 				0649A6861AE0780400DE2494 /* BatchUpdateException.h */,
 				0649A6871AE0780400DE2494 /* BatchUpdateException.m */,
-				06C73F3419180DB8001D3CC8 /* BerInputStream.h */,
-				06C73F3519180DB8001D3CC8 /* BerInputStream.m */,
-				06C73F3619180DB8001D3CC8 /* BerOutputStream.h */,
-				06C73F3719180DB8001D3CC8 /* BerOutputStream.m */,
 				067855C3169F37710042431C /* BigDecimal.h */,
 				067855C4169F37710042431C /* BigDecimal.m */,
 				067855C5169F37710042431C /* BigInteger.h */,
 				067855C6169F37710042431C /* BigInteger.m */,
 				06C73DA919180C6E001D3CC8 /* BindException.h */,
 				06C73DAA19180C6E001D3CC8 /* BindException.m */,
-				067855C7169F37710042431C /* BitLevel.h */,
-				067855C8169F37710042431C /* BitLevel.m */,
 				06721ACD1559CB4200645E1B /* BitSet.h */,
 				06721A311559C91600645E1B /* BitSet.m */,
-				06C73F3819180DB8001D3CC8 /* BitString.h */,
-				06C73F3919180DB8001D3CC8 /* BitString.m */,
 				0649A6881AE0780400DE2494 /* Blob.h */,
 				0649A6891AE0780400DE2494 /* Blob.m */,
 				06C73D9B19180C31001D3CC8 /* BlockGuard.h */,
@@ -4380,8 +4174,6 @@
 				06DD329E16A13FA000AD7ACE /* BufferUnderflowException.m */,
 				06721B351559CC0300645E1B /* Byte.h */,
 				067219D21559C87100645E1B /* Byte.m */,
-				06C73E4119180CB4001D3CC8 /* ByteArrayBuffer.h */,
-				06C73E4219180CB4001D3CC8 /* ByteArrayBuffer.m */,
 				06721A7F1559CB2500645E1B /* ByteArrayInputStream.h */,
 				067219911559C7FC00645E1B /* ByteArrayInputStream.m */,
 				06721A801559CB2500645E1B /* ByteArrayOutputStream.h */,
@@ -4482,8 +4274,6 @@
 				0649A76A1AE07A4100DE2494 /* CharacterData.m */,
 				06ED3DC217D165DE0014750E /* CharacterIterator.h */,
 				06ED3DC317D165DE0014750E /* CharacterIterator.m */,
-				06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */,
-				06DD32A416A13FA000AD7ACE /* CharArrayBuffer.m */,
 				06721A811559CB2500645E1B /* CharArrayReader.h */,
 				067219931559C7FC00645E1B /* CharArrayReader.m */,
 				06721A821559CB2500645E1B /* CharArrayWriter.h */,
@@ -4492,8 +4282,6 @@
 				06DD32A616A13FA000AD7ACE /* CharBuffer.m */,
 				06F28FF318972C9300676F1D /* CharConversionException.h */,
 				06F28FF418972C9300676F1D /* CharConversionException.m */,
-				06DD32A716A13FA000AD7ACE /* CharSequenceAdapter.h */,
-				06DD32A816A13FA000AD7ACE /* CharSequenceAdapter.m */,
 				06AA054A17E110D00017C34A /* Charset.h */,
 				06AA054B17E110D00017C34A /* Charset.m */,
 				06AA054C17E110D00017C34A /* CharsetDecoder.h */,
@@ -4594,8 +4382,6 @@
 				06C73DB219180C8A001D3CC8 /* ContentHandler.m */,
 				06C73DB319180C8A001D3CC8 /* ContentHandlerFactory.h */,
 				06C73DB419180C8A001D3CC8 /* ContentHandlerFactory.m */,
-				067855C9169F37710042431C /* Conversion.h */,
-				067855CA169F37710042431C /* Conversion.m */,
 				06C73DB519180C8A001D3CC8 /* CookieHandler.h */,
 				06C73DB619180C8A001D3CC8 /* CookieHandler.m */,
 				0649A5EA1AE0778600DE2494 /* CookieManager.h */,
@@ -4604,8 +4390,6 @@
 				0649A5ED1AE0778600DE2494 /* CookiePolicy.m */,
 				0649A5EE1AE0778600DE2494 /* CookieStore.h */,
 				0649A5EF1AE0778600DE2494 /* CookieStore.m */,
-				0649A5F01AE0778600DE2494 /* CookieStoreImpl.h */,
-				0649A5F11AE0778600DE2494 /* CookieStoreImpl.m */,
 				06F290D718972DF900676F1D /* CopyOnWriteArrayList.h */,
 				06F290D818972DF900676F1D /* CopyOnWriteArrayList.m */,
 				06F290D918972DF900676F1D /* CopyOnWriteArraySet.h */,
@@ -4636,8 +4420,6 @@
 				06F2916618972E6800676F1D /* DataFormatException.m */,
 				06C73E6319180CC8001D3CC8 /* DatagramChannel.h */,
 				06C73E6419180CC8001D3CC8 /* DatagramChannel.m */,
-				0649A5FE1AE0778600DE2494 /* DatagramChannelImpl.h */,
-				0649A5FF1AE0778600DE2494 /* DatagramChannelImpl.m */,
 				06C73DB719180C8A001D3CC8 /* DatagramPacket.h */,
 				06C73DB819180C8A001D3CC8 /* DatagramPacket.m */,
 				06C73DB919180C8A001D3CC8 /* DatagramSocket.h */,
@@ -4676,14 +4458,6 @@
 				064FB7D91727081D00DC0D51 /* DefaultHandler.m */,
 				064FB7AE172707D700DC0D51 /* DefaultHandler2.h */,
 				064FB7AF172707D700DC0D51 /* DefaultHandler2.m */,
-				0649A6F21AE0796400DE2494 /* DefaultServerSocketFactory.h */,
-				0649A6F31AE0796400DE2494 /* DefaultServerSocketFactory.m */,
-				0649A6F41AE0796400DE2494 /* DefaultSocketFactory.h */,
-				0649A6F51AE0796400DE2494 /* DefaultSocketFactory.m */,
-				0649A6FB1AE0796500DE2494 /* DefaultSSLServerSocketFactory.h */,
-				0649A6FC1AE0796500DE2494 /* DefaultSSLServerSocketFactory.m */,
-				0649A6FD1AE0796500DE2494 /* DefaultSSLSocketFactory.h */,
-				0649A6FE1AE0796500DE2494 /* DefaultSSLSocketFactory.m */,
 				0699FF8C18D7851500278029 /* Deflater.h */,
 				0699FF8D18D7851500278029 /* Deflater.m */,
 				0699FF8E18D7851500278029 /* DeflaterInputStream.h */,
@@ -4700,10 +4474,6 @@
 				06ED3D6517D164AF0014750E /* Deprecated.m */,
 				068677CD166C342C005A5AD7 /* Deque.h */,
 				06F2908318972DA200676F1D /* Deque.m */,
-				06C73F3A19180DB8001D3CC8 /* DerInputStream.h */,
-				06C73F3B19180DB8001D3CC8 /* DerInputStream.m */,
-				06C73F3C19180DB8001D3CC8 /* DerOutputStream.h */,
-				06C73F3D19180DB8001D3CC8 /* DerOutputStream.m */,
 				0649A73F1AE0796700DE2494 /* Destroyable.h */,
 				0649A7401AE0796700DE2494 /* Destroyable.m */,
 				0649A7411AE0796700DE2494 /* DestroyFailedException.h */,
@@ -4714,12 +4484,6 @@
 				06F2906818972D4C00676F1D /* DigestException.m */,
 				0649A6001AE0778600DE2494 /* DirectByteBuffer.h */,
 				0649A6011AE0778600DE2494 /* DirectByteBuffer.m */,
-				06C73F5019180DE8001D3CC8 /* DirectoryString.h */,
-				06C73F5119180DE8001D3CC8 /* DirectoryString.m */,
-				067855CB169F37710042431C /* Division.h */,
-				067855CC169F37710042431C /* Division.m */,
-				06C73F5419180DE8001D3CC8 /* DNParser.h */,
-				06C73F5519180DE8001D3CC8 /* DNParser.m */,
 				0649A76D1AE07A4200DE2494 /* Document.h */,
 				0649A76E1AE07A4200DE2494 /* Document.m */,
 				06F2904F18972CE800676F1D /* Documented.h */,
@@ -4754,8 +4518,6 @@
 				0649A7841AE07A4200DE2494 /* DOMStringList.m */,
 				06721B3A1559CC0300645E1B /* Double.h */,
 				067219D71559C87100645E1B /* Double.m */,
-				06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */,
-				06DD32AA16A13FA000AD7ACE /* DoubleArrayBuffer.m */,
 				06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */,
 				06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */,
 				0649A6961AE0780500DE2494 /* Driver.h */,
@@ -4798,8 +4560,6 @@
 				06C73D5019180BD8001D3CC8 /* Editable.m */,
 				0649A7851AE07A4200DE2494 /* Element.h */,
 				0649A7861AE07A4300DE2494 /* Element.m */,
-				067855CD169F37710042431C /* Elementary.h */,
-				067855CE169F37710042431C /* Elementary.m */,
 				06F2905118972CE800676F1D /* ElementType.h */,
 				06F2905218972CE800676F1D /* ElementType.m */,
 				0649A6661AE077E800DE2494 /* EllipticCurve.h */,
@@ -4816,8 +4576,6 @@
 				06F28FFC18972C9300676F1D /* EmulatedFieldsForLoading.m */,
 				0649A6681AE077E800DE2494 /* EncodedKeySpec.h */,
 				0649A6691AE077E800DE2494 /* EncodedKeySpec.m */,
-				06C73F4219180DE7001D3CC8 /* Engine.h */,
-				06C73F4319180DE7001D3CC8 /* Engine.m */,
 				0649A7871AE07A4300DE2494 /* Entity.h */,
 				0649A7881AE07A4300DE2494 /* Entity.m */,
 				0649A7891AE07A4300DE2494 /* EntityReference.h */,
@@ -4872,20 +4630,14 @@
 				06F28FFE18972C9300676F1D /* Externalizable.m */,
 				064FB7621727071800DC0D51 /* FactoryConfigurationError.h */,
 				064FB7631727071800DC0D51 /* FactoryConfigurationError.m */,
-				06F2913418972E1700676F1D /* Fences.h */,
-				06F2913518972E1700676F1D /* Fences.m */,
 				06ED3DD017D165DE0014750E /* FieldPosition.h */,
 				06ED3DD117D165DE0014750E /* FieldPosition.m */,
 				06721A841559CB2500645E1B /* File.h */,
 				067219951559C7FC00645E1B /* File.m */,
 				06C73E6519180CC8001D3CC8 /* FileChannel.h */,
 				06C73E6619180CC8001D3CC8 /* FileChannel.m */,
-				0649A6021AE0778600DE2494 /* FileChannelImpl.h */,
-				0649A6031AE0778600DE2494 /* FileChannelImpl.m */,
 				06721A851559CB2500645E1B /* FileDescriptor.h */,
 				067219961559C7FC00645E1B /* FileDescriptor.m */,
-				0649A6041AE0778600DE2494 /* FileDescriptorChannel.h */,
-				0649A6051AE0778600DE2494 /* FileDescriptorChannel.m */,
 				06721A861559CB2500645E1B /* FileFilter.h */,
 				06F28FFF18972C9300676F1D /* FileFilter.m */,
 				06C73F0619180D90001D3CC8 /* FileHandler.h */,
@@ -4926,8 +4678,6 @@
 				06ED3D5617D1645A0014750E /* FilterWriter.m */,
 				06721B3F1559CC0300645E1B /* Float.h */,
 				067219DC1559C87100645E1B /* Float.m */,
-				06DD32AD16A13FA000AD7ACE /* FloatArrayBuffer.h */,
-				06DD32AE16A13FA000AD7ACE /* FloatArrayBuffer.m */,
 				06DD32AF16A13FA000AD7ACE /* FloatBuffer.h */,
 				06DD32B016A13FA000AD7ACE /* FloatBuffer.m */,
 				06721A8F1559CB2500645E1B /* Flushable.h */,
@@ -5000,8 +4750,6 @@
 				06721A4D1559C99E00645E1B /* HashSet.m */,
 				06721AE81559CB9200645E1B /* Hashtable.h */,
 				06721A4E1559C99E00645E1B /* Hashtable.m */,
-				06C73EE219180D6D001D3CC8 /* HeapBufferIterator.h */,
-				06C73EE319180D6D001D3CC8 /* HeapBufferIterator.m */,
 				0649A7031AE0796500DE2494 /* HostnameVerifier.h */,
 				0649A7041AE0796500DE2494 /* HostnameVerifier.m */,
 				06C73DC319180C8A001D3CC8 /* HttpCookie.h */,
@@ -5088,8 +4836,6 @@
 				06C73D5619180BD9001D3CC8 /* InputType.m */,
 				06721B451559CC0300645E1B /* InstantiationException.h */,
 				067219E21559C87100645E1B /* InstantiationException.m */,
-				06DD32B316A13FA000AD7ACE /* IntArrayBuffer.h */,
-				06DD32B416A13FA000AD7ACE /* IntArrayBuffer.m */,
 				06DD32B516A13FA000AD7ACE /* IntBuffer.h */,
 				06DD32B616A13FA000AD7ACE /* IntBuffer.m */,
 				06721B461559CC0300645E1B /* Integer.h */,
@@ -5136,10 +4882,6 @@
 				0649A5D91AE076CC00DE2494 /* IosCertificateFactory.m */,
 				06DE64AC1E3AB90500DACBF7 /* IOSCharset.h */,
 				06DE64AD1E3AB90500DACBF7 /* IOSCharset.m */,
-				06DE64AE1E3AB90500DACBF7 /* IOSCharsetDecoder.h */,
-				06DE64AF1E3AB90500DACBF7 /* IOSCharsetDecoder.m */,
-				06DE64B01E3AB90500DACBF7 /* IOSCharsetEncoder.h */,
-				06DE64B11E3AB90500DACBF7 /* IOSCharsetEncoder.m */,
 				06ED3DD417D165DE0014750E /* IOSCollator.h */,
 				06ED3DD517D165DE0014750E /* IOSCollator.m */,
 				06C73D9319180C0C001D3CC8 /* IosHttpHandler.h */,
@@ -5172,8 +4914,6 @@
 				0649A5DB1AE076CC00DE2494 /* IosX509Certificate.m */,
 				06ED3DEC17D1669D0014750E /* IoUtils.h */,
 				06ED3DED17D1669D0014750E /* IoUtils.m */,
-				0649A6061AE0778600DE2494 /* IoVec.h */,
-				0649A6071AE0778600DE2494 /* IoVec.m */,
 				06721AEB1559CB9200645E1B /* Iterator.h */,
 				06F2909F18972DA300676F1D /* Iterator.m */,
 				0649A7591AE07A4100DE2494 /* JSON.h */,
@@ -5286,16 +5026,12 @@
 				06F2915018972E5100676F1D /* LoggingMXBean.m */,
 				06F2915118972E5100676F1D /* LoggingPermission.h */,
 				06F2915218972E5100676F1D /* LoggingPermission.m */,
-				067855CF169F37710042431C /* Logical.h */,
-				067855D0169F37710042431C /* Logical.m */,
 				06721AF41559CB9200645E1B /* LogManager.h */,
 				06721A571559C99E00645E1B /* LogManager.m */,
 				06721AF51559CB9200645E1B /* LogRecord.h */,
 				06721A581559C99E00645E1B /* LogRecord.m */,
 				06721B4B1559CC0300645E1B /* Long.h */,
 				067219E71559C87100645E1B /* Long.m */,
-				06DD32B916A13FA000AD7ACE /* LongArrayBuffer.h */,
-				06DD32BA16A13FA000AD7ACE /* LongArrayBuffer.m */,
 				06DD32BB16A13FA000AD7ACE /* LongBuffer.h */,
 				06DD32BC16A13FA000AD7ACE /* LongBuffer.m */,
 				06C73D7B19180C0C001D3CC8 /* LruCache.h */,
@@ -5332,8 +5068,6 @@
 				06F290A118972DA300676F1D /* Map.m */,
 				06C73D7D19180C0C001D3CC8 /* MapCollections.h */,
 				06C73D7E19180C0C001D3CC8 /* MapCollections.m */,
-				06721AF81559CB9200645E1B /* MapEntry.h */,
-				06721A5A1559C99E00645E1B /* MapEntry.m */,
 				0649A6081AE0778600DE2494 /* MappedByteBuffer.h */,
 				0649A6091AE0778600DE2494 /* MappedByteBuffer.m */,
 				06C73D8F19180C0C001D3CC8 /* Maps.h */,
@@ -5352,8 +5086,6 @@
 				06ED3D7B17D164DC0014750E /* Member.m */,
 				06C73EE619180D6D001D3CC8 /* Memory.h */,
 				06C73EE719180D6D001D3CC8 /* Memory.m */,
-				0649A60A1AE0778600DE2494 /* MemoryBlock.h */,
-				0649A60B1AE0778700DE2494 /* MemoryBlock.m */,
 				06F2915318972E5100676F1D /* MemoryHandler.h */,
 				06F2915418972E5100676F1D /* MemoryHandler.m */,
 				06F2906C18972D4C00676F1D /* MessageDigest.h */,
@@ -5366,8 +5098,6 @@
 				0649A6711AE077E900DE2494 /* MGF1ParameterSpec.m */,
 				06C73F0219180D90001D3CC8 /* MimeUtils.h */,
 				06C73F0319180D90001D3CC8 /* MimeUtils.m */,
-				06DD334016A1406A00AD7ACE /* MiniEnumSet.h */,
-				06DD334116A1406A00AD7ACE /* MiniEnumSet.m */,
 				06F290A218972DA300676F1D /* MissingFormatArgumentException.h */,
 				06F290A318972DA300676F1D /* MissingFormatArgumentException.m */,
 				06F290A418972DA300676F1D /* MissingFormatWidthException.h */,
@@ -5382,14 +5112,10 @@
 				06721B551559CC0300645E1B /* Modifier.m */,
 				06C73DD519180C99001D3CC8 /* MulticastSocket.h */,
 				06C73DD619180C99001D3CC8 /* MulticastSocket.m */,
-				067855D3169F37710042431C /* Multiplication.h */,
-				067855D4169F37710042431C /* Multiplication.m */,
 				06C73F0A19180D90001D3CC8 /* MutableInt.h */,
 				06C73F0B19180D90001D3CC8 /* MutableInt.m */,
 				06C73F0C19180D90001D3CC8 /* MutableLong.h */,
 				06C73F0D19180D90001D3CC8 /* MutableLong.m */,
-				06C73F5219180DE8001D3CC8 /* Name.h */,
-				06C73F5319180DE8001D3CC8 /* Name.m */,
 				0649A79B1AE07A4300DE2494 /* NamedNodeMap.h */,
 				0649A79C1AE07A4300DE2494 /* NamedNodeMap.m */,
 				0649A79D1AE07A4300DE2494 /* NameList.h */,
@@ -5468,10 +5194,6 @@
 				06ED3DD717D165DE0014750E /* NumberFormat.m */,
 				06721B501559CC0300645E1B /* NumberFormatException.h */,
 				067219EC1559C87100645E1B /* NumberFormatException.m */,
-				06C73F4819180DE8001D3CC8 /* ObjectIdentifier.h */,
-				06C73F3E19180DB8001D3CC8 /* ObjectIdentifier.h */,
-				06C73F4919180DE8001D3CC8 /* ObjectIdentifier.m */,
-				06C73F3F19180DB8001D3CC8 /* ObjectIdentifier.m */,
 				06F2900818972C9300676F1D /* ObjectInput.h */,
 				06F2900918972C9300676F1D /* ObjectInput.m */,
 				06F2900A18972C9300676F1D /* ObjectInputStream.h */,
@@ -5512,8 +5234,6 @@
 				067219A51559C7FC00645E1B /* OutputStreamWriter.m */,
 				06C73E7F19180CC9001D3CC8 /* OverlappingFileLockException.h */,
 				06C73E8019180CC9001D3CC8 /* OverlappingFileLockException.m */,
-				06ED3D6817D164AF0014750E /* Override.h */,
-				06ED3D6917D164AF0014750E /* Override.m */,
 				06ED3D6A17D164AF0014750E /* Package.h */,
 				06ED3D6B17D164AF0014750E /* Package.m */,
 				06C73D7F19180C0C001D3CC8 /* Pair.h */,
@@ -5550,8 +5270,6 @@
 				06ED3DA417D165510014750E /* PermissionCollection.m */,
 				06ED3DA517D165510014750E /* Permissions.h */,
 				06ED3DA617D165510014750E /* Permissions.m */,
-				06ED3DA717D165510014750E /* PermissionsHash.h */,
-				06ED3DA817D165510014750E /* PermissionsHash.m */,
 				06D7BDE917DE685C00329964 /* PhantomReference.h */,
 				06D7BDEA17DE685C00329964 /* PhantomReference.m */,
 				06F290FC18972DF900676F1D /* Phaser.h */,
@@ -5566,8 +5284,6 @@
 				06F2901F18972C9400676F1D /* PipedReader.m */,
 				06F2902018972C9400676F1D /* PipedWriter.h */,
 				06F2902118972C9400676F1D /* PipedWriter.m */,
-				0649A6101AE0778700DE2494 /* PipeImpl.h */,
-				0649A6111AE0778700DE2494 /* PipeImpl.m */,
 				0649A6721AE077E900DE2494 /* PKCS8EncodedKeySpec.h */,
 				0649A6731AE077E900DE2494 /* PKCS8EncodedKeySpec.m */,
 				06C73DDB19180C99001D3CC8 /* PlainDatagramSocketImpl.h */,
@@ -5588,8 +5304,6 @@
 				0649A6EB1AE0796400DE2494 /* PreDestroy.m */,
 				0649A6A01AE0780500DE2494 /* PreparedStatement.h */,
 				0649A6A11AE0780500DE2494 /* PreparedStatement.m */,
-				067855D5169F37710042431C /* Primality.h */,
-				067855D6169F37710042431C /* Primality.m */,
 				06ED3DA917D165510014750E /* Principal.h */,
 				06ED3DAA17D165510014750E /* Principal.m */,
 				06C73D8119180C0C001D3CC8 /* Printer.h */,
@@ -5604,8 +5318,6 @@
 				06721A5C1559C99E00645E1B /* PriorityQueue.m */,
 				0649A6481AE077D400DE2494 /* PrivateKey.h */,
 				0649A6491AE077D400DE2494 /* PrivateKey.m */,
-				0649A7551AE079CD00DE2494 /* PrivateKeyImpl.h */,
-				0649A7561AE079CD00DE2494 /* PrivateKeyImpl.m */,
 				06ED3DAB17D165510014750E /* PrivilegedAction.h */,
 				06F2907418972D4C00676F1D /* PrivilegedAction.m */,
 				06ED3DAC17D165510014750E /* PrivilegedActionException.h */,
@@ -5648,8 +5360,6 @@
 				0649A6751AE077E900DE2494 /* PSSParameterSpec.m */,
 				06C73EC619180CFA001D3CC8 /* PublicKey.h */,
 				06C73EC719180CFA001D3CC8 /* PublicKey.m */,
-				0649A7571AE079CD00DE2494 /* PublicKeyImpl.h */,
-				0649A7581AE079CD00DE2494 /* PublicKeyImpl.m */,
 				06ED3D5917D1645A0014750E /* PushbackInputStream.h */,
 				06ED3D5A17D1645A0014750E /* PushbackInputStream.m */,
 				06ED3D5B17D1645A0014750E /* PushbackReader.h */,
@@ -5802,8 +5512,6 @@
 				06F2907A18972D4C00676F1D /* SecureRandomSpi.m */,
 				06F2907B18972D4C00676F1D /* Security.h */,
 				06F2907C18972D4C00676F1D /* Security.m */,
-				06C73F4419180DE7001D3CC8 /* SecurityAccess.h */,
-				06C73F4519180DE7001D3CC8 /* SecurityAccess.m */,
 				06DE64BA1E3AB92300DACBF7 /* SecurityDataHandler.h */,
 				06DE64BB1E3AB92400DACBF7 /* SecurityDataHandler.m */,
 				067855BF169F37140042431C /* SecurityException.h */,
@@ -5820,16 +5528,10 @@
 				06C73D5A19180BD9001D3CC8 /* Selection.m */,
 				06C73E8B19180CC9001D3CC8 /* SelectionKey.h */,
 				06C73E8C19180CC9001D3CC8 /* SelectionKey.m */,
-				0649A6121AE0778700DE2494 /* SelectionKeyImpl.h */,
-				0649A6131AE0778700DE2494 /* SelectionKeyImpl.m */,
 				06C73E8D19180CC9001D3CC8 /* Selector.h */,
 				06C73E8E19180CC9001D3CC8 /* Selector.m */,
-				0649A6141AE0778700DE2494 /* SelectorImpl.h */,
-				0649A6151AE0778700DE2494 /* SelectorImpl.m */,
 				06C73EA219180CD8001D3CC8 /* SelectorProvider.h */,
 				06C73EA319180CD8001D3CC8 /* SelectorProvider.m */,
-				0649A6161AE0778700DE2494 /* SelectorProviderImpl.h */,
-				0649A6171AE0778700DE2494 /* SelectorProviderImpl.m */,
 				06F2911218972DFA00676F1D /* Semaphore.h */,
 				06F2911318972DFA00676F1D /* Semaphore.m */,
 				06F2902418972C9400676F1D /* SequenceInputStream.h */,
@@ -5842,24 +5544,18 @@
 				06C73DEE19180C99001D3CC8 /* ServerSocket.m */,
 				06C73E8F19180CC9001D3CC8 /* ServerSocketChannel.h */,
 				06C73E9019180CC9001D3CC8 /* ServerSocketChannel.m */,
-				0649A6181AE0778700DE2494 /* ServerSocketChannelImpl.h */,
-				0649A6191AE0778700DE2494 /* ServerSocketChannelImpl.m */,
 				0649A6F61AE0796400DE2494 /* ServerSocketFactory.h */,
 				0649A6F71AE0796400DE2494 /* ServerSocketFactory.m */,
 				06F290AE18972DA300676F1D /* ServiceConfigurationError.h */,
 				06F290AF18972DA300676F1D /* ServiceConfigurationError.m */,
 				06F290B018972DA300676F1D /* ServiceLoader.h */,
 				06F290B118972DA300676F1D /* ServiceLoader.m */,
-				06C73F4619180DE7001D3CC8 /* Services.h */,
-				06C73F4719180DE7001D3CC8 /* Services.m */,
 				06721AFF1559CB9200645E1B /* Set.h */,
 				06F290B218972DA300676F1D /* Set.m */,
 				06C73D9119180C0C001D3CC8 /* Sets.h */,
 				06C73D9219180C0C001D3CC8 /* Sets.m */,
 				06721B581559CC0300645E1B /* Short.h */,
 				067219EE1559C87100645E1B /* Short.m */,
-				06DD32DB16A13FA000AD7ACE /* ShortArrayBuffer.h */,
-				06DD32DC16A13FA000AD7ACE /* ShortArrayBuffer.m */,
 				06DD32DD16A13FA000AD7ACE /* ShortBuffer.h */,
 				06DD32DE16A13FA000AD7ACE /* ShortBuffer.m */,
 				06DED8301D0B688E00870669 /* ShortBufferException.h */,
@@ -5890,8 +5586,6 @@
 				06C73DF219180C99001D3CC8 /* SocketAddress.m */,
 				06C73E9119180CC9001D3CC8 /* SocketChannel.h */,
 				06C73E9219180CC9001D3CC8 /* SocketChannel.m */,
-				0649A61A1AE0778700DE2494 /* SocketChannelImpl.h */,
-				0649A61B1AE0778700DE2494 /* SocketChannelImpl.m */,
 				06C73DF319180C99001D3CC8 /* SocketException.h */,
 				06C73DF419180C99001D3CC8 /* SocketException.m */,
 				0649A6F81AE0796400DE2494 /* SocketFactory.h */,
@@ -6082,8 +5776,6 @@
 				06C73EFF19180D6E001D3CC8 /* StructUtsname.m */,
 				06C73D4D19180BBD001D3CC8 /* Suppress.h */,
 				06C73D4E19180BBD001D3CC8 /* Suppress.m */,
-				06ED3D7017D164AF0014750E /* SuppressWarnings.h */,
-				06ED3D7117D164AF0014750E /* SuppressWarnings.m */,
 				067855B9169F367E0042431C /* SyncFailedException.h */,
 				067855BA169F367E0042431C /* SyncFailedException.m */,
 				06F2911418972DFA00676F1D /* SynchronousQueue.h */,

@@ -7,7 +7,6 @@
 package org.xml.sax.helpers;
 
 import com.google.j2objc.annotations.WeakOuter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;

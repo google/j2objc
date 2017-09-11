@@ -7,7 +7,6 @@
 package org.xml.sax.helpers;
 
 import com.google.j2objc.annotations.WeakOuter;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -557,7 +556,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
                 // note funky case:  localname can be null
                 // when declaring the default prefix, and
                 // yet the uri isn't null.
-                atts.addAttribute (NamespaceSupport.XMLNS, prefix,
+                atts.addAttribute (nsSupport.XMLNS, prefix,
                     attQName.intern(), type, value);
             else
                 atts.addAttribute ("", "",

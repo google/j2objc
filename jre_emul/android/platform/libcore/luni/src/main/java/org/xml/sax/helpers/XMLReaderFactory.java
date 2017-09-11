@@ -7,6 +7,10 @@
 
 package org.xml.sax.helpers;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -103,12 +107,12 @@ final public class XMLReaderFactory
     throws SAXException
     {
     String        className = null;
+    ClassLoader    loader = NewInstance.getClassLoader ();
 
     // 1. try the JVM-instance-wide system property
     try { className = System.getProperty (property); }
     catch (RuntimeException e) { /* normally fails for applets */ }
 
-    /* TODO(tball): enable when dynamic services are supported.
     // 2. if that fails, try META-INF/services/
     if (className == null) {
         try {
@@ -122,14 +126,13 @@ final public class XMLReaderFactory
             in = loader.getResourceAsStream (service);
 
         if (in != null) {
-            reader = new BufferedReader (new InputStreamReader (in, Charsets.UTF_8));
+            reader = new BufferedReader (new InputStreamReader (in, StandardCharsets.UTF_8));
             className = reader.readLine ();
             in.close ();
         }
         } catch (Exception e) {
         }
     }
-    */
 
     // 3. Distro-specific fallback
     if (className == null) {
@@ -144,7 +147,7 @@ final public class XMLReaderFactory
 
     // do we know the XMLReader implementation class yet?
     if (className != null)
-        return loadClass (className);
+        return loadClass (loader, className);
 
     // 4. panic -- adapt any SAX1 parser
     try {
@@ -176,14 +179,14 @@ final public class XMLReaderFactory
     public static XMLReader createXMLReader (String className)
     throws SAXException
     {
-    return loadClass (className);
+    return loadClass (NewInstance.getClassLoader (), className);
     }
 
-    private static XMLReader loadClass (String className)
+    private static XMLReader loadClass (ClassLoader loader, String className)
     throws SAXException
     {
     try {
-        return (XMLReader) NewInstance.newInstance (className);
+        return (XMLReader) NewInstance.newInstance (loader, className);
     } catch (ClassNotFoundException e1) {
         throw new SAXException("SAX2 driver class " + className +
                    " not found", e1);

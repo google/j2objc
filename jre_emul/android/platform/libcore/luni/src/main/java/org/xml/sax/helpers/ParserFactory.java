@@ -120,7 +120,8 @@ public class ParserFactory {
     InstantiationException,
     ClassCastException
     {
-    return (Parser) NewInstance.newInstance (className);
+    return (Parser) NewInstance.newInstance (
+        NewInstance.getClassLoader (), className);
     }
 
 }
