@@ -421,7 +421,8 @@ public class Driver implements Locator, XMLReader, Attributes
                             }
                             contentHandler.endElement(pp.getNamespace(),
                                                       name,
-                                                      prefix != null ? name : rawName.toString()
+                                                      // TODO Fixed this. Was "not equals".
+                                                      prefix == null ? name : rawName.toString()
                                                      );
                             // when entering show prefixes for all levels!!!!
                             final int depth = pp.getDepth();
