@@ -826,6 +826,8 @@
 		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
+		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
+		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3814,6 +3816,8 @@
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
+		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
+		DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = org/apache/harmony/tests/java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6334,6 +6338,7 @@
 				062027201D512D82001EE455 /* IntrospectorTest.m */,
 				062029291D512F25001EE455 /* InvalidKeySpecExceptionTest.m */,
 				0620292A1D512F25001EE455 /* InvalidParameterSpecExceptionTest.m */,
+				DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */,
 				06C143BC1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m */,
 				067B13401EEDEA600013CBAF /* IosRSAKeyTest.m */,
 				067B13391EEDE95C0013CBAF /* IosRSASignatureTest.m */,
@@ -6620,6 +6625,7 @@
 				0612B9221F4374A30069EF58 /* PropertyResourceBundleTest.m */,
 				062027261D512D82001EE455 /* PropertyVetoExceptionTest.m */,
 				062028621D512E3E001EE455 /* ProviderExceptionTest.m */,
+				DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */,
 				062029051D512EFC001EE455 /* ProxyTest.m */,
 				062025751D512B77001EE455 /* ProxyTest.m */,
 				0620292D1D512F25001EE455 /* PSSParameterSpecTest.m */,
@@ -7221,6 +7227,7 @@
 				062026631D512CBE001EE455 /* DoubleTest.m in Sources */,
 				0620266E1D512CBE001EE455 /* ReflectionTest.m in Sources */,
 				062028B21D512E78001EE455 /* GenericMethodsTests.m in Sources */,
+				DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */,
 				0612B8FF1F4373740069EF58 /* EntryTest.m in Sources */,
 				0620264D1D512CA1001EE455 /* OldWriterTest.m in Sources */,
 				062027531D512D82001EE455 /* FakeFox02.m in Sources */,
@@ -7787,6 +7794,7 @@
 				0620274C1D512D82001EE455 /* OtherBean.m in Sources */,
 				062025891D512B77001EE455 /* package-info.m in Sources */,
 				0612B91C1F4373740069EF58 /* TreeSubMapTest.m in Sources */,
+				DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */,
 				062029031D512EDB001EE455 /* SmallTests.m in Sources */,
 				0620297B1D512F41001EE455 /* Support_Locale.m in Sources */,
 				062027741D512D9D001EE455 /* MockFoo.m in Sources */,

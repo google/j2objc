@@ -1635,7 +1635,8 @@ public class FieldTest extends junit.framework.TestCase {
     }
 
     /**
-     * Reset static variables.
+     * Tears down the fixture, for example, close a network connection. This
+     * method is called after a test is executed.
      */
     protected void tearDown() {
       TestField.booleanSField = true;

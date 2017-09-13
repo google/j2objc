@@ -62,7 +62,7 @@ public class ParameterizedTypeTest extends GenericReflectionTestsBase {
         E<T> e;
     }
 
-    public void testParameterizedMember() throws Exception{
+    public void testParameterizedMemeber() throws Exception{
         Class<? extends F> clazz = F.class;
         Field field = clazz.getDeclaredField("e");
         assertInstanceOf(ParameterizedType.class, field.getGenericType());

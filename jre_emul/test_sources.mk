@@ -606,11 +606,13 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/reflect/FieldTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericArrayTypeTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericMethodsTests.java \
+    org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     org/apache/harmony/tests/java/lang/reflect/MethodTest.java \
     org/apache/harmony/tests/java/lang/reflect/ModifierTest.java \
     org/apache/harmony/tests/java/lang/reflect/ParameterizedTypeTest.java \
+    org/apache/harmony/tests/java/lang/reflect/ProxyTest.java \
     org/apache/harmony/tests/java/lang/reflect/TypeVariableTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTests.java \

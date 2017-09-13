@@ -364,7 +364,7 @@ public class MethodTest extends junit.framework.TestCase {
         assertFalse("Non varargs method stated as vararg.", mth.isVarArgs());
     }
 
-    // Disabled, as j2objc doesn't create bridge methods.
+// Disabled, as j2objc doesn't create bridge methods.
 //    /**
 //     * java.lang.reflect.Method#isBridge()
 //     */
@@ -382,7 +382,7 @@ public class MethodTest extends junit.framework.TestCase {
 //        assertTrue("Bridge method not found.", foundBridgeMethod);
 //    }
 
-    // Disabled, as j2objc creates different synthetic methods than Java compilers.
+// Disabled, as j2objc creates different synthetic methods than Java compilers.
 //    /**
 //     * java.lang.reflect.Method#isSynthetic()
 //     */
