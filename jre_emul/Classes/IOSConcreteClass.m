@@ -21,6 +21,7 @@
 #import "IOSReflection.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/Enum.h"
+#import "java/lang/IllegalAccessException.h"
 #import "java/lang/InstantiationException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/Void.h"
@@ -55,6 +56,17 @@
   // interface (no class_), array or primitive type (IOSClass types), or void.
   if ([class_ isKindOfClass:[IOSClass class]] || [class_ isMemberOfClass:[JavaLangVoid class]]) {
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
+  }
+  // Check if reflection is available.
+  if ([self getMetadata]) {
+    // Get the nullary constructor.
+    JavaLangReflectConstructor *constructor = JreConstructorWithParamTypes(self, nil);
+    if (!constructor) {
+      @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
+    } else if ([constructor getModifiers] & JavaLangReflectModifier_PRIVATE) {
+      @throw AUTORELEASE([[JavaLangIllegalAccessException alloc]
+          initWithNSString:@"Cannot access private constructor."]);
+    }
   }
   return AUTORELEASE([[class_ alloc] init]);
 }

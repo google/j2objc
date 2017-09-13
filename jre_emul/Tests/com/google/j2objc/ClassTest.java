@@ -430,6 +430,31 @@ public class ClassTest extends TestCase {
     assertTrue(canCallAsSubclass(ConcreteClassE.class, InterfaceQ.class));
   }
 
+  public void testNewInstance() throws Exception {
+    Class<?> cls = Class.forName("com.google.j2objc.ClassTest$PrivateConstructorClass");
+    try {
+      cls.newInstance();
+      fail("Expected IllegalAccessException");
+    } catch (IllegalAccessException expected) {
+      // expected
+    }
+
+    cls = Class.forName("com.google.j2objc.ClassTest$NoNullaryConstructorClass");
+    try {
+      cls.newInstance();
+      fail("Expected InstantiationException");
+    } catch (InstantiationException expected) {
+      // expected
+    }
+
+    cls = Class.forName("com.google.j2objc.ClassTest$InnerClass");
+    try {
+      cls.newInstance();
+    } catch (Exception e) {
+      fail("Failed to create an instance of " + cls);
+    }
+  }
+
   static class InnerClass {
   }
 
@@ -474,6 +499,14 @@ public class ClassTest extends TestCase {
   }
 
   class ConcreteClassE extends AbstractClassX implements InterfaceP, InterfaceQ {
+  }
+
+  static class PrivateConstructorClass {
+    private PrivateConstructorClass() {}
+  }
+
+  static class NoNullaryConstructorClass {
+    NoNullaryConstructorClass(int i) {}
   }
 }
 
