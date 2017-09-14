@@ -3818,6 +3818,11 @@
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
 		DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = org/apache/harmony/tests/java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
+		DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
+		DE9C53851F6ADFBF000E8C71 /* CopyOnWriteArrayListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CopyOnWriteArrayListTest.m; path = libcore/java/util/concurrent/CopyOnWriteArrayListTest.m; sourceTree = "<group>"; };
+		DE9C53861F6ADFCF000E8C71 /* ConcurrentSkipListMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrentSkipListMapTest.m; path = libcore/java/util/concurrent/ConcurrentSkipListMapTest.m; sourceTree = "<group>"; };
+		DEE827341F6AE0B90069C75C /* ForEachRemainingTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForEachRemainingTester.m; path = libcore/java/util/ForEachRemainingTester.m; sourceTree = "<group>"; };
+		DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapDefaultMethodTester.m; path = libcore/java/util/MapDefaultMethodTester.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6186,6 +6191,7 @@
 				0612B8C51F4373730069EF58 /* ConcurrentHashMapTest.m */,
 				067B13151EEDC3DC0013CBAF /* ConcurrentLinkedDequeTest.m */,
 				067B13521EEF6C570013CBAF /* ConcurrentLinkedQueueTest.m */,
+				DE9C53861F6ADFCF000E8C71 /* ConcurrentSkipListMapTest.m */,
 				0612B8C61F4373730069EF58 /* ConcurrentSkipListMapTest.m */,
 				0612B8C71F4373730069EF58 /* ConcurrentSkipListSetTest.m */,
 				0612B8C81F4373730069EF58 /* ConcurrentSkipListSubMapTest.m */,
@@ -6194,6 +6200,7 @@
 				062028941D512E78001EE455 /* ConstructorTest.m */,
 				0620265D1D512CBE001EE455 /* ConstructorTest.m */,
 				0620266F1D512D08001EE455 /* CookiesTest.m */,
+				DE9C53851F6ADFBF000E8C71 /* CopyOnWriteArrayListTest.m */,
 				0612B8CA1F4373730069EF58 /* CopyOnWriteArrayListTest.m */,
 				0612B8CB1F4373730069EF58 /* CopyOnWriteArraySetTest.m */,
 				0612B8CC1F4373730069EF58 /* CountDownLatchTest.m */,
@@ -6288,6 +6295,7 @@
 				062025411D512B37001EE455 /* First.m */,
 				0620288E1D512E78001EE455 /* FloatTest.m */,
 				062026571D512CBE001EE455 /* FloatTest.m */,
+				DEE827341F6AE0B90069C75C /* ForEachRemainingTester.m */,
 				0612B8D41F4373740069EF58 /* ForkJoinPool8Test.m */,
 				0612B8D51F4373740069EF58 /* ForkJoinPoolTest.m */,
 				0612B8D61F4373740069EF58 /* ForkJoinTask8Test.m */,
@@ -6379,6 +6387,7 @@
 				063A62ED1F6726C1001DC971 /* LocatorImplTest.m */,
 				067FC8201EFAE75E001D0627 /* LockSupportTest.m */,
 				062027BF1D512DED001EE455 /* LongTest.m */,
+				DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */,
 				062028991D512E78001EE455 /* MalformedParameterizedTypeExceptionTest.m */,
 				0620289A1D512E78001EE455 /* MalformedParameterizedTypeExceptionTests.m */,
 				06C143831F46135100CABE9A /* MapModeTest.m */,
@@ -6780,6 +6789,7 @@
 				062027D31D512DED001EE455 /* ThreadDeathTest.m */,
 				0612B8E61F4373740069EF58 /* ThreadLocalRandomTest.m */,
 				0612B8E71F4373740069EF58 /* ThreadPoolExecutorSubclassTest.m */,
+				DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */,
 				0612B8E81F4373740069EF58 /* ThreadPoolExecutorTest.m */,
 				0612B9431F4381520069EF58 /* ThreadTest.m */,
 				0612B8E91F4373740069EF58 /* ThreadTest.m */,

@@ -46,6 +46,8 @@ SUPPORT_SOURCES = \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/util/ForEachRemainingTester.java \
+    libcore/java/util/MapDefaultMethodTester.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
@@ -429,6 +431,9 @@ TEST_SOURCES := \
     libcore/java/util/TimeZoneTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
+    libcore/java/util/concurrent/ConcurrentSkipListMapTest.java \
+    libcore/java/util/concurrent/CopyOnWriteArrayListTest.java \
+    libcore/java/util/concurrent/ThreadPoolExecutorTest.java \
     libcore/java/util/logging/OldErrorManagerTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
     libcore/java/util/logging/OldFormatterTest.java \
