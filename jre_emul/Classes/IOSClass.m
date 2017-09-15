@@ -643,10 +643,13 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
   return IOSClass_forName_initialize_classLoader_(className, load, loader);
 }
 
-- (id)cast:(id)throwable {
-  // There's no need to actually cast this here, as the translator will add
-  // a C cast since the return type is a type variable.
-  return throwable;
+- (id)cast:(id)object {
+  if (![self isInstance:object]) {
+    @throw create_JavaLangClassCastException_initWithNSString_(
+        [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
+            [[object java_getClass] getName], [self getName]]);
+  }
+  return object;
 }
 
 - (IOSClass *)getEnclosingClass {

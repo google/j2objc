@@ -455,6 +455,35 @@ public class ClassTest extends TestCase {
     }
   }
 
+  public void testCast() throws Exception {
+    ConcreteClassC c = new ConcreteClassC();
+    try {
+      ConcreteClassA.class.cast(c);
+      fail("Expected ClassCastException");
+    } catch (ClassCastException e) {
+      // expected
+    }
+
+    try {
+      ConcreteClassB.class.cast(c);
+    } catch (ClassCastException e) {
+      fail("Failed to cast " + c + " to ConcreteClassB");
+    }
+   
+    try {
+      InterfaceR.class.cast(c);
+      fail("Expected ClassCastException");
+    } catch (ClassCastException e) {
+      // expected
+    }
+
+    try {
+      InterfaceQ.class.cast(c);
+    } catch (ClassCastException e) {
+      fail("Failed to cast " + c + " to InterfaceQ");
+    }
+  }
+
   static class InnerClass {
   }
 
