@@ -17,7 +17,7 @@
 package android.os;
 
 /*-[
-#include "libcore/io/ErrnoException.h"
+#include "android/system/ErrnoException.h"
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -150,7 +150,7 @@ public final class SystemClock {
       mib[1] = KERN_BOOTTIME;
       size = sizeof(boottime);
       if (sysctl(mib, MIB_SIZE, &boottime, &size, NULL, 0) == -1) {
-        @throw AUTORELEASE([[LibcoreIoErrnoException alloc]
+        @throw AUTORELEASE([[AndroidSystemErrnoException alloc]
                             initWithNSString:@"sysctl" withInt:errno]);
       }
       return ((long long) boottime.tv_sec) * 1.e6 + boottime.tv_usec;

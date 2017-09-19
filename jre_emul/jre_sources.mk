@@ -67,6 +67,7 @@ NATIVE_JRE_SOURCES_CORE = \
 
 # Java sources to be translated normally and included in the core library.
 JAVA_PUBLIC_SOURCES_CORE = \
+  android/system/ErrnoException.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
   java/io/BufferedInputStream.java \
   java/io/BufferedOutputStream.java \
@@ -256,6 +257,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/math/BigInteger.java \
   java/math/MathContext.java \
   java/math/RoundingMode.java \
+  java/net/SocketException.java \
   java/nio/Buffer.java \
   java/nio/BufferOverflowException.java \
   java/nio/BufferUnderflowException.java \
@@ -337,6 +339,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/Enumeration.java \
   java/util/EnumMap.java \
   java/util/EnumSet.java \
+  java/util/EventObject.java \
   java/util/FormatFlagsConversionMismatchException.java \
   java/util/Formattable.java \
   java/util/FormattableFlags.java \
@@ -585,7 +588,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/icu/TimeZoneNames.java \
   libcore/io/AsynchronousCloseMonitor.java \
   libcore/io/DeleteOnExit.java \
-  libcore/io/ErrnoException.java \
   libcore/io/IoBridge.java \
   libcore/io/IoUtils.java \
   libcore/io/Libcore.java \
@@ -667,7 +669,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
 
 JAVA_PUBLIC_SOURCES_IO = \
   java/io/CharArrayReader.java \
-  java/io/CharArrayWriter.java \
   java/io/CharConversionException.java \
   java/io/FileReader.java \
   java/io/FileWriter.java \
@@ -690,6 +691,7 @@ JAVA_PRIVATE_SOURCES_IO =
 JAVA_PUBLIC_SOURCES_NET = \
   com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.java \
   com/google/j2objc/net/NSErrorException.java \
+  java/io/CharArrayWriter.java \
   java/net/Authenticator.java \
   java/net/BindException.java \
   java/net/CacheRequest.java \
@@ -735,7 +737,6 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/ServerSocket.java \
   java/net/Socket.java \
   java/net/SocketAddress.java \
-  java/net/SocketException.java \
   java/net/SocketImpl.java \
   java/net/SocketImplFactory.java \
   java/net/SocketOptions.java \
@@ -753,28 +754,35 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/UnknownServiceException.java
 
 JAVA_PRIVATE_SOURCES_NET = \
+  android/system/GaiException.java \
+  android/system/StructAddrinfo.java \
   com/google/j2objc/net/DataEnqueuedInputStream.java \
   com/google/j2objc/net/DataEnqueuedOutputStream.java \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
   com/google/j2objc/net/SecurityDataHandler.java \
+  java/net/AbstractPlainDatagramSocketImpl.java \
+  java/net/AbstractPlainSocketImpl.java \
   java/net/AddressCache.java \
+  java/net/DefaultDatagramSocketImplFactory.java \
   java/net/DefaultFileNameMap.java \
-  java/net/InetUnixAddress.java \
+  java/net/DefaultInterface.java \
+  java/net/Inet6AddressImpl.java \
+  java/net/InetAddressImpl.java \
   java/net/NetFactoryImpl.java \
+  java/net/NetUtil.java \
+  java/net/SocketInputStream.java \
   java/net/SocketOption.java \
-  java/net/SocketUtils.java \
+  java/net/SocketOutputStream.java \
   java/net/Socks4Message.java \
+  java/net/SocksConsts.java \
+  java/net/SocksSocketImpl.java \
   java/net/StandardSocketOptions.java \
   libcore/icu/NativeIDN.java \
-  libcore/io/GaiException.java \
   libcore/io/NetworkBridge.java \
   libcore/io/NetworkOs.java \
-  libcore/io/StructAddrinfo.java \
   libcore/net/UriCodec.java \
   libcore/net/http/HttpDate.java \
-  libcore/net/url/FileHandler.java \
-  libcore/net/url/FileURLConnection.java \
   okio/AsyncTimeout.java \
   okio/Base64.java \
   okio/Buffer.java \
@@ -793,12 +801,42 @@ JAVA_PRIVATE_SOURCES_NET = \
   okio/Sink.java \
   okio/Source.java \
   okio/Timeout.java \
-  okio/Util.java
+  okio/Util.java \
+  sun/misc/IoTrace.java \
+  sun/nio/cs/ThreadLocalCoders.java \
+  sun/net/ApplicationProxy.java \
+  sun/net/ConnectionResetException.java \
+  sun/net/NetHooks.java \
+  sun/net/ProgressEvent.java \
+  sun/net/ProgressMeteringPolicy.java \
+  sun/net/ProgressMonitor.java \
+  sun/net/ProgressListener.java \
+  sun/net/ProgressSource.java \
+  sun/net/ResourceManager.java \
+  sun/net/SocksProxy.java \
+  sun/net/util/IPAddressUtil.java \
+  sun/net/www/MessageHeader.java \
+  sun/net/www/MeteredStream.java \
+  sun/net/www/ParseUtil.java \
+  sun/net/www/URLConnection.java \
+  sun/net/www/protocol/file/FileURLConnection.java \
+  sun/net/www/protocol/file/Handler.java
+
+NATIVE_JRE_SOURCES_NET = \
+  DatagramPacket.m \
+  Inet4AddressImpl.m \
+  Inet6AddressImpl.m \
+  NetworkInterface.m \
+  PlainDatagramSocketImpl.m \
+  PlainSocketImpl.m \
+  SocketInputStream.m \
+  SocketOutputStream.m \
+  net_util.m \
+  net_util_md.m
 
 JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/EventListener.java \
   java/util/EventListenerProxy.java \
-  java/util/EventObject.java \
   java/util/Observable.java \
   java/util/Observer.java \
   java/util/PriorityQueue.java \
@@ -918,10 +956,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/lang/UnsatisfiedLinkError.java \
   java/net/ProtocolFamily.java \
   java/net/StandardProtocolFamily.java \
-  sun/misc/IoTrace.java \
   sun/misc/LRUCache.java \
-  sun/net/NetHooks.java \
-  sun/net/ResourceManager.java \
+  sun/net/spi/nameservice/NameService.java \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
@@ -973,17 +1009,13 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   FileChannelImpl.m \
   FileDispatcherImpl.m \
   FileKey.m \
-  Inet4AddressImpl.m \
-  Inet6AddressImpl.m \
   InheritedChannel.m \
   IOUtil.m \
   NativeThread.m \
   Net.m \
   PollArrayWrapper.m \
   ServerSocketChannelImpl.m \
-  SocketChannelImpl.m \
-  net_util_md.m \
-  net_util.m
+  SocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
@@ -1853,4 +1885,4 @@ JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
-  $(NATIVE_JRE_SOURCES_CHANNELS)
+  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET)

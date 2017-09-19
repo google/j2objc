@@ -83,73 +83,58 @@ extern jfieldID ia_holderID;
 extern jfieldID iac_addressID;
 extern jfieldID iac_familyID;
 
-// TODO(user): Remove after java.net is updated to OpenJDK.
-static jbyteArray intToByteArray(JNIEnv *env, int address) {
-    jbyteArray caddr = (*env)->NewByteArray(env, 4);
-    jbyte buff[4] = {0, 0, 0, 0};
-    buff[0] = (jbyte)((address >> 24) & 0xff);
-    buff[1] = (jbyte)((address >> 16) & 0xff);
-    buff[2] = (jbyte)((address >> 8) & 0xff);
-    buff[3] = (jbyte)(address & 0xff);
-    [caddr replaceBytes:buff
-                 length:4
-                 offset:0];
-    return caddr;
-}
-
 void setInetAddress_addr(JNIEnv *env, jobject iaObj, int address) {
-    /* TODO(user): Revert this change after java.net is updated to OpenJDK.
+    /* J2ObjC: unused.
     jobject holder;
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     (*env)->SetIntField(env, holder, iac_addressID, address);
     */
-    jbyteArray ipaddress = intToByteArray(env, address);
-    JreStrongAssign(&((JavaNetInetAddress *)iaObj)->ipaddress_, ipaddress);
+    ((JavaNetInetAddress *)iaObj)->holder_->address_ = address;
 }
 
 void setInetAddress_family(JNIEnv *env, jobject iaObj, int family) {
-    /* TODO(user): Revert this change after java.net is updated to OpenJDK.
+    /* J2ObjC: unused.
     jobject holder;
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     (*env)->SetIntField(env, holder, iac_familyID, family);
     */
-    ((JavaNetInetAddress *)iaObj)->family_ = family;
+    ((JavaNetInetAddress *)iaObj)->holder_->family_ = family;
 }
 
 void setInetAddress_hostName(JNIEnv *env, jobject iaObj, jobject host) {
-    /* TODO(user): Revert this change after java.net is updated to OpenJDK.
+    /* J2ObjC: unused.
     jobject holder;
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     (*env)->SetObjectField(env, holder, iac_hostNameID, host);
     */
-    JreStrongAssign(&((JavaNetInetAddress *)iaObj)->hostName_, host);
+    JreStrongAssign(&((JavaNetInetAddress *)iaObj)->holder_->hostName_, host);
 }
 
 int getInetAddress_addr(JNIEnv *env, jobject iaObj) {
-    /* TODO(user): Revert this change after java.net is updated to OpenJDK.
+    /* J2ObjC: unused.
     jobject holder;
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     return (*env)->GetIntField(env, holder, iac_addressID);
     */
-    return NET_IPv4MappedToIPv4((jbyte *)((JavaNetInetAddress *)iaObj)->ipaddress_);
+    return ((JavaNetInetAddress *)iaObj)->holder_->address_;
 }
 
 int getInetAddress_family(JNIEnv *env, jobject iaObj) {
-    /* TODO(user): Revert this change after java.net is updated to OpenJDK.
+    /* J2ObjC: unused.
     jobject holder;
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     return (*env)->GetIntField(env, holder, iac_familyID);
     */
-    return ((JavaNetInetAddress *)iaObj)->family_;
+    return ((JavaNetInetAddress *)iaObj)->holder_->family_;
 }
 
 jobject getInetAddress_hostName(JNIEnv *env, jobject iaObj) {
-    /* TODO(user): Revert this change after java.net is updated to OpenJDK.
+    /* J2ObjC: unused.
     jobject holder;
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     return (*env)->GetObjectField(env, holder, iac_hostNameID);
     */
-    return ((JavaNetInetAddress *)iaObj)->hostName_;
+    return ((JavaNetInetAddress *)iaObj)->holder_->hostName_;
 }
 
 JNIEXPORT jobject JNICALL

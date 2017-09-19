@@ -33,6 +33,7 @@ SUPPORT_SOURCES = \
     com/google/mockwebserver/QueueDispatcher.java \
     com/google/mockwebserver/RecordedRequest.java \
     com/google/mockwebserver/SocketPolicy.java \
+    dalvik/system/CloseGuardMonitor.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \
@@ -46,8 +47,10 @@ SUPPORT_SOURCES = \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
     libcore/java/util/MapDefaultMethodTester.java \
+    libcore/java/util/ResourceLeakageDetector.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
@@ -131,6 +134,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/NoInstanceXMLReader.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
+    tests/net/DelegatingSocketFactory.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
     tests/security/interfaces/Util.java \

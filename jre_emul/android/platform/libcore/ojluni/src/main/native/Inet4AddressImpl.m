@@ -238,7 +238,7 @@ Inet4AddressImpl_isReachable0(JNIEnv *env, jobject this,
      * Let's try to create a RAW socket to send ICMP packets
      * This usually requires "root" privileges, so it's likely to fail.
      */
-    fd = JVM_Socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+    fd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
     if (fd != -1) {
       /*
        * It didn't fail, so we can use ICMP_ECHO requests.
@@ -250,7 +250,7 @@ Inet4AddressImpl_isReachable0(JNIEnv *env, jobject this,
     /*
      * Can't create a raw socket, so let's try a TCP socket
      */
-    fd = JVM_Socket(AF_INET, SOCK_STREAM, 0);
+    fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == JVM_IO_ERR) {
         /* note: if you run out of fds, you may not be able to load
          * the exception class, and get a NoClassDefFoundError
@@ -284,7 +284,7 @@ Inet4AddressImpl_isReachable0(JNIEnv *env, jobject this,
 
     /* no need to use NET_Connect as non-blocking */
     him.sin_port = htons(7);    /* Echo */
-    connect_rv = JVM_Connect(fd, (struct sockaddr *)&him, len);
+    connect_rv = connect(fd, (struct sockaddr *)&him, len);
 
     /**
      * connection established or refused immediately, either way it means
@@ -316,7 +316,7 @@ Inet4AddressImpl_isReachable0(JNIEnv *env, jobject this,
         }
 
         if (errno != EINPROGRESS) {
-          NET_ThrowByNameWithLastError(env, JNU_JAVANETPKG "ConnectException",
+          JNU_ThrowByName(env, JNU_JAVANETPKG "ConnectException",
                                        "connect failed");
           untagSocket(env, fd);
           close(fd);
@@ -327,8 +327,8 @@ Inet4AddressImpl_isReachable0(JNIEnv *env, jobject this,
         if (timeout >= 0) {
           /* has connection been established? */
           optlen = sizeof(connect_rv);
-          if (JVM_GetSockOpt(fd, SOL_SOCKET, SO_ERROR, (void*)&connect_rv,
-                             &optlen) <0) {
+          if (getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&connect_rv,
+                             (socklen_t *)&optlen) <0) {
             connect_rv = errno;
           }
           if (connect_rv == 0 || connect_rv == ECONNREFUSED) {

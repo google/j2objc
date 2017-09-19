@@ -32,17 +32,18 @@
 
 package libcore.java.net;
 
-import static java.net.CookiePolicy.ACCEPT_ORIGINAL_SERVER;
-
 import com.google.mockwebserver.MockResponse;
 import com.google.mockwebserver.MockWebServer;
 import com.google.mockwebserver.RecordedRequest;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import static java.net.CookiePolicy.ACCEPT_ORIGINAL_SERVER;
+
 import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.net.HttpCookie;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
@@ -58,6 +59,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.RandomAccess;
 import java.util.TreeMap;
+
 import junit.framework.TestCase;
 
 public abstract class AbstractCookiesTest extends TestCase {
@@ -356,7 +358,7 @@ public abstract class AbstractCookiesTest extends TestCase {
                 + "b=\"banana\";$Path=\"/\";$Domain=\"" + server.getCookieDomain() + "\"");
     }
 
-    // TODO(tball): enable/fix when java.net is fully based on OpenJDK."
+// TODO(user): b/65289980.
 //    public void testRedirectsDoNotIncludeTooManyCookies() throws Exception {
 //        MockWebServer redirectTarget = new MockWebServer();
 //        redirectTarget.enqueue(new MockResponse().setBody("A"));
@@ -379,7 +381,6 @@ public abstract class AbstractCookiesTest extends TestCase {
 //        get(redirectSource, "/");
 //        RecordedRequest request = redirectSource.takeRequest();
 //
-//        System.out.println("request.getHeaders(): " + request.getHeaders());
 //        assertContains(request.getHeaders(), "Cookie: $Version=\"1\"; "
 //                + "c=\"cookie\";$Path=\"/\";$Domain=\"" + redirectSource.getCookieDomain()
 //                + "\";$Port=\"" + portList + "\"");
@@ -398,7 +399,7 @@ public abstract class AbstractCookiesTest extends TestCase {
      * manager should show up in the request and in {@code
      * getRequestProperties}.
      */
-    // TODO(tball): enable/fix when java.net is fully based on OpenJDK."
+// TODO(user): b/65289980.
 //    public void testHeadersSentToCookieHandler() throws IOException, InterruptedException {
 //        final Map<String, List<String>> cookieHandlerHeaders = new HashMap<String, List<String>>();
 //        CookieHandler.setDefault(new CookieManager(createCookieStore(), null) {

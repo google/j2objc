@@ -35,7 +35,7 @@ import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.TestCase;
-import libcore.io.ErrnoException;
+import android.system.ErrnoException;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.OsConstants;

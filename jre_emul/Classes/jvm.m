@@ -22,6 +22,8 @@
 
 #include <dlfcn.h>
 #include <pthread.h>
+#include <sys/ioctl.h>
+#include <sys/poll.h>
 
 #include "TempFailureRetry.h"
 #include "java/io/File.h"
@@ -38,6 +40,16 @@ static const char *absolutePath(const char *path) {
     [f release];
   }
   return [pathStr fileSystemRepresentation];
+}
+
+jint JVM_SocketAvailable(jint fd, jint *ret) {
+  int arg = *ret;
+  int res = TEMP_FAILURE_RETRY(ioctl(fd, FIONREAD, &arg));
+  if (res < 0) {
+    return 0;
+  }
+  *ret = arg;
+  return 1;
 }
 
 jint JVM_GetLastErrorString(char *buf, int len) {
@@ -103,4 +115,29 @@ jint JVM_RawMonitorEnter(void *mon) {
 
 void JVM_RawMonitorExit(void *mon) {
   pthread_mutex_unlock(mon);
+}
+
+jint JVM_Timeout(int fd, long timeout) {
+  jlong prev, curr;
+  prev = JVM_CurrentTimeMillis(NULL, NULL);
+  struct pollfd pollFds[1];
+  pollFds[0].fd = fd;
+  pollFds[0].events = POLLERR | POLLIN;
+  bool infiniteTimout = (timeout < 0L);
+  int rc = -1;
+
+  {
+    rc = poll(pollFds, 1, (int)timeout);
+    if (!infiniteTimout) {
+      curr = JVM_CurrentTimeMillis(NULL, NULL);
+      timeout -= (long)(curr - prev);
+      if (rc == -1 && errno == EINTR && timeout <= 0) {
+        // Timeout.
+        return 0;
+      }
+      prev = curr;
+    }
+  } while (rc == -1 && errno == EINTR);
+
+  return rc;
 }

@@ -16,6 +16,7 @@
 
 package libcore.io;
 
+import android.system.ErrnoException;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 

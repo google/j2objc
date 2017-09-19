@@ -95,8 +95,7 @@ extern jfieldID dp_offsetID;
 extern jfieldID dp_lengthID;
 extern jfieldID dp_bufLengthID;
 
-/* J2ObjC: unused.
- * Inet6Address fields
+/* Inet6Address fields */
 extern jclass ia6_class;
 extern jfieldID ia6_ipaddressID;
 extern jfieldID ia6_scopeidID;
@@ -104,7 +103,6 @@ extern jfieldID ia6_scopeidsetID;
 extern jfieldID ia6_scopeifnameID;
 extern jfieldID ia6_scopeifnamesetID;
 extern jmethodID ia6_ctrID;
-*/
 
 /************************************************************************
  *  Utilities

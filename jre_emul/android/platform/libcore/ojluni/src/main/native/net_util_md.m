@@ -283,16 +283,17 @@ int cmpScopeID (unsigned int scope, struct sockaddr *him) {
 #endif
 
 
-/* TODO(user): Enable after JNU_ThrowByNameWithLastError() is implemented.
 void
 NET_ThrowByNameWithLastError(JNIEnv *env, const char *name,
                    const char *defaultDetail) {
+/* TODO(user): Enable after JNU_ThrowByNameWithLastError() is implemented.
     char errmsg[255];
     snprintf(errmsg, sizeof(errmsg), "errno: %d, error: %s\n", errno,
              defaultDetail);
     JNU_ThrowByNameWithLastError(env, name, errmsg);
-}
 */
+    JNU_ThrowByName(env, name, defaultDetail);
+}
 
 void
 NET_ThrowCurrent(JNIEnv *env, char *msg) {
@@ -1068,6 +1069,10 @@ int
 NET_SetSockOpt(int fd, int level, int  opt, const void *arg,
                int len)
 {
+    // J2ObjC: added.
+    if (level == IPPROTO_IP && opt == IP_TOS) {
+        return 0; // Already set on iOS, and setting it fails.
+    }
 #ifndef IPTOS_TOS_MASK
 #define IPTOS_TOS_MASK 0x1e
 #endif

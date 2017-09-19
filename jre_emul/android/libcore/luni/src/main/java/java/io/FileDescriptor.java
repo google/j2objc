@@ -17,7 +17,7 @@
 
 package java.io;
 
-import libcore.io.ErrnoException;
+import android.system.ErrnoException;
 import libcore.io.Libcore;
 import static libcore.io.OsConstants.*;
 

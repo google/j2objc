@@ -26,6 +26,7 @@
 
 package sun.nio.ch;
 
+import android.system.ErrnoException;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -40,7 +41,6 @@ import sun.misc.Cleaner;
 import sun.misc.IoTrace;
 
 // ----- BEGIN android -----
-import libcore.io.ErrnoException;
 import libcore.io.Libcore;
 // ----- END android -----
 

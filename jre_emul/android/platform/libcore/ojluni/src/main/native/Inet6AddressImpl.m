@@ -45,6 +45,7 @@
 #endif
 
 #include "java_net_Inet4AddressImpl.h"
+#include "java/net/UnknownHostException.h"
 
 #define NATIVE_METHOD(className, functionName, signature) \
 { #functionName, signature, (void*)(className ## _ ## functionName) }
@@ -73,7 +74,7 @@ static int initialized = 0;
  * Signature: (I)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL
-Inet6AddressImpl_getHostByAddr0(JNIEnv *env, jobject this,
+Java_java_net_Inet6AddressImpl_getHostByAddr0(JNIEnv *env, jobject this,
                                              jbyteArray addrArray) {
 
     jstring ret = NULL;
@@ -125,7 +126,7 @@ Inet6AddressImpl_getHostByAddr0(JNIEnv *env, jobject this,
 #endif /* AF_INET6 */
 
     if (ret == NULL) {
-        JNU_ThrowByName(env, JNU_JAVANETPKG "UnknownHostException", NULL);
+        J2ObjCThrowByName(JavaNetUnknownHostException, nil);
     }
 
     return ret;
@@ -256,7 +257,7 @@ ping6(JNIEnv *env, jint fd, struct sockaddr_in6* him, jint timeout,
  * Signature: ([bII[bI)Z
  */
 JNIEXPORT jboolean JNICALL
-Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
+Java_java_net_Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
                                            jbyteArray addrArray,
                                            jint scope,
                                            jint timeout,
@@ -322,7 +323,7 @@ Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
      * or the echo servioe has been disabled.
      */
 
-    fd = JVM_Socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+    fd = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
 
     if (fd != -1) { /* Good to go, let's do a ping */
         tagSocket(env, fd);
@@ -330,7 +331,7 @@ Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
     }
 
     /* No good, let's fall back on TCP */
-    fd = JVM_Socket(AF_INET6, SOCK_STREAM, 0);
+    fd = socket(AF_INET6, SOCK_STREAM, 0);
     if (fd == JVM_IO_ERR) {
         /* note: if you run out of fds, you may not be able to load
          * the exception class, and get a NoClassDefFoundError
@@ -360,7 +361,7 @@ Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
 
     /* no need to use NET_Connect as non-blocking */
     him6.sin6_port = htons((short) 7); /* Echo port */
-    connect_rv = JVM_Connect(fd, (struct sockaddr *)&him6, len);
+    connect_rv = connect(fd, (struct sockaddr *)&him6, len);
 
     /**
      * connection established or refused immediately, either way it means
@@ -404,8 +405,8 @@ Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
         if (timeout >= 0) {
           /* has connection been established */
           optlen = sizeof(connect_rv);
-          if (JVM_GetSockOpt(fd, SOL_SOCKET, SO_ERROR, (void*)&connect_rv,
-                             &optlen) <0) {
+          if (getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&connect_rv,
+                             (socklen_t *)&optlen) <0) {
             connect_rv = errno;
           }
           if (connect_rv == 0 || connect_rv == ECONNREFUSED) {

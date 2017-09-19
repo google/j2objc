@@ -65,15 +65,15 @@ extern void untagSocket(JNIEnv* env, int fd);
 #else
 
 #define NET_Timeout     JVM_Timeout
-#define NET_Read        JVM_Read
-#define NET_RecvFrom    JVM_RecvFrom
+#define NET_Read        read
+#define NET_RecvFrom    recvfrom
 #define NET_ReadV       readv
-#define NET_Send        JVM_Send
-#define NET_SendTo      JVM_SendTo
+#define NET_Send        send
+#define NET_SendTo      sendto
 #define NET_WriteV      writev
-#define NET_Connect     JVM_Connect
-#define NET_Accept      JVM_Accept
-#define NET_SocketClose JVM_SocketClose
+#define NET_Connect     connect
+#define NET_Accept      accept
+#define NET_SocketClose close
 #define NET_Dup2        dup2
 #define NET_Select      select
 #define NET_Poll        poll
