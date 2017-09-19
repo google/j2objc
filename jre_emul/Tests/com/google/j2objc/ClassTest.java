@@ -469,7 +469,7 @@ public class ClassTest extends TestCase {
     } catch (ClassCastException e) {
       fail("Failed to cast " + c + " to ConcreteClassB");
     }
-   
+
     try {
       InterfaceR.class.cast(c);
       fail("Expected ClassCastException");
@@ -481,6 +481,12 @@ public class ClassTest extends TestCase {
       InterfaceQ.class.cast(c);
     } catch (ClassCastException e) {
       fail("Failed to cast " + c + " to InterfaceQ");
+    }
+
+    try {
+      InterfaceQ.class.cast(null);
+    } catch (ClassCastException e) {
+      fail("Unexpected ClassCastException");
     }
   }
 

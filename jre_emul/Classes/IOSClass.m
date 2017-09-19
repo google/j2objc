@@ -644,7 +644,7 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
 }
 
 - (id)cast:(id)object {
-  if (![self isInstance:object]) {
+  if (__builtin_expect(object && ![self isInstance:object], 0)) {
     @throw create_JavaLangClassCastException_initWithNSString_(
         [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
             [[object java_getClass] getName], [self getName]]);
