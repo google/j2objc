@@ -22,6 +22,7 @@
 static const int MAX_TOUCH_DEPTH = 512;
 static const int SCAN_BUFF_SIZE = 4096;
 
+FOUNDATION_EXPORT int GC_LOG_LOOP = GC_DEBUG;
 FOUNDATION_EXPORT int GC_LOG_RC = 0;
 FOUNDATION_EXPORT int GC_LOG_ROOTS = 0;
 FOUNDATION_EXPORT int GC_LOG_ALIVE = 0;
@@ -1287,7 +1288,7 @@ void ARGC::doGC() {
             
             NSLog(@"scan: %d root: %d alive:%d/%d", cntScan, cntRoot, cntAlivedGenerarion, cntAlive);
         }
-        else {
+        else if (GC_LOG_LOOP) {
             NSLog(@"scan: %d", cntScan);
         }
     }
