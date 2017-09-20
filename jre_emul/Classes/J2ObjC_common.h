@@ -67,7 +67,8 @@
 CF_EXTERN_C_BEGIN
 
 void JreThrowNullPointerException() __attribute__((noreturn));
-void JreThrowClassCastException() __attribute__((noreturn));
+void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
+void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
 
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);

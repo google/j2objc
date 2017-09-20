@@ -34,8 +34,16 @@ void JreThrowNullPointerException() {
   @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
 }
 
-void JreThrowClassCastException() {
-  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
+void JreThrowClassCastException(id obj, Class cls) {
+  @throw create_JavaLangClassCastException_initWithNSString_(
+      [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
+          [[obj java_getClass] getName], NSStringFromClass(cls)]);
+}
+
+void JreThrowClassCastExceptionWithIOSClass(id obj, IOSClass *cls) {
+  @throw create_JavaLangClassCastException_initWithNSString_(
+      [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
+          [[obj java_getClass] getName], [cls getName]]);
 }
 
 void JreThrowAssertionError(id __unsafe_unretained msg) {

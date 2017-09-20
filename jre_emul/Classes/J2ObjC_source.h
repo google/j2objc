@@ -38,7 +38,7 @@
 __attribute__ ((unused)) static inline id cast_chk(id __unsafe_unretained p, Class clazz) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
   if (__builtin_expect(p && ![p isKindOfClass:clazz], 0)) {
-    JreThrowClassCastException();
+    JreThrowClassCastException(p, clazz);
   }
 #endif
   return p;
@@ -50,7 +50,7 @@ __attribute__ ((unused)) static inline id cast_chk(id __unsafe_unretained p, Cla
 __attribute__((always_inline)) inline id cast_check(id __unsafe_unretained p, IOSClass *cls) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
   if (__builtin_expect(p && ![cls isInstance:p], 0)) {
-    JreThrowClassCastException();
+    JreThrowClassCastExceptionWithIOSClass(p, cls);
   }
 #endif
   return p;
