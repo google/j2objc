@@ -44,29 +44,30 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
+J2OBJC_ARGS=()
+
 if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
-  readonly BOOT_PATH=-Xbootclasspath:${LIB_DIR}/jre_emul.jar
+  J2OBJC_ARGS+=("-Xbootclasspath:${LIB_DIR}/jre_emul.jar")
 fi
 
+J2OBJC_ARGS+=(-Xannotations-jar "${LIB_DIR}/j2objc_annotations.jar")
+
 PARSING_JAVA_ARGS=0
-JAVA_ARGS=$()
-J2OBJC_ARGS=$()
-ANNOTATIONS_ARG="-Xannotations-jar ${LIB_DIR}/j2objc_annotations.jar"
+JAVA_ARGS=()
 
 while [ $# -gt 0 ]; do
   case $1 in
     -begin-java-args) PARSING_JAVA_ARGS=1;;
     -end-java-args) PARSING_JAVA_ARGS=0;;
-    -J*) JAVA_ARGS[iJavaArgs++]=${1:2};;
+    -J*) JAVA_ARGS+=("${1:2}");;
     *)
       if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
-        J2OBJC_ARGS[iArgs++]=$1
+        J2OBJC_ARGS+=("$1")
       else
-        JAVA_ARGS[iJavaArgs++]=$1
+        JAVA_ARGS+=("$1")
       fi;;
   esac
   shift
 done
 
-java ${JAVA_ARGS[*]} -jar "${JAR}" "${BOOT_PATH}" ${ANNOTATIONS_ARG} \
-  "${J2OBJC_ARGS[@]}"
+java ${JAVA_ARGS[*]} -jar "${JAR}" "${J2OBJC_ARGS[@]}"
