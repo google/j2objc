@@ -34,18 +34,6 @@ PROTOBUF_JAR = protobuf-java-3.3.0.jar
 
 ASM_JAR = asm-all-5.1.jar
 
-ECLIPSE_JARS = \
-    org.eclipse.core.contenttype-3.4.200.v20140207-1251.jar \
-    org.eclipse.core.jobs-3.6.1.v20141014-1248.jar \
-    org.eclipse.core.resources-3.9.1.v20140825-1431.jar \
-    org.eclipse.core.runtime-3.10.0.v20140318-2214.jar \
-    org.eclipse.equinox.common-3.6.200.v20130402-1505.jar \
-    org.eclipse.equinox.preferences-3.5.200.v20140224-1527.jar \
-    org.eclipse.jdt.compiler.apt-1.1.0.v20140509-1235.jar \
-    org.eclipse.jdt.core-3.10.0.v20140604-1726.jar \
-    org.eclipse.osgi-3.10.2.v20150203-1939.jar \
-    org.eclipse.text-3.5.101.jar
-
 GUAVA_JAR = guava-19.0.jar
 GUAVA_SOURCE_JAR = guava-19.0-sources.jar
 
