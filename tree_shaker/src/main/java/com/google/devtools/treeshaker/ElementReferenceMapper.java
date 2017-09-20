@@ -29,18 +29,18 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.CodeReferenceMap.Builder;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Reference-mapping code for TreeShaker functionality that uses the visitor pattern
  * to identify all elements in the source code
- * 
+ *
  * @author Priyank Malvania
  */
 public class ElementReferenceMapper extends UnitTreeVisitor {
