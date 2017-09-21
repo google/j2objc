@@ -159,8 +159,9 @@ static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash)
   if (!entry) {
     entry = Put(lookup, store, key, hash, lookup->create_func(key));
   }
+  void *result = entry->value;
   pthread_mutex_unlock(&lookup->mutex);
-  return entry->value;
+  return result;
 }
 
 // Attempts a fast lock-free lookup before grabbing any locks.
