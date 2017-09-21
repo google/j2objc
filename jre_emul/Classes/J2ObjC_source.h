@@ -156,16 +156,22 @@ FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size
  * floating point NaN value casts to the equivalent MIN_VALUE while Java
  * requires that NaN casts to 0. (JLS 5.1.3)
  */
-__attribute__((always_inline)) inline jint JreFpToInt(jdouble d) {
+__attribute__((always_inline))
+__attribute__((no_sanitize("float-cast-overflow")))
+inline jint JreFpToInt(jdouble d) {
   jint tmp = (jint)d;
   return tmp == (jint)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
 }
-__attribute__((always_inline)) inline jlong JreFpToLong(jdouble d) {
+__attribute__((always_inline))
+__attribute__((no_sanitize("float-cast-overflow")))
+inline jlong JreFpToLong(jdouble d) {
   jlong tmp = (jlong)d;
   return tmp == (jlong)0x8000000000000000LL
       ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp)) : tmp;
 }
-__attribute__((always_inline)) inline jchar JreFpToChar(jdouble d) {
+__attribute__((always_inline))
+__attribute__((no_sanitize("float-cast-overflow")))
+inline jchar JreFpToChar(jdouble d) {
   unsigned tmp = (unsigned)d;
   return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (jchar)tmp;
 }
