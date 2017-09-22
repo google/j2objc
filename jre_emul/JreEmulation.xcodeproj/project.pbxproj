@@ -828,6 +828,13 @@
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
+		DEADDCC41F757F0800A1E65B /* ConcurrentSkipListMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC11F757F0800A1E65B /* ConcurrentSkipListMapTest.m */; };
+		DEADDCC51F757F0800A1E65B /* CopyOnWriteArrayListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC21F757F0800A1E65B /* CopyOnWriteArrayListTest.m */; };
+		DEADDCC61F757F0800A1E65B /* ThreadPoolExecutorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC31F757F0800A1E65B /* ThreadPoolExecutorTest.m */; };
+		DEADDCC91F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC71F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m */; };
+		DEADDCCA1F757F3100A1E65B /* ResourceLeakageDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC81F757F3100A1E65B /* ResourceLeakageDetector.m */; };
+		DEADDCCD1F757FC000A1E65B /* ForEachRemainingTester.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCCB1F757FC000A1E65B /* ForEachRemainingTester.m */; };
+		DEADDCCE1F757FC000A1E65B /* MapDefaultMethodTester.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCCC1F757FC000A1E65B /* MapDefaultMethodTester.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3821,6 +3828,15 @@
 		DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
 		DE9C53851F6ADFBF000E8C71 /* CopyOnWriteArrayListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CopyOnWriteArrayListTest.m; path = libcore/java/util/concurrent/CopyOnWriteArrayListTest.m; sourceTree = "<group>"; };
 		DE9C53861F6ADFCF000E8C71 /* ConcurrentSkipListMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrentSkipListMapTest.m; path = libcore/java/util/concurrent/ConcurrentSkipListMapTest.m; sourceTree = "<group>"; };
+		DEADDCBF1F757E4700A1E65B /* AbstractResourceLeakageDetectorTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractResourceLeakageDetectorTestCase.m; path = libcore/java/util/AbstractResourceLeakageDetectorTestCase.m; sourceTree = "<group>"; };
+		DEADDCC01F757E4700A1E65B /* ResourceLeakageDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ResourceLeakageDetector.m; path = libcore/java/util/ResourceLeakageDetector.m; sourceTree = "<group>"; };
+		DEADDCC11F757F0800A1E65B /* ConcurrentSkipListMapTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ConcurrentSkipListMapTest.m; path = build_result/tests/libcore/java/util/concurrent/ConcurrentSkipListMapTest.m; sourceTree = "<group>"; };
+		DEADDCC21F757F0800A1E65B /* CopyOnWriteArrayListTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CopyOnWriteArrayListTest.m; path = build_result/tests/libcore/java/util/concurrent/CopyOnWriteArrayListTest.m; sourceTree = "<group>"; };
+		DEADDCC31F757F0800A1E65B /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = build_result/tests/libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
+		DEADDCC71F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractResourceLeakageDetectorTestCase.m; path = build_result/tests/libcore/java/util/AbstractResourceLeakageDetectorTestCase.m; sourceTree = "<group>"; };
+		DEADDCC81F757F3100A1E65B /* ResourceLeakageDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceLeakageDetector.m; path = build_result/tests/libcore/java/util/ResourceLeakageDetector.m; sourceTree = "<group>"; };
+		DEADDCCB1F757FC000A1E65B /* ForEachRemainingTester.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ForEachRemainingTester.m; path = build_result/tests/libcore/java/util/ForEachRemainingTester.m; sourceTree = "<group>"; };
+		DEADDCCC1F757FC000A1E65B /* MapDefaultMethodTester.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MapDefaultMethodTester.m; path = build_result/tests/libcore/java/util/MapDefaultMethodTester.m; sourceTree = "<group>"; };
 		DEE827341F6AE0B90069C75C /* ForEachRemainingTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForEachRemainingTester.m; path = libcore/java/util/ForEachRemainingTester.m; sourceTree = "<group>"; };
 		DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapDefaultMethodTester.m; path = libcore/java/util/MapDefaultMethodTester.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3885,6 +3901,13 @@
 		0661937A155848D70004DAFE = {
 			isa = PBXGroup;
 			children = (
+				DEADDCCB1F757FC000A1E65B /* ForEachRemainingTester.m */,
+				DEADDCCC1F757FC000A1E65B /* MapDefaultMethodTester.m */,
+				DEADDCC71F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m */,
+				DEADDCC81F757F3100A1E65B /* ResourceLeakageDetector.m */,
+				DEADDCC11F757F0800A1E65B /* ConcurrentSkipListMapTest.m */,
+				DEADDCC21F757F0800A1E65B /* CopyOnWriteArrayListTest.m */,
+				DEADDCC31F757F0800A1E65B /* ThreadPoolExecutorTest.m */,
 				0661938A155848D70004DAFE /* Classes */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				0620F4E71BB60A6100626242 /* jre_emul_xctests */,
@@ -6075,6 +6098,7 @@
 				067FC81D1EFAE690001D0627 /* AbstractQueuedSynchronizerTest.m */,
 				0612B8C01F4373730069EF58 /* AbstractQueueTest.m */,
 				062028101D512E03001EE455 /* AbstractQueueTest.m */,
+				DEADDCBF1F757E4700A1E65B /* AbstractResourceLeakageDetectorTestCase.m */,
 				0612B9481F4381AF0069EF58 /* AbstractSelectableChannelTest.m */,
 				0612B9491F4381AF0069EF58 /* AbstractSelectionKeyTest.m */,
 				0612B94A1F4381AF0069EF58 /* AbstractSelectorTest.m */,
@@ -6655,6 +6679,7 @@
 				062025281D512B37001EE455 /* ReflectionTests.m */,
 				0620284E1D512E21001EE455 /* ReplaceTest.m */,
 				0612B9231F4374A30069EF58 /* ResourceBundleTest.m */,
+				DEADDCC01F757E4700A1E65B /* ResourceLeakageDetector.m */,
 				062025291D512B37001EE455 /* RetainedWithTest.m */,
 				0620292E1D512F25001EE455 /* RSAKeyGenParameterSpecTest.m */,
 				0620291D1D512F25001EE455 /* RSAKeyTest.m */,
@@ -7092,6 +7117,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEADDCCD1F757FC000A1E65B /* ForEachRemainingTester.m in Sources */,
+				DEADDCCE1F757FC000A1E65B /* MapDefaultMethodTester.m in Sources */,
+				DEADDCC91F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m in Sources */,
+				DEADDCCA1F757F3100A1E65B /* ResourceLeakageDetector.m in Sources */,
+				DEADDCC41F757F0800A1E65B /* ConcurrentSkipListMapTest.m in Sources */,
+				DEADDCC51F757F0800A1E65B /* CopyOnWriteArrayListTest.m in Sources */,
+				DEADDCC61F757F0800A1E65B /* ThreadPoolExecutorTest.m in Sources */,
 				06C143BB1F46149300CABE9A /* CharBufferTest.m in Sources */,
 				067B13451EEDEABB0013CBAF /* BlockingQueueTest.m in Sources */,
 				067B13431EEDEABB0013CBAF /* IosSecureRandomImplTest.m in Sources */,
