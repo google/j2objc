@@ -89,12 +89,6 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
-#if defined(J2OBJC_COUNT_NIL_CHK) && !defined(J2OBJC_DISABLE_NIL_CHECKS)
-id nil_chk(id __unsafe_unretained p);
-void JrePrintNilChkCount();
-void JrePrintNilChkCountAtExit();
-
-#else
 __attribute__((always_inline)) inline id nil_chk(id __unsafe_unretained p) {
 #if !defined(J2OBJC_DISABLE_NIL_CHECKS)
   if (__builtin_expect(!p, 0)) {
@@ -103,10 +97,6 @@ __attribute__((always_inline)) inline id nil_chk(id __unsafe_unretained p) {
 #endif
   return p;
 }
-
-__attribute__((always_inline)) inline void JrePrintNilChkCount() {}
-__attribute__((always_inline)) inline void JrePrintNilChkCountAtExit() {}
-#endif
 
 CF_EXTERN_C_END
 
