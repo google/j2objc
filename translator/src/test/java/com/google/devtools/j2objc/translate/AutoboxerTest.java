@@ -440,7 +440,7 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(int i) { assert i == 0 : i; }}", "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert((i == 0), (JavaLangInteger_valueOfWithInt_(i)));");
+        "JreAssert(i == 0, JavaLangInteger_valueOfWithInt_(i));");
   }
 
   public void testNonWrapperObjectTypeCastToPrimitive() throws IOException {

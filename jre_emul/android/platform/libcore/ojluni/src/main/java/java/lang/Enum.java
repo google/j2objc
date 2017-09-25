@@ -262,7 +262,7 @@ public abstract class Enum<E extends Enum<E>>
             = new BasicLruCache<Class<? extends Enum>, Object[]>(64) {
         // Use a native reflective lookup so that enums with stripped reflection will work.
         @Override protected native Object[] create(Class<? extends Enum> enumType) /*-[
-          nil_chk(enumType);
+          (void)nil_chk(enumType);
           if (![enumType isEnum]) {
             return nil;
           }

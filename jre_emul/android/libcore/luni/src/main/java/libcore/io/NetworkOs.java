@@ -197,7 +197,7 @@ public final class NetworkOs {
       struct sockaddr_storage *ss, socklen_t *sa_len, BOOL map) {
     memset(ss, 0, sizeof(struct sockaddr_storage));
     *sa_len = 0;
-    nil_chk(inetAddress);
+    (void)nil_chk(inetAddress);
 
     // Get the address family.
     ss->ss_family = [inetAddress->holder_ getFamily];

@@ -170,42 +170,42 @@ CF_EXTERN_C_END
 #define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##CNAME( \
       __unsafe_unretained TYPE **value) { \
-    nil_chk(*value); \
+    (void)nil_chk(*value); \
     return *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Strong##CNAME( \
       __strong TYPE **value) { \
-    nil_chk(*value); \
+    (void)nil_chk(*value); \
     return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Volatile##CNAME( \
       volatile_id *value) { \
     TYPE *original = JreLoadVolatileId(value); \
-    nil_chk(original); \
+    (void)nil_chk(original); \
     return JreAssignVolatileId(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##VolatileStrong##CNAME( \
       volatile_id *value) { \
     TYPE *original = JreLoadVolatileId(value); \
-    nil_chk(original); \
+    (void)nil_chk(original); \
     return JreVolatileStrongAssign(value, \
         TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Array##CNAME(JreArrayRef ref) { \
-    nil_chk(*ref.pValue); \
+    (void)nil_chk(*ref.pValue); \
     return IOSObjectArray_SetRef( \
         ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##CNAME( \
       __unsafe_unretained TYPE **value) { \
-    nil_chk(*value); \
+    (void)nil_chk(*value); \
     TYPE *original = *value; \
     *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1); \
     return original; \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Strong##CNAME( \
       __strong TYPE **value) { \
-    nil_chk(*value); \
+    (void)nil_chk(*value); \
     TYPE *original = *value; \
     JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1)); \
     return original; \
@@ -213,19 +213,19 @@ CF_EXTERN_C_END
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Volatile##CNAME( \
       volatile_id *value) { \
     TYPE *original = JreLoadVolatileId(value); \
-    nil_chk(original); \
+    (void)nil_chk(original); \
     JreAssignVolatileId(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
     return original; \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##VolatileStrong##CNAME( \
       volatile_id *value) { \
     TYPE *original = JreLoadVolatileId(value); \
-    nil_chk(original); \
+    (void)nil_chk(original); \
     JreVolatileStrongAssign(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
     return original; \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Array##CNAME(JreArrayRef ref) { \
-    nil_chk(*ref.pValue); \
+    (void)nil_chk(*ref.pValue); \
     TYPE *original = *ref.pValue; \
     IOSObjectArray_SetRef( \
         ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
@@ -276,33 +276,33 @@ CF_EXTERN_C_END
     CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE) \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##Assign##CNAME( \
       __unsafe_unretained BOXED_TYPE **lhs, RTYPE rhs) { \
-    nil_chk(*lhs); \
+    (void)nil_chk(*lhs); \
     return *lhs = BOXED_TYPE##_valueOfWith##CNAME##_( \
         (TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs))); \
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignStrong##CNAME( \
       __strong BOXED_TYPE **lhs, RTYPE rhs) { \
-    nil_chk(*lhs); \
+    (void)nil_chk(*lhs); \
     return JreStrongAssign(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs)))); \
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignVolatile##CNAME( \
       volatile_id *lhs, RTYPE rhs) { \
     BOXED_TYPE *lhsValue = JreLoadVolatileId(lhs); \
-    nil_chk(lhsValue); \
+    (void)nil_chk(lhsValue); \
     return JreAssignVolatileId(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[lhsValue VALUE_METHOD], rhs)))); \
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignVolatileStrong##CNAME( \
       volatile_id *lhs, RTYPE rhs) { \
     BOXED_TYPE *lhsValue = JreLoadVolatileId(lhs); \
-    nil_chk(lhsValue); \
+    (void)nil_chk(lhsValue); \
     return JreVolatileStrongAssign(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[lhsValue VALUE_METHOD], rhs)))); \
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignArray##CNAME( \
       JreArrayRef lhs, RTYPE rhs) { \
-    nil_chk(*lhs.pValue); \
+    (void)nil_chk(*lhs.pValue); \
     return IOSObjectArray_SetRef(lhs, BOXED_TYPE##_valueOfWith##CNAME##_( \
         (TYPE)(OP((OP_LTYPE)[*((BOXED_TYPE **)lhs.pValue) VALUE_METHOD], rhs)))); \
   }

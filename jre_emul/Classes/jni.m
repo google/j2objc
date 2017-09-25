@@ -37,7 +37,7 @@
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
 
-#define null_chk(p) nil_chk(p)
+#define null_chk(p) (void)nil_chk(p)
 
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];
@@ -132,7 +132,7 @@ static jclass FindClass(JNIEnv *env, const char *name) {
 }
 
 static jsize GetArrayLength(JNIEnv *env, jarray array) {
-  nil_chk(array);
+  (void)nil_chk(array);
   return ((IOSArray *)array)->size_;
 }
 
@@ -149,12 +149,12 @@ static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, jboolean *isCo
 }
 
 static void *GetDirectBufferAddress(JNIEnv *env, jobject buf) {
-  nil_chk(buf);
+  (void)nil_chk(buf);
   return (void *) ((JavaNioBuffer *) buf)->address_;
 }
 
 static jlong GetDirectBufferCapacity(JNIEnv *env, jobject buf) {
-  nil_chk(buf);
+  (void)nil_chk(buf);
   return (jlong) ((JavaNioBuffer *) buf)->capacity_;
 }
 
@@ -179,12 +179,12 @@ static jobject GetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize inde
 }
 
 static jclass GetObjectClass(JNIEnv *env, jobject obj) {
-  nil_chk(obj);
+  (void)nil_chk(obj);
   return [(id<JavaObject>) obj java_getClass];
 }
 
 static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, jboolean *isCopy) {
-  nil_chk(array);
+  (void)nil_chk(array);
   if (isCopy) {
     *isCopy = false;
   }
@@ -197,7 +197,7 @@ static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, jboolean *i
 }
 
 static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {
-  nil_chk(s);
+  (void)nil_chk(s);
   if (isCopy) {
     *isCopy = true;
   }
@@ -205,7 +205,7 @@ static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {
 }
 
 static const jchar *GetStringCritical(JNIEnv *env, jstring s, jboolean *isCopy) {
-  nil_chk(s);
+  (void)nil_chk(s);
   if (isCopy) {
     *isCopy = true;
   }
@@ -213,18 +213,18 @@ static const jchar *GetStringCritical(JNIEnv *env, jstring s, jboolean *isCopy) 
 }
 
 static jsize GetStringLength(JNIEnv *env, jstring s) {
-  nil_chk(s);
+  (void)nil_chk(s);
   return (jsize) [(NSString *) s length];
 }
 
 static void GetStringRegion(JNIEnv *env, jstring s, jsize offset, jsize length, jchar *buffer) {
-  nil_chk(s);
+  (void)nil_chk(s);
   NSRange range = NSMakeRange(offset, length);
   [(NSString *) s getCharacters:(unichar *)buffer range:range];
 }
 
 static const char *GetStringUTFChars(JNIEnv *env, jstring s, jboolean *isCopy) {
-  nil_chk(s);
+  (void)nil_chk(s);
   if (isCopy) {
     *isCopy = false;
   }
@@ -232,12 +232,12 @@ static const char *GetStringUTFChars(JNIEnv *env, jstring s, jboolean *isCopy) {
 }
 
 static jsize GetStringUTFLength(JNIEnv *env, jstring s) {
-  nil_chk(s);
+  (void)nil_chk(s);
   return (jsize) strlen(((NSString *) s).UTF8String);
 }
 
 static void GetStringUTFRegion(JNIEnv *env, jstring s, jsize offset, jsize length, char *buffer) {
-  nil_chk(s);
+  (void)nil_chk(s);
   null_chk((void*)buffer);
   const char *utf = ((NSString *) s).UTF8String;
   memcpy(buffer, utf + offset, length);
@@ -315,7 +315,7 @@ static jlongArray NewLongArray(JNIEnv *env, jsize length) {
 
 static jobjectArray NewObjectArray(JNIEnv *env, jsize length, jclass clazz,
     jobject initialElement) {
-  nil_chk(clazz);
+  (void)nil_chk(clazz);
   IOSObjectArray *result = [IOSObjectArray arrayWithLength:length type:(IOSClass *) clazz];
   if (initialElement) {
     for (jsize i = 0; i < length; i++) {
@@ -395,7 +395,7 @@ static void SetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize index, 
 #define GET_ARRAY_REGION_IMPL(TYPE_NAME, JNI_TYPE) \
   static void Get##TYPE_NAME##ArrayRegion( \
       JNIEnv *env, JNI_TYPE##Array array, jsize offset, jsize length, JNI_TYPE *buffer) { \
-    nil_chk(array); \
+    (void)nil_chk(array); \
     null_chk((void*)buffer); \
     IOSArray_checkRange(array->size_, offset, length); \
     memcpy(buffer, array->buffer_ + offset, length * sizeof(JNI_TYPE)); \
@@ -415,7 +415,7 @@ GET_ARRAY_REGION_IMPL(Double, jdouble)
 #define SET_ARRAY_REGION_IMPL(TYPE_NAME, JNI_TYPE) \
   static void Set##TYPE_NAME##ArrayRegion( \
       JNIEnv *env, JNI_TYPE##Array array, jsize offset, jsize length, const JNI_TYPE *buffer) { \
-    nil_chk(array); \
+    (void)nil_chk(array); \
     null_chk((void*)buffer); \
     IOSArray_checkRange(array->size_, offset, length); \
     memcpy(array->buffer_ + offset, buffer, length * sizeof(JNI_TYPE)); \
@@ -433,13 +433,13 @@ SET_ARRAY_REGION_IMPL(Double, jdouble)
 #undef SET_ARRAY_REGION_IMPL
 
 static jint Throw(JNIEnv *env, jthrowable obj) {
-  nil_chk(obj);
+  (void)nil_chk(obj);
   @throw obj;
   return 0;
 }
 
 static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
-  nil_chk(clazz);
+  (void)nil_chk(clazz);
   NSString *msg = [NSString stringWithUTF8String:message];
   id exc = [(JavaLangThrowable *) [((IOSClass *) clazz).objcClass alloc] initWithNSString:msg];
   @throw AUTORELEASE(exc);
@@ -525,7 +525,7 @@ static void ToArgsArray(IOSObjectArray *paramTypes, jvalue *jargs, va_list args)
 }
 
 static jobject AllocObject(JNIEnv *env, jclass clazz) {
-  nil_chk(clazz);
+  (void)nil_chk(clazz);
   jint modifiers = [clazz getModifiers];
   if ((modifiers & (JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_INTERFACE)) > 0
       || [clazz isArray] || [clazz isEnum]) {

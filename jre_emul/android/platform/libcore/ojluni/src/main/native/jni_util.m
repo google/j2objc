@@ -104,7 +104,7 @@ JNU_NewStringPlatform(JNIEnv *env, const char *str) {
 
 JNIEXPORT const char *
 JNU_GetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy) {
-  nil_chk(jstr);
+  (void)nil_chk(jstr);
   if (isCopy) {
     *isCopy = false;
   }

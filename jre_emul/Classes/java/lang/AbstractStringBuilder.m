@@ -105,7 +105,7 @@ void JavaLangAbstractStringBuilder_initWithInt_(
 
 void JavaLangAbstractStringBuilder_initWithNSString_(
     JavaLangAbstractStringBuilder *self, NSString *string) {
-  nil_chk(string);
+  (void)nil_chk(string);
   self->delegate_.count_ = (jint)[string length];
   NewBuffer(&self->delegate_, self->delegate_.count_ + INITIAL_CAPACITY);
   [string getCharacters:self->delegate_.buffer_ range:NSMakeRange(0, self->delegate_.count_)];
@@ -155,13 +155,13 @@ void JreStringBuilder_appendStringBuffer(JreStringBuilder *sb, JavaLangStringBuf
 }
 
 void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars) {
-  nil_chk(chars);
+  (void)nil_chk(chars);
   JreStringBuilder_appendBuffer(sb, chars->buffer_, chars->size_);
 }
 
 void JreStringBuilder_appendCharArraySubset(
     JreStringBuilder *sb, IOSCharArray *chars, jint offset, jint length) {
-  nil_chk(chars);
+  (void)nil_chk(chars);
   JavaUtilArrays_checkOffsetAndCountWithInt_withInt_withInt_(chars->size_, offset, length);
   JreStringBuilder_appendBuffer(sb, chars->buffer_ + offset, length);
 }
@@ -308,7 +308,7 @@ void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, jint index) {
   }
   jint length = end - start;
   IOSArray_checkRange(delegate_.bufferSize_, start, length);
-  nil_chk(dst);
+  (void)nil_chk(dst);
   IOSArray_checkRange(dst->size_, dstStart, length);
   memcpy(dst->buffer_ + dstStart, delegate_.buffer_ + start, length * sizeof(jchar));
 }
@@ -317,7 +317,7 @@ void JreStringBuilder_insertCharArray(JreStringBuilder *sb, jint index, IOSCharA
   if (index < 0 || index > sb->count_) {
     @throw IndexAndLength(sb, index);
   }
-  nil_chk(chars);
+  (void)nil_chk(chars);
   if (chars->size_ != 0) {
     JreStringBuilder_move(sb, chars->size_, index);
     memcpy(sb->buffer_ + index, chars->buffer_, chars->size_ * sizeof(jchar));
@@ -327,7 +327,7 @@ void JreStringBuilder_insertCharArray(JreStringBuilder *sb, jint index, IOSCharA
 
 void JreStringBuilder_insertCharArraySubset(
     JreStringBuilder *sb, jint index, IOSCharArray *chars, jint start, jint length) {
-  nil_chk(chars);
+  (void)nil_chk(chars);
   if (index >= 0 && index <= sb->count_) {
     if (start >= 0 && length >= 0 && length <= chars->size_ - start) {
       if (length != 0) {
@@ -407,7 +407,7 @@ void JreStringBuilder_replace(JreStringBuilder *sb, jint start, jint end, NSStri
       end = sb->count_;
     }
     if (end > start) {
-      nil_chk(string);
+      (void)nil_chk(string);
       jint stringLength = (jint)[string length];
       jint diff = end - start - stringLength;
       if (diff > 0) {
@@ -571,7 +571,7 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
 
 - (jint)indexOfWithNSString:(NSString *)subString
                     withInt:(jint)start {
-  nil_chk(subString);
+  (void)nil_chk(subString);
   if (start < 0) {
     start = 0;
   }
@@ -611,7 +611,7 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
 
 - (jint)lastIndexOfWithNSString:(NSString *)subString
                         withInt:(jint)start {
-  nil_chk(subString);
+  (void)nil_chk(subString);
   jint subCount = (jint)[subString length];
   if (subCount <= delegate_.count_ && start >= 0) {
     if (subCount > 0) {

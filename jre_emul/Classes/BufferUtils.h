@@ -26,7 +26,7 @@
 #import "java/nio/Buffer.h"
 
 static inline char *BytesRW(id object) {
-  nil_chk(object);
+  (void)nil_chk(object);
   Class cls = object_getClass(object);
   if (cls == [IOSByteArray class]) {
     return (char *)((IOSByteArray *)object)->buffer_;

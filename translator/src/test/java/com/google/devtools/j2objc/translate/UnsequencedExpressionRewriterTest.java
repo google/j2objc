@@ -138,7 +138,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "jint unseq$1 = i++;",
         "jboolean unseq$2 = unseq$1 + i++ == 0;",
         "jint unseq$3 = i++;",
-        "JreAssert((unseq$2), (JreStrcat(\"$II\", @\"foo\", unseq$3, i++)));");
+        "JreAssert(unseq$2, JreStrcat(\"$II\", @\"foo\", unseq$3, i++));");
   }
 
   public void testForInitStatements() throws IOException {

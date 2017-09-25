@@ -53,7 +53,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
-  nil_chk(annotationType);
+  (void)nil_chk(annotationType);
   IOSObjectArray *annotations = [self getAnnotations];
   jint n = annotations->size_;
   for (jint i = 0; i < n; i++) {

@@ -315,7 +315,7 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
 // class, return a superclass method if available.
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
-  nil_chk(name);
+  (void)nil_chk(name);
   JavaLangReflectMethod *method = JreMethodWithNameAndParamTypesInherited(self, name, types);
   if (method && ([method getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
     return method;
@@ -440,7 +440,7 @@ static NSString *CamelCasePackage(NSString *package) {
 }
 
 static IOSClass *ClassForIosName(NSString *iosName) {
-  nil_chk(iosName);
+  (void)nil_chk(iosName);
   // Some protocols have a sibling class that contains the metadata and any
   // constants that are defined. We must look for the protocol before the class
   // to ensure we create a IOSProtocolClass for such cases. NSObject must be
@@ -612,7 +612,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 IOSClass *IOSClass_forName_(NSString *className) {
-  nil_chk(className);
+  (void)nil_chk(className);
   IOSClass *iosClass = nil;
   if ([className length] > 0) {
     if ([className characterAtIndex:0] == '[') {
@@ -767,7 +767,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (id<JavaLangAnnotationAnnotation>)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
-  nil_chk(annotationClass);
+  (void)nil_chk(annotationClass);
   IOSObjectArray *annotations = [self getAnnotations];
   jint n = annotations->size_;
   for (jint i = 0; i < n; i++) {
@@ -887,7 +887,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
 }
 
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
-  nil_chk(name);
+  (void)nil_chk(name);
   JavaLangReflectField *field = FindDeclaredField(self, name, false);
   if (field) {
     return field;
@@ -896,7 +896,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
-  nil_chk(name);
+  (void)nil_chk(name);
   JavaLangReflectField *field = FindField(self, name, true);
   if (field) {
     return field;

@@ -30,8 +30,8 @@
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
 
-void JreThrowNullPointerException() {
-  @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+id JreThrowNullPointerException() {
+  @throw create_JavaLangNullPointerException_init();
 }
 
 void JreThrowClassCastException(id obj, Class cls) {

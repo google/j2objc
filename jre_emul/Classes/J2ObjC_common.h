@@ -66,7 +66,7 @@
 
 CF_EXTERN_C_BEGIN
 
-void JreThrowNullPointerException() __attribute__((noreturn));
+id JreThrowNullPointerException() __attribute__((noreturn));
 void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
 void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
 
@@ -89,16 +89,20 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
-__attribute__((always_inline)) inline id nil_chk(id __unsafe_unretained p) {
-#if !defined(J2OBJC_DISABLE_NIL_CHECKS)
-  if (__builtin_expect(!p, 0)) {
-    JreThrowNullPointerException();
-  }
-#endif
-  return p;
-}
-
 CF_EXTERN_C_END
+
+/*!
+ * The nil_chk macro is used wherever a Java object is dereferenced and needs to
+ * be checked for null. A macro is used instead of an inline function because it
+ * allows the line number of the dereference to be derived from the stack frame.
+ *
+ * @param p The object to check for nil.
+ */
+#ifdef J2OBJC_DISABLE_NIL_CHECKS
+#define nil_chk(p) p
+#else
+#define nil_chk(p) (p ?: JreThrowNullPointerException())
+#endif
 
 #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(

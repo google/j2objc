@@ -100,7 +100,7 @@ NSString *NSString_java_valueOfChar_(jchar value) {
 }
 
 NSString *NSString_java_valueOfChars_(IOSCharArray *data) {
-  nil_chk(data);
+  (void)nil_chk(data);
   return [NSString stringWithCharacters:data->buffer_ length:data->size_];
 }
 
@@ -109,7 +109,7 @@ NSString *NSString_java_valueOfChars_(IOSCharArray *data) {
 }
 
 NSString *NSString_java_valueOfChars_offset_count_(IOSCharArray *data, jint offset, jint count) {
-  nil_chk(data);
+  (void)nil_chk(data);
   checkBounds(data->size_, offset, count);
   return [NSString stringWithCharacters:data->buffer_ + offset length:count];
 }
@@ -187,14 +187,14 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 + (NSString *)java_stringWithCharacters:(IOSCharArray *)value {
-  nil_chk(value);
+  (void)nil_chk(value);
   return StringFromCharArray(value, 0, value->size_);
 }
 
 + (NSString *)java_stringWithCharacters:(IOSCharArray *)value
                                  offset:(jint)offset
                                  length:(jint)count {
-  nil_chk(value);
+  (void)nil_chk(value);
   checkBounds(value->size_, offset, count);
   return StringFromCharArray(value, offset, count);
 }
@@ -470,7 +470,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
                             offset:(jint)offset
                             length:(jint)count
                            charset:(JavaNioCharsetCharset *)charset {
-  nil_chk(value);
+  (void)nil_chk(value);
   checkBounds(value->size_, offset, count);
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     CFStringEncoding encoding =
@@ -569,7 +569,7 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
 }
 
 - (IOSByteArray *)java_getBytesWithCharset:(JavaNioCharsetCharset *)charset {
-  nil_chk(charset);
+  (void)nil_chk(charset);
   IOSByteArray *result;
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     CFStringEncoding encoding =
@@ -604,7 +604,7 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
   if (badParamMsg) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithNSString_(badParamMsg);
   }
-  nil_chk(dst);
+  (void)nil_chk(dst);
   NSUInteger maxBytes = [self maximumLengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   char *bytes = (char *)malloc(maxBytes);
   NSUInteger bytesUsed;
@@ -665,17 +665,17 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 }
 
 - (jboolean)java_hasPrefix:(NSString *)prefix {
-  nil_chk(prefix);
+  (void)nil_chk(prefix);
   return RangeIsEqual(self, prefix, 0);
 }
 
 - (jboolean)java_hasPrefix:(NSString *)prefix offset:(jint)offset {
-  nil_chk(prefix);
+  (void)nil_chk(prefix);
   return RangeIsEqual(self, prefix, offset);
 }
 
 - (jboolean)java_hasSuffix:(NSString *)suffix {
-  nil_chk(suffix);
+  (void)nil_chk(suffix);
   return RangeIsEqual(self, suffix, (jint)[self length] - (jint)[suffix length]);
 }
 
