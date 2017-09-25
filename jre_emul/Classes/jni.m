@@ -37,6 +37,8 @@
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
 
+#define null_chk(p) nil_chk(p)
+
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];
   nameString = [nameString stringByReplacingOccurrencesOfString:@"/" withString:@"."];
@@ -121,15 +123,6 @@ NSString *JNIFormatMethodSignature(JNIMethodSignature sig) {
   }
   result = [result stringByAppendingString:@")"];
   return result;
-}
-
-__attribute__ ((unused)) static inline id null_chk(void *p) {
-#if !defined(J2OBJC_DISABLE_NIL_CHECKS)
-  if (__builtin_expect(!p, 0)) {
-    JreThrowNullPointerException();
-  }
-#endif
-  return p;
 }
 
 static void *GetPrimitiveArrayCritical(JNIEnv *, jarray, jboolean *);
