@@ -135,8 +135,8 @@ resources: $(TEST_RESOURCES)
 
 define resource_copy_rule
 $(RESOURCES_DEST_DIR)/%: $(1)/%
-	@mkdir -p `dirname $$@`
-	@cp $$< $$@
+	@mkdir -p $$(@D)
+	@install -m 0644 $$< $$@
 endef
 
 $(foreach root,$(TEST_RESOURCE_ROOTS),$(eval $(call resource_copy_rule,$(root))))
