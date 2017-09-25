@@ -254,11 +254,11 @@ public class Options {
       } else if (processingSourceFiles) {
         sourceFiles.add(arg);
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
-        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg)));
+        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg)));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
       } else if (arg.equals("-processorpath")) {
-        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg)));
+        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-d")) {
         fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--mapping")) {
@@ -484,18 +484,21 @@ public class Options {
     System.exit(0);
   }
 
-  private static List<String> getPathArgument(String argument) {
+  private List<String> getPathArgument(String argument, boolean expandAarFiles) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
-      if (new File(entry).exists()) {  // JDT fails with bad path entries.
-        entries.add(entry);
-      } else if (entry.startsWith("~/")) {
+      if (entry.startsWith("~/")) {
         // Expand bash/csh tildes, which don't get expanded by the shell
         // first if in the middle of a path string.
-        String expanded = System.getProperty("user.home") + entry.substring(1);
-        if (new File(expanded).exists()) {
-          entries.add(expanded);
-        }
+        entry = System.getProperty("user.home") + entry.substring(1);
+      }
+      File f = new File(entry);
+      if (entry.endsWith(".aar") && expandAarFiles) {
+        // Extract classes.jar from Android library AAR file.
+        f = fileUtil().extractClassesJarFromAarFile(f);
+      }
+      if (f.exists()) {
+        entries.add(entry);
       }
     }
     return entries;
@@ -590,7 +593,7 @@ public class Options {
   }
 
   public List<String> getBootClasspath() {
-    return getPathArgument(bootclasspath);
+    return getPathArgument(bootclasspath, false);
   }
 
   public Mappings getMappings() {

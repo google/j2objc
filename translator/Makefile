@@ -281,6 +281,7 @@ TEST_RESOURCES = \
   com/google/devtools/j2objc/testMappings.j2objc \
   com/google/devtools/j2objc/annotations/Processor.jar \
   com/google/devtools/j2objc/util/example.jar \
+  com/google/devtools/j2objc/util/hello.aar \
   com/google/devtools/j2objc/util/packageInfoLookupTest.jar
 TEST_RESOURCE_FILES = $(TEST_RESOURCES:%=$(TEST_DIR)/%)
 

@@ -14,7 +14,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -24,9 +23,9 @@ import com.google.devtools.j2objc.file.RegularInputFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -248,10 +247,39 @@ public class FileUtil {
       throw new IOException("Could not extract file to " + dir.getPath());
     }
     try (InputStream inputStream = zipFile.getInputStream(entry);
-        InputStreamReader reader = new InputStreamReader(inputStream, charset)) {
-      String source = CharStreams.toString(reader);
-      Files.write(source, outputFile, charset);
+        FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+      byte[] buf = new byte[1024];
+      int n;
+      while ((n = inputStream.read(buf)) > 0) {
+        outputStream.write(buf, 0, n);
+      }
     }
     return outputFile;
+  }
+
+  /**
+   * Android libraries are packaged in AAR files, which is a zip file with a ".aar"
+   * suffix that contains a classes.jar with the classfiles, as well as any Android
+   * resources associated with this library. This method extracts the classes.jar
+   * entry from the AAR file, so it can be used as a classpath entry.
+   * <p>
+   * If there is an error extracting the classes.jar entry, a warning is logged
+   * and the original path is returned.
+   */
+  public File extractClassesJarFromAarFile(File aarFile) {
+    try (ZipFile zfile = new ZipFile(aarFile)) {
+      File tempDir = FileUtil.createTempDir(aarFile.getName());
+      ZipEntry entry = zfile.getEntry("classes.jar");
+      if (entry == null) {
+        ErrorUtil.warning(aarFile.getPath() + " does not have a classes.jar entry");
+        return aarFile;
+      }
+      File tmpFile = extractZipEntry(tempDir, zfile, entry);
+      tmpFile.deleteOnExit();
+      return tmpFile;
+    } catch (IOException e) {
+      ErrorUtil.warning("unable to access " + aarFile.getPath() + ": " + e);
+      return aarFile;
+    }
   }
 }
