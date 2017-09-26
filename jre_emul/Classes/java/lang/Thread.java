@@ -358,7 +358,6 @@ public class Thread implements Runnable {
   }
 
   /*-[
-
   void *start_routine(void *arg) {
     JavaLangThread *thread = (JavaLangThread *)arg;
     pthread_setspecific(java_thread_key, thread);
@@ -366,10 +365,11 @@ public class Thread implements Runnable {
       @try {
         [thread run];
       } @catch (JavaLangThrowable *t) {
-        [thread rethrowWithJavaLangThrowable:t];
+        JavaLangThread_rethrowWithJavaLangThrowable_(thread, t);
       } @catch (id error) {
-        [thread rethrowWithJavaLangThrowable:create_JavaLangThrowable_initWithNSString_(
-            [NSString stringWithFormat:@"Unknown error: %@", [error description]])];
+        JavaLangThread_rethrowWithJavaLangThrowable_(
+            thread, create_JavaLangThrowable_initWithNSString_(
+                [NSString stringWithFormat:@"Unknown error: %@", [error description]]));
       }
       return NULL;
     }
