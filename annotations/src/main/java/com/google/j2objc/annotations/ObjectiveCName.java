@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * constructor or package declaration should be when translated.
  *
  * <p>For packages add the annotation to the package declaration in a package-info.java file to
- * specify the desired package prefix. Alternativesly, package prefixes may be specified using the
+ * specify the desired package prefix. Alternatively, package prefixes may be specified using the
  * {@code --prefix} or {@code --prefixes} flags when invoking j2objc.
  *
  * <p>For classes specify the desired Objective-C class name for the translated type.
