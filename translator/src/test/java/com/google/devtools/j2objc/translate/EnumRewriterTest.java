@@ -67,6 +67,22 @@ public class EnumRewriterTest extends GenerationTest {
         "size_t allocSize = 5 * objSize;",
         "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
         "id e;",
+        "for (jint i = 0; i < 5; i++) {",
+        "(Test_values_[i] = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);",
+        "Test_initWithNSString_withInt_(e, JreEnumConstantName(Test_class_(), i), i);",
+        "}");
+  }
+
+  // Verify normal reflection stripping doesn't affect enum names.
+  public void testSimpleEnumReflectionStripped() throws Exception {
+    options.setStripReflection(true);
+    String translation = translateSourceFile(
+        "enum Test { A, B, C, D, E }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "size_t objSize = class_getInstanceSize(self);",
+        "size_t allocSize = 5 * objSize;",
+        "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
+        "id e;",
         "id names[] = {",
         "@\"A\", @\"B\", @\"C\", @\"D\", @\"E\",",
         "};",
@@ -74,6 +90,15 @@ public class EnumRewriterTest extends GenerationTest {
         "(Test_values_[i] = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, names[i], i);",
         "}");
+  }
+
+  public void testStrippedEnumName() throws Exception {
+    options.setStripEnumConstants(true);
+    String translation = translateSourceFile(
+        "enum Test { APPLE, ORANGE, PEAR }", "Test", "Test.m");
+    assertNotInTranslation(translation, "\"APPLE\"");
+    assertNotInTranslation(translation, "\"ORANGE\"");
+    assertNotInTranslation(translation, "\"PEAR\"");
   }
 
   public void testEnumAllocationCode() throws Exception {
@@ -93,5 +118,29 @@ public class EnumRewriterTest extends GenerationTest {
         "Test_1_initWithNSString_withInt_(e, @\"B\", 1);",
         "(JreEnum(Test, C) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, @\"C\", 2);");
+  }
+
+  public void testValueOfMethod() throws IOException {
+    String translation = translateSourceFile("enum Test { A, B, C }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "Test *Test_valueOfWithNSString_(NSString *name) {",
+        "Test_initialize();",
+        "for (int i = 0; i < 3; i++) {",
+        "Test *e = Test_values_[i];",
+        "if ([name isEqual:[e name]]) {",
+        "return e;",
+        "}",
+        "}",
+        "@throw create_JavaLangIllegalArgumentException_initWithNSString_(name);");
+  }
+
+  public void testStrippedValueOfMethod() throws IOException {
+    options.setStripEnumConstants(true);
+    String translation = translateSourceFile("enum Test { A, B, C }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "Test *Test_valueOfWithNSString_(NSString *name) {",
+        "Test_initialize();",
+        "@throw create_JavaLangError_initWithNSString_(\"Enum.valueOf(String) "
+        + "called on Test enum with stripped constant names\");");
   }
 }

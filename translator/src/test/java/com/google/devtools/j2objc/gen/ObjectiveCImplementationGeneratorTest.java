@@ -216,9 +216,15 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Color", "Color.m");
     assertTranslation(translation, "Color *Color_values_[3];");
     assertTranslation(translation, "@implementation Color");
-    assertTranslation(translation, "@\"RED\", @\"WHITE\", @\"BLUE\",");
     assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
     assertTranslation(translation, "Color *e = Color_values_[i];");
+    assertTranslation(translation,
+        "Color_initWithNSString_withInt_(e, JreEnumConstantName(Color_class_(), i), i);");
+
+    // Check that correct enum names are in metadata.
+    assertTranslation(translation, "{ \"RED\", \"LColor;\"");
+    assertTranslation(translation, "{ \"WHITE\", \"LColor;\"");
+    assertTranslation(translation, "{ \"BLUE\", \"LColor;\"");
   }
 
   public void testEnumWithParameters() throws IOException {

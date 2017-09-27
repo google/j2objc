@@ -65,6 +65,7 @@ public class Options {
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
   private boolean stripReflection = false;
+  private boolean stripEnumConstants = false;
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
@@ -333,6 +334,8 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         stripReflection = true;
+      } else if (arg.equals("-Xstrip-enum-constants")) {
+        stripEnumConstants = true;
       } else if (arg.equals("--no-wrapper-methods")) {
         emitWrapperMethods = false;
       } else if (arg.equals("--no-segmented-headers")) {
@@ -650,6 +653,15 @@ public class Options {
   @VisibleForTesting
   public void setStripReflection(boolean b) {
     stripReflection = b;
+  }
+
+  public boolean stripEnumConstants() {
+    return stripEnumConstants;
+  }
+
+  @VisibleForTesting
+  public void setStripEnumConstants(boolean b) {
+    stripEnumConstants = b;
   }
 
   public boolean emitWrapperMethods() {

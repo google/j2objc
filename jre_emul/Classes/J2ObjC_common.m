@@ -404,3 +404,12 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
 FOUNDATION_EXPORT void JreRelease(id obj) {
   [obj release];
 }
+
+FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal) {
+  const J2ObjcClassInfo *metadata = [enumClass getMetadata];
+  if (metadata) {
+    return [NSString stringWithUTF8String:metadata->fields[ordinal].name];
+  } else {
+    return [NSString stringWithFormat:@"%@_%d", NSStringFromClass(enumClass.objcClass), ordinal];
+  }
+}

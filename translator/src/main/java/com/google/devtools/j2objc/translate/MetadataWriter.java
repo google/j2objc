@@ -291,6 +291,9 @@ public class MetadataWriter extends UnitTreeVisitor {
         // Don't print Java name if it matches the default pattern, to conserve space.
         javaName = null;
       }
+      if ((ElementUtil.isEnumConstant(var) && options.stripEnumConstants())) {
+        objcName = null;
+      }
       String staticRef = null;
       String constantValue;
       if (ElementUtil.isPrimitiveConstant(var)) {

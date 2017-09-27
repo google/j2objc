@@ -124,12 +124,18 @@ public class EnumRewriter extends UnitTreeVisitor {
     VariableElement localEnum = GeneratedVariableElement.newLocalVar("e", TypeUtil.ID_TYPE, null);
     stmts.add(new VariableDeclarationStatement(localEnum, null));
 
-    StringBuffer sb = new StringBuffer("id names[] = {\n  ");
-    for (EnumConstantDeclaration constant : node.getEnumConstants()) {
-      sb.append("@\"" + ElementUtil.getName(constant.getVariableElement()) + "\", ");
+    // Create a local array of enum names only if reflection is stripped but
+    // enum constants are not. For non-stripped classes, enum names are now
+    // retrieved from metadata, to avoid duplicates.
+    boolean useNamesArray = options.stripReflection() && !options.stripEnumConstants();
+    if (useNamesArray) {
+      StringBuffer sb = new StringBuffer("id names[] = {\n  ");
+      for (EnumConstantDeclaration constant : constants) {
+        sb.append("@\"" + ElementUtil.getName(constant.getVariableElement()) + "\", ");
+      }
+      sb.append("\n};");
+      stmts.add(new NativeStatement(sb.toString()));
     }
-    sb.append("\n};");
-    stmts.add(new NativeStatement(sb.toString()));
 
     TypeMirror intType = typeUtil.getInt();
     GeneratedVariableElement loopCounterElement =
@@ -154,8 +160,17 @@ public class EnumRewriter extends UnitTreeVisitor {
     String enumClassName = nameTable.getFullName(node.getTypeElement());
     loopBody.addStatement(new NativeStatement("(" + enumClassName
         + "_values_[i] = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);"));
-    loopBody.addStatement(new NativeStatement(enumClassName
-        + "_initWithNSString_withInt_(e, names[i], i);"));
+    if (useNamesArray) {
+      loopBody.addStatement(new NativeStatement(enumClassName
+          + "_initWithNSString_withInt_(e, names[i], i);"));
+    } else if (options.stripEnumConstants()){
+      loopBody.addStatement(new NativeStatement(enumClassName
+          + "_initWithNSString_withInt_(e, JAVA_LANG_ENUM_NAME_STRIPPED, i);"));
+    } else {
+      loopBody.addStatement(new NativeStatement(enumClassName
+          + "_initWithNSString_withInt_(e, JreEnumConstantName(" + enumClassName
+          + "_class_(), i), i);"));
+    }
    }
 
   private void addNonArcInitialization(EnumDeclaration node) {
@@ -224,7 +239,7 @@ public class EnumRewriter extends UnitTreeVisitor {
       VariableElement varElement = constant.getVariableElement();
       ClassInstanceCreation creation = new ClassInstanceCreation(constant.getExecutablePair());
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      creation.addArgument(new StringLiteral(ElementUtil.getName(varElement), typeUtil));
+      creation.addArgument(new StringLiteral("", typeUtil));
       creation.addArgument(new NumberLiteral(i++, typeUtil));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varElement), creation)));
@@ -272,18 +287,24 @@ public class EnumRewriter extends UnitTreeVisitor {
     methodDecl.setBody(body);
 
     StringBuilder impl = new StringBuilder();
-    if (numConstants > 0) {
+    if (options.stripEnumConstants()) {
       impl.append(UnicodeUtils.format(
-          "  for (int i = 0; i < %s; i++) {\n"
-          + "    %s *e = %s_values_[i];\n"
-          + "    if ([name isEqual:[e name]]) {\n"
-          + "      return e;\n"
-          + "    }\n"
-          + "  }\n", numConstants, typeName, typeName));
+          "  @throw create_JavaLangError_initWithNSString_(\"Enum.valueOf(String) "
+          + "called on %s enum with stripped constant names\");", typeName));
+    } else {
+      if (numConstants > 0) {
+        impl.append(UnicodeUtils.format(
+            "  for (int i = 0; i < %s; i++) {\n"
+            + "    %s *e = %s_values_[i];\n"
+            + "    if ([name isEqual:[e name]]) {\n"
+            + "      return e;\n"
+            + "    }\n"
+            + "  }\n", numConstants, typeName, typeName));
+      }
+      impl.append(
+          "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
+          + "  return nil;");
     }
-    impl.append(
-        "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
-        + "  return nil;");
 
     body.addStatement(new NativeStatement(impl.toString()));
     node.addBodyDeclaration(methodDecl);

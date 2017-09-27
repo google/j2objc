@@ -34,8 +34,13 @@ import java.io.Serializable;
 import libcore.util.BasicLruCache;
 
 /*-[
+#include "IOSReflection.h"
 #include "java/lang/AssertionError.h"
 #include "objc/message.h"
+]-*/
+
+/*-HEADER[
+#define JAVA_LANG_ENUM_NAME_STRIPPED @""
 ]-*/
 
 /**
@@ -81,8 +86,13 @@ public abstract class Enum<E extends Enum<E>>
      * @return the name of this enum constant
      */
     public final String name() {
-        return name;
+      return getEnumConstantName(ordinal);
     }
+
+    private native String getEnumConstantName(int ordinal) /*-[
+      return [self->name_ isEqualToString:JAVA_LANG_ENUM_NAME_STRIPPED]
+        ? JreEnumConstantName([self java_getClass], ordinal) : self->name_;
+    ]-*/;
 
     /**
      * The ordinal of this enumeration constant (its position
@@ -135,7 +145,7 @@ public abstract class Enum<E extends Enum<E>>
      * @return the name of this enum constant
      */
     public String toString() {
-        return name;
+        return name();
     }
 
     /**

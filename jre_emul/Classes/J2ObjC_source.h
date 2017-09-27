@@ -80,6 +80,7 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
 }
 
 FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size);
+FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal);
 
 /*!
  * Macros that simplify the syntax for loading of static fields.
