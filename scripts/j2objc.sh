@@ -44,6 +44,21 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
+# Run command with Java 8.
+if [ -x "/usr/libexec/java_home" ]; then
+  # java_home is available on all Mac systems.
+  readonly JAVA_HOME=`/usr/libexec/java_home -v 1.8 2> /dev/null`
+  readonly JAVA=${JAVA_HOME}/jre/bin/java
+else
+  # Non-Mac system (not supported, but should still work).
+  readonly JAVA=`which java`
+  ${JAVA} -version 2>&1 | fgrep -q 1.8
+fi
+if [ $? -ne 0 ]; then
+  echo "JDK 8 is not installed"
+  exit 1
+fi
+
 J2OBJC_ARGS=()
 
 if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
@@ -70,4 +85,4 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-java ${JAVA_ARGS[*]} -jar "${JAR}" "${J2OBJC_ARGS[@]}"
+${JAVA} ${JAVA_ARGS[*]} -jar "${JAR}" "${J2OBJC_ARGS[@]}"

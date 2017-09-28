@@ -306,13 +306,13 @@ default: $(J2OBJC_JAR)
 $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo building j2objc jar
-	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
+	@$(JAVAC) -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
 	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.8 -target 1.8 -nowarn \
 	    $(JAVA_SOURCES_FULL)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
-	@java -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR_JAR) process jarjar.rules $@-combined $@
+	@$(JAVA) -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR_JAR) process jarjar.rules $@-combined $@
 
 # Format manifest classpath with each jar on a separate line, to avoid
 # maximum line length of 72 bytes in UTF-8 encoding.
@@ -345,12 +345,12 @@ clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 test: compile-tests copy-test-resources
-	java -classpath $(TEST_CLASSPATH) -Xss4m -XX:+UseParallelGC \
+	$(JAVA) -classpath $(TEST_CLASSPATH) -Xss4m -XX:+UseParallelGC \
 	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
-	@javac -Xlint:unchecked -sourcepath src/test/java \
+	@$(JAVAC) -Xlint:unchecked -sourcepath src/test/java \
 	    -classpath $(TEST_CLASSPATH) -encoding UTF-8 -d $(TEST_DIR) \
 	    `find src/test/java -name '*.java'`
 

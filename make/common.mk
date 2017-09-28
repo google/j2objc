@@ -116,13 +116,14 @@ endif
 
 TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
-JAVAC = javac
+# Use Java 8 by default.
+# TODO(tball): remove when Java 9 is supported.
+JAVA_HOME = $(shell /usr/libexec/java_home -v 1.8)
+JAVA = $(JAVA_HOME)/jre/bin/java
 ifdef J2OBJC_JAVAC
 JAVAC = $(J2OBJC_JAVAC)
-endif
-
-ifndef JAVA_HOME
-export JAVA_HOME = $(shell /usr/libexec/java_home)
+else
+JAVAC = $(JAVA_HOME)/bin/javac
 endif
 
 comma=,
