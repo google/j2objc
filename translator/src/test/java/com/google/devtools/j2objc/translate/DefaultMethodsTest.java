@@ -79,7 +79,7 @@ public class DefaultMethodsTest extends GenerationTest {
 
     assertTranslation(header, "void A_f(id<A> self)");
     assertTranslation(header, "jint A_g(id<A> self)");
-    assertTranslation(header, "void A_q()");
+    assertTranslation(header, "void A_q(void)");
     assertTranslation(header, "id A_rWithInt_withA_(id<A> self, jint x, id<A> b)");
 
     // This is an illegal value for JVM's access_flags field and should never show up in metadata.
@@ -233,7 +233,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
 
-    assertTranslation(header, "P_get_f_()");
+    assertTranslation(header, "P_get_f_(void)");
     assertTranslation(header, "P_f_");
     assertTranslation(header, "void P_f(id<P> self)");
     assertTranslation(impl, "id P_f_;");

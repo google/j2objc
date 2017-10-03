@@ -378,7 +378,7 @@ public class FunctionizerTest extends GenerationTest {
         "enum Test { A { void bar() { foo(); } }; private static void foo() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "- (void)bar {", "Test_foo();");
-    assertTranslation(translation, "static void Test_foo();");
+    assertTranslation(translation, "static void Test_foo(void);");
     assertTranslation(translation, "void Test_foo() {");
   }
 
@@ -391,7 +391,7 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "- (void)foo;");
     // Public declaration for "bar". both the class method and c-function.
     assertTranslation(translation, "+ (void)bar;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar();");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar(void);");
 
     translation = getTranslatedFile("Test.m");
     // Implementation for "foo" is functionized.
@@ -471,9 +471,10 @@ public class FunctionizerTest extends GenerationTest {
     // Functionized constructor.
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
     // Retaining allocating constructor.
-    assertTranslation(translation, "FOUNDATION_EXPORT Test *new_Test_init() NS_RETURNS_RETAINED;");
+    assertTranslation(translation,
+        "FOUNDATION_EXPORT Test *new_Test_init(void) NS_RETURNS_RETAINED;");
     // Releasing allocating constructor.
-    assertTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init();");
+    assertTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init(void);");
     translation = getTranslatedFile("Test.m");
     // Declarations for the private constructor.
     assertTranslation(translation,

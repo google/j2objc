@@ -330,19 +330,23 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return "";
   }
 
-  protected String getFunctionSignature(FunctionDeclaration function) {
+  protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
     StringBuilder sb = new StringBuilder();
     String returnType = nameTable.getObjCType(function.getReturnType().getTypeMirror());
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
-    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
-         iter.hasNext(); ) {
-      VariableElement var = iter.next().getVariableElement();
-      String paramType = nameTable.getObjCType(var.asType());
-      paramType += (paramType.endsWith("*") ? "" : " ");
-      sb.append(paramType + nameTable.getVariableShortName(var));
-      if (iter.hasNext()) {
-        sb.append(", ");
+    if (isPrototype && function.getParameters().isEmpty()) {
+      sb.append("void");
+    } else {
+      for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
+           iter.hasNext(); ) {
+        VariableElement var = iter.next().getVariableElement();
+        String paramType = nameTable.getObjCType(var.asType());
+        paramType += (paramType.endsWith("*") ? "" : " ");
+        sb.append(paramType + nameTable.getVariableShortName(var));
+        if (iter.hasNext()) {
+          sb.append(", ");
+        }
       }
     }
     sb.append(')');

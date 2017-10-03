@@ -103,21 +103,21 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         + " }", "Test", "Test.h");
     // finalFoo
     assertTranslation(header, "#define Test_finalFoo 12");
-    assertTranslation(header, "jint Test_get_finalFoo();");
+    assertTranslation(header, "jint Test_get_finalFoo(void);");
     assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, finalFoo, jint)");
     // foo
-    assertTranslation(header, "jint Test_get_foo();");
+    assertTranslation(header, "jint Test_get_foo(void);");
     assertTranslation(header, "jint Test_set_foo(jint value);");
-    assertTranslation(header, "jint *Test_getRef_foo();");
+    assertTranslation(header, "jint *Test_getRef_foo(void);");
     assertTranslation(header, "FOUNDATION_EXPORT jint Test_foo;");
     assertTranslation(header, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, jint)");
     // bar
-    assertTranslation(header, "NSString *Test_get_bar();");
+    assertTranslation(header, "NSString *Test_get_bar(void);");
     assertTranslation(header, "NSString *Test_set_bar(NSString *value);");
     assertTranslation(header, "FOUNDATION_EXPORT NSString *Test_bar;");
     assertTranslation(header, "J2OBJC_STATIC_FIELD_OBJ(Test, bar, NSString *)");
     // finalBar
-    assertTranslation(header, "NSString *Test_get_finalBar();");
+    assertTranslation(header, "NSString *Test_get_finalBar(void);");
     assertTranslation(header, "FOUNDATION_EXPORT NSString *Test_finalBar;");
     assertTranslation(header, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, finalBar, NSString *)");
   }

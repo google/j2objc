@@ -331,12 +331,12 @@ __attribute__((always_inline)) inline void NSString_initialize() {
   }
 }
 
-inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER();
+inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER(void);
 /*! INTERNAL ONLY - Use accessor function from above. */
 FOUNDATION_EXPORT id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
 J2OBJC_STATIC_FIELD_OBJ_FINAL(NSString, CASE_INSENSITIVE_ORDER, id<JavaUtilComparator>)
 
-inline IOSObjectArray *NSString_get_serialPersistentFields();
+inline IOSObjectArray *NSString_get_serialPersistentFields(void);
 /*! INTERNAL ONLY - Use accessor function from above. */
 FOUNDATION_EXPORT IOSObjectArray *NSString_serialPersistentFields;
 J2OBJC_STATIC_FIELD_OBJ_FINAL(NSString, serialPersistentFields, IOSObjectArray *)

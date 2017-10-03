@@ -67,7 +67,7 @@ public class VariableRenamerTest extends GenerationTest {
     assertTranslation(header, "#define Test_foo_ 3");
     assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, jint)");
     // The functionized static method is unchanged.
-    assertTranslation(header, "void Test_foo();");
+    assertTranslation(header, "void Test_foo(void);");
     // Test static field and non-static method collision.
     assertTranslation(impl, "jint Test_bar_");
     assertTranslation(impl, "void Test_bar(Test *self)");

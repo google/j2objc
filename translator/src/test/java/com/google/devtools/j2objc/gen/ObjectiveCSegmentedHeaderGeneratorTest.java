@@ -140,15 +140,15 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         + "public static final int INCLUDE_ALL = 2;"
         + "static class Inner { public static final int RESTRICT = 3; } }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "inline jint Test_get_INCLUDE();",
+        "inline jint Test_get_INCLUDE(void);",
         "#define Test_INCLUDE 1",
         "J2OBJC_STATIC_FIELD_CONSTANT(Test, INCLUDE, jint)");
     assertTranslatedLines(translation,
-        "inline jint Test_get_INCLUDE_ALL();",
+        "inline jint Test_get_INCLUDE_ALL(void);",
         "#define Test_INCLUDE_ALL 2",
         "J2OBJC_STATIC_FIELD_CONSTANT(Test, INCLUDE_ALL, jint)");
     assertTranslatedLines(translation,
-        "inline jint Test_Inner_get_RESTRICT();",
+        "inline jint Test_Inner_get_RESTRICT(void);",
         "#define Test_Inner_RESTRICT 3",
         "J2OBJC_STATIC_FIELD_CONSTANT(Test_Inner, RESTRICT, jint)");
   }
