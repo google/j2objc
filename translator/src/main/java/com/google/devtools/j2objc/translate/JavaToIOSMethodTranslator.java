@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
@@ -39,10 +40,11 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -143,8 +145,13 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     copyDecl.setHasDeclaration(false);
 
     // Add NSZone *zone parameter.
-    VariableElement zoneParam =
+    GeneratedVariableElement zoneParam =
         GeneratedVariableElement.newParameter("zone", NSZONE_TYPE, copyElement);
+    if (options.nullability()) {
+      TypeMirror nullableType = typeUtil.resolveJavaType("javax.annotation.Nullable").asType();
+      AnnotationMirror annotation = new GeneratedAnnotationMirror((DeclaredType) nullableType);
+      zoneParam.addAnnotationMirror(annotation);
+    }
     copyElement.addParameter(zoneParam);
     copyDecl.addParameter(new SingleVariableDeclaration(zoneParam));
 

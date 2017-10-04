@@ -236,6 +236,7 @@ JAVA_SOURCES = \
 	types/AbstractTypeMirror.java \
 	types/ExecutablePair.java \
 	types/FunctionElement.java \
+	types/GeneratedAnnotationMirror.java \
 	types/GeneratedArrayType.java \
 	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \
