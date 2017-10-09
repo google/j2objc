@@ -88,6 +88,9 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java \
     org/mockito/internal/configuration/injection/scanner/InjectMocksScanner.java \
     org/mockito/internal/configuration/injection/scanner/MockScanner.java \
+    org/mockito/internal/creation/ClassNameFinder.java \
+    org/mockito/internal/creation/DelegatingMethod.java \
+    org/mockito/internal/creation/MockSettingsImpl.java \
     org/mockito/internal/creation/settings/CreationSettings.java \
     org/mockito/internal/debugging/Localized.java \
     org/mockito/internal/debugging/LocationImpl.java \
@@ -272,9 +275,6 @@ EXTRACTED_JAVA_SOURCES = \
 
 SUPERSOURCE_JAVA_SOURCES = \
     org/mockito/internal/configuration/ClassPathLoader.java \
-    org/mockito/internal/creation/ClassNameFinder.java \
-    org/mockito/internal/creation/DelegatingMethod.java \
-    org/mockito/internal/creation/MockSettingsImpl.java \
     org/mockito/internal/creation/ios/InvocationHandlerAdapter.java \
     org/mockito/internal/creation/ios/IosMockMaker.java \
     org/mockito/internal/creation/jmock/ClassImposterizer.java \
