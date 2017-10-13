@@ -18,14 +18,15 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -59,10 +60,7 @@ class Options {
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean printReferenceGraph = false;
-
-  // The default source version number if not passed with -source is determined from the system
-  // properties of the running java version after parsing the argument list.
-  private SourceVersion sourceVersion = null;
+  private SourceVersion sourceVersion = SourceVersion.defaultVersion();
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -105,7 +103,7 @@ class Options {
   }
 
   private void addManifest(String manifestFile) throws IOException {
-    BufferedReader in = new BufferedReader(new FileReader(new File(manifestFile)));
+    BufferedReader in = Files.newReader(new File(manifestFile), Charset.forName(fileEncoding));
     try {
       for (String line = in.readLine(); line != null; line = in.readLine()) {
         if (!Strings.isNullOrEmpty(line)) {
@@ -122,10 +120,6 @@ class Options {
   }
 
   public SourceVersion sourceVersion() {
-    if (sourceVersion == null) {
-      // Pull source version from system properties if it is not passed with -source flag.
-      sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
-    }
     return sourceVersion;
   }
 
@@ -204,6 +198,10 @@ class Options {
         }
         try {
           options.sourceVersion = SourceVersion.parse(args[nArg]);
+          // TODO(tball): remove when Java 9 source is supported.
+          if (options.sourceVersion == SourceVersion.JAVA_9) {
+            usage("Java 9 source version is not currently supported.");
+          }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + args[nArg]);
         }

@@ -91,9 +91,7 @@ public class Options {
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup(fileUtil);
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
 
-  // The default source version number if not passed with -source is determined from the system
-  // properties of the running java version after parsing the argument list.
-  private SourceVersion sourceVersion = null;
+  private SourceVersion sourceVersion = SourceVersion.defaultVersion();
 
   private static File proGuardUsageFile = null;
 
@@ -384,6 +382,10 @@ public class Options {
         // Handle aliasing of version numbers as supported by javac.
         try {
           sourceVersion = SourceVersion.parse(s);
+          // TODO(tball): remove when Java 9 source is supported.
+          if (sourceVersion == SourceVersion.JAVA_9) {
+            usage("Java 9 source version is not currently supported.");
+          }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + s);
         }
@@ -430,11 +432,6 @@ public class Options {
     if (swiftFriendly) {
       staticAccessorMethods = true;
       nullability = true;
-    }
-
-    // Pull source version from system properties if it is not passed with -source flag.
-    if (sourceVersion == null) {
-      sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
     }
 
     // javac performs best when all sources are compiled by one task.

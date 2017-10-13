@@ -14,13 +14,14 @@
 
 package com.google.devtools.j2objc.util;
 
+import java.lang.reflect.Method;
+
 /**
  * Supported Java versions, used by the -source and -target flags.
  */
 public enum SourceVersion {
 
-  // TODO(tball): add JAVA_9 when Java 9 releases.
-  JAVA_8(8, "1.8"), JAVA_7(7, "1.7"), JAVA_6(6, "1.6"), JAVA_5(5, "1.5");
+  JAVA_9(9, "1.9"), JAVA_8(8, "1.8"), JAVA_7(7, "1.7"), JAVA_6(6, "1.6"), JAVA_5(5, "1.5");
 
   private final int version;
   private final String flag;
@@ -45,11 +46,16 @@ public enum SourceVersion {
         return sv;
       }
     }
-    if (fullFlag.equals("1.9")) {
-      // Map to JAVA_8 to support testing with pre-release Java 9.
-      return JAVA_8;
-    }
     throw new IllegalArgumentException(flag);
+  }
+
+  public static SourceVersion valueOf(int majorVersion) {
+    for (SourceVersion sv : values()) {
+      if (sv.version == majorVersion) {
+        return sv;
+      }
+    }
+    throw new IllegalArgumentException("Unsupported version: " + majorVersion);
   }
 
   public static boolean java7Minimum(SourceVersion sourceVersion) {
@@ -58,6 +64,26 @@ public enum SourceVersion {
 
   public static boolean java8Minimum(SourceVersion sourceVersion) {
     return sourceVersion.version >= 8;
+  }
+
+  public static boolean java9Minimum(SourceVersion sourceVersion) {
+    return sourceVersion.version >= 9;
+  }
+
+  /**
+   * Returns the source version value associated with the runtime currently running.
+   */
+  public static SourceVersion defaultVersion() {
+    try {
+      Class<?> versionClass = Class.forName("java.lang.Runtime.Version");
+      Method m = versionClass.getMethod("major");
+      Integer majorVersion = (Integer) m.invoke(null);
+      return SourceVersion.valueOf(majorVersion.intValue());
+    } catch (Exception e) {
+      SourceVersion sysVer = SourceVersion.parse(System.getProperty("java.specification.version"));
+      // TODO(tball): remove when Java 9 source is supported.
+      return sysVer == JAVA_9 ? JAVA_8 : sysVer;
+    }
   }
 
   @Override
