@@ -1167,10 +1167,13 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/ExemptionMechanismException.java \
   javax/crypto/ExemptionMechanismSpi.java \
   javax/crypto/IllegalBlockSizeException.java \
+  javax/crypto/KeyGenerator.java \
+  javax/crypto/KeyGeneratorSpi.java \
   javax/crypto/Mac.java \
   javax/crypto/MacSpi.java \
   javax/crypto/NoSuchPaddingException.java \
   javax/crypto/NullCipher.java \
+  javax/crypto/SealedObject.java \
   javax/crypto/SecretKey.java \
   javax/crypto/SecretKeyFactory.java \
   javax/crypto/SecretKeyFactorySpi.java \
