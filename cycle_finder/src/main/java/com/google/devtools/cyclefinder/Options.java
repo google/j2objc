@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.BufferedReader;
@@ -200,7 +201,8 @@ class Options {
           options.sourceVersion = SourceVersion.parse(args[nArg]);
           // TODO(tball): remove when Java 9 source is supported.
           if (options.sourceVersion == SourceVersion.JAVA_9) {
-            usage("Java 9 source version is not currently supported.");
+            ErrorUtil.warning("Java 9 source version is not supported, using Java 8.");
+            options.sourceVersion = SourceVersion.JAVA_8;
           }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + args[nArg]);
