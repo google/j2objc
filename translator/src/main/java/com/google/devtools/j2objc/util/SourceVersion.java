@@ -75,10 +75,10 @@ public enum SourceVersion {
    */
   public static SourceVersion defaultVersion() {
     try {
-      Class<?> versionClass = Class.forName("java.lang.Runtime.Version");
-      Method m = versionClass.getMethod("major");
-      Integer majorVersion = (Integer) m.invoke(null);
-      return SourceVersion.valueOf(majorVersion.intValue());
+      Method versionMethod = Runtime.class.getMethod("version");
+      Object version = versionMethod.invoke(null);
+      int majorVersion = (int) version.getClass().getMethod("major").invoke(version);
+      return SourceVersion.valueOf(majorVersion);
     } catch (Exception e) {
       SourceVersion sysVer = SourceVersion.parse(System.getProperty("java.specification.version"));
       // TODO(tball): remove when Java 9 source is supported.
