@@ -716,7 +716,6 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/Inet6Address.java \
   java/net/InetAddress.java \
   java/net/InetSocketAddress.java \
-  java/net/InMemoryCookieStore.java \
   java/net/InterfaceAddress.java \
   java/net/MalformedURLException.java \
   java/net/MulticastSocket.java \
@@ -724,14 +723,10 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/NetworkInterface.java \
   java/net/NoRouteToHostException.java \
   java/net/PasswordAuthentication.java \
-  java/net/PlainDatagramSocketImpl.java \
-  java/net/PlainServerSocketImpl.java \
-  java/net/PlainSocketImpl.java \
   java/net/PortUnreachableException.java \
   java/net/ProtocolException.java \
   java/net/Proxy.java \
   java/net/ProxySelector.java \
-  java/net/ProxySelectorImpl.java \
   java/net/ResponseCache.java \
   java/net/SecureCacheResponse.java \
   java/net/ServerSocket.java \
@@ -739,6 +734,7 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/SocketAddress.java \
   java/net/SocketImpl.java \
   java/net/SocketImplFactory.java \
+  java/net/SocketOption.java \
   java/net/SocketOptions.java \
   java/net/SocketPermission.java \
   java/net/SocketTimeoutException.java \
@@ -769,10 +765,14 @@ JAVA_PRIVATE_SOURCES_NET = \
   java/net/DefaultInterface.java \
   java/net/Inet6AddressImpl.java \
   java/net/InetAddressImpl.java \
+  java/net/InMemoryCookieStore.java \
   java/net/NetFactoryImpl.java \
   java/net/NetUtil.java \
+  java/net/PlainDatagramSocketImpl.java \
+  java/net/PlainServerSocketImpl.java \
+  java/net/PlainSocketImpl.java \
+  java/net/ProxySelectorImpl.java \
   java/net/SocketInputStream.java \
-  java/net/SocketOption.java \
   java/net/SocketOutputStream.java \
   java/net/Socks4Message.java \
   java/net/SocksConsts.java \
