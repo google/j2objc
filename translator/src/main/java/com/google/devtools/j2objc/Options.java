@@ -217,7 +217,6 @@ public class Options {
 
   private class ArgProcessor {
 
-    private boolean processingSourceFiles = false;
     private List<String> sourceFiles = new ArrayList<>();
 
     private void processArgs(String[] args) throws IOException {
@@ -250,8 +249,6 @@ public class Options {
         return;
       } else if (arg.startsWith("@")) {
         processArgsFile(arg.substring(1));
-      } else if (processingSourceFiles) {
-        sourceFiles.add(arg);
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
@@ -398,7 +395,6 @@ public class Options {
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
-        processingSourceFiles = true;
         sourceFiles.add(arg);
       }
     }
