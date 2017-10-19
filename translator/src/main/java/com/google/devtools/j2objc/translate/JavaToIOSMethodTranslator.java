@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -40,11 +41,10 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
-import javax.lang.model.element.AnnotationMirror;
+
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -70,7 +70,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
   public boolean visit(MethodDeclaration node) {
     ExecutableElement method = node.getExecutableElement();
 
-    // Check if @ObjectiveCName is used but is mismatched with an overriden method.
+    // Check if @ObjectiveCName is used but is mismatched with an overridden method.
     String name = NameTable.getMethodNameFromAnnotation(method);
     if (name != null) {
       String selector = nameTable.selectorForMethodName(method, name);
@@ -148,9 +148,9 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     GeneratedVariableElement zoneParam =
         GeneratedVariableElement.newParameter("zone", NSZONE_TYPE, copyElement);
     if (options.nullability()) {
-      TypeMirror nullableType = typeUtil.resolveJavaType("javax.annotation.Nullable").asType();
-      AnnotationMirror annotation = new GeneratedAnnotationMirror((DeclaredType) nullableType);
-      zoneParam.addAnnotationMirror(annotation);
+      TypeElement annotationType =
+          GeneratedTypeElement.newEmulatedInterface("javax.annotation.Nullable");
+      zoneParam.addAnnotationMirror(new GeneratedAnnotationMirror(annotationType));
     }
     copyElement.addParameter(zoneParam);
     copyDecl.addParameter(new SingleVariableDeclaration(zoneParam));
