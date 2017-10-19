@@ -19,23 +19,22 @@ import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
 /**
  * Annotation mirror class for annotations created during translation.
  */
 public class GeneratedAnnotationMirror implements AnnotationMirror {
-  private final TypeElement element;
+  private final DeclaredType type;
   private final Map<ExecutableElement, AnnotationValue> values = new HashMap<>();
 
-  public GeneratedAnnotationMirror(TypeElement annotationElement) {
-    this.element = annotationElement;
+  public GeneratedAnnotationMirror(DeclaredType annotationType) {
+    this.type = annotationType;
   }
 
   @Override
   public DeclaredType getAnnotationType() {
-    return (DeclaredType) element.asType();
+    return type;
   }
 
   @Override

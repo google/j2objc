@@ -1,6 +1,4 @@
 /*
- * Copyright 2011 Google Inc. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,10 +39,10 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
-
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -148,8 +146,8 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     GeneratedVariableElement zoneParam =
         GeneratedVariableElement.newParameter("zone", NSZONE_TYPE, copyElement);
     if (options.nullability()) {
-      TypeElement annotationType =
-          GeneratedTypeElement.newEmulatedInterface("javax.annotation.Nullable");
+      DeclaredType annotationType = (DeclaredType)
+          GeneratedTypeElement.newEmulatedInterface("javax.annotation.Nullable").asType();
       zoneParam.addAnnotationMirror(new GeneratedAnnotationMirror(annotationType));
     }
     copyElement.addParameter(zoneParam);
