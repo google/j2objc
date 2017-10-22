@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -31,6 +32,7 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -158,8 +160,8 @@ public class EnumRewriter extends UnitTreeVisitor {
         .addUpdater(loopUpdater)
         .setBody(loopBody));
     String enumClassName = nameTable.getFullName(node.getTypeElement());
-    loopBody.addStatement(new NativeStatement("(" + enumClassName
-        + "_values_[i] = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);"));
+    loopBody.addStatement(new NativeStatement("((void)(" + enumClassName
+        + "_values_[i] = e = objc_constructInstance(self, (void *)ptr)), ptr += objSize);"));
     if (useNamesArray) {
       loopBody.addStatement(new NativeStatement(enumClassName
           + "_initWithNSString_withInt_(e, names[i], i);"));
@@ -200,9 +202,9 @@ public class EnumRewriter extends UnitTreeVisitor {
       }
 
       initStatements.add(new ExpressionStatement(new CommaExpression(
-          new Assignment(new SimpleName(varElement), new Assignment(
+          new CastExpression(voidType,new ParenthesizedExpression(new Assignment(new SimpleName(varElement), new Assignment(
           new SimpleName(localEnum), new NativeExpression(UnicodeUtils.format(
-              "objc_constructInstance(%s, (void *)ptr)", classExpr), type.asType()))),
+              "objc_constructInstance(%s, (void *)ptr)", classExpr), type.asType()))))),
           new NativeExpression("ptr += " + sizeName, voidType))));
       String initName = nameTable.getFullFunctionName(methodElement);
       FunctionElement initElement = new FunctionElement(initName, voidType, valueType)
