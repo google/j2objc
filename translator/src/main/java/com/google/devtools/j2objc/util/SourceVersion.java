@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import java.lang.reflect.Method;
-
 /**
  * Supported Java versions, used by the -source and -target flags.
  */
@@ -74,16 +72,18 @@ public enum SourceVersion {
    * Returns the source version value associated with the runtime currently running.
    */
   public static SourceVersion defaultVersion() {
-    try {
-      Method versionMethod = Runtime.class.getMethod("version");
-      Object version = versionMethod.invoke(null);
-      int majorVersion = (int) version.getClass().getMethod("major").invoke(version);
-      return SourceVersion.valueOf(majorVersion);
-    } catch (Exception e) {
-      SourceVersion sysVer = SourceVersion.parse(System.getProperty("java.specification.version"));
-      // TODO(tball): remove when Java 9 source is supported.
-      return sysVer == JAVA_9 ? JAVA_8 : sysVer;
-    }
+    // TODO(tball): uncomment and remove workaround when Java 9 is supported. b/67757486
+//    try {
+//      Method versionMethod = Runtime.class.getMethod("version");
+//      Object version = versionMethod.invoke(null);
+//      int majorVersion = (int) version.getClass().getMethod("major").invoke(version);
+//      return SourceVersion.valueOf(majorVersion);
+//    } catch (Exception e) {
+//      return SourceVersion.parse(System.getProperty("java.specification.version"));
+//    }
+    // Workaround: make Java 8 the maximum version.
+    SourceVersion sysver = SourceVersion.parse(System.getProperty("java.specification.version"));
+    return java9Minimum(sysver) ? JAVA_8 : sysver;
   }
 
   @Override
