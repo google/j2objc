@@ -30,8 +30,10 @@
     if (length < 0) { \
       @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]); \
     } \
+    size_t buf_size = length * sizeof(C_TYPE); \
     IOS##U_NAME##Array *array = NSAllocateObject( \
-        [IOS##U_NAME##Array class], length * sizeof(C_TYPE), nil); \
+        [IOS##U_NAME##Array class], buf_size, nil); \
+    memset(array->buffer_, 0, buf_size); \
     array->size_ = length; \
     return array; \
   } \

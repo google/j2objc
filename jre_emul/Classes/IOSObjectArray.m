@@ -35,7 +35,10 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
   if (length < 0) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
   }
-  IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
+  size_t buf_size = length * sizeof(id);
+  IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], buf_size, nil);
+  // Set array contents to Java default value (null).
+  memset(array->buffer_, 0, buf_size);
   if (!retained) {
     // It is important that this autorelease occurs here and NOT as part of the
     // return statement of one of the public methods. When such a public method

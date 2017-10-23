@@ -255,4 +255,13 @@
                 @"different object array types equal");
 }
 
+// Verify that all elements in a newly created empty object array are nil.
+- (void)testNilObjectArrayElements {
+  const int arraySize = 1000;
+  IOSObjectArray *array = IOSObjectArray_CreateArray(arraySize, NSString_class_(), NO);
+  for (int i = 0; i < arraySize; i++) {
+    XCTAssertNil(array->buffer_[i], @"empty array element was non-nil");
+  }
+}
+
 @end
