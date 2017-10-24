@@ -32,7 +32,8 @@ public class EnumRewriterTest extends GenerationTest {
         "void Test_initWithId_withNSString_withInt_("
           + "Test *self, id t, NSString *__name, jint __ordinal) {");
     assertTranslatedLines(translation,
-        "((void) (JreEnum(Test, A) = e = objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "((void) (JreEnum(Test, A) = e = "
+          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithId_withNSString_withInt_(e, @\"foo\", @\"A\", 0);");
   }
 
@@ -68,7 +69,8 @@ public class EnumRewriterTest extends GenerationTest {
         "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
         "id e;",
         "for (jint i = 0; i < 5; i++) {",
-        "((void)(Test_values_[i] = e = objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "((void)(Test_values_[i] = e = "
+          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, JreEnumConstantName(Test_class_(), i), i);",
         "}");
   }
@@ -87,7 +89,8 @@ public class EnumRewriterTest extends GenerationTest {
         "@\"A\", @\"B\", @\"C\", @\"D\", @\"E\",",
         "};",
         "for (jint i = 0; i < 5; i++) {",
-        "((void)(Test_values_[i] = e = objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "((void)(Test_values_[i] = e = "
+          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, names[i], i);",
         "}");
   }
@@ -111,12 +114,14 @@ public class EnumRewriterTest extends GenerationTest {
         "allocSize += objSize_B;",
         "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
         "id e;",
-        "((void) (JreEnum(Test, A) = e = objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "((void) (JreEnum(Test, A) = e = "
+          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, @\"A\", 0);",
         "((void) (JreEnum(Test, B) = e = objc_constructInstance([Test_1 class],"
           + " (void *)ptr)), ptr += objSize_B);",
         "Test_1_initWithNSString_withInt_(e, @\"B\", 1);",
-        "((void) (JreEnum(Test, C) = e = objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "((void) (JreEnum(Test, C) = e = "
+          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, @\"C\", 2);");
   }
 
