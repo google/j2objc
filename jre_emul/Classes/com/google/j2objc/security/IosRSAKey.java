@@ -320,9 +320,9 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     /**
-     * This method adds a private key to the keychain and returns the key-reference
-     * The format of the bytes are apple format.
-     *
+     * This method adds a private key to the keychain and returns the key-reference. The Security
+     * Framework only supports the PKCS#1 private key format, so the header field of a PKCS#8
+     * certificate needs to be stripped first.
      */
     private static native long createPrivateSecKeyRef(byte[] bytes) /*-[
       NSData * privateKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
@@ -360,6 +360,26 @@ public abstract class IosRSAKey implements RSAKey, Key {
 #endif
       }
 
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+      if (secKeyRef == NULL) {
+        // Try again, my way.
+        NSDictionary* options = @{(id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+                          (id)kSecAttrKeyClass: (id)kSecAttrKeyClassPrivate,
+                          (id)kSecAttrKeySizeInBits: @2048,
+                         };
+        // Convert from PKCS#8 to PKCS#1 by stripping off the header.
+        NSData *pkcs1Key = [privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)];
+        CFErrorRef error = NULL;
+        secKeyRef = SecKeyCreateWithData((__bridge CFDataRef)pkcs1Key,
+                                         (__bridge CFDictionaryRef)options,
+                                         &error);
+        if (!secKeyRef) {
+          NSString *msg = [NSString stringWithFormat:@"Can't SecKeyCreateWithData %@", error];
+          CFRelease(error);
+          @throw create_JavaSecurityProviderException_initWithNSString_(msg);
+        }
+      }
+#endif
       [privateKey release];
       return (jlong)secKeyRef;
     ]-*/;
