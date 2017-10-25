@@ -127,6 +127,7 @@ public class CharsetTest extends TestCase {
     assertCorrectEncoding(new byte[] { -48, -65, -1 }, "Ğ¿ÿ", "WINDOWS-1254");
     assertCorrectEncoding(new byte[] { -61, -1, -120 }, "√ˇà", "X-MACROMAN");
     assertCorrectEncoding(new byte[] { -10, -95, -77, -45 }, "觥秤", "GB2312");
+    assertCorrectEncoding(new byte[] { -79, -72, -70, -48 }, "구분", "EUC-KR");
 
     // Unmappable character
     assertCorrectEncoding(new byte[] { 97, 98, 63, 99, 100 }, "ab\uD7C5cd", "ISO-8859-1");

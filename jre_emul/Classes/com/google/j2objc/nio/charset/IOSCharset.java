@@ -156,6 +156,9 @@ public class IOSCharset extends Charset {
   static const NSString *utf32le_aliases[] = { @"X-UTF-32LE", @"UTF_32LE" };
   static const NSString *gb2312_aliases[] = {
       @"gb2312", @"euc-cn", @"x-EUC-CN", @"euccn", @"EUC_CN", @"gb2312-80", @"gb2312-1980" };
+  static const NSString *euckr_aliases[] = {
+      @"euc_kr", @"csEUCKR", @"ksc5601", @"5601", @"ksc5601_1987", @"ksc_5601",
+      @"ksc5601-1987", @"ks_c_5601-1987", @"euckr" };
 
   static const jbyte ascii_replacement[] = { 63 };
   static const jbyte utf16be_replacement[] = { -1, -3 };
@@ -210,6 +213,8 @@ public class IOSCharset extends Charset {
     { kCFStringEncodingUTF32LE, "UTF-32LE", @"UTF-32LE", utf32le_aliases, 2,
       4.0f, 4.0f, 0.25f, 1.0f, utf32le_replacement, 4 },
     { kCFStringEncodingEUC_CN, "EUC-CN", @"GB2312", gb2312_aliases, 7,
+      2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
+    { kCFStringEncodingEUC_KR, "EUC-KR", @"EUC-KR", euckr_aliases, 9,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
   };
   static const int numIosCharsets = sizeof(iosCharsets) / sizeof(CharsetInfo);
