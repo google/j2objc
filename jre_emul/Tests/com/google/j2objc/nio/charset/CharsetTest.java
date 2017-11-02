@@ -81,6 +81,11 @@ public class CharsetTest extends TestCase {
     assertCorrectDecoding("Ğ¿ÿ", new byte[] { -48, -65, -1 }, "WINDOWS-1254");
     assertCorrectDecoding("√ˇà", new byte[] { -61, -1, -120 }, "X-MACROMAN");
     assertCorrectDecoding("觥秤", new byte[] { -10, -95, -77, -45 }, "GB2312");
+    assertCorrectDecoding("구분", new byte[] { -79, -72, -70, -48 }, "EUC-KR");
+    assertCorrectDecoding("侖侶", new byte[] { -127, -10, -126, 72 }, "gbk");
+    assertCorrectDecoding("侖侶", new byte[] { -127, -10, -126, 72 }, "gb18030");
+    assertCorrectDecoding("高雄市", new byte[] { -80, -86, -74, -81, -91, -85 }, "Big5");
+    assertCorrectDecoding("高雄市", new byte[] { -80, -86, -74, -81, -91, -85 }, "Big5-HKSCS");
   }
 
   private void assertCorrectEncoding(byte[] expected, String input, String charsetName)
@@ -128,6 +133,10 @@ public class CharsetTest extends TestCase {
     assertCorrectEncoding(new byte[] { -61, -1, -120 }, "√ˇà", "X-MACROMAN");
     assertCorrectEncoding(new byte[] { -10, -95, -77, -45 }, "觥秤", "GB2312");
     assertCorrectEncoding(new byte[] { -79, -72, -70, -48 }, "구분", "EUC-KR");
+    assertCorrectEncoding(new byte[] { -127, -10, -126, 72 }, "侖侶", "gbk");
+    assertCorrectEncoding(new byte[] { -127, -10, -126, 72 }, "侖侶", "gb18030");
+    assertCorrectEncoding(new byte[] { -80, -86, -74, -81, -91, -85 }, "高雄市", "Big5");
+    assertCorrectEncoding(new byte[] { -80, -86, -74, -81, -91, -85 }, "高雄市", "Big5-HKSCS");
 
     // Unmappable character
     assertCorrectEncoding(new byte[] { 97, 98, 63, 99, 100 }, "ab\uD7C5cd", "ISO-8859-1");
