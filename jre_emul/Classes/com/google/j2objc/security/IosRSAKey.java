@@ -325,8 +325,8 @@ public abstract class IosRSAKey implements RSAKey, Key {
      * certificate needs to be stripped first.
      */
     private static native long createPrivateSecKeyRef(byte[] bytes) /*-[
-      NSData * privateKey = [[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
-                                                   length:bytes->size_];
+      NSData * privateKey = [[[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
+                                                    length:bytes->size_] autorelease];
 
       // Delete any previous key definition.
       NSMutableDictionary *keyQuery = getPrivateQuery();
@@ -353,7 +353,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       if (osStatus != errSecSuccess) {
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
         NSString *msg = [NSString stringWithFormat:
-            @"Problem adding the public key to the keychain, OSStatus: %d", (int)osStatus];
+            @"Problem adding the private key to the keychain, OSStatus: %d", (int)osStatus];
         @throw create_JavaSecurityProviderException_initWithNSString_(msg);
 #else
         NSLog(@"macOS keychain support not implemented, OSStatus: %d", (int)osStatus);
@@ -363,24 +363,25 @@ public abstract class IosRSAKey implements RSAKey, Key {
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
       if (secKeyRef == NULL) {
         // Try again, my way.
-        NSDictionary* options = @{(id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
-                          (id)kSecAttrKeyClass: (id)kSecAttrKeyClassPrivate,
-                          (id)kSecAttrKeySizeInBits: @2048,
-                         };
-        // Convert from PKCS#8 to PKCS#1 by stripping off the header.
-        NSData *pkcs1Key = [privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)];
-        CFErrorRef error = NULL;
-        secKeyRef = SecKeyCreateWithData((__bridge CFDataRef)pkcs1Key,
-                                         (__bridge CFDictionaryRef)options,
-                                         &error);
-        if (!secKeyRef) {
-          NSString *msg = [NSString stringWithFormat:@"Can't SecKeyCreateWithData %@", error];
-          CFRelease(error);
+        // Convert a PKCS#8 key to PKCS#1 key by stripping off the header.
+        NSData *pkcs1Key = [[privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)]
+            autorelease];
+
+        keyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
+        keyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPrivate;
+        keyQuery[(id)kSecAttrKeySizeInBits] = @2048;
+        keyQuery[(id)kSecValueData] = pkcs1Key;
+
+        OSStatus osStatus = SecItemAdd((CFDictionaryRef)keyQuery, (CFTypeRef *)&secKeyRef);
+
+        if (osStatus != errSecSuccess || !secKeyRef) {
+          NSString *msg = [NSString stringWithFormat:
+              @"Problem adding the private key to the keychain after truncating, OSStatus: %d", 
+              (int)osStatus];
           @throw create_JavaSecurityProviderException_initWithNSString_(msg);
         }
       }
 #endif
-      [privateKey release];
       return (jlong)secKeyRef;
     ]-*/;
   }
