@@ -151,7 +151,7 @@ public final class UnicodeUtils {
    */
   // TODO(mthvedt): Consider using this for all identifiers.
   public static String asValidObjcIdentifier(String word) {
-    StringBuffer objcWord = new StringBuffer();
+    StringBuilder objcWord = new StringBuilder();
     int offset = 0;
 
     if (word.length() > 0 && Character.isDigit(word.codePointAt(0))) {

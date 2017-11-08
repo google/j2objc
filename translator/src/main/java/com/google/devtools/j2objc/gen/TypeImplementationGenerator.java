@@ -330,7 +330,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (initStatements.isEmpty()) {
       return;
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("{\nif (self == [" + typeName + " class]) {\n");
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));

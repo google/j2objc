@@ -131,7 +131,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     // retrieved from metadata, to avoid duplicates.
     boolean useNamesArray = options.stripReflection() && !options.stripEnumConstants();
     if (useNamesArray) {
-      StringBuffer sb = new StringBuffer("id names[] = {\n  ");
+      StringBuilder sb = new StringBuilder("id names[] = {\n  ");
       for (EnumConstantDeclaration constant : constants) {
         sb.append("@\"" + ElementUtil.getName(constant.getVariableElement()) + "\", ");
       }
