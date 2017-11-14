@@ -12,8 +12,7 @@
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
-
+import com.test.Hello;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,6 +24,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.util.Arrays;
+import junit.framework.TestCase;
 
 /**
  * Basic tests to verify serialization support.
@@ -62,7 +62,7 @@ public class SerializationTest extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    //new File(TEST_FILE_NAME).delete();
+    new File(TEST_FILE_NAME).delete();
     super.tearDown();
   }
 
@@ -159,4 +159,32 @@ public class SerializationTest extends TestCase {
     osc = ObjectStreamClass.lookupAny(new Thread[0].getClass());
     assertEquals(-6192713741133905679L, osc.getSerialVersionUID());
   }
+
+  // Verify classes with package prefixes can be serialized.
+  public void testSerializationPkgPrefixes() throws IOException, ClassNotFoundException {
+    Hello greeting = new Hello("hello", "world", 42);
+    assertEquals("hello, world!", greeting.toString());
+    assertEquals(42, greeting.getN());
+
+    // Save the greeting to a file.
+    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(TEST_FILE_NAME));
+    out.writeObject(greeting);
+    out.close();
+    File binFile = new File(TEST_FILE_NAME);
+    assertTrue(binFile.exists());
+
+    // Read back the greeting.
+    ObjectInputStream in = new ObjectInputStream(new FileInputStream(TEST_FILE_NAME));
+    Hello greeting2 = (Hello) in.readObject();
+    in.close();
+    assertEquals("hello, world!", greeting.toString());
+    assertEquals(0, greeting2.getN());  // 0 because n is transient.
+    
+    // Verify package prefix was used.
+    assertEquals("CTHello", objectiveCClassName(greeting2));
+  }
+  
+  private native String objectiveCClassName(Object obj) /*-[
+    return NSStringFromClass([obj class]); 
+  ]-*/;
 }

@@ -33,6 +33,7 @@ SUPPORT_SOURCES = \
     com/google/mockwebserver/QueueDispatcher.java \
     com/google/mockwebserver/RecordedRequest.java \
     com/google/mockwebserver/SocketPolicy.java \
+    com/test/Hello.java \
     dalvik/system/CloseGuardMonitor.java \
     foo/Fourth.java \
     foo/bar/First.java \

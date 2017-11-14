@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06023F051FBA5D9D003BF0A8 /* Hello.m in Sources */ = {isa = PBXBuildFile; fileRef = 06023F041FBA5D9D003BF0A8 /* Hello.m */; };
 		0612B8EE1F4373740069EF58 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */; };
 		0612B8EF1F4373740069EF58 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B8C01F4373730069EF58 /* AbstractQueueTest.m */; };
 		0612B8F01F4373740069EF58 /* ArrayBlockingQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B8C11F4373730069EF58 /* ArrayBlockingQueueTest.m */; };
@@ -869,6 +870,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		06023F041FBA5D9D003BF0A8 /* Hello.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Hello.m; path = com/test/Hello.m; sourceTree = "<group>"; };
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
 		0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractExecutorServiceTest.m; path = jsr166/AbstractExecutorServiceTest.m; sourceTree = "<group>"; };
 		0612B8C01F4373730069EF58 /* AbstractQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractQueueTest.m; path = jsr166/AbstractQueueTest.m; sourceTree = "<group>"; };
@@ -6343,6 +6345,7 @@
 				062028D51D512EBD001EE455 /* HashMapTest.m */,
 				0620281A1D512E03001EE455 /* HashSetTest.m */,
 				062028D61D512EBD001EE455 /* HashtableTest.m */,
+				06023F041FBA5D9D003BF0A8 /* Hello.m */,
 				062025A51D512C8E001EE455 /* ICUTest.m */,
 				0620281B1D512E03001EE455 /* IdentityHashMapTest.m */,
 				062027B61D512DED001EE455 /* IllegalAccessExceptionTest.m */,
@@ -6376,7 +6379,7 @@
 				067B13391EEDE95C0013CBAF /* IosRSASignatureTest.m */,
 				067B133A1EEDE95C0013CBAF /* IosSecureRandomImplTest.m */,
 				06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */,
-				067B133B1EEDE95C0013CBAF /* IosSHAMessageDigestTest.m */,
+				065F96331DAC03F900807A81 /* IosSHAMessageDigestTest.m */,
 				0612B9451F4381750069EF58 /* IterableTest.m */,
 				0620253B1D512B37001EE455 /* JniTest.m */,
 				062028F51D512EDB001EE455 /* JSONArrayTest.m */,
@@ -6411,9 +6414,9 @@
 				063A62ED1F6726C1001DC971 /* LocatorImplTest.m */,
 				067FC8201EFAE75E001D0627 /* LockSupportTest.m */,
 				062027BF1D512DED001EE455 /* LongTest.m */,
-				DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */,
 				062028991D512E78001EE455 /* MalformedParameterizedTypeExceptionTest.m */,
 				0620289A1D512E78001EE455 /* MalformedParameterizedTypeExceptionTests.m */,
+				DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */,
 				06C143831F46135100CABE9A /* MapModeTest.m */,
 				062028491D512E21001EE455 /* Matcher2Test.m */,
 				062025791D512B77001EE455 /* MatcherTest.m */,
@@ -7715,6 +7718,7 @@
 				062029AA1D512FFE001EE455 /* DefaultMethodsTest.m in Sources */,
 				062026A81D512D08001EE455 /* SmallTests.m in Sources */,
 				067FC8251EFAE858001D0627 /* ReentrantReadWriteLockTest.m in Sources */,
+				06023F051FBA5D9D003BF0A8 /* Hello.m in Sources */,
 				069C24431E9EF04900CE6BAF /* CertificateNotYetValidExceptionTest.m in Sources */,
 				0620277D1D512D9D001EE455 /* MockNullSubClass.m in Sources */,
 				069C24421E9EF04900CE6BAF /* CertificateExpiredExceptionTest.m in Sources */,
