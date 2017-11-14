@@ -103,7 +103,7 @@ import libcore.reflect.AnnotatedElements;
  * <caption>Overview of kind of presence detected by different AnnotatedElement methods</caption>
  * <tr><th colspan="2"></th><th colspan="4">Kind of Presence</th>
  * <tr><th colspan="2">Method</th><th>Directly Present</th><th>Indirectly Present</th><th>Present</th><th>Associated</th>
- * <tr><td align=right>{@code T}</td><td>{@link #getAnnotation(Class) getAnnotation(Class&lt;T&gt;)}
+ * <tr><td align="right">{@code T}</td><td>{@link #getAnnotation(Class) getAnnotation(Class&lt;T&gt;)}
  * <td></td><td></td><td>X</td><td></td>
  * </tr>
  * <tr><td align="right">{@code Annotation[]}</td><td>{@link #getAnnotations getAnnotations()}
