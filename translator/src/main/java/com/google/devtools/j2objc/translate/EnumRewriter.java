@@ -239,13 +239,19 @@ public class EnumRewriter extends UnitTreeVisitor {
   // ARC does not allow using "objc_constructInstance" so ARC code doesn't get
   // the shared allocation optimization.
   private void addArcInitialization(EnumDeclaration node) {
+    String enumClassName = nameTable.getFullName(node.getTypeElement());
     List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       VariableElement varElement = constant.getVariableElement();
       ClassInstanceCreation creation = new ClassInstanceCreation(constant.getExecutablePair());
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      creation.addArgument(new StringLiteral("", typeUtil));
+      Expression constName = options.stripEnumConstants()
+          ? new StringLiteral("JAVA_LANG_ENUM_NAME_STRIPPED", typeUtil)
+          : new NativeExpression(
+            UnicodeUtils.format("JreEnumConstantName(%s_class_(), %d)", enumClassName, i),
+            typeUtil.getJavaString().asType());
+      creation.addArgument(constName);
       creation.addArgument(new NumberLiteral(i++, typeUtil));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varElement), creation)));
@@ -295,7 +301,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     StringBuilder impl = new StringBuilder();
     if (options.stripEnumConstants()) {
       impl.append(UnicodeUtils.format(
-          "  @throw create_JavaLangError_initWithNSString_(\"Enum.valueOf(String) "
+          "  @throw create_JavaLangError_initWithNSString_(@\"Enum.valueOf(String) "
           + "called on %s enum with stripped constant names\");", typeName));
     } else {
       if (numConstants > 0) {
@@ -361,6 +367,12 @@ public class EnumRewriter extends UnitTreeVisitor {
         GeneratedTypeElement.newEmulatedClass(
             "java.lang.IllegalArgumentException",
             typeUtil.resolveJavaType("java.lang.RuntimeException").asType()).asType());
+    if (options.stripEnumConstants()) {
+      outerDecl.addImplementationImportType(
+          GeneratedTypeElement.newEmulatedClass(
+              "java.lang.Error",
+              typeUtil.getJavaThrowable().asType()).asType());
+    }
     node.addBodyDeclaration(outerDecl);
   }
 }

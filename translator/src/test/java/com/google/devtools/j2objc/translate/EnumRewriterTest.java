@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
+import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import java.io.IOException;
 
 /**
@@ -73,6 +73,35 @@ public class EnumRewriterTest extends GenerationTest {
           + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, JreEnumConstantName(Test_class_(), i), i);",
         "}");
+  }
+
+  public void testSimpleEnumArc() throws Exception {
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+        "enum Test { A, B, C }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JreEnum(Test, A) = "
+            + "new_Test_initWithNSString_withInt_(JreEnumConstantName(Test_class_(), 0), 0);",
+        "JreEnum(Test, B) = "
+            + "new_Test_initWithNSString_withInt_(JreEnumConstantName(Test_class_(), 1), 1);",
+        "JreEnum(Test, C) = "
+            + "new_Test_initWithNSString_withInt_(JreEnumConstantName(Test_class_(), 2), 2);",
+        "J2OBJC_SET_INITIALIZED(Test)");
+  }
+
+  public void testSimpleEnumArcStripEnumConstants() throws Exception {
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setStripEnumConstants(true);
+    String translation = translateSourceFile(
+        "enum Test { A, B, C }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JreEnum(Test, A) = "
+            + "new_Test_initWithNSString_withInt_(@\"JAVA_LANG_ENUM_NAME_STRIPPED\", 0);",
+        "JreEnum(Test, B) = "
+            + "new_Test_initWithNSString_withInt_(@\"JAVA_LANG_ENUM_NAME_STRIPPED\", 1);",
+        "JreEnum(Test, C) = "
+            + "new_Test_initWithNSString_withInt_(@\"JAVA_LANG_ENUM_NAME_STRIPPED\", 2);",
+        "J2OBJC_SET_INITIALIZED(Test)");
   }
 
   // Verify normal reflection stripping doesn't affect enum names.
@@ -145,7 +174,7 @@ public class EnumRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "Test *Test_valueOfWithNSString_(NSString *name) {",
         "Test_initialize();",
-        "@throw create_JavaLangError_initWithNSString_(\"Enum.valueOf(String) "
+        "@throw create_JavaLangError_initWithNSString_(@\"Enum.valueOf(String) "
         + "called on Test enum with stripped constant names\");");
   }
 }
