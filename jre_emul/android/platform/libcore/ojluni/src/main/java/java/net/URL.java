@@ -1189,8 +1189,8 @@ public final class URL implements java.io.Serializable {
             if (handler == null) {
                 try {
                     if (protocol.equals("file")) {
-                        handler = (URLStreamHandler)Class.
-                            forName("sun.net.www.protocol.file.Handler").newInstance();
+                        // https://github.com/google/j2objc/issues/912
+                        handler = new sun.net.www.protocol.file.Handler();
                     } else if (protocol.equals("jar")) {
                       throw new UnsupportedOperationException("Jar streams are not supported.");
                     } else if (protocol.equals("http")) {
