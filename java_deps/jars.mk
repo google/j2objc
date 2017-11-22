@@ -32,8 +32,6 @@ MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
 PROTOBUF_JAR = protobuf-java-3.3.0.jar
 
-ASM_JAR = asm-all-5.1.jar
-
 GUAVA_JAR = guava-19.0.jar
 GUAVA_SOURCE_JAR = guava-19.0-sources.jar
 
