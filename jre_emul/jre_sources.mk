@@ -66,6 +66,7 @@ NATIVE_JRE_SOURCES_CORE = \
   sun_misc_Unsafe.m
 
 # Java sources to be translated normally and included in the core library.
+# TypeKind is needed by the Checker Framework (https://checkerframework.org/).
 JAVA_PUBLIC_SOURCES_CORE = \
   android/system/ErrnoException.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
@@ -507,6 +508,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   javax/annotation/PreDestroy.java \
   javax/annotation/Resource.java \
   javax/annotation/Resources.java \
+  javax/lang/model/type/TypeKind.java \
   sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
@@ -1716,13 +1718,11 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 
 # These sources are not included in any sub-library, only the full jre_emul.
 # javax.lang.model.element.Modifier is required by mockito, so it is only needed
-# in a testing environment. TypeKind is needed by the Checker Framework. The
-# other classes are errors only thrown by a JVM.
+# in a testing environment. The other classes are errors only thrown by a JVM.
 JAVA_PUBLIC_SOURCES_OTHER = \
   java/lang/ClassCircularityError.java \
   java/lang/UnsupportedClassVersionError.java \
-  javax/lang/model/element/Modifier.java \
-  javax/lang/model/type/TypeKind.java
+  javax/lang/model/element/Modifier.java
 
 JAVA_PRIVATE_SOURCES_OTHER =
 
