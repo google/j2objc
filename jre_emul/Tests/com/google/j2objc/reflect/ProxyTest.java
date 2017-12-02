@@ -30,11 +30,15 @@
  * limitations under the License.
  */
 
-package java.lang.reflect;
+package com.google.j2objc.reflect;
 
-import junit.framework.TestCase;
-
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
+import junit.framework.TestCase;
 
 public class ProxyTest extends TestCase {
 
@@ -64,4 +68,51 @@ public class ProxyTest extends TestCase {
     assertTrue("proxied submit method not invoked", testResult[0]);
   }
 
+  // Issue #910: verify proxy object's equals, hashCode and toString methods
+  // are passed to the InvocationHandler.
+  public void testObjectMethodsInvoked() throws Exception {
+    final Set<String> calledMethods = new HashSet<>();
+    InvocationHandler invocationHandler = new InvocationHandler() {
+      @Override
+      public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+        String methodName = method.getName();
+        calledMethods.add(methodName);
+
+        switch (methodName) {
+          case "helloInt":
+            return 123;
+          case "equals":
+            return o == args[0];
+          case "hashCode":
+            return -123;
+          case "toString":
+            return "hello" + o.hashCode();
+          default:
+            return method.invoke(o, args);
+        }
+      }
+    };
+    ShowMe showMe = (ShowMe) Proxy.newProxyInstance(getClass().getClassLoader(),
+        new Class[] { ShowMe.class }, invocationHandler);
+
+    // Call methods that should be handled by InvocationHandler.
+    assertEquals(123, showMe.helloInt());
+    assertEquals("hello-123", showMe.toString());
+    assertFalse(showMe.equals(new ShowMe() {
+      @Override
+      public int helloInt() {
+        return 423;
+      }
+    }));
+    assertEquals(-123, showMe.hashCode());
+
+    assertTrue(calledMethods.contains("helloInt"));
+    assertTrue(calledMethods.contains("toString"));
+    assertTrue(calledMethods.contains("equals"));
+    assertTrue(calledMethods.contains("hashCode"));
+  }
+
+  static interface ShowMe {
+    int helloInt();
+  }
 }

@@ -28,16 +28,6 @@ package java.lang.reflect;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-/*
-import java.security.AccessController;
-import java.security.Permission;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Comparator;
-import sun.reflect.misc.ReflectUtil;
-import sun.security.util.SecurityConstants;
-import libcore.util.EmptyArray;
-*/
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -248,7 +238,7 @@ public class Proxy implements java.io.Serializable {
     private final static String proxyClassNamePrefix = "$Proxy";
 
     /** parameter types of a proxy class constructor */
-    private final static Class[] constructorParams =
+    private final static Class<?>[] constructorParams =
         { InvocationHandler.class };
 
     /** maps a class loader to the proxy class cache for that loader */
@@ -501,7 +491,7 @@ public class Proxy implements java.io.Serializable {
             do {
                 Object value = cache.get(key);
                 if (value instanceof Reference) {
-                    proxyClass = (Class<?>) ((Reference) value).get();
+                    proxyClass = (Class<?>) ((Reference<?>) value).get();
                 }
                 if (proxyClass != null) {
                     // proxy class already generated: return it
@@ -816,6 +806,104 @@ public class Proxy implements java.io.Serializable {
         return ((Proxy) proxy).h;
     }
 
+    private static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
+      @Override
+      protected Boolean initialValue() {
+        return Boolean.FALSE;
+      }
+    };
+
+    private transient ThreadLocalBoolean toStringForwarded = new ThreadLocalBoolean();
+
+    private boolean toStringForwarded() {
+      return toStringForwarded.get();
+    }
+
+    private void setToStringForwarded(boolean value) {
+      toStringForwarded.set(value);
+    }
+
+    @Override
+    public native String toString() /*-[
+      if ([self toStringForwarded]) {
+        [self setToStringForwardedWithBoolean:false];
+        return [super description];
+      }
+      SEL sel = @selector(description);
+      NSMethodSignature *signature =
+          [NSMethodSignature methodSignatureForSelector:sel];
+      NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+      invocation.target = self;
+      invocation.selector = sel;
+      [self setToStringForwardedWithBoolean:true];
+      [self forwardInvocation:invocation];
+      [self setToStringForwardedWithBoolean:false];
+      NSString *s;
+      [invocation getReturnValue:&s];
+      return s;
+    ]-*/;
+
+    private transient ThreadLocalBoolean hashCodeForwarded = new ThreadLocalBoolean();
+
+    private boolean hashCodeForwarded() {
+      return hashCodeForwarded.get();
+    }
+
+    private void setHashCodeForwarded(boolean value) {
+      hashCodeForwarded.set(value);
+    }
+
+    @Override
+    public native int hashCode() /*-[
+      if ([self hashCodeForwarded]) {
+        [self setHashCodeForwardedWithBoolean:false];
+        return [super hash];
+      }
+      SEL sel = @selector(hash);
+      NSMethodSignature *signature =
+          [NSMethodSignature methodSignatureForSelector:sel];
+      NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+      invocation.target = self;
+      invocation.selector = sel;
+      [self setHashCodeForwardedWithBoolean:true];
+      [self forwardInvocation:invocation];
+      [self setHashCodeForwardedWithBoolean:false];
+      jint hash;
+      [invocation getReturnValue:&hash];
+      return hash;
+    ]-*/;
+
+    private transient ThreadLocalBoolean equalsForwarded = new ThreadLocalBoolean();
+
+    private boolean equalsForwarded() {
+      return equalsForwarded.get();
+    }
+
+    private void setEqualsForwarded(boolean value) {
+      equalsForwarded.set(value);
+    }
+
+    @Override
+    public native boolean equals(Object obj) /*-[
+      if ([self equalsForwarded]) {
+        [self setEqualsForwardedWithBoolean:false];
+        return [super isEqual:obj];
+      }
+      SEL sel = @selector(isEqual:);
+      NSMethodSignature *signature =
+          [NSMethodSignature methodSignatureForSelector:sel];
+      NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+      invocation.target = self;
+      invocation.selector = sel;
+      [invocation setArgument:&obj atIndex:2];  // 2 is first parameter.
+      [self setEqualsForwardedWithBoolean:true];
+      [self forwardInvocation:invocation];
+      [self setEqualsForwardedWithBoolean:false];
+      jboolean result;
+      [invocation getReturnValue:&result];
+      return result;
+    ]-*/;
+
     private static native Class<?> generateProxy(String name, Class<?>[] interfaces,
         ClassLoader loader) throws IllegalArgumentException /*-[
       Class proxyClass = objc_allocateClassPair([JavaLangReflectProxy class], [name UTF8String], 0);
@@ -844,7 +932,8 @@ public class Proxy implements java.io.Serializable {
           return result;
         }
       }
-      return nil;
+      // Skip all Proxy defined methods, but check for Object methods.
+      return JreMethodForSelector(NSObject_class_(), sel);
     }
     ]-*/
 

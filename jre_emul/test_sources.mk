@@ -261,6 +261,7 @@ TEST_SOURCES := \
     com/google/j2objc/java8/TypeMethodReferenceTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/charset/CharsetTest.java \
+    com/google/j2objc/reflect/ProxyTest.java \
     com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
     com/google/j2objc/security/IosRSAKeyTest.java \
     com/google/j2objc/security/IosRSASignatureTest.java \
@@ -274,7 +275,6 @@ TEST_SOURCES := \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
     java/lang/reflect/MethodTest.java \
-    java/lang/reflect/ProxyTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \
