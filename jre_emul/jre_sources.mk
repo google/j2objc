@@ -785,25 +785,6 @@ JAVA_PRIVATE_SOURCES_NET = \
   libcore/io/NetworkOs.java \
   libcore/net/UriCodec.java \
   libcore/net/http/HttpDate.java \
-  okio/AsyncTimeout.java \
-  okio/Base64.java \
-  okio/Buffer.java \
-  okio/BufferedSink.java \
-  okio/BufferedSource.java \
-  okio/ByteString.java \
-  okio/ForwardingSink.java \
-  okio/ForwardingSource.java \
-  okio/MessageDigest.java \
-  okio/Okio.java \
-  okio/RealBufferedSink.java \
-  okio/RealBufferedSource.java \
-  okio/Segment.java \
-  okio/SegmentPool.java \
-  okio/SegmentedByteString.java \
-  okio/Sink.java \
-  okio/Source.java \
-  okio/Timeout.java \
-  okio/Util.java \
   sun/misc/IoTrace.java \
   sun/nio/cs/ThreadLocalCoders.java \
   sun/net/ApplicationProxy.java \

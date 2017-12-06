@@ -55,8 +55,6 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
-    okio/MockSink.java \
-    okio/TestUtil.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
@@ -479,16 +477,6 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipOutputStreamTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
-    okio/AsyncTimeoutTest.java \
-    okio/BufferedSinkTest.java \
-    okio/BufferedSourceTest.java \
-    okio/BufferTest.java \
-    okio/ByteStringTest.java \
-    okio/OkioTest.java \
-    okio/RealBufferedSinkTest.java \
-    okio/RealBufferedSourceTest.java \
-    okio/SegmentSharingTest.java \
-    okio/Utf8Test.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
