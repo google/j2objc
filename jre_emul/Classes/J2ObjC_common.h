@@ -89,6 +89,9 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
+jboolean JreAnnotationEquals(id a1, id a2);
+jint JreAnnotationHashCode(id a);
+
 CF_EXTERN_C_END
 
 /*!

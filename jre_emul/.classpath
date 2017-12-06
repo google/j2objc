@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="android/frameworks/base/core/java"/>
+	<classpathentry kind="src" path="apache_commons_lang/src/test/java"/>
 	<classpathentry kind="src" path="android/frameworks/base/core/tests/coretests/src"/>
 	<classpathentry kind="src" path="android/frameworks/base/tests-runner/src"/>
 	<classpathentry kind="src" path="android/libcore/harmony-tests/src/test/java"/>
@@ -38,5 +39,6 @@
 	<classpathentry kind="lib" path="../dist/lib/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/hamcrest-core-1.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

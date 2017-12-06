@@ -637,6 +637,7 @@
 		062B4F301ED76CC200D4E7D8 /* Support_Xml.m in Sources */ = {isa = PBXBuildFile; fileRef = 062B4F2F1ED76CC200D4E7D8 /* Support_Xml.m */; };
 		062C393C1FD09FA7009B232F /* IosSHAMessageDigestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062C393B1FD09B87009B232F /* IosSHAMessageDigestTest.m */; };
 		062C393E1FD0A7A4009B232F /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062C393D1FD0A7A4009B232F /* ProxyTest.m */; };
+		062C395A1FD61354009B232F /* AnnotationUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062C39591FD61354009B232F /* AnnotationUtilsTest.m */; };
 		063A62C61F672637001DC971 /* HandlerBaseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C01F672637001DC971 /* HandlerBaseTest.m */; };
 		063A62C71F672637001DC971 /* InputSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C11F672637001DC971 /* InputSourceTest.m */; };
 		063A62C81F672637001DC971 /* SAXExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 063A62C21F672637001DC971 /* SAXExceptionTest.m */; };
@@ -1499,6 +1500,22 @@
 		062B4F2F1ED76CC200D4E7D8 /* Support_Xml.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Xml.m; path = tests/support/Support_Xml.m; sourceTree = "<group>"; };
 		062C393B1FD09B87009B232F /* IosSHAMessageDigestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosSHAMessageDigestTest.m; path = com/google/j2objc/security/IosSHAMessageDigestTest.m; sourceTree = "<group>"; };
 		062C393D1FD0A7A4009B232F /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = com/google/j2objc/reflect/ProxyTest.m; sourceTree = "<group>"; };
+		062C394B1FD612A9009B232F /* IOSProxyClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSProxyClass.m; sourceTree = "<group>"; };
+		062C394C1FD612AA009B232F /* java_lang_Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = java_lang_Thread.h; sourceTree = "<group>"; };
+		062C394D1FD612AA009B232F /* IOSMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSMetadata.h; sourceTree = "<group>"; };
+		062C394E1FD612AA009B232F /* JavaThrowable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaThrowable.h; sourceTree = "<group>"; };
+		062C394F1FD612AA009B232F /* IOSProxyClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSProxyClass.h; sourceTree = "<group>"; };
+		062C39501FD612AB009B232F /* jvm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jvm.m; sourceTree = "<group>"; };
+		062C39511FD612AB009B232F /* java_lang_Thread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = java_lang_Thread.m; sourceTree = "<group>"; };
+		062C39521FD612AB009B232F /* JreRetainedWith.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreRetainedWith.m; sourceTree = "<group>"; };
+		062C39531FD612AB009B232F /* JavaThrowable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaThrowable.m; sourceTree = "<group>"; };
+		062C39541FD612AC009B232F /* JreRetainedWith.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreRetainedWith.h; sourceTree = "<group>"; };
+		062C39571FD61312009B232F /* AnnotationUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotationUtils.h; path = build_result/Classes/org/apache/commons/lang3/AnnotationUtils.h; sourceTree = "<group>"; };
+		062C39581FD61312009B232F /* AnnotationUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotationUtils.m; path = build_result/Classes/org/apache/commons/lang3/AnnotationUtils.m; sourceTree = "<group>"; };
+		062C39591FD61354009B232F /* AnnotationUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotationUtilsTest.m; path = org/apache/commons/lang3/AnnotationUtilsTest.m; sourceTree = "<group>"; };
+		062C395B1FD72526009B232F /* AnnotationUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnnotationUtils.m; sourceTree = "<group>"; };
+		062C395C1FD737A3009B232F /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Annotation.m; path = build_result/Classes/java/lang/annotation/Annotation.m; sourceTree = "<group>"; };
+		062C395D1FD737A3009B232F /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Annotation.h; path = build_result/Classes/java/lang/annotation/Annotation.h; sourceTree = "<group>"; };
 		062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSArray_PackagePrivate.h; sourceTree = "<group>"; };
 		063A62C01F672637001DC971 /* HandlerBaseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HandlerBaseTest.m; path = org/apache/harmony/tests/org/xml/sax/HandlerBaseTest.m; sourceTree = "<group>"; };
 		063A62C11F672637001DC971 /* InputSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputSourceTest.m; path = org/apache/harmony/tests/org/xml/sax/InputSourceTest.m; sourceTree = "<group>"; };
@@ -2393,7 +2410,6 @@
 		0675061217F0B3E10015B7E8 /* IOSReflection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSReflection.h; sourceTree = "<group>"; };
 		067855B9169F367E0042431C /* SyncFailedException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SyncFailedException.h; path = build_result/Classes/java/io/SyncFailedException.h; sourceTree = "<group>"; };
 		067855BA169F367E0042431C /* SyncFailedException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SyncFailedException.m; path = build_result/Classes/java/io/SyncFailedException.m; sourceTree = "<group>"; };
-		067855BD169F36A40042431C /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Annotation.h; path = build_result/Classes/java/lang/annotation/Annotation.h; sourceTree = "<group>"; };
 		067855BF169F37140042431C /* SecurityException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecurityException.h; path = build_result/Classes/java/lang/SecurityException.h; sourceTree = "<group>"; };
 		067855C0169F37140042431C /* SecurityException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecurityException.m; path = build_result/Classes/java/lang/SecurityException.m; sourceTree = "<group>"; };
 		067855C3169F37710042431C /* BigDecimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BigDecimal.h; path = build_result/Classes/java/math/BigDecimal.h; sourceTree = "<group>"; };
@@ -3502,7 +3518,6 @@
 		06F2904518972CD000676F1D /* RuntimePermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RuntimePermission.m; path = build_result/Classes/java/lang/RuntimePermission.m; sourceTree = "<group>"; };
 		06F2904818972CD000676F1D /* VirtualMachineError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VirtualMachineError.h; path = build_result/Classes/java/lang/VirtualMachineError.h; sourceTree = "<group>"; };
 		06F2904918972CD000676F1D /* VirtualMachineError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = VirtualMachineError.m; path = build_result/Classes/java/lang/VirtualMachineError.m; sourceTree = "<group>"; };
-		06F2904A18972CE800676F1D /* Annotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Annotation.m; path = build_result/Classes/java/lang/annotation/Annotation.m; sourceTree = "<group>"; };
 		06F2904B18972CE800676F1D /* AnnotationFormatError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationFormatError.h; path = build_result/Classes/java/lang/annotation/AnnotationFormatError.h; sourceTree = "<group>"; };
 		06F2904C18972CE800676F1D /* AnnotationFormatError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AnnotationFormatError.m; path = build_result/Classes/java/lang/annotation/AnnotationFormatError.m; sourceTree = "<group>"; };
 		06F2904D18972CE800676F1D /* AnnotationTypeMismatchException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationTypeMismatchException.h; path = build_result/Classes/java/lang/annotation/AnnotationTypeMismatchException.h; sourceTree = "<group>"; };
@@ -3957,6 +3972,7 @@
 				0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */,
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
+				062C395B1FD72526009B232F /* AnnotationUtils.m */,
 				06C49CDD1CA49C850018E08D /* AsyncTimeout.h */,
 				06C49CDE1CA49C850018E08D /* AsyncTimeout.m */,
 				06C49CDF1CA49C850018E08D /* Base64.h */,
@@ -3993,6 +4009,7 @@
 				066193A1155849BC0004DAFE /* IOSClass.m */,
 				06ED3D4617D163F80014750E /* IOSConcreteClass.h */,
 				06ED3D4717D163F80014750E /* IOSConcreteClass.m */,
+				062C394D1FD612AA009B232F /* IOSMetadata.h */,
 				066193B0155849BC0004DAFE /* IOSObjectArray.h */,
 				066193B1155849BC0004DAFE /* IOSObjectArray.m */,
 				51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */,
@@ -4001,6 +4018,8 @@
 				066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */,
 				06ED3D4817D163F80014750E /* IOSProtocolClass.h */,
 				06ED3D4917D163F80014750E /* IOSProtocolClass.m */,
+				062C394F1FD612AA009B232F /* IOSProxyClass.h */,
+				062C394B1FD612A9009B232F /* IOSProxyClass.m */,
 				06898A7617BAF8C400D7B114 /* IOSReference.h */,
 				06898A7817BAFAB400D7B114 /* IOSReference.m */,
 				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
@@ -4015,12 +4034,19 @@
 				064914331AC47ED000E98733 /* J2ObjC_source.h */,
 				0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
+				062C394C1FD612AA009B232F /* java_lang_Thread.h */,
+				062C39511FD612AB009B232F /* java_lang_Thread.m */,
 				069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */,
 				069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
+				062C394E1FD612AA009B232F /* JavaThrowable.h */,
+				062C39531FD612AB009B232F /* JavaThrowable.m */,
 				062272AA1816DB0B009BB2A2 /* jni.h */,
 				0692DF5E1AE8560300C14F19 /* jni.m */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
+				062C39541FD612AC009B232F /* JreRetainedWith.h */,
+				062C39521FD612AB009B232F /* JreRetainedWith.m */,
+				062C39501FD612AB009B232F /* jvm.m */,
 				067228F1158FB002005318BD /* Method.h */,
 				06721BA21559DE3800645E1B /* Method.m */,
 				064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */,
@@ -4056,12 +4082,12 @@
 				06C49CFA1CA49C850018E08D /* Sink.m */,
 				06C49CFB1CA49C850018E08D /* Source.h */,
 				06C49CFC1CA49C850018E08D /* Source.m */,
+				069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				06C49CFD1CA49C850018E08D /* Timeout.h */,
 				06C49CFE1CA49C850018E08D /* Timeout.m */,
 				06C49CFF1CA49C850018E08D /* Util.h */,
 				06C49D001CA49C850018E08D /* Util.m */,
-				069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -4131,14 +4157,16 @@
 				06ED3D7317D164DC0014750E /* AnnotatedElement.m */,
 				069FE7FB1D8B2042006D0FD8 /* AnnotatedElements.h */,
 				069FE7FC1D8B2043006D0FD8 /* AnnotatedElements.m */,
+				062C395D1FD737A3009B232F /* Annotation.h */,
 				06ED3DBC17D165DE0014750E /* Annotation.h */,
-				067855BD169F36A40042431C /* Annotation.h */,
-				06F2904A18972CE800676F1D /* Annotation.m */,
+				062C395C1FD737A3009B232F /* Annotation.m */,
 				06ED3DBD17D165DE0014750E /* Annotation.m */,
 				06F2904B18972CE800676F1D /* AnnotationFormatError.h */,
 				06F2904C18972CE800676F1D /* AnnotationFormatError.m */,
 				06F2904D18972CE800676F1D /* AnnotationTypeMismatchException.h */,
 				06F2904E18972CE800676F1D /* AnnotationTypeMismatchException.m */,
+				062C39571FD61312009B232F /* AnnotationUtils.h */,
+				062C39581FD61312009B232F /* AnnotationUtils.m */,
 				06721B2F1559CC0300645E1B /* Appendable.h */,
 				06F2903218972CCF00676F1D /* Appendable.m */,
 				06721B301559CC0300645E1B /* ArithmeticException.h */,
@@ -6092,7 +6120,6 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				062C393D1FD0A7A4009B232F /* ProxyTest.m */,
 				0620280D1D512E03001EE455 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */,
@@ -6119,6 +6146,7 @@
 				06C143751F46135100CABE9A /* AlreadyConnectedExceptionTest.m */,
 				0620265B1D512CBE001EE455 /* AnnotationsTest.m */,
 				0620265A1D512CBE001EE455 /* AnnotationTypeMismatchExceptionTest.m */,
+				062C39591FD61354009B232F /* AnnotationUtilsTest.m */,
 				062027A91D512DED001EE455 /* ArithmeticExceptionTest.m */,
 				0612B8C11F4373730069EF58 /* ArrayBlockingQueueTest.m */,
 				0612B8C21F4373730069EF58 /* ArrayDequeTest.m */,
@@ -6663,6 +6691,7 @@
 				0612B9221F4374A30069EF58 /* PropertyResourceBundleTest.m */,
 				062027261D512D82001EE455 /* PropertyVetoExceptionTest.m */,
 				062028621D512E3E001EE455 /* ProviderExceptionTest.m */,
+				062C393D1FD0A7A4009B232F /* ProxyTest.m */,
 				DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */,
 				062029051D512EFC001EE455 /* ProxyTest.m */,
 				0620292D1D512F25001EE455 /* PSSParameterSpecTest.m */,
@@ -7725,6 +7754,7 @@
 				062028B81D512E78001EE455 /* ParameterizedTypeTest.m in Sources */,
 				062026171D512CA1001EE455 /* OldAndroidByteArrayOutputStreamTest.m in Sources */,
 				062B4F1C1ED76B8D00D4E7D8 /* OldXMLFormatterTest.m in Sources */,
+				062C395A1FD61354009B232F /* AnnotationUtilsTest.m in Sources */,
 				0612B93A1F4374C60069EF58 /* SSLEngineResultTest.m in Sources */,
 				069C24261E9EEF7B00CE6BAF /* CheckedInputStreamTest.m in Sources */,
 				062027F31D512DED001EE455 /* MockEnum2.m in Sources */,

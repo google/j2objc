@@ -15,6 +15,7 @@
 # or classes from non-public packages (like libcore.*).
 
 NATIVE_JRE_SOURCES_CORE = \
+  AnnotationUtils.m \
   Bits.m \
   DebugUtils.m \
   FastPointerLookup.m \

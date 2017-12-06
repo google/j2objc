@@ -74,6 +74,8 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     bodyDecls.add(createAnnotationTypeMethod(type));
     bodyDecls.add(createDescriptionMethod(type, members, fieldElements));
     addConstructor(node, fieldElements);
+    addEqualsMethod(node);
+    addHashCodeMethod(node);
   }
 
   // Create an instance field for each member.
@@ -222,5 +224,28 @@ public class AnnotationRewriter extends UnitTreeVisitor {
           new StringLiteral("@" + elementUtil.getBinaryName(type) + "()", typeUtil)));
     }
     return descriptionMethod;
+  }
+
+  private void addEqualsMethod(AnnotationTypeDeclaration node) {
+    TypeElement typeElement = node.getTypeElement();
+    GeneratedExecutableElement equalsElement = GeneratedExecutableElement.newMethodWithSelector(
+        "isEqual:", typeUtil.getBoolean(), typeElement);
+    GeneratedVariableElement paramElement = GeneratedVariableElement.newParameter(
+        "obj", typeUtil.getJavaObject().asType(), equalsElement);
+    equalsElement.addParameter(paramElement);
+    NativeStatement stmt = new NativeStatement("return JreAnnotationEquals(self, obj);");
+    node.addBodyDeclaration(new MethodDeclaration(equalsElement)
+        .addParameter(new SingleVariableDeclaration(paramElement))
+        .setBody(new Block().addStatement(stmt))
+        .setModifiers(java.lang.reflect.Modifier.PUBLIC));
+  }
+
+  private void addHashCodeMethod(AnnotationTypeDeclaration node) {
+    GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
+        "hash", typeUtil.getInt(), node.getTypeElement());
+    NativeStatement stmt = new NativeStatement("return JreAnnotationHashCode(self);");
+    node.addBodyDeclaration(new MethodDeclaration(element)
+        .setBody(new Block().addStatement(stmt))
+        .setModifiers(java.lang.reflect.Modifier.PUBLIC));
   }
 }

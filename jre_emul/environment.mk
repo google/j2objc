@@ -66,6 +66,7 @@ ANDROID_APACHE_TEST_ROOT = $(LIBCORE_BASE)/harmony-tests/src/test/java
 ANDROID_TESTS_RUNNER_ROOT = $(ANDROID_BASE)/frameworks/base/tests-runner/src
 ANDROID_JSR166_TEST_ROOT = $(LIBCORE_BASE)/jsr166-tests/src/test/java
 MOCKWEBSERVER_ROOT = $(ANDROID_PLATFORM)/external/mockwebserver/src/main/java
+APACHE_COMMONS_LANG_TEST_ROOT = apache_commons_lang/src/test/java
 
 # OpenJDK migration definitions.
 # TODO(tball): rename to above names when migration is complete.
@@ -142,7 +143,8 @@ TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
     $(ANDROID_JSR166_TEST_ROOT) $(MOCKWEBSERVER_ROOT) \
     $(NEW_ANDROID_LUNI_TEST_ROOT) $(OKIO_TEST_ROOT) \
     $(NEW_ANDROID_TEST_SUPPORT_ROOT) $(NEW_ANDROID_APACHE_TEST_ROOT) \
-    $(NEW_ANDROID_JSR166_TEST_ROOT) $(ANDROID_DALVIK_TEST_ROOT)
+    $(NEW_ANDROID_JSR166_TEST_ROOT) $(ANDROID_DALVIK_TEST_ROOT) \
+    $(APACHE_COMMONS_LANG_TEST_ROOT)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC)
 

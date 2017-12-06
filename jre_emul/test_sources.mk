@@ -477,6 +477,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipOutputStreamTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
+    org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
