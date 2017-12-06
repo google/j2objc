@@ -98,6 +98,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
+    org/apache/harmony/security/tests/support/MDGoldenData.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyMessageDigest1.java \
@@ -573,6 +574,10 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersTest.java \
+    org/apache/harmony/security/tests/java/security/DigestExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/DigestInputStreamTest.java \
+    org/apache/harmony/security/tests/java/security/DigestInputStream2Test.java \
+    org/apache/harmony/security/tests/java/security/DigestOutputStreamTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactorySpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactoryTest.java \
     org/apache/harmony/security/tests/java/security/KeyPairGeneratorSpiTest.java \

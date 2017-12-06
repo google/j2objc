@@ -1016,6 +1016,8 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/CodeSource.java \
   java/security/CryptoPrimitive.java \
   java/security/DigestException.java \
+  java/security/DigestInputStream.java \
+  java/security/DigestOutputStream.java \
   java/security/DomainCombiner.java \
   java/security/GeneralSecurityException.java \
   java/security/Guard.java \
