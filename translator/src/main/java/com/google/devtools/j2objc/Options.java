@@ -495,7 +495,7 @@ public class Options {
         f = fileUtil().extractClassesJarFromAarFile(f);
       }
       if (f.exists()) {
-        entries.add(entry);
+        entries.add(f.toString());
       }
     }
     return entries;
