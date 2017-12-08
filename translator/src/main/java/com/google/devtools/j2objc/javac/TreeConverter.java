@@ -739,7 +739,8 @@ public class TreeConverter {
       }
     }
     if (ElementUtil.isConstant((VariableElement) node.sym) && ElementUtil.isStatic(node.sym)
-        && !(selected.getKind() == Kind.METHOD_INVOCATION)) {
+        && !(selected.getKind() == Kind.METHOD_INVOCATION)
+        && !(selected.getKind() == Kind.MEMBER_SELECT)) {
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
           .setQualifier((Name) convert(selected))

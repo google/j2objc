@@ -78,4 +78,14 @@ public class StaticVarRewriterTest extends GenerationTest {
         "*IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints), 0) += 2;",
         "return IOSIntArray_Get(JreLoadStatic(Test_Inner, ints), 0);");
   }
+
+  // Verify that Class.CONSTANT_FIELD.CONSTANT translates correctly.
+  public void testStaticFieldExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Bar { static final int N = 1; }"
+        + "class Foo { "
+        + "static class BarHolder { static final Bar BAR = new Bar(); } "
+        + "int test() { return BarHolder.BAR.N; }}", "Foo", "Foo.m");
+    assertTranslatedLines(translation, "- (jint)test {", "return Bar_N;");
+  }
 }
