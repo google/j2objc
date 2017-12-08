@@ -354,6 +354,9 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 $(BUILD_DIR):
 	@mkdir -p $@
 
+test: dist $(DIST_DIR)/j2objcc
+	$(MAKE) -f tests.mk test
+
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(MOCKITO_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito

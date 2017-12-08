@@ -169,6 +169,14 @@ public final class IosMockMaker implements MockMaker {
     ]-*/
 
     /*-[
+    + (BOOL)isSubclassOfClass:(Class)aClass {
+      IOSClass *mockedClass =
+          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self java_getClass]];
+      return self == aClass || [[mockedClass objcClass] isSubclassOfClass:aClass];
+    }
+    ]-*/
+
+    /*-[
     - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
       return [FindMethod(self, aSelector) getSignature];
     }
