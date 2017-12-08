@@ -26,16 +26,7 @@
 
 package sun.util.calendar;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * <code>CalendarSystem</code> is an abstract class that defines the
@@ -98,10 +89,14 @@ public abstract class CalendarSystem {
     private static final ConcurrentMap<String, CalendarSystem> calendars =
             new ConcurrentHashMap<>();*/
 
-    private final static Gregorian GREGORIAN_INSTANCE = new Gregorian();
+    static class GregorianHolder {
+        static final Gregorian INSTANCE = new Gregorian();
+    }
 
     // J2ObjC added: In place of using the ConcurrentHashMap.
-    private final static JulianCalendar JULIAN_INSTANCE = new JulianCalendar();
+    static class JulianHolder {
+        static final JulianCalendar INSTANCE = new JulianCalendar();
+    }
 
     /**
      * Returns the singleton instance of the <code>Gregorian</code>
@@ -110,7 +105,7 @@ public abstract class CalendarSystem {
      * @return the <code>Gregorian</code> instance
      */
     public static Gregorian getGregorianCalendar() {
-        return GREGORIAN_INSTANCE;
+        return GregorianHolder.INSTANCE;
     }
 
     /**
@@ -125,9 +120,9 @@ public abstract class CalendarSystem {
      */
     public static CalendarSystem forName(String calendarName) {
         if ("gregorian".equals(calendarName)) {
-            return GREGORIAN_INSTANCE;
+            return GregorianHolder.INSTANCE;
         } else if ("julian".equals(calendarName)) {
-            return JULIAN_INSTANCE;
+            return JulianHolder.INSTANCE;
         }
         return null;
 

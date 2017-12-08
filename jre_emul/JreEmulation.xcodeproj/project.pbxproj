@@ -297,18 +297,6 @@
 		062026FE1D512D37001EE455 /* DocumentBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026FA1D512D37001EE455 /* DocumentBuilderTest.m */; };
 		062026FF1D512D37001EE455 /* UrlUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026FB1D512D37001EE455 /* UrlUtilsTest.m */; };
 		062027001D512D37001EE455 /* SerializationTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026FC1D512D37001EE455 /* SerializationTester.m */; };
-		0620270D1D512D47001EE455 /* AsyncTimeoutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027011D512D47001EE455 /* AsyncTimeoutTest.m */; };
-		0620270E1D512D47001EE455 /* BufferedSinkTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027021D512D47001EE455 /* BufferedSinkTest.m */; };
-		0620270F1D512D47001EE455 /* BufferedSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027031D512D47001EE455 /* BufferedSourceTest.m */; };
-		062027101D512D47001EE455 /* BufferTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027041D512D47001EE455 /* BufferTest.m */; };
-		062027111D512D47001EE455 /* ByteStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027051D512D47001EE455 /* ByteStringTest.m */; };
-		062027121D512D47001EE455 /* MockSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027061D512D47001EE455 /* MockSink.m */; };
-		062027131D512D47001EE455 /* OkioTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027071D512D47001EE455 /* OkioTest.m */; };
-		062027141D512D47001EE455 /* RealBufferedSinkTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027081D512D47001EE455 /* RealBufferedSinkTest.m */; };
-		062027151D512D47001EE455 /* RealBufferedSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027091D512D47001EE455 /* RealBufferedSourceTest.m */; };
-		062027161D512D47001EE455 /* SegmentSharingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620270A1D512D47001EE455 /* SegmentSharingTest.m */; };
-		062027171D512D47001EE455 /* TestUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620270B1D512D47001EE455 /* TestUtil.m */; };
-		062027181D512D47001EE455 /* Utf8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620270C1D512D47001EE455 /* Utf8Test.m */; };
 		0620273A1D512D82001EE455 /* CRC32Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 062027191D512D82001EE455 /* CRC32Test.m */; };
 		0620273B1D512D82001EE455 /* AllTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620271A1D512D82001EE455 /* AllTests.m */; };
 		0620273C1D512D82001EE455 /* BeanDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620271B1D512D82001EE455 /* BeanDescriptorTest.m */; };
@@ -770,6 +758,13 @@
 		069C24521E9EF14E00CE6BAF /* TestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 069C24501E9EF14E00CE6BAF /* TestUtils.m */; };
 		069FE7FA1D8B1FF3006D0FD8 /* sun_misc_Unsafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
+		06B60ACE1FDA1EFC008274B3 /* AbstractResourceLeakageDetectorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCBF1F757E4700A1E65B /* AbstractResourceLeakageDetectorTestCase.m */; };
+		06B60ACF1FDA1EFC008274B3 /* ConcurrentSkipListMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9C53861F6ADFCF000E8C71 /* ConcurrentSkipListMapTest.m */; };
+		06B60AD01FDA1EFC008274B3 /* CopyOnWriteArrayListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9C53851F6ADFBF000E8C71 /* CopyOnWriteArrayListTest.m */; };
+		06B60AD11FDA1EFC008274B3 /* ForEachRemainingTester.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE827341F6AE0B90069C75C /* ForEachRemainingTester.m */; };
+		06B60AD21FDA1EFC008274B3 /* MapDefaultMethodTester.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */; };
+		06B60AD31FDA1EFC008274B3 /* ResourceLeakageDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC01F757E4700A1E65B /* ResourceLeakageDetector.m */; };
+		06B60AD41FDA1EFC008274B3 /* ThreadPoolExecutorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */; };
 		06C143971F46138600CABE9A /* AlreadyConnectedExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C143751F46135100CABE9A /* AlreadyConnectedExceptionTest.m */; };
 		06C143981F46138600CABE9A /* AsynchronousCloseExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C143761F46135100CABE9A /* AsynchronousCloseExceptionTest.m */; };
 		06C143991F46138600CABE9A /* CancelledKeyExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C143771F46135100CABE9A /* CancelledKeyExceptionTest.m */; };
@@ -828,13 +823,6 @@
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
-		DEADDCC41F757F0800A1E65B /* ConcurrentSkipListMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC11F757F0800A1E65B /* ConcurrentSkipListMapTest.m */; };
-		DEADDCC51F757F0800A1E65B /* CopyOnWriteArrayListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC21F757F0800A1E65B /* CopyOnWriteArrayListTest.m */; };
-		DEADDCC61F757F0800A1E65B /* ThreadPoolExecutorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC31F757F0800A1E65B /* ThreadPoolExecutorTest.m */; };
-		DEADDCC91F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC71F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m */; };
-		DEADDCCA1F757F3100A1E65B /* ResourceLeakageDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCC81F757F3100A1E65B /* ResourceLeakageDetector.m */; };
-		DEADDCCD1F757FC000A1E65B /* ForEachRemainingTester.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCCB1F757FC000A1E65B /* ForEachRemainingTester.m */; };
-		DEADDCCE1F757FC000A1E65B /* MapDefaultMethodTester.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCCC1F757FC000A1E65B /* MapDefaultMethodTester.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1162,18 +1150,6 @@
 		062026FA1D512D37001EE455 /* DocumentBuilderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DocumentBuilderTest.m; path = libcore/javax/xml/parsers/DocumentBuilderTest.m; sourceTree = "<group>"; };
 		062026FB1D512D37001EE455 /* UrlUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UrlUtilsTest.m; path = libcore/net/url/UrlUtilsTest.m; sourceTree = "<group>"; };
 		062026FC1D512D37001EE455 /* SerializationTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SerializationTester.m; path = libcore/util/SerializationTester.m; sourceTree = "<group>"; };
-		062027011D512D47001EE455 /* AsyncTimeoutTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncTimeoutTest.m; path = okio/AsyncTimeoutTest.m; sourceTree = "<group>"; };
-		062027021D512D47001EE455 /* BufferedSinkTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferedSinkTest.m; path = okio/BufferedSinkTest.m; sourceTree = "<group>"; };
-		062027031D512D47001EE455 /* BufferedSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferedSourceTest.m; path = okio/BufferedSourceTest.m; sourceTree = "<group>"; };
-		062027041D512D47001EE455 /* BufferTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferTest.m; path = okio/BufferTest.m; sourceTree = "<group>"; };
-		062027051D512D47001EE455 /* ByteStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ByteStringTest.m; path = okio/ByteStringTest.m; sourceTree = "<group>"; };
-		062027061D512D47001EE455 /* MockSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockSink.m; path = okio/MockSink.m; sourceTree = "<group>"; };
-		062027071D512D47001EE455 /* OkioTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OkioTest.m; path = okio/OkioTest.m; sourceTree = "<group>"; };
-		062027081D512D47001EE455 /* RealBufferedSinkTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSinkTest.m; path = okio/RealBufferedSinkTest.m; sourceTree = "<group>"; };
-		062027091D512D47001EE455 /* RealBufferedSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSourceTest.m; path = okio/RealBufferedSourceTest.m; sourceTree = "<group>"; };
-		0620270A1D512D47001EE455 /* SegmentSharingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SegmentSharingTest.m; path = okio/SegmentSharingTest.m; sourceTree = "<group>"; };
-		0620270B1D512D47001EE455 /* TestUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUtil.m; path = okio/TestUtil.m; sourceTree = "<group>"; };
-		0620270C1D512D47001EE455 /* Utf8Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Utf8Test.m; path = okio/Utf8Test.m; sourceTree = "<group>"; };
 		062027191D512D82001EE455 /* CRC32Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CRC32Test.m; path = org/apache/harmony/archive/tests/java/util/zip/CRC32Test.m; sourceTree = "<group>"; };
 		0620271A1D512D82001EE455 /* AllTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AllTests.m; path = org/apache/harmony/beans/tests/java/beans/AllTests.m; sourceTree = "<group>"; };
 		0620271B1D512D82001EE455 /* BeanDescriptorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BeanDescriptorTest.m; path = org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.m; sourceTree = "<group>"; };
@@ -2649,42 +2625,6 @@
 		06C143BA1F46142600CABE9A /* CharBufferTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharBufferTest.m; path = libcore/java/nio/CharBufferTest.m; sourceTree = "<group>"; };
 		06C143BC1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosRSAKeyPairGeneratorTest.m; path = com/google/j2objc/security/IosRSAKeyPairGeneratorTest.m; sourceTree = "<group>"; };
 		06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosSecurityProviderTests.m; path = com/google/j2objc/security/IosSecurityProviderTests.m; sourceTree = "<group>"; };
-		06C49CDD1CA49C850018E08D /* AsyncTimeout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AsyncTimeout.h; path = build_result/Classes/okio/AsyncTimeout.h; sourceTree = SOURCE_ROOT; };
-		06C49CDE1CA49C850018E08D /* AsyncTimeout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AsyncTimeout.m; path = build_result/Classes/okio/AsyncTimeout.m; sourceTree = SOURCE_ROOT; };
-		06C49CDF1CA49C850018E08D /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64.h; path = build_result/Classes/okio/Base64.h; sourceTree = SOURCE_ROOT; };
-		06C49CE01CA49C850018E08D /* Base64.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64.m; path = build_result/Classes/okio/Base64.m; sourceTree = SOURCE_ROOT; };
-		06C49CE11CA49C850018E08D /* Buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = build_result/Classes/okio/Buffer.h; sourceTree = SOURCE_ROOT; };
-		06C49CE21CA49C850018E08D /* Buffer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Buffer.m; path = build_result/Classes/okio/Buffer.m; sourceTree = SOURCE_ROOT; };
-		06C49CE31CA49C850018E08D /* BufferedSink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BufferedSink.h; path = build_result/Classes/okio/BufferedSink.h; sourceTree = SOURCE_ROOT; };
-		06C49CE41CA49C850018E08D /* BufferedSink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BufferedSink.m; path = build_result/Classes/okio/BufferedSink.m; sourceTree = SOURCE_ROOT; };
-		06C49CE51CA49C850018E08D /* BufferedSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BufferedSource.h; path = build_result/Classes/okio/BufferedSource.h; sourceTree = SOURCE_ROOT; };
-		06C49CE61CA49C850018E08D /* BufferedSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BufferedSource.m; path = build_result/Classes/okio/BufferedSource.m; sourceTree = SOURCE_ROOT; };
-		06C49CE71CA49C850018E08D /* ByteString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ByteString.h; path = build_result/Classes/okio/ByteString.h; sourceTree = SOURCE_ROOT; };
-		06C49CE81CA49C850018E08D /* ByteString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ByteString.m; path = build_result/Classes/okio/ByteString.m; sourceTree = SOURCE_ROOT; };
-		06C49CE91CA49C850018E08D /* ForwardingSink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ForwardingSink.h; path = build_result/Classes/okio/ForwardingSink.h; sourceTree = SOURCE_ROOT; };
-		06C49CEA1CA49C850018E08D /* ForwardingSink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ForwardingSink.m; path = build_result/Classes/okio/ForwardingSink.m; sourceTree = SOURCE_ROOT; };
-		06C49CEB1CA49C850018E08D /* ForwardingSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ForwardingSource.h; path = build_result/Classes/okio/ForwardingSource.h; sourceTree = SOURCE_ROOT; };
-		06C49CEC1CA49C850018E08D /* ForwardingSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ForwardingSource.m; path = build_result/Classes/okio/ForwardingSource.m; sourceTree = SOURCE_ROOT; };
-		06C49CED1CA49C850018E08D /* Okio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Okio.h; path = build_result/Classes/okio/Okio.h; sourceTree = SOURCE_ROOT; };
-		06C49CEE1CA49C850018E08D /* Okio.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Okio.m; path = build_result/Classes/okio/Okio.m; sourceTree = SOURCE_ROOT; };
-		06C49CEF1CA49C850018E08D /* RealBufferedSink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RealBufferedSink.h; path = build_result/Classes/okio/RealBufferedSink.h; sourceTree = SOURCE_ROOT; };
-		06C49CF01CA49C850018E08D /* RealBufferedSink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSink.m; path = build_result/Classes/okio/RealBufferedSink.m; sourceTree = SOURCE_ROOT; };
-		06C49CF11CA49C850018E08D /* RealBufferedSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RealBufferedSource.h; path = build_result/Classes/okio/RealBufferedSource.h; sourceTree = SOURCE_ROOT; };
-		06C49CF21CA49C850018E08D /* RealBufferedSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSource.m; path = build_result/Classes/okio/RealBufferedSource.m; sourceTree = SOURCE_ROOT; };
-		06C49CF31CA49C850018E08D /* Segment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Segment.h; path = build_result/Classes/okio/Segment.h; sourceTree = SOURCE_ROOT; };
-		06C49CF41CA49C850018E08D /* Segment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Segment.m; path = build_result/Classes/okio/Segment.m; sourceTree = SOURCE_ROOT; };
-		06C49CF51CA49C850018E08D /* SegmentedByteString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SegmentedByteString.h; path = build_result/Classes/okio/SegmentedByteString.h; sourceTree = SOURCE_ROOT; };
-		06C49CF61CA49C850018E08D /* SegmentedByteString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SegmentedByteString.m; path = build_result/Classes/okio/SegmentedByteString.m; sourceTree = SOURCE_ROOT; };
-		06C49CF71CA49C850018E08D /* SegmentPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SegmentPool.h; path = build_result/Classes/okio/SegmentPool.h; sourceTree = SOURCE_ROOT; };
-		06C49CF81CA49C850018E08D /* SegmentPool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SegmentPool.m; path = build_result/Classes/okio/SegmentPool.m; sourceTree = SOURCE_ROOT; };
-		06C49CF91CA49C850018E08D /* Sink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Sink.h; path = build_result/Classes/okio/Sink.h; sourceTree = SOURCE_ROOT; };
-		06C49CFA1CA49C850018E08D /* Sink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Sink.m; path = build_result/Classes/okio/Sink.m; sourceTree = SOURCE_ROOT; };
-		06C49CFB1CA49C850018E08D /* Source.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Source.h; path = build_result/Classes/okio/Source.h; sourceTree = SOURCE_ROOT; };
-		06C49CFC1CA49C850018E08D /* Source.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Source.m; path = build_result/Classes/okio/Source.m; sourceTree = SOURCE_ROOT; };
-		06C49CFD1CA49C850018E08D /* Timeout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Timeout.h; path = build_result/Classes/okio/Timeout.h; sourceTree = SOURCE_ROOT; };
-		06C49CFE1CA49C850018E08D /* Timeout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Timeout.m; path = build_result/Classes/okio/Timeout.m; sourceTree = SOURCE_ROOT; };
-		06C49CFF1CA49C850018E08D /* Util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Util.h; path = build_result/Classes/okio/Util.h; sourceTree = SOURCE_ROOT; };
-		06C49D001CA49C850018E08D /* Util.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = build_result/Classes/okio/Util.m; sourceTree = SOURCE_ROOT; };
 		06C54AD31A40C7A4004B3ACD /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternSyntaxException.h; path = build_result/Classes/java/util/regex/PatternSyntaxException.h; sourceTree = "<group>"; };
 		06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternSyntaxException.m; path = build_result/Classes/java/util/regex/PatternSyntaxException.m; sourceTree = "<group>"; };
@@ -3842,13 +3782,6 @@
 		DE9C53861F6ADFCF000E8C71 /* ConcurrentSkipListMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrentSkipListMapTest.m; path = libcore/java/util/concurrent/ConcurrentSkipListMapTest.m; sourceTree = "<group>"; };
 		DEADDCBF1F757E4700A1E65B /* AbstractResourceLeakageDetectorTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractResourceLeakageDetectorTestCase.m; path = libcore/java/util/AbstractResourceLeakageDetectorTestCase.m; sourceTree = "<group>"; };
 		DEADDCC01F757E4700A1E65B /* ResourceLeakageDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ResourceLeakageDetector.m; path = libcore/java/util/ResourceLeakageDetector.m; sourceTree = "<group>"; };
-		DEADDCC11F757F0800A1E65B /* ConcurrentSkipListMapTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ConcurrentSkipListMapTest.m; path = build_result/tests/libcore/java/util/concurrent/ConcurrentSkipListMapTest.m; sourceTree = "<group>"; };
-		DEADDCC21F757F0800A1E65B /* CopyOnWriteArrayListTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CopyOnWriteArrayListTest.m; path = build_result/tests/libcore/java/util/concurrent/CopyOnWriteArrayListTest.m; sourceTree = "<group>"; };
-		DEADDCC31F757F0800A1E65B /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = build_result/tests/libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
-		DEADDCC71F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractResourceLeakageDetectorTestCase.m; path = build_result/tests/libcore/java/util/AbstractResourceLeakageDetectorTestCase.m; sourceTree = "<group>"; };
-		DEADDCC81F757F3100A1E65B /* ResourceLeakageDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceLeakageDetector.m; path = build_result/tests/libcore/java/util/ResourceLeakageDetector.m; sourceTree = "<group>"; };
-		DEADDCCB1F757FC000A1E65B /* ForEachRemainingTester.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ForEachRemainingTester.m; path = build_result/tests/libcore/java/util/ForEachRemainingTester.m; sourceTree = "<group>"; };
-		DEADDCCC1F757FC000A1E65B /* MapDefaultMethodTester.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MapDefaultMethodTester.m; path = build_result/tests/libcore/java/util/MapDefaultMethodTester.m; sourceTree = "<group>"; };
 		DEE827341F6AE0B90069C75C /* ForEachRemainingTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForEachRemainingTester.m; path = libcore/java/util/ForEachRemainingTester.m; sourceTree = "<group>"; };
 		DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapDefaultMethodTester.m; path = libcore/java/util/MapDefaultMethodTester.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3920,13 +3853,6 @@
 		0661937A155848D70004DAFE = {
 			isa = PBXGroup;
 			children = (
-				DEADDCCB1F757FC000A1E65B /* ForEachRemainingTester.m */,
-				DEADDCCC1F757FC000A1E65B /* MapDefaultMethodTester.m */,
-				DEADDCC71F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m */,
-				DEADDCC81F757F3100A1E65B /* ResourceLeakageDetector.m */,
-				DEADDCC11F757F0800A1E65B /* ConcurrentSkipListMapTest.m */,
-				DEADDCC21F757F0800A1E65B /* CopyOnWriteArrayListTest.m */,
-				DEADDCC31F757F0800A1E65B /* ThreadPoolExecutorTest.m */,
 				0661938A155848D70004DAFE /* Classes */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				0620F4E71BB60A6100626242 /* jre_emul_xctests */,
@@ -3973,19 +3899,7 @@
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
 				062C395B1FD72526009B232F /* AnnotationUtils.m */,
-				06C49CDD1CA49C850018E08D /* AsyncTimeout.h */,
-				06C49CDE1CA49C850018E08D /* AsyncTimeout.m */,
-				06C49CDF1CA49C850018E08D /* Base64.h */,
-				06C49CE01CA49C850018E08D /* Base64.m */,
-				06C49CE11CA49C850018E08D /* Buffer.h */,
-				06C49CE21CA49C850018E08D /* Buffer.m */,
-				06C49CE31CA49C850018E08D /* BufferedSink.h */,
-				06C49CE41CA49C850018E08D /* BufferedSink.m */,
-				06C49CE51CA49C850018E08D /* BufferedSource.h */,
-				06C49CE61CA49C850018E08D /* BufferedSource.m */,
 				06FACA1118AD34B8008501DD /* BufferUtils.h */,
-				06C49CE71CA49C850018E08D /* ByteString.h */,
-				06C49CE81CA49C850018E08D /* ByteString.m */,
 				067228EF158FB002005318BD /* Constructor.h */,
 				06721BA01559DE3800645E1B /* Constructor.m */,
 				0674EA5918C681F60027D484 /* DebugUtils.h */,
@@ -3996,10 +3910,6 @@
 				064914321AC47ED000E98733 /* FastPointerLookup.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
 				067228E5158FAEBC005318BD /* Field.m */,
-				06C49CE91CA49C850018E08D /* ForwardingSink.h */,
-				06C49CEA1CA49C850018E08D /* ForwardingSink.m */,
-				06C49CEB1CA49C850018E08D /* ForwardingSource.h */,
-				06C49CEC1CA49C850018E08D /* ForwardingSource.m */,
 				062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
@@ -4065,29 +3975,9 @@
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
 				066B71F617B94DC100A4CBBD /* objc-sync.h */,
 				066B71F717B94DC100A4CBBD /* objc-sync.m */,
-				06C49CED1CA49C850018E08D /* Okio.h */,
-				06C49CEE1CA49C850018E08D /* Okio.m */,
 				06F6ECFE18AAABD500875541 /* Portability.h */,
-				06C49CEF1CA49C850018E08D /* RealBufferedSink.h */,
-				06C49CF01CA49C850018E08D /* RealBufferedSink.m */,
-				06C49CF11CA49C850018E08D /* RealBufferedSource.h */,
-				06C49CF21CA49C850018E08D /* RealBufferedSource.m */,
-				06C49CF31CA49C850018E08D /* Segment.h */,
-				06C49CF41CA49C850018E08D /* Segment.m */,
-				06C49CF51CA49C850018E08D /* SegmentedByteString.h */,
-				06C49CF61CA49C850018E08D /* SegmentedByteString.m */,
-				06C49CF71CA49C850018E08D /* SegmentPool.h */,
-				06C49CF81CA49C850018E08D /* SegmentPool.m */,
-				06C49CF91CA49C850018E08D /* Sink.h */,
-				06C49CFA1CA49C850018E08D /* Sink.m */,
-				06C49CFB1CA49C850018E08D /* Source.h */,
-				06C49CFC1CA49C850018E08D /* Source.m */,
 				069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
-				06C49CFD1CA49C850018E08D /* Timeout.h */,
-				06C49CFE1CA49C850018E08D /* Timeout.m */,
-				06C49CFF1CA49C850018E08D /* Util.h */,
-				06C49D001CA49C850018E08D /* Util.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -6162,7 +6052,6 @@
 				0620251B1D512B37001EE455 /* AssertTest.m */,
 				06C143761F46135100CABE9A /* AsynchronousCloseExceptionTest.m */,
 				6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */,
-				062027011D512D47001EE455 /* AsyncTimeoutTest.m */,
 				067B13071EEDC3DC0013CBAF /* Atomic8Test.m */,
 				067B13081EEDC3DC0013CBAF /* AtomicBooleanTest.m */,
 				067B13091EEDC3DC0013CBAF /* AtomicIntegerArrayTest.m */,
@@ -6201,11 +6090,7 @@
 				062027AD1D512DED001EE455 /* BooleanTest.m */,
 				062028931D512E78001EE455 /* BoundedGenericMethodsTests.m */,
 				063A62CC1F67267C001DC971 /* BrokenInputStream.m */,
-				062027021D512D47001EE455 /* BufferedSinkTest.m */,
-				062027031D512D47001EE455 /* BufferedSourceTest.m */,
-				062027041D512D47001EE455 /* BufferTest.m */,
 				0620267F1D512D08001EE455 /* BufferTest.m */,
-				062027051D512D47001EE455 /* ByteStringTest.m */,
 				062027AE1D512DED001EE455 /* ByteTest.m */,
 				069C24091E9EEF7B00CE6BAF /* CalendarTest.m */,
 				062026951D512D08001EE455 /* CalendarTest.m */,
@@ -6508,7 +6393,6 @@
 				062028DE1D512EBD001EE455 /* MockResolver.m */,
 				062025301D512B37001EE455 /* MockResponse.m */,
 				06C143851F46135100CABE9A /* MockServerSocketChannel.m */,
-				062027061D512D47001EE455 /* MockSink.m */,
 				06C143861F46135100CABE9A /* MockSocketChannel.m */,
 				0620276C1D512D9D001EE455 /* MockSubClass.m */,
 				0620276D1D512D9D001EE455 /* MockSuperClass.m */,
@@ -6561,7 +6445,6 @@
 				0620288A1D512E78001EE455 /* ObjectStreamFieldTest.m */,
 				062027CA1D512DED001EE455 /* ObjectTest.m */,
 				0612B9511F438ECB0069EF58 /* ObservableTest.m */,
-				062027071D512D47001EE455 /* OkioTest.m */,
 				0620269A1D512D08001EE455 /* OldAndroidArrayListTest.m */,
 				062025C91D512CA1001EE455 /* OldAndroidBufferedInputStreamTest.m */,
 				062025CA1D512CA1001EE455 /* OldAndroidBufferedOutputStreamTest.m */,
@@ -6699,8 +6582,6 @@
 				062025321D512B37001EE455 /* QueueDispatcher.m */,
 				0620288B1D512E78001EE455 /* RandomAccessFileTest.m */,
 				062028211D512E03001EE455 /* RandomTest.m */,
-				062027081D512D47001EE455 /* RealBufferedSinkTest.m */,
-				062027091D512D47001EE455 /* RealBufferedSourceTest.m */,
 				062025331D512B37001EE455 /* RecordedRequest.m */,
 				0612B8E01F4373740069EF58 /* RecursiveActionTest.m */,
 				0612B8E11F4373740069EF58 /* RecursiveTaskTest.m */,
@@ -6737,7 +6618,6 @@
 				062025431D512B37001EE455 /* Second.m */,
 				062028641D512E3E001EE455 /* SecureRandom2Test.m */,
 				062028651D512E3E001EE455 /* SecureRandomSpiTest.m */,
-				0620270A1D512D47001EE455 /* SegmentSharingTest.m */,
 				06C1438E1F46135100CABE9A /* SelectableChannelTest.m */,
 				06C1438F1F46135100CABE9A /* SelectionKeyTest.m */,
 				06C143901F46135100CABE9A /* SelectorTest.m */,
@@ -6839,7 +6719,6 @@
 				0620252C1D512B37001EE455 /* TestAnnotation.m */,
 				062025201D512B37001EE455 /* TestClass.m */,
 				0620286D1D512E3E001EE455 /* TestKeyPair.m */,
-				0620270B1D512D47001EE455 /* TestUtil.m */,
 				069C24501E9EF14E00CE6BAF /* TestUtils.m */,
 				062029B11D514671001EE455 /* TextAttributeTest.m */,
 				062024EF1D512AA2001EE455 /* TextUtilsTest.m */,
@@ -6885,7 +6764,6 @@
 				0620267C1D512D08001EE455 /* URLStreamHandlerFactoryTest.m */,
 				0620267D1D512D08001EE455 /* URLTest.m */,
 				062026FB1D512D37001EE455 /* UrlUtilsTest.m */,
-				0620270C1D512D47001EE455 /* Utf8Test.m */,
 				062025A31D512C8E001EE455 /* UTF16EncodingTest.m */,
 				062029201D512F25001EE455 /* Util.m */,
 				062028291D512E03001EE455 /* UUIDTest.m */,
@@ -7149,17 +7027,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				062C393C1FD09FA7009B232F /* IosSHAMessageDigestTest.m in Sources */,
-				DEADDCCD1F757FC000A1E65B /* ForEachRemainingTester.m in Sources */,
-				DEADDCCE1F757FC000A1E65B /* MapDefaultMethodTester.m in Sources */,
-				DEADDCC91F757F3100A1E65B /* AbstractResourceLeakageDetectorTestCase.m in Sources */,
-				DEADDCCA1F757F3100A1E65B /* ResourceLeakageDetector.m in Sources */,
-				DEADDCC41F757F0800A1E65B /* ConcurrentSkipListMapTest.m in Sources */,
-				DEADDCC51F757F0800A1E65B /* CopyOnWriteArrayListTest.m in Sources */,
-				DEADDCC61F757F0800A1E65B /* ThreadPoolExecutorTest.m in Sources */,
-				06C143BB1F46149300CABE9A /* CharBufferTest.m in Sources */,
+				06B60ACE1FDA1EFC008274B3 /* AbstractResourceLeakageDetectorTestCase.m in Sources */,
+				06B60ACF1FDA1EFC008274B3 /* ConcurrentSkipListMapTest.m in Sources */,
+				06B60AD01FDA1EFC008274B3 /* CopyOnWriteArrayListTest.m in Sources */,
+				06B60AD11FDA1EFC008274B3 /* ForEachRemainingTester.m in Sources */,
+				06B60AD21FDA1EFC008274B3 /* MapDefaultMethodTester.m in Sources */,
+				06B60AD31FDA1EFC008274B3 /* ResourceLeakageDetector.m in Sources */,
+				06B60AD41FDA1EFC008274B3 /* ThreadPoolExecutorTest.m in Sources */,
 				067B13451EEDEABB0013CBAF /* BlockingQueueTest.m in Sources */,
 				067B13431EEDEABB0013CBAF /* IosSecureRandomImplTest.m in Sources */,
+				062C393C1FD09FA7009B232F /* IosSHAMessageDigestTest.m in Sources */,
+				06C143BB1F46149300CABE9A /* CharBufferTest.m in Sources */,
 				06C143971F46138600CABE9A /* AlreadyConnectedExceptionTest.m in Sources */,
 				06C143981F46138600CABE9A /* AsynchronousCloseExceptionTest.m in Sources */,
 				06C143991F46138600CABE9A /* CancelledKeyExceptionTest.m in Sources */,
@@ -7226,7 +7104,6 @@
 				062029021D512EDB001EE455 /* SelfUseTest.m in Sources */,
 				0612B91B1F4373740069EF58 /* TreeSetTest.m in Sources */,
 				062026F61D512D17001EE455 /* ZipFileTest.m in Sources */,
-				062027161D512D47001EE455 /* SegmentSharingTest.m in Sources */,
 				069C23FA1E9EEECA00CE6BAF /* Support_MessageFormat.m in Sources */,
 				062027841D512D9D001EE455 /* MockSuperClass.m in Sources */,
 				0620298B1D512F41001EE455 /* Support_TestResource.m in Sources */,
@@ -7246,7 +7123,6 @@
 				062029861D512F41001EE455 /* Support_TestResource_en_US.m in Sources */,
 				062026B91D512D08001EE455 /* CharsetDecoderTest.m in Sources */,
 				0620273F1D512D82001EE455 /* IndexedPropertyDescriptorTest.m in Sources */,
-				0620270E1D512D47001EE455 /* BufferedSinkTest.m in Sources */,
 				063A62D91F67267C001DC971 /* DoNothingParser.m in Sources */,
 				0612B9291F4374A30069EF58 /* FormattableFlagsTest.m in Sources */,
 				0612B9091F4373740069EF58 /* LinkedBlockingDequeTest.m in Sources */,
@@ -7350,7 +7226,6 @@
 				062025671D512B37001EE455 /* JniTest.m in Sources */,
 				062029831D512F41001EE455 /* Support_SetTest.m in Sources */,
 				069C242D1E9EEF7B00CE6BAF /* GZIPOutputStreamTest.m in Sources */,
-				062027101D512D47001EE455 /* BufferTest.m in Sources */,
 				063A62F91F6726C1001DC971 /* ParserAdapterTest.m in Sources */,
 				062028C91D512E89001EE455 /* BigIntegerAndTest.m in Sources */,
 				0620261B1D512CA1001EE455 /* OldAndroidFileTest.m in Sources */,
@@ -7452,7 +7327,6 @@
 				062026341D512CA1001EE455 /* OldFileWriterTest.m in Sources */,
 				062B4F131ED76B8D00D4E7D8 /* OldErrorManagerTest.m in Sources */,
 				0620250B1D512ACA001EE455 /* MemoryTest.m in Sources */,
-				0620270D1D512D47001EE455 /* AsyncTimeoutTest.m in Sources */,
 				062026D01D512D08001EE455 /* TreeSetTest.m in Sources */,
 				062028521D512E21001EE455 /* Pattern2Test.m in Sources */,
 				0612B90C1F4373740069EF58 /* PhaserTest.m in Sources */,
@@ -7466,7 +7340,6 @@
 				062026351D512CA1001EE455 /* OldFilterInputStreamTest.m in Sources */,
 				06E4E835197F1E4E005DDE69 /* main.m in Sources */,
 				0620282B1D512E03001EE455 /* AbstractCollectionTest.m in Sources */,
-				062027131D512D47001EE455 /* OkioTest.m in Sources */,
 				0620293E1D512F25001EE455 /* ECParameterSpecTest.m in Sources */,
 				062026621D512CBE001EE455 /* ClassTest.m in Sources */,
 				062028031D512DED001EE455 /* StringIndexOutOfBoundsExceptionTest.m in Sources */,
@@ -7507,7 +7380,6 @@
 				0612B94E1F4381AF0069EF58 /* AbstractSelectionKeyTest.m in Sources */,
 				0620266C1D512CBE001EE455 /* FieldTest.m in Sources */,
 				062026E91D512D17001EE455 /* GZIPInputStreamTest.m in Sources */,
-				062027121D512D47001EE455 /* MockSink.m in Sources */,
 				0620293B1D512F25001EE455 /* ECFieldF2mTest.m in Sources */,
 				062026ED1D512D17001EE455 /* OldAndroidChecksumTest.m in Sources */,
 				062026271D512CA1001EE455 /* OldBufferedOutputStreamTest.m in Sources */,
@@ -7540,7 +7412,6 @@
 				062026BF1D512D08001EE455 /* DecimalFormatTest.m in Sources */,
 				0612B93B1F4374C60069EF58 /* SSLExceptionTest.m in Sources */,
 				062025BD1D512C8E001EE455 /* LocaleDataTest.m in Sources */,
-				062027141D512D47001EE455 /* RealBufferedSinkTest.m in Sources */,
 				062026401D512CA1001EE455 /* OldObjectStreamFieldTest.m in Sources */,
 				0620255E1D512B37001EE455 /* QueueDispatcher.m in Sources */,
 				063A62F41F6726C1001DC971 /* AttributeListImplTest.m in Sources */,
@@ -7599,7 +7470,6 @@
 				062028BC1D512E78001EE455 /* WildcardTypeTest.m in Sources */,
 				062027551D512D82001EE455 /* FakeFox04.m in Sources */,
 				063A62FC1F6726C1001DC971 /* XMLReaderAdapterTest.m in Sources */,
-				062027171D512D47001EE455 /* TestUtil.m in Sources */,
 				0620277F1D512D9D001EE455 /* MockPropertyChangeEvent.m in Sources */,
 				062027801D512D9D001EE455 /* MockPropertyChangeListener.m in Sources */,
 				062026C51D512D08001EE455 /* BitSetTest.m in Sources */,
@@ -7629,7 +7499,6 @@
 				062026AC1D512D08001EE455 /* UrlEncodingTest.m in Sources */,
 				062029971D512F57001EE455 /* KeyStoreTest.m in Sources */,
 				062028A41D512E78001EE455 /* ObjectStreamConstantsTest.m in Sources */,
-				062027181D512D47001EE455 /* Utf8Test.m in Sources */,
 				062026431D512CA1001EE455 /* OldPipedWriterTest.m in Sources */,
 				062B4F2A1ED76C1200D4E7D8 /* OldJarInputStreamTest.m in Sources */,
 				069C24251E9EEF7B00CE6BAF /* Adler32Test.m in Sources */,
@@ -7712,7 +7581,6 @@
 				062027871D512D9D001EE455 /* MockHomonymySubject.m in Sources */,
 				062027F61D512DED001EE455 /* NoSuchFieldExceptionTest.m in Sources */,
 				062028A31D512E78001EE455 /* ObjectStreamClassTest.m in Sources */,
-				0620270F1D512D47001EE455 /* BufferedSourceTest.m in Sources */,
 				0620298F1D512F41001EE455 /* ThrowingReader.m in Sources */,
 				0620256F1D512B37001EE455 /* Second.m in Sources */,
 				062028B91D512E78001EE455 /* TypeVariableTest.m in Sources */,
@@ -7793,7 +7661,6 @@
 				062028E51D512EBD001EE455 /* CurrencyTest.m in Sources */,
 				062026611D512CBE001EE455 /* CharacterTest.m in Sources */,
 				0612B8FC1F4373740069EF58 /* CountedCompleterTest.m in Sources */,
-				062027151D512D47001EE455 /* RealBufferedSourceTest.m in Sources */,
 				062029AB1D512FFE001EE455 /* ExpressionMethodReferenceTest.m in Sources */,
 				062028841D512E3E001EE455 /* SpiEngUtils.m in Sources */,
 				062027FB1D512DED001EE455 /* NumberTest.m in Sources */,
@@ -7804,7 +7671,6 @@
 				062028091D512DED001EE455 /* VirtualMachineErrorTest.m in Sources */,
 				069C24321E9EEF7B00CE6BAF /* ZipErrorTest.m in Sources */,
 				062025BC1D512C8E001EE455 /* ICUTest.m in Sources */,
-				062027111D512D47001EE455 /* ByteStringTest.m in Sources */,
 				0620297D1D512F41001EE455 /* Support_OutputStream.m in Sources */,
 				062027E41D512DED001EE455 /* CloneNotSupportedExceptionTest.m in Sources */,
 				062026BE1D512D08001EE455 /* DecimalFormatSymbolsTest.m in Sources */,

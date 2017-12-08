@@ -40,16 +40,10 @@
 package java.util;
 
 import com.google.j2objc.util.NativeTimeZone;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.lang.ref.SoftReference;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.concurrent.ConcurrentHashMap;
 import libcore.icu.TimeZoneNames;
-import libcore.io.IoUtils;
 
 /**
  * <code>TimeZone</code> represents a time zone offset, and also figures out daylight
@@ -165,8 +159,14 @@ abstract public class TimeZone implements Serializable, Cloneable {
 
     // Proclaim serialization compatibility with JDK 1.1
     static final long serialVersionUID = 3581463369166924961L;
-    private static final TimeZone GMT = new SimpleTimeZone(0, "GMT");
-    private static final TimeZone UTC = new SimpleTimeZone(0, "UTC");
+
+    static class GMTHolder {
+      static final TimeZone INSTANCE = new SimpleTimeZone(0, "GMT");
+    }
+
+    static class UTCHolder {
+      static final TimeZone INSTANCE = new SimpleTimeZone(0, "UTC");
+    }
 
     /**
      * Gets the time zone offset, for current date, modified in case of
@@ -552,10 +552,10 @@ abstract public class TimeZone implements Serializable, Cloneable {
         // Special cases? These can clone an existing instance.
         if (id.length() == 3) {
             if (id.equals("GMT")) {
-                return (TimeZone) GMT.clone();
+                return (TimeZone) GMTHolder.INSTANCE.clone();
             }
             if (id.equals("UTC")) {
-                return (TimeZone) UTC.clone();
+                return (TimeZone) UTCHolder.INSTANCE.clone();
             }
         }
 
@@ -568,7 +568,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
         }
 
         // We never return null; on failure we return the equivalent of "GMT".
-        return (zone != null) ? zone : (TimeZone) GMT.clone();
+        return (zone != null) ? zone : (TimeZone) GMTHolder.INSTANCE.clone();
     }
 
     /**
@@ -688,7 +688,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
         }
 
         if (defaultTimeZone == null) {
-            defaultTimeZone = GMT;
+            defaultTimeZone = GMTHolder.INSTANCE;
         }
 
         return defaultTimeZone;
