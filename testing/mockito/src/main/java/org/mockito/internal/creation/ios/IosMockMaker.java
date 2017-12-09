@@ -180,7 +180,10 @@ public final class IosMockMaker implements MockMaker {
 
     /*-[
     - (BOOL)isKindOfClass:(Class)aClass {
-      return [self isSubclassOfClass:aClass];
+      IOSClass *mockedClass =
+          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self java_getClass]];
+      return [[self class] isSubclassOfClass:aClass]
+          || [[mockedClass objcClass] isSubclassOfClass:aClass];
     }
     ]-*/
 
