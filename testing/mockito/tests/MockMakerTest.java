@@ -1,6 +1,6 @@
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -13,10 +13,10 @@ public class MockMakerTest {
     public void isAssinableFromMockObject() {
 
         ClassA mockClassA = Mockito.mock(ClassA.class);
-        
-        Assert.assertTrue(ClassA.class.isAssignableFrom(mockClassA.getClass()));
-    }   
-    
+
+        assertTrue(ClassA.class.isAssignableFrom(mockClassA.getClass()));
+    }
+
     @Test
     public void whenThenReturnMockObject() {
 
@@ -24,6 +24,22 @@ public class MockMakerTest {
         ClassA mockClassA = Mockito.mock(ClassA.class);
 
         when(mockInterfaceA.getClassA()).thenReturn(mockClassA);
+    }
+
+    @Test
+    public void shouldInstanceOfOriginalClass_true() {
+
+        ClassA mockClassA = Mockito.mock(ClassA.class);
+
+        assertTrue(mockClassA instanceof ClassA);
+    }
+
+    @Test
+    public void shouldInstanceOfOriginalInterface_true() {
+
+        InterfaceA mockInterfaceA = Mockito.mock(InterfaceA.class);
+
+        assertTrue(mockInterfaceA instanceof InterfaceA);
     }
 
     static class ClassA {}
