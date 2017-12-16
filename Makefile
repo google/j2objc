@@ -71,7 +71,7 @@ dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
 protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 
 
-all_dist: dist all_frameworks
+all_dist: dist all_frameworks examples_dist
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_DIR)
@@ -112,6 +112,17 @@ test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 
 
 test_all: test test_protobuf
+
+examples_dist: copy_examples fix_dist_references
+
+copy_examples:
+	@cp -r examples $(DIST_DIR)
+
+fix_dist_references:
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/protobuf/Makefile
+	@sed -i '' 's/\<path to local j2objc distribution\>/..\/../' \
+	  $(DIST_DIR)/examples/Contacts/WORKSPACE
 
 print_environment:
 	@echo Locale: $${LANG}
