@@ -144,7 +144,8 @@ public class GenerationBatch {
         while (enumerator.hasMoreElements()) {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
-          if (internalPath.endsWith(".java")) {
+          if (internalPath.endsWith(".java")
+              || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
             // Extract JAR file to a temporary directory
             File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
             InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);

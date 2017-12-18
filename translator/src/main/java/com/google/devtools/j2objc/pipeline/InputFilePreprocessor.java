@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Preprocesses each input file in the batch.
+ * Preprocesses each Java file in the batch.
  */
 public class InputFilePreprocessor {
 
@@ -49,7 +49,9 @@ public class InputFilePreprocessor {
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
     for (ProcessingContext input : inputs) {
-      processInput(input);
+      if (input.getFile().getUnitName().endsWith(".java")) {
+        processInput(input);
+      }
     }
   }
 
