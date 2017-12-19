@@ -15,6 +15,7 @@
 # The including makefile may define the variables:
 #   CREATE_JAR_NAME
 #   CREATE_JAR_SOURCES
+#   CREATE_JAR_RESOURCES
 #   CREATE_JAR_JAVAC_ARGS
 #   CREATE_JAR_DEPENDENCIES
 # The including makefile may use the following variables:
@@ -36,4 +37,5 @@ $(CREATE_JAR_RESULT): $(CREATE_JAR_SOURCES) | $(CREATE_JAR_DEPENDENCIES)
 	@mkdir $(CREATE_JAR_STAGE_DIR)
 	$(call long_list_to_file,$(CREATE_JAR_ARGS_FILE),$^)
 	@$(JAVAC) $(CREATE_JAR_JAVAC_ARGS) -d $(CREATE_JAR_STAGE_DIR) @$(CREATE_JAR_ARGS_FILE)
+	@tar cf - $(CREATE_JAR_RESOURCES) | (cd $(CREATE_JAR_STAGE_DIR) && tar xf -)
 	@jar cf $@ -C $(CREATE_JAR_STAGE_DIR) .

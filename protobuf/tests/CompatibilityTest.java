@@ -33,8 +33,6 @@ import com.google.protobuf.ProtocolMessageEnum;
 import foo.bar.baz.PrefixDummy2;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,21 +61,13 @@ import protos.TypicalDataSet;
  */
 public class CompatibilityTest extends ProtobufTest {
 
-  private static InputStream getResourceStream(String path) throws FileNotFoundException {
-    InputStream result = ClassLoader.getSystemResourceAsStream(path);
-    if (result == null) {
-      throw new FileNotFoundException(path);
-    }
-    return result;
-  }
-
+  // Fetch test resource from application root or relative path, depending on build.
   private static InputStream getTestData(String name) throws FileNotFoundException {
-    String osName = System.getProperty("os.name");
-    if (osName.contains("iPhone")) {
-      return getResourceStream(name);
-    } else {
-      return new FileInputStream(new File("testdata/" + name));
+    InputStream resource = ClassLoader.getSystemResourceAsStream(name);
+    if (resource != null) {
+      return resource;
     }
+    return ClassLoader.getSystemResourceAsStream("testdata/" + name);
   }
 
   private static byte[] readStream(InputStream in) throws IOException {

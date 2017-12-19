@@ -44,6 +44,10 @@ PROTOS = \
   string_fields.proto \
   typical.proto
 
+TESTDATA = \
+  testdata/largeproto \
+  testdata/randombytes
+
 $(call check_protobuf_dir)
 
 DESCRIPTOR_INCLUDE_DIR = ../compiler/src
@@ -81,6 +85,7 @@ include $(J2OBJC_ROOT)/make/j2objc_protos.mk
 
 CREATE_JAR_NAME = protobuf_tests
 CREATE_JAR_SOURCES = $(JAVA_SOURCES) $(J2OBJC_PROTOS_JAVA)
+CREATE_JAR_RESOURCES = $(TESTDATA)
 CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -encoding UTF-8
 CREATE_JAR_DEPENDENCIES = annotations_dist junit_java protobuf_runtime_java
 include $(J2OBJC_ROOT)/make/create_jar.mk
