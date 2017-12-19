@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.javac;
 
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -48,6 +47,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -68,6 +68,7 @@ import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.languages.java.ast.Keys;
 import com.strobel.decompiler.patterns.Pattern;
+import com.sun.tools.javac.code.Symbol;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -86,18 +87,17 @@ import javax.lang.model.type.TypeMirror;
  * Procyon AST visitor that converts method/constructor bodies.
  *
  * @author Manvith Narahari
- * @author Tom Ball
  */
 class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   private final JavacEnvironment parserEnv;
   private final TypeUtil typeUtil;
   private final ExecutableElement executableElement;
-  private final AbstractTypeDeclaration typeDecl;
+  private final TypeDeclaration typeDecl;
   private final Map<String, VariableElement> localVariableTable;
   private final boolean sourceDebugging;
 
   public MethodTranslator(JavacEnvironment parserEnv, TranslationEnvironment translationEnv,
-                          ExecutableElement executableElement, AbstractTypeDeclaration typeDecl,
+                          ExecutableElement executableElement, TypeDeclaration typeDecl,
                           Map<String, VariableElement> localVariableTable) {
     this.parserEnv = parserEnv;
     this.typeUtil = translationEnv.typeUtil();
@@ -150,7 +150,11 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     }
     String typeName = typeRef.getFullName();
     Element element = parserEnv.resolve(typeName);
-    // TODO(tball): element is raw, any support for type parameters needed?
+    if (element instanceof TypeElement && ((Symbol.ClassSymbol) element).classfile == null) {
+      // Should never happen, since all types for the classfile this method
+      // is from should have been previously loaded by javac.
+      throw new AssertionError("failed resolving type: " + typeName);
+    }
     return element.asType();
   }
 
@@ -188,7 +192,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     }
     throw new AssertionError("not implemented");
   }
-
+  
   private ExecutableElement findConstructor(TypeElement type, MethodDefinition methodDef) {
     String signature = methodDef.getSignature();
     String erasedSignature = methodDef.getErasedSignature();

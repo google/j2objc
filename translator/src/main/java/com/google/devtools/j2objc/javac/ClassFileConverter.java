@@ -156,8 +156,7 @@ public class ClassFileConverter {
         break;
       case CONSTRUCTOR:
       case METHOD:
-        node = convertMethodDeclaration(
-            (ExecutableElement) element, (AbstractTypeDeclaration) parent);
+        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
         break;
       case ENUM:
         node = convertEnumDeclaration((TypeElement) element);
@@ -281,10 +280,7 @@ public class ClassFileConverter {
     TypeDeclaration typeDecl = new TypeDeclaration(element);
     convertBodyDeclaration(typeDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      // Ignore inner types, as they are defined by other classfiles.
-      if (!elem.getKind().isClass() && !elem.getKind().isInterface()) {
-        typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem, typeDecl));
-      }
+      typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem, typeDecl));
     }
     if (typeDecl.isInterface()) {
       removeInterfaceModifiers(typeDecl);
@@ -296,8 +292,7 @@ public class ClassFileConverter {
     return translationEnv.typeUtil().getMethodDescriptor((ExecutableType) exec.asType());
   }
 
-  private TreeNode convertMethodDeclaration(ExecutableElement element,
-      AbstractTypeDeclaration node) {
+  private TreeNode convertMethodDeclaration(ExecutableElement element, TypeDeclaration node) {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
     convertBodyDeclaration(methodDecl, element);
     HashMap<String, VariableElement> localVariableTable = new HashMap<>();
