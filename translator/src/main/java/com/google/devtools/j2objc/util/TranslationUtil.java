@@ -346,10 +346,11 @@ public final class TranslationUtil {
 
   /**
    * Returns true if an implementation for a type element should be generated.
-   * Normally this is true unless the type is defined in the translator's
-   * jre_emul.jar, to avoid duplicate types causing link errors. Types defined
-   * on the system bootclasspath are ignored, since translating them won't
-   * cause link errors later.
+   * Normally this is true, but in Java 8 a few interfaces from JSR 250
+   * (https://jcp.org/en/jsr/detail?id=250) were added, causing duplicate
+   * symbol link errors when building an app that uses the other JSR 250
+   * annotations. javax.annotation defined on the bootclasspath are therefore
+   * ignored, since translating them won't cause link errors later.
    * <p>
    * If the <code>-Xtranslate-bootclasspath</code> flag is specified
    * (normally only when building the jre_emul libraries), then types
@@ -360,6 +361,9 @@ public final class TranslationUtil {
       return true;
     }
     String className = elementUtil.getBinaryName(typeElement).replace('.', '/');
+    if (!className.startsWith("javax/annotation/")) {
+      return true;
+    }
     String resourcePath = className.replace('.', '/') + ".class";
     return jreEmulLoader.findResource(resourcePath) == null;
   }
