@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
 import java.io.IOException;
 
 /**
@@ -26,6 +27,8 @@ import java.io.IOException;
  */
 public class ClassFileTest extends GenerationTest {
 
+  static class Inner {}
+
   public void testJarFileLoading() throws IOException {
     String jarFilePath = getResourceAsFile("packageInfoLookupTest.jar");
     InputFile input = new JarredInputFile(jarFilePath,
@@ -33,5 +36,27 @@ public class ClassFileTest extends GenerationTest {
     ClassFile cf = ClassFile.create(input);
     assertNotNull(cf);
     assertEquals("com.google.test.packageInfoLookupTest.package-info", cf.getFullName());
+  }
+
+  public void testGetFullNameInnerClass() throws IOException {
+
+    ClassFile cf =
+        getClassFile("ClassFileTest$Inner.class");
+    assertEquals(
+        "com.google.devtools.j2objc.util.ClassFileTest.Inner", cf.getFullName());
+  }
+
+  public void testGetRelativePathInnerClass() throws IOException {
+    String path = "ClassFileTest$Inner.class";
+    ClassFile cf = getClassFile(path);
+    assertEquals("com/google/devtools/j2objc/util/" + path, cf.getRelativePath());
+  }
+
+  private ClassFile getClassFile(String path) throws IOException {
+    String clazzPath = getResourceAsFile(path);
+    InputFile input = new RegularInputFile(clazzPath, path);
+    ClassFile cf = ClassFile.create(input);
+    assertNotNull(cf);
+    return cf;
   }
 }

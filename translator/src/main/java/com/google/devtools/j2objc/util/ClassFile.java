@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.file.InputFile;
 import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.DeobfuscationUtilities;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.assembler.metadata.JarTypeLoader;
@@ -44,8 +45,8 @@ import java.util.stream.Collectors;
  * JVM class file model, which uses a Procyon TypeDefinition as a delegate.
  */
 public class ClassFile {
-  private final CompilationUnit unit;
   private final TypeDeclaration type;
+  private final TypeReference typeRef;
 
   public static ClassFile create(InputFile file) throws IOException {
     ITypeLoader loader;
@@ -61,27 +62,25 @@ public class ClassFile {
     } else {
       loader = new InputTypeLoader();
     }
-    MetadataSystem metadataSystem = new MetadataSystem(loader);
-    CompilationUnit unit = decompileClassFile(path, metadataSystem);
+    TypeReference typeRef = lookupType(path, loader);
+    CompilationUnit unit = decompileClassFile(typeRef);
 
-    return new ClassFile(unit);
+    return new ClassFile(unit, typeRef);
   }
 
-  private static CompilationUnit decompileClassFile(String path, MetadataSystem metadataSystem) {
-    TypeReference typeRef;
+  private static TypeReference lookupType(String path, ITypeLoader loader) {
+    MetadataSystem metadataSystem = new MetadataSystem(loader);
     /* Hack to get around classes whose descriptors clash with primitive types. */
     if (path.length() == 1) {
       MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
-      typeRef = metadataSystem.resolve(parser.parseTypeDescriptor(path));
-    } else {
-      typeRef = metadataSystem.lookupType(path);
+      return metadataSystem.resolve(parser.parseTypeDescriptor(path));
     }
+    return metadataSystem.lookupType(path);
+  }
+
+  private static CompilationUnit decompileClassFile(TypeReference typeRef) {
     TypeDefinition typeDef = typeRef.resolve();
-
-    /* TODO(tball): Support deobfuscation?
-     * DeobfuscationUtilities.processType(typeDef);
-     */
-
+    DeobfuscationUtilities.processType(typeDef);
     DecompilationOptions options = new DecompilationOptions();
     DecompilerSettings settings = DecompilerSettings.javaDefaults();
     settings.setShowSyntheticMembers(true);
@@ -90,8 +89,8 @@ public class ClassFile {
     return Languages.java().decompileTypeToAst(typeDef, options);
   }
 
-  private ClassFile(CompilationUnit unit) {
-    this.unit = unit;
+  private ClassFile(CompilationUnit unit, TypeReference typeRef) {
+    this.typeRef = typeRef;
     assert unit.getTypes().size() == 1;
     this.type = unit.getTypes().firstOrNullObject();
   }
@@ -107,9 +106,34 @@ public class ClassFile {
    * Returns the fully-qualified name of the type defined by this class file.
    */
   public String getFullName() {
-    String pkgName = unit.getPackage().getName();
-    String typeName = type.getName();
-    return pkgName.isEmpty() ? typeName : pkgName + "." + typeName;
+    return typeRef.getFullName();
+  }
+
+  /**
+   * Returns the relative classfile path.
+   */
+  public String getRelativePath() {
+    StringBuilder sb = new StringBuilder();
+    String pkg = typeRef.getPackageName().replace('.', '/');
+    if (pkg.length() > 0) {
+      sb.append(pkg);
+      sb.append('/');
+    }
+    appendDeclaringTypes(typeRef, '$', sb);
+    sb.append(typeRef.getSimpleName());
+    sb.append(".class");
+    return sb.toString();
+  }
+
+  // Recurse depth-first so order of declaring types is correct.
+  private static void appendDeclaringTypes(TypeReference typeRef, char innerClassDelimiter,
+      StringBuilder sb) {
+    TypeReference declaringType = typeRef.getDeclaringType();
+    if (declaringType != null) {
+      appendDeclaringTypes(declaringType, innerClassDelimiter, sb);
+      sb.append(declaringType.getSimpleName());
+      sb.append(innerClassDelimiter);
+    }
   }
 
   /**

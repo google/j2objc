@@ -120,8 +120,7 @@ public class ClassFileConverter {
    */
   private void setClassPath() throws IOException {
     String fullPath = file.getAbsolutePath();
-    String relativePath = classFile.getFullName().replace('.',  '/') + ".class";
-    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(relativePath));
+    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(classFile.getRelativePath()));
     List<File> classPath = new ArrayList<>();
     classPath.add(new File(rootPath));
     parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
