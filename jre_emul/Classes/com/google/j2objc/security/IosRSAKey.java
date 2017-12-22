@@ -364,8 +364,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       if (secKeyRef == NULL) {
         // Try again, my way.
         // Convert a PKCS#8 key to PKCS#1 key by stripping off the header.
-        NSData *pkcs1Key = [[privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)]
-            autorelease];
+        NSData *pkcs1Key = [privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)];
 
         keyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
         keyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPrivate;
