@@ -47,9 +47,13 @@ void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained ARGCOb
 /* replace filed with newValue and returns old value. */
 void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
 
-/* execute garbage collection. */
+/* execute garbage collection now. */
 void ARGC_collectGarbage();
 
+/* set background garbage collection interval. (default: 1000ms) */
+void ARGC_setGarbageCollectionInterval(int time_in_ms);
+
+    
 /* wake garbage collection thread. */
 void ARGC_requestGC();
 
