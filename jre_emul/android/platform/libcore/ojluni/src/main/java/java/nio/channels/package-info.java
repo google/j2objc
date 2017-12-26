@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
  * <a name="channels"></a>
  *
  * <blockquote><table cellspacing=1 cellpadding=0 summary="Lists channels and their descriptions">
- * <tr><th align="left">Channels</th><th align="left">Description</th></tr>
+ * <tr><th><p align="left">Channels</p></th><th><p align="left">Description</p></th></tr>
  * <tr><td valign=top><tt><i>{@link java.nio.channels.Channel}</i></tt></td>
  *     <td>A nexus for I/O operations</td></tr>
  * <tr><td valign=top><tt>&nbsp;&nbsp;<i>{@link java.nio.channels.ReadableByteChannel}</i></tt></td>
@@ -46,14 +46,8 @@
  *     <td>Can read/write to/from a&nbsp;buffer</td></tr>
  * <tr><td valign=top><tt>&nbsp;&nbsp;&nbsp;&nbsp;<i>{@link java.nio.channels.SeekableByteChannel}</i></tt></td>
  *     <td>A {@code ByteChannel} connected to an entity that contains a variable-length sequence of bytes</td></tr>
- * <tr><td valign=top><tt>&nbsp;&nbsp;<i>{@link java.nio.channels.AsynchronousChannel}</i></tt></td>
- *     <td>Supports asynchronous I/O operations.</td></tr>
- * <tr><td valign=top><tt>&nbsp;&nbsp;&nbsp;&nbsp;<i>{@link java.nio.channels.AsynchronousByteChannel}</i></tt></td>
- *     <td>Can read and write bytes asynchronously</td></tr>
  * <tr><td valign=top><tt>&nbsp;&nbsp;<i>{@link java.nio.channels.NetworkChannel}</i></tt></td>
  *     <td>A channel to a network socket</td></tr>
- * <tr><td valign=top><tt>&nbsp;&nbsp;&nbsp;&nbsp;<i>{@link java.nio.channels.MulticastChannel}</i></tt></td>
- *     <td>Can join Internet Protocol (IP) multicast groups</td></tr>
  * <tr><td valign=top><tt>{@link java.nio.channels.Channels}</tt></td>
  *     <td>Utility methods for channel/stream interoperation</td></tr>
  * </table></blockquote>
@@ -94,9 +88,7 @@
  * to {@link java.nio.channels.NetworkChannel#bind bind} the channel's socket,
  * obtain the address to which the socket is bound, and methods to {@link
  * java.nio.channels.NetworkChannel#getOption get} and {@link
- * java.nio.channels.NetworkChannel#setOption set} socket options. The {@link
- * java.nio.channels.MulticastChannel} interface specifies methods to join
- * Internet Protocol (IP) multicast groups.
+ * java.nio.channels.NetworkChannel#setOption set} socket options.
  *
  * <p> The {@link java.nio.channels.Channels} utility class defines static methods
  * that support the interoperation of the stream classes of the <tt>{@link
@@ -110,7 +102,7 @@
  * write them to a given writable byte channel.
  *
  * <blockquote><table cellspacing=1 cellpadding=0 summary="Lists file channels and their descriptions">
- * <tr><th align="left">File channels</th><th align="left">Description</th></tr>
+ * <tr><th><p align="left">File channels</p></th><th><p align="left">Description</p></th></tr>
  * <tr><td valign=top><tt>{@link java.nio.channels.FileChannel}</tt></td>
  *     <td>Reads, writes, maps, and manipulates files</td></tr>
  * <tr><td valign=top><tt>{@link java.nio.channels.FileLock}</tt></td>
@@ -129,8 +121,7 @@
  * contains it, for efficiently transferring bytes between the file and other
  * channels, and for mapping a region of the file directly into memory.
  *
- * <p> A {@code FileChannel} is created by invoking one of its static {@link
- * java.nio.channels.FileChannel#open open} methods, or by invoking the {@code
+ * <p> A {@code FileChannel} is created by invoking the {@code
  * getChannel} method of a {@link java.io.FileInputStream}, {@link
  * java.io.FileOutputStream}, or {@link java.io.RandomAccessFile} to return a
  * file channel connected to the same underlying file as the <tt>{@link java.io}</tt>
@@ -138,7 +129,7 @@
  *
  * <a name="multiplex"></a>
  * <blockquote><table cellspacing=1 cellpadding=0 summary="Lists multiplexed, non-blocking channels and their descriptions">
- * <tr><th align="left">Multiplexed, non-blocking I/O</th><th align="left"><p>Description</th></tr>
+ * <tr><th><p align="left">Multiplexed, non-blocking I/O</p></th><th><p align="left">Description</p></th></tr>
  * <tr><td valign=top><tt>{@link java.nio.channels.SelectableChannel}</tt></td>
  *     <td>A channel that can be multiplexed</td></tr>
  * <tr><td valign=top><tt>&nbsp;&nbsp;{@link java.nio.channels.DatagramChannel}</tt></td>
@@ -222,60 +213,6 @@
  * directly; custom channel classes should extend the appropriate {@link
  * java.nio.channels.SelectableChannel} subclasses defined in this package.
  *
- * <a name="async"></a>
- *
- * <blockquote><table cellspacing=1 cellpadding=0 summary="Lists asynchronous channels and their descriptions">
- * <tr><th align="left">Asynchronous I/O</th><th align="left">Description</th></tr>
- * <tr><td valign=top><tt>{@link java.nio.channels.AsynchronousFileChannel}</tt></td>
- *     <td>An asynchronous channel for reading, writing, and manipulating a file</td></tr>
- * <tr><td valign=top><tt>{@link java.nio.channels.AsynchronousSocketChannel}</tt></td>
- *     <td>An asynchronous channel to a stream-oriented connecting socket</td></tr>
- * <tr><td valign=top><tt>{@link java.nio.channels.AsynchronousServerSocketChannel}&nbsp;&nbsp;</tt></td>
- *     <td>An asynchronous channel to a stream-oriented listening socket</td></tr>
- * <tr><td valign=top><tt>{@link java.nio.channels.CompletionHandler}</tt></td>
- *     <td>A handler for consuming the result of an asynchronous operation</td></tr>
- * <tr><td valign=top><tt>{@link java.nio.channels.AsynchronousChannelGroup}</tt></td>
- *     <td>A grouping of asynchronous channels for the purpose of resource sharing</td></tr>
- * </table></blockquote>
- *
- * <p> {@link java.nio.channels.AsynchronousChannel Asynchronous channels} are a
- * special type of channel capable of asynchronous I/O operations. Asynchronous
- * channels are non-blocking and define methods to initiate asynchronous
- * operations, returning a {@link java.util.concurrent.Future} representing the
- * pending result of each operation. The {@code Future} can be used to poll or
- * wait for the result of the operation. Asynchronous I/O operations can also
- * specify a {@link java.nio.channels.CompletionHandler} to invoke when the
- * operation completes. A completion handler is user provided code that is executed
- * to consume the result of I/O operation.
- *
- * <p> This package defines asynchronous-channel classes that are connected to
- * a stream-oriented connecting or listening socket, or a datagram-oriented socket.
- * It also defines the {@link java.nio.channels.AsynchronousFileChannel} class
- * for asynchronous reading, writing, and manipulating a file. As with the {@link
- * java.nio.channels.FileChannel} it supports operations to truncate the file
- * to a specific size, force updates to the file to be written to the storage
- * device, or acquire locks on the whole file or on a specific region of the file.
- * Unlike the {@code FileChannel} it does not define methods for mapping a
- * region of the file directly into memory. Where memory mapped I/O is required,
- * then a {@code FileChannel} can be used.
- *
- * <p> Asynchronous channels are bound to an asynchronous channel group for the
- * purpose of resource sharing. A group has an associated {@link
- * java.util.concurrent.ExecutorService} to which tasks are submitted to handle
- * I/O events and dispatch to completion handlers that consume the result of
- * asynchronous operations performed on channels in the group. The group can
- * optionally be specified when creating the channel or the channel can be bound
- * to a <em>default group</em>. Sophisticated users may wish to create their
- * own asynchronous channel groups or configure the {@code ExecutorService}
- * that will be used for the default group.
- *
- * <p> As with selectors, the implementation of asynchronous channels can be
- * replaced by "plugging in" an alternative definition or instance of the {@link
- * java.nio.channels.spi.AsynchronousChannelProvider} class defined in the
- * <tt>{@link java.nio.channels.spi}</tt> package.  It is not expected that many
- * developers will actually make use of this facility; it is provided primarily
- * so that sophisticated users can take advantage of operating-system-specific
- * asynchronous I/O mechanisms when very high performance is required.
  *
  * <hr width="80%">
  * <p> Unless otherwise noted, passing a <tt>null</tt> argument to a constructor

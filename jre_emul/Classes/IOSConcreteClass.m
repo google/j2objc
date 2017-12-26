@@ -21,6 +21,7 @@
 #import "IOSReflection.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/Enum.h"
+#import "java/lang/IllegalAccessException.h"
 #import "java/lang/InstantiationException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/Void.h"
@@ -55,6 +56,17 @@
   // interface (no class_), array or primitive type (IOSClass types), or void.
   if ([class_ isKindOfClass:[IOSClass class]] || [class_ isMemberOfClass:[JavaLangVoid class]]) {
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
+  }
+  // Check if reflection is available.
+  if ([self getMetadata]) {
+    // Get the nullary constructor.
+    JavaLangReflectConstructor *constructor = JreConstructorWithParamTypes(self, nil);
+    if (!constructor) {
+      @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
+    } else if ([constructor getModifiers] & JavaLangReflectModifier_PRIVATE) {
+      @throw AUTORELEASE([[JavaLangIllegalAccessException alloc]
+          initWithNSString:@"Cannot access private constructor."]);
+    }
   }
   return AUTORELEASE([[class_ alloc] init]);
 }
@@ -180,8 +192,16 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
       if (!result) {
         unsigned int count;
         __unsafe_unretained Protocol **protocolList = class_copyProtocolList(class_, &count);
-        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
-          interfaces_ = RETAIN_(result);
+        Protocol **protocolList = class_copyProtocolList(class_, &count);
+        bool excludeNSCopying = false;
+        const char *clsName = class_getName(class_);
+        // IOSClass and JavaLangEnum are made to conform to NSCopying so that they can be used as
+        // keys in a NSDictionary but in Java they don't implement Cloneable.
+        if (strcmp("IOSClass", clsName) == 0 || strcmp("JavaLangEnum", clsName) == 0) {
+          excludeNSCopying = true;
+        }
+        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, excludeNSCopying);
+        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
         free(protocolList);
       }
     }

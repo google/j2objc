@@ -317,7 +317,7 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
 // class, return a superclass method if available.
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
-  nil_chk(name);
+  (void)nil_chk(name);
   JavaLangReflectMethod *method = JreMethodWithNameAndParamTypesInherited(self, name, types);
   if (method && ([method getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
     return method;
@@ -442,7 +442,7 @@ static NSString *CamelCasePackage(NSString *package) {
 }
 
 static IOSClass *ClassForIosName(NSString *iosName) {
-  nil_chk(iosName);
+  (void)nil_chk(iosName);
   // Some protocols have a sibling class that contains the metadata and any
   // constants that are defined. We must look for the protocol before the class
   // to ensure we create a IOSProtocolClass for such cases. NSObject must be
@@ -614,7 +614,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 IOSClass *IOSClass_forName_(NSString *className) {
-  nil_chk(className);
+  (void)nil_chk(className);
   IOSClass *iosClass = nil;
   if ([className length] > 0) {
     if ([className characterAtIndex:0] == '[') {
@@ -645,10 +645,13 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
   return IOSClass_forName_initialize_classLoader_(className, load, loader);
 }
 
-- (id)cast:(id)throwable {
-  // There's no need to actually cast this here, as the translator will add
-  // a C cast since the return type is a type variable.
-  return throwable;
+- (id)cast:(id)object {
+  if (__builtin_expect(object && ![self isInstance:object], 0)) {
+    @throw create_JavaLangClassCastException_initWithNSString_(
+        [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
+            [[object java_getClass] getName], [self getName]]);
+  }
+  return object;
 }
 
 - (IOSClass *)getEnclosingClass {
@@ -717,9 +720,9 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
 }
 
 // Checks if a ObjC protocol is a translated Java interface.
-bool IsJavaInterface(Protocol *protocol) {
+bool IsJavaInterface(Protocol *protocol, bool excludeNSCopying) {
   if (protocol == @protocol(NSCopying)) {
-    return true;
+    return !excludeNSCopying;
   }
   unsigned int count;
   __unsafe_unretained Protocol **protocolList = protocol_copyProtocolList(protocol, &count);
@@ -738,14 +741,19 @@ bool IsJavaInterface(Protocol *protocol) {
   return result;
 }
 
+<<<<<<< HEAD
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(__unsafe_unretained Protocol **list, unsigned int count) {
+=======
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
+    Protocol **list, unsigned int count, bool excludeNSCopying) {
+>>>>>>> de7c68b685b87c1f00d6928ff372303fc176c01f
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
     __unsafe_unretained Protocol *protocol = list[i];
     // It is not uncommon for protocols to be added to classes like NSObject using categories. Here
     // we filter out any protocols that aren't translated from Java interfaces.
-    if (IsJavaInterface(protocol)) {
+    if (IsJavaInterface(protocol, excludeNSCopying)) {
       buffer[actualCount++] = IOSClass_fromProtocol(list[i]);
     }
   }
@@ -765,7 +773,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(__unsafe_unretained Proto
 }
 
 - (id<JavaLangAnnotationAnnotation>)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
-  nil_chk(annotationClass);
+  (void)nil_chk(annotationClass);
   IOSObjectArray *annotations = [self getAnnotations];
   jint n = annotations->size_;
   for (jint i = 0; i < n; i++) {
@@ -884,38 +892,9 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   };
 }
 
-JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
-  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
-  const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
-  if (fieldMeta && (!publicOnly || (fieldMeta->modifiers & JavaLangReflectModifier_PUBLIC) != 0)) {
-    Ivar ivar = class_getInstanceVariable(iosClass.objcClass, fieldMeta->name);
-    return [JavaLangReflectField fieldWithIvar:ivar
-                                     withClass:iosClass
-                                  withMetadata:fieldMeta];
-  }
-  return nil;
-}
-
-static JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
-  while (iosClass) {
-    JavaLangReflectField *field = findDeclaredField(iosClass, name, true);
-    if (field) {
-      return field;
-    }
-    for (IOSClass *p in [iosClass getInterfacesInternal]) {
-      JavaLangReflectField *field = findField(p, name);
-      if (field) {
-        return field;
-      }
-    }
-    iosClass = [iosClass getSuperclass];
-  }
-  return nil;
-}
-
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
-  nil_chk(name);
-  JavaLangReflectField *field = findDeclaredField(self, name, false);
+  (void)nil_chk(name);
+  JavaLangReflectField *field = FindDeclaredField(self, name, false);
   if (field) {
     return field;
   }
@@ -923,8 +902,8 @@ static JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
-  nil_chk(name);
-  JavaLangReflectField *field = findField(self, name);
+  (void)nil_chk(name);
+  JavaLangReflectField *field = FindField(self, name, true);
   if (field) {
     return field;
   }
@@ -1447,20 +1426,30 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   return &_IOSClass;
 }
 
+<<<<<<< HEAD
 void ARGC_deallocClass(IOSClass*);
 
 +(instancetype)alloc {
     return [super alloc];
 }
 
+=======
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
+>>>>>>> de7c68b685b87c1f00d6928ff372303fc176c01f
 - (void)dealloc {
     ARGC_deallocClass(self);
   @throw create_JavaLangAssertionError_initWithId_(
       [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
+<<<<<<< HEAD
 #if !__has_feature(objc_arc)
   [super dealloc];
 #endif
+=======
+  // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
+>>>>>>> de7c68b685b87c1f00d6928ff372303fc176c01f
 }
+#pragma clang diagnostic pop
 
 @end
 

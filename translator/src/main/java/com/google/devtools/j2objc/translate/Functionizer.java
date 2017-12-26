@@ -89,10 +89,6 @@ public class Functionizer extends UnitTreeVisitor {
     return true;
   }
 
-  private static boolean isNonVirtual(ExecutableElement method) {
-    return ElementUtil.isPrivate(method) || ElementUtil.isFinal(method);
-  }
-
   static class MethodInfo {
 
     private Boolean functionizable = null;
@@ -144,8 +140,9 @@ public class Functionizer extends UnitTreeVisitor {
     public void endVisit(MethodInvocation node) {
       ExecutableElement method = node.getExecutableElement();
       // Regular invocations can only be functionized if the target is private or final, otherwise
-      // the target method might be overridden by a subclass.
-      if (isNonVirtual(method)) {
+      // the target method might be overridden by a subclass. Private methods are always
+      // functionized so we only check for final methods here.
+      if (ElementUtil.isFinal(method)) {
         invocations.add(method);
       }
     }
@@ -249,8 +246,8 @@ public class Functionizer extends UnitTreeVisitor {
   @Override
   public void endVisit(MethodInvocation node) {
     ExecutableElement method = node.getExecutableElement();
-    if (ElementUtil.isStatic(method)
-        || (functionizableMethods.contains(method) && isNonVirtual(method))) {
+    if (ElementUtil.isStatic(method) || ElementUtil.isPrivate(method)
+        || (functionizableMethods.contains(method) && ElementUtil.isFinal(method))) {
       functionizeInvocation(node, method, node.getExpression(), node.getArguments());
     }
   }
@@ -258,8 +255,8 @@ public class Functionizer extends UnitTreeVisitor {
   @Override
   public void endVisit(SuperMethodInvocation node) {
     ExecutableElement method = node.getExecutableElement();
-    if (ElementUtil.isStatic(method) || functionizableMethods.contains(method)
-        || ElementUtil.isDefault(method)) {
+    if (ElementUtil.isStatic(method) || ElementUtil.isPrivate(method)
+        || functionizableMethods.contains(method) || ElementUtil.isDefault(method)) {
       functionizeInvocation(node, method, node.getReceiver(), node.getArguments());
     }
   }
@@ -347,7 +344,7 @@ public class Functionizer extends UnitTreeVisitor {
     boolean isDefaultMethod = ElementUtil.isDefault(element);
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     if (!isInstanceMethod || isDefaultMethod || Modifier.isNative(node.getModifiers())
-        || functionizableMethods.contains(element)) {
+        || ElementUtil.isPrivate(element) || functionizableMethods.contains(element)) {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
       boolean isEnumConstructor = isConstructor && ElementUtil.isEnum(declaringClass);
       if (isConstructor) {

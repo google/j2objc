@@ -16,15 +16,16 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.j2objc.annotations.ReflectionSupport;
+import com.strobel.decompiler.languages.java.ast.Annotation;
+import com.strobel.decompiler.languages.java.ast.Expression;
+import com.strobel.decompiler.languages.java.ast.MemberReferenceExpression;
+import com.strobel.decompiler.languages.java.ast.PrimitiveExpression;
+import com.strobel.decompiler.languages.java.ast.TypeDeclaration;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
 
 /**
  * Looks up package specific attributes by looking up and parsing package-info java or class files.
@@ -107,14 +108,14 @@ public class PackageInfoLookup {
 
   private PackageData findPackageData(String packageName) {
     try {
-      String fileName = packageName + ".package-info";
+      String typeName = packageName + ".package-info";
       // First look on the sourcepath.
-      InputFile sourceFile = fileUtil.findOnSourcePath(fileName);
+      InputFile sourceFile = fileUtil.findOnSourcePath(typeName);
       if (sourceFile != null) {
         return parseDataFromSourceFile(sourceFile);
       }
       // Then look on the classpath.
-      InputFile classFile = fileUtil.findOnClassPath(fileName);
+      InputFile classFile = fileUtil.findOnClassPath(typeName);
       if (classFile != null) {
         return parseDataFromClassFile(classFile);
       }
@@ -194,35 +195,31 @@ public class PackageInfoLookup {
 
   private PackageData parseDataFromClassFile(InputFile file) throws IOException {
     PackageDataBuilder builder = new PackageDataBuilder();
-    ClassReader classReader = new ClassReader(file.getInputStream());
-    classReader.accept(new ClassVisitor(Opcodes.ASM5) {
-      @Override
-      public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        if (desc.equals("Lcom/google/j2objc/annotations/ObjectiveCName;")) {
-          return new AnnotationVisitor(Opcodes.ASM5) {
-            @Override
-            public void visit(String name, Object value) {
-              if (name.equals("value")) {
-                builder.setObjectiveCName(value.toString());
-              }
-            }
-          };
-        } else if (desc.equals("Ljavax/annotation/ParametersAreNonnullByDefault;")) {
-          builder.setParametersAreNonnullByDefault();
-        } else if (desc.equals("Lcom/google/j2objc/annotations/ReflectionSupport;")) {
-          return new AnnotationVisitor(Opcodes.ASM5) {
-            @Override
-            public void visitEnum(String name, String desc, String value) {
-              if (desc.equals("Lcom/google/j2objc/annotations/ReflectionSupport$Level;")
-                  && name.equals("value")) {
-                builder.setReflectionSupportLevel(ReflectionSupport.Level.valueOf(value));
-              }
-            }
-          };
+    ClassFile classFile = ClassFile.create(file);
+    TypeDeclaration typeDecl = classFile.getType();
+    for (Annotation annotation : typeDecl.getAnnotations()) {
+      String signature = annotation.getType().toTypeReference().getErasedSignature();
+      if (signature.equals("Lcom/google/j2objc/annotations/ObjectiveCName;")) {
+        for (Expression expr : annotation.getArguments()) {
+          if (expr instanceof MemberReferenceExpression) {
+            String value = ((MemberReferenceExpression) expr).getMemberName();
+            builder.setObjectiveCName(value);
+          } else if (expr instanceof PrimitiveExpression) {
+            Object value = ((PrimitiveExpression) expr).getValue();
+            builder.setObjectiveCName((String) value);
+          }
         }
-        return null;
+      } else if (signature.equals("Ljavax/annotation/ParametersAreNonnullByDefault;")) {
+        builder.setParametersAreNonnullByDefault();
+      } else if (signature.equals("Lcom/google/j2objc/annotations/ReflectionSupport;")) {
+        for (Expression expr : annotation.getArguments()) {
+          if (expr instanceof MemberReferenceExpression) {
+            String value = ((MemberReferenceExpression) expr).getMemberName();
+            builder.setReflectionSupportLevel(ReflectionSupport.Level.valueOf(value));
+          }
+        }
       }
-    }, 0);
+    }
     return builder.build();
   }
 }

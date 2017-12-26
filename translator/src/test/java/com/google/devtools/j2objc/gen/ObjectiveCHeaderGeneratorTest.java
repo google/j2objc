@@ -368,7 +368,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
-        "inline JavaUtilDate *Example_get_today();",
+        "inline JavaUtilDate *Example_get_today(void);",
         "inline JavaUtilDate *Example_set_today(JavaUtilDate *value);",
         "/*! INTERNAL ONLY - Use accessor function from above. */",
         "FOUNDATION_EXPORT JavaUtilDate *Example_today;",
@@ -382,7 +382,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today = new java.util.Date(); }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
-        "inline JavaUtilDate *Example_get_today();",
+        "inline JavaUtilDate *Example_get_today(void);",
         "inline JavaUtilDate *Example_set_today(JavaUtilDate *value);",
         "/*! INTERNAL ONLY - Use accessor function from above. */",
         "FOUNDATION_EXPORT JavaUtilDate *Example_today;",
@@ -415,48 +415,32 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { String one, two, three; }",
       "Example", "Example.h");
-    if (options.isJDT()) {
-      assertTranslation(translation, "NSString *one_, *two_, *three_;");
-    } else {
-      assertTranslatedLines(translation,
-          "NSString *one_;", "NSString *two_;", "NSString *three_;");
-    }
+    assertTranslatedLines(translation,
+        "NSString *one_;", "NSString *two_;", "NSString *three_;");
   }
 
   public void testMultiplePrimitiveDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { int one, two, three; }",
       "Example", "Example.h");
-    if (options.isJDT()) {
-      assertTranslation(translation, "int one_, two_, three_;");
-    } else {
-      assertTranslatedLines(translation,
-          "jint one_;", "jint two_;", "jint three_;");
-    }
+    assertTranslatedLines(translation,
+        "jint one_;", "jint two_;", "jint three_;");
   }
 
   public void testMultipleInterfaceDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { Comparable one, two, three; }",
       "Example", "Example.h");
-    if (options.isJDT()) {
-      assertTranslation(translation, "id<JavaLangComparable> one_, two_, three_;");
-    } else {
-      assertTranslatedLines(translation, "id<JavaLangComparable> one_;",
-          "id<JavaLangComparable> two_;", "id<JavaLangComparable> three_;");
-    }
+    assertTranslatedLines(translation, "id<JavaLangComparable> one_;",
+        "id<JavaLangComparable> two_;", "id<JavaLangComparable> three_;");
   }
 
   public void testMultipleClassDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { Class<?> one, two, three; }",
       "Example", "Example.h");
-    if (options.isJDT()) {
-      assertTranslation(translation, "IOSClass *one_, *two_, *three_;");
-    } else {
-      assertTranslatedLines(translation,
-          "IOSClass *one_;", "IOSClass *two_;", "IOSClass *three_;");
-    }
+    assertTranslatedLines(translation,
+        "IOSClass *one_;", "IOSClass *two_;", "IOSClass *three_;");
   }
 
   public void testInnerClassDeclaration() throws IOException {
@@ -488,18 +472,18 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  Color_Enum_WHITE = 1,",
         "  Color_Enum_BLUE = 2,",
         "};");
-    assertTranslation(translation, "@interface Color : JavaLangEnum < NSCopying >");
+    assertTranslation(translation, "@interface Color : JavaLangEnum");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (Color *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FOUNDATION_EXPORT Color *Color_values_[];");
     assertTranslatedLines(translation,
-        "inline Color *Color_get_RED();",
+        "inline Color *Color_get_RED(void);",
         "J2OBJC_ENUM_CONSTANT(Color, RED)");
     assertTranslatedLines(translation,
-        "inline Color *Color_get_WHITE();",
+        "inline Color *Color_get_WHITE(void);",
         "J2OBJC_ENUM_CONSTANT(Color, WHITE)");
     assertTranslatedLines(translation,
-        "inline Color *Color_get_BLUE();",
+        "inline Color *Color_get_BLUE(void);",
         "J2OBJC_ENUM_CONSTANT(Color, BLUE)");
   }
 
@@ -608,7 +592,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum_Enum) {");
     assertTranslation(translation, "@interface MyEnum : JavaLangEnum");
     assertTranslation(translation, "FOUNDATION_EXPORT MyEnum *MyEnum_values_[];");
-    assertTranslation(translation, "inline MyEnum *MyEnum_get_ONE();");
+    assertTranslation(translation, "inline MyEnum *MyEnum_get_ONE(void);");
   }
 
   public void testNoImportForMappedTypes() throws IOException {
@@ -648,7 +632,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "enum Foo implements I, Runnable, Cloneable { "
         + "A, B, C; public void run() {}}}", "A", "A.h");
     assertTranslation(translation,
-        "@interface A_Foo : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
+        "@interface A_Foo : JavaLangEnum < A_I, JavaLangRunnable, NSCopying >");
     assertTranslation(translation, "#include \"java/lang/Runnable.h\"");
   }
 

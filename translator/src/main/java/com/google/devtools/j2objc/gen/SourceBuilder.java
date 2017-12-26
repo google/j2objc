@@ -20,7 +20,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.io.LineReader;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -214,7 +213,7 @@ public class SourceBuilder {
   public String reindent(String code) {
     try {
       // Remove indention from each line.
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       LineReader lr = new LineReader(new StringReader(code));
       String line = lr.readLine();
       while (line != null) {

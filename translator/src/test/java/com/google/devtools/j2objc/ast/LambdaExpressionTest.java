@@ -41,13 +41,13 @@ public class LambdaExpressionTest extends GenerationTest {
     String captureTranslation = translateSourceFile(
         functionHeader + "class Test { Function<Function, Function> f = y -> x -> y;}", "Test",
         "Test.m");
-    assertTranslation(nonCaptureTranslation, "Test_$Lambda$1_get_instance()");
+    assertTranslation(nonCaptureTranslation, "Test_$Lambda$1_get_instance(void);");
     assertTranslatedLines(captureTranslationOuter,
         "@interface Test_$Lambda$1 : NSObject < Function > {",
         " @public",
         "  Test *this$0_;",
         "}");
-    assertTranslation(captureTranslation, "Test_$Lambda$1_get_instance()");
+    assertTranslation(captureTranslation, "Test_$Lambda$1_get_instance(void);");
     assertTranslatedLines(captureTranslation,
         "@interface Test_$Lambda$2 : NSObject < Function > {",
         " @public",
@@ -97,7 +97,7 @@ public class LambdaExpressionTest extends GenerationTest {
     String outerCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> x;}", "Test",
         "Test.m");
-    assertTranslation(outerCapture, "Test_$Lambda$1_get_instance()");
+    assertTranslation(outerCapture, "Test_$Lambda$1_get_instance(void);");
     assertTranslatedLines(outerCapture,
         "- (id)applyWithId:(NSString *)x {",
         "  return create_Test_$Lambda$2_initWithNSString_(x);",
@@ -114,8 +114,8 @@ public class LambdaExpressionTest extends GenerationTest {
     String noCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> y;}", "Test",
         "Test.m");
-    assertTranslation(noCapture, "Test_$Lambda$1_get_instance()");
-    assertTranslation(noCapture, "Test_$Lambda$2_get_instance()");
+    assertTranslation(noCapture, "Test_$Lambda$1_get_instance(void);");
+    assertTranslation(noCapture, "Test_$Lambda$2_get_instance(void);");
     assertTranslatedLines(noCapture,
         "- (id)applyWithId:(NSString *)x {",
         "  return JreLoadStatic(Test_$Lambda$2, instance);",

@@ -74,4 +74,24 @@ public class AnnotationRewriterTest extends GenerationTest {
         + "}\n", "B", "B.m");
     assertTranslation(translation, "return @\"@B()\";");
   }
+
+  public void testEqualsMethodAdded() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*;\n"
+        + "@Retention(RetentionPolicy.RUNTIME) @interface Test { String value(); }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (jboolean)isEqual:(id)obj {",
+        "return JreAnnotationEquals(self, obj);");
+  }
+
+  public void testHashCodeMethodAdded() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*;\n"
+        + "@Retention(RetentionPolicy.RUNTIME) @interface Test { String value(); }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (NSUInteger)hash {",
+        "return JreAnnotationHashCode(self);");
+  }
 }

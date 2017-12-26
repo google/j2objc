@@ -20,18 +20,33 @@
 #ifndef JreEmulation_BufferUtils_h
 #define JreEmulation_BufferUtils_h
 
+#import <objc/runtime.h> // For object_getClass
+
 #import "IOSPrimitiveArray.h"
-#import "java/nio/ByteArrayBuffer.h"
+#import "java/nio/Buffer.h"
 
 static inline char *BytesRW(id object) {
-  nil_chk(object);
-  if ([object isKindOfClass:[IOSByteArray class]]) {
-      return (char *)IOSByteArray_GetRef(object, 0);
+  (void)nil_chk(object);
+  Class cls = object_getClass(object);
+  if (cls == [IOSByteArray class]) {
+    return (char *)((IOSByteArray *)object)->buffer_;
+  } else if (cls == [IOSCharArray class]) {
+    return (char *)((IOSCharArray *)object)->buffer_;
+  } else if (cls == [IOSShortArray class]) {
+    return (char *)((IOSShortArray *)object)->buffer_;
+  } else if (cls == [IOSIntArray class]) {
+    return (char *)((IOSIntArray *)object)->buffer_;
+  } else if (cls == [IOSLongArray class]) {
+    return (char *)((IOSLongArray *)object)->buffer_;
+  } else if (cls == [IOSFloatArray class]) {
+    return (char *)((IOSFloatArray *)object)->buffer_;
+  } else if (cls == [IOSDoubleArray class]) {
+    return (char *)((IOSDoubleArray *)object)->buffer_;
   } else if ([object isKindOfClass:[JavaNioBuffer class]]) {
     // All buffer concrete classes have byteBuffer at the same
     // offset by explicit design.
     JavaNioBuffer *buffer = (JavaNioBuffer *) object;
-    return (char *)buffer->effectiveDirectAddress_;
+    return (char *)buffer->address_;
   }
   return NULL;  // Unknown type.
 }

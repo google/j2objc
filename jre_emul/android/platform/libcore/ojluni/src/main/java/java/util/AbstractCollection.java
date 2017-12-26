@@ -164,7 +164,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws NullPointerException {@inheritDoc}
      */
     public native <T> T[] toArray(T[] contents) /*-[
-      nil_chk(contents);
+      (void)nil_chk(contents);
       jint size = [self size];
       if (contents->size_ < size) {
         contents = [IOSObjectArray arrayWithLength:size type:contents->elementType_];

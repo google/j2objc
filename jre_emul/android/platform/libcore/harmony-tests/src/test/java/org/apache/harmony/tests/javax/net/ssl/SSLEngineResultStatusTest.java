@@ -37,7 +37,7 @@ public class SSLEngineResultStatusTest extends TestCase {
             for (int i = 0; i < enS.length; i++) {
                 flag = false;
                 for (int j = 0; j < str.length; j++) {
-                    if (enS[i].toString() == str[j]) {
+                    if (enS[i].toString().equals(str[j])) {
                         flag = true;
                         break;
                     }

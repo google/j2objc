@@ -44,29 +44,45 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
-if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
-  readonly BOOT_PATH=-Xbootclasspath:${LIB_DIR}/jre_emul.jar
+# Run command with Java 8.
+if [ -x "/usr/libexec/java_home" ]; then
+  # java_home is available on all Mac systems.
+  readonly JAVA_HOME=`/usr/libexec/java_home -v 1.8 2> /dev/null`
+  readonly JAVA=${JAVA_HOME}/jre/bin/java
+else
+  # Non-Mac system (not supported, but should still work).
+  readonly JAVA=`which java`
+  ${JAVA} -version 2>&1 | fgrep -q 1.8
+fi
+if [ $? -ne 0 ]; then
+  echo "JDK 8 is not installed"
+  exit 1
 fi
 
+J2OBJC_ARGS=()
+
+if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
+  J2OBJC_ARGS+=("-Xbootclasspath:${LIB_DIR}/jre_emul.jar")
+fi
+
+J2OBJC_ARGS+=(-Xannotations-jar "${LIB_DIR}/j2objc_annotations.jar")
+
 PARSING_JAVA_ARGS=0
-JAVA_ARGS=$()
-J2OBJC_ARGS=$()
-ANNOTATIONS_ARG="-Xannotations-jar ${LIB_DIR}/j2objc_annotations.jar"
+JAVA_ARGS=()
 
 while [ $# -gt 0 ]; do
   case $1 in
     -begin-java-args) PARSING_JAVA_ARGS=1;;
     -end-java-args) PARSING_JAVA_ARGS=0;;
-    -J*) JAVA_ARGS[iJavaArgs++]=${1:2};;
+    -J*) JAVA_ARGS+=("${1:2}");;
     *)
       if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
-        J2OBJC_ARGS[iArgs++]=$1
+        J2OBJC_ARGS+=("$1")
       else
-        JAVA_ARGS[iJavaArgs++]=$1
+        JAVA_ARGS+=("$1")
       fi;;
   esac
   shift
 done
 
-java ${JAVA_ARGS[*]} -jar "${JAR}" "${BOOT_PATH}" ${ANNOTATIONS_ARG} \
-  "${J2OBJC_ARGS[@]}"
+${JAVA} ${JAVA_ARGS[*]} -jar "${JAR}" "${J2OBJC_ARGS[@]}"

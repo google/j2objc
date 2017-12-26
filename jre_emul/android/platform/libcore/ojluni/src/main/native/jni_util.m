@@ -40,6 +40,32 @@ static NSString *toNSString(const char *msg) {
   return msg ? [NSString stringWithUTF8String:msg] : nil;
 }
 
+/**
+ * Throw a Java exception by name. Similar to SignalError.
+ */
+JNIEXPORT void JNICALL
+JNU_ThrowByName(JNIEnv *env, const char *name, const char *msg)
+{
+    jclass cls = (*env)->FindClass(env, name);
+
+    if (cls != 0) /* Otherwise an exception has already been thrown */
+        (*env)->ThrowNew(env, cls, msg);
+}
+
+/* JNU_Throw common exceptions */
+
+JNIEXPORT void JNICALL
+JNU_ThrowNullPointerException(JNIEnv *env, const char *msg)
+{
+    JNU_ThrowByName(env, "java/lang/NullPointerException", msg);
+}
+
+JNIEXPORT void JNICALL
+JNU_ThrowArrayIndexOutOfBoundsException(JNIEnv *env, const char *msg)
+{
+    JNU_ThrowByName(env, "java/lang/ArrayIndexOutOfBoundsException", msg);
+}
+
 JNIEXPORT void JNICALL
 JNU_ThrowOutOfMemoryError(JNIEnv *env, const char *msg) {
   @throw create_JavaLangOutOfMemoryError_initWithNSString_(toNSString(msg));
@@ -78,7 +104,7 @@ JNU_NewStringPlatform(JNIEnv *env, const char *str) {
 
 JNIEXPORT const char *
 JNU_GetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy) {
-  nil_chk(jstr);
+  (void)nil_chk(jstr);
   if (isCopy) {
     *isCopy = false;
   }

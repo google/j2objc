@@ -67,8 +67,8 @@
 #define NIL_CHECK_Float(value)
 #define NIL_CHECK_Double(value)
 #define NIL_CHECK_Bool(value)
-#define NIL_CHECK_Enum(value) nil_chk(value);
-#define NIL_CHECK_Retainable(value) nil_chk(value);
+#define NIL_CHECK_Enum(value) (void)nil_chk(value);
+#define NIL_CHECK_Retainable(value) (void)nil_chk(value);
 
 // Forward declarations.
 class CGPExtensionValue;
@@ -469,7 +469,7 @@ static BOOL AddBuilderSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   size_t offset = CGPFieldGetOffset(field, cls);
   CGPHasLocator hasLoc = GetHasLocator(cls, field);
   IMP imp = imp_implementationWithBlock(^id(id msg, id value) {
-    nil_chk(value);
+    (void)nil_chk(value);
     id *ptr = FIELD_PTR(id, msg, offset);
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr);
     id builtValue = [(ComGoogleProtobufGeneratedMessage_Builder *)value build];
@@ -516,7 +516,7 @@ static BOOL AddBuilderAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field)
   size_t offset = CGPFieldGetOffset(field, cls);
   IMP imp = imp_implementationWithBlock(^id(
       id msg, ComGoogleProtobufGeneratedMessage_Builder *value) {
-    nil_chk(value);
+    (void)nil_chk(value);
     CGPRepeatedFieldAddRetainable(REPEATED_FIELD_PTR(msg, offset), [value build]);
     return msg;
   });
@@ -1108,7 +1108,7 @@ static id GetSingularField(id msg, CGPFieldDescriptor *field) {
 }
 
 static id GetField(id msg, CGPFieldDescriptor *field) {
-  nil_chk(field);
+  (void)nil_chk(field);
   if (CGPFieldIsMap(field)) {
     size_t offset = CGPFieldGetOffset(field, object_getClass(msg));
     CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
@@ -3445,8 +3445,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
 - (id<ComGoogleProtobufMessage_Builder>)
     setFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(CGPFieldDescriptor *)descriptor
                                                       withId:(id)object {
-  nil_chk(descriptor);
-  nil_chk(object);
+  (void)nil_chk(descriptor);
+  (void)nil_chk(object);
   CGPFieldJavaType javaType = CGPFieldGetJavaType(descriptor);
   Class cls = object_getClass(self);
   size_t offset = CGPFieldGetOffset(descriptor, cls);
@@ -3472,7 +3472,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
 - (id<ComGoogleProtobufMessage_Builder>)
     addRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
     (CGPFieldDescriptor *)descriptor withId:(id)object {
-  nil_chk(object);
+  (void)nil_chk(object);
   size_t offset = CGPFieldGetOffset(descriptor, object_getClass(self));
   if (CGPFieldIsMap(descriptor)) {
     CGPMapFieldAdd(MAP_FIELD_PTR(self, offset), object, descriptor);
@@ -3485,7 +3485,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
 - (id<ComGoogleProtobufMessage_Builder>)
     setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
     (CGPFieldDescriptor *)descriptor withInt:(jint)index withId:(id)object {
-  nil_chk(object);
+  (void)nil_chk(object);
   size_t offset = CGPFieldGetOffset(descriptor, object_getClass(self));
   if (CGPFieldIsMap(descriptor)) {
     CGPMapFieldSet(MAP_FIELD_PTR(self, offset), index, object, descriptor);
@@ -3866,7 +3866,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 
 - (id)setExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value {
-  nil_chk(value);
+  (void)nil_chk(value);
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   extensionMap_[field].set(ToReflectionType(field, value));
   return self;
@@ -3881,7 +3881,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 
 - (id)addExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value {
-  nil_chk(value);
+  (void)nil_chk(value);
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   AddExtensionWithReflectionType(&extensionMap_, field,
       ToReflectionTypeSingular(CGPFieldGetJavaType(field), value));

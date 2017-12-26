@@ -76,5 +76,8 @@ TYPE sun.misc.URLClassPath
 # False positive: sinceDate's value is privately created and owned.
 FIELD sun.util.calendar.Era.sinceDate
 
+# False positive: both fields are set only during construction.
+FIELD sun.nio.ch.ChannelInputStream.ch
+
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml

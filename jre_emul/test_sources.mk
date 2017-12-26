@@ -33,6 +33,8 @@ SUPPORT_SOURCES = \
     com/google/mockwebserver/QueueDispatcher.java \
     com/google/mockwebserver/RecordedRequest.java \
     com/google/mockwebserver/SocketPolicy.java \
+    com/test/Hello.java \
+    dalvik/system/CloseGuardMonitor.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \
@@ -46,11 +48,13 @@ SUPPORT_SOURCES = \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
+    libcore/java/util/ForEachRemainingTester.java \
+    libcore/java/util/MapDefaultMethodTester.java \
+    libcore/java/util/ResourceLeakageDetector.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
-    okio/MockSink.java \
-    okio/TestUtil.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
@@ -94,6 +98,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
+    org/apache/harmony/security/tests/support/MDGoldenData.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyMessageDigest1.java \
@@ -105,14 +110,31 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
+    org/apache/harmony/tests/java/nio/channels/MockDatagramChannel.java \
+    org/apache/harmony/tests/java/nio/channels/MockServerSocketChannel.java \
+    org/apache/harmony/tests/java/nio/channels/MockSocketChannel.java \
+    org/apache/harmony/tests/java/nio/channels/spi/MockAbstractSelector.java \
     org/apache/harmony/tests/java/text/Support_DecimalFormat.java \
     org/apache/harmony/tests/java/text/Support_Format.java \
     org/apache/harmony/tests/java/text/Support_MessageFormat.java \
     org/apache/harmony/tests/java/text/Support_SimpleDateFormat.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
+    org/apache/harmony/tests/org/xml/sax/support/BrokenInputStream.java \
+    org/apache/harmony/tests/org/xml/sax/support/DoNothingParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/DoNothingXMLReader.java \
     org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockFilter.java \
     org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockReader.java \
     org/apache/harmony/tests/org/xml/sax/support/MockResolver.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoAccessParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoAccessXMLReader.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoInstanceParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoInstanceXMLReader.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
+    org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
+    tests/net/DelegatingSocketFactory.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
     tests/security/interfaces/Util.java \
@@ -237,8 +259,9 @@ TEST_SOURCES := \
     com/google/j2objc/java8/SuperMethodReferenceTest.java \
     com/google/j2objc/java8/TypeMethodReferenceTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
-    com/google/j2objc/nio/FileChannelTest.java \
     com/google/j2objc/nio/charset/CharsetTest.java \
+    com/google/j2objc/reflect/ProxyTest.java \
+    com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
     com/google/j2objc/security/IosRSAKeyTest.java \
     com/google/j2objc/security/IosRSASignatureTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
@@ -251,7 +274,6 @@ TEST_SOURCES := \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
     java/lang/reflect/MethodTest.java \
-    java/lang/reflect/ProxyTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \
@@ -381,13 +403,11 @@ TEST_SOURCES := \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
     libcore/java/net/URLTest.java \
     libcore/java/nio/BufferTest.java \
+    libcore/java/nio/CharBufferTest.java \
     libcore/java/nio/NoArrayTest.java \
     libcore/java/nio/OldAndroidNIOTest.java \
     libcore/java/nio/OldDirectIntBufferTest.java \
     libcore/java/nio/OldDirectShortBufferTest.java \
-    libcore/java/nio/channels/FileChannelTest.java \
-    libcore/java/nio/channels/OldFileChannelTest.java \
-    libcore/java/nio/channels/DatagramChannelTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
@@ -415,6 +435,9 @@ TEST_SOURCES := \
     libcore/java/util/TimeZoneTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
+    libcore/java/util/concurrent/ConcurrentSkipListMapTest.java \
+    libcore/java/util/concurrent/CopyOnWriteArrayListTest.java \
+    libcore/java/util/concurrent/ThreadPoolExecutorTest.java \
     libcore/java/util/logging/OldErrorManagerTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
     libcore/java/util/logging/OldFormatterTest.java \
@@ -455,16 +478,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipOutputStreamTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
-    okio/AsyncTimeoutTest.java \
-    okio/BufferedSinkTest.java \
-    okio/BufferedSourceTest.java \
-    okio/BufferTest.java \
-    okio/ByteStringTest.java \
-    okio/OkioTest.java \
-    okio/RealBufferedSinkTest.java \
-    okio/RealBufferedSourceTest.java \
-    okio/SegmentSharingTest.java \
-    okio/Utf8Test.java \
+    org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
@@ -560,6 +574,10 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersTest.java \
+    org/apache/harmony/security/tests/java/security/DigestExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/DigestInputStreamTest.java \
+    org/apache/harmony/security/tests/java/security/DigestInputStream2Test.java \
+    org/apache/harmony/security/tests/java/security/DigestOutputStreamTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactorySpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactoryTest.java \
     org/apache/harmony/security/tests/java/security/KeyPairGeneratorSpiTest.java \
@@ -592,11 +610,13 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/reflect/FieldTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericArrayTypeTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericMethodsTests.java \
+    org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     org/apache/harmony/tests/java/lang/reflect/MethodTest.java \
     org/apache/harmony/tests/java/lang/reflect/ModifierTest.java \
     org/apache/harmony/tests/java/lang/reflect/ParameterizedTypeTest.java \
+    org/apache/harmony/tests/java/lang/reflect/ProxyTest.java \
     org/apache/harmony/tests/java/lang/reflect/TypeVariableTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTests.java \
@@ -612,7 +632,42 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
+    org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.java \
     org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
+    org/apache/harmony/tests/java/nio/channels/ClosedByInterruptExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/ClosedChannelExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/ClosedSelectorExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/ConnectionPendingExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/DatagramChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/FileChannelLockingTest.java \
+    org/apache/harmony/tests/java/nio/channels/FileChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/FileLockInterruptionExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/FileLockTest.java \
+    org/apache/harmony/tests/java/nio/channels/IllegalBlockingModeExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/IllegalSelectorExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/MapModeTest.java \
+    org/apache/harmony/tests/java/nio/channels/NoConnectionPendingExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/NonReadableChannelExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/NonWritableChannelExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/NotYetBoundExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/NotYetConnectedExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/OverlappingFileLockExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/PipeTest.java \
+    org/apache/harmony/tests/java/nio/channels/SelectableChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/SelectionKeyTest.java \
+    org/apache/harmony/tests/java/nio/channels/SelectorTest.java \
+    org/apache/harmony/tests/java/nio/channels/ServerSocketChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/SinkChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/SourceChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/UnresolvedAddressExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/UnsupportedAddressTypeExceptionTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectorTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectableChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractInterruptibleChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectionKeyTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
@@ -681,6 +736,25 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/ext/Attributes2ImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/ext/DefaultHandler2Test.java \
+    org/apache/harmony/tests/org/xml/sax/ext/Locator2ImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/HandlerBaseTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/AttributeListImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/AttributesImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/DefaultHandlerTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/LocatorImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/NamespaceSupportTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/ParserAdapterTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/ParserFactoryTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/XMLFilterImplTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderAdapterTest.java \
+    org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
+    org/apache/harmony/tests/org/xml/sax/InputSourceTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXNotRecognizedExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXNotSupportedExceptionTest.java \
+    org/apache/harmony/tests/org/xml/sax/SAXParseExceptionTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/json/JSONArrayTest.java \
     org/json/JSONObjectTest.java \
@@ -723,6 +797,7 @@ SUITE_SOURCES = \
     jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
     com/google/j2objc/java8/SmallTests.java \
+    com/google/j2objc/security/IosSecurityProviderTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/text/LargeTests.java \
     libcore/java/text/SmallTests.java \
@@ -784,6 +859,24 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/ClosedByInterruptExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/ClosedChannelExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/ClosedSelectorExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/ConnectionPendingExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/FileLockInterruptionExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/IllegalBlockingModeExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/IllegalSelectorExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/NoConnectionPendingExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/NonReadableChannelExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/NonWritableChannelExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/NotYetBoundExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/NotYetConnectedExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/OverlappingFileLockExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/UnresolvedAddressExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/channels/UnsupportedAddressTypeExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \

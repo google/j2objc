@@ -36,7 +36,6 @@ import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -44,7 +43,6 @@ import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * The set of tool properties, initialized by the command-line arguments.
@@ -68,6 +66,7 @@ public class Options {
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
   private boolean stripReflection = false;
+  private boolean stripEnumConstants = false;
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
@@ -77,7 +76,6 @@ public class Options {
   private boolean disallowInheritedConstructors = true;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
-  private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
   private String lintArgument = null;
@@ -89,17 +87,12 @@ public class Options {
   // Property not defined in Java 9, so use empty bootclasspath.
   private String bootclasspath = System.getProperty("sun.boot.class.path", "");
 
-  // TODO(tball): remove after front-end conversion is complete.
-  private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
-
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup(fileUtil);
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
 
-  // The default source version number if not passed with -source is determined from the system
-  // properties of the running java version after parsing the argument list.
-  private SourceVersion sourceVersion = null;
+  private SourceVersion sourceVersion = SourceVersion.defaultVersion();
   private String oz_debugSource;
 
   private static File proGuardUsageFile = null;
@@ -115,7 +108,6 @@ public class Options {
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
   private static final String TIMING_INFO_ARG = "--timing-info";
-  private static final String ENV_FRONT_END_FLAG = "J2OBJC_FRONT_END";
 
   // TODO(tball): remove obsolete flags once projects stop using them.
   private static final Set<String> obsoleteFlags = Sets.newHashSet(
@@ -178,136 +170,6 @@ public class Options {
     }
   }
 
-  // TODO(tball): remove after front-end conversion is complete.
-  private static enum FrontEnd {
-    JDT, JAVAC;
-
-    static FrontEnd defaultFrontEnd() {
-      String envFlag = System.getenv(ENV_FRONT_END_FLAG);
-      if (envFlag != null) {
-        try {
-          return FrontEnd.valueOf(envFlag);
-        } catch (IllegalArgumentException e) {
-          ErrorUtil.error("Invalid front end environment flag: " + envFlag);
-        }
-      }
-      return JAVAC;
-    }
-  }
-
-  /**
-   * Xlint options and their associated JDT parser warnings.
-   */
-  public static enum LintOption {
-    CAST(JavaCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK),
-    DEPRECATION(JavaCore.COMPILER_PB_DEPRECATION),
-    DEP_ANN(JavaCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION),
-    EMPTY(JavaCore.COMPILER_PB_EMPTY_STATEMENT),
-    FALLTHROUGH(JavaCore.COMPILER_PB_FALLTHROUGH_CASE),
-    FINALLY(JavaCore.COMPILER_PB_FINALLY_BLOCK_NOT_COMPLETING),
-    RAWTYPES(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE),
-    SERIAL(JavaCore.COMPILER_PB_MISSING_SERIAL_VERSION),
-    STATIC(JavaCore.COMPILER_PB_STATIC_ACCESS_RECEIVER),
-    UNCHECKED(JavaCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION),
-    VARARGS(JavaCore.COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST),
-
-    // Default JDT warnings that don't have javac equivalents. These are included since
-    // all unspecified warnings are turned off in JdtParser.
-    ASSERT_IDENTIFIER(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER),
-    CHAR_CONCAT(JavaCore.COMPILER_PB_CHAR_ARRAY_IN_STRING_CONCATENATION),
-    COMPARE_IDENTICAL(JavaCore.COMPILER_PB_COMPARING_IDENTICAL),
-    DEAD_CODE(JavaCore.COMPILER_PB_DEAD_CODE),
-    DISCOURAGED(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE),
-    ENUM_IDENTIFIER(JavaCore.COMPILER_PB_ENUM_IDENTIFIER),
-    FINAL_BOUND(JavaCore.COMPILER_PB_FINAL_PARAMETER_BOUND),
-    FORBIDDEN(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE),
-    INCOMPLETE_ENUM_SWITCH(JavaCore.COMPILER_PB_INCOMPLETE_ENUM_SWITCH),
-    INTERFACE_ANNOTATON(JavaCore.COMPILER_PB_ANNOTATION_SUPER_INTERFACE),
-    INTERFACE_NON_INHERITED(JavaCore.COMPILER_PB_INCOMPATIBLE_NON_INHERITED_INTERFACE_METHOD),
-    MASKED_CATCH(JavaCore.COMPILER_PB_HIDDEN_CATCH_BLOCK),
-    METHOD_WITH_CONSTRUCTOR_NAME(JavaCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME),
-    NO_EFFECT_ASSIGN(JavaCore.COMPILER_PB_NO_EFFECT_ASSIGNMENT),
-    NULL_REFERENCE(JavaCore.COMPILER_PB_NULL_REFERENCE),
-    NULL_UNCHECKED_CONVERSION(JavaCore.COMPILER_PB_NULL_UNCHECKED_CONVERSION),
-    PARAMTER_ANNOTATION_DROPPED(JavaCore.COMPILER_PB_NONNULL_PARAMETER_ANNOTATION_DROPPED),
-    PKG_DEFAULT_METHOD(JavaCore.COMPILER_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD),
-    REDUNDANT_NULL_ANNOTATION(JavaCore.COMPILER_PB_REDUNDANT_NULL_ANNOTATION),
-    RESOURCE_LEAK(JavaCore.COMPILER_PB_UNCLOSED_CLOSEABLE),
-    TYPE_HIDING(JavaCore.COMPILER_PB_TYPE_PARAMETER_HIDING),
-    UNUSED_IMPORT(JavaCore.COMPILER_PB_UNUSED_IMPORT),
-    UNUSED_LABEL(JavaCore.COMPILER_PB_UNUSED_LABEL),
-    UNUSED_LOCAL(JavaCore.COMPILER_PB_UNUSED_LOCAL),
-    UNUSED_PRIVATE(JavaCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER),
-    UNUSED_TYPE_ARGS(JavaCore.COMPILER_PB_UNUSED_TYPE_ARGUMENTS_FOR_METHOD_INVOCATION),
-    WARNING_TOKEN(JavaCore.COMPILER_PB_UNHANDLED_WARNING_TOKEN);
-
-    private final String jdtFlag;
-
-    private LintOption(String jdtFlag) {
-      this.jdtFlag = jdtFlag;
-    }
-
-    public String jdtFlag() {
-      return jdtFlag;
-    }
-
-    static LintOption parseName(String name) {
-      if (name.startsWith("-")) {
-        name = name.substring(1);
-      }
-      for (LintOption option : values()) {
-        if (option.name().toLowerCase().equals(name)) {
-          return option;
-        }
-      }
-      return null;
-    }
-
-    static EnumSet<LintOption> parse(String flag) {
-      if (flag.equals("-Xlint") || flag.equals("-Xlint:all")) {
-        return EnumSet.allOf(LintOption.class);
-      }
-      if (flag.equals("-Xlint:none")) {
-        return EnumSet.noneOf(LintOption.class);
-      }
-      if (!flag.startsWith("-Xlint:")) {
-        ErrorUtil.error("invalid flag: " + flag);
-      }
-      String flagList = flag.substring("-Xlint:".length());
-      String[] flags =
-          flagList.contains(",") ? flagList.split(",") : new String[] { flagList };
-      boolean hasMinusOption = false;
-      for (String f : flags) {
-        if (f.startsWith("-")) {
-          hasMinusOption = true;
-          break;
-        }
-      }
-      EnumSet<LintOption> result =
-          hasMinusOption ? EnumSet.allOf(LintOption.class) : EnumSet.noneOf(LintOption.class);
-      for (String f : flags) {
-        if (f.equals("all")) {
-          result.addAll(EnumSet.allOf(LintOption.class));
-          continue;
-        }
-        if (f.equals("none")) {
-          result.clear();
-          continue;
-        }
-        LintOption option = parseName(f);
-        if (option == null) {
-          ErrorUtil.error("invalid flag: " + flag);
-        }
-        if (f.startsWith("-")) {
-          result.remove(option);
-        } else {
-          result.add(option);
-        }
-      }
-      return result;
-    }
-  }
-
   /**
    * What timing information should be printed, if any.
    */
@@ -357,7 +219,6 @@ public class Options {
 
   private class ArgProcessor {
 
-    private boolean processingSourceFiles = false;
     private List<String> sourceFiles = new Oz.SourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
@@ -390,14 +251,12 @@ public class Options {
         return;
       } else if (arg.startsWith("@")) {
         processArgsFile(arg.substring(1));
-      } else if (processingSourceFiles) {
-        sourceFiles.add(arg);
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
-        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg)));
+        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg)));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
       } else if (arg.equals("-processorpath")) {
-        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg)));
+        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-d")) {
         fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--mapping")) {
@@ -485,6 +344,8 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         stripReflection = true;
+      } else if (arg.equals("-Xstrip-enum-constants")) {
+        stripEnumConstants = true;
       } else if (arg.equals("--no-wrapper-methods")) {
         emitWrapperMethods = false;
       } else if (arg.equals("--no-segmented-headers")) {
@@ -514,13 +375,8 @@ public class Options {
         nullability = true;
       } else if (arg.startsWith("-Xlint")) {
         lintArgument = arg;
-        lintOptions = LintOption.parse(arg);
       } else if (arg.equals("-Xtranslate-bootclasspath")) {
         translateBootclasspath = true;
-      } else if (arg.equals("-Xuse-jdt")) {
-        javaFrontEnd = FrontEnd.JDT;
-      } else if (arg.equals("-Xuse-javac")) {
-        javaFrontEnd = FrontEnd.JAVAC;
       } else if (arg.equals("-Xdump-ast")) {
         dumpAST = true;
       } else if (arg.equals("-Xtranslate-classfiles")) {
@@ -549,6 +405,11 @@ public class Options {
         // Handle aliasing of version numbers as supported by javac.
         try {
           sourceVersion = SourceVersion.parse(s);
+          // TODO(tball): remove when Java 9 source is supported.
+          if (sourceVersion == SourceVersion.JAVA_9) {
+            ErrorUtil.warning("Java 9 source version is not supported, using Java 8.");
+            sourceVersion = SourceVersion.JAVA_8;
+          }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + s);
         }
@@ -560,7 +421,6 @@ public class Options {
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
-        processingSourceFiles = true;
         sourceFiles.add(arg);
       }
     }
@@ -597,20 +457,10 @@ public class Options {
       nullability = true;
     }
 
-    // Pull source version from system properties if it is not passed with -source flag.
-    if (sourceVersion == null) {
-      sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
-    }
-
-    if (isJDT()) {
-      // Java 6 had a 1G max heap limit, removed in Java 7.
-      if (batchTranslateMaximum == -1) {  // Not set by flag.
-        batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
-      }
-    } else {
-      // javac performs best when all sources are compiled by one task.
-      batchTranslateMaximum = Integer.MAX_VALUE;
-    }
+    // javac performs best when all sources are compiled by one task.
+    // TODO(kstanger): This renders the --batch-translate-max flag useless. It was previously useful
+    // for tuning the JDT parser. We may want to clean and simplify our batching code now.
+    batchTranslateMaximum = Integer.MAX_VALUE;
   }
 
   /**
@@ -657,18 +507,21 @@ public class Options {
     System.exit(0);
   }
 
-  private static List<String> getPathArgument(String argument) {
+  private List<String> getPathArgument(String argument, boolean expandAarFiles) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
-      if (new File(entry).exists()) {  // JDT fails with bad path entries.
-        entries.add(entry);
-      } else if (entry.startsWith("~/")) {
+      if (entry.startsWith("~/")) {
         // Expand bash/csh tildes, which don't get expanded by the shell
         // first if in the middle of a path string.
-        String expanded = System.getProperty("user.home") + entry.substring(1);
-        if (new File(expanded).exists()) {
-          entries.add(expanded);
-        }
+        entry = System.getProperty("user.home") + entry.substring(1);
+      }
+      File f = new File(entry);
+      if (entry.endsWith(".aar") && expandAarFiles) {
+        // Extract classes.jar from Android library AAR file.
+        f = fileUtil().extractClassesJarFromAarFile(f);
+      }
+      if (f.exists()) {
+        entries.add(f.toString());
       }
     }
     return entries;
@@ -767,7 +620,7 @@ public class Options {
   }
 
   public List<String> getBootClasspath() {
-    return getPathArgument(bootclasspath);
+    return getPathArgument(bootclasspath, false);
   }
 
   public Mappings getMappings() {
@@ -824,6 +677,15 @@ public class Options {
   @VisibleForTesting
   public void setStripReflection(boolean b) {
     stripReflection = b;
+  }
+
+  public boolean stripEnumConstants() {
+    return stripEnumConstants;
+  }
+
+  @VisibleForTesting
+  public void setStripEnumConstants(boolean b) {
+    stripEnumConstants = b;
   }
 
   public boolean emitWrapperMethods() {
@@ -909,10 +771,6 @@ public class Options {
     nullability = b;
   }
 
-  public EnumSet<LintOption> lintOptions() {
-    return lintOptions;
-  }
-
   public String lintArgument() {
     return lintArgument;
   }
@@ -931,11 +789,6 @@ public class Options {
 
   public boolean translateBootclasspathFiles() {
     return translateBootclasspath;
-  }
-
-  // TODO(kstanger): remove after front-end conversion is complete.
-  public boolean isJDT() {
-    return javaFrontEnd == FrontEnd.JDT;
   }
 
   // Unreleased experimental project.

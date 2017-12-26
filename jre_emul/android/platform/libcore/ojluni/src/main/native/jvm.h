@@ -1244,7 +1244,6 @@ JVM_SendTo(jint fd, char *buf, int len,
 JNIEXPORT jint JNICALL
 JVM_SocketAvailable(jint fd, jint *result);
 
-
 JNIEXPORT jint JNICALL
 JVM_GetSockName(jint fd, struct sockaddr *him, int *len);
 

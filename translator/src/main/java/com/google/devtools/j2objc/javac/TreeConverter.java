@@ -125,6 +125,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.code.TypeTag;
+import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
@@ -152,6 +153,7 @@ import javax.tools.JavaFileObject;
 public class TreeConverter {
   private final JCTree.JCCompilationUnit unit;
   private final JavacEnvironment env;
+  private final Types types;
   private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
@@ -189,6 +191,7 @@ public class TreeConverter {
   private TreeConverter(JCTree.JCCompilationUnit javacUnit, JavacEnvironment javacEnv) {
     unit = javacUnit;
     env = javacEnv;
+    types = Types.instance(javacEnv.getContext());
   }
 
   private TreeNode convert(Object obj) {
@@ -499,7 +502,7 @@ public class TreeConverter {
     Assignment newNode = new Assignment();
     String operatorName = node.getOperator().getSimpleName().toString() + "=";
     return newNode
-        .setOperator(Assignment.Operator.fromJdtOperatorName(operatorName))
+        .setOperator(Assignment.Operator.fromOperatorName(operatorName))
         .setLeftHandSide((Expression) convert(node.getVariable()))
         .setRightHandSide((Expression) convert(node.getExpression()));
   }
@@ -681,7 +684,7 @@ public class TreeConverter {
         default:  // value doesn't need to be changed.
       }
     }
-    return newNode.setConstantValue(value);
+    return value != null ? newNode.setConstantValue(value) : newNode;
   }
 
   private TreeNode convertExpressionStatement(JCTree.JCExpressionStatement node) {
@@ -736,7 +739,8 @@ public class TreeConverter {
       }
     }
     if (ElementUtil.isConstant((VariableElement) node.sym) && ElementUtil.isStatic(node.sym)
-        && !(selected.getKind() == Kind.METHOD_INVOCATION)) {
+        && !(selected.getKind() == Kind.METHOD_INVOCATION)
+        && !(selected.getKind() == Kind.MEMBER_SELECT)) {
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
           .setQualifier((Name) convert(selected))
@@ -780,7 +784,10 @@ public class TreeConverter {
     for (TypeMirror type : node.targets) {
       newNode.addTargetType(type);
     }
-    return newNode.setTypeMirror(node.type);
+    return newNode.setTypeMirror(node.type)
+        .setDescriptor(new ExecutablePair(
+            (ExecutableElement) types.findDescriptorSymbol(node.targets.head.tsym),
+            (ExecutableType) node.getDescriptorType(types)));
   }
 
   private TreeNode convertIdent(JCTree.JCIdent node) {
@@ -1286,6 +1293,10 @@ public class TreeConverter {
         BlockComment ocniComment = new BlockComment();
         ocniComment.setSourceRange(startPos, endPos - startPos);
         unit.getCommentList().add(ocniComment);
+      } else {
+        int lineNum = unit.getLineNumber(startPos);
+        ErrorUtil.error("Error finding OCNI closing delimiter for OCNI comment at line " + lineNum);
+        break;
       }
     }
   }

@@ -14,6 +14,7 @@
 
 package com.google.j2objc.annotations;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,7 +25,7 @@ import java.lang.annotation.Target;
  * constructor or package declaration should be when translated.
  *
  * <p>For packages add the annotation to the package declaration in a package-info.java file to
- * specify the desired package prefix. Alternativesly, package prefixes may be specified using the
+ * specify the desired package prefix. Alternatively, package prefixes may be specified using the
  * {@code --prefix} or {@code --prefixes} flags when invoking j2objc.
  *
  * <p>For classes specify the desired Objective-C class name for the translated type.
@@ -36,6 +37,7 @@ import java.lang.annotation.Target;
  *
  * @author Tom Ball
  */
+@Documented
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PACKAGE })
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectiveCName {

@@ -64,9 +64,8 @@ public final class Assignment extends Expression {
       return opString;
     }
 
-    // TODO(tball): remove when javac is front-end.
-    public static Operator fromJdtOperatorName(String jdtOperatorName) {
-      Operator result = stringLookup.get(jdtOperatorName);
+    public static Operator fromOperatorName(String operatorName) {
+      Operator result = stringLookup.get(operatorName);
       assert result != null;
       return result;
     }

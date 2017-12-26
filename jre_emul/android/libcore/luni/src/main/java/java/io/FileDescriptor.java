@@ -17,7 +17,7 @@
 
 package java.io;
 
-import libcore.io.ErrnoException;
+import android.system.ErrnoException;
 import libcore.io.Libcore;
 import static libcore.io.OsConstants.*;
 
@@ -48,7 +48,7 @@ public final class FileDescriptor {
      * The Unix file descriptor backing this FileDescriptor.
      * A value of -1 indicates that this FileDescriptor is invalid.
      */
-    private int descriptor = -1;
+    int descriptor = -1;
 
     static {
         in.descriptor = STDIN_FILENO;
@@ -108,4 +108,14 @@ public final class FileDescriptor {
     @Override public String toString() {
         return "FileDescriptor[" + descriptor + "]";
     }
+
+    /**
+     * @hide internal use only
+     */
+    // Android-added.
+    public boolean isSocket$() {
+        return isSocket(descriptor);
+    }
+
+    private static native boolean isSocket(int descriptor);
 }

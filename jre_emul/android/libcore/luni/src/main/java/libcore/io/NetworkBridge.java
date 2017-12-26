@@ -16,6 +16,7 @@
 
 package libcore.io;
 
+import android.system.ErrnoException;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.BindException;

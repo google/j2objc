@@ -16,6 +16,9 @@
 
 package libcore.io;
 
+import android.system.ErrnoException;
+import android.system.GaiException;
+import android.system.StructAddrinfo;
 import java.io.FileDescriptor;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
@@ -27,6 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.NioUtils;
 
 /*-[
+#include "android/system/GaiException.h"
 #include "BufferUtils.h"
 #include "TempFailureRetry.h"
 #include "java/lang/IllegalArgumentException.h"
@@ -34,10 +38,8 @@ import java.nio.NioUtils;
 #include "java/net/Inet6Address.h"
 #include "java/net/InetAddress.h"
 #include "java/net/InetSocketAddress.h"
-#include "java/net/InetUnixAddress.h"
 #include "java/net/SocketException.h"
 #include "libcore/io/AsynchronousCloseMonitor.h"
-#include "libcore/io/GaiException.h"
 #include "libcore/io/Posix.h"
 
 #include <arpa/inet.h>
@@ -128,6 +130,13 @@ public final class NetworkOs {
     return makeSocketAddress(&ss);
   }
 
+  static void copyAddress(int addr, jbyte *dst) {
+    dst[0] = (jbyte)((addr >> 24) & 0xff);
+    dst[1] = (jbyte)((addr >> 16) & 0xff);
+    dst[2] = (jbyte)((addr >> 8) & 0xff);
+    dst[3] = (jbyte)(addr & 0xff);
+  }
+
   JavaNetInetAddress *sockaddrToInetAddress(const struct sockaddr_storage *ss, int *port) {
     // Convert IPv4-mapped IPv6 addresses to IPv4 addresses.
     // The RI states "Java will never return an IPv4-mapped address".
@@ -180,12 +189,6 @@ public final class NetworkOs {
     IOSByteArray *byteArray =
         [IOSByteArray arrayWithBytes:(jbyte *)rawAddress count:(jint)addressLength];
 
-    if (ss->ss_family == AF_UNIX) {
-        // Note that we get here for AF_UNIX sockets on accept(2). The unix(7) man page claims
-        // that the peer's sun_path will contain the path, but in practice it doesn't, and the
-        // peer length is returned as 2 (meaning only the sun_family field was set).
-        return create_JavaNetInetUnixAddress_initWithByteArray_(byteArray);
-    }
     return JavaNetInetAddress_getByAddressWithNSString_withByteArray_withInt_(
         nil, byteArray, scope_id);
   }
@@ -194,10 +197,10 @@ public final class NetworkOs {
       struct sockaddr_storage *ss, socklen_t *sa_len, BOOL map) {
     memset(ss, 0, sizeof(struct sockaddr_storage));
     *sa_len = 0;
-    nil_chk(inetAddress);
+    (void)nil_chk(inetAddress);
 
     // Get the address family.
-    ss->ss_family = [inetAddress getFamily];
+    ss->ss_family = [inetAddress->holder_ getFamily];
     if (ss->ss_family == AF_UNSPEC) {
       *sa_len = sizeof(ss->ss_family);
       return YES; // Job done!
@@ -214,18 +217,10 @@ public final class NetworkOs {
     if (ss->ss_family == AF_UNIX) {
       struct sockaddr_un *sun = (struct sockaddr_un *)ss;
 
-      jint path_length = inetAddress->ipaddress_->size_;
-      if ((size_t)path_length >= sizeof(sun->sun_path)) {
-        NSString *errMsg =
-            [NSString stringWithFormat:@"inetAddressToSockaddr path too long for AF_UNIX: %d",
-                path_length];
-        @throw create_JavaLangIllegalArgumentException_initWithNSString_(errMsg);
-      }
-
       // Copy the bytes...
       jbyte* dst = (jbyte *)sun->sun_path;
       memset(dst, 0, sizeof(sun->sun_path));
-      [inetAddress->ipaddress_ getBytes:dst length:path_length];
+      copyAddress(inetAddress->holder_->address_, dst);
       *sa_len = sizeof(sun->sun_path);
       return YES;
     }
@@ -236,7 +231,7 @@ public final class NetworkOs {
     if (ss->ss_family == AF_INET6) {
       // IPv6 address. Copy the bytes...
       jbyte *dst = (jbyte *)sin6->sin6_addr.s6_addr;
-      [inetAddress->ipaddress_ getBytes:dst length:16];
+      [((JavaNetInet6Address *) inetAddress)->ipaddress_ getBytes:dst length:16];
       // ...and set the scope id...
       sin6->sin6_scope_id = [(JavaNetInet6Address *) inetAddress getScopeId];
       *sa_len = sizeof(struct sockaddr_in6);
@@ -248,9 +243,9 @@ public final class NetworkOs {
       // We should represent this Inet4Address as an IPv4-mapped IPv6 sockaddr_in6.
       // Change the family...
       sin6->sin6_family = AF_INET6;
-      // Copy the bytes...
+      // Copy the address
       jbyte *dst = (jbyte *)&sin6->sin6_addr.s6_addr[12];
-      [inetAddress->ipaddress_ getBytes:dst length:4];
+      copyAddress(inetAddress->holder_->address_, dst);
       // INADDR_ANY and in6addr_any are both all-zeros...
       if (!IN6_IS_ADDR_UNSPECIFIED(&sin6->sin6_addr)) {
           // ...but all other IPv4-mapped addresses are ::ffff:a.b.c.d, so insert the ffff...
@@ -261,8 +256,7 @@ public final class NetworkOs {
       // We should represent this Inet4Address as an IPv4 sockaddr_in.
       struct sockaddr_in *sin = (struct sockaddr_in *) ss;
       sin->sin_port = htons(port);
-      jbyte *dst = (jbyte *)&sin->sin_addr.s_addr;
-      [inetAddress->ipaddress_ getBytes:dst length:4];
+      sin->sin_addr.s_addr = inetAddress->holder_->address_;
       *sa_len = sizeof(struct sockaddr_in);
     }
     return YES;
@@ -356,7 +350,7 @@ public final class NetworkOs {
     errno = 0;
     int rc = getaddrinfo([node UTF8String], NULL, &hints, &addressList);
     if (rc != 0) {
-      @throw create_LibcoreIoGaiException_initWithNSString_withInt_(@"getaddrinfo", rc);
+      @throw create_AndroidSystemGaiException_initWithNSString_withInt_(@"getaddrinfo", rc);
     }
 
     // Count results so we know how to size the output array.
@@ -414,7 +408,7 @@ public final class NetworkOs {
     errno = 0;
     int rc = getnameinfo((struct sockaddr *) &ss, sa_len, buf, sizeof(buf), NULL, 0, flags);
     if (rc != 0) {
-      @throw create_LibcoreIoGaiException_initWithNSString_withInt_(@"getnameinfo", rc);
+      @throw create_AndroidSystemGaiException_initWithNSString_withInt_(@"getnameinfo", rc);
     }
     return [NSString stringWithUTF8String:buf];
   ]-*/;

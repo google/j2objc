@@ -242,4 +242,17 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         + "} }",
         "Example", "Example.m");
   }
+
+  public void testCopyWithZoneParameterIsNullable() throws IOException {
+    options.setNullability(true);
+    String translation = translateSourceFile(
+        "import javax.annotation.*; "
+        + "@ParametersAreNonnullByDefault class Test implements Cloneable { int i; "
+        + "void test(String s) {}}",
+        "Test", "Test.m");
+    // Verify parameters are non-null by default.
+    assertTranslation(translation, "testWithNSString:(NSString * __nonnull)s {");
+    // Verify that zone is nullable, in spite of the default.
+    assertTranslation(translation, "- (id)copyWithZone:(NSZone * __nullable)zone {");
+  }
 }

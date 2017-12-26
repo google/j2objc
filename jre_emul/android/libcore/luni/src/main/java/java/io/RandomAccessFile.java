@@ -20,13 +20,13 @@ package java.io;
 import com.google.j2objc.annotations.RetainedWith;
 import dalvik.system.CloseGuard;
 
+import android.system.ErrnoException;
 import java.nio.ByteOrder;
 import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
 import java.nio.charset.ModifiedUtf8;
 import java.util.Arrays;
 
-import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;

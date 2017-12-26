@@ -114,7 +114,7 @@ static void ReadRawValue(
       *rawValue = field->metadata_->constantValue;
     }
   } else {
-    nil_chk(object);
+    (void)nil_chk(object);
     if (![field->declaringClass_ isInstance:object]) {
       @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
     }
@@ -171,7 +171,7 @@ static void SetWithRawValue(
           [type __writeRawValue:rawValue toAddress:pValue];
       }
   } else {
-    nil_chk(object);
+    (void)nil_chk(object);
     if (IsFinal(field) && !field->accessible_) {
       @throw create_JavaLangIllegalAccessException_initWithNSString_(@"Cannot set final field");
     }

@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -42,18 +43,21 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ClassFile;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
-import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
+import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
+import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
@@ -69,13 +73,6 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.ParameterNode;
 
 /**
  * Converts a JVM classfile into a CompilationUnit. The resulting unit
@@ -88,12 +85,12 @@ import org.objectweb.asm.tree.ParameterNode;
  * @author Manvith Narahari
  * @author Tom Ball
  */
-public class ClassFileConverter extends ClassVisitor {
+public class ClassFileConverter {
   private final JavacEnvironment parserEnv;
   private final TranslationEnvironment translationEnv;
   private final InputFile file;
   private final ClassFile classFile;
-  private String typeName;
+  private final String typeName;
 
   public static CompilationUnit convertClassFile(
       Options options, JavacEnvironment env, InputFile file) {
@@ -111,16 +108,11 @@ public class ClassFileConverter extends ClassVisitor {
 
   private ClassFileConverter(JavacEnvironment parserEnv, TranslationEnvironment translationEnv,
       InputFile file) throws IOException {
-    super(Opcodes.ASM5);
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
     this.file = file;
-    this.classFile = ClassFile.create(file.getInputStream(), translationEnv.typeUtil());
-    this.typeName = convertInternalTypeName(classFile.name);
-  }
-
-  private static String convertInternalTypeName(String internalName) {
-    return org.objectweb.asm.Type.getObjectType(internalName).getClassName();
+    this.classFile = ClassFile.create(file);
+    this.typeName = classFile.getFullName();
   }
 
   /**
@@ -128,7 +120,8 @@ public class ClassFileConverter extends ClassVisitor {
    */
   private void setClassPath() throws IOException {
     String fullPath = file.getAbsolutePath();
-    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(classFile.name + ".class"));
+    String relativePath = classFile.getFullName().replace('.',  '/') + ".class";
+    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(relativePath));
     List<File> classPath = new ArrayList<>();
     classPath.add(new File(rootPath));
     parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
@@ -145,13 +138,13 @@ public class ClassFileConverter extends ClassVisitor {
     }
     String mainTypeName = typeElement.getSimpleName().toString();
     CompilationUnit compUnit = new CompilationUnit(translationEnv, mainTypeName);
-    compUnit.setPackage((PackageDeclaration) convert(pkgElement));
-    compUnit.addType((AbstractTypeDeclaration) convert(typeElement));
+    compUnit.setPackage((PackageDeclaration) convert(pkgElement, compUnit));
+    compUnit.addType((AbstractTypeDeclaration) convert(typeElement, compUnit));
     return compUnit;
   }
 
   @SuppressWarnings("fallthrough")
-  private TreeNode convert(Element element) {
+  private TreeNode convert(Element element, TreeNode parent) {
     TreeNode node;
     switch (element.getKind()) {
       case ANNOTATION_TYPE:
@@ -163,7 +156,7 @@ public class ClassFileConverter extends ClassVisitor {
         break;
       case CONSTRUCTOR:
       case METHOD:
-        node = convertMethodDeclaration((ExecutableElement) element);
+        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
         break;
       case ENUM:
         node = convertEnumDeclaration((TypeElement) element);
@@ -181,7 +174,7 @@ public class ClassFileConverter extends ClassVisitor {
         node = convertParameter((VariableElement) element);
         break;
       case STATIC_INIT:
-        node = convertMethodDeclaration((ExecutableElement) element);
+        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
         break;
       default:
         throw new AssertionError("Unsupported element kind: " + element.getKind());
@@ -230,7 +223,7 @@ public class ClassFileConverter extends ClassVisitor {
     for (Element elem : element.getEnclosedElements()) {
       BodyDeclaration bodyDecl = elem.getKind() == ElementKind.METHOD
           ? convertAnnotationTypeMemberDeclaration((ExecutableElement) elem)
-          : (BodyDeclaration) convert(elem);
+          : (BodyDeclaration) convert(elem, annotTypeDecl);
       annotTypeDecl.addBodyDeclaration(bodyDecl);
     }
     removeInterfaceModifiers(annotTypeDecl);
@@ -287,7 +280,7 @@ public class ClassFileConverter extends ClassVisitor {
     TypeDeclaration typeDecl = new TypeDeclaration(element);
     convertBodyDeclaration(typeDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem));
+      typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem, typeDecl));
     }
     if (typeDecl.isInterface()) {
       removeInterfaceModifiers(typeDecl);
@@ -295,29 +288,34 @@ public class ClassFileConverter extends ClassVisitor {
     return typeDecl;
   }
 
-  private TreeNode convertMethodDeclaration(ExecutableElement element) {
+  private String getMethodDescriptor(ExecutableElement exec) {
+    return translationEnv.typeUtil().getMethodDescriptor((ExecutableType) exec.asType());
+  }
+
+  private TreeNode convertMethodDeclaration(ExecutableElement element, TypeDeclaration node) {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
     convertBodyDeclaration(methodDecl, element);
+    HashMap<String, VariableElement> localVariableTable = new HashMap<>();
     List<SingleVariableDeclaration> parameters = methodDecl.getParameters();
-    int nParams = element.getParameters().size();
-    if (nParams > 0) {
+    String name = element.getSimpleName().toString();
+    String descriptor = getMethodDescriptor(element);
+    if (element.getParameters().size() > 0) {
+      Iterator<ParameterDeclaration> paramsIterator = methodDecl.isConstructor()
+          ? classFile.getConstructor(descriptor).getParameters().iterator()
+          : classFile.getMethod(name, descriptor).getParameters().iterator();
       // If classfile was compiled with -parameters flag; use the MethodNode
       // to work around potential javac8 bug iterating over parameter names.
-      MethodNode asmNode = classFile.getMethodNode(element);
-      int nMethodNodes = asmNode.parameters != null ? asmNode.parameters.size() : 0;
-      for (int i = 0; i < nParams; i++) {
-        VariableElement param = element.getParameters().get(i);
-        SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
-        if (nMethodNodes == nParams) {
-          ParameterNode paramNode = (ParameterNode) asmNode.parameters.get(i);
-          // If element's name doesn't match the ParameterNode's name, use the latter.
-          if (!paramNode.name.equals(param.getSimpleName().toString())) {
-            param = GeneratedVariableElement.newParameter(paramNode.name, param.asType(),
-                param.getEnclosingElement());
-            varDecl.setVariableElement(param);
-          }
+      for (VariableElement param : element.getParameters()) {
+        SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param, methodDecl);
+        String nameDef = paramsIterator.next().getName();
+        // If element's name doesn't match the ParameterNode's name, use the latter.
+        if (!nameDef.equals(param.getSimpleName().toString())) {
+          param = GeneratedVariableElement.newParameter(nameDef, param.asType(),
+              param.getEnclosingElement());
+          varDecl.setVariableElement(param);
         }
         parameters.add(varDecl);
+        localVariableTable.put(param.getSimpleName().toString(), param);
       }
     }
     if (element.isVarArgs()) {
@@ -328,9 +326,15 @@ public class ClassFileConverter extends ClassVisitor {
       lastParam.setType(Type.newType(varArgType));
       lastParam.setIsVarargs(true);
     }
+    if (!ElementUtil.isAbstract(element)) {
+      EntityDeclaration decl = methodDecl.isConstructor()
+          ? classFile.getConstructor(descriptor)
+          : classFile.getMethod(name, descriptor);
+      MethodTranslator translator = new MethodTranslator(
+          parserEnv, translationEnv, element, node, localVariableTable);
+      methodDecl.setBody((Block) decl.acceptVisitor(translator, null));
+    }
     return methodDecl;
-        /* TODO(user): method translation; finish when supported
-         * .setBody((Block) convert(node.getBody())); */
   }
 
   private TreeNode convertParameter(VariableElement element) {
@@ -351,12 +355,11 @@ public class ClassFileConverter extends ClassVisitor {
       return true;
     } else if (e.getKind() == ElementKind.METHOD) {
       ExecutableElement method = (ExecutableElement) e;
-      TypeUtil typeUtil = translationEnv.typeUtil();
-      String enumSig = typeUtil.getSignatureName(enumType);
+      String enumSig = translationEnv.typeUtil().getSignatureName(enumType);
       String valueOfDesc = "(Ljava/lang/String;)" + enumSig;
       String valuesDesc = "()[" + enumSig;
       String name = method.getSimpleName().toString();
-      String methodDesc = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
+      String methodDesc = getMethodDescriptor(method);
       boolean isValueOf = name.equals("valueOf") && methodDesc.equals(valueOfDesc);
       boolean isValues = name.equals("values") && methodDesc.equals(valuesDesc);
       return isValueOf || isValues;
@@ -368,7 +371,7 @@ public class ClassFileConverter extends ClassVisitor {
     EnumDeclaration enumDecl = new EnumDeclaration(element);
     convertBodyDeclaration(enumDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      TreeNode encElem = convert(elem);
+      TreeNode encElem = convert(elem, enumDecl);
       if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
         enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
       } else if (!isEnumSynthetic(elem, element.asType())) {
@@ -382,55 +385,7 @@ public class ClassFileConverter extends ClassVisitor {
   private TreeNode convertEnumConstantDeclaration(VariableElement element) {
     EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
     convertBodyDeclaration(enumConstDecl, element);
+    /* TODO(user): set ExecutablePair */
     return enumConstDecl;
-  }
-
-  // Extension of ClassNode that supports look up of ASM nodes using elements.
-  static class ClassFile extends ClassNode {
-    private final TypeUtil typeUtil;
-
-    static ClassFile create(InputStream clazz, TypeUtil typeUtil) throws IOException {
-      ClassReader classReader = new ClassReader(clazz);
-      ClassFile cn = new ClassFile(typeUtil);
-      classReader.accept(cn, ClassReader.EXPAND_FRAMES);
-      return cn;
-    }
-
-    ClassFile(TypeUtil typeUtil) {
-      super(Opcodes.ASM5);
-      this.typeUtil = typeUtil;
-    }
-
-    @SuppressWarnings("unchecked")
-    List<FieldNode> getFields() {
-      return fields;
-    }
-
-    @SuppressWarnings("unchecked")
-    List<MethodNode> getMethods() {
-      return methods;
-    }
-
-    FieldNode getFieldNode(VariableElement field) {
-      String name = field.getSimpleName().toString();
-      String descriptor = typeUtil.getFieldDescriptor(field.asType());
-      for (FieldNode node : getFields()) {
-        if (node.name.equals(name) && node.desc.equals(descriptor)) {
-          return node;
-        }
-      }
-      throw new AssertionError("unable to find field node for " + field);
-    }
-
-    MethodNode getMethodNode(ExecutableElement method) {
-      String name = method.getSimpleName().toString();
-      String descriptor = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
-      for (MethodNode node : getMethods()) {
-        if (node.name.equals(name) && node.desc.equals(descriptor)) {
-          return node;
-        }
-      }
-      throw new AssertionError("unable to find method node for " + method);
-    }
   }
 }

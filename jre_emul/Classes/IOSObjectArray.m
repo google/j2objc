@@ -36,7 +36,9 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
   if (length < 0) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
   }
-  IOSObjectArray *array =  ARGC_allocateObject([IOSObjectArray class], length * sizeof(id), nil);
+    size_t buf_size = length * sizeof(id);
+  IOSObjectArray *array =  ARGC_allocateObject([IOSObjectArray class], buf_size, nil);
+    memset(array->buffer_, 0, buf_size);
 #if !__has_feature(objc_arc)
   if (!retained) {
     // It is important that this autorelease occurs here and NOT as part of the
@@ -345,10 +347,12 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
 #if !__has_feature(objc_arc)
 - (id)retain {
   if (!isRetained_) {
+    // Set isRetained_ before retaining the elements to avoid infinite loop if two arrays happen to
+    // contain each other.
+    isRetained_ = true;
     for (jint i = 0; i < size_; i++) {
       RETAIN_(buffer_[i]);
     }
-    isRetained_ = true;
   }
   return [super retain];
 }

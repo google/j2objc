@@ -986,12 +986,17 @@ public class Throwable extends NSException implements Serializable {
         getOurStackTrace();
 
         StackTraceElement[] oldStackTrace = stackTrace;
+        Throwable oldCause = cause;
         try {
             if (stackTrace == null)
                 stackTrace = SentinelHolder.STACK_TRACE_SENTINEL;
+            if (cause == UNSET_CAUSE) {
+              cause = this;
+            }
             s.defaultWriteObject();
         } finally {
             stackTrace = oldStackTrace;
+            cause = oldCause;
         }
     }
 

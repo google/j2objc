@@ -242,39 +242,24 @@ public class RewriterTest extends GenerationTest {
   public void testExtraDimensionsInFieldDeclaration() throws IOException {
     String translation = translateSourceFile(
         "class Test { int i1, i2[], i3[][], i4[][][], i5[][], i6; }", "Test", "Test.h");
-    if (options.isJDT()) {
-      assertTranslatedLines(translation,
-          "jint i1_, i6_;",
-          "IOSIntArray *i2_;",
-          "IOSObjectArray *i3_, *i5_;",
-          "IOSObjectArray *i4_;");
-    } else {
-      assertTranslatedLines(translation,
-          "jint i1_;",
-          "IOSIntArray *i2_;",
-          "IOSObjectArray *i3_;",
-          "IOSObjectArray *i4_;",
-          "IOSObjectArray *i5_;",
-          "jint i6_;");
-    }
+    assertTranslatedLines(translation,
+        "jint i1_;",
+        "IOSIntArray *i2_;",
+        "IOSObjectArray *i3_;",
+        "IOSObjectArray *i4_;",
+        "IOSObjectArray *i5_;",
+        "jint i6_;");
   }
 
   public void testExtraDimensionsInVariableDeclarationStatement() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test() { char c1[][], c2[], c3, c4, c5[][]; } }", "Test", "Test.m");
-    if (options.isJDT()) {
-      assertTranslatedLines(translation,
-          "IOSObjectArray *c1, *c5;",
-          "IOSCharArray *c2;",
-          "jchar c3, c4;");
-    } else {
-      assertTranslatedLines(translation,
-          "IOSObjectArray *c1;",
-          "IOSCharArray *c2;",
-          "jchar c3;",
-          "jchar c4;",
-          "IOSObjectArray *c5;");
-    }
+    assertTranslatedLines(translation,
+        "IOSObjectArray *c1;",
+        "IOSCharArray *c2;",
+        "jchar c3;",
+        "jchar c4;",
+        "IOSObjectArray *c5;");
   }
 
   // Objective-C requires that && tests be surrounded by parens when mixed with || tests.

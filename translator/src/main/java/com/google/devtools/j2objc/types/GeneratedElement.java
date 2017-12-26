@@ -112,6 +112,11 @@ public abstract class GeneratedElement implements Element {
     return this;
   }
 
+  public GeneratedElement addAnnotationMirror(AnnotationMirror newAnnotation) {
+    annotationMirrors.add(newAnnotation);
+    return this;
+  }
+
   @Override
   public String toString() {
     return name.toString();

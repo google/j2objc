@@ -73,8 +73,9 @@
 
 CF_EXTERN_C_BEGIN
 
-void JreThrowNullPointerException() __attribute__((noreturn));
-void JreThrowClassCastException() __attribute__((noreturn));
+id JreThrowNullPointerException() __attribute__((noreturn));
+void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
+void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
 
 #ifdef J2OBJC_USE_GC
 @interface JavaLangObject : ARGCObject
@@ -139,27 +140,27 @@ void JreVolatileRetainedWithRelease(__unsafe_unretained id parent, volatile_id *
 
 NSString *JreStrcat(const char *types, ...);
 
-#if defined(J2OBJC_COUNT_NIL_CHK) && !defined(J2OBJC_DISABLE_NIL_CHECKS)
-id nil_chk(id __unsafe_unretained p);
-void JrePrintNilChkCount();
-void JrePrintNilChkCountAtExit();
+jboolean JreAnnotationEquals(id a1, id a2);
+jint JreAnnotationHashCode(id a);
 
+CF_EXTERN_C_END
+
+/*!
+ * The nil_chk macro is used wherever a Java object is dereferenced and needs to
+ * be checked for null. A macro is used instead of an inline function because it
+ * allows the line number of the dereference to be derived from the stack frame.
+ *
+ * @param p The object to check for nil.
+ */
+#ifdef J2OBJC_DISABLE_NIL_CHECKS
+#define nil_chk(p) p
 #else
-__attribute__((always_inline)) inline id nil_chk(id __unsafe_unretained p) {
-#if !defined(J2OBJC_DISABLE_NIL_CHECKS)
-  if (__builtin_expect(!p, 0)) {
-    JreThrowNullPointerException();
-  }
-#endif
-  return p;
-}
-
-__attribute__((always_inline)) inline void JrePrintNilChkCount() {}
-__attribute__((always_inline)) inline void JrePrintNilChkCountAtExit() {}
+#define nil_chk(p) (p ?: JreThrowNullPointerException())
 #endif
 
 CF_EXTERN_C_END
 
+#if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
     AUTORELEASE(value);
@@ -248,7 +249,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The name of the type to declare the accessor for.
  */
 #define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
-  FOUNDATION_EXPORT IOSClass *TYPE##_class_();
+  FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
 
 /*!
  * Defines the type literal accessor for a class or enum type. This macro should

@@ -263,7 +263,7 @@ public class JavadocGenerator extends AbstractSourceGenerator {
     }
 
     // Separately test begin and end tags, to support a span with multiple Javadoc tags.
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     if (preStart > -1 && preEnd > -1) {
       // Both <pre> and </pre> are in the same text segment.
       sb.append(text.substring(0, preStart));

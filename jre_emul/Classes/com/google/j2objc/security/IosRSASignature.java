@@ -142,11 +142,13 @@ public abstract class IosRSASignature extends SignatureSpi {
   /*-[
   - (IOSByteArray *)nativeEngineSign:(SecKeyRef)privateKey
                            hashBytes:(uint8_t *)hashBytes
-                                size:(size_t)hashBytesSize {
+                                size:(size_t)hashBytesSize
+                                padding: (SecPadding) padding {  
+                     
     size_t signedHashBytesSize = SecKeyGetBlockSize(privateKey);
     uint8_t *signedHashBytes = calloc(signedHashBytesSize, sizeof(uint8_t));
     SecKeyRawSign(privateKey,
-                  kSecPaddingNone,
+                  padding,										
                   hashBytes,
                   hashBytesSize,
                   signedHashBytes,
@@ -164,9 +166,12 @@ public abstract class IosRSASignature extends SignatureSpi {
                        hashBytes:(uint8_t *)hashBytes
                             size:(size_t)hashBytesSize
                          padding:(SecPadding)secPadding {
+                         
     size_t signatureSize = SecKeyGetBlockSize(publicKey);
     if (signatureSize != (size_t)signature->size_) {
-      return false;
+        NSLog (@"nativeEngineVerify: Wrong Signature Size %d %d", (int)signatureSize,
+        (int) hashBytesSize );
+        return false;
     }
     OSStatus status = SecKeyRawVerify(publicKey,
                                       secPadding,
@@ -176,12 +181,16 @@ public abstract class IosRSASignature extends SignatureSpi {
                                       signatureSize);
     if (status != errSecSuccess) {
       // Try verifying without padding.
+      NSLog (@"nativeEngineVerify: Signature with padding failed,  %d ", (int) status);
       status = SecKeyRawVerify(publicKey,
                                kSecPaddingNone,
                                hashBytes,
                                hashBytesSize,
                                (uint8_t*)signature->buffer_,
                                signatureSize);
+      if (status != errSecSuccess) {
+          NSLog (@"nativeEngineVerify: Signature failed,  %d ", (int) status);
+      }                         
     }
     return status == errSecSuccess;
   }
@@ -198,7 +207,8 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize];
+                                               size:hashBytesSize 
+                                            padding:kSecPaddingPKCS1MD5];  
       free(hashBytes);
       return result;
     ]-*/;
@@ -232,7 +242,8 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize];
+                                               size:hashBytesSize 
+                                            padding:kSecPaddingPKCS1SHA1];  
       free(hashBytes);
       return result;
     ]-*/;
@@ -266,7 +277,12 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize];
+                                               size:hashBytesSize 
+#if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
+                                     padding:kSecPaddingPKCS1SHA256];
+#else
+                                     padding:kSecPaddingPKCS1SHA1];
+#endif
       free(hashBytes);
       return result;
     ]-*/;
@@ -284,7 +300,7 @@ public abstract class IosRSASignature extends SignatureSpi {
                                    hashBytes:hashBytes
                                         size:hashBytesSize
 #if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
-                                     padding:kSecPaddingPKCS1SHA256];
+                                     padding:kSecPaddingPKCS1SHA256];  
 #else
                                      padding:kSecPaddingPKCS1SHA1];
 #endif
@@ -304,7 +320,12 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize];
+                                               size:hashBytesSize 
+#if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
+                                     padding:kSecPaddingPKCS1SHA384]; 
+#else
+                                     padding:kSecPaddingPKCS1SHA1];    
+#endif
       free(hashBytes);
       return result;
     ]-*/;
@@ -342,7 +363,13 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize];
+                                               size:hashBytesSize 
+#if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
+                                     padding:kSecPaddingPKCS1SHA512]; 
+#else
+                                     padding:kSecPaddingPKCS1SHA1];   
+#endif   
+                                               
       free(hashBytes);
       return result;
     ]-*/;

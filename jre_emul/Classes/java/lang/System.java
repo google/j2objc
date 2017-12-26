@@ -34,6 +34,7 @@ package java.lang;
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/util/Collections.h"
+#import "jvm.h"
 #include "mach/mach_time.h"
 #include "TargetConditionals.h"
 
@@ -111,7 +112,7 @@ public class System {
   ]-*/;
 
   public static native long currentTimeMillis() /*-[
-    return (long long) ((CFAbsoluteTimeGetCurrent() + kCFAbsoluteTimeIntervalSince1970) * 1000);
+    return JVM_CurrentTimeMillis(nil, nil);
   ]-*/;
 
   public static native int identityHashCode(Object anObject) /*-[

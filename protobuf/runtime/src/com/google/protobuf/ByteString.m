@@ -56,14 +56,14 @@ ComGoogleProtobufByteString *CGPNewByteString(jint len) {
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
     IOSByteArray *bytes) {
-  nil_chk(bytes);  // Ensure Java compatibility.
+  (void)nil_chk(bytes);  // Ensure Java compatibility.
   CGPByteString *byteString = CGPNewByteString(bytes->size_);
   memcpy(byteString->buffer_, bytes->buffer_, bytes->size_);
   return [byteString autorelease];
 }
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text) {
-  nil_chk(text);  // Ensure Java compatibility.
+  (void)nil_chk(text);  // Ensure Java compatibility.
   NSUInteger length = [text lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   CGPByteString *byteString = CGPNewByteString((jint)length);
   [text getBytes:byteString->buffer_

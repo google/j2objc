@@ -82,7 +82,6 @@ int main( int argc, const char *argv[] ) {
     printf("Usage: %s class [args...]\n", *argv);
     return 1;
   }
-  JrePrintNilChkCountAtExit();
   installSignalHandler();
   @autoreleasepool {
     const char *className = argv[1];

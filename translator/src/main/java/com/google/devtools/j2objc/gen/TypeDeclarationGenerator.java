@@ -192,7 +192,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
       names.add(nameTable.getFullName(intrface));
     }
-    if (ElementUtil.isEnum(typeElement)) {
+    if (ElementUtil.getQualifiedName(typeElement).equals("java.lang.Enum")) {
       names.remove("NSCopying");
       names.add(0, "NSCopying");
     } else if (isInterfaceType() && !Oz.inPureObjCMode()) {
@@ -443,7 +443,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         String varName = nameTable.getVariableBaseName(constant.getVariableElement());
         newline();
         JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
-        printf("inline %s *%s_get_%s();\n", typeName, typeName, varName);
+        printf("inline %s *%s_get_%s(void);\n", typeName, typeName, varName);
         printf("J2OBJC_ENUM_CONSTANT(%s, %s)\n", typeName, varName);
       }
     }
@@ -522,11 +522,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     FieldDeclaration decl = (FieldDeclaration) fragment.getParent();
     JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
-    printf("inline %s%s_get_%s();\n", objcTypePadded, typeName, name);
+    printf("inline %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
     if (!isFinal) {
       printf("inline %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
       if (isPrimitive && !isVolatile) {
-        printf("inline %s *%s_getRef_%s();\n", objcType, typeName, name);
+        printf("inline %s *%s_getRef_%s(void);\n", objcType, typeName, name);
       }
     }
 		}
@@ -695,7 +695,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected void printFunctionDeclaration(FunctionDeclaration function) {
-    print("\nFOUNDATION_EXPORT " + getFunctionSignature(function));
+    print("\nFOUNDATION_EXPORT " + getFunctionSignature(function, true));
     if (function.returnsRetained()) {
       print(" NS_RETURNS_RETAINED");
     }

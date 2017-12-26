@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.javac.JavacParser;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import java.io.Closeable;
 import java.io.File;
@@ -46,11 +47,7 @@ public abstract class Parser implements Closeable {
    * Return a new Parser instance with the provided Options.
    */
   public static Parser newParser(Options options) {
-    // TODO(tball): remove after front-end conversion is complete.
-    if (options.isJDT()) {
-      return new com.google.devtools.j2objc.jdt.JdtParser(options);
-    }
-    return new com.google.devtools.j2objc.javac.JavacParser(options);
+    return new JavacParser(options);
   }
 
   /**
@@ -162,7 +159,7 @@ public abstract class Parser implements Closeable {
    */
   public abstract ProcessingResult processAnnotations(Iterable<String> fileArgs,
       List<ProcessingContext> inputs);
-  
+
   /**
    * Release any system resources used by this parser instance.
    */

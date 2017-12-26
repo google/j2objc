@@ -15,13 +15,16 @@
 # or classes from non-public packages (like libcore.*).
 
 NATIVE_ARGC_SOURCES = \
-  ARGC/ARGC.mm 
+  ARGC/ARGC.mm
 
 
 NATIVE_JRE_SOURCES_CORE = \
   IOSReference.m \
+  AnnotationUtils.m \
+  Bits.m \
   DebugUtils.m \
   FastPointerLookup.m \
+  FileDescriptor_md.m \
   IOSArray.m \
   IOSArrayClass.m \
   IOSClass.m \
@@ -36,6 +39,7 @@ NATIVE_JRE_SOURCES_CORE = \
   J2ObjC_icu.m \
   JavaThrowable.m \
   JreRetainedWith.m \
+  MappedByteBuffer.m \
   NSCopying+JavaCloneable.m \
   NSDataInputStream.m \
   NSDataOutputStream.m \
@@ -59,12 +63,17 @@ NATIVE_JRE_SOURCES_CORE = \
   java_util_regex_Matcher.m \
   java_util_regex_Pattern.m \
   jni.m \
+  jni_util.m \
+  jvm.m \
   libcore_icu_ICU.m \
+  libcore_io_Memory.m \
   objc-sync.m \
   sun_misc_Unsafe.m
 
 # Java sources to be translated normally and included in the core library.
+# TypeKind is needed by the Checker Framework (https://checkerframework.org/).
 JAVA_PUBLIC_SOURCES_CORE = \
+  android/system/ErrnoException.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
   java/io/BufferedInputStream.java \
   java/io/BufferedOutputStream.java \
@@ -204,6 +213,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/ThreadLocal.java \
   java/lang/Throwable.java \
   java/lang/TypeNotPresentException.java \
+  java/lang/UnknownError.java \
   java/lang/UnsupportedOperationException.java \
   java/lang/VirtualMachineError.java \
   java/lang/Void.java \
@@ -253,6 +263,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/math/BigInteger.java \
   java/math/MathContext.java \
   java/math/RoundingMode.java \
+  java/net/SocketException.java \
   java/nio/Buffer.java \
   java/nio/BufferOverflowException.java \
   java/nio/BufferUnderflowException.java \
@@ -334,6 +345,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/Enumeration.java \
   java/util/EnumMap.java \
   java/util/EnumSet.java \
+  java/util/EventObject.java \
   java/util/FormatFlagsConversionMismatchException.java \
   java/util/Formattable.java \
   java/util/FormattableFlags.java \
@@ -426,6 +438,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/atomic/AtomicInteger.java \
   java/util/concurrent/atomic/AtomicLong.java \
   java/util/concurrent/atomic/AtomicReference.java \
+  java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
   java/util/concurrent/locks/AbstractOwnableSynchronizer.java \
   java/util/concurrent/locks/AbstractQueuedSynchronizer.java \
   java/util/concurrent/locks/Condition.java \
@@ -500,6 +513,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   javax/annotation/PreDestroy.java \
   javax/annotation/Resource.java \
   javax/annotation/Resources.java \
+  javax/lang/model/type/TypeKind.java \
   sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
@@ -520,24 +534,23 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/math/MutableBigInteger.java \
   java/math/SignedMutableBigInteger.java \
   java/net/NetFactory.java \
-  java/nio/ByteArrayBuffer.java \
+  java/nio/Bits.java \
   java/nio/ByteBufferAsCharBuffer.java \
   java/nio/ByteBufferAsDoubleBuffer.java \
   java/nio/ByteBufferAsFloatBuffer.java \
   java/nio/ByteBufferAsIntBuffer.java \
   java/nio/ByteBufferAsLongBuffer.java \
   java/nio/ByteBufferAsShortBuffer.java \
-  java/nio/CharArrayBuffer.java \
-  java/nio/CharSequenceAdapter.java \
+  java/nio/CharBufferSpliterator.java \
   java/nio/DirectByteBuffer.java \
-  java/nio/DoubleArrayBuffer.java \
-  java/nio/FileDescriptorChannel.java \
-  java/nio/FloatArrayBuffer.java \
-  java/nio/IntArrayBuffer.java \
-  java/nio/IoVec.java \
-  java/nio/LongArrayBuffer.java \
-  java/nio/MemoryBlock.java \
-  java/nio/ShortArrayBuffer.java \
+  java/nio/HeapByteBuffer.java \
+  java/nio/HeapCharBuffer.java \
+  java/nio/HeapDoubleBuffer.java \
+  java/nio/HeapFloatBuffer.java \
+  java/nio/HeapIntBuffer.java \
+  java/nio/HeapLongBuffer.java \
+  java/nio/HeapShortBuffer.java \
+  java/nio/StringCharBuffer.java \
   java/nio/charset/Charsets.java \
   java/nio/charset/ModifiedUtf8.java \
   java/text/CalendarBuilder.java \
@@ -582,7 +595,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/icu/TimeZoneNames.java \
   libcore/io/AsynchronousCloseMonitor.java \
   libcore/io/DeleteOnExit.java \
-  libcore/io/ErrnoException.java \
   libcore/io/IoBridge.java \
   libcore/io/IoUtils.java \
   libcore/io/Libcore.java \
@@ -618,6 +630,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/MutableLong.java \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java \
+  sun/misc/Cleaner.java \
   sun/misc/CompoundEnumeration.java \
   sun/misc/DoubleConsts.java \
   sun/misc/FDBigInt.java \
@@ -627,7 +640,11 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/misc/FormattedFloatingDecimal.java \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
+  sun/nio/ch/DirectBuffer.java \
+  sun/nio/cs/HistoricallyNamedCharset.java \
+  sun/nio/ch/Interruptible.java \
   sun/nio/cs/StreamDecoder.java \
+  sun/nio/cs/StreamEncoder.java \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/misc/ReflectUtil.java \
@@ -659,7 +676,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
 
 JAVA_PUBLIC_SOURCES_IO = \
   java/io/CharArrayReader.java \
-  java/io/CharArrayWriter.java \
   java/io/CharConversionException.java \
   java/io/FileReader.java \
   java/io/FileWriter.java \
@@ -682,6 +698,7 @@ JAVA_PRIVATE_SOURCES_IO =
 JAVA_PUBLIC_SOURCES_NET = \
   com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.java \
   com/google/j2objc/net/NSErrorException.java \
+  java/io/CharArrayWriter.java \
   java/net/Authenticator.java \
   java/net/BindException.java \
   java/net/CacheRequest.java \
@@ -706,7 +723,6 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/Inet6Address.java \
   java/net/InetAddress.java \
   java/net/InetSocketAddress.java \
-  java/net/InMemoryCookieStore.java \
   java/net/InterfaceAddress.java \
   java/net/MalformedURLException.java \
   java/net/MulticastSocket.java \
@@ -714,22 +730,18 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/NetworkInterface.java \
   java/net/NoRouteToHostException.java \
   java/net/PasswordAuthentication.java \
-  java/net/PlainDatagramSocketImpl.java \
-  java/net/PlainServerSocketImpl.java \
-  java/net/PlainSocketImpl.java \
   java/net/PortUnreachableException.java \
   java/net/ProtocolException.java \
   java/net/Proxy.java \
   java/net/ProxySelector.java \
-  java/net/ProxySelectorImpl.java \
   java/net/ResponseCache.java \
   java/net/SecureCacheResponse.java \
   java/net/ServerSocket.java \
   java/net/Socket.java \
   java/net/SocketAddress.java \
-  java/net/SocketException.java \
   java/net/SocketImpl.java \
   java/net/SocketImplFactory.java \
+  java/net/SocketOption.java \
   java/net/SocketOptions.java \
   java/net/SocketPermission.java \
   java/net/SocketTimeoutException.java \
@@ -745,52 +757,74 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/UnknownServiceException.java
 
 JAVA_PRIVATE_SOURCES_NET = \
+  android/system/GaiException.java \
+  android/system/StructAddrinfo.java \
   com/google/j2objc/net/DataEnqueuedInputStream.java \
   com/google/j2objc/net/DataEnqueuedOutputStream.java \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
   com/google/j2objc/net/SecurityDataHandler.java \
+  java/net/AbstractPlainDatagramSocketImpl.java \
+  java/net/AbstractPlainSocketImpl.java \
   java/net/AddressCache.java \
+  java/net/DefaultDatagramSocketImplFactory.java \
   java/net/DefaultFileNameMap.java \
-  java/net/InetUnixAddress.java \
+  java/net/DefaultInterface.java \
+  java/net/Inet6AddressImpl.java \
+  java/net/InetAddressImpl.java \
+  java/net/InMemoryCookieStore.java \
   java/net/NetFactoryImpl.java \
-  java/net/SocketOption.java \
-  java/net/SocketUtils.java \
+  java/net/NetUtil.java \
+  java/net/PlainDatagramSocketImpl.java \
+  java/net/PlainServerSocketImpl.java \
+  java/net/PlainSocketImpl.java \
+  java/net/ProxySelectorImpl.java \
+  java/net/SocketInputStream.java \
+  java/net/SocketOutputStream.java \
   java/net/Socks4Message.java \
+  java/net/SocksConsts.java \
+  java/net/SocksSocketImpl.java \
   java/net/StandardSocketOptions.java \
   libcore/icu/NativeIDN.java \
-  libcore/io/GaiException.java \
   libcore/io/NetworkBridge.java \
   libcore/io/NetworkOs.java \
-  libcore/io/StructAddrinfo.java \
   libcore/net/UriCodec.java \
   libcore/net/http/HttpDate.java \
-  libcore/net/url/FileHandler.java \
-  libcore/net/url/FileURLConnection.java \
-  okio/AsyncTimeout.java \
-  okio/Base64.java \
-  okio/Buffer.java \
-  okio/BufferedSink.java \
-  okio/BufferedSource.java \
-  okio/ByteString.java \
-  okio/ForwardingSink.java \
-  okio/ForwardingSource.java \
-  okio/MessageDigest.java \
-  okio/Okio.java \
-  okio/RealBufferedSink.java \
-  okio/RealBufferedSource.java \
-  okio/Segment.java \
-  okio/SegmentPool.java \
-  okio/SegmentedByteString.java \
-  okio/Sink.java \
-  okio/Source.java \
-  okio/Timeout.java \
-  okio/Util.java
+  sun/misc/IoTrace.java \
+  sun/nio/cs/ThreadLocalCoders.java \
+  sun/net/ApplicationProxy.java \
+  sun/net/ConnectionResetException.java \
+  sun/net/NetHooks.java \
+  sun/net/ProgressEvent.java \
+  sun/net/ProgressMeteringPolicy.java \
+  sun/net/ProgressMonitor.java \
+  sun/net/ProgressListener.java \
+  sun/net/ProgressSource.java \
+  sun/net/ResourceManager.java \
+  sun/net/SocksProxy.java \
+  sun/net/util/IPAddressUtil.java \
+  sun/net/www/MessageHeader.java \
+  sun/net/www/MeteredStream.java \
+  sun/net/www/ParseUtil.java \
+  sun/net/www/URLConnection.java \
+  sun/net/www/protocol/file/FileURLConnection.java \
+  sun/net/www/protocol/file/Handler.java
+
+NATIVE_JRE_SOURCES_NET = \
+  DatagramPacket.m \
+  Inet4AddressImpl.m \
+  Inet6AddressImpl.m \
+  NetworkInterface.m \
+  PlainDatagramSocketImpl.m \
+  PlainSocketImpl.m \
+  SocketInputStream.m \
+  SocketOutputStream.m \
+  net_util.m \
+  net_util_md.m
 
 JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/EventListener.java \
   java/util/EventListenerProxy.java \
-  java/util/EventObject.java \
   java/util/Observable.java \
   java/util/Observer.java \
   java/util/PriorityQueue.java \
@@ -849,7 +883,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicLongFieldUpdater.java \
   java/util/concurrent/atomic/AtomicMarkableReference.java \
   java/util/concurrent/atomic/AtomicReferenceArray.java \
-  java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
   java/util/concurrent/atomic/AtomicStampedReference.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/Lock.java \
@@ -860,7 +893,6 @@ JAVA_PRIVATE_SOURCES_CONCURRENT =
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/ChannelFactoryImpl.java \
-  java/nio/channels/AcceptPendingException.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
   java/nio/channels/AsynchronousCloseException.java \
@@ -878,9 +910,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/FileLockInterruptionException.java \
   java/nio/channels/GatheringByteChannel.java \
   java/nio/channels/IllegalBlockingModeException.java \
-  java/nio/channels/IllegalChannelGroupException.java \
   java/nio/channels/IllegalSelectorException.java \
-  java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
@@ -891,19 +921,16 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/OverlappingFileLockException.java \
   java/nio/channels/Pipe.java \
   java/nio/channels/ReadableByteChannel.java \
-  java/nio/channels/ReadPendingException.java \
   java/nio/channels/ScatteringByteChannel.java \
   java/nio/channels/SeekableByteChannel.java \
   java/nio/channels/SelectableChannel.java \
   java/nio/channels/SelectionKey.java \
   java/nio/channels/Selector.java \
   java/nio/channels/ServerSocketChannel.java \
-  java/nio/channels/ShutdownChannelGroupException.java \
   java/nio/channels/SocketChannel.java \
   java/nio/channels/UnresolvedAddressException.java \
   java/nio/channels/UnsupportedAddressTypeException.java \
   java/nio/channels/WritableByteChannel.java \
-  java/nio/channels/WritePendingException.java \
   java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/channels/spi/AbstractSelectableChannel.java \
   java/nio/channels/spi/AbstractSelectionKey.java \
@@ -913,17 +940,70 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/util/Scanner.java
 
 JAVA_PRIVATE_SOURCES_CHANNELS = \
-  java/nio/ChannelUtils.java \
-  java/nio/DatagramChannelImpl.java \
-  java/nio/FileChannelImpl.java \
-  java/nio/PipeImpl.java \
-  java/nio/SelectionKeyImpl.java \
-  java/nio/SelectorImpl.java \
-  java/nio/SelectorProviderImpl.java \
-  java/nio/ServerSocketChannelImpl.java \
-  java/nio/SocketChannelImpl.java \
+  dalvik/system/SocketTagger.java \
+  java/lang/UnsatisfiedLinkError.java \
+  java/net/ProtocolFamily.java \
+  java/net/StandardProtocolFamily.java \
   sun/misc/LRUCache.java \
-  sun/nio/ch/ChannelInputStream.java
+  sun/net/spi/nameservice/NameService.java \
+  sun/nio/ch/AbstractPollArrayWrapper.java \
+  sun/nio/ch/AbstractPollSelectorImpl.java \
+  sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/ChannelInputStream.java \
+  sun/nio/ch/DatagramChannelImpl.java \
+  sun/nio/ch/DatagramDispatcher.java \
+  sun/nio/ch/DatagramSocketAdaptor.java \
+  sun/nio/ch/DefaultSelectorProvider.java \
+  sun/nio/ch/ExtendedSocketOption.java \
+  sun/nio/ch/FileChannelImpl.java \
+  sun/nio/ch/FileLockTable.java \
+  sun/nio/ch/FileLockImpl.java \
+  sun/nio/ch/FileKey.java \
+  sun/nio/ch/FileDescriptorHolderSocketImpl.java \
+  sun/nio/ch/FileDispatcherImpl.java \
+  sun/nio/ch/FileDispatcher.java \
+  sun/nio/ch/InheritedChannel.java \
+  sun/nio/ch/IOStatus.java \
+  sun/nio/ch/IOUtil.java \
+  sun/nio/ch/IOVecWrapper.java \
+  sun/nio/ch/NativeDispatcher.java \
+  sun/nio/ch/NativeObject.java \
+  sun/nio/ch/NativeThread.java \
+  sun/nio/ch/NativeThreadSet.java \
+  sun/nio/ch/Net.java \
+  sun/nio/ch/OptionKey.java \
+  sun/nio/ch/PipeImpl.java \
+  sun/nio/ch/PollArrayWrapper.java \
+  sun/nio/ch/PollSelectorImpl.java \
+  sun/nio/ch/PollSelectorProvider.java \
+  sun/nio/ch/Reflect.java \
+  sun/nio/ch/SelChImpl.java \
+  sun/nio/ch/SelectionKeyImpl.java \
+  sun/nio/ch/SelectorImpl.java \
+  sun/nio/ch/SelectorProviderImpl.java \
+  sun/nio/ch/ServerSocketAdaptor.java \
+  sun/nio/ch/ServerSocketChannelImpl.java \
+  sun/nio/ch/SinkChannelImpl.java \
+  sun/nio/ch/SocketAdaptor.java \
+  sun/nio/ch/SocketChannelImpl.java \
+  sun/nio/ch/SocketDispatcher.java \
+  sun/nio/ch/SocketOptionRegistry.java \
+  sun/nio/ch/SourceChannelImpl.java \
+  sun/nio/ch/Util.java
+
+NATIVE_JRE_SOURCES_CHANNELS = \
+  DatagramChannelImpl.m \
+  DatagramDispatcher.m \
+  FileChannelImpl.m \
+  FileDispatcherImpl.m \
+  FileKey.m \
+  InheritedChannel.m \
+  IOUtil.m \
+  NativeThread.m \
+  Net.m \
+  PollArrayWrapper.m \
+  ServerSocketChannelImpl.m \
+  SocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
@@ -940,6 +1020,8 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/CodeSource.java \
   java/security/CryptoPrimitive.java \
   java/security/DigestException.java \
+  java/security/DigestInputStream.java \
+  java/security/DigestOutputStream.java \
   java/security/DomainCombiner.java \
   java/security/GeneralSecurityException.java \
   java/security/Guard.java \
@@ -1075,10 +1157,13 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/ExemptionMechanismException.java \
   javax/crypto/ExemptionMechanismSpi.java \
   javax/crypto/IllegalBlockSizeException.java \
+  javax/crypto/KeyGenerator.java \
+  javax/crypto/KeyGeneratorSpi.java \
   javax/crypto/Mac.java \
   javax/crypto/MacSpi.java \
   javax/crypto/NoSuchPaddingException.java \
   javax/crypto/NullCipher.java \
+  javax/crypto/SealedObject.java \
   javax/crypto/SecretKey.java \
   javax/crypto/SecretKeyFactory.java \
   javax/crypto/SecretKeyFactorySpi.java \
@@ -1491,8 +1576,6 @@ NATIVE_JRE_SOURCES_ZIP = \
   java_util_zip_Deflater.m \
   java_util_zip_Inflater.m \
   java_util_zip_ZipFile.m \
-  jni_util.m \
-  jvm.m \
   zip_util.m
 
 JAVA_PUBLIC_SOURCES_ZIP = \
@@ -1533,13 +1616,10 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   java/util/zip/ZipConstants64.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
-  libcore/io/HeapBufferIterator.java \
   libcore/net/url/JarHandler.java \
   libcore/net/url/JarURLConnectionImpl.java \
   libcore/util/CountingOutputStream.java \
   sun/misc/ASCIICaseInsensitiveComparator.java \
-  sun/misc/Cleaner.java \
-  sun/nio/ch/DirectBuffer.java \
   sun/security/timestamp/TimestampToken.java \
   sun/security/util/SignatureFileVerifier.java \
   sun/security/util/ManifestDigester.java \
@@ -1629,7 +1709,6 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 # in a testing environment. The other classes are errors only thrown by a JVM.
 JAVA_PUBLIC_SOURCES_OTHER = \
   java/lang/ClassCircularityError.java \
-  java/lang/UnsatisfiedLinkError.java \
   java/lang/UnsupportedClassVersionError.java \
   javax/lang/model/element/Modifier.java
 
@@ -1799,4 +1878,5 @@ JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
   $(JAVA_PUBLIC_SOURCES_XMLPULL)
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
-NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP)
+NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
+  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET)

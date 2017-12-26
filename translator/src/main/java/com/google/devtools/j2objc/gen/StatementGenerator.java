@@ -87,6 +87,7 @@ import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeLiteral;
@@ -205,11 +206,11 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(AssertStatement node) {
-    buffer.append("JreAssert((");
-    node.getExpression().accept(this);
-    buffer.append("), (");
+    buffer.append("JreAssert(");
+    acceptMacroArgument(node.getExpression());
+    buffer.append(", ");
     if (node.getMessage() != null) {
-      node.getMessage().accept(this);
+      acceptMacroArgument(node.getMessage());
     } else {
       int startPos = node.getStartPosition();
       String assertStatementString =
@@ -221,7 +222,7 @@ public class StatementGenerator extends UnitTreeVisitor {
           + " condition failed: " + assertStatementString;
       buffer.append(LiteralGenerator.generateStringLiteral(msg));
     }
-    buffer.append("));\n");
+    buffer.append(");\n");
     return false;
   }
 
@@ -449,10 +450,18 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(FunctionInvocation node) {
+    // If the function is actually a macro, then it's arguments may need to be wrapped in
+    // parentheses.
+    boolean isMacro = node.getFunctionElement().isMacro();
     buffer.append(node.getName());
     buffer.append('(');
     for (Iterator<Expression> iter = node.getArguments().iterator(); iter.hasNext(); ) {
-      iter.next().accept(this);
+      Expression arg = iter.next();
+      if (isMacro) {
+        acceptMacroArgument(arg);
+      } else {
+        arg.accept(this);
+      }
       if (iter.hasNext()) {
         buffer.append(", ");
       }
@@ -969,5 +978,44 @@ public class StatementGenerator extends UnitTreeVisitor {
     // All Initializer nodes should have been converted during initialization
     // normalization.
     throw new AssertionError("initializer node not converted");
+  }
+
+  private void acceptMacroArgument(Expression expr) {
+    if (needsParenthesesForMacro(expr)) {
+      buffer.append('(');
+      expr.accept(this);
+      buffer.append(')');
+    } else {
+      expr.accept(this);
+    }
+  }
+
+  private boolean needsParenthesesForMacro(Expression expr) {
+    boolean[] hasComma = { false };
+    expr.accept(new TreeVisitor() {
+      @Override
+      public boolean visit(ArrayInitializer node) {
+        hasComma[0] = true;
+        return false;
+      }
+      @Override
+      public boolean visit(CommaExpression node) {
+        return false;  // Adds parentheses around children.
+      }
+      @Override
+      public boolean visit(FunctionInvocation node) {
+        return false;  // Adds parentheses around children.
+      }
+      @Override
+      public boolean visit(StringLiteral node) {
+        if (!UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())) {
+          // LiteralGenerator will emit the string using [NSString stringWithCharacters:].
+          hasComma[0] = true;
+          return false;
+        }
+        return true;
+      }
+    });
+    return hasComma[0];
   }
 }

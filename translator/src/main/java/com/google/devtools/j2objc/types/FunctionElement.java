@@ -34,6 +34,7 @@ public class FunctionElement {
   private final TypeElement declaringClass;
   private List<TypeMirror> parameterTypes = new ArrayList<>();
   private boolean isVarargs = false;
+  private boolean isMacro = false;
 
   public FunctionElement(
       String name, String retainedResultName, TypeMirror returnType,
@@ -88,6 +89,15 @@ public class FunctionElement {
 
   public FunctionElement setIsVarargs(boolean value) {
     isVarargs = value;
+    return this;
+  }
+
+  public boolean isMacro() {
+    return isMacro;
+  }
+
+  public FunctionElement setIsMacro(boolean value) {
+    isMacro = value;
     return this;
   }
 

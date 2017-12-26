@@ -179,13 +179,7 @@ public class CastResolverTest extends GenerationTest {
         + "class A<T extends I1> { T foo; }"
         + "class B<T extends I2> extends A<T> {}", "Test", "Test.m");
     // Test that access of "foo" from subclass B is cast to id<I2>.
-    if (options.isJDT()) {
-      // JDT resolves the "b" in "b.foo" to type A while Javac resolves it to type B. Both are
-      // correct.
-      assertTranslation(translation, "[self test1WithI2:((id<I2>) ((A *) nil_chk(b))->foo_)];");
-    } else {
-      assertTranslation(translation, "[self test1WithI2:((id<I2>) ((B *) nil_chk(b))->foo_)];");
-    }
+    assertTranslation(translation, "[self test1WithI2:((id<I2>) ((B *) nil_chk(b))->foo_)];");
     assertTranslation(translation, "Test_test2WithI2_(self, ((id<I2>) b->foo_));");
   }
 

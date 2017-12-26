@@ -18,12 +18,11 @@
 package java.io;
 
 import com.google.j2objc.annotations.RetainedWith;
+import android.system.ErrnoException;
 import dalvik.system.CloseGuard;
-
 import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
-import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;

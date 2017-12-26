@@ -20,7 +20,10 @@
 //  Created by Keith Stanger on Mar. 8, 2016.
 //
 
+#include <dlfcn.h>
 #include <pthread.h>
+#include <sys/ioctl.h>
+#include <sys/poll.h>
 
 #include "TempFailureRetry.h"
 #include "java/io/File.h"
@@ -37,6 +40,16 @@ static const char *absolutePath(const char *path) {
     RELEASE_(f);
   }
   return [pathStr fileSystemRepresentation];
+}
+
+jint JVM_SocketAvailable(jint fd, jint *ret) {
+  int arg = *ret;
+  int res = TEMP_FAILURE_RETRY(ioctl(fd, FIONREAD, &arg));
+  if (res < 0) {
+    return 0;
+  }
+  *ret = arg;
+  return 1;
 }
 
 jint JVM_GetLastErrorString(char *buf, int len) {
@@ -76,6 +89,11 @@ jlong JVM_Lseek(jint fd, jlong offset, jint whence) {
   return TEMP_FAILURE_RETRY(lseek(fd, offset, whence));
 }
 
+jlong JVM_CurrentTimeMillis(JNIEnv *env, jclass ignored) {
+  return (long long) ((CFAbsoluteTimeGetCurrent()
+      + kCFAbsoluteTimeIntervalSince1970) * 1000);
+}
+
 void *JVM_RawMonitorCreate(void) {
   pthread_mutex_t *lock = malloc(sizeof(pthread_mutex_t));
   if (pthread_mutex_init(lock, NULL) == 0) {
@@ -97,4 +115,29 @@ jint JVM_RawMonitorEnter(void *mon) {
 
 void JVM_RawMonitorExit(void *mon) {
   pthread_mutex_unlock(mon);
+}
+
+jint JVM_Timeout(int fd, long timeout) {
+  jlong prev, curr;
+  prev = JVM_CurrentTimeMillis(NULL, NULL);
+  struct pollfd pollFds[1];
+  pollFds[0].fd = fd;
+  pollFds[0].events = POLLERR | POLLIN;
+  bool infiniteTimout = (timeout < 0L);
+  int rc = -1;
+
+  {
+    rc = poll(pollFds, 1, (int)timeout);
+    if (!infiniteTimout) {
+      curr = JVM_CurrentTimeMillis(NULL, NULL);
+      timeout -= (long)(curr - prev);
+      if (rc == -1 && errno == EINTR && timeout <= 0) {
+        // Timeout.
+        return 0;
+      }
+      prev = curr;
+    }
+  } while (rc == -1 && errno == EINTR);
+
+  return rc;
 }

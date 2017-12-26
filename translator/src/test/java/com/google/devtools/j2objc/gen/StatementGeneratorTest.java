@@ -200,22 +200,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Example_Bar, FOO, NSString *)");
   }
 
-  public void testMultipleVariableDeclarations() throws IOException {
-    String source = "String one, two;";
-    List<Statement> stmts = translateStatements(source);
-    if (options.isJDT()) {
-      // TODO(tball): remove test and this JDT block when javac conversion is complete.
-      String result = generateStatement(stmts.get(0));
-      assertEquals("NSString *one, *two;", result);
-    } else {
-      assertEquals(2, stmts.size());
-      String result = generateStatement(stmts.get(0));
-      assertEquals("NSString *one;", result);
-      result = generateStatement(stmts.get(1));
-      assertEquals("NSString *two;", result);
-    }
-  }
-
   public void testObjectDeclaration() throws IOException {
     List<Statement> stmts = translateStatements("Object o;");
     assertEquals(1, stmts.size());
@@ -1174,7 +1158,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5;\nint b = 6;\nassert a < b;\n}\n}\n",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert((a < b), (@\"Test.java:4 condition failed: assert a < b;\"))");
+        "JreAssert(a < b, @\"Test.java:4 condition failed: assert a < b;\")");
   }
 
   public void testAssertWithDescription() throws IOException {
@@ -1183,7 +1167,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : \"a should be lower than b\";}}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert((a < b), (@\"a should be lower than b\"))");
+        "JreAssert(a < b, @\"a should be lower than b\")");
   }
 
   public void testAssertWithDynamicDescription() throws IOException {
@@ -1192,7 +1176,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : a + \" should be lower than \" + b;}}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert((a < b), (JreStrcat(\"I$I\", a, @\" should be lower than \", b)));");
+        "JreAssert(a < b, JreStrcat(\"I$I\", a, @\" should be lower than \", b));");
   }
 
   // Verify that a Unicode escape sequence is preserved with string

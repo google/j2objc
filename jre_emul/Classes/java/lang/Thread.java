@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import sun.nio.ch.Interruptible;
 
 /*-[
 #import "java/lang/AssertionError.h"
@@ -78,6 +79,10 @@ public class Thread implements Runnable {
 
   /** The object the thread is waiting on (normally null). */
   Object blocker;
+
+  /** The object in which this thread is blocked in an interruptible I/O operation, if any. */
+  private Interruptible IOBlocker;
+  private final Object IOBlockerLock = new Object();
 
   @Weak
   private ThreadGroup threadGroup;
@@ -353,7 +358,6 @@ public class Thread implements Runnable {
   }
 
   /*-[
-
   void *start_routine(void *arg) {
     JavaLangThread *thread = (__bridge JavaLangThread *)arg;
     pthread_setspecific(java_thread_key, (__bridge void *)thread);
@@ -361,10 +365,11 @@ public class Thread implements Runnable {
       @try {
         [thread run];
       } @catch (JavaLangThrowable *t) {
-        [thread rethrowWithJavaLangThrowable:t];
+        JavaLangThread_rethrowWithJavaLangThrowable_(thread, t);
       } @catch (id error) {
-        [thread rethrowWithJavaLangThrowable:create_JavaLangThrowable_initWithNSString_(
-            [NSString stringWithFormat:@"Unknown error: %@", [error description]])];
+        JavaLangThread_rethrowWithJavaLangThrowable_(
+            thread, create_JavaLangThrowable_initWithNSString_(
+                [NSString stringWithFormat:@"Unknown error: %@", [error description]]));
       }
       return NULL;
     }
@@ -584,6 +589,13 @@ public class Thread implements Runnable {
       return getStackTrace().length;
   }
 
+  /** Set the IOBlocker field; invoked from java.nio code. */
+  public void blockedOn(Interruptible b) {
+    synchronized (IOBlockerLock) {
+      IOBlocker = b;
+    }
+  }
+
   /**
    * Posts an interrupt request to this {@code Thread}. Unless the caller is
    * the {@link #currentThread()}, the method {@code checkAccess()} is called
@@ -622,6 +634,14 @@ public class Thread implements Runnable {
           interruptActions.get(i).run();
         }
       }
+
+      synchronized (IOBlockerLock) {
+        Interruptible b = IOBlocker;
+        if (b != null) {
+          b.interrupt(this);
+        }
+      }
+
       if (interrupted) {
         return;  // No further action needed.
       }

@@ -39,11 +39,11 @@ import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Modifies initializers to be more iOS like.  Static initializers are

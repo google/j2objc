@@ -30,37 +30,25 @@
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
 
-void JreThrowNullPointerException() {
-  @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+id JreThrowNullPointerException() {
+  @throw create_JavaLangNullPointerException_init();
 }
 
-void JreThrowClassCastException() {
-  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
+void JreThrowClassCastException(id obj, Class cls) {
+  @throw create_JavaLangClassCastException_initWithNSString_(
+      [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
+          [[obj java_getClass] getName], NSStringFromClass(cls)]);
+}
+
+void JreThrowClassCastExceptionWithIOSClass(id obj, IOSClass *cls) {
+  @throw create_JavaLangClassCastException_initWithNSString_(
+      [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
+          [[obj java_getClass] getName], [cls getName]]);
 }
 
 void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);
 }
-
-#if defined(J2OBJC_COUNT_NIL_CHK) && !defined(J2OBJC_DISABLE_NIL_CHECKS)
-static int j2objc_nil_chk_count = 0;
-
-void JrePrintNilChkCount() {
-  printf("nil_chk count: %d\n", j2objc_nil_chk_count);
-}
-
-void JrePrintNilChkCountAtExit() {
-  atexit(JrePrintNilChkCount);
-}
-
-id nil_chk(id __unsafe_unretained p) {
-  j2objc_nil_chk_count++;
-  if (__builtin_expect(!p, 0)) {
-    JreThrowNullPointerException();
-  }
-  return p;
-}
-#endif
 
 #ifndef J2OBJC_USE_GC
 void JreFinalize(id self) {
@@ -441,4 +429,13 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
 
 FOUNDATION_EXPORT void JreRelease(id obj) {
   RELEASE_(obj);
+}
+
+FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal) {
+  const J2ObjcClassInfo *metadata = [enumClass getMetadata];
+  if (metadata) {
+    return [NSString stringWithUTF8String:metadata->fields[ordinal].name];
+  } else {
+    return [NSString stringWithFormat:@"%@_%d", NSStringFromClass(enumClass.objcClass), ordinal];
+  }
 }

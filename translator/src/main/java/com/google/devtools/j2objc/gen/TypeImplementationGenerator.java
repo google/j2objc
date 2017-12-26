@@ -257,7 +257,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printJniFunctionAndWrapper(function);
     } else {
       String functionBody = generateStatement(function.getBody());
-      println(getFunctionSignature(function) + " " + reindent(functionBody));
+      println(getFunctionSignature(function, false) + " " + reindent(functionBody));
     }
   }
 
@@ -293,7 +293,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     println(";\n");
 
     // Generate a wrapper function that calls the matching JNI function.
-    print(getFunctionSignature(function));
+    print(getFunctionSignature(function, false));
     println(" {");
     print("  ");
     TypeMirror returnType = function.getReturnType().getTypeMirror();
@@ -318,9 +318,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   @Override
   protected void printNativeDeclaration(NativeDeclaration declaration) {
-    newline();
     String code = declaration.getImplementationCode();
     if (code != null) {
+      newline();
       println(reindent(code));
     }
   }
@@ -330,7 +330,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (initStatements.isEmpty()) {
       return;
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("{\nif (self == [" + typeName + " class]) {\n");
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));

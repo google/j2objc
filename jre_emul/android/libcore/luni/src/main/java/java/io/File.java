@@ -39,6 +39,7 @@ import static libcore.io.OsConstants.S_IXUSR;
 import static libcore.io.OsConstants.W_OK;
 import static libcore.io.OsConstants.X_OK;
 
+import android.system.ErrnoException;
 import java.net.NetFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,7 +50,6 @@ import java.util.Locale;
 import java.util.Random;
 
 import libcore.io.DeleteOnExit;
-import libcore.io.ErrnoException;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.StructStat;

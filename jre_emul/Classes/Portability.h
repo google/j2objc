@@ -41,6 +41,7 @@
 #define pwrite64 pwrite
 
 // TODO: Darwin appears to have an fdatasync syscall.
+#include <unistd.h> // For fsync
 static inline int fdatasync(int fd) { return fsync(fd); }
 
 // For Linux-compatible sendfile(3).

@@ -29,6 +29,8 @@
 
 #include "J2ObjC_common.h"
 
+#define java_lang_Integer_MAX_VALUE 2147483647L
+
 extern const jchar JavaLangInteger_digits[];
 extern const jchar JavaLangInteger_DigitTens[];
 extern const jchar JavaLangInteger_DigitOnes[];

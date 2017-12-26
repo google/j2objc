@@ -38,10 +38,12 @@ FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
 // Internal only macro that hacks the @RetainedWith behavior to a child class
 // without needing to use class swizzling or associated objects. Must be
 // combined with @Weak or @WeakOuter on the parent reference.
-#define RETAINED_WITH_CHILD(PARENT_REF) \
+// NUM_REFS is the number of direct/indirect references to the child from
+// the parent.
+#define RETAINED_WITH_CHILD_NUM_REFS(PARENT_REF, NUM_REFS) \
   - (id)retain { \
     @synchronized (self) { \
-      if ([self retainCount] == 1) { \
+      if ([self retainCount] == NUM_REFS) { \
         [PARENT_REF retain]; \
       } \
       return [super retain]; \
@@ -49,13 +51,18 @@ FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
   } \
   - (oneway void)release { \
     @synchronized (self) { \
-      if ([self retainCount] == 2) { \
+      if ([self retainCount] == NUM_REFS + 1) { \
         [PARENT_REF autorelease]; \
       } \
       [super release]; \
     } \
   }
+
+#define RETAINED_WITH_CHILD(PARENT_REF) \
+RETAINED_WITH_CHILD_NUM_REFS(PARENT_REF, 1)
+
 #else
 #define RETAINED_WITH_CHILD(PARENT) /*ignore*/
 #endif
+
 #endif // JRE_RETAINED_WITH_H_

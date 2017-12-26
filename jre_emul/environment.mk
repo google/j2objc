@@ -62,21 +62,23 @@ ANDROID_JSON_TEST_ROOT = $(LIBCORE_BASE)/json/src/test/java
 ANDROID_LUNI_ROOT = $(LIBCORE_BASE)/luni/src/main/java
 ANDROID_LUNI_TEST_ROOT = $(LIBCORE_BASE)/luni/src/test/java
 ANDROID_TEST_SUPPORT_ROOT = $(LIBCORE_BASE)/support/src/test/java
-ANDROID_XML_ROOT = $(LIBCORE_BASE)/xml/src/main/java
 ANDROID_APACHE_TEST_ROOT = $(LIBCORE_BASE)/harmony-tests/src/test/java
 ANDROID_TESTS_RUNNER_ROOT = $(ANDROID_BASE)/frameworks/base/tests-runner/src
 ANDROID_JSR166_TEST_ROOT = $(LIBCORE_BASE)/jsr166-tests/src/test/java
 MOCKWEBSERVER_ROOT = $(ANDROID_PLATFORM)/external/mockwebserver/src/main/java
+APACHE_COMMONS_LANG_TEST_ROOT = apache_commons_lang/src/test/java
 
 # OpenJDK migration definitions.
 # TODO(tball): rename to above names when migration is complete.
 NEW_LIBCORE_BASE = $(ANDROID_PLATFORM)/libcore
 ANDROID_DALVIK_ROOT = $(NEW_LIBCORE_BASE)/dalvik/src/main/java
+ANDROID_DALVIK_TEST_ROOT = $(NEW_LIBCORE_BASE)/dalvik/src/test/java
 NEW_ANDROID_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/main/java
 J2OBJC_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/objc/java
 J2OBJC_LUNI_NATIVE = $(NEW_LIBCORE_BASE)/luni/src/objc/native
 ANDROID_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/main/java
 ANDROID_OPENJDK_NATIVE = $(NEW_LIBCORE_BASE)/ojluni/src/main/native
+ANDROID_XML_ROOT = $(NEW_LIBCORE_BASE)/xml/src/main/java
 NEW_ANDROID_LUNI_TEST_ROOT = $(NEW_LIBCORE_BASE)/luni/src/test/java
 NEW_ANDROID_TEST_SUPPORT_ROOT = $(NEW_LIBCORE_BASE)/support/src/test/java
 NEW_ANDROID_APACHE_TEST_ROOT = $(NEW_LIBCORE_BASE)/harmony-tests/src/test/java
@@ -141,7 +143,8 @@ TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
     $(ANDROID_JSR166_TEST_ROOT) $(MOCKWEBSERVER_ROOT) \
     $(NEW_ANDROID_LUNI_TEST_ROOT) $(OKIO_TEST_ROOT) \
     $(NEW_ANDROID_TEST_SUPPORT_ROOT) $(NEW_ANDROID_APACHE_TEST_ROOT) \
-    $(NEW_ANDROID_JSR166_TEST_ROOT)
+    $(NEW_ANDROID_JSR166_TEST_ROOT) $(ANDROID_DALVIK_TEST_ROOT) \
+    $(APACHE_COMMONS_LANG_TEST_ROOT)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC)
 

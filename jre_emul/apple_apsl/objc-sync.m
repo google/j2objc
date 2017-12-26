@@ -458,7 +458,7 @@ done:
 
 // Returns true if an object has a pthread_mutux allocated for it on this thread.
 BOOL j2objc_sync_holds_lock(id obj) {
-  nil_chk(obj);
+  (void)nil_chk(obj);
   SyncData* data = id2data(obj, TEST);
   return data ? YES : NO;
 }

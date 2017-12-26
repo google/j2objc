@@ -1,0 +1,15 @@
+URL:     https://commons.apache.org/proper/commons-lang/
+Version: 3.7
+License: Apache License 2.0
+License File: LICENSE
+
+Description:
+
+This directory contains the org.apache.commons.lang3.AnnotationUtilsTest
+class, which verifies support for generated annotation class's equals(),
+hashCode(), and toString() methods.
+
+Modifications: 
+
+References to AnnotationUtils methods was replaced with annotation methods
+where possible, and unrelated AnnotationUtils tests were deleted.

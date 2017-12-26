@@ -1306,7 +1306,7 @@ class SystemClassLoader extends ClassLoader {
 
   @Override
   protected native Class<?> findClass(String name) throws ClassNotFoundException /*-[
-    nil_chk(name);
+    (void)nil_chk(name);
     return [IOSClass forName:name initialize:YES classLoader:self];
   ]-*/;
 
@@ -1373,4 +1373,3 @@ class SystemClassLoader extends ClassLoader {
       return findResources(resName);
   }
 }
-

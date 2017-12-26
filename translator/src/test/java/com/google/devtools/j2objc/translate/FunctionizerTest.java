@@ -170,14 +170,14 @@ public class FunctionizerTest extends GenerationTest {
         "int A_str(A *self) {",
         "return 0;");
     assertTranslatedLines(translation,
-        "- (jint)test1 {",
-        "return A_str(this$0_);");
+        "jint A_B_test1(A_B *self) {",
+        "return A_str(self->this$0_);");
     assertTranslatedLines(translation,
-        "- (jint)test2 {",
-        "return A_str(this$0_);");
+        "jint A_B_test2(A_B *self) {",
+        "return A_str(self->this$0_);");
     assertTranslatedLines(translation,
-        "- (jint)test3 {",
-        "return this$0_->outerN_;");
+        "jint A_B_test3(A_B *self) {",
+        "return self->this$0_->outerN_;");
   }
 
   // Verify that a call to a private method in an outer class is converted correctly.
@@ -190,7 +190,7 @@ public class FunctionizerTest extends GenerationTest {
         + "    private void test(B b) { b.test(); }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "- (void)testWithA_B:(A_B *)b {",
+        "void A_C_testWithA_B_(A_C *self, A_B *b) {",
         "A_B_test(nil_chk(b));");
   }
 
@@ -378,7 +378,7 @@ public class FunctionizerTest extends GenerationTest {
         "enum Test { A { void bar() { foo(); } }; private static void foo() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "- (void)bar {", "Test_foo();");
-    assertTranslation(translation, "static void Test_foo();");
+    assertTranslation(translation, "static void Test_foo(void);");
     assertTranslation(translation, "void Test_foo() {");
   }
 
@@ -391,7 +391,7 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "- (void)foo;");
     // Public declaration for "bar". both the class method and c-function.
     assertTranslation(translation, "+ (void)bar;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar();");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar(void);");
 
     translation = getTranslatedFile("Test.m");
     // Implementation for "foo" is functionized.
@@ -471,9 +471,10 @@ public class FunctionizerTest extends GenerationTest {
     // Functionized constructor.
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
     // Retaining allocating constructor.
-    assertTranslation(translation, "FOUNDATION_EXPORT Test *new_Test_init() NS_RETURNS_RETAINED;");
+    assertTranslation(translation,
+        "FOUNDATION_EXPORT Test *new_Test_init(void) NS_RETURNS_RETAINED;");
     // Releasing allocating constructor.
-    assertTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init();");
+    assertTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init(void);");
     translation = getTranslatedFile("Test.m");
     // Declarations for the private constructor.
     assertTranslation(translation,
@@ -589,5 +590,15 @@ public class FunctionizerTest extends GenerationTest {
     options.setEmitWrapperMethods(false);
     String translation = translateSourceFile("class A {}", "A", "A.h");
     assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+  }
+
+  // Even when the private method contains a super invocation, it must be functionized. (b/63163887)
+  public void testPrivateInstanceMethodIsFunctionized() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { private void foo() { super.toString(); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+         "void Test_foo(Test *self) {",
+         "  Test_super$_description(self, @selector(description));",
+         "}");
   }
 }

@@ -56,6 +56,6 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
     assertTranslation(translation, "jint field_");
     assertTranslation(translation, "- (void)method;");
     assertTranslation(translation, "+ (void)staticMethod;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod();");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod(void);");
   }
 }

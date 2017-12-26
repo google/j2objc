@@ -156,6 +156,15 @@ public class IOSCharset extends Charset {
   static const __unsafe_unretained NSString *utf32le_aliases[] = { @"X-UTF-32LE", @"UTF_32LE" };
   static const __unsafe_unretained NSString *gb2312_aliases[] = {
       @"gb2312", @"euc-cn", @"x-EUC-CN", @"euccn", @"EUC_CN", @"gb2312-80", @"gb2312-1980" };
+  static const NSString *euckr_aliases[] = {
+      @"euc_kr", @"csEUCKR", @"ksc5601", @"5601", @"ksc5601_1987", @"ksc_5601",
+      @"ksc5601-1987", @"ks_c_5601-1987", @"euckr" };
+  static const NSString *gbk_aliases[] = {
+      @"windows-936", @"CP936", @"MS936", @"ms_936", @"x-mswin-936" };
+  static const NSString *gb18030_aliases[] = { @"gb18030-2000" };
+  static const NSString *big5_aliases[] = {
+      @"csBig5", @"CN-Big5", @"BIG-FIVE", @"BIGFIVE" };
+  static const NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
 
   static const jbyte ascii_replacement[] = { 63 };
   static const jbyte utf16be_replacement[] = { -1, -3 };
@@ -210,6 +219,16 @@ public class IOSCharset extends Charset {
     { kCFStringEncodingUTF32LE, "UTF-32LE", @"UTF-32LE", utf32le_aliases, 2,
       4.0f, 4.0f, 0.25f, 1.0f, utf32le_replacement, 4 },
     { kCFStringEncodingEUC_CN, "EUC-CN", @"GB2312", gb2312_aliases, 7,
+      2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
+    { kCFStringEncodingEUC_KR, "EUC-KR", @"EUC-KR", euckr_aliases, 9,
+      2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
+    { kCFStringEncodingGBK_95, "GBK", @"GBK", gbk_aliases, 4,
+      2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
+    { kCFStringEncodingGB_18030_2000, "GB18030", @"GB18030", gb18030_aliases, 1,
+      4.0f, 4.0f, 1.0f, 2.0f, ascii_replacement, 1 },
+    { kCFStringEncodingBig5, "BIG5", @"BIG5", big5_aliases, 4,
+      2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
+    { kCFStringEncodingBig5_HKSCS_1999, "BIG5-HKSCS", @"BIG5-HKSCS", big5hkscs_aliases, 2,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
   };
   static const int numIosCharsets = sizeof(iosCharsets) / sizeof(CharsetInfo);

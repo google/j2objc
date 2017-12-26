@@ -26,34 +26,97 @@ import java.io.IOException;
  */
 public class PackageInfoLookupTest extends GenerationTest {
 
-  public void testReflectionSupportAnnotation() throws IOException {
+  public void testFullReflectionSupportSetValue() throws IOException {
     addSourceFile("@ReflectionSupport(value = ReflectionSupport.Level.FULL) package foo;"
         + "import com.google.j2objc.annotations.ReflectionSupport;", "foo/package-info.java");
     CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
     PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
-    assert packageInfoLookup.getReflectionSupportLevel("foo") == ReflectionSupport.Level.FULL;
+    assertSame(ReflectionSupport.Level.FULL, packageInfoLookup.getReflectionSupportLevel("foo"));
+  }
 
+  public void testFullReflectionSupport() throws IOException {
     addSourceFile("@ReflectionSupport(ReflectionSupport.Level.FULL) package bar;"
         + "import com.google.j2objc.annotations.*;", "bar/package-info.java");
-    unit = translateType("bar.A", "package bar; public class A {}");
-    packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
-    assert packageInfoLookup.getReflectionSupportLevel("bar") == ReflectionSupport.Level.FULL;
+    CompilationUnit unit = translateType("bar.A", "package bar; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertSame(ReflectionSupport.Level.FULL, packageInfoLookup.getReflectionSupportLevel("bar"));
+  }
 
+  public void testNativeOnlyReflectionSupport() throws IOException {
     addSourceFile("@com.google.j2objc.annotations.ReflectionSupport"
         + "(com.google.j2objc.annotations.ReflectionSupport.Level.NATIVE_ONLY) package baz;",
         "baz/package-info.java");
-    unit = translateType("baz.A", "package baz; public class A {}");
-    packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
-    assert
-        packageInfoLookup.getReflectionSupportLevel("baz") == ReflectionSupport.Level.NATIVE_ONLY;
+    CompilationUnit unit = translateType("baz.A", "package baz; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertSame(ReflectionSupport.Level.NATIVE_ONLY,
+        packageInfoLookup.getReflectionSupportLevel("baz"));
+  }
 
-    // Verify that ReflectionSupport annotation can be parsed from class files
+  // Verify that ReflectionSupport annotation can be parsed from a compiled jar file.
+  public void testReflectionSupportInJarFile() throws IOException {
     String jarFilePath = getResourceAsFile("packageInfoLookupTest.jar");
     options.fileUtil().getClassPathEntries().add(jarFilePath);
-    unit = translateType("com.google.test.packageInfoLookupTest.A",
+    CompilationUnit unit = translateType("com.google.test.packageInfoLookupTest.A",
         "package com.google.test.packageInfoLookupTest; public class A {}");
-    packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
-    assert packageInfoLookup.getReflectionSupportLevel(unit.getPackage().getName().toString())
-        == ReflectionSupport.Level.FULL;
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertSame(ReflectionSupport.Level.FULL,
+        packageInfoLookup.getReflectionSupportLevel(unit.getPackage().getName().toString()));
+  }
+
+  public void testFullReflectionSupportSetValueCompiled() throws IOException {
+    createClassFile("foo.package-info",
+        "@ReflectionSupport(value = ReflectionSupport.Level.FULL) package foo;"
+        + "import com.google.j2objc.annotations.ReflectionSupport;");
+    removeFile("foo/package-info.java");
+    CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertSame(ReflectionSupport.Level.FULL, packageInfoLookup.getReflectionSupportLevel("foo"));
+  }
+
+  public void testFullReflectionSupportCompiled() throws IOException {
+    createClassFile("bar.package-info",
+        "@ReflectionSupport(ReflectionSupport.Level.FULL) package bar;"
+        + "import com.google.j2objc.annotations.ReflectionSupport;");
+    removeFile("bar/package-info.java");
+    CompilationUnit unit = translateType("bar.A", "package bar; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertSame(ReflectionSupport.Level.FULL, packageInfoLookup.getReflectionSupportLevel("bar"));
+  }
+
+  public void testNativeOnlyReflectionSupportCompiled() throws IOException {
+    createClassFile("baz.package-info",
+        "@com.google.j2objc.annotations.ReflectionSupport"
+        + "(com.google.j2objc.annotations.ReflectionSupport.Level.NATIVE_ONLY) package baz;");
+    removeFile("baz/package-info.java");
+    CompilationUnit unit = translateType("baz.A", "package baz; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertSame(ReflectionSupport.Level.NATIVE_ONLY,
+        packageInfoLookup.getReflectionSupportLevel("baz"));
+  }
+
+  public void testPackageRenameCompiled() throws IOException {
+    createClassFile("foo.package-info",
+        "@ObjectiveCName(\"XYZ\") package foo; "
+        + "import com.google.j2objc.annotations.ObjectiveCName;");
+    removeFile("foo/package-info.java");
+    String translation = translateSourceFile("package foo; public class A {}", "foo.A", "foo/A.h");
+    assertTranslation(translation, "@interface XYZA");
+  }
+
+  // Verify that ParametersAreNonnullByDefault is not set on packages by default.
+  public void testParametersAreNonnullByDefaultNotSet() throws IOException {
+    CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertFalse(packageInfoLookup.hasParametersAreNonnullByDefault("foo"));
+  }
+
+  public void testParametersAreNonnullByDefault() throws IOException {
+    createClassFile("bar.package-info",
+        "@ParametersAreNonnullByDefault package bar;"
+        + "import javax.annotation.ParametersAreNonnullByDefault;");
+    removeFile("bar/package-info.java");
+    CompilationUnit unit = translateType("bar.A", "package bar; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertTrue(packageInfoLookup.hasParametersAreNonnullByDefault("bar"));
   }
 }

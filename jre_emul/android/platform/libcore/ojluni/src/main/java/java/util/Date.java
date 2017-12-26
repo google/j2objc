@@ -129,8 +129,10 @@ import sun.util.calendar.Gregorian;
 public class Date
     implements java.io.Serializable, Cloneable, Comparable<Date>
 {
-    private static final BaseCalendar gcal =
-                                CalendarSystem.getGregorianCalendar();
+    static class GcalHolder {
+      static final BaseCalendar INSTANCE = CalendarSystem.getGregorianCalendar();
+    }
+
     private static BaseCalendar jcal;
 
     private transient long fastTime;
@@ -605,7 +607,7 @@ public class Date
             if (year < 100) {
                 synchronized (Date.class) {
                     if (defaultCenturyStart == 0) {
-                        defaultCenturyStart = gcal.getCalendarDate().getYear() - 80;
+                        defaultCenturyStart = GcalHolder.INSTANCE.getCalendarDate().getYear() - 80;
                     }
                 }
                 year += (defaultCenturyStart / 100) * 100;
@@ -788,7 +790,7 @@ public class Date
      */
     @Deprecated
     public int getDay() {
-        return normalize().getDayOfWeek() - gcal.SUNDAY;
+        return normalize().getDayOfWeek() - GcalHolder.INSTANCE.SUNDAY;
     }
 
     /**
@@ -975,7 +977,7 @@ public class Date
             return date.fastTime;
         }
         BaseCalendar.Date d = (BaseCalendar.Date) date.cdate.clone();
-        return gcal.getTime(d);
+        return GcalHolder.INSTANCE.getTime(d);
     }
 
     /**
@@ -1045,7 +1047,7 @@ public class Date
         BaseCalendar.Date date = normalize();
         StringBuilder sb = new StringBuilder(28);
         int index = date.getDayOfWeek();
-        if (index == gcal.SUNDAY) {
+        if (index == GcalHolder.INSTANCE.SUNDAY) {
             index = 8;
         }
         convertToAbbr(sb, wtb[index]).append(' ');                        // EEE
@@ -1287,7 +1289,7 @@ public class Date
      */
     private static final BaseCalendar getCalendarSystem(int year) {
         if (year >= 1582) {
-            return gcal;
+            return GcalHolder.INSTANCE;
         }
         return getJulianCalendar();
     }
@@ -1299,19 +1301,19 @@ public class Date
         if (utc >= 0
             || utc >= GregorianCalendar.DEFAULT_GREGORIAN_CUTOVER
                         - TimeZone.getDefaultRef().getOffset(utc)) {
-            return gcal;
+            return GcalHolder.INSTANCE;
         }
         return getJulianCalendar();
     }
 
     private static final BaseCalendar getCalendarSystem(BaseCalendar.Date cdate) {
         if (jcal == null) {
-            return gcal;
+            return GcalHolder.INSTANCE;
         }
         if (cdate.getEra() != null) {
             return jcal;
         }
-        return gcal;
+        return GcalHolder.INSTANCE;
     }
 
     synchronized private static final BaseCalendar getJulianCalendar() {

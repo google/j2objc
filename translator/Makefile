@@ -35,8 +35,7 @@ SOURCEPATH = $(CWD):$(JAVA_SOURCE_DIR)
 BASE_PACKAGE = com/google/devtools/j2objc
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(ASM_JAR) $(JSR305_JAR) \
-  $(JAVAC_JAR) $(PROCYON_JARS)
+INTERNAL_DEPS = $(GUAVA_JAR) $(JSR305_JAR) $(JAVAC_JAR) $(PROCYON_JARS)
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -193,39 +192,6 @@ JAVA_SOURCES = \
 	javac/JavacParser.java \
 	javac/MemoryFileObject.java \
 	javac/TreeConverter.java \
-	jdt/AbstractBinding.java \
-	jdt/AbstractTypeBinding.java \
-	jdt/AnnotationPreProcessor.java \
-	jdt/BindingConverter.java \
-	jdt/GeneratedMethodBinding.java \
-	jdt/GeneratedPackageBinding.java \
-	jdt/GeneratedTypeBinding.java \
-	jdt/GeneratedVariableBinding.java \
-	jdt/JdtAnnotationMirror.java \
-	jdt/JdtAnnotationValue.java \
-	jdt/JdtArrayType.java \
-	jdt/JdtDeclaredType.java \
-	jdt/JdtElement.java \
-	jdt/JdtElements.java \
-	jdt/JdtExecutableElement.java \
-	jdt/JdtExecutableType.java \
-	jdt/JdtIntersectionType.java \
-	jdt/JdtJ2ObjCIncompatibleStripper.java \
-	jdt/JdtNoType.java \
-	jdt/JdtNativeType.java \
-	jdt/JdtNullType.java \
-	jdt/JdtPackageElement.java \
-	jdt/JdtParser.java \
-	jdt/JdtPrimitiveType.java \
-	jdt/JdtTypeElement.java \
-	jdt/JdtTypeMirror.java \
-	jdt/JdtTypeParameterElement.java \
-	jdt/JdtTypes.java \
-	jdt/JdtTypeVariable.java \
-	jdt/JdtVariableElement.java \
-	jdt/JdtWildcardType.java \
-	jdt/StringName.java \
-	jdt/TreeConverter.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \
 	pipeline/GenerationBatch.java \
@@ -270,6 +236,7 @@ JAVA_SOURCES = \
 	types/AbstractTypeMirror.java \
 	types/ExecutablePair.java \
 	types/FunctionElement.java \
+	types/GeneratedAnnotationMirror.java \
 	types/GeneratedArrayType.java \
 	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \
@@ -282,7 +249,6 @@ JAVA_SOURCES = \
 	types/LambdaTypeElement.java \
 	types/NativeType.java \
 	types/PointerType.java \
-	util/BindingUtil.java \
 	util/CaptureInfo.java \
 	util/CodeReferenceMap.java \
 	util/ElementUtil.java \
@@ -316,6 +282,7 @@ TEST_RESOURCES = \
   com/google/devtools/j2objc/testMappings.j2objc \
   com/google/devtools/j2objc/annotations/Processor.jar \
   com/google/devtools/j2objc/util/example.jar \
+  com/google/devtools/j2objc/util/hello.aar \
   com/google/devtools/j2objc/util/packageInfoLookupTest.jar
 TEST_RESOURCE_FILES = $(TEST_RESOURCES:%=$(TEST_DIR)/%)
 
@@ -340,13 +307,13 @@ default: $(J2OBJC_JAR)
 $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo building j2objc jar
-	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
+	@$(JAVAC) -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
 	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.8 -target 1.8 -nowarn \
 	    $(JAVA_SOURCES_FULL)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
-	@java -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR_JAR) process jarjar.rules $@-combined $@
+	@$(JAVA) -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR_JAR) process jarjar.rules $@-combined $@
 
 # Format manifest classpath with each jar on a separate line, to avoid
 # maximum line length of 72 bytes in UTF-8 encoding.
@@ -379,12 +346,12 @@ clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 test: compile-tests copy-test-resources
-	java -classpath $(TEST_CLASSPATH) -Xss4m -ea junit.textui.TestRunner \
-	  com.google.devtools.j2objc.SmallTests
+	$(JAVA) -classpath $(TEST_CLASSPATH) -Xss4m -XX:+UseParallelGC \
+	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
-	@javac -Xlint:unchecked -sourcepath src/test/java \
+	@$(JAVAC) -Xlint:unchecked -sourcepath src/test/java \
 	    -classpath $(TEST_CLASSPATH) -encoding UTF-8 -d $(TEST_DIR) \
 	    `find src/test/java -name '*.java'`
 

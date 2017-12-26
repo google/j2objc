@@ -15,8 +15,9 @@
 package com.google.devtools.j2objc;
 
 import com.google.devtools.j2objc.util.SourceVersion;
-
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Tests for {@link Options}.
@@ -75,5 +76,17 @@ public class OptionsTest extends GenerationTest {
     String [] argsJavaTarget = "-target 1.6".split(" ");
     // Passed target should be ignored.
     options.load(argsJavaTarget);
+  }
+
+  public void testFlagsIntermixedWithSources() throws IOException {
+    File tmpDir = new File(getTempDir(), "testdir");
+    tmpDir.mkdir();  // Dir must exist for Options to add it to classpath.
+    String cmdArgs =
+        "Test.java -source 8 OtherTest.java -classpath " + tmpDir.getPath() + " AndAnother.java";
+    String[] args = cmdArgs.split(" ");
+    List<String> sources = options.load(args);
+    assertEquals(3, sources.size());
+    assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
+    assertTrue(options.fileUtil().getClassPathEntries().contains(tmpDir.getPath()));
   }
 }
