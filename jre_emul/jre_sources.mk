@@ -1093,6 +1093,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CRLReason.java \
   java/security/cert/CRLSelector.java \
   java/security/cert/Extension.java \
+  java/security/cert/LDAPCertStoreParameters.java \
   java/security/cert/PKIXBuilderParameters.java \
   java/security/cert/PKIXCertPathBuilderResult.java \
   java/security/cert/PKIXCertPathChecker.java \
@@ -1111,6 +1112,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/X509Extension.java \
   java/security/interfaces/DSAKey.java \
   java/security/interfaces/DSAParams.java \
+  java/security/interfaces/DSAPrivateKey.java \
   java/security/interfaces/DSAPublicKey.java \
   java/security/interfaces/ECKey.java \
   java/security/interfaces/ECPrivateKey.java \
@@ -1121,6 +1123,8 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/interfaces/RSAPrivateKey.java \
   java/security/interfaces/RSAPublicKey.java \
   java/security/spec/AlgorithmParameterSpec.java \
+  java/security/spec/DSAParameterSpec.java \
+  java/security/spec/DSAPrivateKeySpec.java \
   java/security/spec/DSAPublicKeySpec.java \
   java/security/spec/ECField.java \
   java/security/spec/ECFieldF2m.java \
@@ -1148,11 +1152,15 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/util/UUID.java \
   javax/crypto/BadPaddingException.java \
   javax/crypto/Cipher.java \
+  javax/crypto/CipherInputStream.java \
+  javax/crypto/CipherOutputStream.java \
   javax/crypto/CipherSpi.java \
   javax/crypto/ExemptionMechanism.java \
   javax/crypto/ExemptionMechanismException.java \
   javax/crypto/ExemptionMechanismSpi.java \
   javax/crypto/IllegalBlockSizeException.java \
+  javax/crypto/KeyAgreement.java \
+  javax/crypto/KeyAgreementSpi.java \
   javax/crypto/KeyGenerator.java \
   javax/crypto/KeyGeneratorSpi.java \
   javax/crypto/Mac.java \
@@ -1165,11 +1173,21 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/SecretKeyFactorySpi.java \
   javax/crypto/ShortBufferException.java \
   javax/crypto/interfaces/DHKey.java \
+  javax/crypto/interfaces/DHPrivateKey.java \
   javax/crypto/interfaces/DHPublicKey.java \
+  javax/crypto/interfaces/PBEKey.java \
+  javax/crypto/spec/DESKeySpec.java \
+  javax/crypto/spec/DESedeKeySpec.java \
+  javax/crypto/spec/DHGenParameterSpec.java \
   javax/crypto/spec/DHParameterSpec.java \
+  javax/crypto/spec/DHPrivateKeySpec.java \
   javax/crypto/spec/DHPublicKeySpec.java \
+  javax/crypto/spec/GCMParameterSpec.java \
   javax/crypto/spec/IvParameterSpec.java \
+  javax/crypto/spec/OAEPParameterSpec.java \
+  javax/crypto/spec/PBEKeySpec.java \
   javax/crypto/spec/PBEParameterSpec.java \
+  javax/crypto/spec/PSource.java \
   javax/crypto/spec/RC2ParameterSpec.java \
   javax/crypto/spec/RC5ParameterSpec.java \
   javax/crypto/spec/SecretKeySpec.java \
