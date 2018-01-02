@@ -27,6 +27,7 @@ import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -52,6 +53,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.tools.JavaFileObject;
 
 /**
  * Utility methods for working with elements.
@@ -79,8 +81,6 @@ public final class ElementUtil {
 
   private final Elements javacElements;
   private final Map<Element, TypeMirror> elementTypeMap = new HashMap<>();
-
-  private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
   public ElementUtil(Elements javacElements) {
     this.javacElements = javacElements;
@@ -470,7 +470,7 @@ public final class ElementUtil {
 
   public static VariableElement findField(TypeElement type, String name) {
     return Iterables.getFirst(Iterables.filter(
-        filterEnclosedElements(type, VariableElement.class, ElementKind.FIELD), 
+        filterEnclosedElements(type, VariableElement.class, ElementKind.FIELD),
         field -> getName(field).equals(name)), null);
   }
 
@@ -709,5 +709,20 @@ public final class ElementUtil {
         || (isParameter(element)
             && parametersNonnullByDefault
             && !((VariableElement) element).asType().getKind().isPrimitive());
+  }
+
+  /**
+   * Returns the source file name for a type element. Returns null if the element
+   * isn't a javac ClassSymbol, or if it is defined by a classfile which was compiled
+   * without a source attribute.
+   */
+  public static String getSourceFile(TypeElement type) {
+    if (type instanceof ClassSymbol) {
+      JavaFileObject srcFile = ((ClassSymbol) type).sourcefile;
+      if (srcFile != null) {
+        return srcFile.getName();
+      }
+    }
+    return null;
   }
 }

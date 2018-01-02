@@ -162,9 +162,27 @@ public class HeaderMap {
       return mappedHeader;
     }
 
-    String name = ElementUtil.getName(type);
+    String name = inferSourceName(type);
     PackageElement pkg = ElementUtil.getPackage(type);
     return outputDirFromPackage(pkg) + name + ".h";
+  }
+
+  /**
+   * Returns what should be the name of the "main" type associated with this
+   * type. Normally an outer type's name matches from its source file name, but
+   * Java allows additional non-public outer types to be declared in the same
+   * source file.
+   */
+  private String inferSourceName(TypeElement type) {
+    if (!ElementUtil.isPublic(type)) {
+      String srcFile = ElementUtil.getSourceFile(type);
+      if (srcFile != null && srcFile.endsWith(".java")) {
+        int lastSlash = Math.max(srcFile.lastIndexOf('/'), srcFile.lastIndexOf('\\'));
+        String baseName = lastSlash > -1 ? srcFile.substring(lastSlash + 1) : srcFile;
+        return baseName.substring(0, baseName.length() - 5); // Remove .java suffix.
+      }
+    }
+    return ElementUtil.getName(type);
   }
 
   @VisibleForTesting
