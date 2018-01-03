@@ -192,7 +192,6 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
       if (!result) {
         unsigned int count;
         __unsafe_unretained Protocol **protocolList = class_copyProtocolList(class_, &count);
-        Protocol **protocolList = class_copyProtocolList(class_, &count);
         bool excludeNSCopying = false;
         const char *clsName = class_getName(class_);
         // IOSClass and JavaLangEnum are made to conform to NSCopying so that they can be used as
@@ -201,7 +200,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
           excludeNSCopying = true;
         }
         result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, excludeNSCopying);
-        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
+          interfaces_ = RETAIN_(result);
         free(protocolList);
       }
     }

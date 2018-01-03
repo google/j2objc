@@ -156,15 +156,15 @@ public class IOSCharset extends Charset {
   static const __unsafe_unretained NSString *utf32le_aliases[] = { @"X-UTF-32LE", @"UTF_32LE" };
   static const __unsafe_unretained NSString *gb2312_aliases[] = {
       @"gb2312", @"euc-cn", @"x-EUC-CN", @"euccn", @"EUC_CN", @"gb2312-80", @"gb2312-1980" };
-  static const NSString *euckr_aliases[] = {
+  static const __unsafe_unretained NSString *euckr_aliases[] = {
       @"euc_kr", @"csEUCKR", @"ksc5601", @"5601", @"ksc5601_1987", @"ksc_5601",
       @"ksc5601-1987", @"ks_c_5601-1987", @"euckr" };
-  static const NSString *gbk_aliases[] = {
+  static const __unsafe_unretained NSString *gbk_aliases[] = {
       @"windows-936", @"CP936", @"MS936", @"ms_936", @"x-mswin-936" };
-  static const NSString *gb18030_aliases[] = { @"gb18030-2000" };
-  static const NSString *big5_aliases[] = {
+  static const __unsafe_unretained NSString *gb18030_aliases[] = { @"gb18030-2000" };
+  static const __unsafe_unretained NSString *big5_aliases[] = {
       @"csBig5", @"CN-Big5", @"BIG-FIVE", @"BIGFIVE" };
-  static const NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
+  static const __unsafe_unretained NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
 
   static const jbyte ascii_replacement[] = { 63 };
   static const jbyte utf16be_replacement[] = { -1, -3 };

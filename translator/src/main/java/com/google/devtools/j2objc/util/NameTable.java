@@ -23,9 +23,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.Oz;
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.jdt.BindingConverter;
+//import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -48,7 +48,6 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -143,7 +142,7 @@ public class NameTable {
   private final PackagePrefixes prefixMap;
 
   private final ImmutableMap<String, String> classMappings;
-  /*zee 
+  /*argc 
   private final ImmutableMap<String, String> methodMappings;
   //*/
   private final Map<String, String> methodMappings;
@@ -231,14 +230,14 @@ public class NameTable {
     String shortName = getVariableShortName(var);
     if (ElementUtil.isGlobalVar(var)) {
       String className = getFullName(ElementUtil.getDeclaringClass(var));
-      if (ElementUtil.isEnumConstant(var) && !Oz.isPureObjC(elementUtil.getType(var))) {
+      if (ElementUtil.isEnumConstant(var) && !ARGC.isPureObjC(elementUtil.getType(var))) {
         // Enums are declared in an array, so we use a macro to shorten the
         // array access expression.
         return "JreEnum(" + className + ", " + shortName + ")";
       }
       else {//if (className.startsWith("org")) {
           if (ElementUtil.isEnum(var)) {
-        	  if (!Oz.isPureObjC(elementUtil.getType(var))) {
+        	  if (!ARGC.isPureObjC(elementUtil.getType(var))) {
         		  int a = 3;
         	  	a ++;
           }
@@ -281,7 +280,7 @@ public class NameTable {
    */
   public static String camelCasePath(String fqn) {
     StringBuilder sb = new StringBuilder();
-    for (String part : fqn.split(Pattern.quote("/"/* zee File.separator*/))) {
+    for (String part : fqn.split(Pattern.quote("/"/* argc File.separator*/))) {
       sb.append(capitalize(part));
     }
     return sb.toString();
@@ -539,8 +538,8 @@ public class NameTable {
   public static String getPrimitiveObjCType(TypeMirror type) {
     String res = TypeUtil.isVoid(type) ? "void"
         : type.getKind().isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
-		if (type.getKind().isPrimitive() && Oz.inPureObjCMode()) {
-			res = Oz.getObjCType(res);
+		if (type.getKind().isPrimitive() && ARGC.inPureObjCMode()) {
+			res = ARGC.getObjCType(res);
 		}
 		return res;
   }
@@ -603,7 +602,7 @@ public class NameTable {
   }
 
   private String constructObjcTypeFromBounds(TypeMirror type) {
-    /** zee
+    /** argc
     String classType = null;
       /*/
 	  TypeElement classType = null;
@@ -618,7 +617,7 @@ public class NameTable {
       }
     }
     if (classType != null) {
-    	if ((ElementUtil.isEnum(classType) || ElementUtil.isEnumConstant(classType)) && Oz.isPureObjC(elementUtil.getType(classType))) {
+    	if ((ElementUtil.isEnum(classType) || ElementUtil.isEnumConstant(classType)) && ARGC.isPureObjC(elementUtil.getType(classType))) {
     		return getFullName(classType);
     	}
 //    	else if (Oz.inPureObjCMode()) {
@@ -635,9 +634,9 @@ public class NameTable {
   }
 
   public static String getNativeEnumName(String typeName) {
-	  if (Oz.inPureObjCMode()) {
-		  return typeName;
-	  }
+	if (ARGC.inPureObjCMode()) {
+	  return typeName;
+	}
     return typeName + "_Enum";
   }
 

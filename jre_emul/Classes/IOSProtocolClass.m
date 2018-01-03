@@ -25,7 +25,7 @@
 
 @interface IOSProtocolClass () {
   Protocol *protocol_;
-  _Atomic(IOSObjectArray*) interfaces_;
+  IOSObjectArray* interfaces_;
 }
 @end
 
@@ -113,17 +113,18 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = __c11_atomic_load(&interfaces_, __ATOMIC_ACQUIRE);
+    IOSObjectArray *result = interfaces_;
   if (!result) {
     @synchronized(self) {
-      result = __c11_atomic_load(&interfaces_, __ATOMIC_RELAXED);
+            result = interfaces_;
       if (!result) {
         unsigned int count;
         __unsafe_unretained Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
-        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, false);
-        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
+                result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, false);
+                interfaces_ = result;
         free(protocolList);
       }
+    }
     }
   return result;
 }

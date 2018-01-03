@@ -37,7 +37,7 @@
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
 
-#define null_chk(p) (void)nil_chk(p)
+#define null_chk(p) (void)nil_chk((__bridge __unsafe_unretained id)p)
 
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];

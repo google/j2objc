@@ -124,12 +124,11 @@ id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
 id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, __unsafe_unretained id expected, __unsafe_unretained id newValue);
 id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
+void JreReleaseVolatile(volatile_id *pVar);
 #ifdef J2OBJC_USE_GC
-__attribute__((always_inline)) inline void JreReleaseVolatile(volatile_id *pVar) {}
 id JreVolatileNativeAssign(volatile_id *pIvar, __unsafe_unretained id value);
 #else
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
-void JreReleaseVolatile(volatile_id *pVar);
 #endif
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 
@@ -158,9 +157,7 @@ CF_EXTERN_C_END
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
 #endif
 
-CF_EXTERN_C_END
 
-#if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
     AUTORELEASE(value);

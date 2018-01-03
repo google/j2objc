@@ -55,7 +55,7 @@ public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
-  private boolean zee_noPackageDeirectories = false;
+  private boolean argc_noPackageDeirectories = false;
   private static MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
@@ -93,7 +93,7 @@ public class Options {
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
 
   private SourceVersion sourceVersion = SourceVersion.defaultVersion();
-  private String oz_debugSource;
+  private String argc_debugSource;
 
   private static File proGuardUsageFile = null;
 
@@ -219,7 +219,7 @@ public class Options {
 
   private class ArgProcessor {
 
-    private List<String> sourceFiles = new Oz.SourceList(Options.this);
+    private List<String> sourceFiles = new ARGC.SourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -246,7 +246,7 @@ public class Options {
     }
 
     private void processArg(Iterator<String> args) throws IOException {
-      String arg = args.next();
+      String arg = args.next().trim();
       if (arg.isEmpty()) {
         return;
       } else if (arg.startsWith("@")) {
@@ -270,11 +270,8 @@ public class Options {
       } else if (arg.equals("--prefix")) {
         addPrefixOption(getArgValue(args, arg));
       } else if (arg.equals("--pure-objc")) {
-    	  // @zee
-//          if (++nArg == args.length) {
-//            usage("----pure-objc requires an argument");
-//          }
-          Oz.addPureObjC(args.next());
+    	  // argc
+          ARGC.addPureObjC(args.next());
       } else if (arg.equals("--prefixes")) {
         packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
@@ -293,10 +290,10 @@ public class Options {
       } else if (arg.equals("-use-gc")) {
           checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
-    	  /* @zee
-        headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
+    	  /* @argc
+          headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
           /*/
-    	    zee_noPackageDeirectories = true;
+    	  argc_noPackageDeirectories = true;
     	  //*/
 
       } else if (arg.equals("--preserve-full-paths")) {
@@ -386,16 +383,13 @@ public class Options {
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.equals("-debugSource")) {
-//        if (++nArg == args.length) {
-//          usage("-singleSource requires an argument");
-//        }
         // Handle aliasing of version numbers as supported by javac.
-        oz_debugSource = args.next().replace('\\', '/');
-		if (!oz_debugSource.endsWith(".java")) {
-			oz_debugSource += ".java";
+        argc_debugSource = args.next().replace('\\', '/');
+		if (!argc_debugSource.endsWith(".java")) {
+			argc_debugSource += ".java";
 		}
-      } else if (arg.equals("-!debugSource")) {
-        args.next();
+      } else if (arg.equals("-compatible-v2.0.2")) {
+    	ARGC.compatiable_2_0_2 = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -418,6 +412,8 @@ public class Options {
         getArgValue(args, arg);  // ignore
       } else if (obsoleteFlags.contains(arg)) {
         // also ignore
+      } else if (arg.startsWith("-!")) {
+          args.next();
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
@@ -802,6 +798,6 @@ public class Options {
     }
     
    public String getDebugSourceFile() {
-	return oz_debugSource;
+	return argc_debugSource;
   }
 }

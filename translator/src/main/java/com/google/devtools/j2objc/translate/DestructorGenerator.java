@@ -125,7 +125,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
   private List<Statement> createReleaseStatements(AbstractTypeDeclaration node) {
     List<Statement> statements = Lists.newArrayList();
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
-      Statement releaseStmt = createRelease(fragment.getVariableElement());
+      Statement releaseStmt = createRelease(node, fragment.getVariableElement());
       if (releaseStmt != null) {
         statements.add(releaseStmt);
       }
@@ -133,7 +133,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     return statements;
   }
 
-  private Statement createRelease(VariableElement var) {
+  private Statement createRelease(AbstractTypeDeclaration node, VariableElement var) {
     TypeMirror varType = var.asType();
     if (ElementUtil.isStatic(var) || varType.getKind().isPrimitive()
         || ElementUtil.isWeakReference(var)) {
@@ -144,8 +144,8 @@ public class DestructorGenerator extends UnitTreeVisitor {
     String funcName = null;
     if (isRetainedWith) {
       funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
-    } else if (isVolatile && !options.useGC()) {
-      funcName = "JreReleaseVolatile";
+    } else if (isVolatile && (!options.useGC() || typeUtil.getArgcFieldType(node.getTypeElement().asType()) == "Native")) {
+        funcName = "JreReleaseVolatile";
     } else if (options.useReferenceCounting()) {
       funcName = "RELEASE_";
     }

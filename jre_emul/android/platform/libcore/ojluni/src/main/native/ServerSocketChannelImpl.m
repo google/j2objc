@@ -61,14 +61,14 @@ Java_sun_nio_ch_ServerSocketChannelImpl_initIDs(JNIEnv *env, jclass c)
 
     cls = (*env)->FindClass(env, "java/io/FileDescriptor");
     fd_fdID = (*env)->GetFieldID(env, cls, "descriptor", "I");
-    [(id)fd_fdID retain];
+    (void)RETAIN_((id)fd_fdID);
 
     cls = (*env)->FindClass(env, "java/net/InetSocketAddress");
     isa_class = (*env)->NewGlobalRef(env, cls);
-    [(id)isa_class retain];
+    (void)RETAIN_((id)isa_class);
     isa_ctorID = (*env)->GetMethodID(env, cls, "<init>",
                                      "(Ljava/net/InetAddress;I)V");
-    [(id)isa_ctorID retain];
+    (void)RETAIN_((id)isa_ctorID);
 }
 
 JNIEXPORT jint JNICALL

@@ -741,12 +741,7 @@ bool IsJavaInterface(Protocol *protocol, bool excludeNSCopying) {
   return result;
 }
 
-<<<<<<< HEAD
-IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(__unsafe_unretained Protocol **list, unsigned int count) {
-=======
-IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
-    Protocol **list, unsigned int count, bool excludeNSCopying) {
->>>>>>> de7c68b685b87c1f00d6928ff372303fc176c01f
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(__unsafe_unretained Protocol **list, unsigned int count, bool excludeNSCopying) {
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
@@ -1426,28 +1421,19 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   return &_IOSClass;
 }
 
-<<<<<<< HEAD
 void ARGC_deallocClass(IOSClass*);
 
 +(instancetype)alloc {
     return [super alloc];
 }
 
-=======
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
->>>>>>> de7c68b685b87c1f00d6928ff372303fc176c01f
 - (void)dealloc {
     ARGC_deallocClass(self);
   @throw create_JavaLangAssertionError_initWithId_(
       [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
-<<<<<<< HEAD
-#if !__has_feature(objc_arc)
-  [super dealloc];
-#endif
-=======
   // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
->>>>>>> de7c68b685b87c1f00d6928ff372303fc176c01f
 }
 #pragma clang diagnostic pop
 

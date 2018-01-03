@@ -134,9 +134,9 @@ typedef union jvalue {
     __unsafe_unretained jobject  l;
 } jvalue;
 
-#if __has_feature(objc_arc)
-typedef __unsafe_unretained id jfieldID;
-typedef __unsafe_unretained id jmethodID;
+#if defined(__OBJC__)
+typedef id jfieldID;
+typedef id jmethodID;
 #else
 struct _jfieldID;
 typedef struct _jfieldID *jfieldID;

@@ -1,8 +1,20 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 //
-//  ARC+GC.mm
-//
-//  Created by DAE HOON JI on 19/07/2017.
-//  Copyright © 2017 DAE HOON JI. All rights reserved.
+//  Created by daehoon.zee on 30/10/2016.
+//  https://github.com/zeedh/j2objc.git
 //
 
 #import "ARGC.h"
@@ -10,7 +22,7 @@
 #import "../IOSClass.h"
 #import <atomic>
 
-#define GC_DEBUG 0
+#define GC_DEBUG 1
 
 #if !GC_DEBUG
 #pragma GCC optimize ("O2")
@@ -460,7 +472,7 @@ public:
             if (releaseReferenceCountEx(obj)) {
                 touchInstance(obj);
                 // 다음 gc 를 위해서.
-                mayHaveGarbage = true;
+                mayHaveGarbage = 2;
             }
         }
     }
@@ -557,7 +569,7 @@ private:
         }
         NSDeallocateObject(obj);
         _cntDeallocated ++;
-        mayHaveGarbage = true;
+        mayHaveGarbage = 2;
     }
     
     void addPhantom(ObjP dead, BOOL isThreadSafe) {
@@ -607,12 +619,12 @@ private:
     
     BOOL _inGC = FALSE;
 public:
-    static BOOL mayHaveGarbage;
+    static int mayHaveGarbage;
 };
 
 
 ARGC ARGC::_instance;
-BOOL ARGC::mayHaveGarbage = FALSE;
+int ARGC::mayHaveGarbage = 0;
 std::atomic_int ARGC::gc_state;
 static scan_offset_t _emptyFields[1] = { 0 };
 static int64_t gc_interval = 0;
@@ -698,6 +710,9 @@ static int64_t gc_interval = 0;
 - (oneway void)release
 {
     if (ARGC::markPendingRelease(self)) {
+        if (GC_TRACE(self, 0)) {
+            ARGC::checkRefCount(self, @"autorelease on markPendingRelease");
+        }
         [super autorelease];
         return;
     }
@@ -705,7 +720,7 @@ static int64_t gc_interval = 0;
     ARGC::checkRefCount(self, @"release Ext", -1);
     if (ARGC::releaseReferenceCountEx(self)) {
         if (ARGC::getExternalRefCount(self) == 0) {
-            ARGC::mayHaveGarbage = true;
+            ARGC::mayHaveGarbage = 2;
         }
     }
 }
@@ -1194,8 +1209,8 @@ void ARGC::doGC() {
 extern "C" {
     void ARGC_loopGC() {
         void (^SCAN)() = ^{
-            if (ARGC::mayHaveGarbage) {
-                ARGC::mayHaveGarbage = false;
+            if (ARGC::mayHaveGarbage > 0) {
+                ARGC::mayHaveGarbage --;
                 ARGC::_instance.doGC();
             }
             ARGC_loopGC();
@@ -1324,7 +1339,7 @@ extern "C" {
             ARGC::releaseReferenceCountAndPublish(oldRef);
         }
         else {
-            [oldRef autorelease];
+            [oldRef release];
         }
     }
     
@@ -1406,7 +1421,7 @@ extern "C" {
 id JreLoadVolatileId(volatile_id *pVar) {
     id obj = *(std::atomic<id>*)pVar;
     if (obj != NULL) {
-        [obj retain];//ARGC_genericRetain(obj);
+        [obj retain];
         [obj autorelease];
     };
     return obj;
@@ -1415,6 +1430,10 @@ id JreLoadVolatileId(volatile_id *pVar) {
 id JreAssignVolatileId(volatile_id *pVar, id value) {
     *(std::atomic<id>*)pVar = value;
     return value;
+}
+
+void JreReleaseVolatile(volatile_id *pVar) {
+    ARGC_genericRelease(*pVar);
 }
 
 id JreVolatileNativeAssign(volatile_id *pVar, id newValue) {
@@ -1456,7 +1475,6 @@ void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {
     std::atomic<id>* pDst = (std::atomic<id>*)pVar;
     std::atomic<id>* pSrc = (std::atomic<id>*)pOther;
     id obj  = *pSrc;
-    //[obj retain];//ARGC_genericRetain(obj);
     *pDst = obj;
 }
 
@@ -1464,7 +1482,7 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
     std::atomic<id>* pDst = (std::atomic<id>*)pVar;
     std::atomic<id>* pSrc = (std::atomic<id>*)pOther;
     id obj  = *pSrc;
-    [obj retain];//ARGC_genericRetain(obj);
+    [obj retain];
     *pDst = obj;
 }
 

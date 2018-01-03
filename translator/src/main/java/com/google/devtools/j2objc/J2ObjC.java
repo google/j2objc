@@ -92,9 +92,9 @@ public class J2ObjC {
     Parser parser = null;
     try {
         parser = createParser(options);
-      //* zee { src 의 pure-objc 를 먼저 확인하기 위한 조치.
+      //* argc { check pure-objc file list.
       List<String> srcArgs = options.fileUtil().getSourcePathEntries();
-      Oz.Preprocessor list = new Oz.Preprocessor(parser, options);
+      ARGC.Preprocessor list = new ARGC.Preprocessor(parser, options);
       list.preprocess(srcArgs);
       list.preprocess(fileArgs);
       //*/
@@ -107,7 +107,7 @@ public class J2ObjC {
         return;
       }
 
-      /** zee
+      /** argc
       parser = createParser(options);
       //*/
       Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);

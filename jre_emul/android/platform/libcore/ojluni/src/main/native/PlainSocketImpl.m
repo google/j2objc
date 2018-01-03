@@ -102,37 +102,37 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_initProto(JNIEnv *env) {
     psi_fdID = (*env)->GetFieldID(env, cls , "fd",
                                   "Ljava/io/FileDescriptor;");
     CHECK_NULL(psi_fdID);
-    [(id)psi_fdID retain];
+    (void)RETAIN_((id)psi_fdID);
     psi_addressID = (*env)->GetFieldID(env, cls, "address",
                                           "Ljava/net/InetAddress;");
     CHECK_NULL(psi_addressID);
-    [(id)psi_addressID retain];
+    (void)RETAIN_((id)psi_addressID);
     psi_portID = (*env)->GetFieldID(env, cls, "port", "I");
     CHECK_NULL(psi_portID);
-    [(id)psi_portID retain];
+    (void)RETAIN_((id)psi_portID);
     psi_localportID = (*env)->GetFieldID(env, cls, "localport", "I");
     CHECK_NULL(psi_localportID);
-    [(id)psi_localportID retain];
+    (void)RETAIN_((id)psi_localportID);
     psi_timeoutID = (*env)->GetFieldID(env, cls, "timeout", "I");
     CHECK_NULL(psi_timeoutID);
-    [(id)psi_timeoutID retain];
+    (void)RETAIN_((id)psi_timeoutID);
     psi_trafficClassID = (*env)->GetFieldID(env, cls, "trafficClass", "I");
     CHECK_NULL(psi_trafficClassID);
-    [(id)psi_trafficClassID retain];
+    (void)RETAIN_((id)psi_trafficClassID);
     psi_serverSocketID = (*env)->GetFieldID(env, cls, "serverSocket",
                         "Ljava/net/ServerSocket;");
     CHECK_NULL(psi_serverSocketID);
-    [(id)psi_serverSocketID retain];
+    (void)RETAIN_((id)psi_serverSocketID);
     psi_fdLockID = (*env)->GetFieldID(env, cls, "fdLock",
                                       "Ljava/lang/Object;");
     CHECK_NULL(psi_fdLockID);
-    [(id)psi_fdLockID retain];
+    (void)RETAIN_((id)psi_fdLockID);
     psi_closePendingID = (*env)->GetFieldID(env, cls, "closePending", "Z");
     CHECK_NULL(psi_closePendingID);
-    [(id)psi_closePendingID retain];
+    (void)RETAIN_((id)psi_closePendingID);
     IO_fd_fdID = NET_GetFileDescriptorID(env);
     CHECK_NULL(IO_fd_fdID);
-    [(id)IO_fd_fdID retain];
+    (void)RETAIN_((id)IO_fd_fdID);
 }
 
 /* a global reference to the java.net.SocketException class. In

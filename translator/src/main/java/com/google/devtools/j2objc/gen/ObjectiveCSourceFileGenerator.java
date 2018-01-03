@@ -136,7 +136,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
     Set<String> forwardStmts = new TreeSet<>();
     for (Import imp : forwardDecls) {
-      /** zee
+      /** argc
       forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
       /*/
       forwardStmts.add(createForwardDeclaration(imp));
@@ -150,7 +150,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     }
   }
 
-  /** zee
+  /** argc
   private String createForwardDeclaration(String typeName, boolean isInterface) {
   /*/
   private String createForwardDeclaration(Import imp) {

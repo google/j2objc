@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import com.google.devtools.j2objc.Oz;
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
@@ -48,8 +48,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
-
-import org.eclipse.jdt.core.util.ISignatureAttribute;
 
 /**
  * Utility methods for working with TypeMirrors.
@@ -213,54 +211,54 @@ public final class TypeUtil {
   }
 
   public boolean isARGCFieldEx(TypeElement owner, TypeMirror t) {
-	  if (getArgcFieldType(owner.asType()) == "Native") {
-		  return false;
-	  }
+	if (getArgcFieldType(owner.asType()) == "Native") {
+	  return false;
+	}
 	  
-	  if (isPrimitiveOrVoid(t)) {
-		  return false;
-	  }
+	if (isPrimitiveOrVoid(t)) {
+	  return false;
+	}
 	  
-	  return getArgcFieldType(t) != "Native";
+	return getArgcFieldType(t) != "Native";
   }
   
   public String getArgcFieldTypeEx(Element owner, TypeMirror t) {
-	  if (getArgcFieldType(owner.asType()) == "Native") {
-		  return "Native";
-	  }
-	  return getArgcFieldType(t);
+	if (getArgcFieldType(owner.asType()) == "Native") {
+	  return "Native";
+	}
+	return getArgcFieldType(t);
   }
   
   public String getArgcFieldType(TypeMirror t) {
-	  if (TypeUtil.isInterface(t)) {
-		  return "Generic";
+	if (TypeUtil.isInterface(t)) {
+	  return "Generic";
+	}
+	if (ARGC.isPureObjC(t)) {
+	  return "Native";
+	}
+	TypeElement e = asTypeElement(t);
+	if (e == null) {
+	  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
+	  if (tp != null) {
+	    return "Generic";
 	  }
-	  if (Oz.isPureObjC(t)) {
-		  return "Native";
+	}
+	if (e == javaObject) {
+	  return "Generic";
+	}
+	while (e != null) {
+	  if (e == this.javaNumber  || e == javaThrowable
+	  ||  e == javaClass || e == this.javaString) {
+	    return "Native";
 	  }
-	  TypeElement e = asTypeElement(t);
-	  if (e == null) {
-		  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
-		  if (tp != null) {
-			return "Generic";
-		  }
+	  TypeMirror m = e.getSuperclass();
+	  if (isNone(m)) {
+		break;
 	  }
-	  if (e == javaObject) {
-		  return "Generic";
-	  }
-	  while (e != null) {
-		  if (e == this.javaNumber  || e == javaThrowable
-		  ||  e == javaClass || e == this.javaString) {
-			  return "Native";
-		  }
-		  TypeMirror m = e.getSuperclass();
-		  if (isNone(m)) {
-			  break;
-		  }
-		  e = asTypeElement(m);
-	  }
-	  return "Object";
-}
+	  e = asTypeElement(m);
+	}
+   	return "Object";
+  }
   
   
   public static TypeParameterElement asTypeParameterElement(TypeMirror t) {

@@ -164,7 +164,7 @@ void JreReleaseVolatile(volatile_id *pVar) {
   // This is only called from a dealloc method, so we can assume there are no
   // concurrent threads with access to this address. Therefore, synchronization
   // is unnecessary.
-  RELEASE_(*(id *));
+  RELEASE_(*(id *)pVar);
 }
 
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {

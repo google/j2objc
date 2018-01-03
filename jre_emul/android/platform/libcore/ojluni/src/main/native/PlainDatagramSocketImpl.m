@@ -151,29 +151,29 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_init(JNIEnv *env, j
     pdsi_fdID = (*env)->GetFieldID(env, cls, "fd",
                                    "Ljava/io/FileDescriptor;");
     CHECK_NULL(pdsi_fdID);
-    [(id) pdsi_fdID retain];
+    (void)RETAIN_((id) pdsi_fdID);
     pdsi_timeoutID = (*env)->GetFieldID(env, cls, "timeout", "I");
     CHECK_NULL(pdsi_timeoutID);
-    [(id) pdsi_timeoutID retain];
+    (void)RETAIN_((id) pdsi_timeoutID);
     pdsi_trafficClassID = (*env)->GetFieldID(env, cls, "trafficClass", "I");
     CHECK_NULL(pdsi_trafficClassID);
-    [(id) pdsi_trafficClassID retain];
+    (void)RETAIN_((id) pdsi_trafficClassID);
     pdsi_localPortID = (*env)->GetFieldID(env, cls, "localPort", "I");
     CHECK_NULL(pdsi_localPortID);
-    [(id) pdsi_localPortID retain];
+    (void)RETAIN_((id) pdsi_localPortID);
     pdsi_connected = (*env)->GetFieldID(env, cls, "connected", "Z");
     CHECK_NULL(pdsi_connected);
-    [(id) pdsi_connected retain];
+    (void)RETAIN_((id) pdsi_connected);
     pdsi_connectedAddress = (*env)->GetFieldID(env, cls, "connectedAddress",
                                                "Ljava/net/InetAddress;");
     CHECK_NULL(pdsi_connectedAddress);
-    [(id) pdsi_connectedAddress retain];
+    (void)RETAIN_((id) pdsi_connectedAddress);
     pdsi_connectedPort = (*env)->GetFieldID(env, cls, "connectedPort", "I");
     CHECK_NULL(pdsi_connectedPort);
-    [(id) pdsi_connectedPort retain];
+    (void)RETAIN_((id) pdsi_connectedPort);
     IO_fd_fdID = NET_GetFileDescriptorID(env);
     CHECK_NULL(IO_fd_fdID);
-    [(id) IO_fd_fdID retain];
+    (void)RETAIN_((id) IO_fd_fdID);
 
 #ifdef __linux__
 #ifdef AF_INET6

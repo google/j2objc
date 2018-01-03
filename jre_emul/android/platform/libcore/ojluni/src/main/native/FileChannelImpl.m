@@ -22,6 +22,7 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+#pragma clang optimize off
 
 #include "jni.h"
 #include "jni_util.h"
@@ -53,7 +54,7 @@ Java_sun_nio_ch_FileChannelImpl_initIDs(JNIEnv *env, jclass clazz)
 {
     jlong pageSize = sysconf(_SC_PAGESIZE);
     chan_fd = (*env)->GetFieldID(env, clazz, "fd", "Ljava/io/FileDescriptor;");
-    [(id)chan_fd retain];
+    (void)RETAIN_((id)chan_fd);
     return pageSize;
 }
 

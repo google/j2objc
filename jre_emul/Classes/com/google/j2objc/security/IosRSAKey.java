@@ -119,7 +119,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
-      NSData *publicKey = nil;
       NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -129,11 +128,13 @@ public abstract class IosRSAKey implements RSAKey, Key {
       publicKeyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
       publicKeyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPublic;
       publicKeyQuery[(id) kSecReturnData] = (id) kCFBooleanTrue;
+      CFTypeRef publicKeyRef = nil;
       OSStatus status =
-          SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, (CFTypeRef *)&publicKey);
+          SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, &publicKeyRef);
       RELEASE_(publicKeyQuery);
 
       IOSByteArray *bytes = nil;
+      NSData* publicKey = (__bridge NSData*)publicKeyRef;
       if (status == noErr && publicKey.length > 0) {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)publicKey.bytes count:publicKey.length];
         RELEASE_(publicKey);
@@ -326,8 +327,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
      * certificate needs to be stripped first.
      */
     private static native long createPrivateSecKeyRef(byte[] bytes) /*-[
-      NSData * privateKey = [[[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
-                                                    length:bytes->size_] autorelease];
+      NSData * privateKey = AUTORELEASE([[NSData alloc] initWithBytes:(const void *)(bytes->buffer_) length:bytes->size_]);
 
       // Delete any previous key definition.
       NSMutableDictionary *keyQuery = getPrivateQuery();
@@ -365,8 +365,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       if (secKeyRef == NULL) {
         // Try again, my way.
         // Convert a PKCS#8 key to PKCS#1 key by stripping off the header.
-        NSData *pkcs1Key = [[privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)]
-            autorelease];
+        NSData *pkcs1Key = AUTORELEASE([privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)]);
 
         keyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
         keyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPrivate;

@@ -454,7 +454,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     // parentheses.
     boolean isMacro = node.getFunctionElement().isMacro();
     buffer.append(node.getName());
-    buffer.append('(');
+    buffer.append("(");
     for (Iterator<Expression> iter = node.getArguments().iterator(); iter.hasNext(); ) {
       Expression arg = iter.next();
       if (isMacro) {

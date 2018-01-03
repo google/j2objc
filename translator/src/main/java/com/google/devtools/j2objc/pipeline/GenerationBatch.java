@@ -14,20 +14,6 @@
 
 package com.google.devtools.j2objc.pipeline;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.Oz;
-import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.file.JarredInputFile;
-import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.gen.GenerationUnit;
-import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.HeaderMap;
-import com.google.devtools.j2objc.util.Parser;
-
-import com.google.devtools.j2objc.util.FileUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,13 +21,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.gen.GenerationUnit;
+import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
+import com.google.devtools.j2objc.util.HeaderMap;
+import com.google.devtools.j2objc.util.Parser;
 
 /**
  * A set of input files for J2ObjC to process,
@@ -56,12 +52,12 @@ public class GenerationBatch {
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
   private static final String J2OBJC_TEMP_DIR_PREFIX = "J2ObjCTempDir";
   private final Options options;
-	private Parser oz_parser;
+  private Parser argc_parser;
 
   private final List<ProcessingContext> inputs = Lists.newArrayList();
 
   public GenerationBatch(Options options, Parser parser) {
-		this.oz_parser = parser;
+	this.argc_parser = parser;
     this.options = options;
   }
 
@@ -289,7 +285,7 @@ public class GenerationBatch {
    */
   @VisibleForTesting
   public void addSource(InputFile file) {
-		if (oz_parser != null) {
+		if (argc_parser != null) {
 			//Oz.processAutoMethodMapRegister(oz_parser, file, options);
 		}
     inputs.add(ProcessingContext.fromFile(file, options));

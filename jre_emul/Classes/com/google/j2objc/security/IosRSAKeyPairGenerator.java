@@ -96,7 +96,7 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     NSMutableDictionary *query = [NSMutableDictionary dictionary];
     query[(id)kSecClass] = (id)kSecClassKey;
     query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
-    query[(id)kSecAttrKeyClass] = (id)keyClass;
+    query[(id)kSecAttrKeyClass] = (__bridge id)keyClass;
     query[(id)kSecAttrApplicationTag] = tagBytes;
     OSStatus status = SecItemDelete((CFDictionaryRef) query);
     if (status != errSecSuccess && status != errSecItemNotFound) {

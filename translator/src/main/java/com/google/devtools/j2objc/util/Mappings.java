@@ -77,13 +77,13 @@ public class Mappings {
     return ImmutableMap.copyOf(classMappings);
   }
 
-  /* zee 
+  /* argc 
   public ImmutableMap<String, String> getMethodMappings() {
     return ImmutableMap.copyOf(methodMappings);
   }
   */
   public Map<String, String> getMethodMappings() {
-	  /* zee add */
+	  /* argc add */
     return methodMappings;
   }
   

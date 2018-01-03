@@ -614,7 +614,7 @@ JVM_SupportsCX8(void);
  * Structure to pass one probe description to JVM
  */
 typedef struct {
-    jmethodID method;
+    __unsafe_unretained jmethodID method;
     __unsafe_unretained jstring   function;
     __unsafe_unretained jstring   name;
     void*            reserved[4];     // for future use
