@@ -328,6 +328,11 @@ public class System {
 
       // These properties are used to define the default Locale.
       NSString *localeId = [[NSLocale currentLocale] localeIdentifier];
+
+      // Locale ids uses '_' before region designator, but java.util.Locale only uses '-'.
+      NSString *languageId = [localeId stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+      [JavaLangSystem_props setPropertyWithNSString:@"user.locale" withNSString:languageId];
+
       NSDictionary *components = [NSLocale componentsFromLocaleIdentifier:localeId];
       NSString *language = [components objectForKey:NSLocaleLanguageCode];
       if (language) {

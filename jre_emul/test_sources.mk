@@ -209,6 +209,7 @@ TEST_SOURCES := \
     jsr166/LinkedBlockingQueueTest.java \
     jsr166/LinkedListTest.java \
     jsr166/PhaserTest.java \
+    LocaleTest.java \
     MaxFloatingPointTest.java \
     NoPackageTest.java \
     PackagePrefixesTest.java \
