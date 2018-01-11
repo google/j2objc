@@ -25,19 +25,66 @@ import junit.framework.TestCase;
  */
 public class IosSHAMessageDigestTest extends TestCase {
 
+  // Source: https://en.wikipedia.org/wiki/SHA-2#Test_vectors
+  private static final String SHA256_HASH_EMPTY_STRING
+      = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+  private static final String SHA384_HASH_EMPTY_STRING
+      = "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da"
+          + "274edebfe76f65fbd51ad2f14898b95b";
+  private static final String SHA512_HASH_EMPTY_STRING
+      = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce"
+          + "47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+
   // Issue #797: cloned digests returned different hash values.
   public void testDigestCloning() throws Exception {
     MessageDigest digest = MessageDigest.getInstance("SHA-1");
-    String hash1 = hash("foo", (MessageDigest) digest.clone());
-    String hash2 = hash("foo", (MessageDigest) digest.clone());
-    assertEquals(hash1, hash2);
+    byte[] hash1 = hash("foo", (MessageDigest) digest.clone());
+    byte[] hash2 = hash("foo", (MessageDigest) digest.clone());
+    assertEquals(hexString(hash1), hexString(hash2));
   }
 
-  private String hash(String input, MessageDigest digest) throws Exception {
+  // Issue #929: verify MessageDigest.digest() methods reset the digest's state.
+  private void digestResetTest(MessageDigest md, String emptyVector) throws Exception {
+    // Initial state.
+    assertEquals(emptyVector, hexString(md.digest()));
+
+    // Update with empty array.
+    md.update(new byte[0]);
+    assertEquals(emptyVector, hexString(md.digest()));
+
+    // Create a non-empty digest, verify it has a different hash.
+    md.update(new byte[64]);
+    byte[] tmp = md.digest();
+    assertFalse(emptyVector.equals(hexString(tmp)));
+
+    // Verify that digest(array, offset, length) method also resets the digest.
+    int len = md.digest(tmp, 0, tmp.length);
+    assertEquals(emptyVector, hexString(md.digest()));
+
+    // Verify correct digest length was returned.
+    assertEquals(md.getDigestLength(), len);
+  }
+
+  public void testSHA256DigestReset() throws Exception {
+    digestResetTest(MessageDigest.getInstance("SHA-256"), SHA256_HASH_EMPTY_STRING);
+  }
+
+  public void testSHA384DigestReset() throws Exception {
+    digestResetTest(MessageDigest.getInstance("SHA-384"), SHA384_HASH_EMPTY_STRING);
+  }
+
+  public void testSHA512DigestReset() throws Exception {
+    digestResetTest(MessageDigest.getInstance("SHA-512"), SHA512_HASH_EMPTY_STRING);
+  }
+
+  private byte[] hash(String input, MessageDigest digest) throws Exception {
     byte[] bytes = input.getBytes("UTF-8");
     digest.update(bytes);
-    byte[] hash = digest.digest();
-    StringBuilder sb = new StringBuilder(2 * bytes.length);
+    return digest.digest();
+  }
+
+  private String hexString(byte[] hash) {
+    StringBuilder sb = new StringBuilder();
     for (byte b : hash) {
       sb.append(hexDigits[(b >> 4) & 0xf]).append(hexDigits[b & 0xf]);
     }

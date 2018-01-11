@@ -17,7 +17,6 @@
 
 package com.google.j2objc.security;
 
-import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 
 /*-[
@@ -31,38 +30,68 @@ import java.security.MessageDigest;
  */
 public class IosMD5MessageDigest extends MessageDigest implements Cloneable {
 
-  private ByteArrayOutputStream buffer;
+  // Malloc'd CommonCrypto context.
+  protected long ctx;
 
   public IosMD5MessageDigest() {
     super("MD5");
-    buffer = new ByteArrayOutputStream();
-  }
-
-  @Override
-  protected void engineUpdate(byte input) {
-    buffer.write(input);
-  }
-
-  @Override
-  protected void engineUpdate(byte[] input, int offset, int len) {
-    buffer.write(input, offset, len);
-  }
-
-  @Override
-  protected native byte[] engineDigest() /*-[
-    IOSByteArray *bytes = [buffer_ toByteArray];
-    unsigned char digest[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(bytes->buffer_, (unsigned) bytes->size_, digest);
-    return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_MD5_DIGEST_LENGTH];
-  ]-*/;
-
-  @Override
-  protected void engineReset() {
-    buffer.reset();
+    allocContext();
   }
 
   @Override
   protected native int engineGetDigestLength() /*-[
     return CC_MD5_DIGEST_LENGTH;
   ]-*/;
+
+  private native void allocContext() /*-[
+    self->ctx_ = (jlong)calloc(1, sizeof(CC_MD5_CTX));
+    [self engineReset];
+  ]-*/;
+
+  @Override
+  protected native void engineReset() /*-[
+    CC_MD5_Init((CC_MD5_CTX *)ctx_);
+  ]-*/;
+
+  @Override
+  protected native void engineUpdate(byte input) /*-[
+    CC_MD5_Update((CC_MD5_CTX *)ctx_, &input, 1);
+  ]-*/;
+
+  @Override
+  protected native void engineUpdate(byte[] input, int offset, int len) /*-[
+    IOSArray_checkRange(input->size_, offset, len);
+    CC_MD5_Update((CC_MD5_CTX *)ctx_, input->buffer_ + offset, len);
+  ]-*/;
+
+  @Override
+  protected native byte[] engineDigest() /*-[
+    IOSByteArray *md = [IOSByteArray arrayWithLength:CC_MD5_DIGEST_LENGTH];
+    CC_MD5_Final((unsigned char *)md->buffer_, (CC_MD5_CTX *)ctx_);
+    [self engineReset];
+    return md;
+  ]-*/;
+
+  public native Object clone() throws CloneNotSupportedException /*-[
+    ComGoogleJ2objcSecurityIosMD5MessageDigest *obj =
+        (ComGoogleJ2objcSecurityIosMD5MessageDigest *) [super java_clone];
+    ComGoogleJ2objcSecurityIosMD5MessageDigest_allocContext(obj);
+    if (ctx_ != 0LL) {
+      memcpy((void *)obj->ctx_, (const void *)ctx_, sizeof(CC_MD5_CTX));
+    }
+    return obj;
+  ]-*/;
+
+  native void close() /*-[
+    if (ctx_ != 0LL) {
+      free((void *)ctx_);
+      ctx_ = 0LL;
+    }
+  ]-*/;
+
+  @Override
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
+  }
 }
