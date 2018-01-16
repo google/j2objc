@@ -826,6 +826,7 @@
 		06ED87C919759EFF00633227 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06ED87C819759EFF00633227 /* Images.xcassets */; };
 		06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
+		6A4BAAF7200C7C8300BF59E4 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A4BAAF5200C7C5600BF59E4 /* LocaleTest.m */; };
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
@@ -3785,6 +3786,7 @@
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
 		6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		6A4BAAF5200C7C5600BF59E4 /* LocaleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocaleTest.m; sourceTree = "<group>"; };
 		6A77143A1E3957B10038F773 /* LocaleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleTest.m; path = org/apache/harmony/tests/java/util/LocaleTest.m; sourceTree = "<group>"; };
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
@@ -6345,6 +6347,7 @@
 				062025A61D512C8E001EE455 /* LocaleDataTest.m */,
 				6A77143A1E3957B10038F773 /* LocaleTest.m */,
 				0620281E1D512E03001EE455 /* LocaleTest.m */,
+				6A4BAAF5200C7C5600BF59E4 /* LocaleTest.m */,
 				063A62E61F67269E001DC971 /* Locator2ImplTest.m */,
 				063A62ED1F6726C1001DC971 /* LocatorImplTest.m */,
 				067FC8201EFAE75E001D0627 /* LockSupportTest.m */,
@@ -7394,6 +7397,7 @@
 				062029481D512F25001EE455 /* RSAKeyGenParameterSpecTest.m in Sources */,
 				069C24451E9EF04900CE6BAF /* CertificateTest.m in Sources */,
 				062026AD1D512D08001EE455 /* URLStreamHandlerFactoryTest.m in Sources */,
+				6A4BAAF7200C7C8300BF59E4 /* LocaleTest.m in Sources */,
 				062026511D512CA1001EE455 /* StreamTokenizerTest.m in Sources */,
 				062027861D512D9D001EE455 /* MockHomonymySubjectBeanInfo.m in Sources */,
 				063A62F51F6726C1001DC971 /* AttributesImplTest.m in Sources */,
