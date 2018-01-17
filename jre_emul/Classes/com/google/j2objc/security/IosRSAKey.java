@@ -339,6 +339,9 @@ public abstract class IosRSAKey implements RSAKey, Key {
       }
 
       // Store key in keychain.
+      // Set kSecAttrAccessible to Always, since this fails when the app launches before the phone
+      // is unlocked (b/72042384).
+      keyQuery[(id)kSecAttrAccessible] = (id)kSecAttrAccessibleAlways;
       keyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanTrue;
       keyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanTrue;
       keyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
