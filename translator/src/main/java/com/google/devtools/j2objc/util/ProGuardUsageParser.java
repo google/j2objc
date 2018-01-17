@@ -166,7 +166,9 @@ public class ProGuardUsageParser {
 
       @Override
       public boolean processLine(String line) throws IOException {
-        if (line.startsWith("ProGuard, version") || line.startsWith("Reading ")) {
+        if (line.startsWith("ProGuard, version")
+            || line.startsWith("Reading ")
+            || line.startsWith("    processed in")) {
           // ignore output header
         } else if (!line.startsWith("    ")) {
           handleClass(line);
