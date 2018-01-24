@@ -24,6 +24,8 @@
  */
 
 package java.util;
+
+import com.google.j2objc.annotations.AutoreleasePool;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -516,7 +518,7 @@ class TimerThread extends Thread {
      * The main timer loop.  (See class comment.)
      */
     private void mainLoop() {
-        while (true) {
+        for (@AutoreleasePool int i = 0;;) {
             try {
                 TimerTask task;
                 boolean taskFired;
