@@ -393,6 +393,8 @@ TEST_SOURCES := \
     libcore/java/net/CookiesTest.java \
     libcore/java/net/OldCookieHandlerTest.java \
     libcore/java/net/DatagramSocketTest.java \
+    libcore/java/net/InetAddressTest.java \
+    libcore/java/net/InetSocketAddressTest.java \
     libcore/java/net/NetworkInterfaceTest.java \
     libcore/java/net/OldAuthenticatorTest.java \
     libcore/java/net/OldPasswordAuthenticationTest.java \
@@ -800,6 +802,7 @@ SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \
     com/google/j2objc/security/IosSecurityProviderTests.java \
     libcore/java/io/SmallTests.java \
+    libcore/java/net/SmallTests.java \
     libcore/java/text/LargeTests.java \
     libcore/java/text/SmallTests.java \
     libcore/java/util/zip/LargeTests.java \
@@ -814,17 +817,6 @@ ARC_TEST_SOURCES = \
 # translated and compiled with ARC.
 COPIED_ARC_TEST_SOURCES = \
     com/google/j2objc/arc/MemoryTest.java
-
-# These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
-# The java.net SmallTests is also skipped, since it refers to these classes; SmallTests isn't
-# run in a continuous build, just from the command-line.
-ifndef TRAVIS
-TEST_SOURCES := $(TEST_SOURCES) \
-    libcore/java/net/InetAddressTest.java \
-    libcore/java/net/InetSocketAddressTest.java
-SUITE_SOURCES := $(SUITE_SOURCES) \
-    libcore/java/net/SmallTests.java
-endif
 
 TESTS_TO_SKIP = \
     jsr166/ExchangerTest.java
