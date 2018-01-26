@@ -188,20 +188,16 @@ public class MetadataWriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { @Deprecated Test() {} }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "IOSObjectArray *Test__Annotations$0() {",
-        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
-        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+    assertTranslation(translation, "IOSObjectArray *Test__Annotations$0()");
+    assertTranslation(translation, "create_JavaLangDeprecated");
   }
 
   public void testConstructorAnnotationWithParameter() throws IOException {
     String translation = translateSourceFile(
         "public class Test { @Deprecated Test(int i) {} }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "IOSObjectArray *Test__Annotations$0() {",
-        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
-        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+    assertTranslation(translation, "IOSObjectArray *Test__Annotations$0()");
+    assertTranslation(translation, "create_JavaLangDeprecated");
   }
 
   public void testTypeAnnotationDefaultParameter() throws IOException {
