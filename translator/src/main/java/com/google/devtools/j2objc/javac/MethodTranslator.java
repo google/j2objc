@@ -149,7 +149,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       return parserEnv.resolvePrimitiveType(typeRef.getSignature());
     }
     String typeName = typeRef.getFullName();
-    Element element = parserEnv.resolve(typeName);
+    Element element = parserEnv.elementUtilities().getTypeElement(typeName);
     // TODO(tball): element is raw, any support for type parameters needed?
     return element.asType();
   }

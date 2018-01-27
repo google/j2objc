@@ -29,7 +29,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -46,6 +45,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 /**
@@ -87,7 +87,7 @@ public final class TypeUtil {
     PRIMITIVE_IOS_ARRAYS = map;
   }
 
-  private final ParserEnvironment env;
+  private final Elements javacElements;
   private final Types javacTypes;
   private final ElementUtil elementUtil;
 
@@ -103,16 +103,16 @@ public final class TypeUtil {
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
-    this.env = env;
+    this.javacElements = env.elementUtilities();
     this.javacTypes = env.typeUtilities();
     this.elementUtil = elementUtil;
 
-    javaObject = (TypeElement) env.resolve("java.lang.Object");
-    javaString = (TypeElement) env.resolve("java.lang.String");
-    javaClass = (TypeElement) env.resolve("java.lang.Class");
-    javaNumber = (TypeElement) env.resolve("java.lang.Number");
-    javaThrowable = (TypeElement) env.resolve("java.lang.Throwable");
-    TypeElement javaCloneable = (TypeElement) env.resolve("java.lang.Cloneable");
+    javaObject = javacElements.getTypeElement("java.lang.Object");
+    javaString = javacElements.getTypeElement("java.lang.String");
+    javaClass = javacElements.getTypeElement("java.lang.Class");
+    javaNumber = javacElements.getTypeElement("java.lang.Number");
+    javaThrowable = javacElements.getTypeElement("java.lang.Throwable");
+    TypeElement javaCloneable = javacElements.getTypeElement("java.lang.Cloneable");
 
     ImmutableMap.Builder<TypeElement, TypeElement> typeMapBuilder =
         ImmutableMap.<TypeElement, TypeElement>builder()
@@ -122,10 +122,10 @@ public final class TypeUtil {
         .put(javaNumber, NS_NUMBER)
         .put(javaCloneable, NS_COPYING);
 
-    Element javaNSException = env.resolve("java.lang.NSException");
+    TypeElement javaNSException = javacElements.getTypeElement("java.lang.NSException");
     // Could be null if the user is not using jre_emul.jar as the boot path.
     if (javaNSException != null) {
-      typeMapBuilder.put((TypeElement) javaNSException, NS_EXCEPTION);
+      typeMapBuilder.put(javaNSException, NS_EXCEPTION);
     }
 
     javaToObjcTypeMap = typeMapBuilder.build();
@@ -136,7 +136,7 @@ public final class TypeUtil {
   }
 
   public TypeElement resolveJavaType(String qualifiedName) {
-    return (TypeElement) env.resolve(qualifiedName);
+    return javacElements.getTypeElement(qualifiedName);
   }
 
   public static boolean isDeclaredType(TypeMirror t) {
@@ -661,7 +661,8 @@ public final class TypeUtil {
 
   public List<? extends TypeMirror> getUpperBounds(TypeMirror t) {
     if (t == null) {
-      return Collections.singletonList(env.resolve("java.lang.Object").asType());
+      return Collections.singletonList(
+          javacElements.getTypeElement("java.lang.Object").asType());
     }
     switch (t.getKind()) {
       case INTERSECTION:

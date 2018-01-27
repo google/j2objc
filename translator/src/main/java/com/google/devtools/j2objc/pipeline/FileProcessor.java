@@ -159,8 +159,6 @@ abstract class FileProcessor {
     } catch (Throwable t) {
       // Report any uncaught exceptions.
       ErrorUtil.fatalError(t, input.getOriginalSourcePath());
-    } finally {
-      unit.getEnv().reset();
     }
   }
 

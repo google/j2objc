@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -23,17 +22,7 @@ import javax.lang.model.util.Types;
  */
 public interface ParserEnvironment {
 
-  /**
-   * Returns the element associated with a fully-qualified name.
-   * Null is returned if there is no associated element for the
-   * specified name.
-   */
-  Element resolve(String name);
-
   Elements elementUtilities();
 
   Types typeUtilities();
-
-  // TODO(tball): remove when javac front-end update is complete.
-  default void reset() {}
 }
