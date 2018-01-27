@@ -436,7 +436,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         // super type of U an ArrayStoreException will be thrown.
         @SuppressWarnings("rawtypes")
         IntFunction rawGenerator = (IntFunction) generator;
-        return (A[]) Nodes.flatten(evaluateToArrayNode(rawGenerator), rawGenerator)
+        return (A[]) Nodes.flatten((Node<A>) evaluateToArrayNode(rawGenerator), rawGenerator)
                               .asArray(rawGenerator);
     }
 
