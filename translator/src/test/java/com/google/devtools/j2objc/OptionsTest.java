@@ -27,30 +27,35 @@ import java.util.List;
 public class OptionsTest extends GenerationTest {
 
   public void testSourceVersionFlags() throws IOException {
-     // Check that version default is correctly pulled from system properties.
-     String javaVersion = System.getProperty("java.specification.version");
+    if (onJava9OrAbove()) {
+      // TODO(tball): change to 1.9 when Java 9 is supported.
+      assertEquals("1.8", options.getSourceVersion().toString());
+    } else {
+      // Check that version default is correctly pulled from system properties.
+      String javaVersion = System.getProperty("java.specification.version");
 
-     options = new Options();
-     options.load(new String[] {});
-     assertEquals(javaVersion.substring(0, 3), options.getSourceVersion().toString());
+      options = new Options();
+      options.load(new String[] {});
+      assertEquals(javaVersion.substring(0, 3), options.getSourceVersion().toString());
 
-     System.setProperty("java.specification.version", "1.8");
-     options = new Options();
-     options.load(new String[] {});
-     assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
+      System.setProperty("java.specification.version", "1.8");
+      options = new Options();
+      options.load(new String[] {});
+      assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
 
-     System.setProperty("java.specification.version", "1.6");
-     options = new Options();
-     options.load(new String[] {});
-     assertEquals(SourceVersion.JAVA_6, options.getSourceVersion());
+      System.setProperty("java.specification.version", "1.6");
+      options = new Options();
+      options.load(new String[] {});
+      assertEquals(SourceVersion.JAVA_6, options.getSourceVersion());
 
-     System.setProperty("java.specification.version", "1.7");
-     options = new Options();
-     options.load(new String[] {});
-     assertEquals(SourceVersion.JAVA_7, options.getSourceVersion());
+      System.setProperty("java.specification.version", "1.7");
+      options = new Options();
+      options.load(new String[] {});
+      assertEquals(SourceVersion.JAVA_7, options.getSourceVersion());
 
-     // Reset the java.version property to prevent any unexpected jvm behavior after testing.
-     System.setProperty("java.specification.version", javaVersion);
+      // Reset the java.version property to prevent any unexpected jvm behavior after testing.
+      System.setProperty("java.specification.version", javaVersion);
+    }
 
     String[] argsJavaSource = "-source 1.6".split(" ");
     options.load(argsJavaSource);

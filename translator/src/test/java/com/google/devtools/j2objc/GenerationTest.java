@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -306,7 +307,13 @@ public class GenerationTest extends TestCase {
           throw new AssertionError("System doesn't have the default encoding");
         }
       }
+    } else {
+      // Use the classpath for Java 9+.
+      for (String path : Splitter.on(':').split(System.getProperty("java.class.path"))) {
+        classpath.add(path);
+      }
     }
+
     return classpath;
   }
 
@@ -690,6 +697,15 @@ public class GenerationTest extends TestCase {
   protected void enableDebuggingSupport() {
     javacFlags.add("-parameters");
     javacFlags.add("-g");
+  }
+
+  protected boolean onJava9OrAbove() {
+    try {
+      Class.forName("java.lang.Module");
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 
 

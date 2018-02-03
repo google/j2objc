@@ -82,9 +82,7 @@ public class Options {
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
   private String annotationsJar = null;
-
-  // Property not defined in Java 9, so use empty bootclasspath.
-  private String bootclasspath = System.getProperty("sun.boot.class.path", "");
+  private String bootclasspath = null;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -435,6 +433,22 @@ public class Options {
     // TODO(kstanger): This renders the --batch-translate-max flag useless. It was previously useful
     // for tuning the JDT parser. We may want to clean and simplify our batching code now.
     batchTranslateMaximum = Integer.MAX_VALUE;
+
+    if (bootclasspath == null) {
+      // Set jre_emul.jar as bootclasspath, if available. This ensures that source files
+      // accessing JRE classes or methods not supported in the JRE emulation library are
+      // reported during compilation, rather than with a more obscure link error.
+      for (String path : Splitter.on(':').split(System.getProperty("java.class.path"))) {
+        if (path.endsWith("jre_emul.jar")) {
+          bootclasspath = path;
+          break;
+        }
+      }
+    }
+    if (bootclasspath == null) {
+      // Fall back to Java 8 and earlier property.
+      bootclasspath = System.getProperty("sun.boot.class.path", "");
+    }
   }
 
   /**
