@@ -16,6 +16,8 @@
 
 package libcore.icu;
 
+import java.util.regex.Pattern;
+
 /**
  * Java version of Android's NativeIDN class, rewritten for J2ObjC because the
  * Android version uses native code that depends on ICU's uidna functions, which
@@ -36,12 +38,40 @@ public final class NativeIDN {
   private static final int INITIAL_N = 128;
   private static final char DELIMITER = '-';
 
+  // RFC 3490 separator characters.
+  private static final Pattern SEPARATORS_REGEX = Pattern.compile("[.\u3002\uFF0E\uFF61]");
+
+  private static final String PUNYCODE_PREFIX = "xn--";
+
   /**
-   * Convert a Unicode string to Punycode/ASCII. The flags parameter is
-   * ignored; it's used by the ICU functions, but the spec doesn't describe
-   * a need for them.
+   * Convert a Unicode string to IDN.
    */
   public static String toASCII(String s, int flags) {
+    String[] parts = SEPARATORS_REGEX.split(s);
+    for (int i = 0; i < parts.length; i++) {
+      if (nonASCII(parts[i])) {
+        parts[i] = PUNYCODE_PREFIX + encode(parts[i]);
+      }
+    }
+    return String.join(".", parts);
+  }
+
+  /**
+   * Returns true if a string contains any non-ASCII characters.
+   */
+  private static boolean nonASCII(String s) {
+    for (int i = 0; i < s.length(); i++) {
+      if (s.charAt(i) > 0x7F) {
+          return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Encodes a Unicode string to Punycode ASCII.
+   */
+  private static String encode(String s) {
     int n = INITIAL_N;
     int delta = 0;
     int bias = INITIAL_BIAS;
@@ -114,11 +144,23 @@ public final class NativeIDN {
   }
 
   /**
-   * Convert a Punycode/ASCII string to Unicode. The flags parameter is ignored;
-   * it's used by the ICU functions, but the spec doesn't describe a need
-   * for them.
+   * Convert an IDN-formatted ASCII string to Unicode.
    */
   public static String toUnicode(String s, int flags) {
+    String[] parts = SEPARATORS_REGEX.split(s);
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].startsWith(PUNYCODE_PREFIX)) {
+        parts[i] = decode(parts[i].substring(PUNYCODE_PREFIX.length()));
+      }
+    }
+    return String.join(".", parts);
+
+  }
+
+  /**
+   * Convert a Punycode/ASCII string to Unicode.
+   */
+  private static String decode(String s) {
     int n = INITIAL_N;
     int i = 0;
     int bias = INITIAL_BIAS;

@@ -110,6 +110,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
+    org/apache/harmony/tests/java/net/IDNTest.java \
     org/apache/harmony/tests/java/nio/channels/MockDatagramChannel.java \
     org/apache/harmony/tests/java/nio/channels/MockServerSocketChannel.java \
     org/apache/harmony/tests/java/nio/channels/MockSocketChannel.java \
