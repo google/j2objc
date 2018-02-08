@@ -47,8 +47,12 @@ public class GenerationBatch {
 
   private final List<ProcessingContext> inputs = Lists.newArrayList();
 
+  private GenerationUnit globalCombinedUnit = null;
+
   public GenerationBatch(Options options){
     this.options = options;
+    if (options.globalCombinedOutput() != null)
+      globalCombinedUnit = GenerationUnit.newCombinedJarUnit(options.globalCombinedOutput(), options);
   }
 
   public List<ProcessingContext> getInputs() {
@@ -129,7 +133,9 @@ public class GenerationBatch {
     }
 
     GenerationUnit combinedUnit = null;
-    if (options.getHeaderMap().combineSourceJars()) {
+    if (globalCombinedUnit != null) {
+      combinedUnit = globalCombinedUnit;
+    } else if (options.getHeaderMap().combineSourceJars()) {
       combinedUnit = GenerationUnit.newCombinedJarUnit(filename, options);
     }
     try {
@@ -178,6 +184,10 @@ public class GenerationBatch {
    */
   @VisibleForTesting
   public void addSource(InputFile file) {
-    inputs.add(ProcessingContext.fromFile(file, options));
+    if (globalCombinedUnit != null) {
+      inputs.add(new ProcessingContext(file, globalCombinedUnit));
+    } else {
+      inputs.add(ProcessingContext.fromFile(file, options));
+    }
   }
 }
