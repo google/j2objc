@@ -225,6 +225,8 @@ public class MetadataWriter extends UnitTreeVisitor {
         stmts.add(new NativeStatement("#pragma clang diagnostic push"));
         stmts.add(new NativeStatement(
             "#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\""));
+        stmts.add(new NativeStatement(
+            "#pragma clang diagnostic ignored \"-Wundeclared-selector\""));
         for (String selector : selectorMetadata) {
           stmts.add(new NativeStatement(selector));
         }
