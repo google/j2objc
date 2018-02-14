@@ -82,6 +82,7 @@ public class Options {
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
   private String annotationsJar = null;
+  private String globalCombinedOutput = null;
   private String bootclasspath = null;
 
   private Mappings mappings = new Mappings();
@@ -141,6 +142,14 @@ public class Options {
     for (Handler handler : rootLogger.getHandlers()) {
       handler.setLevel(Level.ALL);
     }
+  }
+
+  public String globalCombinedOutput() {
+    return globalCombinedOutput;
+  }
+
+  public void setGlobalCombinedOutput(String globalCombinedOutput) {
+    this.globalCombinedOutput = globalCombinedOutput;
   }
 
   /**
@@ -286,6 +295,8 @@ public class Options {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
       } else if (arg.equals("-XcombineJars")) {
         headerMap.setCombineJars();
+      } else if (arg.equals("-XglobalCombinedOutput")) {
+        setGlobalCombinedOutput(getArgValue(args, arg));
       } else if (arg.equals("-XincludeGeneratedSources")) {
         headerMap.setIncludeGeneratedSources();
       } else if (arg.equals("-use-arc")) {

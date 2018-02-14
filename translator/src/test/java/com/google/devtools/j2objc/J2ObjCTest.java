@@ -131,6 +131,13 @@ public class J2ObjCTest extends GenerationTest {
     makeAssertionsForJavaFiles(exampleH, exampleM, packageInfoH, packageInfoM);
   }
 
+  private void makeAssertionsForGlobalCombinedOutputJavaFiles() throws Exception {
+    String exampleH = getTranslatedFile("testGlobalCombinedOutputFile.h");
+    String exampleM = getTranslatedFile("testGlobalCombinedOutputFile.m");
+    assertTranslation(exampleM, "#include \"testGlobalCombinedOutputFile.h\"");
+    makeAssertionsForGlobalCombinedOutputJavaFiles(exampleH, exampleM);
+  }
+
   private void makeAssertionsForJavaFiles(
       String exampleH, String exampleM, String packageInfoH, String packageInfoM)
       throws Exception {
@@ -149,6 +156,18 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(packageInfoM, "@implementation ComGoogleDevtoolsJ2objcUtilpackage_info");
     // All other assertions
     makeAssertions(exampleH, exampleM, packageInfoM);
+  }
+
+  private void makeAssertionsForGlobalCombinedOutputJavaFiles(String exampleH, String exampleM)
+      throws Exception {
+    // Test the includes
+    assertTranslation(
+        exampleH, "#pragma push_macro(\"INCLUDE_ALL_TestGlobalCombinedOutputFile\")");
+    assertTranslation(
+        exampleM, "@interface ComGoogleDevtoolsJ2objcUtilpackage_info : NSObject");
+    assertTranslation(exampleM, "@implementation ComGoogleDevtoolsJ2objcUtilpackage_info");
+    // All other assertions
+    makeAssertions(exampleH, exampleM, exampleM);
   }
 
   public void testCompilingFromFiles() throws Exception {
@@ -172,6 +191,12 @@ public class J2ObjCTest extends GenerationTest {
     options.getHeaderMap().setCombineJars();
     J2ObjC.run(Collections.singletonList(jarPath), options);
     makeAssertionsForCombinedJar();
+  }
+
+  public void testGlobalCombinedOutput() throws Exception {
+    options.setGlobalCombinedOutput("testGlobalCombinedOutputFile");
+    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
+    makeAssertionsForGlobalCombinedOutputJavaFiles();
   }
 
   public void testSourceDirsOption() throws Exception {
