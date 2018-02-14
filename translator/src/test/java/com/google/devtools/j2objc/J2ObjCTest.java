@@ -158,14 +158,13 @@ public class J2ObjCTest extends GenerationTest {
     makeAssertions(exampleH, exampleM, packageInfoM);
   }
 
-  private void makeAssertionsForGlobalCombinedOutputJavaFiles(
-          String exampleH, String exampleM)
-          throws Exception {
+  private void makeAssertionsForGlobalCombinedOutputJavaFiles(String exampleH, String exampleM)
+      throws Exception {
     // Test the includes
     assertTranslation(
-            exampleH, "#pragma push_macro(\"INCLUDE_ALL_TestGlobalCombinedOutputFile\")");
+        exampleH, "#pragma push_macro(\"INCLUDE_ALL_TestGlobalCombinedOutputFile\")");
     assertTranslation(
-            exampleM, "@interface ComGoogleDevtoolsJ2objcUtilpackage_info : NSObject");
+        exampleM, "@interface ComGoogleDevtoolsJ2objcUtilpackage_info : NSObject");
     assertTranslation(exampleM, "@implementation ComGoogleDevtoolsJ2objcUtilpackage_info");
     // All other assertions
     makeAssertions(exampleH, exampleM, exampleM);
@@ -199,7 +198,7 @@ public class J2ObjCTest extends GenerationTest {
     J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
     makeAssertionsForGlobalCombinedOutputJavaFiles();
   }
-  
+
   public void testSourceDirsOption() throws Exception {
     options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
