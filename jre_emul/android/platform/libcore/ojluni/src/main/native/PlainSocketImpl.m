@@ -53,6 +53,11 @@
 #include "java_net_SocketOptions.h"
 #include "java_net_PlainSocketImpl.h"
 
+// J2ObjC
+#include "java/io/FileDescriptor.h"
+#include "java/net/InetAddress.h"
+#include "java/net/ServerSocket.h"
+
 #define NATIVE_METHOD(className, functionName, signature) \
 { #functionName, signature, (void*)(className ## _ ## functionName) }
 
@@ -1088,3 +1093,11 @@ void register_java_net_PlainSocketImpl(JNIEnv* env) {
   PlainSocketImpl_initProto(env);
 }
 */
+
+// J2ObjC: make explicit references to classes referenced by reflection, so classes
+// are always linked into the app.
+void register_java_net_PlainSocketImpl(JNIEnv* env) {
+    JavaIoFileDescriptor_class_();
+    JavaNetInetAddress_class_();
+    JavaNetServerSocket_class_();
+}
