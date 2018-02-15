@@ -131,13 +131,6 @@ public class J2ObjCTest extends GenerationTest {
     makeAssertionsForJavaFiles(exampleH, exampleM, packageInfoH, packageInfoM);
   }
 
-  private void makeAssertionsForGlobalCombinedOutputJavaFiles() throws Exception {
-    String exampleH = getTranslatedFile("testGlobalCombinedOutputFile.h");
-    String exampleM = getTranslatedFile("testGlobalCombinedOutputFile.m");
-    assertTranslation(exampleM, "#include \"testGlobalCombinedOutputFile.h\"");
-    makeAssertionsForGlobalCombinedOutputJavaFiles(exampleH, exampleM);
-  }
-
   private void makeAssertionsForJavaFiles(
       String exampleH, String exampleM, String packageInfoH, String packageInfoM)
       throws Exception {
@@ -156,6 +149,13 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(packageInfoM, "@implementation ComGoogleDevtoolsJ2objcUtilpackage_info");
     // All other assertions
     makeAssertions(exampleH, exampleM, packageInfoM);
+  }
+
+  private void makeAssertionsForGlobalCombinedOutputJavaFiles() throws Exception {
+    String exampleH = getTranslatedFile("testGlobalCombinedOutputFile.h");
+    String exampleM = getTranslatedFile("testGlobalCombinedOutputFile.m");
+    assertTranslation(exampleM, "#include \"testGlobalCombinedOutputFile.h\"");
+    makeAssertionsForGlobalCombinedOutputJavaFiles(exampleH, exampleM);
   }
 
   private void makeAssertionsForGlobalCombinedOutputJavaFiles(String exampleH, String exampleM)

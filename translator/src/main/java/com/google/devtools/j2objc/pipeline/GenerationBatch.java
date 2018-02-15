@@ -51,8 +51,10 @@ public class GenerationBatch {
 
   public GenerationBatch(Options options){
     this.options = options;
-    if (options.globalCombinedOutput() != null)
-      globalCombinedUnit = GenerationUnit.newCombinedJarUnit(options.globalCombinedOutput(), options);
+    if (options.globalCombinedOutput() != null) {
+      globalCombinedUnit = GenerationUnit.newCombinedJarUnit(
+          options.globalCombinedOutput(), options);
+    }
   }
 
   public List<ProcessingContext> getInputs() {
