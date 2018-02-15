@@ -21,6 +21,7 @@
 
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/ClassNotFoundException.h"
 #import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
@@ -77,8 +78,15 @@ IOSClass *JreClassForString(const char * const str) {
   const char *ptr = str;
   IOSClass *result = ParseNextClass(&ptr);
   if (!result) {
-    @throw create_JavaLangAssertionError_initWithId_(
-      [NSString stringWithFormat:@"invalid type from metadata %s", str]);
+    NSString *type = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
+    size_t len = strlen(str);
+    if (len > 2 && *str == 'L' && str[len - 1] == ';') {
+      type = [type substringWithRange:NSMakeRange(1, len - 2)];
+      @throw create_JavaLangClassNotFoundException_initWithNSString_(type);
+    } else {
+      @throw create_JavaLangAssertionError_initWithId_(
+        [NSString stringWithFormat:@"invalid type from metadata %@", type]);
+    }
   }
   return result;
 }
