@@ -112,6 +112,46 @@ public class ProxyTest extends TestCase {
     assertTrue(calledMethods.contains("hashCode"));
   }
 
+  // Issue #910: verify proxy object's equals, hashCode and toString methods
+  // are used if invocation handler invokes them.
+  public void testObjectMethodDefaultsInvoked() throws Exception {
+    final Set<String> calledMethods = new HashSet<>();
+    InvocationHandler invocationHandler = new InvocationHandler() {
+      @Override
+      public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+        String methodName = method.getName();
+        calledMethods.add(methodName);
+
+        switch (methodName) {
+          case "helloInt":
+            return 123;
+          default:
+            return method.invoke(o, args);
+        }
+      }
+    };
+    ShowMe showMe = (ShowMe) Proxy.newProxyInstance(getClass().getClassLoader(),
+        new Class[] { ShowMe.class }, invocationHandler);
+
+    // Call methods that should be handled by InvocationHandler.
+    assertEquals(123, showMe.helloInt());
+
+    // Check return values from Proxy.proxy_* methods.
+    int hashCode = showMe.hashCode();
+    assertEquals("JavaLangReflectProxy@" + Integer.toHexString(hashCode), showMe.toString());
+    assertFalse(showMe.equals(new ShowMe() {
+      @Override
+      public int helloInt() {
+        return 423;
+      }
+    }));
+
+    assertTrue(calledMethods.contains("helloInt"));
+    assertTrue(calledMethods.contains("toString"));
+    assertTrue(calledMethods.contains("equals"));
+    assertTrue(calledMethods.contains("hashCode"));
+  }
+
   static interface ShowMe {
     int helloInt();
   }
