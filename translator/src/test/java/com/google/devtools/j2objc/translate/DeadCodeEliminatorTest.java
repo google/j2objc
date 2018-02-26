@@ -418,4 +418,25 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(bImpl, "[self bazWithNSString:arg0];");
     assertNotInTranslation(iHeader, "(void)bazWithId:(id)t");
   }
+
+  public void testDeadNativeMethod() throws IOException {
+    String source = "class A {\n"
+        + "  private native String bar() /*-[\n"
+        + "    return @\"test\";\n"
+        + "  ]-*/;"
+        + "  private native int baz();"
+        + "  private void mumble() {\n"
+        + "    // nothing\n"
+        + "  }\n"
+        + "}\n";
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addMethod("A", "bar", "()Ljava/lang/String;")
+        .addMethod("A", "baz", "()I")
+        .build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile(source, "A", "A.m");
+    assertNotInTranslation(translation, "bar");
+    assertNotInTranslation(translation, "baz");
+    assertTranslation(translation, "mumble");
+  }
 }

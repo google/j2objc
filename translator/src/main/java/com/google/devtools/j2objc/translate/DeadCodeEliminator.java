@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.Comment;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -145,12 +146,6 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
       BodyDeclaration declaration = declarationsIter.next();
       if (declaration instanceof MethodDeclaration) {
         MethodDeclaration method = (MethodDeclaration) declaration;
-        // Need to keep native methods because otherwise the OCNI content will
-        // be emitted without a surrounding method.
-        // TODO(kstanger): Remove the method and its OCNI comment.
-        if (Modifier.isNative(method.getModifiers())) {
-          continue;
-        }
         ExecutableElement elem = method.getExecutableElement();
         String name = typeUtil.getReferenceName(elem);
         String signature = typeUtil.getReferenceSignature(elem);
@@ -158,7 +153,29 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
           if (method.isConstructor()) {
             deadCodeMap.addConstructorRemovedClass(clazz);
           }
+          if (Modifier.isNative(method.getModifiers())) {
+            removeMethodOCNI(method);
+          }
           declarationsIter.remove();
+        }
+      }
+    }
+  }
+
+  /**
+   * Remove the OCNI comment associated with a native method, if it exists.
+   */
+  private void removeMethodOCNI(MethodDeclaration method) {
+    int methodStart = method.getStartPosition();
+    String src = unit.getSource().substring(methodStart, methodStart + method.getLength());
+    if (src.contains("/*-[")) {
+      int ocniStart = methodStart + src.indexOf("/*-[");
+      Iterator<Comment> commentsIter = unit.getCommentList().iterator();
+      while (commentsIter.hasNext()) {
+        Comment comment = commentsIter.next();
+        if (comment.isBlockComment() && comment.getStartPosition() == ocniStart) {
+          commentsIter.remove();
+          break;
         }
       }
     }
