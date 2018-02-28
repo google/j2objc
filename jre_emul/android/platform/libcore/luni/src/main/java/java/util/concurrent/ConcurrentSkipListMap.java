@@ -412,7 +412,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          */
         Node(Node<K,V> next) {
             this.key = null;
-            this.value = this;
+            this.value = sentinel();
             this.next = next;
         }
 
@@ -474,7 +474,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
              * interference among helping threads.
              */
             if (f == next && this == b.next) {
-                if (f == null || f.value != f) // not already marked
+                if (f == null || f.value != sentinel()) // not already marked
                     casNext(f, new Node<K,V>(f));
                 else
                     b.casNext(this, f.next);
@@ -489,7 +489,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          */
         V getValidValue() {
             Object v = value;
-            if (v == this || v == BASE_HEADER)
+            if (v == sentinel() || v == BASE_HEADER)
                 return null;
             @SuppressWarnings("unchecked") V vv = (V)v;
             return vv;
@@ -724,7 +724,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     n.helpDelete(b, f);
                     break;
                 }
-                if (b.value == null || v == n)  // b is deleted
+                if (b.value == null || v == sentinel())  // b is deleted
                     break;
                 if ((c = cpr(cmp, key, n.key)) == 0)
                     return n;
@@ -760,7 +760,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     n.helpDelete(b, f);
                     break;
                 }
-                if (b.value == null || v == n)  // b is deleted
+                if (b.value == null || v == sentinel())  // b is deleted
                     break;
                 if ((c = cpr(cmp, key, n.key)) == 0) {
                     @SuppressWarnings("unchecked") V vv = (V)v;
@@ -801,7 +801,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                         n.helpDelete(b, f);
                         break;
                     }
-                    if (b.value == null || v == n) // b is deleted
+                    if (b.value == null || v == sentinel()) // b is deleted
                         break;
                     if ((c = cpr(cmp, key, n.key)) > 0) {
                         b = n;
@@ -939,7 +939,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     n.helpDelete(b, f);
                     break;
                 }
-                if (b.value == null || v == n)      // b is deleted
+                if (b.value == null || v == sentinel())      // b is deleted
                     break;
                 if ((c = cpr(cmp, key, n.key)) < 0)
                     break outer;
@@ -1085,7 +1085,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     n.helpDelete(b, f);
                     break;
                 }
-                if (b.value == null || v == n)      // b is deleted
+                if (b.value == null || v == sentinel())      // b is deleted
                     break;
                 if (f != null) {
                     b = n;
@@ -1144,7 +1144,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                         n.helpDelete(b, f);
                         break;
                     }
-                    if (b.value == null || v == n)      // b is deleted
+                    if (b.value == null || v == sentinel())      // b is deleted
                         break;
                     b = n;
                     n = f;
@@ -1213,7 +1213,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     n.helpDelete(b, f);
                     break;
                 }
-                if (b.value == null || v == n)      // b is deleted
+                if (b.value == null || v == sentinel())      // b is deleted
                     break;
                 int c = cpr(cmp, key, n.key);
                 if ((c == 0 && (rel & EQ) != 0) ||
@@ -2252,7 +2252,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         Iter() {
             while ((next = findFirst()) != null) {
                 Object x = next.value;
-                if (x != null && x != next) {
+                if (x != null && x != sentinel()) {
                     @SuppressWarnings("unchecked") V vv = (V)x;
                     nextValue = vv;
                     break;
@@ -2271,7 +2271,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             lastReturned = next;
             while ((next = next.next) != null) {
                 Object x = next.value;
-                if (x != null && x != next) {
+                if (x != null && x != sentinel()) {
                     @SuppressWarnings("unchecked") V vv = (V)x;
                     nextValue = vv;
                     break;
@@ -3070,7 +3070,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     if (next == null)
                         break;
                     Object x = next.value;
-                    if (x != null && x != next) {
+                    if (x != null && x != sentinel()) {
                         if (! inBounds(next.key, cmp))
                             next = null;
                         else {
@@ -3103,7 +3103,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     if (next == null)
                         break;
                     Object x = next.value;
-                    if (x != null && x != next) {
+                    if (x != null && x != sentinel()) {
                         if (tooHigh(next.key, cmp))
                             next = null;
                         else {
@@ -3122,7 +3122,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     if (next == null)
                         break;
                     Object x = next.value;
-                    if (x != null && x != next) {
+                    if (x != null && x != sentinel()) {
                         if (tooLow(next.key, cmp))
                             next = null;
                         else {
@@ -3334,7 +3334,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                 K k; Object v;
                 if ((k = e.key) != null && f != null && cpr(cmp, f, k) <= 0)
                     break;
-                if ((v = e.value) != null && v != e)
+                if ((v = e.value) != null && v != sentinel())
                     action.accept(k);
             }
         }
@@ -3350,7 +3350,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     e = null;
                     break;
                 }
-                if ((v = e.value) != null && v != e) {
+                if ((v = e.value) != null && v != sentinel()) {
                     current = e.next;
                     action.accept(k);
                     return true;
@@ -3422,7 +3422,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                 K k; Object v;
                 if ((k = e.key) != null && f != null && cpr(cmp, f, k) <= 0)
                     break;
-                if ((v = e.value) != null && v != e) {
+                if ((v = e.value) != null && v != sentinel()) {
                     @SuppressWarnings("unchecked") V vv = (V)v;
                     action.accept(vv);
                 }
@@ -3440,7 +3440,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     e = null;
                     break;
                 }
-                if ((v = e.value) != null && v != e) {
+                if ((v = e.value) != null && v != sentinel()) {
                     current = e.next;
                     @SuppressWarnings("unchecked") V vv = (V)v;
                     action.accept(vv);
@@ -3509,7 +3509,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                 K k; Object v;
                 if ((k = e.key) != null && f != null && cpr(cmp, f, k) <= 0)
                     break;
-                if ((v = e.value) != null && v != e) {
+                if ((v = e.value) != null && v != sentinel()) {
                     @SuppressWarnings("unchecked") V vv = (V)v;
                     action.accept
                         (new AbstractMap.SimpleImmutableEntry<K,V>(k, vv));
@@ -3528,7 +3528,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
                     e = null;
                     break;
                 }
-                if ((v = e.value) != null && v != e) {
+                if ((v = e.value) != null && v != sentinel()) {
                     current = e.next;
                     @SuppressWarnings("unchecked") V vv = (V)v;
                     action.accept
@@ -3577,6 +3577,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     // Unsafe mechanics
     private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
     private static final long HEAD;
+    private static final Node SENTINEL = new Node(null);
     static {
         try {
             HEAD = U.objectFieldOffset
@@ -3584,5 +3585,9 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         } catch (ReflectiveOperationException e) {
             throw new Error(e);
         }
+    }
+
+    private static Node sentinel() {
+        return SENTINEL;
     }
 }
