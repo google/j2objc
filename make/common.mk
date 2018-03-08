@@ -42,6 +42,11 @@ ARCH_BUILD_MACOSX_DIR = $(ARCH_BUILD_DIR)/macosx
 ARCH_LIB_MACOSX_DIR = $(ARCH_LIB_DIR)/macosx
 DIST_LIB_MACOSX_DIR = $(DIST_LIB_DIR)/macosx
 
+# Watchos library dirs.
+ARCH_BUILD_WATCH_DIR = $(ARCH_BUILD_DIR)/watchos
+ARCH_LIB_WATCH_DIR = $(ARCH_LIB_DIR)/watchos
+DIST_LIB_WATCH_DIR = $(DIST_LIB_DIR)/watchos
+
 # Appletv library dirs.
 ARCH_BUILD_TV_DIR = $(ARCH_BUILD_DIR)/appletvos
 ARCH_LIB_TV_DIR = $(ARCH_LIB_DIR)/appletvos
@@ -59,7 +64,7 @@ TVOS_AVAILABLE = \
   then echo "YES"; else echo "NO"; fi)
 
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64
+J2OBJC_ARCHS = macosx iphone iphone64 watchv7k watchsimulator simulator simulator64
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
 endif
