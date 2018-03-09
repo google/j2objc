@@ -582,7 +582,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
         + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {",
-        "return JreDefaultFastEnumeration(self, state, stackbuf, len);",
+        "return JreDefaultFastEnumeration(self, state, stackbuf);",
         "}");
   }
 

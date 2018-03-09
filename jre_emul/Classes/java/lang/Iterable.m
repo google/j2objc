@@ -77,7 +77,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaLangIterable)
 
 NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id<JavaLangIterable> obj, NSFastEnumerationState *state,
-    __unsafe_unretained id *stackbuf, NSUInteger len) {
+    __unsafe_unretained id *stackbuf) {
   SEL hasNextSel = @selector(hasNext);
   SEL nextSel = @selector(next);
   __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
@@ -96,7 +96,7 @@ NSUInteger JreDefaultFastEnumeration(
   id (*nextImpl)(id, SEL) = (id (*)(id, SEL)) state->extra[2];
   NSUInteger objCount = 0;
   state->itemsPtr = stackbuf;
-  while (hasNextImpl(iter, hasNextSel) && objCount < len) {
+  if (hasNextImpl(iter, hasNextSel)) {
     *stackbuf++ = nextImpl(iter, nextSel);
     objCount++;
   }
