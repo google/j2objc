@@ -25,6 +25,9 @@
  */
 
 package java.lang;
+
+import com.google.j2objc.NSException;
+
 import  java.io.*;
 import  java.util.*;
 

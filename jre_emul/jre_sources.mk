@@ -44,7 +44,6 @@ NATIVE_JRE_SOURCES_CORE = \
   NSObject+JavaObject.m \
   NSString+JavaString.m \
   java/lang/AbstractStringBuilder.m \
-  java/lang/Iterable.m \
   java/lang/reflect/AccessibleObject.m \
   java/lang/reflect/Constructor.m \
   java/lang/reflect/Executable.m \
@@ -173,6 +172,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Integer.java \
   java/lang/InternalError.java \
   java/lang/InterruptedException.java \
+  java/lang/Iterable.java \
   java/lang/LinkageError.java \
   java/lang/Long.java \
   java/lang/Math.java \
@@ -1810,11 +1810,11 @@ SOURCE_RETENTION_ANNOTATIONS = \
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
 # but need to include the .java file in jre_emul.jar.
 EMULATED_JAVA_SOURCES = \
+  com/google/j2objc/NSException.java \
+  com/google/j2objc/NSFastEnumeration.java \
   java/lang/AbstractStringBuilder.java \
   java/lang/Class.java \
   java/lang/Cloneable.java \
-  java/lang/Iterable.java \
-  java/lang/NSException.java \
   java/lang/Number.java \
   java/lang/Object.java \
   java/lang/String.java \
@@ -1847,7 +1847,6 @@ PUBLIC_NATIVE_HEADERS = \
   NSObject+JavaObject.h \
   NSString+JavaString.h \
   java/lang/AbstractStringBuilder.h \
-  java/lang/Iterable.h \
   java/lang/reflect/AccessibleObject.h \
   java/lang/reflect/Constructor.h \
   java/lang/reflect/Executable.h \

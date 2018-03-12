@@ -10,29 +10,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//
-//  Iterable.h
-//  JreEmulation
-//
-//  Created by kstanger on 8/28/13.
-//
-
-#ifndef _JavaLangIterable_H_
-#define _JavaLangIterable_H_
-
-@protocol JavaUtilIterator;
-
+// Copy of generated header of Iterable.java.
+// TODO(tball): remove when apps no longer reference j2objc/jre_emul/Classes/java/lang/Iterable.h.
+// NOLINTBEGIN
 #include "J2ObjC_header.h"
+
+#pragma push_macro("INCLUDE_ALL_JavaLangIterable")
+#ifdef RESTRICT_JavaLangIterable
+#define INCLUDE_ALL_JavaLangIterable 0
+#else
+#define INCLUDE_ALL_JavaLangIterable 1
+#endif
+#undef RESTRICT_JavaLangIterable
+
+#if !defined (JavaLangIterable_) && (INCLUDE_ALL_JavaLangIterable || defined(INCLUDE_JavaLangIterable))
+#define JavaLangIterable_
 
 @protocol JavaUtilFunctionConsumer;
 @protocol JavaUtilIterator;
 @protocol JavaUtilSpliterator;
 
-/**
- * Instances of classes that implement this interface can be used with
- * the enhanced for loop.
- */
-@protocol JavaLangIterable <NSFastEnumeration, JavaObject>
+@protocol JavaLangIterable < NSFastEnumeration, JavaObject >
 
 - (id<JavaUtilIterator>)iterator;
 
@@ -42,18 +40,15 @@
 
 @end
 
-@interface JavaLangIterable : NSObject < JavaLangIterable >
-@end
-
 J2OBJC_EMPTY_STATIC_INIT(JavaLangIterable)
-
-J2OBJC_TYPE_LITERAL_HEADER(JavaLangIterable)
-
-FOUNDATION_EXPORT NSUInteger JreDefaultFastEnumeration(
-    id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf);
 
 FOUNDATION_EXPORT void JavaLangIterable_forEachWithJavaUtilFunctionConsumer_(id<JavaLangIterable> self, id<JavaUtilFunctionConsumer> action);
 
 FOUNDATION_EXPORT id<JavaUtilSpliterator> JavaLangIterable_spliterator(id<JavaLangIterable> self);
 
-#endif // _JavaLangIterable_H_
+J2OBJC_TYPE_LITERAL_HEADER(JavaLangIterable)
+
+#endif
+
+#pragma pop_macro("INCLUDE_ALL_JavaLangIterable")
+// NOLINTEND
