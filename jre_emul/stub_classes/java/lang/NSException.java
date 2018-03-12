@@ -15,11 +15,13 @@
  *  limitations under the License.
  */
 
-package com.google.j2objc;
+package java.lang;
 
 /**
- * This stub is mapped to the iOS NSFastEnumeration protocol. We need the Java
- * stub class so that java.lang.Iterable instances can support fast enumeration.
+ * This stub is mapped to the iOS NSException class. We need the Java stub class so that
+ * java.lang.Throwable can declare itself to extend NSException.
  */
-public interface NSFastEnumeration {
+public class NSException {
+
+  public NSException(String message) {}
 }
