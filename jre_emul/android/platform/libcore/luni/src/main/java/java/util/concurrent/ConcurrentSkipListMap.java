@@ -405,7 +405,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         /**
          * Creates a new marker node. A marker is distinguished by
-         * having its value field point to itself.  Marker nodes also
+         * having its value field point to a sentinel.  Marker nodes also
          * have null keys, a fact that is exploited in a few places,
          * but this doesn't distinguish markers from the base-level
          * header node (head.node), which also has a null key.
@@ -440,7 +440,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          * @return true if this node is a marker node
          */
         boolean isMarker() {
-            return value == this;
+            return value == sentinel();
         }
 
         /**
