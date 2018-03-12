@@ -22,6 +22,7 @@
 #import "J2ObjC_types.h"
 
 @class IOSClass;
+@protocol JavaLangIterable;
 
 #ifndef __has_feature
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
@@ -91,6 +92,9 @@ NSString *JreStrcat(const char *types, ...);
 
 jboolean JreAnnotationEquals(id a1, id a2);
 jint JreAnnotationHashCode(id a);
+
+NSUInteger JreDefaultFastEnumeration(
+    id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf);
 
 CF_EXTERN_C_END
 

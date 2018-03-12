@@ -69,6 +69,8 @@ public final class TypeUtil {
       GeneratedTypeElement.newIosClass("IOSClass", NS_OBJECT, "IOSClass.h");
   public static final TypeElement NS_COPYING =
       GeneratedTypeElement.newIosInterface("NSCopying", "");
+  public static final TypeElement NS_FASTENUMERATION =
+      GeneratedTypeElement.newIosInterface("NSFastEnumeration", "");
   public static final TypeElement IOS_OBJECT_ARRAY =
       GeneratedTypeElement.newIosClass("IOSObjectArray", NS_OBJECT, "IOSObjectArray.h");
   public static final TypeMirror NATIVE_CHAR_PTR = new NativeType("char *");
@@ -122,10 +124,16 @@ public final class TypeUtil {
         .put(javaNumber, NS_NUMBER)
         .put(javaCloneable, NS_COPYING);
 
-    TypeElement javaNSException = javacElements.getTypeElement("java.lang.NSException");
-    // Could be null if the user is not using jre_emul.jar as the boot path.
-    if (javaNSException != null) {
-      typeMapBuilder.put(javaNSException, NS_EXCEPTION);
+    TypeElement typeNSException = javacElements.getTypeElement("com.google.j2objc.NSException");
+    TypeElement typeNSFastEnumeration =
+        javacElements.getTypeElement("com.google.j2objc.NSFastEnumeration");
+
+    // Types could be null if the user is not using jre_emul.jar as the boot path.
+    if (typeNSException != null) {
+      typeMapBuilder.put(typeNSException, NS_EXCEPTION);
+    }
+    if (typeNSFastEnumeration != null) {
+      typeMapBuilder.put(typeNSFastEnumeration, NS_FASTENUMERATION);
     }
 
     javaToObjcTypeMap = typeMapBuilder.build();
