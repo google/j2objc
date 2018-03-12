@@ -29,6 +29,9 @@
 
 @class IOSClass;
 
+//TODO(b/72794968): Suppress duplicate definition warning.
+#pragma clang system_header
+
 // A category that adds Java Object-compatible methods to NSObject.
 @interface NSObject (JavaObject) <JavaObject>
 
