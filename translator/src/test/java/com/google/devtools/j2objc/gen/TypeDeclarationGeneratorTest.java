@@ -181,11 +181,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   public void testSynchronizedPropertyGetter() throws IOException {
     String source = "import com.google.j2objc.annotations.Property; "
         + "public class FooBar {"
-        + "  @Property(\"getter=getfieldBar\") private int fieldBar;"
+        + "  @Property(\"getter=getFieldBar\") private int fieldBar;"
         + "  public synchronized int getFieldBar() { return fieldBar; }"
         + "}";
     String translation = translateSourceFile(source, "FooBar", "FooBar.h");
-    assertTranslation(translation, "@property (getter=getfieldBar) jint fieldBar;");
+    assertTranslation(translation, "@property (getter=getFieldBar) jint fieldBar;");
   }
 
   public void testBadPropertyAttribute() throws IOException {
@@ -195,6 +195,16 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "}";
     translateSourceFile(source, "FooBar", "FooBar.h");
     assertErrorCount(1);
+  }
+
+  public void testPropertySetterSelector() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"setter=setFieldBar\") private int fieldBar;"
+        + "  public void setFieldBar(int val) { fieldBar = val; }"
+        + "}";
+    String translation = translateSourceFile(source, "FooBar", "FooBar.h");
+    assertTranslation(translation, "setter=setFieldBarWithInt:");
   }
 
   public void testBadPropertySetterSelector() throws IOException {

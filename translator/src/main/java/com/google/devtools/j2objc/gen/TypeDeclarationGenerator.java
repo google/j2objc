@@ -311,8 +311,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Locate method which matches the Java/Objective C setter name pattern.
    */
   public static ExecutableElement findSetterMethod(
-      String propertyName, TypeElement declaringClass) {
-    return ElementUtil.findMethod(declaringClass, "set" + NameTable.capitalize(propertyName));
+      String propertyName, TypeMirror type, TypeElement declaringClass) {
+    return ElementUtil.findMethod(declaringClass, "set" + NameTable.capitalize(propertyName),
+        TypeUtil.getQualifiedName(type));
   }
 
   protected void printProperties() {
@@ -331,22 +332,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         // to support its unique accessors.
         Set<String> attributes = property.getPropertyAttributes();
         TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-        if (property.getGetter() == null) {
-          ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
-          if (getter != null) {
-            attributes.add("getter=" + NameTable.getMethodName(getter));
-            if (!ElementUtil.isSynchronized(getter)) {
-              attributes.add("nonatomic");
-            }
+        ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
+        if (getter != null) {
+          // Update getter from its Java name to its selector. This is normally the
+          // same since getters have no parameters, but the name may be reserved.
+          attributes.remove("getter=" + property.getGetter());
+          attributes.add("getter=" + nameTable.getMethodSelector(getter));
+          if (!ElementUtil.isSynchronized(getter)) {
+            attributes.add("nonatomic");
           }
         }
-        if (property.getSetter() == null) {
-          ExecutableElement setter = findSetterMethod(propertyName, declaringClass);
-          if (setter != null) {
-            attributes.add("setter=" + NameTable.getMethodName(setter));
-            if (!ElementUtil.isSynchronized(setter)) {
-              attributes.add("nonatomic");
-            }
+        ExecutableElement setter = findSetterMethod(propertyName, varType, declaringClass);
+        if (setter != null) {
+          // Update setter from its Java name to its selector.
+          attributes.remove("setter=" + property.getSetter());
+          attributes.add("setter=" + nameTable.getMethodSelector(setter));
+          if (!ElementUtil.isSynchronized(setter)) {
+            attributes.add("nonatomic");
           }
         }
 
