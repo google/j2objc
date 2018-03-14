@@ -2290,7 +2290,7 @@ public class Collections {
 
         SynchronizedMap(Map<K,V> m) {
             this.m = Objects.requireNonNull(m);
-            mutex = this;
+            mutex = new Object();
         }
 
         SynchronizedMap(Map<K,V> m, Object mutex) {
