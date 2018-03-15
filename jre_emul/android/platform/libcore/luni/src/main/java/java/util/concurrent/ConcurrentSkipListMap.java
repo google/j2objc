@@ -502,7 +502,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          */
         AbstractMap.SimpleImmutableEntry<K,V> createSnapshot() {
             Object v = value;
-            if (v == null || v == this || v == BASE_HEADER)
+            if (v == null || v == sentinel() || v == BASE_HEADER)
                 return null;
             @SuppressWarnings("unchecked") V vv = (V)v;
             return new AbstractMap.SimpleImmutableEntry<K,V>(key, vv);
