@@ -284,6 +284,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     String selector = nameTable.getMethodSelector(element);
     if (m.isConstructor()) {
       returnType = "instancetype";
+      // when supports nullability - set constructor as nonnull (in case it is not annotated already)
+      // AFAIK Java doesn't support nullable constructor right?
+      // helps to work better with Swift
+      if (this.options.nullability() && !ElementUtil.hasNullableAnnotation(element)) {
+        returnType = returnType + " __nonnull";
+      }
     } else if (selector.equals("hash")) {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
