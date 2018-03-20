@@ -31,8 +31,10 @@ import libcore.util.MutableLong;
 #include "java/io/File.h"
 #include "libcore/io/StructLinger.h"
 #include "libcore/io/StructPollfd.h"
+#include "libcore/io/StructStat.h"
 #include "libcore/io/StructStatVfs.h"
 #include "libcore/io/StructTimeval.h"
+#include "libcore/io/StructUtsname.h"
 
 #include <fcntl.h>
 #include <poll.h>
