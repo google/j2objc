@@ -706,6 +706,7 @@ public final class ElementUtil {
    */
   public static boolean isNonnull(Element element, boolean parametersNonnullByDefault) {
     return hasNonnullAnnotation(element)
+        || isConstructor(element)  // Java constructors are always non-null.
         || (isParameter(element)
             && parametersNonnullByDefault
             && !((VariableElement) element).asType().getKind().isPrimitive());

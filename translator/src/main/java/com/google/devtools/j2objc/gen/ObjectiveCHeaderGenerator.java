@@ -135,7 +135,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
    * checker frameworks don't have that requirement.
    */
   protected void pushIgnoreNullabilityCompletenessPragma() {
-    if (getGenerationUnit().hasNullabilityAnnotations()) {
+    if (getGenerationUnit().options().nullability()
+        || getGenerationUnit().hasNullabilityAnnotations()) {
       newline();
       println("#if __has_feature(nullability)");
       println("#pragma clang diagnostic push");
@@ -145,7 +146,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void popIgnoreNullabilityCompletenessPragma() {
-    if (getGenerationUnit().hasNullabilityAnnotations()) {
+    if (getGenerationUnit().options().nullability()
+        || getGenerationUnit().hasNullabilityAnnotations()) {
       newline();
       println("#if __has_feature(nullability)");
       println("#pragma clang diagnostic pop");

@@ -442,6 +442,19 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@property (readonly, nonatomic) jdouble test8;");
   }
 
+  // Verify that constructors are always nonnull (issue #960).
+  public void testNonnullConstructors() throws IOException {
+    options.setNullability(true);
+    String translation = translateSourceFile(
+        "class Test { "
+        + "  int i; "
+        + "  public Test() { this(0); } "
+        + "  private Test(int i) { this.i = i; }}", "Test", "Test.h");
+    assertTranslation(translation, "- (instancetype __nonnull)init;");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithInt:(jint)i;");
+  }
+
   public void testFieldWithIntersectionType() throws IOException {
     String translation = translateSourceFile(
         "class Test <T extends Comparable & Runnable> { T foo; }", "Test", "Test.h");
