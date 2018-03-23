@@ -355,6 +355,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "@protocol UnitTestExample < UnitTestBar, JavaObject >");
   }
 
+  public void testNativeSuperInterfaceTranslation() throws IOException {
+    String translation = translateSourceFile("package java.lang;"
+        + "import com.google.j2objc.NSFastEnumeration;"
+        + "public interface Iterable<T> extends NSFastEnumeration { String foo(); }",
+        "Iterable", "java/lang/Iterable.h");
+    assertTranslation(translation,
+        "@protocol JavaLangIterable < NSFastEnumeration, JavaObject >");
+  }
+
   public void testConstTranslation() throws IOException {
     String translation = translateSourceFile(
         "package unit.test; public class Example { public static final int FOO=1; }",
