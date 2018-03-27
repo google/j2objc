@@ -24,6 +24,7 @@
 #include <pthread.h>
 #include <AssertMacros.h>
 #include <libkern/OSAtomic.h>
+#include <os/lock.h>
 
 #include "JreEmulation.h"
 #include "java/lang/Thread.h"
@@ -35,6 +36,25 @@
 #define DEBUG_ASSERT_MESSAGE(name, assertion, label, message, file, line, value) \
   fprintf(stderr, "Assertion failed: %s, %s file: %s, line: %d\n", \
       assertion, (message != 0) ? message : "", file, line);
+
+// OSSpinlock causes deadlock on iOS. we avoid it if possible
+#undef J2OBJC_FAST_LOCK_TYPE
+#undef J2OBJC_FAST_LOCK_LOCK
+#undef J2OBJC_FAST_LOCK_UNLOCK
+
+#if !defined(__IPHONE_10_0) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_10_0
+#define J2OBJC_FAST_LOCK_TYPE OSSpinLock
+#define J2OBJC_FAST_LOCK_LOCK(LOCK) OSSpinLockLock(LOCK)
+#define J2OBJC_FAST_LOCK_UNLOCK(LOCK) OSSpinLockUnlock(LOCK)
+
+#else
+
+#define J2OBJC_FAST_LOCK_TYPE os_unfair_lock_t
+#define J2OBJC_FAST_LOCK_LOCK(LOCK) os_unfair_lock_lock(LOCK)
+#define J2OBJC_FAST_LOCK_UNLOCK(LOCK) os_unfair_lock_unlock(LOCK)
+
+#endif
+
 
 //
 // Allocate a lock only when needed.  Since few locks are needed at any point
@@ -81,7 +101,7 @@ typedef struct SyncCache {
 } SyncCache;
 
 typedef struct {
-    OSSpinLock lock;
+    J2OBJC_FAST_LOCK_TYPE lock;
     SyncData *data;
 } SyncList __attribute__((aligned(64)));
 // aligned to put locks on separate cache lines
@@ -154,7 +174,7 @@ static SyncCache *fetch_cache(BOOL create)
 
 static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
 {
-    OSSpinLock *lockp = &LOCK_FOR_OBJ(object);
+    J2OBJC_FAST_LOCK_TYPE *lockp = &LOCK_FOR_OBJ(object);
     SyncData **listp = &LIST_FOR_OBJ(object);
     SyncData* result = NULL;
     SyncCacheItem *item = NULL;
@@ -209,7 +229,7 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
     // We could keep the nodes in some hash table if we find that there are
     // more than 20 or so distinct locks active, but we don't do that now.
 
-    OSSpinLockLock(lockp);
+    J2OBJC_FAST_LOCK_LOCK(lockp);
 
     SyncData* p;
     SyncData* firstUnused = NULL;
@@ -251,7 +271,7 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
     *listp = result;
 
  done:
-    OSSpinLockUnlock(lockp);
+    J2OBJC_FAST_LOCK_UNLOCK(lockp);
     if (result) {
         // Only new ACQUIRE should get here.
         // All RELEASE and CHECK and recursive ACQUIRE are
@@ -462,7 +482,3 @@ BOOL j2objc_sync_holds_lock(id obj) {
   SyncData* data = id2data(obj, TEST);
   return data ? YES : NO;
 }
-
-
-
-
