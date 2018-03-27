@@ -33,6 +33,8 @@ import com.google.protobuf.ProtocolMessageEnum;
 import foo.bar.baz.PrefixDummy2;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,11 +65,18 @@ public class CompatibilityTest extends ProtobufTest {
 
   // Fetch test resource from application root or relative path, depending on build.
   private static InputStream getTestData(String name) throws FileNotFoundException {
+    // For iOS the test data might be available at root in the bundle.
     InputStream resource = ClassLoader.getSystemResourceAsStream(name);
     if (resource != null) {
       return resource;
     }
-    return ClassLoader.getSystemResourceAsStream("testdata/" + name);
+    // For Java the test data is added as a resource in the jar.
+    resource = ClassLoader.getSystemResourceAsStream("testdata/" + name);
+    if (resource != null) {
+      return resource;
+    }
+    // For macos, the files are not available in the bundle.
+    return new FileInputStream(new File("testdata/" + name));
   }
 
   private static byte[] readStream(InputStream in) throws IOException {
