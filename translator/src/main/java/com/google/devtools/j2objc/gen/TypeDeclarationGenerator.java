@@ -91,6 +91,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void generateInitialDeclaration() {
+    if (typeNode.isDeadClass()) {
+      printStaticFieldDeclarations();
+      return;
+    }
     printNativeEnum();
 
     printTypeDocumentation();
@@ -464,7 +468,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   protected void printStaticFieldDeclarations() {
     for (VariableDeclarationFragment fragment : getStaticFields()) {
-      printStaticFieldFullDeclaration(fragment);
+      if (typeNode.isDeadClass()) {
+        printDeadClassConstant(fragment);
+      } else {
+        printStaticFieldFullDeclaration(fragment);
+      }
     }
   }
 
@@ -508,6 +516,22 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           fragment, UnicodeUtils.format("%s%s_%s", declType, typeName, name));
     }
     printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
+  }
+
+  // Overridden in TypePrivateDeclarationGenerator
+  protected void printDeadClassConstant(VariableDeclarationFragment fragment) {
+    VariableElement var = fragment.getVariableElement();
+    Object value = var.getConstantValue();
+    assert value != null;
+    String declType = getDeclarationType(var);
+    declType += (declType.endsWith("*") ? "" : " ");
+    String name = nameTable.getVariableShortName(var);
+    if (ElementUtil.isPrimitiveConstant(var)) {
+      printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
+    } else {
+      println("FOUNDATION_EXPORT "
+          + UnicodeUtils.format("%s%s_%s", declType, typeName, name) + ";");
+    }
   }
 
   private void printTypeLiteralDeclaration() {

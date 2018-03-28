@@ -42,6 +42,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -69,7 +70,7 @@ public class MetadataWriter extends UnitTreeVisitor {
   private final ArrayType annotationArray;
   private final ArrayType annotationArray2D;
 
-  public MetadataWriter(CompilationUnit unit) {
+  public MetadataWriter(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
     super(unit);
     TypeMirror annotationType =
         GeneratedTypeElement.newEmulatedInterface("java.lang.annotation.Annotation").asType();
@@ -93,6 +94,9 @@ public class MetadataWriter extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
+    if (node.isDeadClass()) {
+      return;
+    }
     TypeElement type = node.getTypeElement();
     if (!translationUtil.needsReflection(type)) {
       return;

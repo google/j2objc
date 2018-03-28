@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.Comment;
@@ -21,9 +22,11 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
@@ -32,7 +35,6 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * Updates the Java AST to remove methods and classes reported as dead
@@ -52,7 +54,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
   @Override
   public void endVisit(TypeDeclaration node) {
     TypeElement type = node.getTypeElement();
-    eliminateDeadCode(type, node.getBodyDeclarations());
+    eliminateDeadCode(type, node);
     // Also strip supertypes.
     if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
       node.stripSupertypes();
@@ -62,7 +64,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
   @Override
   public void endVisit(EnumDeclaration node) {
     TypeElement type = node.getTypeElement();
-    eliminateDeadCode(type, node.getBodyDeclarations());
+    eliminateDeadCode(type, node);
     if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.getEnumConstants().clear();
@@ -74,25 +76,27 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
   public void endVisit(AnnotationTypeDeclaration node) {
     TypeElement type = node.getTypeElement();
     if (!ElementUtil.isRuntimeAnnotation(type)) {
-      eliminateDeadCode(type, node.getBodyDeclarations());
+      eliminateDeadCode(type, node);
     }
   }
 
   /**
    * Remove dead members from a type.
    */
-  private void eliminateDeadCode(TypeElement type, List<BodyDeclaration> decls) {
+  private void eliminateDeadCode(TypeElement type, AbstractTypeDeclaration node) {
+    List<BodyDeclaration> decls = node.getBodyDeclarations();
     String clazz = elementUtil.getBinaryName(type);
     if (deadCodeMap.containsClass(clazz)) {
-      stripClass(decls);
+      stripClass(node);
     } else {
       removeDeadMethods(clazz, decls);
       removeDeadFields(clazz, decls);
     }
   }
 
-  private void stripClass(List<BodyDeclaration> decls) {
-    for (Iterator<BodyDeclaration> iter = decls.iterator(); iter.hasNext(); ) {
+  private void stripClass(AbstractTypeDeclaration node) {
+    boolean removeClass = true;
+    for (Iterator<BodyDeclaration> iter = node.getBodyDeclarations().iterator(); iter.hasNext(); ) {
       BodyDeclaration decl = iter.next();
 
       // Do not strip interfaces or static nested classes. They are independent of the dead class,
@@ -105,36 +109,49 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         }
       }
 
-      if (!isInlinableConstant(decl)) {
+      if (decl.getKind() == Kind.FIELD_DECLARATION) {
+        FieldDeclaration field = (FieldDeclaration) decl;
+        Iterator<VariableDeclarationFragment> fragmentsIter = field.getFragments().iterator();
+        while (fragmentsIter.hasNext()) {
+          VariableDeclarationFragment fragment = fragmentsIter.next();
+          // Don't delete any constants because we can't detect their use.
+          if (fragment.getVariableElement().getConstantValue() == null) {
+            fragmentsIter.remove();
+          } else {
+            removeClass = false;
+          }
+        }
+        if (field.getFragments().isEmpty()) {
+          iter.remove();
+        }
+      } else {
         if (decl instanceof MethodDeclaration) {
           unit.setHasIncompleteProtocol();
         }
         iter.remove();
       }
     }
-  }
 
-  private boolean isInlinableConstant(BodyDeclaration decl) {
-    if (!(decl instanceof FieldDeclaration)) {
-      return false;
-    }
-    int modifiers = decl.getModifiers();
-    if (!Modifier.isStatic(modifiers) || !Modifier.isFinal(modifiers)
-        || Modifier.isPrivate(modifiers)) {
-      return false;
-    }
-    TypeMirror type = ((FieldDeclaration) decl).getTypeMirror();
-    if (!(type.getKind().isPrimitive() || typeUtil.isString(type))) {
-      return false;
-    }
+    if (removeClass) {
+      node.setDeadClass(true);
 
-    // Only when every fragment has constant value do we say this is inlinable.
-    for (VariableDeclarationFragment fragment : ((FieldDeclaration) decl).getFragments()) {
-      if (fragment.getVariableElement().getConstantValue() == null) {
-        return false;
+      // Remove any class-level OCNI comment blocks.
+      int srcStart = node.getStartPosition();
+      String src = unit.getSource().substring(srcStart, srcStart + node.getLength());
+      if (src.contains("/*-[")) {
+        int ocniStart = srcStart + src.indexOf("/*-[");
+        int ocniEnd = ocniStart + node.getLength();
+        Iterator<Comment> commentsIter = unit.getCommentList().iterator();
+        while (commentsIter.hasNext()) {
+          Comment comment = commentsIter.next();
+          if (comment.isBlockComment()
+              && comment.getStartPosition() >= ocniStart
+              && (comment.getStartPosition() + comment.getLength()) <= ocniEnd) {
+            commentsIter.remove();
+          }
+        }
       }
     }
-    return true;
   }
 
   /**
@@ -193,7 +210,9 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         Iterator<VariableDeclarationFragment> fragmentsIter = field.getFragments().iterator();
         while (fragmentsIter.hasNext()) {
           VariableDeclarationFragment fragment = fragmentsIter.next();
-          // Don't delete any constants because we can't detect their use.
+          // Don't delete any constants because we can't detect their use. Instead,
+          // these are translated by the TypeDeclarationGenerator as #define directives,
+          // so the enclosing type can still be deleted if otherwise empty.
           VariableElement var = fragment.getVariableElement();
           if (var.getConstantValue() == null
               && deadCodeMap.containsField(clazz, ElementUtil.getName(var))) {
@@ -202,6 +221,37 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         }
         if (field.getFragments().isEmpty()) {
           declarationsIter.remove();
+        }
+      }
+    }
+  }
+
+  /**
+   * Remove empty classes marked as dead. This needs to be done after translation
+   * to avoid inner class references in the AST returned by DeadCodeEliminator.
+   */
+  public static void removeDeadClasses(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
+    ElementUtil elementUtil = unit.getEnv().elementUtil();
+    Iterator<AbstractTypeDeclaration> iter = unit.getTypes().iterator();
+    while (iter.hasNext()) {
+      AbstractTypeDeclaration type = iter.next();
+      TypeElement typeElement = type.getTypeElement();
+      if (!ElementUtil.isRuntimeAnnotation(typeElement)) {
+        if (deadCodeMap.containsClass(typeElement, elementUtil)) {
+          type.setDeadClass(true);
+        } else {
+          // Keep class, remove dead interfaces.
+          if (typeElement.getInterfaces().size() > 0) {
+            GeneratedTypeElement replacement = GeneratedTypeElement.mutableCopy(typeElement);
+            for (TypeElement intrface : ElementUtil.getInterfaces(typeElement)) {
+              if (!deadCodeMap.containsClass(intrface, elementUtil)) {
+                replacement.addInterface(intrface.asType());
+              }
+            }
+            if (typeElement.getInterfaces().size() > replacement.getInterfaces().size()) {
+              type.setTypeElement(replacement);
+            }
+          }
         }
       }
     }

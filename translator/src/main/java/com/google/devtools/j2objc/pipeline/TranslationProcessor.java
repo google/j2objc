@@ -64,7 +64,6 @@ import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
-
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -241,7 +240,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("DestructorGenerator");
 
     // Before: StaticVarRewriter - Generates static variable access expressions.
-    new MetadataWriter(unit).run();
+    new MetadataWriter(unit, deadCodeMap).run();
     ticker.tick("MetadataWriter");
 
     // Before: Functionizer - Needs to rewrite some ClassInstanceCreation nodes
@@ -291,6 +290,11 @@ public class TranslationProcessor extends FileProcessor {
     //   top-level and functionizing to have occured.
     new PrivateDeclarationResolver(unit).run();
     ticker.tick("PrivateDeclarationResolver");
+
+    if (deadCodeMap != null) {
+      DeadCodeEliminator.removeDeadClasses(unit, deadCodeMap);
+      ticker.tick("removeDeadClasses");
+    }
 
     // Make sure we still have a valid AST.
     unit.validate();

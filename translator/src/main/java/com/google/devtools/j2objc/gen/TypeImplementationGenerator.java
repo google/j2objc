@@ -72,6 +72,12 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   protected void generate() {
+    if (typeNode.isDeadClass()) {
+      newline();
+      printStaticVars();
+      return;
+    }
+
     syncFilename(compilationUnit.getSourceFilePath());
 
     printInitFlagDefinition();

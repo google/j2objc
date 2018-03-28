@@ -214,7 +214,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  static class Baz { void g() {} }\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo_Bar");
+    assertNotInTranslation(translation, "@interface Foo_Bar");
     assertNotInTranslation(translation, "- (void)f");
     assertTranslation(translation, "@interface Foo_Baz");
     assertNotInTranslation(translation, "- (void)g");
@@ -312,7 +312,6 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String impl = getTranslatedFile("Foo.m");
 
     assertNotInTranslation(header, "@interface Foo : Base < SomeInterface >");
-    assertTranslation(header, "@interface Foo : NSObject");
     assertNotInTranslation(impl, "countByEnumeratingWithState:");
   }
 
@@ -329,7 +328,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
     String header = translateSourceFile(source, "Foo", "Foo.h");
     assertNotInTranslation(header, "@interface Foo : Base");
-    assertTranslation(header, "@interface Foo : NSObject");
+    assertNotInTranslation(header, "@interface Foo : NSObject");
     assertTranslation(header, "- (id)someMethod;");
     assertNotInTranslation(header, "- (NSString *)someMethod;");
   }
@@ -438,5 +437,124 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "bar");
     assertNotInTranslation(translation, "baz");
     assertTranslation(translation, "mumble");
+  }
+
+  public void testDeadClass_OCNI() throws IOException {
+    String source = "class A {\n"
+        + "  private native String bar() /*-[\n"
+        + "    return @\"test\";\n"
+        + "  ]-*/;\n"
+        + "\n"
+        + "/*-[\n"
+        + "  NSLog(@\"A\");\n"
+        + "]-*/\n"
+        + "}\n"
+        + "class B {\n"
+        + "  native int size() /*-[\n"
+        + "    return 42;\n"
+        + "  ]-*/;\n"
+        + "/*-[\n"
+        + "  NSLog(@\"B\");\n"
+        + "]-*/\n"
+        + "}\n";
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addClass("A")
+        .build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile(source, "A", "A.h");
+    assertNotInTranslation(translation, "@interface A");
+    assertTranslation(translation, "@interface B");
+
+    translation = getTranslatedFile("A.m");
+    assertNotInTranslation(translation, "@implementation A");
+    assertNotInTranslation(translation, "bar");
+    assertNotInTranslation(translation, "return @\"test\"");
+    assertNotInTranslation(translation, "NSLog(@\"A\");");
+    assertTranslation(translation, "@implementation B");
+    assertTranslation(translation, "size");
+    assertTranslation(translation, "return 42");
+    assertTranslation(translation, "NSLog(@\"B\");");
+  }
+
+  public void testDeadInterface() throws IOException {
+    String source = "class A implements java.io.Closeable, java.io.Flushable {\n"
+        + "  public void close() {}\n"
+        + "  public void flush() {}\n"
+        + "}\n";
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addClass("java.io.Flushable")
+        .build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile(source, "A", "A.h");
+    assertNotInTranslation(translation, "JavaIoFlushable");
+    assertTranslation(translation, "JavaIoCloseable");
+  }
+
+  public void testDeadClassWithConstant() throws IOException {
+    String source = "class A {\n"
+        + "  private static class B {\n"
+        + "    public static final int MEANING_OF_LIFE = 42;\n"
+        + "    private static final int PI_DAY = 314;\n"
+        + "  }\n"
+        + "  public int meaningOfLife() {\n"
+        + "    return B.MEANING_OF_LIFE;\n"
+        + "  }\n"
+        + "  public int piDay() {\n"
+        + "    return B.PI_DAY;\n"
+        + "  }\n"
+        + "}\n";
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addClass("A$B")
+        .build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile(source, "A", "A.m");
+    assertTranslation(translation, "#define A_B_MEANING_OF_LIFE 42");
+    assertTranslation(translation, "#define A_B_PI_DAY 314");
+    assertNotInTranslation(translation, "@interface A_B");
+    assertNotInTranslation(translation, "@implementation A_B");
+  }
+
+  public void testDeadClass_ExternalOCNI() throws IOException {
+    String source = "/*-[\n"
+        + "#include <stdlib.h>\n"
+        + "]-*/\n"
+        + "class A {\n"
+        + "}\n";
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addClass("A")
+        .build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile(source, "A", "A.h");
+    assertNotInTranslation(translation, "@interface A");
+
+    translation = getTranslatedFile("A.m");
+    assertNotInTranslation(translation, "@implementation A");
+    assertTranslation(translation, "#include <stdlib.h>");
+  }
+
+  public void testDeadClass_StringConstants() throws IOException {
+    String source = "class A {\n"
+        + "  public static class B {\n"
+        + "    public static final String FOO = \"foo\";\n"
+        + "    private static final String BAR = \"bar\";\n"
+        + "  }\n"
+        + "  String test() {\n"
+        + "    return B.FOO + B.BAR;\n"
+        + "  }\n"
+        + "}\n";
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addClass("A$B")
+        .build();
+    setDeadCodeMap(map);
+    // Check that accessors from a dead class are not generated.
+    options.setStaticAccessorMethods(true);
+    String translation = translateSourceFile(source, "A", "A.h");
+    assertNotInTranslation(translation, "@interface A_B");
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *A_B_FOO;");
+
+    translation = getTranslatedFile("A.m");
+    assertNotInTranslation(translation, "@implementation A_B");
+    assertTranslation(translation, "NSString *A_B_FOO = @\"foo\";");
+    assertTranslation(translation, "static NSString *A_B_BAR = @\"bar\";");
   }
 }

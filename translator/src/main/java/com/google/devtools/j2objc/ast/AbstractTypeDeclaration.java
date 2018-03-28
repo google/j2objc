@@ -29,6 +29,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
       ChildList.create(BodyDeclaration.class, this);
   protected final ChildList<Statement> classInitStatements =
       ChildList.create(Statement.class, this);
+  private boolean isDeadClass;
 
   AbstractTypeDeclaration() {}
 
@@ -95,6 +96,15 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public AbstractTypeDeclaration addClassInitStatement(int index, Statement stmt) {
     classInitStatements.add(index, stmt);
+    return this;
+  }
+
+  public boolean isDeadClass() {
+    return isDeadClass;
+  }
+
+  public AbstractTypeDeclaration setDeadClass(boolean b) {
+    isDeadClass = b;
     return this;
   }
 }
