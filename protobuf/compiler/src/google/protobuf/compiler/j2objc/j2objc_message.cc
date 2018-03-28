@@ -324,6 +324,15 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "classname", ClassName(descriptor_));
   printer->Indent();
   printer->Indent();
+  // The descriptor must be assigned before field data is initialized.
+  // Specifically the non-static initialization of field class types may result
+  // in an access of this descriptor during its class initialization.
+  printer->Print(
+      "$classname$_descriptor_ = CGPInitDescriptor(self, "
+          "[$classname$_Builder class], $flags$, "
+          "sizeof($classname$_Storage));\n",
+      "classname", ClassName(descriptor_),
+      "flags", GetMessageFlags(descriptor_));
   if (field_generators_.numMapFields() > 0) {
     printer->Print("static CGPFieldData mapEntryFields[] = {\n");
     printer->Indent();
@@ -333,6 +342,10 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     }
     printer->Outdent();
     printer->Print("};\n");
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      field_generators_.get(descriptor_->field(i))
+          .GenerateMapEntryNonStaticFieldData(printer, "mapEntryFields");
+    }
   }
   printer->Print("static CGPFieldData fields[] = {\n");
   printer->Indent();
@@ -341,6 +354,10 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Outdent();
   printer->Print("};\n");
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    field_generators_.get(descriptor_->field(i))
+        .GenerateNonStaticFieldData(printer, "fields", i);
+  }
   if (descriptor_->oneof_decl_count() > 0) {
     printer->Print("static CGPOneofData oneofs[] = {\n");
     printer->Indent();
@@ -351,13 +368,9 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     printer->Print("};\n");
   }
   printer->Print(
-      "CGPInitDescriptor(&$classname$_descriptor_, "
-          "self, [$classname$_Builder class], $flags$, "
-          "sizeof($classname$_Storage), $fieldcount$, fields, $oneofcount$, "
-          "$oneofdata$);\n"
-      "",
+      "CGPInitFields($classname$_descriptor_, $fieldcount$, fields, "
+          "$oneofcount$, $oneofdata$);\n",
       "classname", ClassName(descriptor_),
-      "flags", GetMessageFlags(descriptor_),
       "fieldcount", SimpleItoa(descriptor_->field_count()),
       "oneofcount", SimpleItoa(descriptor_->oneof_decl_count()),
       "oneofdata", descriptor_->oneof_decl_count() > 0 ? "oneofs" : "NULL");
@@ -370,6 +383,10 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     }
     printer->Outdent();
     printer->Print("};\n");
+    for (int i = 0; i < descriptor_->extension_count(); i++) {
+      ExtensionGenerator(descriptor_->extension(i))
+          .GenerateNonStaticFieldData(printer, "extensionFields", i);
+    }
     for (int i = 0; i < descriptor_->extension_count(); i++) {
       ExtensionGenerator(descriptor_->extension(i))
           .GenerateSourceInitializer(printer);

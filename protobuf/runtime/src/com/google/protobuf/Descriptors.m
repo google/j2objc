@@ -96,19 +96,19 @@ IOSObjectArray *CreateFields(
   return fields;
 }
 
-void CGPInitDescriptor(
-    CGPDescriptor **pDescriptor, Class messageClass, Class builderClass, CGPMessageFlags flags,
-    size_t storageSize, jint fieldCount, CGPFieldData *fieldData, jint oneofCount,
-    CGPOneofData *oneofData) {
-  CGPDescriptor *descriptor = [[CGPDescriptor alloc]
+CGPDescriptor *CGPInitDescriptor(
+    Class messageClass, Class builderClass, CGPMessageFlags flags,
+    size_t storageSize) {
+  return [[CGPDescriptor alloc]
       initWithMessageClass:messageClass
               builderClass:builderClass
                      flags:flags
                storageSize:storageSize];
-  // The descriptor must be at least partially initialized and available before creating the field
-  // descriptors below.
-  *pDescriptor = descriptor;
+}
 
+void CGPInitFields(
+    CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
+    jint oneofCount, CGPOneofData *oneofData) {
   descriptor->fields_ = CreateFields(fieldCount, fieldData, descriptor);
 
   if (oneofCount > 0) {
@@ -296,7 +296,8 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
       break;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
       {
-        Class enumClass = objc_getClass(data->className);
+        Class enumClass = data->objcType;
+        NSCAssert(enumClass != nil, @"Field data is missing objc enum type.");
         CGPEnumDescriptor *enumDescriptor = [enumClass performSelector:@selector(getDescriptor)];
         CGPEnumValueDescriptor *valueDescriptor =
             IOSObjectArray_Get(enumDescriptor->values_, data->defaultValue.valueInt);
@@ -326,7 +327,8 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
           descriptor->valueType_ = NewMapEntryDescriptor(data->mapEntryFields);
           break;
         }
-        Class msgClass = objc_getClass(data->className);
+        Class msgClass = data->objcType;
+        NSCAssert(msgClass != nil, @"Field data is missing objc message type.");
         CGPDescriptor *msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
         data->defaultValue.valueId = msgDescriptor->defaultInstance_;
         descriptor->valueType_ = msgDescriptor;

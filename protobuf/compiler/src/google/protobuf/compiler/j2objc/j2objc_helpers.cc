@@ -592,23 +592,6 @@ string GetDefaultValueTypeName(const FieldDescriptor *descriptor) {
   }
 }
 
-string GetFieldDataClassName(const FieldDescriptor *descriptor) {
-  switch (GetJavaType(descriptor)) {
-    case JAVATYPE_INT:
-    case JAVATYPE_LONG:
-    case JAVATYPE_FLOAT:
-    case JAVATYPE_DOUBLE:
-    case JAVATYPE_BOOLEAN:
-    case JAVATYPE_STRING:
-    case JAVATYPE_BYTES:
-      return "NULL";
-    case JAVATYPE_ENUM:
-      return "\"" + ClassName(descriptor->enum_type()) + "\"";
-    case JAVATYPE_MESSAGE:
-      return "\"" + ClassName(descriptor->message_type()) + "\"";
-  }
-}
-
 string GetFieldOptionsData(const FieldDescriptor *descriptor) {
   string field_options = descriptor->options().SerializeAsString();
   // Must convert to a standard byte order for packing length into

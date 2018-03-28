@@ -838,7 +838,7 @@ static const char *GetParamKeyword(CGPFieldDescriptor *field) {
       return "ComGoogleProtobufByteString";
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
-      return field->data_->className;
+      return class_getName(field->data_->objcType);
   }
   __builtin_unreachable();
 }

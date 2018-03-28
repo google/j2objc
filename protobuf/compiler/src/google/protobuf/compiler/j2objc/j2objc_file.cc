@@ -310,6 +310,10 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
     printer.Print("};\n");
     for (int i = 0; i < file_->extension_count(); i++) {
       ExtensionGenerator(file_->extension(i))
+          .GenerateNonStaticFieldData(&printer, "extensionFields", i);
+    }
+    for (int i = 0; i < file_->extension_count(); i++) {
+      ExtensionGenerator(file_->extension(i))
           .GenerateSourceInitializer(&printer);
     }
     printer.Print(
