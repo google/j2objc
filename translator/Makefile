@@ -42,6 +42,7 @@ JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
 CLASSPATH = $(CLASS_DIR):$(JAR_DEPS_PATH)
 TEST_CLASSPATH = $(TEST_DIR):$(CLASS_DIR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST)
+TEST_BOOT_CLASSPATH = $(DIST_JAR_DIR)/jre_emul.jar
 
 MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
 MANIFEST = $(BUILD_DIR)/manifest.mf
@@ -347,6 +348,7 @@ clean:
 
 test: compile-tests copy-test-resources
 	$(JAVA) -classpath $(TEST_CLASSPATH) -Xss4m -XX:+UseParallelGC \
+	    -Xbootclasspath/a:$(TEST_BOOT_CLASSPATH) \
 	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
