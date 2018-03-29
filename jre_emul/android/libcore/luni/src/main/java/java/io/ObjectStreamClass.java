@@ -663,7 +663,8 @@ public class ObjectStreamClass implements Serializable {
     native Object newInstance(Class<?> instantiationClass) /*-[
       // Allocate an object with the instantiationClass but invoke the constructor of the first
       // non-serializable class up the hierarchy.
-      Class cls = [self resolveConstructorClassWithIOSClass:instantiationClass].objcClass;
+      Class cls = JavaIoObjectStreamClass_resolveConstructorClassWithIOSClass_(
+          self, instantiationClass).objcClass;
       SEL sel = [resolvedConstructor_ getSelector];
       IMP imp = class_getMethodImplementation(cls, sel);
       id newInstance = [[instantiationClass.objcClass alloc] autorelease];
