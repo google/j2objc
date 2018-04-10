@@ -208,7 +208,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     addSourceFile("package bar.foo; public interface A {}", "bar/foo/A.java");
     options.getPackagePrefixes().addPrefix("foo.bar", "XX");
     options.getPackagePrefixes().addPrefix("bar.foo", "XX");
-    String s = translateSourceFile(
+    translateSourceFile(
         "package foo.bar; interface B extends bar.foo.A {}  public class A implements B {}",
         "foo.bar.A", "foo/bar/A.m");
     assertTrue(ErrorUtil.getErrorMessages().contains("Duplicate type name found in XXA->XXB->XXA"));

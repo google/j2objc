@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -60,7 +58,6 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.Weak;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.element.ExecutableElement;
@@ -236,34 +233,6 @@ public class Rewriter extends UnitTreeVisitor {
       return false;
     }
     return true;
-  }
-
-  private ListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
-      List<VariableDeclarationFragment> fragments) {
-    // Removes extra dimensions on variable declaration fragments and creates extra field
-    // declaration nodes if necessary.
-    // eg. "int i1, i2[], i3[][];" becomes "int i1; int[] i2; int[][] i3".
-    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations = null;
-    int masterDimensions = -1;
-    Iterator<VariableDeclarationFragment> iter = fragments.iterator();
-    while (iter.hasNext()) {
-      VariableDeclarationFragment frag = iter.next();
-      int dimensions = frag.getExtraDimensions();
-      if (masterDimensions == -1) {
-        masterDimensions = dimensions;
-      } else if (dimensions != masterDimensions) {
-        if (newDeclarations == null) {
-          newDeclarations = LinkedListMultimap.create();
-        }
-        VariableDeclarationFragment newFrag = new VariableDeclarationFragment(
-            frag.getVariableElement(), TreeUtil.remove(frag.getInitializer()));
-        newDeclarations.put(dimensions, newFrag);
-        iter.remove();
-      } else {
-        frag.setExtraDimensions(0);
-      }
-    }
-    return newDeclarations;
   }
 
   /**

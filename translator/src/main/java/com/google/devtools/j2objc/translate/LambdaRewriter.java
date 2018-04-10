@@ -74,7 +74,6 @@ public class LambdaRewriter extends UnitTreeVisitor {
 
     private final FunctionalExpression node;
     private final TypeElement lambdaType;
-    private final TypeMirror typeMirror;
     private final ExecutablePair descriptor;
     private TypeDeclaration typeDecl;
     private GeneratedExecutableElement implElement;
@@ -84,7 +83,6 @@ public class LambdaRewriter extends UnitTreeVisitor {
     private RewriteContext(FunctionalExpression node) {
       this.node = node;
       lambdaType = node.getTypeElement();
-      typeMirror = node.getTypeMirror();
       descriptor = node.getDescriptor();
       createTypeDeclaration();
       createImplementation();
