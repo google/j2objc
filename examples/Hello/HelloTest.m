@@ -13,9 +13,12 @@
 #import <XCTest/XCTest.h>
 
 @interface HelloTest : XCTestCase
-  // No tests necessary, as this class is used to just build the hello library.
 @end
 
 @implementation HelloTest
+
+- (void)testAppExecution {
+  XCTAssert(true);
+}
 
 @end
