@@ -69,13 +69,13 @@ public final class NativeTimeZone extends TimeZone {
 
 
   public static native NativeTimeZone get(String name) /*-[
-    return [ComGoogleJ2objcUtilNativeTimeZone fromNativeTimeZoneWithId:
-        [NSTimeZone timeZoneWithName:name]];
+    return ComGoogleJ2objcUtilNativeTimeZone_fromNativeTimeZoneWithId_(
+        [NSTimeZone timeZoneWithName:name]);
   ]-*/;
 
   public static native NativeTimeZone getDefaultNativeTimeZone() /*-[
-    return [ComGoogleJ2objcUtilNativeTimeZone fromNativeTimeZoneWithId:
-        [NSTimeZone defaultTimeZone]];
+    return ComGoogleJ2objcUtilNativeTimeZone_fromNativeTimeZoneWithId_(
+        [NSTimeZone defaultTimeZone]);
   ]-*/;
 
   private static native NativeTimeZone fromNativeTimeZone(Object nativeTimeZone) /*-[

@@ -310,7 +310,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
 
     private native Result postResult(Result result) /*-[
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self finishWithId:result];
+            AndroidOsAsyncTask_finishWithId_(self, result);
         });
         return result;
     ]-*/;

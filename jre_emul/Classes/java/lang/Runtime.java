@@ -110,7 +110,7 @@ public class Runtime {
 
   private native void registerShutdownHooks() /*-[
     atexit_b(^{
-      [self runShutdownHooks];
+      JavaLangRuntime_runShutdownHooks(self);
     });
   ]-*/;
 

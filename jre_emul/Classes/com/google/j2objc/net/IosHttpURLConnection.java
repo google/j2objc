@@ -610,12 +610,13 @@ public class IosHttpURLConnection extends HttpURLConnection {
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
     NSString *statusLine = [NSString stringWithFormat:@"HTTP/1.1 %d %@", responseCode,
         self->responseMessage_];
-    [self addHeaderWithNSString:nil withNSString:statusLine];
+    ComGoogleJ2objcNetIosHttpURLConnection_addHeaderWithNSString_withNSString_(
+        self, nil, statusLine);
 
     // Copy remaining response headers.
     [response.allHeaderFields enumerateKeysAndObjectsUsingBlock:
         ^(id key, id value, BOOL *stop) {
-      [self addHeaderWithNSString:key withNSString:value];
+      ComGoogleJ2objcNetIosHttpURLConnection_addHeaderWithNSString_withNSString_(self, key, value);
     }];
 
     if (response.statusCode >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
