@@ -113,12 +113,12 @@ test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 
 test_all: test test_protobuf
 
-examples_dist: copy_examples fix_dist_references
+examples_dist: install_examples
 
 copy_examples:
 	@cp -r examples $(DIST_DIR)
 
-fix_dist_references:
+install_examples: copy_examples
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcconfig
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/protobuf/Makefile
 	@sed -i '' 's/\<path to local j2objc distribution\>/..\/../' \
