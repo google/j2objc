@@ -50,6 +50,7 @@ import java.util.logging.LogRecord;
 #endif
 }
 @end
+#pragma clang diagnostic pop
 ]-*/
 
 /**
@@ -122,6 +123,10 @@ public class IOSLogHandler extends Handler {
   }
 
   private native void log(String logMessage, int aslLevel) /*-[
+    // TODO(tball): update ASL use to iOS 10's os_log and remove clang pragmas.
+    #pragma clang diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
     // Add stderr as a log file, so that log messages are seen on the debug log,
     // and not just the device log.
     static dispatch_once_t onceToken;
@@ -140,9 +145,6 @@ public class IOSLogHandler extends Handler {
       [threadData setObject:logClient forKey:ComGoogleJ2objcUtilLoggingIOSLogHandler_ASLCLIENT];
     }
     asl_log(logClient->_client, NULL, aslLevel, "%s", [logMessage UTF8String]);
+    #pragma clang diagnostic pop
   ]-*/;
-
-/*-[
-#pragma clang diagnostic pop
-]-*/
 }

@@ -31,6 +31,10 @@
 #include "java_lang_Thread.h"
 #include "objc-sync.h"
 
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+
 // Redefine DEBUG_ASSERT_MESSAGE macro to not call the deprecated DebugAssert call.
 #undef DEBUG_ASSERT_MESSAGE
 #define DEBUG_ASSERT_MESSAGE(name, assertion, label, message, file, line, value) \
@@ -482,3 +486,5 @@ BOOL j2objc_sync_holds_lock(id obj) {
   SyncData* data = id2data(obj, TEST);
   return data ? YES : NO;
 }
+#pragma clang diagnostic pop
+
