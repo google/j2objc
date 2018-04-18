@@ -38,7 +38,6 @@ import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
-import org.junit.runners.JUnit4;
 import org.junit.runners.Suite;
 
 /*-[
@@ -259,15 +258,8 @@ public class JUnitTestRunner {
     return false;
   }
 
-  /**
-   * @return true if {@param cls} is {@link JUnit4} annotated.
-   */
+  /** @return true if {@param cls} is {@link RunWith} annotated. */
   protected boolean isJUnit4TestClass(Class<?> cls) {
-    // Need to find test classes, otherwise crashes with b/11790448.
-    if (!cls.getName().endsWith("Test")) {
-      return false;
-    }
-    // Check the annotation.
     return cls.getAnnotation(RunWith.class) != null;
   }
 
