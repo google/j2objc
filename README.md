@@ -43,5 +43,5 @@ code for their Android app, which they either own or are licensed to use.
 This library is distributed under the Apache 2.0 license found in the
 [LICENSE](./LICENSE) file with the following exceptions.
 The protocol buffers library is distributed under the same BSD license as
-Google's protocol buffers. See [README](protobuf/README.md) and
+Google's protocol buffers. See [README](/protobuf/google/README.md) and
 [LICENSE](protobuf/LICENSE).
