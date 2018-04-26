@@ -56,33 +56,19 @@ public final class Security {
         Provider provider;
     }
 
+    // j2objc: reworked to allow security.properties to be optional resource.
     static {
         props = new Properties();
         boolean loadedProps = false;
-        /* ----- BEGIN j2objc -----
-        InputStream is = null;
-        try {
-            /*
-             * Android keeps the property file in a jar resource.
-             * /
-            InputStream propStream = Security.class.getResourceAsStream("security.properties");
-            if (propStream == null) {
-                System.logE("Could not find 'security.properties'.");
-            } else {
-                is  = new BufferedInputStream(propStream);
+        InputStream propStream = Security.class.getResourceAsStream("security.properties");
+        if (propStream != null) {
+            try (InputStream is = new BufferedInputStream(propStream)) {
                 props.load(is);
                 loadedProps = true;
-            }
-        } catch (IOException ex) {
-            System.logE("Could not load 'security.properties'", ex);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignored) {}
+            } catch (IOException ex) {
+                System.logE("Failed loading 'security.properties' resource", ex);
             }
         }
-        ----- END j2objc ----- */
 
         if (!loadedProps) {
             initializeStatic();
