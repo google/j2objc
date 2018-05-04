@@ -60,6 +60,14 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
   public Annotation[] getDeclaredAnnotations() {
     return null;
   }
+
+  public AnnotatedType[] getAnnotatedParameterTypes() {
+    return null;
+  }
+
+  public AnnotatedType getAnnotatedReturnType() {
+    return null;
+  }
   
   public Annotation[][] getParameterAnnotations() {
     return null;

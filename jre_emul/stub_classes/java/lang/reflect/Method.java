@@ -69,6 +69,14 @@ public class Method extends Executable {
     return null;
   }
 
+  public AnnotatedType[] getAnnotatedParameterTypes() {
+    return null;
+  }
+
+  public AnnotatedType getAnnotatedReturnType() {
+    return null;
+  }
+
   public Annotation[][] getParameterAnnotations() {
     return null;
   }
