@@ -237,7 +237,12 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/ref/ReferenceQueue.java \
   java/lang/ref/SoftReference.java \
   java/lang/ref/WeakReference.java \
+  java/lang/reflect/AnnotatedArrayType.java \
   java/lang/reflect/AnnotatedElement.java \
+  java/lang/reflect/AnnotatedParameterizedType.java \
+  java/lang/reflect/AnnotatedType.java \
+  java/lang/reflect/AnnotatedTypeVariable.java \
+  java/lang/reflect/AnnotatedWildcardType.java \
   java/lang/reflect/Array.java \
   java/lang/reflect/GenericArrayType.java \
   java/lang/reflect/GenericDeclaration.java \
@@ -1819,7 +1824,6 @@ EMULATED_JAVA_SOURCES = \
   java/lang/Object.java \
   java/lang/String.java \
   java/lang/reflect/AccessibleObject.java \
-  java/lang/reflect/AnnotatedType.java \
   java/lang/reflect/Constructor.java \
   java/lang/reflect/Executable.java \
   java/lang/reflect/Field.java \
