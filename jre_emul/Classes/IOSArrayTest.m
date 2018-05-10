@@ -16,17 +16,16 @@
 //  IOSArrayTest.m
 //  JreEmulation
 //
-//  Created by Tom Ball on 7/6/11.
-//
 
 #import <XCTest/XCTest.h>
 #import <objc/runtime.h>
-#import "IOSArray.h"
-#import "IOSClass.h"
-#import "IOSPrimitiveArray.h"
-#import "java/lang/IndexOutOfBoundsException.h"
-#import "java/util/Calendar.h"
-#import "java/util/Date.h"
+#include "IOSArray.h"
+#include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
+#include "J2ObjC_source.h"
+#include "java/lang/IndexOutOfBoundsException.h"
+#include "java/util/Calendar.h"
+#include "java/util/Date.h"
 
 // Unit tests for IOSArray.
 @interface IOSArrayTest : XCTestCase
@@ -258,7 +257,7 @@
 // Verify that all elements in a newly created empty object array are nil.
 - (void)testNilObjectArrayElements {
   const int arraySize = 1000;
-  IOSObjectArray *array = IOSObjectArray_CreateArray(arraySize, NSString_class_(), NO);
+  IOSObjectArray *array = [IOSObjectArray arrayWithLength:arraySize type:NSString_class_()];
   for (int i = 0; i < arraySize; i++) {
     XCTAssertNil(array->buffer_[i], @"empty array element was non-nil");
   }
