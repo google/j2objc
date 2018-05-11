@@ -867,4 +867,9 @@ public final class TypeUtil {
   private static TypeElement newPrimitiveIosArray(String name) {
     return GeneratedTypeElement.newIosClass(name, NS_OBJECT, "IOSPrimitiveArray.h");
   }
+
+  public static boolean isStubType(String typeName) {
+    // Currently only NSException and NSFastEnumeration have com.google.j2objc stubs.
+    return typeName.startsWith("com.google.j2objc.NS");
+  }
 }

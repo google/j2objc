@@ -248,4 +248,11 @@ public class MetadataWriterTest extends GenerationTest {
         "  { \"val$j_\", \"I\", .constantValue.asLong = 0, 0x1012, -1, -1, -1, -1 },",
         "};");
   }
+
+  // Verify that the stub NS types, such as NSFastEnumeration, are not included in metadata.
+  public void testNSTypesNotInMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "interface Test<T> extends com.google.j2objc.NSFastEnumeration {}", "Test", "Test.m");
+    assertNotInTranslation(translation, "NSFastEnumeration");
+  }
 }
