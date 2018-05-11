@@ -292,12 +292,15 @@ public class SignatureGenerator {
         genTypeSignature(((ArrayType) type).getComponentType(), sb);
         break;
       case DECLARED:
-        // ClassTypeSignature ::= "L" {Ident "/"} Ident
-        //   OptTypeArguments {"." Ident OptTypeArguments} ";".
-        sb.append('L');
-        sb.append(elementUtil.getBinaryName(TypeUtil.asTypeElement(type)).replace('.', '/'));
-        genOptTypeArguments(((DeclaredType) type).getTypeArguments(), sb);
-        sb.append(';');
+        String typeName = elementUtil.getBinaryName(TypeUtil.asTypeElement(type));
+        if (!TypeUtil.isStubType(typeName)) {
+          // ClassTypeSignature ::= "L" {Ident "/"} Ident
+          //   OptTypeArguments {"." Ident OptTypeArguments} ";".
+          sb.append('L');
+          sb.append(typeName.replace('.', '/'));
+          genOptTypeArguments(((DeclaredType) type).getTypeArguments(), sb);
+          sb.append(';');
+        }
         break;
       case TYPEVAR:
         // TypeVariableSignature ::= "T" Ident ";".
