@@ -21,14 +21,12 @@
 
 #import "IOSClass.h"
 #import "J2ObjC_source.h"
-#import "java/lang/OutOfMemoryError.h"
 #import "java/lang/ref/PhantomReference.h"
 #import "java/lang/ref/Reference.h"
 #import "java/lang/ref/SoftReference.h"
 
 #import <objc/runtime.h>
 #import <pthread.h>
-#import <stdio.h>
 
 #if TARGET_OS_MAC == 0
 #import <UIKit/UIApplication.h>
@@ -66,6 +64,7 @@
 - (void)JavaLangRefReference_original_release;
 @end
 
+
 @implementation IOSReference
 
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference);
@@ -75,64 +74,80 @@ static void RealReferentRelease(id referent);
 static void ReferentSubclassDealloc(id self, SEL _cmd);
 static void ReferentSubclassRelease(id self, SEL _cmd);
 static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd);
+static void WhileLocked(void (^block)(void));
 static CFMutableSetRef CreateSoftReferenceSet();
 
-// NOLINTBEGIN
+// Global recursive mutux.
+static pthread_mutex_t reference_mutex;
 
-// An object to use for synchronizing access to soft_references and in_low_memory_cleanup.
-static NSObject *soft_references_lock;
+// Maps referents to sets of Reference instances that refer to them.
+static CFMutableDictionaryRef weak_refs_map;
 
-// Set of all referent objects that are soft ref queue candidates. These are only released when
-// the runtime is notified of a low memory condition. Synchronized using soft_references_lock.
+// Maps referent classes to their referent subclasses.
+static NSMutableDictionary *referent_subclass_map;
+
+// Set of all referent subclasses.
+static NSMutableSet *referent_subclasses;
+
+// Set of all soft ref queue candidates. These are only released when
+// the runtime is notified of a low memory condition.
 static CFMutableSetRef soft_references;
 
-// true while cleaning up soft references. Synchronized using soft_references_lock.
 static jboolean in_low_memory_cleanup;
 
-// NOLINTEND
-
 + (void)initReferent:(JavaLangRefReference *)reference {
-  @synchronized(reference) {
+  WhileLocked(^{
     id referent = JreLoadVolatileId(&reference->referent_);
     if (referent) {
       EnsureReferentSubclass(referent);
       AssociateReferenceWithReferent(referent, reference);
     }
-  }
+  });
 }
 
 + (id)getReferent:(JavaLangRefReference *)reference {
-  // The referent must be loaded under @synchronized(reference) to avoid a race with another thread
-  // that might be releasing the referent. We can't rely only on the volatile synchronization
-  // because it is a @Weak volatile, but @synchronized(reference) will synchronize with the release
-  // implementation in the referent subclass.
-  @synchronized(reference) {
+  // The referent must be loaded under mutex to avoid a race with another
+  // thread that might be releasing the referent. We can't rely only on the
+  // volatile synchronization because it is a @Weak volatile, but WhileLocked
+  // will synchronize with the release implementation in the referent subclass.
+  __block id referent;
+  WhileLocked(^{
     // The volatile load ensures that the result is retained in this thread.
-    return JreLoadVolatileId(&reference->referent_);
-  }
+    referent = JreLoadVolatileId(&reference->referent_);
+  });
+  return referent;
 }
 
 + (void)clearReferent:(JavaLangRefReference *)reference {
-  @synchronized(reference) {
+  WhileLocked(^{
     id referent = JreLoadVolatileId(&reference->referent_);
     if (referent) {
       RemoveReferenceAssociation(referent, reference);
     }
     JreAssignVolatileId(&reference->referent_, nil);
-  }
+  });
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
-  @synchronized(soft_references_lock) {
+  WhileLocked(^{
     in_low_memory_cleanup = true;
-    CFSetRemoveAllValues(soft_references);
+    CFRelease(soft_references);
+    soft_references = CreateSoftReferenceSet();
     in_low_memory_cleanup = false;
-  }
+  });
 }
 
 + (void)initialize {
   if (self == [IOSReference class]) {
-    soft_references_lock = [[NSObject alloc] init];
+    pthread_mutexattr_t mutexattr;
+    pthread_mutexattr_init(&mutexattr);
+    pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&reference_mutex, &mutexattr);
+    pthread_mutexattr_destroy(&mutexattr);
+
+    weak_refs_map = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    referent_subclasses = [[NSMutableSet alloc] init];
+    referent_subclass_map = [[NSMutableDictionary alloc] init];
     soft_references = CreateSoftReferenceSet();
 
 #ifdef SUPPORTS_SOFT_REFERENCES
@@ -155,67 +170,22 @@ static CFMutableSetRef CreateSoftReferenceSet() {
   return CFSetCreateMutable(NULL, 0, &softReferenceSetCallBacks);
 }
 
-// Returns the CFMutableSet of JavaLangRefReference associated with a reference object for the
-// provided key. Must be called inside @synchronized(referent).
-static CFMutableSetRef ReferenceSetForReferent(const void *key, id referent,
-                                               jboolean createIfMissing) {
-  CFMutableSetRef set = (CFMutableSetRef)objc_getAssociatedObject(referent, key);
-  if (!set && createIfMissing) {
-    set = CFSetCreateMutable(NULL, 0, NULL);
-    objc_setAssociatedObject(referent, key, (id)set, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    CFRelease(set);
-  }
-  return set;
+static void WhileLocked(void (^block)(void)) {
+  pthread_mutex_lock(&reference_mutex);
+  block();
+  pthread_mutex_unlock(&reference_mutex);
 }
 
-// Returns the set of (non-soft, non-phantom) JavaLangRefReference objects that refer to referent.
-// Must be called inside @synchronized(referent).
-static CFMutableSetRef WeakReferencesForReferent(id referent, jboolean createIfMissing) {
-  return ReferenceSetForReferent(&WeakReferencesForReferent, referent, createIfMissing);
+
+// Returns the referent subclass for a referent, or nil if one hasn't
+// been created for that type. Caller must hold the mutex.
+static Class GetReferentSubclass(id obj) {
+  Class cls = object_getClass(obj);
+  while (cls && ![referent_subclasses containsObject:cls])
+    cls = class_getSuperclass(cls);
+  return cls;
 }
 
-// Returns the set of JavaLangRefSoftReference objects that refer to referent.
-// Must be called inside @synchronized(referent).
-static CFMutableSetRef SoftReferencesForReferent(id referent, jboolean createIfMissing) {
-  return ReferenceSetForReferent(&SoftReferencesForReferent, referent, createIfMissing);
-}
-
-// Returns the set of JavaLangRefPhantomReference objects that refer to referent.
-// Must be called inside @synchronized(referent).
-static CFMutableSetRef PhantomReferencesForReferent(id referent, jboolean createIfMissing) {
-  return ReferenceSetForReferent(&PhantomReferencesForReferent, referent, createIfMissing);
-}
-
-// Returns a malloc-ed c string containing the name of the referent subclass of a given class. If
-// cls is already a referent subclass, its name is returned unmodified.
-static char *CreateReferentSubclassNameForClass(Class cls) {
-  char *result = NULL;
-  if (asprintf(&result, "%s_ReferentSubclass", class_getName(cls)) < 0) {
-    // asprintf's internal malloc failed, so throw an out of memory error.
-    // NOLINTNEXTLINE
-    @throw [[[JavaLangOutOfMemoryError alloc] init] autorelease];
-  }
-  return result;
-}
-
-// Returns true if cls is a runtime generated referrent subclass.
-// Must be called inside @synchronized(cls).
-jboolean IsReferrentSubclass(Class cls) {
-  return (objc_getAssociatedObject(cls, &IsReferrentSubclass) != nil);
-}
-
-// Returns the referent subclass for a referent, or nil if one hasn't been created for that type.
-// Must be called inside @synchronized(cls).
-static Class GetReferentSubclass(Class cls) {
-  Class subclass = objc_getAssociatedObject(cls, &GetReferentSubclass);
-  if (subclass) {
-    return subclass;
-  }
-  if (IsReferrentSubclass(cls)) {
-    return cls;
-  }
-  return nil;
-}
 
 // Returns true if an object is constant. The retain and release methods
 // don't modify retain counts when they are INT_MAX (or UINT_MAX on some
@@ -229,221 +199,169 @@ static jboolean IsConstantObject(id obj) {
     return true;
   }
   NSUInteger retainCount = [obj retainCount];
-  return (retainCount == UINT_MAX || retainCount == INT_MAX);
+  return retainCount == UINT_MAX || retainCount == INT_MAX;
 }
+
 
 // Create a custom subclass for specified referent class.
-// Must be called inside @synchronized(cls).
 static Class CreateReferentSubclass(Class cls) {
-  char *newName = CreateReferentSubclassNameForClass(cls);
-  Class subclass = objc_allocateClassPair(cls, newName, 0);
-  @synchronized(subclass) {
-    // Replace the referent subclass.
-    Method dealloc = class_getInstanceMethod(cls, @selector(dealloc));
-    class_addMethod(subclass, @selector(dealloc), (IMP)ReferentSubclassDealloc,
-                    method_getTypeEncoding(dealloc));
-    Method release = class_getInstanceMethod(cls, @selector(release));
-    class_addMethod(subclass, @selector(release), (IMP)ReferentSubclassRelease,
-                    method_getTypeEncoding(release));
-    Method getClass = class_getInstanceMethod(cls, @selector(java_getClass));
-    class_addMethod(subclass, @selector(java_getClass), (IMP)ReferentSubclassGetClass,
-                    method_getTypeEncoding(getClass));
-    objc_registerClassPair(subclass);
-
-    // Mark the referrent subclass for use by IsReferrentSubclass.
-    objc_setAssociatedObject(subclass, &IsReferrentSubclass, subclass, OBJC_ASSOCIATION_ASSIGN);
-
-    // Annotate the class with the referrent subclass for use by GetReferentSubclass.
-    objc_setAssociatedObject(cls, &GetReferentSubclass, subclass,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
-    free(newName);
-    return subclass;
-  }
+  NSString *newName = [NSString stringWithFormat: @"%s_ReferentSubclass", class_getName(cls)];
+  Class subclass = objc_allocateClassPair(cls, [newName UTF8String], 0);
+  Method dealloc = class_getInstanceMethod(cls, @selector(dealloc));
+  class_addMethod(subclass, @selector(dealloc), (IMP) ReferentSubclassDealloc,
+                  method_getTypeEncoding(dealloc));
+  Method release = class_getInstanceMethod(cls, @selector(release));
+  class_addMethod(subclass, @selector(release), (IMP) ReferentSubclassRelease,
+                  method_getTypeEncoding(release));
+  Method getClass = class_getInstanceMethod(cls, @selector(java_getClass));
+  class_addMethod(subclass, @selector(java_getClass), (IMP) ReferentSubclassGetClass,
+                  method_getTypeEncoding(getClass));
+  objc_registerClassPair(subclass);
+  return subclass;
 }
+
 
 // Checks whether a referent subclass exists, and creates one if
 // it doesn't. The exception is for constants, which are never
-// dealloced.
+// dealloced. Caller must hold the mutex.
 static void EnsureReferentSubclass(id referent) {
-  if (IsConstantObject(referent)) {
-    return;
-  }
-  Class cls = object_getClass(referent);
-  Class subclass;
-  @synchronized(cls) {
-    // Ensure that the referent subclass for cls exists.
-    subclass = GetReferentSubclass(cls) ?: CreateReferentSubclass(cls);
-  }
-
-  // Patch the object's class to match the referent subclass.
-  if (class_getSuperclass(subclass) == cls) {
-    object_setClass(referent, subclass);
+  if (!GetReferentSubclass(referent) && !IsConstantObject(referent)) {
+    Class cls = object_getClass(referent);
+    Class subclass = [referent_subclass_map objectForKey:cls];
+    if (!subclass) {
+      subclass = CreateReferentSubclass(cls);
+      [referent_subclass_map setObject:subclass forKey:(id<NSCopying>) cls];
+      [referent_subclasses addObject:subclass];
+    }
+    if (class_getSuperclass(subclass) == cls) {
+      object_setClass(referent, subclass);
+    }
   }
 }
 
-// Returns the referent's original class.
-static Class GetRealSuperclass(Class referentClass) {
-  @synchronized(referentClass) {
-    return IsReferrentSubclass(referentClass) ? class_getSuperclass(referentClass) : referentClass;
-  }
+
+// Returns the referent's original class. Caller must hold the mutex.
+static Class GetRealSuperclass(id obj) {
+  return class_getSuperclass(GetReferentSubclass(obj));
 }
+
 
 // Add an association between a referent and its reference. Because
 // multiple references can share a referent, a reference set is used.
+// Caller must hold the mutex.
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference) {
-  @synchronized(referent) {
+  CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
+  if (!set) {
+    set = CFSetCreateMutable(NULL, 0, NULL);
+    CFDictionarySetValue(weak_refs_map, referent, set);
+    CFRelease(set);
+  }
+  CFSetAddValue(set, reference);
+}
+
+
+// Check if there is a SoftReference among a referent's references. Caller must
+// hold the mutex.
+static bool hasSoftReference(CFMutableSetRef set) {
+  NSSet *setCopy = (ARCBRIDGE NSSet *) set;
+  for (JavaLangRefReference *reference in setCopy) {
     if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
-      CFMutableSetRef softSet = SoftReferencesForReferent(referent, true);
-      CFSetAddValue(softSet, reference);
-    } else if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
-      CFMutableSetRef phantomSet = PhantomReferencesForReferent(referent, true);
-      CFSetAddValue(phantomSet, reference);
-    } else {
-      CFMutableSetRef weakSet = WeakReferencesForReferent(referent, true);
-      CFSetAddValue(weakSet, reference);
+      return true;
+    }
+  }
+  return false;
+}
+
+
+// Remove the association between a referent and all of its references. Caller
+// must hold the mutex
+static void RemoveReferenceAssociation(id referent, JavaLangRefReference *reference) {
+  CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
+  if (set) {
+    CFSetRemoveValue(set, reference);
+    if ([reference isKindOfClass:[JavaLangRefSoftReference class]] && !hasSoftReference(set)) {
+      CFSetRemoveValue(soft_references, referent);
     }
   }
 }
 
-// Remove the association between a referent and all of its references.
-static void RemoveReferenceAssociation(id referent, JavaLangRefReference *reference) {
-  @synchronized(referent) {
-    if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
-      CFMutableSetRef softSet = SoftReferencesForReferent(referent, false);
-      if (softSet) {
-        CFSetRemoveValue(softSet, reference);
-        if (CFSetGetCount(softSet) == 0) {
-          // We could also remove the empty soft reference set here.
-          @synchronized(soft_references_lock) {
-            CFSetRemoveValue(soft_references, referent);
-          }
-        }
-      }
-    } else if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
-      CFMutableSetRef phantomSet = PhantomReferencesForReferent(referent, false);
-      if (phantomSet) {
-        CFSetRemoveValue(phantomSet, reference);
-        // We could also remove the phantom reference set here if it is now empty.
-      }
-    } else {
-      CFMutableSetRef weakSet = WeakReferencesForReferent(referent, false);
-      if (weakSet) {
-        CFSetRemoveValue(weakSet, reference);
-        // We could also remove the weak reference set here if it is now empty.
-      }
-    }
-  }
-}
 
 // Invoke a referent subclass's original release method.
 static void RealReferentDealloc(id referent) {
-  Class referentClass = object_getClass(referent);
-  Class superclass = GetRealSuperclass(referentClass);
+  Class superclass = GetRealSuperclass(referent);
   IMP superDealloc = class_getMethodImplementation(superclass, @selector(dealloc));
   ((void (*)(id, SEL))superDealloc)(referent, @selector(dealloc));
 }
 
-#pragma mark Referent Subclass Method Implementations
-
-// Implementation of CFSetApplierFunction that clears the referent field of a reference.
-// The reference access must be synchronized by the caller.
-static void ClearReferentField(const void *value, void *context) {
-  JavaLangRefReference *reference = (JavaLangRefReference *)value;
-  JreAssignVolatileId(&reference->referent_, nil);
-}
-
-// Implementation of CFSetApplierFunction that enqueues a reference.
-// The reference access must be synchronized by the caller.
-static void EnqueueReference(const void *value, void *context) {
-  JavaLangRefReference *reference = (JavaLangRefReference *)value;
-  [reference enqueue];
-}
 
 // Dealloc method for referent subclasses, which directly calls the
 // original class's dealloc method. Normally "[super dealloc]" isn't
 // permissible with ARC, but in this case it's actually invoking a
 // delegate object's dealloc method (which won't invoke super-dealloc).
 static void ReferentSubclassDealloc(id self, SEL _cmd) {
-  @synchronized(self) {
-    CFMutableSetRef weakSet = WeakReferencesForReferent(self, false);
-    if (weakSet) {
-      CFSetApplyFunction(weakSet, &ClearReferentField, NULL);
-      CFSetApplyFunction(weakSet, &EnqueueReference, NULL);
-
-      // Remove reference associations.
-      objc_setAssociatedObject(self, &WeakReferencesForReferent, nil,
-                               OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-
-    CFMutableSetRef softSet = SoftReferencesForReferent(self, false);
-    if (softSet) {
-      CFSetApplyFunction(softSet, &ClearReferentField, NULL);
-      CFSetApplyFunction(softSet, &EnqueueReference, NULL);
-
-      // Remove reference associations.
-      objc_setAssociatedObject(self, &SoftReferencesForReferent, nil,
-                               OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-
-    CFMutableSetRef phantomSet = PhantomReferencesForReferent(self, false);
-    if (phantomSet) {
-      // Retain the phantom set until they can be enqueued after dealloc.
-      CFRetain(phantomSet);
-
-      CFSetApplyFunction(phantomSet, &ClearReferentField, NULL);
-
-      // Remove reference associations.
-      objc_setAssociatedObject(self, &PhantomReferencesForReferent, nil,
-                               OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  WhileLocked(^{
+    CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, self);
+    if (set) {
+      NSSet *setCopy = (ARCBRIDGE NSSet *) set;
+      int numPhantom = 0;
+      id phantomRefs[setCopy.count];
+      for (JavaLangRefReference *reference in setCopy) {
+        // Clear the referent field.
+        JreAssignVolatileId(&reference->referent_, nil);
+        // Queue the reference unless it is a phantom.
+        if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
+          phantomRefs[numPhantom++] = reference;
+        } else {
+          [reference enqueue];
+        }
+      }
 
       // Real dealloc.
       RealReferentDealloc(self);
+      // Remove reference associations.
+      CFDictionaryRemoveValue(weak_refs_map, self);
 
-      CFSetApplyFunction(phantomSet, &EnqueueReference, NULL);
-
-      CFRelease(phantomSet);
-    } else {
-      // No phantom refs, so just do the real dealloc.
-      RealReferentDealloc(self);
+      // Queue all phantom references.
+      for (int i = 0; i < numPhantom; i++) {
+        [phantomRefs[i] enqueue];
+      }
     }
-  }
+  });
 }
+
 
 // Invoke a referent subclass's original release method.
 static void RealReferentRelease(id referent) {
-  Class referentClass = object_getClass(referent);
-  Class superclass = GetRealSuperclass(referentClass);
+  Class superclass = GetRealSuperclass(referent);
   IMP superRelease = class_getMethodImplementation(superclass, @selector(release));
   ((void (*)(id, SEL))superRelease)(referent, @selector(release));
 }
+
 
 // Release method for referent subclasses, which directly calls the
 // original class's release method. If the instance would be
 // deallocated when this function returns, it is added to its
 // associated reference queue, if any.
 static void ReferentSubclassRelease(id self, SEL _cmd) {
-  @synchronized(self) {
-    // If the retainCount is 1 during release, RealReferentRelease will trigger dealloc.
-    if ([self retainCount] == 1) {
-      CFMutableSetRef softSet = SoftReferencesForReferent(self, false);
-      if (softSet && CFSetGetCount(softSet) > 0) {
+  WhileLocked(^{
+    if ([self retainCount] == 1 && !in_low_memory_cleanup) {
+      CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, self);
+      if (set && hasSoftReference(set)) {
         // referent is softly reachable. Save it from deallocation.
-        @synchronized(soft_references_lock) {
-          if (!in_low_memory_cleanup) {
-            CFSetAddValue(soft_references, self);
-          }
-        }
+        CFSetAddValue(soft_references, self);
       }
     }
     RealReferentRelease(self);
-  }
+  });
 }
 
 // Override getClass in the subclass so that it returns the IOSClass for the
 // original class of the referent.
 static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
-  Class realSuperclass = GetRealSuperclass(object_getClass(self));
+  __block Class realSuperclass;
+  WhileLocked(^{
+    realSuperclass = GetRealSuperclass(self);
+  });
   return IOSClass_fromClass(realSuperclass);
 }
 
