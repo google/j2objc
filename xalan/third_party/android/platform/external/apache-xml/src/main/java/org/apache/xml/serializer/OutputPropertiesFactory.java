@@ -21,8 +21,10 @@
 package org.apache.xml.serializer;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
@@ -376,6 +378,26 @@ public final class OutputPropertiesFactory
                 is = OutputPropertiesFactory.class
                     .getResourceAsStream(resourceName);
             }
+            
+            // j2objc: resource wasn't found, load defaults from string.
+            if (is == null) {
+              if (resourceName.equals(PROP_FILE_HTML)) {
+                is = new ByteArrayInputStream(
+                    PROP_FILE_HTML_STR.getBytes(StandardCharsets.UTF_8));
+              }
+              if (resourceName.equals(PROP_FILE_TEXT)) {
+                is = new ByteArrayInputStream(
+                    PROP_FILE_TEXT_STR.getBytes(StandardCharsets.UTF_8));
+              }
+              if (resourceName.equals(PROP_FILE_XML)) {
+                is = new ByteArrayInputStream(
+                    PROP_FILE_XML_STR.getBytes(StandardCharsets.UTF_8));
+              }
+              if (resourceName.equals(PROP_FILE_UNKNOWN)) {
+                is = new ByteArrayInputStream(
+                    PROP_FILE_UNKNOWN_STR.getBytes(StandardCharsets.UTF_8));
+              }
+            }
 
             bis = new BufferedInputStream(is);
             props.load(bis);
@@ -512,5 +534,52 @@ public final class OutputPropertiesFactory
         }
         return s;
     }
+    
+    // j2objc: the default resource values, for when resources weren't linked into app.
+    // These strings are created by taking each .properties file and removing the
+    // comments and whitespace.
+    
+    private static final String PROP_FILE_XML_STR =
+        "method=xml\n"
+        + "version=1.0\n"
+        + "encoding=UTF-8\n"
+        + "indent=no\n" 
+        + "omit-xml-declaration=no\n"
+        + "standalone=no\n"
+        + "media-type=text/xml\n"
+        + "{http\\u003a//xml.apache.org/xalan}indent-amount=0\n"
+        + "{http\\u003a//xml.apache.org/xalan}content-handler="
+        + "org.apache.xml.serializer.ToXMLStream\n"
+        + "{http\\u003a//xml.apache.org/xalan}entities=org/apache/xml/serializer/XMLEntities\n";
+
+    private static final String PROP_FILE_TEXT_STR =
+        "method=text\n"
+        + "media-type=text/plain\n"
+        + "{http\\u003a//xml.apache.org/xalan}content-handler="
+        + "org.apache.xml.serializer.ToTextStream\n";
+    
+    private static final String PROP_FILE_HTML_STR =
+        "method=html\n"
+        + "indent=yes\n"
+        + "media-type=text/html\n"
+        + "version=4.0\n"
+        + "{http\\u003a//xml.apache.org/xalan}indent-amount=0\n"
+        + "{http\\u003a//xml.apache.org/xalan}content-handler="
+        + "org.apache.xml.serializer.ToHTMLStream\n"
+        + "{http\\u003a//xml.apache.org/xalan}entities=org/apache/xml/serializer/HTMLEntities\n"
+        + "{http\\u003a//xml.apache.org/xalan}use-url-escaping=yes\n"
+        + "{http\\u003a//xml.apache.org/xalan}omit-meta-tag=no\n"; 
+
+    private static final String PROP_FILE_UNKNOWN_STR =
+        "method=xml\n"
+        + "version=1.0\n"
+        + "encoding=UTF-8\n"
+        + "indent=no\n"
+        + "omit-xml-declaration=no\n"
+        + "standalone=no\n"
+        + "media-type=text/xml\n"
+        + "{http\\u003a//xml.apache.org/xalan}indent-amount=0\n"
+        + "{http\\u003a//xml.apache.org/xalan}content-handler="
+        + "org.apache.xml.serializer.ToUnknownStream\n";
 
 }

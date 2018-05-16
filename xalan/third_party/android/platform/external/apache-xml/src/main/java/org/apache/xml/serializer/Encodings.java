@@ -20,11 +20,13 @@
  */
 package org.apache.xml.serializer;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -314,11 +316,17 @@ public final class Encodings extends Object
     {
         try
         {
-            final InputStream is; 
+            InputStream is; 
                 
             SecuritySupport ss = SecuritySupport.getInstance();
             is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
                                             ENCODINGS_FILE);
+            
+            // j2objc: if resource wasn't found, load defaults from string.
+            if (is == null) {
+                is = new ByteArrayInputStream(
+                    ENCODINGS_FILE_STR.getBytes(StandardCharsets.UTF_8));
+            }
 
             Properties props = new Properties();
             if (is != null) {
@@ -494,4 +502,149 @@ public final class Encodings extends Object
     private static final Hashtable _encodingTableKeyJava = new Hashtable();
     private static final Hashtable _encodingTableKeyMime = new Hashtable();
     private static final EncodingInfo[] _encodings = loadEncodingInfo();
+    
+    // j2objc: the default resource values, for when resources weren't linked into app.
+    // These strings are created by taking each .properties file and removing the
+    // comments and whitespace.
+    
+    private static final String ENCODINGS_FILE_STR =
+        "ASCII ASCII,US-ASCII 0x007F\n"
+        + "Big5 BIG5,csBig5 0x007F\n"
+        + "Big5_HKSCS BIG5-HKSCS 0x007F\n"
+        + "Cp037 EBCDIC-CP-US,EBCDIC-CP-CA,EBCDIC-CP-WT,EBCDIC-CP-NL,IBM037 0x0019\n"
+        + "Cp273 IBM273,csIBM273 0x0019\n"
+        + "Cp274 csIBM274,EBCDIC-BE \n"
+        + "Cp275 csIBM275,EBCDIC-BR \n"
+        + "Cp277 EBCDIC-CP-DK,EBCDIC-CP-NO,IBM277,csIBM277 0x0019\n"
+        + "Cp278 EBCDIC-CP-FI,EBCDIC-CP-SE,IBM278,csIBM278 0x0019\n"
+        + "Cp280 EBCDIC-CP-IT,IBM280,csIBM280 0x0019\n"
+        + "Cp281 EBCDIC-JP-E,csIBM281 \n"
+        + "Cp284 EBCDIC-CP-ES,IBM284,csIBM284 0x0019\n"
+        + "Cp285 EBCDIC-CP-GB,IBM284,csIBM285 0x0019\n"
+        + "Cp290 EBCDIC-JP-kana,IBM290,csIBM290 0x0019\n"
+        + "Cp297 EBCDIC-CP-FR,IBM297,csIBM297 0x0019\n"
+        + "Cp420 EBCDIC-CP-AR1,IBM420,csIBM420 0x0019\n"
+        + "Cp423 EBCDIC-CP-GR,IBM423,csIBM423 \n"
+        + "Cp424 EBCDIC-CP-HE,IBM424,csIBM424 0x0019\n"
+        + "Cp437 437,IBM437,csPC8CodePage437 0x007F\n"
+        + "Cp500 EBCDIC-CP-CH,EBCDIC-CP-BE,IBM500,csIBM500 0x0019\n"
+        + "Cp775 IBM775,csPC775Baltic 0x007F\n"
+        + "Cp838 IBM-Thai,838,csIBMThai 0x0019\n"
+        + "Cp850 850,csPC850Multilingual,IBM850 0x007F\n"
+        + "Cp851 851,IBM851,csIBM851 \n"
+        + "Cp852 IBM852,852,csPCp852 0x007F\n"
+        + "Cp855 IBM855,855,csIBM855 0x007F\n"
+        + "Cp857 IBM857,857,csIBM857 0x007F\n"
+        + "Cp858 IBM00858 0x007F\n"
+        + "Cp860 860,csIBM860,IBM860 0x007F\n"
+        + "Cp861 IBM861,861,csIBM861,cp-is 0x007F\n"
+        + "Cp862 IBM862,862,csPCi62LatinHebrew 0x007F\n"
+        + "Cp863 IBM863,863,csIBM863 0x007F\n"
+        + "Cp864 IBM864,864,csIBM864 0x007F\n"
+        + "Cp865 IBM865,865,csIBM865 0x007F\n"
+        + "Cp866 IBM866,866,csIBM866 0x007F\n"
+        + "Cp868 IBM868,cp-ar,csIBM868 0x007F\n"
+        + "Cp869 IBM869,869,cp-gr,csIBM869 0x007F\n"
+        + "Cp870 EBCDIC-CP-ROECE,EBCDIC-CP-YU,IBM870,csIBM870 0x0019\n"
+        + "Cp871 EBCDIC-CP-IS,IBM871,csIBM871 0x0019\n"
+        + "Cp880 EBCDIC-Cyrillic,IBM880,csIBM880 \n"
+        + "Cp891 IBM891,csIBM891 \n"
+        + "Cp903 IBM903,csIBM903 \n"
+        + "Cp904 IBM904,csIBM904 \n"
+        + "Cp905 IBM905,csIBM905,EBCDIC-CP-TR \n"
+        + "Cp918 EBCDIC-CP-AR2,IBM918,csIBM918 0x0019\n"
+        + "Cp936 GBK,MS936,WINDOWS-936 \n"
+        + "Cp1026 IBM1026,csIBM1026 0x0019\n"
+        + "Cp1047 IBM1047,IBM-1047 0x0019\n"
+        + "Cp1140 IBM01140 0x0019\n"
+        + "Cp1141 IBM01141 0x0019\n"
+        + "Cp1142 IBM01142 0x0019\n"
+        + "Cp1143 IBM01143 0x0019\n"
+        + "Cp1144 IBM01144 0x0019\n"
+        + "Cp1145 IBM01145 0x0019\n"
+        + "Cp1146 IBM01146 0x0019\n"
+        + "Cp1147 IBM01147 0x0019\n"
+        + "Cp1148 IBM01148 0x0019\n"
+        + "Cp1149 IBM01149 0x0019\n"
+        + "Cp1250 WINDOWS-1250 0x007F\n"
+        + "Cp1251 WINDOWS-1251 0x007F\n"
+        + "Cp1252 WINDOWS-1252 0x007F\n"
+        + "Cp1253 WINDOWS-1253 0x007F\n"
+        + "Cp1254 WINDOWS-1254 0x007F\n"
+        + "Cp1255 WINDOWS-1255 0x007F\n"
+        + "Cp1256 WINDOWS-1256 0x007F\n"
+        + "Cp1257 WINDOWS-1257 0x007F\n"
+        + "Cp1258 WINDOWS-1258 0x007F\n"
+        + "EUC-CN EUC-CN 0x007F\n"
+        + "EUC_CN EUC-CN 0x007F\n"
+        + "EUC-JP EUC-JP 0x007F\n"
+        + "EUC_JP EUC-JP 0x007F\n"
+        + "EUC-KR EUC-KR 0x007F\n"
+        + "EUC_KR EUC-KR 0x007F\n"
+        + "EUC-TW EUC-TW 0x007F\n"
+        + "EUC_TW EUC-TW,x-EUC-TW 0x007F\n"
+        + "EUCJIS EUC-JP 0x007F\n"
+        + "GB2312 GB2312 0x007F\n"
+        + "ISO2022CN ISO-2022-CN \n"
+        + "ISO2022JP ISO-2022-JP \n"
+        + "ISO2022KR ISO-2022-KR 0x007F\n"
+        + "ISO8859-1 ISO-8859-1 0x00FF\n"
+        + "ISO8859_1 ISO-8859-1 0x00FF\n"
+        + "8859-1 ISO-8859-1 0x00FF\n"
+        + "8859_1 ISO-8859-1 0x00FF\n"
+        + "ISO8859-2 ISO-8859-2 0x00A0\n"
+        + "ISO8859_2 ISO-8859-2 0x00A0\n"
+        + "8859-2 ISO-8859-2 0x00A0\n"
+        + "8859_2 ISO-8859-2 0x00A0\n"
+        + "ISO8859-3 ISO-8859-3 0x00A0\n"
+        + "ISO8859_3 ISO-8859-3 0x00A0\n"
+        + "8859-3 ISO-8859-3 0x00A0\n"
+        + "8859_3 ISO-8859-3 0x00A0\n"
+        + "ISO8859-4 ISO-8859-4 0x00A0\n"
+        + "ISO8859_4 ISO-8859-4 0x00A0\n"
+        + "8859-4 ISO-8859-4 0x00A0\n"
+        + "8859_4 ISO-8859-4 0x00A0\n"
+        + "ISO8859-5 ISO-8859-5 0x00A0\n"
+        + "ISO8859_5 ISO-8859-5 0x00A0\n"
+        + "8859-5 ISO-8859-5 0x00A0\n"
+        + "8859_5 ISO-8859-5 0x00A0\n"
+        + "ISO8859-6 ISO-8859-6 0x00A0\n"
+        + "ISO8859_6 ISO-8859-6 0x00A0\n"
+        + "8859-6 ISO-8859-6 0x00A0\n"
+        + "8859_6 ISO-8859-6 0x00A0\n"
+        + "ISO8859-7 ISO-8859-7 0x00A0\n"
+        + "ISO8859_7 ISO-8859-7 0x00A0\n"
+        + "8859-7 ISO-8859-7 0x00A0\n"
+        + "8859_7 ISO-8859-7 0x00A0\n"
+        + "ISO8859-8 ISO-8859-8 0x00A0\n"
+        + "ISO8859_8 ISO-8859-8 0x00A0\n"
+        + "8859-8 ISO-8859-8 0x00A0\n"
+        + "8859_8 ISO-8859-8 0x00A0\n"
+        + "ISO8859-9 ISO-8859-9 0x00CF\n"
+        + "ISO8859_9 ISO-8859-9 0x00CF\n"
+        + "8859-9 ISO-8859-9 0x00CF\n"
+        + "8859_9 ISO-8859-9 0x00CF\n"
+        + "ISO8859-10 ISO-8859-10 0x007E\n"
+        + "ISO8859_10 ISO-8859-10 0x007E\n"
+        + "ISO8859-11 ISO-8859-11 0x007E\n"
+        + "ISO8859_11 ISO-8859-11 0x007E\n"
+        + "ISO8859-12 ISO-8859-12 0x007F\n"
+        + "ISO8859_12 ISO-8859-12 0x007F\n"
+        + "ISO8859-13 ISO-8859-13 0x00A0\n"
+        + "ISO8859_13 ISO-8859-13 0x00A0\n"
+        + "ISO8859-14 ISO-8859-14 0x007E\n"
+        + "ISO8859_14 ISO-8859-14 0x007E\n"
+        + "ISO8859-15 ISO-8859-15 0x00A3\n"
+        + "ISO8859_15 ISO-8859-15 0x00A3\n"
+        + "JIS ISO-2022-JP 0x007F\n"
+        + "KOI8_R KOI8-R 0x007F\n"
+        + "KSC5601 EUC-KR 0x007F\n"
+        + "KS_C_5601-1987 KS_C_5601-1987,iso-ir-149,KS_C_5601-1989,KSC_5601,csKSC56011987 0x007F\n"
+        + "MacTEC MacRoman \n"
+        + "MS932 windows-31j \n"
+        + "SJIS SHIFT_JIS 0x007F\n"
+        + "TIS620 TIS-620 \n"
+        + "UTF8 UTF-8 0xFFFF\n"
+        + "Unicode UNICODE,UTF-16 0xFFFF\n";
+
 }
