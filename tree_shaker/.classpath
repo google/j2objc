@@ -8,6 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/tools.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar" sourcepath="../java_deps/build_result/javac-src.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>
