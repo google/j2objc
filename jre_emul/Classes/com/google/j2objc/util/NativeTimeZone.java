@@ -116,10 +116,12 @@ public final class NativeTimeZone extends TimeZone {
   ]-*/;
 
   private static native void setUpTimeZoneDidChangeNotificationHandler() /*-[
-    [[NSNotificationCenter defaultCenter] addObserver:[ComGoogleJ2objcUtilNativeTimeZone class]
-                                             selector:@selector(handleTimeZoneChangeWithId:)
-                                                 name:NSSystemTimeZoneDidChangeNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserverForName: NSSystemTimeZoneDidChangeNotification
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+        ComGoogleJ2objcUtilNativeTimeZone_handleTimeZoneChangeWithId_(note);
+    }];
   ]-*/;
 
   private static void handleTimeZoneChange(Object notification) {
