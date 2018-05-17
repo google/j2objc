@@ -678,7 +678,6 @@
 		067B13351EEDCE720013CBAF /* AtomicReferenceFieldUpdaterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13111EEDC3DC0013CBAF /* AtomicReferenceFieldUpdaterTest.m */; };
 		067B13361EEDCE720013CBAF /* AtomicReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13121EEDC3DC0013CBAF /* AtomicReferenceTest.m */; };
 		067B13371EEDCE720013CBAF /* AtomicStampedReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13131EEDC3DC0013CBAF /* AtomicStampedReferenceTest.m */; };
-		067B133E1EEDE95C0013CBAF /* IosSecureRandomImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B133A1EEDE95C0013CBAF /* IosSecureRandomImplTest.m */; };
 		067B13411EEDEA600013CBAF /* IosRSAKeyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13401EEDEA600013CBAF /* IosRSAKeyTest.m */; };
 		067B13421EEDEABB0013CBAF /* IosRSASignatureTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13391EEDE95C0013CBAF /* IosRSASignatureTest.m */; };
 		067B13431EEDEABB0013CBAF /* IosSecureRandomImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B133A1EEDE95C0013CBAF /* IosSecureRandomImplTest.m */; };
@@ -7040,7 +7039,6 @@
 				0620F4F31BB60AC700626242 /* IOSObjectArrayTest.m in Sources */,
 				0620F4F41BB60AC700626242 /* IOSPrimitiveClassTest.m in Sources */,
 				0620F4F51BB60AC700626242 /* JavaLangReflectMethodTest.m in Sources */,
-				067B133E1EEDE95C0013CBAF /* IosSecureRandomImplTest.m in Sources */,
 				0620F4F61BB60AC700626242 /* NSDataInputStreamTest.m in Sources */,
 				0620F4F71BB60AC700626242 /* NSObject_JavaObjectTest.m in Sources */,
 				0620F4F81BB60AC700626242 /* NSString_JavaStringTest.m in Sources */,
