@@ -53,6 +53,8 @@ public final class Posix implements Os {
   Posix() { }
 
   /*-[
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wunused-function"
   static LibcoreIoStructStat *makeStructStat(const struct stat *sb) {
       return AUTORELEASE([[LibcoreIoStructStat alloc]
                           initWithLong:sb->st_dev
@@ -140,6 +142,7 @@ public final class Posix implements Os {
     }
     return [path fileSystemRepresentation];
   }
+  #pragma clang diagnostic pop
   ]-*/
 
   static void throwErrnoException(String message, int errorCode) throws ErrnoException {
