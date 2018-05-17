@@ -21,6 +21,7 @@
 
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/Boolean.h"
 #import "java/lang/ClassNotFoundException.h"
 #import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Field.h"
@@ -320,6 +321,11 @@ JavaLangReflectField *FindField(IOSClass *iosClass, NSString *name, jboolean pub
     iosClass = [iosClass getSuperclass];
   }
   return nil;
+}
+
+jboolean JreSupportsReflection() {
+  NSString *className = [[JavaLangBoolean_get_TRUE() java_getClass] getName];
+  return [className isEqualToString:@"java.lang.Boolean"];
 }
 
 #pragma clang diagnostic pop

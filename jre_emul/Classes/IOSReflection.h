@@ -87,6 +87,10 @@ __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodIn
   return metadata->selector;
 }
 
+// @VisibleForTesting: this method is used to support tests when jre_emul is built with
+// reflection stripped.
+jboolean JreSupportsReflection();
+
 CF_EXTERN_C_END
 
 #endif // JreEmulation_IOSReflection_h
