@@ -120,6 +120,9 @@ public final class TranslationUtil {
     if (ElementUtil.isLambda(type)) {
       return false;
     }
+    if (isJUnitTestClass(type)) {
+      return true;
+    }
     PackageElement packageElement = ElementUtil.getPackage(type);
     ReflectionSupport.Level level = null;
     while (type != null) {
@@ -141,6 +144,24 @@ public final class TranslationUtil {
     } else {
       return !options.stripReflection();
     }
+  }
+
+  private boolean isJUnitTestClass(TypeElement type) {
+    if (ElementUtil.isPackageInfo(type)) {
+      return false;
+    }
+    return isJUnit3TestClass(type) || isJUnit4TestClass(type);
+  }
+
+  private boolean isJUnit3TestClass(TypeElement type) {
+    TypeElement testType = typeUtil.resolveJavaType("junit.framework.Test");
+    return testType != null && typeUtil.isAssignable(type.asType(), testType.asType());
+  }
+
+  private boolean isJUnit4TestClass(TypeElement type) {
+    AnnotationMirror annotation =
+        ElementUtil.getQualifiedNamedAnnotation(type, "org.junit.runner.RunWith");
+    return annotation != null;
   }
 
   private ReflectionSupport.Level getReflectionSupportLevelOnPackage(PackageElement node) {
