@@ -6,7 +6,6 @@
 
 package java.util.concurrent;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import com.google.j2objc.annotations.RetainedWith;
 
 import java.io.ObjectStreamField;
@@ -235,7 +234,6 @@ import java.util.stream.Stream;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     implements ConcurrentMap<K,V>, Serializable {
     private static final long serialVersionUID = 7249069246763182397L;
