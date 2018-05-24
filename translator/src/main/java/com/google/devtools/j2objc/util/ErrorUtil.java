@@ -119,7 +119,7 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
       return;
     }
     String msg;
-    if (CLANG_STYLE_ERROR_MSG) {
+    if (CLANG_STYLE_ERROR_MSG && diagnostic.getSource() != null) {
       msg = String.format("error: %s:%d: %s", diagnostic.getSource().getName(),
           diagnostic.getLineNumber(), diagnostic.getMessage(null).trim());
     } else {
