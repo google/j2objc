@@ -75,7 +75,7 @@ static void ReferentSubclassDealloc(id self, SEL _cmd);
 static void ReferentSubclassRelease(id self, SEL _cmd);
 static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd);
 static void WhileLocked(void (^block)(void));
-static CFMutableSetRef CreateSoftReferenceSet();
+static CFMutableSetRef CreateReferentSet();
 
 // Global recursive mutux.
 static pthread_mutex_t reference_mutex;
@@ -84,10 +84,10 @@ static pthread_mutex_t reference_mutex;
 static CFMutableDictionaryRef weak_refs_map;
 
 // Maps referent classes to their referent subclasses.
-static NSMutableDictionary *referent_subclass_map;
+static CFMutableDictionaryRef referent_subclass_map;
 
 // Set of all referent subclasses.
-static NSMutableSet *referent_subclasses;
+static CFMutableSetRef referent_subclasses;
 
 // Set of all soft ref queue candidates. These are only released when
 // the runtime is notified of a low memory condition.
@@ -132,7 +132,7 @@ static jboolean in_low_memory_cleanup;
   WhileLocked(^{
     in_low_memory_cleanup = true;
     CFRelease(soft_references);
-    soft_references = CreateSoftReferenceSet();
+    soft_references = CreateReferentSet();
     in_low_memory_cleanup = false;
   });
 }
@@ -146,9 +146,10 @@ static jboolean in_low_memory_cleanup;
     pthread_mutexattr_destroy(&mutexattr);
 
     weak_refs_map = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
-    referent_subclasses = [[NSMutableSet alloc] init];
-    referent_subclass_map = [[NSMutableDictionary alloc] init];
-    soft_references = CreateSoftReferenceSet();
+    referent_subclasses = CreateReferentSet();
+    referent_subclass_map =
+        CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    soft_references = CreateReferentSet();
 
 #ifdef SUPPORTS_SOFT_REFERENCES
     // Register for iOS low memory notifications, to clear pending soft references.
@@ -161,13 +162,13 @@ static jboolean in_low_memory_cleanup;
   }
 }
 
-static CFMutableSetRef CreateSoftReferenceSet() {
-  CFSetCallBacks softReferenceSetCallBacks = kCFTypeSetCallBacks;
+static CFMutableSetRef CreateReferentSet() {
+  CFSetCallBacks referenceSetCallBacks = kCFTypeSetCallBacks;
   // Set equal callback to NULL to use pointer equality.
-  softReferenceSetCallBacks.equal = NULL;
+  referenceSetCallBacks.equal = NULL;
   // Set hash callback to NULL to compute hash codes by converting pointers to integers
-  softReferenceSetCallBacks.hash = NULL;
-  return CFSetCreateMutable(NULL, 0, &softReferenceSetCallBacks);
+  referenceSetCallBacks.hash = NULL;
+  return CFSetCreateMutable(NULL, 0, &referenceSetCallBacks);
 }
 
 static void WhileLocked(void (^block)(void)) {
@@ -181,8 +182,9 @@ static void WhileLocked(void (^block)(void)) {
 // been created for that type. Caller must hold the mutex.
 static Class GetReferentSubclass(id obj) {
   Class cls = object_getClass(obj);
-  while (cls && ![referent_subclasses containsObject:cls])
+  while (cls && !CFSetContainsValue(referent_subclasses, cls)) {
     cls = class_getSuperclass(cls);
+  }
   return cls;
 }
 
@@ -227,11 +229,11 @@ static Class CreateReferentSubclass(Class cls) {
 static void EnsureReferentSubclass(id referent) {
   if (!GetReferentSubclass(referent) && !IsConstantObject(referent)) {
     Class cls = object_getClass(referent);
-    Class subclass = [referent_subclass_map objectForKey:cls];
+    Class subclass = (Class)CFDictionaryGetValue(referent_subclass_map, cls);
     if (!subclass) {
       subclass = CreateReferentSubclass(cls);
-      [referent_subclass_map setObject:subclass forKey:(id<NSCopying>) cls];
-      [referent_subclasses addObject:subclass];
+      CFDictionaryAddValue(referent_subclass_map, cls, subclass);
+      CFSetAddValue(referent_subclasses, subclass);
     }
     if (class_getSuperclass(subclass) == cls) {
       object_setClass(referent, subclass);
@@ -263,6 +265,7 @@ static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *re
 // Check if there is a SoftReference among a referent's references. Caller must
 // hold the mutex.
 static bool hasSoftReference(CFMutableSetRef set) {
+  // CFSet doesn't have an interruptible iterator function.
   NSSet *setCopy = (ARCBRIDGE NSSet *) set;
   for (JavaLangRefReference *reference in setCopy) {
     if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
@@ -294,6 +297,24 @@ static void RealReferentDealloc(id referent) {
 }
 
 
+typedef struct PhantomRefsContext {
+  int num;
+  id *refs;
+} PhantomRefsContext;
+
+static void ClearAndMaybeQueueReference(const void *value, void *context) {
+  JavaLangRefReference *reference = (JavaLangRefReference *)value;
+  PhantomRefsContext *ctx = (PhantomRefsContext *)context;
+  // Clear the referent field.
+  JreAssignVolatileId(&reference->referent_, nil);
+  // Queue the reference unless it is a phantom.
+  if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
+    ctx->refs[ctx->num++] = reference;
+  } else {
+    [reference enqueue];
+  }
+}
+
 // Dealloc method for referent subclasses, which directly calls the
 // original class's dealloc method. Normally "[super dealloc]" isn't
 // permissible with ARC, but in this case it's actually invoking a
@@ -302,19 +323,13 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
   WhileLocked(^{
     CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, self);
     if (set) {
-      NSSet *setCopy = (ARCBRIDGE NSSet *) set;
-      int numPhantom = 0;
-      id phantomRefs[setCopy.count];
-      for (JavaLangRefReference *reference in setCopy) {
-        // Clear the referent field.
-        JreAssignVolatileId(&reference->referent_, nil);
-        // Queue the reference unless it is a phantom.
-        if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
-          phantomRefs[numPhantom++] = reference;
-        } else {
-          [reference enqueue];
-        }
-      }
+      int count = (int)CFSetGetCount(set);
+      CFMutableSetRef setCopy = CFSetCreateMutableCopy(NULL, count, set);
+      PhantomRefsContext phantomRefsCtx;
+      phantomRefsCtx.num = 0;
+      id phantomRefs[count];
+      phantomRefsCtx.refs = phantomRefs;
+      CFSetApplyFunction(setCopy, ClearAndMaybeQueueReference, &phantomRefsCtx);
 
       // Real dealloc.
       RealReferentDealloc(self);
@@ -322,8 +337,8 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
       CFDictionaryRemoveValue(weak_refs_map, self);
 
       // Queue all phantom references.
-      for (int i = 0; i < numPhantom; i++) {
-        [phantomRefs[i] enqueue];
+      for (int i = 0; i < phantomRefsCtx.num; i++) {
+        [phantomRefsCtx.refs[i] enqueue];
       }
     }
   });
