@@ -36,6 +36,7 @@ import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -64,8 +65,7 @@ public class Options {
   private boolean segmentedHeaders = true;
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
-  private boolean stripReflection = false;
-  private boolean stripEnumConstants = false;
+  private EnumSet<MetadataSupport> includedMetadata = MetadataSupport.defaultSupport();
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
@@ -187,6 +187,24 @@ public class Options {
 
     // Print all timing information.
     ALL
+  }
+
+  /**
+   * What reflection support should be generated, if any.
+   */
+  public enum MetadataSupport {
+    // Generate metadata for classes that implement java.io.Serializable.
+    SERIAL,
+
+    // Generate metadata for enum constants.
+    ENUM_CONSTANTS,
+
+    // Generate all metadata.
+    FULL;
+
+    static EnumSet<MetadataSupport> defaultSupport() {
+      return EnumSet.of(SERIAL, ENUM_CONSTANTS, FULL);
+    }
   }
 
   /**
@@ -337,9 +355,31 @@ public class Options {
       } else if (arg.equals("--strip-gwt-incompatible")) {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
-        stripReflection = true;
+        includedMetadata.remove(MetadataSupport.FULL);
       } else if (arg.equals("-Xstrip-enum-constants")) {
-        stripEnumConstants = true;
+        includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
+      } else if (arg.startsWith("--strip-reflection:")) {
+        includedMetadata.remove(MetadataSupport.FULL);
+        String[] subArgs = arg.substring(arg.indexOf(':') + 1).split(":");
+        for (String subArg : subArgs) {
+          switch (subArg) {
+            case "enum-constants": {
+              includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
+              break;
+            }
+            case "serial": {
+              includedMetadata.remove(MetadataSupport.SERIAL);
+              break;
+            }
+            case "all": {
+              includedMetadata = EnumSet.noneOf(MetadataSupport.class);
+              break;
+            }
+            default: {
+              usage("invalid --strip-reflection argument: " + subArg);
+            }
+          }
+        }
       } else if (arg.equals("--no-wrapper-methods")) {
         emitWrapperMethods = false;
       } else if (arg.equals("--no-segmented-headers")) {
@@ -666,21 +706,47 @@ public class Options {
   }
 
   public boolean stripReflection() {
-    return stripReflection;
+    return !includedMetadata.contains(MetadataSupport.FULL);
   }
 
   @VisibleForTesting
   public void setStripReflection(boolean b) {
-    stripReflection = b;
+    if (b) {
+      includedMetadata.remove(MetadataSupport.FULL);
+    } else {
+      includedMetadata.add(MetadataSupport.FULL);
+    }
   }
 
   public boolean stripEnumConstants() {
-    return stripEnumConstants;
+    return !includedMetadata.contains(MetadataSupport.ENUM_CONSTANTS);
   }
 
   @VisibleForTesting
   public void setStripEnumConstants(boolean b) {
-    stripEnumConstants = b;
+    if (b) {
+      includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
+    } else {
+      includedMetadata.add(MetadataSupport.ENUM_CONSTANTS);
+    }
+  }
+
+  public boolean stripSerializedClassReflection() {
+    return !includedMetadata.contains(MetadataSupport.SERIAL);
+  }
+
+  @VisibleForTesting
+  public void setStripSerializedClassReflection(boolean b) {
+    if (b) {
+      includedMetadata.remove(MetadataSupport.SERIAL);
+    } else {
+      includedMetadata.add(MetadataSupport.SERIAL);
+    }
+  }
+
+  @VisibleForTesting
+  public void setStripAllReflection() {
+    includedMetadata = EnumSet.noneOf(MetadataSupport.class);
   }
 
   public boolean emitWrapperMethods() {

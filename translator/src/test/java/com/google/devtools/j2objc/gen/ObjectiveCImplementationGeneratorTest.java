@@ -822,4 +822,24 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "private static class B extends A<Integer> { } }", "Test", "Test.m");
     assertTranslation(translation, "@class JavaLangInteger;");
   }
+
+  // Verify that a class that directly or indirectly implements java.io.serializable
+  // has metadata.
+  public void testSerializableClassNoStripMetadata() throws IOException {
+    options.setStripReflection(true);
+    String translation = translateSourceFile(
+        "package foo; public class Bar implements java.io.Serializable {}",
+        "Bar", "foo/Bar.m");
+    assertTranslation(translation, "__metadata");
+  }
+
+  // Verify that a class that directly or indirectly implements java.io.serializable
+  // does not have metadata if --strip-reflection:all is specified.
+  public void testSerializableClassStripAllMetadata() throws IOException {
+    options.setStripAllReflection();
+    String translation = translateSourceFile(
+        "package foo; public class Bar implements java.io.Serializable {}",
+        "Bar", "foo/Bar.m");
+    assertNotInTranslation(translation, "__metadata");
+  }
 }

@@ -76,7 +76,7 @@ public final class TranslationUtil {
     this.options = options;
     this.elementUtil = elementUtil;
     this.jreEmulLoader = getJreEmulClassPath(options);
-    
+
   }
 
   public static TypeElement getSuperType(AbstractTypeDeclaration node) {
@@ -123,6 +123,9 @@ public final class TranslationUtil {
     if (isJUnitTestClass(type)) {
       return true;
     }
+    if (needsSerializationReflection(type)) {
+      return true;
+    }
     PackageElement packageElement = ElementUtil.getPackage(type);
     ReflectionSupport.Level level = null;
     while (type != null) {
@@ -144,6 +147,18 @@ public final class TranslationUtil {
     } else {
       return !options.stripReflection();
     }
+  }
+
+  private boolean needsSerializationReflection(TypeElement type) {
+    if (!options.stripSerializedClassReflection()) {
+      TypeElement serializable = typeUtil.resolveJavaType("java.io.Serializable");
+      for (TypeMirror intrface : type.getInterfaces()) {
+        if (intrface.equals(serializable.asType())) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private boolean isJUnitTestClass(TypeElement type) {
