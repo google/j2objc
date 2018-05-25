@@ -24,6 +24,9 @@
  */
 
 package java.util;
+
+import com.google.j2objc.annotations.ReflectionSupport;
+
 import java.io.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.DoubleConsumer;
@@ -73,6 +76,7 @@ import sun.misc.Unsafe;
  * @author  Frank Yellin
  * @since   1.0
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public
 class Random implements java.io.Serializable {
     /** use serialVersionUID from JDK 1.1 for interoperability */

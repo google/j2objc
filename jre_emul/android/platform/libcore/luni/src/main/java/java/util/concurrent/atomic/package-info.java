@@ -181,4 +181,7 @@
  *
  * @since 1.5
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 package java.util.concurrent.atomic;
+
+import com.google.j2objc.annotations.ReflectionSupport;

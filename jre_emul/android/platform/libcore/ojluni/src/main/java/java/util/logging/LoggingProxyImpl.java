@@ -25,11 +25,13 @@
 
 package java.util.logging;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import sun.util.logging.LoggingProxy;
 
 /**
  * Implementation of LoggingProxy when java.util.logging classes exist.
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 class LoggingProxyImpl implements LoggingProxy {
     static final LoggingProxy INSTANCE = new LoggingProxyImpl();
 

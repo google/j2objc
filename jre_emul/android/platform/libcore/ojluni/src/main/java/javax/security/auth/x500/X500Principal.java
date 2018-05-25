@@ -25,6 +25,7 @@
 
 package javax.security.auth.x500;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.*;
 import java.security.Principal;
 import java.util.Collections;
@@ -61,6 +62,7 @@ import sun.security.util.*;
  * @see java.security.cert.X509Certificate
  * @since 1.4
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public final class X500Principal implements Principal, java.io.Serializable {
 
     private static final long serialVersionUID = -500463348111345721L;
