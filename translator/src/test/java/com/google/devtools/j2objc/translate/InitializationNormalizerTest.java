@@ -26,8 +26,6 @@ import java.io.IOException;
  * @author Tom Ball
  */
 public class InitializationNormalizerTest extends GenerationTest {
-  // TODO(tball): update bug id in comments to public issue numbers when
-  // issue tracking is sync'd.
 
   /**
    * Verify that for a constructor that calls another constructor and has
@@ -272,5 +270,18 @@ public class InitializationNormalizerTest extends GenerationTest {
         "    JreStrongAssign(&Test_FOO, [NSString stringWithCharacters:(jchar[]) { "
           + "(int) 0xda6e } length:1]);",
         "    Test_CODE_POINT = Test_getCodePoint();");
+  }
+
+  // Verify that a static variable initialized as null doesn't do that in the
+  // initialize method, since static variables are always zeroed in C.
+  public void testNullInitializationIsStripped() throws IOException {
+    String translation = translateSourceFile(
+        "class test { private static Object CLASS_LOCK = null; }", "Test", "Test.m");
+
+    // Is the null initializer still in the field declaration?
+    assertNotInTranslation(translation, "static id test_CLASS_LOCK = nil;");
+
+    // Was it moved to class initialization?
+    assertNotInTranslation(translation, "JreStrongAssign(&test_CLASS_LOCK, nil);");
   }
 }

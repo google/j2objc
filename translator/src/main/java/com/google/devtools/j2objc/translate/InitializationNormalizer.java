@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.Initializer;
@@ -31,6 +32,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -153,10 +155,18 @@ public class InitializationNormalizer extends UnitTreeVisitor {
         initStatements.add(makeAssignmentStatement(frag));
         return;
       }
-      Object constantValue = frag.getInitializer().getConstantValue();
+      Expression initializer = frag.getInitializer();
+      Object constantValue = initializer.getConstantValue();
       if (constantValue == null) {
-        // The initializer does not have a constant value. Move it to the class initializer.
-        classInitStatements.add(makeAssignmentStatement(frag));
+        if (initializer.getKind() == TreeNode.Kind.NULL_LITERAL
+                // Without this check, clang strips away the element causing missing symbol errors.
+                && !type.getKind().isInterface()) {
+          // Remove initializer, since static vars are already null.
+          TreeUtil.remove(initializer);
+        } else {
+          // The initializer does not have a constant value. Move it to the class initializer.
+          classInitStatements.add(makeAssignmentStatement(frag));
+        }
         return;
       }
       if (constantValue instanceof String
