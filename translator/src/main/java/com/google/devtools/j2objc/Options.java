@@ -65,7 +65,7 @@ public class Options {
   private boolean segmentedHeaders = true;
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
-  private EnumSet<MetadataSupport> includedMetadata = MetadataSupport.defaultSupport();
+  private EnumSet<MetadataSupport> includedMetadata = EnumSet.allOf(MetadataSupport.class);
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
@@ -201,10 +201,6 @@ public class Options {
 
     // Generate all metadata.
     FULL;
-
-    static EnumSet<MetadataSupport> defaultSupport() {
-      return EnumSet.of(SERIAL, ENUM_CONSTANTS, FULL);
-    }
   }
 
   /**
@@ -355,28 +351,40 @@ public class Options {
       } else if (arg.equals("--strip-gwt-incompatible")) {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
-        includedMetadata.remove(MetadataSupport.FULL);
+        includedMetadata = EnumSet.of(MetadataSupport.ENUM_CONSTANTS);
       } else if (arg.equals("-Xstrip-enum-constants")) {
         includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
-      } else if (arg.startsWith("--strip-reflection:")) {
+      } else if (arg.startsWith("--reflection:")) {
         includedMetadata.remove(MetadataSupport.FULL);
-        String[] subArgs = arg.substring(arg.indexOf(':') + 1).split(":");
+        String[] subArgs = arg.substring(arg.indexOf(':') + 1).split(",", -1);
         for (String subArg : subArgs) {
           switch (subArg) {
-            case "enum-constants": {
-              includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
-              break;
-            }
-            case "serial": {
-              includedMetadata.remove(MetadataSupport.SERIAL);
-              break;
-            }
             case "all": {
+              includedMetadata = EnumSet.allOf(MetadataSupport.class);
+              break;
+            }
+            case "none": {
               includedMetadata = EnumSet.noneOf(MetadataSupport.class);
               break;
             }
+            case "enum-constants": {
+              includedMetadata.add(MetadataSupport.ENUM_CONSTANTS);
+              break;
+            }
+            case "-enum-constants": {
+              includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
+              break;
+            }
+            case "serializable": {
+              includedMetadata.add(MetadataSupport.SERIAL);
+              break;
+            }
+            case "-serializable": {
+              includedMetadata.remove(MetadataSupport.SERIAL);
+              break;
+            }
             default: {
-              usage("invalid --strip-reflection argument: " + subArg);
+              usage("invalid --reflection argument: " + subArg);
             }
           }
         }
