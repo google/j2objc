@@ -56,6 +56,7 @@
 // J2ObjC
 #include "java/io/FileDescriptor.h"
 #include "java/net/InetAddress.h"
+#include "java/net/PlainSocketImpl.h"
 #include "java/net/ServerSocket.h"
 
 #define NATIVE_METHOD(className, functionName, signature) \
@@ -64,19 +65,6 @@
 /************************************************************************
  * PlainSocketImpl
  */
-
-static jfieldID IO_fd_fdID;
-
-jfieldID psi_fdID;
-jfieldID psi_addressID;
-jfieldID psi_ipaddressID;
-jfieldID psi_portID;
-jfieldID psi_localportID;
-jfieldID psi_timeoutID;
-jfieldID psi_trafficClassID;
-jfieldID psi_serverSocketID;
-jfieldID psi_fdLockID;
-jfieldID psi_closePendingID;
 
 extern void setDefaultScopeID(JNIEnv *env, struct sockaddr *him);
 
@@ -96,49 +84,13 @@ extern void setDefaultScopeID(JNIEnv *env, struct sockaddr *him);
 /*
  * Return the file descriptor given a PlainSocketImpl
  */
-static int getFD(JNIEnv *env, jobject this) {
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+static int getFD(JavaNetPlainSocketImpl *plainSocketImpl) {
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     CHECK_NULL_RETURN(fdObj, -1);
-    return (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+    return fdObj->descriptor_;
 }
 
-JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_initProto(JNIEnv *env) {
-    jclass cls = (*env)->FindClass(env, "java/net/PlainSocketImpl");
-    psi_fdID = (*env)->GetFieldID(env, cls , "fd",
-                                  "Ljava/io/FileDescriptor;");
-    CHECK_NULL(psi_fdID);
-    [(id)psi_fdID retain];
-    psi_addressID = (*env)->GetFieldID(env, cls, "address",
-                                          "Ljava/net/InetAddress;");
-    CHECK_NULL(psi_addressID);
-    [(id)psi_addressID retain];
-    psi_portID = (*env)->GetFieldID(env, cls, "port", "I");
-    CHECK_NULL(psi_portID);
-    [(id)psi_portID retain];
-    psi_localportID = (*env)->GetFieldID(env, cls, "localport", "I");
-    CHECK_NULL(psi_localportID);
-    [(id)psi_localportID retain];
-    psi_timeoutID = (*env)->GetFieldID(env, cls, "timeout", "I");
-    CHECK_NULL(psi_timeoutID);
-    [(id)psi_timeoutID retain];
-    psi_trafficClassID = (*env)->GetFieldID(env, cls, "trafficClass", "I");
-    CHECK_NULL(psi_trafficClassID);
-    [(id)psi_trafficClassID retain];
-    psi_serverSocketID = (*env)->GetFieldID(env, cls, "serverSocket",
-                        "Ljava/net/ServerSocket;");
-    CHECK_NULL(psi_serverSocketID);
-    [(id)psi_serverSocketID retain];
-    psi_fdLockID = (*env)->GetFieldID(env, cls, "fdLock",
-                                      "Ljava/lang/Object;");
-    CHECK_NULL(psi_fdLockID);
-    [(id)psi_fdLockID retain];
-    psi_closePendingID = (*env)->GetFieldID(env, cls, "closePending", "Z");
-    CHECK_NULL(psi_closePendingID);
-    [(id)psi_closePendingID retain];
-    IO_fd_fdID = NET_GetFileDescriptorID(env);
-    CHECK_NULL(IO_fd_fdID);
-    [(id)IO_fd_fdID retain];
-}
+JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_initProto(JNIEnv *env) {}
 
 /* a global reference to the java.net.SocketException class. In
  * socketCreate, we ensure that this is initialized. This is to
@@ -153,7 +105,9 @@ static jclass socketExceptionCls;
  * Signature: (Z)V */
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, jobject this,
                                            jboolean stream) {
-    jobject fdObj, ssObj;
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
+    JavaIoFileDescriptor *fdObj;
+    jobject ssObj;
     int fd;
     int type = (stream ? SOCK_STREAM : SOCK_DGRAM);
 #ifdef AF_INET6
@@ -168,7 +122,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, j
         socketExceptionCls = (jclass)(*env)->NewGlobalRef(env, c);
         CHECK_NULL(socketExceptionCls);
     }
-    fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    fdObj = plainSocketImpl->fd_;
 
     if (fdObj == NULL) {
         (*env)->ThrowNew(env, socketExceptionCls, "null fd object");
@@ -203,7 +157,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, j
      * If this is a server socket then enable SO_REUSEADDR
      * automatically and set to non blocking.
      */
-    ssObj = (*env)->GetObjectField(env, this, psi_serverSocketID);
+    ssObj = plainSocketImpl->serverSocket_;
     if (ssObj != NULL) {
         int arg = 1;
         SET_NONBLOCKING(fd);
@@ -216,7 +170,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, j
         }
     }
 
-    (*env)->SetIntField(env, fdObj, IO_fd_fdID, fd);
+    fdObj->descriptor_ = fd;
 }
 
 /*
@@ -231,17 +185,18 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketConnect(JNIEnv *env, 
                                             jobject iaObj, jint port,
                                             jint timeout)
 {
-    jint localport = (*env)->GetIntField(env, this, psi_localportID);
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
+    jint localport = plainSocketImpl->localport_;
     int len = 0;
 
     /* fdObj is the FileDescriptor field on this */
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
 
     jclass clazz = (*env)->GetObjectClass(env, this);
 
     jobject fdLock;
 
-    jint trafficClass = (*env)->GetIntField(env, this, psi_trafficClassID);
+    jint trafficClass = plainSocketImpl->trafficClass_;
 
     /* fd is an int field on iaObj */
     jint fd;
@@ -254,7 +209,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketConnect(JNIEnv *env, 
         JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Socket closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
     if (IS_NULL(iaObj)) {
         JNU_ThrowNullPointerException(env, "inet address argument null.");
@@ -489,11 +444,11 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketConnect(JNIEnv *env, 
         return;
     }
 
-    (*env)->SetIntField(env, fdObj, IO_fd_fdID, fd);
+    fdObj->descriptor_ = fd;
 
     /* set the remote peer address and port */
-    (*env)->SetObjectField(env, this, psi_addressID, iaObj);
-    (*env)->SetIntField(env, this, psi_portID, port);
+    JreStrongAssign(&plainSocketImpl->address_, iaObj);
+    plainSocketImpl->port_ = port;
 
     /*
      * we need to initialize the local port field if bind was called
@@ -510,7 +465,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketConnect(JNIEnv *env, 
                            "Error getting socket name");
         } else {
             localport = NET_GetPortFromSockaddr((struct sockaddr *)&him);
-            (*env)->SetIntField(env, this, psi_localportID, localport);
+            plainSocketImpl->localport_ = localport;
         }
     }
 }
@@ -522,9 +477,9 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketConnect(JNIEnv *env, 
  */
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketBind(JNIEnv *env, jobject this,
                                          jobject iaObj, jint localport) {
-
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     /* fdObj is the FileDescriptor field on this */
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     /* fd is an int field on fdObj */
     int fd;
     int len;
@@ -535,7 +490,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketBind(JNIEnv *env, job
                         "Socket closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
     if (IS_NULL(iaObj)) {
         JNU_ThrowNullPointerException(env, "iaObj is null.");
@@ -561,7 +516,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketBind(JNIEnv *env, job
     }
 
     /* set the address */
-    (*env)->SetObjectField(env, this, psi_addressID, iaObj);
+    JreStrongAssign(&plainSocketImpl->address_, iaObj);
 
     /* intialize the local port */
     if (localport == 0) {
@@ -574,9 +529,9 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketBind(JNIEnv *env, job
             return;
         }
         localport = NET_GetPortFromSockaddr((struct sockaddr *)&him);
-        (*env)->SetIntField(env, this, psi_localportID, localport);
+        plainSocketImpl->localport_ = localport;
     } else {
-        (*env)->SetIntField(env, this, psi_localportID, localport);
+        plainSocketImpl->localport_ = localport;
     }
 }
 
@@ -588,8 +543,9 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketBind(JNIEnv *env, job
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketListen (JNIEnv *env, jobject this,
                                             jint count)
 {
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     /* this FileDescriptor fd field */
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     /* fdObj's int fd field */
     int fd;
 
@@ -598,7 +554,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketListen (JNIEnv *env, 
                         "Socket closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
 
     /*
@@ -622,14 +578,13 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketListen (JNIEnv *env, 
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, jobject this,
                                            jobject socket)
 {
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     /* fields on this */
     int port;
-    jint timeout = (*env)->GetIntField(env, this, psi_timeoutID);
+    jint timeout = plainSocketImpl->timeout_;
     jlong prevTime = 0;
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
 
-    /* the FileDescriptor field on socket */
-    jobject socketFdObj;
     /* the InetAddress field on socket */
     jobject socketAddressObj;
 
@@ -649,7 +604,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
                         "Socket closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
     if (IS_NULL(socket)) {
         JNU_ThrowNullPointerException(env, "socket is null");
@@ -756,14 +711,13 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
     /*
      * Populate SocketImpl.fd.fd
      */
-    socketFdObj = (*env)->GetObjectField(env, socket, psi_fdID);
-    (*env)->SetIntField(env, socketFdObj, IO_fd_fdID, newfd);
-
-    (*env)->SetObjectField(env, socket, psi_addressID, socketAddressObj);
-    (*env)->SetIntField(env, socket, psi_portID, port);
+    JavaNetPlainSocketImpl *tempSocket = (JavaNetPlainSocketImpl *)socket;
+    tempSocket->fd_->descriptor_ = newfd;
+    JreStrongAssign(&tempSocket->address_, socketAddressObj);
+    tempSocket->port_ = port;
     /* also fill up the local port information */
-     port = (*env)->GetIntField(env, this, psi_localportID);
-    (*env)->SetIntField(env, socket, psi_localportID, port);
+     port = plainSocketImpl->localport_;
+    tempSocket->localport_ = port;
 }
 
 
@@ -774,8 +728,9 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
  */
 JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl_socketAvailable(JNIEnv *env, jobject this) {
 
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     jint ret = -1;
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     jint fd;
 
     if (IS_NULL(fdObj)) {
@@ -783,7 +738,7 @@ JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl_socketAvailable(JNIEnv *env
                         "Socket closed");
         return -1;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
     /* JVM_SocketAvailable returns 0 for failure, 1 for success */
     if (!JVM_SocketAvailable(fd, &ret)){
@@ -804,7 +759,8 @@ JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl_socketAvailable(JNIEnv *env
  */
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketClose0(JNIEnv *env, jobject this) {
 
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     jint fd;
 
     if (IS_NULL(fdObj)) {
@@ -812,10 +768,10 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketClose0(JNIEnv *env, j
                         "socket already closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
     if (fd != -1) {
-      (*env)->SetIntField(env, fdObj, IO_fd_fdID, -1);
+      fdObj->descriptor_ = -1;
       untagSocket(env, fd);
       NET_SocketClose(fd);
     }
@@ -829,8 +785,8 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketClose0(JNIEnv *env, j
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketShutdown(JNIEnv *env, jobject this,
                                              jint howto)
 {
-
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     jint fd;
 
     /*
@@ -842,7 +798,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketShutdown(JNIEnv *env,
                         "socket already closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
     }
     shutdown(fd, howto);
 }
@@ -856,6 +812,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketShutdown(JNIEnv *env,
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketSetOption(JNIEnv *env, jobject this,
                                               jint cmd, jboolean on,
                                               jobject value) {
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     int fd;
     int level, optname, optlen;
     union {
@@ -866,7 +823,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketSetOption(JNIEnv *env
     /*
      * Check that socket hasn't been closed
      */
-    fd = getFD(env, this);
+    fd = getFD(plainSocketImpl);
     if (fd < 0) {
         JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException",
                         "Socket closed");
@@ -950,7 +907,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketSetOption(JNIEnv *env
  */
 JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl_socketGetOption(JNIEnv *env, jobject this,
                                               jint cmd, jobject iaContainerObj) {
-
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     int fd;
     int level, optname, optlen;
     union {
@@ -961,7 +918,7 @@ JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl_socketGetOption(JNIEnv *env
     /*
      * Check that socket hasn't been closed
      */
-    fd = getFD(env, this);
+    fd = getFD(plainSocketImpl);
     if (fd < 0) {
         JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException",
                         "Socket closed");
@@ -1043,8 +1000,9 @@ JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl_socketGetOption(JNIEnv *env
 JNIEXPORT void JNICALL
 Java_java_net_PlainSocketImpl_socketSendUrgentData(JNIEnv *env, jobject this,
                                              jint data) {
+    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
     /* The fd field */
-    jobject fdObj = (*env)->GetObjectField(env, this, psi_fdID);
+    JavaIoFileDescriptor *fdObj = plainSocketImpl->fd_;
     int n, fd;
     unsigned char d = data & 0xFF;
 
@@ -1052,7 +1010,7 @@ Java_java_net_PlainSocketImpl_socketSendUrgentData(JNIEnv *env, jobject this,
         JNU_ThrowByName(env, "java/net/SocketException", "Socket closed");
         return;
     } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+        fd = fdObj->descriptor_;
         /* Bug 4086704 - If the Socket associated with this file descriptor
          * was closed (sysCloseFD), the the file descriptor is set to -1.
          */
