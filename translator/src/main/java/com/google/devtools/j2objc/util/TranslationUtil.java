@@ -150,15 +150,12 @@ public final class TranslationUtil {
   }
 
   private boolean needsSerializationReflection(TypeElement type) {
-    if (!options.stripSerializedClassReflection()) {
+    if (options.stripSerializedClassReflection() || ElementUtil.isPackageInfo(type)) {
+      return false;
+    } else {
       TypeElement serializable = typeUtil.resolveJavaType("java.io.Serializable");
-      for (TypeMirror intrface : type.getInterfaces()) {
-        if (intrface.equals(serializable.asType())) {
-          return true;
-        }
-      }
+      return typeUtil.isAssignable(type.asType(), serializable.asType());
     }
-    return false;
   }
 
   private boolean isJUnitTestClass(TypeElement type) {

@@ -827,9 +827,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   // has metadata.
   public void testSerializableClassNoStripMetadata() throws IOException {
     options.setStripReflection(true);
-    String translation = translateSourceFile(
-        "package foo; public class Bar implements java.io.Serializable {}",
-        "Bar", "foo/Bar.m");
+    addSourceFile("abstract class Foo implements java.io.Serializable {}", "Foo.java");
+    String translation = translateSourceFile("public class Bar extends Foo {}", "Bar", "Bar.m");
     assertTranslation(translation, "__metadata");
   }
 
