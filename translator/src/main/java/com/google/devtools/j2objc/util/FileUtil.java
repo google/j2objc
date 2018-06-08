@@ -243,8 +243,9 @@ public class FileUtil {
   public File extractZipEntry(File dir, ZipFile zipFile, ZipEntry entry) throws IOException {
     File outputFile = new File(dir, entry.getName());
     File parentFile = outputFile.getParentFile();
-    if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
-      throw new IOException("Could not extract file to " + dir.getPath());
+    if (!outputFile.getCanonicalPath().startsWith(dir.getCanonicalPath() + File.separator)
+        || (!parentFile.isDirectory() && !parentFile.mkdirs())) {
+      throw new IOException("Could not extract " + entry.getName() + " to " + dir.getPath());
     }
     try (InputStream inputStream = zipFile.getInputStream(entry);
         FileOutputStream outputStream = new FileOutputStream(outputFile)) {
