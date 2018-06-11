@@ -25,6 +25,8 @@
 
 package java.net;
 
+import com.google.j2objc.annotations.ReflectionSupport;
+
 /**
  * This class represents a Network Interface address. In short it's an
  * IP address, a subnet mask and a broadcast address when the address is
@@ -34,6 +36,7 @@ package java.net;
  * @see java.net.NetworkInterface
  * @since 1.6
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class InterfaceAddress {
     private InetAddress address = null;
     private Inet4Address broadcast = null;

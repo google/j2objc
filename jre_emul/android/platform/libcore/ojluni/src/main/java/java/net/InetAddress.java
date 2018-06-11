@@ -26,6 +26,7 @@
 
 package java.net;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.ObjectStreamException;
 import java.io.ObjectStreamField;
 import java.io.IOException;
@@ -181,6 +182,7 @@ import static libcore.io.OsConstants.*;
  * @see     java.net.InetAddress#getLocalHost()
  * @since JDK1.0
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public
 class InetAddress implements java.io.Serializable {
 

@@ -24,6 +24,7 @@
  */
 package java.net;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.IOException;
 
 /*
@@ -32,6 +33,7 @@ import java.io.IOException;
  * @author Chris Hegarty
  */
 
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
 {
     static {

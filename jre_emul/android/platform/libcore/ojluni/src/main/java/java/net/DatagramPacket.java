@@ -26,6 +26,8 @@
 
 package java.net;
 
+import com.google.j2objc.annotations.ReflectionSupport;
+
 /**
  * This class represents a datagram packet.
  * <p>
@@ -40,6 +42,7 @@ package java.net;
  * @author  Benjamin Renaud
  * @since   JDK1.0
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public final
 class DatagramPacket {
 

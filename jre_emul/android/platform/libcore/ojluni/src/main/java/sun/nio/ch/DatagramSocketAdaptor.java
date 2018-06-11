@@ -25,6 +25,7 @@
 
 package sun.nio.ch;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.*;
 import java.net.*;
 import java.nio.*;
@@ -381,8 +382,10 @@ public class DatagramSocketAdaptor
     * DatagramSocket constructor so that no native resources are allocated in
     * super class.
     */
-   private static final DatagramSocketImpl dummyDatagramSocket
-       = new DatagramSocketImpl()
+   private static final DatagramSocketImpl dummyDatagramSocket = new DummyDatagramSocket();
+
+   @ReflectionSupport(value = ReflectionSupport.Level.FULL)
+   private static final class DummyDatagramSocket extends DatagramSocketImpl
    {
        protected void create() throws SocketException {}
 

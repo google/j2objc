@@ -26,6 +26,7 @@
 
 package sun.nio.ch;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import com.google.j2objc.annotations.RetainedWith;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -43,6 +44,7 @@ import sun.net.ResourceManager;
  * An implementation of DatagramChannels.
  */
 
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 class DatagramChannelImpl
     extends DatagramChannel
     implements SelChImpl

@@ -26,6 +26,7 @@
 
 package java.net;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.ObjectStreamException;
 import static libcore.io.OsConstants.*;
 
@@ -84,6 +85,7 @@ import static libcore.io.OsConstants.*;
  * @since 1.4
  */
 
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public final
 class Inet4Address extends InetAddress {
     final static int INADDRSZ = 4;

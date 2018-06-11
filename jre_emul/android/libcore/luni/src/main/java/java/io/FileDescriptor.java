@@ -18,6 +18,7 @@
 package java.io;
 
 import android.system.ErrnoException;
+import com.google.j2objc.annotations.ReflectionSupport;
 import libcore.io.Libcore;
 import static libcore.io.OsConstants.*;
 
@@ -27,6 +28,7 @@ import static libcore.io.OsConstants.*;
  * and {@link RandomAccessFile}), and then create new streams that point to the same
  * file descriptor.
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public final class FileDescriptor {
 
     /**
