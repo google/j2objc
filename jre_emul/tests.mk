@@ -27,6 +27,11 @@ include $(J2OBJC_ROOT)/make/translate_macros.mk
 ALL_TEST_SOURCES = $(TEST_SOURCES) $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
 ALL_SUITE_SOURCES = $(SUITE_SOURCES)
 
+ifdef J2OBJC_JRE_REFLECTION
+TESTS_TO_SKIP += $(TESTS_USE_SERIALIZATION)
+TESTS_TO_SKIP += $(TESTS_USE_REFLECTION)
+TESTS_TO_SKIP += $(TESTS_TO_TRIAGE)
+endif
 TESTS_TO_RUN = $(filter-out $(TESTS_TO_SKIP),$(ALL_TEST_SOURCES))
 TESTS_TO_RUN := $(subst /,.,$(TESTS_TO_RUN:%.java=%))
 
@@ -210,7 +215,7 @@ run-zip-tests-large: link resources $(TEST_BIN)
 # Run this when the above has errors and JUnit doesn't report which
 # test failed or hung.
 run-each-test: link resources $(TEST_BIN)
-	@for test in $(subst /,.,$(ALL_TEST_SOURCES:%.java=%)); do \
+	@for test in $(TESTS_TO_RUN); do \
 	  echo $$test:; \
 	  $(TEST_BIN) org.junit.runner.JUnitCore $$test; \
 	done

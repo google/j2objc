@@ -38,6 +38,9 @@ TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
 TRANSLATE_ARGS = -sourcepath $(JRE_SRC) \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --doc-comments -Xtranslate-bootclasspath
+ifdef J2OBJC_JRE_REFLECTION
+TRANSLATE_ARGS += --reflection:$(J2OBJC_JRE_REFLECTION)
+endif
 include ../make/translate.mk
 
 FAT_LIB_SOURCE_DIRS = $(NATIVE_SOURCE_DIRS) $(GEN_OBJC_DIR)
