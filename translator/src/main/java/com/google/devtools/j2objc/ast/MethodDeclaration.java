@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
@@ -136,5 +137,11 @@ public class MethodDeclaration extends BodyDeclaration {
   public MethodDeclaration addParameter(int index, SingleVariableDeclaration param) {
     parameters.add(index, param);
     return this;
+  }
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(executableElement);
   }
 }

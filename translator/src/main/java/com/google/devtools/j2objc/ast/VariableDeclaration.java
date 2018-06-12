@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
 import javax.lang.model.element.VariableElement;
 
 /**
@@ -65,5 +66,11 @@ public abstract class VariableDeclaration extends TreeNode {
   public VariableDeclaration setInitializer(Expression newInitializer) {
     initializer.set(newInitializer);
     return this;
+  }
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(variableElement);
   }
 }
