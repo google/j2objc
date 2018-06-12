@@ -8,7 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/procyon-decompiler.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>

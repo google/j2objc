@@ -32,8 +32,8 @@ MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
 PROTOBUF_JAR = protobuf-java-3.3.0.jar
 
-GUAVA_JAR = guava-19.0.jar
-GUAVA_SOURCE_JAR = guava-19.0-sources.jar
+GUAVA_JAR = guava-25.1-jre.jar
+GUAVA_SOURCE_JAR = guava-25.1-jre-sources.jar
 
 JSR305_JAR = jsr305-3.0.0.jar
 JSR305_SOURCE_JAR = jsr305-3.0.0.jar
