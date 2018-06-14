@@ -19,6 +19,7 @@ SUFFIXES:
 default: dist
 
 include environment.mk
+include java_sources.mk
 
 JAVA_SOURCES_INCLUDE = $(BUILD_DIR)/java_sources.mk
 ifndef IS_CLEAN_GOAL
@@ -27,7 +28,13 @@ endif
 
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
-CLASSPATH = $(DIST_JAR_DIR)/$(JSR305_JAR):$(DIST_JAR_DIR)/j2objc_annotations.jar
+CLASSPATH_LIST = \
+  $(DIST_JAR_DIR)/$(JSR305_JAR) \
+  $(DIST_JAR_DIR)/$(ERROR_PRONE_ANNOTATIONS_JAR) \
+  $(DIST_JAR_DIR)/$(CHECKER_QUAL_JAR) \
+  $(DIST_JAR_DIR)/$(ANIMAL_SNIFFER_ANNOTATIONS_JAR) \
+  $(DIST_JAR_DIR)/j2objc_annotations.jar
+CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
@@ -66,10 +73,10 @@ clean:
 
 java: $(DIST_JAR)
 
-$(SRC_JAR) $(JAR): | java_deps_dist
+$(JAR): | java_deps_dist
 	@:
 
-$(JAVA_SOURCES_INCLUDE): $(SRC_JAR)
+$(JAVA_SOURCES_INCLUDE): $(BUNDLE_SRC_JAR)
 	@mkdir -p $(@D)
 	@echo "JAVA_SOURCES = \\" > $@
 	@for file in `jar tf $< | grep \.java$$`; do \
@@ -82,10 +89,10 @@ translate: $(TRANSLATE_MARK)
 $(DIST_DIR)/j2objc: | translator_dist
 	@:
 
-$(TRANSLATE_MARK): $(DIST_DIR)/j2objc $(SRC_JAR)
+$(TRANSLATE_MARK): $(DIST_DIR)/j2objc $(BUNDLE_SRC_JAR)
 	@echo "Translating Guava sources"
 	@mkdir -p $(GEN_OBJC_DIR) $(@D)
-	@$(DIST_DIR)/j2objc $(TRANSLATE_ARGS) -d $(GEN_OBJC_DIR) $(SRC_JAR)
+	@$(DIST_DIR)/j2objc $(TRANSLATE_ARGS) -d $(GEN_OBJC_DIR) $(BUNDLE_SRC_JAR)
 	@touch $@
 
 $(OBJC_SOURCES) $(OBJC_HEADERS): $(TRANSLATE_MARK)
@@ -99,13 +106,37 @@ $(DIST_GUAVA_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 
-$(OBJC_SOURCES_MANIFEST): $(SRC_JAR)
+$(OBJC_SOURCES_MANIFEST): $(BUNDLE_SRC_JAR)
 	@mkdir -p $(@D)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@files='$(sort $(OBJC_SOURCES) $(OBJC_HEADERS))' && for i in $$files; do \
 	  echo $$i >> $@; \
 	done
+
+$(BUNDLE_SRC_JAR): $(GUAVA_SRC_JAR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
+	$(CHECKER_QUAL_SRC_JAR) $(ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR) | java_deps_dist
+	@echo "Building Guava bundle."
+	@mkdir -p $(BUNDLE_SRC_DIR)
+	@unzip -o -q -d $(BUNDLE_SRC_DIR) $(GUAVA_SRC_JAR)
+	@unzip -o -q -d $(BUNDLE_SRC_DIR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR)
+	@unzip -o -q -d $(BUNDLE_SRC_DIR) $(CHECKER_QUAL_SRC_JAR) $(CHECKER_QUAL_SOURCES)
+	@unzip -o -q -d $(BUNDLE_SRC_DIR) $(ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR)
+	@echo "Moving checker sources to top level."
+	@rsync -a $(BUNDLE_SRC_DIR)/checker/src/org/ $(BUNDLE_SRC_DIR)/org/
+	@rsync -a $(BUNDLE_SRC_DIR)/framework/src/org/ $(BUNDLE_SRC_DIR)/org/
+	@echo "Removing problematic imports that are only used in javadoc comments."
+	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
+		$(BUNDLE_SRC_DIR)/org/checkerframework/checker/nullness/qual/Nullable.java
+	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
+		$(BUNDLE_SRC_DIR)/org/checkerframework/checker/nullness/qual/MonotonicNonNull.java
+	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
+		$(BUNDLE_SRC_DIR)/org/checkerframework/checker/nullness/qual/NonNull.java
+	@sed -i '' -e '/import org.checkerframework.checker.initialization.InitializationChecker;/d' \
+		$(BUNDLE_SRC_DIR)/org/checkerframework/checker/nullness/qual/NonNull.java
+	@sed -i '' -e '/import org.checkerframework.framework.util.defaults.QualifierDefaults;/d' \
+		$(BUNDLE_SRC_DIR)/org/checkerframework/framework/qual/DefaultQualifierInHierarchy.java
+	@cd $(BUNDLE_SRC_DIR) && zip -r -q $@ com org
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 	@:

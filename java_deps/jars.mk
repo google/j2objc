@@ -32,6 +32,15 @@ MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
 PROTOBUF_JAR = protobuf-java-3.3.0.jar
 
+ERROR_PRONE_ANNOTATIONS_JAR = error_prone_annotations-2.1.3.jar
+ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.1.3-sources.jar
+
+CHECKER_QUAL_JAR = checker-qual-2.0.0.jar
+CHECKER_QUAL_SOURCE_JAR = checker-qual-2.0.0-sources.jar
+
+ANIMAL_SNIFFER_ANNOTATIONS_JAR = animal-sniffer-annotations-1.14.jar
+ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR = animal-sniffer-annotations-1.14-sources.jar
+
 GUAVA_JAR = guava-25.1-jre.jar
 GUAVA_SOURCE_JAR = guava-25.1-jre-sources.jar
 

@@ -184,6 +184,14 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
       type:JavaLangAnnotationAnnotation_class_()];
 }
 
+- (id<JavaLangReflectAnnotatedType>)getAnnotatedReturnType {
+  return nil;
+}
+
+- (IOSObjectArray *)getAnnotatedParameterTypes {
+  return [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
+}
+
 - (NSString *)toGenericString {
   // Code generated from Android's java.lang.reflect.AbstractMethod class.
   JavaLangStringBuilder *sb = [[JavaLangStringBuilder alloc] initWithInt:80];

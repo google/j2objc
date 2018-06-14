@@ -53,6 +53,21 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_annotations</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.checkerframework</groupId>
+                  <artifactId>checker-qual</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>animal-sniffer-annotations</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
                   <classifier>sources</classifier>
@@ -88,6 +103,24 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.1.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.checkerframework</groupId>
+      <artifactId>checker-qual</artifactId>
+      <version>2.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>animal-sniffer-annotations</artifactId>
+      <version>1.14</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
