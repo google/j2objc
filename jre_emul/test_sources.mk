@@ -1042,17 +1042,6 @@ LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res3.properties \
     bundles/java/util/logging/res_en_US.properties \
     bundles/java/util/logging/res_zh_CN.properties \
-    sun/util/logging/resources/logging_de.properties \
-    sun/util/logging/resources/logging_es.properties \
-    sun/util/logging/resources/logging_fr.properties \
-    sun/util/logging/resources/logging_it.properties \
-    sun/util/logging/resources/logging_ja.properties \
-    sun/util/logging/resources/logging_ko.properties \
-    sun/util/logging/resources/logging.properties \
-    sun/util/logging/resources/logging_pt_BR.properties \
-    sun/util/logging/resources/logging_sv.properties \
-    sun/util/logging/resources/logging_zh_CN.properties \
-    sun/util/logging/resources/logging_zh_TW.properties \
     config/java/util/logging/logging.config
 ZIP_TEST_RESOURCES_SRCS = \
     tests/resources/java/util/zip/EmptyArchive.zip \

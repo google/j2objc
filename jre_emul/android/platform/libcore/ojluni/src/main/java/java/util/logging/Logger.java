@@ -37,6 +37,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -1396,22 +1397,23 @@ public class Logger {
     static final String SYSTEM_LOGGER_RB_NAME = "sun.util.logging.resources.logging";
 
     private static ResourceBundle findSystemResourceBundle(final Locale locale) {
-        // the resource bundle is in a restricted package
-        /* J2ObjC removed.
-        return AccessController.doPrivileged(new PrivilegedAction<ResourceBundle>() {
-            public ResourceBundle run() {
-        */
-                try {
-                    return ResourceBundle.getBundle(SYSTEM_LOGGER_RB_NAME,
-                                                    locale,
-                                                    ClassLoader.getSystemClassLoader());
-                } catch (MissingResourceException e) {
-                    throw new InternalError(e.toString());
-                }
-        /* J2ObjC removed.
-            }
-        });
-        */
+      // J2ObjC: inlined contents of sun/util/logging/resources/logging/logging.properties
+      return new ListResourceBundle() {
+        @Override
+        protected Object[][] getContents() {
+          return new Object[][] {
+            { "ALL", "ALL" },
+            { "SEVERE", "SEVERE" },
+            { "WARNING", "WARNING" },
+            { "INFO", "INFO" },
+            { "CONFIG", "CONFIG" },
+            { "FINE", "FINE" },
+            { "FINER", "FINER" },
+            { "FINEST", "FINEST" },
+            { "OFF", "OFF" }
+          };
+        }
+      };
     }
 
     /**
