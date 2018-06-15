@@ -2242,11 +2242,6 @@ public class SimpleDateFormat extends DateFormat {
         return index;
     }
 
-
-    private final String getCalendarName() {
-        return calendar.getClass().getName();
-    }
-
     private boolean useDateFormatSymbols() {
         if (useDateFormatSymbols) {
             return true;
@@ -2255,7 +2250,7 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     private boolean isGregorianCalendar() {
-        return "java.util.GregorianCalendar".equals(getCalendarName());
+        return calendar instanceof GregorianCalendar;
     }
 
     /**

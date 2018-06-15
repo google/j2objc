@@ -926,12 +926,18 @@ TESTS_USE_REFLECTION = \
     com/google/j2objc/ReflectionTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/reflect/ProxyTest.java \
+    libcore/java/io/OldObjectOutputStreamTest.java \
+    libcore/java/lang/reflect/ReflectionTest.java \
+    org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
+    org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
+    org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
+    org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
 
 # TODO(user): find out why they are failing when reflection is stripped.
 TESTS_TO_TRIAGE = \
     libcore/java/awt/font/TextAttributeTest.java \
-    libcore/java/io/OldObjectOutputStreamTest.java \
-    libcore/java/lang/reflect/ReflectionTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/util/logging/OldMemoryHandlerTest.java \
     libcore/java/util/jar/OldManifestTest.java \
@@ -944,8 +950,6 @@ TESTS_TO_TRIAGE = \
     tests/api/java/lang/reflect/ProxyTest.java \
     libcore/java/nio/BufferTest.java \
     libcore/java/util/EventObjectTest.java \
-    org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
-    org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
     org/apache/harmony/tests/java/nio/channels/FileChannelTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
     org/apache/harmony/tests/java/text/MessageFormatTest.java \
@@ -954,15 +958,6 @@ TESTS_TO_TRIAGE = \
     libcore/java/net/SocketTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
     jsr166/ForkJoinPoolTest.java \
-    libcore/java/text/SimpleDateFormatTest.java \
-    org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
-    org/apache/harmony/tests/java/nio/channels/ServerSocketChannelTest.java \
-    org/apache/harmony/tests/javax/security/cert/X509CertificateTest.java \
-    org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
-    org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
-    org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
-    org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
-    org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
 
 TEST_RESOURCES_SRCS = \
     lib/logging.properties \
