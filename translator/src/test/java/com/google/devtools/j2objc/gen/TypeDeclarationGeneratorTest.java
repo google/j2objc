@@ -526,4 +526,56 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "Test_FOO = false;");
     assertNotInTranslation(translation, "Test_BAR = true;");
   }
+
+  // Verify that generated source mappings are correct for methods that take no arguments.
+  public void testMethodSignatureMappingWithoutParameters() throws IOException {
+    String source = "class A { void zebra() {} }";
+    CompilationUnit compilationUnit = translateType("A", source);
+    GeneratedType generatedType =
+        GeneratedType.fromTypeDeclaration(compilationUnit.getTypes().get(0));
+    GeneratedSourceMappings mappings = generatedType.getGeneratedSourceMappings();
+
+    boolean foundZebra = false;
+    for (GeneratedSourceMappings.Mapping mapping : mappings.getMappings()) {
+      if (mapping.getIdentifier().equals("zebra")) {
+        foundZebra = true;
+        assertEquals("zebra", source.substring(mapping.getSourceBegin(), mapping.getSourceEnd()));
+        assertEquals(
+            "zebra",
+            generatedType
+                .getPublicDeclarationCode()
+                .substring(mapping.getTargetBegin(), mapping.getTargetEnd()));
+      }
+    }
+
+    if (!foundZebra) {
+      fail("No mapping found for zebra() method");
+    }
+  }
+
+  // Verify that generated source mappings are correct for methods that take arguments.
+  public void testMethodSignatureMappingWithParameters() throws IOException {
+    String source = "class A { void zebra(int foo, int bar) {} }";
+    CompilationUnit compilationUnit = translateType("A", source);
+    GeneratedType generatedType =
+        GeneratedType.fromTypeDeclaration(compilationUnit.getTypes().get(0));
+    GeneratedSourceMappings mappings = generatedType.getGeneratedSourceMappings();
+
+    boolean foundZebra = false;
+    for (GeneratedSourceMappings.Mapping mapping : mappings.getMappings()) {
+      if (mapping.getIdentifier().equals("zebra")) {
+        foundZebra = true;
+        assertEquals("zebra", source.substring(mapping.getSourceBegin(), mapping.getSourceEnd()));
+        assertEquals(
+            "zebraWithInt",
+            generatedType
+                .getPublicDeclarationCode()
+                .substring(mapping.getTargetBegin(), mapping.getTargetEnd()));
+      }
+    }
+
+    if (!foundZebra) {
+      fail("No mapping found for zebra(int, int) method");
+    }
+  }
 }

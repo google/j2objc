@@ -84,6 +84,7 @@ public class Options {
   private String annotationsJar = null;
   private String globalCombinedOutput = null;
   private String bootclasspath = null;
+  private boolean emitKytheMappings = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -425,6 +426,8 @@ public class Options {
         translateClassfiles = true;
       } else if (arg.equals("-Xannotations-jar")) {
         annotationsJar = getArgValue(args, arg);
+      } else if (arg.equals("-Xkythe-mapping")) {
+        emitKytheMappings = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -858,6 +861,15 @@ public class Options {
 
   public boolean translateBootclasspathFiles() {
     return translateBootclasspath;
+  }
+
+  public boolean emitKytheMappings() {
+    return emitKytheMappings;
+  }
+
+  @VisibleForTesting
+  public void setEmitKytheMappings(boolean b) {
+    emitKytheMappings = b;
   }
 
   // Unreleased experimental project.

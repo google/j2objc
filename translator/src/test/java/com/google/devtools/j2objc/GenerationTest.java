@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -59,6 +61,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -708,6 +711,22 @@ public class GenerationTest extends TestCase {
     }
   }
 
+  protected String extractKytheMetadata(String translation) {
+    String openingDelimiter = "/* This file contains Kythe metadata.";
+    String closingDelimiter = "*/";
+    int openingDelimiterIndex = translation.indexOf(openingDelimiter);
+    int closingDelimiterIndex = translation.indexOf(closingDelimiter);
+    if (openingDelimiterIndex == -1) {
+      return "";
+    }
+
+    String encodedMetadata =
+        translation
+            .substring(openingDelimiterIndex + openingDelimiter.length(), closingDelimiterIndex)
+            .replace("\n", "")
+            .trim();
+    return new String(Base64.getDecoder().decode(encodedMetadata), UTF_8);
+  }
 
   // Empty test so Bazel won't report a "no tests" error.
   public void testNothing() {}

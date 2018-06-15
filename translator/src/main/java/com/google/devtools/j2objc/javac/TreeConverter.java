@@ -879,6 +879,12 @@ public class TreeConverter {
 
   private TreeNode convertMethodDeclaration(JCTree.JCMethodDecl node) {
     MethodDeclaration newNode = new MethodDeclaration();
+
+    // JCMethodDecl's preferred diagnostic position is the beginning of the method name.
+    int methodStartPosition = node.pos().getPreferredPosition();
+    Name name = Name.newName(null /* qualifier */, node.sym);
+    name.setPosition(new SourcePosition(methodStartPosition, node.name.length()));
+
     convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     for (JCTree.JCVariableDecl param : node.getParameters()) {
       newNode.addParameter((SingleVariableDeclaration) convert(param));
@@ -886,7 +892,8 @@ public class TreeConverter {
     return newNode
         .setIsConstructor(ElementUtil.isConstructor(node.sym))
         .setExecutableElement(node.sym)
-        .setBody((Block) convert(node.getBody()));
+        .setBody((Block) convert(node.getBody()))
+        .setName(name);
   }
 
   private static String getMemberName(JCTree.JCExpression node) {

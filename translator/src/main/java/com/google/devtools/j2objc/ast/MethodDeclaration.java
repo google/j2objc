@@ -26,6 +26,7 @@ import javax.lang.model.type.TypeMirror;
 public class MethodDeclaration extends BodyDeclaration {
 
   private ExecutableElement executableElement = null;
+  private Name name = null;
   private boolean isConstructor = false;
   private boolean hasDeclaration = true;
   private boolean isUnavailable = false;
@@ -38,6 +39,7 @@ public class MethodDeclaration extends BodyDeclaration {
   public MethodDeclaration(MethodDeclaration other) {
     super(other);
     executableElement = other.getExecutableElement();
+    name = other.getName();
     isConstructor = other.isConstructor();
     hasDeclaration = other.hasDeclaration();
     isUnavailable = other.isUnavailable();
@@ -62,6 +64,17 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public MethodDeclaration setExecutableElement(ExecutableElement newElement) {
     executableElement = newElement;
+    return this;
+  }
+
+  public Name getName() {
+    return name != null
+        ? name
+        : (executableElement != null ? Name.newName(null, executableElement) : null);
+  }
+
+  public MethodDeclaration setName(Name newName) {
+    name = newName;
     return this;
   }
 

@@ -16,11 +16,14 @@
 
 package com.google.devtools.j2objc.gen;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import java.util.Base64;
 import java.util.Set;
 
 /**
@@ -52,22 +55,32 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return ".h";
   }
 
-  public void generate() {
+  public final void generate() {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
     }
     generateFileHeader();
 
+    if (getGenerationUnit().options().emitKytheMappings()) {
+      generateKythePragma();
+    }
+
     for (GeneratedType generatedType : getOrderedTypes()) {
       printTypeDeclaration(generatedType);
     }
 
     generateFileFooter();
+
+    if (getGenerationUnit().options().emitKytheMappings()) {
+      generateTypeMappings();
+    }
+
     save(getOutputPath());
   }
 
   protected void printTypeDeclaration(GeneratedType generatedType) {
+    generatedType.getGeneratedSourceMappings().setTargetOffset(getBuilder().length());
     print(generatedType.getPublicDeclarationCode());
   }
 
@@ -153,5 +166,50 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println("#pragma clang diagnostic pop");
       println("#endif");
     }
+  }
+
+  private void generateKythePragma() {
+    println("#ifdef KYTHE_IS_RUNNING");
+    println("#pragma kythe_inline_metadata \"This file contains Kythe metadata.\"");
+    println("#endif");
+  }
+
+  private void generateTypeMappings() {
+    KytheIndexingMetadata metadata = new KytheIndexingMetadata();
+
+    for (GeneratedType generatedType : getOrderedTypes()) {
+      GeneratedSourceMappings sourceMappings = generatedType.getGeneratedSourceMappings();
+      int offset = sourceMappings.getTargetOffset();
+      for (GeneratedSourceMappings.Mapping mapping : sourceMappings.getMappings()) {
+        metadata.addAnchorAnchor(
+            mapping.getSourceBegin(),
+            mapping.getSourceEnd(),
+            mapping.getTargetBegin() + offset,
+            mapping.getTargetEnd() + offset,
+            "" /* sourceCorpus */,
+            getGenerationUnit().getSourceName() /* sourcePath */);
+      }
+    }
+
+    printKytheMappings(metadata);
+  }
+
+  private void printKytheMappings(KytheIndexingMetadata metadata) {
+    // The Kythe indexer assumes the JSON metadata is base-64 encoded; we wrap it to 80 characters
+    // for readability in the generated source.
+    String encodedMetadata =
+        new String(Base64.getEncoder().encode(metadata.toJson().getBytes(UTF_8)), UTF_8);
+    StringBuilder wrappedMetadata = new StringBuilder();
+    int lineWidth = 80;
+    for (int i = 0; i <= encodedMetadata.length() / lineWidth; ++i) {
+      wrappedMetadata.append(
+          encodedMetadata, i * lineWidth, Math.min((i + 1) * lineWidth, encodedMetadata.length()));
+      wrappedMetadata.append("\n");
+    }
+
+    newline();
+    println("/* This file contains Kythe metadata.");
+    print(wrappedMetadata.toString());
+    println("*/");
   }
 }

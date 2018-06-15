@@ -866,4 +866,21 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // The companion class of Foo still has the class method +[Foo f].
     assertTranslatedLines(impl, "+ (void)f {", "Foo_f();", "}");
   }
+
+  // Verifies that properly encoded Kythe metadata and associated pragmas are generated when
+  // using the Kythe mapping flag.
+  public void testKytheMetadataMappings() throws IOException {
+    options.setEmitKytheMappings(true);
+    String translation =
+        translateSourceFile("class A {" + "public A(int i) {}" + "A() {} }", "A", "A.h");
+    String kytheMetadata = extractKytheMetadata(translation);
+
+    assertTranslation(translation, "#ifdef KYTHE_IS_RUNNING");
+    assertTranslation(
+        translation, "#pragma kythe_inline_metadata" + " \"This file contains Kythe metadata.\"");
+    assertTranslation(translation, "/* This file contains Kythe metadata.");
+
+    assertTranslation(kytheMetadata, "kythe0");
+    assertTranslation(kytheMetadata, "{\"type\":\"anchor_anchor\"");
+  }
 }

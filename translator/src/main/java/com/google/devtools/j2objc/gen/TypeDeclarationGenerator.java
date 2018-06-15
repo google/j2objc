@@ -62,8 +62,26 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
+  private final GeneratedSourceMappings generatedSourceMappings;
+
   protected TypeDeclarationGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder, node);
+    generatedSourceMappings = new GeneratedSourceMappings();
+  }
+
+  protected TypeDeclarationGenerator(
+      SourceBuilder builder,
+      AbstractTypeDeclaration node,
+      GeneratedSourceMappings generatedSourceMappings) {
+    super(builder, node);
+    this.generatedSourceMappings = generatedSourceMappings;
+  }
+
+  public static void generate(
+      SourceBuilder builder,
+      AbstractTypeDeclaration node,
+      GeneratedSourceMappings generatedSourceMappings) {
+    new TypeDeclarationGenerator(builder, node, generatedSourceMappings).generate();
   }
 
   public static void generate(SourceBuilder builder, AbstractTypeDeclaration node) {
@@ -621,7 +639,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
-    print(getMethodSignature(m));
+
+    String methodSignature = getMethodSignature(m);
+
+    // In order to properly map the method name from the entire signature, we must isolate it from
+    // associated type and parameter declarations.  The method name is guaranteed to be between the
+    // first closing parenthesis and first colon (for methods with arguments), or the entirety of
+    // the declaration after the first closing parenthesis (for methods with no arguments).
+    int identifierStartIndex = methodSignature.indexOf(')') + 1;
+    int identifierEndIndex =
+        methodSignature.contains(":") ? methodSignature.indexOf(':') : methodSignature.length();
+    generatedSourceMappings.addMethodMapping(
+        m /* methodDeclaration */,
+        getBuilder().length() + identifierStartIndex /* targetBegin */,
+        identifierEndIndex - identifierStartIndex /* length */);
+
+    print(methodSignature);
+
     String methodName = nameTable.getMethodSelector(methodElement);
     if (!m.isConstructor() && NameTable.needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.

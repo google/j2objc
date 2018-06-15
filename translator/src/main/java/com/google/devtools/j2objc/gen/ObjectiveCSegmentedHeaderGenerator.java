@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.Import;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -134,6 +133,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     printForwardDeclarations(forwardDeclarations);
 
+    type.getGeneratedSourceMappings().setTargetOffset(getBuilder().length());
     print(code);
     newline();
     println("#endif");

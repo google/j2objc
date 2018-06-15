@@ -47,6 +47,7 @@ public class GeneratedType {
   private final String publicDeclarationCode;
   private final String privateDeclarationCode;
   private final String implementationCode;
+  private final GeneratedSourceMappings generatedSourceMappings;
 
   private GeneratedType(
       String typeName,
@@ -58,7 +59,8 @@ public class GeneratedType {
       Set<Import> implementationIncludes,
       String publicDeclarationCode,
       String privateDeclarationCode,
-      String implementationCode) {
+      String implementationCode,
+      GeneratedSourceMappings generatedSourceMappings) {
     this.typeName = Preconditions.checkNotNull(typeName);
     this.isPrivate = isPrivate;
     this.superTypes = Preconditions.checkNotNull(superTypes);
@@ -70,6 +72,7 @@ public class GeneratedType {
     this.publicDeclarationCode = Preconditions.checkNotNull(publicDeclarationCode);
     this.privateDeclarationCode = Preconditions.checkNotNull(privateDeclarationCode);
     this.implementationCode = Preconditions.checkNotNull(implementationCode);
+    this.generatedSourceMappings = Preconditions.checkNotNull(generatedSourceMappings);
   }
 
   public static GeneratedType fromTypeDeclaration(AbstractTypeDeclaration typeNode) {
@@ -99,7 +102,8 @@ public class GeneratedType {
     typeNode.accept(importCollector);
 
     SourceBuilder builder = new SourceBuilder(emitLineDirectives);
-    TypeDeclarationGenerator.generate(builder, typeNode);
+    GeneratedSourceMappings generatedSourceMappings = new GeneratedSourceMappings();
+    TypeDeclarationGenerator.generate(builder, typeNode, generatedSourceMappings);
     String publicDeclarationCode = builder.toString();
 
     builder = new SourceBuilder(emitLineDirectives);
@@ -137,7 +141,8 @@ public class GeneratedType {
         implementationIncludes.build(),
         publicDeclarationCode,
         privateDeclarationCode,
-        implementationCode);
+        implementationCode,
+        generatedSourceMappings);
   }
 
   /**
@@ -185,6 +190,10 @@ public class GeneratedType {
 
   public String getImplementationCode() {
     return implementationCode;
+  }
+
+  public GeneratedSourceMappings getGeneratedSourceMappings() {
+    return generatedSourceMappings;
   }
 
   @Override
