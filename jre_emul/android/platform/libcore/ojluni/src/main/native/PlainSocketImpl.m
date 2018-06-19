@@ -55,6 +55,7 @@
 
 // J2ObjC
 #include "java/io/FileDescriptor.h"
+#include "java/lang/Integer.h"
 #include "java/net/InetAddress.h"
 #include "java/net/PlainSocketImpl.h"
 #include "java/net/ServerSocket.h"
@@ -852,25 +853,17 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketSetOption(JNIEnv *env
         case java_net_SocketOptions_SO_LINGER :
         case java_net_SocketOptions_IP_TOS :
             {
-                jclass cls;
-                jfieldID fid;
-
-                cls = (*env)->FindClass(env, "java/lang/Integer");
-                CHECK_NULL(cls);
-                fid = (*env)->GetFieldID(env, cls, "value", "I");
-                CHECK_NULL(fid);
-
                 if (cmd == java_net_SocketOptions_SO_LINGER) {
                     if (on) {
                         optval.ling.l_onoff = 1;
-                        optval.ling.l_linger = (*env)->GetIntField(env, value, fid);
+                        optval.ling.l_linger = [((JavaLangInteger *)value) intValue];
                     } else {
                         optval.ling.l_onoff = 0;
                         optval.ling.l_linger = 0;
                     }
                     optlen = sizeof(optval.ling);
                 } else {
-                    optval.i = (*env)->GetIntField(env, value, fid);
+                    optval.i = [((JavaLangInteger *)value) intValue];
                     optlen = sizeof(optval.i);
                 }
 

@@ -58,6 +58,8 @@
 
 #include "java_net_SocketOptions.h"
 #include "java_net_PlainDatagramSocketImpl.h"
+#include "java/lang/Boolean.h"
+#include "java/lang/Integer.h"
 #include "java/net/Inet6Address.h"
 
 #define NATIVE_METHOD(className, functionName, signature) \
@@ -89,38 +91,14 @@ extern int getDefaultScopeID(JNIEnv *env);
  * Returns a java.lang.Integer based on 'i'
  */
 static jobject createInteger(JNIEnv *env, int i) {
-    static jclass i_class;
-    static jmethodID i_ctrID;
-
-    if (i_class == NULL) {
-        jclass c = (*env)->FindClass(env, "java/lang/Integer");
-        CHECK_NULL_RETURN(c, NULL);
-        i_ctrID = (*env)->GetMethodID(env, c, "<init>", "(I)V");
-        CHECK_NULL_RETURN(i_ctrID, NULL);
-        i_class = (*env)->NewGlobalRef(env, c);
-        CHECK_NULL_RETURN(i_class, NULL);
-    }
-
-    return ( (*env)->NewObject(env, i_class, i_ctrID, i) );
+    return create_JavaLangInteger_initWithInt_(i);
 }
 
 /*
  * Returns a java.lang.Boolean based on 'b'
  */
 static jobject createBoolean(JNIEnv *env, int b) {
-    static jclass b_class;
-    static jmethodID b_ctrID;
-
-    if (b_class == NULL) {
-        jclass c = (*env)->FindClass(env, "java/lang/Boolean");
-        CHECK_NULL_RETURN(c, NULL);
-        b_ctrID = (*env)->GetMethodID(env, c, "<init>", "(Z)V");
-        CHECK_NULL_RETURN(b_ctrID, NULL);
-        b_class = (*env)->NewGlobalRef(env, c);
-        CHECK_NULL_RETURN(b_class, NULL);
-    }
-
-    return( (*env)->NewObject(env, b_class, b_ctrID, (jboolean)(b!=0)) );
+    return JavaLangBoolean_valueOfWithBoolean_(b != 0);
 }
 
 
@@ -1221,14 +1199,7 @@ static void setMulticastInterface(JNIEnv *env, jobject this, int fd,
       /*
          * value is a Integer (Android-changed, openJdk uses NetworkInterface)
          */
-        static jfieldID integer_valueID;
-        if (integer_valueID == NULL) {
-            jclass c = (*env)->FindClass(env, "java/lang/Integer");
-            CHECK_NULL(c);
-            integer_valueID = (*env)->GetFieldID(env, c, "value", "I");
-            CHECK_NULL(integer_valueID);
-        }
-        int index = (*env)->GetIntField(env, value, integer_valueID);
+        int index = [((JavaLangInteger *)value) intValue];
 
         // Android-changed: Return early if mcast_set_if_by_addr_v4 threw.
         // We don't want to call into the IPV6 code with a pending exception.
@@ -1245,17 +1216,10 @@ static void setMulticastInterface(JNIEnv *env, jobject this, int fd,
  * Enable/disable local loopback of multicast datagrams.
  */
 static void mcast_set_loop_v4(JNIEnv *env, jobject this, int fd, jobject value) {
-    jclass cls;
-    jfieldID fid;
     jboolean on;
     char loopback;
 
-    cls = (*env)->FindClass(env, "java/lang/Boolean");
-    CHECK_NULL(cls);
-    fid =  (*env)->GetFieldID(env, cls, "value", "Z");
-    CHECK_NULL(fid);
-
-    on = (*env)->GetBooleanField(env, value, fid);
+    on = [((JavaLangBoolean *)value) booleanValue];
     loopback = (!on ? 1 : 0);
 
     if (NET_SetSockOpt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const void *)&loopback, sizeof(char)) < 0) {
@@ -1269,17 +1233,10 @@ static void mcast_set_loop_v4(JNIEnv *env, jobject this, int fd, jobject value) 
  */
 #ifdef AF_INET6
 static void mcast_set_loop_v6(JNIEnv *env, jobject this, int fd, jobject value) {
-    jclass cls;
-    jfieldID fid;
     jboolean on;
     int loopback;
 
-    cls = (*env)->FindClass(env, "java/lang/Boolean");
-    CHECK_NULL(cls);
-    fid =  (*env)->GetFieldID(env, cls, "value", "Z");
-    CHECK_NULL(fid);
-
-    on = (*env)->GetBooleanField(env, value, fid);
+    on = [((JavaLangBoolean *)value) booleanValue];
     loopback = (!on ? 1 : 0);
 
     if (NET_SetSockOpt(fd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, (const void *)&loopback, sizeof(int)) < 0) {
@@ -1379,15 +1336,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_socketSetOption(JNI
         case java_net_SocketOptions_SO_RCVBUF :
         case java_net_SocketOptions_IP_TOS :
             {
-                jclass cls;
-                jfieldID fid;
-
-                cls = (*env)->FindClass(env, "java/lang/Integer");
-                CHECK_NULL(cls);
-                fid =  (*env)->GetFieldID(env, cls, "value", "I");
-                CHECK_NULL(fid);
-
-                optval.i = (*env)->GetIntField(env, value, fid);
+                optval.i = [((JavaLangInteger *)value) intValue];
                 optlen = sizeof(optval.i);
                 break;
             }
@@ -1395,16 +1344,8 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_socketSetOption(JNI
         case java_net_SocketOptions_SO_REUSEADDR:
         case java_net_SocketOptions_SO_BROADCAST:
             {
-                jclass cls;
-                jfieldID fid;
                 jboolean on;
-
-                cls = (*env)->FindClass(env, "java/lang/Boolean");
-                CHECK_NULL(cls);
-                fid =  (*env)->GetFieldID(env, cls, "value", "Z");
-                CHECK_NULL(fid);
-
-                on = (*env)->GetBooleanField(env, value, fid);
+                on = [((JavaLangBoolean *)value) booleanValue];
 
                 /* SO_REUSEADDR or SO_BROADCAST */
                 optval.i = (on ? 1 : 0);

@@ -946,8 +946,6 @@ TESTS_USE_REFLECTION = \
 
 # TODO(user): find out why they are failing when reflection is stripped.
 TESTS_TO_TRIAGE = \
-    libcore/java/net/DatagramSocketTest.java \
-    libcore/java/net/SocketTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
     libcore/java/util/logging/OldMemoryHandlerTest.java \
 
