@@ -96,8 +96,10 @@ public class ParsePositionTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.text.ParsePosition.toString()
-		assertEquals("toString failed.", 
-				"java.text.ParsePosition[index=2147483647,errorIndex=-1]", pp.toString());
+		// J2ObjC reflection-stripping change.
+		assertTrue("toString failed.", 
+				pp.toString().matches("[Jj]ava\\.?[Tt]ext\\.?ParsePosition"
+						+ "\\[index=2147483647,errorIndex=\\-1\\]"));
 	}
 
 	/**

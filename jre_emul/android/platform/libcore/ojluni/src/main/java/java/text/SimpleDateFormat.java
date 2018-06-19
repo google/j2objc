@@ -2250,7 +2250,8 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     private boolean isGregorianCalendar() {
-        return calendar instanceof GregorianCalendar;
+        // J2ObjC reflection-stripping change.
+        return calendar.getClass().getName().matches("[Jj]ava\\.?[Uu]til\\.?GregorianCalendar");
     }
 
     /**

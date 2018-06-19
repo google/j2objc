@@ -81,8 +81,9 @@ public class OldManifestTest extends TestCase {
         assertTrue("Should have no main attributes", emptyClone
                 .getMainAttributes().isEmpty());
         assertEquals(emptyClone, emptyManifest);
-        assertEquals(emptyManifest.clone().getClass().getName(),
-                "java.util.jar.Manifest");
+        // J2ObjC reflection-stripping change.
+        assertTrue(emptyManifest.clone().getClass().getName().matches(
+                "[Jj]ava\\.?[Uu]til\\.?[Jj]ar\\.?Manifest"));
 
         Manifest manifest = new Manifest(new URL(Support_Resources
                 .getURL("manifest/hyts_MANIFEST.MF")).openStream());

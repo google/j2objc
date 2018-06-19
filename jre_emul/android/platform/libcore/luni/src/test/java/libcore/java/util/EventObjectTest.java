@@ -37,7 +37,9 @@ public final class EventObjectTest extends TestCase {
     }
 
     public void testToString() {
-        assertEquals("java.util.EventObject[source=x]", new EventObject("x").toString());
+        // J2ObjC reflection-stripping change.
+        String regex = "[Jj]ava\\.?[Uu]til\\.?EventObject\\[source=x\\]";
+        assertTrue(new EventObject("x").toString().matches(regex));
     }
 
     public void testSerializationNullsOutSource() {

@@ -22,12 +22,13 @@ import junit.framework.TestCase;
 public class TextAttributeTest extends TestCase {
 
     public void testAttributeNames() {
-        assertEquals("java.awt.font.TextAttribute(kerning)",
-                TextAttribute.KERNING.toString());
-        assertEquals("java.awt.font.TextAttribute(ligatures)",
-                TextAttribute.LIGATURES.toString());
-        assertEquals("java.awt.font.TextAttribute(tracking)",
-                TextAttribute.TRACKING.toString());
+        // J2ObjC reflection-stripping change.
+        assertTrue(TextAttribute.KERNING.toString().matches(
+                "[Jj]ava\\.?[Aa]wt\\.?[Ff]ont\\.?TextAttribute\\(kerning\\)"));
+        assertTrue(TextAttribute.LIGATURES.toString().matches(
+                "[Jj]ava\\.?[Aa]wt\\.?[Ff]ont\\.?TextAttribute\\(ligatures\\)"));
+        assertTrue(TextAttribute.TRACKING.toString().matches(
+                "[Jj]ava\\.?[Aa]wt\\.?[Ff]ont\\.?TextAttribute\\(tracking\\)"));
     }
 
     public void testAttributeValues() {

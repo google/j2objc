@@ -886,6 +886,7 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/text/DateFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
     libcore/java/util/CurrencyTest.java \
+    libcore/java/util/EventObjectTest.java \
     libcore/java/util/LocaleTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
@@ -916,6 +917,7 @@ TESTS_USE_SERIALIZATION = \
     org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatTest.java \
+    org/apache/harmony/tests/java/text/MessageFormatTest.java \
     org/apache/harmony/tests/java/util/BitSetTest.java \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/zip/ZipErrorTest.java \
@@ -926,38 +928,28 @@ TESTS_USE_REFLECTION = \
     com/google/j2objc/ReflectionTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/reflect/ProxyTest.java \
+    jsr166/ForkJoinPoolTest.java \
     libcore/java/io/OldObjectOutputStreamTest.java \
+    libcore/java/lang/CharacterTest.java \
     libcore/java/lang/reflect/ReflectionTest.java \
+    libcore/java/net/URLStreamHandlerFactoryTest.java \
+    libcore/java/nio/BufferTest.java \
+    org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
+    org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
-    org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
-    org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
-    org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
+    org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
+    org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
+    tests/api/java/lang/reflect/ProxyTest.java \
 
 # TODO(user): find out why they are failing when reflection is stripped.
 TESTS_TO_TRIAGE = \
-    libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/net/DatagramSocketTest.java \
-    libcore/java/util/logging/OldMemoryHandlerTest.java \
-    libcore/java/util/jar/OldManifestTest.java \
-    org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
-    org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
-    org/apache/harmony/tests/java/text/FieldPositionTest.java \
-    org/apache/harmony/tests/java/text/ParsePositionTest.java \
-    org/apache/harmony/tests/java/util/EventObjectTest.java \
-    org/json/JSONArrayTest.java \
-    tests/api/java/lang/reflect/ProxyTest.java \
-    libcore/java/nio/BufferTest.java \
-    libcore/java/util/EventObjectTest.java \
-    org/apache/harmony/tests/java/nio/channels/FileChannelTest.java \
-    libcore/java/net/URLStreamHandlerFactoryTest.java \
-    org/apache/harmony/tests/java/text/MessageFormatTest.java \
-    tests/security/cert/X509Certificate2Test.java \
-    libcore/java/lang/CharacterTest.java \
     libcore/java/net/SocketTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
-    jsr166/ForkJoinPoolTest.java \
+    libcore/java/util/logging/OldMemoryHandlerTest.java \
 
 TEST_RESOURCES_SRCS = \
     lib/logging.properties \
