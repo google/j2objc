@@ -944,11 +944,6 @@ TESTS_USE_REFLECTION = \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     tests/api/java/lang/reflect/ProxyTest.java \
 
-# TODO(user): find out why they are failing when reflection is stripped.
-TESTS_TO_TRIAGE = \
-    libcore/java/util/logging/OldFileHandlerTest.java \
-    libcore/java/util/logging/OldMemoryHandlerTest.java \
-
 TEST_RESOURCES_SRCS = \
     lib/logging.properties \
     prefixes.properties
