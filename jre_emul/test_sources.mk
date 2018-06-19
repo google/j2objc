@@ -928,7 +928,6 @@ TESTS_USE_REFLECTION = \
     com/google/j2objc/ReflectionTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/reflect/ProxyTest.java \
-    jsr166/ForkJoinPoolTest.java \
     libcore/java/io/OldObjectOutputStreamTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/lang/reflect/ReflectionTest.java \

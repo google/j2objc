@@ -6,6 +6,7 @@
 
 package java.util.concurrent;
 
+import com.google.j2objc.ReflectionStrippedError;
 import com.google.j2objc.annotations.AutoreleasePool;
 
 import java.io.Serializable;
@@ -564,6 +565,9 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
                     wx.initCause(ex);
                     return wx;
                 }
+            } catch (ReflectionStrippedError ignore) {
+                // J2ObjC reflection-stripping change.
+                return new Throwable(ex);
             } catch (Exception ignore) {
             }
         }
