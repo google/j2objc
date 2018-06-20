@@ -498,6 +498,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/logging/Logger.java \
   java/util/logging/LoggingMXBean.java \
   java/util/logging/LoggingPermission.java \
+  java/util/logging/package-info.java \
   java/util/regex/MatchResult.java \
   java/util/regex/Matcher.java \
   java/util/regex/Pattern.java \
@@ -878,6 +879,7 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/Semaphore.java \
   java/util/concurrent/ThreadFactory.java \
   java/util/concurrent/TransferQueue.java \
+  java/util/concurrent/package-info.java \
   java/util/concurrent/atomic/AtomicIntegerArray.java \
   java/util/concurrent/atomic/AtomicIntegerFieldUpdater.java \
   java/util/concurrent/atomic/AtomicLongArray.java \
@@ -885,10 +887,12 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicMarkableReference.java \
   java/util/concurrent/atomic/AtomicReferenceArray.java \
   java/util/concurrent/atomic/AtomicStampedReference.java \
+  java/util/concurrent/atomic/package-info.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/ReadWriteLock.java \
-  java/util/concurrent/locks/ReentrantReadWriteLock.java
+  java/util/concurrent/locks/ReentrantReadWriteLock.java \
+  java/util/concurrent/locks/package-info.java
 
 JAVA_PRIVATE_SOURCES_CONCURRENT =
 
@@ -1374,7 +1378,8 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/x509/X509CertInfo.java \
   sun/security/x509/X509CRLEntryImpl.java \
   sun/security/x509/X509CRLImpl.java \
-  sun/security/x509/X509Key.java
+  sun/security/x509/X509Key.java \
+  sun/security/x509/package-info.java
 
 JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ServerSocketFactory.java \
