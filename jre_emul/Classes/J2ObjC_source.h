@@ -79,6 +79,24 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
   }
 }
 
+/*!
+ * Defines a mapping of a Java class name to its iOS equivalent. These are defined
+ * for any class that has an iOS name that doesn't follow the default camel-cased
+ * name mangling pattern.
+ */
+typedef const struct J2ObjcClassNameMapping {
+  NSString * const java_name;
+  NSString * const ios_name;
+} J2ObjcClassNameMapping;
+
+/*!
+ * Defines a mapping between Java and iOS class names, using a custom data segment.
+ */
+#define J2OBJC_CLASS_NAME_MAPPING(CLASS, JAVANAME, IOSNAME) \
+  static J2ObjcClassNameMapping CLASS##_mapping __attribute__((used,\
+  section("__DATA,__j2objc_aliases"))) = { JAVANAME, IOSNAME };
+
+
 FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size);
 FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal);
 

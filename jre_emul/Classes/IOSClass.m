@@ -74,8 +74,6 @@ J2OBJC_INITIALIZED_DEFN(IOSClass)
 
 @implementation IOSClass
 
-static NSDictionary *IOSClass_mappedClasses;
-
 // Primitive class instances.
 static IOSPrimitiveClass *IOSClass_byteClass;
 static IOSPrimitiveClass *IOSClass_charClass;
@@ -519,9 +517,31 @@ static NSString *JavaToIosName(NSString *javaName) {
   return [javaName stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
 }
 
+// The __j2objc_aliases custom data segment is built by the linker (along with these start
+// and end section symbols) from structures defined by the J2OBJC_CLASS_NAME_MAPPING macro.
+// This data defines mapping for Java class names to the actual iOS names, and so is only
+// necessary when loading classes by name.
+static NSDictionary *FetchClassMappings() {
+  extern J2ObjcClassNameMapping start_alias_section __asm("section$start$__DATA$__j2objc_aliases");
+  extern J2ObjcClassNameMapping end_alias_section  __asm("section$end$__DATA$__j2objc_aliases");
+  NSUInteger nMappings = (NSUInteger)(&end_alias_section - &start_alias_section);
+  NSMutableDictionary *mappedClasses = [[NSMutableDictionary alloc] initWithCapacity:nMappings];
+  for (long i = 0; i < nMappings; i++) {
+    J2ObjcClassNameMapping* mapping = (&start_alias_section) + i;
+    [mappedClasses setObject:mapping->ios_name forKey:mapping->java_name];
+  }
+  return mappedClasses;
+}
+
 static IOSClass *ClassForJavaName(NSString *name) {
+  static NSDictionary *mappedClasses;
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    mappedClasses = FetchClassMappings();
+  });
+
   // First check if this is a mapped name.
-  NSString *mappedName = [IOSClass_mappedClasses objectForKey:name];
+  NSString *mappedName = [mappedClasses objectForKey:name];
   if (mappedName) {
     return ClassForIosName(mappedName);
   }
@@ -535,7 +555,7 @@ static IOSClass *ClassForJavaName(NSString *name) {
       break;
     }
     NSString *prefix = [name substringToIndex:lastDollar];
-    NSString *mappedName = [IOSClass_mappedClasses objectForKey:prefix];
+    NSString *mappedName = [mappedClasses objectForKey:prefix];
     if (mappedName) {
       NSString *suffix = JavaToIosName([name substringFromIndex:lastDollar]);
       return ClassForIosName([mappedName stringByAppendingString:suffix]);
@@ -1176,15 +1196,6 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 
 + (void)initialize {
   if (self == [IOSClass class]) {
-    // Explicitly mapped classes are defined in Types.initializeTypeMap().
-    // If types are added to that method (it's rare) they need to be added here.
-    IOSClass_mappedClasses = [[NSDictionary alloc] initWithObjectsAndKeys:
-         @"NSObject",    @"java.lang.Object",
-         @"IOSClass",    @"java.lang.Class",
-         @"NSNumber",    @"java.lang.Number",
-         @"NSString",    @"java.lang.String",
-         @"NSCopying",   @"java.lang.Cloneable", nil];
-
     IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
     IOSClass_charClass = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
     IOSClass_doubleClass = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
@@ -1398,3 +1409,5 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)
+
+J2OBJC_CLASS_NAME_MAPPING(IOSClass, @"java.lang.Class", @"IOSClass")

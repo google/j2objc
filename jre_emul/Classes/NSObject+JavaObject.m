@@ -219,3 +219,5 @@ static void doWait(id obj, long long timeout) {
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)
+
+J2OBJC_CLASS_NAME_MAPPING(NSObject, @"java.lang.Object", @"NSObject")
