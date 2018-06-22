@@ -97,6 +97,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     printOuterDeclarations();
     printTypeLiteralImplementation();
+    printClassNameMapping();
   }
 
   private void printInitFlagDefinition() {
@@ -223,6 +224,16 @@ public class TypeImplementationGenerator extends TypeGenerator {
       newline();
       printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
           isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+    }
+  }
+
+  private void printClassNameMapping() {
+    String javaName = ElementUtil.getQualifiedName(typeElement);
+    String unprefixedName =
+        NameTable.camelCaseQualifiedName(javaName);
+    if (!unprefixedName.equals(typeName) && !options.stripClassNameMapping()) {
+      newline();
+      printf("J2OBJC_CLASS_NAME_MAPPING(%s, @\"%s\", @\"%s\")\n", typeName, javaName, typeName);
     }
   }
 

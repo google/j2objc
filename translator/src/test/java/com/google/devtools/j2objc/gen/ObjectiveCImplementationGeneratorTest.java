@@ -697,6 +697,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
+    assertTranslation(translation,
+        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, @\"foo.bar.mumble.Test\", @\"FBMTest\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -714,6 +716,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
+    assertTranslation(translation,
+        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, @\"foo.bar.mumble.Test\", @\"FBMTest\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -735,6 +739,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
+    assertTranslation(translation,
+        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, @\"foo.bar.mumble.Test\", @\"FBMTest\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -840,5 +846,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "package foo; public class Bar implements java.io.Serializable {}",
         "Bar", "foo/Bar.m");
     assertNotInTranslation(translation, "__metadata");
+  }
+
+  public void testClassMappingStripped() throws IOException {
+    options.setStripReflection(true);
+    String translation = translateSourceFile(
+        "@com.google.j2objc.annotations.ObjectiveCName(\"NSTest\") public class Test {}",
+        "Test", "Test.m");
+    assertNotInTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
+  }
+
+  public void testClassMappingNotStripped() throws IOException {
+    options.setStripReflection(true);
+    options.setStripClassNameMapping(false);
+    String translation = translateSourceFile(
+        "@com.google.j2objc.annotations.ObjectiveCName(\"NSTest\") public class Test {}",
+        "Test", "Test.m");
+    assertTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
   }
 }

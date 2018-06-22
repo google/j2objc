@@ -200,6 +200,9 @@ public class Options {
     // Generate metadata for enum constants.
     ENUM_CONSTANTS,
 
+    // Generate class name mapping.
+    CLASS_NAMES,
+
     // Generate all metadata.
     FULL;
   }
@@ -253,7 +256,7 @@ public class Options {
         usage("no @ file specified");
       }
       File f = new File(filename);
-      String fileArgs = Files.toString(f, fileUtil.getCharset());
+      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
       // Simple split on any whitespace, quoted values aren't supported.
       processArgs(fileArgs.split("\\s+"));
     }
@@ -382,6 +385,14 @@ public class Options {
             }
             case "-serializable": {
               includedMetadata.remove(MetadataSupport.SERIAL);
+              break;
+            }
+            case "class-names": {
+              includedMetadata.add(MetadataSupport.CLASS_NAMES);
+              break;
+            }
+            case "-class-names": {
+              includedMetadata.remove(MetadataSupport.CLASS_NAMES);
               break;
             }
             default: {
@@ -724,8 +735,9 @@ public class Options {
   public void setStripReflection(boolean b) {
     if (b) {
       includedMetadata.remove(MetadataSupport.FULL);
+      includedMetadata.remove(MetadataSupport.CLASS_NAMES);
     } else {
-      includedMetadata.add(MetadataSupport.FULL);
+      includedMetadata = EnumSet.allOf(MetadataSupport.class);
     }
   }
 
@@ -752,6 +764,19 @@ public class Options {
       includedMetadata.remove(MetadataSupport.SERIAL);
     } else {
       includedMetadata.add(MetadataSupport.SERIAL);
+    }
+  }
+
+  public boolean stripClassNameMapping() {
+    return !includedMetadata.contains(MetadataSupport.CLASS_NAMES);
+  }
+
+  @VisibleForTesting
+  public void setStripClassNameMapping(boolean b) {
+    if (b) {
+      includedMetadata.remove(MetadataSupport.CLASS_NAMES);
+    } else {
+      includedMetadata.add(MetadataSupport.CLASS_NAMES);
     }
   }
 
