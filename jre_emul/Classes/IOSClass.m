@@ -528,7 +528,8 @@ static NSDictionary *FetchClassMappings() {
   NSMutableDictionary *mappedClasses = [[NSMutableDictionary alloc] initWithCapacity:nMappings];
   for (long i = 0; i < nMappings; i++) {
     J2ObjcClassNameMapping* mapping = (&start_alias_section) + i;
-    [mappedClasses setObject:mapping->ios_name forKey:mapping->java_name];
+    [mappedClasses setObject:((NSString *)mapping->ios_name)
+                      forKey:((NSString *)mapping->java_name)];
   }
   return mappedClasses;
 }

@@ -84,9 +84,9 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
  * for any class that has an iOS name that doesn't follow the default camel-cased
  * name mangling pattern.
  */
-typedef const struct J2ObjcClassNameMapping {
-  NSString * const java_name;
-  NSString * const ios_name;
+typedef struct J2ObjcClassNameMapping {
+  void *java_name;
+  void *ios_name;
 } J2ObjcClassNameMapping;
 
 /*!
