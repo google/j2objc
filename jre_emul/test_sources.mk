@@ -926,7 +926,6 @@ TESTS_USE_REFLECTION = \
     com/google/j2objc/ClassTest.java \
     com/google/j2objc/FieldTest.java \
     com/google/j2objc/ReflectionTest.java \
-    com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/reflect/ProxyTest.java \
     libcore/java/io/OldObjectOutputStreamTest.java \
     libcore/java/lang/CharacterTest.java \

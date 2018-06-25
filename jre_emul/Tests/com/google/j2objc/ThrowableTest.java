@@ -116,8 +116,10 @@ public class ThrowableTest extends TestCase {
   }
 
   public void testThrowableToStringFormat() {
-    assertEquals("java.lang.Throwable", new Throwable().toString());
-    assertEquals("java.lang.Throwable: oops", new Throwable("oops").toString());
+    String regex = "[Jj]ava\\.?[Ll]ang\\.?Throwable";
+    assertTrue(new Throwable().toString().matches(regex));
+    regex += ": oops";
+    assertTrue(new Throwable("oops").toString().matches(regex));
   }
 
   public void testNSExceptionDescriptionUnchanged() {
