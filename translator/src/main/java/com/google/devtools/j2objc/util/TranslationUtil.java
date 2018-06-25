@@ -123,9 +123,6 @@ public final class TranslationUtil {
     if (isJUnitTestClass(type)) {
       return true;
     }
-    if (needsSerializationReflection(type)) {
-      return true;
-    }
     PackageElement packageElement = ElementUtil.getPackage(type);
     ReflectionSupport.Level level = null;
     while (type != null) {
@@ -146,15 +143,6 @@ public final class TranslationUtil {
       return level == ReflectionSupport.Level.FULL;
     } else {
       return !options.stripReflection();
-    }
-  }
-
-  private boolean needsSerializationReflection(TypeElement type) {
-    if (options.stripSerializedClassReflection() || ElementUtil.isPackageInfo(type)) {
-      return false;
-    } else {
-      TypeElement serializable = typeUtil.resolveJavaType("java.io.Serializable");
-      return typeUtil.isAssignable(type.asType(), serializable.asType());
     }
   }
 

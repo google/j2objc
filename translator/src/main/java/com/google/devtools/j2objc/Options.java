@@ -194,9 +194,6 @@ public class Options {
    * What reflection support should be generated, if any.
    */
   public enum MetadataSupport {
-    // Generate metadata for classes that implement java.io.Serializable.
-    SERIAL,
-
     // Generate metadata for enum constants.
     ENUM_CONSTANTS,
 
@@ -377,14 +374,6 @@ public class Options {
             }
             case "-enum-constants": {
               includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
-              break;
-            }
-            case "serializable": {
-              includedMetadata.add(MetadataSupport.SERIAL);
-              break;
-            }
-            case "-serializable": {
-              includedMetadata.remove(MetadataSupport.SERIAL);
               break;
             }
             case "class-names": {
@@ -751,19 +740,6 @@ public class Options {
       includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
     } else {
       includedMetadata.add(MetadataSupport.ENUM_CONSTANTS);
-    }
-  }
-
-  public boolean stripSerializedClassReflection() {
-    return !includedMetadata.contains(MetadataSupport.SERIAL);
-  }
-
-  @VisibleForTesting
-  public void setStripSerializedClassReflection(boolean b) {
-    if (b) {
-      includedMetadata.remove(MetadataSupport.SERIAL);
-    } else {
-      includedMetadata.add(MetadataSupport.SERIAL);
     }
   }
 
