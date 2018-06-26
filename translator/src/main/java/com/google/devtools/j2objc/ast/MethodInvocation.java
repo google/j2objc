@@ -113,6 +113,11 @@ public class MethodInvocation extends Expression {
     return this;
   }
 
+  public MethodInvocation setArguments(List<Expression> args) {
+    arguments.replaceAll(args);
+    return this;
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {

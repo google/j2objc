@@ -182,7 +182,7 @@ public class ClassFileConverter {
     return node;
   }
 
-  private Name convertName(Symbol symbol) {
+  static Name convertName(Symbol symbol) {
     if (symbol.owner == null || symbol.owner.name.isEmpty()) {
       return new SimpleName(symbol);
     }

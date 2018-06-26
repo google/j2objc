@@ -89,6 +89,18 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualSignatureSrcClassfile(type, source);
   }
 
+  public void testHelloClass() throws IOException {
+    String source = String.join("\n",
+        "class Hello {",
+        "  public static void main(String... args) {",
+        // Use fully-qualified name since classfile types are always fully-qualified.
+        "    java.lang.System.out.println(\"hello, world\");",
+        "  }",
+        "}"
+    );
+    assertEqualASTSrcClassfile("Hello", source);
+  }
+
 //  public void testMethodClass() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
