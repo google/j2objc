@@ -43,7 +43,8 @@ public class KytheIndexingMetadata {
     }
 
     private String toJson() {
-      return String.format("{\"corpus\":\"%s\",\"path\":\"%s\"}", corpus, path);
+      return String.format(
+          "{\"corpus\":\"%s\",\"path\":\"%s\",\"language\":\"java\"}", corpus, path);
     }
   }
 
