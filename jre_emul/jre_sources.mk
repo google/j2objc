@@ -509,6 +509,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/stream/DoubleStream.java \
   java/util/stream/IntStream.java \
   java/util/stream/LongStream.java \
+  java/util/stream/Stream.java \
   java/util/stream/Streams.java \
   java/util/stream/StreamSupport.java \
   javax/annotation/PostConstruct.java \
@@ -842,8 +843,7 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/logging/MemoryHandler.java \
   java/util/logging/SimpleFormatter.java \
   java/util/logging/StreamHandler.java \
-  java/util/logging/XMLFormatter.java \
-  java/util/stream/Stream.java
+  java/util/logging/XMLFormatter.java
 
 JAVA_PRIVATE_SOURCES_UTIL = \
   java/util/stream/TerminalSink.java
