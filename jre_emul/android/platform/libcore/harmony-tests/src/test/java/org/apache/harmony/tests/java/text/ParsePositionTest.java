@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.tests.java.text;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.text.ParsePosition;
 
 public class ParsePositionTest extends junit.framework.TestCase {
@@ -97,9 +98,8 @@ public class ParsePositionTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.text.ParsePosition.toString()
 		// J2ObjC reflection-stripping change.
-		assertTrue("toString failed.", 
-				pp.toString().matches("[Jj]ava\\.?[Tt]ext\\.?ParsePosition"
-						+ "\\[index=2147483647,errorIndex=\\-1\\]"));
+		assertTrue("toString failed.", ReflectionUtil.matchClassNamePrefix(pp.toString(),
+				"java.text.ParsePosition[index=2147483647,errorIndex=-1]"));
 	}
 
 	/**

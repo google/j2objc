@@ -526,6 +526,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/nio/charset/IconvCharsetDecoder.java \
   com/google/j2objc/nio/charset/IconvCharsetEncoder.java \
   com/google/j2objc/util/NativeTimeZone.java \
+  com/google/j2objc/util/ReflectionUtil.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
   java/io/EmulatedFields.java \

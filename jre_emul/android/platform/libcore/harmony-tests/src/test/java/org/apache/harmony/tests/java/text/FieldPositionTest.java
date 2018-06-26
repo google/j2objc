@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.tests.java.text;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 
@@ -220,19 +221,19 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		fpos.setBeginIndex(2);
 		fpos.setEndIndex(3);
 		// J2ObjC reflection-stripping change.
-		String regex = "[Jj]ava\\.?[Tt]ext\\.?FieldPosition"
-				+ "\\[field=1,attribute=null,beginIndex=2,endIndex=3\\]";
-		assertTrue("ToString returned the wrong value:", fpos.toString().matches(regex));
+		String expected = "java.text.FieldPosition"
+				+ "[field=1,attribute=null,beginIndex=2,endIndex=3]";
+		assertTrue("ToString returned the wrong value:",
+				ReflectionUtil.matchClassNamePrefix(fpos.toString(), expected));
 
 		FieldPosition fpos2 = new FieldPosition(DateFormat.Field.ERA);
 		fpos2.setBeginIndex(4);
 		fpos2.setEndIndex(5);
 		// J2ObjC reflection-stripping change.
-    String fieldRegex = DateFormat.Field.ERA.toString()
-        .replace("(", "\\(").replace(")", "\\)").replace("$", "\\$");
-		regex = "[Jj]ava\\.?[Tt]ext\\.?FieldPosition\\[field=\\-1,attribute="
-				+ fieldRegex + ",beginIndex=4,endIndex=5\\]";
-		assertTrue("ToString returned the wrong value:", fpos2.toString().matches(regex));
+		expected = "java.text.FieldPosition[field=-1,attribute="
+				+ DateFormat.Field.ERA.toString() + ",beginIndex=4,endIndex=5]";
+		assertTrue("ToString returned the wrong value:",
+				ReflectionUtil.matchClassNamePrefix(fpos2.toString(), expected));
 	}
 
 	/**

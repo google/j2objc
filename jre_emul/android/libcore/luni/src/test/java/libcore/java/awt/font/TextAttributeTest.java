@@ -16,6 +16,7 @@
 
 package libcore.java.awt.font;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.awt.font.TextAttribute;
 import junit.framework.TestCase;
 
@@ -23,12 +24,12 @@ public class TextAttributeTest extends TestCase {
 
     public void testAttributeNames() {
         // J2ObjC reflection-stripping change.
-        assertTrue(TextAttribute.KERNING.toString().matches(
-                "[Jj]ava\\.?[Aa]wt\\.?[Ff]ont\\.?TextAttribute\\(kerning\\)"));
-        assertTrue(TextAttribute.LIGATURES.toString().matches(
-                "[Jj]ava\\.?[Aa]wt\\.?[Ff]ont\\.?TextAttribute\\(ligatures\\)"));
-        assertTrue(TextAttribute.TRACKING.toString().matches(
-                "[Jj]ava\\.?[Aa]wt\\.?[Ff]ont\\.?TextAttribute\\(tracking\\)"));
+        assertTrue(ReflectionUtil.matchClassNamePrefix(TextAttribute.KERNING.toString(),
+                "java.awt.font.TextAttribute(kerning)"));
+        assertTrue(ReflectionUtil.matchClassNamePrefix(TextAttribute.LIGATURES.toString(),
+                "java.awt.font.TextAttribute(ligatures)"));
+        assertTrue(ReflectionUtil.matchClassNamePrefix(TextAttribute.TRACKING.toString(),
+                "java.awt.font.TextAttribute(tracking)"));
     }
 
     public void testAttributeValues() {

@@ -39,6 +39,7 @@
 
 package java.text;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -2251,7 +2252,8 @@ public class SimpleDateFormat extends DateFormat {
 
     private boolean isGregorianCalendar() {
         // J2ObjC reflection-stripping change.
-        return calendar.getClass().getName().matches("[Jj]ava\\.?[Uu]til\\.?GregorianCalendar");
+        return ReflectionUtil.matchClassNamePrefix(calendar.getClass().getName(),
+                                                   "java.util.GregorianCalendar");
     }
 
     /**

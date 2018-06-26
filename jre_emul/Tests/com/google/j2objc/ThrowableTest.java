@@ -16,6 +16,7 @@
 
 package com.google.j2objc;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -116,10 +117,10 @@ public class ThrowableTest extends TestCase {
   }
 
   public void testThrowableToStringFormat() {
-    String regex = "[Jj]ava\\.?[Ll]ang\\.?Throwable";
-    assertTrue(new Throwable().toString().matches(regex));
-    regex += ": oops";
-    assertTrue(new Throwable("oops").toString().matches(regex));
+    String expected = "java.lang.Throwable";
+    assertTrue(ReflectionUtil.matchClassNamePrefix(new Throwable().toString(), expected));
+    expected += ": oops";
+    assertTrue(ReflectionUtil.matchClassNamePrefix(new Throwable("oops").toString(), expected));
   }
 
   public void testNSExceptionDescriptionUnchanged() {
