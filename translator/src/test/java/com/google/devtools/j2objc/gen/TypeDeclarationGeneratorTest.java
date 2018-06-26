@@ -578,4 +578,30 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
       fail("No mapping found for zebra(int, int) method");
     }
   }
+
+  // Verify that generated source mappings are correct for constructors.
+  public void testConstructorMapping() throws IOException {
+    String source = "class MyClass { public MyClass() {} }";
+    CompilationUnit compilationUnit = translateType("MyClass", source);
+    GeneratedType generatedType =
+        GeneratedType.fromTypeDeclaration(compilationUnit.getTypes().get(0));
+    GeneratedSourceMappings mappings = generatedType.getGeneratedSourceMappings();
+
+    boolean foundType = false;
+    for (GeneratedSourceMappings.Mapping mapping : mappings.getMappings()) {
+      if (mapping.getIdentifier().equals("<init>")) {
+        foundType = true;
+        assertEquals("MyClass", source.substring(mapping.getSourceBegin(), mapping.getSourceEnd()));
+        assertEquals(
+            "init",
+            generatedType
+                .getPublicDeclarationCode()
+                .substring(mapping.getTargetBegin(), mapping.getTargetEnd()));
+      }
+    }
+
+    if (!foundType) {
+      fail("No mapping found for MyClass() constructor");
+    }
+  }
 }

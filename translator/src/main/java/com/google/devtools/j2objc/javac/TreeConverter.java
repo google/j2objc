@@ -882,8 +882,13 @@ public class TreeConverter {
 
     // JCMethodDecl's preferred diagnostic position is the beginning of the method name.
     int methodStartPosition = node.pos().getPreferredPosition();
+
+    int length = ElementUtil.isConstructor(node.sym)
+        ? node.sym.toString().indexOf('(')
+        : node.name.length();
+
     Name name = Name.newName(null /* qualifier */, node.sym);
-    name.setPosition(new SourcePosition(methodStartPosition, node.name.length()));
+    name.setPosition(new SourcePosition(methodStartPosition, length));
 
     convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     for (JCTree.JCVariableDecl param : node.getParameters()) {
