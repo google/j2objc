@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 
 import java.util.Set;
@@ -29,7 +30,7 @@ import java.util.Set;
  */
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
 
-  private final String suffix;
+  private final Options options;
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -41,16 +42,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private ObjectiveCImplementationGenerator(GenerationUnit unit) {
     super(unit, unit.options().emitLineDirectives());
-    suffix = unit.options().getLanguage().suffix();
+    options = unit.options();
   }
 
   @Override
   protected String getSuffix() {
-    return suffix;
+    return options.getLanguage().suffix();
   }
 
   public void generate() {
-    print(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
+    print(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
     printImports();
     printIgnoreIncompletePragmas();
     pushIgnoreDeprecatedDeclarationsPragma();

@@ -85,6 +85,7 @@ public class Options {
   private String globalCombinedOutput = null;
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
+  private boolean emitSourceHeaders = true;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -162,17 +163,26 @@ public class Options {
    * What languages can be generated.
    */
   public static enum OutputLanguageOption {
-    OBJECTIVE_C(".m"),
-    OBJECTIVE_CPLUSPLUS(".mm");
+    OBJECTIVE_C(".m", ".h"),
+    OBJECTIVE_CPLUSPLUS(".mm", ".h"),
+
+    // Test-only language option, for A/B test comparisons.
+    TEST_OBJECTIVE_C(".m2", ".h2");
 
     private final String suffix;
+    private final String headerSuffix;
 
-    OutputLanguageOption(String suffix) {
+    OutputLanguageOption(String suffix, String headerSuffix) {
       this.suffix = suffix;
+      this.headerSuffix = headerSuffix;
     }
 
     public String suffix() {
       return suffix;
+    }
+
+    public String headerSuffix() {
+      return headerSuffix;
     }
   }
 
@@ -428,6 +438,8 @@ public class Options {
         annotationsJar = getArgValue(args, arg);
       } else if (arg.equals("-Xkythe-mapping")) {
         emitKytheMappings = true;
+      } else if (arg.equals("-Xno-source-headers")) {
+        emitSourceHeaders = false;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -871,6 +883,15 @@ public class Options {
   @VisibleForTesting
   public void setEmitKytheMappings(boolean b) {
     emitKytheMappings = b;
+  }
+
+  public boolean emitSourceHeaders() {
+    return emitSourceHeaders;
+  }
+
+  @VisibleForTesting
+  public void setEmitSourceHeaders(boolean b) {
+    emitSourceHeaders = b;
   }
 
   // Unreleased experimental project.

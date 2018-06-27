@@ -236,6 +236,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       Expression expr = (Expression) target.getFirstChild().acceptVisitor(this, null);
       MethodInvocation newNode = new MethodInvocation()
           .setExecutablePair(new ExecutablePair(sym))
+          .setTypeMirror(sym.getReturnType())
           .setArguments(args)
           .setExpression(expr);
       return newNode;

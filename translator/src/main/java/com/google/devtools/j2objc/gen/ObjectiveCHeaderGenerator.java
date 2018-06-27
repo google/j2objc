@@ -20,6 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -32,6 +33,8 @@ import java.util.Set;
  * @author Tom Ball
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
+
+  private final Options options;
 
   // The prefix to use for preprocessor variable names. Derived from the path of
   // the generated file. For example if "my/pkg/Foo.h" is being generated the
@@ -48,15 +51,16 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected ObjectiveCHeaderGenerator(GenerationUnit unit) {
     super(unit, false);
     varPrefix = getVarPrefix(unit.getOutputPath());
+    options = unit.options();
   }
 
   @Override
   protected String getSuffix() {
-    return ".h";
+    return options.getLanguage().headerSuffix();
   }
 
   public final void generate() {
-    println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
+    println(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
     }

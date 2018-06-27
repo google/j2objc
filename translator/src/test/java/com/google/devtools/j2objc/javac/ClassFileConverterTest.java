@@ -37,7 +37,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "package foo.bar;",
         "interface Test {}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testMethodInterface() throws IOException {
@@ -48,7 +48,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  void hello();",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testMethodParamsInterface() throws IOException {
@@ -63,7 +63,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  boolean world(boolean a, int[]... b);",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testDefaultStaticInterface() throws IOException {
@@ -77,7 +77,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  default String bye(String a) { return a; }",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testEmptyClass() throws IOException {
@@ -86,7 +86,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "package foo.bar;",
         "class Test {}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testHelloClass() throws IOException {
@@ -98,54 +98,54 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile("Hello", source);
+    assertEqualSrcClassfile("Hello", source);
   }
 
-//  public void testMethodClass() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  String s;",
-//        "  int i, j, k;",
-//        "  void hello(String a) {}",
-//        "  boolean world(boolean a, int b, float c, double d,",
-//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
-//        "  boolean world(boolean a, int... b) { return a; }",
-//        "  boolean world(boolean a, int[]... b) { return a; }",
-//        "  Test(String s, int i, int j, int k) {",
-//        "    this.s = s;",
-//        "    this.i = i;",
-//        "    this.j = j;",
-//        "    this.k = k;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
-//
-//  public void testStaticMethodClass() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  static String s;",
-//        "  static int i, j, k;",
-//        "  static void hello(String a) {}",
-//        "  static boolean world(boolean a, int b, float c, double d,",
-//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
-//        "  static boolean world(boolean a, int... b) { return a; }",
-//        "  static boolean world(boolean a, int[]... b) { return a; }",
-//        "  Test(String s, int i, int j, int k) {",
-//        "    this.s = s;",
-//        "    this.i = i;",
-//        "    this.j = j;",
-//        "    this.k = k;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
+  public void testMethodClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  String s;",
+        "  int i, j, k;",
+        "  void hello(String a) {}",
+        "  boolean world(boolean a, int b, float c, double d,",
+        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  boolean world(boolean a, int... b) { return a; }",
+        "  boolean world(boolean a, int[]... b) { return a; }",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testStaticMethodClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  static String s;",
+        "  static int i, j, k;",
+        "  static void hello(String a) {}",
+        "  static boolean world(boolean a, int b, float c, double d,",
+        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  static boolean world(boolean a, int... b) { return a; }",
+        "  static boolean world(boolean a, int[]... b) { return a; }",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
 
   public void testEmptyAbstractClass() throws IOException {
     String type = "foo.bar.Test";
@@ -153,7 +153,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "package foo.bar;",
         "abstract class Test {}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
 //  public void testMethodAbstractClass() throws IOException {
@@ -258,7 +258,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  final String jj = \"Hello\";",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testFieldMethodModifiers() throws IOException {
@@ -279,7 +279,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  public static final int sfdm() { return 0; }",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
 //  public void testSimpleEnum() throws IOException {
@@ -516,7 +516,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  Integer skip();",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testExtendInterfaceParametrized() throws IOException {
@@ -530,7 +530,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  E skip();",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
 //  public void testExtendClass() throws IOException {
@@ -636,7 +636,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "      void boundedWildcardParam(Map<? extends S, ? super T> map) {}",
         "}"
     );
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testInterfaceMethod() throws IOException {
@@ -647,7 +647,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  int run();",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testMethodReturn() throws IOException {
@@ -658,7 +658,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  int run() { return 0; }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testPrimitiveExpressions() throws IOException {
@@ -679,7 +679,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  String getString() { return \"Hello\"; }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testNull() throws IOException {
@@ -690,7 +690,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  String returnNull() { return null; }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testLookupVars() throws IOException {
@@ -701,7 +701,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  int run(int hello) { return hello; }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testVarDecl() throws IOException {
@@ -720,7 +720,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testVarDeclInit() throws IOException {
@@ -739,7 +739,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testVarDeclString() throws IOException {
@@ -758,7 +758,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testVarDeclInitString() throws IOException {
@@ -777,7 +777,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testMultiVariableDeclAssign() throws IOException {
@@ -795,7 +795,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testAssignment() throws IOException {
@@ -820,7 +820,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testUnaryOperators() throws IOException {
@@ -861,7 +861,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testBinaryOperator() throws IOException {
@@ -891,7 +891,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testTernaryOperator() throws IOException {
@@ -934,7 +934,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testWrapperClasses() throws IOException {
@@ -953,7 +953,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testBasicArrays() throws IOException {
@@ -971,7 +971,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testMultidimensionalArrays() throws IOException {
@@ -992,7 +992,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testArrayInitializers() throws IOException {
@@ -1017,7 +1017,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testArraySubtyping() throws IOException {
@@ -1031,7 +1031,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testIf() throws IOException {
@@ -1048,7 +1048,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testElseIf() throws IOException {
@@ -1073,7 +1073,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testWhile() throws IOException {
@@ -1101,7 +1101,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testDoWhile() throws IOException {
@@ -1126,7 +1126,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testFor() throws IOException {
@@ -1165,7 +1165,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testForEach() throws IOException {
@@ -1189,7 +1189,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testNestedLoops() throws IOException {
@@ -1236,7 +1236,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 
 //  //TODO(user): run above nested loop test but with labeled outer loops
@@ -1249,7 +1249,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //        "  }",
 //        "}"
 //    );
-//    assertEqualASTSrcClassfile(type, source);
+//    assertEqualSrcClassfile(type, source);
 //  }
 //
 //  //TODO(user): may not be decompiled properly
@@ -1262,7 +1262,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //        "  }",
 //        "}"
 //    );
-//    assertEqualASTSrcClassfile(type, source);
+//    assertEqualSrcClassfile(type, source);
 //  }
 
   public void testThis() throws IOException {
@@ -1290,6 +1290,6 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
-    assertEqualASTSrcClassfile(type, source);
+    assertEqualSrcClassfile(type, source);
   }
 }

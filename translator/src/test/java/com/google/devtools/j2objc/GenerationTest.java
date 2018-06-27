@@ -461,16 +461,26 @@ public class GenerationTest extends TestCase {
   }
 
   /**
-   * Compiles Java source, as contained in a source file, and compares the parsed compilation units
-   * generated from the source and class files.
+   * Compiles Java source, as contained in a source file, and compares the generated Objective C
+   * from the source and class files.
    *
    * @param type the public type being declared
    * @param source the source code
    */
-  protected void assertEqualASTSrcClassfile(String type, String source) throws IOException {
-    CompilationUnit srcUnit = compileType(type, source);
-    CompilationUnit classfileUnit = compileAsClassFile(type, source);
-    assertEqualASTs(srcUnit, classfileUnit);
+  protected void assertEqualSrcClassfile(String type, String source) throws IOException {
+    options.setEmitSourceHeaders(false);
+    String fileRoot = type.replace('.', '/');
+    CompilationUnit srcUnit = translateType(type, source);
+    String srcHeader = generateFromUnit(srcUnit, fileRoot + ".h");
+    String srcImpl = getTranslatedFile(fileRoot + ".m");
+
+    options.setOutputLanguage(Options.OutputLanguageOption.TEST_OBJECTIVE_C);
+    CompilationUnit classfileUnit = compileAsClassFile(fileRoot, source);
+    TranslationProcessor.applyMutations(classfileUnit, deadCodeMap, TimeTracker.noop());
+    String clsHeader = generateFromUnit(classfileUnit, fileRoot + ".h2");
+    String clsImpl = getTranslatedFile(fileRoot + ".m2");
+    assertEquals(srcHeader, clsHeader);
+    assertEquals(srcImpl, clsImpl);
   }
 
   /**
@@ -587,7 +597,7 @@ public class GenerationTest extends TestCase {
   protected String addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
-    Files.write(source, file, options.fileUtil().getCharset());
+    Files.asCharSink(file, options.fileUtil().getCharset()).write(source);
     return file.getPath();
   }
 
@@ -607,7 +617,7 @@ public class GenerationTest extends TestCase {
   protected String getTranslatedFile(String fileName) throws IOException {
     File f = new File(tempDir, fileName);
     assertTrue(fileName + " not generated", f.exists());
-    return Files.toString(f, options.fileUtil().getCharset());
+    return Files.asCharSource(f, options.fileUtil().getCharset()).read();
   }
 
   /**

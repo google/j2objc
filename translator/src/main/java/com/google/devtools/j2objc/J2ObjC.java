@@ -53,8 +53,10 @@ public class J2ObjC {
     }
   }
 
-  public static String getFileHeader(String sourceFileName) {
-    return UnicodeUtils.format(Options.getFileHeader(), sourceFileName);
+  public static String getFileHeader(Options options, String sourceFileName) {
+    return options.emitSourceHeaders()
+        ? UnicodeUtils.format(Options.getFileHeader(), sourceFileName)
+        : "";
   }
 
   private static void checkErrors(boolean treatWarningsAsErrors) {
