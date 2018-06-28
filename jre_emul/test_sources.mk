@@ -938,6 +938,9 @@ TESTS_USE_REFLECTION = \
     org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
+    org/apache/harmony/security/tests/java/security/KeyTest.java \
+    org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
+    org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
     org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     tests/api/java/lang/reflect/ProxyTest.java \

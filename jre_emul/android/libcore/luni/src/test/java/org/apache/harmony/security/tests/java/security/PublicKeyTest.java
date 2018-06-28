@@ -22,6 +22,8 @@
 
 package org.apache.harmony.security.tests.java.security;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.security.PublicKey;
 
 import junit.framework.TestCase;
@@ -52,7 +54,8 @@ public class PublicKeyTest extends TestCase {
             return new byte[0];
         }
         public long getSerVerUID() {
-            return serialVersionUID;
+            // J2ObjC reflection-stripping change.
+            return ReflectionUtil.getSerialVersionUID(PublicKey.class);
         }
     }
 }

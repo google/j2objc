@@ -17,6 +17,7 @@
 
 package com.google.j2objc.util;
 
+import java.io.Serializable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,5 +42,23 @@ public final class ReflectionUtil {
             .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
             .collect(Collectors.joining());
     return actual.equals(expected);
+  }
+
+  /**
+   * Transpiled code that directly acccess the serialVersionUID field when reflection is stripped
+   * won't compile because this field is also stripped.
+   *
+   * <p>Accessing it via reflection allows the non-stripped code to keep the same behavior and
+   * allows the stripped code to compile. Note that in the later case, a ReflectionStrippedError
+   * will be thrown, this is OK because serialization code is not supported when reflection is
+   * stripped.
+   */
+  public static long getSerialVersionUID(Class<? extends Serializable> clazz) {
+    try {
+      return clazz.getField("serialVersionUID").getLong(null);
+    } catch (NoSuchFieldException | IllegalAccessException ex) {
+      // ignored.
+      return 0;
+    }
   }
 }
