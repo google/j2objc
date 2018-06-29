@@ -939,7 +939,8 @@ public class StatementGenerator extends UnitTreeVisitor {
     List<VariableDeclarationFragment> vars = node.getFragments();
     assert !vars.isEmpty();
     VariableElement element = vars.get(0).getVariableElement();
-    if (ElementUtil.suppressesWarning("unused", element)) {
+    if (ElementUtil.suppressesWarning("unused", element)
+        || ElementUtil.getName(element).startsWith("unused")) {
       buffer.append("__unused ");
     }
     String objcType = nameTable.getObjCType(element);

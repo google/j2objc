@@ -1584,6 +1584,12 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "__unused jint foo;");
   }
 
+  public void testSuppressedUnusedVariableByName() throws IOException {
+    String translation =
+        translateSourceFile("class Test { void test() { int unusedFoo; }}", "Test", "Test.m");
+    assertTranslation(translation, "__unused jint unusedFoo;");
+  }
+
   // Verify that empty statements line offset to owning statement is preserved.
   public void testEmptyStatementFormatting() throws IOException {
     String translation = translateSourceFile(
