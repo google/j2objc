@@ -143,7 +143,8 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
   printer->Outdent();
   printer->Print("};\n");
 
-  printer->Print("\n"
+  printer->Print(
+      "\n"
       "@interface $classname$ :"
       " JavaLangEnum<ComGoogleProtobufInternal_EnumLite> {\n"
       " @private\n"
@@ -165,29 +166,28 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
       "/*! INTERNAL ONLY - Use enum accessors declared below. */\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_values_[];\n"
       "\n"
-      "FOUNDATION_EXPORT IOSObjectArray *$classname$_values();\n"
+      "FOUNDATION_EXPORT IOSObjectArray *$classname$_values(void);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithNSString_("
-          "NSString *name);\n"
+      "NSString *name);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithInt_("
-          "jint value);\n"
+      "jint value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
-          "jint value);\n"
+      "jint value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
-          "NSUInteger ordinal);\n\n",
+      "NSUInteger ordinal);\n\n",
       "classname", CaseClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     printer->Print(
-        "inline $classname$ *$classname$_get_$name$();\n"
+        "inline $classname$ *$classname$_get_$name$(void);\n"
         "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
-        "classname", CaseClassName(descriptor_),
-        "name", CaseValueName(descriptor_->field(i)));
+        "classname", CaseClassName(descriptor_), "name",
+        CaseValueName(descriptor_->field(i)));
   }
   printer->Print(
-      "inline $classname$ *$classname$_get_$name$();\n"
+      "inline $classname$ *$classname$_get_$name$(void);\n"
       "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
-      "classname", CaseClassName(descriptor_),
-      "name", NotSetName(descriptor_));
+      "classname", CaseClassName(descriptor_), "name", NotSetName(descriptor_));
 }
 
 const int kMaxRowChars = 80;
@@ -238,10 +238,11 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
     row_chars += added_chars;
   }
 
-  printer->Print("\n"
+  printer->Print(
+      "\n"
       "    };\n"
       "    CGPInitializeOneofCaseEnum("
-          "self, $count$, $classname$_values_, names, int_values);\n"
+      "self, $count$, $classname$_values_, names, int_values);\n"
       "    J2OBJC_SET_INITIALIZED($classname$)\n"
       "  }\n"
       "}\n"
@@ -270,10 +271,10 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
-      "IOSObjectArray *$classname$_values() {\n"
+      "IOSObjectArray *$classname$_values(void) {\n"
       "  $classname$_initialize();"
       "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
-          " count:$count$ type:$classname$_class_()];\n"
+      " count:$count$ type:$classname$_class_()];\n"
       "}\n"
       "\n"
       "$classname$ *$classname$_valueOfWithNSString_(NSString *name) {\n"
@@ -285,7 +286,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "    }\n"
       "  }\n"
       "  @throw create_JavaLangIllegalArgumentException_initWithNSString_("
-          "name);\n"
+      "name);\n"
       "}\n"
       "\n"
       "$classname$ *$classname$_valueOfWithInt_(jint value) {\n"
@@ -310,8 +311,8 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "  }\n"
       "  return $classname$_values_[ordinal];\n"
       "}\n",
-      "classname", CaseClassName(descriptor_),
-      "count", SimpleItoa(descriptor_->field_count() + 1));
+      "classname", CaseClassName(descriptor_), "count",
+      SimpleItoa(descriptor_->field_count() + 1));
 }
 
 void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
