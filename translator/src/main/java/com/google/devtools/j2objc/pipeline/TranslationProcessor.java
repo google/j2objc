@@ -51,6 +51,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.PackageInfoRewriter;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
+import com.google.devtools.j2objc.translate.SerializationStripper;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriter;
 import com.google.devtools.j2objc.translate.SwitchRewriter;
@@ -144,6 +145,10 @@ public class TranslationProcessor extends FileProcessor {
     // Update code that has GWT references.
     new GwtConverter(unit).run();
     ticker.tick("GwtConverter");
+
+    // Remove serialization related members if needed.
+    new SerializationStripper(unit).run();
+    ticker.tick("SerializationStripper");
 
     // Add default equals/hashCode methods to Number subclasses, if necessary.
     new NumberMethodRewriter(unit).run();
