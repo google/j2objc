@@ -156,76 +156,76 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualSrcClassfile(type, source);
   }
 
-//  public void testMethodAbstractClass() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "abstract class Test {",
-//        "  String s;",
-//        "  int i, j, k;",
-//        "  void hello(String a) {}",
-//        "  boolean world(boolean a, int b, float c, double d,",
-//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
-//        "  abstract boolean world(boolean a, int... b);",
-//        "  abstract boolean world(boolean a, int[]... b);",
-//        "  Test(String s, int i, int j, int k) {",
-//        "    this.s = s;",
-//        "    this.i = i;",
-//        "    this.j = j;",
-//        "    this.k = k;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
-//
-//  public void testStaticMethodAbstractClass() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "abstract class Test {",
-//        "  static String s;",
-//        "  static int i, j, k;",
-//        "  void hello(String a) {}",
-//        "  boolean world(boolean a, int b, float c, double d,",
-//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
-//        "  static boolean world(boolean a, int... b) { return a; }",
-//        "  static boolean world(boolean a, int[]... b) { return a; }",
-//        "  Test(String s, int i, int j, int k) {",
-//        "    this.s = s;",
-//        "    this.i = i;",
-//        "    this.j = j;",
-//        "    this.k = k;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
-//
-//  public void testMixedAbstractClass() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "abstract class Test {",
-//        "  static String s;",
-//        "  int i, j, k;",
-//        "  static void hello(String a) {}",
-//        "  static boolean world(boolean a, int b, float c, double d,",
-//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
-//        "  abstract boolean world(boolean a, int... b);",
-//        "  boolean world(boolean a, int[]... b) { return a; }",
-//        "  Test() {",
-//        "  }",
-//        "  Test(String s, int i, int j, int k) {",
-//        "    this.s = s;",
-//        "    this.i = i;",
-//        "    this.j = j;",
-//        "    this.k = k;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
+ public void testMethodAbstractClass() throws IOException {
+   String type = "foo.bar.Test";
+   String source = String.join("\n",
+       "package foo.bar;",
+       "abstract class Test {",
+       "  String s;",
+       "  int i, j, k;",
+       "  void hello(String a) {}",
+       "  boolean world(boolean a, int b, float c, double d,",
+       "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+       "  abstract boolean world(boolean a, int... b);",
+       "  abstract boolean world(boolean a, int[]... b);",
+       "  Test(String s, int i, int j, int k) {",
+       "    this.s = s;",
+       "    this.i = i;",
+       "    this.j = j;",
+       "    this.k = k;",
+       "  }",
+       "}"
+   );
+   assertEqualSrcClassfile(type, source);
+ }
+
+ public void testStaticMethodAbstractClass() throws IOException {
+   String type = "foo.bar.Test";
+   String source = String.join("\n",
+       "package foo.bar;",
+       "abstract class Test {",
+       "  static String s;",
+       "  static int i, j, k;",
+       "  void hello(String a) {}",
+       "  boolean world(boolean a, int b, float c, double d,",
+       "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+       "  static boolean world(boolean a, int... b) { return a; }",
+       "  static boolean world(boolean a, int[]... b) { return a; }",
+       "  Test(String s, int i, int j, int k) {",
+       "    this.s = s;",
+       "    this.i = i;",
+       "    this.j = j;",
+       "    this.k = k;",
+       "  }",
+       "}"
+   );
+   assertEqualSrcClassfile(type, source);
+ }
+
+ public void testMixedAbstractClass() throws IOException {
+   String type = "foo.bar.Test";
+   String source = String.join("\n",
+       "package foo.bar;",
+       "abstract class Test {",
+       "  static String s;",
+       "  int i, j, k;",
+       "  static void hello(String a) {}",
+       "  static boolean world(boolean a, int b, float c, double d,",
+       "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+       "  abstract boolean world(boolean a, int... b);",
+       "  boolean world(boolean a, int[]... b) { return a; }",
+       "  Test() {",
+       "  }",
+       "  Test(String s, int i, int j, int k) {",
+       "    this.s = s;",
+       "    this.i = i;",
+       "    this.j = j;",
+       "    this.k = k;",
+       "  }",
+       "}"
+   );
+   assertEqualSrcClassfile(type, source);
+ }
 
   public void testConstantFields() throws IOException {
     String type = "foo.bar.Test";
@@ -335,22 +335,22 @@ public class ClassFileConverterTest extends GenerationTest {
 //    assertEqualSignatureSrcClassfile(type, source);
 //  }
 //
-//  public void testPredefinedAnnotations() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "class Test {",
-//        "  /**",
-//        "   * @deprecated",
-//        "   * integer overflow concern",
-//        "   */",
-//        "  @Deprecated",
-//        "  int find_middle(int a, int b) { return (a + b)/2; }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
-//
+ public void testPredefinedAnnotations() throws IOException {
+   String type = "foo.bar.Test";
+   String source = String.join("\n",
+       "package foo.bar;",
+       "class Test {",
+       "  /**",
+       "   * @deprecated",
+       "   * integer overflow concern",
+       "   */",
+       "  @Deprecated",
+       "  int find_middle(int a, int b) { return (a + b)/2; }",
+       "}"
+   );
+   assertEqualSrcClassfile(type, source);
+ }
+
 //  public void testSingleMemberAnnotations() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
