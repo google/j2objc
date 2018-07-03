@@ -729,6 +729,7 @@ public final class TypeUtil {
       case INT:
       case LONG:
       case SHORT:
+      case TYPEVAR:
       case VOID:
         return getName(t);
       default:

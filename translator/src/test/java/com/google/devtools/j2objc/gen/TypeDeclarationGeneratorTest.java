@@ -148,16 +148,19 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   public void testProperties() throws IOException {
     String source =
         "import com.google.j2objc.annotations.Property; "
-        + "public class FooBar {"
-        + "  @Property(\"readonly, nonatomic\") private int fieldBar, fieldBaz;"
-        + "  @Property(\"readwrite\") private String fieldCopy;"
-        + "  @Property private boolean fieldBool;"
-        + "  @Property(\"nonatomic, readonly, weak\") private int fieldReorder;"
-        + "  public int getFieldBaz() { return 1; }"
-        + "  public void setFieldNonAtomic(int value) { }"
-        + "  public void setFieldBaz(int value, int option) { }"
-        + "  public boolean isFieldBool() { return fieldBool; }"
-        + "}";
+            + "public class FooBar<T extends Throwable> {"
+            + "  @Property(\"readonly, nonatomic\") private int fieldBar, fieldBaz;"
+            + "  @Property(\"readwrite\") private String fieldCopy;"
+            + "  @Property private boolean fieldBool;"
+            + "  @Property(\"nonatomic, readonly, weak\") private int fieldReorder;"
+            + "  @Property T aGenericProperty;"
+            + "  public int getFieldBaz() { return 1; }"
+            + "  public void setFieldNonAtomic(int value) { }"
+            + "  public void setFieldBaz(int value, int option) { }"
+            + "  public boolean isFieldBool() { return fieldBool; }"
+            + "  public T getAGenericProperty() { return aGenericProperty; } "
+            + "  public void setAGenericProperty(T value) { }"
+            + "}";
     String translation = translateSourceFile(source, "FooBar", "FooBar.h");
     assertTranslation(translation, "@property (readonly, nonatomic) jint fieldBar;");
 
@@ -176,6 +179,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // Reorder property attributes and pass setter through.
     assertTranslation(translation,
         "@property (weak, readonly, nonatomic) jint fieldReorder;");
+
+    // Test generic property.
+    assertTranslation(
+        translation,
+        "@property (nonatomic, getter=getAGenericProperty, "
+            + "setter=setAGenericPropertyWithJavaLangThrowable:) "
+            + "JavaLangThrowable *aGenericProperty;");
   }
 
   public void testSynchronizedPropertyGetter() throws IOException {
