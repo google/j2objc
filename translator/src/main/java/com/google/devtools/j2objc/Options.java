@@ -65,7 +65,8 @@ public class Options {
   private boolean segmentedHeaders = true;
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
-  private EnumSet<MetadataSupport> includedMetadata = EnumSet.allOf(MetadataSupport.class);
+  private EnumSet<MetadataSupport> includedMetadata =
+      EnumSet.of(MetadataSupport.FULL, MetadataSupport.ENUM_CONSTANTS);
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;

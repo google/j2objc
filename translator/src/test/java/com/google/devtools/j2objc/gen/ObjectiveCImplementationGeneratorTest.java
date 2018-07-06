@@ -684,6 +684,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoPrefixAnnotation() throws IOException {
+    options.setStripClassNameMapping(false);
     addSourcesToSourcepaths();
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
@@ -703,6 +704,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoPreprocessing() throws IOException {
+    options.setStripClassNameMapping(false);
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
         + "package foo.bar.mumble;\n"
@@ -722,6 +724,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoOnClasspath() throws IOException {
+    options.setStripClassNameMapping(false);
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
         + "package foo.bar.mumble;\n"
