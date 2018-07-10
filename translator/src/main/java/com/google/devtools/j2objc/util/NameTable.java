@@ -673,4 +673,10 @@ public class NameTable {
   public String getPrefix(PackageElement packageElement) {
     return prefixMap.getPrefix(packageElement);
   }
+
+  /** Ignores the ObjectiveCName annotation. */
+  public String getDefaultObjectiveCName(TypeElement element) {
+    String binaryName = elementUtil.getBinaryName(element);
+    return camelCaseQualifiedName(binaryName).replace('$', '_');
+  }
 }

@@ -54,6 +54,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   // Convenient fields for use by subclasses.
   protected final AbstractTypeDeclaration typeNode;
+  protected final ElementUtil elementUtil;
   protected final TypeElement typeElement;
   protected final CompilationUnit compilationUnit;
   protected final TranslationEnvironment env;
@@ -71,6 +72,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeElement = node.getTypeElement();
     compilationUnit = TreeUtil.getCompilationUnit(node);
     env = compilationUnit.getEnv();
+    elementUtil = env.elementUtil();
     typeUtil = env.typeUtil();
     nameTable = env.nameTable();
     typeName = nameTable.getFullName(typeElement);

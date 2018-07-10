@@ -228,12 +228,12 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printClassNameMapping() {
-    String javaName = ElementUtil.getQualifiedName(typeElement);
-    String unprefixedName =
-        NameTable.camelCaseQualifiedName(javaName);
-    if (!unprefixedName.equals(typeName) && !options.stripClassNameMapping()) {
+    String defaultObjectiveCName = nameTable.getDefaultObjectiveCName(typeElement);
+    if (!typeName.equals(defaultObjectiveCName) && !options.stripClassNameMapping()) {
       newline();
-      printf("J2OBJC_CLASS_NAME_MAPPING(%s, @\"%s\", @\"%s\")\n", typeName, javaName, typeName);
+      printf(
+          "J2OBJC_CLASS_NAME_MAPPING(%s, @\"%s\", @\"%s\")\n",
+          typeName, elementUtil.getBinaryName(typeElement), typeName);
     }
   }
 

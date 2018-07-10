@@ -848,4 +848,29 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
   }
+
+  public void testClassMappingNestedClass() throws IOException {
+    options.setStripClassNameMapping(false);
+    String hFile =
+        translateSourceFile(
+            "package foo; "
+                + "import com.google.j2objc.annotations.ObjectiveCName; "
+                + "public class Outer { "
+                + "@ObjectiveCName(\"Renamed\") public class Inner {} "
+                + "}",
+            "foo.Outer",
+            "foo/Outer.h");
+    String mFile = getTranslatedFile("foo/Outer.m");
+    // Validate Outer class.
+    assertTranslation(hFile, "@interface FooOuter");
+    assertTranslation(mFile, "@implementation FooOuter");
+    // Validate Inner class.
+    assertTranslation(hFile, "@interface Renamed");
+    assertTranslation(mFile, "@implementation Renamed");
+    assertTranslation(
+        mFile, "J2OBJC_CLASS_NAME_MAPPING(Renamed, @\"foo.Outer$Inner\", @\"Renamed\")");
+    assertNotInTranslation(mFile, "FooOuter_Inner");
+    // Make sure that the only class mapping is the one for the inner class.
+    assertOccurrences(mFile, "J2OBJC_CLASS_NAME_MAPPING", 1);
+  }
 }
