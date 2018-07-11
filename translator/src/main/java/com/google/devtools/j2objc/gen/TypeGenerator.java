@@ -275,10 +275,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
   }
 
-  /**
-   * Create an Objective-C method signature string.
-   */
-  protected String getMethodSignature(MethodDeclaration m) {
+  /** Create an Objective-C method signature string. */
+  protected String getMethodSignature(MethodDeclaration m, boolean isDeclaration) {
     StringBuilder sb = new StringBuilder();
     ExecutableElement element = m.getExecutableElement();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
@@ -290,7 +288,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
     }
-    sb.append(UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element)));
+    sb.append(
+        UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element, isDeclaration)));
 
     List<SingleVariableDeclaration> params = m.getParameters();
     String[] selParts = selector.split(":");
@@ -308,8 +307,13 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         }
         VariableElement var = params.get(i).getVariableElement();
         String typeName = nameTable.getObjCType(var.asType());
-        sb.append(UnicodeUtils.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var),
-            nameTable.getVariableShortName(var)));
+        sb.append(
+            UnicodeUtils.format(
+                "%s:(%s%s)%s",
+                selParts[i],
+                typeName,
+                nullability(var, isDeclaration),
+                nameTable.getVariableShortName(var)));
       }
     }
 
@@ -317,11 +321,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   /**
-   * Returns an Objective-C nullability attribute string if there is a matching
-   * JSR305 annotation, or an empty string.
+   * Returns an Objective-C nullability attribute string if there is a matching JSR305 annotation,
+   * or an empty string. The nullability attribute is only needed in declarations (i.e. Objective-C
+   * interface).
    */
-  private String nullability(Element element) {
-    if (options.nullability()) {
+  private String nullability(Element element, boolean isDeclaration) {
+    if (options.nullability() && isDeclaration) {
       if (ElementUtil.hasNullableAnnotation(element)) {
         return " __nullable";
       }

@@ -260,7 +260,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     syncLineNumbers(m);  // avoid doc-comment
     String methodBody = generateStatement(m.getBody());
-    print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
+    print(getMethodSignature(m, /* isDeclaration= */ false) + " " + reindent(methodBody) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
     }
