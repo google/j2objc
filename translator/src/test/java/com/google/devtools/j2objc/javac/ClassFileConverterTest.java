@@ -296,7 +296,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //        "  SATURDAY",
 //        "}"
 //    );
-//    assertEqualSignatureSrcClassfile(type, source);
+//    assertEqualSrcClassfile(type, source);
 //  }
 //
 /* TODO(user): enum constants are created in static initializer; executable pairs not complete
@@ -332,7 +332,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //        "  }",
 //        "}"
 //    );
-//    assertEqualSignatureSrcClassfile(type, source);
+//    assertEqualSrcClassfile(type, source);
 //  }
 //
  public void testPredefinedAnnotations() throws IOException {
@@ -379,8 +379,8 @@ public class ClassFileConverterTest extends GenerationTest {
 //    String annotationSource =
 //        "package foo.bar; @interface SuppressWarningsClass { String value(); }";
 //    addSourceFile(annotationSource, typeNameToSource(annotationType));
-//    assertEqualSignatureSrcClassfile(annotationType, annotationSource);
-//    assertEqualSignatureSrcClassfile(type, source);
+//    assertEqualSrcClassfile(annotationType, annotationSource);
+//    assertEqualSrcClassfile(type, source);
 //  }
 
   public void testArrayAnnotations() throws IOException {
@@ -396,8 +396,8 @@ public class ClassFileConverterTest extends GenerationTest {
     String annotationSource =
         "package foo.bar; @interface ArrayAnnot { String[] strings(); }";
     addSourceFile(annotationSource, typeNameToSource(annotationType));
-    assertEqualSignatureSrcClassfile(annotationType, annotationSource);
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(annotationType, annotationSource);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testAnnotationType() throws IOException {
@@ -427,8 +427,8 @@ public class ClassFileConverterTest extends GenerationTest {
         "  String[] reviewers();",
         "}");
     addSourceFile(annotationSource, typeNameToSource(annotationType));
-    assertEqualSignatureSrcClassfile(annotationType, annotationSource);
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(annotationType, annotationSource);
+    assertEqualSrcClassfile(type, source);
   }
 
   public void testDefaultsAnnotationType() throws IOException {
@@ -456,54 +456,53 @@ public class ClassFileConverterTest extends GenerationTest {
         "  String[] reviewers();",
         "}");
     addSourceFile(annotationSource, typeNameToSource(annotationType));
-    assertEqualSignatureSrcClassfile(annotationType, annotationSource);
-    assertEqualSignatureSrcClassfile(type, source);
+    assertEqualSrcClassfile(annotationType, annotationSource);
+    assertEqualSrcClassfile(type, source);
   }
 
-/* TODO(user): enum constants are written with their fully qualified names in classfiles */
-//  public void testAnnotatedAnnotationType() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "@Preamble(",
-//        "    author = \"John Doe\",",
-//        "    date = \"3/17/2002\"",
-//        ")",
-//        "@ModificationData",
-//        "class Test {}"
-//    );
-//    String annotationType1 = "foo.bar.Preamble";
-//    String annotationSource1 = String.join("\n",
-//        "package foo.bar;",
-//        "import java.lang.annotation.Documented;",
-//        "import java.lang.annotation.Retention;",
-//        "import static java.lang.annotation.RetentionPolicy.RUNTIME;",
-//        "@Documented",
-//        "@Retention(RUNTIME)",
-//        "@interface Preamble {",
-//        "  String author();",
-//        "  String date();",
-//        "}"
-//    );
-//    String annotationType2 = "foo.bar.ModificationData";
-//    String annotationSource2 = String.join("\n",
-//        "package foo.bar;",
-//        "import java.lang.annotation.Documented;",
-//        "import java.lang.annotation.Retention;",
-//        "import java.lang.annotation.RetentionPolicy;",
-//        "@Documented",
-//        "@Retention(RetentionPolicy.CLASS)",
-//        "@interface ModificationData {",
-//        "  String lastModified() default \"N/A\";",
-//        "  String lastModifiedBy() default \"N/A\";",
-//        "}"
-//    );
-//    addSourceFile(annotationSource1, typeNameToSource(annotationType1));
-//    addSourceFile(annotationSource2, typeNameToSource(annotationType2));
-//    assertEqualSignatureSrcClassfile(annotationType1, annotationSource1);
-//    assertEqualSignatureSrcClassfile(annotationType2, annotationSource2);
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
+  public void testAnnotatedAnnotationType() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "@Preamble(",
+        "    author = \"John Doe\",",
+        "    date = \"3/17/2002\"",
+        ")",
+        "@ModificationData",
+        "class Test {}"
+    );
+    String annotationType1 = "foo.bar.Preamble";
+    String annotationSource1 = String.join("\n",
+        "package foo.bar;",
+        "import java.lang.annotation.Documented;",
+        "import java.lang.annotation.Retention;",
+        "import static java.lang.annotation.RetentionPolicy.RUNTIME;",
+        "@Documented",
+        "@Retention(RUNTIME)",
+        "@interface Preamble {",
+        "  String author();",
+        "  String date();",
+        "}"
+    );
+    String annotationType2 = "foo.bar.ModificationData";
+    String annotationSource2 = String.join("\n",
+        "package foo.bar;",
+        "import java.lang.annotation.Documented;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Documented",
+        "@Retention(RetentionPolicy.CLASS)",
+        "@interface ModificationData {",
+        "  String lastModified() default \"N/A\";",
+        "  String lastModifiedBy() default \"N/A\";",
+        "}"
+    );
+    addSourceFile(annotationSource1, typeNameToSource(annotationType1));
+    addSourceFile(annotationSource2, typeNameToSource(annotationType2));
+    assertEqualSrcClassfile(annotationType1, annotationSource1);
+    assertEqualSrcClassfile(annotationType2, annotationSource2);
+    assertEqualSrcClassfile(type, source);
+  }
 
   public void testExtendInterface() throws IOException {
     String type = "foo.bar.Range";
@@ -553,7 +552,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //        "  }",
 //        "}"
 //    );
-//    assertEqualSignatureSrcClassfile(type, source);
+//    assertEqualSrcClassfile(type, source);
 //  }
 //
 //  public void testExtendClassParametrized() throws IOException {
@@ -569,52 +568,52 @@ public class ClassFileConverterTest extends GenerationTest {
 //        "  }",
 //        "}"
 //    );
-//    assertEqualSignatureSrcClassfile(type, source);
+//    assertEqualSrcClassfile(type, source);
 //  }
-//
-//  public void testImplement() throws IOException {
-//    String type = "foo.bar.Unit";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "import java.lang.Comparable;",
-//        "public class Unit implements Comparable<Unit> {",
-//        "  public int compareTo(Unit other) {",
-//        "    return 0;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
-//
-//  public void testImplementParametrized() throws IOException {
-//    String type = "foo.bar.Smallest";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "import java.lang.Comparable;",
-//        "public class Smallest<E> implements Comparable<E> {",
-//        "  public int compareTo(E other) {",
-//        "    return -1;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
-//
-//  public void testImplementParametrizedNested() throws IOException {
-//    String type = "foo.bar.Thing";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "import java.lang.Comparable;",
-//        "import java.lang.Runnable;",
-//        "public class Thing<S, T extends Comparable<T> & Runnable>",
-//        "    implements Comparable<Thing<S, T>> {",
-//        "  public int compareTo(Thing<S, T> other) {",
-//        "    return 1;",
-//        "  }",
-//        "}"
-//    );
-//    assertEqualSignatureSrcClassfile(type, source);
-//  }
+
+  public void testImplement() throws IOException {
+    String type = "foo.bar.Unit";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "import java.lang.Comparable;",
+        "public class Unit implements Comparable<Unit> {",
+        "  public int compareTo(Unit other) {",
+        "    return 0;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testImplementParametrized() throws IOException {
+    String type = "foo.bar.Smallest";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "import java.lang.Comparable;",
+        "public class Smallest<E> implements Comparable<E> {",
+        "  public int compareTo(E other) {",
+        "    return -1;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testImplementParametrizedNested() throws IOException {
+    String type = "foo.bar.Thing";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "import java.lang.Comparable;",
+        "import java.lang.Runnable;",
+        "public class Thing<S, T extends Comparable<T> & Runnable>",
+        "    implements Comparable<Thing<S, T>> {",
+        "  public int compareTo(Thing<S, T> other) {",
+        "    return 1;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
 
   public void testGenericMethods() throws IOException {
     String type = "foo.bar.Thing";

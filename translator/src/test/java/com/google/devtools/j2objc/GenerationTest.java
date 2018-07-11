@@ -448,19 +448,6 @@ public class GenerationTest extends TestCase {
   }
 
   /**
-   * Compiles Java source, as contained in a source file, and compares the parsed compilation units
-   * generated from the source and class files, while ignoring method bodies.
-   *
-   * @param type the public type being declared
-   * @param source the source code
-   */
-  protected void assertEqualSignatureSrcClassfile(String type, String source) throws IOException {
-    CompilationUnit srcUnit = compileType(type, source);
-    CompilationUnit classfileUnit = compileAsClassFile(type, source);
-    assertEqualSignatures(srcUnit, classfileUnit);
-  }
-
-  /**
    * Compiles Java source, as contained in a source file, and compares the generated Objective C
    * from the source and class files.
    *
@@ -474,11 +461,13 @@ public class GenerationTest extends TestCase {
     String srcHeader = generateFromUnit(srcUnit, fileRoot + ".h");
     String srcImpl = getTranslatedFile(fileRoot + ".m");
 
+    Options.OutputLanguageOption language = options.getLanguage();
     options.setOutputLanguage(Options.OutputLanguageOption.TEST_OBJECTIVE_C);
     CompilationUnit classfileUnit = compileAsClassFile(fileRoot, source);
     TranslationProcessor.applyMutations(classfileUnit, deadCodeMap, TimeTracker.noop());
     String clsHeader = generateFromUnit(classfileUnit, fileRoot + ".h2");
     String clsImpl = getTranslatedFile(fileRoot + ".m2");
+    options.setOutputLanguage(language);
     assertEquals(srcHeader, clsHeader);
     assertEquals(srcImpl, clsImpl);
   }
