@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/annotations"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
