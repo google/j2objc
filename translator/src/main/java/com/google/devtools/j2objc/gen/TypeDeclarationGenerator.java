@@ -47,6 +47,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -640,7 +641,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
 
-    String methodSignature = getMethodSignature(m, /* isDeclaration= */ true);
+    String methodSignature = getMethodSignature(m);
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the
@@ -788,6 +789,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printDeclarations(methods);
       printDeclarations(declarations);
     }
+  }
+
+  /**
+   * Returns an Objective-C nullability attribute string if there is a matching JSR305 annotation,
+   * or an empty string.
+   */
+  @Override
+  protected String nullability(Element element) {
+    if (options.nullability()) {
+      if (ElementUtil.hasNullableAnnotation(element)) {
+        return " __nullable";
+      }
+      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
+        return " __nonnull";
+      }
+    }
+    return "";
   }
 
   /**

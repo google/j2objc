@@ -462,7 +462,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  private Test(int i) { this.i = i; }}", "Test", "Test.h");
     assertTranslation(translation, "- (instancetype __nonnull)init;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (instancetype __nonnull)initWithInt:(jint)i;");
+    assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
   }
 
   public void testFieldWithIntersectionType() throws IOException {

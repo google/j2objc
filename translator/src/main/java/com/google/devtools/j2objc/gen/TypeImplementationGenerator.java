@@ -35,6 +35,7 @@ import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -260,7 +261,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     syncLineNumbers(m);  // avoid doc-comment
     String methodBody = generateStatement(m.getBody());
-    print(getMethodSignature(m, /* isDeclaration= */ false) + " " + reindent(methodBody) + "\n");
+    print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
     }
@@ -359,5 +360,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   protected String generateStatement(Statement stmt) {
     return StatementGenerator.generate(stmt, getBuilder().getCurrentLine());
+  }
+
+  @Override
+  protected String nullability(Element element) {
+    return "";
   }
 }

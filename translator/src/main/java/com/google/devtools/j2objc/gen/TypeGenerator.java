@@ -276,7 +276,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   /** Create an Objective-C method signature string. */
-  protected String getMethodSignature(MethodDeclaration m, boolean isDeclaration) {
+  protected String getMethodSignature(MethodDeclaration m) {
     StringBuilder sb = new StringBuilder();
     ExecutableElement element = m.getExecutableElement();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
@@ -288,8 +288,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
     }
-    sb.append(
-        UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element, isDeclaration)));
+    sb.append(UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element)));
 
     List<SingleVariableDeclaration> params = m.getParameters();
     String[] selParts = selector.split(":");
@@ -310,32 +309,15 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         sb.append(
             UnicodeUtils.format(
                 "%s:(%s%s)%s",
-                selParts[i],
-                typeName,
-                nullability(var, isDeclaration),
-                nameTable.getVariableShortName(var)));
+                selParts[i], typeName, nullability(var), nameTable.getVariableShortName(var)));
       }
     }
 
     return sb.toString();
   }
 
-  /**
-   * Returns an Objective-C nullability attribute string if there is a matching JSR305 annotation,
-   * or an empty string. The nullability attribute is only needed in declarations (i.e. Objective-C
-   * interface).
-   */
-  private String nullability(Element element, boolean isDeclaration) {
-    if (options.nullability() && isDeclaration) {
-      if (ElementUtil.hasNullableAnnotation(element)) {
-        return " __nullable";
-      }
-      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
-        return " __nonnull";
-      }
-    }
-    return "";
-  }
+  /** Returns an Objective-C nullability attribute string if needed. */
+  protected abstract String nullability(Element element);
 
   protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
     StringBuilder sb = new StringBuilder();
