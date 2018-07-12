@@ -79,6 +79,9 @@ public final class ElementUtil {
 
   private static final String LAZY_INIT = "com.google.errorprone.annotations.concurrent.LazyInit";
 
+  private static final Pattern NULLABLE_PATTERN = Pattern.compile("Nullable");
+  private static final Pattern NONNULL_PATTERN = Pattern.compile("No[nt][Nn]ull");
+
   private final Elements javacElements;
   private final Map<Element, TypeMirror> elementTypeMap = new HashMap<>();
 
@@ -595,6 +598,16 @@ public final class ElementUtil {
     return false;
   }
 
+  /** Similar to the above but matches against a pattern. */
+  public static boolean hasNamedAnnotation(AnnotatedConstruct ac, Pattern pattern) {
+    for (AnnotationMirror annotation : ac.getAnnotationMirrors()) {
+      if (pattern.matcher(getName(annotation.getAnnotationType().asElement())).matches()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static boolean hasQualifiedNamedAnnotation(Element element, String name) {
     return getQualifiedNamedAnnotation(element, name) != null;
   }
@@ -614,7 +627,7 @@ public final class ElementUtil {
    * Java frameworks.
    */
   public static boolean hasNullableAnnotation(Element element) {
-    return hasNamedAnnotation(element, "Nullable");
+    return hasNullabilityAnnotation(element, NULLABLE_PATTERN);
   }
 
   /**
@@ -623,13 +636,20 @@ public final class ElementUtil {
    * frameworks, with varying but similar names.
    */
   public static boolean hasNonnullAnnotation(Element element) {
-    Pattern p = Pattern.compile("No[nt][Nn]ull");
-    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
-      if (p.matcher(annotation.getAnnotationType().asElement().getSimpleName()).matches()) {
-        return true;
-      }
+    return hasNullabilityAnnotation(element, NONNULL_PATTERN);
+  }
+
+  private static boolean hasNullabilityAnnotation(Element element, Pattern pattern) {
+    // The two if statements cover type annotations.
+    if (isMethod(element)
+        && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {
+      return true;
     }
-    return false;
+    if (isVariable(element) && hasNamedAnnotation(element.asType(), pattern)) {
+      return true;
+    }
+    // This covers declaration annotations.
+    return hasNamedAnnotation(element, pattern);
   }
 
   public static Object getAnnotationValue(AnnotationMirror annotation, String name) {

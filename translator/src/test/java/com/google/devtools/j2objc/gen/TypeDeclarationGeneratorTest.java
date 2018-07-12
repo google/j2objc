@@ -471,6 +471,23 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
   }
 
+  // Verify type nullability annotations.
+  public void testNullableTypeAnnotation() throws IOException {
+    String source =
+        "package foo.bar;"
+            + "@java.lang.annotation.Target(value={java.lang.annotation.ElementType.TYPE_USE})"
+            + "@interface NonNull {}"
+            + "@java.lang.annotation.Target(value={java.lang.annotation.ElementType.TYPE_USE})"
+            + "@interface Nullable {}"
+            + "public class Test {"
+            + "  @Nullable String test(@NonNull String msg) { return null; } "
+            + "}";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg");
+  }
+
   public void testFieldWithIntersectionType() throws IOException {
     String translation = translateSourceFile(
         "class Test <T extends Comparable & Runnable> { T foo; }", "Test", "Test.h");
