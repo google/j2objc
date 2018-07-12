@@ -92,7 +92,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("#ifndef %s_H\n", varPrefix);
     printf("#define %s_H\n", varPrefix);
     pushIgnoreDeprecatedDeclarationsPragma();
-    pushIgnoreNullabilityCompletenessPragma();
+    pushIgnoreNullabilityPragmas();
 
     Set<String> seenTypes = Sets.newHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
@@ -134,7 +134,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected void generateFileFooter() {
     newline();
-    popIgnoreNullabilityCompletenessPragma();
+    popIgnoreNullabilityPragmas();
     popIgnoreDeprecatedDeclarationsPragma();
     printf("#endif // %s_H\n", varPrefix);
   }
@@ -147,22 +147,30 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   /**
-   * Ignores nullability completeness warnings. If clang finds any nullability
-   * annotations, it checks that all annotatable sites have annotations. Java
-   * checker frameworks don't have that requirement.
+   * Ignores nullability warnings. This method should be paired with popIgnoreNullabilityPragmas.
+   *
+   * <p>-Wnullability: In Java, conflicting nullability annotations do not cause compilation issues
+   * (e.g.changing a parameter from {@code @Nullable} to {@code @NonNull} in an overriding method).
+   * In Objective-C, they generate compiler warnings. The transpiled code should be able to compile
+   * in spite of conflicting/incomplete Java nullability annotations.
+   *
+   * <p>-Wnullability-completeness: if clang finds any nullability annotations, it checks that all
+   * annotable sites have annotations. Java checker frameworks don't have that requirement.
    */
-  protected void pushIgnoreNullabilityCompletenessPragma() {
+  protected void pushIgnoreNullabilityPragmas() {
     if (getGenerationUnit().options().nullability()
         || getGenerationUnit().hasNullabilityAnnotations()) {
       newline();
       println("#if __has_feature(nullability)");
       println("#pragma clang diagnostic push");
+      println("#pragma GCC diagnostic ignored \"-Wnullability\"");
       println("#pragma GCC diagnostic ignored \"-Wnullability-completeness\"");
       println("#endif");
     }
   }
 
-  protected void popIgnoreNullabilityCompletenessPragma() {
+  /** Restores warnings after a call to pushIgnoreNullabilityPragmas. */
+  protected void popIgnoreNullabilityPragmas() {
     if (getGenerationUnit().options().nullability()
         || getGenerationUnit().hasNullabilityAnnotations()) {
       newline();

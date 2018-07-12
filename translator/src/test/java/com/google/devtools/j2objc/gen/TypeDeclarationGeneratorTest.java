@@ -371,9 +371,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "}";
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "#if __has_feature(nullability)",
         "#pragma clang diagnostic push",
+        "#pragma GCC diagnostic ignored \"-Wnullability\"",
         "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
         "#endif");
     assertTranslatedLines(translation,
@@ -393,9 +395,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "}";
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "#if __has_feature(nullability)",
         "#pragma clang diagnostic push",
+        "#pragma GCC diagnostic ignored \"-Wnullability\"",
         "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
         "#endif");
     assertTranslatedLines(translation,
@@ -408,9 +412,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   public void testEnumNullabilityPragmas() throws IOException {
     options.setNullability(true);
     String translation = translateSourceFile("enum Test { A, B, C; }", "Test", "Test.h");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "#if __has_feature(nullability)",
         "#pragma clang diagnostic push",
+        "#pragma GCC diagnostic ignored \"-Wnullability\"",
         "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
         "#endif");
     assertTranslatedLines(translation,

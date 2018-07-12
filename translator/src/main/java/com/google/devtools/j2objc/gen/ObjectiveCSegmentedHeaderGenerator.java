@@ -55,7 +55,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       printLocalIncludes(type);
     }
     pushIgnoreDeprecatedDeclarationsPragma();
-    pushIgnoreNullabilityCompletenessPragma();
+    pushIgnoreNullabilityPragmas();
 
     // Print OCNI blocks
     Collection<String> nativeBlocks = getGenerationUnit().getNativeHeaderBlocks();
@@ -99,7 +99,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
     newline();
-    popIgnoreNullabilityCompletenessPragma();
+    popIgnoreNullabilityPragmas();
     popIgnoreDeprecatedDeclarationsPragma();
     printf("#pragma pop_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
   }
