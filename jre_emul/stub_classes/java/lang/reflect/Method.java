@@ -36,7 +36,7 @@ public class Method extends Executable {
     return 0;
   }
 
-  public Class getReturnType() {
+  public Class<?> getReturnType() {
     return null;
   }
 
