@@ -81,8 +81,11 @@ public class GeneratedSourceMappings {
   private int targetOffset = 0;
 
   public void addMethodMapping(MethodDeclaration methodDeclaration, int targetBegin, int length) {
-    mappings.add(
-        Mapping.fromMethodDeclaration(methodDeclaration, targetBegin, targetBegin + length));
+    assert methodDeclaration.getName() != null;
+    if (methodDeclaration.getName().getStartPosition() != -1) {
+      mappings.add(
+          Mapping.fromMethodDeclaration(methodDeclaration, targetBegin, targetBegin + length));
+    }
   }
 
   public Set<Mapping> getMappings() {
