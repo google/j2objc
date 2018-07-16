@@ -85,8 +85,8 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
  * name mangling pattern.
  */
 typedef struct J2ObjcClassNameMapping {
-  void *java_name;
-  void *ios_name;
+  const char * const java_name;
+  const char * const ios_name;
 } J2ObjcClassNameMapping;
 
 /*!

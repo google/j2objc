@@ -699,7 +699,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, @\"foo.bar.mumble.Test\", @\"FBMTest\")");
+        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, \"foo.bar.mumble.Test\", \"FBMTest\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -719,7 +719,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, @\"foo.bar.mumble.Test\", @\"FBMTest\")");
+        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, \"foo.bar.mumble.Test\", \"FBMTest\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -743,7 +743,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, @\"foo.bar.mumble.Test\", @\"FBMTest\")");
+        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, \"foo.bar.mumble.Test\", \"FBMTest\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -868,7 +868,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(hFile, "@interface Renamed");
     assertTranslation(mFile, "@implementation Renamed");
     assertTranslation(
-        mFile, "J2OBJC_CLASS_NAME_MAPPING(Renamed, @\"foo.Outer$Inner\", @\"Renamed\")");
+        mFile, "J2OBJC_CLASS_NAME_MAPPING(Renamed, \"foo.Outer$Inner\", \"Renamed\")");
     assertNotInTranslation(mFile, "FooOuter_Inner");
     // Make sure that the only class mapping is the one for the inner class.
     assertOccurrences(mFile, "J2OBJC_CLASS_NAME_MAPPING", 1);

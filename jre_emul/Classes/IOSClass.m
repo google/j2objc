@@ -528,8 +528,7 @@ static NSDictionary *FetchClassMappings() {
   NSMutableDictionary *mappedClasses = [[NSMutableDictionary alloc] initWithCapacity:nMappings];
   for (long i = 0; i < nMappings; i++) {
     J2ObjcClassNameMapping* mapping = (&start_alias_section) + i;
-    [mappedClasses setObject:((NSString *)mapping->ios_name)
-                      forKey:((NSString *)mapping->java_name)];
+    [mappedClasses setObject:@(mapping->ios_name) forKey:@(mapping->java_name)];
   }
   return mappedClasses;
 }
@@ -1411,4 +1410,4 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)
 
-J2OBJC_CLASS_NAME_MAPPING(IOSClass, @"java.lang.Class", @"IOSClass")
+J2OBJC_CLASS_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
