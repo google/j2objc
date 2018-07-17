@@ -823,7 +823,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "create_A_Outer(create_A_Inner(@\"Bar\"))");
   }
 
-  public void testForwradDeclarationForPrivateAbstractDeclaration() throws IOException {
+  public void testForwardDeclarationForPrivateAbstractDeclaration() throws IOException {
     // We need a forward declaration of JavaLangInteger for the type narrowing declaration of get()
     // in the private class B.
     String translation = translateSourceFile(
@@ -872,5 +872,18 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(mFile, "FooOuter_Inner");
     // Make sure that the only class mapping is the one for the inner class.
     assertOccurrences(mFile, "J2OBJC_CLASS_NAME_MAPPING", 1);
+  }
+
+  public void testLambdaDoesNotGenerateClassMapping() throws IOException {
+    options.setStripClassNameMapping(false);
+    String mFile =
+        translateSourceFile(
+            "package foo; "
+                + "public class Bar { "
+                + "  Runnable r = () -> {}; "
+                + "}",
+            "foo.Bar",
+            "foo/Bar.m");
+    assertNotInTranslation(mFile, "J2OBJC_CLASS_NAME_MAPPING");
   }
 }

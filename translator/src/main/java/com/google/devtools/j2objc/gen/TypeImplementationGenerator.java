@@ -230,7 +230,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printClassNameMapping() {
     String defaultObjectiveCName = nameTable.getDefaultObjectiveCName(typeElement);
-    if (!typeName.equals(defaultObjectiveCName) && !options.stripClassNameMapping()) {
+    if (!ElementUtil.isLambda(typeElement)
+        && !typeName.equals(defaultObjectiveCName)
+        && !options.stripClassNameMapping()) {
       newline();
       printf(
           "J2OBJC_CLASS_NAME_MAPPING(%s, \"%s\", \"%s\")\n",
