@@ -1443,7 +1443,7 @@ static BOOL ReadMapEntryField(
       return stream->ReadRetainedNSString(&value->valueId);
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP:
       isGroup = YES;
-      // fall through.
+      FALLTHROUGH_INTENDED;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_MESSAGE: {
       ComGoogleProtobufGeneratedMessage *newMsg = CGPNewMessage(field->valueType_);
       if (!(isGroup ?
@@ -1554,7 +1554,7 @@ static BOOL MergeExtensionValueFromStream(
       return YES;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP:
       isGroup = YES;
-      // fall through.
+      FALLTHROUGH_INTENDED;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_MESSAGE:
       {
         CGPDescriptor *fieldType = field->valueType_;
@@ -1806,7 +1806,7 @@ static BOOL MergeFieldFromStream(
       return YES;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP:
       isGroup = YES;
-      // fall through.
+      FALLTHROUGH_INTENDED;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_MESSAGE:
       {
         CGPDescriptor *fieldType = field->valueType_;
