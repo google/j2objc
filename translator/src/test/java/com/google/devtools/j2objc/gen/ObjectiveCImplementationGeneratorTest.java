@@ -699,7 +699,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, \"foo.bar.mumble.Test\", \"FBMTest\")");
+        "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -719,7 +719,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, \"foo.bar.mumble.Test\", \"FBMTest\")");
+        "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -743,7 +743,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_CLASS_NAME_MAPPING(FBMTest, \"foo.bar.mumble.Test\", \"FBMTest\")");
+        "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -832,24 +832,24 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@class JavaLangInteger;");
   }
 
-  public void testClassMappingStripped() throws IOException {
+  public void testNameMappingStripped() throws IOException {
     options.setStripReflection(true);
     String translation = translateSourceFile(
         "@com.google.j2objc.annotations.ObjectiveCName(\"NSTest\") public class Test {}",
         "Test", "Test.m");
-    assertNotInTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
+    assertNotInTranslation(translation, "J2OBJC_NAME_MAPPING");
   }
 
-  public void testClassMappingNotStripped() throws IOException {
+  public void testNameMappingNotStripped() throws IOException {
     options.setStripReflection(true);
     options.setStripClassNameMapping(false);
     String translation = translateSourceFile(
         "@com.google.j2objc.annotations.ObjectiveCName(\"NSTest\") public class Test {}",
         "Test", "Test.m");
-    assertTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
+    assertTranslation(translation, "J2OBJC_NAME_MAPPING(NSTest, \"Test\", \"NSTest\")");
   }
 
-  public void testClassMappingNestedClass() throws IOException {
+  public void testNameMappingNestedClass() throws IOException {
     options.setStripClassNameMapping(false);
     String hFile =
         translateSourceFile(
@@ -868,37 +868,47 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(hFile, "@interface Renamed");
     assertTranslation(mFile, "@implementation Renamed");
     assertTranslation(
-        mFile, "J2OBJC_CLASS_NAME_MAPPING(Renamed, \"foo.Outer$Inner\", \"Renamed\")");
+        mFile, "J2OBJC_NAME_MAPPING(Renamed, \"foo.Outer$Inner\", \"Renamed\")");
     assertNotInTranslation(mFile, "FooOuter_Inner");
     // Make sure that the only class mapping is the one for the inner class.
-    assertOccurrences(mFile, "J2OBJC_CLASS_NAME_MAPPING", 1);
+    assertOccurrences(mFile, "J2OBJC_NAME_MAPPING", 1);
   }
 
-  public void testLambdaDoesNotGenerateClassMapping() throws IOException {
+  /**
+   * The following scenarios should not generate name mappings: package-info files, lambdas and
+   * anonymous classes.
+   */
+  public void testCasesWithoutNameMapping() throws IOException {
     options.setStripClassNameMapping(false);
+    addSourceFile(
+        "@ObjectiveCName(\"FBM\")\n"
+            + "package foo.bar.mumble;\n"
+            + "import com.google.j2objc.annotations.ObjectiveCName;",
+        "foo/bar/mumble/package-info.java");
     String mFile =
         translateSourceFile(
-            "package foo; "
-                + "public class Bar { "
-                + "  Runnable r = () -> {}; "
+            "package foo.bar.mumble; "
+                + "public class Test { "
+                + "  Runnable r = () -> {}; "  // lambda
+                + "  Runnable s = new Runnable() { "  // anonymous
+                + "    @Override public void run() {} "
+                + "  }; "
+                + "  public void method() { "
+                + "    Runnable unused = new Runnable() {"  // local anonymous
+                + "      @Override public void run() {} "
+                + "    };"
+                + "  } "
                 + "}",
-            "foo.Bar",
-            "foo/Bar.m");
-    assertNotInTranslation(mFile, "J2OBJC_CLASS_NAME_MAPPING");
-  }
-
-  public void testPackageInfoDoesNotGenerateClassMapping() throws IOException {
-    options.setStripClassNameMapping(false);
-    String translation =
-        translateSourceFile(
-            "@ObjectiveCName(\"FBM\")\n"
-                + "package foo.bar.mumble;\n"
-                + "import com.google.j2objc.annotations.ObjectiveCName;",
-            "foo.bar.mumble.package-info",
-            "foo/bar/mumble/package-info.m");
+            "foo.bar.mumble.Test",
+            "foo/bar/mumble/Test.m");
+    assertTranslation(
+        mFile, "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
+    assertOccurrences(mFile, "J2OBJC_NAME_MAPPING", 1);
     // The ObjectiveCName annotation affects classes in the package but not the package itself.
+    String translation =
+        translateSourceFile("foo.bar.mumble.package-info", "foo/bar/mumble/package-info.m");
     assertTranslation(translation, "FooBarMumblepackage_info");
     assertNotInTranslation(translation, "FBMpackage_info");
-    assertNotInTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
+    assertNotInTranslation(translation, "J2OBJC_NAME_MAPPING");
   }
 }

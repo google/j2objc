@@ -518,30 +518,30 @@ static NSString *JavaToIosName(NSString *javaName) {
 }
 
 // The __j2objc_aliases custom data segment is built by the linker (along with these start
-// and end section symbols) from structures defined by the J2OBJC_CLASS_NAME_MAPPING macro.
-// This data defines mapping for Java class names to the actual iOS names, and so is only
+// and end section symbols) from structures defined by the J2OBJC_NAME_MAPPING macro.
+// This data defines mapping for Java names to the actual iOS names, and so is only
 // necessary when loading classes by name.
-static NSDictionary *FetchClassMappings() {
-  extern J2ObjcClassNameMapping start_alias_section __asm("section$start$__DATA$__j2objc_aliases");
-  extern J2ObjcClassNameMapping end_alias_section  __asm("section$end$__DATA$__j2objc_aliases");
+static NSDictionary *FetchNameMappings() {
+  extern J2ObjcNameMapping start_alias_section __asm("section$start$__DATA$__j2objc_aliases");
+  extern J2ObjcNameMapping end_alias_section  __asm("section$end$__DATA$__j2objc_aliases");
   NSUInteger nMappings = (NSUInteger)(&end_alias_section - &start_alias_section);
-  NSMutableDictionary *mappedClasses = [[NSMutableDictionary alloc] initWithCapacity:nMappings];
+  NSMutableDictionary *mappedNames = [[NSMutableDictionary alloc] initWithCapacity:nMappings];
   for (long i = 0; i < nMappings; i++) {
-    J2ObjcClassNameMapping* mapping = (&start_alias_section) + i;
-    [mappedClasses setObject:@(mapping->ios_name) forKey:@(mapping->java_name)];
+    J2ObjcNameMapping* mapping = (&start_alias_section) + i;
+    [mappedNames setObject:@(mapping->ios_name) forKey:@(mapping->java_name)];
   }
-  return mappedClasses;
+  return mappedNames;
 }
 
 static IOSClass *ClassForJavaName(NSString *name) {
-  static NSDictionary *mappedClasses;
+  static NSDictionary *mappedNames;
   static dispatch_once_t once;
   dispatch_once(&once, ^{
-    mappedClasses = FetchClassMappings();
+    mappedNames = FetchNameMappings();
   });
 
   // First check if this is a mapped name.
-  NSString *mappedName = [mappedClasses objectForKey:name];
+  NSString *mappedName = [mappedNames objectForKey:name];
   if (mappedName) {
     return ClassForIosName(mappedName);
   }
@@ -555,7 +555,7 @@ static IOSClass *ClassForJavaName(NSString *name) {
       break;
     }
     NSString *prefix = [name substringToIndex:lastDollar];
-    NSString *mappedName = [mappedClasses objectForKey:prefix];
+    NSString *mappedName = [mappedNames objectForKey:prefix];
     if (mappedName) {
       NSString *suffix = JavaToIosName([name substringFromIndex:lastDollar]);
       return ClassForIosName([mappedName stringByAppendingString:suffix]);
@@ -569,17 +569,22 @@ static IOSClass *ClassForJavaName(NSString *name) {
     return ClassForIosName(JavaToIosName(name));
   }
   NSString *package = [name substringToIndex:lastDot];
-  NSString *suffix = JavaToIosName([name substringFromIndex:lastDot + 1]);
+  NSString *clazz = JavaToIosName([name substringFromIndex:lastDot + 1]);
   // First check if the class can be found with the default camel case package. This avoids the
   // expensive FindRenamedPackagePrefix if possible.
-  IOSClass *cls = ClassForIosName([CamelCasePackage(package) stringByAppendingString:suffix]);
+  IOSClass *cls = ClassForIosName([CamelCasePackage(package) stringByAppendingString:clazz]);
   if (cls) {
     return cls;
+  }
+  // Check if the package has a mapped name.
+  mappedName = [mappedNames objectForKey:package];
+  if (mappedName) {
+    return ClassForIosName([mappedName stringByAppendingString:clazz]);
   }
   // Check if the package has a renamed prefix.
   NSString *renamedPackage = FindRenamedPackagePrefix(package);
   if (renamedPackage) {
-    return ClassForIosName([renamedPackage stringByAppendingString:suffix]);
+    return ClassForIosName([renamedPackage stringByAppendingString:clazz]);
   }
   return nil;
 }
@@ -1410,4 +1415,4 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)
 
-J2OBJC_CLASS_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
+J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")

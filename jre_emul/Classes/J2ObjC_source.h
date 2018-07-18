@@ -80,20 +80,20 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
 }
 
 /*!
- * Defines a mapping of a Java class name to its iOS equivalent. These are defined
- * for any class that has an iOS name that doesn't follow the default camel-cased
+ * Defines a mapping of a Java name to its iOS equivalent. These are defined for
+ * any Java name that has an iOS name that doesn't follow the default camel-cased
  * name mangling pattern.
  */
-typedef struct J2ObjcClassNameMapping {
+typedef struct J2ObjcNameMapping {
   const char * const java_name;
   const char * const ios_name;
-} J2ObjcClassNameMapping;
+} J2ObjcNameMapping;
 
 /*!
- * Defines a mapping between Java and iOS class names, using a custom data segment.
+ * Defines a mapping between Java and iOS names, using a custom data segment.
  */
-#define J2OBJC_CLASS_NAME_MAPPING(CLASS, JAVANAME, IOSNAME) \
-  static J2ObjcClassNameMapping CLASS##_mapping __attribute__((used,\
+#define J2OBJC_NAME_MAPPING(CLASS, JAVANAME, IOSNAME) \
+  static J2ObjcNameMapping CLASS##_mapping __attribute__((used,\
   section("__DATA,__j2objc_aliases"))) = { JAVANAME, IOSNAME };
 
 

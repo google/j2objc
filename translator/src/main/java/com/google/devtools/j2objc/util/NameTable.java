@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
@@ -678,5 +679,33 @@ public class NameTable {
   public String getDefaultObjectiveCName(TypeElement element) {
     String binaryName = elementUtil.getBinaryName(element);
     return camelCaseQualifiedName(binaryName).replace('$', '_');
+  }
+
+  public Optional<String> getNameMapping(TypeElement typeElement, String typeName) {
+    final String mappingFormat = "J2OBJC_NAME_MAPPING(%s, \"%s\", \"%s\")\n";
+    // No mapping is needed if the default Objective-C name was not modified.
+    if (typeName.equals(getDefaultObjectiveCName(typeElement))) {
+      return Optional.empty();
+    }
+
+    // Return a class mapping only if there is a explicit rename.
+    AnnotationMirror annotation = ElementUtil.getAnnotation(typeElement, ObjectiveCName.class);
+    String mappedName = classMappings.get(ElementUtil.getQualifiedName(typeElement));
+    if (annotation != null || mappedName != null) {
+      return Optional.of(
+          String.format(mappingFormat, typeName, elementUtil.getBinaryName(typeElement), typeName));
+    }
+
+    // Otherwise, there was a package rename. Because only one package mapping is needed per
+    // generation unit, it is safe to generate it together with a public class.
+    if (ElementUtil.isTopLevel(typeElement) && ElementUtil.isPublic(typeElement)) {
+      PackageElement packageElement = ElementUtil.getPackage(typeElement);
+      String packageName = packageElement.getQualifiedName().toString();
+      String mappedPackageName = getPrefix(packageElement);
+      return Optional.of(
+          String.format(mappingFormat, mappedPackageName, packageName, mappedPackageName));
+    }
+
+    return Optional.empty();
   }
 }

@@ -33,4 +33,4 @@
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(NSCopying)
 
-J2OBJC_CLASS_NAME_MAPPING(NSCopying, "java.lang.Cloneable", "NSCopying")
+J2OBJC_NAME_MAPPING(NSCopying, "java.lang.Cloneable", "NSCopying")

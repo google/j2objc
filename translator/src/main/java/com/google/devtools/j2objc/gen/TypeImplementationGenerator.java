@@ -35,6 +35,7 @@ import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
@@ -98,7 +99,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     printOuterDeclarations();
     printTypeLiteralImplementation();
-    printClassNameMapping();
+    printNameMapping();
   }
 
   private void printInitFlagDefinition() {
@@ -228,16 +229,13 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
-  private void printClassNameMapping() {
-    String defaultObjectiveCName = nameTable.getDefaultObjectiveCName(typeElement);
-    if (!ElementUtil.isPackageInfo(typeElement)
-        && !ElementUtil.isLambda(typeElement)
-        && !typeName.equals(defaultObjectiveCName)
-        && !options.stripClassNameMapping()) {
-      newline();
-      printf(
-          "J2OBJC_CLASS_NAME_MAPPING(%s, \"%s\", \"%s\")\n",
-          typeName, elementUtil.getBinaryName(typeElement), typeName);
+  private void printNameMapping() {
+    if (!options.stripClassNameMapping()) {
+      Optional<String> mapping = nameTable.getNameMapping(typeElement, typeName);
+      if (mapping.isPresent()) {
+        newline();
+        printf(mapping.get());
+      }
     }
   }
 
