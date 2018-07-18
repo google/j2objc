@@ -886,4 +886,19 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             "foo/Bar.m");
     assertNotInTranslation(mFile, "J2OBJC_CLASS_NAME_MAPPING");
   }
+
+  public void testPackageInfoDoesNotGenerateClassMapping() throws IOException {
+    options.setStripClassNameMapping(false);
+    String translation =
+        translateSourceFile(
+            "@ObjectiveCName(\"FBM\")\n"
+                + "package foo.bar.mumble;\n"
+                + "import com.google.j2objc.annotations.ObjectiveCName;",
+            "foo.bar.mumble.package-info",
+            "foo/bar/mumble/package-info.m");
+    // The ObjectiveCName annotation affects classes in the package but not the package itself.
+    assertTranslation(translation, "FooBarMumblepackage_info");
+    assertNotInTranslation(translation, "FBMpackage_info");
+    assertNotInTranslation(translation, "J2OBJC_CLASS_NAME_MAPPING");
+  }
 }

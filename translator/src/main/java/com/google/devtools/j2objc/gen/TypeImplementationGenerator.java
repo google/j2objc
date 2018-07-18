@@ -230,7 +230,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printClassNameMapping() {
     String defaultObjectiveCName = nameTable.getDefaultObjectiveCName(typeElement);
-    if (!ElementUtil.isLambda(typeElement)
+    if (!ElementUtil.isPackageInfo(typeElement)
+        && !ElementUtil.isLambda(typeElement)
         && !typeName.equals(defaultObjectiveCName)
         && !options.stripClassNameMapping()) {
       newline();
