@@ -46,10 +46,10 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -259,7 +259,7 @@ public class GenerationTest extends TestCase {
     String path = typeNameToSource(typeName);
     File srcFile = new File(tempDir, path);
     srcFile.getParentFile().mkdirs();
-    try (FileWriter fw = new FileWriter(srcFile)) {
+    try (BufferedWriter fw = Files.newWriter(srcFile, UTF_8)) {
       fw.write(source);
     }
 
@@ -468,8 +468,33 @@ public class GenerationTest extends TestCase {
     String clsHeader = generateFromUnit(classfileUnit, fileRoot + ".h2");
     String clsImpl = getTranslatedFile(fileRoot + ".m2");
     options.setOutputLanguage(language);
-    assertEquals(srcHeader, clsHeader);
-    assertEquals(srcImpl, clsImpl);
+    if (!srcHeader.equals(clsHeader)) {
+      fail("source and classfile headers differ:\n" + diff(fileRoot + ".h", fileRoot + ".h2"));
+    }
+    if (!srcImpl.equals(clsImpl)) {
+      fail("source and classfile impls differ:\n" + diff(fileRoot + ".m", fileRoot + ".m2"));
+    }
+  }
+
+  /**
+   * Invoke diff on two generated files and return its report.
+   */
+  protected String diff(String file1, String file2) {
+    File f1 = new File(tempDir, file1);
+    File f2 = new File(tempDir, file2);
+    ProcessBuilder pb = new ProcessBuilder("/usr/bin/diff",
+        f1.getAbsolutePath(), f2.getAbsolutePath()).inheritIO();
+    pb.redirectErrorStream(true);
+    File log = new File(tempDir, "result.diff");
+    pb.redirectOutput(ProcessBuilder.Redirect.to(log));
+    try {
+      Process p = pb.start();
+      p.waitFor();
+      String s = Files.asCharSource(log, options.fileUtil().getCharset()).read();
+      return s;
+    } catch (InterruptedException | IOException e) {
+      return "failed diffing generated files: " + e;
+    }
   }
 
   /**
