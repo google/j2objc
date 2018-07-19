@@ -357,7 +357,8 @@ public class ClassFileConverter {
   private boolean isEnumSynthetic(Element e, TypeMirror enumType) {
     if (e.getKind() == ElementKind.STATIC_INIT) {
       return true;
-    } else if (e.getKind() == ElementKind.METHOD) {
+    }
+    if (e.getKind() == ElementKind.METHOD) {
       ExecutableElement method = (ExecutableElement) e;
       String enumSig = translationEnv.typeUtil().getSignatureName(enumType);
       String valueOfDesc = "(Ljava/lang/String;)" + enumSig;
@@ -375,11 +376,13 @@ public class ClassFileConverter {
     EnumDeclaration enumDecl = new EnumDeclaration(element);
     convertBodyDeclaration(enumDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      TreeNode encElem = convert(elem, enumDecl);
-      if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
-        enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
-      } else if (!isEnumSynthetic(elem, element.asType())) {
-        enumDecl.addBodyDeclaration((BodyDeclaration) encElem);
+      if (!isEnumSynthetic(elem, element.asType())) {
+        TreeNode encElem = convert(elem, enumDecl);
+        if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
+          enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
+        } else {
+          enumDecl.addBodyDeclaration((BodyDeclaration) encElem);
+        }
       }
     }
     enumDecl.removeModifiers(Modifier.FINAL);
@@ -389,7 +392,6 @@ public class ClassFileConverter {
   private TreeNode convertEnumConstantDeclaration(VariableElement element) {
     EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
     convertBodyDeclaration(enumConstDecl, element);
-    /* TODO(user): set ExecutablePair */
     return enumConstDecl;
   }
 }

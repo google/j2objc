@@ -282,6 +282,14 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualSrcClassfile(type, source);
   }
 
+  public void testParameterizedClass() throws IOException {
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class StringList extends java.util.ArrayList<String> {}"
+    );
+    assertEqualSrcClassfile("foo.bar.StringList", source);
+  }
+
 //  public void testSimpleEnum() throws IOException {
 //    String type = "foo.bar.Day";
 //    String source = String.join("\n",

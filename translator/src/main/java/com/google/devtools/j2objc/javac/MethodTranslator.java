@@ -60,7 +60,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.strobel.assembler.metadata.MethodDefinition;
+import com.strobel.assembler.metadata.MethodReference;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.core.StringUtilities;
 import com.strobel.decompiler.languages.java.ast.AnonymousObjectCreationExpression;
@@ -121,6 +121,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -209,7 +210,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
 
   @Override
   public TreeNode visitInvocationExpression(InvocationExpression node, Void data) {
-    MethodDefinition methodDef = (MethodDefinition) node.getUserData(Keys.MEMBER_REFERENCE);
+    MethodReference methodDef = (MethodReference) node.getUserData(Keys.MEMBER_REFERENCE);
     com.strobel.decompiler.languages.java.ast.Expression target = node.getTarget();
     if (target instanceof SuperReferenceExpression) {
       return target.acceptVisitor(this, null);
@@ -227,12 +228,11 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       return newNode;
     }
     if (target instanceof MemberReferenceExpression) {
-      TypeElement declaringType =
-          (TypeElement) ((DeclaredType) resolve(methodDef.getDeclaringType())).asElement();
+      TypeMirror type = resolve(methodDef.getDeclaringType());
       List<Expression> args = node.getArguments().stream()
           .map(e -> (Expression) e.acceptVisitor(this, null))
           .collect(Collectors.toList());
-      ExecutableElement sym = findMethod(methodDef.getName(), declaringType, methodDef);
+      ExecutableElement sym = findMethod(methodDef.getName(), type, methodDef);
       Expression expr = (Expression) target.getFirstChild().acceptVisitor(this, null);
       MethodInvocation newNode = new MethodInvocation()
           .setExecutablePair(new ExecutablePair(sym))
@@ -244,10 +244,13 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     throw new AssertionError("not implemented");
   }
 
-  private ExecutableElement findMethod(String name, TypeElement type, MethodDefinition methodDef) {
+  private ExecutableElement findMethod(String name, TypeMirror type, MethodReference methodDef) {
+    TypeElement typeElement = (TypeElement) (type.getKind() == TypeKind.ARRAY
+        ? ((com.sun.tools.javac.code.Type.ArrayType) type).tsym
+        : parserEnv.typeUtilities().asElement(type));
     String signature = methodDef.getSignature();
     String erasedSignature = methodDef.getErasedSignature();
-    for (Element e : type.getEnclosedElements()) {
+    for (Element e : typeElement.getEnclosedElements()) {
       if (e.getKind() == ElementKind.METHOD && e.getSimpleName().contentEquals(name)) {
         String sig = typeUtil.getReferenceSignature((ExecutableElement) e);
         if (sig.equals(signature) || sig.equals(erasedSignature)) {
@@ -255,11 +258,10 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
         }
       }
     }
-    throw new AssertionError(
-        "failed method lookup: " + type.getQualifiedName() + " " + name + signature);
+    throw new AssertionError("failed method lookup: " + type + " " + name + signature);
   }
 
-  private ExecutableElement findConstructor(TypeElement type, MethodDefinition methodDef) {
+  private ExecutableElement findConstructor(TypeElement type, MethodReference methodDef) {
     String signature = methodDef.getSignature();
     String erasedSignature = methodDef.getErasedSignature();
     for (Element e : type.getEnclosedElements()) {
