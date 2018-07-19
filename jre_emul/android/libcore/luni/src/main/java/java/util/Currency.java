@@ -17,6 +17,8 @@
 
 package java.util;
 
+import com.google.j2objc.LibraryNotLinkedError;
+import com.google.j2objc.util.CurrencyNumericCodes;
 import java.io.Serializable;
 import libcore.icu.ICU;
 import libcore.icu.LocaleData;
@@ -112,6 +114,23 @@ public final class Currency implements Serializable {
      */
     public String getCurrencyCode() {
         return currencyCode;
+    }
+
+    /**
+     * Returns the ISO 4217 numeric code of this currency.
+     *
+     * @return the ISO 4217 numeric code of this currency
+     * @since 1.7
+     */
+    public int getNumericCode() {
+        try {
+            String name = "com.google.j2objc.util.CurrencyNumericCodesImpl";
+            CurrencyNumericCodes cnc = (CurrencyNumericCodes) Class.forName(name).newInstance();
+            return cnc.getNumericCode(currencyCode);
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError("java.util support", "jre_util",
+                "ComGoogleJ2objcUtilCurrencyNumericCodesImpl");
+        }
     }
 
     /**

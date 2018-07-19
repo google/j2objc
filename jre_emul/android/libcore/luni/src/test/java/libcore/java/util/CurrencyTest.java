@@ -102,11 +102,10 @@ public class CurrencyTest extends junit.framework.TestCase {
         assertSame("Currency objects should be singletons", usd, deserializedUsd);
     }
 
-    /* getNumericCode is not implemented in J2ObjC.
     public void test_getNumericCode() throws Exception {
         assertEquals(840, Currency.getInstance("USD").getNumericCode());
         assertEquals(826, Currency.getInstance("GBP").getNumericCode());
         assertEquals(999, Currency.getInstance("XXX").getNumericCode());
         assertEquals(0, Currency.getInstance("XFU").getNumericCode());
-    }*/
+    }
 }
