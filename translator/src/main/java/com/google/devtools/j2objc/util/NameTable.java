@@ -703,7 +703,7 @@ public class NameTable {
       String packageName = packageElement.getQualifiedName().toString();
       String mappedPackageName = getPrefix(packageElement);
       return Optional.of(
-          String.format(mappingFormat, mappedPackageName, packageName, mappedPackageName));
+          String.format(mappingFormat, typeName, packageName, mappedPackageName));
     }
 
     return Optional.empty();

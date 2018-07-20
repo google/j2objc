@@ -699,7 +699,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
+        "J2OBJC_NAME_MAPPING(FBMTest, \"foo.bar.mumble\", \"FBM\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -719,7 +719,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
+        "J2OBJC_NAME_MAPPING(FBMTest, \"foo.bar.mumble\", \"FBM\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -743,7 +743,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertTranslation(translation,
-        "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
+        "J2OBJC_NAME_MAPPING(FBMTest, \"foo.bar.mumble\", \"FBM\")");
     assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
@@ -902,7 +902,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             "foo.bar.mumble.Test",
             "foo/bar/mumble/Test.m");
     assertTranslation(
-        mFile, "J2OBJC_NAME_MAPPING(FBM, \"foo.bar.mumble\", \"FBM\")");
+        mFile, "J2OBJC_NAME_MAPPING(FBMTest, \"foo.bar.mumble\", \"FBM\")");
     assertOccurrences(mFile, "J2OBJC_NAME_MAPPING", 1);
     // The ObjectiveCName annotation affects classes in the package but not the package itself.
     String translation =
