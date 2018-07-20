@@ -684,7 +684,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoPrefixAnnotation() throws IOException {
-    options.setStripClassNameMapping(false);
     addSourcesToSourcepaths();
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
@@ -704,7 +703,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoPreprocessing() throws IOException {
-    options.setStripClassNameMapping(false);
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
         + "package foo.bar.mumble;\n"
@@ -724,7 +722,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoOnClasspath() throws IOException {
-    options.setStripClassNameMapping(false);
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
         + "package foo.bar.mumble;\n"
@@ -833,7 +830,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testNameMappingStripped() throws IOException {
-    options.setStripReflection(true);
+    options.setStripNameMapping(true);
     String translation = translateSourceFile(
         "@com.google.j2objc.annotations.ObjectiveCName(\"NSTest\") public class Test {}",
         "Test", "Test.m");
@@ -842,7 +839,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   public void testNameMappingNotStripped() throws IOException {
     options.setStripReflection(true);
-    options.setStripClassNameMapping(false);
+    options.setStripNameMapping(false);
     String translation = translateSourceFile(
         "@com.google.j2objc.annotations.ObjectiveCName(\"NSTest\") public class Test {}",
         "Test", "Test.m");
@@ -850,7 +847,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testNameMappingNestedClass() throws IOException {
-    options.setStripClassNameMapping(false);
     String hFile =
         translateSourceFile(
             "package foo; "
@@ -879,7 +875,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
    * anonymous classes.
    */
   public void testCasesWithoutNameMapping() throws IOException {
-    options.setStripClassNameMapping(false);
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
             + "package foo.bar.mumble;\n"

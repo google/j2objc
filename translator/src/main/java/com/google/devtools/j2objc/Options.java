@@ -66,7 +66,8 @@ public class Options {
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
   private EnumSet<MetadataSupport> includedMetadata =
-      EnumSet.of(MetadataSupport.FULL, MetadataSupport.ENUM_CONSTANTS);
+      EnumSet.of(
+          MetadataSupport.FULL, MetadataSupport.ENUM_CONSTANTS, MetadataSupport.NAME_MAPPING);
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
@@ -208,8 +209,8 @@ public class Options {
     // Generate metadata for enum constants.
     ENUM_CONSTANTS,
 
-    // Generate class name mapping.
-    CLASS_NAMES,
+    // Generate name mapping.
+    NAME_MAPPING,
 
     // Generate all metadata.
     FULL;
@@ -387,12 +388,12 @@ public class Options {
               includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
               break;
             }
-            case "class-names": {
-              includedMetadata.add(MetadataSupport.CLASS_NAMES);
+            case "name-mapping": {
+              includedMetadata.add(MetadataSupport.NAME_MAPPING);
               break;
             }
-            case "-class-names": {
-              includedMetadata.remove(MetadataSupport.CLASS_NAMES);
+            case "-name-mapping": {
+              includedMetadata.remove(MetadataSupport.NAME_MAPPING);
               break;
             }
             default: {
@@ -737,7 +738,7 @@ public class Options {
   public void setStripReflection(boolean b) {
     if (b) {
       includedMetadata.remove(MetadataSupport.FULL);
-      includedMetadata.remove(MetadataSupport.CLASS_NAMES);
+      includedMetadata.remove(MetadataSupport.NAME_MAPPING);
     } else {
       includedMetadata = EnumSet.allOf(MetadataSupport.class);
     }
@@ -756,16 +757,16 @@ public class Options {
     }
   }
 
-  public boolean stripClassNameMapping() {
-    return !includedMetadata.contains(MetadataSupport.CLASS_NAMES);
+  public boolean stripNameMapping() {
+    return !includedMetadata.contains(MetadataSupport.NAME_MAPPING);
   }
 
   @VisibleForTesting
-  public void setStripClassNameMapping(boolean b) {
+  public void setStripNameMapping(boolean b) {
     if (b) {
-      includedMetadata.remove(MetadataSupport.CLASS_NAMES);
+      includedMetadata.remove(MetadataSupport.NAME_MAPPING);
     } else {
-      includedMetadata.add(MetadataSupport.CLASS_NAMES);
+      includedMetadata.add(MetadataSupport.NAME_MAPPING);
     }
   }
 

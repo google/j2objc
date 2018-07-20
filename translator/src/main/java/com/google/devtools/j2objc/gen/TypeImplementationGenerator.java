@@ -230,7 +230,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printNameMapping() {
-    if (!options.stripClassNameMapping()) {
+    if (!options.stripNameMapping()) {
       Optional<String> mapping = nameTable.getNameMapping(typeElement, typeName);
       if (mapping.isPresent()) {
         newline();
