@@ -242,6 +242,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         VariableElement var = fragment.getVariableElement();
+        // Static accessors cannot be directly invoked from Swift when the corresponding property is
+        // also generated.
+        if (ElementUtil.hasAnnotation(var, Property.class)) {
+          continue;
+        }
         String accessorName = nameTable.getStaticAccessorName(var);
         String objcType = nameTable.getObjCType(var.asType());
         printf("\n+ (%s)%s;\n", objcType, accessorName);
