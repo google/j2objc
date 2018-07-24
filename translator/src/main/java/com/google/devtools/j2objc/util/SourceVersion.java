@@ -19,7 +19,12 @@ package com.google.devtools.j2objc.util;
  */
 public enum SourceVersion {
 
-  JAVA_9(9, "1.9"), JAVA_8(8, "1.8"), JAVA_7(7, "1.7"), JAVA_6(6, "1.6"), JAVA_5(5, "1.5");
+  JAVA_10(10, "10"),
+  JAVA_9(9, "1.9"),
+  JAVA_8(8, "1.8"),
+  JAVA_7(7, "1.7"),
+  JAVA_6(6, "1.6"),
+  JAVA_5(5, "1.5");
 
   private final int version;
   private final String flag;

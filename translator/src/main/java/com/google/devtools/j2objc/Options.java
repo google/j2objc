@@ -458,6 +458,11 @@ public class Options {
             ErrorUtil.warning("Java 9 source version is not supported, using Java 8.");
             sourceVersion = SourceVersion.JAVA_8;
           }
+          // TODO(tball): remove when Java 10 source is supported.
+          if (sourceVersion == SourceVersion.JAVA_10) {
+            ErrorUtil.warning("Java 10 source version is not supported, using Java 8.");
+            sourceVersion = SourceVersion.JAVA_8;
+          }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + s);
         }
