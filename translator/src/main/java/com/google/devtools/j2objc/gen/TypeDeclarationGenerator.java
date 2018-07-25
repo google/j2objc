@@ -401,6 +401,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           }
         }
 
+        if (ElementUtil.isFinal(varElement)) {
+          attributes.add("readonly");
+        }
+
         if (!attributes.isEmpty()) {
           print('(');
           print(PropertyAnnotation.toAttributeString(attributes));

@@ -154,6 +154,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
             + "  @Property private boolean fieldBool;"
             + "  @Property(\"nonatomic, readonly, weak\") private int fieldReorder;"
             + "  @Property T aGenericProperty;"
+            + "  @Property private final int fieldFinal = 724;"
             + "  public int getFieldBaz() { return 1; }"
             + "  public void setFieldNonAtomic(int value) { }"
             + "  public void setFieldBaz(int value, int option) { }"
@@ -186,6 +187,9 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@property (nonatomic, getter=getAGenericProperty, "
             + "setter=setAGenericPropertyWithJavaLangThrowable:) "
             + "JavaLangThrowable *aGenericProperty;");
+
+    // Test readonly property.
+    assertTranslation(translation, "@property (readonly) jint fieldFinal;");
   }
 
   public void testSynchronizedPropertyGetter() throws IOException {
@@ -274,14 +278,18 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Property; "
         + "public class Test {  "
         + "@Property static int test; "
-        + "@Property(\"nonatomic\") static double d; }", "Test", "Test.h");
+        + "@Property(\"nonatomic\") static double d; "
+        + "@Property static final boolean flag = true; }", "Test", "Test.h");
     assertTranslatedLines(translation,
         "@property (class) jint test;",
-        "@property (nonatomic, class) jdouble d;");
+        "@property (nonatomic, class) jdouble d;",
+        "@property (readonly, class) jboolean flag;");
     assertNotInTranslation(translation, "+ (jint)test;");
     assertNotInTranslation(translation, "+ (void)setTest:(jint)value;");
     assertNotInTranslation(translation, "+ (jdouble)d;");
     assertNotInTranslation(translation, "+ (void)setD:(jdouble)value;");
+    assertNotInTranslation(translation, "+ (jboolean)flag;");
+    assertNotInTranslation(translation, "+ (void)setFlag:(jboolean)value;");
 
     // Verify class attributes aren't assigned to instance fields.
     translateSourceFile(
