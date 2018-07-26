@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * Notes:
  * <ul>
  *   <li>Invalid attributes are reported as errors.</li>
- *   <li><b>readwrite</b>, <b>strong</b>, and <b>atomic</b> attributes are removed
+ *   <li><b>readwrite</b>, <b>strong</b> (when using ARC), and <b>atomic</b> attributes are removed
  *     since they are defaults.</li>
  *   <li>Strings will include the <b>copy</b> attribute.</li>
  * </ul>

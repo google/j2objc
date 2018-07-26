@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -185,7 +186,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(
         translation,
         "@property (nonatomic, getter=getAGenericProperty, "
-            + "setter=setAGenericPropertyWithJavaLangThrowable:) "
+            + "setter=setAGenericPropertyWithJavaLangThrowable:, strong) "
             + "JavaLangThrowable *aGenericProperty;");
 
     // Test readonly property.
@@ -270,6 +271,26 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "}";
     translateSourceFile(source, "Foo", "Foo.h");
     assertErrorCount(1);
+  }
+
+  public void testStrongProperties() throws IOException {
+    String source =
+        "import com.google.j2objc.annotations.Property; "
+            + "public class Test {  "
+            + "@Property(\"strong\") Thread explicitlyStrong; "
+            + "@Property Thread implicitlyStrong; }";
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslatedLines(
+        translation,
+        "@property (strong) JavaLangThread *explicitlyStrong;",
+        "@property (strong) JavaLangThread *implicitlyStrong;");
+
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslatedLines(
+        translation,
+        "@property JavaLangThread *explicitlyStrong;",
+        "@property JavaLangThread *implicitlyStrong;");
   }
 
   public void testClassProperties() throws IOException {

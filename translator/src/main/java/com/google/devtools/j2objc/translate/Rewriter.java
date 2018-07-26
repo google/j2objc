@@ -256,8 +256,13 @@ public class Rewriter extends UnitTreeVisitor {
     }
 
     node.removeAttribute("readwrite");
-    node.removeAttribute("strong");
     node.removeAttribute("atomic");
+    // strong is the default when using ARC; otherwise, assign is the default.
+    if (options.useARC()) {
+      node.removeAttribute("strong");
+    } else if (!fieldType.getKind().isPrimitive() && !node.hasMemoryManagementAttribute()) {
+      node.addAttribute("strong");
+    }
 
     // Make sure attempt isn't made to specify an accessor method for fields with multiple
     // fragments, since each variable needs unique accessors.
