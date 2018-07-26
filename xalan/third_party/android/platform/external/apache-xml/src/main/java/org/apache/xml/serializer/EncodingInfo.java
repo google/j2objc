@@ -66,7 +66,7 @@ public final class EncodingInfo extends Object
      * and working up to m_highCharInContiguousGroup.
      * <p>
      * This is the char for which chars at or below this value are 
-     * definately in the encoding, although for chars
+     * definitely in the encoding, although for chars
      * above this point they might be in the encoding.
      * This exists for performance, especially for ASCII characters
      * because for ASCII all chars in the range '\u0001' to '\u007F' 

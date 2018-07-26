@@ -155,7 +155,7 @@ public class ProcessorCharacters extends XSLTElementProcessor
 
   /**
    * Accumulate characters, until a non-whitespace event has
-   * occured.
+   * occurred.
    */
   private StringBuffer m_accumulator = new StringBuffer();
 

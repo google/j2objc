@@ -1209,7 +1209,7 @@ UTextClose(UText *ut);
 struct UTextFuncs {
     /**
      *   (public)  Function table size, sizeof(UTextFuncs)
-     *             Intended for use should the table grow to accomodate added
+     *             Intended for use should the table grow to accommodate added
      *             functions in the future, to allow tests for older format
      *             function tables that do not contain the extensions.
      *

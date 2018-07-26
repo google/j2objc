@@ -347,7 +347,7 @@ public abstract class SerializerBase
      * there is a currently open element.
      * 
      * An element is currently open if a startElement() notification has
-     * occured but the start of the element has not yet been written to the
+     * occurred but the start of the element has not yet been written to the
      * output.  In the stream case this means that we have not yet been forced
      * to close the elements opening tag by another notification, such as a
      * character notification.

@@ -238,7 +238,7 @@ public class WalkerFactory
     // root
     // child:node()
     // BIT_DESCENDANT_OR_SELF
-    // It's highly possible that we should have a seperate bit set for 
+    // It's highly possible that we should have a separate bit set for 
     // "//foo" patterns.
     // For at least the time being, we can't optimize patterns like 
     // "//table[3]", because this has to be analyzed as 

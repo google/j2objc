@@ -491,7 +491,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "ERROR! Could not find ENDOP after OP_LOCATIONPATH"},
 
   { ER_ERROR_OCCURED,
-     "Error occured!"},
+     "Error occurred!"},
 
   { ER_ILLEGAL_VARIABLE_REFERENCE,
       "VariableReference given for variable out of context or without definition!  Name = {0}"},

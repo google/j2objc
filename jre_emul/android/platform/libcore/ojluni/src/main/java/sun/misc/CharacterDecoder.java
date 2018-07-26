@@ -145,7 +145,7 @@ public abstract class CharacterDecoder {
      * Decode the text from the InputStream and write the decoded
      * octets to the OutputStream. This method runs until the stream
      * is exhausted.
-     * @exception CEFormatException An error has occured while decoding
+     * @exception CEFormatException An error has occurred while decoding
      * @exception CEStreamExhausted The input stream is unexpectedly out of data
      */
     public void decodeBuffer(InputStream aStream, OutputStream bStream) throws IOException {

@@ -627,7 +627,7 @@ public interface Statement extends Wrapper, AutoCloseable {
     int SUCCESS_NO_INFO = -2;
 
     /**
-     * The constant indicating that an error occured while executing a
+     * The constant indicating that an error occurred while executing a
      * batch statement.
      *
      * @since 1.4
