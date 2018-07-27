@@ -247,10 +247,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (ElementUtil.hasAnnotation(var, Property.class)) {
           continue;
         }
+        TypeMirror type = var.asType();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = nameTable.getObjCType(var.asType());
-        printf("\n+ (%s)%s;\n", objcType, accessorName);
-        if (!ElementUtil.isFinal(var)) {
+        String objcType = nameTable.getObjCType(type);
+        TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
+        String baseName = nameTable.getVariableBaseName(var);
+        ExecutableElement getter = ElementUtil.findGetterMethod(baseName, type, declaringClass);
+        if (getter == null) {
+          printf("\n+ (%s)%s;\n", objcType, accessorName);
+        }
+        ExecutableElement setter = ElementUtil.findSetterMethod(baseName, type, declaringClass);
+        if (setter == null && !ElementUtil.isFinal(var)) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
       }
@@ -320,30 +327,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println("}");
   }
 
-  /**
-   * Locate method which matches either Java or Objective C getter name patterns.
-   */
-  public static ExecutableElement findGetterMethod(
-      String propertyName, TypeMirror propertyType, TypeElement declaringClass) {
-    // Try Objective-C getter naming convention.
-    ExecutableElement getter = ElementUtil.findMethod(declaringClass, propertyName);
-    if (getter == null) {
-      // Try Java getter naming conventions.
-      String prefix = TypeUtil.isBoolean(propertyType) ? "is" : "get";
-      getter = ElementUtil.findMethod(declaringClass, prefix + NameTable.capitalize(propertyName));
-    }
-    return getter;
-  }
-
-  /**
-   * Locate method which matches the Java/Objective C setter name pattern.
-   */
-  public static ExecutableElement findSetterMethod(
-      String propertyName, TypeMirror type, TypeElement declaringClass) {
-    return ElementUtil.findMethod(declaringClass, "set" + NameTable.capitalize(propertyName),
-        TypeUtil.getQualifiedName(type));
-  }
-
   protected void printProperties() {
     Iterable<VariableDeclarationFragment> fields = getAllFields();
     for (VariableDeclarationFragment fragment : fields) {
@@ -360,7 +343,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         // to support its unique accessors.
         Set<String> attributes = property.getPropertyAttributes();
         TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-        ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
+        ExecutableElement getter =
+            ElementUtil.findGetterMethod(propertyName, varType, declaringClass);
         if (getter != null) {
           // Update getter from its Java name to its selector. This is normally the
           // same since getters have no parameters, but the name may be reserved.
@@ -370,7 +354,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
             attributes.add("nonatomic");
           }
         }
-        ExecutableElement setter = findSetterMethod(propertyName, varType, declaringClass);
+        ExecutableElement setter =
+            ElementUtil.findSetterMethod(propertyName, varType, declaringClass);
         if (setter != null) {
           // Update setter from its Java name to its selector.
           attributes.remove("setter=" + property.getSetter());

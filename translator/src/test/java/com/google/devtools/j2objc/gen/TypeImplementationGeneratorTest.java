@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -109,6 +108,23 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (void)setI:(jint)value");
     assertNotInTranslation(translation, "+ (jint)VERSION");
     assertNotInTranslation(translation, "+ (Test *)DEFAULT");
+  }
+
+  // Verify that accessor methods for static vars and constants are not generated when they are
+  // already provided.
+  public void testNoStaticFieldAccessorMethodsWhenAlreadyProvided() throws IOException {
+    options.setStaticAccessorMethods(true);
+    String source =
+        "class Test { "
+            + "  static String ID; "
+            + "  static String getID() { return ID; } "
+            + "  static void setID(String ID) { Test.ID = ID; } "
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertNotInTranslation(translation, "+ (NSString *)ID {");
+    assertNotInTranslation(translation, "+ (void)setID:(NSString *)value {");
+    assertTranslation(translation, "+ (NSString *)getID {");
+    assertTranslation(translation, "+ (void)setIDWithNSString:(NSString *)ID {");
   }
 
   // Verify that accessor methods for enum constants are generated on request.

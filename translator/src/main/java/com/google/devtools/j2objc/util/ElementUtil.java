@@ -475,6 +475,28 @@ public final class ElementUtil {
         method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
   }
 
+  /** Locate method which matches either Java or Objective C getter name patterns. */
+  public static ExecutableElement findGetterMethod(
+      String propertyName, TypeMirror propertyType, TypeElement declaringClass) {
+    // Try Objective-C getter naming convention.
+    ExecutableElement getter = ElementUtil.findMethod(declaringClass, propertyName);
+    if (getter == null) {
+      // Try Java getter naming conventions.
+      String prefix = TypeUtil.isBoolean(propertyType) ? "is" : "get";
+      getter = ElementUtil.findMethod(declaringClass, prefix + NameTable.capitalize(propertyName));
+    }
+    return getter;
+  }
+
+  /** Locate method which matches the Java/Objective C setter name pattern. */
+  public static ExecutableElement findSetterMethod(
+      String propertyName, TypeMirror type, TypeElement declaringClass) {
+    return ElementUtil.findMethod(
+        declaringClass,
+        "set" + NameTable.capitalize(propertyName),
+        TypeUtil.getQualifiedName(type));
+  }
+
   public static ExecutableElement findConstructor(TypeElement type, String... paramTypes) {
     return Iterables.getFirst(Iterables.filter(
         getConstructors(type),

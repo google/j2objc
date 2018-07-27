@@ -97,6 +97,23 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value");
   }
 
+  // Verify that accessor methods for static vars and constants are not generated when they are
+  // already provided.
+  public void testNoStaticFieldAccessorMethodsWhenAlreadyProvided() throws IOException {
+    options.setStaticAccessorMethods(true);
+    String source =
+        "class Test { "
+            + "  static String ID; "
+            + "  static String getID() { return ID; } "
+            + "  static void setID(String ID) { Test.ID = ID; } "
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertNotInTranslation(translation, "+ (NSString *)ID;");
+    assertNotInTranslation(translation, "+ (void)setID:(NSString *)value;");
+    assertTranslation(translation, "+ (NSString *)getID;");
+    assertTranslation(translation, "+ (void)setIDWithNSString:(NSString *)ID;");
+  }
+
   // Verify that accessor methods for enum constants are generated on request.
   public void testEnumConstantAccessorMethods() throws IOException {
     options.setStaticAccessorMethods(true);
