@@ -94,6 +94,11 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     return this;
   }
 
+  public AbstractTypeDeclaration addClassInitStatement(Statement stmt) {
+    classInitStatements.add(stmt);
+    return this;
+  }
+
   public AbstractTypeDeclaration addClassInitStatement(int index, Statement stmt) {
     classInitStatements.add(index, stmt);
     return this;

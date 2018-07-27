@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.ArrayType;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BreakStatement;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
@@ -109,6 +110,7 @@ import com.strobel.decompiler.languages.java.ast.VariableInitializer;
 import com.strobel.decompiler.languages.java.ast.WildcardType;
 import com.strobel.decompiler.patterns.Pattern;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -756,7 +758,20 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
 
   @Override
   public TreeNode visitObjectCreationExpression(ObjectCreationExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    Type type = (Type) node.getType().acceptVisitor(this, null);
+    TypeElement typeElement = (TypeElement) ((DeclaredType) type.getTypeMirror()).asElement();
+    ClassInstanceCreation newNode = new ClassInstanceCreation();
+    List<String> paramTypes = new ArrayList<>();
+    for (com.strobel.decompiler.languages.java.ast.Expression arg : node.getArguments()) {
+      Expression expr = (Expression) arg.acceptVisitor(this,  null);
+      newNode.addArgument(expr);
+      paramTypes.add(expr.getTypeMirror().toString());
+    }
+    ExecutableElement constructor =
+        ElementUtil.findConstructor(typeElement, paramTypes.toArray(new String[0]));
+    return newNode
+        .setExecutablePair(new ExecutablePair(constructor))
+        .setType(type);
   }
 
   @Override

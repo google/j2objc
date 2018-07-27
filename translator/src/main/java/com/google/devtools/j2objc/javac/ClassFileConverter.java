@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
@@ -138,9 +139,29 @@ public class ClassFileConverter {
     String mainTypeName = typeElement.getSimpleName().toString();
     CompilationUnit compUnit = new CompilationUnit(translationEnv, mainTypeName);
     compUnit.setPackage((PackageDeclaration) convert(pkgElement, compUnit));
-    compUnit.addType((AbstractTypeDeclaration) convert(typeElement, compUnit));
+    AbstractTypeDeclaration typeDecl = (AbstractTypeDeclaration) convert(typeElement, compUnit);
+    convertClassInitializer(typeDecl);
+    compUnit.addType(typeDecl);
     return compUnit;
   }
+
+  /**
+   * The clinit method isn't converted into a member element by javac,
+   * so extract it separately from the classfile.
+   */
+  private void convertClassInitializer(AbstractTypeDeclaration typeDecl) {
+    EntityDeclaration decl = classFile.getMethod("<clinit>", "()V");
+    if (decl == null) {
+      return;  // Class doesn't have a static initializer.
+    }
+    MethodTranslator translator = new MethodTranslator(
+        parserEnv, translationEnv, null, typeDecl, null);
+    Block block = (Block) decl.acceptVisitor(translator, null);
+    for (Statement stmt : block.getStatements()) {
+      typeDecl.addClassInitStatement(stmt.copy());
+    }
+
+ }
 
   @SuppressWarnings("fallthrough")
   private TreeNode convert(Element element, TreeNode parent) {
@@ -174,7 +195,8 @@ public class ClassFileConverter {
         node = convertParameter((VariableElement) element);
         break;
       case STATIC_INIT:
-        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
+        // Converted separately in convertClassInitializer().
+        node = null;
         break;
       default:
         throw new AssertionError("Unsupported element kind: " + element.getKind());
@@ -224,7 +246,9 @@ public class ClassFileConverter {
       BodyDeclaration bodyDecl = elem.getKind() == ElementKind.METHOD
           ? convertAnnotationTypeMemberDeclaration((ExecutableElement) elem)
           : (BodyDeclaration) convert(elem, annotTypeDecl);
-      annotTypeDecl.addBodyDeclaration(bodyDecl);
+      if (bodyDecl != null) {
+        annotTypeDecl.addBodyDeclaration(bodyDecl);
+      }
     }
     removeInterfaceModifiers(annotTypeDecl);
     return annotTypeDecl;
@@ -282,7 +306,10 @@ public class ClassFileConverter {
     for (Element elem : element.getEnclosedElements()) {
       // Ignore inner types, as they are defined by other classfiles.
       if (!elem.getKind().isClass() && !elem.getKind().isInterface()) {
-        typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem, typeDecl));
+        BodyDeclaration decl = (BodyDeclaration) convert(elem, typeDecl);
+        if (decl != null) {
+          typeDecl.addBodyDeclaration(decl);
+        }
       }
     }
     if (typeDecl.isInterface()) {

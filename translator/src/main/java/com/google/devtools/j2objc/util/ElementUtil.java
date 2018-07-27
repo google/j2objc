@@ -475,6 +475,12 @@ public final class ElementUtil {
         method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
   }
 
+  public static ExecutableElement findConstructor(TypeElement type, String... paramTypes) {
+    return Iterables.getFirst(Iterables.filter(
+        getConstructors(type),
+        method -> paramsMatch(method, paramTypes)), null);
+  }
+
   public static VariableElement findField(TypeElement type, String name) {
     return Iterables.getFirst(Iterables.filter(
         filterEnclosedElements(type, VariableElement.class, ElementKind.FIELD),

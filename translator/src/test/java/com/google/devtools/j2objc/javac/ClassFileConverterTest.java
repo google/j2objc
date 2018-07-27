@@ -1299,4 +1299,20 @@ public class ClassFileConverterTest extends GenerationTest {
     );
     assertEqualSrcClassfile(type, source);
   }
+
+  public void testStaticFields() throws IOException {
+    String source = String.join("\n",
+        "class Test {",
+        // Constant.
+        "  static final double PI = 3.1416;",
+
+        // Primitive static field.
+        // TODO(tball): enable when mutator moves initializer expressions to declarations.
+        // "  static int version = 42;",
+
+        // Static field with constructor that takes an arg.
+        "  static Number number = new Integer(42);",
+        "}");
+    assertEqualSrcClassfile("Test", source);
+  }
 }
