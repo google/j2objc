@@ -89,7 +89,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         // Local cache for record-at-a-time fetch
         int gotslot[] = new int[4];
 
-        // endDocument recieved?
+        // endDocument received?
         private boolean done = false;
         boolean m_isError = false;
 

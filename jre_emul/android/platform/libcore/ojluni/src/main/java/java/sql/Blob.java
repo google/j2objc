@@ -158,7 +158,7 @@ public interface Blob {
      * in the <code>Blob</code> object starting at the position
      * <code>pos</code>.  If the end of the <code>Blob</code> value is reached
      * while writing the array of bytes, then the length of the <code>Blob</code>
-     * value will be increased to accomodate the extra bytes.
+     * value will be increased to accommodate the extra bytes.
      * <p>
      * <b>Note:</b> If the value specified for <code>pos</code>
      * is greater then the length+1 of the <code>BLOB</code> value then the

@@ -43,7 +43,7 @@ extern "C" {
  * particularly aware of the fact that these functions are convenience
  * functions, and as such are often compound operations, each one of
  * which may throw an exception. Therefore, the functions this file
- * will often return silently if an exception has occured, and callers
+ * will often return silently if an exception has occurred, and callers
  * must check for exception themselves.
  */
 

@@ -212,7 +212,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Throw a template element runtime error.  (Note: should we throw a TransformerException instead?)
    *
-   * @param msg key of the error that occured.
+   * @param msg key of the error that occurred.
    * @param args Arguments to be used in the message
    */
   public void error(String msg, Object[] args)

@@ -96,7 +96,7 @@ public final class DOM3SerializerImpl implements DOM3Serializer {
     /**
      * Serializes the Level 3 DOM node by creating an instance of DOM3TreeWalker
      * which traverses the DOM tree and invokes handler events to serialize
-     * the DOM NOde. Throws an exception only if an I/O exception occured
+     * the DOM NOde. Throws an exception only if an I/O exception occurred
      * while serializing.
      * This interface is a public API.
      *

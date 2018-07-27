@@ -287,7 +287,7 @@ public class SerializerMessages extends ListResourceBundle {
              },
              
              { MsgKey.ER_WRITING_INTERNAL_SUBSET,
-                 "An error occured while writing the internal subset."
+                 "An error occurred while writing the internal subset."
              },
         };
 

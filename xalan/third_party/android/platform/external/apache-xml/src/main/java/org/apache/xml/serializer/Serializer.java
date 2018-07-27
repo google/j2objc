@@ -187,7 +187,7 @@ public interface Serializer {
      *
      * @return A {@link ContentHandler} interface into this serializer,
      *  or null if the serializer is not SAX 2 capable
-     * @throws IOException An I/O exception occured
+     * @throws IOException An I/O exception occurred
      */
     public ContentHandler asContentHandler() throws IOException;
 

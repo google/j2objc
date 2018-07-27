@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
 
 /**
  * <code>DOMLocatorImpl</code> is an implementaion that describes a location (e.g. 
- * where an error occured).
+ * where an error occurred).
  * <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document Object Model (DOM) Level 3 Core Specification</a>.
  * This class is a copy of the Xerces-2J class org.apache.xerces.dom.DOMLocatorImpl.java v 1.10 
  *

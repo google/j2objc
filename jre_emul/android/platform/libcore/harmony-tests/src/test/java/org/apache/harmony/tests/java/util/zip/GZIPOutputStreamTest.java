@@ -57,7 +57,7 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
             outGZIP.close();
         } catch (IOException e) {
             fail(
-                    "an IO error occured while trying to find the output file or creating GZIP constructor");
+                    "an IO error occurred while trying to find the output file or creating GZIP constructor");
         }
     }
 

@@ -511,7 +511,7 @@ public final class OutputPropertiesFactory
      * the rules of {@link #loadPropertiesFile}.
      *
      * @param s non-null reference to string that may need to be fixed up.
-     * @return A new string if fixup occured, otherwise the s argument.
+     * @return A new string if fixup occurred, otherwise the s argument.
      */
     static private String fixupPropertyString(String s, boolean doClipping)
     {

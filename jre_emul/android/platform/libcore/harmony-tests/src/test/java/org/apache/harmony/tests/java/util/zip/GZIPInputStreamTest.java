@@ -68,7 +68,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
             inGZIP.close();
         } catch (IOException e) {
             fail(
-                    "an IO error occured while trying to open the input file");
+                    "an IO error occurred while trying to open the input file");
         }
     }
 

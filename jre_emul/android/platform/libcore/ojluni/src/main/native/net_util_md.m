@@ -1309,7 +1309,7 @@ NET_Bind(int fd, struct sockaddr *him, int len)
 
 #if defined(__solaris__) && defined(AF_INET6)
     /*
-     * Solaris has seperate IPv4 and IPv6 port spaces so we
+     * Solaris has separate IPv4 and IPv6 port spaces so we
      * use an exclusive bind when SO_REUSEADDR is not used to
      * give the illusion of a unified port space.
      * This also avoids problems with IPv6 sockets connecting

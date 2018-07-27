@@ -31,7 +31,7 @@ import org.apache.xml.res.XMLMessages;
 
 
 /**
- * This class specifies an exceptional condition that occured
+ * This class specifies an exceptional condition that occurred
  * in the DTM module.
  */
 public class DTMException extends RuntimeException {

@@ -63,7 +63,7 @@ public interface DOMSerializer
 {
     /**
      * Serializes the DOM node. Throws an exception only if an I/O
-     * exception occured while serializing.
+     * exception occurred while serializing.
      * 
      * This interface is a public API.
      *

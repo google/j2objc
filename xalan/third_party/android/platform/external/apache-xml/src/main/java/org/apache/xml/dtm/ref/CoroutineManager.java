@@ -130,7 +130,7 @@ public class CoroutineManager
    * %REVIEW% It's been proposed that we be able to pass types of data
    * other than Object -- more specific object types, or
    * lighter-weight primitives.  This would seem to create a potential
-   * explosion of "pass x recieve y back" methods (or require
+   * explosion of "pass x receive y back" methods (or require
    * fracturing resume into two calls, resume-other and
    * wait-to-be-resumed), and the weight issue could be managed by
    * reusing a mutable buffer object to contain the primitive

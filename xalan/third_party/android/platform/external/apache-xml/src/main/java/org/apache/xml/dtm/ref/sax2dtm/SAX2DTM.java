@@ -362,7 +362,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * know what source it's reading from, what thread that source will run in,
    * or when it will run.
    *
-   * @param incrementalSAXSource The parser that we want to recieve events from
+   * @param incrementalSAXSource The parser that we want to receive events from
    * on demand.
    */
   public void setIncrementalSAXSource(IncrementalSAXSource incrementalSAXSource)
@@ -2453,7 +2453,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int exName = m_expandedNameTable.getExpandedTypeID(DTM.COMMENT_NODE);
 
     // For now, treat comments as strings...  I guess we should do a
-    // seperate FSB buffer instead.
+    // separate FSB buffer instead.
     int dataIndex = m_valuesOrPrefixes.stringToIndex(new String(ch, start,
                       length));
 

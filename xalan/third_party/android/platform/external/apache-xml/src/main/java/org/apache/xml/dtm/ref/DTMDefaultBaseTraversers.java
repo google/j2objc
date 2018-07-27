@@ -361,7 +361,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
           if(parentID == axisRoot)
             return nextID;
           
-          // If the parent occured before the subtree root, then 
+          // If the parent occurred before the subtree root, then 
           // we know it is past the child axis.
           if(parentID < axisRoot)
               return NULL;

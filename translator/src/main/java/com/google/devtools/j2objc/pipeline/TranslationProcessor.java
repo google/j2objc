@@ -287,7 +287,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("CastResolver");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
-    //   top-level and functionizing to have occured.
+    //   top-level and functionizing to have occurred.
     new PrivateDeclarationResolver(unit).run();
     ticker.tick("PrivateDeclarationResolver");
 
