@@ -612,6 +612,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 IOSClass *IOSClass_forName_(NSString *className) {
+  IOSClass_initialize();
   (void)nil_chk(className);
   IOSClass *iosClass = nil;
   if ([className length] > 0) {
@@ -634,6 +635,7 @@ IOSClass *IOSClass_forName_(NSString *className) {
 
 IOSClass *IOSClass_forName_initialize_classLoader_(
     NSString *className, jboolean load, JavaLangClassLoader *loader) {
+  IOSClass_initialize();
   return IOSClass_forName_(className);
 }
 
