@@ -381,8 +381,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
             attributes.add("nullable");
           } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
             attributes.add("nonnull");
-          } else if (!attributes.contains("null_unspecified")) {
-            attributes.add("null_resettable");
           }
         }
 

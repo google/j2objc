@@ -493,9 +493,9 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
     assertTranslatedLines(translation,
         "@property (copy, nullable) NSString *test;",
-        "@property (copy, null_resettable) NSString *test2;",
+        "@property (copy) NSString *test2;",
         "@property (copy, nonnull) NSString *test3;",
-        "@property (copy, nonatomic, null_resettable) NSString *test4;");
+        "@property (copy, nonatomic) NSString *test4;");
 
     // Verify explicit nullability parameters override default.
     assertTranslatedLines(translation,
