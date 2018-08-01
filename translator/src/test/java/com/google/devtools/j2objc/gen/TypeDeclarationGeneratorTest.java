@@ -344,6 +344,15 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "public class Test {  "
         + "@Property static int test; }", "Test", "Test.h");
     assertErrorCount(1);
+
+    // Verify class properties are not supported for private static fields.
+    ErrorUtil.reset();
+    options.setStaticAccessorMethods(true);
+    translateSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+            + "public class Test {  "
+            + "@Property private static int test; }", "Test", "Test.h");
+    assertErrorCount(1);
   }
 
   public void testNullabilityAttributes() throws IOException {

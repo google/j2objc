@@ -57,6 +57,7 @@ public final class PropertyGenerator {
   private final VariableElement varElement;
   private final TypeMirror varType;
   private final String propertyName;
+  private final FieldDeclaration declaration;
 
   private PropertyGenerator(
       VariableDeclarationFragment fragment,
@@ -69,7 +70,7 @@ public final class PropertyGenerator {
     this.nameTable = nameTable;
     this.typeUtil = typeUtil;
     this.parametersNonnullByDefault = parametersNonnullByDefault;
-    FieldDeclaration declaration = (FieldDeclaration) fragment.getParent();
+    declaration = (FieldDeclaration) fragment.getParent();
     annotation =
         (PropertyAnnotation) TreeUtil.getAnnotation(Property.class, declaration.getAnnotations());
     varElement = fragment.getVariableElement();
@@ -93,7 +94,6 @@ public final class PropertyGenerator {
   }
 
   private boolean processMemoryManagementAttributes(Set<String> attributes) {
-    FieldDeclaration declaration = (FieldDeclaration) fragment.getParent();
     VariableDeclarationFragment firstVarNode = declaration.getFragment(0);
     if (typeUtil.isString(varType)) {
       attributes.add("copy");
@@ -147,12 +147,16 @@ public final class PropertyGenerator {
     } else if (attributes.contains("class")) {
       ErrorUtil.error(fragment, "Only static fields can be translated to class properties");
     }
-    if (attributes.contains("class") && !options.staticAccessorMethods()) {
-      // Class property accessors must be present, as they are not synthesized by runtime.
-      ErrorUtil.error(
-          fragment,
-          "Class properties require either a --swift-friendly or"
-              + " --static-accessor-methods flag");
+    if (attributes.contains("class")) {
+      if (!options.staticAccessorMethods()) {
+        // Class property accessors must be present, as they are not synthesized by runtime.
+        ErrorUtil.error(
+            fragment,
+            "Class properties require either a --swift-friendly or"
+                + " --static-accessor-methods flag");
+      } else if (declaration.hasPrivateDeclaration()) {
+        ErrorUtil.error(fragment, "Properties are not supported for private static fields.");
+      }
     }
   }
 
