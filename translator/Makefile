@@ -180,6 +180,7 @@ JAVA_SOURCES = \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
+	gen/PropertyGenerator.java \
 	gen/SignatureGenerator.java \
 	gen/SourceBuilder.java \
 	gen/StatementGenerator.java \

@@ -30,12 +30,9 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
-import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -46,7 +43,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -330,77 +326,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   protected void printProperties() {
     Iterable<VariableDeclarationFragment> fields = getAllFields();
     for (VariableDeclarationFragment fragment : fields) {
-      FieldDeclaration fieldDecl = (FieldDeclaration) fragment.getParent();
-      VariableElement varElement = fragment.getVariableElement();
-      PropertyAnnotation property = (PropertyAnnotation)
-          TreeUtil.getAnnotation(Property.class, fieldDecl.getAnnotations());
-      if (property != null) {
-        print("@property ");
-        TypeMirror varType = varElement.asType();
-        String propertyName = nameTable.getVariableBaseName(varElement);
-
-        // Add default getter/setter here, as each fragment needs its own attributes
-        // to support its unique accessors.
-        Set<String> attributes = property.getPropertyAttributes();
-        TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-        ExecutableElement getter =
-            ElementUtil.findGetterMethod(propertyName, varType, declaringClass);
-        if (getter != null) {
-          // Update getter from its Java name to its selector. This is normally the
-          // same since getters have no parameters, but the name may be reserved.
-          attributes.remove("getter=" + property.getGetter());
-          attributes.add("getter=" + nameTable.getMethodSelector(getter));
-          if (!ElementUtil.isSynchronized(getter)) {
-            attributes.add("nonatomic");
-          }
-        }
-        ExecutableElement setter =
-            ElementUtil.findSetterMethod(propertyName, varType, declaringClass);
-        if (setter != null) {
-          // Update setter from its Java name to its selector.
-          attributes.remove("setter=" + property.getSetter());
-          attributes.add("setter=" + nameTable.getMethodSelector(setter));
-          if (!ElementUtil.isSynchronized(setter)) {
-            attributes.add("nonatomic");
-          }
-        }
-
-        if (ElementUtil.isStatic(varElement)) {
-          attributes.add("class");
-        } else if (attributes.contains("class")) {
-          ErrorUtil.error(fragment, "Only static fields can be translated to class properties");
-        }
-        if (attributes.contains("class") && !options.staticAccessorMethods()) {
-          // Class property accessors must be present, as they are not synthesized by runtime.
-          ErrorUtil.error(fragment, "Class properties require either a --swift-friendly or"
-              + " --static-accessor-methods flag");
-        }
-
-        if (options.nullability() && !varElement.asType().getKind().isPrimitive()) {
-          if (ElementUtil.hasNullableAnnotation(varElement)) {
-            attributes.add("nullable");
-          } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
-            attributes.add("nonnull");
-          }
-        }
-
-        if (ElementUtil.isFinal(varElement)) {
-          attributes.add("readonly");
-        }
-
-        if (!attributes.isEmpty()) {
-          print('(');
-          print(PropertyAnnotation.toAttributeString(attributes));
-          print(") ");
-        }
-
-        String objcType = nameTable.getObjCType(varType);
-        print(objcType);
-        if (!objcType.endsWith("*")) {
-          print(' ');
-        }
-        println(propertyName + ";");
-      }
+      PropertyGenerator.generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
+          .ifPresent(this::println);
     }
   }
 

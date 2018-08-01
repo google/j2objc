@@ -56,7 +56,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.annotations.Weak;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -236,36 +235,13 @@ public class Rewriter extends UnitTreeVisitor {
   }
 
   /**
-   * Verify, update property attributes. Accessor methods are not checked since a
-   * property annotation may apply to separate variables in a field declaration, so
-   * each variable needs to be checked separately during generation.
+   * Make sure attempt isn't made to specify an accessor method for fields with multiple fragments,
+   * since each variable needs unique accessors.
    */
   @Override
   public void endVisit(PropertyAnnotation node) {
     FieldDeclaration field = (FieldDeclaration) node.getParent();
     TypeMirror fieldType = field.getTypeMirror();
-    VariableDeclarationFragment firstVarNode = field.getFragment(0);
-    if (typeUtil.isString(fieldType)) {
-      node.addAttribute("copy");
-    } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {
-      if (node.hasAttribute("strong")) {
-        ErrorUtil.error(field, "Weak field annotation conflicts with strong Property attribute");
-        return;
-      }
-      node.addAttribute("weak");
-    }
-
-    node.removeAttribute("readwrite");
-    node.removeAttribute("atomic");
-    // strong is the default when using ARC; otherwise, assign is the default.
-    if (options.useARC()) {
-      node.removeAttribute("strong");
-    } else if (!fieldType.getKind().isPrimitive() && !node.hasMemoryManagementAttribute()) {
-      node.addAttribute("strong");
-    }
-
-    // Make sure attempt isn't made to specify an accessor method for fields with multiple
-    // fragments, since each variable needs unique accessors.
     String getter = node.getGetter();
     String setter = node.getSetter();
     if (field.getFragments().size() > 1) {

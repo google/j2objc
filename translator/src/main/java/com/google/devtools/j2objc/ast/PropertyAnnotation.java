@@ -100,7 +100,7 @@ public class PropertyAnnotation extends Annotation {
     return getAttribute(attribute) != null;
   }
 
-  public boolean hasMemoryManagementAttribute() {
+  public static boolean hasMemoryManagementAttribute(Set<String> attributes) {
     return !Sets.intersection(attributes, MEMORY_MANAGEMENT_ATTRIBUTES).isEmpty();
   }
 
