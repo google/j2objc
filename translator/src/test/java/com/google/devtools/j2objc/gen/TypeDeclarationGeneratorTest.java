@@ -168,10 +168,16 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
   public void testStaticFieldAccessorInInterfaceType() throws IOException {
     options.setStaticAccessorMethods(true);
-    String translation = translateSourceFile(
-        "interface Test { public static final boolean FOO = true; }", "Test", "Test.h");
+    String translation =
+        translateSourceFile(
+            "interface Test { public static final boolean FOO = true; }", "Test", "Test.h");
     // The static accessor must go in the companion class, not the @protocol.
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
+        "@protocol Test < JavaObject >",
+        "",
+        "@end",
+        "",
         "@interface Test : NSObject",
         "",
         "+ (jboolean)FOO;");
@@ -389,6 +395,22 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@property (readonly, class) jboolean flag NS_SWIFT_NAME(flag);",
         "@property (copy, class) NSString *TRUE_ NS_SWIFT_NAME(TRUE_);");
     assertNotInTranslation(translation, "@property (copy, class) NSString *s NS_SWIFT_NAME(s);");
+  }
+
+  public void testPropertiesInInterfaceType() throws IOException {
+    options.setClassProperties(true);
+    String translation =
+        translateSourceFile(
+            "interface Test { public static final boolean FOO = true; }", "Test", "Test.h");
+    // The property must go in the companion class, not the @protocol.
+    assertTranslatedLines(
+        translation,
+        "@protocol Test < JavaObject >",
+        "",
+        "@end",
+        "",
+        "@interface Test : NSObject",
+        "@property (readonly, class) jboolean FOO NS_SWIFT_NAME(FOO);");
   }
 
   public void testNullabilityAttributes() throws IOException {

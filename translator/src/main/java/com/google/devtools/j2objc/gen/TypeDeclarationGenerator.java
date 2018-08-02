@@ -124,8 +124,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     } else {
       newline();
     }
-    printProperties();
     if (!typeElement.getKind().isInterface()) {
+      printProperties();
       printStaticAccessors();
     }
     printInnerDeclarations();
@@ -354,6 +354,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printf(" < %s >", typeName);
     }
     printInstanceVariables();
+    printProperties();
     printStaticInterfaceMethods();
     printStaticAccessors();
     println("\n@end");
