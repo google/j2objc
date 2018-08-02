@@ -123,48 +123,15 @@ public class Options {
     "-Xforce-incomplete-java8"
   );
 
-  static {
-    // Load string resources.
-    URL propertiesUrl = Resources.getResource(J2ObjC.class, "J2ObjC.properties");
-    Properties properties = new Properties();
-    try {
-      properties.load(propertiesUrl.openStream());
-    } catch (IOException e) {
-      System.err.println("unable to access tool properties: " + e);
-      System.exit(1);
-    }
-    fileHeader = properties.getProperty(FILE_HEADER_KEY);
-    Preconditions.checkNotNull(fileHeader);
-    usageMessage = properties.getProperty(USAGE_MSG_KEY);
-    Preconditions.checkNotNull(usageMessage);
-    helpMessage = properties.getProperty(HELP_MSG_KEY);
-    Preconditions.checkNotNull(helpMessage);
-    xhelpMessage = properties.getProperty(X_HELP_MSG_KEY);
-    Preconditions.checkNotNull(xhelpMessage);
-
-    Logger rootLogger = Logger.getLogger("");
-    for (Handler handler : rootLogger.getHandlers()) {
-      handler.setLevel(Level.ALL);
-    }
-  }
-
-  public String globalCombinedOutput() {
-    return globalCombinedOutput;
-  }
-
-  public void setGlobalCombinedOutput(String globalCombinedOutput) {
-    this.globalCombinedOutput = globalCombinedOutput;
-  }
-
   /**
    * Types of memory management to be used by translated code.
    */
-  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
+  public enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
 
   /**
    * What languages can be generated.
    */
-  public static enum OutputLanguageOption {
+  public enum OutputLanguageOption {
     OBJECTIVE_C(".m", ".h"),
     OBJECTIVE_CPLUSPLUS(".mm", ".h"),
 
@@ -213,7 +180,41 @@ public class Options {
     NAME_MAPPING,
 
     // Generate all metadata.
-    FULL;
+    FULL
+  }
+
+
+  static {
+    // Load string resources.
+    URL propertiesUrl = Resources.getResource(J2ObjC.class, "J2ObjC.properties");
+    Properties properties = new Properties();
+    try {
+      properties.load(propertiesUrl.openStream());
+    } catch (IOException e) {
+      System.err.println("unable to access tool properties: " + e);
+      System.exit(1);
+    }
+    fileHeader = properties.getProperty(FILE_HEADER_KEY);
+    Preconditions.checkNotNull(fileHeader);
+    usageMessage = properties.getProperty(USAGE_MSG_KEY);
+    Preconditions.checkNotNull(usageMessage);
+    helpMessage = properties.getProperty(HELP_MSG_KEY);
+    Preconditions.checkNotNull(helpMessage);
+    xhelpMessage = properties.getProperty(X_HELP_MSG_KEY);
+    Preconditions.checkNotNull(xhelpMessage);
+
+    Logger rootLogger = Logger.getLogger("");
+    for (Handler handler : rootLogger.getHandlers()) {
+      handler.setLevel(Level.ALL);
+    }
+  }
+
+  public String globalCombinedOutput() {
+    return globalCombinedOutput;
+  }
+
+  public void setGlobalCombinedOutput(String globalCombinedOutput) {
+    this.globalCombinedOutput = globalCombinedOutput;
   }
 
   /**
