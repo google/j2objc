@@ -72,6 +72,7 @@ public class Options {
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
   private boolean staticAccessorMethods = false;
+  private boolean classProperties = false;
   private int batchTranslateMaximum = -1;
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
@@ -421,6 +422,8 @@ public class Options {
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.equals("--static-accessor-methods")) {
         staticAccessorMethods = true;
+      } else if (arg.equals("--class-properties")) {
+        classProperties = true;
       } else if (arg.equals("--swift-friendly")) {
         swiftFriendly = true;
       } else if (arg.equals("-processor")) {
@@ -509,6 +512,10 @@ public class Options {
     if (swiftFriendly) {
       staticAccessorMethods = true;
       nullability = true;
+    }
+
+    if (classProperties) {
+      staticAccessorMethods = true;
     }
 
     // javac performs best when all sources are compiled by one task.
@@ -823,6 +830,16 @@ public class Options {
 
   @VisibleForTesting
   public void setStaticAccessorMethods(boolean b) {
+    staticAccessorMethods = b;
+  }
+
+  public boolean classProperties() {
+    return classProperties;
+  }
+
+  @VisibleForTesting
+  public void setClassProperties(boolean b) {
+    classProperties = b;
     staticAccessorMethods = b;
   }
 

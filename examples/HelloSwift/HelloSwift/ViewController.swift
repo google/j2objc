@@ -24,8 +24,8 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     var text = ""
-    text += "Static var: " + OrgJ2objcExample.hello_J2OBJC() +  "\n"
-    text += "Enum: " + OrgJ2objcExample_Day.wednesday().getShortName() + "\n"
+    text += "Static var: " + OrgJ2objcExample.HELLO_J2OBJC +  "\n"
+    text += "Enum: " + OrgJ2objcExample_Day.WEDNESDAY.getShortName() + "\n"
     textView.text = text
   }
 

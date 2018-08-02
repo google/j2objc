@@ -71,11 +71,19 @@ public final class PropertyGenerator {
     this.typeUtil = typeUtil;
     this.parametersNonnullByDefault = parametersNonnullByDefault;
     declaration = (FieldDeclaration) fragment.getParent();
-    annotation =
+    PropertyAnnotation annotation =
         (PropertyAnnotation) TreeUtil.getAnnotation(Property.class, declaration.getAnnotations());
     varElement = fragment.getVariableElement();
+    if (annotation == null
+        && options.classProperties()
+        && ElementUtil.isStatic(varElement)
+        && !declaration.hasPrivateDeclaration()) {
+      // Generate the property for a static variable by simulating the @Property annotation.
+      annotation = new PropertyAnnotation();
+    }
+    this.annotation = annotation;
     varType = varElement.asType();
-    propertyName = nameTable.getVariableBaseName(varElement);
+    propertyName = nameTable.getStaticAccessorName(varElement);
   }
 
   private Optional<String> build() {
@@ -152,8 +160,8 @@ public final class PropertyGenerator {
         // Class property accessors must be present, as they are not synthesized by runtime.
         ErrorUtil.error(
             fragment,
-            "Class properties require either a --swift-friendly or"
-                + " --static-accessor-methods flag");
+            "Class properties require any of these flags: "
+                + "--swift-friendly, --class-properties or --static-accessor-methods");
       } else if (declaration.hasPrivateDeclaration()) {
         ErrorUtil.error(fragment, "Properties are not supported for private static fields.");
       }
@@ -192,7 +200,11 @@ public final class PropertyGenerator {
     if (!objcType.endsWith("*")) {
       buffer.append(' ');
     }
-    buffer.append(propertyName).append(';');
+    buffer.append(propertyName);
+    if (options.classProperties() && ElementUtil.isStatic(varElement)) {
+      buffer.append(" NS_SWIFT_NAME(").append(propertyName).append(")");
+    }
+    buffer.append(";");
     return buffer.toString();
   }
 }

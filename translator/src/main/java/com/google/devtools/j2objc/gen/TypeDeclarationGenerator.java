@@ -329,6 +329,18 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       PropertyGenerator.generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
           .ifPresent(this::println);
     }
+
+    if (options.classProperties() && typeNode instanceof EnumDeclaration) {
+      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+        String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
+        print("\n@property (readonly, class");
+        if (options.nullability()) {
+          print(", nonnull");
+        }
+        // TODO(user): use nameTable.getSwiftName() when it is implemented.
+        printf(") %s *%s NS_SWIFT_NAME(%s);", typeName, accessorName, accessorName);
+      }
+    }
   }
 
   protected void printCompanionClassDeclaration() {
