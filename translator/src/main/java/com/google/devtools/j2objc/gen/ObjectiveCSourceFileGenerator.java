@@ -107,7 +107,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
         source += '\n';
       }
 
-      Files.write(source, outputFile, unit.options().fileUtil().getCharset());
+      Files.asCharSink(outputFile, unit.options().fileUtil().getCharset()).write(source);
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     } finally {

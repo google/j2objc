@@ -103,7 +103,8 @@ public class InputFilePreprocessor {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, options.fileUtil().getCharset());
+      Files.asCharSink(strippedFile, options.fileUtil().getCharset())
+          .write(parseResult.getSource());
       input.setFile(new RegularInputFile(strippedFile.getPath(), relativePath));
     }
   }
