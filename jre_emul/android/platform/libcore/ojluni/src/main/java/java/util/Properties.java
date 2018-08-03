@@ -27,16 +27,15 @@
 package java.util;
 
 import com.google.j2objc.LibraryNotLinkedError;
-
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -322,7 +321,7 @@ class Properties extends Hashtable<Object,Object> {
      * @since   1.6
      */
     public synchronized void load(Reader reader) throws IOException {
-        load0(new LineReader(reader));
+        load0(this, new LineReader(reader));
     }
 
     /**
@@ -346,10 +345,11 @@ class Properties extends Hashtable<Object,Object> {
      * @since 1.2
      */
     public synchronized void load(InputStream inStream) throws IOException {
-        load0(new LineReader(inStream));
+        load0(this, new LineReader(inStream));
     }
 
-    private void load0 (LineReader lr) throws IOException {
+    // j2objc: modified to support IOSClass loading of a prefixes.properties resource.
+    static void load0(Map<Object, Object> map, LineReader lr) throws IOException {
         char[] convtBuf = new char[1024];
         int limit;
         int keyLen;
@@ -397,7 +397,7 @@ class Properties extends Hashtable<Object,Object> {
             }
             String key = loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
             String value = loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
-            put(key, value);
+            map.put(key, value);
         }
     }
 
@@ -407,7 +407,7 @@ class Properties extends Hashtable<Object,Object> {
      * Method returns the char length of the "logical line" and stores
      * the line in "lineBuf".
      */
-    class LineReader {
+    static class LineReader {
         public LineReader(InputStream inStream) {
             this.inStream = inStream;
             inByteBuf = new byte[8192];
@@ -537,7 +537,7 @@ class Properties extends Hashtable<Object,Object> {
      * Converts encoded &#92;uxxxx to unicode chars
      * and changes special saved chars to their original forms
      */
-    private String loadConvert (char[] in, int off, int len, char[] convtBuf) {
+    private static String loadConvert (char[] in, int off, int len, char[] convtBuf) {
         if (convtBuf.length < len) {
             int newLen = len * 2;
             if (newLen < 0) {

@@ -55,7 +55,10 @@
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
 #import "java/util/Enumeration.h"
+#import "java/util/Iterator.h"
+#import "java/util/LinkedHashMap.h"
 #import "java/util/Properties.h"
+#import "java/util/Set.h"
 #import "libcore/reflect/AnnotatedElements.h"
 #import "libcore/reflect/GenericSignatureParser.h"
 #import "libcore/reflect/Types.h"
@@ -93,7 +96,7 @@ static IOSObjectArray *IOSClass_emptyClassArray;
 #define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
 
 // Package to prefix mappings, initialized in FindRenamedPackagePrefix().
-static JavaUtilProperties *prefixMapping;
+static JavaUtilLinkedHashMap *prefixMapping;
 
 - (Class)objcClass {
   return nil;
@@ -475,17 +478,19 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
       JavaIoInputStream *prefixesResource =
           [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
       if (prefixesResource) {
-        prefixMapping = [[JavaUtilProperties alloc] init];
-        [prefixMapping load__WithJavaIoInputStream:prefixesResource];
+        JreStrongAssignAndConsume(&prefixMapping, new_JavaUtilLinkedHashMap_init());
+        JavaUtilProperties_load0WithJavaUtilMap_withJavaUtilProperties_LineReader_(
+            prefixMapping,
+            create_JavaUtilProperties_LineReader_initWithJavaIoInputStream_(prefixesResource));
       }
     });
-    prefix = [prefixMapping getPropertyWithNSString:package];
+    prefix = [prefixMapping getWithId:package];
   }
   if (!prefix && prefixMapping) {
     // Check each prefix mapping to see if it's a matching wildcard.
-    id<JavaUtilEnumeration> names = [prefixMapping propertyNames];
-    while ([names hasMoreElements]) {
-      NSString *key = (NSString *) [names nextElement];
+    id<JavaUtilIterator> names = [[prefixMapping keySet] iterator];
+    while ([names hasNext]) {
+      NSString *key = (NSString *) [names next];
       // Same translation as j2objc's PackagePrefixes.wildcardToRegex().
       NSString *regex;
       if ([key hasSuffix:@".*"]) {
@@ -498,7 +503,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
                   java_replace:@"\\*" withSequence:@".*"]];
       }
       if ([package java_matches:regex]) {
-        prefix = [prefixMapping getPropertyWithNSString:key];
+        prefix = [prefixMapping getWithId:key];
         break;
       }
     }
