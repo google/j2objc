@@ -127,7 +127,7 @@ BIN = $(BUILD_DIR)/protobuf_tests
 BIN_ARC = $(BUILD_DIR)/protobuf_tests_arc
 
 test_java: $(CREATE_JAR_RESULT)
-	java -classpath $(CLASSPATH):$(CREATE_JAR_RESULT) \
+	$(JAVA) -classpath $(CLASSPATH):$(CREATE_JAR_RESULT) \
 	  org.junit.runner.JUnitCore $(TESTS_TO_RUN)
 
 test_objc: $(BIN)
