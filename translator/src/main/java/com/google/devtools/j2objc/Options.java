@@ -76,7 +76,6 @@ public class Options {
   private int batchTranslateMaximum = -1;
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
-  private boolean swiftFriendly = false;
   private boolean nullability = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
@@ -423,9 +422,9 @@ public class Options {
       } else if (arg.equals("--static-accessor-methods")) {
         staticAccessorMethods = true;
       } else if (arg.equals("--class-properties")) {
-        classProperties = true;
+        setClassProperties(true);
       } else if (arg.equals("--swift-friendly")) {
-        swiftFriendly = true;
+        setSwiftFriendly(true);
       } else if (arg.equals("-processor")) {
         processors = getArgValue(args, arg);
       } else if (arg.equals("--allow-inherited-constructors")) {
@@ -507,15 +506,6 @@ public class Options {
 
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
-    }
-
-    if (swiftFriendly) {
-      classProperties = true;
-      nullability = true;
-    }
-
-    if (classProperties) {
-      staticAccessorMethods = true;
     }
 
     // javac performs best when all sources are compiled by one task.
@@ -861,15 +851,10 @@ public class Options {
     disallowInheritedConstructors = b;
   }
 
-  public boolean swiftFriendly() {
-    return swiftFriendly;
-  }
-
   @VisibleForTesting
   public void setSwiftFriendly(boolean b) {
-    swiftFriendly = b;
-    nullability = b;
     setClassProperties(b);
+    setNullability(b);
   }
 
   public boolean nullability() {
