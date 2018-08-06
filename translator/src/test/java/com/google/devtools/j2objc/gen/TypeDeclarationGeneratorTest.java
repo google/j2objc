@@ -342,12 +342,6 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@property (class) jint test;",
         "@property (nonatomic, class) jdouble d;",
         "@property (readonly, class) jboolean flag;");
-    assertNotInTranslation(translation, "+ (jint)test;");
-    assertNotInTranslation(translation, "+ (void)setTest:(jint)value;");
-    assertNotInTranslation(translation, "+ (jdouble)d;");
-    assertNotInTranslation(translation, "+ (void)setD:(jdouble)value;");
-    assertNotInTranslation(translation, "+ (jboolean)flag;");
-    assertNotInTranslation(translation, "+ (void)setFlag:(jboolean)value;");
 
     // Verify class attributes aren't assigned to instance fields.
     translateSourceFile(

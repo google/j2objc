@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Comparator;
@@ -238,11 +237,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         VariableElement var = fragment.getVariableElement();
-        // Static accessors cannot be directly invoked from Swift when the corresponding property is
-        // also generated.
-        if (ElementUtil.hasAnnotation(var, Property.class)) {
-          continue;
-        }
         TypeMirror type = var.asType();
         String accessorName = nameTable.getStaticAccessorName(var);
         String objcType = nameTable.getObjCType(type);
