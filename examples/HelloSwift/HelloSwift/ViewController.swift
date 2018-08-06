@@ -24,8 +24,12 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     var text = ""
-    text += "Static var: " + OrgJ2objcExample.HELLO_J2OBJC +  "\n"
-    text += "Enum: " + OrgJ2objcExample_Day.WEDNESDAY.getShortName() + "\n"
+    let hello = OrgJ2objcExample.HELLO_J2OBJC
+    let wednesday = OrgJ2objcExample_Day.WEDNESDAY.getShortName()
+    text += "Static var: " + hello! +  "\n"
+    text += "Enum: " + wednesday + "\n"
+    text += "No nullability annotation: " + String(describing: type(of: hello)) + "\n"
+    text += "NonNull annotation: " + String(describing: type(of: wednesday)) + "\n"
     textView.text = text
   }
 

@@ -34,8 +34,10 @@ public class Example {
       this.shortName = shortName;
     }
 
-    public String getShortName() {
+    public @NonNull String getShortName() {
       return shortName;
     }
   }
 }
+
+@interface NonNull {}
