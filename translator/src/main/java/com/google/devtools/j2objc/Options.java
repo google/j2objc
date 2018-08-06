@@ -510,7 +510,7 @@ public class Options {
     }
 
     if (swiftFriendly) {
-      staticAccessorMethods = true;
+      classProperties = true;
       nullability = true;
     }
 
@@ -868,8 +868,8 @@ public class Options {
   @VisibleForTesting
   public void setSwiftFriendly(boolean b) {
     swiftFriendly = b;
-    staticAccessorMethods = b;
     nullability = b;
+    setClassProperties(b);
   }
 
   public boolean nullability() {
