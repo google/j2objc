@@ -73,6 +73,7 @@ public class Options {
   private boolean docCommentsEnabled = false;
   private boolean staticAccessorMethods = false;
   private boolean classProperties = false;
+  private int batchTranslateMaximum = -1;
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
   private boolean nullability = false;
@@ -106,15 +107,13 @@ public class Options {
   private static final String HELP_MSG_KEY = "help-message";
   private static final String X_HELP_MSG_KEY = "x-help-message";
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
+  private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
   private static final String TIMING_INFO_ARG = "--timing-info";
 
   // TODO(tball): remove obsolete flags once projects stop using them.
   private static final Set<String> obsoleteFlags = Sets.newHashSet(
-    "--batch-translate-max",
     "--disallow-inherited-constructors",
-    "--extract-unsequenced",
     "--final-methods-as-functions",
-    "--jsni-warnings",
     "--no-final-methods-functions",
     "--hide-private-members",
     "--no-hide-private-members",
@@ -123,7 +122,6 @@ public class Options {
     "--quiet",
     "-Xforce-incomplete-java8"
   );
-  private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
 
   /**
    * Types of memory management to be used by translated code.
@@ -418,6 +416,9 @@ public class Options {
         docCommentsEnabled = true;
       } else if (arg.equals("--doc-comment-warnings")) {
         reportJavadocWarnings = true;
+      } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
+        batchTranslateMaximum =
+            Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.equals("--static-accessor-methods")) {
         staticAccessorMethods = true;
       } else if (arg.equals("--class-properties")) {
@@ -471,8 +472,6 @@ public class Options {
       } else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.
         getArgValue(args, arg);  // ignore
-      } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
-        // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
         // also ignore
       } else if (arg.startsWith("-")) {
@@ -508,6 +507,11 @@ public class Options {
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
     }
+
+    // javac performs best when all sources are compiled by one task.
+    // TODO(kstanger): This renders the --batch-translate-max flag useless. It was previously useful
+    // for tuning the JDT parser. We may want to clean and simplify our batching code now.
+    batchTranslateMaximum = Integer.MAX_VALUE;
 
     if (bootclasspath == null) {
       // Set jre_emul.jar as bootclasspath, if available. This ensures that source files
@@ -790,6 +794,15 @@ public class Options {
   @VisibleForTesting
   public void enableExtractUnsequencedModifications() {
     extractUnsequencedModifications = true;
+  }
+
+  public int batchTranslateMaximum() {
+    return batchTranslateMaximum;
+  }
+
+  @VisibleForTesting
+  public void setBatchTranslateMaximum(int max) {
+    batchTranslateMaximum = max;
   }
 
   public SourceVersion getSourceVersion(){

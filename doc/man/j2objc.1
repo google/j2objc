@@ -62,6 +62,10 @@ Print this message.
 .BI \-\-allow\-inherited\-constructors
 Don't issue compiler warnings when native code accesses inherited constructors.
 .TP
+\fB\-batch-translate-max\fR\=\fIn\fR
+The maximum number of source files that are translated together. Batching
+speeds up translation, but requires more memory.
+.TP
 .BI \-\-build\-closure
 Translate dependent classes if out-of-date.
 .TP
