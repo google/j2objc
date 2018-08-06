@@ -16,15 +16,8 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.util.ErrorUtil;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
 
 /**
  * Tests for {@link TranslationProcessor}.
@@ -32,36 +25,6 @@ import java.util.jar.JarOutputStream;
  * @author kstanger@google.com (Keith Stanger)
  */
 public class TranslationProcessorTest extends GenerationTest {
-
-  public void testJarBatchTranslation() throws IOException {
-    String fooSource = "package mypkg; class Foo {}";
-    String barSource = "package mypkg; class Bar {}";
-    File jarFile = getTempFile("test.jar");
-    JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarFile));
-    try {
-      JarEntry fooEntry = new JarEntry("mypkg/Foo.java");
-      jar.putNextEntry(fooEntry);
-      jar.write(fooSource.getBytes());
-      jar.closeEntry();
-      JarEntry barEntry = new JarEntry("mypkg/Bar.java");
-      jar.putNextEntry(barEntry);
-      jar.write(barSource.getBytes());
-      jar.closeEntry();
-    } finally {
-      jar.close();
-    }
-
-    options.fileUtil().appendSourcePath(jarFile.getPath());
-    options.setBatchTranslateMaximum(2);
-
-    GenerationBatch batch = new GenerationBatch(options);
-    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
-    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
-    processor.processInputs(batch.getInputs());
-
-    assertEquals(0, ErrorUtil.errorCount());
-  }
 
   public void testSingleSourceFileBuildClosure() throws IOException {
     options.setBuildClosure(true);

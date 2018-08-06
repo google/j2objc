@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
@@ -25,10 +24,6 @@ import com.google.devtools.j2objc.util.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -44,16 +39,9 @@ abstract class FileProcessor {
   protected final BuildClosureQueue closureQueue;
   protected final Options options;
 
-  private final int batchSize;
-  private final Set<ProcessingContext> batchInputs = new HashSet<>();
-
-  private final boolean doBatching;
-
   public FileProcessor(Parser parser) {
     this.parser = Preconditions.checkNotNull(parser);
     this.options = parser.options();
-    batchSize = options.batchTranslateMaximum();
-    doBatching = batchSize > 0;
     if (options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
       assert !options.getHeaderMap().useSourceDirectories();
@@ -67,7 +55,6 @@ abstract class FileProcessor {
     for (ProcessingContext input : inputs) {
       processInput(input);
     }
-    processBatch();
   }
 
   public void processBuildClosureDependencies() {
@@ -75,7 +62,6 @@ abstract class FileProcessor {
       while (true) {
         InputFile file = closureQueue.getNextFile();
         if (file == null) {
-          processBatch();
           file = closureQueue.getNextFile();
         }
         if (file == null) {
@@ -89,15 +75,6 @@ abstract class FileProcessor {
   private void processInput(ProcessingContext input) {
     try {
       InputFile file = input.getFile();
-
-      if (isBatchable(file)) {
-        batchInputs.add(input);
-        if (batchInputs.size() == batchSize) {
-          processBatch();
-        }
-        return;
-      }
-
       logger.finest("parsing " + file);
 
       CompilationUnit compilationUnit = parser.parse(file);
@@ -110,42 +87,6 @@ abstract class FileProcessor {
     } catch (RuntimeException | Error e) {
       ErrorUtil.fatalError(e, input.getOriginalSourcePath());
     }
-  }
-
-  protected boolean isBatchable(InputFile file) {
-    return doBatching && file.getAbsolutePath().endsWith(".java");
-  }
-
-  private void processBatch() {
-    if (batchInputs.isEmpty()) {
-      return;
-    }
-
-    List<String> paths = Lists.newArrayListWithCapacity(batchInputs.size());
-    final Map<String, ProcessingContext> inputMap = new CanonicalPathMap(batchInputs.size());
-    for (ProcessingContext input : batchInputs) {
-      String path = input.getFile().getAbsolutePath();
-      paths.add(path);
-      inputMap.put(path, input);
-    }
-
-    Parser.Handler handler = new Parser.Handler() {
-      @Override
-      public void handleParsedUnit(String path, CompilationUnit unit) {
-        ProcessingContext input = inputMap.get(path);
-        processCompiledSource(input, unit);
-        batchInputs.remove(input);
-      }
-    };
-    logger.finest("Processing batch of size " + batchInputs.size());
-    parser.parseFiles(paths, handler, options.getSourceVersion());
-
-    // Any remaining files in batchFiles has some kind of error.
-    for (ProcessingContext input : batchInputs) {
-      handleError(input);
-    }
-
-    batchInputs.clear();
   }
 
   private void processCompiledSource(ProcessingContext input,
