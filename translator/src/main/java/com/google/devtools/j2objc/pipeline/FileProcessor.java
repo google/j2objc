@@ -43,17 +43,11 @@ abstract class FileProcessor {
   private final Parser parser;
   protected final BuildClosureQueue closureQueue;
   protected final Options options;
-
-  private final int batchSize;
   private final Set<ProcessingContext> batchInputs = new HashSet<>();
-
-  private final boolean doBatching;
 
   public FileProcessor(Parser parser) {
     this.parser = Preconditions.checkNotNull(parser);
     this.options = parser.options();
-    batchSize = options.batchTranslateMaximum();
-    doBatching = batchSize > 0;
     if (options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
       assert !options.getHeaderMap().useSourceDirectories();
@@ -92,9 +86,6 @@ abstract class FileProcessor {
 
       if (isBatchable(file)) {
         batchInputs.add(input);
-        if (batchInputs.size() == batchSize) {
-          processBatch();
-        }
         return;
       }
 
@@ -113,7 +104,7 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-    return doBatching && file.getAbsolutePath().endsWith(".java");
+    return file.getAbsolutePath().endsWith(".java");
   }
 
   private void processBatch() {

@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Tests for {@link com.google.devtools.j2objc.J2ObjC#run(List)}.
+ * Tests for {@link com.google.devtools.j2objc.J2ObjC}.
  */
 public class J2ObjCTest extends GenerationTest {
   String jarPath;
@@ -115,12 +115,6 @@ public class J2ObjCTest extends GenerationTest {
     makeAssertionsForJar();
   }
 
-  public void testBatchCompilingFromJar() throws Exception {
-    options.setBatchTranslateMaximum(2);
-    J2ObjC.run(Collections.singletonList(jarPath), options);
-    makeAssertionsForJar();
-  }
-
   // Make assertions for java files with default output locations.
   private void makeAssertionsForJavaFiles() throws Exception {
     String exampleH = getTranslatedFile("com/google/devtools/j2objc/util/Example.h");
@@ -171,12 +165,6 @@ public class J2ObjCTest extends GenerationTest {
   }
 
   public void testCompilingFromFiles() throws Exception {
-    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
-    makeAssertionsForJavaFiles();
-  }
-
-  public void testBatchCompilingFromFiles() throws Exception {
-    options.setBatchTranslateMaximum(2);
     J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
     makeAssertionsForJavaFiles();
   }
