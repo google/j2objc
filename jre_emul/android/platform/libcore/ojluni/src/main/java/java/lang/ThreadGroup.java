@@ -58,7 +58,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /* the runtime uses these directly; do not rename */
     static final ThreadGroup systemThreadGroup = new ThreadGroup();
 
-    static final ThreadGroup mainThreadGroup = new ThreadGroup(systemThreadGroup, "main");
+    static final ThreadGroup mainThreadGroup = new MainThreadGroup(systemThreadGroup);
 
     private final ThreadGroup parent;
     String name;
@@ -1081,5 +1081,14 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      */
     public String toString() {
         return getClass().getName() + "[name=" + getName() + ",maxpri=" + maxPriority + "]";
+    }
+
+    // j2objc: main thread group needs to potentially handle lots of native
+    // thread additions and removals, so start with a bigger threads array.
+    private static class MainThreadGroup extends ThreadGroup {
+      MainThreadGroup(ThreadGroup parent) {
+        super(parent, "main");
+        threads = new Thread[32];
+      }
     }
 }
