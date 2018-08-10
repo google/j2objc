@@ -64,9 +64,15 @@ import java.util.logging.Logger;
 public class System {
   private static Properties props;
 
-  public static final InputStream in;
-  public static final PrintStream out;
-  public static final PrintStream err;
+  /*
+   * j2objc: final attribute removed from these fields.
+   * These fields transpiled to Objective-C readonly properties with setters
+   * when using --class-properties. This was causing clang
+   * -Wobjc-readonly-with-setter-property errors.
+   */
+  public static InputStream in;
+  public static PrintStream out;
+  public static PrintStream err;
 
   /*-[
     static mach_timebase_info_data_t machTimeInfo_;
