@@ -229,6 +229,7 @@ JAVA_SOURCES = \
 	translate/PackageInfoRewriter.java \
 	translate/PrivateDeclarationResolver.java \
 	translate/Rewriter.java \
+	translate/SerializationStripper.java \
 	translate/StaticVarRewriter.java \
 	translate/SuperMethodInvocationRewriter.java \
 	translate/SwitchRewriter.java \
