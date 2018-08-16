@@ -173,7 +173,8 @@ public class GenerationTest extends TestCase {
    */
   protected CompilationUnit translateType(String typeName, String source) {
     CompilationUnit newUnit = compileType(typeName, source);
-    TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
+    TranslationProcessor.applyMutations(
+        newUnit, deadCodeMap, options.externalAnnotations(), TimeTracker.noop());
     return newUnit;
   }
 
@@ -464,7 +465,8 @@ public class GenerationTest extends TestCase {
     Options.OutputLanguageOption language = options.getLanguage();
     options.setOutputLanguage(Options.OutputLanguageOption.TEST_OBJECTIVE_C);
     CompilationUnit classfileUnit = compileAsClassFile(fileRoot, source);
-    TranslationProcessor.applyMutations(classfileUnit, deadCodeMap, TimeTracker.noop());
+    TranslationProcessor.applyMutations(
+        classfileUnit, deadCodeMap, options.externalAnnotations(), TimeTracker.noop());
     String clsHeader = generateFromUnit(classfileUnit, fileRoot + ".h2");
     String clsImpl = getTranslatedFile(fileRoot + ".m2");
     options.setOutputLanguage(language);
@@ -563,7 +565,8 @@ public class GenerationTest extends TestCase {
   protected String compileAndTranslateSourceFile(String source, String typeName, String fileName)
       throws IOException {
     CompilationUnit newUnit = compileAsClassFile(typeName, source);
-    TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
+    TranslationProcessor.applyMutations(
+        newUnit, deadCodeMap, options.externalAnnotations(), TimeTracker.noop());
     return generateFromUnit(newUnit, fileName);
   }
 

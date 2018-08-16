@@ -23,6 +23,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
@@ -92,6 +93,7 @@ public class Options {
   private FileUtil fileUtil = new FileUtil();
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup(fileUtil);
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
+  private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
 
   private SourceVersion sourceVersion = SourceVersion.defaultVersion();
 
@@ -444,6 +446,8 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
+      } else if (arg.equals("-Xexternal-annotation-file")) {
+        addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -890,6 +894,20 @@ public class Options {
   @VisibleForTesting
   public void setEmitSourceHeaders(boolean b) {
     emitSourceHeaders = b;
+  }
+
+  public ExternalAnnotations externalAnnotations() {
+    return externalAnnotations;
+  }
+
+  @VisibleForTesting
+  public void addExternalAnnotationFile(String file) throws IOException {
+    externalAnnotations.addExternalAnnotationFile(file);
+  }
+
+  @VisibleForTesting
+  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
+    externalAnnotations.addExternalAnnotationFileContents(fileContents);
   }
 
   // Unreleased experimental project.

@@ -212,6 +212,7 @@ JAVA_SOURCES = \
 	translate/DestructorGenerator.java \
 	translate/EnhancedForRewriter.java \
 	translate/EnumRewriter.java \
+	translate/ExternalAnnotationInjector.java \
 	translate/Functionizer.java \
 	translate/GwtConverter.java \
 	translate/InitializationNormalizer.java \
@@ -256,6 +257,7 @@ JAVA_SOURCES = \
 	util/CodeReferenceMap.java \
 	util/ElementUtil.java \
 	util/ErrorUtil.java \
+	util/ExternalAnnotations.java \
 	util/FileUtil.java \
 	util/HeaderMap.java \
 	util/Mappings.java \

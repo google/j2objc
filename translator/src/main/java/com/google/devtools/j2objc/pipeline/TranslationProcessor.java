@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
+import com.google.devtools.j2objc.translate.ExternalAnnotationInjector;
 import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
@@ -63,6 +64,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
 import java.util.Set;
@@ -99,7 +101,7 @@ public class TranslationProcessor extends FileProcessor {
       // Dump compilation unit to an .ast output file instead of translating.
       DebugASTDump.dumpUnit(unit);
     } else {
-      applyMutations(unit, deadCodeMap, ticker);
+      applyMutations(unit, deadCodeMap, options.externalAnnotations(), ticker);
       ticker.tick("Tree mutations");
       ticker.printResults(System.out);
 
@@ -119,14 +121,15 @@ public class TranslationProcessor extends FileProcessor {
   }
 
   /**
-   * Translates a parsed source file, modifying the compilation unit by
-   * substituting core Java type and method references with iOS equivalents.
-   * For example, <code>java.lang.Object</code> maps to <code>NSObject</code>,
-   * and <code>java.lang.String</code> to <code>NSString</code>. The source is
-   * also modified to add support for iOS memory management, extract inner
-   * classes, etc.
+   * Translates a parsed source file, modifying the compilation unit by substituting core Java type
+   * and method references with iOS equivalents. For example, <code>java.lang.Object</code> maps to
+   * <code>NSObject</code>, and <code>java.lang.String</code> to <code>NSString</code>. The source
+   * is also modified to add support for iOS memory management, extract inner classes, etc.
    */
-  public static void applyMutations(CompilationUnit unit, CodeReferenceMap deadCodeMap,
+  public static void applyMutations(
+      CompilationUnit unit,
+      CodeReferenceMap deadCodeMap,
+      ExternalAnnotations externalAnnotations,
       TimeTracker ticker) {
     ticker.push();
 
@@ -138,6 +141,9 @@ public class TranslationProcessor extends FileProcessor {
       new DeadCodeEliminator(unit, deadCodeMap).run();
       ticker.tick("DeadCodeEliminator");
     }
+
+    new ExternalAnnotationInjector(unit, externalAnnotations).run();
+    ticker.tick("ExternalAnnotationInjector");
 
     new OuterReferenceResolver(unit).run();
     ticker.tick("OuterReferenceResolver");
