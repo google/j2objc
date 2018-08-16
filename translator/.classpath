@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/procyon-decompiler.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

@@ -44,6 +44,8 @@ ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR = animal-sniffer-annotations-1.14-sources.
 GUAVA_JAR = guava-25.1-jre.jar
 GUAVA_SOURCE_JAR = guava-25.1-jre-sources.jar
 
+SCENELIB_JAR = scenelib.jar
+
 JSR305_JAR = jsr305-3.0.0.jar
 JSR305_SOURCE_JAR = jsr305-3.0.0.jar
 

@@ -50,7 +50,7 @@ RESOURCES = \
     com/google/devtools/j2objc/reserved_names.txt
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(GUAVA_JAR) $(JAVAC_JAR) $(PROCYON_JARS)
+INTERNAL_DEPS = $(GUAVA_JAR) $(JAVAC_JAR) $(PROCYON_JARS) $(SCENELIB_JAR)
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -69,7 +69,7 @@ TEST_CLASSPATH = \
 # Files in dependent jars that aren't needed in combined jar.
 UNUSED_JAR_CONTENTS = \
   $(CLASS_DIR)/[A-Z]* \
-  $(CLASS_DIR)/[ahps]* \
+  $(CLASS_DIR)/[ahp]* \
   $(CLASS_DIR)/about_files \
   $(CLASS_DIR)/ant_tasks \
   $(CLASS_DIR)/compiler* \

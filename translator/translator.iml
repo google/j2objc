@@ -6,6 +6,7 @@
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-25.1-jre.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/javac.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/procyon-decompiler.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src/main/java" expected_position="0" />
       <src_folder value="file://$MODULE_DIR$/src/main/resources" expected_position="1" />
@@ -65,6 +66,15 @@
       <library name="procyon-decompiler.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-decompiler.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="scenelib.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
