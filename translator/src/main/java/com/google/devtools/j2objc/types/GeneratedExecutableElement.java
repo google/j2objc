@@ -97,6 +97,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
             method.isVarArgs(),
             ElementUtil.isSynthetic(method));
     generatedMethod.addAnnotationMirrors(method.getAnnotationMirrors());
+    generatedMethod.addModifiers(method.getModifiers());
     return generatedMethod;
   }
 

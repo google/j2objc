@@ -84,6 +84,20 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "- (NSString * __nullable)bar;");
   }
 
+  public void testInjectNullability_returnType_interfaceMethod() throws IOException {
+    options.setNullability(true);
+    options.addExternalAnnotationFileContents(EXTERNAL_NULLABILITY_ANNOTATIONS);
+    String source =
+        "package p;"
+            + "public interface Test { "
+            + "    String foo(); "
+            + "    default String bar() { return null; } "
+            + "}";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.h");
+    assertTranslation(translation, "- (NSString * __nonnull)foo;");
+    assertTranslation(translation, "- (NSString * __nullable)bar;");
+  }
+
   public void testInjectNullability_returnType_nestedClassMethod() throws IOException {
     options.setNullability(true);
     String externalNullabilityAnnotations =
