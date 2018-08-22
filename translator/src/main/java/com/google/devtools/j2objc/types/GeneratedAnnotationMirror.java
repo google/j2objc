@@ -32,6 +32,10 @@ public class GeneratedAnnotationMirror implements AnnotationMirror {
     this.type = annotationType;
   }
 
+  public GeneratedAnnotationMirror(String qualifiedName) {
+    this((DeclaredType) GeneratedTypeElement.newEmulatedInterface(qualifiedName).asType());
+  }
+
   @Override
   public DeclaredType getAnnotationType() {
     return type;

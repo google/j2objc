@@ -83,11 +83,21 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   public static GeneratedExecutableElement newMappedMethod(
       String selector, ExecutableElement method) {
-    TypeMirror returnType = ElementUtil.isConstructor(method)
-        ? ElementUtil.getDeclaringClass(method).asType() : method.getReturnType();
-    return new GeneratedExecutableElement(
-        selector, selector, ElementKind.METHOD, returnType, method.getEnclosingElement(),
-        method.isVarArgs(), ElementUtil.isSynthetic(method));
+    TypeMirror returnType =
+        ElementUtil.isConstructor(method)
+            ? ElementUtil.getDeclaringClass(method).asType()
+            : method.getReturnType();
+    GeneratedExecutableElement generatedMethod =
+        new GeneratedExecutableElement(
+            selector,
+            selector,
+            ElementKind.METHOD,
+            returnType,
+            method.getEnclosingElement(),
+            method.isVarArgs(),
+            ElementUtil.isSynthetic(method));
+    generatedMethod.addAnnotationMirrors(method.getAnnotationMirrors());
+    return generatedMethod;
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
