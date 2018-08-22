@@ -1,8 +1,8 @@
 # J2ObjC: Java to Objective-C Translator and Runtime #
 
-**Project site:** <http://j2objc.org><br>
-**J2ObjC blog:** <http://j2objc.blogspot.com><br>
-**Questions and discussion:** <http://groups.google.com/group/j2objc-discuss>
+**Project site:** <https://j2objc.org><br>
+**J2ObjC blog:** <https://j2objc.blogspot.com><br>
+**Questions and discussion:** <https://groups.google.com/group/j2objc-discuss>
 
 ### What J2ObjC Is ###
 J2ObjC is an open-source command-line tool from Google that translates
@@ -41,7 +41,8 @@ code for their Android app, which they either own or are licensed to use.
 ## License ##
 
 This library is distributed under the Apache 2.0 license found in the
-[LICENSE](./LICENSE) file with the following exceptions.
+[LICENSE](https://github.com/google/j2objc/blob/master/LICENSE) file.
 The protocol buffers library is distributed under the same BSD license as
-Google's protocol buffers. See [README](/protobuf/google/README.md) and
-[LICENSE](protobuf/LICENSE).
+Google's protocol buffers. See its
+[README](https://github.com/protocolbuffers/protobuf/blob/master/README.md) and
+[LICENSE](https://github.com/protocolbuffers/protobuf/blob/master/LICENSE).
