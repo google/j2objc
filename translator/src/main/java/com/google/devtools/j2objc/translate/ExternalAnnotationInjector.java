@@ -105,7 +105,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   private void injectAnnotations(MethodDeclaration node, Set<Annotation> annotations) {
     ExecutableElement element = node.getExecutableElement();
     GeneratedExecutableElement generatedElement =
-        GeneratedExecutableElement.newMappedMethod(nameTable.getMethodSelector(element), element);
+        GeneratedExecutableElement.mutableCopy(nameTable.getMethodSelector(element), element);
     for (Annotation externalAnnotation : annotations) {
       generatedElement.addAnnotationMirror(
           new GeneratedAnnotationMirror(externalAnnotation.def.name));

@@ -125,4 +125,22 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "- (NSString * __nonnull)foo;");
     assertTranslation(translation, "- (NSString * __nullable)bar;");
   }
+
+  // Verify that visiting a constructor does not affect the generated code.
+  public void testVisitingConstructor() throws IOException {
+    options.setNullability(true);
+    String externalNullabilityAnnotations =
+        "package p: "
+            + "annotation @AnAnnotation: "
+            + "class Test: "
+            + "  method <init>()V: @p.AnAnnotation";
+    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    String source = "package p; public class Test { public Test() {} }";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.h");
+    assertTranslation(translation, "- (instancetype __nonnull)init;");
+    assertTranslation(translation, "FOUNDATION_EXPORT void PTest_init(PTest *self);");
+    assertTranslation(
+        translation, "FOUNDATION_EXPORT PTest *new_PTest_init(void) NS_RETURNS_RETAINED;");
+    assertTranslation(translation, "FOUNDATION_EXPORT PTest *create_PTest_init(void);");
+  }
 }
