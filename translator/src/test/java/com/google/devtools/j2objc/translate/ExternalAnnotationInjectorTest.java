@@ -163,4 +163,27 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "@class JavaLangThread;");
     assertTranslation(translation, "@class JavaLangThreadGroup;");
   }
+
+  // TODO(user): This visitor replaces the original ExecutableElement with a
+  // GeneratedExecutableElement to inject annotations. The Functionizer visitor is not able to
+  // match method invocations (ExecutableElements) with annotated method declarations
+  // (GeneratedExecutableElement).
+  /*public void testFunctionizer() throws IOException {
+    options.setNullability(true);
+    String externalNullabilityAnnotations =
+        "package p: "
+            + "annotation @AnAnnotation: "
+            + "class Test: "
+            + "  method foo()V: @p.AnAnnotation";
+    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    String source =
+        "package p;"
+            + "public class Test { "
+            + "  public final void foo() {} "
+            + "  public void bar() { foo(); } "
+            + "}";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    assertTranslation(translation, "__attribute__((unused)) static void PTest_foo(PTest *self);");
+    assertTranslatedLines(translation, "- (void)bar {", "  PTest_foo(self);", "}");
+  }*/
 }
