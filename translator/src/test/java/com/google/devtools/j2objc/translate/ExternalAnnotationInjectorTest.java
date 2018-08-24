@@ -143,4 +143,24 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         translation, "FOUNDATION_EXPORT PTest *new_PTest_init(void) NS_RETURNS_RETAINED;");
     assertTranslation(translation, "FOUNDATION_EXPORT PTest *create_PTest_init(void);");
   }
+
+  // Verify that visited methods generate the expected forward declarations.
+  public void testForwardDeclaration() throws IOException {
+    options.setNullability(true);
+    String externalNullabilityAnnotations =
+        "package p: "
+            + "annotation @AnAnnotation: "
+            + "class Test: "
+            + "  method foo(Ljava/lang/Thread;)V: @p.AnAnnotation";
+    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    String source =
+        "package p;"
+            + "public class Test { "
+            + "  public void foo(Thread t) {} "
+            + "  public void bar(ThreadGroup t) {} " // no external annotation.
+            + "}";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.h");
+    assertTranslation(translation, "@class JavaLangThread;");
+    assertTranslation(translation, "@class JavaLangThreadGroup;");
+  }
 }
