@@ -38,6 +38,7 @@ public class BuildClosureQueue {
 
   public BuildClosureQueue(Options options) {
     this.options = options;
+    queuedNames.addAll(options.entryClasses());
   }
 
   /**

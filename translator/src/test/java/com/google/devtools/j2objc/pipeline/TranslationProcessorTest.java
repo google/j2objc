@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.pipeline;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -64,5 +65,30 @@ public class TranslationProcessorTest extends GenerationTest {
     String translation = getTranslatedFile("Foo.h");
     assertTranslation(translation, "- (void)foo2;");
     assertNotInTranslation(translation, "foo1");
+  }
+
+  public void testEntryClasses() throws IOException {
+    addSourceFile("class A { B test() { return new B(); }}", "A.java");
+    addSourceFile("class B extends C {}", "B.java");
+    addSourceFile("class C {}", "C.java");
+
+    // Specify B as an entry class for building a class closure.
+    options.load(new String[] {
+        "--build-closure",
+        "B"
+    });
+    GenerationBatch batch = new GenerationBatch(options);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
+    processor.processInputs(batch.getInputs());
+    processor.processBuildClosureDependencies();
+
+    // Assert B entry class was compiled.
+    assertTrue(new File(tempDir, "B.m").exists());
+
+    // Verify C.java was compiled, since it depends upon B.
+    assertTrue(new File(tempDir, "C.m").exists());
+
+    // Verify A.java wasn't compiled; it has a B reference, but B doesn't depend on it.
+    assertFalse(new File(tempDir, "A.m").exists());
   }
 }

@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
+import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.PackageInfoLookup;
 import com.google.devtools.j2objc.util.PackagePrefixes;
 import com.google.devtools.j2objc.util.SourceVersion;
@@ -45,6 +46,7 @@ import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * The set of tool properties, initialized by the command-line arguments.
@@ -94,6 +96,7 @@ public class Options {
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup(fileUtil);
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
+  private final List<String> entryClasses = new ArrayList<>();
 
   private SourceVersion sourceVersion = SourceVersion.defaultVersion();
 
@@ -109,6 +112,9 @@ public class Options {
   private static final String X_HELP_MSG_KEY = "x-help-message";
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static final String TIMING_INFO_ARG = "--timing-info";
+
+  private static final Pattern KNOWN_FILE_SUFFIX_PATTERN
+      = Pattern.compile(".*\\.(java|class|jar|zip)");
 
   // TODO(tball): remove obsolete flags once projects stop using them.
   private static final Set<String> obsoleteFlags = Sets.newHashSet(
@@ -481,6 +487,9 @@ public class Options {
         // also ignore
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
+      } else if (NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
+        // TODO(tball): document entry classes when build is updated to Bazel.
+        entryClasses.add(arg);
       } else {
         sourceFiles.add(arg);
       }
@@ -509,6 +518,11 @@ public class Options {
           + "-XincludeGeneratedSources");
     }
 
+    // Entry classes are only allowed with --build-closure flag.
+    if (!entryClasses.isEmpty() && !buildClosure) {
+      ErrorUtil.error("entry class names can only be specified with --build-closure flag");
+    }
+
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
     }
@@ -528,6 +542,10 @@ public class Options {
       // Fall back to Java 8 and earlier property.
       bootclasspath = System.getProperty("sun.boot.class.path", "");
     }
+  }
+
+  private boolean hasKnownFileSuffix(String s) {
+    return KNOWN_FILE_SUFFIX_PATTERN.matcher(s).matches();
   }
 
   /**
@@ -918,5 +936,9 @@ public class Options {
   @VisibleForTesting
   public void setTranslateClassfiles(boolean b) {
     translateClassfiles = b;
+  }
+
+  public List<String> entryClasses() {
+    return entryClasses;
   }
 }
