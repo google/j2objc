@@ -668,6 +668,14 @@ public final class ElementUtil {
   }
 
   private static boolean hasNullabilityAnnotation(Element element, Pattern pattern) {
+    // Ignore nullability annotation on primitive types.
+    if (isMethod(element)
+        && ((ExecutableElement) element).getReturnType().getKind().isPrimitive()) {
+      return false;
+    }
+    if (isVariable(element) && element.asType().getKind().isPrimitive()) {
+      return false;
+    }
     // The two if statements cover type annotations.
     if (isMethod(element)
         && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {

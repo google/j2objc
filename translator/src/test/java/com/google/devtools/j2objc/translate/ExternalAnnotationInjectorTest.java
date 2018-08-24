@@ -126,6 +126,25 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "- (NSString * __nullable)bar;");
   }
 
+  // Nullability specifiers should not be applied to primitive types.
+  public void testInjectNullability_returnType_primitiveType() throws IOException {
+    options.setNullability(true);
+    String externalNullabilityAnnotations =
+        "package p: "
+            + "annotation @NonNull: "
+            + "class Test: "
+            + "  method foo()Z:"
+            + "    return: @p.NonNull ";
+    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    String source =
+        "package p;"
+            + "public class Test { "
+            + "  public boolean foo() { return true; } "
+            + "}";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.h");
+    assertTranslation(translation, "- (jboolean)foo;");
+  }
+
   // Verify that visiting a constructor does not affect the generated code.
   public void testVisitingConstructor() throws IOException {
     options.setNullability(true);
