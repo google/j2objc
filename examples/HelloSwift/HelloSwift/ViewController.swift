@@ -17,6 +17,10 @@
 
 
 import UIKit
+// MOE:begin_strip
+import third_party_java_src_j2objc_examples_HelloSwift_hello_transpiled
+import third_party_java_src_j2objc_jre_emul_jre_core
+// MOE:end_strip
 
 class ViewController: UIViewController {
   @IBOutlet weak var textView: UITextView!
@@ -26,10 +30,12 @@ class ViewController: UIViewController {
     var text = ""
     let hello = OrgJ2objcExample.HELLO_J2OBJC
     let wednesday = OrgJ2objcExample_Day.WEDNESDAY.getShortName()
+    let sb = JavaLangStringBuilder().append(with: "StringBuilder\n").description()
     text += "Static var: " + hello! +  "\n"
     text += "Enum: " + wednesday + "\n"
     text += "No nullability annotation: " + String(describing: type(of: hello)) + "\n"
     text += "NonNull annotation: " + String(describing: type(of: wednesday)) + "\n"
+    text += sb!
     textView.text = text
   }
 
