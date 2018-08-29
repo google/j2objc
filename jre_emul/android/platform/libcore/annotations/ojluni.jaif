@@ -1,0 +1,2837 @@
+//
+// Copyright (C) 2017 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// This file specifies additional annotations that are applied to libcore
+// code before generating android stubs and documentation. This data
+// is human-maintained and is based on jdk annotations shipped in Android
+// Studio.
+
+// If this file is changed, please update libcore/annotated_java_files.bp file by running:
+// libcore/annotations/generate_annotated_java_files.py libcore/annotations/ojluni.jaif > libcore/annotated_java_files.bp
+//
+// For arrray syntax, please see https://checkerframework.org/jsr308/specification/java-annotation-design.html#array-syntax
+// @Nullable String @NonNull[] <- Non-null array of nullable strings can be expressed as:
+//
+//    type: @libcore.util.NonNull
+//      inner-type 0, 0: @libcore.util.Nullable
+
+package libcore.util:
+annotation @NonNull: @java.lang.annotation.Retention(value=SOURCE) @java.lang.annotation.Target(value={TYPE_USE})
+    int from
+    int to
+annotation @Nullable: @java.lang.annotation.Retention(value=SOURCE) @java.lang.annotation.Target(value={TYPE_USE})
+    int from
+    int to
+annotation @NullFromTypeParam: @java.lang.annotation.Retention(value=SOURCE) @java.lang.annotation.Target(value={TYPE_USE})
+    int from
+    int to
+
+package java.io:
+class PrintWriter:
+
+    method <init>(Ljava/io/Writer;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/io/Writer;Z)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/io/OutputStream;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/io/OutputStream;Z)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/nio/charset/Charset;Ljava/io/File;)V:
+        return:
+
+    method <init>(Ljava/lang/String;Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/io/File;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/io/File;Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method write([CII)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method write([C)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method write(Ljava/lang/String;II)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method write(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method print([C)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method print(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method print(Ljava/lang/Object;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method println(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method println(Ljava/lang/Object;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+
+    method printf(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+
+    method format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+
+    method format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+
+    method append(Ljava/lang/CharSequence;)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method append(Ljava/lang/CharSequence;II)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method append(C)Ljava/io/PrintWriter;:
+        return: @libcore.util.NonNull
+
+package java.lang:
+class Appendable:
+    method append(Ljava/lang/CharSequence;)Ljava/lang/Appendable;:
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Is expected to return self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/CharSequence;II)Ljava/lang/Appendable;:
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Is expected to return self
+        return: @libcore.util.NonNull
+
+    method append(C)Ljava/lang/Appendable;:
+        // Is expected to return self
+        return: @libcore.util.NonNull
+
+class Boolean:
+    method <init>(Ljava/lang/String;)V:
+        // In contrast to other type classes, doesn't NPE on null, but sets value to false
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method parseBoolean(Ljava/lang/String;)Z:
+        // In contrast to other type classes, doesn't NPE on null, but sets value to false
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method valueOf(Z)Ljava/lang/Boolean;:
+        // Always return value
+        return: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Boolean;:
+        // Null == false
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Always return value
+        return: @libcore.util.NonNull
+
+    method toString(Z)Ljava/lang/String;:
+        // Always return value
+        return: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Always return value
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method getBoolean(Ljava/lang/String;)Z:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method compareTo(Ljava/lang/Boolean;)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+class Byte:
+    method toString(B)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(B)Ljava/lang/Byte;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method parseByte(Ljava/lang/String;I)B:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseByte(Ljava/lang/String;)B:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;I)Ljava/lang/Byte;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Byte;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method decode(Ljava/lang/String;)Ljava/lang/Byte;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method compareTo(Ljava/lang/Byte;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toHexString(BZ)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+class Character:
+    method valueOf(C)Ljava/lang/Character;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toString(C)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method codePointAt(Ljava/lang/CharSequence;I)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method codePointAt([CI)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method codePointAt([CII)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method codePointBefore(Ljava/lang/CharSequence;I)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method codePointBefore([CI)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method codePointBefore([CII)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toChars(I[CI)I:
+        // throws NPE
+        parameter #1:
+          type: @libcore.util.NonNull
+
+    method toChars(I)[C:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method codePointCount(Ljava/lang/CharSequence;II)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method codePointCount([CII)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method offsetByCodePoints(Ljava/lang/CharSequence;II)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method offsetByCodePoints([CIIII)I:
+        // throws NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method compareTo(Ljava/lang/Character;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method getName(I)Ljava/lang/String;:
+        // Null is a valid return value
+        return: @libcore.util.Nullable
+
+class Character$Subset:
+    method <init>(Ljava/lang/String;)V:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+class Character$UnicodeBlock:
+    method of(C)Ljava/lang/Character$UnicodeBlock;:
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method of(I)Ljava/lang/Character$UnicodeBlock;:
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method forName(Ljava/lang/String;)Ljava/lang/Character$UnicodeBlock;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+class Character$UnicodeScript:
+    method of(I)Ljava/lang/Character$UnicodeScript;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method forName(Ljava/lang/String;)Ljava/lang/Character$UnicodeScript;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+class CharSequence:
+    // Always returns a string instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+class Enum:
+    // Always returns an instance or throws
+    method valueOf(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;:
+        return: @libcore.util.NonNull
+
+class Iterable:
+    // Always returns an instance
+    method iterator()Ljava/util/Iterator;:
+        return: @libcore.util.NonNull
+
+class Integer:
+    method toString(II)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toUnsignedString(II)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toHexString(I)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toOctalString(I)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toBinaryString(I)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toString(I)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toUnsignedString(I)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+   method parseInt(Ljava/lang/String;I)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseInt(Ljava/lang/String;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseUnsignedInt(Ljava/lang/String;I)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseUnsignedInt(Ljava/lang/String;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;I)Ljava/lang/Integer;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Integer;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(I)Ljava/lang/Integer;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method getInteger(Ljava/lang/String;)Ljava/lang/Integer;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method getInteger(Ljava/lang/String;I)Ljava/lang/Integer;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method getInteger(Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Can be null
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method decode(Ljava/lang/String;)Ljava/lang/Integer;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method compareTo(Ljava/lang/Integer;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+class Float:
+    method toString(F)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toHexString(F)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Float;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(F)Ljava/lang/Float;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method parseFloat(Ljava/lang/String;)F:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method compareTo(Ljava/lang/Float;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+class Double:
+    method toString(D)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toHexString(D)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Double;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(D)Ljava/lang/Double;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method parseDouble(Ljava/lang/String;)D:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method compareTo(Ljava/lang/Double;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+class Long:
+    method toString(JI)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toUnsignedString(JI)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toHexString(J)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toOctalString(J)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toBinaryString(J)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toString(J)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method toUnsignedString(J)Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method parseLong(Ljava/lang/String;I)J:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseLong(Ljava/lang/String;)J:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseUnsignedLong(Ljava/lang/String;I)J:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method parseUnsignedLong(Ljava/lang/String;)J:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;I)Ljava/lang/Long;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Long;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method valueOf(J)Ljava/lang/Long;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method decode(Ljava/lang/String;)Ljava/lang/Long;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Always returns an instance
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        // Can be null
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method getLong(Ljava/lang/String;)Ljava/lang/Long;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method getLong(Ljava/lang/String;J)Ljava/lang/Long;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method getLong(Ljava/lang/String;Ljava/lang/Long;)Ljava/lang/Long;:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Can be null
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns null in case of failure
+        return: @libcore.util.Nullable
+
+    method compareTo(Ljava/lang/Long;)I:
+        // Throws NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+class String:
+    method <init>(Ljava/lang/String;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([C)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([CII)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([III)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BIII)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BI)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BIILjava/lang/String;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #3:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BIILjava/nio/charset/Charset;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #3:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BLjava/lang/String;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BLjava/nio/charset/Charset;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([BII)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>([B)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>(Ljava/lang/StringBuffer;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>(Ljava/lang/StringBuilder;)V:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return:
+    method <init>(II[C)V:
+        parameter #2:
+          type: @libcore.util.NonNull
+        return:
+    method getChars(II[CI)V:
+        parameter #2:
+          type: @libcore.util.NonNull
+        return:
+
+    // Always returns a string instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getBytes(II[BI)V:
+        parameter #2:
+          type: @libcore.util.NonNull
+    // Empty array in worst case
+    method getBytes(Ljava/lang/String;)[B:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Empty array in worst case
+    method getBytes(Ljava/nio/charset/Charset;)[B:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Empty array in worst case (or throws)
+    method getBytes(Ljava/lang/String;)[B:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Empty array in worst case
+    method getBytes()[B:
+        return: @libcore.util.NonNull
+    method equals(Ljava/lang/Object;)Z:
+        parameter #0:
+          type: @libcore.util.Nullable
+    // Empty array in worst case
+    method toCharArray()[C:
+        return: @libcore.util.NonNull
+    // Empty char sequence in worst case
+    method subSequence(II)Ljava/lang/CharSequence;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method concat(Ljava/lang/String;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method copyValueOf([CII)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method copyValueOf([C)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method intern()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method replace(CC)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method substring(I)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method substring(II)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method toLowerCase(Ljava/util/Locale;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method toLowerCase()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method toUpperCase(Ljava/util/Locale;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method toUpperCase()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method trim()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(Z)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(C)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(I)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(J)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(F)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(D)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf(Ljava/lang/Object;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.Nullable
+        return:@libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf([C)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method valueOf([CII)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method split(Ljava/lang/String;I)[Ljava/lang/String;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+    // Always returns a string instance
+    method split(Ljava/lang/String;)[Ljava/lang/String;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+    // Always returns a string instance
+    method join(Ljava/lang/CharSequence;[Ljava/lang/CharSequence;)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+    // Always returns a string instance
+    method join(Ljava/lang/CharSequence;Ljava/lang/Iterable;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+            inner-type 3, 0, 2, 0: @libcore.util.Nullable
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method replaceAll(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    // Always returns a string instance
+    method replaceFirst(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+   method replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+          type: @libcore.util.NonNull
+        return: @libcore.util.NonNull
+    method contentEquals(Ljava/lang/StringBuffer;)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method contentEquals(Ljava/lang/CharSequence;)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method equalsIgnoreCase(Ljava/lang/String;)Z:
+        parameter #0:
+          type: @libcore.util.Nullable
+    method compareTo(Ljava/lang/String;)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method compareToIgnoreCase(Ljava/lang/String;)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method regionMatches(ILjava/lang/String;II)Z:
+        parameter #1:
+          type: @libcore.util.NonNull
+    method regionMatches(ZILjava/lang/String;II)Z:
+        parameter #2:
+          type: @libcore.util.NonNull
+    method startsWith(Ljava/lang/String;I)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method startsWith(Ljava/lang/String;)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method endsWith(Ljava/lang/String;)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method indexOf(Ljava/lang/String;)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method indexOf(Ljava/lang/String;I)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method lastIndexOf(Ljava/lang/String;)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method lastIndexOf(Ljava/lang/String;I)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method matches(Ljava/lang/String;)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method contains(Ljava/lang/CharSequence;)Z:
+        parameter #0:
+          type: @libcore.util.NonNull
+    method format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+        return: @libcore.util.NonNull
+    method format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;:
+        parameter #0:
+          type: @libcore.util.NonNull
+        parameter #1:
+          type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+        return: @libcore.util.NonNull
+
+class System:
+    // Ideally, in should be made NonNull - but it IS possible to make this final field
+    // a null using setIn(null). It makes sense to leave this field as a platform
+    // type for convenience reasons - no one sane should expect this to be null,
+    // but it's nice to have kotlin check it.
+    field in:
+
+    // Same as in "in" field
+    field out:
+
+    // Same as in "in" field
+    field err:
+
+
+    method setIn(Ljava/io/InputStream;)V:
+        // While it makes little sense, it's possible to set System.in to null.
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method setOut(Ljava/io/PrintStream;)V:
+        // While it makes little sense, it's possible to set System.out to null.
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method setErr(Ljava/io/PrintStream;)V:
+        // While it makes little sense, it's possible to set System.err to null.
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method console()Ljava/io/Console;:
+        // Always returns an instance
+        return: @libcore.util.Nullable
+
+    method inheritedChannel()Ljava/nio/channels/Channel;:
+        // Null if there's no inherited channel
+        return: @libcore.util.Nullable
+
+    method setSecurityManager(Ljava/lang/SecurityManager;)V:
+        // Null is a valid argument.
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method getSecurityManager()Ljava/lang/SecurityManager;:
+        // Null is valid return value.
+        return: @libcore.util.Nullable
+
+    method arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V:
+        // NPE on null src
+        parameter #0:
+          type: @libcore.util.NonNull
+        // NPE on null dst
+        parameter #1:
+          type: @libcore.util.NonNull
+
+    method identityHashCode(Ljava/lang/Object;)I:
+        // Null is a valid argument.
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method getProperties()Ljava/util/Properties;:
+        // There's always a properties object
+        return: @libcore.util.NonNull
+
+    method lineSeparator()Ljava/lang/String;:
+        // There's always a line separator string (empty in worst case)
+        return: @libcore.util.NonNull
+
+    method setProperties(Ljava/util/Properties;)V:
+        // Null is a valid argument (will reset to defaults)
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method getProperty(Ljava/lang/String;)Ljava/lang/String;:
+        // Property key can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;:
+        // Property key can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Property value can be null
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;:
+        // Property key can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Property value can be null
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method clearProperty(Ljava/lang/String;)Ljava/lang/String;:
+        // Property key can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method getenv(Ljava/lang/String;)Ljava/lang/String;:
+        // Name can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Null is valid return value
+        return: @libcore.util.Nullable
+
+    method getenv()Ljava/util/Map;:
+        // Never null
+        return: @libcore.util.NonNull
+
+    method load(Ljava/lang/String;)V:
+        // Filename can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method loadLibrary(Ljava/lang/String;)V:
+        // Libname can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method mapLibraryName(Ljava/lang/String;)Ljava/lang/String;:
+        // Libname can't be null
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Never null
+        return: @libcore.util.NonNull
+
+class StringBuffer:
+    method <init>(Ljava/lang/String;)V:
+        // NPE on null argument
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/CharSequence;)V:
+        // NPE on null argument
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method getChars(II[CI)V:
+        // NPE on null argument
+        parameter #2:
+          type: @libcore.util.NonNull
+
+    method append(Ljava/lang/Object;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/String;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/StringBuffer;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/AbstractStringBuilder;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/CharSequence;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/CharSequence;II)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append([C)Ljava/lang/StringBuffer;:
+        // Null for char[] methods result in NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append([CII)Ljava/lang/StringBuffer;:
+        // Null for char[] methods result in NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Z)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(C)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(I)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method appendCodePoint(I)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(J)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(F)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(D)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method delete(II)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method deleteCharAt(I)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method replace(IILjava/lang/String;)Ljava/lang/StringBuffer;:
+        // NPE from null
+        parameter #2:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method substring(I)Ljava/lang/String;:
+        // Never null
+        return: @libcore.util.NonNull
+
+    method subSequence(II)Ljava/lang/CharSequence;:
+        // Never null
+        return: @libcore.util.NonNull
+
+    method substring(II)Ljava/lang/String;:
+        // Never null
+        return: @libcore.util.NonNull
+
+    method insert(I[CII)Ljava/lang/StringBuffer;:
+        // Null for char[] methods result in NPE
+        parameter #1:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/Object;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/String;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(I[C)Ljava/lang/StringBuffer;:
+        // Null for char[] methods result in NPE
+        parameter #1:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/CharSequence;)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/CharSequence;II)Ljava/lang/StringBuffer;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IZ)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IC)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(II)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IJ)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IF)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ID)Ljava/lang/StringBuffer;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method indexOf(Ljava/lang/String;)I:
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method indexOf(Ljava/lang/String;I)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method lastIndexOf(Ljava/lang/String;)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method lastIndexOf(Ljava/lang/String;I)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method reverse()Ljava/lang/StringBuffer;:
+        // Never null
+        return: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Never null
+        return: @libcore.util.NonNull
+
+class StringBuilder:
+
+    method <init>(Ljava/lang/String;)V:
+        // NPE on null argument
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/CharSequence;)V:
+        // NPE on null argument
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method append(Ljava/lang/Object;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/String;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/StringBuffer;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/CharSequence;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Ljava/lang/CharSequence;II)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #0:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append([C)Ljava/lang/StringBuilder;:
+        // Null for char[] methods result in NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append([CII)Ljava/lang/StringBuilder;:
+        // Null for char[] methods result in NPE
+        parameter #0:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(Z)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(C)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(I)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(J)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(F)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method append(D)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method appendCodePoint(I)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method delete(II)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method deleteCharAt(I)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method replace(IILjava/lang/String;)Ljava/lang/StringBuilder;:
+        // NPE from null
+        parameter #2:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(I[CII)Ljava/lang/StringBuilder;:
+        // Null for char[] methods result in NPE
+        parameter #1:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/Object;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/String;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(I[C)Ljava/lang/StringBuilder;:
+        // Null for char[] methods result in NPE
+        parameter #1:
+          type: @libcore.util.NonNull
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/CharSequence;)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ILjava/lang/CharSequence;II)Ljava/lang/StringBuilder;:
+        // null -> "null"
+        parameter #1:
+          type: @libcore.util.Nullable
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IZ)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IC)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(II)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IJ)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(IF)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method insert(ID)Ljava/lang/StringBuilder;:
+        // Returns self
+        return: @libcore.util.NonNull
+
+    method indexOf(Ljava/lang/String;)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method indexOf(Ljava/lang/String;I)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method lastIndexOf(Ljava/lang/String;)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method lastIndexOf(Ljava/lang/String;I)I:
+        // NPE on null
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method reverse()Ljava/lang/StringBuilder;:
+        // Never null
+        return: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        // Never null
+        return: @libcore.util.NonNull
+
+class Thread:
+    // Always returns a string instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always return an instance
+    method currentThread()Ljava/lang/Thread;:
+        return: @libcore.util.NonNull
+
+// It would be nice to use @NullFromTypeParam in ThreadLocal
+// everywhere its <T> is used, buy sadly the code below makes it impossible:
+//
+// ThreadLocal<@NonNull Object> foo = new ThreadLocal<>();
+// assertNull(foo.get())
+//
+// Hence @Nullable T is used heavily
+class ThreadLocal:
+    method withInitial(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;:
+        // NPE on null supplier
+        parameter #0:
+          type: @libcore.util.NonNull
+	// Always returns instance
+        return: @libcore.util.NonNull
+
+    method initialValue()Ljava/lang/Object;:
+        // Returns null by default
+        return: @libcore.util.Nullable
+
+    method get()Ljava/lang/Object;:
+        // May return null
+        return: @libcore.util.Nullable
+
+    method set(Ljava/lang/Object;)V:
+        // Depends on type param
+        parameter #0:
+          type: @libcore.util.NullFromTypeParam
+
+class Object:
+
+    method getClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+class Class:
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method forName(Ljava/lang/String;)Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.Nullable
+
+    method newInstance()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+    method isInstance(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method isAssignableFrom(Ljava/lang/Class;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getClassLoader()Ljava/lang/ClassLoader;:
+        return: @libcore.util.Nullable
+
+    method getTypeParameters()[Ljava/lang/reflect/TypeVariable;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0,3, 0: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getSuperclass()Ljava/lang/Class;:
+        return: @libcore.util.Nullable
+
+    method getGenericSuperclass()Ljava/lang/reflect/Type;:
+        return: @libcore.util.Nullable
+
+    method getPackage()Ljava/lang/Package;:
+        return: @libcore.util.Nullable
+
+    method getInterfaces()[Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getGenericInterfaces()[Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getComponentType()Ljava/lang/Class;:
+        return: @libcore.util.Nullable
+
+    method getSigners()[Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getEnclosingMethod()Ljava/lang/reflect/Method;:
+        return: @libcore.util.Nullable
+
+    method getEnclosingConstructor()Ljava/lang/reflect/Constructor;:
+        return: @libcore.util.Nullable
+
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.Nullable
+
+    method getEnclosingClass()Ljava/lang/Class;:
+        return: @libcore.util.Nullable
+
+    method getSimpleName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getTypeName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getCanonicalName()Ljava/lang/String;:
+        return: @libcore.util.Nullable
+
+    method getClasses()[Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getFields()[Ljava/lang/reflect/Field;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getMethods()[Ljava/lang/reflect/Method;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getConstructors()[Ljava/lang/reflect/Constructor;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getField(Ljava/lang/String;)Ljava/lang/reflect/Field;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.Nullable
+                inner-type 0, 0: @libcore.util.NonNull
+
+    method getConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+                inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredClasses()[Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredFields()[Ljava/lang/reflect/Field;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredMethods()[Ljava/lang/reflect/Method;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredConstructors()[Ljava/lang/reflect/Constructor;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.Nullable
+                inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+                inner-type 0, 0: @libcore.util.NonNull
+
+    method getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getResource(Ljava/lang/String;)Ljava/net/URL;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getProtectionDomain()Ljava/security/ProtectionDomain;:
+        return: @libcore.util.Nullable
+
+    method getEnumConstants()[Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method cast(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method asSubclass(Ljava/lang/Class;)Ljava/lang/Class;:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method isAnnotationPresent(Ljava/lang/Class;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getAnnotationsByType(Ljava/lang/Class;)[Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getAnnotations()[Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getDeclaredAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method isDeclaredAnnotationPresent(Ljava/lang/Class;)Z:
+        return:
+
+package java.lang.reflect:
+
+class AccessibleObject:
+    // Empty array in the worst case
+    method getAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+
+class AnnotatedElement:
+    // Empty array in the worst case
+    method getAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+
+class Array:
+    // Returns instance or throws
+    method newInstance(Ljava/lang/Class;I)Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+    // Returns instance or throws
+    method newInstance(Ljava/lang/Class;[I)Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+class Constructor:
+    // Always returns an instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // There's always a declaring class
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getParameterTypes()[Ljava/lang/Class;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Returns instance or throws
+    method newInstance([Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+class Executable:
+    // There's always a declaring class
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getParameterTypes()[Ljava/lang/Class;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getTypeParameters()[Ljava/lang/reflect/TypeVariable;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getGenericParameterTypes()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getParameters()[Ljava/lang/reflect/Parameter;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getExceptionTypes()[Ljava/lang/Class;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getGenericExceptionTypes()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Always returns an instance
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getParameterAnnotations()[[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+          inner-type 0, 0, 0, 0:  @libcore.util.NonNull
+
+class Field:
+    // Always returns an instance
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // There's always a type of a field
+    method getType()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+class GenericArrayType:
+    // There's always a type for array
+    method getGenericComponentType()Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+
+class GenericDeclaration:
+    // Empty array in the worst case
+    method getTypeParameters()[Ljava/lang/reflect/TypeVariable;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+
+class Member:
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+class Method:
+    // There's always a declaring class
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getTypeParameters()[Ljava/lang/reflect/TypeVariable;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // There's always a return type (such as Void.class)
+    method getReturnType()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // There's always a return type (such as Void.class)
+    method getGenericReturnType()Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getParameterTypes()[Ljava/lang/Class;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getGenericParameterTypes()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getExceptionTypes()[Ljava/lang/Class;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getGenericExceptionTypes()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Always returns an instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getParameterAnnotations()[[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+          inner-type 0, 0, 0, 0:  @libcore.util.NonNull
+
+
+class ParameterizedType:
+    // Empty array in the worst case
+    method getActualTypeArguments()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Always returns an instance
+    method getRawType()Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+
+class Parameter:
+    // Always returns an instance
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // There's always a declaring executable
+    method getDeclaringExecutable()Ljava/lang/reflect/Executable;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method getRealName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+    // There's always a type
+    method getParameterizedType()Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+    // There's always a type
+    method getType()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Empty array in the worst case
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+
+class Proxy:
+    // Always returns an instance (or throws)
+    method getProxyClass(Ljava/lang/ClassLoader;[Ljava/lang/Class;)Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+    // Always returns an instance (or throws)
+    method newProxyInstance(Ljava/lang/ClassLoader;[Ljava/lang/Class;Ljava/lang/reflect/InvocationHandler;)Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+    // Always returns an instance (or throws)
+    method getInvocationHandler(Ljava/lang/Object;)Ljava/lang/reflect/InvocationHandler;:
+        return: @libcore.util.NonNull
+
+class Type:
+    // Always returns an instance
+    method getTypeName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+class TypeVariable:
+    // Empty array in the worst case
+    method getBounds()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Always returns an instance
+    method getGenericDeclaration()Ljava/lang/reflect/GenericDeclaration;:
+        return: @libcore.util.NonNull
+    // Always returns an instance
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+class WildcardType:
+    // Empty array in the worst case
+    method getUpperBounds()[Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+    // Empty array in the worst case
+    method getLowerBounds()[Ljava/lang/reflect/Type;:
+        return:  @libcore.util.NonNull
+          inner-type 0, 0:  @libcore.util.NonNull
+
+package java.util:
+
+class ArrayList:
+
+    method <init>(Ljava/util/Collection;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method contains(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method indexOf(Ljava/lang/Object;)I:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method lastIndexOf(Ljava/lang/Object;)I:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method clone()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+    method toArray()[Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+
+    method toArray([Ljava/lang/Object;)[Ljava/lang/Object;:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+
+    method get(I)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method set(ILjava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method add(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+
+    method add(ILjava/lang/Object;)V:
+        return:
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method remove(I)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method addAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method addAll(ILjava/util/Collection;)Z:
+        return:
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method removeAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method retainAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method listIterator(I)Ljava/util/ListIterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method listIterator()Ljava/util/ListIterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method iterator()Ljava/util/Iterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method subList(II)Ljava/util/List;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method forEach(Ljava/util/function/Consumer;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method spliterator()Ljava/util/Spliterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method removeIf(Ljava/util/function/Predicate;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method replaceAll(Ljava/util/function/UnaryOperator;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method sort(Ljava/util/Comparator;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+class HashMap:
+
+    method <init>(Ljava/util/Map;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method get(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method containsKey(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method putAll(Ljava/util/Map;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method containsValue(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method keySet()Ljava/util/Set;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method values()Ljava/util/Collection;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method entrySet()Ljava/util/Set;:
+        return: @libcore.util.NonNull
+            // N.B. The CF extract-annotations tool incorrectly omits the 1,0 from here.
+            inner-type 3, 0, 1, 0: @libcore.util.NonNull
+            inner-type 3, 0, 1, 0, 3, 0: @libcore.util.NullFromTypeParam
+            inner-type 3, 0, 1, 0, 3, 1: @libcore.util.NullFromTypeParam
+
+    method getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method replace(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.Nullable
+        parameter #2:
+            type: @libcore.util.NullFromTypeParam
+
+    method replace(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.Nullable
+
+    method computeIfPresent(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NonNull
+                inner-type 3, 2,2, 0: @libcore.util.Nullable
+
+    method compute(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.Nullable
+                inner-type 3, 2,2, 0: @libcore.util.Nullable
+
+    method merge(Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NonNull
+                inner-type 3, 1,2, 0: @libcore.util.NonNull
+                inner-type 3, 2,2, 0: @libcore.util.Nullable
+
+    method forEach(Ljava/util/function/BiConsumer;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method replaceAll(Ljava/util/function/BiFunction;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 2,2, 0: @libcore.util.NullFromTypeParam
+
+    method clone()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+class Iterator:
+
+    method next()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method forEachRemaining(Ljava/util/function/Consumer;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+class List:
+    method contains(Ljava/lang/Object;)Z:
+        // May be null
+        parameter #0:
+          type: @libcore.util.Nullable
+        return:
+
+    method iterator()Ljava/util/Iterator;:
+        // Javadoc doesn't mention possiblity of a null result
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method toArray()[Ljava/lang/Object;:
+        // Never returns null
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+
+    method toArray([Ljava/lang/Object;)[Ljava/lang/Object;:
+        // Javadoc mention NPE for param #0
+        parameter #0:
+          type: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+        // Never returns null
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+
+    method add(Ljava/lang/Object;)Z:
+        // Nullness depends on type parameter nullness
+        parameter #0:
+          type: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;)Z:
+        // param #0 has to allow nulls
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method containsAll(Ljava/util/Collection;)Z:
+        // Javadoc mention NPE for null param #0
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method addAll(Ljava/util/Collection;)Z:
+        // Javadoc mention NPE for null param #0
+        parameter #0:
+          type: @libcore.util.NonNull
+          // boolean addAll(Collection<? extends E> c);
+          // Nullness depends on type parameter nullness
+          inner-type 3, 0, 2, 0: @libcore.util.NullFromTypeParam
+
+    method addAll(ILjava/util/Collection;)Z:
+        // Javadoc mention NPE for null param #1
+        parameter #1:
+          type: @libcore.util.NonNull
+          // boolean addAll(int, Collection<? extends E> c);
+          inner-type 3, 0, 2, 0: @libcore.util.NullFromTypeParam
+
+    method removeAll(Ljava/util/Collection;)Z:
+        // Javadoc mention NPE for null param #0
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method retainAll(Ljava/util/Collection;)Z:
+        // Javadoc mention NPE for null param #0
+        parameter #0:
+          type: @libcore.util.NonNull
+
+    method replaceAll(Ljava/util/function/UnaryOperator;)V:
+        // Javadoc mention NPE for null param #0
+        parameter #0:
+          type: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method sort(Ljava/util/Comparator;)V:
+        // Javadoc mention null as valid param #0
+        parameter #0:
+          type: @libcore.util.Nullable
+          inner-type 3, 0, 2, 0: @libcore.util.NullFromTypeParam
+
+    method equals(Ljava/lang/Object;)Z:
+        // Null is valid argument #0
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method get(I)Ljava/lang/Object;:
+        // Nullness depends on type parameter nullness
+        // E get(int index);
+        return: @libcore.util.NullFromTypeParam
+
+    method set(ILjava/lang/Object;)Ljava/lang/Object;:
+        // Nullness depends on type parameter nullness
+        // E set(int index, E element);
+        parameter #1:
+          type: @libcore.util.NullFromTypeParam
+        return: @libcore.util.NullFromTypeParam
+
+    method add(ILjava/lang/Object;)V:
+        // Nullness depends on type parameter nullness
+        // void add(int index, E element);
+        parameter #1:
+          type: @libcore.util.NullFromTypeParam
+
+    method remove(I)Ljava/lang/Object;:
+        // Nullness depends on type parameter nullness
+        // E remove(int index);
+        return: @libcore.util.NullFromTypeParam
+
+    method indexOf(Ljava/lang/Object;)I:
+        // Null is valid argument
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method lastIndexOf(Ljava/lang/Object;)I:
+        // Null is valid argument
+        parameter #0:
+          type: @libcore.util.Nullable
+
+    method listIterator()Ljava/util/ListIterator;:
+        // Javadoc doesn't mention possiblity of a null result
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method listIterator(I)Ljava/util/ListIterator;:
+        // Javadoc doesn't mention possiblity of a null result
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method subList(II)Ljava/util/List;:
+         // Javadoc doesn't mention possiblity of a null result
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method spliterator()Ljava/util/Spliterator;:
+        // Javadoc doesn't mention possiblity of a null result
+        return: @libcore.util.NonNull
+
+class Map:
+
+    method containsKey(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method containsValue(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method get(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method putAll(Ljava/util/Map;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method keySet()Ljava/util/Set;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method values()Ljava/util/Collection;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method entrySet()Ljava/util/Set;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.NullFromTypeParam
+            inner-type 3, 0,3, 1: @libcore.util.NullFromTypeParam
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method forEach(Ljava/util/function/BiConsumer;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method replaceAll(Ljava/util/function/BiFunction;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 2,2, 0: @libcore.util.NullFromTypeParam
+
+    method putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method replace(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.Nullable
+        parameter #2:
+            type: @libcore.util.NullFromTypeParam
+
+    method replace(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.Nullable
+
+    method computeIfPresent(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NonNull
+                inner-type 3, 2,2, 0: @libcore.util.Nullable
+
+    method compute(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.Nullable
+                inner-type 3, 2,2, 0: @libcore.util.Nullable
+
+    method merge(Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NonNull
+                inner-type 3, 1,2, 0: @libcore.util.NonNull
+                inner-type 3, 2,2, 0: @libcore.util.Nullable
+
+class Map$Entry:
+
+    method getKey()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method getValue()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method setValue(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method comparingByKey()Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 1: @libcore.util.Nullable
+
+    method comparingByValue()Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.Nullable
+            inner-type 3, 0,3, 1: @libcore.util.NonNull
+
+    method comparingByKey(Ljava/util/Comparator;)Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.NullFromTypeParam
+            inner-type 3, 0,3, 1: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method comparingByValue(Ljava/util/Comparator;)Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.Nullable
+            inner-type 3, 0,3, 1: @libcore.util.NullFromTypeParam
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+class Set:
+
+    method contains(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method iterator()Ljava/util/Iterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
+
+    method toArray()[Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+
+    method toArray([Ljava/lang/Object;)[Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 0, 0: @libcore.util.Nullable
+
+    method add(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+
+    method remove(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method containsAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method addAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method retainAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method removeAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method spliterator()Ljava/util/Spliterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NullFromTypeParam
