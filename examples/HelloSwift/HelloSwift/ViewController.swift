@@ -19,7 +19,7 @@
 import UIKit
 // MOE:begin_strip
 import third_party_java_src_j2objc_examples_HelloSwift_hello_transpiled
-import third_party_java_src_j2objc_jre_emul_jre_core
+import third_party_java_src_j2objc_jre_emul_lite_jre_core
 // MOE:end_strip
 
 class ViewController: UIViewController {
@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     text += "Enum: " + wednesday + "\n"
     text += "No nullability annotation: " + String(describing: type(of: hello)) + "\n"
     text += "NonNull annotation: " + String(describing: type(of: wednesday)) + "\n"
-    text += sb!
+    text += sb
     textView.text = text
   }
 
