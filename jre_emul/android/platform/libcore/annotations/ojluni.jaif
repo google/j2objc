@@ -873,11 +873,6 @@ class String:
         parameter #0:
           type: @libcore.util.NonNull
         return: @libcore.util.NonNull
-    // Empty array in worst case (or throws)
-    method getBytes(Ljava/lang/String;)[B:
-        parameter #0:
-          type: @libcore.util.NonNull
-        return: @libcore.util.NonNull
     // Empty array in worst case
     method getBytes()[B:
         return: @libcore.util.NonNull
