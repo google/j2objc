@@ -218,9 +218,6 @@ public class TreeConverter {
   @SuppressWarnings("fallthrough")
   private TreeNode convertInner(JCTree javacNode) {
     switch (javacNode.getKind()) {
-      default:
-        throw new AssertionError("Unknown node type: " + javacNode.getKind());
-
       case ANNOTATION:
       case TYPE_ANNOTATION:
         return convertAnnotation((JCTree.JCAnnotation) javacNode);
@@ -379,6 +376,9 @@ public class TreeConverter {
         }
         throw new AssertionError("Unknown OTHER node, tag: " + javacNode.getTag());
       }
+
+      default:
+        throw new AssertionError("Unknown node type: " + javacNode.getKind());
     }
   }
 
@@ -511,7 +511,7 @@ public class TreeConverter {
     InfixExpression newNode = new InfixExpression();
     newNode
         .setTypeMirror(node.type)
-        .setOperator(InfixExpression.Operator.parse(node.operator.name.toString()));
+        .setOperator(InfixExpression.Operator.parse(node.getOperator().name.toString()));
 
     // Flatten this tree to avoid stack overflow with very deep trees. This
     // code traverses the subtree non-recursively and merges all children
@@ -1134,6 +1134,31 @@ public class TreeConverter {
     return Type.newType(type);
   }
 
+  private Type convertType(TypeMirror varType, SourcePosition pos, boolean isVarargs) {
+    Type newType;
+    if (isVarargs) {
+      newType = Type.newType(((javax.lang.model.type.ArrayType) varType).getComponentType());
+    } else {
+      if (varType.getKind() == TypeKind.DECLARED
+          && !((DeclaredType) varType).getTypeArguments().isEmpty()) {
+        newType = new ParameterizedType()
+            .setType((SimpleType) new SimpleType(varType).setPosition(pos))
+            .setTypeMirror(varType);
+      } else if (varType.getKind() == TypeKind.UNION) {
+        newType = new UnionType();
+        newType.setTypeMirror(varType);
+        for (TypeMirror t : ((javax.lang.model.type.UnionType) varType).getAlternatives()) {
+          Type alternative = convertType(t, pos, false);
+          alternative.setPosition(pos);
+          ((UnionType) newType).addType(alternative);
+        }
+      } else {
+        newType = Type.newType(varType);
+      }
+    }
+    return (Type) newType.setPosition(pos);
+  }
+
   private TypeMirror nameType(JCTree node) {
     if (node.getKind() == Kind.PARAMETERIZED_TYPE) {
       return ((JCTree.JCTypeApply) node).clazz.type;
@@ -1198,31 +1223,6 @@ public class TreeConverter {
         .setAnnotations(convertAnnotations(node.getModifiers()))
         .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
-  }
-
-  private Type convertType(TypeMirror varType, SourcePosition pos, boolean isVarargs) {
-    Type newType;
-    if (isVarargs) {
-      newType = Type.newType(((javax.lang.model.type.ArrayType) varType).getComponentType());
-    } else {
-      if (varType.getKind() == TypeKind.DECLARED
-          && !((DeclaredType) varType).getTypeArguments().isEmpty()) {
-        newType = new ParameterizedType()
-            .setType((SimpleType) new SimpleType(varType).setPosition(pos))
-            .setTypeMirror(varType);
-      } else if (varType.getKind() == TypeKind.UNION) {
-        newType = new UnionType();
-        newType.setTypeMirror(varType);
-        for (TypeMirror t : ((javax.lang.model.type.UnionType) varType).getAlternatives()) {
-          Type alternative = convertType(t, pos, false);
-          alternative.setPosition(pos);
-          ((UnionType) newType).addType(alternative);
-        }
-      } else {
-        newType = Type.newType(varType);
-      }
-    }
-    return (Type) newType.setPosition(pos);
   }
 
   private VariableDeclarationExpression convertVariableExpression(JCTree.JCVariableDecl node) {

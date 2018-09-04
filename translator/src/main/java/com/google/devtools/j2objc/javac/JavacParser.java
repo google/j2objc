@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -26,12 +27,13 @@ import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.ExpressionTree;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.tree.JCTree;
 import java.io.File;
 import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,8 +55,8 @@ import javax.tools.ToolProvider;
  * @author Tom Ball
  */
 public class JavacParser extends Parser {
-  
-  private JavacFileManager fileManager; 
+
+  private JavacFileManager fileManager;
 
   public JavacParser(Options options){
     super(options);
@@ -69,8 +71,7 @@ public class JavacParser extends Parser {
   public CompilationUnit parse(InputFile file) {
     try {
       if (file.getUnitName().endsWith(".java")) {
-        String source = null;
-        source = options.fileUtil().readFile(file);
+        String source = options.fileUtil().readFile(file);
         return parse(null, file.getUnitName(), source);
       } else {
         assert options.translateClassfiles();
@@ -241,10 +242,7 @@ public class JavacParser extends Parser {
       }
       try {
         JavacEnvironment env = createEnvironment(inputFiles, null, true);
-        List<CompilationUnitTree> units = new ArrayList<>();
-        for (CompilationUnitTree unit : env.task().parse()) {
-          units.add(unit);
-        }
+        env.task().parse();
         // JavacTaskImpl.enter() parses and runs annotation processing, but
         // not type checking and attribution (that's done by analyze()).
         env.task().enter();
@@ -261,7 +259,7 @@ public class JavacParser extends Parser {
     // No annotation processors on classpath, or processing errors reported.
     return new JavacProcessingResult(generatedInputs, null);
   }
-  
+
   @Override
   public void close() throws IOException {
     if (fileManager != null) {
@@ -289,6 +287,43 @@ public class JavacParser extends Parser {
     }
   }
 
+  /**
+   * Extract the name of a Java source's package, or null if not found. This method is only used
+   * before javac parsing to determine the main type name.
+   */
+  @VisibleForTesting
+  static String packageName(String source) {
+    try (StringReader r = new StringReader(source)) {
+      StreamTokenizer tokenizer = new StreamTokenizer(r);
+      tokenizer.slashSlashComments(true);
+      tokenizer.slashStarComments(true);
+      StringBuilder sb = new StringBuilder();
+      boolean inName = false;
+      while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
+        if (inName) {
+          switch (tokenizer.ttype) {
+            case ';':
+              return sb.length() > 0 ? sb.toString() : null;
+            case '.':
+              sb.append('.');
+              break;
+            case StreamTokenizer.TT_WORD:
+              sb.append(tokenizer.sval);
+              break;
+            default:
+              inName = false; // Invalid package statement pattern.
+              break;
+          }
+        } else if (tokenizer.ttype == StreamTokenizer.TT_WORD && tokenizer.sval.equals("package")) {
+          inName = true;
+        }
+      }
+      return null; // Package statement not found.
+    } catch (IOException e) {
+      throw new AssertionError("Exception reading string: " + e);
+    }
+  }
+
   private static class JavacParseResult implements Parser.ParseResult {
     private final InputFile file;
     private String source;
@@ -313,9 +348,11 @@ public class JavacParser extends Parser {
     @Override
     public String mainTypeName() {
       String qualifiedName = FileUtil.getMainTypeName(file);
-      ExpressionTree packageDecl = unit.getPackageName();
-      if (packageDecl != null) {
-        qualifiedName = packageDecl.toString() + "." + qualifiedName;
+      // The API for accessing a compilation unit's package changed between
+      // Java 8 and Java 10, so instead this gets the package from the source.
+      String packageName = JavacParser.packageName(source);
+      if (packageName != null) {
+        qualifiedName = packageName + "." + qualifiedName;
       }
       return qualifiedName;
     }
@@ -345,6 +382,5 @@ public class JavacParser extends Parser {
     public File getSourceOutputDirectory() {
       return sourceOutputDirectory;
     }
-
   }
 }
