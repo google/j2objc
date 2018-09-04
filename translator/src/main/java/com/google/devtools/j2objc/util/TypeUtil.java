@@ -251,10 +251,18 @@ public final class TypeUtil {
   }
 
   public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
+    if (isGeneratedType(t1) || isGeneratedType(t2)) {
+      // TODO(user): implement as part of converting Elements to their generated versions.
+      return false;
+    }
     return javacTypes.isAssignable(t1, t2);
   }
 
   public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
+    if (isGeneratedType(t1) || isGeneratedType(t2)) {
+      // TODO(user): implement as part of converting Elements to their generated versions.
+      return false;
+    }
     return javacTypes.isSubtype(t1, t2);
   }
 
