@@ -58,7 +58,8 @@ endif
 
 # Command-line pattern for calling libtool and filtering the "same member name"
 # errors from having object files of the same name. (but in different directory)
-fat_lib_filtered_libtool = set -o pipefail && $(LIBTOOL) -static -o $1 -filelist $2 2>&1 \
+fat_lib_filtered_libtool = set -o pipefail \
+  && $(LIBTOOL) -static -no_warning_for_no_symbols -o $1 -filelist $2 2>&1 \
   | (grep -v "same member name" || true)
 
 arch_flags = $(strip \
