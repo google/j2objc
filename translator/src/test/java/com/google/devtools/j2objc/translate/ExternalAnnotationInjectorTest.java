@@ -205,4 +205,38 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "__attribute__((unused)) static void PTest_foo(PTest *self);");
     assertTranslatedLines(translation, "- (void)bar {", "  PTest_foo(self);", "}");
   }*/
+
+  private static final String REFLECTION_SUPPORT_ANNOTATION =
+      "package com.google.j2objc.annotations: "
+          + "annotation @ReflectionSupport: "
+          + "  enum com.google.j2objc.annotations.ReflectionSupport.Level value ";
+
+  public void testInjectReflectionSupport_type_keepReflection() throws IOException {
+    String externalReflectionSupportAnnotations =
+        REFLECTION_SUPPORT_ANNOTATION
+            + "package p: "
+            + "class Test: "
+            + "  @com.google.j2objc.annotations.ReflectionSupport( "
+            + "    com.google.j2objc.annotations.ReflectionSupport.Level.FULL) ";
+    options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
+    options.setStripReflection(true);
+    String source = "package p; public class Test {}";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    assertTranslation(translation, "__metadata");
+  }
+
+  public void testInjectReflectionSupport_type_stripReflection() throws IOException {
+    String externalReflectionSupportAnnotations =
+        REFLECTION_SUPPORT_ANNOTATION
+            + "package p: "
+            + "class Test: "
+            + "  @com.google.j2objc.annotations.ReflectionSupport( "
+            + "    com.google.j2objc.annotations.ReflectionSupport.Level.NATIVE_ONLY) ";
+    options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
+    options.setStripReflection(false);
+    String source = "package p; public class Test {}";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    assertNotInTranslation(translation, "__metadata");
+  }
+
 }
