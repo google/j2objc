@@ -17,10 +17,6 @@
 
 
 import UIKit
-// MOE:begin_strip
-import third_party_java_src_j2objc_examples_HelloSwift_hello_transpiled
-import third_party_java_src_j2objc_jre_emul_lite_jre_core
-// MOE:end_strip
 
 class ViewController: UIViewController {
   @IBOutlet weak var textView: UITextView!
