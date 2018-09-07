@@ -396,7 +396,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
 				INFOPLIST_FILE = HelloSwift/Info.plist;
-				J2OBJC_HOME = ../../dist;
+				J2OBJC_HOME = ../..;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,7 +424,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
 				INFOPLIST_FILE = HelloSwift/Info.plist;
-				J2OBJC_HOME = ../../dist;
+				J2OBJC_HOME = ../..;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -449,7 +449,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
-				J2OBJC_HOME = ../../dist;
+				J2OBJC_HOME = ../..;
 				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -469,7 +469,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
-				J2OBJC_HOME = ../../dist;
+				J2OBJC_HOME = ../..;
 				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
 				OTHER_LDFLAGS = (
 					"-ObjC",
