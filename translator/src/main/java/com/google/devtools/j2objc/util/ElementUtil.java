@@ -477,7 +477,7 @@ public final class ElementUtil {
 
   /** Locate method which matches either Java or Objective C getter name patterns. */
   public static ExecutableElement findGetterMethod(
-      String propertyName, TypeMirror propertyType, TypeElement declaringClass) {
+      String propertyName, TypeMirror propertyType, TypeElement declaringClass, boolean isStatic) {
     // Try Objective-C getter naming convention.
     ExecutableElement getter = ElementUtil.findMethod(declaringClass, propertyName);
     if (getter == null) {
@@ -485,16 +485,17 @@ public final class ElementUtil {
       String prefix = TypeUtil.isBoolean(propertyType) ? "is" : "get";
       getter = ElementUtil.findMethod(declaringClass, prefix + NameTable.capitalize(propertyName));
     }
-    return getter;
+    return getter != null && isStatic == isStatic(getter) ? getter : null;
   }
 
   /** Locate method which matches the Java/Objective C setter name pattern. */
   public static ExecutableElement findSetterMethod(
-      String propertyName, TypeMirror type, TypeElement declaringClass) {
-    return ElementUtil.findMethod(
+      String propertyName, TypeMirror type, TypeElement declaringClass, boolean isStatic) {
+    ExecutableElement setter = ElementUtil.findMethod(
         declaringClass,
         "set" + NameTable.capitalize(propertyName),
         TypeUtil.getQualifiedName(type));
+    return setter != null && isStatic == isStatic(setter) ? setter : null;
   }
 
   public static ExecutableElement findConstructor(TypeElement type, String... paramTypes) {

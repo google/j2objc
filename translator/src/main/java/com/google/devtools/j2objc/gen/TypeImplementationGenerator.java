@@ -186,7 +186,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
         String typeSuffix = isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id";
         TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
         String baseName = nameTable.getVariableBaseName(varElement);
-        ExecutableElement getter = ElementUtil.findGetterMethod(baseName, type, declaringClass);
+        ExecutableElement getter =
+            ElementUtil.findGetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (getter == null) {
           if (isVolatile) {
             printf(
@@ -196,7 +197,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
             printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
           }
         }
-        ExecutableElement setter = ElementUtil.findSetterMethod(baseName, type, declaringClass);
+        ExecutableElement setter =
+            ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (setter == null && !ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
               ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")

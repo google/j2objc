@@ -378,7 +378,9 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
                 + "static double d; "
                 + "static final boolean flag = true; "
                 + "static String TRUE; " // reserved word.
-                + "private static String s; }" // private.
+                + "private static String s; " // private.
+                // verify that this instance getter does not prevent generating the class getter.
+                + "int getTest() { return test; } }"
             ,
             "Test",
             "Test.h");
@@ -388,6 +390,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@property (class) jdouble d NS_SWIFT_NAME(d);",
         "@property (readonly, class) jboolean flag NS_SWIFT_NAME(flag);",
         "@property (copy, class) NSString *TRUE_ NS_SWIFT_NAME(TRUE_);");
+    assertTranslation(translation, "- (jint)getTest;");
+    assertTranslation(translation, "+ (jint)test;");
     assertNotInTranslation(translation, "@property (copy, class) NSString *s NS_SWIFT_NAME(s);");
   }
 

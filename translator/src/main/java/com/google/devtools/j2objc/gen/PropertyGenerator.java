@@ -128,7 +128,9 @@ public final class PropertyGenerator {
     // Add default getter/setter here, as each fragment needs its own attributes
     // to support its unique accessors.
     TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-    ExecutableElement getter = ElementUtil.findGetterMethod(propertyName, varType, declaringClass);
+    ExecutableElement getter =
+        ElementUtil.findGetterMethod(
+            propertyName, varType, declaringClass, ElementUtil.isStatic(varElement));
     if (getter != null) {
       // Update getter from its Java name to its selector. This is normally the
       // same since getters have no parameters, but the name may be reserved.
@@ -138,7 +140,9 @@ public final class PropertyGenerator {
         attributes.add("nonatomic");
       }
     }
-    ExecutableElement setter = ElementUtil.findSetterMethod(propertyName, varType, declaringClass);
+    ExecutableElement setter =
+        ElementUtil.findSetterMethod(
+            propertyName, varType, declaringClass, ElementUtil.isStatic(varElement));
     if (setter != null) {
       // Update setter from its Java name to its selector.
       attributes.remove("setter=" + annotation.getSetter());

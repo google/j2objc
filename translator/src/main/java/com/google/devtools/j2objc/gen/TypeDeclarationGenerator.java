@@ -242,11 +242,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         String objcType = nameTable.getObjCType(type);
         TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
         String baseName = nameTable.getVariableBaseName(var);
-        ExecutableElement getter = ElementUtil.findGetterMethod(baseName, type, declaringClass);
+        ExecutableElement getter =
+            ElementUtil.findGetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (getter == null) {
           printf("\n+ (%s)%s;\n", objcType, accessorName);
         }
-        ExecutableElement setter = ElementUtil.findSetterMethod(baseName, type, declaringClass);
+        ExecutableElement setter =
+            ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (setter == null && !ElementUtil.isFinal(var)) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
