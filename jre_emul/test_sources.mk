@@ -862,13 +862,6 @@ TESTS_USE_SERIALIZATION = \
     jsr166/TimeUnitTest.java \
     jsr166/AbstractQueuedLongSynchronizerTest.java \
     jsr166/AbstractQueuedSynchronizerTest.java \
-    jsr166/AtomicBooleanTest.java \
-    jsr166/AtomicIntegerArrayTest.java \
-    jsr166/AtomicIntegerTest.java \
-    jsr166/AtomicLongArrayTest.java \
-    jsr166/AtomicLongTest.java \
-    jsr166/AtomicReferenceArrayTest.java \
-    jsr166/AtomicReferenceTest.java \
     jsr166/ConcurrentLinkedDequeTest.java \
     jsr166/ConcurrentLinkedQueueTest.java \
     jsr166/LinkedTransferQueueTest.java \

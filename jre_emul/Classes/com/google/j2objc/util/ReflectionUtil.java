@@ -61,4 +61,11 @@ public final class ReflectionUtil {
       return 0;
     }
   }
+
+
+  public static boolean isReflectionStripped() {
+    // When reflection metadata is present, the name of the class is java.lang.Boolean.
+    // For more details about this behavior see {@link #matchClassNamePrefix}.
+    return Boolean.TRUE.getClass().getName().equals("JavaLangBoolean");
+  }
 }
