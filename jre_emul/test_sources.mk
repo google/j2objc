@@ -840,29 +840,7 @@ FAILING_MATH_TESTS = \
     tests/api/java/math/BigIntegerTest.java \
 
 TESTS_USE_SERIALIZATION = \
-    jsr166/ArrayBlockingQueueTest.java \
-    jsr166/ArrayDequeTest.java \
-    jsr166/ConcurrentHashMapTest.java \
-    jsr166/ConcurrentSkipListMapTest.java \
-    jsr166/ConcurrentSkipListSetTest.java \
-    jsr166/ConcurrentSkipListSubMapTest.java \
-    jsr166/ConcurrentSkipListSubSetTest.java \
-    jsr166/CopyOnWriteArrayListTest.java \
-    jsr166/CopyOnWriteArraySetTest.java \
-    jsr166/LinkedBlockingDequeTest.java \
-    jsr166/LinkedBlockingQueueTest.java \
-    jsr166/PriorityBlockingQueueTest.java \
-    jsr166/PriorityQueueTest.java \
     SerializationTest.java \
-    jsr166/SynchronousQueueTest.java \
-    jsr166/TreeMapTest.java \
-    jsr166/TreeSetTest.java \
-    jsr166/TreeSubMapTest.java \
-    jsr166/TreeSubSetTest.java \
-    jsr166/TimeUnitTest.java \
-    jsr166/ConcurrentLinkedDequeTest.java \
-    jsr166/ConcurrentLinkedQueueTest.java \
-    jsr166/LinkedTransferQueueTest.java \
     libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/io/OldAndroidSerializationTest.java \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
