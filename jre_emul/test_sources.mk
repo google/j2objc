@@ -860,13 +860,9 @@ TESTS_USE_SERIALIZATION = \
     jsr166/TreeSubMapTest.java \
     jsr166/TreeSubSetTest.java \
     jsr166/TimeUnitTest.java \
-    jsr166/AbstractQueuedLongSynchronizerTest.java \
-    jsr166/AbstractQueuedSynchronizerTest.java \
     jsr166/ConcurrentLinkedDequeTest.java \
     jsr166/ConcurrentLinkedQueueTest.java \
     jsr166/LinkedTransferQueueTest.java \
-    jsr166/ReentrantLockTest.java \
-    jsr166/ReentrantReadWriteLockTest.java \
     libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/io/OldAndroidSerializationTest.java \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
