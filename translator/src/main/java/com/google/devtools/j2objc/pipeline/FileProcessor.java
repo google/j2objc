@@ -52,6 +52,8 @@ abstract class FileProcessor {
       // Should be an error if the user specifies this with --build-closure
       assert !options.getHeaderMap().useSourceDirectories();
       closureQueue = new BuildClosureQueue(options);
+    } else if (options.globalCombinedOutput() != null) {
+      closureQueue = new BuildClosureQueue(options);
     } else {
       closureQueue = null;
     }

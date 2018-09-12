@@ -78,12 +78,6 @@ public class BuildClosureQueue {
   }
 
   private InputFile getFileForName(String name) {
-    // Check if class exists on classpath.
-    if (findClassFile(name)) {
-      logger.finest("no source for " + name + ", class found");
-      return null;
-    }
-
     InputFile inputFile = null;
     try {
       inputFile = options.fileUtil().findOnSourcePath(name);
@@ -92,6 +86,10 @@ public class BuildClosureQueue {
     }
 
     if (inputFile == null) {
+      // Check if class exists on classpath.
+      if (findClassFile(name)) {
+        logger.finest("no source for " + name + ", class found");
+      }
       return null;
     }
 
