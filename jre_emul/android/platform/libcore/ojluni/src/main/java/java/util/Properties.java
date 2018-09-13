@@ -349,7 +349,7 @@ class Properties extends Hashtable<Object,Object> {
     }
 
     // j2objc: modified to support IOSClass loading of a prefixes.properties resource.
-    static void load0(Map<Object, Object> map, LineReader lr) throws IOException {
+    public static void load0(Map<Object, Object> map, LineReader lr) throws IOException {
         char[] convtBuf = new char[1024];
         int limit;
         int keyLen;
@@ -401,13 +401,14 @@ class Properties extends Hashtable<Object,Object> {
         }
     }
 
-    /* Read in a "logical line" from an InputStream/Reader, skip all comment
+    /**
+     * Read in a "logical line" from an InputStream/Reader, skip all comment
      * and blank lines and filter out those leading whitespace characters
      * (\u0020, \u0009 and \u000c) from the beginning of a "natural line".
      * Method returns the char length of the "logical line" and stores
      * the line in "lineBuf".
      */
-    static class LineReader {
+    public static class LineReader {
         public LineReader(InputStream inStream) {
             this.inStream = inStream;
             inByteBuf = new byte[8192];
