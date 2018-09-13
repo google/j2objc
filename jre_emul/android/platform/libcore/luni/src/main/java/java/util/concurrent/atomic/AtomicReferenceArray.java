@@ -40,7 +40,7 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
     static {
         try {
             // J2ObjC reflection-stripping change.
-            if (ReflectionUtil.isReflectionStripped()) {
+            if (ReflectionUtil.isJreReflectionStripped()) {
                 ARRAY = 0;
             } else {
                 ARRAY = U.objectFieldOffset

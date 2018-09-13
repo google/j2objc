@@ -1108,7 +1108,7 @@ public class ReentrantLockTest extends JSR166TestCase {
     public void testSerialization_fair() { testSerialization(true); }
     public void testSerialization(boolean fair) {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         ReentrantLock lock = new ReentrantLock(fair);

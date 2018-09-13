@@ -1083,7 +1083,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
      */
     public void testSerialization() {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         Mutex sync = new Mutex();

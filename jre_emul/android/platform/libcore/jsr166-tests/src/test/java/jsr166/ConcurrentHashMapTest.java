@@ -781,7 +781,7 @@ public class ConcurrentHashMapTest extends JSR166TestCase {
      */
     public void testSerialization() throws Exception {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         Map x = map5();

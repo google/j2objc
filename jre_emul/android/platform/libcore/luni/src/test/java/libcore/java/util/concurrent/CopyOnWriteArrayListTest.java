@@ -262,7 +262,7 @@ public final class CopyOnWriteArrayListTest extends TestCase {
 
     public void testSerialize() {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         String s = "aced0005737200296a6176612e7574696c2e636f6e63757272656e742e436f70"

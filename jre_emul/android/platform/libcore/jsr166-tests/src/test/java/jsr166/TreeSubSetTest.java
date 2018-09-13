@@ -484,7 +484,7 @@ public class TreeSubSetTest extends JSR166TestCase {
      */
     public void testSerialization() throws Exception {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         NavigableSet x = populatedSet(SIZE);
@@ -976,7 +976,7 @@ public class TreeSubSetTest extends JSR166TestCase {
      */
     public void testDescendingSerialization() throws Exception {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         NavigableSet x = dset5();

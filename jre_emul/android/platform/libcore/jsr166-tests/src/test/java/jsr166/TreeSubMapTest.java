@@ -444,7 +444,7 @@ public class TreeSubMapTest extends JSR166TestCase {
      */
     public void testSerialization() throws Exception {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         NavigableMap x = map5();
@@ -975,7 +975,7 @@ public class TreeSubMapTest extends JSR166TestCase {
      */
     public void testDescendingSerialization() throws Exception {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         NavigableMap x = dmap5();

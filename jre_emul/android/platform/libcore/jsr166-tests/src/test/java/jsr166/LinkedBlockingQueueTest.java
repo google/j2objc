@@ -777,7 +777,7 @@ public class LinkedBlockingQueueTest extends JSR166TestCase {
      */
     public void testSerialization() throws Exception {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         Queue x = populatedQueue(SIZE);

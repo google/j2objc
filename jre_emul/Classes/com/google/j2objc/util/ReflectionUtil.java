@@ -61,7 +61,7 @@ public final class ReflectionUtil {
     }
   }
 
-  public static boolean isReflectionStripped() {
+  public static boolean isJreReflectionStripped() {
     // When reflection metadata is present, the name of the class is java.lang.Boolean.
     // For more details about this behavior see {@link #matchClassNamePrefix}.
     return Boolean.TRUE.getClass().getName().equals("JavaLangBoolean");

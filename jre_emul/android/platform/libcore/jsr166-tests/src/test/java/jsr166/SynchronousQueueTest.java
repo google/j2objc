@@ -530,7 +530,7 @@ public class SynchronousQueueTest extends JSR166TestCase {
      */
     public void testSerialization() {
         // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
             return;
         }
         final SynchronousQueue x = new SynchronousQueue();

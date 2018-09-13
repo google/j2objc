@@ -1258,7 +1258,7 @@ public class LogManager {
 
         // Load the properties
         Properties.load0(props, new Properties.LineReader(ins));
-        if (ReflectionUtil.isReflectionStripped()) {
+        if (ReflectionUtil.isJreReflectionStripped()) {
           reflectionStrippedProcessing();
         }
         // Instantiate new configuration objects.
