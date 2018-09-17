@@ -120,7 +120,7 @@ public final class TranslationUtil {
     if (ElementUtil.isLambda(type)) {
       return false;
     }
-    if (isJUnitTestClass(type)) {
+    if (isJUnitTestClass(type) || ElementUtil.isRuntimeAnnotation(type)) {
       return true;
     }
     PackageElement packageElement = ElementUtil.getPackage(type);

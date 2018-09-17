@@ -25,7 +25,6 @@
 
 package java.lang;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.lang.annotation.*;
 import static java.lang.annotation.ElementType.*;
 
@@ -41,7 +40,5 @@ import static java.lang.annotation.ElementType.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})
-// TODO(user): remove once reflection data is not stripped from runtime annotations.
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public @interface Deprecated {
 }
