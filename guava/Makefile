@@ -16,18 +16,38 @@ SUFFIXES:
 
 default: dist
 
-clean:
+clean: clean_jre clean_android
+	@:
+
+clean_jre:
 	@$(MAKE) -f jre.mk clean
+
+clean_android:
 	@$(MAKE) -C android -f android.mk clean
 
-dist:
+dist: dist_jre dist_android
+	@:
+
+dist_jre:
 	@$(MAKE) -f jre.mk dist
+
+dist_android:
 	@$(MAKE) -C android -f android.mk dist
 
-framework:
+framework: framework_jre framework_android
+	@:
+
+framework_jre:
 	@$(MAKE) -f jre.mk framework
+
+framework_android:
 	@$(MAKE) -C android -f android.mk framework
 
-java:
+java: java_jre java_android
+	@:
+
+java_jre:
 	@$(MAKE) -f jre.mk java
+
+java_android:
 	@$(MAKE) -C android -f android.mk java
