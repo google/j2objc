@@ -16,18 +16,6 @@ SUFFIXES:
 
 default: dist
 
-clean:
-	@$(MAKE) -f jre.mk clean
-	@$(MAKE) -C android -f android.mk clean
-
-dist:
-	@$(MAKE) -f jre.mk dist
-	@$(MAKE) -C android -f android.mk dist
-
-framework:
-	@$(MAKE) -f jre.mk framework
-	@$(MAKE) -C android -f android.mk framework
-
-java:
-	@$(MAKE) -f jre.mk java
-	@$(MAKE) -C android -f android.mk java
+include android_environment.mk
+include android_sources.mk
+include ../common.mk

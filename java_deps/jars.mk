@@ -38,11 +38,17 @@ ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.1.3-sources.jar
 CHECKER_QUAL_JAR = checker-qual-2.0.0.jar
 CHECKER_QUAL_SOURCE_JAR = checker-qual-2.0.0-sources.jar
 
+CHECKER_COMPAT_QUAL_JAR = checker-compat-qual-2.0.0.jar
+CHECKER_COMPAT_QUAL_SOURCE_JAR = checker-compat-qual-2.0.0-sources.jar
+
 ANIMAL_SNIFFER_ANNOTATIONS_JAR = animal-sniffer-annotations-1.14.jar
 ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR = animal-sniffer-annotations-1.14-sources.jar
 
 GUAVA_JAR = guava-25.1-jre.jar
 GUAVA_SOURCE_JAR = guava-25.1-jre-sources.jar
+
+GUAVA_ANDROID_JAR = guava-25.1-android.jar
+GUAVA_ANDROID_SOURCE_JAR = guava-25.1-android-sources.jar
 
 SCENELIB_JAR = scenelib.jar
 

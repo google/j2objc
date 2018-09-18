@@ -11,20 +11,22 @@
 # limitations under the License.
 
 # Builds a J2ObjC translated Guava library.
-#
-# Author: Keith Stanger
 
-J2OBJC_ROOT = ..
+J2OBJC_ROOT = ../..
 
-include ../make/common.mk
-include ../make/j2objc_deps.mk
-include ../java_deps/jars.mk
+include ../../make/common.mk
+include ../../make/j2objc_deps.mk
+include ../../java_deps/jars.mk
 
-GUAVA_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_SOURCE_JAR)
+GUAVA_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_ANDROID_SOURCE_JAR)
 ERROR_PRONE_ANNOTATIONS_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(ERROR_PRONE_ANNOTATIONS_SOURCE_JAR)
-CHECKER_QUAL_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(CHECKER_QUAL_SOURCE_JAR)
+CHECKER_QUAL_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(CHECKER_COMPAT_QUAL_SOURCE_JAR)
 ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR)
 
-JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_JAR)
+JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_ANDROID_JAR)
 
 OBJS_DIR = $(BUILD_DIR)/objs
+GUAVA_FAT_LIB_NAME = guavaandroid
+GUAVA_STATIC_FRAMEWORK_NAME = GuavaAndroid
+GUAVA_INCLUDE_DIR = $(ARCH_INCLUDE_DIR)/guava_android
+GUAVA_DIST_JAR = $(DIST_JAR_DIR)/$(GUAVA_ANDROID_JAR)
