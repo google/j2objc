@@ -1387,6 +1387,7 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
 JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ServerSocketFactory.java \
   javax/net/SocketFactory.java \
+  javax/net/ssl/ExtendedSSLSession.java \
   javax/net/ssl/HandshakeCompletedEvent.java \
   javax/net/ssl/HandshakeCompletedListener.java \
   javax/net/ssl/HostnameVerifier.java \
@@ -1420,6 +1421,8 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/TrustManager.java \
   javax/net/ssl/TrustManagerFactory.java \
   javax/net/ssl/TrustManagerFactorySpi.java \
+  javax/net/ssl/X509ExtendedTrustManager.java \
+  javax/net/ssl/X509KeyManager.java \
   javax/net/ssl/X509TrustManager.java
 
 JAVA_PRIVATE_SOURCES_SSL = \

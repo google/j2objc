@@ -43,11 +43,14 @@ SUPPORT_SOURCES = \
     jsr166/BlockingQueueTest.java \
     jsr166/CollectionImplementation.java \
     jsr166/JSR166TestCase.java \
+    libcore/java/io/NullPrintStream.java \
     libcore/java/lang/reflect/package-info.java \
     libcore/java/net/AbstractCookiesTest.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/security/CpuFeatures.java \
+    libcore/java/security/StandardNames.java \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
     libcore/java/util/MapDefaultMethodTester.java \
@@ -55,6 +58,10 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
+    libcore/javax/net/ssl/SSLConfigurationAsserts.java \
+    libcore/javax/net/ssl/TestSSLContext.java \
+    libcore/javax/net/ssl/TestSSLSocketPair.java \
+    libcore/javax/net/ssl/TestTrustManager.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
@@ -99,6 +106,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/security/tests/support/MDGoldenData.java \
+    org/apache/harmony/security/tests/support/TestCertUtils.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyMessageDigest1.java \
@@ -135,6 +143,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/NoInstanceXMLReader.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
+    org/apache/harmony/xnet/tests/support/mySSLSession.java \
     tests/net/DelegatingSocketFactory.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
@@ -480,6 +489,8 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/net/ssl/SSLSocketFactoryTest.java \
+    libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
@@ -721,6 +732,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/zip/ZipFileTest.java \
     org/apache/harmony/tests/java/util/zip/ZipInputStreamTest.java \
     org/apache/harmony/tests/java/util/zip/ZipOutputStreamTest.java \
+    org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultHandshakeStatusTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultStatusTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultTest.java \
@@ -730,6 +742,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/net/ssl/SSLPeerUnverifiedExceptionTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLProtocolExceptionTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSessionBindingEventTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \
@@ -820,7 +834,12 @@ COPIED_ARC_TEST_SOURCES = \
     com/google/j2objc/arc/MemoryTest.java
 
 TESTS_TO_SKIP = \
-    jsr166/ExchangerTest.java
+    jsr166/ExchangerTest.java \
+    libcore/javax/net/ssl/SSLSocketFactoryTest.java \
+    libcore/javax/net/ssl/SSLSocketTest.java \
+    org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.java
 
 FAILING_TESTS = \
     libcore/java/text/DateFormatSymbolsTest.java
