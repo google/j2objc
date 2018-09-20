@@ -841,9 +841,6 @@ TESTS_TO_SKIP = \
     org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.java
 
-FAILING_TESTS = \
-    libcore/java/text/DateFormatSymbolsTest.java
-
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
     org/apache/harmony/tests/java/math/BigDecimalArithmeticTest.java \

@@ -255,7 +255,7 @@ $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(DIST_JRE_EMUL_LIB) $(DIST_JUNIT_LIB)
 	@echo "  " $(TEST_JOCC) $(LINK_FLAGS) ...
 	@$(TEST_JOCC) $(LINK_FLAGS) -o $@ $(TEST_OBJS)
 
-$(ALL_TESTS_SOURCE): tests.mk
+$(ALL_TESTS_SOURCE): tests.mk test_sources.mk
 	@mkdir -p $(@D)
 	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
 
