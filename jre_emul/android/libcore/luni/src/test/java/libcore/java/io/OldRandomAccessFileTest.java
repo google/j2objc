@@ -579,6 +579,10 @@ public class OldRandomAccessFileTest extends junit.framework.TestCase {
         }
     }
 
+    /*-[
+        #pragma clang diagnostic push
+        #pragma GCC diagnostic ignored "-Winteger-overflow"
+    ]-*/
     /**
      * java.io.RandomAccessFile#readInt()
      * java.io.RandomAccessFile#writeInt(char)
@@ -670,6 +674,9 @@ public class OldRandomAccessFileTest extends junit.framework.TestCase {
             // Expected.
         }
     }
+    /*-[
+        #pragma clang diagnostic pop
+    ]-*/
 
     /**
      * java.io.RandomAccessFile#readShort()
