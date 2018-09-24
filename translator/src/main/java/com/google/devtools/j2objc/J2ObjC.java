@@ -127,7 +127,6 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      translationProcessor.processBuildClosureDependencies();
       if (ErrorUtil.errorCount() > 0) {
         return;
       }

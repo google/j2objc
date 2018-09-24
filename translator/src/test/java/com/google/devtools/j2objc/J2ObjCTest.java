@@ -1,6 +1,4 @@
 /*
- * Copyright 2011 Google Inc. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -243,5 +241,31 @@ public class J2ObjCTest extends GenerationTest {
     options.setEmitLineDirectives(true);
     J2ObjC.run(Collections.singletonList(jarPath), options);
     assertWarningCount(1);
+  }
+
+  public void testSourcePathTypesIncludedInGlobalCombinedOutput() throws Exception {
+    options.setGlobalCombinedOutput("combined_file");
+    jarPath = getResourceAsFile("util/example.jar");
+    options.fileUtil().insertSourcePath(0, jarPath);
+    String srcPath =
+        addSourceFile(
+            String.join(
+                "\n",
+                "package foo.bar;",
+                "class Test {",
+                "  Class<?> getExampleClass() {",
+                "     return com.google.test.Example.class;",
+                "  }",
+                "}"),
+            "foo/bar/Test.java");
+    J2ObjC.run(Collections.singletonList(srcPath), options);
+    String translation = getTranslatedFile("combined_file.m");
+
+    // Verify both implementations are in the combined file ...
+    assertTranslation(translation, "@implementation FooBarTest");
+    assertTranslation(translation, "@implementation CBTExample");
+
+    // ... and that there isn't a "type not found" import.
+    assertNotInTranslation(translation, "Example.h");
   }
 }

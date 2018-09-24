@@ -36,7 +36,6 @@ public class TranslationProcessorTest extends GenerationTest {
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
-    processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Test.h");
     assertTranslation(translation, "@interface Test");
@@ -60,7 +59,6 @@ public class TranslationProcessorTest extends GenerationTest {
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
-    processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Foo.h");
     assertTranslation(translation, "- (void)foo2;");
@@ -80,7 +78,6 @@ public class TranslationProcessorTest extends GenerationTest {
     GenerationBatch batch = new GenerationBatch(options);
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
-    processor.processBuildClosureDependencies();
 
     // Assert B entry class was compiled.
     assertTrue(new File(tempDir, "B.m").exists());

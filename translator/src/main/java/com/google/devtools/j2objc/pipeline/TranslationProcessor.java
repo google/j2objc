@@ -67,6 +67,8 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,7 +84,7 @@ public class TranslationProcessor extends FileProcessor {
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
   private final CodeReferenceMap deadCodeMap;
-
+  private final List<GenerationUnit> outputs = new ArrayList<>();
   private int processedCount = 0;
 
   public TranslationProcessor(Parser parser, CodeReferenceMap deadCodeMap) {
@@ -107,17 +109,21 @@ public class TranslationProcessor extends FileProcessor {
 
       GenerationUnit genUnit = input.getGenerationUnit();
       genUnit.addCompilationUnit(unit);
+      outputs.add(genUnit);
 
       // Add out-of-date dependencies to translation list.
       if (closureQueue != null) {
         checkDependencies(unit);
       }
-
-      if (genUnit.isFullyParsed()) {
-        generateObjectiveCSource(genUnit);
-      }
     }
     processedCount++;
+  }
+
+  @Override
+  protected void processOutputs(Iterable<ProcessingContext> outputs) {
+    for (ProcessingContext output : outputs) {
+      generateObjectiveCSource(output.getGenerationUnit());
+    }
   }
 
   /**
@@ -298,7 +304,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("CastResolver");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
-    //   top-level and functionizing to have occured.
+    //   top-level and functionizing to have occurred.
     new PrivateDeclarationResolver(unit).run();
     ticker.tick("PrivateDeclarationResolver");
 

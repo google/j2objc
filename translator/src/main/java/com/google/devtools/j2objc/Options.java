@@ -1,6 +1,4 @@
 /*
- * Copyright 2012 Google Inc. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +20,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -86,7 +85,7 @@ public class Options {
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
   private String annotationsJar = null;
-  private String globalCombinedOutput = null;
+  private CombinedOutput globalCombinedOutput = null;
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
@@ -193,6 +192,29 @@ public class Options {
     FULL
   }
 
+  /**
+   * Class that holds the information needed to generate combined output, so that all output goes to
+   * a single, named .h/.m file set.
+   */
+  public static class CombinedOutput {
+
+    private final String outputName;
+    private final GenerationUnit combinedUnit;
+
+    CombinedOutput(String outputName, Options options) {
+      this.outputName = outputName;
+      this.combinedUnit = GenerationUnit.newCombinedJarUnit(outputName, options);
+    }
+
+    public String globalCombinedOutputName() {
+      return outputName;
+    }
+
+    public GenerationUnit globalGenerationUnit() {
+      return combinedUnit;
+    }
+  }
+
 
   static {
     // Load string resources.
@@ -219,12 +241,12 @@ public class Options {
     }
   }
 
-  public String globalCombinedOutput() {
+  public CombinedOutput globalCombinedOutput() {
     return globalCombinedOutput;
   }
 
-  public void setGlobalCombinedOutput(String globalCombinedOutput) {
-    this.globalCombinedOutput = globalCombinedOutput;
+  public void setGlobalCombinedOutput(String outputName) {
+    this.globalCombinedOutput = new CombinedOutput(outputName, this);
   }
 
   /**
