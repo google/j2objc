@@ -1384,6 +1384,9 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/x509/X509Key.java \
   sun/security/x509/package-info.java
 
+NATIVE_JRE_SOURCES_SSL = \
+  com/google/j2objc/net/ssl/IosSslSocket.m
+
 JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ServerSocketFactory.java \
   javax/net/SocketFactory.java \
@@ -1427,7 +1430,8 @@ JAVA_PUBLIC_SOURCES_SSL = \
 
 JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsHandler.java \
-  com/google/j2objc/net/IosHttpsURLConnection.java
+  com/google/j2objc/net/IosHttpsURLConnection.java \
+  com/google/j2objc/net/ssl/IosSslSocketFactory.java
 
 JAVA_PUBLIC_SOURCES_XML = \
   com/google/j2objc/util/PropertiesXmlLoader.java \
@@ -1830,6 +1834,7 @@ SOURCE_RETENTION_ANNOTATIONS = \
 EMULATED_JAVA_SOURCES = \
   com/google/j2objc/NSException.java \
   com/google/j2objc/NSFastEnumeration.java \
+  com/google/j2objc/net/ssl/IosSslSocket.java \
   java/lang/AbstractStringBuilder.java \
   java/lang/Class.java \
   java/lang/Cloneable.java \
@@ -1908,4 +1913,4 @@ JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
-  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET)
+  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET) $(NATIVE_JRE_SOURCES_SSL)
