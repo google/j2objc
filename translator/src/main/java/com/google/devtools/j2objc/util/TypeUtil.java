@@ -208,7 +208,15 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
-    return isDeclaredType(t) ? (TypeElement) ((DeclaredType) t).asElement() : null;
+    if (isDeclaredType(t)) {
+      return (TypeElement) ((DeclaredType) t).asElement();
+    }
+    // Return the left-most component of an intersection type, for compatibility with JDK 10 and
+    // earlier.
+    if (isIntersection(t)) {
+      return asTypeElement(((IntersectionType) t).getBounds().iterator().next());
+    }
+    return null;
   }
 
   public static boolean isJavaObject(TypeMirror t) {
