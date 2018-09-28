@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.util;
  */
 public enum SourceVersion {
 
+  JAVA_11(11, "11"),
   JAVA_10(10, "10"),
   JAVA_9(9, "1.9"),
   JAVA_8(8, "1.8"),
