@@ -41,7 +41,7 @@ public class IosSslSocketFactory extends SSLSocketFactory {
 
   @Override
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
-    throw new UnsupportedOperationException();
+    return new IosSslSocket(host, port);
   }
 
   @Override

@@ -25,6 +25,8 @@ import javax.net.ssl.SSLSocket;
  */
 public class IosSslSocket extends SSLSocket {
 
+  public IosSslSocket(String host, int port) {}
+
   @Override
   public String[] getSupportedCipherSuites() {
     return new String[0];

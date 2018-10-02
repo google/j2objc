@@ -13,11 +13,26 @@
 #ifndef _ComGoogleJ2objcNetSslIosSslSocket_H_
 #define _ComGoogleJ2objcNetSslIosSslSocket_H_
 
+#import "J2ObjC_header.h"
 #import "javax/net/ssl/SSLSocket.h"
 
 // A socket that uses Apple's SecureTransport API.
 @interface ComGoogleJ2objcNetSslIosSslSocket : JavaxNetSslSSLSocket
 
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleJ2objcNetSslIosSslSocket)
+
+FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(
+    ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port);
+
+FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
+    new_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port)
+    NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
+    create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port);
+
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleJ2objcNetSslIosSslSocket)
 
 #endif
