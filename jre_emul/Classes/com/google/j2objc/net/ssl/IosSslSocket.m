@@ -85,7 +85,11 @@ static void checkStatus(OSStatus status);
     } while (status == errSSLWouldBlock);
   }
 
-  checkStatus(status);
+  if (status == errSSLClosedGraceful || status == errSSLClosedAbort) {
+    processed = -1;
+  } else {
+    checkStatus(status);
+  }
   if (_socket->_sslException) {
     @throw _socket->_sslException;
   }
@@ -292,21 +296,7 @@ static void checkStatus(OSStatus status);
 @end
 
 static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t *dataLength) {
-  // The SecureTransport API sometimes requests data from the callback even if it still has
-  // application data in its buffer. If we would blindly read from the underlying (blocking) socket
-  // in that case, the application layer would only get the data from the SecureTransport buffer
-  // after the blocking read on the underlying socket returns, which in some cases means we'd have
-  // to wait for the timeout to kick in. By letting the SecureTransport API know we don't have any
-  // more data at this point, we can force it to deplete its internal buffer of application data.
   ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
-  @try {
-    // The underlying socket supports available() and reported that no data is available.
-    if ([[socket plainInputStream] available] == 0) {
-      *dataLength = 0;
-      return errSSLWouldBlock;
-    }
-  } @catch (JavaIoIOException *e) {}
-
   IOSByteArray *array = [IOSByteArray arrayWithLength:*dataLength];
   jint processed;
   @try {
@@ -317,7 +307,8 @@ static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t 
   }
 
   if (processed  < 0) {
-    return errSSLClosedAbort;
+    *dataLength = 0;
+    return errSSLClosedGraceful;
   }
 
   OSStatus status = processed < *dataLength ? errSSLWouldBlock : errSecSuccess;
