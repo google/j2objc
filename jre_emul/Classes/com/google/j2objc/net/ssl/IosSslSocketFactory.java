@@ -47,17 +47,17 @@ public class IosSslSocketFactory extends SSLSocketFactory {
   @Override
   public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
       throws IOException, UnknownHostException {
-    throw new UnsupportedOperationException();
+    return new IosSslSocket(host, port, localHost, localPort);
   }
 
   @Override
   public Socket createSocket(InetAddress host, int port) throws IOException {
-    throw new UnsupportedOperationException();
+    return new IosSslSocket(host, port);
   }
 
   @Override
   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
       throws IOException {
-    throw new UnsupportedOperationException();
+    return new IosSslSocket(address, port, localAddress, localPort);
   }
 }

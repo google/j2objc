@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -29,10 +30,8 @@ import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
 import javax.security.cert.X509Certificate;
 import junit.framework.TestCase;
 import libcore.io.Base64;
@@ -49,7 +48,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#SSLSocket()
      */
-    public void testConstructor() throws Exception {
+    public void j2objcNotImplemented_testConstructor() throws Exception {
         SSLSocket ssl = getSSLSocket();
         assertNotNull(ssl);
         ssl.close();
@@ -86,7 +85,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#SSLSocket(InetAddress address, int port,
      *                                          InetAddress clientAddress, int clientPort)
      */
-    public void testConstructor_InetAddressIInetAddressI() throws Exception {
+    public void j2objcNotImplemented_testConstructor_InetAddressIInetAddressI() throws Exception {
         int sport = startServer("Cons InetAddress,I,InetAddress,I");
 
         SSLSocket ssl = getSSLSocket(InetAddress.getLocalHost(), sport,
@@ -167,7 +166,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#SSLSocket(String host, int port, InetAddress clientAddress,
      *           int clientPort)
      */
-    public void testConstructor_StringIInetAddressI() throws Exception {
+    public void j2objcNotImplemented_testConstructor_StringIInetAddressI() throws Exception {
         int sport = startServer("Cons String,I,InetAddress,I");
         int[] invalidPort = {-1, Integer.MIN_VALUE, 65536, Integer.MAX_VALUE};
 
@@ -204,7 +203,7 @@ public class SSLSocketTest extends TestCase {
         }
     }
 
-    public void test_creationStressTest() throws Exception {
+    public void j2objcNotImplemented_test_creationStressTest() throws Exception {
         // Test the default codepath, which uses /dev/urandom.
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, null, null);
@@ -223,7 +222,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#addHandshakeCompletedListener(HandshakeCompletedListener listener)
      */
     // AndroidOnly("RI doesn't throw the specified IAE")
-    public void test_addHandshakeCompletedListener() throws IOException {
+    public void j2objcNotImplemented_test_addHandshakeCompletedListener() throws IOException {
         SSLSocket ssl = getSSLSocket();
         HandshakeCompletedListener ls = new HandshakeCL();
         try {
@@ -238,7 +237,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#removeHandshakeCompletedListener(HandshakeCompletedListener listener)
      */
-    public void test_removeHandshakeCompletedListener() throws IOException {
+    public void j2objcNotImplemented_test_removeHandshakeCompletedListener() throws IOException {
         SSLSocket ssl = getSSLSocket();
         HandshakeCompletedListener ls = new HandshakeCL();
         try {
@@ -261,7 +260,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#setEnableSessionCreation(boolean flag)
      * javax.net.ssl.SSLSocket#getEnableSessionCreation()
      */
-    public void test_EnableSessionCreation() throws IOException {
+    public void j2objcNotImplemented_test_EnableSessionCreation() throws IOException {
         SSLSocket ssl = getSSLSocket();
         assertTrue(ssl.getEnableSessionCreation());
         ssl.setEnableSessionCreation(false);
@@ -275,7 +274,8 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#setNeedClientAuth(boolean need)
      * javax.net.ssl.SSLSocket#getNeedClientAuthCreation()
      */
-    public void test_NeedClientAuth() throws UnknownHostException, IOException {
+    public void j2objcNotImplemented_test_NeedClientAuth()
+        throws UnknownHostException, IOException {
         SSLSocket ssl = getSSLSocket();
         ssl.setNeedClientAuth(true);
         assertTrue(ssl.getNeedClientAuth());
@@ -288,7 +288,8 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#setWantClientAuth(boolean want)
      * javax.net.ssl.SSLSocket#getWantClientAuthCreation()
      */
-    public void test_WantClientAuth() throws UnknownHostException, IOException {
+    public void j2objcNotImplemented_test_WantClientAuth()
+        throws UnknownHostException, IOException {
         SSLSocket ssl = getSSLSocket();
         ssl.setWantClientAuth(true);
         assertTrue(ssl.getWantClientAuth());
@@ -300,7 +301,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#getSupportedProtocols()
      */
-    public void test_getSupportedProtocols() throws IOException {
+    public void j2objcNotImplemented_test_getSupportedProtocols() throws IOException {
         SSLSocket ssl = getSSLSocket();
         String[] res = ssl.getSupportedProtocols();
         assertTrue("No supported protocols found", res.length > 0);
@@ -311,7 +312,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#getEnabledProtocols()
      * javax.net.ssl.SSLSocket#setEnabledProtocols(String[] protocols)
      */
-    public void test_EnabledProtocols() throws IOException {
+    public void j2objcNotImplemented_test_EnabledProtocols() throws IOException {
         SSLSocket ssl = getSSLSocket();
         try {
             ssl.setEnabledProtocols(null);
@@ -334,7 +335,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#getSession()
      */
-    public void test_getSession() throws IOException {
+    public void j2objcNotImplemented_test_getSession() throws IOException {
         SSLSocket ssl = getSSLSocket();
         assertNotNull(ssl.getSession());
         ssl.close();
@@ -343,7 +344,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#getSupportedCipherSuites()
      */
-    public void test_getSupportedCipherSuites() throws IOException {
+    public void j2objcNotImplemented_test_getSupportedCipherSuites() throws IOException {
         SSLSocket ssl = getSSLSocket();
         String[] res = ssl.getSupportedCipherSuites();
         assertTrue("no supported cipher suites", res.length > 0);
@@ -354,7 +355,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#getEnabledCipherSuites()
      * javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[] suites)
      */
-    public void test_EnabledCipherSuites() throws IOException {
+    public void j2objcNotImplemented_test_EnabledCipherSuites() throws IOException {
         SSLSocket ssl = getSSLSocket();
         try {
             ssl.setEnabledCipherSuites(null);
@@ -380,7 +381,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#getUseClientMode()
      * javax.net.ssl.SSLSocket#setUseClientMode(boolean mode)
      */
-    public void test_UseClientMode() throws IOException {
+    public void j2objcNotImplemented_test_UseClientMode() throws IOException {
         SSLSocket ssl = getSSLSocket();
         assertTrue(ssl.getUseClientMode());
         ssl.setUseClientMode(false);
@@ -404,7 +405,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#startHandshake()
      */
-    public void test_startHandshake() throws IOException {
+    public void j2objcNotImplemented_test_startHandshake() throws IOException {
         SSLSocket ssl = getSSLSocket();
         try {
             ssl.startHandshake();
@@ -532,6 +533,7 @@ public class SSLSocketTest extends TestCase {
 
         public void run() {
             try {
+                /* J2ObjC not implemented
                 KeyManager[] keyManagers = provideKeys ? getKeyManagers(keys) : null;
                 TrustManager[] trustManagers = new TrustManager[] { trustManager };
 
@@ -540,6 +542,8 @@ public class SSLSocketTest extends TestCase {
 
                 SSLServerSocket serverSocket = (SSLServerSocket)
                         sslContext.getServerSocketFactory().createServerSocket();
+                */
+                ServerSocket serverSocket = new ServerSocket();
                 try {
                     serverSocket.bind(new InetSocketAddress(0));
                     sport = serverSocket.getLocalPort();

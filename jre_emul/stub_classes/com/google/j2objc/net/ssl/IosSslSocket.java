@@ -15,6 +15,7 @@
 package com.google.j2objc.net.ssl;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -26,6 +27,12 @@ import javax.net.ssl.SSLSocket;
 public class IosSslSocket extends SSLSocket {
 
   public IosSslSocket(String host, int port) {}
+
+  public IosSslSocket(String host, int port, InetAddress localHost, int localPort) {}
+
+  public IosSslSocket(InetAddress host, int port) {}
+
+  public IosSslSocket(InetAddress address, int port, InetAddress localAddress, int localPort) {}
 
   @Override
   public String[] getSupportedCipherSuites() {

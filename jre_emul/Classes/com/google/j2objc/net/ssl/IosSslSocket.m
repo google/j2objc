@@ -183,7 +183,9 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)dealloc {
-  CFRelease(_sslContext);
+  if (_sslContext) {
+    CFRelease(_sslContext);
+  }
   [_sslInputStream release];
   [_sslOutputStream release];
   [_sslException release];
@@ -353,6 +355,7 @@ static void setup(ComGoogleJ2objcNetSslIosSslSocket *self) {
   checkStatus(SSLSetPeerDomainName(self->_sslContext, [hostName UTF8String], [hostName length]));
 }
 
+// public IosSslSocket(String host, int port)
 void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(
     ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port) {
   JavaxNetSslSSLSocket_initWithNSString_withInt_(self, host, port);
@@ -367,6 +370,78 @@ ComGoogleJ2objcNetSslIosSslSocket *
 ComGoogleJ2objcNetSslIosSslSocket *
     create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port) {
   J2OBJC_CREATE_IMPL(ComGoogleJ2objcNetSslIosSslSocket, initWithNSString_withInt_, host, port)
+}
+
+// public IosSslSocket(String host, int port, InetAddress localAddr, int localPort)
+void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
+    ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port,
+    JavaNetInetAddress *localAddr, jint localPort) {
+  JavaxNetSslSSLSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
+      self, host, port, localAddr, localPort);
+  setup(self);
+}
+
+ComGoogleJ2objcNetSslIosSslSocket *
+new_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
+    NSString *host, jint port, JavaNetInetAddress *localAddr, jint localPort) {
+  J2OBJC_NEW_IMPL(ComGoogleJ2objcNetSslIosSslSocket,
+                  initWithNSString_withInt_withJavaNetInetAddress_withInt_, host, port, localAddr,
+                  localPort)
+}
+
+ComGoogleJ2objcNetSslIosSslSocket *
+create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
+    NSString *host, jint port, JavaNetInetAddress *localAddr, jint localPort) {
+  J2OBJC_CREATE_IMPL(ComGoogleJ2objcNetSslIosSslSocket,
+                     initWithNSString_withInt_withJavaNetInetAddress_withInt_, host, port,
+                     localAddr, localPort)
+}
+
+// public IosSslSocket(InetAddress host, int port)
+void ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
+    ComGoogleJ2objcNetSslIosSslSocket *self, JavaNetInetAddress *address, jint port) {
+  JavaxNetSslSSLSocket_initWithJavaNetInetAddress_withInt_(self, address, port);
+  setup(self);
+}
+
+ComGoogleJ2objcNetSslIosSslSocket *
+new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
+    JavaNetInetAddress *address, jint port) {
+  J2OBJC_NEW_IMPL(ComGoogleJ2objcNetSslIosSslSocket, initWithJavaNetInetAddress_withInt_, address,
+                  port)
+}
+
+ComGoogleJ2objcNetSslIosSslSocket *
+create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
+    JavaNetInetAddress *address, jint port) {
+  J2OBJC_CREATE_IMPL(ComGoogleJ2objcNetSslIosSslSocket, initWithJavaNetInetAddress_withInt_,
+                     address, port)
+}
+
+// public IosSslSocket(InetAddress address, int port, InetAddress localAddr, int localPort)
+// NOLINTNEXTLINE
+void ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
+    ComGoogleJ2objcNetSslIosSslSocket *self, JavaNetInetAddress *address, jint port,
+    JavaNetInetAddress *localAddr, jint localPort) {
+  JavaxNetSslSSLSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
+      self, address, port, localAddr, localPort);
+  setup(self);
+}
+
+// NOLINTNEXTLINE
+ComGoogleJ2objcNetSslIosSslSocket *new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
+    JavaNetInetAddress *address, jint port, JavaNetInetAddress *localAddr, jint localPort) {
+  J2OBJC_NEW_IMPL(ComGoogleJ2objcNetSslIosSslSocket,
+                  initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_, address, port,
+                  localAddr, localPort)
+}
+
+// NOLINTNEXTLINE
+ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
+    JavaNetInetAddress *address, jint port, JavaNetInetAddress *localAddr, jint localPort) {
+  J2OBJC_CREATE_IMPL(ComGoogleJ2objcNetSslIosSslSocket,
+                     initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_, address,
+                     port, localAddr, localPort)
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
