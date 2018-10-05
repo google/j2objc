@@ -92,11 +92,6 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
         String clsName = SSLSocketFactory.getSecurityProperty
                 ("ssl.ServerSocketFactory.provider");
 
-        // J2ObjC-changed: check if the security providers know about this factory.
-        if (clsName == null) {
-            clsName = SSLSocketFactory.getProviderProperty("ssl.ServerSocketFactory.provider");
-        }
-
         if (clsName != null) {
             // The instance for the default socket factory is checked for updates quite
             // often (for instance, every time a security provider is added). Which leads

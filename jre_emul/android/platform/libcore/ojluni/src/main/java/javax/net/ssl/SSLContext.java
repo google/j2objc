@@ -470,4 +470,8 @@ public class SSLContext {
         return contextSpi.engineGetSupportedSSLParameters();
     }
 
+    // J2ObjC: reference all dynamically loaded classes, so they are linked into apps.
+    private static final Class<?>[] unused = {
+        com.google.j2objc.net.ssl.IosSslContextSpi.class
+    };
 }

@@ -1431,7 +1431,8 @@ JAVA_PUBLIC_SOURCES_SSL = \
 JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsHandler.java \
   com/google/j2objc/net/IosHttpsURLConnection.java \
-  com/google/j2objc/net/ssl/IosSslSocketFactory.java
+  com/google/j2objc/net/ssl/IosSslSocketFactory.java \
+  com/google/j2objc/net/ssl/IosSslContextSpi.java
 
 JAVA_PUBLIC_SOURCES_XML = \
   com/google/j2objc/util/PropertiesXmlLoader.java \

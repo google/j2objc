@@ -111,8 +111,7 @@ public class IosSecurityProvider extends Provider {
     put("Alg.Alias.Signature.2.16.840.1.101.3.4.2.3with1.2.840.113549.1.1.1",
             "SHA512WithRSA");
 
-    put("ssl.SocketFactory.provider", "com.google.j2objc.net.ssl.IosSslSocketFactory");
-    put("ssl.ServerSocketFactory.provider", "com.google.j2objc.net.ssl.IosSslSocketFactory");
+    put("SSLContext.Default", "com.google.j2objc.net.ssl.IosSslContextSpi");
   }
 
   // Reference all dynamically loaded classes, so they are linked into apps.

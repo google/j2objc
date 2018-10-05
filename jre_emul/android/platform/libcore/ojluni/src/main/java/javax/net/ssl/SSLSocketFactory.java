@@ -31,8 +31,6 @@ import java.net.*;
 import javax.net.SocketFactory;
 import java.io.IOException;
 import java.security.*;
-import java.util.Locale;
-import sun.security.jca.Providers;
 
 //import sun.security.action.GetPropertyAction;
 
@@ -97,11 +95,6 @@ public abstract class SSLSocketFactory extends SocketFactory
         defaultSocketFactory = null;
 
         String clsName = getSecurityProperty("ssl.SocketFactory.provider");
-
-        // J2ObjC-changed: check if the security providers know about this factory.
-        if (clsName == null) {
-            clsName = getProviderProperty("ssl.SocketFactory.provider");
-        }
 
         if (clsName != null) {
             // The instance for the default socket factory is checked for updates quite
@@ -169,16 +162,6 @@ public abstract class SSLSocketFactory extends SocketFactory
                 return s;
             }
         });
-    }
-
-    static String getProviderProperty(String key) {
-        for (Provider p : Providers.getProviderList().providers()) {
-            String value = (String) p.get(key);
-            if (value != null) {
-                return value;
-            }
-        }
-        return null;
     }
 
     /**
