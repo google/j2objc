@@ -61,7 +61,7 @@ public class SSLSocketFactoryTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocketFactory#createSocket(Socket s, String host, int port, boolean autoClose)
      */
-    public void test_createSocket() throws Exception {
+    public void j2objcNotImplemented_test_createSocket() throws Exception {
         SSLSocketFactory sf = (SSLSocketFactory)SSLSocketFactory.getDefault();
         int sport = startServer("test_createSocket()");
         int[] invalid = {
@@ -103,7 +103,7 @@ public class SSLSocketFactoryTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocketFactory#getDefaultCipherSuites()
      */
-    public void test_getDefaultCipherSuites() {
+    public void j2objcNotImplemented_test_getDefaultCipherSuites() {
         try {
             SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
             assertTrue("no default cipher suites returned",
@@ -116,7 +116,7 @@ public class SSLSocketFactoryTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocketFactory#getSupportedCipherSuites()
      */
-    public void test_getSupportedCipherSuites() {
+    public void j2objcNotImplemented_test_getSupportedCipherSuites() {
         try {
             SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
             assertTrue("no supported cipher suites returned",

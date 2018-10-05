@@ -137,7 +137,8 @@ public class SSLSocketFactoryTest extends TestCase {
         }
     }
 
-    public void test_SSLSocketFactory_getDefault_cacheInvalidate() throws Exception {
+    public void j2objcNotImplemented_test_SSLSocketFactory_getDefault_cacheInvalidate()
+        throws Exception {
         String origProvider = resetSslProvider();
         try {
             SocketFactory sf1 = SSLSocketFactory.getDefault();
@@ -205,7 +206,7 @@ public class SSLSocketFactoryTest extends TestCase {
         return origProvider;
     }
 
-    public void test_SSLSocketFactory_defaultConfiguration() throws Exception {
+    public void j2objcNotImplemented_test_SSLSocketFactory_defaultConfiguration() throws Exception {
         SSLConfigurationAsserts.assertSSLSocketFactoryDefaultConfiguration(
                 (SSLSocketFactory) SSLSocketFactory.getDefault());
     }
@@ -220,7 +221,7 @@ public class SSLSocketFactoryTest extends TestCase {
         assertNotSame(sf.getSupportedCipherSuites(), sf.getSupportedCipherSuites());
     }
 
-    public void test_SSLSocketFactory_createSocket() throws Exception {
+    public void j2objcNotImplemented_test_SSLSocketFactory_createSocket() throws Exception {
         try {
             SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
             Socket s = sf.createSocket(null, null, -1, false);

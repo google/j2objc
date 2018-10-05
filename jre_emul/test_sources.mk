@@ -835,10 +835,8 @@ COPIED_ARC_TEST_SOURCES = \
 
 TESTS_TO_SKIP = \
     jsr166/ExchangerTest.java \
-    libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
-    org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java \
-    org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java
+    org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
