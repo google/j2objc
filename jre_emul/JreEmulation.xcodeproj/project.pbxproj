@@ -830,6 +830,20 @@
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
+		FA1DD7A82154124E00D0B800 /* SSLSocketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */; };
+		FA1DD7A92154124E00D0B800 /* SSLSocketFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7A72154124E00D0B800 /* SSLSocketFactoryTest.m */; };
+		FA1DD7AC215412E400D0B800 /* SSLSocketFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7AA215412E300D0B800 /* SSLSocketFactoryTest.m */; };
+		FA1DD7AD215412E400D0B800 /* SSLSocketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7AB215412E400D0B800 /* SSLSocketTest.m */; };
+		FA1DD7AF2154160F00D0B800 /* HandshakeCompletedEventTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7AE2154160F00D0B800 /* HandshakeCompletedEventTest.m */; };
+		FA1DD7B12154182E00D0B800 /* NullPrintStream.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7B02154182E00D0B800 /* NullPrintStream.m */; };
+		FA1DD7B42154186000D0B800 /* CpuFeatures.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7B22154186000D0B800 /* CpuFeatures.m */; };
+		FA1DD7B52154186000D0B800 /* StandardNames.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7B32154186000D0B800 /* StandardNames.m */; };
+		FA1DD7B9215418AF00D0B800 /* SSLConfigurationAsserts.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7B6215418AF00D0B800 /* SSLConfigurationAsserts.m */; };
+		FA1DD7BA215418AF00D0B800 /* TestSSLContext.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7B7215418AF00D0B800 /* TestSSLContext.m */; };
+		FA1DD7BB215418AF00D0B800 /* TestTrustManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7B8215418AF00D0B800 /* TestTrustManager.m */; };
+		FA1DD7BD215418F300D0B800 /* TestCertUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7BC215418F200D0B800 /* TestCertUtils.m */; };
+		FA1DD7BF2154190800D0B800 /* mySSLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7BE2154190700D0B800 /* mySSLSession.m */; };
+		FA1DD7C1215419D400D0B800 /* TestSSLSocketPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3799,6 +3813,26 @@
 		DEADDCC01F757E4700A1E65B /* ResourceLeakageDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ResourceLeakageDetector.m; path = libcore/java/util/ResourceLeakageDetector.m; sourceTree = "<group>"; };
 		DEE827341F6AE0B90069C75C /* ForEachRemainingTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForEachRemainingTester.m; path = libcore/java/util/ForEachRemainingTester.m; sourceTree = "<group>"; };
 		DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapDefaultMethodTester.m; path = libcore/java/util/MapDefaultMethodTester.m; sourceTree = "<group>"; };
+		FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLSocketTest.m; path = org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.m; sourceTree = "<group>"; };
+		FA1DD7A72154124E00D0B800 /* SSLSocketFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLSocketFactoryTest.m; path = org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.m; sourceTree = "<group>"; };
+		FA1DD7AA215412E300D0B800 /* SSLSocketFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLSocketFactoryTest.m; path = libcore/javax/net/ssl/SSLSocketFactoryTest.m; sourceTree = "<group>"; };
+		FA1DD7AB215412E400D0B800 /* SSLSocketTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLSocketTest.m; path = libcore/javax/net/ssl/SSLSocketTest.m; sourceTree = "<group>"; };
+		FA1DD7AE2154160F00D0B800 /* HandshakeCompletedEventTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HandshakeCompletedEventTest.m; path = org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.m; sourceTree = "<group>"; };
+		FA1DD7B02154182E00D0B800 /* NullPrintStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NullPrintStream.m; path = libcore/java/io/NullPrintStream.m; sourceTree = "<group>"; };
+		FA1DD7B22154186000D0B800 /* CpuFeatures.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CpuFeatures.m; path = libcore/java/security/CpuFeatures.m; sourceTree = "<group>"; };
+		FA1DD7B32154186000D0B800 /* StandardNames.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StandardNames.m; path = libcore/java/security/StandardNames.m; sourceTree = "<group>"; };
+		FA1DD7B6215418AF00D0B800 /* SSLConfigurationAsserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLConfigurationAsserts.m; path = libcore/javax/net/ssl/SSLConfigurationAsserts.m; sourceTree = "<group>"; };
+		FA1DD7B7215418AF00D0B800 /* TestSSLContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestSSLContext.m; path = libcore/javax/net/ssl/TestSSLContext.m; sourceTree = "<group>"; };
+		FA1DD7B8215418AF00D0B800 /* TestTrustManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestTrustManager.m; path = libcore/javax/net/ssl/TestTrustManager.m; sourceTree = "<group>"; };
+		FA1DD7BC215418F200D0B800 /* TestCertUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCertUtils.m; path = org/apache/harmony/security/tests/support/TestCertUtils.m; sourceTree = "<group>"; };
+		FA1DD7BE2154190700D0B800 /* mySSLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = mySSLSession.m; path = org/apache/harmony/xnet/tests/support/mySSLSession.m; sourceTree = "<group>"; };
+		FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestSSLSocketPair.m; path = libcore/javax/net/ssl/TestSSLSocketPair.m; sourceTree = "<group>"; };
+		FA603094216679440049C9AD /* IosSslContextSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslContextSpi.m; path = build_result/Classes/com/google/j2objc/net/ssl/IosSslContextSpi.m; sourceTree = "<group>"; };
+		FA603095216679440049C9AD /* IosSslContextSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslContextSpi.h; path = build_result/Classes/com/google/j2objc/net/ssl/IosSslContextSpi.h; sourceTree = "<group>"; };
+		FA603096216679440049C9AD /* IosSslSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocketFactory.m; path = build_result/Classes/com/google/j2objc/net/ssl/IosSslSocketFactory.m; sourceTree = "<group>"; };
+		FA603097216679440049C9AD /* IosSslSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslSocketFactory.h; path = build_result/Classes/com/google/j2objc/net/ssl/IosSslSocketFactory.h; sourceTree = "<group>"; };
+		FAF4EEF8215AF32400413554 /* IosSslSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocket.m; path = com/google/j2objc/net/ssl/IosSslSocket.m; sourceTree = "<group>"; };
+		FAF4EEF9215AF32500413554 /* IosSslSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslSocket.h; path = com/google/j2objc/net/ssl/IosSslSocket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3949,6 +3983,8 @@
 				06898A7817BAFAB400D7B114 /* IOSReference.m */,
 				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
 				06AFD3DA183D3F4D001C90C6 /* IOSReflection.m */,
+				FAF4EEF9215AF32500413554 /* IosSslSocket.h */,
+				FAF4EEF8215AF32400413554 /* IosSslSocket.m */,
 				06B1E04F17F6403100F8940B /* Iterable.h */,
 				06B1E05017F6403100F8940B /* Iterable.m */,
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
@@ -4938,6 +4974,10 @@
 				06F28FE618972C2300676F1D /* IosSecurityProvider.m */,
 				06F28FE718972C2300676F1D /* IosSHAMessageDigest.h */,
 				06F28FE818972C2300676F1D /* IosSHAMessageDigest.m */,
+				FA603095216679440049C9AD /* IosSslContextSpi.h */,
+				FA603094216679440049C9AD /* IosSslContextSpi.m */,
+				FA603097216679440049C9AD /* IosSslSocketFactory.h */,
+				FA603096216679440049C9AD /* IosSslSocketFactory.m */,
 				0649A5DA1AE076CC00DE2494 /* IosX509Certificate.h */,
 				0649A5DB1AE076CC00DE2494 /* IosX509Certificate.m */,
 				06ED3DEC17D1669D0014750E /* IoUtils.h */,
@@ -6163,6 +6203,7 @@
 				0612B8CB1F4373730069EF58 /* CopyOnWriteArraySetTest.m */,
 				0612B8CC1F4373730069EF58 /* CountDownLatchTest.m */,
 				0612B8CD1F4373730069EF58 /* CountedCompleterTest.m */,
+				FA1DD7B22154186000D0B800 /* CpuFeatures.m */,
 				069C24111E9EEF7B00CE6BAF /* CRC32Test.m */,
 				062027191D512D82001EE455 /* CRC32Test.m */,
 				062029A11D512FFE001EE455 /* CreationReferenceTest.m */,
@@ -6278,6 +6319,7 @@
 				062026D61D512D17001EE455 /* GZIPOutputStreamTest.m */,
 				0620267E1D512D08001EE455 /* Handler.m */,
 				063A62C01F672637001DC971 /* HandlerBaseTest.m */,
+				FA1DD7AE2154160F00D0B800 /* HandshakeCompletedEventTest.m */,
 				062028D51D512EBD001EE455 /* HashMapTest.m */,
 				0620281A1D512E03001EE455 /* HashSetTest.m */,
 				062028D61D512EBD001EE455 /* HashtableTest.m */,
@@ -6430,6 +6472,7 @@
 				062028691D512E3E001EE455 /* MyKeyPairGeneratorSpi.m */,
 				0620286A1D512E3E001EE455 /* MyMessageDigest1.m */,
 				0620286B1D512E3E001EE455 /* MySignature1.m */,
+				FA1DD7BE2154190700D0B800 /* mySSLSession.m */,
 				063A62EE1F6726C1001DC971 /* NamespaceSupportTest.m */,
 				062025A71D512C8E001EE455 /* NativeDecimalFormatTest.m */,
 				0620252E1D512B37001EE455 /* NativeTimeZoneTest.m */,
@@ -6457,6 +6500,7 @@
 				06C1438B1F46135100CABE9A /* NotYetConnectedExceptionTest.m */,
 				062025241D512B37001EE455 /* NSErrorExceptionTest.m */,
 				062027C71D512DED001EE455 /* NullPointerExceptionTest.m */,
+				FA1DD7B02154182E00D0B800 /* NullPrintStream.m */,
 				062027C81D512DED001EE455 /* NumberFormatExceptionTest.m */,
 				069C23E51E9EEECA00CE6BAF /* NumberFormatTest.m */,
 				062026911D512D08001EE455 /* NumberFormatTest.m */,
@@ -6679,6 +6723,7 @@
 				062024EE1D512AA2001EE455 /* SpannableTest.m */,
 				0620286C1D512E3E001EE455 /* SpiEngUtils.m */,
 				0620284F1D512E21001EE455 /* SplitTest.m */,
+				FA1DD7B6215418AF00D0B800 /* SSLConfigurationAsserts.m */,
 				0612B92F1F4374C60069EF58 /* SSLEngineResultHandshakeStatusTest.m */,
 				0612B9301F4374C60069EF58 /* SSLEngineResultStatusTest.m */,
 				0612B9311F4374C60069EF58 /* SSLEngineResultTest.m */,
@@ -6688,7 +6733,12 @@
 				0612B9351F4374C60069EF58 /* SSLPeerUnverifiedExceptionTest.m */,
 				0612B9361F4374C60069EF58 /* SSLProtocolExceptionTest.m */,
 				0612B9371F4374C60069EF58 /* SSLSessionBindingEventTest.m */,
+				FA1DD7AA215412E300D0B800 /* SSLSocketFactoryTest.m */,
+				FA1DD7A72154124E00D0B800 /* SSLSocketFactoryTest.m */,
+				FA1DD7AB215412E400D0B800 /* SSLSocketTest.m */,
+				FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */,
 				062028231D512E03001EE455 /* StackTest.m */,
+				FA1DD7B32154186000D0B800 /* StandardNames.m */,
 				062026081D512CA1001EE455 /* StreamTokenizerTest.m */,
 				062028901D512E78001EE455 /* StrictMathTest.m */,
 				062027CE1D512DED001EE455 /* String2Test.m */,
@@ -6740,8 +6790,12 @@
 				0612B8E51F4373740069EF58 /* SystemTest.m */,
 				062025761D512B77001EE455 /* SystemTest.m */,
 				0620252C1D512B37001EE455 /* TestAnnotation.m */,
+				FA1DD7BC215418F200D0B800 /* TestCertUtils.m */,
 				062025201D512B37001EE455 /* TestClass.m */,
 				0620286D1D512E3E001EE455 /* TestKeyPair.m */,
+				FA1DD7B7215418AF00D0B800 /* TestSSLContext.m */,
+				FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */,
+				FA1DD7B8215418AF00D0B800 /* TestTrustManager.m */,
 				069C24501E9EF14E00CE6BAF /* TestUtils.m */,
 				062029B11D514671001EE455 /* TextAttributeTest.m */,
 				062024EF1D512AA2001EE455 /* TextUtilsTest.m */,
@@ -7109,6 +7163,7 @@
 				067B132C1EEDCE720013CBAF /* AtomicBooleanTest.m in Sources */,
 				067B132D1EEDCE720013CBAF /* AtomicIntegerArrayTest.m in Sources */,
 				067B132E1EEDCE720013CBAF /* AtomicIntegerFieldUpdaterTest.m in Sources */,
+				FA1DD7BA215418AF00D0B800 /* TestSSLContext.m in Sources */,
 				067B132F1EEDCE720013CBAF /* AtomicIntegerTest.m in Sources */,
 				067B13301EEDCE720013CBAF /* AtomicLongArrayTest.m in Sources */,
 				067B13311EEDCE720013CBAF /* AtomicLongFieldUpdaterTest.m in Sources */,
@@ -7140,6 +7195,7 @@
 				062028A21D512E78001EE455 /* SerializationTest.m in Sources */,
 				062026A41D512D08001EE455 /* NetworkInterfaceTest.m in Sources */,
 				062028551D512E21001EE455 /* ReplaceTest.m in Sources */,
+				FA1DD7BB215418AF00D0B800 /* TestTrustManager.m in Sources */,
 				069C24041E9EEEF700CE6BAF /* SimpleTimeZoneTest.m in Sources */,
 				0612B9011F4373740069EF58 /* ExecutorCompletionServiceTest.m in Sources */,
 				062026441D512CA1001EE455 /* OldPushbackInputStreamTest.m in Sources */,
@@ -7177,6 +7233,7 @@
 				069C241F1E9EEF7B00CE6BAF /* InputStreamReaderTest.m in Sources */,
 				062027E51D512DED001EE455 /* EnumTest.m in Sources */,
 				062026671D512CBE001EE455 /* ThrowableTest.m in Sources */,
+				FA1DD7B52154186000D0B800 /* StandardNames.m in Sources */,
 				062027401D512D82001EE455 /* IntrospectionExceptionTest.m in Sources */,
 				062027F21D512DED001EE455 /* MockEnum.m in Sources */,
 				062025471D512B37001EE455 /* AssertTest.m in Sources */,
@@ -7275,6 +7332,7 @@
 				062028301D512E03001EE455 /* ArrayListTest.m in Sources */,
 				069C24031E9EEEF700CE6BAF /* GregorianCalendarTest.m in Sources */,
 				062027811D512D9D001EE455 /* MockPropertyChangeListener2.m in Sources */,
+				FA1DD7BF2154190800D0B800 /* mySSLSession.m in Sources */,
 				062025AF1D512C8E001EE455 /* PackagePrefixesTest.m in Sources */,
 				062025491D512B37001EE455 /* FieldTest.m in Sources */,
 				063A62E21F67267C001DC971 /* NoSubclassParser.m in Sources */,
@@ -7365,6 +7423,7 @@
 				062028751D512E3E001EE455 /* KeyTest.m in Sources */,
 				062026BA1D512D08001EE455 /* CharsetEncoderTest.m in Sources */,
 				062028D11D512E89001EE455 /* BigIntegerOrTest.m in Sources */,
+				FA1DD7AD215412E400D0B800 /* SSLSocketTest.m in Sources */,
 				062026351D512CA1001EE455 /* OldFilterInputStreamTest.m in Sources */,
 				06E4E835197F1E4E005DDE69 /* main.m in Sources */,
 				0620282B1D512E03001EE455 /* AbstractCollectionTest.m in Sources */,
@@ -7383,6 +7442,7 @@
 				0612B90E1F4373740069EF58 /* PriorityQueueTest.m in Sources */,
 				069C244E1E9EF11600CE6BAF /* DateFormatSymbolsTest.m in Sources */,
 				062028A81D512E78001EE455 /* DoubleTest.m in Sources */,
+				FA1DD7BD215418F300D0B800 /* TestCertUtils.m in Sources */,
 				0612B8F31F4373740069EF58 /* ConcurrencyTests.m in Sources */,
 				062026461D512CA1001EE455 /* OldRandomAccessFileTest.m in Sources */,
 				062028041D512DED001EE455 /* StringTest.m in Sources */,
@@ -7406,6 +7466,7 @@
 				0620254F1D512B37001EE455 /* NativeUtil.m in Sources */,
 				069C23F81E9EEECA00CE6BAF /* Support_DecimalFormat.m in Sources */,
 				0612B90A1F4373740069EF58 /* LinkedBlockingQueueTest.m in Sources */,
+				FA1DD7A82154124E00D0B800 /* SSLSocketTest.m in Sources */,
 				0612B94E1F4381AF0069EF58 /* AbstractSelectionKeyTest.m in Sources */,
 				0620266C1D512CBE001EE455 /* FieldTest.m in Sources */,
 				062026E91D512D17001EE455 /* GZIPInputStreamTest.m in Sources */,
@@ -7426,9 +7487,11 @@
 				0612B9271F4374A30069EF58 /* BitSetTest.m in Sources */,
 				0620282E1D512E03001EE455 /* AbstractQueueTest.m in Sources */,
 				06E5B7BC1EA58AE3003278F2 /* AbstractCookiesTest.m in Sources */,
+				FA1DD7C1215419D400D0B800 /* TestSSLSocketPair.m in Sources */,
 				062026641D512CBE001EE455 /* EnumTest.m in Sources */,
 				0612B9031F4373740069EF58 /* ForkJoinPool8Test.m in Sources */,
 				069C24021E9EEEF700CE6BAF /* DateTest.m in Sources */,
+				FA1DD7A92154124E00D0B800 /* SSLSocketFactoryTest.m in Sources */,
 				062029491D512F25001EE455 /* RSAMultiPrimePrivateCrtKeySpecTest.m in Sources */,
 				069C23F91E9EEECA00CE6BAF /* Support_Format.m in Sources */,
 				062028CE1D512E89001EE455 /* BigIntegerHashCodeTest.m in Sources */,
@@ -7469,6 +7532,7 @@
 				062027491D512D82001EE455 /* MisprintBean.m in Sources */,
 				062026101D512CA1001EE455 /* InputStreamReaderTest.m in Sources */,
 				062026AB1D512D08001EE455 /* URLConnectionTest.m in Sources */,
+				FA1DD7AC215412E400D0B800 /* SSLSocketFactoryTest.m in Sources */,
 				062029431D512F25001EE455 /* InvalidKeySpecExceptionTest.m in Sources */,
 				062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */,
 				062027DC1D512DED001EE455 /* ArrayIndexOutOfBoundsExceptionTest.m in Sources */,
@@ -7543,6 +7607,7 @@
 				062025541D512B37001EE455 /* ReflectionTests.m in Sources */,
 				062029451D512F25001EE455 /* MGF1ParameterSpecTest.m in Sources */,
 				0620299A1D512F57001EE455 /* MessageDigestTestSHA256.m in Sources */,
+				FA1DD7B9215418AF00D0B800 /* SSLConfigurationAsserts.m in Sources */,
 				062027E71D512DED001EE455 /* ExceptionTest.m in Sources */,
 				062028001D512DED001EE455 /* String2Test.m in Sources */,
 				0620294A1D512F25001EE455 /* RSAOtherPrimeInfoTest.m in Sources */,
@@ -7619,6 +7684,7 @@
 				062028AD1D512E78001EE455 /* ArrayTest.m in Sources */,
 				062026331D512CA1001EE455 /* OldFileTest.m in Sources */,
 				062029781D512F41001EE455 /* Support_GetPutFieldsDefaulted.m in Sources */,
+				FA1DD7AF2154160F00D0B800 /* HandshakeCompletedEventTest.m in Sources */,
 				062026FE1D512D37001EE455 /* DocumentBuilderTest.m in Sources */,
 				069FE7FA1D8B1FF3006D0FD8 /* sun_misc_Unsafe.m in Sources */,
 				062B4F251ED76C1200D4E7D8 /* OldAttributesNameTest.m in Sources */,
@@ -7707,6 +7773,7 @@
 				0612B8EF1F4373740069EF58 /* AbstractQueueTest.m in Sources */,
 				063A62E31F67267C001DC971 /* NoSubclassXMLReader.m in Sources */,
 				0620293C1D512F25001EE455 /* ECFieldFpTest.m in Sources */,
+				FA1DD7B12154182E00D0B800 /* NullPrintStream.m in Sources */,
 				062028D21D512E89001EE455 /* BigIntegerSubtractTest.m in Sources */,
 				0612B92E1F4374A30069EF58 /* TimerTest.m in Sources */,
 				0612B9131F4373740069EF58 /* SynchronousQueueTest.m in Sources */,
@@ -7718,6 +7785,7 @@
 				062028A51D512E78001EE455 /* ObjectStreamFieldTest.m in Sources */,
 				0620256E1D512B37001EE455 /* Fourth.m in Sources */,
 				0612B93F1F4374C60069EF58 /* SSLProtocolExceptionTest.m in Sources */,
+				FA1DD7B42154186000D0B800 /* CpuFeatures.m in Sources */,
 				062028E71D512EBD001EE455 /* HashtableTest.m in Sources */,
 				062028E61D512EBD001EE455 /* HashMapTest.m in Sources */,
 				0620298E1D512F41001EE455 /* Support_UnmodifiableMapTest.m in Sources */,
