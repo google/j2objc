@@ -34,6 +34,11 @@ public class IosSslSocketFactory extends SSLSocketFactory {
   }
 
   @Override
+  public Socket createSocket() throws IOException {
+    return new IosSslSocket();
+  }
+
+  @Override
   public Socket createSocket(Socket s, String host, int port, boolean autoClose)
       throws IOException {
     throw new UnsupportedOperationException();

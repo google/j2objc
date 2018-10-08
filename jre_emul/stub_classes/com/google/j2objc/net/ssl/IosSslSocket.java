@@ -26,6 +26,8 @@ import javax.net.ssl.SSLSocket;
  */
 public class IosSslSocket extends SSLSocket {
 
+  public IosSslSocket() {}
+
   public IosSslSocket(String host, int port) {}
 
   public IosSslSocket(String host, int port, InetAddress localHost, int localPort) {}

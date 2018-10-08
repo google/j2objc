@@ -25,6 +25,16 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleJ2objcNetSslIosSslSocket)
 
+// public IosSslSocket()
+FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_init(
+    ComGoogleJ2objcNetSslIosSslSocket *self);
+
+FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
+new_ComGoogleJ2objcNetSslIosSslSocket_init(void) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
+create_ComGoogleJ2objcNetSslIosSslSocket_init(void);
+
 // public IosSslSocket(String host, int port)
 FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(
     ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port);

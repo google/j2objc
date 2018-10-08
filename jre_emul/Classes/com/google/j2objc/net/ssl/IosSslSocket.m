@@ -29,6 +29,8 @@
 static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t *dataLength);
 static OSStatus SslWriteCallback(SSLConnectionRef connection, const void *data, size_t *dataLength);
 static void checkStatus(OSStatus status);
+static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self);
+static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self);
 
 // The users of this class perform I/O via the two stream specializations: SslInputStream and
 // SslOutputStream. The actual network I/O operations are perfomed by the inherited java streams.
@@ -183,9 +185,7 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)dealloc {
-  if (_sslContext) {
-    CFRelease(_sslContext);
-  }
+  tearDownContext(self);
   [_sslInputStream release];
   [_sslOutputStream release];
   [_sslException release];
@@ -197,7 +197,7 @@ static void checkStatus(OSStatus status);
 - (void)close {
   @synchronized(self) {
     if ([self isClosed]) return;
-    checkStatus(SSLClose(_sslContext));
+    tearDownContext(self);
     [super close];
   }
 }
@@ -253,6 +253,7 @@ static void checkStatus(OSStatus status);
 - (void)startHandshake {
   @synchronized(self) {
     if (!handshakeCompleted) {
+      setUpContext(self);
       OSStatus status;
       do {
         status = SSLHandshake(_sslContext);
@@ -343,23 +344,47 @@ static void checkStatus(OSStatus status) {
   }
 }
 
-static void setup(ComGoogleJ2objcNetSslIosSslSocket *self) {
-  self->_sslContext = SSLCreateContext(nil, kSSLClientSide, kSSLStreamType);
+static void init(ComGoogleJ2objcNetSslIosSslSocket *self) {
   self->_sslInputStream = [[SslInputStream alloc] initWithSocket:self];
   self->_sslOutputStream = [[SslOutputStream alloc] initWithSocket:self];
   self->_sslException = nil;
+}
 
+static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
+  self->_sslContext = SSLCreateContext(nil, kSSLClientSide, kSSLStreamType);
   checkStatus(SSLSetIOFuncs(self->_sslContext, SslReadCallback, SslWriteCallback));
   checkStatus(SSLSetConnection(self->_sslContext, self));
   NSString *hostName = [[self getInetAddress] getHostName];
   checkStatus(SSLSetPeerDomainName(self->_sslContext, [hostName UTF8String], [hostName length]));
 }
 
+static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
+  if (self->_sslContext) {
+    checkStatus(SSLClose(self->_sslContext));
+    CFRelease(self->_sslContext);
+    self->_sslContext = nil;
+  }
+}
+
+// public IosSslSocket()
+void ComGoogleJ2objcNetSslIosSslSocket_init(ComGoogleJ2objcNetSslIosSslSocket *self) {
+  JavaxNetSslSSLSocket_init(self);
+  init(self);
+}
+
+ComGoogleJ2objcNetSslIosSslSocket *new_ComGoogleJ2objcNetSslIosSslSocket_init(void) {
+  J2OBJC_NEW_IMPL(ComGoogleJ2objcNetSslIosSslSocket, init)
+}
+
+ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init(void) {
+  J2OBJC_CREATE_IMPL(ComGoogleJ2objcNetSslIosSslSocket, init)
+}
+
 // public IosSslSocket(String host, int port)
 void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(
     ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port) {
   JavaxNetSslSSLSocket_initWithNSString_withInt_(self, host, port);
-  setup(self);
+  init(self);
 }
 
 ComGoogleJ2objcNetSslIosSslSocket *
@@ -378,7 +403,7 @@ void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetA
     JavaNetInetAddress *localAddr, jint localPort) {
   JavaxNetSslSSLSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
       self, host, port, localAddr, localPort);
-  setup(self);
+  init(self);
 }
 
 ComGoogleJ2objcNetSslIosSslSocket *
@@ -401,7 +426,7 @@ create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetIne
 void ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
     ComGoogleJ2objcNetSslIosSslSocket *self, JavaNetInetAddress *address, jint port) {
   JavaxNetSslSSLSocket_initWithJavaNetInetAddress_withInt_(self, address, port);
-  setup(self);
+  init(self);
 }
 
 ComGoogleJ2objcNetSslIosSslSocket *
@@ -425,7 +450,7 @@ void ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJa
     JavaNetInetAddress *localAddr, jint localPort) {
   JavaxNetSslSSLSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
       self, address, port, localAddr, localPort);
-  setup(self);
+  init(self);
 }
 
 // NOLINTNEXTLINE

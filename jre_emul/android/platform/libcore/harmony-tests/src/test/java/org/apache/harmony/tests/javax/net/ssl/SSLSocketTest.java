@@ -48,7 +48,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#SSLSocket()
      */
-    public void j2objcNotImplemented_testConstructor() throws Exception {
+    public void testConstructor() throws Exception {
         SSLSocket ssl = getSSLSocket();
         assertNotNull(ssl);
         ssl.close();
