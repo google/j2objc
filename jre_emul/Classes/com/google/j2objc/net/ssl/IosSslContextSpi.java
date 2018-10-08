@@ -30,7 +30,9 @@ public class IosSslContextSpi extends SSLContextSpi {
 
   @Override
   protected void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
-      throws KeyManagementException {}
+      throws KeyManagementException {
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   protected SSLSocketFactory engineGetSocketFactory() {

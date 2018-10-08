@@ -221,7 +221,7 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)setEnabledCipherSuitesWithNSStringArray:(IOSObjectArray *)suites {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (IOSObjectArray *)getSupportedProtocols {
@@ -233,21 +233,21 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)setEnabledProtocolsWithNSStringArray:(IOSObjectArray *)protocols {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (id<JavaxNetSslSSLSession>)getSession {
-  return nil;
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (void)addHandshakeCompletedListenerWithJavaxNetSslHandshakeCompletedListener:
     (id<JavaxNetSslHandshakeCompletedListener>)listener {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (void)removeHandshakeCompletedListenerWithJavaxNetSslHandshakeCompletedListener:
     (id<JavaxNetSslHandshakeCompletedListener>)listener {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (void)startHandshake {
@@ -264,15 +264,15 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)setUseClientModeWithBoolean:(jboolean)mode {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (jboolean)getUseClientMode {
-  return FALSE;
+  return TRUE;  // Currently only client mode is supported.
 }
 
 - (void)setNeedClientAuthWithBoolean:(jboolean)need {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (jboolean)getNeedClientAuth {
@@ -280,7 +280,7 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)setWantClientAuthWithBoolean:(jboolean)want {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (jboolean)getWantClientAuth {
@@ -288,7 +288,7 @@ static void checkStatus(OSStatus status);
 }
 
 - (void)setEnableSessionCreationWithBoolean:(jboolean)flag {
-
+  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
 - (jboolean)getEnableSessionCreation {
