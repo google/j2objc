@@ -301,7 +301,7 @@ public class SSLSocketTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocket#getSupportedProtocols()
      */
-    public void j2objcNotImplemented_test_getSupportedProtocols() throws IOException {
+    public void test_getSupportedProtocols() throws IOException {
         SSLSocket ssl = getSSLSocket();
         String[] res = ssl.getSupportedProtocols();
         assertTrue("No supported protocols found", res.length > 0);
@@ -312,7 +312,7 @@ public class SSLSocketTest extends TestCase {
      * javax.net.ssl.SSLSocket#getEnabledProtocols()
      * javax.net.ssl.SSLSocket#setEnabledProtocols(String[] protocols)
      */
-    public void j2objcNotImplemented_test_EnabledProtocols() throws IOException {
+    public void test_EnabledProtocols() throws IOException {
         SSLSocket ssl = getSSLSocket();
         try {
             ssl.setEnabledProtocols(null);

@@ -14,6 +14,7 @@
 
 package com.google.j2objc.net.ssl;
 
+import com.google.j2objc.security.IosSecurityProvider.SslProtocol;
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 import javax.net.ssl.KeyManager;
@@ -28,15 +29,23 @@ import javax.net.ssl.TrustManager;
 /** Returns factories that use Apple's SecureTransport API. */
 public class IosSslContextSpi extends SSLContextSpi {
 
+  private final SslProtocol protocol;
+
+  private IosSslContextSpi(SslProtocol protocol) {
+    this.protocol = protocol;
+  }
+
   @Override
   protected void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
       throws KeyManagementException {
-    throw new UnsupportedOperationException();
+    if (km != null || tm != null || sr != null) {
+      throw new UnsupportedOperationException();
+    }
   }
 
   @Override
   protected SSLSocketFactory engineGetSocketFactory() {
-    return new IosSslSocketFactory();
+    return new IosSslSocketFactory(protocol);
   }
 
   @Override
@@ -72,5 +81,50 @@ public class IosSslContextSpi extends SSLContextSpi {
   @Override
   protected SSLParameters engineGetSupportedSSLParameters() {
     return super.engineGetSupportedSSLParameters();
+  }
+
+  /**
+   * Public to allow construction via the provider framework.
+   */
+  public static final class Default extends IosSslContextSpi {
+    public Default() {
+      super(SslProtocol.DEFAULT);
+    }
+  }
+
+  /**
+   * Public to allow construction via the provider framework.
+   */
+  public static final class Tls extends IosSslContextSpi {
+    public Tls() {
+      super(SslProtocol.TLS);
+    }
+  }
+
+  /**
+   * Public to allow construction via the provider framework.
+   */
+  public static final class TlsV1 extends IosSslContextSpi {
+    public TlsV1() {
+      super(SslProtocol.TLS_V1);
+    }
+  }
+
+  /**
+   * Public to allow construction via the provider framework.
+   */
+  public static final class TlsV11 extends IosSslContextSpi {
+    public TlsV11() {
+      super(SslProtocol.TLS_V11);
+    }
+  }
+
+  /**
+   * Public to allow construction via the provider framework.
+   */
+  public static final class TlsV12 extends IosSslContextSpi {
+    public TlsV12() {
+      super(SslProtocol.TLS_V12);
+    }
   }
 }

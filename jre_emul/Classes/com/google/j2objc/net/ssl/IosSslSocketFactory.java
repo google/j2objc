@@ -14,6 +14,7 @@
 
 package com.google.j2objc.net.ssl;
 
+import com.google.j2objc.security.IosSecurityProvider.SslProtocol;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -22,6 +23,12 @@ import javax.net.ssl.SSLSocketFactory;
 
 /** Creates SSL sockets that use Apple's SecureTransport API. */
 public class IosSslSocketFactory extends SSLSocketFactory {
+
+  private final String[] enabledProtocols;
+
+  public IosSslSocketFactory(SslProtocol protocol) {
+    enabledProtocols = new String[] {protocol.toString()};
+  }
 
   @Override
   public String[] getDefaultCipherSuites() {
@@ -35,7 +42,9 @@ public class IosSslSocketFactory extends SSLSocketFactory {
 
   @Override
   public Socket createSocket() throws IOException {
-    return new IosSslSocket();
+    IosSslSocket socket = new IosSslSocket();
+    socket.setEnabledProtocols(enabledProtocols);
+    return socket;
   }
 
   @Override
@@ -46,23 +55,31 @@ public class IosSslSocketFactory extends SSLSocketFactory {
 
   @Override
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
-    return new IosSslSocket(host, port);
+    IosSslSocket socket = new IosSslSocket(host, port);
+    socket.setEnabledProtocols(enabledProtocols);
+    return socket;
   }
 
   @Override
   public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
       throws IOException, UnknownHostException {
-    return new IosSslSocket(host, port, localHost, localPort);
+    IosSslSocket socket = new IosSslSocket(host, port, localHost, localPort);
+    socket.setEnabledProtocols(enabledProtocols);
+    return socket;
   }
 
   @Override
   public Socket createSocket(InetAddress host, int port) throws IOException {
-    return new IosSslSocket(host, port);
+    IosSslSocket socket = new IosSslSocket(host, port);
+    socket.setEnabledProtocols(enabledProtocols);
+    return socket;
   }
 
   @Override
   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
       throws IOException {
-    return new IosSslSocket(address, port, localAddress, localPort);
+    IosSslSocket socket = new IosSslSocket(address, port, localAddress, localPort);
+    socket.setEnabledProtocols(enabledProtocols);
+    return socket;
   }
 }

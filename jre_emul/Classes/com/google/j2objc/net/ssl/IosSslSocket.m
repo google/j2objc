@@ -15,9 +15,11 @@
 #import <Security/Security.h>
 
 #import "J2ObjC_source.h"
+#import "com/google/j2objc/security/IosSecurityProvider.h"
 #import "java/io/InputStream.h"
 #import "java/io/OutputStream.h"
 #import "java/lang/Exception.h"
+#import "java/lang/IllegalArgumentException.h"
 #import "java/lang/UnsupportedOperationException.h"
 #import "java/net/InetAddress.h"
 #import "java/net/SocketException.h"
@@ -32,6 +34,9 @@ static void checkStatus(OSStatus status);
 static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self);
 static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self);
 
+// Maps from Java SSL constants to the SSLProtocol enumeration.
+static NSDictionary *protocolMapping;
+
 // The users of this class perform I/O via the two stream specializations: SslInputStream and
 // SslOutputStream. The actual network I/O operations are perfomed by the inherited java streams.
 // Expected data flow:
@@ -43,6 +48,7 @@ static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self);
   SSLContextRef _sslContext;
   SslInputStream *_sslInputStream;
   SslOutputStream *_sslOutputStream;
+  IOSObjectArray *enabledProtocols;
   BOOL handshakeCompleted;
 
   // Used to forward exceptions from the plain streams to the SSL streams.
@@ -176,6 +182,22 @@ static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self);
 
 @implementation ComGoogleJ2objcNetSslIosSslSocket
 
++ (void)initialize {
+  NSMutableDictionary *temp = [[[NSMutableDictionary alloc] init] autorelease];
+  NSString *key;
+  key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_DEFAULT() description];
+  temp[key] = @(kTLSProtocol1);
+  key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_TLS() description];
+  temp[key] = @(kTLSProtocol1);
+  key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_TLS_V1() description];
+  temp[key] = @(kTLSProtocol1);
+  key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_TLS_V11() description];
+  temp[key] = @(kTLSProtocol11);
+  key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_TLS_V12() description];
+  temp[key] = @(kTLSProtocol12);
+  protocolMapping = [[NSDictionary alloc] initWithDictionary:temp];
+}
+
 - (JavaIoInputStream *)plainInputStream {
   return [super getInputStream];
 }
@@ -225,15 +247,24 @@ static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self);
 }
 
 - (IOSObjectArray *)getSupportedProtocols {
-  return [IOSObjectArray arrayWithLength:0 type:NSString_class_()];
+  return [IOSObjectArray arrayWithArray:enabledProtocols];
 }
 
 - (IOSObjectArray *)getEnabledProtocols {
-  return [IOSObjectArray arrayWithLength:0 type:NSString_class_()];
+  return [IOSObjectArray arrayWithArray:enabledProtocols];
 }
 
 - (void)setEnabledProtocolsWithNSStringArray:(IOSObjectArray *)protocols {
-  J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
+  if (!protocols) {
+    J2ObjCThrowByName(JavaLangIllegalArgumentException, @"Null argument");
+  }
+  for (NSString *p in protocols) {
+    if (!protocolMapping[p]) {
+      NSString *msg = [NSString stringWithFormat:@"Invalid protocol: %@", p];
+      J2ObjCThrowByName(JavaLangIllegalArgumentException, msg);
+    }
+  }
+  JreStrongAssign(&enabledProtocols, [IOSObjectArray arrayWithArray:protocols]);
 }
 
 - (id<JavaxNetSslSSLSession>)getSession {
@@ -356,6 +387,8 @@ static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
   checkStatus(SSLSetConnection(self->_sslContext, self));
   NSString *hostName = [[self getInetAddress] getHostName];
   checkStatus(SSLSetPeerDomainName(self->_sslContext, [hostName UTF8String], [hostName length]));
+  SSLProtocol protocol = [protocolMapping[[self->enabledProtocols objectAtIndex:0]] intValue];
+  checkStatus(SSLSetProtocolVersionMin(self->_sslContext, protocol));
 }
 
 static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
