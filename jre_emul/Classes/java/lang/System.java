@@ -54,6 +54,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.nio.channels.Channel;
+import java.nio.channels.spi.SelectorProvider;
 
 /**
  * Simple iOS version of java.lang.System.  No code was shared, just its
@@ -499,4 +501,33 @@ public class System {
     }
     systemLogger.log(level, message, thrown);
   }
+  
+  /**
+     * Returns the channel inherited from the entity that created this
+     * Java virtual machine.
+     *
+     * <p> This method returns the channel obtained by invoking the
+     * {@link java.nio.channels.spi.SelectorProvider#inheritedChannel
+     * inheritedChannel} method of the system-wide default
+     * {@link java.nio.channels.spi.SelectorProvider} object. </p>
+     *
+     * <p> In addition to the network-oriented channels described in
+     * {@link java.nio.channels.spi.SelectorProvider#inheritedChannel
+     * inheritedChannel}, this method may return other kinds of
+     * channels in the future.
+     *
+     * @return  The inherited channel, if any, otherwise <tt>null</tt>.
+     *
+     * @throws  IOException
+     *          If an I/O error occurs
+     *
+     * @throws  SecurityException
+     *          If a security manager is present and it does not
+     *          permit access to the channel.
+     *
+     * @since 1.5
+     */
+    public static Channel inheritedChannel() throws IOException {
+        return SelectorProvider.provider().inheritedChannel();
+    }
 }
