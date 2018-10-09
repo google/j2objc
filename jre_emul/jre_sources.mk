@@ -281,6 +281,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/NioUtils.java \
   java/nio/ReadOnlyBufferException.java \
   java/nio/ShortBuffer.java \
+  java/nio/channels/Channel.java \
   java/nio/charset/CharacterCodingException.java \
   java/nio/charset/Charset.java \
   java/nio/charset/CharsetDecoder.java \
@@ -906,7 +907,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AsynchronousCloseException.java \
   java/nio/channels/ByteChannel.java \
   java/nio/channels/CancelledKeyException.java \
-  java/nio/channels/Channel.java \
   java/nio/channels/Channels.java \
   java/nio/channels/ClosedByInterruptException.java \
   java/nio/channels/ClosedChannelException.java \
