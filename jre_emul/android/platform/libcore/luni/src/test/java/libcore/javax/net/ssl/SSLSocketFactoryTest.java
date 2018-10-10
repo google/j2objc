@@ -221,7 +221,7 @@ public class SSLSocketFactoryTest extends TestCase {
         assertNotSame(sf.getSupportedCipherSuites(), sf.getSupportedCipherSuites());
     }
 
-    public void j2objcNotImplemented_test_SSLSocketFactory_createSocket() throws Exception {
+    public void test_SSLSocketFactory_createSocket() throws Exception {
         try {
             SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
             Socket s = sf.createSocket(null, null, -1, false);

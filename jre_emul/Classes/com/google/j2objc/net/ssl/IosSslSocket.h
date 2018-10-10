@@ -17,6 +17,7 @@
 #import "javax/net/ssl/SSLSocket.h"
 
 @class JavaNetInetAddress;
+@class JavaNetSocket;
 
 // A socket that uses Apple's SecureTransport API.
 @interface ComGoogleJ2objcNetSslIosSslSocket : JavaxNetSslSSLSocket
@@ -86,6 +87,15 @@ NS_RETURNS_RETAINED;
 // NOLINTNEXTLINE
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
     JavaNetInetAddress *address, jint port, JavaNetInetAddress *localAddr, jint localPort);
+
+// public IosSslSocket(Socket s, String host, int port, boolean autoClose)
+FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
+new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
+    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
+create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
+    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose);
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleJ2objcNetSslIosSslSocket)
 

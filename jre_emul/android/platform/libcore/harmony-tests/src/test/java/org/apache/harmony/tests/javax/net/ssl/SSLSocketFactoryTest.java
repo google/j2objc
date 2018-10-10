@@ -61,7 +61,7 @@ public class SSLSocketFactoryTest extends TestCase {
     /**
      * javax.net.ssl.SSLSocketFactory#createSocket(Socket s, String host, int port, boolean autoClose)
      */
-    public void j2objcNotImplemented_test_createSocket() throws Exception {
+    public void test_createSocket() throws Exception {
         SSLSocketFactory sf = (SSLSocketFactory)SSLSocketFactory.getDefault();
         int sport = startServer("test_createSocket()");
         int[] invalid = {
