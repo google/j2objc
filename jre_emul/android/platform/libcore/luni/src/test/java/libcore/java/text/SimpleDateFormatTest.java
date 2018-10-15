@@ -455,4 +455,57 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         df.parse("22 Jul 1977 12:23:45 HST");
         assertEquals(tz, df.getTimeZone());
     }
+
+    // Tests that 'b' and 'B' pattern symbols are silently ignored so that CLDR 32 patterns
+    // can be used. http://b/68139386
+    public void testDayPeriodFormat() throws Exception {
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = isoFormat.parse("2017-01-01T08:00:00");
+
+        for (Locale locale : new Locale[] { Locale.US, Locale.FRANCE }) {
+            // Pattern letter 'b'
+            assertDayPeriodFormat("HHb", date, "08", locale);
+            assertDayPeriodFormat("HHbb", date, "08", locale);
+            assertDayPeriodFormat("HHbbb", date, "08", locale);
+            assertDayPeriodFormat("HHbbbb", date, "08", locale);
+            assertDayPeriodFormat("HHbbbbb", date, "08", locale);
+
+            // Pattern letter 'B'
+            assertDayPeriodFormat("HHB", date, "08", locale);
+            assertDayPeriodFormat("HHBB", date, "08", locale);
+            assertDayPeriodFormat("HHBBB", date, "08", locale);
+            assertDayPeriodFormat("HHBBBB", date, "08", locale);
+            assertDayPeriodFormat("HHBBBBB", date, "08", locale);
+        }
+    }
+
+    // Tests that SimpleDateFormat with 'b' and 'B' pattern symbols can't parse any date
+    public void testDayPeriodParse() {
+        assertDayPeriodParseFailure("b", "");
+        assertDayPeriodParseFailure("HHb", "1");
+        assertDayPeriodParseFailure("HHb", "12");
+        assertDayPeriodParseFailure("HH b", "12 AM");
+        assertDayPeriodParseFailure("HH b", "12 midnight");
+
+        assertDayPeriodParseFailure("B", "");
+        assertDayPeriodParseFailure("HHB", "8");
+        assertDayPeriodParseFailure("HHB", "08");
+        assertDayPeriodParseFailure("HH B", "08 AM");
+        assertDayPeriodParseFailure("HH B", "08 in the morning");
+    }
+
+    private void assertDayPeriodParseFailure(String pattern, String source) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.US);
+        ParsePosition parsePosition = new ParsePosition(0);
+        Date d = simpleDateFormat.parse(source, parsePosition);
+        assertNull(d);
+        assertEquals(0, parsePosition.getIndex());
+    }
+
+    private void assertDayPeriodFormat(String pattern, Date date, String expected, Locale locale) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, locale);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        assertEquals(expected, simpleDateFormat.format(date));
+    }
 }

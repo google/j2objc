@@ -230,7 +230,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * Pretend to support 'L' and 'c' for now. It's meant for standalone weekday and
      * month names, but we just use the non-standalone versions for now.
      */
-    static final String  patternChars = "GyMdkHmsSEDFwWahKzZYuXLc";
+    // Android-changed: Add 'c' (standalone day of week), 'b' (day period),
+    //   'B' (flexible day period)
+    static final String  patternChars = "GyMdkHmsSEDFwWahKzZYuXLcbB";
 
     static final int PATTERN_ERA                  =  0; // G
     static final int PATTERN_YEAR                 =  1; // y
@@ -255,7 +257,11 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     static final int PATTERN_ISO_DAY_OF_WEEK      = 20; // u
     static final int PATTERN_ISO_ZONE             = 21; // X
     static final int PATTERN_STANDALONE_MONTH     = 22; // L
+    // Android-added: Constant for standalone day of week.
     static final int PATTERN_STANDALONE_DAY_OF_WEEK = 23; // c
+    // Android-added: Constant for pattern letter 'b', 'B'
+    static final int PATTERN_DAY_PERIOD = 24; // b
+    static final int PATTERN_FLEXIBLE_DAY_PERIOD = 25; // B
 
     /**
      * Localized date-time pattern characters. For example, a locale may
