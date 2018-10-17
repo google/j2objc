@@ -706,17 +706,24 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * getDisplayNames} indicating names in all styles, such as
      * "January" and "Jan".
      *
+     * @see #SHORT_FORMAT
+     * @see #LONG_FORMAT
+     * @see #SHORT_STANDALONE
+     * @see #LONG_STANDALONE
      * @see #SHORT
      * @see #LONG
      * @since 1.6
      */
     public static final int ALL_STYLES = 0;
 
+    static final int STANDALONE_MASK = 0x8000;
+
     /**
      * A style specifier for {@link #getDisplayName(int, int, Locale)
      * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
-     * getDisplayNames} indicating a short name, such as "Jan".
+     * getDisplayNames} equivalent to {@link #SHORT_FORMAT}.
      *
+     * @see #SHORT_STANDALONE
      * @see #LONG
      * @since 1.6
      */
@@ -725,12 +732,89 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
     /**
      * A style specifier for {@link #getDisplayName(int, int, Locale)
      * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
-     * getDisplayNames} indicating a long name, such as "January".
+     * getDisplayNames} equivalent to {@link #LONG_FORMAT}.
      *
+     * @see #LONG_STANDALONE
      * @see #SHORT
      * @since 1.6
      */
     public static final int LONG = 2;
+
+    /**
+     * A style specifier for {@link #getDisplayName(int, int, Locale)
+     * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
+     * getDisplayNames} indicating a narrow name used for format. Narrow names
+     * are typically single character strings, such as "M" for Monday.
+     *
+     * @see #NARROW_STANDALONE
+     * @see #SHORT_FORMAT
+     * @see #LONG_FORMAT
+     * @since 1.8
+     */
+    public static final int NARROW_FORMAT = 4;
+
+    /**
+     * A style specifier for {@link #getDisplayName(int, int, Locale)
+     * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
+     * getDisplayNames} indicating a narrow name independently. Narrow names
+     * are typically single character strings, such as "M" for Monday.
+     *
+     * @see #NARROW_FORMAT
+     * @see #SHORT_STANDALONE
+     * @see #LONG_STANDALONE
+     * @since 1.8
+     */
+    public static final int NARROW_STANDALONE = NARROW_FORMAT | STANDALONE_MASK;
+
+    /**
+     * A style specifier for {@link #getDisplayName(int, int, Locale)
+     * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
+     * getDisplayNames} indicating a short name used for format.
+     *
+     * @see #SHORT_STANDALONE
+     * @see #LONG_FORMAT
+     * @see #LONG_STANDALONE
+     * @since 1.8
+     */
+    public static final int SHORT_FORMAT = 1;
+
+    /**
+     * A style specifier for {@link #getDisplayName(int, int, Locale)
+     * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
+     * getDisplayNames} indicating a long name used for format.
+     *
+     * @see #LONG_STANDALONE
+     * @see #SHORT_FORMAT
+     * @see #SHORT_STANDALONE
+     * @since 1.8
+     */
+    public static final int LONG_FORMAT = 2;
+
+    /**
+     * A style specifier for {@link #getDisplayName(int, int, Locale)
+     * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
+     * getDisplayNames} indicating a short name used independently,
+     * such as a month abbreviation as calendar headers.
+     *
+     * @see #SHORT_FORMAT
+     * @see #LONG_FORMAT
+     * @see #LONG_STANDALONE
+     * @since 1.8
+     */
+    public static final int SHORT_STANDALONE = SHORT | STANDALONE_MASK;
+
+    /**
+     * A style specifier for {@link #getDisplayName(int, int, Locale)
+     * getDisplayName} and {@link #getDisplayNames(int, int, Locale)
+     * getDisplayNames} indicating a long name used independently,
+     * such as a month name as calendar headers.
+     *
+     * @see #LONG_FORMAT
+     * @see #SHORT_FORMAT
+     * @see #SHORT_STANDALONE
+     * @since 1.8
+     */
+    public static final int LONG_STANDALONE = LONG | STANDALONE_MASK;
 
     // Internal notes:
     // Calendar contains two kinds of time representations: current "time" in
