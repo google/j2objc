@@ -1738,6 +1738,84 @@ JAVA_PRIVATE_SOURCES_BEANS = \
   java/beans/StandardBeanInfo.java \
   org/apache/harmony/beans/BeansUtils.java
 
+JAVA_PUBLIC_SOURCES_TIME = \
+  java/time/Clock.java \
+  java/time/DateTimeException.java \
+  java/time/DayOfWeek.java \
+  java/time/Duration.java \
+  java/time/Instant.java \
+  java/time/LocalDate.java \
+  java/time/LocalDateTime.java \
+  java/time/LocalTime.java \
+  java/time/Month.java \
+  java/time/MonthDay.java \
+  java/time/OffsetDateTime.java \
+  java/time/OffsetTime.java \
+  java/time/Period.java \
+  java/time/Year.java \
+  java/time/YearMonth.java \
+  java/time/ZoneId.java \
+  java/time/ZoneOffset.java \
+  java/time/ZonedDateTime.java \
+  java/time/chrono/AbstractChronology.java \
+  java/time/chrono/ChronoLocalDate.java \
+  java/time/chrono/ChronoLocalDateTime.java \
+  java/time/chrono/ChronoPeriod.java \
+  java/time/chrono/ChronoZonedDateTime.java \
+  java/time/chrono/Chronology.java \
+  java/time/chrono/Era.java \
+  java/time/chrono/IsoChronology.java \
+  java/time/chrono/IsoEra.java \
+  java/time/chrono/package-info.java \
+  java/time/format/DateTimeFormatter.java \
+  java/time/format/DateTimeFormatterBuilder.java \
+  java/time/format/DateTimeParseException.java \
+  java/time/format/DecimalStyle.java \
+  java/time/format/FormatStyle.java \
+  java/time/format/ResolverStyle.java \
+  java/time/format/SignStyle.java \
+  java/time/format/TextStyle.java \
+  java/time/format/package-info.java \
+  java/time/package-info.java \
+  java/time/temporal/ChronoField.java \
+  java/time/temporal/ChronoUnit.java \
+  java/time/temporal/IsoFields.java \
+  java/time/temporal/JulianFields.java \
+  java/time/temporal/Temporal.java \
+  java/time/temporal/TemporalAccessor.java \
+  java/time/temporal/TemporalAdjuster.java \
+  java/time/temporal/TemporalAdjusters.java \
+  java/time/temporal/TemporalAmount.java \
+  java/time/temporal/TemporalField.java \
+  java/time/temporal/TemporalQueries.java \
+  java/time/temporal/TemporalQuery.java \
+  java/time/temporal/TemporalUnit.java \
+  java/time/temporal/UnsupportedTemporalTypeException.java \
+  java/time/temporal/ValueRange.java \
+  java/time/temporal/WeekFields.java \
+  java/time/temporal/package-info.java \
+  java/time/zone/ZoneOffsetTransition.java \
+  java/time/zone/ZoneOffsetTransitionRule.java \
+  java/time/zone/ZoneRules.java \
+  java/time/zone/ZoneRulesException.java \
+  java/time/zone/package-info.java
+
+JAVA_PRIVATE_SOURCES_TIME = \
+  java/time/Ser.java \
+  java/time/ZoneRegion.java \
+  java/time/chrono/ChronoLocalDateImpl.java \
+  java/time/chrono/ChronoLocalDateTimeImpl.java \
+  java/time/chrono/ChronoPeriodImpl.java \
+  java/time/chrono/ChronoZonedDateTimeImpl.java \
+  java/time/chrono/Ser.java \
+  java/time/format/DateTimeParseContext.java \
+  java/time/format/DateTimePrintContext.java \
+  java/time/format/DateTimeTextProvider.java \
+  java/time/format/Parsed.java \
+  java/time/zone/Ser.java \
+  java/time/zone/ZoneRulesProvider.java \
+  sun/util/locale/provider/CalendarDataUtility.java
+
 # These sources are not included in any sub-library, only the full jre_emul.
 # javax.lang.model.element.Modifier is required by mockito, so it is only needed
 # in a testing environment. The other classes are errors only thrown by a JVM.
@@ -1819,6 +1897,7 @@ JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_XMLPULL) \
 JAVA_SOURCES_ZIP = $(JAVA_PUBLIC_SOURCES_ZIP) $(JAVA_PRIVATE_SOURCES_ZIP)
 JAVA_SOURCES_SQL = $(JAVA_PUBLIC_SOURCES_SQL) $(JAVA_PRIVATE_SOURCES_SQL)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
+JAVA_SOURCES_TIME = $(JAVA_PUBLIC_SOURCES_TIME) $(JAVA_PRIVATE_SOURCES_TIME)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
 # These annotations have a SOURCE retention, and so should not be part of the runtime.
@@ -1891,6 +1970,7 @@ JAVA_PUBLIC_SOURCES_JRE = \
   $(JAVA_PUBLIC_SOURCES_ZIP) \
   $(JAVA_PUBLIC_SOURCES_SQL) \
   $(JAVA_PUBLIC_SOURCES_BEANS) \
+  $(JAVA_PUBLIC_SOURCES_TIME) \
   $(JAVA_PUBLIC_SOURCES_OTHER)
 JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_CORE) \
@@ -1905,6 +1985,7 @@ JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_ZIP) \
   $(JAVA_PRIVATE_SOURCES_SQL) \
   $(JAVA_PRIVATE_SOURCES_BEANS) \
+  $(JAVA_PRIVATE_SOURCES_TIME) \
   $(JAVA_PRIVATE_SOURCES_OTHER) \
   $(ANDROID_PRIVATE_SOURCES)
 
