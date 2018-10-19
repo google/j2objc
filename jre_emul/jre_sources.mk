@@ -500,7 +500,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/logging/Logger.java \
   java/util/logging/LoggingMXBean.java \
   java/util/logging/LoggingPermission.java \
-  java/util/logging/package-info.java \
   java/util/regex/MatchResult.java \
   java/util/regex/Matcher.java \
   java/util/regex/Pattern.java \
