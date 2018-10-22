@@ -7,6 +7,7 @@
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/javac.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/procyon-decompiler.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/plume-util-1.0.5.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src/main/java" expected_position="0" />
       <src_folder value="file://$MODULE_DIR$/src/main/resources" expected_position="1" />

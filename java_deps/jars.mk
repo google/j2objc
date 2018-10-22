@@ -51,6 +51,7 @@ GUAVA_ANDROID_JAR = guava-25.1-android.jar
 GUAVA_ANDROID_SOURCE_JAR = guava-25.1-android-sources.jar
 
 SCENELIB_JAR = scenelib.jar
+PLUME_UTIL_JAR = plume-util-1.0.5.jar
 
 JSR305_JAR = jsr305-3.0.0.jar
 JSR305_SOURCE_JAR = jsr305-3.0.0.jar

@@ -591,20 +591,31 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(Element e) {
-    if (e.getKind() != ElementKind.ANNOTATION_TYPE) {
-      return false;
-    }
+    return isAnnotationType(e) && hasRetentionPolicy(e, "RUNTIME");
+  }
+
+  public static boolean isGeneratedAnnotation(AnnotationMirror mirror) {
+    return isGeneratedAnnotation(mirror.getAnnotationType().asElement());
+  }
+
+  public static boolean isGeneratedAnnotation(Element e) {
+    // Use a negative check, since CLASS retention is the default.
+    return isAnnotationType(e) && !hasRetentionPolicy(e, "SOURCE");
+  }
+
+  private static boolean hasRetentionPolicy(Element e, String policy) {
     for (AnnotationMirror ann : e.getAnnotationMirrors()) {
       String annotationName = ann.getAnnotationType().asElement().getSimpleName().toString();
       if (annotationName.equals("Retention")) {
         for (AnnotationValue value : ann.getElementValues().values()) {
           // Retention's value is a RetentionPolicy enum constant.
           VariableElement v = (VariableElement) value.getValue();
-          return v.getSimpleName().toString().equals("RUNTIME");
+          return v.getSimpleName().contentEquals(policy);
         }
       }
     }
     return false;
+
   }
 
   public static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
