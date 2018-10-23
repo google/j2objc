@@ -32,7 +32,8 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
-    assertTranslatedLines(impl, "void Foo_g(id<Foo> self) {", "[self f];", "}");
+    assertTranslatedLines(impl,
+        "void Foo_g(id<Foo> self) {", "Foo_initialize();", "[self f];", "}");
   }
 
   public void testDefaultMethodFunctionalizationWithReflectionsStripped() throws IOException {
@@ -45,7 +46,8 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
-    assertTranslatedLines(impl, "void Foo_g(id<Foo> self) {", "[self f];", "}");
+    assertTranslatedLines(impl,
+        "void Foo_g(id<Foo> self) {", "Foo_initialize();", "[self f];", "}");
   }
 
   public void testSuperDefaultMethodInvocation() throws IOException {
@@ -120,6 +122,7 @@ public class DefaultMethodsTest extends GenerationTest {
         "NSString *A_underscorePrefixWithNSString_(id<A> self, NSString *a)");
     assertTranslatedLines(impl,
         "NSString *A_underscorePrefixWithNSString_(id<A> self, NSString *a) {",
+        "  A_initialize();",
         "  return [self opWithNSString:@\"_\" withNSString:a];",
         "}");
 
@@ -291,7 +294,7 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(header, "- (JavaLangLong *)f;");
 
     // From A<T>
-    assertTranslatedLines(impl, "id A_f(id<A> self) {", "return nil;", "}");
+    assertTranslatedLines(impl, "id A_f(id<A> self) {", "A_initialize();", "return nil;", "}");
 
     // From P
     assertTranslatedLines(impl, "- (NSString *)f {", "return A_f(self);", "}");
@@ -336,7 +339,7 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(header, "- (NSString *)f");
 
     // From the default method of A.
-    assertTranslatedLines(impl, "id A_f(id<A> self) {", "return nil;", "}");
+    assertTranslatedLines(impl, "id A_f(id<A> self) {", "A_initialize();", "return nil;", "}");
 
     // From @implementation B.
     assertTranslatedLines(impl, "- (NSString *)f {", "return @\"\";", "}");
@@ -346,7 +349,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String source = "interface A { default Class<?> type() { return getClass(); } }";
     String impl = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(impl,
-        "IOSClass *A_type(id<A> self) {", "return [self java_getClass];", "}");
+        "IOSClass *A_type(id<A> self) {", "A_initialize();", "return [self java_getClass];", "}");
   }
 
   public void testDefaultMethodWithMultipleSelectors() throws IOException {
