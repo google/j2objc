@@ -75,7 +75,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
     TypeElement type = node.getTypeElement();
-    if (!ElementUtil.isRuntimeAnnotation(type)) {
+    if (!ElementUtil.isGeneratedAnnotation(type)) {
       eliminateDeadCode(type, node);
     }
   }
@@ -236,7 +236,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
     while (iter.hasNext()) {
       AbstractTypeDeclaration type = iter.next();
       TypeElement typeElement = type.getTypeElement();
-      if (!ElementUtil.isRuntimeAnnotation(typeElement)) {
+      if (!ElementUtil.isGeneratedAnnotation(typeElement)) {
         if (deadCodeMap.containsClass(typeElement, elementUtil)) {
           type.setDeadClass(true);
         } else {

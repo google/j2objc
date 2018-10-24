@@ -194,14 +194,6 @@ public class FunctionizerTest extends GenerationTest {
         "A_B_test(nil_chk(b));");
   }
 
-  // Verify annotation parameters are ignored.
-  public void testAnnotationParameters() throws IOException {
-    String translation = translateSourceFile(
-        "import java.lang.annotation.*; @Target({ElementType.METHOD}) public @interface Test {}",
-        "Test", "Test.m");
-    assertNotInTranslation(translation, "self");
-  }
-
   // Verify function declaration is in .m file, not the header.
   public void testPrivateStaticMethod() throws IOException {
     String translation = translateSourceFile(
