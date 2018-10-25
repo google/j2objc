@@ -59,28 +59,29 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.time.Clock;
 import java.time.ZoneId;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test system clock.
  */
-@Test
 public class TestClock_System {
 
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
+    @Test
     public void test_withZone_same() {
         Clock test = Clock.system(PARIS);
         Clock changed = test.withZone(PARIS);
         assertSame(test, changed);
     }
 
+    @Test
     //-----------------------------------------------------------------------
     public void test_toString() {
         Clock test = Clock.system(PARIS);

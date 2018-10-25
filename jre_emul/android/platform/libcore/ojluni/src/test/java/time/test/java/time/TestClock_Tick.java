@@ -59,8 +59,8 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -69,12 +69,11 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test tick clock.
  */
-@Test
 public class TestClock_Tick {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
@@ -82,6 +81,7 @@ public class TestClock_Tick {
     private static final ZonedDateTime ZDT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2));
 
     //-------------------------------------------------------------------------
+    @Test
     public void test_withZone_same() {
         Clock test = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
         Clock changed = test.withZone(PARIS);
@@ -89,6 +89,7 @@ public class TestClock_Tick {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         Clock test = Clock.tick(Clock.systemUTC(), Duration.ofMillis(500));
         assertEquals(test.toString(), "TickClock[SystemClock[Z],PT0.5S]");

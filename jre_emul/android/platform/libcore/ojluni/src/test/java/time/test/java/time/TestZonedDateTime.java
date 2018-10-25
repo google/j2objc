@@ -61,12 +61,11 @@ package test.java.time;
 
 import java.time.ZonedDateTime;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test ZonedDateTime.
  */
-@Test
 public class TestZonedDateTime extends AbstractTest {
 
     @Test

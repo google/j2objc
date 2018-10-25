@@ -59,26 +59,31 @@
  */
 package test.java.time;
 
-import java.time.Instant;
+import static org.junit.Assert.assertEquals;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import java.time.Instant;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test Instant.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestInstant extends AbstractTest {
 
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(Instant.class);
     }
 
-    @DataProvider(name="sampleEpochMillis")
-    private Object[][] provider_sampleEpochMillis() {
-        return new Object[][] {
+    @DataProvider
+    public static Object[][] provider_sampleEpochMillis() {
+        return new Object [][] {
             {"Long.MAX_VALUE", Long.MAX_VALUE},
             {"Long.MAX_VALUE-1", Long.MAX_VALUE - 1},
             {"1", 1L},
@@ -89,11 +94,12 @@ public class TestInstant extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="sampleEpochMillis")
+    @Test
+    @UseDataProvider("provider_sampleEpochMillis")
     public void test_epochMillis(String name, long millis) {
         Instant t1 = Instant.ofEpochMilli(millis);
         long m = t1.toEpochMilli();
-        assertEquals(millis, m, name);
+        assertEquals(name, millis, m);
     }
 
 }

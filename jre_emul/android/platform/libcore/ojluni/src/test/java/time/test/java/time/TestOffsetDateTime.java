@@ -59,33 +59,36 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertSame;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 /**
  * Test OffsetDateTime.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestOffsetDateTime extends AbstractTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59, 500), OFFSET_PONE);
     }
 
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(OffsetDateTime.class);
@@ -94,8 +97,8 @@ public class TestOffsetDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleTimes")
-    Object[][] provider_sampleTimes() {
+    @DataProvider
+    public static Object[][] provider_sampleTimes() {
         return new Object[][] {
             {2008, 6, 30, 11, 30, 20, 500, OFFSET_PONE},
             {2008, 6, 30, 11, 0, 0, 0, OFFSET_PONE},
@@ -104,7 +107,8 @@ public class TestOffsetDateTime extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="sampleTimes")
+    @Test
+    @UseDataProvider("provider_sampleTimes")
     public void test_get_same(int y, int o, int d, int h, int m, int s, int n, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);

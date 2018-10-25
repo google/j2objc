@@ -63,22 +63,19 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DecimalStyle;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DecimalStyle;
 import java.time.format.SignStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.util.Locale;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
 
 /**
  * Abstract PrinterParser test.
  */
-@Test
 public class AbstractTestPrinterParser {
 
     protected StringBuilder buf;
@@ -88,7 +85,7 @@ public class AbstractTestPrinterParser {
     protected DecimalStyle decimalStyle;
 
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         buf = new StringBuilder();
         builder = new DateTimeFormatterBuilder();

@@ -144,6 +144,12 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
     org/apache/harmony/xnet/tests/support/mySSLSession.java \
+    test/java/time/AbstractTest.java \
+    test/java/time/MockSimplePeriod.java \
+    test/java/time/format/AbstractTestPrinterParser.java \
+    test/java/time/format/MockIOExceptionAppendable.java \
+    test/java/time/temporal/MockFieldNoValue.java \
+    test/java/time/temporal/MockFieldValue.java \
     tests/net/DelegatingSocketFactory.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
@@ -782,6 +788,24 @@ TEST_SOURCES := \
     org/json/SelfUseTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    test/java/time/TestDuration.java \
+    test/java/time/TestInstant.java \
+    test/java/time/TestLocalTime.java \
+    test/java/time/TestMonthDay.java \
+    test/java/time/TestOffsetDateTime.java \
+    test/java/time/TestOffsetDateTime_instants.java \
+    test/java/time/TestOffsetTime.java \
+    test/java/time/TestPeriod.java \
+    test/java/time/TestYear.java \
+    test/java/time/TestYearMonth.java \
+    test/java/time/TestZoneOffset.java \
+    test/java/time/TestZonedDateTime.java \
+    test/java/time/chrono/TestChronoLocalDate.java \
+    test/java/time/chrono/TestIsoChronoImpl.java \
+    test/java/time/temporal/TestChronoField.java \
+    test/java/time/temporal/TestIsoWeekFields.java \
+    test/java/time/temporal/TestJulianFields.java \
+    test/java/time/zone/TestFixedZoneRules.java \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/security/cert/X509Certificate2Test.java \
     tests/security/interfaces/RSAKeyTest.java \
@@ -824,6 +848,7 @@ SUITE_SOURCES = \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
     org/json/SmallTests.java \
+    test/java/time/Tests.java
 
 ARC_TEST_SOURCES = \
     com/google/j2objc/arc/EnumTest.java
@@ -923,6 +948,10 @@ TESTS_USE_REFLECTION = \
     org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
     org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
+    test/java/time/TestOffsetTime.java \
+    test/java/time/TestYear.java \
+    test/java/time/TestYearMonth.java \
+    test/java/time/TestZonedDateTime.java \
     tests/api/java/lang/reflect/ProxyTest.java \
 
 TEST_RESOURCES_SRCS = \

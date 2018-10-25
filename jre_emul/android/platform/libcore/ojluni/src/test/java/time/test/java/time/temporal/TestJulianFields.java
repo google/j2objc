@@ -59,16 +59,15 @@
  */
 package test.java.time.temporal;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.temporal.JulianFields;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
 public class TestJulianFields {
 
     //-----------------------------------------------------------------------

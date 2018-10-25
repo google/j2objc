@@ -59,31 +59,31 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test MonthDay.
  */
-@Test
 public class TestMonthDay extends AbstractTest {
 
     private MonthDay TEST_07_15;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         TEST_07_15 = MonthDay.of(7, 15);
     }
 
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(MonthDay.class);
@@ -125,20 +125,20 @@ public class TestMonthDay extends AbstractTest {
             for (int j = 0; j < localDates.length; j++) {
                 MonthDay b = localDates[j];
                 if (i < j) {
-                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
-                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }

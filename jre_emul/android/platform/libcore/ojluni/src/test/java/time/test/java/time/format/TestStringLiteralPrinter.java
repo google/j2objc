@@ -59,23 +59,24 @@
  */
 package test.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test StringLiteralPrinterParser.
  */
-@Test
 public class TestStringLiteralPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_print_emptyCalendrical() throws Exception {
         buf.append("EXISTING");
         getFormatter("hello").formatTo(EMPTY_DTA, buf);
         assertEquals(buf.toString(), "EXISTINGhello");
     }
 
+    @Test
     public void test_print_dateTime() throws Exception {
         buf.append("EXISTING");
         getFormatter("hello").formatTo(dta, buf);
@@ -84,17 +85,19 @@ public class TestStringLiteralPrinter extends AbstractTestPrinterParser {
 
 
 
-
+    @Test
     public void test_print_emptyAppendable() throws Exception {
         getFormatter("hello").formatTo(dta, buf);
         assertEquals(buf.toString(), "hello");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() throws Exception {
         assertEquals(getFormatter("hello").toString(), "'hello'");
     }
 
+    @Test
     public void test_toString_apos() throws Exception {
         assertEquals(getFormatter("o'clock").toString(), "'o''clock'");
     }

@@ -56,8 +56,8 @@
  */
 package test.java.time.temporal;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
@@ -68,16 +68,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-@Test
 public class TestChronoField {
     Map<ChronoField, String> fieldMap;
 
 
-    @BeforeClass
+    @Before
     public void initClass() {
         fieldMap = new HashMap<>();
         fieldMap.put(ChronoField.ERA, "era");
@@ -93,7 +92,6 @@ public class TestChronoField {
         fieldMap.put(ChronoField.OFFSET_SECONDS, "zone");
     }
 
-    @DataProvider(name = "localeList")
     Locale[] data_localeList() {
         return new Locale[] {
                 Locale.US,
@@ -103,7 +101,6 @@ public class TestChronoField {
         };
     }
     //-----------------------------------------------------------------------
-    @DataProvider(name = "localeDisplayNames")
     Object[][] data_localeDisplayNames() {
         return new Object[][] {
                 {ChronoField.ERA},
@@ -119,6 +116,7 @@ public class TestChronoField {
         };
     }
 
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void test_IsoFields_week_based_year() {
         Locale locale = Locale.US;
@@ -127,11 +125,12 @@ public class TestChronoField {
         assertEquals(name, "week");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_nullIsoFields_week_based_year() {
         String name = IsoFields.WEEK_OF_WEEK_BASED_YEAR.getDisplayName((Locale)null);
     }
 
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void test_WeekFields_week_based_year() {
         Locale locale = Locale.US;
@@ -141,18 +140,18 @@ public class TestChronoField {
         assertEquals(name, "week");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_nullWeekFields_week_based_year() {
         TemporalField weekOfYearField = WeekFields.SUNDAY_START.weekOfYear();
         String name = weekOfYearField.getDisplayName((Locale)null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_nullLocaleChronoFieldDisplayName() {
         ChronoField.YEAR.getDisplayName((Locale)null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_nullLocaleTemporalFieldDisplayName() {
         // Test the default method in TemporalField using the
         // IsoFields.DAY_OF_QUARTER which does not override getDisplayName

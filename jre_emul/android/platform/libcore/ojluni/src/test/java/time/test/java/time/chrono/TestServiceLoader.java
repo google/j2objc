@@ -58,20 +58,18 @@
  */
 package test.java.time.chrono;
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.chrono.Chronology;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Tests that a custom Chronology is available via the ServiceLoader.
  * The CopticChronology is configured via META-INF/services/java.time.chrono.Chronology.
  */
-@Test
 public class TestServiceLoader {
 
     @Test
@@ -84,7 +82,7 @@ public class TestServiceLoader {
         for (Chronology chrono : loader) {
             chronos.put(chrono.getId(), chrono);
         }
-        assertNotNull(chronos.get("Coptic"), "CopticChronology not found");
+        assertNotNull("CopticChronology not found", chronos.get("Coptic"));
     }
 
 }

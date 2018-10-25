@@ -59,21 +59,20 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.time.Duration;
-
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test Duration.
  */
-@Test
 public class TestDuration extends AbstractTest {
 
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(Duration.class);
@@ -187,14 +186,14 @@ public class TestDuration extends AbstractTest {
             for (int j = 0; j < durations.length; j++) {
                 Duration b = durations[j];
                 if (i < j) {
-                    assertEquals(a.compareTo(b)< 0, true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b)< 0, true);
+                    assertEquals( a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
-                    assertEquals(a.compareTo(b) > 0, true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b) > 0, true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }

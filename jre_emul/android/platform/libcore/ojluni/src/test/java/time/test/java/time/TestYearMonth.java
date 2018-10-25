@@ -61,12 +61,11 @@ package test.java.time;
 
 import java.time.YearMonth;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test YearMonth.
  */
-@Test
 public class TestYearMonth extends AbstractTest {
 
     //-----------------------------------------------------------------------

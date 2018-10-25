@@ -56,31 +56,25 @@
  */
 package test.java.time.chrono;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoLocalDateTime;
-import java.time.chrono.Chronology;
-import java.time.chrono.ThaiBuddhistChronology;
-import java.time.chrono.ThaiBuddhistDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test chrono local date.
  */
-@Test
 public class TestChronoLocalDate {
     // this class primarily tests whether the generics work OK
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_date_comparator_checkGenerics_ISO() {
         List<ChronoLocalDate> dates = new ArrayList<>();
         ChronoLocalDate date = LocalDate.of(2013, 1, 1);
@@ -105,6 +99,7 @@ public class TestChronoLocalDate {
         assertTrue(ChronoLocalDate.timeLineOrder().compare(copy.get(0), copy.get(1)) < 0);
     }
 
+    @Test
     public void test_date_comparator_checkGenerics_LocalDate() {
         List<LocalDate> dates = new ArrayList<>();
         LocalDate date = LocalDate.of(2013, 1, 1);
@@ -130,6 +125,7 @@ public class TestChronoLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     public void test_date_checkGenerics_genericsMethod() {
         Chronology chrono = ThaiBuddhistChronology.INSTANCE;
         ChronoLocalDate date = chrono.dateNow();
@@ -198,5 +194,5 @@ public class TestChronoLocalDate {
 
     private <D extends ChronoLocalDate> ChronoLocalDateTime<D> processCLDT(ChronoLocalDateTime<D> dt) {
         return dt;
-    }
+    } */
 }

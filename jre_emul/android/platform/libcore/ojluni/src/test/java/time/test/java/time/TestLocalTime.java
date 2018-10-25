@@ -59,25 +59,25 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Clock;
 import java.time.LocalTime;
-
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test LocalTime.
  */
-@Test
 public class TestLocalTime extends AbstractTest {
     static final long NANOS_PER_SECOND = 1_000_000_000L;
     static final long NANOS_PER_MINUTE = 60 * NANOS_PER_SECOND;
     static final long NANOS_PER_DAY = 24 * 60 * NANOS_PER_MINUTE;
 
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(LocalTime.class);
@@ -204,8 +204,8 @@ public class TestLocalTime extends AbstractTest {
             // A second iteration may be needed if the clock changed
             // due to a DST change between the two calls to now.
         }
-        assertTrue(diff < 100000000,   // less than 0.1 sec
-                "LocalTime.now  vs LocalTime.now(Clock.systemDefaultZone()) not close");
+        assertTrue("LocalTime.now  vs LocalTime.now(Clock.systemDefaultZone()) not close",
+            diff < 100000000); // less than 0.1 sec)
     }
 
 }

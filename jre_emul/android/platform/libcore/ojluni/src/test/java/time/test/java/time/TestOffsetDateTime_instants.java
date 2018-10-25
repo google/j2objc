@@ -59,7 +59,7 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -69,13 +69,11 @@ import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.Year;
 import java.time.ZoneOffset;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test OffsetDateTime creation.
  */
-@Test
 public class TestOffsetDateTime_instants {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
@@ -83,17 +81,18 @@ public class TestOffsetDateTime_instants {
     private static final ZoneOffset OFFSET_MIN = ZoneOffset.ofHours(-18);
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_ofInstant_nullInstant() {
         OffsetDateTime.ofInstant((Instant) null, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_ofInstant_nullOffset() {
         Instant instant = Instant.ofEpochSecond(0L);
         OffsetDateTime.ofInstant(instant, (ZoneOffset) null);
     }
 
+    @Test
     public void factory_ofInstant_allSecsInDay() {
         for (int i = 0; i < (24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
@@ -107,6 +106,7 @@ public class TestOffsetDateTime_instants {
         }
     }
 
+    @Test
     public void factory_ofInstant_allDaysInCycle() {
         // sanity check using different algorithm
         OffsetDateTime expected = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
@@ -118,16 +118,18 @@ public class TestOffsetDateTime_instants {
         }
     }
 
+    @Test
     public void factory_ofInstant_history() {
         doTest_factory_ofInstant_all(-2820, 2820);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void factory_ofInstant_minYear() {
         doTest_factory_ofInstant_all(Year.MIN_VALUE, Year.MIN_VALUE + 420);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void factory_ofInstant_tooLow() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_VALUE - 1;
@@ -136,11 +138,12 @@ public class TestOffsetDateTime_instants {
         OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
+    @Test
     public void factory_ofInstant_maxYear() {
         doTest_factory_ofInstant_all(Year.MAX_VALUE - 420, Year.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void factory_ofInstant_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         long year = Year.MAX_VALUE + 1L;
@@ -150,6 +153,7 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void factory_ofInstant_minWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_VALUE;
@@ -166,6 +170,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 0);
     }
 
+    @Test
     public void factory_ofInstant_minWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_VALUE;
@@ -182,6 +187,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 0);
     }
 
+    @Test
     public void factory_ofInstant_maxWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_VALUE;
@@ -198,6 +204,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 0);
     }
 
+    @Test
     public void factory_ofInstant_maxWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_VALUE;
@@ -215,13 +222,13 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void factory_ofInstant_maxInstantWithMaxOffset() {
         Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
         OffsetDateTime.ofInstant(instant, OFFSET_MAX);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void factory_ofInstant_maxInstantWithMinOffset() {
         Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
         OffsetDateTime.ofInstant(instant, OFFSET_MIN);
@@ -282,6 +289,7 @@ public class TestOffsetDateTime_instants {
     //    }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toInstant_19700101() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -289,6 +297,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 0);
     }
 
+    @Test
     public void test_toInstant_19700101_oneNano() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 1), ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -296,6 +305,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 1);
     }
 
+    @Test
     public void test_toInstant_19700101_minusOneNano() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(23, 59, 59, 999999999), ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -303,6 +313,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 999999999);
     }
 
+    @Test
     public void test_toInstant_19700102() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 2), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -310,6 +321,7 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNano(), 0);
     }
 
+    @Test
     public void test_toInstant_19691231() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -318,26 +330,31 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toEpochSecond_19700101() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), 0);
     }
 
+    @Test
     public void test_toEpochSecond_19700101_oneNano() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of( 0, 0, 0, 1), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), 0);
     }
 
+    @Test
     public void test_toEpochSecond_19700101_minusOneNano() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(23, 59, 59, 999999999), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), -1);
     }
 
+    @Test
     public void test_toEpochSecond_19700102() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 2), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), 24L * 60L * 60L);
     }
 
+    @Test
     public void test_toEpochSecond_19691231() {
         OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), -24L * 60L * 60L);

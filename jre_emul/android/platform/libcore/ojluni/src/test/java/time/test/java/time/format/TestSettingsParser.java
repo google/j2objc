@@ -59,25 +59,26 @@
  */
 package test.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.text.ParsePosition;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test SettingsParser.
  */
-@Test
 public class TestSettingsParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_print_sensitive() throws Exception {
         setCaseSensitive(true);
         getFormatter().formatTo(dta, buf);
         assertEquals(buf.toString(), "");
     }
 
+    @Test
     public void test_print_strict() throws Exception {
         setStrict(true);
         getFormatter().formatTo(dta, buf);
@@ -92,6 +93,7 @@ public class TestSettingsParser extends AbstractTestPrinterParser {
     */
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_changeStyle_sensitive() throws Exception {
         setCaseSensitive(true);
         ParsePosition pos = new ParsePosition(0);
@@ -99,6 +101,7 @@ public class TestSettingsParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 0);
     }
 
+    @Test
     public void test_parse_changeStyle_insensitive() throws Exception {
         setCaseSensitive(false);
         ParsePosition pos = new ParsePosition(0);
@@ -106,6 +109,7 @@ public class TestSettingsParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 0);
     }
 
+    @Test
     public void test_parse_changeStyle_strict() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -113,6 +117,7 @@ public class TestSettingsParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 0);
     }
 
+    @Test
     public void test_parse_changeStyle_lenient() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -121,21 +126,25 @@ public class TestSettingsParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString_sensitive() throws Exception {
         setCaseSensitive(true);
         assertEquals(getFormatter().toString(), "ParseCaseSensitive(true)");
     }
 
+    @Test
     public void test_toString_insensitive() throws Exception {
         setCaseSensitive(false);
         assertEquals(getFormatter().toString(), "ParseCaseSensitive(false)");
     }
 
+    @Test
     public void test_toString_strict() throws Exception {
         setStrict(true);
         assertEquals(getFormatter().toString(), "ParseStrict(true)");
     }
 
+    @Test
     public void test_toString_lenient() throws Exception {
         setStrict(false);
         assertEquals(getFormatter().toString(), "ParseStrict(false)");

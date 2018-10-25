@@ -60,8 +60,11 @@ import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.chrono.IsoChronology;
@@ -70,18 +73,17 @@ import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestIsoChronoImpl {
 
-    @DataProvider(name = "RangeVersusCalendar")
-    Object[][] provider_rangeVersusCalendar() {
+    @DataProvider
+    public static Object[][] provider_rangeVersusCalendar() {
         return new Object[][]{
             {LocalDate.of(1583, 1, 1), LocalDate.of(2100, 1, 1)},
         };
@@ -90,10 +92,11 @@ public class TestIsoChronoImpl {
     //-----------------------------------------------------------------------
     // Verify  ISO Calendar matches java.util.Calendar for range
     //-----------------------------------------------------------------------
-    @Test(dataProvider = "RangeVersusCalendar")
+    @Test
+    @UseDataProvider("provider_rangeVersusCalendar")
     public void test_IsoChrono_vsCalendar(LocalDate isoStartDate, LocalDate isoEndDate) {
         GregorianCalendar cal = new GregorianCalendar();
-        assertEquals(cal.getCalendarType(), "gregory", "Unexpected calendar type");
+        assertEquals("Unexpected calendar type", cal.getCalendarType(), "gregory");
         LocalDate isoDate = IsoChronology.INSTANCE.date(isoStartDate);
 
         cal.setTimeZone(TimeZone.getTimeZone("GMT+00"));
@@ -102,9 +105,12 @@ public class TestIsoChronoImpl {
         cal.set(Calendar.DAY_OF_MONTH, isoDate.get(DAY_OF_MONTH));
 
         while (isoDate.isBefore(isoEndDate)) {
-            assertEquals(isoDate.get(DAY_OF_MONTH), cal.get(Calendar.DAY_OF_MONTH), "Day mismatch in " + isoDate + ";  cal: " + cal);
-            assertEquals(isoDate.get(MONTH_OF_YEAR), cal.get(Calendar.MONTH) + 1, "Month mismatch in " + isoDate);
-            assertEquals(isoDate.get(YEAR_OF_ERA), cal.get(Calendar.YEAR), "Year mismatch in " + isoDate);
+            assertEquals("Day mismatch in " + isoDate + ";  cal: " + cal, isoDate.get(DAY_OF_MONTH),
+                cal.get(Calendar.DAY_OF_MONTH));
+            assertEquals("Month mismatch in " + isoDate, isoDate.get(MONTH_OF_YEAR),
+                cal.get(Calendar.MONTH) + 1);
+            assertEquals("Year mismatch in " + isoDate, isoDate.get(YEAR_OF_ERA),
+                cal.get(Calendar.YEAR));
 
             isoDate = isoDate.plus(1, ChronoUnit.DAYS);
             cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -115,10 +121,11 @@ public class TestIsoChronoImpl {
     // Verify  ISO Calendar matches java.util.Calendar
     // DayOfWeek, WeekOfMonth, WeekOfYear for range
     //-----------------------------------------------------------------------
-    @Test(dataProvider = "RangeVersusCalendar")
+    @Test
+    @UseDataProvider("provider_rangeVersusCalendar")
     public void test_DayOfWeek_IsoChronology_vsCalendar(LocalDate isoStartDate, LocalDate isoEndDate) {
         GregorianCalendar cal = new GregorianCalendar();
-        assertEquals(cal.getCalendarType(), "gregory", "Unexpected calendar type");
+        assertEquals("Unexpected calendar type", cal.getCalendarType(), "gregory");
         LocalDate isoDate = IsoChronology.INSTANCE.date(isoStartDate);
 
         for (DayOfWeek firstDayOfWeek : DayOfWeek.values()) {
@@ -134,29 +141,35 @@ public class TestIsoChronoImpl {
 
                 // For every date in the range
                 while (isoDate.isBefore(isoEndDate)) {
-                    assertEquals(isoDate.get(DAY_OF_MONTH), cal.get(Calendar.DAY_OF_MONTH), "Day mismatch in " + isoDate + ";  cal: " + cal);
-                    assertEquals(isoDate.get(MONTH_OF_YEAR), cal.get(Calendar.MONTH) + 1, "Month mismatch in " + isoDate);
-                    assertEquals(isoDate.get(YEAR_OF_ERA), cal.get(Calendar.YEAR), "Year mismatch in " + isoDate);
+                    assertEquals("Day mismatch in " + isoDate + ";  cal: " + cal,
+                        isoDate.get(DAY_OF_MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                    assertEquals("Month mismatch in " + isoDate, isoDate.get(MONTH_OF_YEAR),
+                        cal.get(Calendar.MONTH) + 1);
+                    assertEquals("Year mismatch in " + isoDate, isoDate.get(YEAR_OF_ERA),
+                        cal.get(Calendar.YEAR));
 
                     int jdow = Math.floorMod(cal.get(Calendar.DAY_OF_WEEK) - 2, 7) + 1;
                     int dow = isoDate.get(weekDef.dayOfWeek());
-                    assertEquals(jdow, dow, "Calendar DayOfWeek does not match ISO DayOfWeek");
+                    assertEquals("Calendar DayOfWeek does not match ISO DayOfWeek", jdow, dow);
 
                     int jweekOfMonth = cal.get(Calendar.WEEK_OF_MONTH);
                     int isoWeekOfMonth = isoDate.get(weekDef.weekOfMonth());
-                    assertEquals(jweekOfMonth, isoWeekOfMonth, "Calendar WeekOfMonth does not match ISO WeekOfMonth");
+                    assertEquals("Calendar WeekOfMonth does not match ISO WeekOfMonth",
+                        jweekOfMonth, isoWeekOfMonth);
 
                     int jweekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
                     int weekOfYear = isoDate.get(weekDef.weekOfWeekBasedYear());
-                    assertEquals(jweekOfYear, weekOfYear,  "GregorianCalendar WeekOfYear does not match WeekOfWeekBasedYear");
+                    assertEquals("GregorianCalendar WeekOfYear does not match WeekOfWeekBasedYear",
+                        jweekOfYear, weekOfYear);
 
                     int jWeekYear = cal.getWeekYear();
                     int weekBasedYear = isoDate.get(weekDef.weekBasedYear());
-                    assertEquals(jWeekYear, weekBasedYear,  "GregorianCalendar getWeekYear does not match YearOfWeekBasedYear");
+                    assertEquals("GregorianCalendar getWeekYear does not match YearOfWeekBasedYear",
+                        jWeekYear, weekBasedYear);
 
                     int jweeksInWeekyear = cal.getWeeksInWeekYear();
                     int weeksInWeekBasedYear = (int)isoDate.range(weekDef.weekOfWeekBasedYear()).getMaximum();
-                    assertEquals(jweeksInWeekyear, weeksInWeekBasedYear, "length of weekBasedYear");
+                    assertEquals("length of weekBasedYear", jweeksInWeekyear, weeksInWeekBasedYear);
 
                     isoDate = isoDate.plus(1, ChronoUnit.DAYS);
                     cal.add(Calendar.DAY_OF_MONTH, 1);

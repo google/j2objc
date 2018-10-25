@@ -59,10 +59,10 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -80,13 +80,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test ZoneId.
  */
-@Test
 public class TestZoneId extends AbstractTest {
 
     private static final int OVERLAP = 2;
@@ -95,6 +93,7 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
+    @Test
     public void test_immutable() {
         // cannot use standard test as ZoneId is abstract
         Class<ZoneId> cls = ZoneId.class;
@@ -112,6 +111,7 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // UTC
     //-----------------------------------------------------------------------
+    @Test
     public void test_constant_UTC() {
         ZoneId test = ZoneOffset.UTC;
         assertEquals(test.getId(), "Z");
@@ -124,12 +124,13 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // system default
     //-----------------------------------------------------------------------
+    @Test
     public void test_systemDefault() {
         ZoneId test = ZoneId.systemDefault();
         assertEquals(test.getId(), TimeZone.getDefault().getID());
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_systemDefault_unableToConvert_badFormat() {
         TimeZone current = TimeZone.getDefault();
         try {
@@ -140,7 +141,7 @@ public class TestZoneId extends AbstractTest {
         }
     }
 
-    @Test(expectedExceptions = ZoneRulesException.class)
+    @Test(expected = ZoneRulesException.class)
     public void test_systemDefault_unableToConvert_unknownId() {
         TimeZone current = TimeZone.getDefault();
         try {
@@ -154,12 +155,14 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // Europe/London
     //-----------------------------------------------------------------------
+    @Test
     public void test_London() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getId(), "Europe/London");
         assertEquals(test.getRules().isFixedOffset(), false);
     }
 
+    @Test
     public void test_London_getOffset() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getRules().getOffset(createInstant(2008, 1, 1, ZoneOffset.UTC)), ZoneOffset.ofHours(0));
@@ -176,6 +179,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 12, 1, ZoneOffset.UTC)), ZoneOffset.ofHours(0));
     }
 
+    @Test
     public void test_London_getOffset_toDST() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getRules().getOffset(createInstant(2008, 3, 24, ZoneOffset.UTC)), ZoneOffset.ofHours(0));
@@ -191,6 +195,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC)), ZoneOffset.ofHours(1));
     }
 
+    @Test
     public void test_London_getOffset_fromDST() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getRules().getOffset(createInstant(2008, 10, 24, ZoneOffset.UTC)), ZoneOffset.ofHours(1));
@@ -206,6 +211,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC)), ZoneOffset.ofHours(0));
     }
 
+    @Test
     public void test_London_getOffsetInfo() {
         ZoneId test = ZoneId.of("Europe/London");
         checkOffset(test.getRules(), createLDT(2008, 1, 1), ZoneOffset.ofHours(0), 1);
@@ -222,6 +228,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), createLDT(2008, 12, 1), ZoneOffset.ofHours(0), 1);
     }
 
+    @Test
     public void test_London_getOffsetInfo_toDST() {
         ZoneId test = ZoneId.of("Europe/London");
         checkOffset(test.getRules(), createLDT(2008, 3, 24), ZoneOffset.ofHours(0), 1);
@@ -238,6 +245,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0), ZoneOffset.ofHours(1), 1);
     }
 
+    @Test
     public void test_London_getOffsetInfo_fromDST() {
         ZoneId test = ZoneId.of("Europe/London");
         checkOffset(test.getRules(), createLDT(2008, 10, 24), ZoneOffset.ofHours(1), 1);
@@ -254,6 +262,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0), ZoneOffset.ofHours(0), 1);
     }
 
+    @Test
     public void test_London_getOffsetInfo_gap() {
         ZoneId test = ZoneId.of("Europe/London");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
@@ -280,6 +289,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(trans.hashCode(), otherTrans.hashCode());
     }
 
+    @Test
     public void test_London_getOffsetInfo_overlap() {
         ZoneId test = ZoneId.of("Europe/London");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
@@ -309,12 +319,14 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // Europe/Paris
     //-----------------------------------------------------------------------
+    @Test
     public void test_Paris() {
         ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getId(), "Europe/Paris");
         assertEquals(test.getRules().isFixedOffset(), false);
     }
 
+    @Test
     public void test_Paris_getOffset() {
         ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getRules().getOffset(createInstant(2008, 1, 1, ZoneOffset.UTC)), ZoneOffset.ofHours(1));
@@ -331,6 +343,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 12, 1, ZoneOffset.UTC)), ZoneOffset.ofHours(1));
     }
 
+    @Test
     public void test_Paris_getOffset_toDST() {
         ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getRules().getOffset(createInstant(2008, 3, 24, ZoneOffset.UTC)), ZoneOffset.ofHours(1));
@@ -346,6 +359,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC)), ZoneOffset.ofHours(2));
     }
 
+    @Test
     public void test_Paris_getOffset_fromDST() {
         ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getRules().getOffset(createInstant(2008, 10, 24, ZoneOffset.UTC)), ZoneOffset.ofHours(2));
@@ -361,6 +375,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC)), ZoneOffset.ofHours(1));
     }
 
+    @Test
     public void test_Paris_getOffsetInfo() {
         ZoneId test = ZoneId.of("Europe/Paris");
         checkOffset(test.getRules(), createLDT(2008, 1, 1), ZoneOffset.ofHours(1), 1);
@@ -377,6 +392,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), createLDT(2008, 12, 1), ZoneOffset.ofHours(1), 1);
     }
 
+    @Test
     public void test_Paris_getOffsetInfo_toDST() {
         ZoneId test = ZoneId.of("Europe/Paris");
         checkOffset(test.getRules(), createLDT(2008, 3, 24), ZoneOffset.ofHours(1), 1);
@@ -393,6 +409,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), LocalDateTime.of(2008, 3, 30, 3, 0, 0, 0), ZoneOffset.ofHours(2), 1);
     }
 
+    @Test
     public void test_Paris_getOffsetInfo_fromDST() {
         ZoneId test = ZoneId.of("Europe/Paris");
         checkOffset(test.getRules(), createLDT(2008, 10, 24), ZoneOffset.ofHours(2), 1);
@@ -409,6 +426,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), LocalDateTime.of(2008, 10, 26, 3, 0, 0, 0), ZoneOffset.ofHours(1), 1);
     }
 
+    @Test
     public void test_Paris_getOffsetInfo_gap() {
         ZoneId test = ZoneId.of("Europe/Paris");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0);
@@ -433,6 +451,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(trans.hashCode(), otherDis.hashCode());
     }
 
+    @Test
     public void test_Paris_getOffsetInfo_overlap() {
         ZoneId test = ZoneId.of("Europe/Paris");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0);
@@ -460,12 +479,14 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // America/New_York
     //-----------------------------------------------------------------------
+    @Test
     public void test_NewYork() {
         ZoneId test = ZoneId.of("America/New_York");
         assertEquals(test.getId(), "America/New_York");
         assertEquals(test.getRules().isFixedOffset(), false);
     }
 
+    @Test
     public void test_NewYork_getOffset() {
         ZoneId test = ZoneId.of("America/New_York");
         ZoneOffset offset = ZoneOffset.ofHours(-5);
@@ -495,6 +516,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 12, 28, offset)), ZoneOffset.ofHours(-5));
     }
 
+    @Test
     public void test_NewYork_getOffset_toDST() {
         ZoneId test = ZoneId.of("America/New_York");
         ZoneOffset offset = ZoneOffset.ofHours(-5);
@@ -510,6 +532,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 3, 9, 2, 0, 0, 0, offset)), ZoneOffset.ofHours(-4));
     }
 
+    @Test
     public void test_NewYork_getOffset_fromDST() {
         ZoneId test = ZoneId.of("America/New_York");
         ZoneOffset offset = ZoneOffset.ofHours(-4);
@@ -525,6 +548,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getRules().getOffset(createInstant(2008, 11, 2, 2, 0, 0, 0, offset)), ZoneOffset.ofHours(-5));
     }
 
+    @Test
     public void test_NewYork_getOffsetInfo() {
         ZoneId test = ZoneId.of("America/New_York");
         checkOffset(test.getRules(), createLDT(2008, 1, 1), ZoneOffset.ofHours(-5), 1);
@@ -553,6 +577,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), createLDT(2008, 12, 28), ZoneOffset.ofHours(-5), 1);
     }
 
+    @Test
     public void test_NewYork_getOffsetInfo_toDST() {
         ZoneId test = ZoneId.of("America/New_York");
         checkOffset(test.getRules(), createLDT(2008, 3, 8), ZoneOffset.ofHours(-5), 1);
@@ -568,6 +593,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), LocalDateTime.of(2008, 3, 9, 3, 0, 0, 0), ZoneOffset.ofHours(-4), 1);
     }
 
+    @Test
     public void test_NewYork_getOffsetInfo_fromDST() {
         ZoneId test = ZoneId.of("America/New_York");
         checkOffset(test.getRules(), createLDT(2008, 11, 1), ZoneOffset.ofHours(-4), 1);
@@ -583,6 +609,7 @@ public class TestZoneId extends AbstractTest {
         checkOffset(test.getRules(), LocalDateTime.of(2008, 11, 2, 2, 0, 0, 0), ZoneOffset.ofHours(-5), 1);
     }
 
+    @Test
     public void test_NewYork_getOffsetInfo_gap() {
         ZoneId test = ZoneId.of("America/New_York");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 9, 2, 0, 0, 0);
@@ -606,6 +633,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(trans.hashCode(), otherTrans.hashCode());
     }
 
+    @Test
     public void test_NewYork_getOffsetInfo_overlap() {
         ZoneId test = ZoneId.of("America/New_York");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 11, 2, 1, 0, 0, 0);
@@ -632,12 +660,14 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // getXxx() isXxx()
     //-----------------------------------------------------------------------
+    @Test
     public void test_get_Tzdb() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getId(), "Europe/London");
         assertEquals(test.getRules().isFixedOffset(), false);
     }
 
+    @Test
     public void test_get_TzdbFixed() {
         ZoneId test = ZoneId.of("+01:30");
         assertEquals(test.getId(), "+01:30");

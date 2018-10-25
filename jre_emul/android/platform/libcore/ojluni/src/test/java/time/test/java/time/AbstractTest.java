@@ -59,9 +59,7 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -89,10 +87,11 @@ public abstract class AbstractTest {
         for (Field field : fields) {
             if (field.getName().contains("$") == false) {
                 if (Modifier.isStatic(field.getModifiers())) {
-                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                    assertTrue("Field:" + field.getName(), Modifier.isFinal(field.getModifiers()));
                 } else {
-                    assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
-                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                    assertTrue("Field:" + field.getName(),
+                        Modifier.isPrivate(field.getModifiers()));
+                    assertTrue("Field:" + field.getName(), Modifier.isFinal(field.getModifiers()));
                 }
             }
         }

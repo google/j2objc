@@ -207,6 +207,9 @@ run-net-tests: link resources $(TEST_BIN)
 run-text-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.text.SmallTests libcore.java.text.LargeTests
 
+run-time-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore test.java.time.Tests
+
 run-zip-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests
 

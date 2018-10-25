@@ -62,29 +62,31 @@ package test.java.time.format;
 import static java.time.temporal.ChronoField.AMPM_OF_DAY;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalField;
 import java.util.Locale;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test SimpleDateTimeTextProvider.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestDateTimeTextProvider extends AbstractTestPrinterParser {
 
-    Locale enUS = new Locale("en", "US");
-    Locale ptBR = new Locale("pt", "BR");
+    static Locale enUS = new Locale("en", "US");
+    static Locale ptBR = new Locale("pt", "BR");
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "Text")
-    Object[][] data_text() {
+    @DataProvider
+    public static Object[][] data_text() {
         return new Object[][] {
             {DAY_OF_WEEK, 1, TextStyle.SHORT, enUS, "Mon"},
             {DAY_OF_WEEK, 2, TextStyle.SHORT, enUS, "Tue"},
@@ -179,7 +181,8 @@ public class TestDateTimeTextProvider extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider = "Text")
+    @Test
+    @UseDataProvider("data_text")
     public void test_getText(TemporalField field, Number value, TextStyle style, Locale locale, String expected) {
           DateTimeFormatter fmt = getFormatter(field, style).withLocale(locale);
           assertEquals(fmt.format(ZonedDateTime.now().with(field, value.longValue())), expected);

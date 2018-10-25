@@ -60,9 +60,9 @@
 package test.java.time.format;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -79,7 +79,8 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.chrono.ThaiBuddhistChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.ThaiBuddhistChronology; */
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DecimalStyle;
@@ -88,12 +89,11 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import java.util.function.Function;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test DateTimeFormatter.
  */
-@Test
 public class TestDateTimeFormatter {
 
     @Test
@@ -122,7 +122,8 @@ public class TestDateTimeFormatter {
         assertGoodErrorDate(Instant::from, "Instant");
         assertGoodErrorDate(ZoneOffset::from, "ZoneOffset");
         assertGoodErrorDate(ZoneId::from, "ZoneId");
-        assertGoodErrorDate(ThaiBuddhistChronology.INSTANCE::date, "");
+        /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+        assertGoodErrorDate(ThaiBuddhistChronology.INSTANCE::date, ""); */
 
         assertGoodErrorTime(DayOfWeek::from, "DayOfWeek");
         assertGoodErrorTime(Month::from, "Month");
@@ -138,7 +139,8 @@ public class TestDateTimeFormatter {
         assertGoodErrorTime(Instant::from, "Instant");
         assertGoodErrorTime(ZoneOffset::from, "ZoneOffset");
         assertGoodErrorTime(ZoneId::from, "ZoneId");
-        assertGoodErrorTime(ThaiBuddhistChronology.INSTANCE::date, "");
+        /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+        assertGoodErrorTime(ThaiBuddhistChronology.INSTANCE::date, ""); */
     }
 
     private void assertGoodErrorDate(Function<TemporalAccessor, Object> function, String expectedText) {
@@ -149,10 +151,10 @@ public class TestDateTimeFormatter {
             fail("Should have failed");
         } catch (DateTimeException ex) {
             String msg = ex.getMessage();
-            assertTrue(msg.contains(expectedText), msg);
-            assertTrue(msg.contains("Year"), msg);
-            assertTrue(msg.contains("MinuteOfHour"), msg);
-            assertTrue(msg.contains("DayOfMonth"), msg);
+            assertTrue(msg, msg.contains(expectedText));
+            assertTrue(msg, msg.contains("Year"));
+            assertTrue(msg, msg.contains("MinuteOfHour"));
+            assertTrue(msg, msg.contains("DayOfMonth"));
         }
     }
 
@@ -164,10 +166,10 @@ public class TestDateTimeFormatter {
             fail("Should have failed");
         } catch (DateTimeException ex) {
             String msg = ex.getMessage();
-            assertTrue(msg.contains(expectedText), msg);
-            assertTrue(msg.contains("HourOfDay"), msg);
-            assertTrue(msg.contains("MonthOfYear"), msg);
-            assertTrue(msg.contains("SecondOfMinute"), msg);
+            assertTrue(msg, msg.contains(expectedText));
+            assertTrue(msg, msg.contains("HourOfDay"));
+            assertTrue(msg, msg.contains("MonthOfYear"));
+            assertTrue(msg, msg.contains("SecondOfMinute"));
         }
     }
 
@@ -176,7 +178,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("HH:mm:ss");
         TemporalAccessor temporal = f.parse("11:30:56");
         String msg = temporal.toString();
-        assertTrue(msg.contains("11:30:56"), msg);
+        assertTrue(msg, msg.contains("11:30:56"));
     }
 
     @Test
@@ -184,7 +186,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         TemporalAccessor temporal = f.parse("2010-06-30");
         String msg = temporal.toString();
-        assertTrue(msg.contains("2010-06-30"), msg);
+        assertTrue(msg, msg.contains("2010-06-30"));
     }
 
     @Test
@@ -192,8 +194,8 @@ public class TestDateTimeFormatter {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         TemporalAccessor temporal = f.parse("2010-06-30 11:30:56");
         String msg = temporal.toString();
-        assertTrue(msg.contains("2010-06-30"), msg);
-        assertTrue(msg.contains("11:30:56"), msg);
+        assertTrue(msg, msg.contains("2010-06-30"));
+        assertTrue(msg, msg.contains("11:30:56"));
     }
 
 }

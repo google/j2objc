@@ -59,25 +59,27 @@
  */
 package test.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.ZoneOffset;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test ZoneOffsetPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
 
     private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsets")
-    Object[][] provider_offsets() {
+    @DataProvider
+    public static Object[][] provider_offsets() {
         return new Object[][] {
             {"+HH", "NO-OFFSET", ZoneOffset.UTC},
             {"+HH", "+01", ZoneOffset.ofHours(1)},
@@ -147,24 +149,27 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_format(String pattern, String expected, ZoneOffset offset) throws Exception {
         buf.append("EXISTING");
         getFormatter(pattern, "NO-OFFSET").formatTo(offset, buf);
         assertEquals(buf.toString(), "EXISTING" + expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_toString(String pattern, String expected, ZoneOffset offset) throws Exception {
         assertEquals(getFormatter(pattern, "NO-OFFSET").toString(), "Offset(" + pattern + ",'NO-OFFSET')");
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         getFormatter("+HH:MM:ss", "Z").formatTo(EMPTY_DTA, buf);
     }
 
+    @Test
     public void test_print_emptyAppendable() throws Exception {
         getFormatter("+HH:MM:ss", "Z").formatTo(OFFSET_0130, buf);
         assertEquals(buf.toString(), "+01:30");

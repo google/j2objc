@@ -61,29 +61,32 @@ package test.java.time.format;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.SignStyle;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import test.java.time.temporal.MockFieldValue;
 
 /**
  * Test SimpleNumberPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         getFormatter(DAY_OF_MONTH, 1, 2, SignStyle.NEVER).formatTo(EMPTY_DTA, buf);
     }
 
+    @Test
     public void test_print_append() throws Exception {
         buf.append("EXISTING");
         getFormatter(DAY_OF_MONTH, 1, 2, SignStyle.NEVER).formatTo(LocalDate.of(2012, 1, 3), buf);
@@ -91,8 +94,8 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="Pad")
-    Object[][] provider_pad() {
+    @DataProvider
+    public static Object[][] provider_pad() {
         return new Object[][] {
             {1, 1, -10, null},
             {1, 1, -9, "9"},
@@ -181,7 +184,8 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="Pad")
+    @Test
+    @UseDataProvider("provider_pad")
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, long value, String result) throws Exception {
         try {
             getFormatter(DAY_OF_MONTH, minPad, maxPad, SignStyle.NOT_NEGATIVE).formatTo(new MockFieldValue(DAY_OF_MONTH, value), buf);
@@ -198,7 +202,8 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad")
+    @Test
+    @UseDataProvider("provider_pad")
     public void test_pad_NEVER(int minPad, int maxPad, long value, String result) throws Exception {
         try {
             getFormatter(DAY_OF_MONTH, minPad, maxPad, SignStyle.NEVER).formatTo(new MockFieldValue(DAY_OF_MONTH, value), buf);
@@ -214,7 +219,8 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad")
+    @Test
+    @UseDataProvider("provider_pad")
     public void test_pad_NORMAL(int minPad, int maxPad, long value, String result) throws Exception {
         try {
             getFormatter(DAY_OF_MONTH, minPad, maxPad, SignStyle.NORMAL).formatTo(new MockFieldValue(DAY_OF_MONTH, value), buf);
@@ -230,7 +236,8 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad")
+    @Test
+    @UseDataProvider("provider_pad")
     public void test_pad_ALWAYS(int minPad, int maxPad, long value, String result) throws Exception {
         try {
             getFormatter(DAY_OF_MONTH, minPad, maxPad, SignStyle.ALWAYS).formatTo(new MockFieldValue(DAY_OF_MONTH, value), buf);
@@ -246,7 +253,8 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pad")
+    @Test
+    @UseDataProvider("provider_pad")
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, long value, String result) throws Exception {
         try {
             getFormatter(DAY_OF_MONTH, minPad, maxPad, SignStyle.EXCEEDS_PAD).formatTo(new MockFieldValue(DAY_OF_MONTH, value), buf);
@@ -267,14 +275,17 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString1() throws Exception {
         assertEquals(getFormatter(HOUR_OF_DAY, 1, 19, SignStyle.NORMAL).toString(), "Value(HourOfDay)");
     }
 
+    @Test
     public void test_toString2() throws Exception {
         assertEquals(getFormatter(HOUR_OF_DAY, 2, 2, SignStyle.NOT_NEGATIVE).toString(), "Value(HourOfDay,2)");
     }
 
+    @Test
     public void test_toString3() throws Exception {
         assertEquals(getFormatter(HOUR_OF_DAY, 1, 2, SignStyle.NOT_NEGATIVE).toString(), "Value(HourOfDay,1,2,NOT_NEGATIVE)");
     }

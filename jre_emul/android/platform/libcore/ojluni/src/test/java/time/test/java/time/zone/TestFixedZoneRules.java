@@ -59,21 +59,18 @@
  */
 package test.java.time.zone;
 
-import java.time.zone.ZoneRules;
-
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-
-import org.testng.annotations.Test;
+import java.time.zone.ZoneRules;
+import org.junit.Test;
 
 /**
  * Test ZoneRules for fixed offset time-zones.
  */
-@Test
 public class TestFixedZoneRules {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);

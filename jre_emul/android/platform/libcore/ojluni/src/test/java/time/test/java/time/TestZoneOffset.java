@@ -59,18 +59,18 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertSame;
 
 import java.time.ZoneOffset;
-
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test ZoneOffset.
  */
-@Test
 public class TestZoneOffset extends AbstractTest {
 
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(ZoneOffset.class);
