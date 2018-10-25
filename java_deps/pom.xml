@@ -103,6 +103,11 @@
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
+                  <groupId>com.tngtech.java</groupId>
+                  <artifactId>junit-dataprovider</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
                   <groupId>org.hamcrest</groupId>
                   <artifactId>hamcrest-core</artifactId>
                   <classifier>sources</classifier>
@@ -164,6 +169,12 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.java</groupId>
+      <artifactId>junit-dataprovider</artifactId>
+      <version>1.10.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>

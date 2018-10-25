@@ -59,6 +59,7 @@ public class HeaderMap {
       "com.google.common.util",
       "com.google.j2objc",
       "com.google.protobuf",
+      "com.tngtech.java.junit.dataprovider",
       "dalvik",
       "java",
       "javax",

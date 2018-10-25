@@ -23,6 +23,9 @@ JUNIT_JAR = j2objc_junit.jar
 JUNIT_ROOT_JAR = junit-4.11.jar
 JUNIT_SOURCE_JAR = junit-4.11-sources.jar
 
+JUNIT_DATAPROVIDER_JAR = junit-dataprovider-1.10.4.jar
+JUNIT_DATAPROVIDER_SOURCE_JAR = junit-dataprovider-1.10.4-sources.jar
+
 # JUnit dependency
 HAMCREST_JAR = hamcrest-core-1.3.jar
 HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar

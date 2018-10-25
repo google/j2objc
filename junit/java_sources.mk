@@ -164,6 +164,29 @@ JUNIT_SOURCES = \
     org/junit/runners/model/Statement.java \
     org/junit/runners/model/TestClass.java
 
+JUNIT_DATAPROVIDER_SOURCES = \
+    com/tngtech/java/junit/dataprovider/DataProvider.java \
+    com/tngtech/java/junit/dataprovider/DataProviderFilter.java \
+    com/tngtech/java/junit/dataprovider/DataProviderFrameworkMethod.java \
+    com/tngtech/java/junit/dataprovider/DataProviderRunner.java \
+    com/tngtech/java/junit/dataprovider/DataProviders.java \
+    com/tngtech/java/junit/dataprovider/Placeholders.java \
+    com/tngtech/java/junit/dataprovider/UseDataProvider.java \
+    com/tngtech/java/junit/dataprovider/internal/DataConverter.java \
+    com/tngtech/java/junit/dataprovider/internal/TestGenerator.java \
+    com/tngtech/java/junit/dataprovider/internal/TestValidator.java \
+    com/tngtech/java/junit/dataprovider/internal/convert/AbstractObjectConverter.java \
+    com/tngtech/java/junit/dataprovider/internal/convert/ObjectArrayConverter.java \
+    com/tngtech/java/junit/dataprovider/internal/convert/SingleArgConverter.java \
+    com/tngtech/java/junit/dataprovider/internal/convert/StringConverter.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/BasePlaceholder.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/CanonicalClassNamePlaceholder.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/CompleteMethodSignaturePlaceholder.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/IndexPlaceholder.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/ParameterPlaceholder.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/SimpleClassNamePlaceholder.java \
+    com/tngtech/java/junit/dataprovider/internal/placeholder/SimpleMethodNamePlaceholder.java
+
 HAMCREST_SOURCES = \
     org/hamcrest/BaseDescription.java \
     org/hamcrest/BaseMatcher.java \
