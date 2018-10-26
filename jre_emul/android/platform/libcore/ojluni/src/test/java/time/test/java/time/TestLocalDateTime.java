@@ -59,36 +59,40 @@
  */
 package test.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test LocalDateTime.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestLocalDateTime extends AbstractTest {
 
     private LocalDateTime TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
 
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(LocalDateTime.class);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleDates")
-    Object[][] provider_sampleDates() {
+    @DataProvider
+    public static Object[][] provider_sampleDates() {
         return new Object[][] {
             {2008, 7, 5},
             {2007, 7, 5},
@@ -99,8 +103,8 @@ public class TestLocalDateTime extends AbstractTest {
         };
     }
 
-    @DataProvider(name="sampleTimes")
-    Object[][] provider_sampleTimes() {
+    @DataProvider
+    public static Object[][] provider_sampleTimes() {
         return new Object[][] {
             {0, 0, 0, 0},
             {0, 0, 0, 1},
@@ -488,7 +492,8 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // toLocalDate()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
+    @Test
+    @UseDataProvider("provider_sampleDates")
     public void test_getDate(int year, int month, int day) {
         LocalDate d = LocalDate.of(year, month, day);
         LocalDateTime dt = LocalDateTime.of(d, LocalTime.MIDNIGHT);
@@ -498,7 +503,8 @@ public class TestLocalDateTime extends AbstractTest {
     //-----------------------------------------------------------------------
     // toLocalTime()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
+    @Test
+    @UseDataProvider("provider_sampleTimes")
     public void test_getTime(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.of(h, m, s, ns);
         LocalDateTime dt = LocalDateTime.of(LocalDate.of(2011, 7, 30), t);
@@ -548,20 +554,20 @@ public class TestLocalDateTime extends AbstractTest {
             for (int j = 0; j < localDateTimes.length; j++) {
                 LocalDateTime b = localDateTimes[j];
                 if (i < j) {
-                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
-                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }

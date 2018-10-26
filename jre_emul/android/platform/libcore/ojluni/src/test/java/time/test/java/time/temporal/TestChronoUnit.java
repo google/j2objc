@@ -67,24 +67,26 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneOffset;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestChronoUnit {
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "yearsBetween")
-    Object[][] data_yearsBetween() {
+    @DataProvider
+    public static Object[][] data_yearsBetween() {
         return new Object[][] {
             {date(1939, SEPTEMBER, 2), date(1939, SEPTEMBER, 1), 0},
             {date(1939, SEPTEMBER, 2), date(1939, SEPTEMBER, 2), 0},
@@ -104,22 +106,26 @@ public class TestChronoUnit {
         };
     }
 
-    @Test(dataProvider = "yearsBetween")
+    @Test
+    @UseDataProvider("data_yearsBetween")
     public void test_yearsBetween(LocalDate start, LocalDate end, long expected) {
         assertEquals(YEARS.between(start, end), expected);
     }
 
-    @Test(dataProvider = "yearsBetween")
+    @Test
+    @UseDataProvider("data_yearsBetween")
     public void test_yearsBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(YEARS.between(end, start), -expected);
     }
 
-    @Test(dataProvider = "yearsBetween")
+    @Test
+    @UseDataProvider("data_yearsBetween")
     public void test_yearsBetween_LocalDateTimeSameTime(LocalDate start, LocalDate end, long expected) {
         assertEquals(YEARS.between(start.atTime(12, 30), end.atTime(12, 30)), expected);
     }
 
-    @Test(dataProvider = "yearsBetween")
+    @Test
+    @UseDataProvider("data_yearsBetween")
     public void test_yearsBetween_LocalDateTimeLaterTime(LocalDate start, LocalDate end, long expected) {
         if (expected >= 0) {
             assertEquals(YEARS.between(start.atTime(12, 30), end.atTime(12, 31)), expected);
@@ -128,12 +134,14 @@ public class TestChronoUnit {
         }
     }
 
-    @Test(dataProvider = "yearsBetween")
+    @Test
+    @UseDataProvider("data_yearsBetween")
     public void test_yearsBetween_ZonedDateSameOffset(LocalDate start, LocalDate end, long expected) {
         assertEquals(YEARS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(2))), expected);
     }
 
-    @Test(dataProvider = "yearsBetween")
+    @Test
+    @UseDataProvider("data_yearsBetween")
     public void test_yearsBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
         if (expected >= 0) {
@@ -144,8 +152,8 @@ public class TestChronoUnit {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "monthsBetween")
-    Object[][] data_monthsBetween() {
+    @DataProvider
+    public static Object[][] data_monthsBetween() {
         return new Object[][] {
             {date(2012, JULY, 2), date(2012, JULY, 1), 0},
             {date(2012, JULY, 2), date(2012, JULY, 2), 0},
@@ -177,22 +185,26 @@ public class TestChronoUnit {
         };
     }
 
-    @Test(dataProvider = "monthsBetween")
+    @Test
+    @UseDataProvider("data_monthsBetween")
     public void test_monthsBetween(LocalDate start, LocalDate end, long expected) {
         assertEquals(MONTHS.between(start, end), expected);
     }
 
-    @Test(dataProvider = "monthsBetween")
+    @Test
+    @UseDataProvider("data_monthsBetween")
     public void test_monthsBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(MONTHS.between(end, start), -expected);
     }
 
-    @Test(dataProvider = "monthsBetween")
+    @Test
+    @UseDataProvider("data_monthsBetween")
     public void test_monthsBetween_LocalDateTimeSameTime(LocalDate start, LocalDate end, long expected) {
         assertEquals(MONTHS.between(start.atTime(12, 30), end.atTime(12, 30)), expected);
     }
 
-    @Test(dataProvider = "monthsBetween")
+    @Test
+    @UseDataProvider("data_monthsBetween")
     public void test_monthsBetween_LocalDateTimeLaterTime(LocalDate start, LocalDate end, long expected) {
         if (expected >= 0) {
             assertEquals(MONTHS.between(start.atTime(12, 30), end.atTime(12, 31)), expected);
@@ -201,12 +213,14 @@ public class TestChronoUnit {
         }
     }
 
-    @Test(dataProvider = "monthsBetween")
+    @Test
+    @UseDataProvider("data_monthsBetween")
     public void test_monthsBetween_ZonedDateSameOffset(LocalDate start, LocalDate end, long expected) {
         assertEquals(MONTHS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(2))), expected);
     }
 
-    @Test(dataProvider = "monthsBetween")
+    @Test
+    @UseDataProvider("data_monthsBetween")
     public void test_monthsBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
         if (expected >= 0) {
@@ -217,8 +231,8 @@ public class TestChronoUnit {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "weeksBetween")
-    Object[][] data_weeksBetween() {
+    @DataProvider
+    public static Object[][] data_weeksBetween() {
         return new Object[][] {
             {date(2012, JULY, 2), date(2012, JUNE, 25), -1},
             {date(2012, JULY, 2), date(2012, JUNE, 26), 0},
@@ -244,19 +258,21 @@ public class TestChronoUnit {
         };
     }
 
-    @Test(dataProvider = "weeksBetween")
+    @Test
+    @UseDataProvider("data_weeksBetween")
     public void test_weeksBetween(LocalDate start, LocalDate end, long expected) {
         assertEquals(WEEKS.between(start, end), expected);
     }
 
-    @Test(dataProvider = "weeksBetween")
+    @Test
+    @UseDataProvider("data_weeksBetween")
     public void test_weeksBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(WEEKS.between(end, start), -expected);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "daysBetween")
-    Object[][] data_daysBetween() {
+    @DataProvider
+    public static Object[][] data_daysBetween() {
         return new Object[][] {
             {date(2012, JULY, 2), date(2012, JULY, 1), -1},
             {date(2012, JULY, 2), date(2012, JULY, 2), 0},
@@ -287,22 +303,26 @@ public class TestChronoUnit {
         };
     }
 
-    @Test(dataProvider = "daysBetween")
+    @Test
+    @UseDataProvider("data_daysBetween")
     public void test_daysBetween(LocalDate start, LocalDate end, long expected) {
         assertEquals(DAYS.between(start, end), expected);
     }
 
-    @Test(dataProvider = "daysBetween")
+    @Test
+    @UseDataProvider("data_daysBetween")
     public void test_daysBetweenReversed(LocalDate start, LocalDate end, long expected) {
         assertEquals(DAYS.between(end, start), -expected);
     }
 
-    @Test(dataProvider = "daysBetween")
+    @Test
+    @UseDataProvider("data_daysBetween")
     public void test_daysBetween_LocalDateTimeSameTime(LocalDate start, LocalDate end, long expected) {
         assertEquals(DAYS.between(start.atTime(12, 30), end.atTime(12, 30)), expected);
     }
 
-    @Test(dataProvider = "daysBetween")
+    @Test
+    @UseDataProvider("data_daysBetween")
     public void test_daysBetween_LocalDateTimeLaterTime(LocalDate start, LocalDate end, long expected) {
         if (expected >= 0) {
             assertEquals(DAYS.between(start.atTime(12, 30), end.atTime(12, 31)), expected);
@@ -311,12 +331,14 @@ public class TestChronoUnit {
         }
     }
 
-    @Test(dataProvider = "daysBetween")
+    @Test
+    @UseDataProvider("data_daysBetween")
     public void test_daysBetween_ZonedDateSameOffset(LocalDate start, LocalDate end, long expected) {
         assertEquals(DAYS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(2))), expected);
     }
 
-    @Test(dataProvider = "daysBetween")
+    @Test
+    @UseDataProvider("data_daysBetween")
     public void test_daysBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
         if (expected >= 0) {

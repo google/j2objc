@@ -790,6 +790,8 @@ TEST_SOURCES := \
     sun/misc/UnsafeTest.java \
     test/java/time/TestDuration.java \
     test/java/time/TestInstant.java \
+    test/java/time/TestLocalDate.java \
+    test/java/time/TestLocalDateTime.java \
     test/java/time/TestLocalTime.java \
     test/java/time/TestMonthDay.java \
     test/java/time/TestOffsetDateTime.java \
@@ -803,6 +805,9 @@ TEST_SOURCES := \
     test/java/time/chrono/TestChronoLocalDate.java \
     test/java/time/chrono/TestIsoChronoImpl.java \
     test/java/time/temporal/TestChronoField.java \
+    test/java/time/temporal/TestChronoUnit.java \
+    test/java/time/temporal/TestDateTimeBuilderCombinations.java \
+    test/java/time/temporal/TestDateTimeValueRange.java \
     test/java/time/temporal/TestIsoWeekFields.java \
     test/java/time/temporal/TestJulianFields.java \
     test/java/time/zone/TestFixedZoneRules.java \

@@ -60,32 +60,36 @@
 package test.java.time;
 
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test LocalDate.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestLocalDate extends AbstractTest {
 
     private LocalDate TEST_2007_07_15;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
     }
 
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(LocalDate.class);
@@ -174,8 +178,8 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // plusWeeks()
     //-----------------------------------------------------------------------
-    @DataProvider(name="samplePlusWeeksSymmetry")
-    Object[][] provider_samplePlusWeeksSymmetry() {
+    @DataProvider
+    public static Object[][] provider_samplePlusWeeksSymmetry() {
         return new Object[][] {
             {LocalDate.of(-1, 1, 1)},
             {LocalDate.of(-1, 2, 28)},
@@ -206,7 +210,8 @@ public class TestLocalDate extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="samplePlusWeeksSymmetry")
+    @Test
+    @UseDataProvider("provider_samplePlusWeeksSymmetry")
     public void test_plusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             LocalDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
@@ -226,8 +231,8 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // plusDays()
     //-----------------------------------------------------------------------
-    @DataProvider(name="samplePlusDaysSymmetry")
-    Object[][] provider_samplePlusDaysSymmetry() {
+    @DataProvider
+    public static Object[][] provider_samplePlusDaysSymmetry() {
         return new Object[][] {
             {LocalDate.of(-1, 1, 1)},
             {LocalDate.of(-1, 2, 28)},
@@ -258,7 +263,8 @@ public class TestLocalDate extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="samplePlusDaysSymmetry")
+    @Test
+    @UseDataProvider("provider_samplePlusDaysSymmetry")
     public void test_plusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.plusDays(days).plusDays(-days);
@@ -302,8 +308,8 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // minusWeeks()
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleMinusWeeksSymmetry")
-    Object[][] provider_sampleMinusWeeksSymmetry() {
+    @DataProvider
+    public static Object[][] provider_sampleMinusWeeksSymmetry() {
         return new Object[][] {
             {LocalDate.of(-1, 1, 1)},
             {LocalDate.of(-1, 2, 28)},
@@ -334,7 +340,8 @@ public class TestLocalDate extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="sampleMinusWeeksSymmetry")
+    @Test
+    @UseDataProvider("provider_sampleMinusWeeksSymmetry")
     public void test_minusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             LocalDate t = reference.minusWeeks(weeks).minusWeeks(-weeks);
@@ -354,8 +361,8 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // minusDays()
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleMinusDaysSymmetry")
-    Object[][] provider_sampleMinusDaysSymmetry() {
+    @DataProvider
+    public static Object[][] provider_sampleMinusDaysSymmetry() {
         return new Object[][] {
             {LocalDate.of(-1, 1, 1)},
             {LocalDate.of(-1, 2, 28)},
@@ -386,7 +393,8 @@ public class TestLocalDate extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="sampleMinusDaysSymmetry")
+    @Test
+    @UseDataProvider("provider_sampleMinusDaysSymmetry")
     public void test_minusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.minusDays(days).minusDays(-days);
@@ -425,20 +433,20 @@ public class TestLocalDate extends AbstractTest {
             for (int j = 0; j < localDates.length; j++) {
                 LocalDate b = localDates[j];
                 if (i < j) {
-                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
-                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }

@@ -70,26 +70,29 @@ import static java.time.temporal.ChronoField.EPOCH_DAY;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test.
  */
+@RunWith(DataProviderRunner.class)
 public class TestDateTimeBuilderCombinations {
 
-    @DataProvider(name = "combine")
-    Object[][] data_combine() {
+    @DataProvider
+    public static Object[][] data_combine() {
         return new Object[][] {
             {YEAR, 2012, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 3, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
             {PROLEPTIC_MONTH, 2012 * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
@@ -101,7 +104,8 @@ public class TestDateTimeBuilderCombinations {
         };
     }
 
-    @Test(dataProvider = "combine")
+    @Test
+    @UseDataProvider("data_combine")
     public void test_derive(final TemporalField field1, final Number value1,
                             final TemporalField field2, final Number value2,
                             final TemporalField field3, final Number value3,
@@ -164,8 +168,8 @@ public class TestDateTimeBuilderCombinations {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "normalized")
-    Object[][] data_normalized() {
+    @DataProvider
+    public static Object[][] data_normalized() {
         return new Object[][] {
             {YEAR, 2127, YEAR, 2127},
             {MONTH_OF_YEAR, 12, MONTH_OF_YEAR, 12},
@@ -182,7 +186,8 @@ public class TestDateTimeBuilderCombinations {
         };
     }
 
-    @Test(dataProvider = "normalized")
+    @Test
+    @UseDataProvider("data_normalized")
     public void test_normalized(final TemporalField field1, final Number value1, TemporalField expectedField, Number expectedVal) {
         // mock for testing that does not fully comply with TemporalAccessor contract
         TemporalAccessor test = new TemporalAccessor() {

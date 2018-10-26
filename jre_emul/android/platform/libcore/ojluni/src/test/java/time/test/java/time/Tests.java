@@ -21,6 +21,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   TestDuration.class,
   TestInstant.class,
+  TestLocalDate.class,
+  TestLocalDateTime.class,
   TestLocalTime.class,
   TestMonthDay.class,
   TestOffsetDateTime.class,
@@ -34,6 +36,9 @@ import org.junit.runners.Suite;
   test.java.time.chrono.TestChronoLocalDate.class,
   test.java.time.chrono.TestIsoChronoImpl.class,
   test.java.time.temporal.TestChronoField.class,
+  test.java.time.temporal.TestChronoUnit.class,
+  test.java.time.temporal.TestDateTimeBuilderCombinations.class,
+  test.java.time.temporal.TestDateTimeValueRange.class,
   test.java.time.temporal.TestIsoWeekFields.class,
   test.java.time.temporal.TestJulianFields.class,
   test.java.time.zone.TestFixedZoneRules.class,

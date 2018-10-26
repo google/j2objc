@@ -59,29 +59,29 @@
  */
 package test.java.time.temporal;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ValueRange;
-
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import test.java.time.AbstractTest;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestDateTimeValueRange extends AbstractTest {
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(ValueRange.class);
@@ -90,6 +90,7 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // of(long,long)
     //-----------------------------------------------------------------------
+    @Test
     public void test_of_longlong() {
         ValueRange test = ValueRange.of(1, 12);
         assertEquals(test.getMinimum(), 1);
@@ -100,6 +101,7 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(test.isIntValue(), true);
     }
 
+    @Test
     public void test_of_longlong_big() {
         ValueRange test = ValueRange.of(1, 123456789012345L);
         assertEquals(test.getMinimum(), 1);
@@ -110,7 +112,7 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(test.isIntValue(), false);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_of_longlong_minGtMax() {
         ValueRange.of(12, 1);
     }
@@ -118,6 +120,7 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // of(long,long,long)
     //-----------------------------------------------------------------------
+    @Test
     public void test_of_longlonglong() {
         ValueRange test = ValueRange.of(1, 28, 31);
         assertEquals(test.getMinimum(), 1);
@@ -128,12 +131,12 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(test.isIntValue(), true);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_of_longlonglong_minGtMax() {
         ValueRange.of(12, 1, 2);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_of_longlonglong_smallestmaxminGtMax() {
         ValueRange.of(1, 31, 28);
     }
@@ -141,8 +144,8 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // of(long,long,long,long)
     //-----------------------------------------------------------------------
-    @DataProvider(name="valid")
-    Object[][] data_valid() {
+    @DataProvider
+    public static Object[][] data_valid() {
         return new Object[][] {
                 {1, 1, 1, 1},
                 {1, 1, 1, 2},
@@ -156,7 +159,8 @@ public class TestDateTimeValueRange extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="valid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_of_longlonglonglong(long sMin, long lMin, long sMax, long lMax) {
         ValueRange test = ValueRange.of(sMin, lMin, sMax, lMax);
         assertEquals(test.getMinimum(), sMin);
@@ -167,8 +171,8 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(test.isIntValue(), true);
     }
 
-    @DataProvider(name="invalid")
-    Object[][] data_invalid() {
+    @DataProvider
+    public static Object[][] data_invalid() {
         return new Object[][] {
                 {1, 2, 31, 28},
                 {1, 31, 2, 28},
@@ -181,7 +185,8 @@ public class TestDateTimeValueRange extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="invalid", expectedExceptions=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
+    @UseDataProvider("data_invalid")
     public void test_of_longlonglonglong_invalid(long sMin, long lMin, long sMax, long lMax) {
         ValueRange.of(sMin, lMin, sMax, lMax);
     }
@@ -189,6 +194,7 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // isValidValue(long)
     //-----------------------------------------------------------------------
+    @Test
     public void test_isValidValue_long() {
         ValueRange test = ValueRange.of(1, 28, 31);
         assertEquals(test.isValidValue(0), false);
@@ -202,6 +208,7 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // isValidIntValue(long)
     //-----------------------------------------------------------------------
+    @Test
     public void test_isValidValue_long_int() {
         ValueRange test = ValueRange.of(1, 28, 31);
         assertEquals(test.isValidValue(0), false);
@@ -210,6 +217,7 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(test.isValidValue(32), false);
     }
 
+    @Test
     public void test_isValidValue_long_long() {
         ValueRange test = ValueRange.of(1, 28, Integer.MAX_VALUE + 1L);
         assertEquals(test.isValidIntValue(0), false);
@@ -221,7 +229,8 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // checkValidValue
     //-----------------------------------------------------------------------
-    @Test(dataProvider="valid")
+    @Test
+    @UseDataProvider("data_valid")
     public void test_of_checkValidValue(long sMin, long lMin, long sMax, long lMax) {
         ValueRange test = ValueRange.of(sMin, lMin, sMax, lMax);
         assertEquals(test.checkValidIntValue(sMin, null), sMin);
@@ -230,25 +239,27 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(test.checkValidIntValue(lMax, null), lMax);
     }
 
-    @Test(dataProvider="valid", expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_valid")
     public void test_of_checkValidValueMinException(long sMin, long lMin, long sMax, long lMax) {
         ValueRange test = ValueRange.of(sMin, lMin, sMax, lMax);
         test.checkValidIntValue(sMin-1, null);
     }
 
-    @Test(dataProvider="valid", expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_valid")
     public void test_of_checkValidValueMaxException(long sMin, long lMin, long sMax, long lMax) {
         ValueRange test = ValueRange.of(sMin, lMin, sMax, lMax);
         test.checkValidIntValue(lMax+1, null);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_checkValidValueUnsupported_long_long() {
         ValueRange test = ValueRange.of(1, 28, Integer.MAX_VALUE + 1L);
         test.checkValidIntValue(0, (ChronoField)null);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_checkValidValueInvalid_long_long() {
         ValueRange test = ValueRange.of(1, 28, Integer.MAX_VALUE + 1L);
         test.checkValidIntValue(Integer.MAX_VALUE + 2L, (ChronoField)null);
@@ -257,6 +268,7 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
+    @Test
     public void test_equals1() {
         ValueRange a = ValueRange.of(1, 2, 3, 4);
         ValueRange b = ValueRange.of(1, 2, 3, 4);
@@ -267,6 +279,7 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(a.hashCode() == b.hashCode(), true);
     }
 
+    @Test
     public void test_equals2() {
         ValueRange a = ValueRange.of(1, 2, 3, 4);
         assertEquals(a.equals(ValueRange.of(0, 2, 3, 4)), false);
@@ -275,11 +288,13 @@ public class TestDateTimeValueRange extends AbstractTest {
         assertEquals(a.equals(ValueRange.of(1, 2, 3, 5)), false);
     }
 
+    @Test
     public void test_equals_otherType() {
         ValueRange a = ValueRange.of(1, 12);
         assertEquals(a.equals("Rubbish"), false);
     }
 
+    @Test
     public void test_equals_null() {
         ValueRange a = ValueRange.of(1, 12);
         assertEquals(a.equals(null), false);
@@ -288,6 +303,7 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString() {
         assertEquals(ValueRange.of(1, 1, 4, 4).toString(), "1 - 4");
         assertEquals(ValueRange.of(1, 1, 3, 4).toString(), "1 - 3/4");
