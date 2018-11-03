@@ -30,7 +30,7 @@ public final class ICUData {
     /**
      * The data path to be used with getBundleInstance API
      */
-    static final String ICU_DATA_PATH = "android/icu/impl/";
+    static final String ICU_DATA_PATH = "/com/ibm/icu/impl/";
     /**
      * The ICU data package name.
      * This is normally the name of the .dat package, and the prefix (plus '/')

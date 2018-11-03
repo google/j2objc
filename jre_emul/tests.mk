@@ -137,7 +137,8 @@ translate-all: translate
 link: build $(TEST_BIN)
 
 resources: $(TEST_RESOURCES)
-	@:
+	@unzip -q -o -d $(RESOURCES_DEST_DIR) $(RESOURCES_DEST_DIR)/icutzdata.jar
+	@unzip -q -o -d $(RESOURCES_DEST_DIR) $(RESOURCES_DEST_DIR)/icudata.jar
 
 define resource_copy_rule
 $(RESOURCES_DEST_DIR)/%: $(1)/%
@@ -156,7 +157,7 @@ $(foreach root,$(TEST_RESOURCE_ROOTS),$(eval $(call resource_copy_rule,$(root)))
 run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 	@ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
-run-initialization-test: $(TESTS_DIR)/jreinitialization
+run-initialization-test: resources $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
 run-core-size-test: $(TESTS_DIR)/core_size \

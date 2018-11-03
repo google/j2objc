@@ -1046,9 +1046,14 @@ BEANS_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser \
     serialization/org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.golden.ser
 
+ICU_TEST_RESOURCES_SRCS = \
+    icudata.jar \
+    icutzdata.jar \
+
 TEST_RESOURCE_ROOTS = \
   apache_harmony/classlib/modules/luni/src/test/resources \
   android/libcore/luni/src/test/resources \
+  android/platform/external/icu/android_icu4j/resources \
   android/platform/libcore/harmony-tests/src/test/resources \
   android/platform/libcore/luni/src/test/resources \
   android/platform/libcore/ojluni/src/main/resources \
@@ -1063,7 +1068,8 @@ TEST_RESOURCES_RELATIVE = \
   $(ANDROID_TEST_RESOURCES_SRCS) \
   $(LOGGING_TEST_RESOURCES_SRCS) \
   $(ZIP_TEST_RESOURCES_SRCS) \
-  $(BEANS_TEST_RESOURCES_SRCS)
+  $(BEANS_TEST_RESOURCES_SRCS) \
+  $(ICU_TEST_RESOURCES_SRCS)
 
 TEST_RESOURCES_QUALIFIED = \
   $(patsubst $(CURDIR)/%,%,\
