@@ -69,6 +69,7 @@ ZIP_OBJS_RELATIVE = $(JAVA_SOURCES_ZIP:.java=.o) $(NATIVE_JRE_SOURCES_ZIP:.m=.o)
 SQL_OBJS_RELATIVE = $(JAVA_SOURCES_SQL:.java=.o)
 BEANS_OBJS_RELATIVE = $(JAVA_SOURCES_BEANS:.java=.o)
 TIME_OBJS_RELATIVE = $(JAVA_SOURCES_TIME:.java=.o)
+ICU_OBJS_RELATIVE = $(JAVA_SOURCES_ICU:.java=.o)
 JRE_OBJS_RELATIVE = $(JAVA_SOURCES:.java=.o) $(NATIVE_JRE_SOURCES:.m=.o)
 ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
 
@@ -88,6 +89,7 @@ LIBS += $(call emit_library_rules,jre_zip,$(ZIP_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_sql,$(SQL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_beans,$(BEANS_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_time,$(TIME_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_icu,$(ICU_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
@@ -214,6 +216,7 @@ OBJC_SOURCES_MANIFESTS := \
   $(call objc_manifest,objc_sources_sql,$(JAVA_SOURCES_SQL)) \
   $(call objc_manifest,objc_sources_beans,$(JAVA_SOURCES_BEANS)) \
   $(call objc_manifest,objc_sources_time,$(JAVA_SOURCES_TIME)) \
+  $(call objc_manifest,objc_sources_icu,$(JAVA_SOURCES_ICU)) \
   $(call objc_manifest,objc_sources_other,$(JAVA_SOURCES_OTHER)) \
   $(call objc_manifest,objc_sources_android,$(JAVA_SOURCES_ANDROID))
 
