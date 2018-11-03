@@ -9,6 +9,8 @@
 */
 package android.icu.text;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.text.ParsePosition;
 import java.util.HashMap;
 
@@ -17,7 +19,7 @@ import android.icu.lang.UCharacter;
 class RBBISymbolTable implements SymbolTable{
     
     HashMap<String, RBBISymbolTableEntry> fHashTable;
-    RBBIRuleScanner      fRuleScanner;
+    @Weak RBBIRuleScanner fRuleScanner;
 
     // These next two fields are part of the mechanism for passing references to
     //   already-constructed UnicodeSets back to the UnicodeSet constructor

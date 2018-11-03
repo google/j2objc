@@ -9,6 +9,8 @@
  */
 package android.icu.text;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -67,7 +69,7 @@ final class NFRuleSet {
     /**
      * The RuleBasedNumberFormat that owns this rule
      */
-    final RuleBasedNumberFormat owner;
+    @Weak final RuleBasedNumberFormat owner;
 
     /**
      * True if the rule set is a fraction rule set.  A fraction rule set

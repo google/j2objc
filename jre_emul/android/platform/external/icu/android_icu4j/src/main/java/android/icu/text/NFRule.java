@@ -9,6 +9,8 @@
  */
 package android.icu.text;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.util.List;
@@ -113,7 +115,7 @@ final class NFRule {
     /**
      * The RuleBasedNumberFormat that owns this rule
      */
-    private final RuleBasedNumberFormat formatter;
+    @Weak private final RuleBasedNumberFormat formatter;
 
     //-----------------------------------------------------------------------
     // construction

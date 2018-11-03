@@ -9,6 +9,7 @@
  */
 package android.icu.text;
 
+import com.google.j2objc.annotations.Weak;
 import java.text.ParsePosition;
 
 //===================================================================
@@ -35,7 +36,7 @@ abstract class NFSubstitution {
      * The rule set this substitution uses to format its result, or null.
      * (Either this or numberFormat has to be non-null.)
      */
-    final NFRuleSet ruleSet;
+    @Weak final NFRuleSet ruleSet;
 
     /**
      * The DecimalFormat this substitution uses to format its result,
@@ -781,7 +782,7 @@ class ModulusSubstitution extends NFSubstitution {
      * If this is a &gt;&gt;&gt; substitution, the rule to use to format
      * the substitution value.  Otherwise, null.
      */
-    private final NFRule ruleToUse;
+    @Weak private final NFRule ruleToUse;
 
     //-----------------------------------------------------------------------
     // construction

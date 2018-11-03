@@ -23,7 +23,7 @@ import android.icu.lang.UCharacter;
  */
 public class TextTrieMap<V> {
 
-    private Node _root = new Node();
+    private Node<V> _root = new Node<>();
     boolean _ignoreCase;
 
     /**
@@ -222,7 +222,8 @@ public class TextTrieMap<V> {
     /**
      * Inner class representing a text node in the trie.
      */
-    private class Node {
+    /* J2ObjC: convert to static to avoid retain cycles. */
+    private static class Node<V> {
         private char[] _text;
         private List<V> _values;
         private List<Node> _children;
