@@ -137,8 +137,8 @@ translate-all: translate
 link: build $(TEST_BIN)
 
 resources: $(TEST_RESOURCES)
-	@unzip -q -o -d $(RESOURCES_DEST_DIR) $(RESOURCES_DEST_DIR)/icutzdata.jar
-	@unzip -q -o -d $(RESOURCES_DEST_DIR) $(RESOURCES_DEST_DIR)/icudata.jar
+	@unzip -q -o -d $(RESOURCES_DEST_DIR) $(TEST_RESOURCES_ICU_DATA_ZIP) $(TEST_RESOURCES_ICU_DATA_SRCS)
+	@unzip -q -o -d $(RESOURCES_DEST_DIR) $(TEST_RESOURCES_ICU_TZ_DATA_ZIP) $(TEST_RESOURCES_ICU_TZ_DATA_SRCS)
 
 define resource_copy_rule
 $(RESOURCES_DEST_DIR)/%: $(1)/%
