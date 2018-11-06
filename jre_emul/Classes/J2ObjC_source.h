@@ -96,6 +96,30 @@ typedef struct J2ObjcNameMapping {
   static J2ObjcNameMapping CLASS##_mapping __attribute__((used,\
   section("__DATA,__j2objc_aliases"))) = { JAVANAME, IOSNAME };
 
+/*!
+ * Defines a data element that corresponds to a Java resource file. These are
+ * created using the gen_resource_source.py script. The name_hash is the hash
+ * of full_name, used to find a named resource more quickly.
+ */
+typedef struct J2ObjcResourceDefinition {
+  const char * const full_name;
+  const jbyte * const data;
+  const jint length;
+  const jint name_hash;
+} J2ObjcResourceDefinition;
+
+// Preprocessor trick to add quotes to a macro arg:
+// https://stackoverflow.com/questions/3419332/c-preprocessor-stringify-the-result-of-a-macro
+#define Q(x) #x
+#define QUOTE(x) Q(x)
+
+/*!
+ * Defines a data resource using a custom data segment. The data segment name length cannot
+ * exceed 16 characters.
+ */
+#define J2OBJC_RESOURCE(BUF, LEN, HASH) \
+  static J2ObjcResourceDefinition BUF##_resource __attribute__((used,\
+  section("__DATA,__j2objcresource"))) = { QUOTE(BUF), BUF, LEN, HASH };
 
 FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size);
 FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal);
