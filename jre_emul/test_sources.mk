@@ -788,6 +788,7 @@ TEST_SOURCES := \
     org/json/SelfUseTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    test/java/time/TestClock_Fixed.java \
     test/java/time/TestDuration.java \
     test/java/time/TestInstant.java \
     test/java/time/TestLocalDate.java \

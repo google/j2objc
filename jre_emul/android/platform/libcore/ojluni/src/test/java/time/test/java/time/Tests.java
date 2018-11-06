@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 /** Test suite for java.time package. */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+  TestClock_Fixed.class,
   TestDuration.class,
   TestInstant.class,
   TestLocalDate.class,

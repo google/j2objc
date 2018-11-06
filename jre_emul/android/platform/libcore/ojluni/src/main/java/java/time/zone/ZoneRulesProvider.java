@@ -139,9 +139,8 @@ public abstract class ZoneRulesProvider {
 
     static {
         // Android-changed: use a single hard-coded provider.
-        /* J2ObjC removed.
         ZoneRulesProvider provider = new IcuZoneRulesProvider();
-        registerProvider(provider); */
+        registerProvider(provider);
     }
 
     //-------------------------------------------------------------------------
