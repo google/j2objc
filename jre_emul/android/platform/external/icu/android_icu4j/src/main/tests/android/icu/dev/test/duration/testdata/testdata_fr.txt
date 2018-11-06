@@ -1,0 +1,401 @@
+=fullPluralizedFormCounts
+-3
+-2
+-1
+0
+1
+2
+3
+5
+10
+11
+12
+20
+21
+22
+23
+25
+=fullPluralizedFormTargets
+il y a 3 ans
+il y a 2 ans
+il y a 1 an
+0 an
+dans 1 an
+dans 2 ans
+dans 3 ans
+dans 5 ans
+dans 10 ans
+dans 11 ans
+dans 12 ans
+dans 20 ans
+dans 21 ans
+dans 22 ans
+dans 23 ans
+dans 25 ans
+il y a 3 mois
+il y a 2 mois
+il y a 1 mois
+0 mois
+dans 1 mois
+dans 2 mois
+dans 3 mois
+dans 5 mois
+dans 10 mois
+dans 11 mois
+dans 12 mois
+dans 20 mois
+dans 21 mois
+dans 22 mois
+dans 23 mois
+dans 25 mois
+il y a 3 semaines
+il y a 2 semaines
+il y a 1 semaine
+0 semaine
+dans 1 semaine
+dans 2 semaines
+dans 3 semaines
+dans 5 semaines
+dans 10 semaines
+dans 11 semaines
+dans 12 semaines
+dans 20 semaines
+dans 21 semaines
+dans 22 semaines
+dans 23 semaines
+dans 25 semaines
+il y a 3 jours
+il y a 2 jours
+il y a 1 jour
+0 jour
+dans 1 jour
+dans 2 jours
+dans 3 jours
+dans 5 jours
+dans 10 jours
+dans 11 jours
+dans 12 jours
+dans 20 jours
+dans 21 jours
+dans 22 jours
+dans 23 jours
+dans 25 jours
+il y a 3 heures
+il y a 2 heures
+il y a 1 heure
+0 heure
+dans 1 heure
+dans 2 heures
+dans 3 heures
+dans 5 heures
+dans 10 heures
+dans 11 heures
+dans 12 heures
+dans 20 heures
+dans 21 heures
+dans 22 heures
+dans 23 heures
+dans 25 heures
+il y a 3 minutes
+il y a 2 minutes
+il y a 1 minute
+0 minute
+dans 1 minute
+dans 2 minutes
+dans 3 minutes
+dans 5 minutes
+dans 10 minutes
+dans 11 minutes
+dans 12 minutes
+dans 20 minutes
+dans 21 minutes
+dans 22 minutes
+dans 23 minutes
+dans 25 minutes
+il y a 3 secondes
+il y a 2 secondes
+il y a 1 seconde
+0 seconde
+dans 1 seconde
+dans 2 secondes
+dans 3 secondes
+dans 5 secondes
+dans 10 secondes
+dans 11 secondes
+dans 12 secondes
+dans 20 secondes
+dans 21 secondes
+dans 22 secondes
+dans 23 secondes
+dans 25 secondes
+il y a 3 millisecondes
+il y a 2 millisecondes
+il y a 1 milliseconde
+0 milliseconde
+dans 1 milliseconde
+dans 2 millisecondes
+dans 3 millisecondes
+dans 5 millisecondes
+dans 10 millisecondes
+dans 11 millisecondes
+dans 12 millisecondes
+dans 20 millisecondes
+dans 21 millisecondes
+dans 22 millisecondes
+dans 23 millisecondes
+dans 25 millisecondes
+=mediumFormTargets
+3 ans
+3 mois
+3 semaines
+3 jours
+3 heures
+3 minutes
+3 secondes
+3 millisecondes
+=shortFormTargets
+3 ans
+3 mois
+3 semaines
+3 jours
+3 heures
+3 minutes
+3 secondes
+3 millisecondes
+=customMinuteTargets
+5 minutes
+1 heure et 5 minutes
+10 minutes
+1 heure et 10 minutes
+15 minutes
+1 heure et 15 minutes
+20 minutes
+1 heure et 20 minutes
+25 minutes
+1 heure et 25 minutes
+30 minutes
+1 heure et 30 minutes
+35 minutes
+1 heure et 35 minutes
+40 minutes
+1 heure et 40 minutes
+45 minutes
+1 heure et 45 minutes
+50 minutes
+1 heure et 50 minutes
+55 minutes
+1 heure et 55 minutes
+=limitedUnitTargets
+1 mois
+1 mois et 2 semaines
+1 mois, 2 semaines et 3 jours
+il y a 1 mois
+il y a 1 mois et 2 semaines
+il y a 1 mois, 2 semaines et 3 jours
+dans 1 mois
+dans 1 mois et 2 semaines
+dans 1 mois, 2 semaines et 3 jours
+moins de 1 mois
+moins de 1 mois et 2 semaines
+moins de 1 mois, 2 semaines et 3 jours
+il y a moins de 1 mois
+il y a moins de 1 mois et 2 semaines
+il y a moins de 1 mois, 2 semaines et 3 jours
+dans moins de 1 mois
+dans moins de 1 mois et 2 semaines
+dans moins de 1 mois, 2 semaines et 3 jours
+plus de 1 mois
+plus de 1 mois et 2 semaines
+plus de 1 mois, 2 semaines et 3 jours
+il y a plus de 1 mois
+il y a plus de 1 mois et 2 semaines
+il y a plus de 1 mois, 2 semaines et 3 jours
+dans plus de 1 mois
+dans plus de 1 mois et 2 semaines
+dans plus de 1 mois, 2 semaines et 3 jours
+1 heure
+1 heure et 2 minutes
+1 heure, 2 minutes et 3 secondes
+il y a 1 heure
+il y a 1 heure et 2 minutes
+il y a 1 heure, 2 minutes et 3 secondes
+dans 1 heure
+dans 1 heure et 2 minutes
+dans 1 heure, 2 minutes et 3 secondes
+moins de 1 heure
+moins de 1 heure et 2 minutes
+moins de 1 heure, 2 minutes et 3 secondes
+il y a moins de 1 heure
+il y a moins de 1 heure et 2 minutes
+il y a moins de 1 heure, 2 minutes et 3 secondes
+dans moins de 1 heure
+dans moins de 1 heure et 2 minutes
+dans moins de 1 heure, 2 minutes et 3 secondes
+plus de 1 heure
+plus de 1 heure et 2 minutes
+plus de 1 heure, 2 minutes et 3 secondes
+il y a plus de 1 heure
+il y a plus de 1 heure et 2 minutes
+il y a plus de 1 heure, 2 minutes et 3 secondes
+dans plus de 1 heure
+dans plus de 1 heure et 2 minutes
+dans plus de 1 heure, 2 minutes et 3 secondes
+=halfUnitCounts
+0
+1
+2
+5
+10
+11
+12
+20
+21
+22
+=halfUnitTargets
+½ an
+1½ ans
+2½ ans
+5½ ans
+10½ ans
+11½ ans
+12½ ans
+20½ ans
+21½ ans
+22½ ans
+½ mois
+1½ mois
+2½ mois
+5½ mois
+10½ mois
+11½ mois
+12½ mois
+20½ mois
+21½ mois
+22½ mois
+½ semaine
+1½ semaines
+2½ semaines
+5½ semaines
+10½ semaines
+11½ semaines
+12½ semaines
+20½ semaines
+21½ semaines
+22½ semaines
+½ jour
+1½ jours
+2½ jours
+5½ jours
+10½ jours
+11½ jours
+12½ jours
+20½ jours
+21½ jours
+22½ jours
+½ heure
+1½ heures
+2½ heures
+5½ heures
+10½ heures
+11½ heures
+12½ heures
+20½ heures
+21½ heures
+22½ heures
+½ minute
+1½ minutes
+2½ minutes
+5½ minutes
+10½ minutes
+11½ minutes
+12½ minutes
+20½ minutes
+21½ minutes
+22½ minutes
+½ seconde
+1½ secondes
+2½ secondes
+5½ secondes
+10½ secondes
+11½ secondes
+12½ secondes
+20½ secondes
+21½ secondes
+22½ secondes
+½ milliseconde
+1½ millisecondes
+2½ millisecondes
+5½ millisecondes
+10½ millisecondes
+11½ millisecondes
+12½ millisecondes
+20½ millisecondes
+21½ millisecondes
+22½ millisecondes
+=fractionalUnitCounts
+0.025
+1.0
+1.205
+2.125
+12.05
+=fractionalUnitTargets
+0.02 ans
+1.00 ans
+1.20 ans
+2.12 ans
+12.05 ans
+0.02 mois
+1.00 mois
+1.20 mois
+2.12 mois
+12.05 mois
+0.02 semaines
+1.00 semaines
+1.20 semaines
+2.12 semaines
+12.05 semaines
+0.02 jours
+1.00 jours
+1.20 jours
+2.12 jours
+12.05 jours
+0.02 heures
+1.00 heures
+1.20 heures
+2.12 heures
+12.05 heures
+0.02 minutes
+1.00 minutes
+1.20 minutes
+2.12 minutes
+12.05 minutes
+0.02 secondes
+1.00 secondes
+1.20 secondes
+2.12 secondes
+12.05 secondes
+0.02 millisecondes
+1.00 millisecondes
+1.20 millisecondes
+2.12 millisecondes
+12.05 millisecondes
+=multipleUnitTargets
+1 an et 2 mois
+1 an et 3 semaines
+1 an, 2 mois et 3 semaines
+1 mois et 2 semaines
+1 mois et 3 jours
+1 mois, 2 semaines et 3 jours
+1 semaine et 2 jours
+1 semaine et 3 heures
+1 semaine, 2 jours et 3 heures
+1 jour et 2 heures
+1 jour et 3 minutes
+1 jour, 2 heures et 3 minutes
+1 heure et 2 minutes
+1 heure et 3 secondes
+1 heure, 2 minutes et 3 secondes
+1 minute et 2 secondes
+1 minute et 3 millisecondes
+1 minute, 2 secondes et 3 millisecondes
+1 seconde et 2 millisecondes

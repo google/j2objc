@@ -1,0 +1,62 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2016 and later: Unicode, Inc. and others.                     *
+ * License & terms of use: http://www.unicode.org/copyright.html#License       *
+ *******************************************************************************
+ *******************************************************************************
+ * Copyright (C) 2005, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
+import java.util.MissingResourceException;
+
+import com.ibm.icu.dev.test.TestFmwk;
+import com.ibm.icu.util.UResourceBundle;
+/*
+ * Eclipse expects the java files in a package-like directory structure to have a package declaration at the top of the file.
+ * To fool Eclipse this file has an "jpp" extension. The ant build script copies this file to the default package and renames it
+ * before building.
+ */ 
+/**
+ * @author ram
+ */
+public class TestDefaultPackageLoading extends TestFmwk{
+    public static void main(String[] args){
+        new TestDefaultPackageLoading().run(args);
+    }
+    public void TestResourceBundleLoading(){
+        try{
+            UResourceBundle bundle = UResourceBundle.getBundleInstance("TestData", "en");
+            String aaa = bundle.getString("aaa");
+            if(!aaa.equals("testcircularalias/aab")){
+                errln("Did not get the expected data");
+            }
+        }catch (MissingResourceException ex){
+            errln("could not load data "+ex.getMessage());
+        }
+    }
+    public void TestResFileLoading(){
+        try{
+            UResourceBundle bundle = UResourceBundle.getBundleInstance("", "te");
+            String aaa = bundle.getString("string_only_in_te");
+            if(!aaa.equals("TE")){
+                errln("Did not get the expected data");
+            }
+        }catch (MissingResourceException ex){
+            errln("could not load data "+ex.getMessage());
+        }
+    }
+    public void TestJB3767(){
+        try{
+            UResourceBundle bundle = UResourceBundle.getBundleInstance("com.ibm.icu.dev.data.TestData", "bge");
+            String aaa = bundle.getString("string_only_in_te");
+            if(!aaa.equals("TE")){
+                errln("Did not get the expected data");
+            }
+            logln("Got : " + bundle.getULocale().getName());
+        }catch (MissingResourceException ex){
+            errln("could not load data "+ex.getMessage());
+        }
+    }
+    
+}
