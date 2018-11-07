@@ -10,6 +10,7 @@
 
 package android.icu.util;
 
+import android.icu.impl.ICUData;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -644,8 +645,8 @@ public final class VersionInfo implements Comparable<VersionInfo>
         if (TZDATA_VERSION == null) {
             synchronized (VersionInfo.class) {
                 if (TZDATA_VERSION == null) {
-                    UResourceBundle tzbundle = UResourceBundle.getBundleInstance("android/icu/impl/data/icudt"
-                            + VersionInfo.ICU_DATA_VERSION_PATH, "zoneinfo64");
+                    UResourceBundle tzbundle = UResourceBundle.getBundleInstance(
+                        ICUData.ICU_BASE_NAME, "zoneinfo64");
                     TZDATA_VERSION = tzbundle.getString("TZVersion");
                 }
             }

@@ -17,6 +17,10 @@
 # Author: Tom Ball, Keith Stanger
 
 SUPPORT_SOURCES = \
+    android/icu/dev/test/AbstractTestLog.java \
+    android/icu/dev/test/TestFmwk.java \
+    android/icu/dev/test/TestLog.java \
+    android/icu/dev/test/TestUtil.java \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
     bar/Third.java \
@@ -196,6 +200,12 @@ SUPPORT_SOURCES = \
 NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 TEST_SOURCES := \
+    android/icu/dev/test/timezone/TimeZoneAliasTest.java \
+    android/icu/dev/test/timezone/TimeZoneBoundaryTest.java \
+    android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.java \
+    android/icu/dev/test/timezone/TimeZoneRegressionTest.java \
+    android/icu/dev/test/timezone/TimeZoneRuleTest.java \
+    android/icu/dev/test/timezone/TimeZoneTest.java \
     jsr166/AbstractExecutorServiceTest.java \
     jsr166/AbstractQueueTest.java \
     jsr166/ArrayBlockingQueueTest.java \
@@ -843,6 +853,7 @@ TEST_SOURCES := \
     tests/targets/security/MessageDigestTestSHA512.java \
 
 SUITE_SOURCES = \
+    android/icu/dev/test/Tests.java \
     jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
     com/google/j2objc/java8/SmallTests.java \
@@ -1051,12 +1062,16 @@ BEANS_TEST_RESOURCES_SRCS = \
 TEST_RESOURCES_ICU_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icudata.jar
 TEST_RESOURCES_ICU_DATA_SRCS = \
     com/ibm/icu/impl/data/icudt58b/dayPeriods.res \
+    com/ibm/icu/impl/data/icudt58b/en.res \
+    com/ibm/icu/impl/data/icudt58b/en_US.res \
     com/ibm/icu/impl/data/icudt58b/keyTypeData.res \
+    com/ibm/icu/impl/data/icudt58b/likelySubtags.res \
     com/ibm/icu/impl/data/icudt58b/nfc.nrm \
     com/ibm/icu/impl/data/icudt58b/nfkc.nrm \
     com/ibm/icu/impl/data/icudt58b/nfkc_cf.nrm \
     com/ibm/icu/impl/data/icudt58b/pnames.icu \
     com/ibm/icu/impl/data/icudt58b/pool.res \
+    com/ibm/icu/impl/data/icudt58b/root.res \
     com/ibm/icu/impl/data/icudt58b/supplementalData.res \
     com/ibm/icu/impl/data/icudt58b/ubidi.icu \
     com/ibm/icu/impl/data/icudt58b/ucase.icu \
@@ -1068,6 +1083,7 @@ TEST_RESOURCES_ICU_DATA_SRCS = \
 TEST_RESOURCES_ICU_TZ_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icutzdata.jar
 TEST_RESOURCES_ICU_TZ_DATA_SRCS = \
     com/ibm/icu/impl/data/icudt58b/timezoneTypes.res \
+    com/ibm/icu/impl/data/icudt58b/windowsZones.res \
     com/ibm/icu/impl/data/icudt58b/zoneinfo64.res \
 
 TEST_RESOURCE_ROOTS = \

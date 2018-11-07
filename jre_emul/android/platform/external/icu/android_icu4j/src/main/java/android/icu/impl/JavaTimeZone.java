@@ -11,8 +11,6 @@ package android.icu.impl;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -37,7 +35,8 @@ public class JavaTimeZone extends TimeZone {
 
     private java.util.TimeZone javatz;
     private transient java.util.Calendar javacal;
-    private static Method mObservesDaylightTime;
+    /* J2ObjC removed: use of reflection.
+    private static Method mObservesDaylightTime; */
 
     static {
         AVAILABLESET = new TreeSet<String>();
@@ -46,13 +45,14 @@ public class JavaTimeZone extends TimeZone {
             AVAILABLESET.add(availableIds[i]);
         }
 
+        /* J2ObjC removed: use of reflection.
         try {
             mObservesDaylightTime = java.util.TimeZone.class.getMethod("observesDaylightTime", (Class[]) null);
         } catch (NoSuchMethodException e) {
             // Java 6 or older
         } catch (SecurityException e) {
             // not visible
-        }
+        } */
     }
 
     /**
@@ -200,6 +200,7 @@ public class JavaTimeZone extends TimeZone {
      */
     @Override
     public boolean observesDaylightTime() {
+        /* J2ObjC removed: use of reflection.
         if (mObservesDaylightTime != null) {
             // Java 7+
             try {
@@ -209,7 +210,8 @@ public class JavaTimeZone extends TimeZone {
             } catch (InvocationTargetException e) {
             }
         }
-        return super.observesDaylightTime();
+        return super.observesDaylightTime(); */
+        return javatz.observesDaylightTime();
     }
 
     /* (non-Javadoc)

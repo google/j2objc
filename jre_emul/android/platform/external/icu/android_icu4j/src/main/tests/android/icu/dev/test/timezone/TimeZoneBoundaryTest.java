@@ -442,7 +442,8 @@ public class TimeZoneBoundaryTest extends TestFmwk
         // support historic transitions, therefore, the test below
         // will fail on such environment (with the latest TimeZone
         // patch for US 2007+ rule).
-        if (TestUtil.getJavaVendor() == JavaVendor.Android || TestUtil.getJavaVersion() > 3) {
+        /* J2ObjC: always execute. */
+        if (true) {
             // This only works in PST/PDT
             TimeZone.setDefault(safeGetTimeZone("PST"));
             logln("========================================");

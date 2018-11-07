@@ -80,16 +80,18 @@ abstract public class TestFmwk extends AbstractTestLog {
         Locale.setDefault(defaultLocale);
         TimeZone.setDefault(defaultTimeZone);
 
+        /* J2ObjC removed
         if (getParams().testSecurityManager != null) {
             System.setSecurityManager(getParams().testSecurityManager);
-        }
+        } */
     }
 
     @After
     public void testTeardown() {
+        /* J2ObjC removed
         if (getParams().testSecurityManager != null) {
             System.setSecurityManager(getParams().originalSecurityManager);
-        }
+        } */
     }
 
     private static TestParams getParams() {

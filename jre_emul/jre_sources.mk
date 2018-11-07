@@ -2002,6 +2002,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/ICUException.java \
   android/icu/util/InitialTimeZoneRule.java \
   android/icu/util/OutputInt.java \
+  android/icu/util/RuleBasedTimeZone.java \
   android/icu/util/STZInfo.java \
   android/icu/util/SimpleTimeZone.java \
   android/icu/util/TimeArrayTimeZoneRule.java \
@@ -2010,6 +2011,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/UResourceBundle.java \
   android/icu/util/UResourceBundleIterator.java \
   android/icu/util/UResourceTypeMismatchException.java \
+  android/icu/util/VTimeZone.java \
 
 # These sources are not included in any sub-library, only the full jre_emul.
 # javax.lang.model.element.Modifier is required by mockito, so it is only needed

@@ -15,13 +15,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import android.icu.dev.test.TestFmwk;
@@ -264,6 +264,7 @@ public class TimeZoneTest extends TestFmwk
      *
      * Bug 4044013
      */
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestCustomParse() {
         String[] DATA = {
@@ -327,6 +328,7 @@ public class TimeZoneTest extends TestFmwk
      * 4/21/98 - make smarter, so the test works if the ext resources
      * are present or not.
      */
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestDisplayName() {
         TimeZone zone = TimeZone.getTimeZone("PST");
@@ -455,6 +457,7 @@ public class TimeZoneTest extends TestFmwk
     }
 
 
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestDisplayName2() {
         Date now = new Date();
@@ -1087,6 +1090,7 @@ public class TimeZoneTest extends TestFmwk
         }
     }
 
+    /* J2ObjC removed: use of reflection. */
     @Test
     public void TestFractionalDST() {
         String tzName = "Australia/Lord_Howe"; // 30 min offset
@@ -1096,22 +1100,10 @@ public class TimeZoneTest extends TestFmwk
             // hack so test compiles and runs in both JDK 1.3 and JDK 1.4
             final Object[] args = new Object[0];
             final Class[] argtypes = new Class[0];
-            java.lang.reflect.Method m = tz_java.getClass().getMethod("getDSTSavings", argtypes); 
-            dst_java = ((Integer) m.invoke(tz_java, args)).intValue();
+            dst_java = tz_java.getDSTSavings();
             if (dst_java <= 0 || dst_java >= 3600000) { // didn't get the fractional time zone we wanted
             errln("didn't get fractional time zone!");
             }
-        } catch (NoSuchMethodException e) {
-            // see JDKTimeZone for the reason for this code
-            dst_java = 3600000;
-        } catch (IllegalAccessException e) {
-            // see JDKTimeZone for the reason for this code
-            errln(e.getMessage());
-            dst_java = 3600000;
-        } catch (InvocationTargetException e) {
-            // see JDKTimeZone for the reason for this code
-            errln(e.getMessage());
-            dst_java = 3600000;
         } catch (SecurityException e) {
             warnln(e.getMessage());
             return;
@@ -1150,6 +1142,7 @@ public class TimeZoneTest extends TestFmwk
     }
 
     // jb4484
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void TestSimpleTimeZoneSerialization() 
     {
@@ -1402,6 +1395,8 @@ public class TimeZoneTest extends TestFmwk
             errln("Could create the time zone but it is not in getAvailableIDs");
         }
     }
+
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestZoneMeta() {
         java.util.TimeZone save = java.util.TimeZone.getDefault();
@@ -1505,6 +1500,7 @@ public class TimeZoneTest extends TestFmwk
         }
     }
 
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestCanonicalID() {
         // Some canonical IDs in CLDR are defined as "Link"
@@ -1847,6 +1843,7 @@ public class TimeZoneTest extends TestFmwk
     /*
      * Test case for hashCode problem reported by ticket#7690 OlsonTimeZone.hashCode() throws NPE.
      */
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestHashCode() {
         String[] ids = TimeZone.getAvailableIDs();
@@ -1930,7 +1927,8 @@ public class TimeZoneTest extends TestFmwk
         TimeZone[] ZA1 = {
             TimeZone.getDefault(),
             TimeZone.getTimeZone("America/Los_Angeles", TimeZone.TIMEZONE_ICU),
-            TimeZone.getTimeZone("America/Los_Angeles", TimeZone.TIMEZONE_JDK),
+            /* J2ObjC: not ready yet.
+            TimeZone.getTimeZone("America/Los_Angeles", TimeZone.TIMEZONE_JDK), */
             new SimpleTimeZone(0, "stz"),
             new RuleBasedTimeZone("rbtz", new InitialTimeZoneRule("rbtz0", 0, 0)),
             VTimeZone.create("America/New_York"),
@@ -2171,6 +2169,7 @@ public class TimeZoneTest extends TestFmwk
         }
     }
 
+    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void TestObservesDaylightTime() {
         boolean observesDaylight;
