@@ -875,6 +875,18 @@
 		FA6C09CD2187C5AC006C646A /* AbstractTestPrinterParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09AE2187C5AB006C646A /* AbstractTestPrinterParser.m */; };
 		FA6C09CE2187C5AC006C646A /* TestIsoWeekFields.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09AF2187C5AB006C646A /* TestIsoWeekFields.m */; };
 		FA6C09CF2187C5AC006C646A /* TestLocalTime.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09B02187C5AB006C646A /* TestLocalTime.m */; };
+		FA6C09DD21925DE4006C646A /* TimeZoneRegressionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D221925DE2006C646A /* TimeZoneRegressionTest.m */; };
+		FA6C09DE21925DE4006C646A /* TimeZoneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D321925DE2006C646A /* TimeZoneTest.m */; };
+		FA6C09DF21925DE4006C646A /* TestFmwk.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D421925DE2006C646A /* TestFmwk.m */; };
+		FA6C09E021925DE4006C646A /* TestLog.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D521925DE2006C646A /* TestLog.m */; };
+		FA6C09E121925DE4006C646A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D621925DE3006C646A /* Tests.m */; };
+		FA6C09E221925DE4006C646A /* TimeZoneBoundaryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D721925DE3006C646A /* TimeZoneBoundaryTest.m */; };
+		FA6C09E321925DE4006C646A /* AbstractTestLog.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D821925DE3006C646A /* AbstractTestLog.m */; };
+		FA6C09E421925DE4006C646A /* TestUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09D921925DE3006C646A /* TestUtil.m */; };
+		FA6C09E521925DE4006C646A /* TimeZoneAliasTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DA21925DE3006C646A /* TimeZoneAliasTest.m */; };
+		FA6C09E621925DE4006C646A /* TimeZoneOffsetLocalTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */; };
+		FA6C09E721925DE4006C646A /* TimeZoneRuleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */; };
+		FA6C09E921925E10006C646A /* EmbeddedResourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3895,6 +3907,18 @@
 		FA6C09AE2187C5AB006C646A /* AbstractTestPrinterParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractTestPrinterParser.m; path = test/java/time/format/AbstractTestPrinterParser.m; sourceTree = "<group>"; };
 		FA6C09AF2187C5AB006C646A /* TestIsoWeekFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestIsoWeekFields.m; path = test/java/time/temporal/TestIsoWeekFields.m; sourceTree = "<group>"; };
 		FA6C09B02187C5AB006C646A /* TestLocalTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestLocalTime.m; path = test/java/time/TestLocalTime.m; sourceTree = "<group>"; };
+		FA6C09D221925DE2006C646A /* TimeZoneRegressionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneRegressionTest.m; path = android/icu/dev/test/timezone/TimeZoneRegressionTest.m; sourceTree = "<group>"; };
+		FA6C09D321925DE2006C646A /* TimeZoneTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneTest.m; path = android/icu/dev/test/timezone/TimeZoneTest.m; sourceTree = "<group>"; };
+		FA6C09D421925DE2006C646A /* TestFmwk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestFmwk.m; path = android/icu/dev/test/TestFmwk.m; sourceTree = "<group>"; };
+		FA6C09D521925DE2006C646A /* TestLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestLog.m; path = android/icu/dev/test/TestLog.m; sourceTree = "<group>"; };
+		FA6C09D621925DE3006C646A /* Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tests.m; path = android/icu/dev/test/Tests.m; sourceTree = "<group>"; };
+		FA6C09D721925DE3006C646A /* TimeZoneBoundaryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneBoundaryTest.m; path = android/icu/dev/test/timezone/TimeZoneBoundaryTest.m; sourceTree = "<group>"; };
+		FA6C09D821925DE3006C646A /* AbstractTestLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractTestLog.m; path = android/icu/dev/test/AbstractTestLog.m; sourceTree = "<group>"; };
+		FA6C09D921925DE3006C646A /* TestUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUtil.m; path = android/icu/dev/test/TestUtil.m; sourceTree = "<group>"; };
+		FA6C09DA21925DE3006C646A /* TimeZoneAliasTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneAliasTest.m; path = android/icu/dev/test/timezone/TimeZoneAliasTest.m; sourceTree = "<group>"; };
+		FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneOffsetLocalTest.m; path = android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.m; sourceTree = "<group>"; };
+		FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneRuleTest.m; path = android/icu/dev/test/timezone/TimeZoneRuleTest.m; sourceTree = "<group>"; };
+		FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EmbeddedResourceTest.m; path = com/google/j2objc/EmbeddedResourceTest.m; sourceTree = "<group>"; };
 		FAF4EEF8215AF32400413554 /* IosSslSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocket.m; path = com/google/j2objc/net/ssl/IosSslSocket.m; sourceTree = "<group>"; };
 		FAF4EEF9215AF32500413554 /* IosSslSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslSocket.h; path = com/google/j2objc/net/ssl/IosSslSocket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -6131,6 +6155,18 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */,
+				FA6C09D821925DE3006C646A /* AbstractTestLog.m */,
+				FA6C09D421925DE2006C646A /* TestFmwk.m */,
+				FA6C09D521925DE2006C646A /* TestLog.m */,
+				FA6C09D621925DE3006C646A /* Tests.m */,
+				FA6C09D921925DE3006C646A /* TestUtil.m */,
+				FA6C09DA21925DE3006C646A /* TimeZoneAliasTest.m */,
+				FA6C09D721925DE3006C646A /* TimeZoneBoundaryTest.m */,
+				FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */,
+				FA6C09D221925DE2006C646A /* TimeZoneRegressionTest.m */,
+				FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */,
+				FA6C09D321925DE2006C646A /* TimeZoneTest.m */,
 				FA6C09A02187C5A8006C646A /* AbstractTest.m */,
 				FA6C09AE2187C5AB006C646A /* AbstractTestPrinterParser.m */,
 				FA6C09932187C5A6006C646A /* MockFieldNoValue.m */,
@@ -7204,6 +7240,7 @@
 				069FAFE01FFD83AF001A5383 /* DigestInputStream2Test.m in Sources */,
 				069FAFE11FFD83AF001A5383 /* DigestInputStreamTest.m in Sources */,
 				069FAFE21FFD83AF001A5383 /* DigestOutputStreamTest.m in Sources */,
+				FA6C09DE21925DE4006C646A /* TimeZoneTest.m in Sources */,
 				069FAFE31FFD83AF001A5383 /* MDGoldenData.m in Sources */,
 				069FAFE41FFD83AF001A5383 /* CertificateFactoryTestX509.m in Sources */,
 				067B13451EEDEABB0013CBAF /* BlockingQueueTest.m in Sources */,
@@ -7249,6 +7286,7 @@
 				06C143B41F46138600CABE9A /* SinkChannelTest.m in Sources */,
 				06C143B51F46138600CABE9A /* SocketChannelTest.m in Sources */,
 				06C143B61F46138600CABE9A /* SourceChannelTest.m in Sources */,
+				FA6C09E021925DE4006C646A /* TestLog.m in Sources */,
 				FA6C09BC2187C5AB006C646A /* TestOffsetDateTime_instants.m in Sources */,
 				06C143B71F46138600CABE9A /* UnresolvedAddressExceptionTest.m in Sources */,
 				06C143B81F46138600CABE9A /* UnsupportedAddressTypeExceptionTest.m in Sources */,
@@ -7345,6 +7383,7 @@
 				063A62C71F672637001DC971 /* InputSourceTest.m in Sources */,
 				062027EA1D512DED001EE455 /* IllegalMonitorStateExceptionTest.m in Sources */,
 				062026B31D512D08001EE455 /* OldDirectIntBufferTest.m in Sources */,
+				FA6C09E921925E10006C646A /* EmbeddedResourceTest.m in Sources */,
 				0620277B1D512D9D001EE455 /* MockInterface.m in Sources */,
 				062025881D512B77001EE455 /* Example.m in Sources */,
 				069C23F21E9EEECA00CE6BAF /* DecimalFormatTest.m in Sources */,
@@ -7380,6 +7419,7 @@
 				0620273A1D512D82001EE455 /* CRC32Test.m in Sources */,
 				0620294B1D512F25001EE455 /* RSAPrivateCrtKeySpecTest.m in Sources */,
 				0620263A1D512CA1001EE455 /* OldInputStreamTest.m in Sources */,
+				FA6C09DD21925DE4006C646A /* TimeZoneRegressionTest.m in Sources */,
 				062026A61D512D08001EE455 /* OldPasswordAuthenticationTest.m in Sources */,
 				062026C71D512D08001EE455 /* CurrencyTest.m in Sources */,
 				062027E61D512DED001EE455 /* ErrorTest.m in Sources */,
@@ -7424,6 +7464,7 @@
 				0612B9161F4373740069EF58 /* ThreadPoolExecutorSubclassTest.m in Sources */,
 				0620260E1D512CA1001EE455 /* FileOutputStreamTest.m in Sources */,
 				0620255C1D512B37001EE455 /* MockResponse.m in Sources */,
+				FA6C09E421925DE4006C646A /* TestUtil.m in Sources */,
 				062029401D512F25001EE455 /* ECPrivateKeySpecTest.m in Sources */,
 				062026251D512CA1001EE455 /* OldAndroidStringWriterTest.m in Sources */,
 				062029851D512F41001EE455 /* Support_StringWriter.m in Sources */,
@@ -7507,6 +7548,7 @@
 				062027581D512D82001EE455 /* FakeFox041.m in Sources */,
 				069C24291E9EEF7B00CE6BAF /* DeflaterInputStreamTest.m in Sources */,
 				062026CB1D512D08001EE455 /* OldAndroidArrayListTest.m in Sources */,
+				FA6C09E721925DE4006C646A /* TimeZoneRuleTest.m in Sources */,
 				0612B8EE1F4373740069EF58 /* AbstractExecutorServiceTest.m in Sources */,
 				062029711D512F41001EE455 /* Support_ASimpleOutputStream.m in Sources */,
 				062028461D512E03001EE455 /* TreeSetTest.m in Sources */,
@@ -7525,6 +7567,7 @@
 				062028511D512E21001EE455 /* ModeTest.m in Sources */,
 				0620282F1D512E03001EE455 /* AbstractSequentialListTest.m in Sources */,
 				062026B01D512D08001EE455 /* BufferTest.m in Sources */,
+				FA6C09E221925DE4006C646A /* TimeZoneBoundaryTest.m in Sources */,
 				062028751D512E3E001EE455 /* KeyTest.m in Sources */,
 				062026BA1D512D08001EE455 /* CharsetEncoderTest.m in Sources */,
 				062028D11D512E89001EE455 /* BigIntegerOrTest.m in Sources */,
@@ -7686,6 +7729,7 @@
 				062025BF1D512C8E001EE455 /* MemoryTest.m in Sources */,
 				FA6C09BF2187C5AC006C646A /* AbstractTest.m in Sources */,
 				062029991D512F57001EE455 /* MessageDigestTestSHA1.m in Sources */,
+				FA6C09E621925DE4006C646A /* TimeZoneOffsetLocalTest.m in Sources */,
 				062027751D512D9D001EE455 /* MockFooButton.m in Sources */,
 				069C23F11E9EEECA00CE6BAF /* DecimalFormatSymbolsTest.m in Sources */,
 				069C23EF1E9EEECA00CE6BAF /* DateFormatSymbolsTest.m in Sources */,
@@ -7785,6 +7829,7 @@
 				062027501D512D82001EE455 /* FakeFox.m in Sources */,
 				0620273E1D512D82001EE455 /* FeatureDescriptorTest.m in Sources */,
 				062B4F261ED76C1200D4E7D8 /* OldAttributesTest.m in Sources */,
+				FA6C09E121925DE4006C646A /* Tests.m in Sources */,
 				0620274D1D512D82001EE455 /* SampleBean.m in Sources */,
 				062028821D512E3E001EE455 /* MyMessageDigest1.m in Sources */,
 				062027DF1D512DED001EE455 /* BooleanTest.m in Sources */,
@@ -7903,6 +7948,7 @@
 				062026421D512CA1001EE455 /* OldPipedOutputStreamTest.m in Sources */,
 				0612B9151F4373740069EF58 /* ThreadLocalRandomTest.m in Sources */,
 				062025871D512B77001EE455 /* SystemTest.m in Sources */,
+				FA6C09E321925DE4006C646A /* AbstractTestLog.m in Sources */,
 				062029721D512F41001EE455 /* Support_ASimpleReader.m in Sources */,
 				062028A51D512E78001EE455 /* ObjectStreamFieldTest.m in Sources */,
 				0620256E1D512B37001EE455 /* Fourth.m in Sources */,
@@ -7920,6 +7966,7 @@
 				0620273B1D512D82001EE455 /* AllTests.m in Sources */,
 				062029041D512EDB001EE455 /* XmlPullParserFactoryTest.m in Sources */,
 				062027421D512D82001EE455 /* MethodDescriptorTest.m in Sources */,
+				FA6C09E521925DE4006C646A /* TimeZoneAliasTest.m in Sources */,
 				069C24411E9EF04900CE6BAF /* CertificateExceptionTest.m in Sources */,
 				062028E41D512EBD001EE455 /* ChannelsTest.m in Sources */,
 				062026151D512CA1001EE455 /* OldAndroidBufferedWriterTest.m in Sources */,
@@ -7986,6 +8033,7 @@
 				062027591D512D82001EE455 /* FakeFox0411.m in Sources */,
 				062028501D512E21001EE455 /* Matcher2Test.m in Sources */,
 				0620280C1D512DED001EE455 /* ModifierTest.m in Sources */,
+				FA6C09DF21925DE4006C646A /* TestFmwk.m in Sources */,
 				062027561D512D82001EE455 /* FakeFox011.m in Sources */,
 				062026CC1D512D08001EE455 /* OldTimeZoneTest.m in Sources */,
 				062028BB1D512E78001EE455 /* UndeclaredThrowableExceptionTests.m in Sources */,

@@ -1894,10 +1894,14 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/impl/ICUConfig.java \
   android/icu/impl/ICUData.java \
   android/icu/impl/ICUDebug.java \
+  android/icu/impl/ICULocaleService.java \
+  android/icu/impl/ICUNotifier.java \
+  android/icu/impl/ICURWLock.java \
   android/icu/impl/ICUResourceBundle.java \
   android/icu/impl/ICUResourceBundleImpl.java \
   android/icu/impl/ICUResourceBundleReader.java \
   android/icu/impl/ICUResourceTableAccess.java \
+  android/icu/impl/ICUService.java \
   android/icu/impl/IllegalIcuArgumentException.java \
   android/icu/impl/IntTrie.java \
   android/icu/impl/IntTrieBuilder.java \
@@ -1926,6 +1930,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/impl/TZDBTimeZoneNames.java \
   android/icu/impl/TextTrieMap.java \
   android/icu/impl/TimeZoneAdapter.java \
+  android/icu/impl/TimeZoneNamesFactoryImpl.java \
   android/icu/impl/TimeZoneGenericNames.java \
   android/icu/impl/TimeZoneNamesImpl.java \
   android/icu/impl/Trie.java \
@@ -1974,6 +1979,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/text/NFRule.java \
   android/icu/text/NFRuleSet.java \
   android/icu/text/NFSubstitution.java \
+  android/icu/text/NumberFormatServiceShim.java \
   android/icu/text/PluralRanges.java \
   android/icu/text/PluralRulesSerialProxy.java \
   android/icu/text/RBBIDataWrapper.java \

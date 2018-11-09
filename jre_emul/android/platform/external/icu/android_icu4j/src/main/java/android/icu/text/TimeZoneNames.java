@@ -120,6 +120,7 @@ public abstract class TimeZoneNames implements Serializable {
     private static final String DEFAULT_FACTORY_CLASS = "android.icu.impl.TimeZoneNamesFactoryImpl";
 
     static {
+        /* J2ObjC: removed use of reflection.
         Factory factory = null;
         String classname = ICUConfig.get(FACTORY_NAME_PROP, DEFAULT_FACTORY_CLASS);
         while (true) {
@@ -142,7 +143,8 @@ public abstract class TimeZoneNames implements Serializable {
         if (factory == null) {
             factory = new DefaultTimeZoneNames.FactoryImpl();
         }
-        TZNAMES_FACTORY = factory;
+        TZNAMES_FACTORY = factory; */
+        TZNAMES_FACTORY = new android.icu.impl.TimeZoneNamesFactoryImpl();
     }
 
     /**

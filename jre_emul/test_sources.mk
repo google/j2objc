@@ -1077,11 +1077,14 @@ TEST_RESOURCES_ICU_DATA_SRCS = \
     com/ibm/icu/impl/data/icudt58b/ucase.icu \
     com/ibm/icu/impl/data/icudt58b/unames.icu \
     com/ibm/icu/impl/data/icudt58b/uprops.icu \
+    com/ibm/icu/impl/data/icudt58b/zone/en.res \
     com/ibm/icu/impl/data/icudt58b/zone/pool.res \
+    com/ibm/icu/impl/data/icudt58b/zone/root.res \
     com/ibm/icu/impl/data/icudt58b/zone/tzdbNames.res \
 
 TEST_RESOURCES_ICU_TZ_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icutzdata.jar
 TEST_RESOURCES_ICU_TZ_DATA_SRCS = \
+    com/ibm/icu/impl/data/icudt58b/metaZones.res \
     com/ibm/icu/impl/data/icudt58b/timezoneTypes.res \
     com/ibm/icu/impl/data/icudt58b/windowsZones.res \
     com/ibm/icu/impl/data/icudt58b/zoneinfo64.res \

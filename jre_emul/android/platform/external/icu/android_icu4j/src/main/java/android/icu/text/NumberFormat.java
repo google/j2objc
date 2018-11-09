@@ -884,6 +884,7 @@ public abstract class NumberFormat extends UFormat {
         // it's all in the class init.  The worst problem is we might instantiate
         // two shim instances, but they'll share the same state so that's ok.
         if (shim == null) {
+            /* J2ObjC removed: use of reflection.
             try {
                 Class<?> cls = Class.forName("android.icu.text.NumberFormatServiceShim");
                 shim = (NumberFormatShim)cls.newInstance();
@@ -897,6 +898,8 @@ public abstract class NumberFormat extends UFormat {
                 throw new RuntimeException(e.getMessage());
             }
             ///CLOVER:ON
+            */
+            shim = new android.icu.text.NumberFormatServiceShim();
         }
         return shim;
     }

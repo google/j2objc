@@ -9,6 +9,7 @@
  */
 package android.icu.impl;
 
+import com.google.j2objc.annotations.Weak;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Iterator;
@@ -118,7 +119,7 @@ public abstract class ICUNotifier {
      * The notification thread.
      */
     private static class NotifyThread extends Thread {
-        private final ICUNotifier notifier;
+        @Weak private final ICUNotifier notifier;
         private final List<EventListener[]> queue = new ArrayList<EventListener[]>();
 
         NotifyThread(ICUNotifier notifier) {
