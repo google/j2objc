@@ -266,9 +266,20 @@ public abstract class ZoneId implements Serializable {
      * @throws ZoneRulesException if the converted zone region ID cannot be found
      */
     public static ZoneId systemDefault() {
-        /* J2ObjC removed.
-        return TimeZone.getDefault().toZoneId(); */
-        return ZoneId.of("UTC+00:00");
+        return toZoneId(TimeZone.getDefault());
+    }
+
+    /**
+     * J2ObjC: moved from java.util to keep jre_core independent of jre_time.
+     * Converts a {@code TimeZone} object to a {@code ZoneId}.
+     *
+     * @return a {@code ZoneId} representing the same time zone as this
+     *         {@code TimeZone}
+     * @since 1.8
+     */
+    public static ZoneId toZoneId(TimeZone tz) {
+        // Android-changed: don't support "old mapping"
+        return ZoneId.of(tz.getID(), ZoneId.SHORT_IDS);
     }
 
     /**
