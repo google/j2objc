@@ -56,8 +56,9 @@
  */
 package java.time.temporal;
 
+/* J2ObjC removed
 import android.icu.text.DateTimePatternGenerator;
-import android.icu.util.ULocale;
+import android.icu.util.ULocale; */
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.Year;
@@ -620,15 +621,19 @@ public enum ChronoField implements TemporalField {
         }
 
         // Android-changed: use ICU names.
+        /* J2ObjC removed
         DateTimePatternGenerator generator = DateTimePatternGenerator
                 .getFrozenInstance(ULocale.forLocale(locale));
         String icuName = generator.getAppendItemName(getIcuFieldNumber(this));
         return icuName != null && !icuName.isEmpty() ? icuName : name;
+        */
+        return name;
     }
 
     /**
      * @return the field id according to {@link DateTimePatternGenerator} for the field.
      */
+    /* J2ObjC removed
     private static int getIcuFieldNumber(ChronoField field) {
         switch (field) {
             case SECOND_OF_MINUTE:
@@ -653,6 +658,7 @@ public enum ChronoField implements TemporalField {
                 throw new IllegalArgumentException("Unexpected ChronoField " + field.name());
         }
     }
+    */
 
     @Override
     public TemporalUnit getBaseUnit() {

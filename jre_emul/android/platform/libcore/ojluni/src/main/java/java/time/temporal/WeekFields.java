@@ -61,10 +61,11 @@
  */
 package java.time.temporal;
 
+/* J2ObjC removed.
 import android.icu.text.DateTimePatternGenerator;
 import android.icu.util.Calendar;
 import android.icu.util.ULocale;
-
+*/
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
@@ -286,11 +287,13 @@ public final class WeekFields implements Serializable {
     public static WeekFields of(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         // Android-changed: get Week data from ICU4J
+        /* J2ObjC removed.
         ULocale ulocale = ULocale.forLocale(locale);
-        String region = ULocale.getRegionForSupplementalData(ulocale, /* inferRegion */true);
+        String region = ULocale.getRegionForSupplementalData(ulocale, /* inferRegion true);
         Calendar.WeekData weekData = Calendar.getWeekDataForRegion(region);
         DayOfWeek dow = DayOfWeek.SUNDAY.plus(weekData.firstDayOfWeek - 1);
-        return WeekFields.of(dow, weekData.minimalDaysInFirstWeek);
+        return WeekFields.of(dow, weekData.minimalDaysInFirstWeek); */
+        return ISO;
     }
 
     /**
@@ -1034,11 +1037,14 @@ public final class WeekFields implements Serializable {
             Objects.requireNonNull(locale, "locale");
             if (rangeUnit == YEARS) {  // only have values for week-of-year
                 // Android-changed: Use ICU name values.
+                /* J2ObjC removed
                 DateTimePatternGenerator dateTimePatternGenerator = DateTimePatternGenerator
                         .getFrozenInstance(ULocale.forLocale(locale));
                 String icuName = dateTimePatternGenerator
                         .getAppendItemName(DateTimePatternGenerator.WEEK_OF_YEAR);
                 return icuName != null && !icuName.isEmpty() ? icuName : name;
+                */
+                return name;
             }
             return name;
         }

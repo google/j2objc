@@ -61,9 +61,10 @@
  */
 package java.time.format;
 
+/* J2ObjC removed.
 import android.icu.impl.ICUData;
 import android.icu.impl.ICUResourceBundle;
-import android.icu.util.UResourceBundle;
+import android.icu.util.UResourceBundle; */
 
 import static java.time.temporal.ChronoField.AMPM_OF_DAY;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
@@ -433,6 +434,7 @@ class DateTimeTextProvider {
             return new LocaleStore(styleMap);
         }
 
+        /* J2ObjC removed.
         if (field == IsoFields.QUARTER_OF_YEAR) {
             // Android-changed: Use ICU resources.
             ICUResourceBundle rb = (ICUResourceBundle) UResourceBundle
@@ -447,11 +449,12 @@ class DateTimeTextProvider {
             styleMap.put(TextStyle.NARROW, extractQuarters(formatRb, "narrow"));
             styleMap.put(TextStyle.NARROW_STANDALONE, extractQuarters(standaloneRb, "narrow"));
             return new LocaleStore(styleMap);
-        }
+        }*/
 
         return "";  // null marker for map
     }
 
+    /* J2ObjC removed.
     private static Map<Long, String> extractQuarters(ICUResourceBundle rb, String key) {
         String[] names = rb.getWithFallback(key).getStringArray();
         Map<Long, String> map = new HashMap<>();
@@ -459,7 +462,7 @@ class DateTimeTextProvider {
             map.put((long) (q + 1), names[q]);
         }
         return map;
-    }
+    } */
 
     /**
      * Helper method to create an immutable entry.

@@ -61,12 +61,12 @@
  */
 package java.time.format;
 
-import android.icu.impl.ZoneMeta;
-import android.icu.text.LocaleDisplayNames;
-import android.icu.text.TimeZoneFormat;
-import android.icu.text.TimeZoneNames;
-import android.icu.util.Calendar;
-import android.icu.util.ULocale;
+//import android.icu.impl.ZoneMeta;
+//import android.icu.text.LocaleDisplayNames;
+//import android.icu.text.TimeZoneFormat;
+//import android.icu.text.TimeZoneNames;
+//import android.icu.util.Calendar;
+//import android.icu.util.ULocale;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
@@ -212,9 +212,11 @@ public final class DateTimeFormatterBuilder {
         }
 
         // Android-changed: get format string from ICU.
+        /* J2ObjC removed.
         String pattern = Calendar.getDateTimeFormatString(
                 ULocale.forLocale(locale), chrono.getCalendarType(),
-                convertStyle(dateStyle), convertStyle(timeStyle));
+                convertStyle(dateStyle), convertStyle(timeStyle)); */
+        String pattern = "";
         return pattern;
     }
 
@@ -3642,6 +3644,7 @@ public final class DateTimeFormatterBuilder {
         private static final int GENERIC = 2;
 
         // Android-changed: List of types used by getDisplayName().
+        /* J2ObjC removed.
         private static final TimeZoneNames.NameType[] TYPES = new TimeZoneNames.NameType[] {
                 TimeZoneNames.NameType.LONG_STANDARD,
                 TimeZoneNames.NameType.SHORT_STANDARD,
@@ -3661,7 +3664,7 @@ public final class DateTimeFormatterBuilder {
                 TimeZoneNames.NameType.SHORT_STANDARD,
                 TimeZoneNames.NameType.SHORT_DAYLIGHT,
                 TimeZoneNames.NameType.SHORT_GENERIC,
-        };
+        }; */
 
         private static final Map<String, SoftReference<Map<Locale, String[]>>> cache =
             new ConcurrentHashMap<>();
@@ -3676,13 +3679,14 @@ public final class DateTimeFormatterBuilder {
             if (ref == null || (perLocale = ref.get()) == null ||
                     (names = perLocale.get(locale)) == null) {
                 // Android-changed: use ICU TimeZoneNames instead of TimeZoneNameUtility.
+                /* J2ObjC removed.
                 TimeZoneNames timeZoneNames = TimeZoneNames.getInstance(locale);
                 names = new String[TYPES.length + 1];
                 // Zeroth index used for id, other indexes based on NameType constant + 1.
                 names[0] = id;
                 String canonicalId = ZoneMeta.getCanonicalCLDRID(id);
                 timeZoneNames.getDisplayNames(canonicalId, TYPES, System.currentTimeMillis(),
-                        /* dest */ names, /* destoffset  */ 1);
+                        /* dest  names, /* destoffset  1); */
                 if (names == null) {
                     return null;
                 }
@@ -3769,6 +3773,7 @@ public final class DateTimeFormatterBuilder {
                 (tree = entry.getValue().get()) == null)) {
                 tree = PrefixTree.newTree(context);
                 // Android-changed: use ICU TimeZoneNames to get Zone names.
+                /* J2ObjC removed.
                 TimeZoneNames timeZoneNames = TimeZoneNames.getInstance(locale);
                 long now = System.currentTimeMillis();
                 TimeZoneNames.NameType[] types =
@@ -3800,7 +3805,7 @@ public final class DateTimeFormatterBuilder {
                         }
                     }
                 }
-                cached.put(locale, new SimpleImmutableEntry<>(regionIdsSize, new SoftReference<>(tree)));
+                cached.put(locale, new SimpleImmutableEntry<>(regionIdsSize, new SoftReference<>(tree))); */
             }
             return tree;
         }
@@ -4367,9 +4372,11 @@ public final class DateTimeFormatterBuilder {
          */
         private String getChronologyName(Chronology chrono, Locale locale) {
             // Android-changed: Use ICU LocaleDisplayNames.
+            /* J2ObjC removed.
             LocaleDisplayNames displayNames = LocaleDisplayNames.getInstance(ULocale.forLocale(locale));
             String name = displayNames.keyValueDisplayName("calendar", chrono.getCalendarType());
-            return name != null ? name : chrono.getId();
+            return name != null ? name : chrono.getId(); */
+            return chrono.getId();
         }
     }
 

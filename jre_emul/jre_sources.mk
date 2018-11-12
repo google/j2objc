@@ -1812,7 +1812,6 @@ JAVA_PRIVATE_SOURCES_TIME = \
   java/time/format/DateTimePrintContext.java \
   java/time/format/DateTimeTextProvider.java \
   java/time/format/Parsed.java \
-  java/time/format/ZoneName.java \
   java/time/zone/IcuZoneRulesProvider.java \
   java/time/zone/Ser.java \
   java/time/zone/ZoneRulesProvider.java \

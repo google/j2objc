@@ -56,8 +56,9 @@
  */
 package java.time.temporal;
 
+/* J2ObjC removed.
 import android.icu.text.DateTimePatternGenerator;
-import android.icu.util.ULocale;
+import android.icu.util.ULocale; */
 
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
@@ -419,11 +420,13 @@ public final class IsoFields {
             public String getDisplayName(Locale locale) {
                 Objects.requireNonNull(locale, "locale");
                 // Android-changed: Use ICU name values.
+                /* J2ObjC removed
                 DateTimePatternGenerator dateTimePatternGenerator = DateTimePatternGenerator
                         .getFrozenInstance(ULocale.forLocale(locale));
                 String icuName = dateTimePatternGenerator
                         .getAppendItemName(DateTimePatternGenerator.WEEK_OF_YEAR);
-                return icuName != null && !icuName.isEmpty() ? icuName : toString();
+                return icuName != null && !icuName.isEmpty() ? icuName : toString(); */
+                return toString();
             }
 
             @Override
