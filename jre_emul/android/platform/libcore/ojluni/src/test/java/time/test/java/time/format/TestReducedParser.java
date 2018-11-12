@@ -65,33 +65,38 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.HijrahChronology;
+/* J2ObjC: only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahChronology; */
 import java.time.chrono.IsoChronology;
+/* J2ObjC: only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.MinguoChronology;
 import java.time.chrono.ThaiBuddhistChronology;
-import java.time.chrono.ThaiBuddhistDate;
+import java.time.chrono.ThaiBuddhistDate; */
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test ReducedPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestReducedParser extends AbstractTestPrinterParser {
     private static final boolean STRICT = true;
     private static final boolean LENIENT = false;
@@ -109,15 +114,16 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="error")
-    Object[][] data_error() {
+    @DataProvider
+    public static Object[][] data_error() {
         return new Object[][] {
             {YEAR, 2, 2010, "12", -1, IndexOutOfBoundsException.class},
             {YEAR, 2, 2010, "12", 3, IndexOutOfBoundsException.class},
         };
     }
 
-    @Test(dataProvider="error")
+    @Test
+    @UseDataProvider("data_error")
     public void test_parse_error(TemporalField field, int width, int baseValue, String text, int pos, Class<?> expected) {
         try {
             getFormatter0(field, width, baseValue).parseUnresolved(text, new ParsePosition(pos));
@@ -127,6 +133,7 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_fieldRangeIgnored() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter0(DAY_OF_YEAR, 3, 10).parseUnresolved("456", pos);
@@ -138,8 +145,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     // Parse data and values that are consistent whether strict or lenient
     // The data is the ChronoField, width, baseValue, text, startPos, endPos, value
     //-----------------------------------------------------------------------
-    @DataProvider(name="ParseAll")
-    Object[][] provider_parseAll() {
+    @DataProvider
+    public static Object[][] provider_parseAll() {
         return new Object[][] {
              // negative zero
             {YEAR, 1, 2010, "-0", 0, 0, null},
@@ -182,30 +189,32 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="ParseAll")
+    @Test
+    @UseDataProvider("provider_parseAll")
     public void test_parseAllStrict(TemporalField field, int width, int baseValue, String input, int pos, int parseLen, Integer parseVal) {
         ParsePosition ppos = new ParsePosition(pos);
         setStrict(true);
         TemporalAccessor parsed = getFormatter0(field, width, baseValue).parseUnresolved(input, ppos);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), parseLen, "error case parse position");
-            assertEquals(parsed, parseVal, "unexpected parse result");
+            assertEquals("error case parse position", ppos.getErrorIndex(), parseLen);
+            assertEquals("unexpected parse result", parsed, parseVal);
         } else {
-            assertEquals(ppos.getIndex(), parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), parseLen);
             assertParsed(parsed, YEAR, parseVal != null ? (long) parseVal : null);
         }
     }
 
-   @Test(dataProvider="ParseAll")
+   @Test
+   @UseDataProvider("provider_parseAll")
     public void test_parseAllLenient(TemporalField field, int width, int baseValue, String input, int pos, int parseLen, Integer parseVal) {
         ParsePosition ppos = new ParsePosition(pos);
         setStrict(false);
         TemporalAccessor parsed = getFormatter0(field, width, baseValue).parseUnresolved(input, ppos);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), parseLen, "error case parse position");
-            assertEquals(parsed, parseVal, "unexpected parse result");
+            assertEquals("error case parse position", ppos.getErrorIndex(), parseLen);
+            assertEquals("unexpected parse result", parsed, parseVal);
         } else {
-            assertEquals(ppos.getIndex(), parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), parseLen);
             assertParsed(parsed, YEAR, parseVal != null ? (long) parseVal : null);
         }
     }
@@ -215,8 +224,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     // The data is the ChronoField, minWidth, maxWidth, baseValue, text, startPos,
     // Strict Pair(endPos, value), Lenient Pair(endPos, value)
     //-----------------------------------------------------------------------
-    @DataProvider(name="ParseLenientSensitive")
-    Object[][] provider_parseLenientSensitive() {
+    @DataProvider
+    public static Object[][] provider_parseLenientSensitive() {
         return new Object[][] {
             // few digits supplied
             {YEAR, 2, 2, 2010, "3", 0, strict(0, null), lenient(1, 3)},
@@ -268,32 +277,34 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     // Parsing tests for strict mode
     //-----------------------------------------------------------------------
-    @Test(dataProvider="ParseLenientSensitive")
+    @Test
+    @UseDataProvider("provider_parseLenientSensitive")
     public void test_parseStrict(TemporalField field, int minWidth, int maxWidth, int baseValue, String input, int pos,
         Pair strict, Pair lenient) {
         ParsePosition ppos = new ParsePosition(pos);
         setStrict(true);
         TemporalAccessor parsed = getFormatter0(field, minWidth, maxWidth, baseValue).parseUnresolved(input, ppos);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), strict.parseLen, "error case parse position");
-            assertEquals(parsed, strict.parseVal, "unexpected parse result");
+            assertEquals("error case parse position", ppos.getErrorIndex(), strict.parseLen);
+            assertEquals("unexpected parse result", parsed, strict.parseVal);
         } else {
-            assertEquals(ppos.getIndex(), strict.parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), strict.parseLen);
             assertParsed(parsed, YEAR, strict.parseVal != null ? (long) strict.parseVal : null);
         }
     }
 
-    @Test(dataProvider="ParseLenientSensitive")
+    @Test
+    @UseDataProvider("provider_parseLenientSensitive")
     public void test_parseStrict_baseDate(TemporalField field, int minWidth, int maxWidth, int baseValue, String input, int pos,
                                  Pair strict, Pair lenient) {
         ParsePosition ppos = new ParsePosition(pos);
         setStrict(true);
         TemporalAccessor parsed = getFormatterBaseDate(field, minWidth, maxWidth, baseValue).parseUnresolved(input, ppos);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), strict.parseLen, "error case parse position");
-            assertEquals(parsed, strict.parseVal, "unexpected parse result");
+            assertEquals("error case parse position", ppos.getErrorIndex(), strict.parseLen);
+            assertEquals("unexpected parse result", parsed, strict.parseVal);
         } else {
-            assertEquals(ppos.getIndex(), strict.parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), strict.parseLen);
             assertParsed(parsed, YEAR, strict.parseVal != null ? (long) strict.parseVal : null);
         }
     }
@@ -301,42 +312,44 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     // Parsing tests for lenient mode
     //-----------------------------------------------------------------------
-    @Test(dataProvider="ParseLenientSensitive")
+    @Test
+    @UseDataProvider("provider_parseLenientSensitive")
     public void test_parseLenient(TemporalField field, int minWidth, int maxWidth, int baseValue, String input, int pos,
         Pair strict, Pair lenient) {
         ParsePosition ppos = new ParsePosition(pos);
         setStrict(false);
         TemporalAccessor parsed = getFormatter0(field, minWidth, maxWidth, baseValue).parseUnresolved(input, ppos);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), lenient.parseLen, "error case parse position");
-            assertEquals(parsed, lenient.parseVal, "unexpected parse result");
+            assertEquals("error case parse position", ppos.getErrorIndex(), lenient.parseLen);
+            assertEquals("unexpected parse result", parsed, lenient.parseVal);
         } else {
-            assertEquals(ppos.getIndex(), lenient.parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), lenient.parseLen);
             assertParsed(parsed, YEAR, lenient.parseVal != null ? (long) lenient.parseVal : null);
         }
     }
 
-    @Test(dataProvider="ParseLenientSensitive")
+    @Test
+    @UseDataProvider("provider_parseLenientSensitive")
     public void test_parseLenient_baseDate(TemporalField field, int minWidth, int maxWidth, int baseValue, String input, int pos,
                                   Pair strict, Pair lenient) {
         ParsePosition ppos = new ParsePosition(pos);
         setStrict(false);
         TemporalAccessor parsed = getFormatterBaseDate(field, minWidth, maxWidth, baseValue).parseUnresolved(input, ppos);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), lenient.parseLen, "error case parse position");
-            assertEquals(parsed, lenient.parseVal, "unexpected parse result");
+            assertEquals("error case parse position", ppos.getErrorIndex(), lenient.parseLen);
+            assertEquals("unexpected parse result", parsed, lenient.parseVal);
         } else {
-            assertEquals(ppos.getIndex(), lenient.parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), lenient.parseLen);
             assertParsed(parsed, YEAR, lenient.parseVal != null ? (long) lenient.parseVal : null);
         }
     }
 
     private void assertParsed(TemporalAccessor parsed, TemporalField field, Long value) {
         if (value == null) {
-            assertEquals(parsed, null, "Parsed Value");
+            assertEquals("Parsed Value", parsed, null);
         } else {
-            assertEquals(parsed.isSupported(field), true, "isSupported: " + field);
-            assertEquals(parsed.getLong(field), (long) value, "Temporal.getLong: " + field);
+            assertEquals("isSupported: " + field, parsed.isSupported(field), true);
+            assertEquals("Temporal.getLong: " + field, parsed.getLong(field), (long) value);
         }
     }
 
@@ -344,8 +357,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     // Cases and values in adjacent parsing mode
     //-----------------------------------------------------------------------
-    @DataProvider(name="ParseAdjacent")
-    Object[][] provider_parseAdjacent() {
+    @DataProvider
+    public static Object[][] provider_parseAdjacent() {
         return new Object[][] {
             // general
             {"yyMMdd", "19990703",  LENIENT, 0, 8, 1999, 7, 3},
@@ -363,7 +376,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="ParseAdjacent")
+    @Test
+    @UseDataProvider("provider_parseAdjacent")
     public void test_parseAdjacent(String pattern, String input, boolean strict, int pos, int parseLen, int year, int month, int day) {
         ParsePosition ppos = new ParsePosition(0);
         builder = new DateTimeFormatterBuilder();
@@ -372,11 +386,11 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         DateTimeFormatter dtf = builder.toFormatter();
 
         TemporalAccessor parsed = dtf.parseUnresolved(input, ppos);
-        assertNotNull(parsed, String.format("parse failed: ppos: %s, formatter: %s%n", ppos.toString(), dtf));
+        assertNotNull(String.format("parse failed: ppos: %s, formatter: %s%n", ppos.toString(), dtf), parsed);
         if (ppos.getErrorIndex() != -1) {
-            assertEquals(ppos.getErrorIndex(), parseLen, "error case parse position");
+            assertEquals("error case parse position", ppos.getErrorIndex(), parseLen);
         } else {
-            assertEquals(ppos.getIndex(), parseLen, "parse position");
+            assertEquals("parse position", ppos.getIndex(), parseLen);
             assertParsed(parsed, YEAR_OF_ERA, Long.valueOf(year));
             assertParsed(parsed, MONTH_OF_YEAR, Long.valueOf(month));
             assertParsed(parsed, DAY_OF_MONTH, Long.valueOf(day));
@@ -386,13 +400,15 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     // Cases and values in reduced value parsing mode
     //-----------------------------------------------------------------------
-    @DataProvider(name="ReducedWithChrono")
-    Object[][] provider_reducedWithChrono() {
+    @DataProvider
+    @UseDataProvider("provider_reducedWithChrono")
+    public static Object[][] provider_reducedWithChrono() {
         LocalDate baseYear = LocalDate.of(2000, 1, 1);
         return new Object[][] {
             {IsoChronology.INSTANCE.date(baseYear)},
             {IsoChronology.INSTANCE.date(baseYear).plus(1, YEARS)},
             {IsoChronology.INSTANCE.date(baseYear).plus(99, YEARS)},
+            /* J2ObjC: only "gregorian" and "julian" calendars are supported.
             {HijrahChronology.INSTANCE.date(baseYear)},
             {HijrahChronology.INSTANCE.date(baseYear).plus(1, YEARS)},
             {HijrahChronology.INSTANCE.date(baseYear).plus(99, YEARS)},
@@ -404,11 +420,12 @@ public class TestReducedParser extends AbstractTestPrinterParser {
             {MinguoChronology.INSTANCE.date(baseYear).plus(99, YEARS)},
             {ThaiBuddhistChronology.INSTANCE.date(baseYear)},
             {ThaiBuddhistChronology.INSTANCE.date(baseYear).plus(1, YEARS)},
-            {ThaiBuddhistChronology.INSTANCE.date(baseYear).plus(99, YEARS)},
+            {ThaiBuddhistChronology.INSTANCE.date(baseYear).plus(99, YEARS)}, */
         };
     }
 
-    @Test(dataProvider="ReducedWithChrono")
+    @Test
+    @UseDataProvider("provider_reducedWithChrono")
     public void test_reducedWithChronoYear(ChronoLocalDate date) {
         Chronology chrono = date.getChronology();
         DateTimeFormatter df
@@ -421,12 +438,12 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = df.parseUnresolved(input, pos);
         int actual = parsed.get(YEAR);
-        assertEquals(actual, expected,
-                String.format("Wrong date parsed, chrono: %s, input: %s",
-                chrono, input));
+        assertEquals(String.format("Wrong date parsed, chrono: %s, input: %s", chrono, input),
+            actual, expected);
 
     }
-    @Test(dataProvider="ReducedWithChrono")
+    @Test
+    @UseDataProvider("provider_reducedWithChrono")
     public void test_reducedWithChronoYearOfEra(ChronoLocalDate date) {
         Chronology chrono = date.getChronology();
         DateTimeFormatter df
@@ -439,12 +456,12 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = df.parseUnresolved(input, pos);
         int actual = parsed.get(YEAR_OF_ERA);
-        assertEquals(actual, expected,
-                String.format("Wrong date parsed, chrono: %s, input: %s",
-                chrono, input));
+        assertEquals(String.format("Wrong date parsed, chrono: %s, input: %s", chrono, input),
+            actual, expected);
 
     }
 
+    /* J2ObjC: only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_reducedWithLateChronoChange() {
         ThaiBuddhistDate date = ThaiBuddhistDate.of(2543, 1, 1);
@@ -459,12 +476,13 @@ public class TestReducedParser extends AbstractTestPrinterParser {
 
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = df.parseUnresolved(input, pos);
-        assertEquals(pos.getIndex(), input.length(), "Input not parsed completely");
-        assertEquals(pos.getErrorIndex(), -1, "Error index should be -1 (no-error)");
+        assertEquals("Input not parsed completely", pos.getIndex(), input.length());
+        assertEquals("Error index should be -1 (no-error)", pos.getErrorIndex(), -1);
         int actual = parsed.get(YEAR);
-        assertEquals(actual, expected,
-                String.format("Wrong date parsed, chrono: %s, input: %s",
-                parsed.query(TemporalQueries.chronology()), input));
+        assertEquals(
+            String.format("Wrong date parsed, chrono: %s, input: %s",
+                parsed.query(TemporalQueries.chronology()), input),
+            actual, expected);
 
     }
 
@@ -482,14 +500,15 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         String input = "44 ThaiBuddhist ISO";
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = df.parseUnresolved(input, pos);
-        assertEquals(pos.getIndex(), input.length(), "Input not parsed completely: " + pos);
-        assertEquals(pos.getErrorIndex(), -1, "Error index should be -1 (no-error)");
+        assertEquals("Input not parsed completely: " + pos, pos.getIndex(), input.length());
+        assertEquals("Error index should be -1 (no-error)", pos.getErrorIndex(), -1);
         int actual = parsed.get(YEAR);
-        assertEquals(actual, expected,
-                String.format("Wrong date parsed, chrono: %s, input: %s",
-                parsed.query(TemporalQueries.chronology()), input));
+        assertEquals(
+            String.format("Wrong date parsed, chrono: %s, input: %s",
+                parsed.query(TemporalQueries.chronology()), input),
+            actual, expected);
 
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // Class to structure the test data

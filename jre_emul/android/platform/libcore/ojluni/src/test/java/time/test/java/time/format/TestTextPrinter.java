@@ -64,31 +64,35 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.chrono.JapaneseChronology;
+/* J2ObjC: only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.JapaneseChronology; */
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalField;
 import java.util.Locale;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import test.java.time.temporal.MockFieldValue;
 
 /**
  * Test TextPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestTextPrinter extends AbstractTestPrinterParser {
     static final Locale RUSSIAN = new Locale("ru");
     static final Locale FINNISH = new Locale("fi");
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         getFormatter(DAY_OF_WEEK, TextStyle.FULL).formatTo(EMPTY_DTA, buf);
     }
@@ -100,8 +104,8 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="print")
-    Object[][] provider_dow() {
+    @DataProvider
+    public static Object[][] provider_dow() {
         return new Object[][] {
             {DAY_OF_WEEK, TextStyle.FULL, 1, "Monday"},
             {DAY_OF_WEEK, TextStyle.FULL, 2, "Tuesday"},
@@ -206,8 +210,8 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
        };
     }
 
-    @DataProvider(name="print_DayOfWeekData")
-    Object[][] providerDayOfWeekData() {
+    @DataProvider
+    public static Object[][] providerDayOfWeekData() {
         return new Object[][] {
             // Locale, pattern, expected text, input DayOfWeek
             {Locale.US, "e",  "1",  DayOfWeek.SUNDAY},
@@ -220,8 +224,8 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
         };
     }
 
-    @DataProvider(name="print_JapaneseChronology")
-    Object[][] provider_japaneseEra() {
+    @DataProvider
+    public static Object[][] provider_japaneseEra() {
        return new Object[][] {
             {ERA,           TextStyle.FULL, 2, "Heisei"}, // Note: CLDR doesn't define "wide" Japanese era names.
             {ERA,           TextStyle.SHORT, 2, "Heisei"},
@@ -230,8 +234,8 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     };
 
     // Test data is dependent on localized resources.
-    @DataProvider(name="print_standalone")
-    Object[][] provider_StandaloneNames() {
+    @DataProvider
+    public static Object[][] provider_StandaloneNames() {
         return new Object[][] {
             // standalone names for 2013-01-01 (Tue)
             // Locale, TemporalField, TextStyle, expected text
@@ -243,48 +247,57 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="print")
+    @Test
+    @UseDataProvider("provider_dow")
     public void test_format(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         getFormatter(field, style).formatTo(new MockFieldValue(field, value), buf);
         assertEquals(buf.toString(), expected);
     }
 
-    @Test(dataProvider="print_DayOfWeekData")
+    @Test
+    @UseDataProvider("providerDayOfWeekData")
     public void test_formatDayOfWeek(Locale locale, String pattern, String expected, DayOfWeek dayOfWeek) {
         DateTimeFormatter formatter = getPatternFormatter(pattern).withLocale(locale);
         String text = formatter.format(dayOfWeek);
         assertEquals(text, expected);
     }
 
-    @Test(dataProvider="print_JapaneseChronology")
+    /* J2ObjC: only "gregorian" and "julian" calendars are supported.
+    @Test
+    @UseDataProvider("provider_japaneseEra")
     public void test_formatJapaneseEra(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         LocalDate ld = LocalDate.of(2013, 1, 31);
         getFormatter(field, style).withChronology(JapaneseChronology.INSTANCE).formatTo(ld, buf);
         assertEquals(buf.toString(), expected);
-    }
+    } */
 
-    @Test(dataProvider="print_standalone")
+    @Test
+    @UseDataProvider("provider_StandaloneNames")
     public void test_standaloneNames(Locale locale, TemporalField field, TextStyle style, String expected) {
         getFormatter(field, style).withLocale(locale).formatTo(LocalDate.of(2013, 1, 1), buf);
         assertEquals(buf.toString(), expected);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_print_french_long() throws Exception {
         getFormatter(MONTH_OF_YEAR, TextStyle.FULL).withLocale(Locale.FRENCH).formatTo(LocalDate.of(2012, 1, 1), buf);
         assertEquals(buf.toString(), "janvier");
     }
 
+    @Test
     public void test_print_french_short() throws Exception {
         getFormatter(MONTH_OF_YEAR, TextStyle.SHORT).withLocale(Locale.FRENCH).formatTo(LocalDate.of(2012, 1, 1), buf);
         assertEquals(buf.toString(), "janv.");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_toString1() throws Exception {
         assertEquals(getFormatter(MONTH_OF_YEAR, TextStyle.FULL).toString(), "Text(MonthOfYear)");
     }
 
+    @Test
     public void test_toString2() throws Exception {
         assertEquals(getFormatter(MONTH_OF_YEAR, TextStyle.SHORT).toString(), "Text(MonthOfYear,SHORT)");
     }

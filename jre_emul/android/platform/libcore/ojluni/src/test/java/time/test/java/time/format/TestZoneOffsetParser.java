@@ -60,32 +60,36 @@
 package test.java.time.format;
 
 import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.text.ParsePosition;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test ZoneOffsetPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="error")
-    Object[][] data_error() {
+    @DataProvider
+    public static Object[][] data_error() {
         return new Object[][] {
             {"+HH:MM:ss", "Z", "hello", -1, IndexOutOfBoundsException.class},
             {"+HH:MM:ss", "Z", "hello", 6, IndexOutOfBoundsException.class},
         };
     }
 
-    @Test(dataProvider="error")
+    @Test
+    @UseDataProvider("data_error")
     public void test_parse_error(String pattern, String noOffsetText, String text, int pos, Class<?> expected) {
         try {
             getFormatter(pattern, noOffsetText).parseUnresolved(text, new ParsePosition(pos));
@@ -95,6 +99,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_exactMatch_UTC() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "Z").parseUnresolved("Z", pos);
@@ -102,6 +107,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_startStringMatch_UTC() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "Z").parseUnresolved("ZOTHER", pos);
@@ -109,6 +115,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_midStringMatch_UTC() throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "Z").parseUnresolved("OTHERZOTHER", pos);
@@ -116,6 +123,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_endStringMatch_UTC() throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "Z").parseUnresolved("OTHERZ", pos);
@@ -124,6 +132,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_exactMatch_UTC_EmptyUTC() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "").parseUnresolved("", pos);
@@ -131,6 +140,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_startStringMatch_UTC_EmptyUTC() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "").parseUnresolved("OTHER", pos);
@@ -138,6 +148,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_midStringMatch_UTC_EmptyUTC() throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "").parseUnresolved("OTHEROTHER", pos);
@@ -145,6 +156,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_endStringMatch_UTC_EmptyUTC() throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter("+HH:MM:ss", "").parseUnresolved("OTHER", pos);
@@ -153,8 +165,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsets")
-    Object[][] provider_offsets() {
+    @DataProvider
+    public static Object[][] provider_offsets() {
         return new Object[][] {
             {"+HH", "+00", ZoneOffset.UTC},
             {"+HH", "-00", ZoneOffset.UTC},
@@ -228,7 +240,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_exactMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(pattern, "Z").parseUnresolved(parse, pos);
@@ -236,7 +249,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_startStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(pattern, "Z").parseUnresolved(parse + ":OTHER", pos);
@@ -244,7 +258,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_midStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter(pattern, "Z").parseUnresolved("OTHER" + parse + ":OTHER", pos);
@@ -252,7 +267,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_endStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter(pattern, "Z").parseUnresolved("OTHER" + parse, pos);
@@ -260,7 +276,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_exactMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(pattern, "").parseUnresolved(parse, pos);
@@ -268,7 +285,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_startStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(pattern, "").parseUnresolved(parse + ":OTHER", pos);
@@ -276,7 +294,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_midStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter(pattern, "").parseUnresolved("OTHER" + parse + ":OTHER", pos);
@@ -284,7 +303,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, expected);
     }
 
-    @Test(dataProvider="offsets")
+    @Test
+    @UseDataProvider("provider_offsets")
     public void test_parse_endStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
         ParsePosition pos = new ParsePosition(5);
         TemporalAccessor parsed = getFormatter(pattern, "").parseUnresolved("OTHER" + parse, pos);
@@ -293,8 +313,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="bigOffsets")
-    Object[][] provider_bigOffsets() {
+    @DataProvider
+    public static Object[][] provider_bigOffsets() {
         return new Object[][] {
             {"+HH", "+59", 59 * 3600},
             {"+HH", "-19", -(19 * 3600)},
@@ -319,7 +339,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="bigOffsets")
+    @Test
+    @UseDataProvider("provider_bigOffsets")
     public void test_parse_bigOffsets(String pattern, String parse, long offsetSecs) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(pattern, "").parseUnresolved(parse, pos);
@@ -328,8 +349,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="badOffsets")
-    Object[][] provider_badOffsets() {
+    @DataProvider
+    public static Object[][] provider_badOffsets() {
         return new Object[][] {
             {"+HH", "+1", 0},
             {"+HH", "-1", 0},
@@ -390,7 +411,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="badOffsets")
+    @Test
+    @UseDataProvider("provider_badOffsets")
     public void test_parse_invalid(String pattern, String parse, int expectedPosition) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(pattern, "Z").parseUnresolved(parse, pos);
@@ -401,6 +423,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_caseSensitiveUTC_matchedCase() throws Exception {
         setCaseSensitive(true);
         ParsePosition pos = new ParsePosition(0);
@@ -409,6 +432,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_caseSensitiveUTC_unmatchedCase() throws Exception {
         setCaseSensitive(true);
         ParsePosition pos = new ParsePosition(0);
@@ -417,6 +441,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertEquals(parsed, null);
     }
 
+    @Test
     public void test_parse_caseInsensitiveUTC_matchedCase() throws Exception {
         setCaseSensitive(false);
         ParsePosition pos = new ParsePosition(0);
@@ -425,6 +450,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
         assertParsed(parsed, ZoneOffset.UTC);
     }
 
+    @Test
     public void test_parse_caseInsensitiveUTC_unmatchedCase() throws Exception {
         setCaseSensitive(false);
         ParsePosition pos = new ParsePosition(0);

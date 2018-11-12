@@ -63,9 +63,12 @@ import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.text.ParsePosition;
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
@@ -74,27 +77,28 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.util.Locale;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test TextPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestTextParser extends AbstractTestPrinterParser {
     static final Locale RUSSIAN = new Locale("ru");
     static final Locale FINNISH = new Locale("fi");
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="error")
-    Object[][] data_error() {
+    @DataProvider
+    public static Object[][] data_error() {
         return new Object[][] {
             {DAY_OF_WEEK, TextStyle.FULL, "Monday", -1, IndexOutOfBoundsException.class},
             {DAY_OF_WEEK, TextStyle.FULL, "Monday", 7, IndexOutOfBoundsException.class},
         };
     }
 
-    @Test(dataProvider="error")
+    @Test
+    @UseDataProvider("data_error")
     public void test_parse_error(TemporalField field, TextStyle style, String text, int pos, Class<?> expected) {
         try {
             getFormatter(field, style).parseUnresolved(text, new ParsePosition(pos));
@@ -104,6 +108,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_midStr() throws Exception {
         ParsePosition pos = new ParsePosition(3);
         assertEquals(getFormatter(DAY_OF_WEEK, TextStyle.FULL)
@@ -112,6 +117,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 9);
     }
 
+    @Test
     public void test_parse_remainderIgnored() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         assertEquals(getFormatter(DAY_OF_WEEK, TextStyle.SHORT)
@@ -121,6 +127,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_noMatch1() throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed =
@@ -129,6 +136,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(parsed, null);
     }
 
+    @Test
     public void test_parse_noMatch2() throws Exception {
         ParsePosition pos = new ParsePosition(3);
         TemporalAccessor parsed =
@@ -137,6 +145,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(parsed, null);
     }
 
+    @Test
     public void test_parse_noMatch_atEnd() throws Exception {
         ParsePosition pos = new ParsePosition(6);
         TemporalAccessor parsed =
@@ -146,8 +155,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseText")
-    Object[][] provider_text() {
+    @DataProvider
+    public static Object[][] provider_text() {
         return new Object[][] {
             {DAY_OF_WEEK, TextStyle.FULL, 1, "Monday"},
             {DAY_OF_WEEK, TextStyle.FULL, 2, "Tuesday"},
@@ -188,8 +197,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
        };
     }
 
-    @DataProvider(name="parseNumber")
-    Object[][] provider_number() {
+    @DataProvider
+    public static Object[][] provider_number() {
         return new Object[][] {
             {DAY_OF_MONTH, TextStyle.FULL, 1, "1"},
             {DAY_OF_MONTH, TextStyle.FULL, 2, "2"},
@@ -204,8 +213,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     // Test data is dependent on localized resources.
-    @DataProvider(name="parseStandaloneText")
-    Object[][] providerStandaloneText() {
+    @DataProvider
+    public static Object[][] providerStandaloneText() {
         // Locale, TemporalField, TextStyle, expected value, input text
         return new Object[][] {
             // Android-changed: CLDR provides russian days/months in lower-case and with a fullstop.
@@ -218,8 +227,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
         };
     }
 
-    @DataProvider(name="parseDayOfWeekText")
-    Object[][] providerDayOfWeekData() {
+    @DataProvider
+    public static Object[][] providerDayOfWeekData() {
         return new Object[][] {
             // Locale, pattern, input text, expected DayOfWeek
             {Locale.US, "e",  "1",  DayOfWeek.SUNDAY},
@@ -233,8 +242,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     // Test data is dependent on localized resources.
-    @DataProvider(name="parseLenientText")
-    Object[][] providerLenientText() {
+    @DataProvider
+    public static Object[][] providerLenientText() {
         // Locale, TemporalField, expected value, input text
         return new Object[][] {
             // Android-changed: CLDR provides russian months in lower-case and with a fullstop.
@@ -245,21 +254,24 @@ public class TestTextParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="parseText")
+    @Test
+    @UseDataProvider("provider_text")
     public void test_parseText(TemporalField field, TextStyle style, int value, String input) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         assertEquals(getFormatter(field, style).parseUnresolved(input, pos).getLong(field), (long) value);
         assertEquals(pos.getIndex(), input.length());
     }
 
-    @Test(dataProvider="parseNumber")
+    @Test
+    @UseDataProvider("provider_number")
     public void test_parseNumber(TemporalField field, TextStyle style, int value, String input) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         assertEquals(getFormatter(field, style).parseUnresolved(input, pos).getLong(field), (long) value);
         assertEquals(pos.getIndex(), input.length());
     }
 
-    @Test(dataProvider="parseStandaloneText")
+    @Test
+    @UseDataProvider("providerStandaloneText")
     public void test_parseStandaloneText(Locale locale, TemporalField field, TextStyle style, int expectedValue, String input) {
         DateTimeFormatter formatter = getFormatter(field, style).withLocale(locale);
         ParsePosition pos = new ParsePosition(0);
@@ -267,7 +279,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), input.length());
     }
 
-    @Test(dataProvider="parseDayOfWeekText")
+    @Test
+    @UseDataProvider("providerDayOfWeekData")
     public void test_parseDayOfWeekText(Locale locale, String pattern, String input, DayOfWeek expected) {
         DateTimeFormatter formatter = getPatternFormatter(pattern).withLocale(locale);
         ParsePosition pos = new ParsePosition(0);
@@ -276,7 +289,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="parseText")
+    @Test
+    @UseDataProvider("provider_text")
     public void test_parse_strict_caseSensitive_parseUpper(TemporalField field, TextStyle style, int value, String input) throws Exception {
         if (input.equals(input.toUpperCase(Locale.ROOT))) {
             // Skip if the given input is all upper case (e.g., "Q1")
@@ -288,7 +302,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getErrorIndex(), 0);
     }
 
-    @Test(dataProvider="parseText")
+    @Test
+    @UseDataProvider("provider_text")
     public void test_parse_strict_caseInsensitive_parseUpper(TemporalField field, TextStyle style, int value, String input) throws Exception {
         setCaseSensitive(false);
         ParsePosition pos = new ParsePosition(0);
@@ -297,7 +312,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="parseText")
+    @Test
+    @UseDataProvider("provider_text")
     public void test_parse_strict_caseSensitive_parseLower(TemporalField field, TextStyle style, int value, String input) throws Exception {
         if (input.equals(input.toLowerCase(Locale.ROOT))) {
             // Skip if the given input is all lower case (e.g., "1st quarter")
@@ -309,7 +325,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getErrorIndex(), 0);
     }
 
-    @Test(dataProvider="parseText")
+    @Test
+    @UseDataProvider("provider_text")
     public void test_parse_strict_caseInsensitive_parseLower(TemporalField field, TextStyle style, int value, String input) throws Exception {
         setCaseSensitive(false);
         ParsePosition pos = new ParsePosition(0);
@@ -320,6 +337,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_full_strict_full_match() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -327,6 +345,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 7);
     }
 
+    @Test
     public void test_parse_full_strict_short_noMatch() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -334,6 +353,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getErrorIndex(), 0);
     }
 
+    @Test
     public void test_parse_full_strict_number_noMatch() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -342,6 +362,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_short_strict_full_match() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -349,6 +370,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 3);
     }
 
+    @Test
     public void test_parse_short_strict_short_match() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -356,6 +378,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 3);
     }
 
+    @Test
     public void test_parse_short_strict_number_noMatch() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -364,6 +387,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_french_short_strict_full_noMatch() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -372,6 +396,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getErrorIndex(), 0);
     }
 
+    @Test
     public void test_parse_french_short_strict_short_match() throws Exception {
         setStrict(true);
         ParsePosition pos = new ParsePosition(0);
@@ -383,6 +408,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_full_lenient_full_match() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -390,6 +416,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 7);
     }
 
+    @Test
     public void test_parse_full_lenient_short_match() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -397,6 +424,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 3);
     }
 
+    @Test
     public void test_parse_full_lenient_number_match() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -405,6 +433,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_parse_short_lenient_full_match() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -412,6 +441,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 7);
     }
 
+    @Test
     public void test_parse_short_lenient_short_match() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -419,6 +449,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 3);
     }
 
+    @Test
     public void test_parse_short_lenient_number_match() throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -426,7 +457,8 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertEquals(pos.getIndex(), 1);
     }
 
-    @Test(dataProvider="parseLenientText")
+    @Test
+    @UseDataProvider("providerLenientText")
     public void test_parseLenientText(Locale locale, TemporalField field, int expectedValue, String input) {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);

@@ -80,6 +80,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -93,6 +94,7 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
+    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         // cannot use standard test as ZoneId is abstract

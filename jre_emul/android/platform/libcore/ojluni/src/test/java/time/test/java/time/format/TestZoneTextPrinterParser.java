@@ -23,8 +23,11 @@
 
 package test.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.text.DateFormatSymbols;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -44,8 +47,10 @@ import java.util.Set;
 import java.util.TimeZone;
 import jdk.testlibrary.RandomFactory;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import android.icu.impl.ZoneMeta;
 
 /*
@@ -57,7 +62,7 @@ import android.icu.impl.ZoneMeta;
 /**
  * Test ZoneTextPrinterParser
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestZoneTextPrinterParser extends AbstractTestPrinterParser {
 
     protected static DateTimeFormatter getFormatter(Locale locale, TextStyle style) {
@@ -129,7 +134,8 @@ public class TestZoneTextPrinterParser extends AbstractTestPrinterParser {
     }
 
     // Android-changed: disable test as it doesn't assert anything and produces a lot of output.
-    @Test(enabled = false)
+    @Ignore
+    @Test
     public void test_ParseText() {
         Locale[] locales = new Locale[] { Locale.ENGLISH, Locale.JAPANESE, Locale.FRENCH };
         Set<String> zids = ZoneRulesProvider.getAvailableZoneIds();
@@ -157,8 +163,8 @@ public class TestZoneTextPrinterParser extends AbstractTestPrinterParser {
 
     private static Set<ZoneId> none = new HashSet<>();
 
-    @DataProvider(name="preferredZones")
-    Object[][] data_preferredZones() {
+    @DataProvider
+    public static Object[][] data_preferredZones() {
         // Android-changed: Differences in time zone name handling.
         // Android and java.time (via the RI) have differences in how they handle Time Zone Names.
         // - Android doesn't use IANA abbreviates (usually 3-letter abbreviations) except where they
@@ -187,7 +193,8 @@ public class TestZoneTextPrinterParser extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="preferredZones")
+    @Test
+    @UseDataProvider("data_preferredZones")
     public void test_ParseText(String expected, String text, Set<ZoneId> preferred, Locale locale, TextStyle style) {
         DateTimeFormatter fmt = new DateTimeFormatterBuilder().appendZoneText(style, preferred)
                                                               .toFormatter(locale)

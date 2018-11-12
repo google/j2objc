@@ -66,8 +66,11 @@ import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
 import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 import static java.time.temporal.ChronoField.SECOND_OF_DAY;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -78,13 +81,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test parsing of edge cases.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestDateTimeParsing {
 
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
@@ -115,8 +118,8 @@ public class TestDateTimeParsing {
     private static final DateTimeFormatter INSTANTSECONDS_OFFSETSECONDS = new DateTimeFormatterBuilder()
         .appendValue(INSTANT_SECONDS).appendLiteral(' ').appendValue(OFFSET_SECONDS).toFormatter();
 
-    @DataProvider(name = "instantZones")
-    Object[][] data_instantZones() {
+    @DataProvider
+    public static Object[][] data_instantZones() {
         return new Object[][] {
             {LOCALFIELDS_ZONEID, "2014-06-30 01:02:03 Europe/Paris", ZonedDateTime.of(2014, 6, 30, 1, 2, 3, 0, PARIS)},
             {LOCALFIELDS_ZONEID, "2014-06-30 01:02:03 +02:30", ZonedDateTime.of(2014, 6, 30, 1, 2, 3, 0, OFFSET_0230)},
@@ -133,25 +136,29 @@ public class TestDateTimeParsing {
         };
     }
 
-    @Test(dataProvider = "instantZones")
+    @Test
+    @UseDataProvider("data_instantZones")
     public void test_parse_instantZones_ZDT(DateTimeFormatter formatter, String text, ZonedDateTime expected) {
         TemporalAccessor actual = formatter.parse(text);
         assertEquals(ZonedDateTime.from(actual), expected);
     }
 
-    @Test(dataProvider = "instantZones")
+    @Test
+    @UseDataProvider("data_instantZones")
     public void test_parse_instantZones_LDT(DateTimeFormatter formatter, String text, ZonedDateTime expected) {
         TemporalAccessor actual = formatter.parse(text);
         assertEquals(LocalDateTime.from(actual), expected.toLocalDateTime());
     }
 
-    @Test(dataProvider = "instantZones")
+    @Test
+    @UseDataProvider("data_instantZones")
     public void test_parse_instantZones_Instant(DateTimeFormatter formatter, String text, ZonedDateTime expected) {
         TemporalAccessor actual = formatter.parse(text);
         assertEquals(Instant.from(actual), expected.toInstant());
     }
 
-    @Test(dataProvider = "instantZones")
+    @Test
+    @UseDataProvider("data_instantZones")
     public void test_parse_instantZones_supported(DateTimeFormatter formatter, String text, ZonedDateTime expected) {
         TemporalAccessor actual = formatter.parse(text);
         assertEquals(actual.isSupported(INSTANT_SECONDS), true);
@@ -163,8 +170,8 @@ public class TestDateTimeParsing {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "instantNoZone")
-    Object[][] data_instantNoZone() {
+    @DataProvider
+    public static Object[][] data_instantNoZone() {
         return new Object[][] {
             {INSTANT, "2014-06-30T01:02:03Z", ZonedDateTime.of(2014, 6, 30, 1, 2, 3, 0, ZoneOffset.UTC).toInstant()},
             {INSTANTSECONDS, "86402", Instant.ofEpochSecond(86402)},
@@ -172,25 +179,29 @@ public class TestDateTimeParsing {
         };
     }
 
-    @Test(dataProvider = "instantNoZone", expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_instantNoZone")
     public void test_parse_instantNoZone_ZDT(DateTimeFormatter formatter, String text, Instant expected) {
         TemporalAccessor actual = formatter.parse(text);
         ZonedDateTime.from(actual);
     }
 
-    @Test(dataProvider = "instantNoZone", expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
+    @UseDataProvider("data_instantNoZone")
     public void test_parse_instantNoZone_LDT(DateTimeFormatter formatter, String text, Instant expected) {
         TemporalAccessor actual = formatter.parse(text);
         LocalDateTime.from(actual);
     }
 
-    @Test(dataProvider = "instantNoZone")
+    @Test
+    @UseDataProvider("data_instantNoZone")
     public void test_parse_instantNoZone_Instant(DateTimeFormatter formatter, String text, Instant expected) {
         TemporalAccessor actual = formatter.parse(text);
         assertEquals(Instant.from(actual), expected);
     }
 
-    @Test(dataProvider = "instantNoZone")
+    @Test
+    @UseDataProvider("data_instantNoZone")
     public void test_parse_instantNoZone_supported(DateTimeFormatter formatter, String text, Instant expected) {
         TemporalAccessor actual = formatter.parse(text);
         assertEquals(actual.isSupported(INSTANT_SECONDS), true);

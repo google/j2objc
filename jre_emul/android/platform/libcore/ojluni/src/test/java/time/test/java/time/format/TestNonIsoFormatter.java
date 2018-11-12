@@ -22,8 +22,11 @@
  */
 package test.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
@@ -42,9 +45,9 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Locale;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test DateTimeFormatter with non-ISO chronology.
@@ -52,7 +55,7 @@ import org.testng.annotations.Test;
  * Strings in test data are all dependent on CLDR data which may change
  * in future CLDR releases.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestNonIsoFormatter {
     private static final Chronology ISO8601 = IsoChronology.INSTANCE;
     private static final Chronology JAPANESE = JapaneseChronology.INSTANCE;
@@ -67,12 +70,12 @@ public class TestNonIsoFormatter {
     private static final Locale thTHTH = Locale.forLanguageTag("th-TH-u-nu-thai");
     private static final Locale jaJPJP = Locale.forLanguageTag("ja-JP-u-ca-japanese");
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @DataProvider(name="format_data")
-    Object[][] formatData() {
+    @DataProvider
+    public static Object[][] formatData() {
         return new Object[][] {
             // Chronology, Format Locale, Numbering Locale, ChronoLocalDate, expected string
             { JAPANESE, Locale.JAPANESE, Locale.JAPANESE, JAPANESE.date(IsoDate),
@@ -98,8 +101,8 @@ public class TestNonIsoFormatter {
         };
     }
 
-    @DataProvider(name="invalid_text")
-    Object[][] invalidText() {
+    @DataProvider
+    public static Object[][] invalidText() {
         return new Object[][] {
             // TODO: currently fixed Chronology and Locale.
             // line commented out, as S64.01.09 seems like a reasonable thing to parse
@@ -109,8 +112,8 @@ public class TestNonIsoFormatter {
         };
     }
 
-    @DataProvider(name="chrono_names")
-    Object[][] chronoNamesData() {
+    @DataProvider
+    public static Object[][] chronoNamesData() {
         return new Object[][] {
             // Chronology, Locale, Chronology Name
             // Android-changed: CLDR data has changed.
@@ -134,7 +137,8 @@ public class TestNonIsoFormatter {
         };
     }
 
-    @Test(dataProvider="format_data")
+    @Test
+    @UseDataProvider("formatData")
     public void test_formatLocalizedDate(Chronology chrono, Locale formatLocale, Locale numberingLocale,
                                          ChronoLocalDate date, String expected) {
         DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
@@ -144,7 +148,8 @@ public class TestNonIsoFormatter {
         assertEquals(text, expected);
     }
 
-    @Test(dataProvider="format_data")
+    @Test
+    @UseDataProvider("formatData")
     public void test_parseLocalizedText(Chronology chrono, Locale formatLocale, Locale numberingLocale,
                                         ChronoLocalDate expected, String text) {
         DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
@@ -155,14 +160,16 @@ public class TestNonIsoFormatter {
         assertEquals(date, expected);
     }
 
-    @Test(dataProvider="invalid_text", expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
+    @UseDataProvider("invalidText")
     public void test_parseInvalidText(String text) {
         DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
             .withChronology(JAPANESE).withLocale(Locale.JAPANESE);
         dtf.parse(text);
     }
 
-    @Test(dataProvider="chrono_names")
+    @Test
+    @UseDataProvider("chronoNamesData")
     public void test_chronoNames(Chronology chrono, Locale locale, String expected) {
         DateTimeFormatter dtf = new DateTimeFormatterBuilder().appendChronologyText(TextStyle.SHORT)
             .toFormatter(locale);

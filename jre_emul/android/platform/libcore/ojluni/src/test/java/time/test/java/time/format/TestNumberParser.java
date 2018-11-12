@@ -63,10 +63,13 @@ import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.text.ParsePosition;
 import java.time.format.DateTimeFormatter;
 import java.time.format.SignStyle;
@@ -74,25 +77,26 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test NumberPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestNumberParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="error")
-    Object[][] data_error() {
+    @DataProvider
+    public static Object[][] data_error() {
         return new Object[][] {
             {DAY_OF_MONTH, 1, 2, SignStyle.NEVER, "12", -1, IndexOutOfBoundsException.class},
             {DAY_OF_MONTH, 1, 2, SignStyle.NEVER, "12", 3, IndexOutOfBoundsException.class},
         };
     }
 
-    @Test(dataProvider="error")
+    @Test
+    @UseDataProvider("data_error")
     public void test_parse_error(TemporalField field, int min, int max, SignStyle style, String text, int pos, Class<?> expected) {
         try {
             getFormatter(field, min, max, style).parseUnresolved(text, new ParsePosition(pos));
@@ -103,8 +107,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseData")
-    Object[][] provider_parseData() {
+    @DataProvider
+    public static Object[][] provider_parseData() {
         return new Object[][] {
             // normal
             {1, 2, SignStyle.NEVER, 0, "12", 0, 2, 12L},       // normal
@@ -163,7 +167,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="parseData")
+    @Test
+    @UseDataProvider("provider_parseData")
     public void test_parse_fresh(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
         ParsePosition ppos = new ParsePosition(pos);
         DateTimeFormatter dtf = getFormatter(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
@@ -183,7 +188,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="parseData")
+    @Test
+    @UseDataProvider("provider_parseData")
     public void test_parse_textField(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
         ParsePosition ppos = new ParsePosition(pos);
         DateTimeFormatter dtf = getFormatter(DAY_OF_WEEK, minWidth, maxWidth, signStyle);
@@ -204,8 +210,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseSignsStrict")
-    Object[][] provider_parseSignsStrict() {
+    @DataProvider
+    public static Object[][] provider_parseSignsStrict() {
         return new Object[][] {
             // basics
             {"0", 1, 2, SignStyle.NEVER, 1, 0},
@@ -304,7 +310,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="parseSignsStrict")
+    @Test
+    @UseDataProvider("provider_parseSignsStrict")
     public void test_parseSignsStrict(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         ParsePosition pos = new ParsePosition(0);
         TemporalAccessor parsed = getFormatter(DAY_OF_MONTH, min, max, style).parseUnresolved(input, pos);
@@ -319,8 +326,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseSignsLenient")
-    Object[][] provider_parseSignsLenient() {
+    @DataProvider
+    public static Object[][] provider_parseSignsLenient() {
         return new Object[][] {
             // never
             {"0", 1, 2, SignStyle.NEVER, 1, 0},
@@ -413,7 +420,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="parseSignsLenient")
+    @Test
+    @UseDataProvider("provider_parseSignsLenient")
     public void test_parseSignsLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -429,8 +437,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseDigitsLenient")
-    Object[][] provider_parseDigitsLenient() {
+    @DataProvider
+    public static Object[][] provider_parseDigitsLenient() {
         return new Object[][] {
                 // never
                 {"5", 1, 2, SignStyle.NEVER, 1, 5},
@@ -504,7 +512,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="parseDigitsLenient")
+    @Test
+    @UseDataProvider("provider_parseDigitsLenient")
     public void test_parseDigitsLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);
@@ -520,8 +529,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseDigitsAdjacentLenient")
-    Object[][] provider_parseDigitsAdjacentLenient() {
+    @DataProvider
+    public static Object[][] provider_parseDigitsAdjacentLenient() {
         return new Object[][] {
                 // never
                 {"5", 1, null, null},
@@ -538,7 +547,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="parseDigitsAdjacentLenient")
+    @Test
+    @UseDataProvider("provider_parseDigitsAdjacentLenient")
     public void test_parseDigitsAdjacentLenient(String input, int parseLen, Integer parseMonth, Integer parsedDay) throws Exception {
         setStrict(false);
         ParsePosition pos = new ParsePosition(0);

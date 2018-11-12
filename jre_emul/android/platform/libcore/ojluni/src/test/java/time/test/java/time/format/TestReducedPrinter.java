@@ -60,24 +60,29 @@
 package test.java.time.format;
 
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.chrono.MinguoDate;
+/* J2ObjC: only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.MinguoDate; */
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalField;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import test.java.time.temporal.MockFieldValue;
 
 /**
  * Test ReducedPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     private DateTimeFormatter getFormatter0(TemporalField field, int width, int baseValue) {
@@ -93,7 +98,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
         getFormatter0(YEAR, 2, 2010).formatTo(EMPTY_DTA, buf);
     }
@@ -106,8 +111,8 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="Pivot")
-    Object[][] provider_pivot() {
+    @DataProvider
+    public static Object[][] provider_pivot() {
         return new Object[][] {
             {1, 1, 2010, 2010, "0"},
             {1, 1, 2010, 2011, "1"},
@@ -175,7 +180,8 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="Pivot")
+    @Test
+    @UseDataProvider("provider_pivot")
     public void test_pivot(int minWidth, int maxWidth, int baseValue, int value, String result) throws Exception {
         try {
             getFormatter0(YEAR, minWidth, maxWidth, baseValue).formatTo(new MockFieldValue(YEAR, value), buf);
@@ -192,7 +198,8 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
         }
     }
 
-    @Test(dataProvider="Pivot")
+    @Test
+    @UseDataProvider("provider_pivot")
     public void test_pivot_baseDate(int minWidth, int maxWidth, int baseValue, int value, String result) throws Exception {
         try {
             getFormatterBaseDate(YEAR, minWidth, maxWidth, baseValue).formatTo(new MockFieldValue(YEAR, value), buf);
@@ -210,6 +217,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    /* J2ObjC: only "gregorian" and "julian" calendars are supported.
     public void test_minguoChrono_fixedWidth() throws Exception {
         // ISO 2021 is Minguo 110
         DateTimeFormatter f = getFormatterBaseDate(YEAR, 2, 2, 2021);
@@ -242,7 +250,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
         assertEquals(f.format(date), "09");
         date = MinguoDate.of(210, 6, 30);
         assertEquals(f.format(date), "210");
-    }
+    } */
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
@@ -252,8 +260,8 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     // Cases and values in adjacent parsing mode
     //-----------------------------------------------------------------------
-    @DataProvider(name="PrintAdjacent")
-    Object[][] provider_printAdjacent() {
+    @DataProvider
+    public static Object[][] provider_printAdjacent() {
         return new Object[][] {
             // general
             {"yyMMdd", "990703",   1999, 7, 3},
@@ -265,7 +273,9 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="PrintAdjacent")
+    @Ignore("J2ObjC: not ready yet.")
+    @Test
+    @UseDataProvider("provider_printAdjacent")
     public void test_printAdjacent(String pattern, String text, int year, int month, int day) {
         builder = new DateTimeFormatterBuilder();
         builder.appendPattern(pattern);

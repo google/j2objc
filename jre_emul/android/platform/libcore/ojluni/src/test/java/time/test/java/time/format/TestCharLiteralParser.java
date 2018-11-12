@@ -60,25 +60,28 @@
 package test.java.time.format;
 
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.text.ParsePosition;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test CharLiteralPrinterParser.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestCharLiteralParser extends AbstractTestPrinterParser {
 
-    @DataProvider(name="success")
-    Object[][] data_success() {
+    @DataProvider
+    public static Object[][] data_success() {
         return new Object[][] {
             // match
             {'a', true, "a", 0, 1},
@@ -100,7 +103,8 @@ public class TestCharLiteralParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="success")
+    @Test
+    @UseDataProvider("data_success")
     public void test_parse_success(char c, boolean caseSensitive,
                                    String text, int pos, int expectedPos) {
         setCaseSensitive(caseSensitive);
@@ -117,15 +121,16 @@ public class TestCharLiteralParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="error")
-    Object[][] data_error() {
+    @DataProvider
+    public static Object[][] data_error() {
         return new Object[][] {
             {'a', "a", -1, IndexOutOfBoundsException.class},
             {'a', "a", 2, IndexOutOfBoundsException.class},
         };
     }
 
-    @Test(dataProvider="error")
+    @Test
+    @UseDataProvider("data_error")
     public void test_parse_error(char c, String text, int pos, Class<?> expected) {
         try {
             ParsePosition ppos = new ParsePosition(pos);
