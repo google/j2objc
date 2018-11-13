@@ -979,7 +979,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_getLocalizedDateTimePattern(FormatStyle dateStyle, FormatStyle timeStyle,
             Chronology chrono, Locale locale, String expected) {
         String actual = DateTimeFormatterBuilder.getLocalizedDateTimePattern(dateStyle, timeStyle, chrono, locale);
-        assertEquals(actual, expected, "Pattern " + convertNonAscii(actual));
+        assertEquals("Pattern " + convertNonAscii(actual), actual, expected);
     }
 
     @Test(expected=java.lang.IllegalArgumentException.class)
