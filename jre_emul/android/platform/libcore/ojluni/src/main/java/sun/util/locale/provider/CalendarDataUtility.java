@@ -25,9 +25,8 @@
 
 package sun.util.locale.provider;
 
-/* J2ObjC removed.
 import android.icu.text.DateFormatSymbols;
-import android.icu.util.ULocale; */
+import android.icu.util.ULocale;
 
 import static java.util.Calendar.*;
 
@@ -59,7 +58,6 @@ public class CalendarDataUtility {
     public static String retrieveFieldValueName(String id, int field, int value, int style,
             Locale locale) {
         // Android-changed: delegate to ICU.
-        /* J2ObjC removed.
         if (field == Calendar.ERA) {
             // For era the field value does not always equal the index into the names array.
             switch (normalizeCalendarType(id)) {
@@ -86,8 +84,7 @@ public class CalendarDataUtility {
         if (value >= names.length) {
             return null;
         }
-        return names[value]; */
-        return null;
+        return names[value];
     }
 
     public static String retrieveJavaTimeFieldValueName(String id, int field, int value, int style,
@@ -105,7 +102,6 @@ public class CalendarDataUtility {
     public static Map<String, Integer> retrieveFieldValueNames(String id, int field, int style,
             Locale locale) {
         // Android-changed: delegate to ICU.
-        /* J2ObjC removed.
         Map<String, Integer> names;
         if (style == ALL_STYLES) {
             names = retrieveFieldValueNamesImpl(id, field, SHORT_FORMAT, locale);
@@ -116,11 +112,9 @@ public class CalendarDataUtility {
             // specific style
             names = retrieveFieldValueNamesImpl(id, field, style, locale);
         }
-        return names.isEmpty() ? null : names; */
-        return null;
+        return names.isEmpty() ? null : names;
     }
 
-    /* J2ObjC removed.
     private static Map<String, Integer> retrieveFieldValueNamesImpl(String id, int field, int style,
             Locale locale) {
         String[] names = getNames(id, field, style, locale);
@@ -155,17 +149,14 @@ public class CalendarDataUtility {
             }
         }
         return result;
-    } */
+    }
 
     public static Map<String, Integer> retrieveJavaTimeFieldValueNames(String id, int field,
             int style, Locale locale) {
         // Android-changed: don't distinguish between retrieve* and retrieveJavaTime* methods.
-        /* J2ObjC removed.
-        return retrieveFieldValueNames(id, field, style, locale); */
-        return new LinkedHashMap<>();
+        return retrieveFieldValueNames(id, field, style, locale);
     }
 
-    /* J2ObjC removed.
     private static String[] getNames(String id, int field, int style, Locale locale) {
         int context = toContext(style);
         int width = toWidth(style);
@@ -200,7 +191,7 @@ public class CalendarDataUtility {
 
     /**
      * Transform a {@link Calendar} style constant into an ICU width value.
-     *
+     */
     private static int toWidth(int style) {
         switch (style) {
             case Calendar.SHORT_FORMAT:
@@ -219,7 +210,7 @@ public class CalendarDataUtility {
 
     /**
      * Transform a {@link Calendar} style constant into an ICU context value.
-     *
+     */
     private static int toContext(int style) {
         switch (style) {
             case Calendar.SHORT_FORMAT:
@@ -247,7 +238,7 @@ public class CalendarDataUtility {
             type = requestID;
         }
         return type;
-    } */
+    }
 
     // Android-changed: Removed CalendarFieldValueNameGetter, CalendarFieldValueNamesMapGetter
     // and CalendarWeekParameterGetter

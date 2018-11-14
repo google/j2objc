@@ -800,6 +800,9 @@ TEST_SOURCES := \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
     test/java/time/TestClock_Fixed.java \
+    test/java/time/TestClock_Offset.java \
+    test/java/time/TestClock_System.java \
+    test/java/time/TestClock_Tick.java \
     test/java/time/TestDuration.java \
     test/java/time/TestInstant.java \
     test/java/time/TestLocalDate.java \
@@ -812,10 +815,31 @@ TEST_SOURCES := \
     test/java/time/TestPeriod.java \
     test/java/time/TestYear.java \
     test/java/time/TestYearMonth.java \
+    test/java/time/TestZoneId.java \
     test/java/time/TestZoneOffset.java \
     test/java/time/TestZonedDateTime.java \
     test/java/time/chrono/TestChronoLocalDate.java \
     test/java/time/chrono/TestIsoChronoImpl.java \
+    test/java/time/format/TestCharLiteralParser.java \
+    test/java/time/format/TestCharLiteralPrinter.java \
+    test/java/time/format/TestDateTimeFormatter.java \
+    test/java/time/format/TestDateTimeFormatterBuilder.java \
+    test/java/time/format/TestDateTimeParsing.java \
+    test/java/time/format/TestDateTimeTextProvider.java \
+    test/java/time/format/TestDecimalStyle.java \
+    test/java/time/format/TestFractionPrinterParser.java \
+    test/java/time/format/TestNumberParser.java \
+    test/java/time/format/TestNumberPrinter.java \
+    test/java/time/format/TestPadPrinterDecorator.java \
+    test/java/time/format/TestReducedParser.java \
+    test/java/time/format/TestReducedPrinter.java \
+    test/java/time/format/TestSettingsParser.java \
+    test/java/time/format/TestStringLiteralParser.java \
+    test/java/time/format/TestStringLiteralPrinter.java \
+    test/java/time/format/TestTextParser.java \
+    test/java/time/format/TestTextPrinter.java \
+    test/java/time/format/TestZoneOffsetParser.java \
+    test/java/time/format/TestZoneOffsetPrinter.java \
     test/java/time/temporal/TestChronoField.java \
     test/java/time/temporal/TestChronoUnit.java \
     test/java/time/temporal/TestDateTimeBuilderCombinations.java \
@@ -1063,7 +1087,8 @@ TEST_RESOURCES_ICU_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/da
 TEST_RESOURCES_ICU_DATA_SRCS = \
     com/ibm/icu/impl/data/icudt58b/dayPeriods.res \
     com/ibm/icu/impl/data/icudt58b/en.res \
-    com/ibm/icu/impl/data/icudt58b/en_US.res \
+    com/ibm/icu/impl/data/icudt58b/fi.res \
+    com/ibm/icu/impl/data/icudt58b/fr.res \
     com/ibm/icu/impl/data/icudt58b/keyTypeData.res \
     com/ibm/icu/impl/data/icudt58b/likelySubtags.res \
     com/ibm/icu/impl/data/icudt58b/nfc.nrm \
@@ -1079,6 +1104,8 @@ TEST_RESOURCES_ICU_DATA_SRCS = \
     com/ibm/icu/impl/data/icudt58b/uprops.icu \
     com/ibm/icu/impl/data/icudt58b/zone/en.res \
     com/ibm/icu/impl/data/icudt58b/zone/pool.res \
+    com/ibm/icu/impl/data/icudt58b/pt.res \
+    com/ibm/icu/impl/data/icudt58b/ru.res \
     com/ibm/icu/impl/data/icudt58b/zone/root.res \
     com/ibm/icu/impl/data/icudt58b/zone/tzdbNames.res \
 
