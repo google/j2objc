@@ -57,6 +57,7 @@ import sun.misc.CompoundEnumeration;
 import sun.reflect.Reflection;
 
 /*-[
+#import "NSDataInputStream.h"
 #import "java/io/BufferedInputStream.h"
 #import "java/io/FileInputStream.h"
 #import "java/net/NetFactory.h"
@@ -1341,6 +1342,29 @@ class SystemClassLoader extends ClassLoader {
     return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
   ]-*/;
 
+  /*-[
+  static JavaIoInputStream *GetLinkedResource(NSString *name) {
+    const char *resourceName = [[[name stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
+        stringByReplacingOccurrencesOfString:@"."
+                                  withString:@"_"] UTF8String];
+    extern J2ObjcResourceDefinition start_resource_section __asm(
+        "section$start$__DATA$__j2objcresource");
+    extern J2ObjcResourceDefinition end_resource_section __asm(
+        "section$end$__DATA$__j2objcresource");
+    NSUInteger nResources = (NSUInteger)(&end_resource_section - &start_resource_section);
+    for (long i = 0; i < nResources; i++) {
+      J2ObjcResourceDefinition *resource = (&start_resource_section) + i;
+      if (strcmp(resourceName, resource->full_name) == 0) {
+        NSData *data = [[NSData alloc] initWithBytesNoCopy:(void *)resource->data
+                                                    length:(NSUInteger)resource->length
+                                              freeWhenDone:NO];
+        return [NSDataInputStream streamWithData:data];
+      }
+    }
+    return nil;
+  }
+  ]-*/
+
   // Gets the resource stream without needing to construct a URL object, which is in libjre_net.
   @Override
   public native InputStream getResourceAsStream(String name) /*-[
@@ -1349,11 +1373,11 @@ class SystemClassLoader extends ClassLoader {
     }
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *path = [bundle pathForResource:name ofType:nil];
-    if (!path) {
-      return nil;
+    if (path) {
+      return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
+          create_JavaIoFileInputStream_initWithNSString_(path));
     }
-    return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
-        create_JavaIoFileInputStream_initWithNSString_(path));
+    return GetLinkedResource(name);
   ]-*/;
 
   @Override

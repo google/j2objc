@@ -1081,37 +1081,12 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return [NSString stringWithFormat:@"/%@/%@", relativePath, resourceName];
 }
 
-static JavaIoInputStream *GetLinkedResource(NSString *name) {
-  const char *resourceName = [[[name stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
-      stringByReplacingOccurrencesOfString:@"."
-                                withString:@"_"] UTF8String];
-  extern J2ObjcResourceDefinition start_resource_section __asm(
-      "section$start$__DATA$__j2objcresource");
-  extern J2ObjcResourceDefinition end_resource_section __asm("section$end$__DATA$__j2objcresource");
-  NSUInteger nResources = (NSUInteger)(&end_resource_section - &start_resource_section);
-  for (long i = 0; i < nResources; i++) {
-    J2ObjcResourceDefinition *resource = (&start_resource_section) + i;
-    if (strcmp(resourceName, resource->full_name) == 0) {
-      NSData *data = [[NSData alloc] initWithBytesNoCopy:(void *)resource->data
-                                                  length:(NSUInteger)resource->length
-                                            freeWhenDone:NO];
-      return [NSDataInputStream streamWithData:data];
-    }
-  }
-  return nil;
-}
-
 - (JavaNetURL *)getResource:(NSString *)name {
   return [[self getClassLoader] getResourceWithNSString:resolveResourceName(self, name)];
 }
 
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name {
-  NSString *resolvedName = resolveResourceName(self, name);
-  JavaIoInputStream *result = [[self getClassLoader] getResourceAsStreamWithNSString:resolvedName];
-  if (!result) {
-    result = GetLinkedResource(resolvedName);
-  }
-  return result;
+  return [[self getClassLoader] getResourceAsStreamWithNSString:resolveResourceName(self, name)];
 }
 
 // These java.security methods don't have an iOS equivalent, so always return nil.
