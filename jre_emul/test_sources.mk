@@ -1083,39 +1083,6 @@ BEANS_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser \
     serialization/org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.golden.ser
 
-TEST_RESOURCES_ICU_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icudata.jar
-TEST_RESOURCES_ICU_DATA_SRCS = \
-    com/ibm/icu/impl/data/icudt58b/dayPeriods.res \
-    com/ibm/icu/impl/data/icudt58b/en.res \
-    com/ibm/icu/impl/data/icudt58b/fi.res \
-    com/ibm/icu/impl/data/icudt58b/fr.res \
-    com/ibm/icu/impl/data/icudt58b/keyTypeData.res \
-    com/ibm/icu/impl/data/icudt58b/likelySubtags.res \
-    com/ibm/icu/impl/data/icudt58b/nfc.nrm \
-    com/ibm/icu/impl/data/icudt58b/nfkc.nrm \
-    com/ibm/icu/impl/data/icudt58b/nfkc_cf.nrm \
-    com/ibm/icu/impl/data/icudt58b/pnames.icu \
-    com/ibm/icu/impl/data/icudt58b/pool.res \
-    com/ibm/icu/impl/data/icudt58b/root.res \
-    com/ibm/icu/impl/data/icudt58b/supplementalData.res \
-    com/ibm/icu/impl/data/icudt58b/ubidi.icu \
-    com/ibm/icu/impl/data/icudt58b/ucase.icu \
-    com/ibm/icu/impl/data/icudt58b/unames.icu \
-    com/ibm/icu/impl/data/icudt58b/uprops.icu \
-    com/ibm/icu/impl/data/icudt58b/zone/en.res \
-    com/ibm/icu/impl/data/icudt58b/zone/pool.res \
-    com/ibm/icu/impl/data/icudt58b/pt.res \
-    com/ibm/icu/impl/data/icudt58b/ru.res \
-    com/ibm/icu/impl/data/icudt58b/zone/root.res \
-    com/ibm/icu/impl/data/icudt58b/zone/tzdbNames.res \
-
-TEST_RESOURCES_ICU_TZ_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icutzdata.jar
-TEST_RESOURCES_ICU_TZ_DATA_SRCS = \
-    com/ibm/icu/impl/data/icudt58b/metaZones.res \
-    com/ibm/icu/impl/data/icudt58b/timezoneTypes.res \
-    com/ibm/icu/impl/data/icudt58b/windowsZones.res \
-    com/ibm/icu/impl/data/icudt58b/zoneinfo64.res \
-
 TEST_RESOURCE_ROOTS = \
   apache_harmony/classlib/modules/luni/src/test/resources \
   android/libcore/luni/src/test/resources \
