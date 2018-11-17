@@ -22,6 +22,18 @@ import java.util.logging.Logger;
 
 import android.icu.util.VersionInfo;
 
+/*-[
+// J2ObjC: make sure that the embedded resources are linked by referencing
+// the class defined in jre_emul/android/platform/external/icu/data/ICUData.m.
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wreceiver-forward-class"
+@class ICUData;
+void unused() {
+  Class unused = [ICUData class];
+}
+#pragma clang diagnostic pop
+]-*/
+
 /**
  * Provides access to ICU data files as InputStreams.  Implements security checking.
  * @hide Only a subset of ICU is exposed in Android
