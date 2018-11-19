@@ -33,6 +33,8 @@ FAT_LIB_IPHONE64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-versio
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_WATCHV7K_FLAGS = -arch armv7k -DJ2OBJC_BUILD_ARCH=armv7k -mwatchos-version-min=2.0 \
   -isysroot $(FAT_LIB_WATCH_SDK_DIR)
+FAT_LIB_WATCH64_FLAGS = -arch arm64_32 -DJ2OBJC_BUILD_ARCH=arm64_32 -mwatchos-version-min=2.0 \
+  -isysroot $(FAT_LIB_WATCH_SDK_DIR)
 FAT_LIB_WATCHSIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -mwatchos-version-min=2.0 \
   -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -miphoneos-version-min=5.0 \
@@ -53,6 +55,7 @@ ifeq ("$(XCODE_7_MINIMUM)", "YES")
 FAT_LIB_IPHONE_FLAGS += -fembed-bitcode
 FAT_LIB_IPHONE64_FLAGS += -fembed-bitcode
 FAT_LIB_WATCHV7K_FLAGS += -fembed-bitcode
+FAT_LIB_WATCH64_FLAGS += -fembed-bitcode
 FAT_LIB_TV_FLAGS += -fembed-bitcode
 endif
 
@@ -67,11 +70,12 @@ arch_flags = $(strip \
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
   $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
   $(patsubst watchv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
+  $(patsubst watch64,$(FAT_LIB_WATCH64_FLAGS),\
   $(patsubst watchsimulator,$(FAT_LIB_WATCHSIMULATOR_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),\
   $(patsubst appletvos,$(FAT_LIB_TV_FLAGS),\
-  $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),$(1)))))))))))
+  $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),$(1))))))))))))
 
 fat_lib_dependencies:
 	@:

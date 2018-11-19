@@ -64,7 +64,7 @@ TVOS_AVAILABLE = \
   then echo "YES"; else echo "NO"; fi)
 
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 watchv7k watchsimulator simulator simulator64
+J2OBJC_ARCHS = macosx iphone iphone64 watchv7k watch64 watchsimulator simulator simulator64
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
 endif
