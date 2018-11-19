@@ -286,6 +286,7 @@ RESOURCE_FILES = $(RESOURCES:%=$(CLASS_DIR)/$(BASE_PACKAGE)/%)
 TEST_RESOURCES = \
   com/google/devtools/j2objc/mappings.j2objc \
   com/google/devtools/j2objc/testMappings.j2objc \
+  com/google/devtools/j2objc/annotations/ExplicitProcessor.jar \
   com/google/devtools/j2objc/annotations/Processor.jar \
   com/google/devtools/j2objc/util/example.jar \
   com/google/devtools/j2objc/util/hello.aar \
