@@ -21,8 +21,8 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
@@ -39,10 +39,11 @@ public class J2ObjCTestExplicitProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    for (TypeElement type: annotations) {
+    for (TypeElement type : annotations) {
       Writer w = null;
       try {
-        JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile("ExplicitProcessingResult");
+        JavaFileObject sourceFile = processingEnv.getFiler()
+            .createSourceFile("ExplicitProcessingResult");
         w = sourceFile.openWriter();
         w.write("public class ExplicitProcessingResult {"
             + "  public String getResultForExplicitProcessor() {"
@@ -58,7 +59,9 @@ public class J2ObjCTestExplicitProcessor extends AbstractProcessor {
         if (w != null) {
           try {
             w.close();
-          } catch (IOException e) {}
+          } catch (IOException e) {
+            // Ignored.
+          }
         }
       }
     }

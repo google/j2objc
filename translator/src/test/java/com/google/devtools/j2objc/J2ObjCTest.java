@@ -283,7 +283,8 @@ public class J2ObjCTest extends GenerationTest {
     assertErrorCount(0);
 
     assertSpecifiedAnnotationProcessorOutput();
-    assertFalse("Overridden processor generated output", getTempFile("ProcessingResult.h").exists());
+    assertFalse("Overridden processor generated output",
+        getTempFile("ProcessingResult.h").exists());
   }
 
   // Test for warning if compiling jar with -g.
