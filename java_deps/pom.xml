@@ -63,6 +63,11 @@
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
+                  <groupId>org.checkerframework</groupId>
+                  <artifactId>checker-compat-qual</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>animal-sniffer-annotations</artifactId>
                   <classifier>sources</classifier>
@@ -70,7 +75,22 @@
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
+                  <version>25.1-jre</version>
                   <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <version>25.1-android</version>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <!-- Putting this here instead of in the dependencies section
+                       because Maven only downloads one version of a dependency
+                       and this one conflicts with 25.1-jre. -->
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <version>25.1-android</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>javax.inject</groupId>
@@ -80,6 +100,11 @@
                 <artifactItem>
                   <groupId>junit</groupId>
                   <artifactId>junit</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.tngtech.java</groupId>
+                  <artifactId>junit-dataprovider</artifactId>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
@@ -116,6 +141,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.checkerframework</groupId>
+      <artifactId>checker-compat-qual</artifactId>
+      <version>2.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer-annotations</artifactId>
       <version>1.14</version>
@@ -138,6 +169,12 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.java</groupId>
+      <artifactId>junit-dataprovider</artifactId>
+      <version>1.10.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -181,6 +218,11 @@
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
       <version>0.5.32</version>
+    </dependency>
+    <dependency>
+      <groupId>org.plumelib</groupId>
+      <artifactId>plume-util</artifactId>
+      <version>1.0.5</version>
     </dependency>
   </dependencies>
 </project>

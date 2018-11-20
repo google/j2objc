@@ -34,14 +34,13 @@ public final class ReflectionUtil {
    * {@actual} to the cammel case version of {@code expected}.
    */
   public static boolean matchClassNamePrefix(String actual, String expected) {
-    if (actual.equals(expected)) {
-      return true;
-    }
-    expected =
-        Stream.of(expected.split("\\."))
-            .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
-            .collect(Collectors.joining());
-    return actual.equals(expected);
+    return actual.equals(expected) || actual.equals(getCamelCase(expected));
+  }
+
+  public static String getCamelCase(String name) {
+    return Stream.of(name.split("\\."))
+        .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+        .collect(Collectors.joining());
   }
 
   /**
@@ -60,5 +59,11 @@ public final class ReflectionUtil {
       // ignored.
       return 0;
     }
+  }
+
+  public static boolean isJreReflectionStripped() {
+    // When reflection metadata is present, the name of the class is java.lang.Boolean.
+    // For more details about this behavior see {@link #matchClassNamePrefix}.
+    return Boolean.TRUE.getClass().getName().equals("JavaLangBoolean");
   }
 }

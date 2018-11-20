@@ -6,6 +6,8 @@
 
 package java.util.concurrent.atomic;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.function.BinaryOperator;
@@ -37,8 +39,13 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
 
     static {
         try {
-            ARRAY = U.objectFieldOffset
-                (AtomicReferenceArray.class.getDeclaredField("array"));
+            // J2ObjC reflection-stripping change.
+            if (ReflectionUtil.isJreReflectionStripped()) {
+                ARRAY = 0;
+            } else {
+                ARRAY = U.objectFieldOffset
+                    (AtomicReferenceArray.class.getDeclaredField("array"));
+            }
             /* J2ObjC unused.
             ABASE = U.arrayBaseOffset(Object[].class);
             int scale = U.arrayIndexScale(Object[].class);

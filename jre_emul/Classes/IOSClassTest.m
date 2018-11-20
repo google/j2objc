@@ -20,6 +20,7 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "com/google/j2objc/util/ReflectionUtil.h"
 #import "java/lang/Double.h"
 #import "java/util/Arrays.h"
 
@@ -33,6 +34,9 @@
 @implementation IOSClassTest
 
 - (void)testCheckDoubleParameterNaming {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   IOSClass *arraysClass = JavaUtilArrays_class_();
   IOSObjectArray *argTypes =
       [IOSObjectArray arrayWithObjects:

@@ -1036,7 +1036,12 @@ public class SimpleDateFormat extends DateFormat {
         Calendar.ZONE_OFFSET,
         // 'L' and 'c',
         Calendar.MONTH,
-        Calendar.DAY_OF_WEEK
+        // Android-added: 'c' for standalone day of week.
+        Calendar.DAY_OF_WEEK,
+        // Android-added: Support for 'b'/'B' (day period). Calendar.AM_PM is just used as a
+        // placeholder in the absence of full support for day period.
+        Calendar.AM_PM,
+        Calendar.AM_PM
     };
 
     // Map index into pattern character string to DateFormat field number
@@ -1054,7 +1059,12 @@ public class SimpleDateFormat extends DateFormat {
         DateFormat.TIMEZONE_FIELD,
         // 'L' and 'c'
         DateFormat.MONTH_FIELD,
-        DateFormat.DAY_OF_WEEK_FIELD
+        // Android-added: 'c' for standalone day of week.
+        DateFormat.DAY_OF_WEEK_FIELD,
+        // Android-added: Support for 'b'/'B' (day period). DateFormat.AM_PM_FIELD is just used as a
+        // placeholder in the absence of full support for day period.
+        DateFormat.AM_PM_FIELD,
+        DateFormat.AM_PM_FIELD
     };
 
     // Maps from DecimalFormatSymbols index to Field constant
@@ -1070,7 +1080,12 @@ public class SimpleDateFormat extends DateFormat {
         Field.TIME_ZONE,
         // 'L' and 'c'
         Field.MONTH,
-        Field.DAY_OF_WEEK
+        // Android-added: 'c' for standalone day of week.
+        Field.DAY_OF_WEEK,
+        // Android-added: Support for 'b'/'B' (day period). Field.AM_PM is just used as a
+        // placeholder in the absence of full support for day period.
+        Field.AM_PM,
+        Field.AM_PM
     };
 
     /**
@@ -1177,6 +1192,13 @@ public class SimpleDateFormat extends DateFormat {
                 String[] ampm = formatData.getAmPmStrings();
                 current = ampm[value];
             }
+            break;
+
+        // Android-added: Ignore 'b' and 'B' introduced in CLDR 32+ pattern data. http://b/68139386
+        // Not currently supported here.
+        case PATTERN_DAY_PERIOD:
+        case PATTERN_FLEXIBLE_DAY_PERIOD:
+            current = "";
             break;
 
         case PATTERN_HOUR1:    // 'h' 1-based.  eg, 11PM + 1 hour =>> 12 AM

@@ -437,7 +437,7 @@ public class Functionizer extends UnitTreeVisitor {
 
     function.setBody(TreeUtil.remove(method.getBody()));
 
-    if (ElementUtil.isStatic(elem)) {
+    if (ElementUtil.isStatic(elem) || ElementUtil.isDefault(elem)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = UnicodeUtils.format("%s_initialize", nameTable.getFullName(declaringClass));
       TypeMirror voidType = typeUtil.getVoid();

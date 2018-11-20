@@ -10,6 +10,8 @@ package jsr166;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -774,6 +776,10 @@ public class LinkedBlockingQueueTest extends JSR166TestCase {
      * A deserialized serialized queue has same elements in same order
      */
     public void testSerialization() throws Exception {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         Queue x = populatedQueue(SIZE);
         Queue y = serialClone(x);
 

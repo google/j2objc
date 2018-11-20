@@ -10,6 +10,8 @@ package jsr166;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -527,6 +529,10 @@ public class SynchronousQueueTest extends JSR166TestCase {
      * a deserialized serialized queue is usable
      */
     public void testSerialization() {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         final SynchronousQueue x = new SynchronousQueue();
         final SynchronousQueue y = new SynchronousQueue(false);
         final SynchronousQueue z = new SynchronousQueue(true);

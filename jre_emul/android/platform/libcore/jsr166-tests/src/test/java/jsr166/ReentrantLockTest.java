@@ -10,6 +10,8 @@ package jsr166;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -1105,6 +1107,10 @@ public class ReentrantLockTest extends JSR166TestCase {
     public void testSerialization()      { testSerialization(false); }
     public void testSerialization_fair() { testSerialization(true); }
     public void testSerialization(boolean fair) {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         ReentrantLock lock = new ReentrantLock(fair);
         lock.lock();
 

@@ -145,6 +145,11 @@ public class JavacParser extends Parser {
     if (lintArgument != null) {
       javacOptions.add(lintArgument);
     }
+    String explicitProcessors = options.getProcessors();
+    if (explicitProcessors != null) {
+      javacOptions.add("-processor");
+      javacOptions.add(explicitProcessors);
+    }
     if (processAnnotations) {
       javacOptions.add("-proc:only");
     } else {
@@ -235,7 +240,7 @@ public class JavacParser extends Parser {
     PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
     loader.addPaths(options.getProcessorPathEntries());
     Iterator<Processor> serviceIterator = ServiceLoader.load(Processor.class, loader).iterator();
-    if (serviceIterator.hasNext()) {
+    if (serviceIterator.hasNext() || options.getProcessors() != null) {
       List<File> inputFiles = new ArrayList<>();
       for (ProcessingContext input : inputs) {
         inputFiles.add(new File(input.getFile().getAbsolutePath()));

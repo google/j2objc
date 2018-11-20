@@ -102,4 +102,21 @@ public class TranslationUtilTest extends GenerationTest {
     TranslationUtil translationUtil = unit.getEnv().translationUtil();
     assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
   }
+
+  public void testRuntimeAnnotationKeepsReflection() {
+    options.setStripReflection(true);
+    String source =
+        "package foo; "
+            + "import static java.lang.annotation.ElementType.TYPE; "
+            + "import static java.lang.annotation.RetentionPolicy.RUNTIME; "
+            + "import java.lang.annotation.Retention; "
+            + "import java.lang.annotation.Target; "
+            + "import org.junit.runners.JUnit4; "
+            + "@Retention(RUNTIME) "
+            + "@Target(value={TYPE}) "
+            + "public @interface AnAnnotation {} ";
+    CompilationUnit unit = translateType("foo.AnAnnotation", source);
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+  }
 }

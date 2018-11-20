@@ -26,8 +26,12 @@
 
 package sun.util.logging;
 
-import java.lang.reflect.Field;
 import java.util.Date;
+
+// j2objc: jre_emul always has dependency, since both classes are part of a static library.
+/*-[
+#include "java/util/logging/LoggingProxyImpl.h"
+]-*/
 
 /**
  * Internal API to support JRE implementation to detect if the java.util.logging
@@ -43,26 +47,31 @@ import java.util.Date;
 public class LoggingSupport {
     private LoggingSupport() { }
 
-    private static final LoggingProxy proxy;
+    private static final LoggingProxy proxy = initializeProxy();
 
-    static {
-        LoggingProxy p;
-        try {
-            // create a LoggingProxyImpl instance when
-            // java.util.logging classes exist
-            Class<?> c = Class.forName("java.util.logging.LoggingProxyImpl", true, null);
-            Field f = c.getDeclaredField("INSTANCE");
-            f.setAccessible(true);
-            p = (LoggingProxy) f.get(null);
-        } catch (ClassNotFoundException cnf) {
-            p = null;
-        } catch (NoSuchFieldException e) {
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        }
-        proxy = p;
-    }
+    // j2objc: simplified with direct access function.
+    private static native LoggingProxy initializeProxy() /*-[
+        return JavaUtilLoggingLoggingProxyImpl_get_INSTANCE();
+    ]-*/;
+
+    // static {
+    //     LoggingProxy p;
+    //     try {
+    //         // create a LoggingProxyImpl instance when
+    //         // java.util.logging classes exist
+    //         Class<?> c = Class.forName("java.util.logging.LoggingProxyImpl", true, null);
+    //         Field f = c.getDeclaredField("INSTANCE");
+    //         f.setAccessible(true);
+    //         p = (LoggingProxy) f.get(null);
+    //     } catch (ClassNotFoundException cnf) {
+    //         p = null;
+    //     } catch (NoSuchFieldException e) {
+    //         throw new AssertionError(e);
+    //     } catch (IllegalAccessException e) {
+    //         throw new AssertionError(e);
+    //     }
+    //     proxy = p;
+    // }
 
     /**
      * Returns true if java.util.logging support is available.
@@ -164,7 +173,7 @@ public class LoggingSupport {
         if (format != null) {
             try {
                 // validate the user-defined format string
-                String.format(format, new Date(), "", "", "", "", "");
+                String unused = String.format(format, new Date(), "", "", "", "", "");
             } catch (IllegalArgumentException e) {
                 // illegal syntax; fall back to the default format
                 format = DEFAULT_FORMAT;

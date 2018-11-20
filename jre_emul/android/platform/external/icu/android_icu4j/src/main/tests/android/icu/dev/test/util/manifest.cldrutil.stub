@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Class-Path: utilities.jar
+Main-Class: com.ibm.icu.dev.test.TestAll
+
+Name: com/ibm/icu/
+Specification-Title: Utilities for CLDR 
+Specification-Version: 3.4
+Specification-Vendor: ICU
+Implementation-Title: Utilities for CLDR
+Implementation-Version: 3.4.0
+Implementation-Vendor: IBM Corporation
+Implementation-Vendor-Id: com.ibm
+Copyright-Info: Copyright (c) 2005, International Business Machines Corporation and others.  All Rights Reserved.
+Sealed: false

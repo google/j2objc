@@ -11,109 +11,43 @@
 # limitations under the License.
 
 # Builds a J2ObjC translated Guava library.
-#
-# Author: Keith Stanger
 
 SUFFIXES:
 
 default: dist
 
-include environment.mk
-include java_sources.mk
-
-JAVA_SRC_DIR = $(BUILD_DIR)/java
-JAVA_SOURCES = $(GUAVA_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(ERROR_PRONE_ANNOTATIONS_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(CHECKER_QUAL_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(ANIMAL_SNIFFER_ANNOTATIONS_SOURCES:%=$(JAVA_SRC_DIR)/%)
-OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
-CLASSPATH_LIST = \
-  $(DIST_JAR_DIR)/$(JSR305_JAR) \
-  $(JAVA_DEPS_JAR_DIR)/$(ERROR_PRONE_ANNOTATIONS_JAR) \
-  $(JAVA_DEPS_JAR_DIR)/$(CHECKER_QUAL_JAR) \
-  $(JAVA_DEPS_JAR_DIR)/$(ANIMAL_SNIFFER_ANNOTATIONS_JAR) \
-  $(DIST_JAR_DIR)/j2objc_annotations.jar
-CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
-
-TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
-TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(JAVA_SRC_DIR)/%=%)
-TRANSLATE_ARGS = -classpath $(CLASSPATH) -encoding UTF-8
-include ../make/translate.mk
-
-J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c -I$(GEN_OBJC_DIR) $(CC_WARNINGS)
-FAT_LIB_NAME = guava
-FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%)
-FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
-FAT_LIB_COMPILE = $(J2OBJCC)
-include ../make/fat_lib.mk
-
-STATIC_FRAMEWORK_NAME = Guava
-include ../make/static_framework.mk
-
-fat_lib_dependencies: jre_emul_dist jsr305_dist
-
-# Headers are installed in dist/include/guava/, so that developers can translate
-# and use other versions of Guava without conflict.
-DIST_GUAVA_INCLUDE_DIR = $(ARCH_INCLUDE_DIR)/guava
-DIST_HEADERS = $(JAVA_SOURCES:$(JAVA_SRC_DIR)/%.java=$(DIST_GUAVA_INCLUDE_DIR)/%.h)
-DIST_JAR = $(DIST_JAR_DIR)/$(GUAVA_JAR)
-
-dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(DIST_HEADERS)
-
-clean:
-	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(DIST_GUAVA_INCLUDE_DIR) $(DIST_JAR)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
-
-java: $(DIST_JAR)
-
-$(JAR): | java_deps_dist
+clean: clean_jre clean_android
 	@:
 
-$(DIST_JAR): $(JAR)
-	@mkdir -p $(@D)
-	@install -m 0644 $< $@
+clean_jre:
+	@$(MAKE) -f jre.mk clean
 
-$(DIST_GUAVA_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
-	@mkdir -p $(@D)
-	@install -m 0644 $< $@
+clean_android:
+	@$(MAKE) -C android -f android.mk clean
 
-$(OBJC_SOURCES_MANIFEST): | $(BUILD_DIR)
-	@echo "Building $$(basename $@)"
-	@if [ -e $@ ]; then rm $@; fi
-	@files='$(TRANSLATE_SOURCES)' && for i in $$files; do \
-	  echo $${i%.m}.h >> $@; \
-	  echo $$i >> $@; \
-	done
-
-objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
+dist: dist_jre dist_android
 	@:
 
-$(BUILD_DIR)/.extracted: $(GUAVA_SRC_JAR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
-	$(CHECKER_QUAL_SRC_JAR) $(ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR) | java_deps_dist
-	@echo "Extracting Guava sources"
-	@mkdir -p $(JAVA_SRC_DIR)
-	@unzip -o -q -d $(JAVA_SRC_DIR) $(GUAVA_SRC_JAR) $(GUAVA_SOURCES)
-	@unzip -o -q -d $(JAVA_SRC_DIR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
-		$(ERROR_PRONE_ANNOTATIONS_SOURCES)
-	@unzip -o -q -d $(JAVA_SRC_DIR) $(CHECKER_QUAL_SRC_JAR) \
-		$(CHECKER_QUAL_SOURCES_ORIGINAL_PATH)
-	@unzip -o -q -d $(JAVA_SRC_DIR) $(ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR) \
-		$(ANIMAL_SNIFFER_ANNOTATIONS_SOURCES)
-	@echo "Moving checker sources to top level."
-	@rsync -a $(JAVA_SRC_DIR)/checker/src/org/ $(JAVA_SRC_DIR)/org/
-	@rsync -a $(JAVA_SRC_DIR)/framework/src/org/ $(JAVA_SRC_DIR)/org/
-	@echo "Removing problematic imports that are only used in javadoc comments."
-	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
-		$(JAVA_SRC_DIR)/org/checkerframework/checker/nullness/qual/Nullable.java
-	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
-		$(JAVA_SRC_DIR)/org/checkerframework/checker/nullness/qual/MonotonicNonNull.java
-	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
-		$(JAVA_SRC_DIR)/org/checkerframework/checker/nullness/qual/NonNull.java
-	@sed -i '' -e '/import org.checkerframework.checker.initialization.InitializationChecker;/d' \
-		$(JAVA_SRC_DIR)/org/checkerframework/checker/nullness/qual/NonNull.java
-	@sed -i '' -e '/import org.checkerframework.framework.util.defaults.QualifierDefaults;/d' \
-		$(JAVA_SRC_DIR)/org/checkerframework/framework/qual/DefaultQualifierInHierarchy.java
-	@touch $(JAVA_SOURCES)
-	@touch $@
+dist_jre:
+	@$(MAKE) -f jre.mk dist
 
-$(JAVA_SOURCES): $(BUILD_DIR)/.extracted
+dist_android:
+	@$(MAKE) -C android -f android.mk dist
+
+framework: framework_jre framework_android
+	@:
+
+framework_jre:
+	@$(MAKE) -f jre.mk framework
+
+framework_android:
+	@$(MAKE) -C android -f android.mk framework
+
+java: java_jre java_android
+	@:
+
+java_jre:
+	@$(MAKE) -f jre.mk java
+
+java_android:
+	@$(MAKE) -C android -f android.mk java

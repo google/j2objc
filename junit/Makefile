@@ -22,9 +22,11 @@ include java_sources.mk
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
+    $(JUNIT_DATAPROVIDER_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%)
 PUBLIC_HEADERS = \
     $(JUNIT_SOURCES:%.java=%.h) \
+    $(JUNIT_DATAPROVIDER_SOURCES:%.java=%.h) \
     $(HAMCREST_SOURCES:%.java=%.h)
 ARCH_HEADERS = $(PUBLIC_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
@@ -60,10 +62,14 @@ java: $(JUNIT_DIST_JAR)
 lib: $(FAT_LIBS)
 	@:
 
-$(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
+$(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(JUNIT_DATAPROVIDER_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@echo extracting sources
 	@mkdir -p $(JAVA_SRC_DIR)
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES)
+	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_DATAPROVIDER_SRC_JAR) $(JUNIT_DATAPROVIDER_SOURCES)
+	# Removing import that does not impact functionality and just adds another dependency.
+	@sed -i '' -e '/import edu.umd.cs.findbugs.annotations.SuppressWarnings;/d' \
+		$(JAVA_SRC_DIR)/com/tngtech/java/junit/dataprovider/internal/placeholder/ParameterPlaceholder.java
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
 	@touch $(EXTRACTED_JAVA)
 	@touch $@

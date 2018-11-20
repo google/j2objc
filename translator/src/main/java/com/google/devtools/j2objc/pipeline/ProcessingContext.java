@@ -38,13 +38,22 @@ public class ProcessingContext {
   }
 
   public static ProcessingContext fromFile(InputFile file, Options options) {
-    return new ProcessingContext(file, GenerationUnit.newSingleFileUnit(file, options));
+    Options.CombinedOutput globalOutput = options.globalCombinedOutput();
+    GenerationUnit newGenUnit =
+        globalOutput != null
+            ? globalOutput.globalGenerationUnit()
+            : GenerationUnit.newSingleFileUnit(file, options);
+    return new ProcessingContext(file, newGenUnit);
   }
 
   public static ProcessingContext fromExtractedJarEntry(
       InputFile file, String sourceName, Options options) {
-    return new ProcessingContext(
-        file, GenerationUnit.newSingleExtractedJarEntryUnit(file, sourceName, options));
+    Options.CombinedOutput globalOutput = options.globalCombinedOutput();
+    GenerationUnit newGenUnit =
+        globalOutput != null
+            ? globalOutput.globalGenerationUnit()
+            : GenerationUnit.newSingleExtractedJarEntryUnit(file, sourceName, options);
+    return new ProcessingContext(file, newGenUnit);
   }
 
   public String getOriginalSourcePath() {

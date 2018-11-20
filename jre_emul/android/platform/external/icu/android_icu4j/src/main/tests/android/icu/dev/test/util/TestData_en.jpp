@@ -1,0 +1,43 @@
+/*
+ *******************************************************************************
+ * Copyright (C) 2016 and later: Unicode, Inc. and others.                     *
+ * License & terms of use: http://www.unicode.org/copyright.html#License       *
+ *******************************************************************************
+ *******************************************************************************
+ * Copyright (C) 2005, International Business Machines Corporation and         *
+ * others. All Rights Reserved.                                                *
+ *******************************************************************************
+ */
+import java.util.ListResourceBundle;
+import com.ibm.icu.impl.ICUListResourceBundle;
+/*
+ * Eclipse expects the java files in a package-like directory structure to have a package declaration at the top of the file.
+ * To fool Eclipse this file has an "jpp" extension. The ant build script copies this file to the default package and renames it
+ * before building.
+ */ 
+/**
+ * @author ram
+ */
+
+public class TestData_en extends ListResourceBundle {
+    public TestData_en() {
+        
+  }
+  private static Object[][] data = new Object[][] { 
+              {
+                  "aaa",
+                 "testcircularalias/aab",
+              },
+              {
+                  "aab",
+                  "testcircularalias/aac",
+              },
+              {
+                  "aac",
+                  "testcircularalias/aaa",
+              } 
+  };
+  protected Object[][] getContents(){
+      return data;
+  }
+}

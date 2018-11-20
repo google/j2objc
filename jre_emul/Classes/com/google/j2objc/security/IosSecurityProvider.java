@@ -33,6 +33,8 @@ public class IosSecurityProvider extends Provider {
 
   private static final String PREFIX = "com.google.j2objc.security.";
 
+  private static final String SSL_PREFIX = "com.google.j2objc.net.ssl.IosSslContextSpi";
+
   private static final long serialVersionUID = 1L;
 
   public IosSecurityProvider() {
@@ -110,6 +112,12 @@ public class IosSecurityProvider extends Provider {
     put("Alg.Alias.Signature.1.2.840.113549.1.1.13", "SHA512WithRSA");
     put("Alg.Alias.Signature.2.16.840.1.101.3.4.2.3with1.2.840.113549.1.1.1",
             "SHA512WithRSA");
+
+    put("SSLContext." + SslProtocol.DEFAULT, SSL_PREFIX + "$Default");
+    put("SSLContext." + SslProtocol.TLS, SSL_PREFIX + "$Tls");
+    put("SSLContext." + SslProtocol.TLS_V1, SSL_PREFIX + "$TlsV1");
+    put("SSLContext." + SslProtocol.TLS_V11, SSL_PREFIX + "$TlsV11");
+    put("SSLContext." + SslProtocol.TLS_V12, SSL_PREFIX + "$TlsV12");
   }
 
   // Reference all dynamically loaded classes, so they are linked into apps.
@@ -123,4 +131,25 @@ public class IosSecurityProvider extends Provider {
     IosSecureRandomImpl.class,
     IosSHAMessageDigest.class
   };
+
+  /** SSL protocols supported by the Android platform. */
+  public enum SslProtocol {
+    DEFAULT("Default"),
+    SSL("SSL"),
+    SSLv3("SSLv3"),
+    TLS("TLS"),
+    TLS_V1("TLSv1"),
+    TLS_V11("TLSv1.1"),
+    TLS_V12 ("TLSv1.2");
+
+    private final String name;
+    SslProtocol(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
+  }
 }

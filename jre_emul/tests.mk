@@ -47,6 +47,7 @@ TEST_OBJS = \
 TEST_RESOURCES = $(TEST_RESOURCES_RELATIVE:%=$(RESOURCES_DEST_DIR)/%)
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
+JUNIT_DATAPROVIDER_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_DATAPROVIDER_JAR)
 
 INCLUDE_DIRS = $(TESTS_DIR) $(TESTS_DIR)/arc $(CLASS_DIR) $(EMULATION_CLASS_DIR)
 INCLUDE_ARGS = $(INCLUDE_DIRS:%=-I%)
@@ -72,7 +73,8 @@ endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
+TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR) \
+    -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
     -encoding UTF-8 --prefixes Tests/resources/prefixes.properties
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
@@ -154,7 +156,7 @@ $(foreach root,$(TEST_RESOURCE_ROOTS),$(eval $(call resource_copy_rule,$(root)))
 run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 	@ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
-run-initialization-test: $(TESTS_DIR)/jreinitialization
+run-initialization-test: resources $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
 run-core-size-test: $(TESTS_DIR)/core_size \
@@ -183,6 +185,9 @@ run-beans-tests: link resources $(TEST_BIN)
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
 
+run-icu-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore android.icu.dev.test.Tests
+
 run-io-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.io.SmallTests
 
@@ -204,6 +209,9 @@ run-net-tests: link resources $(TEST_BIN)
 
 run-text-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.text.SmallTests libcore.java.text.LargeTests
+
+run-time-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore test.java.time.Tests
 
 run-zip-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests
@@ -255,7 +263,7 @@ $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(DIST_JRE_EMUL_LIB) $(DIST_JUNIT_LIB)
 	@echo "  " $(TEST_JOCC) $(LINK_FLAGS) ...
 	@$(TEST_JOCC) $(LINK_FLAGS) -o $@ $(TEST_OBJS)
 
-$(ALL_TESTS_SOURCE): tests.mk
+$(ALL_TESTS_SOURCE): tests.mk test_sources.mk
 	@mkdir -p $(@D)
 	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
 

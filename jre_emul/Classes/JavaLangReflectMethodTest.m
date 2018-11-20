@@ -21,6 +21,7 @@
 
 #import <XCTest/XCTest.h>
 #import "IOSClass.h"
+#import "com/google/j2objc/util/ReflectionUtil.h"
 #import "java/lang/Byte.h"
 #import "java/lang/Double.h"
 #import "java/lang/Float.h"
@@ -48,6 +49,9 @@ static double defaultValue = 3.1416;
 }
 
 - (void)testGetName {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   JavaLangReflectMethod *hashMethod = [class_ getMethod:@"hashCode"
                                          parameterTypes:nil];
   XCTAssertNotNil(hashMethod, @"hashMethod not found", nil);
@@ -56,6 +60,9 @@ static double defaultValue = 3.1416;
 }
 
 - (void)testGetReturnType {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   JavaLangReflectMethod *sizeMethod = [class_ getMethod:@"size"
                                          parameterTypes:nil];
   XCTAssertNotNil(sizeMethod, @"sizeMethod not found", nil);
@@ -66,6 +73,9 @@ static double defaultValue = 3.1416;
 }
 
 - (void)testInvocation {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   JavaLangReflectMethod *sizeMethod = [class_ getMethod:@"size"
                                          parameterTypes:nil];
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:NSObject_class_()];
@@ -87,6 +97,9 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testByteReturn {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   id result = invokeValueMethod(@"byteValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangByte class]],
                @"incorrect type returned", nil);
@@ -95,6 +108,9 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testDoubleReturn {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   id result = invokeValueMethod(@"doubleValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangDouble class]],
                @"incorrect type returned", nil);
@@ -103,6 +119,9 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testFloatReturn {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   id result = invokeValueMethod(@"floatValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangFloat class]],
                @"incorrect type returned", nil);
@@ -111,6 +130,9 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testIntegerReturn {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   id result = invokeValueMethod(@"intValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangInteger class]],
                @"incorrect type returned", nil);
@@ -119,6 +141,9 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testLongReturn {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   id result = invokeValueMethod(@"longValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangLong class]],
                @"incorrect type returned", nil);
@@ -127,6 +152,9 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testShortReturn {
+  if (ComGoogleJ2objcUtilReflectionUtil_isJreReflectionStripped()) {
+    return;
+  }
   id result = invokeValueMethod(@"shortValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangShort class]],
                @"incorrect type returned", nil);

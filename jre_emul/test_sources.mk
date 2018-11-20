@@ -17,6 +17,10 @@
 # Author: Tom Ball, Keith Stanger
 
 SUPPORT_SOURCES = \
+    android/icu/dev/test/AbstractTestLog.java \
+    android/icu/dev/test/TestFmwk.java \
+    android/icu/dev/test/TestLog.java \
+    android/icu/dev/test/TestUtil.java \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
     bar/Third.java \
@@ -43,11 +47,14 @@ SUPPORT_SOURCES = \
     jsr166/BlockingQueueTest.java \
     jsr166/CollectionImplementation.java \
     jsr166/JSR166TestCase.java \
+    libcore/java/io/NullPrintStream.java \
     libcore/java/lang/reflect/package-info.java \
     libcore/java/net/AbstractCookiesTest.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/security/CpuFeatures.java \
+    libcore/java/security/StandardNames.java \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
     libcore/java/util/MapDefaultMethodTester.java \
@@ -55,6 +62,10 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
+    libcore/javax/net/ssl/SSLConfigurationAsserts.java \
+    libcore/javax/net/ssl/TestSSLContext.java \
+    libcore/javax/net/ssl/TestSSLSocketPair.java \
+    libcore/javax/net/ssl/TestTrustManager.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
@@ -99,6 +110,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/security/tests/support/MDGoldenData.java \
+    org/apache/harmony/security/tests/support/TestCertUtils.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyMessageDigest1.java \
@@ -135,6 +147,13 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/NoInstanceXMLReader.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
+    org/apache/harmony/xnet/tests/support/mySSLSession.java \
+    test/java/time/AbstractTest.java \
+    test/java/time/MockSimplePeriod.java \
+    test/java/time/format/AbstractTestPrinterParser.java \
+    test/java/time/format/MockIOExceptionAppendable.java \
+    test/java/time/temporal/MockFieldNoValue.java \
+    test/java/time/temporal/MockFieldValue.java \
     tests/net/DelegatingSocketFactory.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
@@ -181,6 +200,12 @@ SUPPORT_SOURCES = \
 NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 TEST_SOURCES := \
+    android/icu/dev/test/timezone/TimeZoneAliasTest.java \
+    android/icu/dev/test/timezone/TimeZoneBoundaryTest.java \
+    android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.java \
+    android/icu/dev/test/timezone/TimeZoneRegressionTest.java \
+    android/icu/dev/test/timezone/TimeZoneRuleTest.java \
+    android/icu/dev/test/timezone/TimeZoneTest.java \
     jsr166/AbstractExecutorServiceTest.java \
     jsr166/AbstractQueueTest.java \
     jsr166/ArrayBlockingQueueTest.java \
@@ -240,6 +265,7 @@ TEST_SOURCES := \
     com/google/j2objc/ArrayTest.java \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
+    com/google/j2objc/EmbeddedResourceTest.java \
     com/google/j2objc/EnvironmentUtil.java \
     com/google/j2objc/FieldTest.java \
     com/google/j2objc/IterableTest.java \
@@ -480,6 +506,8 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/net/ssl/SSLSocketFactoryTest.java \
+    libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
@@ -721,6 +749,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/zip/ZipFileTest.java \
     org/apache/harmony/tests/java/util/zip/ZipInputStreamTest.java \
     org/apache/harmony/tests/java/util/zip/ZipOutputStreamTest.java \
+    org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultHandshakeStatusTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultStatusTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultTest.java \
@@ -730,6 +759,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/net/ssl/SSLPeerUnverifiedExceptionTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLProtocolExceptionTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSessionBindingEventTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \
@@ -768,6 +799,54 @@ TEST_SOURCES := \
     org/json/SelfUseTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    test/java/time/TestClock_Fixed.java \
+    test/java/time/TestClock_Offset.java \
+    test/java/time/TestClock_System.java \
+    test/java/time/TestClock_Tick.java \
+    test/java/time/TestDuration.java \
+    test/java/time/TestInstant.java \
+    test/java/time/TestLocalDate.java \
+    test/java/time/TestLocalDateTime.java \
+    test/java/time/TestLocalTime.java \
+    test/java/time/TestMonthDay.java \
+    test/java/time/TestOffsetDateTime.java \
+    test/java/time/TestOffsetDateTime_instants.java \
+    test/java/time/TestOffsetTime.java \
+    test/java/time/TestPeriod.java \
+    test/java/time/TestYear.java \
+    test/java/time/TestYearMonth.java \
+    test/java/time/TestZoneId.java \
+    test/java/time/TestZoneOffset.java \
+    test/java/time/TestZonedDateTime.java \
+    test/java/time/chrono/TestChronoLocalDate.java \
+    test/java/time/chrono/TestIsoChronoImpl.java \
+    test/java/time/format/TestCharLiteralParser.java \
+    test/java/time/format/TestCharLiteralPrinter.java \
+    test/java/time/format/TestDateTimeFormatter.java \
+    test/java/time/format/TestDateTimeFormatterBuilder.java \
+    test/java/time/format/TestDateTimeParsing.java \
+    test/java/time/format/TestDateTimeTextProvider.java \
+    test/java/time/format/TestDecimalStyle.java \
+    test/java/time/format/TestFractionPrinterParser.java \
+    test/java/time/format/TestNumberParser.java \
+    test/java/time/format/TestNumberPrinter.java \
+    test/java/time/format/TestPadPrinterDecorator.java \
+    test/java/time/format/TestReducedParser.java \
+    test/java/time/format/TestReducedPrinter.java \
+    test/java/time/format/TestSettingsParser.java \
+    test/java/time/format/TestStringLiteralParser.java \
+    test/java/time/format/TestStringLiteralPrinter.java \
+    test/java/time/format/TestTextParser.java \
+    test/java/time/format/TestTextPrinter.java \
+    test/java/time/format/TestZoneOffsetParser.java \
+    test/java/time/format/TestZoneOffsetPrinter.java \
+    test/java/time/temporal/TestChronoField.java \
+    test/java/time/temporal/TestChronoUnit.java \
+    test/java/time/temporal/TestDateTimeBuilderCombinations.java \
+    test/java/time/temporal/TestDateTimeValueRange.java \
+    test/java/time/temporal/TestIsoWeekFields.java \
+    test/java/time/temporal/TestJulianFields.java \
+    test/java/time/zone/TestFixedZoneRules.java \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/security/cert/X509Certificate2Test.java \
     tests/security/interfaces/RSAKeyTest.java \
@@ -798,6 +877,7 @@ TEST_SOURCES := \
     tests/targets/security/MessageDigestTestSHA512.java \
 
 SUITE_SOURCES = \
+    android/icu/dev/test/Tests.java \
     jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
     com/google/j2objc/java8/SmallTests.java \
@@ -810,6 +890,7 @@ SUITE_SOURCES = \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
     org/json/SmallTests.java \
+    test/java/time/Tests.java
 
 ARC_TEST_SOURCES = \
     com/google/j2objc/arc/EnumTest.java
@@ -820,10 +901,9 @@ COPIED_ARC_TEST_SOURCES = \
     com/google/j2objc/arc/MemoryTest.java
 
 TESTS_TO_SKIP = \
-    jsr166/ExchangerTest.java
-
-FAILING_TESTS = \
-    libcore/java/text/DateFormatSymbolsTest.java
+    jsr166/ExchangerTest.java \
+    libcore/javax/net/ssl/SSLSocketTest.java \
+    org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
@@ -840,40 +920,7 @@ FAILING_MATH_TESTS = \
     tests/api/java/math/BigIntegerTest.java \
 
 TESTS_USE_SERIALIZATION = \
-    jsr166/ArrayBlockingQueueTest.java \
-    jsr166/ArrayDequeTest.java \
-    jsr166/ConcurrentHashMapTest.java \
-    jsr166/ConcurrentSkipListMapTest.java \
-    jsr166/ConcurrentSkipListSetTest.java \
-    jsr166/ConcurrentSkipListSubMapTest.java \
-    jsr166/ConcurrentSkipListSubSetTest.java \
-    jsr166/CopyOnWriteArrayListTest.java \
-    jsr166/CopyOnWriteArraySetTest.java \
-    jsr166/LinkedBlockingDequeTest.java \
-    jsr166/LinkedBlockingQueueTest.java \
-    jsr166/PriorityBlockingQueueTest.java \
-    jsr166/PriorityQueueTest.java \
     SerializationTest.java \
-    jsr166/SynchronousQueueTest.java \
-    jsr166/TreeMapTest.java \
-    jsr166/TreeSetTest.java \
-    jsr166/TreeSubMapTest.java \
-    jsr166/TreeSubSetTest.java \
-    jsr166/TimeUnitTest.java \
-    jsr166/AbstractQueuedLongSynchronizerTest.java \
-    jsr166/AbstractQueuedSynchronizerTest.java \
-    jsr166/AtomicBooleanTest.java \
-    jsr166/AtomicIntegerArrayTest.java \
-    jsr166/AtomicIntegerTest.java \
-    jsr166/AtomicLongArrayTest.java \
-    jsr166/AtomicLongTest.java \
-    jsr166/AtomicReferenceArrayTest.java \
-    jsr166/AtomicReferenceTest.java \
-    jsr166/ConcurrentLinkedDequeTest.java \
-    jsr166/ConcurrentLinkedQueueTest.java \
-    jsr166/LinkedTransferQueueTest.java \
-    jsr166/ReentrantLockTest.java \
-    jsr166/ReentrantReadWriteLockTest.java \
     libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/io/OldAndroidSerializationTest.java \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
@@ -943,6 +990,10 @@ TESTS_USE_REFLECTION = \
     org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
     org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
+    test/java/time/TestOffsetTime.java \
+    test/java/time/TestYear.java \
+    test/java/time/TestYearMonth.java \
+    test/java/time/TestZonedDateTime.java \
     tests/api/java/lang/reflect/ProxyTest.java \
 
 TEST_RESOURCES_SRCS = \
@@ -1049,7 +1100,7 @@ TEST_RESOURCES_RELATIVE = \
   $(ANDROID_TEST_RESOURCES_SRCS) \
   $(LOGGING_TEST_RESOURCES_SRCS) \
   $(ZIP_TEST_RESOURCES_SRCS) \
-  $(BEANS_TEST_RESOURCES_SRCS)
+  $(BEANS_TEST_RESOURCES_SRCS) \
 
 TEST_RESOURCES_QUALIFIED = \
   $(patsubst $(CURDIR)/%,%,\

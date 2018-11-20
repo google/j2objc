@@ -28,34 +28,33 @@ public class UnsafeTest extends TestCase {
   public void testAllocInstance() {
     Unsafe unsafe = Unsafe.getUnsafe();
 
-    Object o = unsafe.allocateInstance(UnsafeTest.class);
-    assertTrue(o instanceof UnsafeTest);
+    Object o;
+    try {
+      o = unsafe.allocateInstance(UnsafeTest.class);
+      assertTrue(o instanceof UnsafeTest);
+    } catch (Exception e) {
+      fail("Exception thrown allocating normal instance: " + e);
+    }
 
     try {
       o = unsafe.allocateInstance(AbstractTestClass.class);
       fail("abstract class instantiated");
-    } catch (Exception e) {
-      // Can't directly catch InstantiationException since it is not
-      // declared by Unsafe.allocateInstance().
-      assertTrue(e instanceof InstantiationException);
+    } catch (InstantiationException e) {
+      // success.
     }
 
     try {
       o = unsafe.allocateInstance(TestEnum.class);
       fail("enum instantiated");
-    } catch (Exception e) {
-      // Can't directly catch InstantiationException since it is not
-      // declared by Unsafe.allocateInstance().
-      assertTrue(e instanceof InstantiationException);
+    } catch (InstantiationException e) {
+      // success.
     }
 
     try {
       o = unsafe.allocateInstance(TestInterface.class);
       fail("interface class instantiated");
-    } catch (Exception e) {
-      // Can't directly catch InstantiationException since it is not
-      // declared by Unsafe.allocateInstance().
-      assertTrue(e instanceof InstantiationException);
+    } catch (InstantiationException e) {
+      // success.
     }
 
     try {

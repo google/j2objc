@@ -194,14 +194,6 @@ public class FunctionizerTest extends GenerationTest {
         "A_B_test(nil_chk(b));");
   }
 
-  // Verify annotation parameters are ignored.
-  public void testAnnotationParameters() throws IOException {
-    String translation = translateSourceFile(
-        "import java.lang.annotation.*; @Target({ElementType.METHOD}) public @interface Test {}",
-        "Test", "Test.m");
-    assertNotInTranslation(translation, "self");
-  }
-
   // Verify function declaration is in .m file, not the header.
   public void testPrivateStaticMethod() throws IOException {
     String translation = translateSourceFile(
@@ -600,5 +592,22 @@ public class FunctionizerTest extends GenerationTest {
          "void Test_foo(Test *self) {",
          "  Test_super$_description(self, @selector(description));",
          "}");
+  }
+
+  public void testDefaultMethod() throws IOException {
+    String translation = translateSourceFile(
+        "interface A { default String test(String msg) { return msg.toUpperCase(); }}",
+        "A", "A.h");
+    // Protocol method declaration.
+    assertTranslation(translation, "- (NSString *)testWithNSString:(NSString *)msg;");
+    // Default method's function declaration.
+    assertTranslation(translation, "NSString *A_testWithNSString_(id<A> self, NSString *msg);");
+
+    translation = getTranslatedFile("A.m");
+    // Check default method function.
+    assertTranslatedLines(translation,
+        "NSString *A_testWithNSString_(id<A> self, NSString *msg) {",
+        "A_initialize();",  // Issue 1009: this initialize call was missing.
+        "return [((NSString *) nil_chk(msg)) uppercaseString];");
   }
 }

@@ -6,6 +6,8 @@
 
 package jsr166;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -809,6 +811,10 @@ public class ConcurrentSkipListMapTest extends JSR166TestCase {
      * A deserialized map equals original
      */
     public void testSerialization() throws Exception {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         NavigableMap x = map5();
         NavigableMap y = serialClone(x);
 

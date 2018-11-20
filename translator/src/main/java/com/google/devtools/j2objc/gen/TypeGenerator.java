@@ -248,7 +248,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
     return hasInitializeMethod()
         || hasStaticAccessorMethods()
-        || ElementUtil.isRuntimeAnnotation(typeElement)
+        || ElementUtil.isGeneratedAnnotation(typeElement)
         || hasStaticMethods();
   }
 

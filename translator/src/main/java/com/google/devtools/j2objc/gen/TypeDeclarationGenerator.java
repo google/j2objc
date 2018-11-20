@@ -345,7 +345,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
     printf("\n@interface %s : NSObject", typeName);
-    if (ElementUtil.isRuntimeAnnotation(typeElement)) {
+    if (ElementUtil.isGeneratedAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
     }

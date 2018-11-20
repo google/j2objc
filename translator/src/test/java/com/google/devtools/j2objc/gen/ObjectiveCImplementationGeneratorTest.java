@@ -609,9 +609,9 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "#define Test_I 5");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Test_FOO;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, FOO, NSString *)");
+    assertTranslation(translation, "@interface Test : NSObject");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *Test_FOO = @\"foo\";");
-    assertTranslation(translation, "@interface Test : NSObject");
   }
 
   public void testCombinedGeneration() throws IOException {

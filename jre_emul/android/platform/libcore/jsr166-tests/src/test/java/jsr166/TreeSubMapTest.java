@@ -6,6 +6,8 @@
 
 package jsr166;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -441,6 +443,10 @@ public class TreeSubMapTest extends JSR166TestCase {
      * A deserialized map equals original
      */
     public void testSerialization() throws Exception {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         NavigableMap x = map5();
         NavigableMap y = serialClone(x);
 
@@ -968,6 +974,10 @@ public class TreeSubMapTest extends JSR166TestCase {
      * A deserialized map equals original
      */
     public void testDescendingSerialization() throws Exception {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         NavigableMap x = dmap5();
         NavigableMap y = serialClone(x);
 

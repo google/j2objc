@@ -24,20 +24,23 @@ include ../make/common.mk
 include jars.mk
 
 DISTRIBUTION_JARS = $(JSR305_JAR) $(JAVAX_INJECT_JAR) \
-    $(JUNIT_JAR) $(HAMCREST_JAR) $(MOCKITO_JAR)
+    $(JUNIT_JAR) $(JUNIT_DATAPROVIDER_JAR) $(HAMCREST_JAR) $(MOCKITO_JAR)
 INTERNAL_JARS = \
   $(ERROR_PRONE_ANNOTATIONS_JAR) $(ERROR_PRONE_ANNOTATIONS_SOURCE_JAR) \
   $(CHECKER_QUAL_JAR) $(CHECKER_QUAL_SOURCE_JAR) \
+  $(CHECKER_COMPAT_QUAL_JAR) $(CHECKER_COMPAT_QUAL_SOURCE_JAR) \
   $(ANIMAL_SNIFFER_ANNOTATIONS_JAR) $(ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR) \
   $(GUAVA_JAR) $(GUAVA_SOURCE_JAR) \
-  $(JUNIT_SOURCE_JAR) $(HAMCREST_SOURCE_JAR) \
+  $(GUAVA_ANDROID_JAR) $(GUAVA_ANDROID_SOURCE_JAR) \
+  $(JUNIT_SOURCE_JAR) $(JUNIT_DATAPROVIDER_SOURCE_JAR) $(HAMCREST_SOURCE_JAR) \
   $(JSR305_SOURCE_JAR) $(JAVAX_INJECT_SOURCE_JAR) \
   $(MOCKITO_SOURCE_JAR) \
   $(JARJAR_JAR) \
   $(JAVAC_JAR) \
   $(PROTOBUF_JAR) \
   $(PROCYON_JARS) \
-  $(SCENELIB_JAR)
+  $(SCENELIB_JAR) \
+  $(PLUME_UTIL_JAR)
 DIST_JARS = $(DISTRIBUTION_JARS:%=$(DIST_JAR_DIR)/%)
 DOCLET_JARS = $(DOCLAVA_JAR) $(JSILVER_JAR)
 BUILD_DIR_JARS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(INTERNAL_JARS:%=$(BUILD_DIR)/%)
@@ -60,12 +63,11 @@ $(BUILD_DIR)/$(JAVAC_JAR): | $(BUILD_DIR)
 	@cp -f $(JAVA_HOME)/lib/$(JAVAC_JAR) $@
 
 $(BUILD_DIR)/$(SCENELIB_JAR): | $(BUILD_DIR)
-	@curl -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.6.56.zip
+	@curl -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.8.0.zip
 	@unzip -d $(BUILD_DIR) $@.zip annotation-tools/annotation-file-utilities/annotation-file-utilities.jar
 	@unzip -d $(BUILD_DIR) $(BUILD_DIR)/annotation-tools/annotation-file-utilities/annotation-file-utilities.jar "scenelib/*"
-	@unzip -d $(BUILD_DIR) $(BUILD_DIR)/annotation-tools/annotation-file-utilities/annotation-file-utilities.jar "org/plumelib/*"
-	@cd $(BUILD_DIR) && zip -r $(SCENELIB_JAR) scenelib/ org/plumelib/
-	@rm -rf $(BUILD_DIR)/annotation-tools/ $(BUILD_DIR)/scenelib/ $(BUILD_DIR)/org/
+	@cd $(BUILD_DIR) && zip -r $(SCENELIB_JAR) scenelib/
+	@rm -rf $(BUILD_DIR)/annotation-tools/ $(BUILD_DIR)/scenelib/
 
 $(BUILD_DIR)/$(JARJAR_JAR): | $(BUILD_DIR)
 	@cp -f $(JARJAR_HOME)/$(JARJAR_JAR) $@

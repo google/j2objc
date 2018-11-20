@@ -35,7 +35,8 @@ SOURCEPATH = $(CWD):$(JAVA_SOURCE_DIR)
 BASE_PACKAGE = com/google/devtools/j2objc
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(GUAVA_JAR) $(JSR305_JAR) $(JAVAC_JAR) $(PROCYON_JARS) $(SCENELIB_JAR)
+INTERNAL_DEPS = $(GUAVA_JAR) $(JSR305_JAR) $(JAVAC_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) \
+    $(PLUME_UTIL_JAR)
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -285,6 +286,7 @@ RESOURCE_FILES = $(RESOURCES:%=$(CLASS_DIR)/$(BASE_PACKAGE)/%)
 TEST_RESOURCES = \
   com/google/devtools/j2objc/mappings.j2objc \
   com/google/devtools/j2objc/testMappings.j2objc \
+  com/google/devtools/j2objc/annotations/ExplicitProcessor.jar \
   com/google/devtools/j2objc/annotations/Processor.jar \
   com/google/devtools/j2objc/util/example.jar \
   com/google/devtools/j2objc/util/hello.aar \

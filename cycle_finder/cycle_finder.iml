@@ -46,7 +46,7 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file:///java_deps/build_result/javac-src.jar" />
+          <root url="file://../java_deps/build_result/javac-src.jar" />
         </SOURCES>
       </library>
     </orderEntry>

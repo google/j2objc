@@ -31,7 +31,6 @@ import java.net.*;
 import javax.net.SocketFactory;
 import java.io.IOException;
 import java.security.*;
-import java.util.Locale;
 
 //import sun.security.action.GetPropertyAction;
 

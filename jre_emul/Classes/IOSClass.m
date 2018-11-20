@@ -32,6 +32,7 @@
 #import "IOSProxyClass.h"
 #import "IOSReflection.h"
 #import "NSCopying+JavaCloneable.h"
+#import "NSDataInputStream.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"

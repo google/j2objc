@@ -19,7 +19,7 @@
 
 @implementation HelloTest
 
-- (void)testGetEnv {
+- (void)testStatusHello {
   NSString *message = [OrgJ2objcStatus hello];
   XCTAssertTrue([message hasPrefix:@"Hello"], "Status.hello() should return hello string.");
 }

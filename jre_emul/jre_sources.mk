@@ -281,6 +281,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/NioUtils.java \
   java/nio/ReadOnlyBufferException.java \
   java/nio/ShortBuffer.java \
+  java/nio/channels/Channel.java \
   java/nio/charset/CharacterCodingException.java \
   java/nio/charset/Charset.java \
   java/nio/charset/CharsetDecoder.java \
@@ -499,7 +500,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/logging/Logger.java \
   java/util/logging/LoggingMXBean.java \
   java/util/logging/LoggingPermission.java \
-  java/util/logging/package-info.java \
   java/util/regex/MatchResult.java \
   java/util/regex/Matcher.java \
   java/util/regex/Pattern.java \
@@ -906,7 +906,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AsynchronousCloseException.java \
   java/nio/channels/ByteChannel.java \
   java/nio/channels/CancelledKeyException.java \
-  java/nio/channels/Channel.java \
   java/nio/channels/Channels.java \
   java/nio/channels/ClosedByInterruptException.java \
   java/nio/channels/ClosedChannelException.java \
@@ -1384,9 +1383,13 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/x509/X509Key.java \
   sun/security/x509/package-info.java
 
+NATIVE_JRE_SOURCES_SSL = \
+  com/google/j2objc/net/ssl/IosSslSocket.m
+
 JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ServerSocketFactory.java \
   javax/net/SocketFactory.java \
+  javax/net/ssl/ExtendedSSLSession.java \
   javax/net/ssl/HandshakeCompletedEvent.java \
   javax/net/ssl/HandshakeCompletedListener.java \
   javax/net/ssl/HostnameVerifier.java \
@@ -1420,11 +1423,15 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/TrustManager.java \
   javax/net/ssl/TrustManagerFactory.java \
   javax/net/ssl/TrustManagerFactorySpi.java \
+  javax/net/ssl/X509ExtendedTrustManager.java \
+  javax/net/ssl/X509KeyManager.java \
   javax/net/ssl/X509TrustManager.java
 
 JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsHandler.java \
-  com/google/j2objc/net/IosHttpsURLConnection.java
+  com/google/j2objc/net/IosHttpsURLConnection.java \
+  com/google/j2objc/net/ssl/IosSslSocketFactory.java \
+  com/google/j2objc/net/ssl/IosSslContextSpi.java
 
 JAVA_PUBLIC_SOURCES_XML = \
   com/google/j2objc/util/PropertiesXmlLoader.java \
@@ -1731,6 +1738,291 @@ JAVA_PRIVATE_SOURCES_BEANS = \
   java/beans/StandardBeanInfo.java \
   org/apache/harmony/beans/BeansUtils.java
 
+JAVA_PUBLIC_SOURCES_TIME = \
+  java/time/Clock.java \
+  java/time/DateTimeException.java \
+  java/time/DayOfWeek.java \
+  java/time/Duration.java \
+  java/time/Instant.java \
+  java/time/LocalDate.java \
+  java/time/LocalDateTime.java \
+  java/time/LocalTime.java \
+  java/time/Month.java \
+  java/time/MonthDay.java \
+  java/time/OffsetDateTime.java \
+  java/time/OffsetTime.java \
+  java/time/Period.java \
+  java/time/Year.java \
+  java/time/YearMonth.java \
+  java/time/ZoneId.java \
+  java/time/ZoneOffset.java \
+  java/time/ZonedDateTime.java \
+  java/time/chrono/AbstractChronology.java \
+  java/time/chrono/ChronoLocalDate.java \
+  java/time/chrono/ChronoLocalDateTime.java \
+  java/time/chrono/ChronoPeriod.java \
+  java/time/chrono/ChronoZonedDateTime.java \
+  java/time/chrono/Chronology.java \
+  java/time/chrono/Era.java \
+  java/time/chrono/IsoChronology.java \
+  java/time/chrono/IsoEra.java \
+  java/time/chrono/package-info.java \
+  java/time/format/DateTimeFormatter.java \
+  java/time/format/DateTimeFormatterBuilder.java \
+  java/time/format/DateTimeParseException.java \
+  java/time/format/DecimalStyle.java \
+  java/time/format/FormatStyle.java \
+  java/time/format/ResolverStyle.java \
+  java/time/format/SignStyle.java \
+  java/time/format/TextStyle.java \
+  java/time/format/package-info.java \
+  java/time/package-info.java \
+  java/time/temporal/ChronoField.java \
+  java/time/temporal/ChronoUnit.java \
+  java/time/temporal/IsoFields.java \
+  java/time/temporal/JulianFields.java \
+  java/time/temporal/Temporal.java \
+  java/time/temporal/TemporalAccessor.java \
+  java/time/temporal/TemporalAdjuster.java \
+  java/time/temporal/TemporalAdjusters.java \
+  java/time/temporal/TemporalAmount.java \
+  java/time/temporal/TemporalField.java \
+  java/time/temporal/TemporalQueries.java \
+  java/time/temporal/TemporalQuery.java \
+  java/time/temporal/TemporalUnit.java \
+  java/time/temporal/UnsupportedTemporalTypeException.java \
+  java/time/temporal/ValueRange.java \
+  java/time/temporal/WeekFields.java \
+  java/time/temporal/package-info.java \
+  java/time/zone/ZoneOffsetTransition.java \
+  java/time/zone/ZoneOffsetTransitionRule.java \
+  java/time/zone/ZoneRules.java \
+  java/time/zone/ZoneRulesException.java \
+  java/time/zone/package-info.java
+
+JAVA_PRIVATE_SOURCES_TIME = \
+  java/time/Ser.java \
+  java/time/ZoneRegion.java \
+  java/time/chrono/ChronoLocalDateImpl.java \
+  java/time/chrono/ChronoLocalDateTimeImpl.java \
+  java/time/chrono/ChronoPeriodImpl.java \
+  java/time/chrono/ChronoZonedDateTimeImpl.java \
+  java/time/chrono/Ser.java \
+  java/time/format/DateTimeParseContext.java \
+  java/time/format/DateTimePrintContext.java \
+  java/time/format/DateTimeTextProvider.java \
+  java/time/format/Parsed.java \
+  java/time/format/ZoneName.java \
+  java/time/zone/IcuZoneRulesProvider.java \
+  java/time/zone/Ser.java \
+  java/time/zone/ZoneRulesProvider.java \
+  sun/util/locale/provider/CalendarDataUtility.java
+
+JAVA_PUBLIC_SOURCES_ICU = \
+  android/icu/lang/UCharacter.java \
+  android/icu/lang/UCharacterCategory.java \
+  android/icu/lang/UCharacterEnums.java \
+  android/icu/lang/UProperty.java \
+  android/icu/lang/UScript.java \
+  android/icu/math/BigDecimal.java \
+  android/icu/math/MathContext.java \
+  android/icu/text/BreakIterator.java \
+  android/icu/text/CurrencyPluralInfo.java \
+  android/icu/text/DateFormat.java \
+  android/icu/text/DateFormatSymbols.java \
+  android/icu/text/DateTimePatternGenerator.java \
+  android/icu/text/DecimalFormat.java \
+  android/icu/text/DecimalFormatSymbols.java \
+  android/icu/text/DisplayContext.java \
+  android/icu/text/LocaleDisplayNames.java \
+  android/icu/text/MessageFormat.java \
+  android/icu/text/MessagePattern.java \
+  android/icu/text/Normalizer.java \
+  android/icu/text/Normalizer2.java \
+  android/icu/text/NumberFormat.java \
+  android/icu/text/NumberingSystem.java \
+  android/icu/text/PluralFormat.java \
+  android/icu/text/PluralRules.java \
+  android/icu/text/Replaceable.java \
+  android/icu/text/SelectFormat.java \
+  android/icu/text/SimpleDateFormat.java \
+  android/icu/text/SymbolTable.java \
+  android/icu/text/TimeZoneFormat.java \
+  android/icu/text/TimeZoneNames.java \
+  android/icu/text/UCharacterIterator.java \
+  android/icu/text/UFormat.java \
+  android/icu/text/UnicodeFilter.java \
+  android/icu/text/UnicodeMatcher.java \
+  android/icu/text/UnicodeSet.java \
+  android/icu/text/UnicodeSetIterator.java \
+  android/icu/util/Calendar.java \
+  android/icu/util/Currency.java \
+  android/icu/util/CurrencyAmount.java \
+  android/icu/util/Freezable.java \
+  android/icu/util/GregorianCalendar.java \
+  android/icu/util/HebrewCalendar.java \
+  android/icu/util/ICUUncheckedIOException.java \
+  android/icu/util/IllformedLocaleException.java \
+  android/icu/util/LocaleData.java \
+  android/icu/util/Measure.java \
+  android/icu/util/MeasureUnit.java \
+  android/icu/util/Output.java \
+  android/icu/util/RangeValueIterator.java \
+  android/icu/util/TimeUnit.java \
+  android/icu/util/TimeZone.java \
+  android/icu/util/ULocale.java \
+  android/icu/util/ValueIterator.java \
+  android/icu/util/VersionInfo.java \
+
+JAVA_PRIVATE_SOURCES_ICU = \
+  android/icu/impl/Assert.java \
+  android/icu/impl/BMPSet.java \
+  android/icu/impl/CacheBase.java \
+  android/icu/impl/CacheValue.java \
+  android/icu/impl/CalendarCache.java \
+  android/icu/impl/CalendarUtil.java \
+  android/icu/impl/CaseMapImpl.java \
+  android/icu/impl/CharTrie.java \
+  android/icu/impl/CharacterIteration.java \
+  android/icu/impl/CharacterIteratorWrapper.java \
+  android/icu/impl/ClassLoaderUtil.java \
+  android/icu/impl/CurrencyData.java \
+  android/icu/impl/DateNumberFormat.java \
+  android/icu/impl/DayPeriodRules.java \
+  android/icu/impl/Grego.java \
+  android/icu/impl/ICUBinary.java \
+  android/icu/impl/ICUCache.java \
+  android/icu/impl/ICUConfig.java \
+  android/icu/impl/ICUData.java \
+  android/icu/impl/ICUDebug.java \
+  android/icu/impl/ICULocaleService.java \
+  android/icu/impl/ICUNotifier.java \
+  android/icu/impl/ICURWLock.java \
+  android/icu/impl/ICUResourceBundle.java \
+  android/icu/impl/ICUResourceBundleImpl.java \
+  android/icu/impl/ICUResourceBundleReader.java \
+  android/icu/impl/ICUResourceTableAccess.java \
+  android/icu/impl/ICUService.java \
+  android/icu/impl/IllegalIcuArgumentException.java \
+  android/icu/impl/IntTrie.java \
+  android/icu/impl/IntTrieBuilder.java \
+  android/icu/impl/JavaTimeZone.java \
+  android/icu/impl/LocaleIDParser.java \
+  android/icu/impl/LocaleIDs.java \
+  android/icu/impl/LocaleUtility.java \
+  android/icu/impl/Norm2AllModes.java \
+  android/icu/impl/Normalizer2Impl.java \
+  android/icu/impl/OlsonTimeZone.java \
+  android/icu/impl/Pair.java \
+  android/icu/impl/PatternProps.java \
+  android/icu/impl/PatternTokenizer.java \
+  android/icu/impl/PluralRulesLoader.java \
+  android/icu/impl/Relation.java \
+  android/icu/impl/RelativeDateFormat.java \
+  android/icu/impl/ReplaceableUCharacterIterator.java \
+  android/icu/impl/ResourceBundleWrapper.java \
+  android/icu/impl/RuleCharacterIterator.java \
+  android/icu/impl/SimpleCache.java \
+  android/icu/impl/SimpleFormatterImpl.java \
+  android/icu/impl/SoftCache.java \
+  android/icu/impl/SortedSetRelation.java \
+  android/icu/impl/StandardPlural.java \
+  android/icu/impl/StringRange.java \
+  android/icu/impl/TZDBTimeZoneNames.java \
+  android/icu/impl/TextTrieMap.java \
+  android/icu/impl/TimeZoneAdapter.java \
+  android/icu/impl/TimeZoneNamesFactoryImpl.java \
+  android/icu/impl/TimeZoneGenericNames.java \
+  android/icu/impl/TimeZoneNamesImpl.java \
+  android/icu/impl/Trie.java \
+  android/icu/impl/Trie2.java \
+  android/icu/impl/Trie2Writable.java \
+  android/icu/impl/Trie2_16.java \
+  android/icu/impl/Trie2_32.java \
+  android/icu/impl/TrieBuilder.java \
+  android/icu/impl/UBiDiProps.java \
+  android/icu/impl/UCaseProps.java \
+  android/icu/impl/UCharArrayIterator.java \
+  android/icu/impl/UCharacterIteratorWrapper.java \
+  android/icu/impl/UCharacterName.java \
+  android/icu/impl/UCharacterNameChoice.java \
+  android/icu/impl/UCharacterNameReader.java \
+  android/icu/impl/UCharacterProperty.java \
+  android/icu/impl/UCharacterUtility.java \
+  android/icu/impl/UPropertyAliases.java \
+  android/icu/impl/URLHandler.java \
+  android/icu/impl/UResource.java \
+  android/icu/impl/UnicodeSetStringSpan.java \
+  android/icu/impl/Utility.java \
+  android/icu/impl/ZoneMeta.java \
+  android/icu/impl/locale/AsciiUtil.java \
+  android/icu/impl/locale/BaseLocale.java \
+  android/icu/impl/locale/Extension.java \
+  android/icu/impl/locale/InternalLocaleBuilder.java \
+  android/icu/impl/locale/KeyTypeData.java \
+  android/icu/impl/locale/LanguageTag.java \
+  android/icu/impl/locale/LocaleExtensions.java \
+  android/icu/impl/locale/LocaleObjectCache.java \
+  android/icu/impl/locale/LocaleSyntaxException.java \
+  android/icu/impl/locale/ParseStatus.java \
+  android/icu/impl/locale/StringTokenIterator.java \
+  android/icu/impl/locale/UnicodeLocaleExtension.java \
+  android/icu/lang/CharSequences.java \
+  android/icu/lang/UCharacterNameIterator.java \
+  android/icu/text/CurrencyDisplayNames.java \
+  android/icu/text/CurrencyMetaInfo.java \
+  android/icu/text/DictionaryBreakEngine.java \
+  android/icu/text/DictionaryMatcher.java \
+  android/icu/text/DigitList.java \
+  android/icu/text/Edits.java \
+  android/icu/text/FilteredNormalizer2.java \
+  android/icu/text/LanguageBreakEngine.java \
+  android/icu/text/NFRule.java \
+  android/icu/text/NFRuleSet.java \
+  android/icu/text/NFSubstitution.java \
+  android/icu/text/NumberFormatServiceShim.java \
+  android/icu/text/PluralRanges.java \
+  android/icu/text/PluralRulesSerialProxy.java \
+  android/icu/text/RBBIDataWrapper.java \
+  android/icu/text/RBBINode.java \
+  android/icu/text/RBBIRuleBuilder.java \
+  android/icu/text/RBBIRuleParseTable.java \
+  android/icu/text/RBBIRuleScanner.java \
+  android/icu/text/RBBISetBuilder.java \
+  android/icu/text/RBBISymbolTable.java \
+  android/icu/text/RBBITableBuilder.java \
+  android/icu/text/RBNFPostProcessor.java \
+  android/icu/text/RbnfLenientScanner.java \
+  android/icu/text/RbnfLenientScannerProvider.java \
+  android/icu/text/ReplaceableString.java \
+  android/icu/text/RuleBasedBreakIterator.java \
+  android/icu/text/RuleBasedNumberFormat.java \
+  android/icu/text/UFieldPosition.java \
+  android/icu/text/UForwardCharacterIterator.java \
+  android/icu/text/UTF16.java \
+  android/icu/text/UnhandledBreakEngine.java \
+  android/icu/util/AnnualTimeZoneRule.java \
+  android/icu/util/BasicTimeZone.java \
+  android/icu/util/BytesTrie.java \
+  android/icu/util/DateTimeRule.java \
+  android/icu/util/ICUCloneNotSupportedException.java \
+  android/icu/util/ICUException.java \
+  android/icu/util/InitialTimeZoneRule.java \
+  android/icu/util/OutputInt.java \
+  android/icu/util/RuleBasedTimeZone.java \
+  android/icu/util/STZInfo.java \
+  android/icu/util/SimpleTimeZone.java \
+  android/icu/util/TimeArrayTimeZoneRule.java \
+  android/icu/util/TimeZoneRule.java \
+  android/icu/util/TimeZoneTransition.java \
+  android/icu/util/UResourceBundle.java \
+  android/icu/util/UResourceBundleIterator.java \
+  android/icu/util/UResourceTypeMismatchException.java \
+  android/icu/util/VTimeZone.java \
+
+NATIVE_JRE_SOURCES_ICU = \
+  ICUData.m
+
 # These sources are not included in any sub-library, only the full jre_emul.
 # javax.lang.model.element.Modifier is required by mockito, so it is only needed
 # in a testing environment. The other classes are errors only thrown by a JVM.
@@ -1812,6 +2104,8 @@ JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_XMLPULL) \
 JAVA_SOURCES_ZIP = $(JAVA_PUBLIC_SOURCES_ZIP) $(JAVA_PRIVATE_SOURCES_ZIP)
 JAVA_SOURCES_SQL = $(JAVA_PUBLIC_SOURCES_SQL) $(JAVA_PRIVATE_SOURCES_SQL)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
+JAVA_SOURCES_TIME = $(JAVA_PUBLIC_SOURCES_TIME) $(JAVA_PRIVATE_SOURCES_TIME)
+JAVA_SOURCES_ICU = $(JAVA_PUBLIC_SOURCES_ICU) $(JAVA_PRIVATE_SOURCES_ICU)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
 # These annotations have a SOURCE retention, and so should not be part of the runtime.
@@ -1827,6 +2121,7 @@ SOURCE_RETENTION_ANNOTATIONS = \
 EMULATED_JAVA_SOURCES = \
   com/google/j2objc/NSException.java \
   com/google/j2objc/NSFastEnumeration.java \
+  com/google/j2objc/net/ssl/IosSslSocket.java \
   java/lang/AbstractStringBuilder.java \
   java/lang/Class.java \
   java/lang/Cloneable.java \
@@ -1883,6 +2178,8 @@ JAVA_PUBLIC_SOURCES_JRE = \
   $(JAVA_PUBLIC_SOURCES_ZIP) \
   $(JAVA_PUBLIC_SOURCES_SQL) \
   $(JAVA_PUBLIC_SOURCES_BEANS) \
+  $(JAVA_PUBLIC_SOURCES_TIME) \
+  $(JAVA_PUBLIC_SOURCES_ICU) \
   $(JAVA_PUBLIC_SOURCES_OTHER)
 JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_CORE) \
@@ -1897,6 +2194,8 @@ JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_ZIP) \
   $(JAVA_PRIVATE_SOURCES_SQL) \
   $(JAVA_PRIVATE_SOURCES_BEANS) \
+  $(JAVA_PRIVATE_SOURCES_TIME) \
+  $(JAVA_PRIVATE_SOURCES_ICU) \
   $(JAVA_PRIVATE_SOURCES_OTHER) \
   $(ANDROID_PRIVATE_SOURCES)
 
@@ -1905,4 +2204,5 @@ JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
-  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET)
+  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET) $(NATIVE_JRE_SOURCES_SSL) \
+  $(NATIVE_JRE_SOURCES_ICU)

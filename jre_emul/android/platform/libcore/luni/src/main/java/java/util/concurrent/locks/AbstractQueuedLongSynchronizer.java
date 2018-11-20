@@ -6,6 +6,8 @@
 
 package java.util.concurrent.locks;
 
+import com.google.j2objc.annotations.ReflectionSupport;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,6 +31,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
  * @since 1.6
  * @author Doug Lea
  */
+@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public abstract class AbstractQueuedLongSynchronizer
     extends AbstractOwnableSynchronizer
     implements java.io.Serializable {

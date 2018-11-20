@@ -48,8 +48,10 @@ import java.io.Console;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.channels.Channel;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -151,18 +153,18 @@ public class System {
                          length:length];
   ]-*/;
 
-  public native static long nanoTime() /*-[
+  public static native long nanoTime() /*-[
     uint64_t time = mach_absolute_time();
 
     // Convert to nanoseconds and return,
     return (time * machTimeInfo_.numer) / machTimeInfo_.denom;
   ]-*/;
 
-  public native static void exit(int status) /*-[
+  public static native void exit(int status) /*-[
     exit(status);
   ]-*/;
 
-  public native static Properties getProperties() /*-[
+  public static native Properties getProperties() /*-[
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
       JreStrongAssignAndConsume(&JavaLangSystem_props, [[JavaUtilProperties alloc] init]);
@@ -385,7 +387,7 @@ public class System {
     return value ? [NSString stringWithUTF8String:value] : nil;
   ]-*/;
 
-  public static native Map<String,String> getenv() /*-[
+  public static native Map<String, String> getenv() /*-[
     NSDictionaryMap *environmentMap =
         [NSDictionaryMap mapWithDictionary:[NSProcessInfo processInfo].environment];
     return [JavaUtilCollections unmodifiableMapWithJavaUtilMap:environmentMap];
@@ -499,4 +501,35 @@ public class System {
     }
     systemLogger.log(level, message, thrown);
   }
+
+  /**
+   * Returns the channel inherited from the entity that created this
+   * Java virtual machine.
+   *
+   * <p> This method returns the channel obtained by invoking the
+   * {@link java.nio.channels.spi.SelectorProvider#inheritedChannel
+   * inheritedChannel} method of the system-wide default
+   * {@link java.nio.channels.spi.SelectorProvider} object. </p>
+   *
+   * <p> In addition to the network-oriented channels described in
+   * {@link java.nio.channels.spi.SelectorProvider#inheritedChannel
+   * inheritedChannel}, this method may return other kinds of
+   * channels in the future.
+   *
+   * @return  The inherited channel, if any, otherwise <tt>null</tt>.
+   *
+   * @throws  IOException
+   *          If an I/O error occurs
+   *
+   * @throws  SecurityException
+   *          If a security manager is present and it does not
+   *          permit access to the channel.
+   *
+   * @since 1.5
+   */
+   public static Channel inheritedChannel() throws IOException {
+       // j2objc: Android always returns null, so avoid calling
+       // SelectorProvider to keep library subsets separate.
+       return null;
+   }
 }

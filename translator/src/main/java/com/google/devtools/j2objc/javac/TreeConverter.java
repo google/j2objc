@@ -779,15 +779,33 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertFunctionalExpression(JCTree.JCFunctionalExpression node,
-      FunctionalExpression newNode) {
-    for (TypeMirror type : node.targets) {
+  private TreeNode convertFunctionalExpression(
+      JCTree.JCFunctionalExpression node, FunctionalExpression newNode) {
+    for (TypeMirror type : getTargets(node)) {
       newNode.addTargetType(type);
     }
-    return newNode.setTypeMirror(node.type)
-        .setDescriptor(new ExecutablePair(
-            (ExecutableElement) types.findDescriptorSymbol(node.targets.head.tsym),
-            (ExecutableType) node.getDescriptorType(types)));
+    return newNode
+        .setTypeMirror(getTargets(node).iterator().next())
+        .setDescriptor(
+            new ExecutablePair(
+                (ExecutableElement) types.findDescriptorSymbol(getTargets(node).head.tsym),
+                (ExecutableType) node.getDescriptorType(types)));
+  }
+
+  private static com.sun.tools.javac.util.List<com.sun.tools.javac.code.Type> getTargets(
+      JCTree.JCFunctionalExpression node) {
+    try {
+      return node.targets;
+    } catch (NoSuchFieldError e) {
+      // continue below
+    }
+    try {
+      return com.sun.tools.javac.util.List.of(
+          (com.sun.tools.javac.code.Type)
+              JCTree.JCFunctionalExpression.class.getField("target").get(node));
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
+    }
   }
 
   private TreeNode convertIdent(JCTree.JCIdent node) {

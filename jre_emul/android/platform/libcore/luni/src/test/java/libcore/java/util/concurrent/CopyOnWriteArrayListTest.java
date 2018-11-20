@@ -16,6 +16,8 @@
 
 package libcore.java.util.concurrent;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -259,6 +261,10 @@ public final class CopyOnWriteArrayListTest extends TestCase {
     }
 
     public void testSerialize() {
+        // J2ObjC reflection-stripping change.
+        if (ReflectionUtil.isJreReflectionStripped()) {
+            return;
+        }
         String s = "aced0005737200296a6176612e7574696c2e636f6e63757272656e742e436f70"
                 + "794f6e577269746541727261794c697374785d9fd546ab90c3030000787077040"
                 + "0000005740001617400016274000163707400016578";

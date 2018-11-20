@@ -1,0 +1,89 @@
+# Copyright (C) 2016 and later: Unicode, Inc. and others. License & terms of use: http://www.unicode.org/copyright.html#License
+#
+# Copyright (C) 2006-2009, Google, International Business Machines Corporation and others. All Rights Reserved.
+# Regex for recognizing RFC 4646 well-formed tags
+# http://www.rfc-editor.org/rfc/rfc4646.txt
+# http://tools.ietf.org/html/draft-ietf-ltru-4646bis-21
+
+# The structure requires no forward references, so it reverses the order.
+# It uses Java/Perl syntax instead of the old ABNF
+# The uppercase comments are fragments copied from RFC 4646
+
+# Note: the tool requires that any real "=" or "#" or ";" in the regex be escaped.
+
+$alpha  = [a-z] ;   # ALPHA
+$digit  = [0-9] ;   # DIGIT
+$alphanum   = [a-z 0-9] ;   # ALPHA / DIGIT
+$x  = x ;   # private use singleton
+$singleton = [a-w y-z] ; # other singleton
+$s  = [-_] ; # separator -- lenient parsers will use [-_] -- strict will use [-]
+
+# Now do the components. The structure is slightly different to allow for capturing the right components.
+# The notation (?:....) is a non-capturing version of (...): so the "?:" can be deleted if someone doesn't care about capturing.
+
+$language   = $alpha{2,8} | $alpha{2,3} $s $alpha{3};
+            
+   # ABNF (2*3ALPHA) / 4ALPHA / 5*8ALPHA  --- note: because of how | works in regex, don't use $alpha{2,3} | $alpha{4,8} 
+   # We don't have to have the general case of extlang, because there can be only one extlang (except for zh-min-nan).
+
+# Note: extlang invalid in Unicode language tags
+
+$script = $alpha{4} ;   # 4ALPHA 
+
+$region = $alpha{2} | $digit{3} ;    # 2ALPHA / 3DIGIT
+
+$variant    = (?: $alphanum{5,8} | $digit $alphanum{3} ) ;  # 5*8alphanum / (DIGIT 3alphanum)
+
+$extension  = $singleton (?: $s $alphanum{2,8} )+ ; # singleton 1*("-" (2*8alphanum))
+
+$privateUse = $x (?: $s $alphanum{1,8} )+ ; # "x" 1*("-" (1*8alphanum))
+
+# Define certain grandfathered codes, since otherwise the regex is pretty useless.
+# Since these are limited, this is safe even later changes to the registry --
+# the only oddity is that it might change the type of the tag, and thus
+# the results from the capturing groups.
+# http://www.iana.org/assignments/language-subtag-registry
+# Note that these have to be compared case insensitively, requiring (?i) below.
+
+$grandfathered  = en $s GB $s oed
+      | i $s (?: ami | bnn | default | enochian | hak | klingon | lux | mingo | navajo | pwn | tao | tay | tsu )
+      | no $s (?: bok | nyn )
+      | sgn $s (?: BE $s (?: fr | nl) | CH $s de )
+      | zh $s min $s nan;
+
+# old:         | zh $s (?: cmn (?: $s Hans | $s Hant )? | gan | min (?: $s nan)? | wuu | yue );
+# For well-formedness, we don't need the ones that would otherwise pass.
+# For validity, they need to be checked.
+
+# $grandfatheredWellFormed = (?:
+#         art $s lojban
+#     | cel $s gaulish
+#     | zh $s (?: guoyu | hakka | xiang )
+# );
+
+# Unicode locales: but we are shifting to a compatible form
+# $keyvalue = (?: $alphanum+ \= $alphanum+);
+# $keywords = ($keyvalue (?: \; $keyvalue)*);
+
+# We separate items that we want to capture as a single group
+
+$variantList   = $variant (?: $s $variant )* ; # special for multiples
+$extensionList = $extension (?: $s $extension )* ;   # special for multiples
+
+$langtag = (?: ( $language )
+      (?: $s ( $script ) )? 40%
+      (?: $s ( $region ) )? 40%
+      (?: $s ( $variantList ) )? 10%
+      (?: $s ( $extensionList ) )? 5%
+      (?: $s ( $privateUse ) )? 5%);
+
+# Here is the final breakdown, with capturing groups for each of these components
+# The variants, extensions, grandfathered, and private-use may have interior '-'
+ 
+$root = (?i) # case-insensitive
+  (?:
+      $langtag 90%
+    | ( $privateUse ) 5%
+    | ( $grandfathered ) 5%)
+#    (?: \@ $keywords )? 5%
+    ;
