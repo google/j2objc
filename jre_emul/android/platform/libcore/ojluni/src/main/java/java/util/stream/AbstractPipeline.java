@@ -24,6 +24,7 @@
  */
 package java.util.stream;
 
+import com.google.j2objc.annotations.Weak;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
@@ -80,12 +81,14 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * stage).
      */
     @SuppressWarnings("rawtypes")
+    @Weak
     private final AbstractPipeline sourceStage;
 
     /**
      * The "upstream" pipeline, or null if this is the source stage.
      */
     @SuppressWarnings("rawtypes")
+    @Weak
     private final AbstractPipeline previousStage;
 
     /**
