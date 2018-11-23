@@ -21,6 +21,45 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 /*-[
+#if TARGET_OS_MAC && __MAC_OS_X_VERSION_MAX_ALLOWED >= 101200
+#define OS_LOG_AVAILABLE 1
+#elif TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
+#define OS_LOG_AVAILABLE 1
+#elif TARGET_OS_TV && __TV_OS_VERSION_MAX_ALLOWED >= 100000
+#define OS_LOG_AVAILABLE 1
+#elif TARGET_OS_WATCH && __WATCH_OS_X_VERSION_MAX_ALLOWED >= 30000
+#define OS_LOG_AVAILABLE 1
+#else
+#define OS_LOG_AVAILABLE 0
+#endif
+
+#if OS_LOG_AVAILABLE
+#import <os/log.h>
+#endif
+
+@interface NativeLog : NSObject {
+#if OS_LOG_AVAILABLE
+ @public
+  os_log_t _log;
+#endif
+}
+- (instancetype)initWithSubsystem:(NSString *)subsystem category:(NSString *)category;
+@end
+
+@implementation NativeLog
+- (instancetype)initWithSubsystem:(NSString *)subsystem category:(NSString *)category {
+  self = [super init];
+  if (self) {
+#if OS_LOG_AVAILABLE
+    _log = os_log_create(subsystem.UTF8String, category.UTF8String);
+#endif
+  }
+  return self;
+}
+@end
+]-*/
+
+/*-[
 // TODO(tball): update ASL use to iOS 10's os_log and remove clang pragmas.
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -54,7 +93,7 @@ import java.util.logging.LogRecord;
 ]-*/
 
 /**
- * Handler implementation that calls iOS asl_log().
+ * Handler implementation that calls iOS asl_log(), or os_log() if supported by the OS.
  *
  * @author Tom Ball
  */
@@ -77,6 +116,11 @@ public class IOSLogHandler extends Handler {
 
   private static final String ASLCLIENT = "IOSLogHandler-aslclient";
 
+  /**
+   * An os_log_t object used to group all os_log() calls from this handler into a category.
+   */
+  private Object nativeLog;
+
   public IOSLogHandler() {
     setFormatter(new IOSLogFormatter());
   }
@@ -96,6 +140,22 @@ public class IOSLogHandler extends Handler {
     if (!isLoggable(record)) {
       return;
     }
+    if (shouldUseOSLog()) {
+      publishWithOSLog(record);
+    } else {
+      publishWithAsl(record);
+    }
+  }
+
+  private native boolean shouldUseOSLog() /*-[
+  #if OS_LOG_AVAILABLE
+    return YES;
+  #else
+    return NO;
+  #endif
+  ]-*/;
+
+  private void publishWithAsl(LogRecord record) {
     StringBuilder sb = new StringBuilder(getFormatter().format(record));
     int aslLevel;
     switch (record.getLevel().intValue()) {
@@ -119,10 +179,10 @@ public class IOSLogHandler extends Handler {
       record.getThrown().printStackTrace(new PrintWriter(stringWriter));
       sb.append(stringWriter.toString());
     }
-    log(sb.toString(), aslLevel);
+    aslLog(sb.toString(), aslLevel);
   }
 
-  private native void log(String logMessage, int aslLevel) /*-[
+  private native void aslLog(String logMessage, int aslLevel) /*-[
     // TODO(tball): update ASL use to iOS 10's os_log and remove clang pragmas.
     #pragma clang diagnostic push
     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -146,5 +206,38 @@ public class IOSLogHandler extends Handler {
     }
     asl_log(logClient->_client, NULL, aslLevel, "%s", [logMessage UTF8String]);
     #pragma clang diagnostic pop
+  ]-*/;
+
+  private void publishWithOSLog(LogRecord record) {
+    StringBuilder sb = new StringBuilder(getFormatter().format(record));
+    osLog(sb.toString(), record.getLevel().intValue());
+  }
+
+  private native void osLog(String logMessage, int logLevel) /*-[
+  #if OS_LOG_AVAILABLE
+    os_log_type_t logType = OS_LOG_TYPE_DEBUG;
+    switch (logLevel) {
+      case 1000:  // Level.SEVERE
+        logType = OS_LOG_TYPE_ERROR;
+        break;
+      case 900:   // Level.WARNING
+        logType = OS_LOG_TYPE_DEFAULT;
+        break;
+      case 800:   // Level.INFO
+      case 700:   // Level.CONFIG
+        logType = OS_LOG_TYPE_INFO;
+        break;
+    }
+    if (!self->nativeLog_) {
+      self->nativeLog_ =
+        [[NativeLog alloc] initWithSubsystem:@"com.google.j2objc.util.logging.IOSLogHandler"
+                                    category:@"general"];
+    }
+    NativeLog *nativeLog = (NativeLog *)self->nativeLog_;
+    os_log_with_type(nativeLog->_log, logType, "%{public}s", logMessage.UTF8String);
+  #else
+    JreThrowAssertionError(@"Failure in os_log support. Expected to use os_log only when the\
+                             framework is supported by the base SDK.");
+  #endif
   ]-*/;
 }
