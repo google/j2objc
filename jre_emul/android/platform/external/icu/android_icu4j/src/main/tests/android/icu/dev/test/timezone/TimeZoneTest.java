@@ -396,7 +396,6 @@ public class TimeZoneTest extends TestFmwk
 
         // Make sure we get the default display format for Locales
         // with no display name data.
-        /* J2ObjC: not ready yet.
         Locale mt_MT = new Locale("mt", "MT");
         name = zone.getDisplayName(mt_MT);
         //*****************************************************************
@@ -432,8 +431,8 @@ public class TimeZoneTest extends TestFmwk
                   "************************************************************\n" +
                   "THE ABOVE FAILURE MAY JUST MEAN THE LOCALE DATA HAS CHANGED\n" +
                   "************************************************************");
-        }*/
-        
+        }
+
         // Now try a non-existent zone
         zone2 = new SimpleTimeZone(90*60*1000, "xyzzy");
         name = zone2.getDisplayName(Locale.ENGLISH);

@@ -74,7 +74,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalField;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import test.java.time.temporal.MockFieldValue;
@@ -273,7 +272,6 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
         };
     }
 
-    @Ignore("J2ObjC: not ready yet.")
     @Test
     @UseDataProvider("provider_printAdjacent")
     public void test_printAdjacent(String pattern, String text, int year, int month, int day) {
@@ -283,7 +281,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
 
         LocalDate ld = LocalDate.of(year, month, day);
         String actual = dtf.format(ld);
-        assertEquals(actual, text, "formatter output: " + dtf);
+        assertEquals("formatter output: " + dtf, actual, text);
     }
 
 }

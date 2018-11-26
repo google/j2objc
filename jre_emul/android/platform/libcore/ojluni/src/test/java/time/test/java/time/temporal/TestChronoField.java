@@ -69,7 +69,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestChronoField {
@@ -116,7 +115,6 @@ public class TestChronoField {
         };
     }
 
-    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void test_IsoFields_week_based_year() {
         Locale locale = Locale.US;
@@ -130,7 +128,6 @@ public class TestChronoField {
         String name = IsoFields.WEEK_OF_WEEK_BASED_YEAR.getDisplayName((Locale)null);
     }
 
-    @Ignore("J2ObjC: not ready yet.")
     @Test
     public void test_WeekFields_week_based_year() {
         Locale locale = Locale.US;
