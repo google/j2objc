@@ -795,8 +795,9 @@ public class TreeConverter {
   private static com.sun.tools.javac.util.List<com.sun.tools.javac.code.Type> getTargets(
       JCTree.JCFunctionalExpression node) {
     try {
-      return node.targets;
-    } catch (NoSuchFieldError e) {
+      return (com.sun.tools.javac.util.List<com.sun.tools.javac.code.Type>)
+          JCTree.JCFunctionalExpression.class.getField("targets").get(node);
+    } catch (ReflectiveOperationException e) {
       // continue below
     }
     try {
