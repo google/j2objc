@@ -336,42 +336,46 @@ static NSDictionary *protocolMapping;
 @end
 
 static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t *dataLength) {
-  ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
-  IOSByteArray *array = [IOSByteArray arrayWithLength:*dataLength];
-  jint processed;
-  @try {
-    processed = [[socket plainInputStream] readWithByteArray:array];
-  } @catch (JavaIoIOException *e) {
-    JreStrongAssign(&socket->_sslException, e);
-    return errSSLInternal;
-  }
+  @autoreleasepool {
+    ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
+    IOSByteArray *array = [IOSByteArray arrayWithLength:*dataLength];
+    jint processed;
+    @try {
+      processed = [[socket plainInputStream] readWithByteArray:array];
+    } @catch (JavaIoIOException *e) {
+      JreStrongAssign(&socket->_sslException, e);
+      return errSSLInternal;
+    }
 
-  if (processed  < 0) {
-    *dataLength = 0;
-    return errSSLClosedGraceful;
-  }
+    if (processed  < 0) {
+      *dataLength = 0;
+      return errSSLClosedGraceful;
+    }
 
-  OSStatus status = processed < *dataLength ? errSSLWouldBlock : errSecSuccess;
-  if (processed > 0) {
-    [array getBytes:(jbyte *)data length:processed];
+    OSStatus status = processed < *dataLength ? errSSLWouldBlock : errSecSuccess;
+    if (processed > 0) {
+      [array getBytes:(jbyte *)data length:processed];
+    }
+    *dataLength = processed;
+    return status;
   }
-  *dataLength = processed;
-  return status;
 }
 
 static OSStatus SslWriteCallback(SSLConnectionRef connection,
                                  const void *data,
                                  size_t *dataLength) {
-  ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
-  IOSByteArray *array = [IOSByteArray arrayWithBytes:(const jbyte *)data count:*dataLength];
-  @try {
-    [[socket plainOutputStream] writeWithByteArray:array];
-    [[socket plainOutputStream] flush];
-  } @catch (JavaIoIOException *e) {
-    JreStrongAssign(&socket->_sslException, e);
-    return errSSLInternal;
+  @autoreleasepool {
+    ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
+    IOSByteArray *array = [IOSByteArray arrayWithBytes:(const jbyte *)data count:*dataLength];
+    @try {
+      [[socket plainOutputStream] writeWithByteArray:array];
+      [[socket plainOutputStream] flush];
+    } @catch (JavaIoIOException *e) {
+      JreStrongAssign(&socket->_sslException, e);
+      return errSSLInternal;
+    }
+    return errSecSuccess;
   }
-  return errSecSuccess;
 }
 
 static void checkStatus(OSStatus status) {
