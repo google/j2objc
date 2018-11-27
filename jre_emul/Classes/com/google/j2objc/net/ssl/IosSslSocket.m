@@ -83,16 +83,18 @@ static NSDictionary *protocolMapping;
   OSStatus status;
 
   [_socket startHandshake];
+
+  // Deplete the SSL buffer before issuing a new read.
+  size_t available = 0;
+  checkStatus(SSLGetBufferedReadSize(_socket->_sslContext, &available));
+  if (available != 0) {
+    len = MIN(((jint) available), len);
+  }
+
   @synchronized (_socket) {
     do {
-      size_t temp;
-      status = SSLRead(_socket->_sslContext, b->buffer_ + off, len, &temp);
-      off += temp;
-      len -= temp;
-      processed += temp;
-      // if less data than requested was actually transferred then, keep calling SSLRead until
-      // something different from errSSLWouldBlock is returned.
-    } while (status == errSSLWouldBlock);
+      status = SSLRead(_socket->_sslContext, b->buffer_ + off, len, &processed);
+    } while (status == errSSLWouldBlock && processed == 0);
   }
 
   if (status == errSSLClosedGraceful || status == errSSLClosedAbort) {
