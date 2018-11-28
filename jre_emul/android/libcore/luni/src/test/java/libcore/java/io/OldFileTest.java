@@ -143,8 +143,15 @@ public class OldFileTest extends TestCase {
 
     public void test_createTempFileLjava_lang_StringLjava_lang_String() {
         try {
-            // Providing an illegal file prefix (iOS simulator paths can be very deep).
-            File f3 = File.createTempFile("/../../../../../../../../../../../../../../", null);
+            String tmpDir = System.getProperty("java.io.tmpdir", ".");
+            int tmpDirDepth = tmpDir.split("/").length;
+            StringBuilder prefix = new StringBuilder();
+            for (int i = 0; i < tmpDirDepth; ++i) {
+                prefix.append("/..");
+            }
+            // Add one more level to guarantee an illegal file prefix.
+            prefix.append("/../");
+            File f3 = File.createTempFile(prefix.toString(), null);
             f3.delete();
             fail("IOException not thrown");
         } catch (IOException e) {
