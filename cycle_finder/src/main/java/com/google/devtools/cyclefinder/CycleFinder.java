@@ -126,7 +126,8 @@ public class CycleFinder {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, Charset.forName(options.fileEncoding()));
+      Files.asCharSink(strippedFile, Charset.forName(options.fileEncoding()))
+          .write(parseResult.getSource());
       sourceFileNames.set(i, strippedFile.getPath());
     }
     return strippedDir;

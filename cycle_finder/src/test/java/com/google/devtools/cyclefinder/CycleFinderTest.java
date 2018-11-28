@@ -444,12 +444,14 @@ public class CycleFinderTest extends TestCase {
     Options options = new Options();
     if (!whitelistEntries.isEmpty()) {
       File whitelistFile = new File(tempDir, "whitelist");
-      Files.write(Joiner.on("\n").join(whitelistEntries), whitelistFile, Charset.defaultCharset());
+      Files.asCharSink(whitelistFile, Charset.defaultCharset())
+          .write(Joiner.on("\n").join(whitelistEntries));
       options.addWhitelistFile(whitelistFile.getAbsolutePath());
     }
     if (!blacklistEntries.isEmpty()) {
       File blacklistFile = new File(tempDir, "type_filter");
-      Files.write(Joiner.on("\n").join(blacklistEntries), blacklistFile, Charset.defaultCharset());
+      Files.asCharSink(blacklistFile, Charset.defaultCharset())
+          .write(Joiner.on("\n").join(blacklistEntries));
       options.addBlacklistFile(blacklistFile.getAbsolutePath());
     }
     options.setSourceFiles(inputFiles);
@@ -472,7 +474,7 @@ public class CycleFinderTest extends TestCase {
   private void addSourceFile(String fileName, String source) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
-    Files.write(source, file, Charset.defaultCharset());
+    Files.asCharSink(file, Charset.defaultCharset()).write(source);
     inputFiles.add(file.getAbsolutePath());
   }
 
