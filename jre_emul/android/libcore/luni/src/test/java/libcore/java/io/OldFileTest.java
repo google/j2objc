@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Arrays;
 import junit.framework.TestCase;
 
 public class OldFileTest extends TestCase {
@@ -143,18 +143,14 @@ public class OldFileTest extends TestCase {
 
     public void test_createTempFileLjava_lang_StringLjava_lang_String() {
         try {
-            String tmpDir = System.getProperty("java.io.tmpdir", ".");
-            int tmpDirDepth = tmpDir.split("/").length;
-            StringBuilder prefix = new StringBuilder();
-            for (int i = 0; i < tmpDirDepth; ++i) {
-                prefix.append("/..");
-            }
-            // Add one more level to guarantee an illegal file prefix.
-            prefix.append("/../");
-            File f3 = File.createTempFile(prefix.toString(), null);
+            // Create an illegal file prefix.
+            char[] prefix = new char[255];
+            Arrays.fill(prefix, 'a');
+            File f3 = File.createTempFile(new String(prefix), null);
             f3.delete();
             fail("IOException not thrown");
         } catch (IOException e) {
+            // java.io.IOException: open failed: ENAMETOOLONG (File name too long)
         }
     }
 
