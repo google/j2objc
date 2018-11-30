@@ -35,8 +35,10 @@ import java.security.ProtectionDomain;
  *
  * @see java.lang.Object
  */
-public final class Class<T> implements AnnotatedElement, GenericDeclaration, Serializable, Type {
+public final class Class<T> implements Serializable, GenericDeclaration, Type, AnnotatedElement {
   private static final long serialVersionUID = 3206093459760846163L;
+
+  private Class() {}
 
   public static Class<?> forName(String className) throws ClassNotFoundException {
     return null;
@@ -95,7 +97,7 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
     return null;
   }
 
-  public Class<?>[] getDeclaredClasses() throws SecurityException {
+  public Class<?>[] getDeclaredClasses() {
   	return null;
   }
 
@@ -108,11 +110,11 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   	return null;
   }
 
-  public Field getDeclaredField(String name) throws NoSuchFieldException, SecurityException {
+  public Field getDeclaredField(String name) throws NoSuchFieldException {
   	return null;
   }
 
-  public Field[] getDeclaredFields() throws SecurityException {
+  public Field[] getDeclaredFields() {
   	return null;
   }
 
@@ -149,7 +151,7 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
     return null;
   }
 
-  public Field getField(String name) throws NoSuchFieldException, SecurityException {
+  public Field getField(String name) throws NoSuchFieldException {
     return null;
   }
 
@@ -214,7 +216,7 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
     return null;
   }
 
-  public TypeVariable<Class<T>>[] getTypeParameters() {
+  public synchronized TypeVariable<Class<T>>[] getTypeParameters() {
 	return null;
   }
 
@@ -277,21 +279,21 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   /**
    * @since 1.8
    */
-  public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+  public <A extends Annotation> A[] getDeclaredAnnotationsByType(Class<A> annotationClass) {
     return null;
   }
 
   /**
    * @since 1.8
    */
-  public <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
+  public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationClass) {
     return null;
   }
 
   /**
    * @since 1.8
    */
-  public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
+  public <A extends Annotation> A getDeclaredAnnotation(Class<A> annotationClass) {
     return null;
   }
 

@@ -98,4 +98,16 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
   final char[] getValue() {
     return null;
   }
+
+  public AbstractStringBuilder append(char c) {
+    return null;
+  }
+
+  public AbstractStringBuilder append(CharSequence s) {
+    return null;
+  }
+
+  public AbstractStringBuilder append(CharSequence s, int start, int end) {
+    return null;
+  }
 }

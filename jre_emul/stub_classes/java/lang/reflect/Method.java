@@ -26,7 +26,9 @@ import java.lang.annotation.Annotation;
  *
  * @see Object
  */
-public class Method extends Executable {
+public final class Method extends Executable {
+
+  private Method() {}
 
   public String getName() {
     return null;
@@ -89,7 +91,7 @@ public class Method extends Executable {
     return false;
   }
 
-  public Class[] getExceptionTypes() {
+  public Class<?>[] getExceptionTypes() {
     return null;
   }
 
@@ -115,5 +117,21 @@ public class Method extends Executable {
 
   public boolean isDefault() {
     return false;
+  }
+
+  public boolean equals(Object obj) {
+    return false;
+  }
+
+  public int getParameterCount() {
+    return -1;
+  }
+
+  public int hashCode() {
+    return -1;
+  }
+
+  public java.lang.String toString() {
+    return null;
   }
 }

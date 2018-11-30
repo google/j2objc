@@ -28,7 +28,7 @@ import java.util.Comparator;
  *
  * @see java.lang.Object
  */
-public class String implements CharSequence, Comparable<String>, Serializable {
+public final class String implements Serializable, Comparable<String>, CharSequence {
 
   public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
 
@@ -316,6 +316,18 @@ public class String implements CharSequence, Comparable<String>, Serializable {
 
   public static String join(CharSequence delimiter, Iterable<? extends CharSequence> elements) {
     return null;
+  }
+
+  public boolean equals(Object anObject) {
+    return false;
+  }
+
+  public int hashCode() {
+    return -1;
+  }
+
+  public String toString() {
+      return null;
   }
 
   private static class CaseInsensitiveComparator

@@ -27,7 +27,9 @@ import java.lang.annotation.Annotation;
  * @since 1.8
  * @see Object
  */
-public abstract class Executable extends AccessibleObject implements GenericDeclaration, Member {
+public abstract class Executable extends AccessibleObject implements Member, GenericDeclaration {
+
+  Executable() {}
 
   public abstract Class<?> getDeclaringClass();
   public abstract String getName();
@@ -80,5 +82,9 @@ public abstract class Executable extends AccessibleObject implements GenericDecl
 
   Type[] getAllGenericParameterTypes() {
     return null;
+  }
+
+  public final boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+    return false;
   }
 }

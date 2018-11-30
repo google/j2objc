@@ -26,7 +26,9 @@ import java.lang.annotation.Annotation;
  *
  * @see Object
  */
-public class Field extends AccessibleObject implements Member {
+public final class Field extends AccessibleObject implements Member {
+
+  private Field() {}
 
   public String getName() {
     return null;
@@ -103,6 +105,14 @@ public class Field extends AccessibleObject implements Member {
     return null;
   }
 
+  public <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
+    return null;
+  }
+
+  public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+    return false;
+  }
+
   public boolean isSynthetic() {
     return false;
   }
@@ -112,6 +122,18 @@ public class Field extends AccessibleObject implements Member {
   }
 
   public String toGenericString() {
+    return null;
+  }
+
+  public boolean equals(Object obj) {
+    return false;
+  }
+
+  public int hashCode() {
+    return -1;
+  }
+
+  public java.lang.String toString() {
     return null;
   }
 }
