@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -92,7 +92,7 @@ public abstract class Reader implements Readable, Closeable {
      *         -1 if this source of characters is at its end
      * @throws IOException if an I/O error occurs
      * @throws NullPointerException if target is null
-     * @throws ReadOnlyBufferException if target is a read only buffer
+     * @throws java.nio.ReadOnlyBufferException if target is a read only buffer
      * @since 1.5
      */
     public int read(java.nio.CharBuffer target) throws IOException {

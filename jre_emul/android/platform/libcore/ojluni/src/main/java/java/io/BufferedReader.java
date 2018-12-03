@@ -96,7 +96,7 @@ public class BufferedReader extends Reader {
      * @param  in   A Reader
      * @param  sz   Input-buffer size
      *
-     * @exception  IllegalArgumentException  If sz is <= 0
+     * @exception  IllegalArgumentException  If {@code sz <= 0}
      */
     public BufferedReader(Reader in, int sz) {
         super(in);
@@ -148,7 +148,7 @@ public class BufferedReader extends Reader {
                 } else {
                     /* Reallocate buffer to accommodate read-ahead limit */
                     //
-                    // Android changed : Use the same strategy as BufferedInputStream,
+                    // Android-changed: Use the same strategy as BufferedInputStream,
                     // i.e, double the size of the buffer on each fill. Do not directly
                     // size the buffer to the readAheadLimit.
                     //
@@ -495,7 +495,7 @@ public class BufferedReader extends Reader {
      *                         whose size is no smaller than limit.
      *                         Therefore large values should be used with care.
      *
-     * @exception  IllegalArgumentException  If readAheadLimit is < 0
+     * @exception  IllegalArgumentException  If {@code readAheadLimit < 0}
      * @exception  IOException  If an I/O error occurs
      */
     public void mark(int readAheadLimit) throws IOException {
@@ -532,9 +532,12 @@ public class BufferedReader extends Reader {
         synchronized (lock) {
             if (in == null)
                 return;
-            in.close();
-            in = null;
-            cb = null;
+            try {
+                in.close();
+            } finally {
+                in = null;
+                cb = null;
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@ package java.io;
  * This exception is mainly used by data input streams to signal end of
  * stream. Note that many other input operations return a special value on
  * end of stream rather than throwing an exception.
- * <p>
  *
  * @author  Frank Yellin
  * @see     java.io.DataInputStream
