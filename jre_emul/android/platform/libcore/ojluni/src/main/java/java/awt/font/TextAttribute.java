@@ -93,7 +93,7 @@ import java.util.HashMap;
  * @see java.text.AttributedCharacterIterator
  */
 
-// Android-removed : Removed Summary of Attributes.
+// Android-removed: Removed Summary of Attributes.
 /* <h4>Summary of attributes</h4>
  * <p>
  * <font size="-1">
