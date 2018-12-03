@@ -49,7 +49,7 @@ import java.util.stream.StreamSupport;
  * is no guarantee that each class will be capable of testing its instances
  * for equality with those of the other.  It is therefore inappropriate to use
  * arbitrary <tt>CharSequence</tt> instances as elements in a set or as keys in
- * a map. <p/>
+ * a map. </p>
  *
  * @author Mike McCloskey
  * @since 1.4
@@ -87,7 +87,7 @@ public interface CharSequence {
     char charAt(int index);
 
     /**
-     * Returns a new <code>CharSequence</code> that is a subsequence of this sequence.
+     * Returns a <code>CharSequence</code> that is a subsequence of this sequence.
      * The subsequence starts with the <code>char</code> value at the specified index and
      * ends with the <code>char</code> value at index <tt>end - 1</tt>.  The length
      * (in <code>char</code>s) of the

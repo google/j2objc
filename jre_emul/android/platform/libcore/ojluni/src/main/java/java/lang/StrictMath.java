@@ -57,6 +57,22 @@ import sun.misc.DoubleConsts;
  * {@code sinh}, {@code cosh}, {@code tanh},
  * {@code hypot}, {@code expm1}, and {@code log1p}.
  *
+ * <p>
+ * The platform uses signed two's complement integer arithmetic with
+ * int and long primitive types.  The developer should choose
+ * the primitive type to ensure that arithmetic operations consistently
+ * produce correct results, which in some cases means the operations
+ * will not overflow the range of values of the computation.
+ * The best practice is to choose the primitive type and algorithm to avoid
+ * overflow. In cases where the size is {@code int} or {@code long} and
+ * overflow errors need to be detected, the methods {@code addExact},
+ * {@code subtractExact}, {@code multiplyExact}, and {@code toIntExact}
+ * throw an {@code ArithmeticException} when the results overflow.
+ * For other arithmetic operations such as divide, absolute value,
+ * increment, decrement, and negation overflow occurs only with
+ * a specific minimum or maximum value and should be checked against
+ * the minimum or maximum as appropriate.
+ *
  * @author  unascribed
  * @author  Joseph D. Darcy
  * @since   1.3
@@ -162,6 +178,8 @@ public final class StrictMath {
      *          in radians.
      */
     public static strictfp double toRadians(double angdeg) {
+        // Do not delegate to Math.toRadians(angdeg) because
+        // this method has the strictfp modifier.
         return angdeg / 180.0 * PI;
     }
 
@@ -177,6 +195,8 @@ public final class StrictMath {
      *          in degrees.
      */
     public static strictfp double toDegrees(double angrad) {
+        // Do not delegate to Math.toDegrees(angrad) because
+        // this method has the strictfp modifier.
         return angrad * 180.0 / PI;
     }
 
@@ -683,7 +703,7 @@ public final class StrictMath {
      * <p>This method is properly synchronized to allow correct use by
      * more than one thread. However, if many threads need to generate
      * pseudorandom numbers at a great rate, it may reduce contention
-     * for each thread to have its own pseudorandom number generator.
+     * for each thread to have its own pseudorandom-number generator.
      *
      * @return  a pseudorandom {@code double} greater than or equal
      * to {@code 0.0} and less than {@code 1.0}.
@@ -901,7 +921,7 @@ public final class StrictMath {
     }
 
     /**
-     * Returns the absolute value of an {@code int} value..
+     * Returns the absolute value of an {@code int} value.
      * If the argument is not negative, the argument is returned.
      * If the argument is negative, the negation of the argument is returned.
      *
@@ -1436,6 +1456,7 @@ public final class StrictMath {
      * {@link Float#MIN_EXPONENT} -1.
      * </ul>
      * @param f a {@code float} value
+     * @return the unbiased exponent of the argument
      * @since 1.6
      */
     public static int getExponent(float f) {
@@ -1453,6 +1474,7 @@ public final class StrictMath {
      * {@link Double#MIN_EXPONENT} -1.
      * </ul>
      * @param d a {@code double} value
+     * @return the unbiased exponent of the argument
      * @since 1.6
      */
     public static int getExponent(double d) {
@@ -1661,7 +1683,7 @@ public final class StrictMath {
     }
 
     /**
-     * Return {@code d} &times;
+     * Returns {@code d} &times;
      * 2<sup>{@code scaleFactor}</sup> rounded as if performed
      * by a single correctly rounded floating-point multiply to a
      * member of the double value set.  See the Java
@@ -1695,7 +1717,7 @@ public final class StrictMath {
     }
 
     /**
-     * Return {@code f} &times;
+     * Returns {@code f} &times;
      * 2<sup>{@code scaleFactor}</sup> rounded as if performed
      * by a single correctly rounded floating-point multiply to a
      * member of the float value set.  See the Java

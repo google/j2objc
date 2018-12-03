@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@ import java.util.*;
  * method.<p>
  *
  * For example, if one adds two keys <tt>a</tt> and <tt>b</tt> such that
- * <tt>(!a.equals(b) && a.compareTo(b) == 0)</tt> to a sorted
+ * {@code (!a.equals(b) && a.compareTo(b) == 0)} to a sorted
  * set that does not use an explicit comparator, the second <tt>add</tt>
  * operation returns false (and the size of the sorted set does not increase)
  * because <tt>a</tt> and <tt>b</tt> are equivalent from the sorted set's
@@ -84,7 +84,7 @@ import java.util.*;
  *     {(x, y) such that x.equals(y)}. </pre><p>
  *
  * This interface is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @param <T> the type of objects that this object may be compared to
@@ -93,7 +93,6 @@ import java.util.*;
  * @see java.util.Comparator
  * @since 1.2
  */
-
 public interface Comparable<T> {
     /**
      * Compares this object with the specified object for order.  Returns a
