@@ -673,7 +673,7 @@ public class TimeZoneFormat extends UFormat implements Freezable<TimeZoneFormat>
      * Sets the default parse options.
      * <p>
      * <b>Note:</b> By default, an instance of <code>TimeZoneFormat</code>
-     * created by {#link {@link #getInstance(ULocale)} has no parse options set.
+     * created by {@link #getInstance(ULocale)} has no parse options set.
      *
      * @param options the default parse options.
      * @return this object.
