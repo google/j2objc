@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -87,8 +87,7 @@ public interface NetworkChannel
     NetworkChannel bind(SocketAddress local) throws IOException;
 
     /**
-     * Returns the socket address that this channel's socket is bound to, or
-     * {@code null} if the socket is not bound.
+     * Returns the socket address that this channel's socket is bound to.
      *
      * <p> Where the channel is {@link #bind bound} to an Internet Protocol
      * socket address then the return value from this method is of type {@link
@@ -107,6 +106,8 @@ public interface NetworkChannel
     /**
      * Sets the value of a socket option.
      *
+     * @param   <T>
+     *          The type of the socket option value
      * @param   name
      *          The socket option
      * @param   value
@@ -131,6 +132,8 @@ public interface NetworkChannel
     /**
      * Returns the value of a socket option.
      *
+     * @param   <T>
+     *          The type of the socket option value
      * @param   name
      *          The socket option
      *

@@ -636,18 +636,18 @@ public abstract class CharBuffer
     public CharBuffer put(String src, int start, int end) {
         checkBounds(start, end - start, src.length());
 
-        // Android changed : Don't bother making changes to the buffer if there's nothing
+        // Android-changed: Don't bother making changes to the buffer if there's nothing
         // to write. This is questionable behaviour but code expects it.
         if (start == end) {
             return this;
         }
 
-        // Android changed : Throw ReadOnlyBufferException as soon as possible.
+        // Android-changed: Throw ReadOnlyBufferException as soon as possible.
         if (isReadOnly()) {
             throw new ReadOnlyBufferException();
         }
 
-        // Android changed : Throw as early as we can if there isn't enough space.
+        // Android-changed: Throw as early as we can if there isn't enough space.
         if ((end - start) > remaining()) {
             throw new BufferOverflowException();
         }

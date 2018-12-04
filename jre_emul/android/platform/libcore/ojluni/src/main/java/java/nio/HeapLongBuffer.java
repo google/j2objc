@@ -161,12 +161,13 @@ class HeapLongBuffer
     }
 
     public LongBuffer put(LongBuffer src) {
+        if (src == this) {
+            throw new IllegalArgumentException();
+        }
         if (isReadOnly) {
             throw new ReadOnlyBufferException();
         }
         if (src instanceof HeapLongBuffer) {
-            if (src == this)
-                throw new IllegalArgumentException();
             HeapLongBuffer sb = (HeapLongBuffer) src;
             int n = sb.remaining();
             if (n > remaining())
