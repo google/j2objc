@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2005, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ import sun.util.logging.PlatformLogger;
  *
  * <p> The HTTP cookie management in java.net package looks like:
  * <blockquote>
- * <pre>
+ * <pre>{@code
  *                  use
  * CookieHandler <------- HttpURLConnection
  *       ^
@@ -59,7 +59,7 @@ import sun.util.logging.PlatformLogger;
  *                            | impl
  *                            |
  *                  Internal in-memory implementation
- * </pre>
+ * }</pre>
  * <ul>
  *   <li>
  *     CookieHandler is at the core of cookie management. User can call
@@ -132,7 +132,7 @@ public class CookieManager extends CookieHandler
      *
      * <p>This constructor will create new cookie manager with default
      * cookie store and accept policy. The effect is same as
-     * <tt>CookieManager(null, null)</tt>.
+     * {@code CookieManager(null, null)}.
      */
     public CookieManager() {
         this(null, null);
@@ -142,12 +142,12 @@ public class CookieManager extends CookieHandler
     /**
      * Create a new cookie manager with specified cookie store and cookie policy.
      *
-     * @param store     a <tt>CookieStore</tt> to be used by cookie manager.
-     *                  if <tt>null</tt>, cookie manager will use a default one,
+     * @param store     a {@code CookieStore} to be used by cookie manager.
+     *                  if {@code null}, cookie manager will use a default one,
      *                  which is an in-memory CookieStore implmentation.
-     * @param cookiePolicy      a <tt>CookiePolicy</tt> instance
+     * @param cookiePolicy      a {@code CookiePolicy} instance
      *                          to be used by cookie manager as policy callback.
-     *                          if <tt>null</tt>, ACCEPT_ORIGINAL_SERVER will
+     *                          if {@code null}, ACCEPT_ORIGINAL_SERVER will
      *                          be used.
      */
     public CookieManager(CookieStore store,
@@ -171,11 +171,11 @@ public class CookieManager extends CookieHandler
     /**
      * To set the cookie policy of this cookie manager.
      *
-     * <p> A instance of <tt>CookieManager</tt> will have
+     * <p> A instance of {@code CookieManager} will have
      * cookie policy ACCEPT_ORIGINAL_SERVER by default. Users always
      * can call this method to set another cookie policy.
      *
-     * @param cookiePolicy      the cookie policy. Can be <tt>null</tt>, which
+     * @param cookiePolicy      the cookie policy. Can be {@code null}, which
      *                          has no effects on current cookie policy.
      */
     public void setCookiePolicy(CookiePolicy cookiePolicy) {
@@ -205,9 +205,8 @@ public class CookieManager extends CookieHandler
         Map<String, List<String>> cookieMap =
                         new java.util.HashMap<String, List<String>>();
         // if there's no default CookieStore, no way for us to get any cookie
-        if (cookieJar == null) {
+        if (cookieJar == null)
             return Collections.unmodifiableMap(cookieMap);
-        }
 
         boolean secureLink = "https".equalsIgnoreCase(uri.getScheme());
         List<HttpCookie> cookies = new java.util.ArrayList<HttpCookie>();
@@ -244,7 +243,6 @@ public class CookieManager extends CookieHandler
         return Collections.unmodifiableMap(cookieMap);
     }
 
-
     public void
         put(URI uri, Map<String, List<String>> responseHeaders)
         throws IOException
@@ -259,7 +257,7 @@ public class CookieManager extends CookieHandler
         if (cookieJar == null)
             return;
 
-        PlatformLogger logger = PlatformLogger.getLogger("java.net.CookieManager");
+    PlatformLogger logger = PlatformLogger.getLogger("java.net.CookieManager");
         for (String headerKey : responseHeaders.keySet()) {
             // RFC 2965 3.2.2, key must be 'Set-Cookie2'
             // we also accept 'Set-Cookie' here for backward compatibility
@@ -279,8 +277,8 @@ public class CookieManager extends CookieHandler
                         cookies = HttpCookie.parse(headerValue);
                     } catch (IllegalArgumentException e) {
                         // Bogus header, make an empty list and log the error
-                        cookies = java.util.Collections.EMPTY_LIST;
-                        if (logger.isLoggable(PlatformLogger.SEVERE)) {
+                        cookies = java.util.Collections.emptyList();
+                        if (logger.isLoggable(PlatformLogger.Level.SEVERE)) {
                             logger.severe("Invalid cookie for " + uri + ": " + headerValue);
                         }
                     }
@@ -310,7 +308,10 @@ public class CookieManager extends CookieHandler
                         // there is no dot at the beginning of effective request-host,
                         // the default Domain can only domain-match itself.)
                         if (cookie.getDomain() == null) {
-                            cookie.setDomain(uri.getHost());
+                            String host = uri.getHost();
+                            if (host != null && !host.contains("."))
+                                host += ".local";
+                            cookie.setDomain(host);
                         }
                         String ports = cookie.getPortlist();
                         if (ports != null) {
@@ -409,7 +410,7 @@ public class CookieManager extends CookieHandler
 
     /*
      * sort cookies with respect to their path: those with more specific Path attributes
-     * precede those with less specific, as defined in RFC 2965 sec. 3.3.4.
+     * precede those with less specific, as defined in RFC 2965 sec. 3.3.4
      */
     private List<String> sortByPath(List<HttpCookie> cookies) {
         Collections.sort(cookies, new CookiePathComparator());

@@ -729,13 +729,26 @@ public final class URITest extends TestCase {
         assertEquals("a_b.c.d.net", uri.getHost());
     }
 
-    // RFC1034#section-3.5 doesn't permit empty labels in hostnames, but we
-    // accepted this prior to N and the behavior is used by some apps. We need
-    // to keep the behavior for now for compatibility.
+    // RFC1034#section-3.5 doesn't permit empty labels in hostnames. This was accepted prior to N,
+    // but returns null in later releases.
     // http://b/25991669
+    // http://b/29560247
     public void testHostWithEmptyLabel() throws Exception {
-        assertEquals(".example.com", new URI("http://.example.com/").getHost());
-        assertEquals("example..com", new URI("http://example..com/").getHost());
+        assertNull(new URI("http://.example.com/").getHost());
+        assertNull(new URI("http://example..com/").getHost());
+    }
+
+    public void test_JDK7171415() {
+        URI lower, mixed;
+        lower = URI.create("http://www.example.com/%2b");
+        mixed = URI.create("http://wWw.ExAmPlE.com/%2B");
+        assertTrue(lower.equals(mixed));
+        assertEquals(lower.hashCode(), mixed.hashCode());
+
+        lower = URI.create("http://www.example.com/%2bbb");
+        mixed = URI.create("http://wWw.ExAmPlE.com/%2BbB");
+        assertFalse(lower.equals(mixed));
+        assertFalse(lower.hashCode() == mixed.hashCode());
     }
 
     // Adding a new test? Consider adding an equivalent test to URLTest.java
