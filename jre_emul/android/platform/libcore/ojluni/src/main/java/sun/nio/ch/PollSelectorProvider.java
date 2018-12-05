@@ -36,7 +36,8 @@ public class PollSelectorProvider
         return new PollSelectorImpl(this);
     }
 
-    public Channel inheritedChannel() throws IOException {
-        return InheritedChannel.getChannel();
-    }
+    // Android-changed: Android never has stdin/stdout connected to a socket.
+    // public Channel inheritedChannel() throws IOException {
+    //     return InheritedChannel.getChannel();
+    // }
 }

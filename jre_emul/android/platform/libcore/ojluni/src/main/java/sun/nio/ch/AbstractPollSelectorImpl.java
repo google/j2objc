@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,8 +28,6 @@ package sun.nio.ch;
 import java.io.IOException;
 import java.nio.channels.*;
 import java.nio.channels.spi.*;
-import java.util.*;
-import sun.misc.*;
 
 
 /**
@@ -67,7 +65,7 @@ abstract class AbstractPollSelectorImpl
         this.channelOffset = offset;
     }
 
-    void putEventOps(SelectionKeyImpl sk, int ops) {
+    public void putEventOps(SelectionKeyImpl sk, int ops) {
         synchronized (closeLock) {
             if (closed)
                 throw new ClosedSelectorException();

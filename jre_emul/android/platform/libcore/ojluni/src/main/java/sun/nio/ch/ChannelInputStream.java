@@ -29,7 +29,6 @@ package sun.nio.ch;
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
-import java.nio.channels.spi.*;
 
 
 /**
@@ -45,7 +44,7 @@ public class ChannelInputStream
     extends InputStream
 {
 
-    // Android-changed : This code didn't make sense. In particular, the block channel is
+    // Android-changed: This code didn't make sense. In particular, the block channel is
     // useless because we throw if the channel is non-blocking!. It would only make sense
     // if it's called on a blocking channel (but we're asked to make it non-blocking before
     // the read) we never do that, though.
@@ -60,11 +59,11 @@ public class ChannelInputStream
                 boolean bm = sc.isBlocking();
                 if (!bm)
                     throw new IllegalBlockingModeException();
-                // Android removed.
+                // Android-removed.
                 // if (bm != block)
                 //    sc.configureBlocking(block);
                 int n = ch.read(bb);
-                // Android removed.
+                // Android-removed.
                 // if (bm != block)
                 //     sc.configureBlocking(bm);
                 return n;

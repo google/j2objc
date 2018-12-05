@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2003, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ class SSLPeerUnverifiedException extends SSLException
 
     /**
      * Constructs an exception reporting that the SSL peer's
-     * identity has not been verifiied.
+     * identity has not been verified.
      *
      * @param reason describes the problem.
      */

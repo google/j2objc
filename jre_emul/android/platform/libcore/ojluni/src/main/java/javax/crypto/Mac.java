@@ -34,7 +34,9 @@ import java.security.spec.AlgorithmParameterSpec;
 
 import java.nio.ByteBuffer;
 
-//import sun.security.util.Debug;
+/* Android-removed: this debugging mechanism is not used in Android.
+import sun.security.util.Debug;
+*/
 import sun.security.jca.*;
 import sun.security.jca.GetInstance.Instance;
 
@@ -54,76 +56,92 @@ import sun.security.jca.GetInstance.Instance;
  * e.g., MD5 or SHA-1, in combination with a secret shared key. HMAC is
  * specified in RFC 2104.
  *
- * <p> Android provides the following <code>Mac</code> algorithms
+ * <p> Android provides the following <code>Mac</code> algorithms:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>DESedeMAC</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DESedeMAC/CFB8</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DESedeMAC64</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DESMAC</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DESMAC/CFB8</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DESwithISO9797</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>HmacMD5</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA1</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA224</td>
- *             <td>1&ndash;8, 22+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA256</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA384</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA512</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>ISO9797ALG3MAC</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithHmacSHA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithHmacSHA1</td>
- *             <td>1+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr class="deprecated">
+ *       <td>DESMAC</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DESMAC/CFB8</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DESedeMAC</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DESedeMAC/CFB8</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DESedeMAC64</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DESwithISO9797</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacMD5</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA1</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA224</td>
+ *       <td>1-8,22+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA256</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA384</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA512</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>ISO9797ALG3MAC</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA1</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA224</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA384</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA512</td>
+ *       <td>26+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * These algorithms are described in the
@@ -138,8 +156,12 @@ import sun.security.jca.GetInstance.Instance;
 
 public class Mac implements Cloneable {
 
-//    private static final Debug debug =
-//                        Debug.getInstance("jca", "Mac");
+    /* Android-removed: this debugging mechanism is not used in Android.
+    private static final Debug pdebug =
+                        Debug.getInstance("provider", "Provider");
+    private static final boolean skipDebug =
+        Debug.isOn("engine=") && !Debug.isOn("mac");
+    */
 
     // The provider
     private Provider provider;
@@ -216,11 +238,11 @@ public class Mac implements Cloneable {
      */
     public static final Mac getInstance(String algorithm)
             throws NoSuchAlgorithmException {
-        List services = GetInstance.getServices("Mac", algorithm);
+        List<Service> services = GetInstance.getServices("Mac", algorithm);
         // make sure there is at least one service from a signed provider
-        Iterator t = services.iterator();
+        Iterator<Service> t = services.iterator();
         while (t.hasNext()) {
-            Service s = (Service)t.next();
+            Service s = t.next();
             if (JceSecurity.canUseProvider(s.getProvider()) == false) {
                 continue;
             }
@@ -322,18 +344,20 @@ public class Mac implements Cloneable {
             if (spi != null) {
                 return;
             }
-//            if (debug != null) {
-//                int w = --warnCount;
-//                if (w >= 0) {
-//                    debug.println("Mac.init() not first method "
-//                        + "called, disabling delayed provider selection");
-//                    if (w == 0) {
-//                        debug.println("Further warnings of this type will "
-//                            + "be suppressed");
-//                    }
-//                    new Exception("Call trace").printStackTrace();
-//                }
-//            }
+            /* Android-removed: this debugging mechanism is not used in Android.
+            if (debug != null) {
+                int w = --warnCount;
+                if (w >= 0) {
+                    debug.println("Mac.init() not first method "
+                        + "called, disabling delayed provider selection");
+                    if (w == 0) {
+                        debug.println("Further warnings of this type will "
+                            + "be suppressed");
+                    }
+                    new Exception("Call trace").printStackTrace();
+                }
+            }
+            */
             Exception lastException = null;
             for (Service s : GetInstance.getServices("Mac", algorithm)) {
                 if (JceSecurity.canUseProvider(s.getProvider()) == false) {
@@ -447,6 +471,13 @@ public class Mac implements Cloneable {
             throw new InvalidKeyException("init() failed", e);
         }
         initialized = true;
+
+        /* Android-removed: this debugging mechanism is not used in Android.
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("Mac." + algorithm + " algorithm from: " +
+                this.provider.getName());
+        }
+        */
     }
 
     /**
@@ -469,6 +500,13 @@ public class Mac implements Cloneable {
             chooseProvider(key, params);
         }
         initialized = true;
+
+        /* Android-removed: this debugging mechanism is not used in Android.
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("Mac." + algorithm + " algorithm from: " +
+                this.provider.getName());
+        }
+        */
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2004, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -173,7 +173,7 @@ public class SSLEngineResult {
      *
      * @throws  IllegalArgumentException
      *          if the <code>status</code> or <code>handshakeStatus</code>
-     *          arguments are null, or if <<code>bytesConsumed</code> or
+     *          arguments are null, or if <code>bytesConsumed</code> or
      *          <code>bytesProduced</code> is negative.
      */
     public SSLEngineResult(Status status, HandshakeStatus handshakeStatus,
@@ -230,6 +230,7 @@ public class SSLEngineResult {
     /**
      * Returns a String representation of this object.
      */
+    @Override
     public String toString() {
         return ("Status = " + status +
             " HandshakeStatus = " + handshakeStatus +

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -90,7 +90,7 @@ public interface SSLSessionContext {
      * @param seconds the new session timeout limit in seconds; zero means
      *          there is no limit.
      *
-     * @exception IllegalArgumentException if the timeout specified is < 0.
+     * @exception IllegalArgumentException if the timeout specified is {@code < 0}.
      * @see #getSessionTimeout
      */
     public void setSessionTimeout(int seconds)
@@ -122,7 +122,7 @@ public interface SSLSessionContext {
      *
      * @param size the new session cache size limit; zero means there is no
      * limit.
-     * @exception IllegalArgumentException if the specified size is < 0.
+     * @exception IllegalArgumentException if the specified size is {@code < 0}.
      * @see #getSessionCacheSize
      */
     public void setSessionCacheSize(int size)

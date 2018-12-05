@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002, 2003, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2002, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,19 +25,20 @@
 
 package sun.nio.ch;
 
+import java.lang.annotation.Native;
 
 // Constants for reporting I/O status
 
-final class IOStatus {
+public final class IOStatus {
 
     private IOStatus() { }
 
-    static final int EOF = -1;              // End of file
-    static final int UNAVAILABLE = -2;      // Nothing available (non-blocking)
-    static final int INTERRUPTED = -3;      // System call interrupted
-    static final int UNSUPPORTED = -4;      // Operation not supported
-    static final int THROWN = -5;           // Exception thrown in JNI code
-    static final int UNSUPPORTED_CASE = -6; // This case not supported
+    @Native public static final int EOF = -1;              // End of file
+    @Native public static final int UNAVAILABLE = -2;      // Nothing available (non-blocking)
+    @Native public static final int INTERRUPTED = -3;      // System call interrupted
+    @Native public static final int UNSUPPORTED = -4;      // Operation not supported
+    @Native public static final int THROWN = -5;           // Exception thrown in JNI code
+    @Native public static final int UNSUPPORTED_CASE = -6; // This case not supported
 
     // The following two methods are for use in try/finally blocks where a
     // status value needs to be normalized before being returned to the invoker
@@ -55,28 +56,28 @@ final class IOStatus {
     //     }
     //
 
-    static int normalize(int n) {
+    public static int normalize(int n) {
         if (n == UNAVAILABLE)
             return 0;
         return n;
     }
 
-    static boolean check(int n) {
+    public static boolean check(int n) {
         return (n >= UNAVAILABLE);
     }
 
-    static long normalize(long n) {
+    public static long normalize(long n) {
         if (n == UNAVAILABLE)
             return 0;
         return n;
     }
 
-    static boolean check(long n) {
+    public static boolean check(long n) {
         return (n >= UNAVAILABLE);
     }
 
     // Return true iff n is not one of the IOStatus values
-    static boolean checkAll(long n) {
+    public static boolean checkAll(long n) {
         return ((n > EOF) || (n < UNSUPPORTED_CASE));
     }
 

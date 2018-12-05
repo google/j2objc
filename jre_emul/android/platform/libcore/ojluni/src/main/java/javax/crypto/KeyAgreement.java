@@ -32,7 +32,9 @@ import java.security.*;
 import java.security.Provider.Service;
 import java.security.spec.*;
 
+/* Android-removed: this debugging mechanism is not used in Android.
 import sun.security.util.Debug;
+*/
 import sun.security.jca.*;
 import sun.security.jca.GetInstance.Instance;
 
@@ -57,22 +59,22 @@ import sun.security.jca.GetInstance.Instance;
  *
  * <p> Android provides the following <code>KeyAgreement</code> algorithms:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>DH</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>ECDH</td>
- *             <td>11+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>DH</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>ECDH</td>
+ *       <td>11+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * This algorithm is described in the <a href=
@@ -89,8 +91,12 @@ import sun.security.jca.GetInstance.Instance;
 
 public class KeyAgreement {
 
-    private static final Debug debug =
-                        Debug.getInstance("jca", "KeyAgreement");
+    /* Android-removed: this debugging mechanism is not used in Android.
+    private static final Debug pdebug =
+                        Debug.getInstance("provider", "Provider");
+    private static final boolean skipDebug =
+        Debug.isOn("engine=") && !Debug.isOn("keyagreement");
+    */
 
     // The provider
     private Provider provider;
@@ -153,7 +159,7 @@ public class KeyAgreement {
      * algorithm.
      * See the KeyAgreement section in the <a href=
      * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyAgreement">
-     * Java Cryptography Architecture Standard Algorithm Name Documentation
+     * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
      * @return the new <code>KeyAgreement</code> object.
@@ -169,11 +175,12 @@ public class KeyAgreement {
      */
     public static final KeyAgreement getInstance(String algorithm)
             throws NoSuchAlgorithmException {
-        List services = GetInstance.getServices("KeyAgreement", algorithm);
+        List<Service> services =
+                GetInstance.getServices("KeyAgreement", algorithm);
         // make sure there is at least one service from a signed provider
-        Iterator t = services.iterator();
+        Iterator<Service> t = services.iterator();
         while (t.hasNext()) {
-            Service s = (Service)t.next();
+            Service s = t.next();
             if (JceSecurity.canUseProvider(s.getProvider()) == false) {
                 continue;
             }
@@ -199,7 +206,7 @@ public class KeyAgreement {
      * algorithm.
      * See the KeyAgreement section in the <a href=
      * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyAgreement">
-     * Java Cryptography Architecture Standard Algorithm Name Documentation
+     * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
      * @param provider the name of the provider.
@@ -243,7 +250,7 @@ public class KeyAgreement {
      * algorithm.
      * See the KeyAgreement section in the <a href=
      * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyAgreement">
-     * Java Cryptography Architecture Standard Algorithm Name Documentation
+     * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
      * @param provider the provider.
@@ -286,6 +293,7 @@ public class KeyAgreement {
             if (spi != null) {
                 return;
             }
+            /* Android-removed: this debugging mechanism is not used in Android.
             if (debug != null) {
                 int w = --warnCount;
                 if (w >= 0) {
@@ -298,6 +306,7 @@ public class KeyAgreement {
                     new Exception("Call trace").printStackTrace();
                 }
             }
+            */
             Exception lastException = null;
             for (Service s : GetInstance.getServices("KeyAgreement", algorithm)) {
                 if (JceSecurity.canUseProvider(s.getProvider()) == false) {
@@ -403,7 +412,7 @@ public class KeyAgreement {
      *
      * <p> If this key agreement requires any random bytes, it will get
      * them using the
-     * {@link SecureRandom <code>SecureRandom</code>}
+     * {@link java.security.SecureRandom}
      * implementation of the highest-priority
      * installed provider as the source of randomness.
      * (If none of the installed providers supply an implementation of
@@ -453,6 +462,13 @@ public class KeyAgreement {
                 throw new InvalidKeyException(e);
             }
         }
+
+        /* Android-removed: this debugging mechanism is not used in Android.
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("KeyAgreement." + algorithm + " algorithm from: " +
+                this.provider.getName());
+        }
+        */
     }
 
     /**
@@ -461,7 +477,7 @@ public class KeyAgreement {
      *
      * <p> If this key agreement requires any random bytes, it will get
      * them using the
-     * {@link SecureRandom <code>SecureRandom</code>}
+     * {@link java.security.SecureRandom}
      * implementation of the highest-priority
      * installed provider as the source of randomness.
      * (If none of the installed providers supply an implementation of
@@ -509,6 +525,13 @@ public class KeyAgreement {
         } else {
             chooseProvider(I_PARAMS, key, params, random);
         }
+
+        /* Android-removed: this debugging mechanism is not used in Android.
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("KeyAgreement." + algorithm + " algorithm from: " +
+                this.provider.getName());
+        }
+        */
     }
 
     /**
