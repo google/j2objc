@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -34,29 +34,47 @@ package javax.security.auth;
 public interface Destroyable {
 
     /**
-     * Destroy this <code>Object</code>.
+     * Destroy this {@code Object}.
      *
-     * <p> Sensitive information associated with this <code>Object</code>
+     * <p> Sensitive information associated with this {@code Object}
      * is destroyed or cleared.  Subsequent calls to certain methods
-     * on this <code>Object</code> will result in an
-     * <code>IllegalStateException</code> being thrown.
+     * on this {@code Object} will result in an
+     * {@code IllegalStateException} being thrown.
      *
      * <p>
+     * The default implementation throws {@code DestroyFailedException}.
+     *
+     * <p>
+     * Android note: Up to and including API 25 this method did not have a
+     * default implementation. Implementations of this interface must provide
+     * a concrete implementation of this method in order to work on older
+     * versions of Android.
      *
      * @exception DestroyFailedException if the destroy operation fails. <p>
      *
      * @exception SecurityException if the caller does not have permission
-     *          to destroy this <code>Object</code>.
+     *          to destroy this {@code Object}.
      */
-    void destroy() throws DestroyFailedException;
+    public default void destroy() throws DestroyFailedException {
+        throw new DestroyFailedException();
+    }
 
     /**
-     * Determine if this <code>Object</code> has been destroyed.
+     * Determine if this {@code Object} has been destroyed.
      *
      * <p>
+     * The default implementation returns false.
      *
-     * @return true if this <code>Object</code> has been destroyed,
+     * <p>
+     * Android note: Up to and including API 25 this method did not have a
+     * default implementation. Implementations of this interface must provide
+     * a concrete implementation of this method in order to work on older
+     * versions of Android.
+     *
+     * @return true if this {@code Object} has been destroyed,
      *          false otherwise.
      */
-    boolean isDestroyed();
+    public default boolean isDestroyed() {
+        return false;
+    }
 }

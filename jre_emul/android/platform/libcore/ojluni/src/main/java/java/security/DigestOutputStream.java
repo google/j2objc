@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1999, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -37,13 +37,13 @@ import java.io.ByteArrayOutputStream;
  * the bits going through the stream.
  *
  * <p>To complete the message digest computation, call one of the
- * <code>digest</code> methods on the associated message
- * digest after your calls to one of this digest ouput stream's
+ * {@code digest} methods on the associated message
+ * digest after your calls to one of this digest output stream's
  * {@link #write(int) write} methods.
  *
  * <p>It is possible to turn this stream on or off (see
  * {@link #on(boolean) on}). When it is on, a call to one of the
- * <code>write</code> methods results in
+ * {@code write} methods results in
  * an update on the message digest.  But when it is off, the message
  * digest is not updated. The default is for the stream to be on.
  *
@@ -99,8 +99,8 @@ public class DigestOutputStream extends FilterOutputStream {
      * the specified byte, and in any case writes the byte
      * to the output stream. That is, if the digest function is on
      * (see {@link #on(boolean) on}), this method calls
-     * <code>update</code> on the message digest associated with this
-     * stream, passing it the byte <code>b</code>. This method then
+     * {@code update} on the message digest associated with this
+     * stream, passing it the byte {@code b}. This method then
      * writes the byte to the output stream, blocking until the byte
      * is actually written.
      *
@@ -112,17 +112,17 @@ public class DigestOutputStream extends FilterOutputStream {
      * @see MessageDigest#update(byte)
      */
     public void write(int b) throws IOException {
+        out.write(b);
         if (on) {
             digest.update((byte)b);
         }
-        out.write(b);
     }
 
     /**
      * Updates the message digest (if the digest function is on) using
      * the specified subarray, and in any case writes the subarray to
      * the output stream. That is, if the digest function is on (see
-     * {@link #on(boolean) on}), this method calls <code>update</code>
+     * {@link #on(boolean) on}), this method calls {@code update}
      * on the message digest associated with this stream, passing it
      * the subarray specifications. This method then writes the subarray
      * bytes to the output stream, blocking until the bytes are actually
@@ -131,26 +131,35 @@ public class DigestOutputStream extends FilterOutputStream {
      * @param b the array containing the subarray to be used for updating
      * and writing to the output stream.
      *
-     * @param off the offset into <code>b</code> of the first byte to
+     * @param off the offset into {@code b} of the first byte to
      * be updated and written.
      *
      * @param len the number of bytes of data to be updated and written
-     * from <code>b</code>, starting at offset <code>off</code>.
+     * from {@code b}, starting at offset {@code off}.
      *
      * @exception IOException if an I/O error occurs.
      *
      * @see MessageDigest#update(byte[], int, int)
      */
     public void write(byte[] b, int off, int len) throws IOException {
+        // BEGIN Android-added: perform checks for parameters first.
+        // See org.apache.harmony.security.tests.j.s.DigestOutputStreamTest#test_write$BII_6
+        if (b == null || off + len > b.length) {
+            throw new IllegalArgumentException("wrong parameters for write");
+        }
+        if (off < 0 || len < 0) {
+            throw new IndexOutOfBoundsException("wrong index for write");
+        }
+        // END Android-added
+        out.write(b, off, len);
         if (on) {
             digest.update(b, off, len);
         }
-        out.write(b, off, len);
     }
 
     /**
      * Turns the digest function on or off. The default is on.  When
-     * it is on, a call to one of the <code>write</code> methods results in an
+     * it is on, a call to one of the {@code write} methods results in an
      * update on the message digest.  But when it is off, the message
      * digest is not updated.
      *

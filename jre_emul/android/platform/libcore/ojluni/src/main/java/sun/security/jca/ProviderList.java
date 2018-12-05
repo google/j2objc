@@ -55,8 +55,8 @@ import java.security.Provider.Service;
  */
 public final class ProviderList {
 
-//    final static sun.security.util.Debug debug =
-//        sun.security.util.Debug.getInstance("jca", "ProviderList");
+    final static sun.security.util.Debug debug =
+        sun.security.util.Debug.getInstance("jca", "ProviderList");
 
     private final static ProviderConfig[] PC0 = new ProviderConfig[0];
 
@@ -69,6 +69,13 @@ public final class ProviderList {
     // used to avoid explicit null checks in various places
     private static final Provider EMPTY_PROVIDER =
         new Provider("##Empty##", 1.0d, "initialization in progress") {
+            // BEGIN Android-added
+            // TODO(user): the computation of the default in Android yields
+            // -2591074641286775682L . Check why there's a difference and possibly change number
+            // accordingly.
+            // END Android-added
+            private static final long serialVersionUID = 1151354171352296389L;
+            // END Android-changed
             // override getService() to return null slightly faster
             public Service getService(String type, String algorithm) {
                 return null;
@@ -188,9 +195,9 @@ public final class ProviderList {
             }
         }
         configs = configList.toArray(PC0);
-//        if (debug != null) {
-//            debug.println("provider configuration: " + configList);
-//        }
+        if (debug != null) {
+            debug.println("provider configuration: " + configList);
+        }
     }
 
     /**
@@ -272,10 +279,10 @@ public final class ProviderList {
         if (allLoaded) {
             return configs.length;
         }
-//        if (debug != null) {
-//            debug.println("Loading all providers");
-//            new Exception("Call trace").printStackTrace();
-//        }
+        if (debug != null) {
+            debug.println("Loading all providers");
+            new Exception("Call trace").printStackTrace();
+        }
         int n = 0;
         for (int i = 0; i < configs.length; i++) {
             Provider p = configs[i].getProvider();

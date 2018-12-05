@@ -43,7 +43,7 @@ public class ResourcesMgr {
             bundle = java.security.AccessController.doPrivileged(
                 new java.security.PrivilegedAction<java.util.ResourceBundle>() {
                 public java.util.ResourceBundle run() {
-                    // Android changed: Work around class name.
+                    // Android-changed: Work around class name.
                     return java.util.ResourceBundle.getBundle(Resources.class.getName());
                 }
             });

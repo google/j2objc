@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -784,7 +784,8 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
     public KeyIdentifier getAuthKeyId() throws IOException {
         AuthorityKeyIdentifierExtension aki = getAuthKeyIdExtension();
         if (aki != null) {
-            KeyIdentifier keyId = (KeyIdentifier)aki.get(aki.KEY_ID);
+            KeyIdentifier keyId = (KeyIdentifier)aki.get(
+                    AuthorityKeyIdentifierExtension.KEY_ID);
             return keyId;
         } else {
             return null;
@@ -823,7 +824,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
     public BigInteger getCRLNumber() throws IOException {
         CRLNumberExtension numExt = getCRLNumberExtension();
         if (numExt != null) {
-            BigInteger num = (BigInteger)numExt.get(numExt.NUMBER);
+            BigInteger num = numExt.get(CRLNumberExtension.NUMBER);
             return num;
         } else {
             return null;
@@ -852,7 +853,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
     public BigInteger getBaseCRLNumber() throws IOException {
         DeltaCRLIndicatorExtension dciExt = getDeltaCRLIndicatorExtension();
         if (dciExt != null) {
-            BigInteger num = (BigInteger)dciExt.get(dciExt.NUMBER);
+            BigInteger num = dciExt.get(DeltaCRLIndicatorExtension.NUMBER);
             return num;
         } else {
             return null;
@@ -963,7 +964,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
                                                  e.hasMoreElements();) {
                     ex = e.nextElement();
                     inCertOID = ex.getExtensionId();
-                    if (inCertOID.equals(findOID)) {
+                    if (inCertOID.equals((Object)findOID)) {
                         crlExt = ex;
                         break;
                     }
@@ -1192,8 +1193,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
         CertificateIssuerExtension ciExt =
             entry.getCertificateIssuerExtension();
         if (ciExt != null) {
-            GeneralNames names = (GeneralNames)
-                ciExt.get(CertificateIssuerExtension.ISSUER);
+            GeneralNames names = ciExt.get(CertificateIssuerExtension.ISSUER);
             X500Name issuerDN = (X500Name) names.get(0).getName();
             return issuerDN.asX500Principal();
         } else {
