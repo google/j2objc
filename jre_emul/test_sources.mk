@@ -1085,7 +1085,6 @@ BEANS_TEST_RESOURCES_SRCS = \
 
 TEST_RESOURCE_ROOTS = \
   apache_harmony/classlib/modules/luni/src/test/resources \
-  android/libcore/luni/src/test/resources \
   android/platform/libcore/harmony-tests/src/test/resources \
   android/platform/libcore/luni/src/test/resources \
   android/platform/libcore/ojluni/src/main/resources \
