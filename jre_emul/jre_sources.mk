@@ -295,12 +295,16 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
+  java/security/AccessControlContext.java \
+  java/security/AccessController.java \
   java/security/AllPermission.java \
   java/security/BasicPermission.java \
+  java/security/DomainCombiner.java \
+  java/security/Guard.java \
   java/security/Permission.java \
   java/security/PermissionCollection.java \
   java/security/Permissions.java \
-  java/security/Guard.java \
+  java/security/PrivilegedActionException.java \
   java/text/Annotation.java \
   java/text/AttributedCharacterIterator.java \
   java/text/AttributedString.java \
@@ -416,11 +420,13 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/WeakHashMap.java \
   java/util/concurrent/AbstractExecutorService.java \
   java/util/concurrent/BlockingQueue.java \
+  java/util/concurrent/Callable.java \
   java/util/concurrent/CancellationException.java \
   java/util/concurrent/CompletionService.java \
   java/util/concurrent/ConcurrentHashMap.java \
   java/util/concurrent/ConcurrentMap.java \
   java/util/concurrent/CopyOnWriteArrayList.java \
+  java/util/concurrent/CopyOnWriteArraySet.java \
   java/util/concurrent/CountDownLatch.java \
   java/util/concurrent/CountedCompleter.java \
   java/util/concurrent/Delayed.java \
@@ -866,13 +872,11 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/ArrayBlockingQueue.java \
   java/util/concurrent/BlockingDeque.java \
   java/util/concurrent/BrokenBarrierException.java \
-  java/util/concurrent/Callable.java \
   java/util/concurrent/ConcurrentLinkedDeque.java \
   java/util/concurrent/ConcurrentLinkedQueue.java \
   java/util/concurrent/ConcurrentNavigableMap.java \
   java/util/concurrent/ConcurrentSkipListMap.java \
   java/util/concurrent/ConcurrentSkipListSet.java \
-  java/util/concurrent/CopyOnWriteArraySet.java \
   java/util/concurrent/CyclicBarrier.java \
   java/util/concurrent/DelayQueue.java \
   java/util/concurrent/Exchanger.java \
@@ -1017,9 +1021,7 @@ NATIVE_JRE_SOURCES_CHANNELS = \
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
   java/net/URLClassLoader.java \
-  java/security/AccessControlContext.java \
   java/security/AccessControlException.java \
-  java/security/AccessController.java \
   java/security/AlgorithmConstraints.java \
   java/security/AlgorithmParameterGenerator.java \
   java/security/AlgorithmParameterGeneratorSpi.java \
@@ -1031,7 +1033,6 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/DigestException.java \
   java/security/DigestInputStream.java \
   java/security/DigestOutputStream.java \
-  java/security/DomainCombiner.java \
   java/security/GeneralSecurityException.java \
   java/security/GuardedObject.java \
   java/security/InvalidAlgorithmParameterException.java \
@@ -1057,7 +1058,6 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/Principal.java \
   java/security/PrivateKey.java \
   java/security/PrivilegedAction.java \
-  java/security/PrivilegedActionException.java \
   java/security/PrivilegedExceptionAction.java \
   java/security/ProtectionDomain.java \
   java/security/Provider.java \
