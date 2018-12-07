@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2004, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@ import java.io.IOException;
  * For example, the following class prints out different representations of a
  * stock's name depending on the flags and length constraints:
  *
- * <blockquote><pre>
+ * {@code
  *   import java.nio.CharBuffer;
  *   import java.util.Formatter;
  *   import java.util.Formattable;
@@ -89,12 +89,12 @@ import java.io.IOException;
  *           return String.format("%s - %s", symbol, companyName);
  *       }
  *   }
- * </pre></blockquote>
+ * }
  *
  * <p> When used in conjunction with the {@link java.util.Formatter}, the above
  * class produces the following output for various format strings.
  *
- * <blockquote><pre>
+ * {@code
  *   Formatter fmt = new Formatter();
  *   StockName sn = new StockName("HUGE", "Huge Fruit, Inc.",
  *                                "Fruit Titanesque, Inc.");
@@ -104,7 +104,7 @@ import java.io.IOException;
  *   fmt.format("%-10.8s", sn);              //   -> "HUGE      "
  *   fmt.format("%.12s", sn);                //   -> "Huge Fruit,*"
  *   fmt.format(Locale.FRANCE, "%25s", sn);  //   -> "   Fruit Titanesque, Inc."
- * </pre></blockquote>
+ * }
  *
  * <p> Formattables are not necessarily safe for multithreaded access.  Thread
  * safety is optional and may be enforced by classes that extend and implement

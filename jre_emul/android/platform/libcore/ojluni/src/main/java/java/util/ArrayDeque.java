@@ -27,6 +27,7 @@
  * License version 2 only, as published by the Free Software Foundation.
  * However, the following notice accompanied the original version of this
  * file:
+ *
  * Written by Josh Bloch of Google Inc. and released to the public domain,
  * as explained at http://creativecommons.org/publicdomain/zero/1.0/.
  */
@@ -907,7 +908,7 @@ public class ArrayDeque<E> extends AbstractCollection<E>
      * @since 1.8
      */
     public Spliterator<E> spliterator() {
-        return new DeqSpliterator<E>(this, -1, -1);
+        return new DeqSpliterator<>(this, -1, -1);
     }
 
     static final class DeqSpliterator<E> implements Spliterator<E> {

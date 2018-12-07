@@ -104,9 +104,22 @@ import java.util.stream.StreamSupport;
  * the specified behavior of underlying {@link Object} methods wherever the
  * implementor deems it appropriate.
  *
+ * <p>Some collection operations which perform recursive traversal of the
+ * collection may fail with an exception for self-referential instances where
+ * the collection directly or indirectly contains itself. This includes the
+ * {@code clone()}, {@code equals()}, {@code hashCode()} and {@code toString()}
+ * methods. Implementations may optionally handle the self-referential scenario,
+ * however most current implementations do not do so.
+ *
  * <p>This interface is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
+ *
+ * @implSpec
+ * The default method implementations (inherited or otherwise) do not apply any
+ * synchronization protocol.  If a {@code Collection} implementation has a
+ * specific synchronization protocol, then it must override default
+ * implementations to apply that protocol.
  *
  * @param <E> the type of elements in this collection
  *
@@ -226,6 +239,7 @@ public interface Collection<E> extends Iterable<E> {
      * Note that <tt>toArray(new Object[0])</tt> is identical in function to
      * <tt>toArray()</tt>.
      *
+     * @param <T> the runtime type of the array to contain the collection
      * @param a the array into which the elements of this collection are to be
      *        stored, if it is big enough; otherwise, a new array of the same
      *        runtime type is allocated for this purpose.
@@ -369,7 +383,6 @@ public interface Collection<E> extends Iterable<E> {
      * @see #contains(Object)
      */
     boolean removeAll(Collection<?> c);
-
 
     /**
      * Removes all of the elements of this collection that satisfy the given

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -129,10 +129,8 @@ import sun.util.calendar.Gregorian;
 public class Date
     implements java.io.Serializable, Cloneable, Comparable<Date>
 {
-    static class GcalHolder {
-      static final BaseCalendar INSTANCE = CalendarSystem.getGregorianCalendar();
-    }
-
+    private static final BaseCalendar gcal =
+                                CalendarSystem.getGregorianCalendar();
     private static BaseCalendar jcal;
 
     private transient long fastTime;
@@ -490,10 +488,12 @@ public class Date
                 if ('0' <= c && c <= '9') {
                     n = c - '0';
                     while (i < limit && '0' <= (c = s.charAt(i)) && c <= '9') {
-                        n = (n * 10) + (c - '0');
+                        n = n * 10 + c - '0';
                         i++;
                     }
                     if (prevc == '+' || prevc == '-' && year != Integer.MIN_VALUE) {
+                        // BEGIN Android-changed: Android specific time zone logic
+
                         if (tzoffset != 0 && tzoffset != -1)
                             break syntax;
 
@@ -520,6 +520,7 @@ public class Date
 
                         if (prevc == '+')   // plus means east of GMT
                             n = -n;
+                        // END Android-changed: Android specific time zone logic
 
                         tzoffset = n;
                     } else if (n >= 70)
@@ -607,7 +608,7 @@ public class Date
             if (year < 100) {
                 synchronized (Date.class) {
                     if (defaultCenturyStart == 0) {
-                        defaultCenturyStart = GcalHolder.INSTANCE.getCalendarDate().getYear() - 80;
+                        defaultCenturyStart = gcal.getCalendarDate().getYear() - 80;
                     }
                 }
                 year += (defaultCenturyStart / 100) * 100;
@@ -749,7 +750,7 @@ public class Date
      * replaced by <code>Calendar.get(Calendar.DAY_OF_MONTH)</code>.
      */
     @Deprecated
-    // Android removed stray @deprecated tag.
+    // Android-removed stray @deprecated tag.
     public int getDate() {
         return normalize().getDayOfMonth();
     }
@@ -790,7 +791,7 @@ public class Date
      */
     @Deprecated
     public int getDay() {
-        return normalize().getDayOfWeek() - GcalHolder.INSTANCE.SUNDAY;
+        return normalize().getDayOfWeek() - BaseCalendar.SUNDAY;
     }
 
     /**
@@ -977,7 +978,7 @@ public class Date
             return date.fastTime;
         }
         BaseCalendar.Date d = (BaseCalendar.Date) date.cdate.clone();
-        return GcalHolder.INSTANCE.getTime(d);
+        return gcal.getTime(d);
     }
 
     /**
@@ -1002,8 +1003,9 @@ public class Date
      * exclusive OR of the two halves of the primitive <tt>long</tt>
      * value returned by the {@link Date#getTime}
      * method. That is, the hash code is the value of the expression:
-     * <blockquote><pre>
-     * (int)(this.getTime()^(this.getTime() >>> 32))</pre></blockquote>
+     * <blockquote><pre>{@code
+     * (int)(this.getTime()^(this.getTime() >>> 32))
+     * }</pre></blockquote>
      *
      * @return  a hash code value for this object.
      */
@@ -1047,7 +1049,7 @@ public class Date
         BaseCalendar.Date date = normalize();
         StringBuilder sb = new StringBuilder(28);
         int index = date.getDayOfWeek();
-        if (index == GcalHolder.INSTANCE.SUNDAY) {
+        if (index == BaseCalendar.SUNDAY) {
             index = 8;
         }
         convertToAbbr(sb, wtb[index]).append(' ');                        // EEE
@@ -1059,7 +1061,7 @@ public class Date
         CalendarUtils.sprintf0d(sb, date.getSeconds(), 2).append(' '); // ss
         TimeZone zi = date.getZone();
         if (zi != null) {
-            sb.append(zi.getDisplayName(date.isDaylightTime(), zi.SHORT, Locale.US)); // zzz
+            sb.append(zi.getDisplayName(date.isDaylightTime(), TimeZone.SHORT, Locale.US)); // zzz
         } else {
             sb.append("GMT");
         }
@@ -1103,7 +1105,7 @@ public class Date
     /**
      * Creates a string representation of this <tt>Date</tt> object of
      * the form:
-     * <blockquote<pre>
+     * <blockquote><pre>
      * d mon yyyy hh:mm:ss GMT</pre></blockquote>
      * where:<ul>
      * <li><i>d</i> is the day of the month (<tt>1</tt> through <tt>31</tt>),
@@ -1185,6 +1187,7 @@ public class Date
     public int getTimezoneOffset() {
         int zoneOffset;
         if (cdate == null) {
+            // Android-changed: Android specific time zone logic
             GregorianCalendar cal = new GregorianCalendar(fastTime);
             zoneOffset = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET));
         } else {
@@ -1253,7 +1256,7 @@ public class Date
             }
             GregorianCalendar gc = new GregorianCalendar(tz);
             gc.clear();
-            gc.set(gc.MILLISECOND, ms);
+            gc.set(GregorianCalendar.MILLISECOND, ms);
             gc.set(y, m-1, d, hh, mm, ss);
             fastTime = gc.getTimeInMillis();
             BaseCalendar cal = getCalendarSystem(fastTime);
@@ -1289,7 +1292,7 @@ public class Date
      */
     private static final BaseCalendar getCalendarSystem(int year) {
         if (year >= 1582) {
-            return GcalHolder.INSTANCE;
+            return gcal;
         }
         return getJulianCalendar();
     }
@@ -1301,19 +1304,19 @@ public class Date
         if (utc >= 0
             || utc >= GregorianCalendar.DEFAULT_GREGORIAN_CUTOVER
                         - TimeZone.getDefaultRef().getOffset(utc)) {
-            return GcalHolder.INSTANCE;
+            return gcal;
         }
         return getJulianCalendar();
     }
 
     private static final BaseCalendar getCalendarSystem(BaseCalendar.Date cdate) {
         if (jcal == null) {
-            return GcalHolder.INSTANCE;
+            return gcal;
         }
         if (cdate.getEra() != null) {
             return jcal;
         }
-        return GcalHolder.INSTANCE;
+        return gcal;
     }
 
     synchronized private static final BaseCalendar getJulianCalendar() {

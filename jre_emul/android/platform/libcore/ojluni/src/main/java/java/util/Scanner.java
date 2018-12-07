@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -48,47 +48,51 @@ import sun.misc.LRUCache;
  *
  * <p>For example, this code allows a user to read a number from
  * <tt>System.in</tt>:
- * <blockquote><pre>
+ * <blockquote><pre>{@code
  *     Scanner sc = new Scanner(System.in);
  *     int i = sc.nextInt();
- * </pre></blockquote>
+ * }</pre></blockquote>
  *
  * <p>As another example, this code allows <code>long</code> types to be
  * assigned from entries in a file <code>myNumbers</code>:
- * <blockquote><pre>
+ * <blockquote><pre>{@code
  *      Scanner sc = new Scanner(new File("myNumbers"));
  *      while (sc.hasNextLong()) {
  *          long aLong = sc.nextLong();
- *      }</pre></blockquote>
+ *      }
+ * }</pre></blockquote>
  *
  * <p>The scanner can also use delimiters other than whitespace. This
  * example reads several items in from a string:
- *<blockquote><pre>
+ * <blockquote><pre>{@code
  *     String input = "1 fish 2 fish red fish blue fish";
  *     Scanner s = new Scanner(input).useDelimiter("\\s*fish\\s*");
  *     System.out.println(s.nextInt());
  *     System.out.println(s.nextInt());
  *     System.out.println(s.next());
  *     System.out.println(s.next());
- *     s.close(); </pre></blockquote>
+ *     s.close();
+ * }</pre></blockquote>
  * <p>
  * prints the following output:
- * <blockquote><pre>
+ * <blockquote><pre>{@code
  *     1
  *     2
  *     red
- *     blue </pre></blockquote>
+ *     blue
+ * }</pre></blockquote>
  *
  * <p>The same output can be generated with this code, which uses a regular
  * expression to parse all four tokens at once:
- *<blockquote><pre>
+ * <blockquote><pre>{@code
  *     String input = "1 fish 2 fish red fish blue fish";
  *     Scanner s = new Scanner(input);
  *     s.findInLine("(\\d+) fish (\\d+) fish (\\w+) fish (\\w+)");
  *     MatchResult result = s.match();
  *     for (int i=1; i<=result.groupCount(); i++)
  *         System.out.println(result.group(i));
- *     s.close(); </pre></blockquote>
+ *     s.close();
+ * }</pre></blockquote>
  *
  * <p>The <a name="default-delimiter">default whitespace delimiter</a> used
  * by a scanner is as recognized by {@link java.lang.Character}.{@link
@@ -144,13 +148,13 @@ import sun.misc.LRUCache;
  * {@link #reset} method will reset the value of the scanner's radix to
  * <code>10</code> regardless of whether it was previously changed.
  *
- * <a name="localized-numbers">
- * <h4> Localized numbers </h4>
+ * <h3> <a name="localized-numbers">Localized numbers</a> </h3>
  *
  * <p> An instance of this class is capable of scanning numbers in the standard
  * formats as well as in the formats of the scanner's locale. A scanner's
  * <a name="initial-locale">initial locale </a>is the value returned by the {@link
- * java.util.Locale#getDefault} method; it may be changed via the {@link
+ * java.util.Locale#getDefault(Locale.Category)
+ * Locale.getDefault(Locale.Category.FORMAT)} method; it may be changed via the {@link
  * #useLocale} method. The {@link #reset} method will reset the value of the
  * scanner's locale to the initial locale regardless of whether it was
  * previously changed.
@@ -161,186 +165,138 @@ import sun.misc.LRUCache;
  * {@link java.text.DecimalFormatSymbols DecimalFormatSymbols} object,
  * <tt>dfs</tt>.
  *
- * <blockquote><table>
- * <tr><td valign="top"><i>LocalGroupSeparator&nbsp;&nbsp;</i></td>
- *     <td valign="top">The character used to separate thousands groups,
- *                      <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *                      java.text.DecimalFormatSymbols#getGroupingSeparator
- *                      getGroupingSeparator()}</td></tr>
- * <tr><td valign="top"><i>LocalDecimalSeparator&nbsp;&nbsp;</i></td>
- *     <td valign="top">The character used for the decimal point,
- *                      <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *                      java.text.DecimalFormatSymbols#getDecimalSeparator
- *                      getDecimalSeparator()}</td></tr>
- * <tr><td valign="top"><i>LocalPositivePrefix&nbsp;&nbsp;</i></td>
- *     <td valign="top">The string that appears before a positive number (may
- *                      be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *                      java.text.DecimalFormat#getPositivePrefix
- *                      getPositivePrefix()}</td></tr>
- * <tr><td valign="top"><i>LocalPositiveSuffix&nbsp;&nbsp;</i></td>
- *     <td valign="top">The string that appears after a positive number (may be
- *                      empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *                      java.text.DecimalFormat#getPositiveSuffix
- *                      getPositiveSuffix()}</td></tr>
- * <tr><td valign="top"><i>LocalNegativePrefix&nbsp;&nbsp;</i></td>
- *     <td valign="top">The string that appears before a negative number (may
- *                      be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *                      java.text.DecimalFormat#getNegativePrefix
- *                      getNegativePrefix()}</td></tr>
- * <tr><td valign="top"><i>LocalNegativeSuffix&nbsp;&nbsp;</i></td>
- *     <td valign="top">The string that appears after a negative number (may be
- *                      empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *                      java.text.DecimalFormat#getNegativeSuffix
- *                      getNegativeSuffix()}</td></tr>
- * <tr><td valign="top"><i>LocalNaN&nbsp;&nbsp;</i></td>
- *     <td valign="top">The string that represents not-a-number for
- *                      floating-point values,
- *                      <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *                      java.text.DecimalFormatSymbols#getNaN
- *                      getNaN()}</td></tr>
- * <tr><td valign="top"><i>LocalInfinity&nbsp;&nbsp;</i></td>
- *     <td valign="top">The string that represents infinity for floating-point
- *                      values, <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *                      java.text.DecimalFormatSymbols#getInfinity
- *                      getInfinity()}</td></tr>
- * </table></blockquote>
+ * <blockquote><dl>
+ *     <dt><i>LocalGroupSeparator&nbsp;&nbsp;</i>
+ *         <dd>The character used to separate thousands groups,
+ *         <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ *         java.text.DecimalFormatSymbols#getGroupingSeparator
+ *         getGroupingSeparator()}
+ *     <dt><i>LocalDecimalSeparator&nbsp;&nbsp;</i>
+ *         <dd>The character used for the decimal point,
+ *     <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ *     java.text.DecimalFormatSymbols#getDecimalSeparator
+ *     getDecimalSeparator()}
+ *     <dt><i>LocalPositivePrefix&nbsp;&nbsp;</i>
+ *         <dd>The string that appears before a positive number (may
+ *         be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ *         java.text.DecimalFormat#getPositivePrefix
+ *         getPositivePrefix()}
+ *     <dt><i>LocalPositiveSuffix&nbsp;&nbsp;</i>
+ *         <dd>The string that appears after a positive number (may be
+ *         empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ *         java.text.DecimalFormat#getPositiveSuffix
+ *         getPositiveSuffix()}
+ *     <dt><i>LocalNegativePrefix&nbsp;&nbsp;</i>
+ *         <dd>The string that appears before a negative number (may
+ *         be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ *         java.text.DecimalFormat#getNegativePrefix
+ *         getNegativePrefix()}
+ *     <dt><i>LocalNegativeSuffix&nbsp;&nbsp;</i>
+ *         <dd>The string that appears after a negative number (may be
+ *         empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ *     java.text.DecimalFormat#getNegativeSuffix
+ *     getNegativeSuffix()}
+ *     <dt><i>LocalNaN&nbsp;&nbsp;</i>
+ *         <dd>The string that represents not-a-number for
+ *         floating-point values,
+ *         <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ *         java.text.DecimalFormatSymbols#getNaN
+ *         getNaN()}
+ *     <dt><i>LocalInfinity&nbsp;&nbsp;</i>
+ *         <dd>The string that represents infinity for floating-point
+ *         values, <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ *         java.text.DecimalFormatSymbols#getInfinity
+ *         getInfinity()}
+ * </dl></blockquote>
  *
- * <a name="number-syntax">
- * <h4> Number syntax </h4>
+ * <h4> <a name="number-syntax">Number syntax</a> </h4>
  *
  * <p> The strings that can be parsed as numbers by an instance of this class
  * are specified in terms of the following regular-expression grammar, where
- * Rmax is the highest digit in the radix being used (for example, Rmax is 9
- * in base 10).
+ * Rmax is the highest digit in the radix being used (for example, Rmax is 9 in base 10).
  *
- * <p>
- * <table cellspacing=0 cellpadding=0 align=center>
- *
- *   <tr><td valign=top align=right><i>NonASCIIDigit</i>&nbsp;&nbsp;::</td>
- *       <td valign=top>= A non-ASCII character c for which
+ * <dl>
+ *   <dt><i>NonAsciiDigit</i>:
+ *       <dd>A non-ASCII character c for which
  *            {@link java.lang.Character#isDigit Character.isDigit}<tt>(c)</tt>
- *                        returns&nbsp;true</td></tr>
+ *                        returns&nbsp;true
  *
- *   <tr><td>&nbsp;</td></tr>
+ *   <dt><i>Non0Digit</i>:
+ *       <dd><tt>[1-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i>
  *
- *   <tr><td align=right><i>Non0Digit</i>&nbsp;&nbsp;::</td>
- *   <td><tt>= [1-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i></td></tr>
+ *   <dt><i>Digit</i>:
+ *       <dd><tt>[0-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i>
  *
- *   <tr><td>&nbsp;</td></tr>
+ *   <dt><i>GroupedNumeral</i>:
+ *       <dd><tt>(&nbsp;</tt><i>Non0Digit</i>
+ *                   <i>Digit</i><tt>?
+ *                   </tt><i>Digit</i><tt>?</tt>
+ *       <dd>&nbsp;&nbsp;&nbsp;&nbsp;<tt>(&nbsp;</tt><i>LocalGroupSeparator</i>
+ *                         <i>Digit</i>
+ *                         <i>Digit</i>
+ *                         <i>Digit</i><tt> )+ )</tt>
  *
- *   <tr><td align=right><i>Digit</i>&nbsp;&nbsp;::</td>
- *   <td><tt>= [0-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i></td></tr>
+ *   <dt><i>Numeral</i>:
+ *       <dd><tt>( ( </tt><i>Digit</i><tt>+ )
+ *               | </tt><i>GroupedNumeral</i><tt> )</tt>
  *
- *   <tr><td>&nbsp;</td></tr>
+ *   <dt><a name="Integer-regex"><i>Integer</i>:</a>
+ *       <dd><tt>( [-+]? ( </tt><i>Numeral</i><tt>
+ *                               ) )</tt>
+ *       <dd><tt>| </tt><i>LocalPositivePrefix</i> <i>Numeral</i>
+ *                      <i>LocalPositiveSuffix</i>
+ *       <dd><tt>| </tt><i>LocalNegativePrefix</i> <i>Numeral</i>
+ *                 <i>LocalNegativeSuffix</i>
  *
- *   <tr><td valign=top align=right><i>GroupedNumeral</i>&nbsp;&nbsp;::</td>
- *       <td valign=top>
- *         <table cellpadding=0 cellspacing=0>
- *           <tr><td><tt>= (&nbsp;</tt></td>
- *               <td><i>Non0Digit</i><tt>
- *                   </tt><i>Digit</i><tt>?
- *                   </tt><i>Digit</i><tt>?</tt></td></tr>
- *           <tr><td></td>
- *               <td><tt>(&nbsp;</tt><i>LocalGroupSeparator</i><tt>
- *                         </tt><i>Digit</i><tt>
- *                         </tt><i>Digit</i><tt>
- *                         </tt><i>Digit</i><tt> )+ )</tt></td></tr>
- *         </table></td></tr>
+ *   <dt><i>DecimalNumeral</i>:
+ *       <dd><i>Numeral</i>
+ *       <dd><tt>| </tt><i>Numeral</i>
+ *                 <i>LocalDecimalSeparator</i>
+ *                 <i>Digit</i><tt>*</tt>
+ *       <dd><tt>| </tt><i>LocalDecimalSeparator</i>
+ *                 <i>Digit</i><tt>+</tt>
  *
- *   <tr><td>&nbsp;</td></tr>
+ *   <dt><i>Exponent</i>:
+ *       <dd><tt>( [eE] [+-]? </tt><i>Digit</i><tt>+ )</tt>
  *
- *   <tr><td align=right><i>Numeral</i>&nbsp;&nbsp;::</td>
- *       <td><tt>= ( ( </tt><i>Digit</i><tt>+ )
- *               | </tt><i>GroupedNumeral</i><tt> )</tt></td></tr>
+ *   <dt><a name="Decimal-regex"><i>Decimal</i>:</a>
+ *       <dd><tt>( [-+]? </tt><i>DecimalNumeral</i>
+ *                         <i>Exponent</i><tt>? )</tt>
+ *       <dd><tt>| </tt><i>LocalPositivePrefix</i>
+ *                 <i>DecimalNumeral</i>
+ *                 <i>LocalPositiveSuffix</i>
+ *                 <i>Exponent</i><tt>?</tt>
+ *       <dd><tt>| </tt><i>LocalNegativePrefix</i>
+ *                 <i>DecimalNumeral</i>
+ *                 <i>LocalNegativeSuffix</i>
+ *                 <i>Exponent</i><tt>?</tt>
  *
- *   <tr><td>&nbsp;</td></tr>
+ *   <dt><i>HexFloat</i>:
+ *       <dd><tt>[-+]? 0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+
+ *                 ([pP][-+]?[0-9]+)?</tt>
  *
- *   <tr><td valign=top align=right>
- *         <a name="Integer-regex"><i>Integer</i>&nbsp;&nbsp;::</td>
- *       <td valign=top><tt>= ( [-+]? ( </tt><i>Numeral</i><tt>
- *                               ) )</tt></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalPositivePrefix</i><tt> </tt><i>Numeral</i><tt>
- *                      </tt><i>LocalPositiveSuffix</i></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalNegativePrefix</i><tt> </tt><i>Numeral</i><tt>
- *                 </tt><i>LocalNegativeSuffix</i></td></tr>
- *
- *   <tr><td>&nbsp;</td></tr>
- *
- *   <tr><td align=right><i>DecimalNumeral</i>&nbsp;&nbsp;::</td>
- *       <td><tt>= </tt><i>Numeral</i></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>Numeral</i><tt>
- *                 </tt><i>LocalDecimalSeparator</i><tt>
- *                 </tt><i>Digit</i><tt>*</tt></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalDecimalSeparator</i><tt>
- *                 </tt><i>Digit</i><tt>+</tt></td></tr>
- *
- *   <tr><td>&nbsp;</td></tr>
- *
- *   <tr><td align=right><i>Exponent</i>&nbsp;&nbsp;::</td>
- *       <td><tt>= ( [eE] [+-]? </tt><i>Digit</i><tt>+ )</tt></td></tr>
- *
- *   <tr><td>&nbsp;</td></tr>
- *
- *   <tr><td align=right>
- *         <a name="Decimal-regex"><i>Decimal</i>&nbsp;&nbsp;::</td>
- *       <td><tt>= ( [-+]? </tt><i>DecimalNumeral</i><tt>
- *                         </tt><i>Exponent</i><tt>? )</tt></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalPositivePrefix</i><tt>
- *                 </tt><i>DecimalNumeral</i><tt>
- *                 </tt><i>LocalPositiveSuffix</i>
- *                 </tt><i>Exponent</i><tt>?</td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalNegativePrefix</i><tt>
- *                 </tt><i>DecimalNumeral</i><tt>
- *                 </tt><i>LocalNegativeSuffix</i>
- *                 </tt><i>Exponent</i><tt>?</td></tr>
- *
- *   <tr><td>&nbsp;</td></tr>
- *
- *   <tr><td align=right><i>HexFloat</i>&nbsp;&nbsp;::</td>
- *       <td><tt>= [-+]? 0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+
- *                 ([pP][-+]?[0-9]+)?</tt></td></tr>
- *
- *   <tr><td>&nbsp;</td></tr>
- *
- *   <tr><td align=right><i>NonNumber</i>&nbsp;&nbsp;::</td>
- *       <td valign=top><tt>= NaN
+ *   <dt><i>NonNumber</i>:
+ *       <dd><tt>NaN
  *                          | </tt><i>LocalNan</i><tt>
  *                          | Infinity
- *                          | </tt><i>LocalInfinity</i></td></tr>
+ *                          | </tt><i>LocalInfinity</i>
  *
- *   <tr><td>&nbsp;</td></tr>
+ *   <dt><i>SignedNonNumber</i>:
+ *       <dd><tt>( [-+]? </tt><i>NonNumber</i><tt> )</tt>
+ *       <dd><tt>| </tt><i>LocalPositivePrefix</i>
+ *                 <i>NonNumber</i>
+ *                 <i>LocalPositiveSuffix</i>
+ *       <dd><tt>| </tt><i>LocalNegativePrefix</i>
+ *                 <i>NonNumber</i>
+ *                 <i>LocalNegativeSuffix</i>
  *
- *   <tr><td align=right><i>SignedNonNumber</i>&nbsp;&nbsp;::</td>
- *       <td><tt>= ( [-+]? </tt><i>NonNumber</i><tt> )</tt></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalPositivePrefix</i><tt>
- *                 </tt><i>NonNumber</i><tt>
- *                 </tt><i>LocalPositiveSuffix</i></td></tr>
- *   <tr><td></td>
- *       <td><tt>| </tt><i>LocalNegativePrefix</i><tt>
- *                 </tt><i>NonNumber</i><tt>
- *                 </tt><i>LocalNegativeSuffix</i></td></tr>
+ *   <dt><a name="Float-regex"><i>Float</i></a>:
+ *       <dd><i>Decimal</i>
+ *           <tt>| </tt><i>HexFloat</i>
+ *           <tt>| </tt><i>SignedNonNumber</i>
  *
- *   <tr><td>&nbsp;</td></tr>
- *
- *   <tr><td valign=top align=right>
- *         <a name="Float-regex"><i>Float</i>&nbsp;&nbsp;::</td>
- *       <td valign=top><tt>= </tt><i>Decimal</i><tt></td></tr>
- *       <tr><td></td>
- *           <td><tt>| </tt><i>HexFloat</i><tt></td></tr>
- *       <tr><td></td>
- *           <td><tt>| </tt><i>SignedNonNumber</i><tt></td></tr>
- *
- * </table>
- * </center>
- *
- * <p> Whitespace is not significant in the above regular expressions.
+ * </dl>
+ * <p>Whitespace is not significant in the above regular expressions.
  *
  * @since   1.5
  */
@@ -464,7 +420,7 @@ public final class Scanner implements Iterator<String>, Closeable {
     private int SIMPLE_GROUP_INDEX = 5;
     private String buildIntegerPatternString() {
         String radixDigits = digits.substring(0, radix);
-        // Android changed : Support non-decimal starting digits. (i.e, a-z are valid radix digits).
+        // Android-changed: Support non-decimal starting digits. (i.e, a-z are valid radix digits).
         String nonZeroRadixDigits = "((?i)[" + digits.substring(1, radix) + "]|(" + non0Digit + "))";
 
         // \\p{javaDigit} is not guaranteed to be appropriate
@@ -472,7 +428,7 @@ public final class Scanner implements Iterator<String>, Closeable {
         // whatever parse method is invoked, so ultimately the
         // Scanner will do the right thing
         String digit = "((?i)["+radixDigits+"]|\\p{javaDigit})";
-        // Android changed : Support non-decimal starting digits.
+        // Android-changed: Support non-decimal starting digits.
         String groupedNumeral = "("+nonZeroRadixDigits+digit+"?"+digit+"?("+
                                 groupSeparator+digit+digit+digit+")+)";
         // digit++ is the possessive form which is necessary for reducing
@@ -571,9 +527,8 @@ public final class Scanner implements Iterator<String>, Closeable {
      * Constructs a <code>Scanner</code> that returns values scanned
      * from the specified source delimited by the specified pattern.
      *
-     * @param  source A character source implementing the Readable interface
+     * @param source A character source implementing the Readable interface
      * @param pattern A delimiting pattern
-     * @return A scanner with the specified source and pattern
      */
     private Scanner(Readable source, Pattern pattern) {
         assert source != null : "source should not be null";
@@ -827,7 +782,7 @@ public final class Scanner implements Iterator<String>, Closeable {
         // Restore current position and limit for reading
         buf.limit(buf.position());
         buf.position(p);
-        // Android changed : The matcher implementation eagerly calls toString() so we'll have
+        // Android-changed: The matcher implementation eagerly calls toString() so we'll have
         // to update its input whenever the buffer limit, position etc. changes.
         matcher.reset(buf);
     }
@@ -1274,7 +1229,7 @@ public final class Scanner implements Iterator<String>, Closeable {
     // The next operation should occur in the specified radix but
     // the default is left untouched.
     private void setRadix(int radix) {
-        // Android-changed : Complain loudly if a bogus radix is being set.
+        // Android-changed: Complain loudly if a bogus radix is being set.
         if (radix > Character.MAX_RADIX) {
             throw new IllegalArgumentException("radix == " + radix);
         }
@@ -1643,6 +1598,7 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <tt>findWithinHorizon(Pattern.compile(pattern, horizon))</tt>.
      *
      * @param pattern a string specifying the pattern to search for
+     * @param horizon the search horizon
      * @return the text that matched the specified pattern
      * @throws IllegalStateException if this scanner is closed
      * @throws IllegalArgumentException if horizon is negative
@@ -1677,6 +1633,7 @@ public final class Scanner implements Iterator<String>, Closeable {
      * thrown.
      *
      * @param pattern the pattern to scan for
+     * @param horizon the search horizon
      * @return the text that matched the specified pattern
      * @throws IllegalStateException if this scanner is closed
      * @throws IllegalArgumentException if horizon is negative
@@ -2615,11 +2572,11 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <tt>scanner.reset()</tt> behaves in exactly the same way as the
      * invocation
      *
-     * <blockquote><pre>
+     * <blockquote><pre>{@code
      *   scanner.useDelimiter("\\p{javaWhitespace}+")
-     *          .useLocale(Locale.getDefault())
+     *          .useLocale(Locale.getDefault(Locale.Category.FORMAT))
      *          .useRadix(10);
-     * </pre></blockquote>
+     * }</pre></blockquote>
      *
      * @return this scanner
      *

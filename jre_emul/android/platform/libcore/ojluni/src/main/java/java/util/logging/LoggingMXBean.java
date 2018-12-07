@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2003, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -45,7 +45,7 @@ package java.util.logging;
  *
  */
 
-// Android-removed : References to java.lang.management.
+// Android-removed: References to java.lang.management.
 //
 // It is recommended
 // to use the {@link java.lang.management.PlatformLoggingMXBean} management

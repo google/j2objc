@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      */
     private long elements = 0L;
 
-    RegularEnumSet(Class<E>elementType, Enum[] universe) {
+    RegularEnumSet(Class<E>elementType, Enum<?>[] universe) {
         super(elementType, universe);
     }
 
@@ -96,6 +96,7 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return unseen != 0;
         }
 
+        @SuppressWarnings("unchecked")
         public E next() {
             if (unseen == 0)
                 throw new NoSuchElementException();
@@ -139,11 +140,11 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
     public boolean contains(Object e) {
         if (e == null)
             return false;
-        Class eClass = e.getClass();
+        Class<?> eClass = e.getClass();
         if (eClass != elementType && eClass.getSuperclass() != elementType)
             return false;
 
-        return (elements & (1L << ((Enum)e).ordinal())) != 0;
+        return (elements & (1L << ((Enum<?>)e).ordinal())) != 0;
     }
 
     // Modification Operations
@@ -160,7 +161,7 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
         typeCheck(e);
 
         long oldElements = elements;
-        elements |= (1L << ((Enum)e).ordinal());
+        elements |= (1L << ((Enum<?>)e).ordinal());
         return elements != oldElements;
     }
 
@@ -173,12 +174,12 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
     public boolean remove(Object e) {
         if (e == null)
             return false;
-        Class eClass = e.getClass();
+        Class<?> eClass = e.getClass();
         if (eClass != elementType && eClass.getSuperclass() != elementType)
             return false;
 
         long oldElements = elements;
-        elements &= ~(1L << ((Enum)e).ordinal());
+        elements &= ~(1L << ((Enum<?>)e).ordinal());
         return elements != oldElements;
     }
 
@@ -197,7 +198,7 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(c instanceof RegularEnumSet))
             return super.containsAll(c);
 
-        RegularEnumSet es = (RegularEnumSet)c;
+        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
         if (es.elementType != elementType)
             return es.isEmpty();
 
@@ -216,7 +217,7 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(c instanceof RegularEnumSet))
             return super.addAll(c);
 
-        RegularEnumSet es = (RegularEnumSet)c;
+        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
         if (es.elementType != elementType) {
             if (es.isEmpty())
                 return false;
@@ -242,7 +243,7 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(c instanceof RegularEnumSet))
             return super.removeAll(c);
 
-        RegularEnumSet es = (RegularEnumSet)c;
+        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
         if (es.elementType != elementType)
             return false;
 
@@ -288,14 +289,14 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * the same size, and every member of the given set is contained in
      * this set.
      *
-     * @param e object to be compared for equality with this set
+     * @param o object to be compared for equality with this set
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o) {
         if (!(o instanceof RegularEnumSet))
             return super.equals(o);
 
-        RegularEnumSet es = (RegularEnumSet)o;
+        RegularEnumSet<?> es = (RegularEnumSet<?>)o;
         if (es.elementType != elementType)
             return elements == 0 && es.elements == 0;
         return es.elements == elements;

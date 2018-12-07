@@ -27,6 +27,7 @@
  * License version 2 only, as published by the Free Software Foundation.
  * However, the following notice accompanied the original version of this
  * file:
+ *
  * Written by Doug Lea and Josh Bloch with assistance from members of
  * JCP JSR-166 Expert Group and released to the public domain, as explained
  * at http://creativecommons.org/publicdomain/zero/1.0/
@@ -34,10 +35,7 @@
 
 package java.util;
 
-// BEGIN android-note
-// removed link to collections framework docs
-// END android-note
-
+// Android-changed: removed link to collections framework docs
 /**
  * A linear collection that supports element insertion and removal at
  * both ends.  The name <i>deque</i> is short for "double ended queue"
@@ -189,6 +187,8 @@ package java.util;
  * @since  1.6
  * @param <E> the type of elements held in this deque
  */
+// Android-changed: fix framework docs link to "Collection#optional-restrictions"
+// Several occurrences of the link have been fixed throughout.
 public interface Deque<E> extends Queue<E> {
     /**
      * Inserts the specified element at the front of this deque if it is

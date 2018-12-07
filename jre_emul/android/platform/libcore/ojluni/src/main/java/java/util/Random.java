@@ -316,9 +316,8 @@ class Random implements java.io.Serializable {
      * Returns the next pseudorandom, uniformly distributed {@code int}
      * value from this random number generator's sequence. The general
      * contract of {@code nextInt} is that one {@code int} value is
-     * pseudorandomly generated and returned. All 2<font size="-1"><sup>32
-     * </sup></font> possible {@code int} values are produced with
-     * (approximately) equal probability.
+     * pseudorandomly generated and returned. All 2<sup>32</sup> possible
+     * {@code int} values are produced with (approximately) equal probability.
      *
      * <p>The method {@code nextInt} is implemented by class {@code Random}
      * as if by:
@@ -339,23 +338,23 @@ class Random implements java.io.Serializable {
      * between 0 (inclusive) and the specified value (exclusive), drawn from
      * this random number generator's sequence.  The general contract of
      * {@code nextInt} is that one {@code int} value in the specified range
-     * is pseudorandomly generated and returned.  All {@code n} possible
+     * is pseudorandomly generated and returned.  All {@code bound} possible
      * {@code int} values are produced with (approximately) equal
-     * probability.  The method {@code nextInt(int n)} is implemented by
+     * probability.  The method {@code nextInt(int bound)} is implemented by
      * class {@code Random} as if by:
      *  <pre> {@code
-     * public int nextInt(int n) {
-     *   if (n <= 0)
-     *     throw new IllegalArgumentException("n must be positive");
+     * public int nextInt(int bound) {
+     *   if (bound <= 0)
+     *     throw new IllegalArgumentException("bound must be positive");
      *
-     *   if ((n & -n) == n)  // i.e., n is a power of 2
-     *     return (int)((n * (long)next(31)) >> 31);
+     *   if ((bound & -bound) == bound)  // i.e., bound is a power of 2
+     *     return (int)((bound * (long)next(31)) >> 31);
      *
      *   int bits, val;
      *   do {
      *       bits = next(31);
-     *       val = bits % n;
-     *   } while (bits - val + (n-1) < 0);
+     *       val = bits % bound;
+     *   } while (bits - val + (bound-1) < 0);
      *   return val;
      * }}</pre>
      *
@@ -381,12 +380,11 @@ class Random implements java.io.Serializable {
      * greatly increases the length of the sequence of values returned by
      * successive calls to this method if n is a small power of two.
      *
-     * @param n the bound on the random number to be returned.  Must be
-     *        positive.
+     * @param bound the upper bound (exclusive).  Must be positive.
      * @return the next pseudorandom, uniformly distributed {@code int}
-     *         value between {@code 0} (inclusive) and {@code n} (exclusive)
+     *         value between zero (inclusive) and {@code bound} (exclusive)
      *         from this random number generator's sequence
-     * @throws IllegalArgumentException if n is not positive
+     * @throws IllegalArgumentException if bound is not positive
      * @since 1.2
      */
 
@@ -461,11 +459,9 @@ class Random implements java.io.Serializable {
      * <p>The general contract of {@code nextFloat} is that one
      * {@code float} value, chosen (approximately) uniformly from the
      * range {@code 0.0f} (inclusive) to {@code 1.0f} (exclusive), is
-     * pseudorandomly generated and returned. All 2<font
-     * size="-1"><sup>24</sup></font> possible {@code float} values
-     * of the form <i>m&nbsp;x&nbsp</i>2<font
-     * size="-1"><sup>-24</sup></font>, where <i>m</i> is a positive
-     * integer less than 2<font size="-1"><sup>24</sup> </font>, are
+     * pseudorandomly generated and returned. All 2<sup>24</sup> possible
+     * {@code float} values of the form <i>m&nbsp;x&nbsp;</i>2<sup>-24</sup>,
+     * where <i>m</i> is a positive integer less than 2<sup>24</sup>, are
      * produced with (approximately) equal probability.
      *
      * <p>The method {@code nextFloat} is implemented by class {@code Random}

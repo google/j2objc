@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -89,7 +89,7 @@ import sun.util.ResourceBundleEnumeration;
  *
  * public class MyResources_fr extends ListResourceBundle {
  *     protected Object[][] getContents() {
- *         return new Object[][] = {
+ *         return new Object[][] {
  *         // LOCALIZE THIS
  *             {"s1", "Le disque \"{1}\" {0}."},          // MessageFormat pattern
  *             {"s2", "1"},                               // location of {0} in pattern
@@ -105,6 +105,12 @@ import sun.util.ResourceBundleEnumeration;
  * }
  * </pre>
  * </blockquote>
+ *
+ * <p>
+ * The implementation of a {@code ListResourceBundle} subclass must be thread-safe
+ * if it's simultaneously used by multiple threads. The default implementations
+ * of the methods in this class are thread-safe.
+ *
  * @see ResourceBundle
  * @see PropertyResourceBundle
  * @since JDK1.1
@@ -200,5 +206,8 @@ public abstract class ListResourceBundle extends ResourceBundle {
         lookup = temp;
     }
 
-    private Map<String,Object> lookup = null;
+    // Android-changed: Fix unsafe publication http://b/31467561
+    // Fixed in OpenJDK 9: http://hg.openjdk.java.net/jdk9/dev/jdk/rev/29ecac30ecae
+    // was: private Map<String,Object> lookup = null;
+    private volatile Map<String,Object> lookup = null;
 }

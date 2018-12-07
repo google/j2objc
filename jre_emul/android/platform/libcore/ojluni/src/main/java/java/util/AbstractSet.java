@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ package java.util;
  * for <tt>equals</tt> and <tt>hashCode</tt>.<p>
  *
  * This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @param <E> the type of elements maintained by this set
@@ -88,7 +88,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 
         if (!(o instanceof Set))
             return false;
-        Collection c = (Collection) o;
+        Collection<?> c = (Collection<?>) o;
         if (c.size() != size())
             return false;
         try {
@@ -166,6 +166,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * @see #contains(Object)
      */
     public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
         boolean modified = false;
 
         if (size() > c.size()) {
