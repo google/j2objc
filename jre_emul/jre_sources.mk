@@ -300,6 +300,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/security/Permission.java \
   java/security/PermissionCollection.java \
   java/security/Permissions.java \
+  java/security/Guard.java \
   java/text/Annotation.java \
   java/text/AttributedCharacterIterator.java \
   java/text/AttributedString.java \
@@ -414,15 +415,20 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/Vector.java \
   java/util/WeakHashMap.java \
   java/util/concurrent/AbstractExecutorService.java \
+  java/util/concurrent/BlockingQueue.java \
   java/util/concurrent/CancellationException.java \
+  java/util/concurrent/CompletionService.java \
   java/util/concurrent/ConcurrentHashMap.java \
+  java/util/concurrent/ConcurrentMap.java \
   java/util/concurrent/CopyOnWriteArrayList.java \
   java/util/concurrent/CountDownLatch.java \
   java/util/concurrent/CountedCompleter.java \
   java/util/concurrent/Delayed.java \
   java/util/concurrent/ExecutionException.java \
+  java/util/concurrent/Executor.java \
   java/util/concurrent/ExecutorCompletionService.java \
   java/util/concurrent/Executors.java \
+  java/util/concurrent/ExecutorService.java \
   java/util/concurrent/ForkJoinPool.java \
   java/util/concurrent/ForkJoinTask.java \
   java/util/concurrent/ForkJoinWorkerThread.java \
@@ -430,7 +436,11 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/FutureTask.java \
   java/util/concurrent/LinkedBlockingQueue.java \
   java/util/concurrent/RejectedExecutionException.java \
+  java/util/concurrent/RejectedExecutionHandler.java \
+  java/util/concurrent/RunnableFuture.java \
   java/util/concurrent/RunnableScheduledFuture.java \
+  java/util/concurrent/ScheduledExecutorService.java \
+  java/util/concurrent/ScheduledFuture.java \
   java/util/concurrent/ScheduledThreadPoolExecutor.java \
   java/util/concurrent/SynchronousQueue.java \
   java/util/concurrent/ThreadLocalRandom.java \
@@ -445,6 +455,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/locks/AbstractOwnableSynchronizer.java \
   java/util/concurrent/locks/AbstractQueuedSynchronizer.java \
   java/util/concurrent/locks/Condition.java \
+  java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/LockSupport.java \
   java/util/concurrent/locks/ReentrantLock.java \
   java/util/function/BiConsumer.java \
@@ -853,13 +864,10 @@ JAVA_PRIVATE_SOURCES_UTIL = \
 JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/ArrayBlockingQueue.java \
   java/util/concurrent/BlockingDeque.java \
-  java/util/concurrent/BlockingQueue.java \
   java/util/concurrent/BrokenBarrierException.java \
   java/util/concurrent/Callable.java \
-  java/util/concurrent/CompletionService.java \
   java/util/concurrent/ConcurrentLinkedDeque.java \
   java/util/concurrent/ConcurrentLinkedQueue.java \
-  java/util/concurrent/ConcurrentMap.java \
   java/util/concurrent/ConcurrentNavigableMap.java \
   java/util/concurrent/ConcurrentSkipListMap.java \
   java/util/concurrent/ConcurrentSkipListSet.java \
@@ -867,18 +875,12 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/CyclicBarrier.java \
   java/util/concurrent/DelayQueue.java \
   java/util/concurrent/Exchanger.java \
-  java/util/concurrent/Executor.java \
-  java/util/concurrent/ExecutorService.java \
   java/util/concurrent/LinkedBlockingDeque.java \
   java/util/concurrent/LinkedTransferQueue.java \
   java/util/concurrent/Phaser.java \
   java/util/concurrent/PriorityBlockingQueue.java \
   java/util/concurrent/RecursiveAction.java \
   java/util/concurrent/RecursiveTask.java \
-  java/util/concurrent/RejectedExecutionHandler.java \
-  java/util/concurrent/RunnableFuture.java \
-  java/util/concurrent/ScheduledExecutorService.java \
-  java/util/concurrent/ScheduledFuture.java \
   java/util/concurrent/Semaphore.java \
   java/util/concurrent/ThreadFactory.java \
   java/util/concurrent/TransferQueue.java \
@@ -892,7 +894,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicStampedReference.java \
   java/util/concurrent/atomic/package-info.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
-  java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/ReadWriteLock.java \
   java/util/concurrent/locks/ReentrantReadWriteLock.java \
   java/util/concurrent/locks/package-info.java
@@ -1031,7 +1032,6 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/DigestOutputStream.java \
   java/security/DomainCombiner.java \
   java/security/GeneralSecurityException.java \
-  java/security/Guard.java \
   java/security/GuardedObject.java \
   java/security/InvalidAlgorithmParameterException.java \
   java/security/InvalidKeyException.java \
