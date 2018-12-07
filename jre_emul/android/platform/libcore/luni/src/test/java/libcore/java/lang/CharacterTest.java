@@ -146,6 +146,7 @@ public class CharacterTest extends junit.framework.TestCase {
     // we'd allow "basic-latin", and "hangul jamo extended b", for example.
     assertEquals(Character.UnicodeBlock.BASIC_LATIN, Character.UnicodeBlock.forName("basic latin"));
     assertEquals(Character.UnicodeBlock.BASIC_LATIN, Character.UnicodeBlock.forName("BaSiC LaTiN"));
+    assertEquals(Character.UnicodeBlock.BASIC_LATIN, Character.UnicodeBlock.forName("BasicLatin"));
     assertEquals(Character.UnicodeBlock.BASIC_LATIN, Character.UnicodeBlock.forName("BASIC_LATIN"));
     assertEquals(Character.UnicodeBlock.BASIC_LATIN, Character.UnicodeBlock.forName("basic_LATIN"));
 
@@ -171,6 +172,7 @@ public class CharacterTest extends junit.framework.TestCase {
     assertEquals(Character.UnicodeBlock.COMBINING_MARKS_FOR_SYMBOLS, Character.UnicodeBlock.forName("Combining Diacritical Marks For Symbols"));
     assertEquals(Character.UnicodeBlock.COMBINING_MARKS_FOR_SYMBOLS, Character.UnicodeBlock.forName("COMBINING_MARKS_FOR_SYMBOLS"));
     assertEquals(Character.UnicodeBlock.COMBINING_MARKS_FOR_SYMBOLS, Character.UnicodeBlock.forName("Combining Marks for Symbols"));
+    assertEquals(Character.UnicodeBlock.COMBINING_MARKS_FOR_SYMBOLS, Character.UnicodeBlock.forName("CombiningMarksforSymbols"));
     assertEquals(Character.UnicodeBlock.CYRILLIC_SUPPLEMENTARY, Character.UnicodeBlock.forName("Cyrillic Supplementary"));
     assertEquals(Character.UnicodeBlock.CYRILLIC_SUPPLEMENTARY, Character.UnicodeBlock.forName("Cyrillic Supplement"));
   }
@@ -195,7 +197,7 @@ public class CharacterTest extends junit.framework.TestCase {
 
   // http://b/9690863
   public void test_isDigit_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isDigit", int.class);
+    Method m = Character.class.getDeclaredMethod("isDigit" + "Impl", int.class);
     m.setAccessible(true);
     for (int i = 0; i <= 0xffff; ++i) {
       assertEquals(m.invoke(null, i), Character.isDigit(i));
@@ -204,7 +206,7 @@ public class CharacterTest extends junit.framework.TestCase {
 
   // http://b/9690863
   public void test_isIdentifierIgnorable_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isIdentifierIgnorable", int.class);
+    Method m = Character.class.getDeclaredMethod("isIdentifierIgnorable" + "Impl", int.class);
     m.setAccessible(true);
     for (int i = 0; i <= 0xffff; ++i) {
       assertEquals(m.invoke(null, i), Character.isIdentifierIgnorable(i));
@@ -212,25 +214,90 @@ public class CharacterTest extends junit.framework.TestCase {
   }
 
   // http://b/9690863
-  public void test_isSpaceChar_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isSpaceChar", int.class);
+  public void test_isLetter_against_icu4c() throws Exception {
+    Method m = Character.class.getDeclaredMethod("isLetter" + "Impl", int.class);
     m.setAccessible(true);
     for (int i = 0; i <= 0xffff; ++i) {
-      if((Boolean) m.invoke(null, i) != Character.isSpaceChar(i)) System.out.println(i);
+      assertEquals(m.invoke(null, i), Character.isLetter(i));
+    }
+  }
+
+  // http://b/9690863
+  public void test_isLetterOrDigit_against_icu4c() throws Exception {
+    Method m = Character.class.getDeclaredMethod("isLetterOrDigit" + "Impl", int.class);
+    m.setAccessible(true);
+    for (int i = 0; i <= 0xffff; ++i) {
+      assertEquals(m.invoke(null, i), Character.isLetterOrDigit(i));
+    }
+  }
+
+  // http://b/9690863
+  public void test_isLowerCase_against_icu4c() throws Exception {
+    Method m = Character.class.getDeclaredMethod("isLowerCase" + "Impl", int.class);
+    m.setAccessible(true);
+    for (int i = 0; i <= 0xffff; ++i) {
+      assertEquals(m.invoke(null, i), Character.isLowerCase(i));
+    }
+  }
+
+  // http://b/9690863
+  public void test_isSpaceChar_against_icu4c() throws Exception {
+    Method m = Character.class.getDeclaredMethod("isSpaceChar" + "Impl", int.class);
+    m.setAccessible(true);
+    for (int i = 0; i <= 0xffff; ++i) {
+      // ICU and the RI disagree about character 0x180e. Remove this special case if this changes
+      // or Android decides to follow ICU exactly.
+      if (i == 0x180e) {
+        assertTrue(Character.isSpaceChar(i));
+        assertFalse((Boolean) m.invoke(null, i));
+      } else {
+        assertEquals("Failed for character " + i, m.invoke(null, i), Character.isSpaceChar(i));
+      }
+    }
+  }
+
+  // http://b/9690863
+  public void test_isUpperCase_against_icu4c() throws Exception {
+    Method m = Character.class.getDeclaredMethod("isUpperCase" + "Impl", int.class);
+    m.setAccessible(true);
+    for (int i = 0; i <= 0xffff; ++i) {
+      assertEquals(m.invoke(null, i), Character.isUpperCase(i));
     }
   }
 
   // http://b/9690863
   public void test_isWhitespace_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isWhitespace", int.class);
+    Method m = Character.class.getDeclaredMethod("isWhitespace" + "Impl", int.class);
     m.setAccessible(true);
     for (int i = 0; i <= 0xffff; ++i) {
-      assertEquals(m.invoke(null, i), Character.isWhitespace(i));
+      // ICU and the RI disagree about character 0x180e. Remove this special case if this changes
+      // or Android decides to follow ICU exactly.
+      if (i == 0x180e) {
+          assertTrue(Character.isWhitespace(i));
+          assertFalse((Boolean) m.invoke(null, i));
+      } else {
+        assertEquals("Failed for character " + i, m.invoke(null, i), Character.isWhitespace(i));
+      }
     }
   }
 
-  // Verify that the UnicodeScript.aliases map loads successfully.
-  public void test_UnicodeScript_aliases() throws Exception {
-    assertEquals(Character.UnicodeScript.BALINESE, Character.UnicodeScript.forName("BALI"));
+  // http://b/15492712
+  public void test_getDirectionality() throws Exception {
+    // We shouldn't throw an exception for any code point.
+    for (int c = '\u0000'; c <= Character.MAX_VALUE; ++c) {
+      Character.getDirectionality(c);
+    }
+    assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x2066));
+    assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x2067));
+    assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x2068));
+    assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x2069));
+  }
+
+  public void testStaticHashCode() {
+    assertEquals(new Character('A').hashCode(), Character.hashCode('A'));
+  }
+
+  public void testBYTES() {
+    assertEquals(2, Character.BYTES);
   }
 }

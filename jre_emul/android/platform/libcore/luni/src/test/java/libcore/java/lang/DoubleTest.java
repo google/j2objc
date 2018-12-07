@@ -117,10 +117,7 @@ public class DoubleTest extends TestCase {
     /**
      * This value has been known to cause javac and java to infinite loop.
      * http://www.exploringbinary.com/java-hangs-when-converting-2-2250738585072012e-308/
-     *
-     * This test still fails. The literal used as the expected value is the same as
-     * Double.MIN_NORMAL (which is not subnormal) and resolves to 0x0010000000000000.
-     * The strings actually get parsed to the largest subnormal of 0x000fffffffffffff.
+     */
     public void testParseLargestSubnormalDoublePrecision() {
         assertEquals(2.2250738585072014E-308, Double.parseDouble("2.2250738585072012e-308"));
         assertEquals(2.2250738585072014E-308, Double.parseDouble("0.00022250738585072012e-304"));
@@ -130,5 +127,45 @@ public class DoubleTest extends TestCase {
         assertEquals(2.2250738585072014E-308, Double.parseDouble("2.22507385850720129978001e-308"));
         assertEquals(-2.2250738585072014E-308, Double.parseDouble("-2.2250738585072012e-308"));
     }
-     */
+
+    // https://code.google.com/p/android/issues/detail?id=71216
+    public void testParse_bug71216() {
+        try {
+            Double.parseDouble("73706943-9580-4406-a02f-0304e4324844");
+            fail();
+        } catch (NumberFormatException expected) {
+        }
+
+        try {
+            Double.parseDouble("bade999999999999999999999999999999");
+            fail();
+        } catch (NumberFormatException expected) {
+        }
+    }
+
+    public void testStaticHashCode() {
+        assertEquals(Double.valueOf(567.0).hashCode(), Double.hashCode(567.0));
+    }
+
+    public void testMax() {
+        double a = 567.0;
+        double b = 578.0;
+        assertEquals(Math.max(a, b), Double.max(a, b));
+    }
+
+    public void testMin() {
+        double a = 567.0;
+        double b = 578.0;
+        assertEquals(Math.min(a, b), Double.min(a, b));
+    }
+
+    public void testSum() {
+        double a = 567.0;
+        double b = 578.0;
+        assertEquals(a + b, Double.sum(a, b));
+    }
+
+    public void testBYTES() {
+        assertEquals(8, Double.BYTES);
+    }
 }

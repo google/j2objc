@@ -19,6 +19,9 @@ package libcore.java.lang;
 import junit.framework.TestCase;
 import libcore.util.SerializationTester;
 
+import java.util.EnumSet;
+import java.util.concurrent.CountDownLatch;
+
 public final class EnumTest extends TestCase {
     public void testEnumSerialization() {
         String s = "aced00057e7200236c6962636f72652e6a6176612e6c616e672e456e756d5465"
@@ -46,5 +49,76 @@ public final class EnumTest extends TestCase {
         },
         PAPER,
         SCISSORS
+    }
+
+    public static final CountDownLatch cdl = new CountDownLatch(1);
+
+    public static enum EnumA {
+        A, B
+    }
+
+    public static class ToBeLoaded {
+        public static final Object myValue;
+        public static final EnumSet<EnumA> mySet;
+
+
+        static {
+            try {
+                cdl.await();
+            } catch (InterruptedException ie) {
+                fail();
+            }
+
+            myValue = new String("xyz");
+            // This is the key to reproducing the deadlock. This call will result in a call
+            // to Enum.getSharedConstants, which will initialize classes while holding a lock.
+            mySet = EnumSet.noneOf(EnumA.class);
+        }
+    }
+
+    public static enum ComplicatedEnum {
+        A(ToBeLoaded.myValue);
+
+        private final Object value;
+        ComplicatedEnum(Object v) {
+            value = v;
+        }
+    }
+
+    public void testDeadlock() {
+        Thread t1 = new Thread() {
+            public void run() {
+                System.out.println(ToBeLoaded.myValue);
+            }
+        };
+        // Should be stuck waiting on the latch.
+        t1.start();
+
+        Thread t2 = new Thread() {
+            public void run() {
+                // See matching call in ToBeLoaded.<clinit>.
+                System.out.println(EnumSet.noneOf(ComplicatedEnum.class));
+            }
+        };
+
+        // Should be blocked waiting for the initialization of ComplicatedEnum.
+        t2.start();
+
+        // Unblock the countdown latch so that both threads can make progress.
+        cdl.countDown();
+
+        // This test has no positive or negative assertions. If it fails, it will fail because
+        // it timed out.
+        try {
+            t1.join();
+        } catch (InterruptedException ie) {
+            fail();
+        }
+
+        try {
+            t2.join();
+        } catch (InterruptedException ie) {
+            fail();
+        }
     }
 }

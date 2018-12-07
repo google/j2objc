@@ -76,6 +76,8 @@ public class WildcardTypeTest extends GenericReflectionTestsBase {
         assertInstanceOf(WildcardType.class, actualTypeArguments[0]);
 
         WildcardType wildcardType = (WildcardType) actualTypeArguments[0];
+        assertEquals("? super T", wildcardType.toString());
+        assertEquals("? super T", wildcardType.getTypeName());
 
         Type[] lowerBounds = wildcardType.getLowerBounds();
         assertLenghtOne(lowerBounds);
@@ -97,6 +99,8 @@ public class WildcardTypeTest extends GenericReflectionTestsBase {
         assertInstanceOf(WildcardType.class, actualTypeArguments[0]);
 
         WildcardType wildcardType = (WildcardType) actualTypeArguments[0];
+        assertEquals("? extends T", wildcardType.toString());
+        assertEquals("? extends T", wildcardType.getTypeName());
         assertLenghtZero(wildcardType.getLowerBounds());
 
         Type[] upperBounds = wildcardType.getUpperBounds();

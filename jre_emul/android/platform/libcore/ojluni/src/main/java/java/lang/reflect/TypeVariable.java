@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -48,6 +48,8 @@ package java.lang.reflect;
  *
  * @since 1.5
  */
+// Android-changed: Removed AnnotatedElement super-class due to excluded support
+// for runtime type annotations
 public interface TypeVariable<D extends GenericDeclaration> extends Type {
     /**
      * Returns an array of {@code Type} objects representing the
@@ -86,4 +88,18 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type {
      * @return the name of this type variable, as it appears in the source code
      */
     String getName();
+
+    /**
+     * Returns an array of AnnotatedType objects that represent the use of
+     * types to denote the upper bounds of the type parameter represented by
+     * this TypeVariable. The order of the objects in the array corresponds to
+     * the order of the bounds in the declaration of the type parameter.
+     *
+     * Returns an array of length 0 if the type parameter declares no bounds.
+     *
+     * @return an array of objects representing the upper bounds of the type variable
+     * @since 1.8
+     */
+    // Android-changed: Excluded support for runtime type annotations
+    // AnnotatedType[] getAnnotatedBounds();
 }

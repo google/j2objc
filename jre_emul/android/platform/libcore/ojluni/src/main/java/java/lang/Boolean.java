@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
  * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -61,6 +60,7 @@ public final class Boolean implements java.io.Serializable,
      *
      * @since   JDK1.1
      */
+    @SuppressWarnings("unchecked")
     public static final Class<Boolean> TYPE = (Class<Boolean>) boolean[].class.getComponentType();
 
     /**
@@ -102,7 +102,7 @@ public final class Boolean implements java.io.Serializable,
      * @param   s   the string to be converted to a {@code Boolean}.
      */
     public Boolean(String s) {
-        this(toBoolean(s));
+        this(parseBoolean(s));
     }
 
     /**
@@ -119,7 +119,7 @@ public final class Boolean implements java.io.Serializable,
      * @since 1.5
      */
     public static boolean parseBoolean(String s) {
-        return toBoolean(s);
+        return ((s != null) && s.equalsIgnoreCase("true"));
     }
 
     /**
@@ -160,7 +160,7 @@ public final class Boolean implements java.io.Serializable,
      * @return  the {@code Boolean} value represented by the string.
      */
     public static Boolean valueOf(String s) {
-        return toBoolean(s) ? TRUE : FALSE;
+        return parseBoolean(s) ? TRUE : FALSE;
     }
 
     /**
@@ -196,8 +196,9 @@ public final class Boolean implements java.io.Serializable,
      * {@code true}; returns the integer {@code 1237} if this
      * object represents {@code false}.
      */
+    @Override
     public int hashCode() {
-        return value ? 1231 : 1237;
+        return Boolean.hashCode(value);
     }
 
     /**
@@ -242,15 +243,16 @@ public final class Boolean implements java.io.Serializable,
      *
      * @param   name   the system property name.
      * @return  the {@code boolean} value of the system property.
+     * @throws  SecurityException for the same reasons as
+     *          {@link System#getProperty(String) System.getProperty}
      * @see     java.lang.System#getProperty(java.lang.String)
      * @see     java.lang.System#getProperty(java.lang.String, java.lang.String)
      */
     public static boolean getBoolean(String name) {
         boolean result = false;
         try {
-            result = toBoolean(System.getProperty(name));
-        } catch (IllegalArgumentException e) {
-        } catch (NullPointerException e) {
+            result = parseBoolean(System.getProperty(name));
+        } catch (IllegalArgumentException | NullPointerException e) {
         }
         return result;
     }
@@ -287,10 +289,6 @@ public final class Boolean implements java.io.Serializable,
      */
     public static int compare(boolean x, boolean y) {
         return (x == y) ? 0 : (x ? 1 : -1);
-    }
-
-    private static boolean toBoolean(String name) {
-        return ((name != null) && name.equalsIgnoreCase("true"));
     }
 
     /**

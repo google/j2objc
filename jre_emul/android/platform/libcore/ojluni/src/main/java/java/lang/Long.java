@@ -26,6 +26,10 @@
 
 package java.lang;
 
+import java.lang.annotation.Native;
+import java.math.*;
+
+
 /**
  * The {@code Long} class wraps a value of the primitive type {@code
  * long} in an object. An object of type {@code Long} contains a
@@ -53,13 +57,13 @@ public final class Long extends Number implements Comparable<Long> {
      * A constant holding the minimum value a {@code long} can
      * have, -2<sup>63</sup>.
      */
-    public static final long MIN_VALUE = 0x8000000000000000L;
+    @Native public static final long MIN_VALUE = 0x8000000000000000L;
 
     /**
      * A constant holding the maximum value a {@code long} can
      * have, 2<sup>63</sup>-1.
      */
-    public static final long MAX_VALUE = 0x7fffffffffffffffL;
+    @Native public static final long MAX_VALUE = 0x7fffffffffffffffL;
 
     /**
      * The {@code Class} instance representing the primitive type
@@ -115,6 +119,23 @@ public final class Long extends Number implements Comparable<Long> {
      * @see     java.lang.Character#MIN_RADIX
      */
     public static native String toString(long i, int radix);
+
+    /**
+     * Return a BigInteger equal to the unsigned value of the
+     * argument.
+     */
+    private static BigInteger toUnsignedBigInteger(long i) {
+        if (i >= 0L)
+            return BigInteger.valueOf(i);
+        else {
+            int upper = (int) (i >>> 32);
+            int lower = (int) i;
+
+            // return (upper << 32) + lower
+            return (BigInteger.valueOf(Integer.toUnsignedLong(upper))).shiftLeft(32).
+                add(BigInteger.valueOf(Integer.toUnsignedLong(lower)));
+        }
+    }
 
     /**
      * Returns a string representation of the {@code long}
@@ -1093,6 +1114,70 @@ public final class Long extends Number implements Comparable<Long> {
      */
     public static int compareUnsigned(long x, long y) {
         return compare(x + MIN_VALUE, y + MIN_VALUE);
+    }
+
+
+    /**
+     * Returns the unsigned quotient of dividing the first argument by
+     * the second where each argument and the result is interpreted as
+     * an unsigned value.
+     *
+     * <p>Note that in two's complement arithmetic, the three other
+     * basic arithmetic operations of add, subtract, and multiply are
+     * bit-wise identical if the two operands are regarded as both
+     * being signed or both being unsigned.  Therefore separate {@code
+     * addUnsigned}, etc. methods are not provided.
+     *
+     * @param dividend the value to be divided
+     * @param divisor the value doing the dividing
+     * @return the unsigned quotient of the first argument divided by
+     * the second argument
+     * @see #remainderUnsigned
+     * @since 1.8
+     */
+    public static long divideUnsigned(long dividend, long divisor) {
+        if (divisor < 0L) { // signed comparison
+            // Answer must be 0 or 1 depending on relative magnitude
+            // of dividend and divisor.
+            return (compareUnsigned(dividend, divisor)) < 0 ? 0L :1L;
+        }
+
+        if (dividend > 0) //  Both inputs non-negative
+            return dividend/divisor;
+        else {
+            /*
+             * For simple code, leveraging BigInteger.  Longer and faster
+             * code written directly in terms of operations on longs is
+             * possible; see "Hacker's Delight" for divide and remainder
+             * algorithms.
+             */
+            return toUnsignedBigInteger(dividend).
+                divide(toUnsignedBigInteger(divisor)).longValue();
+        }
+    }
+
+    /**
+     * Returns the unsigned remainder from dividing the first argument
+     * by the second where each argument and the result is interpreted
+     * as an unsigned value.
+     *
+     * @param dividend the value to be divided
+     * @param divisor the value doing the dividing
+     * @return the unsigned remainder of the first argument divided by
+     * the second argument
+     * @see #divideUnsigned
+     * @since 1.8
+     */
+    public static long remainderUnsigned(long dividend, long divisor) {
+        if (dividend > 0 && divisor > 0) { // signed comparisons
+            return dividend % divisor;
+        } else {
+            if (compareUnsigned(dividend, divisor) < 0) // Avoid explicit check for 0 divisor
+                return dividend;
+            else
+                return toUnsignedBigInteger(dividend).
+                    remainder(toUnsignedBigInteger(divisor)).longValue();
+        }
     }
 
     // Bit Twiddling

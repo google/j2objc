@@ -110,9 +110,9 @@ public class MathTest extends junit.framework.TestCase {
      */
     public void test_atan2DD() {
         // Test for method double java.lang.Math.atan2(double, double)
-        double correct = Math.atan(0.5);
-        double answer = Math.atan2(1,  2);
-        assertEquals("Should equal atan(0.5)", correct, answer, 1.0E-16);
+        double answer = Math.atan(Math.tan(1.0));
+        assertTrue("Returned incorrect arc tangent: " + answer, answer <= 1.0
+                && answer >= 9.9999999999999983E-1);
     }
 
     /**
@@ -120,34 +120,22 @@ public class MathTest extends junit.framework.TestCase {
      */
     public void test_cbrt_D() {
         //Test for special situations
-        assertTrue("Should return Double.NaN", Double.isNaN(Math
-                .cbrt(Double.NaN)));
-        assertEquals("Should return Double.POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math
-                .cbrt(Double.POSITIVE_INFINITY), 0D);
-        assertEquals("Should return Double.NEGATIVE_INFINITY",
-                Double.NEGATIVE_INFINITY, Math
-                .cbrt(Double.NEGATIVE_INFINITY), 0D);
-        assertEquals(Double.doubleToLongBits(0.0), Double.doubleToLongBits(Math
-                .cbrt(0.0)));
-        assertEquals(Double.doubleToLongBits(+0.0), Double.doubleToLongBits(Math
-                .cbrt(+0.0)));
-        assertEquals(Double.doubleToLongBits(-0.0), Double.doubleToLongBits(Math
-                .cbrt(-0.0)));
+        assertTrue(Double.isNaN(Math.cbrt(Double.NaN)));
+        assertEquals(Double.POSITIVE_INFINITY, Math.cbrt(Double.POSITIVE_INFINITY), 0D);
+        assertEquals(Double.NEGATIVE_INFINITY, Math.cbrt(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals(Double.doubleToLongBits(0.0), Double.doubleToLongBits(Math.cbrt(0.0)));
+        assertEquals(Double.doubleToLongBits(+0.0), Double.doubleToLongBits(Math.cbrt(+0.0)));
+        assertEquals(Double.doubleToLongBits(-0.0), Double.doubleToLongBits(Math.cbrt(-0.0)));
 
-        assertEquals("Should return 3.0", 3.0, Math.cbrt(27.0), 0D);
-        assertEquals("Should return 23.111993172558684", 23.111993172558684,
-                Math.cbrt(12345.6), 0D);
-        assertEquals("Should return 5.643803094122362E102",
-                5.643803094122362E102, Math.cbrt(Double.MAX_VALUE), 0D);
-        assertEquals("Should return 0.01", 0.01, Math.cbrt(0.000001), 0D);
+        assertEquals(3.0, Math.cbrt(27.0), 0D);
+        assertEquals(23.111993172558684, Math.cbrt(12345.6), Math.ulp(23.111993172558684));
+        assertEquals(5.643803094122362E102, Math.cbrt(Double.MAX_VALUE), 0D);
+        assertEquals(0.01, Math.cbrt(0.000001), 0D);
 
-        assertEquals("Should return -3.0", -3.0, Math.cbrt(-27.0), 0D);
-        assertEquals("Should return -23.111993172558684", -23.111993172558684,
-                Math.cbrt(-12345.6), 0D);
-        assertEquals("Should return 1.7031839360032603E-108",
-                1.7031839360032603E-108, Math.cbrt(Double.MIN_VALUE), 0D);
-        assertEquals("Should return -0.01", -0.01, Math.cbrt(-0.000001), 0D);
+        assertEquals(-3.0, Math.cbrt(-27.0), 0D);
+        assertEquals(-23.111993172558684, Math.cbrt(-12345.6), Math.ulp(-23.111993172558684));
+        assertEquals(1.7031839360032603E-108, Math.cbrt(Double.MIN_VALUE), 0D);
+        assertEquals(-0.01, Math.cbrt(-0.000001), 0D);
     }
 
     /**
@@ -618,32 +606,39 @@ public class MathTest extends junit.framework.TestCase {
                 .log1p(Double.MIN_VALUE), 0D);
     }
 
+    public void test_maxDD_Math() {
+        test_maxDD(true /* use Math */);
+    }
+
+    public void test_maxDD_Double() {
+        test_maxDD(false /* use Math */);
+    }
+
     /**
      * java.lang.Math#max(double, double)
      */
-    public void test_maxDD() {
+    private static void test_maxDD(boolean useMath) {
         // Test for method double java.lang.Math.max(double, double)
-        assertEquals("Incorrect double max value", 1908897.6000089, Math.max(-1908897.6000089,
-                1908897.6000089), 0D);
+        assertEquals("Incorrect double max value", 1908897.6000089,
+                max(-1908897.6000089, 1908897.6000089, useMath), 0D);
         assertEquals("Incorrect double max value",
-                1908897.6000089, Math.max(2.0, 1908897.6000089), 0D);
-        assertEquals("Incorrect double max value", -2.0, Math.max(-2.0,
-                -1908897.6000089), 0D);
+                1908897.6000089, max(2.0, 1908897.6000089, useMath), 0D);
+        assertEquals("Incorrect double max value", -2.0, max(-2.0, -1908897.6000089, useMath), 0D);
 
         // Compare toString representations here since -0.0 = +0.0, and
         // NaN != NaN and we need to distinguish
         assertEquals("Max failed for NaN",
-                Double.toString(Double.NaN), Double.toString(Math.max(Double.NaN, 42.0d)));
+                Double.toString(Double.NaN), Double.toString(max(Double.NaN, 42.0d, useMath)));
         assertEquals("Max failed for NaN",
-                Double.toString(Double.NaN), Double.toString(Math.max(42.0d, Double.NaN)));
+                Double.toString(Double.NaN), Double.toString(max(42.0d, Double.NaN, useMath)));
         assertEquals("Max failed for 0.0",
-                Double.toString(+0.0d), Double.toString(Math.max(+0.0d, -0.0d)));
+                Double.toString(+0.0d), Double.toString(max(+0.0d, -0.0d, useMath)));
         assertEquals("Max failed for 0.0",
-                Double.toString(+0.0d), Double.toString(Math.max(-0.0d, +0.0d)));
+                Double.toString(+0.0d), Double.toString(max(-0.0d, +0.0d, useMath)));
         assertEquals("Max failed for -0.0d",
-                Double.toString(-0.0d), Double.toString(Math.max(-0.0d, -0.0d)));
+                Double.toString(-0.0d), Double.toString(max(-0.0d, -0.0d, useMath)));
         assertEquals("Max failed for 0.0",
-                Double.toString(+0.0d), Double.toString(Math.max(+0.0d, +0.0d)));
+                Double.toString(+0.0d), Double.toString(max(+0.0d, +0.0d, useMath)));
     }
 
     /**
@@ -699,33 +694,57 @@ public class MathTest extends junit.framework.TestCase {
                 -20, Math.max(-20, -19088976000089L));
     }
 
+    public void test_minDD_Math() {
+        test_minDD(true /* useMath */);
+    }
+
+    public void test_minDD_Double() {
+        test_minDD(false /* useMath */);
+    }
+
     /**
      * java.lang.Math#min(double, double)
      */
-    public void test_minDD() {
+    private static void test_minDD(boolean useMath) {
         // Test for method double java.lang.Math.min(double, double)
-        assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-1908897.6000089,
-                1908897.6000089), 0D);
+        assertEquals("Incorrect double min value", -1908897.6000089,
+                min(-1908897.6000089, 1908897.6000089, useMath), 0D);
         assertEquals("Incorrect double min value",
-                2.0, Math.min(2.0, 1908897.6000089), 0D);
-        assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-2.0,
-                -1908897.6000089), 0D);
+                2.0, min(2.0, 1908897.6000089, useMath), 0D);
+        assertEquals("Incorrect double min value", -1908897.6000089,
+                min(-2.0, -1908897.6000089, useMath), 0D);
         assertEquals("Incorrect double min value", 1.0d, Math.min(1.0d, 1.0d));
 
         // Compare toString representations here since -0.0 = +0.0, and
         // NaN != NaN and we need to distinguish
         assertEquals("Min failed for NaN",
-                Double.toString(Double.NaN), Double.toString(Math.min(Double.NaN, 42.0d)));
+                Double.toString(Double.NaN), Double.toString(min(Double.NaN, 42.0d, useMath)));
         assertEquals("Min failed for NaN",
-                Double.toString(Double.NaN), Double.toString(Math.min(42.0d, Double.NaN)));
+                Double.toString(Double.NaN), Double.toString(min(42.0d, Double.NaN, useMath)));
         assertEquals("Min failed for -0.0",
-                Double.toString(-0.0d), Double.toString(Math.min(+0.0d, -0.0d)));
+                Double.toString(-0.0d), Double.toString(min(+0.0d, -0.0d, useMath)));
         assertEquals("Min failed for -0.0",
-                Double.toString(-0.0d), Double.toString(Math.min(-0.0d, +0.0d)));
+                Double.toString(-0.0d), Double.toString(min(-0.0d, +0.0d, useMath)));
         assertEquals("Min failed for -0.0d",
-                Double.toString(-0.0d), Double.toString(Math.min(-0.0d, -0.0d)));
+                Double.toString(-0.0d), Double.toString(min(-0.0d, -0.0d, useMath)));
         assertEquals("Min failed for 0.0",
-                Double.toString(+0.0d), Double.toString(Math.min(+0.0d, +0.0d)));
+                Double.toString(+0.0d), Double.toString(min(+0.0d, +0.0d, useMath)));
+    }
+
+    private static double min(double a, double b, boolean useMath) {
+        if (useMath) {
+            return Math.min(a, b);
+        } else {
+            return Double.min(a, b);
+        }
+    }
+
+    private static double max(double a, double b, boolean useMath) {
+        if (useMath) {
+            return Math.max(a, b);
+        } else {
+            return Double.max(a, b);
+        }
     }
 
     /**
@@ -1050,6 +1069,68 @@ public class MathTest extends junit.framework.TestCase {
     }
 
     /**
+     * {@link java.lang.Math#nextDown(double)}
+     * @since 1.8
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextDown_D() {
+        // This method is semantically equivalent to nextAfter(d,
+        // Double.NEGATIVE_INFINITY),
+        // so we use the data of test_nextAfter_DD
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            final double start = NEXTAFTER_DD_START_CASES[i][0];
+            final long nextDownBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][2]);
+            final long resultBits = Double.doubleToLongBits(Math.nextDown(start));
+            assertEquals("Result should be next down-number.", nextDownBits,
+                    resultBits);
+        }
+
+        // test for cases with NaN
+        assertTrue("The result should be NaN.", Double.isNaN(Math
+                .nextDown(Double.NaN)));
+
+        // test for exception
+        try {
+            Math.nextDown((Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * {@link java.lang.Math#nextDown(float)}
+     * @since 1.8
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextDown_F() {
+        // This method is semantically equivalent to nextAfter(f,
+        // Float.NEGATIVE_INFINITY),
+        // so we use the data of test_nextAfter_FD
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            final float start = NEXTAFTER_FD_START_CASES[i][0];
+            final int nextDownBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][2]);
+            final int resultBits = Float.floatToIntBits(Math.nextDown(start));
+            assertEquals("Result should be next down-number.", nextDownBits,
+                    resultBits);
+        }
+
+        // test for cases with NaN
+        assertTrue("The result should be NaN.", Float.isNaN(Math
+                .nextDown(Float.NaN)));
+
+        // test for exception
+        try {
+            Math.nextDown((Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
      * java.lang.Math#pow(double, double)
      */
     public void test_powDD() {
@@ -1207,11 +1288,11 @@ public class MathTest extends junit.framework.TestCase {
                  * 1. If the first argument is finite and less than zero if the
                  * second argument is a finite even integer, the result is equal
                  * to the result of raising the absolute value of the first
-                 * argument to the power of the second argument
+                 * argument to the power of the second argument 
                  *
                  * 2. if the second argument is a finite odd integer, the result is equal to the
                  * negative of the result of raising the absolute value of the
-                 * first argument to the power of the second argument
+                 * first argument to the power of the second argument 
                  *
                  * 3. if the second argument is finite and not an integer, then the result
                  * is NaN.
@@ -1713,32 +1794,20 @@ public class MathTest extends junit.framework.TestCase {
      */
     public void test_sinh_D() {
         // Test for special situations
-        assertTrue("Should return NaN", Double.isNaN(Math.sinh(Double.NaN)));
-        assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.sinh(Double.POSITIVE_INFINITY), 0D);
-        assertEquals("Should return NEGATIVE_INFINITY",
-                Double.NEGATIVE_INFINITY, Math.sinh(Double.NEGATIVE_INFINITY), 0D);
-        assertEquals(Double.doubleToLongBits(0.0), Double.doubleToLongBits(Math
-                .sinh(0.0)));
-        assertEquals(Double.doubleToLongBits(+0.0), Double
-                .doubleToLongBits(Math.sinh(+0.0)));
-        assertEquals(Double.doubleToLongBits(-0.0), Double
-                .doubleToLongBits(Math.sinh(-0.0)));
+        assertTrue(Double.isNaN(Math.sinh(Double.NaN)));
+        assertEquals(Double.POSITIVE_INFINITY, Math.sinh(Double.POSITIVE_INFINITY), 0D);
+        assertEquals(Double.NEGATIVE_INFINITY, Math.sinh(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals(Double.doubleToLongBits(0.0), Double.doubleToLongBits(Math.sinh(0.0)));
+        assertEquals(Double.doubleToLongBits(+0.0), Double.doubleToLongBits(Math.sinh(+0.0)));
+        assertEquals(Double.doubleToLongBits(-0.0), Double.doubleToLongBits(Math.sinh(-0.0)));
 
-        assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.sinh(1234.56), 0D);
-        assertEquals("Should return NEGATIVE_INFINITY",
-                Double.NEGATIVE_INFINITY, Math.sinh(-1234.56), 0D);
-        assertEquals("Should return 1.0000000000001666E-6",
-                1.0000000000001666E-6, Math.sinh(0.000001), 0D);
-        assertEquals("Should return -1.0000000000001666E-6",
-                -1.0000000000001666E-6, Math.sinh(-0.000001), 0D);
-        assertEquals("Should return 5.115386441963859", 5.11538644196386, Math
-                .sinh(2.33482), 0D);
-        assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.sinh(Double.MAX_VALUE), 0D);
-        assertEquals("Should return 4.9E-324", 4.9E-324, Math
-                .sinh(Double.MIN_VALUE), 0D);
+        assertEquals(Double.POSITIVE_INFINITY, Math.sinh(1234.56), 0D);
+        assertEquals(Double.NEGATIVE_INFINITY, Math.sinh(-1234.56), 0D);
+        assertEquals(1.0000000000001666E-6, Math.sinh(0.000001), 0D);
+        assertEquals(-1.0000000000001666E-6, Math.sinh(-0.000001), 0D);
+        assertEquals(5.115386441963859, Math.sinh(2.33482), Math.ulp(5.115386441963859));
+        assertEquals(Double.POSITIVE_INFINITY, Math.sinh(Double.MAX_VALUE), 0D);
+        assertEquals(4.9E-324, Math.sinh(Double.MIN_VALUE), 0D);
     }
 
     /**

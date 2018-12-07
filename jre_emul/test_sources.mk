@@ -416,6 +416,7 @@ TEST_SOURCES := \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/lang/reflect/FieldTest.java \
     libcore/java/lang/reflect/MethodTest.java \
+    libcore/java/lang/reflect/ModifierTest.java \
     libcore/java/lang/reflect/ReflectionTest.java \
     libcore/java/net/CookiesTest.java \
     libcore/java/net/OldCookieHandlerTest.java \

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -42,14 +42,12 @@ interface Member {
     /**
      * Identifies the set of all public members of a class or interface,
      * including inherited members.
-     * @see java.lang.SecurityManager#checkMemberAccess
      */
     public static final int PUBLIC = 0;
 
     /**
      * Identifies the set of declared members of a class or interface.
      * Inherited members are not included.
-     * @see java.lang.SecurityManager#checkMemberAccess
      */
     public static final int DECLARED = 1;
 
@@ -87,6 +85,7 @@ interface Member {
      *
      * @return true if and only if this member was introduced by
      * the compiler.
+     * @jls 13.1 The Form of a Binary
      * @since 1.5
      */
     public boolean isSynthetic();

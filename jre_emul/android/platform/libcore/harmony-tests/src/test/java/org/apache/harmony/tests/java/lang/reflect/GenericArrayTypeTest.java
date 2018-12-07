@@ -36,6 +36,9 @@ public class GenericArrayTypeTest extends GenericReflectionTestsBase {
         Field field = clazz.getDeclaredField("array");
         Type genericType = field.getGenericType();
         assertInstanceOf(GenericArrayType.class, genericType);
+        assertEquals("T[]", genericType.toString());
+        assertEquals("T[]", genericType.getTypeName());
+
         Type componentType = ((GenericArrayType) genericType).getGenericComponentType();
         assertEquals(getTypeParameter(clazz), componentType);
         assertInstanceOf(TypeVariable.class, componentType);
@@ -52,13 +55,17 @@ public class GenericArrayTypeTest extends GenericReflectionTestsBase {
         Class<? extends B> clazz = GenericArrayTypeTest.B.class;
         Field field = clazz.getDeclaredField("array");
         Type genericType = field.getGenericType();
-
         assertInstanceOf(GenericArrayType.class, genericType);
+
+        String bName = B.class.getName();
+        assertEquals(bName + "<T>[]", genericType.toString());
+        assertEquals(bName + "<T>[]", genericType.getTypeName());
+
         GenericArrayType arrayType = (GenericArrayType) genericType;
         Type componentType = arrayType.getGenericComponentType();
         assertInstanceOf(ParameterizedType.class, componentType);
-        ParameterizedType parameteriezdType = (ParameterizedType) componentType;
-        assertEquals(clazz, parameteriezdType.getRawType());
-        assertEquals(clazz.getTypeParameters()[0], parameteriezdType.getActualTypeArguments()[0]);
+        ParameterizedType parameterizedType = (ParameterizedType) componentType;
+        assertEquals(clazz, parameterizedType.getRawType());
+        assertEquals(clazz.getTypeParameters()[0], parameterizedType.getActualTypeArguments()[0]);
     }
 }

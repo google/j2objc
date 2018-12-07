@@ -121,4 +121,46 @@ public class FloatTest extends junit.framework.TestCase {
       }
       assertEquals(f1, 0f);
     }
+
+    // Float equivalent of testParseLargestSubnormalDoublePrecision. http://b/18087920.
+    public void testParseLargestSubnormalFloatPrecision() {
+        // These are different ways of saying MIN_NORMAL.
+        assertEquals(1.1754943508222875e-38f, Float.parseFloat("1.1754943508222875e-38"));
+        assertEquals(1.1754943508222875e-38f, Float.parseFloat("0.00011754943508222875e-34f"));
+        assertEquals(1.1754943508222875e-38f, Float.parseFloat("00000001.1754943508222875e-38f"));
+        assertEquals(1.1754943508222875e-38f, Float.parseFloat("1.17549435082228750000e-38f"));
+        assertEquals(1.1754943508222875e-38f, Float.parseFloat("1.1754943508222875e-0038f"));
+        assertEquals(-1.1754943508222875e-38f, Float.parseFloat("-1.1754943508222875e-38f"));
+
+        // Extra interesting values suggested as part of http://b/18087920.
+        assertEquals(1.1754944e-38f, Float.parseFloat("11754942807573643E-54"));
+        assertEquals(1.1754944e-38f, Float.parseFloat("11754942807573644E-54"));
+        assertEquals(1.1754944e-38f, Float.parseFloat("11754942807573645E-54"));
+    }
+
+    public void testStaticHashCode() {
+        assertEquals(Float.valueOf(567.0f).hashCode(), Float.hashCode(567.0f));
+    }
+
+    public void testMax() {
+        float a = 567.0f;
+        float b = 578.0f;
+        assertEquals(Math.max(a, b), Float.max(a, b));
+    }
+
+    public void testMin() {
+        float a = 567.0f;
+        float b = 578.0f;
+        assertEquals(Math.min(a, b), Float.min(a, b));
+    }
+
+    public void testSum() {
+        float a = 567.0f;
+        float b = 578.0f;
+        assertEquals(a + b, Float.sum(a, b));
+    }
+
+    public void testBYTES() {
+        assertEquals(4, Float.BYTES);
+    }
 }

@@ -35,6 +35,8 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         TypeVariable<Class> typeVariable = typeParameters[0];
         assertEquals(clazz, typeVariable.getGenericDeclaration());
         assertEquals("T", typeVariable.getName());
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
         Type[] bounds = typeVariable.getBounds();
         assertLenghtOne(bounds);
         assertEquals(Object.class, bounds[0]);
@@ -51,6 +53,8 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         TypeVariable<Method> typeVariable = typeParameters[0];
         assertEquals(method, typeVariable.getGenericDeclaration());
         assertEquals("T", typeVariable.getName());
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
         Type[] bounds = typeVariable.getBounds();
         assertLenghtOne(bounds);
         assertEquals(Object.class, bounds[0]);
@@ -67,6 +71,8 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         TypeVariable<?> typeVariable = typeParameters[0];
         assertEquals(constructor, typeVariable.getGenericDeclaration());
         assertEquals("T", typeVariable.getName());
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
         Type[] bounds = typeVariable.getBounds();
         assertLenghtOne(bounds);
         assertEquals(Object.class, bounds[0]);
@@ -79,13 +85,18 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         assertEquals(3, typeParameters.length);
         assertEquals("Q", typeParameters[0].getName());
         assertEquals(clazz, typeParameters[0].getGenericDeclaration());
+        assertEquals("Q", typeParameters[0].toString());
+        assertEquals("Q", typeParameters[0].getTypeName());
 
         assertEquals("R", typeParameters[1].getName());
         assertEquals(clazz, typeParameters[1].getGenericDeclaration());
+        assertEquals("R", typeParameters[1].toString());
+        assertEquals("R", typeParameters[1].getTypeName());
 
         assertEquals("S", typeParameters[2].getName());
         assertEquals(clazz, typeParameters[2].getGenericDeclaration());
-
+        assertEquals("S", typeParameters[2].toString());
+        assertEquals("S", typeParameters[2].getTypeName());
     }
 
     static class E {
@@ -99,12 +110,18 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         assertEquals(3, typeParameters.length);
         assertEquals("Q", typeParameters[0].getName());
         assertEquals(method, typeParameters[0].getGenericDeclaration());
+        assertEquals("Q", typeParameters[0].toString());
+        assertEquals("Q", typeParameters[0].getTypeName());
 
         assertEquals("R", typeParameters[1].getName());
         assertEquals(method, typeParameters[1].getGenericDeclaration());
+        assertEquals("R", typeParameters[1].toString());
+        assertEquals("R", typeParameters[1].getTypeName());
 
         assertEquals("S", typeParameters[2].getName());
         assertEquals(method, typeParameters[2].getGenericDeclaration());
+        assertEquals("S", typeParameters[2].toString());
+        assertEquals("S", typeParameters[2].getTypeName());
     }
 
     static class F {
@@ -118,12 +135,18 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         assertEquals(3, typeParameters.length);
         assertEquals("Q", typeParameters[0].getName());
         assertEquals(constructor, typeParameters[0].getGenericDeclaration());
+        assertEquals("Q", typeParameters[0].toString());
+        assertEquals("Q", typeParameters[0].getTypeName());
 
         assertEquals("R", typeParameters[1].getName());
         assertEquals(constructor, typeParameters[1].getGenericDeclaration());
+        assertEquals("R", typeParameters[1].toString());
+        assertEquals("R", typeParameters[1].getTypeName());
 
         assertEquals("S", typeParameters[2].getName());
         assertEquals(constructor, typeParameters[2].getGenericDeclaration());
+        assertEquals("S", typeParameters[2].toString());
+        assertEquals("S", typeParameters[2].getTypeName());
     }
 
     static class G <T extends Number>{}
@@ -135,6 +158,8 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         Type[] bounds = typeVariable.getBounds();
         assertLenghtOne(bounds);
         assertEquals(Number.class, bounds[0]);
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
     }
 
     static class H <T extends Number & Serializable >{}
@@ -146,5 +171,7 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         assertEquals(2, bounds.length);
         assertEquals(Number.class, bounds[0]);
         assertEquals(Serializable.class, bounds[1]);
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
     }
 }
