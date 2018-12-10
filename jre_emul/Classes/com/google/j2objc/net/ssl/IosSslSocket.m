@@ -405,7 +405,7 @@ static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
 
 static void tearDownContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
   if (self->_sslContext) {
-    checkStatus(SSLClose(self->_sslContext));
+    SSLClose(self->_sslContext);
     CFRelease(self->_sslContext);
     self->_sslContext = nil;
   }
