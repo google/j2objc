@@ -21,12 +21,18 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.TreeMap;
 
+import libcore.java.util.SpliteratorTester;
 import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
 
@@ -453,7 +459,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         LinkedHashMap<String, String> map
                 = new LinkedHashMap<String, String>(6, 0.75F, true) {
             @Override
-            protected boolean removeEldestEntry(Entry<String, String> e) {
+            protected boolean removeEldestEntry(Map.Entry<String, String> e) {
                 return true;
             }
         };
@@ -704,6 +710,214 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         }
         assertTrue("Entries left in map", !it1.hasNext());
     }
+
+    public void test_forEach() throws Exception {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("three", "3");
+        map.put("two", "2");
+        map.put("one", "1");
+
+        LinkedHashMap<String, String> output = new LinkedHashMap<>();
+        map.forEach((k, v) -> output.put(k,v));
+        assertEquals(map, output);
+
+        LinkedHashSet<String> setOutput = new LinkedHashSet<>();
+        map.keySet().forEach((k) -> setOutput.add(k));
+        assertEquals(map.keySet(), setOutput);
+
+        setOutput.clear();
+        map.values().forEach((v) -> setOutput.add(v));
+        assertEquals(new LinkedHashSet<>(map.values()), setOutput);
+
+        LinkedHashSet<Map.Entry<String,String>> entrySetOutput = new LinkedHashSet<>();
+        map.entrySet().forEach((v) -> entrySetOutput.add(v));
+        assertEquals(map.entrySet(), entrySetOutput);
+    }
+
+
+    public void test_forEach_NPE() throws Exception {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        try {
+            map.forEach(null);
+            fail();
+        } catch(NullPointerException expected) {}
+
+        try {
+            map.keySet().forEach(null);
+            fail();
+        } catch(NullPointerException expected) {}
+
+        try {
+            map.values().forEach(null);
+            fail();
+        } catch(NullPointerException expected) {}
+
+        try {
+            map.entrySet().forEach(null);
+            fail();
+        } catch(NullPointerException expected) {}
+    }
+
+    public void test_forEach_CME() throws Exception {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        map.put("one", "1");
+        map.put("two", "2");
+        map.put("three", "3");
+
+        LinkedHashMap<String, String> outputMap = new LinkedHashMap<>();
+        try {
+            map.forEach(new java.util.function.BiConsumer<String, String>() {
+                    @Override
+                    public void accept(String k, String v) {
+                        outputMap.put(k, v);
+                        map.put("foo1", v);
+                    }
+                });
+            fail();
+        } catch(ConcurrentModificationException expected) {}
+        // We should get a CME and DO NOT continue forEach evaluation
+        assertEquals(1, outputMap.size());
+
+        outputMap.clear();
+        try {
+            map.keySet().forEach(new java.util.function.Consumer<String>() {
+                    @Override
+                    public void accept(String k) {
+                        outputMap.put(k, "foo");
+                        map.put("foo2", "boo");
+                    }
+                });
+            fail();
+        } catch(ConcurrentModificationException expected) {}
+        // We should get a CME and DO NOT continue forEach evaluation
+        assertEquals(1, outputMap.size());
+
+        outputMap.clear();
+        try {
+            map.values().forEach(new java.util.function.Consumer<String>() {
+                    @Override
+                    public void accept(String k)  {
+                        outputMap.put(k, "foo");
+                        map.put("foo3", "boo");
+                    }
+                });
+            fail();
+        } catch(ConcurrentModificationException expected) {}
+        // We should get a CME and DO NOT continue forEach evaluation
+        assertEquals(1, outputMap.size());
+
+        outputMap.clear();
+        try {
+            map.entrySet().forEach(new java.util.function.Consumer<Map.Entry<String,String>>() {
+                    @Override
+                    public void accept(Map.Entry<String,String> k)  {
+                        outputMap.put(k.getKey(), "foo");
+                        map.put("foo4", "boo");
+                    }
+                });
+            fail();
+        } catch(ConcurrentModificationException expected) {}
+        // We should get a CME and DO NOT continue forEach evaluation
+        assertEquals(1, outputMap.size());
+    }
+
+    /* TODO(b/120651620): enable and fix.
+    public void test_spliterator_keySet() {
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("a", "1");
+        hashMap.put("b", "2");
+        hashMap.put("c", "3");
+        hashMap.put("d", "4");
+        hashMap.put("e", "5");
+        hashMap.put("f", "6");
+        hashMap.put("g", "7");
+        hashMap.put("h", "8");
+        hashMap.put("i", "9");
+        hashMap.put("j", "10");
+        hashMap.put("k", "11");
+        hashMap.put("l", "12");
+        hashMap.put("m", "13");
+        hashMap.put("n", "14");
+        hashMap.put("o", "15");
+        hashMap.put("p", "16");
+
+        Set<String> keys = hashMap.keySet();
+        ArrayList<String> expectedKeys = new ArrayList<>(keys);
+
+        SpliteratorTester.runBasicIterationTests_unordered(keys.spliterator(), expectedKeys,
+                String::compareTo);
+        SpliteratorTester.runBasicSplitTests(keys, expectedKeys);
+        SpliteratorTester.testSpliteratorNPE(keys.spliterator());
+
+        assertTrue(keys.spliterator().hasCharacteristics(Spliterator.ORDERED));
+        SpliteratorTester.runOrderedTests(keys);
+    }
+
+    public void test_spliterator_valueSet() {
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("a", "1");
+        hashMap.put("b", "2");
+        hashMap.put("c", "3");
+        hashMap.put("d", "4");
+        hashMap.put("e", "5");
+        hashMap.put("f", "6");
+        hashMap.put("g", "7");
+        hashMap.put("h", "8");
+        hashMap.put("i", "9");
+        hashMap.put("j", "10");
+        hashMap.put("k", "11");
+        hashMap.put("l", "12");
+        hashMap.put("m", "13");
+        hashMap.put("n", "14");
+        hashMap.put("o", "15");
+        hashMap.put("p", "16");
+
+        Collection<String> values = hashMap.values();
+        ArrayList<String> expectedValues = new ArrayList<>(values);
+
+        SpliteratorTester.runBasicIterationTests_unordered(values.spliterator(), expectedValues,
+                String::compareTo);
+        SpliteratorTester.runBasicSplitTests(values, expectedValues);
+        SpliteratorTester.testSpliteratorNPE(values.spliterator());
+
+        assertTrue(values.spliterator().hasCharacteristics(Spliterator.ORDERED));
+        SpliteratorTester.runOrderedTests(values);
+    }
+
+    public void test_spliterator_entrySet() {
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("a", "1");
+        hashMap.put("b", "2");
+        hashMap.put("c", "3");
+        hashMap.put("d", "4");
+        hashMap.put("e", "5");
+        hashMap.put("f", "6");
+        hashMap.put("g", "7");
+        hashMap.put("h", "8");
+        hashMap.put("i", "9");
+        hashMap.put("j", "10");
+        hashMap.put("k", "11");
+        hashMap.put("l", "12");
+        hashMap.put("m", "13");
+        hashMap.put("n", "14");
+        hashMap.put("o", "15");
+        hashMap.put("p", "16");
+
+        Set<Map.Entry<String, String>> entries = hashMap.entrySet();
+        ArrayList<Map.Entry<String, String>> expectedValues = new ArrayList<>(entries);
+
+        Comparator<Map.Entry<String, String>> comparator =
+                (a, b) -> (a.getKey().compareTo(b.getKey()));
+
+        SpliteratorTester.runBasicIterationTests_unordered(entries.spliterator(), expectedValues,
+                (a, b) -> (a.getKey().compareTo(b.getKey())));
+        SpliteratorTester.runBasicSplitTests(entries, expectedValues, comparator);
+        SpliteratorTester.testSpliteratorNPE(entries.spliterator());
+
+        assertTrue(entries.spliterator().hasCharacteristics(Spliterator.ORDERED));
+        SpliteratorTester.runOrderedTests(entries);
+    } */
+
 
     /**
      * Sets up the fixture, for example, open a network connection. This method

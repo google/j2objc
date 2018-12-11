@@ -156,13 +156,17 @@ public class HashtableTest extends junit.framework.TestCase {
         assertTrue("Clone different size than original", h.size() == htfull
                 .size());
 
-        Set org = htfull.keySet();
-        Set cpy = h.keySet();
+        Enumeration org = htfull.keys();
+        Enumeration cpy = h.keys();
 
-        for (Object key : org) {
-          assertTrue("Key comparison failed", cpy.contains(key));
-          assertEquals("Value comparison failed", htfull.get(key), h.get(key));
+        String okey, ckey;
+        while (org.hasMoreElements()) {
+            assertTrue("Key comparison failed", (okey = (String) org
+                    .nextElement()).equals(ckey = (String) cpy.nextElement()));
+            assertTrue("Value comparison failed", ((String) htfull.get(okey))
+                    .equals((String) h.get(ckey)));
         }
+        assertTrue("Copy has more keys than original", !cpy.hasMoreElements());
     }
 
     /**
@@ -245,7 +249,7 @@ public class HashtableTest extends junit.framework.TestCase {
         }
     }
 
-// BEGIN android-removed
+// BEGIN Android-removed
 // implementation dependent
 //    /**
 //     * java.util.Hashtable#elements()
@@ -281,7 +285,7 @@ public class HashtableTest extends junit.framework.TestCase {
 //        }
 //        assertTrue("unexpected NoSuchElementException", !exception);
 //    }
-// END android-removed
+// END Android-removed
 
     /**
      * java.util.Hashtable#entrySet()
@@ -297,11 +301,11 @@ public class HashtableTest extends junit.framework.TestCase {
         while (e.hasMoreElements())
             assertTrue("Returned incorrect entry set", s2.contains(e
                     .nextElement()));
-// BEGIN android-removed
+// BEGIN Android-removed
 // implementation dependent
 //        assertEquals("Not synchronized",
 //                "java.util.Collections$SynchronizedSet", s.getClass().getName());
-// END android-removed
+// END Android-removed
 
         boolean exception = false;
         try {
@@ -334,7 +338,7 @@ public class HashtableTest extends junit.framework.TestCase {
         assertEquals("Could not retrieve element", "FVal 2", ((String) h.get("FKey 2"))
                 );
 
-// BEGIN android-removed
+// BEGIN Android-removed
 // implementation dependent
 //        // Regression for HARMONY-262
 //        ReusableKey k = new ReusableKey();
@@ -354,7 +358,7 @@ public class HashtableTest extends junit.framework.TestCase {
 //        } catch (NullPointerException e) {
 //            //expected
 //        }
-// END android-removed
+// END Android-removed
     }
 
     /**
@@ -465,11 +469,11 @@ public class HashtableTest extends junit.framework.TestCase {
             assertTrue("Returned incorrect key set", s
                     .contains(e.nextElement()));
 
-// BEGIN android-removed
+// BEGIN Android-removed
 // implementation dependent
 //        assertEquals("Not synchronized",
 //                "java.util.Collections$SynchronizedSet", s.getClass().getName());
-// END android-removed
+// END Android-removed
 
         Map map = new Hashtable(101);
         map.put(new Integer(1), "1");
@@ -544,7 +548,7 @@ public class HashtableTest extends junit.framework.TestCase {
         }
     }
 
-// BEGIN android-removed
+// BEGIN Android-removed
 // implementation dependent
 //    /**
 //     * java.util.Hashtable#keySet()
@@ -588,7 +592,7 @@ public class HashtableTest extends junit.framework.TestCase {
 //        }
 //        assertTrue("unexpected NoSuchElementException", !exception);
 //    }
-// END android-removed
+// END Android-removed
 
     /**
      * java.util.Hashtable#put(java.lang.Object, java.lang.Object)
@@ -747,11 +751,11 @@ public class HashtableTest extends junit.framework.TestCase {
         while (e.hasMoreElements())
             assertTrue("Returned incorrect values", c.contains(e.nextElement()));
 
-// BEGIN android-removed
+// BEGIN Android-removed
 // implementation dependent
 //        assertEquals("Not synchronized",
 //                "java.util.Collections$SynchronizedCollection", c.getClass().getName());
-// END android-removed
+// END Android-removed
 
         Hashtable myHashtable = new Hashtable();
         for (int i = 0; i < 100; i++)
@@ -889,6 +893,46 @@ public class HashtableTest extends junit.framework.TestCase {
         } catch (NoSuchElementException e) {
             // Expected
         }
+    }
+
+    public void test_forEach() throws Exception {
+        Hashtable<String, String> ht = new Hashtable<>();
+        ht.put("1", "one");
+        ht.put("2", "two");
+        ht.put("3", "three");
+        Hashtable<String, String> output = new Hashtable<>();
+
+        ht.forEach((k,v) -> output.put(k,v));
+        assertEquals(ht, output);
+    }
+
+    public void test_forEach_NPE() throws Exception {
+        Hashtable<String, String> ht = new Hashtable<>();
+        try {
+            ht.forEach(null);
+            fail();
+        } catch(NullPointerException expected) {}
+    }
+
+    public void test_forEach_CME() throws Exception {
+        Hashtable<String, String> ht = new Hashtable<>();
+        ht.put("one", "1");
+        ht.put("two", "2");
+        ht.put("three", "3");
+
+        Hashtable<String, String> outputHt = new Hashtable<>();
+        try {
+            ht.forEach(new java.util.function.BiConsumer<String, String>() {
+                    @Override
+                    public void accept(String k, String v) {
+                        outputHt.put(k, v);
+                        ht.put("foo", v);
+                    }
+                });
+            fail();
+        } catch(ConcurrentModificationException expected) {}
+        // We should get a CME and DO NOT continue forEach evaluation
+        assertEquals(1, outputHt.size());
     }
 
     protected Hashtable hashtableClone(Hashtable s) {
