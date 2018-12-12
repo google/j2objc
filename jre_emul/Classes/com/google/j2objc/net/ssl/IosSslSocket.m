@@ -58,6 +58,7 @@ static NSDictionary *protocolMapping;
 }
 - (JavaIoInputStream *)plainInputStream;
 - (JavaIoOutputStream *)plainOutputStream;
+- (NSString *)getHostname;
 @end
 
 // An input stream that uses Apple's SSLRead.
@@ -211,6 +212,10 @@ static NSDictionary *protocolMapping;
 
 - (JavaIoOutputStream *)plainOutputStream {
   return [super getOutputStream];
+}
+
+- (NSString *)getHostname {
+  return [[self getInetAddress] getHostName];
 }
 
 - (void)dealloc {
@@ -397,7 +402,7 @@ static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
   self->_sslContext = SSLCreateContext(nil, kSSLClientSide, kSSLStreamType);
   checkStatus(SSLSetIOFuncs(self->_sslContext, SslReadCallback, SslWriteCallback));
   checkStatus(SSLSetConnection(self->_sslContext, self));
-  NSString *hostName = [[self getInetAddress] getHostName];
+  NSString *hostName = [self getHostname];
   checkStatus(SSLSetPeerDomainName(self->_sslContext, [hostName UTF8String], [hostName length]));
   SSLProtocol protocol = [protocolMapping[[self->enabledProtocols objectAtIndex:0]] intValue];
   checkStatus(SSLSetProtocolVersionMin(self->_sslContext, protocol));
@@ -518,6 +523,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 @interface WrapperSocket : ComGoogleJ2objcNetSslIosSslSocket {
 @public
   JavaNetSocket *underlyingSocket;
+  NSString *hostname;
   BOOL autoClose;
 }
 @end
@@ -527,6 +533,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 - (void)dealloc {
   [super dealloc];
   [underlyingSocket release];
+  [hostname release];
 }
 
 #pragma mark ComGoogleJ2objcNetSslIosSslSocket methods
@@ -546,6 +553,10 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 - (JavaIoOutputStream *)plainOutputStream {
   return [underlyingSocket getOutputStream];
+}
+
+- (NSString *)getHostname {
+  return hostname;
 }
 
 #pragma mark JavaNetSocket methods
@@ -750,6 +761,7 @@ void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
   }
   init(self);
   JreStrongAssign(&self->underlyingSocket, socket);
+  JreStrongAssign(&self->hostname, host);
   self->autoClose = autoClose;
 }
 
