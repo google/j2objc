@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-//Used by AnnotationsTest.
-@AnnotationsTest.RepeatableAnnotation
-@AnnotationsTest.RepeatableAnnotation
-package libcore.java.lang.reflect;
+/**
+ * See {@link libcore.java.lang.reflect.annotations.PackageTest}.
+ */
+@Repeated(1)
+@Repeated(2)
+package libcore.java.lang.reflect.annotations.multipleannotation;
+
+import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.Repeated;

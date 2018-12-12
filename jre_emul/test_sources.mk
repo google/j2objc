@@ -48,7 +48,17 @@ SUPPORT_SOURCES = \
     jsr166/CollectionImplementation.java \
     jsr166/JSR166TestCase.java \
     libcore/java/io/NullPrintStream.java \
-    libcore/java/lang/reflect/package-info.java \
+    libcore/java/lang/reflect/annotations/AnnotatedElementTestSupport.java \
+    libcore/java/lang/reflect/annotations/multipleannotation/MultipleAnnotation.java \
+    libcore/java/lang/reflect/annotations/multipleannotation/package-info.java \
+    libcore/java/lang/reflect/annotations/multipleannotationexplicitsingle/MultipleAnnotationExplicitSingle.java \
+    libcore/java/lang/reflect/annotations/multipleannotationexplicitsingle/package-info.java \
+    libcore/java/lang/reflect/annotations/multipleannotationoddity/MultipleAnnotationOddity.java \
+    libcore/java/lang/reflect/annotations/multipleannotationoddity/package-info.java \
+    libcore/java/lang/reflect/annotations/noannotation/NoAnnotation.java \
+    libcore/java/lang/reflect/annotations/noannotation/package-info.java \
+    libcore/java/lang/reflect/annotations/singleannotation/SingleAnnotation.java \
+    libcore/java/lang/reflect/annotations/singleannotation/package-info.java \
     libcore/java/net/AbstractCookiesTest.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
@@ -413,13 +423,21 @@ TEST_SOURCES := \
     libcore/java/lang/ThrowableTest.java \
     libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/lang/ref/ReferenceQueueTest.java \
-    libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/lang/reflect/FieldTest.java \
     libcore/java/lang/reflect/MethodTest.java \
     libcore/java/lang/reflect/ModifierTest.java \
     libcore/java/lang/reflect/ReflectionTest.java \
+    libcore/java/lang/reflect/annotations/AnnotatedElementParameterTest.java \
+    libcore/java/lang/reflect/annotations/Annotations57649Test.java \
+    libcore/java/lang/reflect/annotations/AnnotationsTest.java \
+    libcore/java/lang/reflect/annotations/ClassTest.java \
+    libcore/java/lang/reflect/annotations/ConstructorTest.java \
+    libcore/java/lang/reflect/annotations/ExecutableParameterTest.java \
+    libcore/java/lang/reflect/annotations/FieldTest.java \
+    libcore/java/lang/reflect/annotations/MethodTest.java \
+    libcore/java/lang/reflect/annotations/PackageTest.java \
     libcore/java/net/CookiesTest.java \
     libcore/java/net/OldCookieHandlerTest.java \
     libcore/java/net/DatagramSocketTest.java \
