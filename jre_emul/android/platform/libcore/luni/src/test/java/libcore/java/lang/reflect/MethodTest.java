@@ -306,7 +306,6 @@ public final class MethodTest extends TestCase {
         assertEquals(InterfaceWithStatic.class, declaredMethod.getDeclaringClass());
     }
 
-    /* J2ObjC: enable and fix.
     public void testStaticInterfaceMethod_invoke() throws Exception {
         String interfaceWithStaticClassName = InterfaceWithStatic.class.getName();
         assertEquals(interfaceWithStaticClassName, InterfaceWithStatic.staticMethod());
@@ -322,7 +321,7 @@ public final class MethodTest extends TestCase {
         method.setAccessible(false);
         // No effect expected.
         assertEquals(interfaceWithStaticClassName, method.invoke(null));
-    } */
+    }
 
     // Default method reflection.
 
