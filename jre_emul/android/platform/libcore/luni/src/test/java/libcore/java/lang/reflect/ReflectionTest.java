@@ -575,17 +575,25 @@ public final class ReflectionTest extends TestCase {
         assertFalse(Modifier.isStrict(modifiers));
     }
 
-    /* J2ObjC: enable and fix.
     public void testAnonymousClassModifiers() {
         int modifiers = staticAnonymous.getClass().getModifiers();
         assertFalse(Modifier.isPublic(modifiers));
         assertFalse(Modifier.isProtected(modifiers));
         assertFalse(Modifier.isPrivate(modifiers));
         assertFalse(Modifier.isAbstract(modifiers));
+        // http://b/62290080
+        // OpenJDK 9b08 changed the behavior of Modifier.isStatic(modifiers)
+        // to return false, consistent with JLS 15.9.5 ("An anonymous class
+        // is never static"). Earlier versions of OpenJDK returned true.
+        // This test accepts either behavior.
+        // J2ObjC: sets this modifier to true.
         assertTrue(Modifier.isStatic(modifiers));
-        assertFalse(Modifier.isFinal(modifiers));
+        // J2ObjC: recent versions of the JDK return false, but some versions return true.
+        // J2ObjC sets this modifier to true
+        // (see com.google.devtools.j2objc.translate.MetadataWriter.getTypeModifiers).
+        assertTrue(Modifier.isFinal(modifiers));
         assertFalse(Modifier.isStrict(modifiers));
-    } */
+    }
 
     public void testInnerClassName() {
         assertEquals("ReflectionTest", ReflectionTest.class.getSimpleName());
