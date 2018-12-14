@@ -2650,8 +2650,9 @@ public final class URI
         = L_SERVER | lowMask("%");
     private static final long H_SERVER_PERCENT
         = H_SERVER | highMask("%");
-    private static final long L_LEFT_BRACKET = lowMask("[");
-    private static final long H_LEFT_BRACKET = highMask("[");
+    // j2objc: unused
+//    private static final long L_LEFT_BRACKET = lowMask("[");
+//    private static final long H_LEFT_BRACKET = highMask("[");
 
     // scheme        = alpha *( alpha | digit | "+" | "-" | "." )
     private static final long L_SCHEME = L_ALPHA | L_DIGIT | lowMask("+-.");
@@ -2659,10 +2660,11 @@ public final class URI
 
     // uric_no_slash = unreserved | escaped | ";" | "?" | ":" | "@" |
     //                 "&" | "=" | "+" | "$" | ","
-    private static final long L_URIC_NO_SLASH
-        = L_UNRESERVED | L_ESCAPED | lowMask(";?:@&=+$,");
-    private static final long H_URIC_NO_SLASH
-        = H_UNRESERVED | H_ESCAPED | highMask(";?:@&=+$,");
+    // j2objc: unused
+//    private static final long L_URIC_NO_SLASH
+//        = L_UNRESERVED | L_ESCAPED | lowMask(";?:@&=+$,");
+//    private static final long H_URIC_NO_SLASH
+//        = H_UNRESERVED | H_ESCAPED | highMask(";?:@&=+$,");
 
 
     // -- Escaping and encoding --
@@ -2699,7 +2701,6 @@ public final class URI
     // by the given mask pair
     //
     private static String quote(String s, long lowMask, long highMask) {
-        int n = s.length();
         StringBuffer sb = null;
         boolean allowNonASCII = ((lowMask & L_ESCAPED) != 0);
         for (int i = 0; i < s.length(); i++) {
@@ -2825,7 +2826,6 @@ public final class URI
                 continue;
             }
             bb.clear();
-            int ui = i;
             for (;;) {
                 assert (n - i >= 2);
                 bb.put(decode(s.charAt(++i), s.charAt(++i)));
@@ -2881,11 +2881,12 @@ public final class URI
             fail("Expected " + expected, p);
         }
 
-        private void failExpecting(String expected, String prior, int p)
-            throws URISyntaxException
-        {
-            fail("Expected " + expected + " following " + prior, p);
-        }
+        // j2objc: unused
+//        private void failExpecting(String expected, String prior, int p)
+//            throws URISyntaxException
+//        {
+//            fail("Expected " + expected + " following " + prior, p);
+//        }
 
 
         // -- Simple access to the input string --

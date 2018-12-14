@@ -23,9 +23,9 @@ import java.io.FileDescriptor;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.NetFactoryImpl;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.URLImpl;
 import java.nio.ByteBuffer;
 import java.nio.NioUtils;
 
@@ -773,8 +773,8 @@ public final class NetworkOs {
     }
   }
 
-  // Create a compile-time link to NetFactoryImpl to pull it into binaries that already link other
+  // Create a compile-time link to URLImpl to pull it into binaries that already link other
   // java.net classes. Most of java.net depends on NetworkOs so this declaration should be
-  // sufficient to ensure that NetFactoryImpl is loaded.
-  private static final Class<?> unused = NetFactoryImpl.class;
+  // sufficient to ensure that URLImpl is loaded.
+  private static final Class<?> unused = URLImpl.class;
 }

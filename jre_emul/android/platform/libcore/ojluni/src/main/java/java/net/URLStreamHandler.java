@@ -425,10 +425,16 @@ public abstract class URLStreamHandler {
 
         // Compare the ports.
         int port1, port2;
-        port1 = (u1.getPort() != -1) ? u1.getPort() : u1.handler.getDefaultPort();
-        port2 = (u2.getPort() != -1) ? u2.getPort() : u2.handler.getDefaultPort();
-        if (port1 != port2)
+        try {
+            port1 = (u1.getPort() != -1)
+                ? u1.getPort() : ((URLStreamHandler) u1.getHandler()).getDefaultPort();
+            port2 = (u2.getPort() != -1)
+                ? u2.getPort() : ((URLStreamHandler) u2.getHandler()).getDefaultPort();
+            if (port1 != port2)
+                return false;
+        } catch (MalformedURLException e) {
             return false;
+        }
 
         // Compare the hosts.
         if (!hostsEqual(u1, u2))
@@ -448,7 +454,7 @@ public abstract class URLStreamHandler {
      */
     protected synchronized InetAddress getHostAddress(URL u) {
         if (u.hostAddress != null)
-            return u.hostAddress;
+            return (InetAddress) u.hostAddress;
 
         String host = u.getHost();
         if (host == null || host.equals("")) {
@@ -462,7 +468,7 @@ public abstract class URLStreamHandler {
                 return null;
             }
         }
-        return u.hostAddress;
+        return (InetAddress) u.hostAddress;
     }
 
     /**
@@ -543,9 +549,13 @@ public abstract class URLStreamHandler {
        protected void setURL(URL u, String protocol, String host, int port,
                              String authority, String userInfo, String path,
                              String query, String ref) {
-        if (this != u.handler) {
-            throw new SecurityException("handler for url different from " +
-                                        "this handler");
+        try {
+          if (this != u.getHandler()) {
+              throw new SecurityException("handler for url different from " +
+                                          "this handler");
+          }
+        } catch (MalformedURLException e) {
+          // Ignore.
         }
         // ensure that no one can reset the protocol on a given URL.
         u.set(u.getProtocol(), host, port, authority, userInfo, path, query, ref);

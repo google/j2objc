@@ -265,7 +265,12 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/math/BigInteger.java \
   java/math/MathContext.java \
   java/math/RoundingMode.java \
+  java/net/MalformedURLException.java \
   java/net/SocketException.java \
+  java/net/URI.java \
+  java/net/URISyntaxException.java \
+  java/net/URL.java \
+  java/net/URLDelegate.java \
   java/nio/Buffer.java \
   java/nio/BufferOverflowException.java \
   java/nio/BufferUnderflowException.java \
@@ -556,7 +561,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/math/BitSieve.java \
   java/math/MutableBigInteger.java \
   java/math/SignedMutableBigInteger.java \
-  java/net/NetFactory.java \
   java/nio/Bits.java \
   java/nio/ByteBufferAsCharBuffer.java \
   java/nio/ByteBufferAsDoubleBuffer.java \
@@ -668,6 +672,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/nio/ch/Interruptible.java \
   sun/nio/cs/StreamDecoder.java \
   sun/nio/cs/StreamEncoder.java \
+  sun/nio/cs/ThreadLocalCoders.java \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/misc/ReflectUtil.java \
@@ -747,7 +752,6 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/InetAddress.java \
   java/net/InetSocketAddress.java \
   java/net/InterfaceAddress.java \
-  java/net/MalformedURLException.java \
   java/net/MulticastSocket.java \
   java/net/NetPermission.java \
   java/net/NetworkInterface.java \
@@ -769,9 +773,6 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/SocketPermission.java \
   java/net/SocketTimeoutException.java \
   java/net/UnknownHostException.java \
-  java/net/URI.java \
-  java/net/URISyntaxException.java \
-  java/net/URL.java \
   java/net/URLConnection.java \
   java/net/URLDecoder.java \
   java/net/URLEncoder.java \
@@ -796,7 +797,6 @@ JAVA_PRIVATE_SOURCES_NET = \
   java/net/Inet6AddressImpl.java \
   java/net/InetAddressImpl.java \
   java/net/InMemoryCookieStore.java \
-  java/net/NetFactoryImpl.java \
   java/net/NetUtil.java \
   java/net/PlainDatagramSocketImpl.java \
   java/net/PlainServerSocketImpl.java \
@@ -808,13 +808,13 @@ JAVA_PRIVATE_SOURCES_NET = \
   java/net/SocksConsts.java \
   java/net/SocksSocketImpl.java \
   java/net/StandardSocketOptions.java \
+  java/net/URLImpl.java \
   libcore/icu/NativeIDN.java \
   libcore/io/NetworkBridge.java \
   libcore/io/NetworkOs.java \
   libcore/net/UriCodec.java \
   libcore/net/http/HttpDate.java \
   sun/misc/IoTrace.java \
-  sun/nio/cs/ThreadLocalCoders.java \
   sun/net/ApplicationProxy.java \
   sun/net/ConnectionResetException.java \
   sun/net/NetHooks.java \

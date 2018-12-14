@@ -61,7 +61,6 @@ import sun.reflect.Reflection;
 #import "NSDataInputStream.h"
 #import "java/io/BufferedInputStream.h"
 #import "java/io/FileInputStream.h"
-#import "java/net/NetFactory.h"
 #import "java/util/ArrayList.h"
 #import "java/util/Collections.h"
 ]-*/
@@ -1331,7 +1330,7 @@ class SystemClassLoader extends ClassLoader {
     }
     NSBundle *bundle = [NSBundle mainBundle];
     NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-    return nativeURL ? JavaNetNetFactory_newURLWithNSString_([nativeURL description]) : nil;
+    return nativeURL ? create_JavaNetURL_initWithNSString_([nativeURL description]) : nil;
   ]-*/;
 
   @Override
@@ -1343,13 +1342,13 @@ class SystemClassLoader extends ClassLoader {
     for (NSBundle *bundle in [NSBundle allBundles]) {
       NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
       if (nativeURL) {
-        [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
+        [urls addWithId:create_JavaNetURL_initWithNSString_([nativeURL description])];
       }
     }
     for (NSBundle *bundle in [NSBundle allFrameworks]) {
       NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
       if (nativeURL) {
-        [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
+        [urls addWithId:create_JavaNetURL_initWithNSString_([nativeURL description])];
       }
     }
     return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
