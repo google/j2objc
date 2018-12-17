@@ -78,9 +78,15 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
 
 - (id)invokeWithId:(id)object
     withNSObjectArray:(IOSObjectArray *)arguments {
-  if (!IsStatic(metadata_) && object == nil) {
-    @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
-      @"null object specified for non-final method"]);
+  if (!IsStatic(metadata_)) {
+    if (object == nil) {
+      @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
+                          @"null object specified for non-final method"]);
+    }
+    if (![[self getDeclaringClass] isAssignableFrom:[object java_getClass]]) {
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+                          @"wrong receiver"]);
+    }
   }
 
   IOSObjectArray *paramTypes = [self getParameterTypesInternal];

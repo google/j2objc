@@ -477,7 +477,6 @@ public final class MethodTest extends TestCase {
         assertTrue(implClassDefaultMethod.isDefault());
     }
 
-    /* J2ObjC: enable and fix.
     public void testDefaultMethod_invoke() throws Exception {
         InterfaceWithDefault impl1 = new InterfaceWithRedefinedMethods() {};
         InterfaceWithDefault impl2 = new InterfaceWithReAbstractedMethod() {
@@ -516,7 +515,7 @@ public final class MethodTest extends TestCase {
                 }
             }
         }
-    } */
+    }
 
     interface OtherInterfaceWithDefault {
         default String defaultMethod() {
