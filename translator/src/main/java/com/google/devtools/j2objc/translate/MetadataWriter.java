@@ -474,10 +474,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       modifiers |= ElementUtil.ACC_ENUM;
     }
     if (ElementUtil.isAnonymous(type)) {
-      // Anonymous classes are always static, though their closure may include an instance.
-      modifiers |= ElementUtil.ACC_ANONYMOUS | java.lang.reflect.Modifier.STATIC;
-      // Anonymous classes are always implicitly final (JLS 15.9.5.).
-      modifiers |= java.lang.reflect.Modifier.FINAL;
+      modifiers |= ElementUtil.ACC_ANONYMOUS;
     }
     return modifiers;
   }

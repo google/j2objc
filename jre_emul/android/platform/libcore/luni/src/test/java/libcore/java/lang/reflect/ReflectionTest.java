@@ -586,12 +586,10 @@ public final class ReflectionTest extends TestCase {
         // to return false, consistent with JLS 15.9.5 ("An anonymous class
         // is never static"). Earlier versions of OpenJDK returned true.
         // This test accepts either behavior.
-        // J2ObjC: sets this modifier to true.
-        assertTrue(Modifier.isStatic(modifiers));
+        Modifier.isStatic(modifiers); // return value is ignored
         // J2ObjC: recent versions of the JDK return false, but some versions return true.
-        // J2ObjC sets this modifier to true
-        // (see com.google.devtools.j2objc.translate.MetadataWriter.getTypeModifiers).
-        assertTrue(Modifier.isFinal(modifiers));
+        // This test accepts either behavior.
+        Modifier.isFinal(modifiers); // return value is ignored
         assertFalse(Modifier.isStrict(modifiers));
     }
 
