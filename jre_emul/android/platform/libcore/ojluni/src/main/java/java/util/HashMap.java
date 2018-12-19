@@ -1545,9 +1545,14 @@ public class HashMap<K,V>
       // Note: Must not use extra[4] because it is set by HashSet.
       if (state->state == 0) {
         state->state = 1;
-        state->mutationsPtr = (unsigned long *) &modCount_;
         state->extra[0] = 0;
         state->extra[1] = 0;
+        // Detect mutations here to properly raise ConcurrentModificationException.
+        state->mutationsPtr = &state->state;
+        state->extra[3] = modCount_;
+      }
+      if (state->extra[3] != modCount_) {
+        @throw create_JavaUtilConcurrentModificationException_init();
       }
       NSUInteger position = state->extra[0];
       JavaUtilHashMap_HashMapEntry *entry = (JavaUtilHashMap_HashMapEntry *) state->extra[1];

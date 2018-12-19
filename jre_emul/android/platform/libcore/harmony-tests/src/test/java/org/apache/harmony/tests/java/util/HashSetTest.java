@@ -254,7 +254,6 @@ public class HashSetTest extends junit.framework.TestCase {
         } catch(NullPointerException expected) {}
     }
 
-    /* TODO(b/120651620): throws NSGenericException instead of ConcurrentModificationException.
     public void test_forEach_CME() throws Exception {
         HashSet<String> set = new HashSet<>();
         set.add("one");
@@ -266,7 +265,7 @@ public class HashSetTest extends junit.framework.TestCase {
                 });
             fail();
         } catch(ConcurrentModificationException expected) {}
-    } */
+    }
 
     public void test_spliterator() throws Exception {
         HashSet<String> hashSet = new HashSet<>();
