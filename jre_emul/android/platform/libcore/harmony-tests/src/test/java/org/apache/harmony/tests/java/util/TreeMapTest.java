@@ -1978,7 +1978,6 @@ public class TreeMapTest extends junit.framework.TestCase {
         } catch(NullPointerException expected) {}
     }
 
-    /* TODO(b/120651620): throws NSGenericException instead of ConcurrentModificationException.
     public void test_forEach_CME() throws Exception {
         TreeMap<String, String> map = new TreeMap<>();
         map.put("one", "1");
@@ -2014,7 +2013,7 @@ public class TreeMapTest extends junit.framework.TestCase {
                 });
             fail();
         } catch(ConcurrentModificationException expected) {}
-    } */
+    }
 
     /**
      * Sets up the fixture, for example, open a network connection. This method
