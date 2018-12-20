@@ -477,9 +477,13 @@ TEST_SOURCES := \
     libcore/java/util/EventObjectTest.java \
     libcore/java/util/FormatterTest.java \
     libcore/java/util/GregorianCalendarTest.java \
+    libcore/java/util/HashMapTest.java \
+    libcore/java/util/LinkedHashMapTest.java \
     libcore/java/util/LocaleTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
+    libcore/java/util/OldAndroidHashMapTest.java \
+    libcore/java/util/OldLinkedHashMapTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/SimpleTimeZoneTest.java \

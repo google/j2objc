@@ -821,7 +821,6 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         assertEquals(1, outputMap.size());
     }
 
-    /* TODO(b/120651620): enable and fix.
     public void test_spliterator_keySet() {
         LinkedHashMap<String, String> hashMap = new LinkedHashMap<>();
         hashMap.put("a", "1");
@@ -916,7 +915,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 
         assertTrue(entries.spliterator().hasCharacteristics(Spliterator.ORDERED));
         SpliteratorTester.runOrderedTests(entries);
-    } */
+    }
 
 
     /**

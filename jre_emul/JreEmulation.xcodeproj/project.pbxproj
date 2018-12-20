@@ -932,6 +932,10 @@
 		FA6C09E621925DE4006C646A /* TimeZoneOffsetLocalTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */; };
 		FA6C09E721925DE4006C646A /* TimeZoneRuleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */; };
 		FA6C09E921925E10006C646A /* EmbeddedResourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */; };
+		FAD38CE021CABB46003EDCDF /* HashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDC21CABB45003EDCDF /* HashMapTest.m */; };
+		FAD38CE121CABB46003EDCDF /* OldAndroidHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */; };
+		FAD38CE221CABB46003EDCDF /* OldLinkedHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */; };
+		FAD38CE321CABB46003EDCDF /* LinkedHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDF21CABB46003EDCDF /* LinkedHashMapTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4095,6 +4099,10 @@
 		FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneOffsetLocalTest.m; path = android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.m; sourceTree = "<group>"; };
 		FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneRuleTest.m; path = android/icu/dev/test/timezone/TimeZoneRuleTest.m; sourceTree = "<group>"; };
 		FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EmbeddedResourceTest.m; path = com/google/j2objc/EmbeddedResourceTest.m; sourceTree = "<group>"; };
+		FAD38CDC21CABB45003EDCDF /* HashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HashMapTest.m; path = libcore/java/util/HashMapTest.m; sourceTree = "<group>"; };
+		FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldAndroidHashMapTest.m; path = libcore/java/util/OldAndroidHashMapTest.m; sourceTree = "<group>"; };
+		FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldLinkedHashMapTest.m; path = libcore/java/util/OldLinkedHashMapTest.m; sourceTree = "<group>"; };
+		FAD38CDF21CABB46003EDCDF /* LinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedHashMapTest.m; path = libcore/java/util/LinkedHashMapTest.m; sourceTree = "<group>"; };
 		FAF4EEF8215AF32400413554 /* IosSslSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocket.m; path = com/google/j2objc/net/ssl/IosSslSocket.m; sourceTree = "<group>"; };
 		FAF4EEF9215AF32500413554 /* IosSslSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslSocket.h; path = com/google/j2objc/net/ssl/IosSslSocket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -6676,6 +6684,7 @@
 				0620267E1D512D08001EE455 /* Handler.m */,
 				063A62C01F672637001DC971 /* HandlerBaseTest.m */,
 				FA1DD7AE2154160F00D0B800 /* HandshakeCompletedEventTest.m */,
+				FAD38CDC21CABB45003EDCDF /* HashMapTest.m */,
 				062028D51D512EBD001EE455 /* HashMapTest.m */,
 				FA5C0C4021BFFBA3000B6275 /* HashSetTest.m */,
 				062028D61D512EBD001EE455 /* HashtableTest.m */,
@@ -6734,6 +6743,7 @@
 				0612B8DA1F4373740069EF58 /* LinkedBlockingDequeTest.m */,
 				0612B8DB1F4373740069EF58 /* LinkedBlockingQueueTest.m */,
 				067B13501EEDF1840013CBAF /* LinkedBlockingQueueTest.m */,
+				FAD38CDF21CABB46003EDCDF /* LinkedHashMapTest.m */,
 				062028D71D512EBD001EE455 /* LinkedHashMapTest.m */,
 				FA5C0C4221BFFBA3000B6275 /* LinkedHashSetTest.m */,
 				FA5C0C4321BFFBA3000B6275 /* LinkedListTest.m */,
@@ -6892,6 +6902,7 @@
 				062026DA1D512D17001EE455 /* OldAndroidDeflateTest.m */,
 				062025D21D512CA1001EE455 /* OldAndroidFileTest.m */,
 				062026DB1D512D17001EE455 /* OldAndroidGZIPStreamTest.m */,
+				FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */,
 				062025D31D512CA1001EE455 /* OldAndroidInputStreamReaderTest.m */,
 				062025D41D512CA1001EE455 /* OldAndroidLineNumberReaderTest.m */,
 				062026811D512D08001EE455 /* OldAndroidNIOTest.m */,
@@ -6945,6 +6956,7 @@
 				062B4F0C1ED76B8D00D4E7D8 /* OldLevelTest.m */,
 				062025F21D512CA1001EE455 /* OldLineNumberInputStreamTest.m */,
 				062025F31D512CA1001EE455 /* OldLineNumberReaderTest.m */,
+				FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */,
 				062B4F0D1ED76B8D00D4E7D8 /* OldLoggerTest.m */,
 				062B4F0E1ED76B8D00D4E7D8 /* OldLogManagerTest.m */,
 				062B4F0F1ED76B8D00D4E7D8 /* OldLogRecordTest.m */,
@@ -7545,12 +7557,14 @@
 				069FAFE11FFD83AF001A5383 /* DigestInputStreamTest.m in Sources */,
 				069FAFE21FFD83AF001A5383 /* DigestOutputStreamTest.m in Sources */,
 				FA6C09DE21925DE4006C646A /* TimeZoneTest.m in Sources */,
+				FAD38CE021CABB46003EDCDF /* HashMapTest.m in Sources */,
 				069FAFE31FFD83AF001A5383 /* MDGoldenData.m in Sources */,
 				069FAFE41FFD83AF001A5383 /* CertificateFactoryTestX509.m in Sources */,
 				067B13451EEDEABB0013CBAF /* BlockingQueueTest.m in Sources */,
 				06B60ACE1FDA1EFC008274B3 /* AbstractResourceLeakageDetectorTestCase.m in Sources */,
 				06B60ACF1FDA1EFC008274B3 /* ConcurrentSkipListMapTest.m in Sources */,
 				06B60AD01FDA1EFC008274B3 /* CopyOnWriteArrayListTest.m in Sources */,
+				FAD38CE221CABB46003EDCDF /* OldLinkedHashMapTest.m in Sources */,
 				06B60AD11FDA1EFC008274B3 /* ForEachRemainingTester.m in Sources */,
 				06B60AD21FDA1EFC008274B3 /* MapDefaultMethodTester.m in Sources */,
 				06B60AD31FDA1EFC008274B3 /* ResourceLeakageDetector.m in Sources */,
@@ -7674,6 +7688,7 @@
 				063A62E91F67269E001DC971 /* Locator2ImplTest.m in Sources */,
 				062028B41D512E78001EE455 /* MalformedParameterizedTypeExceptionTest.m in Sources */,
 				062026391D512CA1001EE455 /* OldInputStreamReaderTest.m in Sources */,
+				FAD38CE321CABB46003EDCDF /* LinkedHashMapTest.m in Sources */,
 				0612B8F61F4373740069EF58 /* ConcurrentSkipListSetTest.m in Sources */,
 				062026651D512CBE001EE455 /* FloatTest.m in Sources */,
 				069C241F1E9EEF7B00CE6BAF /* InputStreamReaderTest.m in Sources */,
@@ -7801,6 +7816,7 @@
 				6A5D0D66219CCBB200709765 /* TestTextPrinter.m in Sources */,
 				0620262B1D512CA1001EE455 /* OldByteArrayOutputStreamTest.m in Sources */,
 				0612B9401F4374C60069EF58 /* SSLSessionBindingEventTest.m in Sources */,
+				FAD38CE121CABB46003EDCDF /* OldAndroidHashMapTest.m in Sources */,
 				069C23F71E9EEECA00CE6BAF /* SimpleDateFormatTest.m in Sources */,
 				FA5C0CB621BFFE6B000B6275 /* ClassCastExceptionTest.m in Sources */,
 				0620286F1D512E3E001EE455 /* AlgorithmParametersSpiTest.m in Sources */,
