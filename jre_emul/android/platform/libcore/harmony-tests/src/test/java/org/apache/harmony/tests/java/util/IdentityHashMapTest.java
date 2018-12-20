@@ -167,16 +167,18 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
                 "key2", key2.iterator().next());
     }
 
-    /** TODO(b/120651620): enable and fix.
+    /**
      * java.util.IdentityHashMap#containsKey(java.lang.Object)
-     *
+     */
     public void test_containsKeyLjava_lang_Object() {
         // Test for method boolean
         // java.util.IdentityHashMap.containsKey(java.lang.Object)
         assertTrue("Returned false for valid key", hm
                 .containsKey(objArray2[23]));
+        /* J2ObjC. This assert fails due to an Objective-C optimization for short strings:
+           the string value is encoded directly in the pointer (NSTaggedPointerString).
         assertTrue("Returned true for copy of valid key", !hm
-                .containsKey(new Integer(23).toString()));
+                .containsKey(new Integer(23).toString())); */
         assertTrue("Returned true for invalid key", !hm.containsKey("KKDKDKD"));
 
         IdentityHashMap m = new IdentityHashMap();
@@ -184,7 +186,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
         assertTrue("Failed with null key", m.containsKey(null));
         assertTrue("Failed with missing key matching null hash", !m
                 .containsKey(new Integer(0)));
-    } */
+    }
 
     /**
      * java.util.IdentityHashMap#containsValue(java.lang.Object)
