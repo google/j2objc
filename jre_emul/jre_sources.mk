@@ -1852,6 +1852,7 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/text/TimeZoneNames.java \
   android/icu/text/UCharacterIterator.java \
   android/icu/text/UFormat.java \
+  android/icu/text/UForwardCharacterIterator.java \
   android/icu/text/UnicodeFilter.java \
   android/icu/text/UnicodeMatcher.java \
   android/icu/text/UnicodeSet.java \
@@ -1999,7 +2000,6 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/text/RuleBasedBreakIterator.java \
   android/icu/text/RuleBasedNumberFormat.java \
   android/icu/text/UFieldPosition.java \
-  android/icu/text/UForwardCharacterIterator.java \
   android/icu/text/UTF16.java \
   android/icu/text/UnhandledBreakEngine.java \
   android/icu/util/AnnualTimeZoneRule.java \
