@@ -67,6 +67,7 @@ SUPPORT_SOURCES = \
     libcore/java/security/StandardNames.java \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
+    libcore/java/util/ListDefaultMethodTester.java \
     libcore/java/util/MapDefaultMethodTester.java \
     libcore/java/util/RemoveIfTester.java \
     libcore/java/util/ResourceLeakageDetector.java \
@@ -472,6 +473,7 @@ TEST_SOURCES := \
     libcore/java/util/Base64Test.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
+    libcore/java/util/CollectionsTest.java \
     libcore/java/util/CurrencyTest.java \
     libcore/java/util/DateTest.java \
     libcore/java/util/EventObjectTest.java \
@@ -483,6 +485,7 @@ TEST_SOURCES := \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldAndroidHashMapTest.java \
+    libcore/java/util/OldCollectionsTest.java \
     libcore/java/util/OldLinkedHashMapTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
@@ -723,6 +726,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/BitSetTest.java \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CollectionsTest.java \
+    org/apache/harmony/tests/java/util/Collections2Test.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
     org/apache/harmony/tests/java/util/EmptyStackExceptionTest.java \
@@ -1061,6 +1065,13 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedCollection.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedList.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedListRandomAccess.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedMap.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedSet.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedMap.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedSet.golden.ser \
     serialization/org/apache/harmony/tests/java/util/EnumSetTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/HashSetTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/IdentityHashMapTest.golden.ser \

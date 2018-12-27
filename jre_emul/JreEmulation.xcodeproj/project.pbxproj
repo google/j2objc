@@ -932,6 +932,10 @@
 		FA6C09E621925DE4006C646A /* TimeZoneOffsetLocalTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */; };
 		FA6C09E721925DE4006C646A /* TimeZoneRuleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */; };
 		FA6C09E921925E10006C646A /* EmbeddedResourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */; };
+		FACA982A21CC21EA00B3D2E2 /* CollectionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FACA982721CC21EA00B3D2E2 /* CollectionsTest.m */; };
+		FACA982B21CC21EA00B3D2E2 /* ListDefaultMethodTester.m in Sources */ = {isa = PBXBuildFile; fileRef = FACA982821CC21EA00B3D2E2 /* ListDefaultMethodTester.m */; };
+		FACA982C21CC21EA00B3D2E2 /* OldCollectionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FACA982921CC21EA00B3D2E2 /* OldCollectionsTest.m */; };
+		FACA982E21CC222A00B3D2E2 /* Collections2Test.m in Sources */ = {isa = PBXBuildFile; fileRef = FACA982D21CC222A00B3D2E2 /* Collections2Test.m */; };
 		FAD38CE021CABB46003EDCDF /* HashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDC21CABB45003EDCDF /* HashMapTest.m */; };
 		FAD38CE121CABB46003EDCDF /* OldAndroidHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */; };
 		FAD38CE221CABB46003EDCDF /* OldLinkedHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */; };
@@ -4099,6 +4103,10 @@
 		FA6C09DB21925DE4006C646A /* TimeZoneOffsetLocalTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneOffsetLocalTest.m; path = android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.m; sourceTree = "<group>"; };
 		FA6C09DC21925DE4006C646A /* TimeZoneRuleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneRuleTest.m; path = android/icu/dev/test/timezone/TimeZoneRuleTest.m; sourceTree = "<group>"; };
 		FA6C09E821925E10006C646A /* EmbeddedResourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EmbeddedResourceTest.m; path = com/google/j2objc/EmbeddedResourceTest.m; sourceTree = "<group>"; };
+		FACA982721CC21EA00B3D2E2 /* CollectionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CollectionsTest.m; path = libcore/java/util/CollectionsTest.m; sourceTree = "<group>"; };
+		FACA982821CC21EA00B3D2E2 /* ListDefaultMethodTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListDefaultMethodTester.m; path = libcore/java/util/ListDefaultMethodTester.m; sourceTree = "<group>"; };
+		FACA982921CC21EA00B3D2E2 /* OldCollectionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldCollectionsTest.m; path = libcore/java/util/OldCollectionsTest.m; sourceTree = "<group>"; };
+		FACA982D21CC222A00B3D2E2 /* Collections2Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Collections2Test.m; path = org/apache/harmony/tests/java/util/Collections2Test.m; sourceTree = "<group>"; };
 		FAD38CDC21CABB45003EDCDF /* HashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HashMapTest.m; path = libcore/java/util/HashMapTest.m; sourceTree = "<group>"; };
 		FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldAndroidHashMapTest.m; path = libcore/java/util/OldAndroidHashMapTest.m; sourceTree = "<group>"; };
 		FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldLinkedHashMapTest.m; path = libcore/java/util/OldLinkedHashMapTest.m; sourceTree = "<group>"; };
@@ -6418,6 +6426,10 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FACA982D21CC222A00B3D2E2 /* Collections2Test.m */,
+				FACA982721CC21EA00B3D2E2 /* CollectionsTest.m */,
+				FACA982821CC21EA00B3D2E2 /* ListDefaultMethodTester.m */,
+				FACA982921CC21EA00B3D2E2 /* OldCollectionsTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */,
@@ -7554,6 +7566,7 @@
 				069FAFE01FFD83AF001A5383 /* DigestInputStream2Test.m in Sources */,
 				FA5C0CA721BFFE6B000B6275 /* StringIndexOutOfBoundsExceptionTest.m in Sources */,
 				FA5C0CA021BFFE6B000B6275 /* UnsupportedOperationExceptionTest.m in Sources */,
+				FACA982A21CC21EA00B3D2E2 /* CollectionsTest.m in Sources */,
 				069FAFE11FFD83AF001A5383 /* DigestInputStreamTest.m in Sources */,
 				069FAFE21FFD83AF001A5383 /* DigestOutputStreamTest.m in Sources */,
 				FA6C09DE21925DE4006C646A /* TimeZoneTest.m in Sources */,
@@ -7601,6 +7614,7 @@
 				06C143AF1F46138600CABE9A /* PipeTest.m in Sources */,
 				06C143B01F46138600CABE9A /* SelectableChannelTest.m in Sources */,
 				06C143B11F46138600CABE9A /* SelectionKeyTest.m in Sources */,
+				FACA982B21CC21EA00B3D2E2 /* ListDefaultMethodTester.m in Sources */,
 				06C143B21F46138600CABE9A /* SelectorTest.m in Sources */,
 				06C143B31F46138600CABE9A /* ServerSocketChannelTest.m in Sources */,
 				06C143B41F46138600CABE9A /* SinkChannelTest.m in Sources */,
@@ -7622,6 +7636,7 @@
 				067B132E1EEDCE720013CBAF /* AtomicIntegerFieldUpdaterTest.m in Sources */,
 				FA1DD7BA215418AF00D0B800 /* TestSSLContext.m in Sources */,
 				067B132F1EEDCE720013CBAF /* AtomicIntegerTest.m in Sources */,
+				FACA982C21CC21EA00B3D2E2 /* OldCollectionsTest.m in Sources */,
 				067B13301EEDCE720013CBAF /* AtomicLongArrayTest.m in Sources */,
 				067B13311EEDCE720013CBAF /* AtomicLongFieldUpdaterTest.m in Sources */,
 				067B13321EEDCE720013CBAF /* AtomicLongTest.m in Sources */,
@@ -8131,6 +8146,7 @@
 				062028C81D512E89001EE455 /* BigIntegerAddTest.m in Sources */,
 				06DE64D11E3AC09F00DACBF7 /* TimeZoneTest.m in Sources */,
 				FA40677421C07E6100988DFD /* PackageTest.m in Sources */,
+				FACA982E21CC222A00B3D2E2 /* Collections2Test.m in Sources */,
 				069C24271E9EEF7B00CE6BAF /* CheckedOutputStreamTest.m in Sources */,
 				0612B9171F4373740069EF58 /* ThreadPoolExecutorTest.m in Sources */,
 				069C23ED1E9EEECA00CE6BAF /* AttributedStringTest.m in Sources */,
