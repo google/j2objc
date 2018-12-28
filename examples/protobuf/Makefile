@@ -28,10 +28,11 @@ $(PROTO_JAVA) $(PROTO_OBJC): $(JAVA_DIR) $(OBJC_DIR)
 # Compile Java proto file.
 PROTO_JAVA_CLASS = $(PROTO_JAVA:%.java=%.class)
 PROTOBUF_RUNTIME = $(J2OBJC_DIST)/lib/protobuf_runtime.jar
+JRE_RUNTIME = $(J2OBJC_DIST)/lib/jre_emul.jar
 
 $(PROTO_JAVA_CLASS): $(PROTO_JAVA)
-	javac -cp $(PROTOBUF_RUNTIME) -d $(JAVA_DIR) \
-	    $(PROTO_JAVA)
+	javac -source 1.8 -target 1.8 -bootclasspath $(JRE_RUNTIME) \
+	    -cp $(PROTOBUF_RUNTIME) -d $(JAVA_DIR) $(PROTO_JAVA)
 
 # Translate Java sources, adding compiled Java proto to the classpath.
 OBJC_SOURCES = $(JAVA_SOURCES:%.java=$(OBJC_DIR)/%.m)
