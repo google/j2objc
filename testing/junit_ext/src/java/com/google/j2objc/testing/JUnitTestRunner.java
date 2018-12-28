@@ -16,8 +16,10 @@ package com.google.j2objc.testing;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.WeakOuter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -107,7 +109,8 @@ public class JUnitTestRunner {
 
   public static int main(String[] args) {
     // Create JUnit test runner.
-    JUnitTestRunner runner = new JUnitTestRunner();
+    PrintStream nsLogOut = new PrintStream(new NSLogOutputStream(), true);
+    JUnitTestRunner runner = new JUnitTestRunner(nsLogOut);
     runner.loadPropertiesFromResource(PROPERTIES_FILE_NAME);
     return runner.run();
   }
@@ -438,5 +441,31 @@ public class JUnitTestRunner {
       // interleaving with logger messages.
       out.print(String.format(format, args));
     }
+  }
+
+  /**
+   * Logs test runner output using NSLog().
+   */
+  private static class NSLogOutputStream extends OutputStream {
+    private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+    @Override
+    public void write(int b) throws IOException {
+      buffer.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      buffer.write(b, off, len);
+    }
+
+    @Override
+    public native void flush() /*-[
+      NSString *s = [buffer_ toStringWithNSString:@"UTF-8"];
+      if (s.length) {
+        NSLog(@"%@", s);
+      }
+      [buffer_ reset];
+    ]-*/;
   }
 }
