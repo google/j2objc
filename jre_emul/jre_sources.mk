@@ -210,6 +210,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/ThreadLocal.java \
   java/lang/Throwable.java \
   java/lang/TypeNotPresentException.java \
+  java/lang/UnsatisfiedLinkError.java \
   java/lang/UnknownError.java \
   java/lang/UnsupportedOperationException.java \
   java/lang/VirtualMachineError.java \
@@ -954,7 +955,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
 
 JAVA_PRIVATE_SOURCES_CHANNELS = \
   dalvik/system/SocketTagger.java \
-  java/lang/UnsatisfiedLinkError.java \
   java/net/ProtocolFamily.java \
   java/net/StandardProtocolFamily.java \
   sun/misc/LRUCache.java \
