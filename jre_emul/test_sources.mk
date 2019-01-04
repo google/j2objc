@@ -730,6 +730,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
     org/apache/harmony/tests/java/util/EmptyStackExceptionTest.java \
+    org/apache/harmony/tests/java/util/EnumMapTest.java \
     org/apache/harmony/tests/java/util/EnumSetTest.java \
     org/apache/harmony/tests/java/util/EventObjectTest.java \
     org/apache/harmony/tests/java/util/FormattableFlagsTest.java \
@@ -739,6 +740,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashSetTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/IdentityHashMapTest.java \
+    org/apache/harmony/tests/java/util/InputMismatchExceptionTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/tests/java/util/LinkedHashSetTest.java \
     org/apache/harmony/tests/java/util/LinkedListTest.java \
@@ -1073,8 +1075,10 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedMap.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedSet.golden.ser \
     serialization/org/apache/harmony/tests/java/util/EnumSetTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/EnumMapTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/HashSetTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/IdentityHashMapTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/InputMismatchExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser \
     serialization/org/apache/harmony/tests/java/util/RandomTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/PriorityQueue.golden.ser \

@@ -181,7 +181,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V>
         } else {
             if (m.isEmpty())
                 throw new IllegalArgumentException("Specified map is empty");
-            keyType = m.keySet().iterator().next().getDeclaringClass();
+            /* J2ObjC modified. */
+            Object o = m.keySet().iterator().next();
+            if (!(o instanceof Enum)) {
+                throw new ClassCastException();
+            }
+            keyType = ((K) o).getDeclaringClass();
             keyUniverse = getKeyUniverse(keyType);
             vals = new Object[keyUniverse.length];
             putAll(m);
