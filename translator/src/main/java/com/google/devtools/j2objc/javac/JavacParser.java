@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.tools.javac.api.JavacTaskImpl;
-import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.tree.JCTree;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +45,7 @@ import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
@@ -56,7 +56,7 @@ import javax.tools.ToolProvider;
  */
 public class JavacParser extends Parser {
 
-  private JavacFileManager fileManager;
+  private StandardJavaFileManager fileManager;
 
   public JavacParser(Options options){
     super(options);
@@ -100,9 +100,9 @@ public class JavacParser extends Parser {
     return null;
   }
 
-  private JavacFileManager getFileManager(JavaCompiler compiler,
+  private StandardJavaFileManager getFileManager(JavaCompiler compiler,
       DiagnosticCollector<JavaFileObject> diagnostics) throws IOException {
-    fileManager = (JavacFileManager)
+    fileManager =
         compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset());
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
@@ -118,7 +118,7 @@ public class JavacParser extends Parser {
     return fileManager;
   }
 
-  private void addPaths(Location location, List<String> paths, JavacFileManager fileManager)
+  private void addPaths(Location location, List<String> paths, StandardJavaFileManager fileManager)
       throws IOException {
     List<File> filePaths = new ArrayList<>();
     for (String path : paths) {
@@ -198,7 +198,7 @@ public class JavacParser extends Parser {
       boolean processAnnotations) throws IOException {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-    JavacFileManager fileManager = getFileManager(compiler, diagnostics);
+    StandardJavaFileManager fileManager = getFileManager(compiler, diagnostics);
     List<String> javacOptions = getJavacOptions(processAnnotations);
     if (fileObjects == null) {
       fileObjects = new ArrayList<>();

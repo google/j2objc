@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.javac;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.code.Symtab;
-import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.jvm.ClassReader;
 import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.model.JavacTypes;
@@ -28,11 +27,12 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
 
 class JavacEnvironment implements ParserEnvironment {
 
   private final JavacTaskImpl task;
-  private final JavacFileManager fileManager;
+  private final StandardJavaFileManager fileManager;
   private final DiagnosticCollector<JavaFileObject> diagnostics;
   private final Context context;
   private final ClassReader classReader;
@@ -40,7 +40,7 @@ class JavacEnvironment implements ParserEnvironment {
   private final JavacElements javacElements;
   private final JavacTypes javacTypes;
 
-  JavacEnvironment(JavacTaskImpl task, JavacFileManager fileManager,
+  JavacEnvironment(JavacTaskImpl task, StandardJavaFileManager fileManager,
       DiagnosticCollector<JavaFileObject> diagnostics) {
     this.task = task;
     this.fileManager = fileManager;
@@ -102,7 +102,7 @@ class JavacEnvironment implements ParserEnvironment {
     return task;
   }
 
-  public JavacFileManager fileManager() {
+  public StandardJavaFileManager fileManager() {
     return fileManager;
   }
 
