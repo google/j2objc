@@ -190,7 +190,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       return parserEnv.typeUtilities().getArrayType(componentType);
     }
     if (typeRef.isPrimitive() || typeRef.isVoid()) {
-      return parserEnv.resolvePrimitiveType(typeRef.getSignature());
+      return typeUtil.resolvePrimitiveType(typeRef.getSignature());
     }
     String typeName = typeRef.getFullName();
     Element element = parserEnv.elementUtilities().getTypeElement(typeName);

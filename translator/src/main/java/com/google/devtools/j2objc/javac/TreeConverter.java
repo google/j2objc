@@ -153,7 +153,6 @@ import javax.tools.JavaFileObject;
 public class TreeConverter {
   private final JCTree.JCCompilationUnit unit;
   private final JavacEnvironment env;
-  private final Types types;
   private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
@@ -191,7 +190,6 @@ public class TreeConverter {
   private TreeConverter(JCTree.JCCompilationUnit javacUnit, JavacEnvironment javacEnv) {
     unit = javacUnit;
     env = javacEnv;
-    types = Types.instance(javacEnv.getContext());
   }
 
   private TreeNode convert(Object obj) {
@@ -784,6 +782,8 @@ public class TreeConverter {
     for (TypeMirror type : getTargets(node)) {
       newNode.addTargetType(type);
     }
+    Types types =
+        Types.instance(((com.sun.tools.javac.api.BasicJavacTask) env.task()).getContext());
     return newNode
         .setTypeMirror(getTargets(node).iterator().next())
         .setDescriptor(

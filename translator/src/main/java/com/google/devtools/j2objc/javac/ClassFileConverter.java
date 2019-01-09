@@ -96,7 +96,6 @@ public class ClassFileConverter {
   public static CompilationUnit convertClassFile(
       Options options, JavacEnvironment env, InputFile file) {
     try {
-      env.saveParameterNames();
       ClassFileConverter converter = new ClassFileConverter(
           env, new TranslationEnvironment(options, env), file);
       converter.setClassPath();

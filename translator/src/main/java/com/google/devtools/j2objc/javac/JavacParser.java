@@ -27,7 +27,7 @@ import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
-import com.sun.tools.javac.api.JavacTaskImpl;
+import com.sun.source.util.JavacTask;
 import com.sun.tools.javac.tree.JCTree;
 import java.io.File;
 import java.io.IOException;
@@ -89,7 +89,7 @@ public class JavacParser extends Parser {
   public CompilationUnit parse(String mainType, String path, String source) {
     try {
       JavacEnvironment parserEnv = createEnvironment(path, source);
-      JavacTaskImpl task = parserEnv.task();
+      JavacTask task = parserEnv.task();
       JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
       task.analyze();
       processDiagnostics(parserEnv.diagnostics());
@@ -206,7 +206,7 @@ public class JavacParser extends Parser {
     for (JavaFileObject jfo : fileManager.getJavaFileObjectsFromFiles(files)) {
       fileObjects.add(jfo);
     }
-    JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(null, fileManager, diagnostics,
+    JavacTask task = (JavacTask) compiler.getTask(null, fileManager, diagnostics,
         javacOptions, null, fileObjects);
     return new JavacEnvironment(task, fileManager, diagnostics);
   }
@@ -222,7 +222,7 @@ public class JavacParser extends Parser {
     String path = file.getUnitName();
     try {
       JavacEnvironment parserEnv = createEnvironment(path, source);
-      JavacTaskImpl task = parserEnv.task();
+      JavacTask task = parserEnv.task();
       JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
       processDiagnostics(parserEnv.diagnostics());
       return new JavacParseResult(file, source, unit);
@@ -248,9 +248,7 @@ public class JavacParser extends Parser {
       try {
         JavacEnvironment env = createEnvironment(inputFiles, null, true);
         env.task().parse();
-        // JavacTaskImpl.enter() parses and runs annotation processing, but
-        // not type checking and attribution (that's done by analyze()).
-        env.task().enter();
+        env.task().analyze();
         processDiagnostics(env.diagnostics());
         // The source output directory is created and set in createEnvironment().
         File sourceOutputDirectory =

@@ -15,14 +15,8 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.util.ParserEnvironment;
-import com.sun.tools.javac.api.JavacTaskImpl;
-import com.sun.tools.javac.code.Symtab;
-import com.sun.tools.javac.jvm.ClassReader;
-import com.sun.tools.javac.model.JavacElements;
-import com.sun.tools.javac.model.JavacTypes;
-import com.sun.tools.javac.util.Context;
+import com.sun.source.util.JavacTask;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.DiagnosticCollector;
@@ -31,74 +25,36 @@ import javax.tools.StandardJavaFileManager;
 
 class JavacEnvironment implements ParserEnvironment {
 
-  private final JavacTaskImpl task;
+  private final JavacTask task;
   private final StandardJavaFileManager fileManager;
   private final DiagnosticCollector<JavaFileObject> diagnostics;
-  private final Context context;
-  private final ClassReader classReader;
-  private final Symtab symbolTable;
-  private final JavacElements javacElements;
-  private final JavacTypes javacTypes;
+  private final Elements elements;
+  private final Types types;
 
-  JavacEnvironment(JavacTaskImpl task, StandardJavaFileManager fileManager,
+  JavacEnvironment(JavacTask task, StandardJavaFileManager fileManager,
       DiagnosticCollector<JavaFileObject> diagnostics) {
     this.task = task;
     this.fileManager = fileManager;
     this.diagnostics = diagnostics;
-    context = task.getContext();
-    classReader = ClassReader.instance(context);
-    symbolTable = Symtab.instance(context);
-    javacElements = JavacElements.instance(context);
-    javacTypes = JavacTypes.instance(context);
-  }
-
-  TypeMirror resolvePrimitiveType(String signature) {
-    switch (signature) {
-      case "B": return symbolTable.byteType;
-      case "C": return symbolTable.charType;
-      case "D": return symbolTable.doubleType;
-      case "F": return symbolTable.floatType;
-      case "I": return symbolTable.intType;
-      case "J": return symbolTable.longType;
-      case "S": return symbolTable.shortType;
-      case "V": return symbolTable.voidType;
-      case "Z": return symbolTable.booleanType;
-      default:
-        return null;
-    }
+    elements = task.getElements();
+    types = task.getTypes();
   }
 
   public PackageElement defaultPackage() {
-    try {
-      return (PackageElement) Symtab.class.getField("unnamedPackage").get(symbolTable);
-    } catch (NoSuchFieldException e) {
-      // continue
-    } catch (ReflectiveOperationException e) {
-      throw new LinkageError(e.getMessage(), e);
-    }
-    try {
-      Object unnamedModule = Symtab.class.getField("unnamedModule");
-      return (PackageElement) unnamedModule.getClass().getField("unnamedPackage").get(symbolTable);
-    } catch (ReflectiveOperationException e) {
-      throw new LinkageError(e.getMessage(), e);
-    }
-  }
-
-  public Context getContext() {
-    return context;
+    return elements.getPackageElement("");
   }
 
   @Override
   public Elements elementUtilities() {
-    return javacElements;
+    return elements;
   }
 
   @Override
   public Types typeUtilities() {
-    return javacTypes;
+    return types;
   }
 
-  public JavacTaskImpl task() {
+  public JavacTask task() {
     return task;
   }
 
@@ -108,9 +64,5 @@ class JavacEnvironment implements ParserEnvironment {
 
   public DiagnosticCollector<JavaFileObject> diagnostics() {
     return diagnostics;
-  }
-
-  public void saveParameterNames() {
-    classReader.saveParameterNames = true;
   }
 }

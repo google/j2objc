@@ -610,6 +610,22 @@ public final class TypeUtil {
     return javacTypes.getNullType();
   }
 
+  public TypeMirror resolvePrimitiveType(String signature) {
+    switch (signature) {
+      case "B": return getByte();
+      case "C": return getChar();
+      case "D": return getDouble();
+      case "F": return getFloat();
+      case "I": return getInt();
+      case "J": return getLong();
+      case "S": return getShort();
+      case "V": return getVoid();
+      case "Z": return getBoolean();
+      default:
+        return null;
+    }
+  }
+
   public PrimitiveType unboxedType(TypeMirror t) {
     if (isGeneratedType(t)) {
       return null;
