@@ -117,8 +117,12 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import com.sun.source.tree.AnnotationTree;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.StatementTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
+import com.sun.source.util.SourcePositions;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
@@ -131,7 +135,6 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.JCTree.Tag;
-import com.sun.tools.javac.tree.TreeInfo;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,12 +154,14 @@ import javax.tools.JavaFileObject;
  * Converts a Java AST from the JDT data structure to our J2ObjC data structure.
  */
 public class TreeConverter {
-  private final JCTree.JCCompilationUnit unit;
+  private final CompilationUnitTree unit;
   private final JavacEnvironment env;
   private CompilationUnit newUnit;
+  private final Trees trees;
+  private final SourcePositions sourcePositions;
 
   public static CompilationUnit convertCompilationUnit(
-      Options options, JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
+      Options options, JavacEnvironment env, CompilationUnitTree javacUnit) {
     String sourceFilePath = getPath(javacUnit.getSourceFile());
     try {
       TreeConverter converter = new TreeConverter(javacUnit, env);
@@ -165,10 +170,13 @@ public class TreeConverter {
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
       converter.newUnit = new CompilationUnit(new TranslationEnvironment(options, env),
           sourceFilePath, mainTypeName, source);
-      PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
-      converter.newUnit.setPackage(
-          converter.convertPackage(pkg, Trees.instance(env.task())));
-      for (JCTree type : javacUnit.getTypeDecls()) {
+      ExpressionTree pkgName = javacUnit.getPackageName();
+      PackageElement pkg =
+          pkgName != null
+              ? env.elementUtilities().getPackageElement(pkgName.toString())
+              : env.defaultPackage();
+      converter.newUnit.setPackage(converter.convertPackage(pkg));
+      for (Tree type : javacUnit.getTypeDecls()) {
         TreeNode newNode = converter.convert(type);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
           converter.newUnit.addType((AbstractTypeDeclaration) newNode);
@@ -187,9 +195,11 @@ public class TreeConverter {
     }
   }
 
-  private TreeConverter(JCTree.JCCompilationUnit javacUnit, JavacEnvironment javacEnv) {
+  private TreeConverter(CompilationUnitTree javacUnit, JavacEnvironment javacEnv) {
     unit = javacUnit;
     env = javacEnv;
+    trees = javacEnv.treeUtilities();
+    sourcePositions = trees.getSourcePositions();
   }
 
   private TreeNode convert(Object obj) {
@@ -206,8 +216,8 @@ public class TreeConverter {
   }
 
   private SourcePosition getPosition(JCTree node) {
-    int startPosition = TreeInfo.getStartPos(node);
-    int endPosition = TreeInfo.getEndPos(node, unit.endPositions);
+    int startPosition = (int) sourcePositions.getStartPosition(unit, node);
+    int endPosition = (int) sourcePositions.getEndPosition(unit, node);
     int length = startPosition == Position.NOPOS || endPosition == Position.NOPOS
         ? 0 : endPosition - startPosition;
     return getSourcePosition(startPosition, length);
@@ -1003,11 +1013,11 @@ public class TreeConverter {
     return (SimpleName) new SimpleName(element, type).setPosition(pos);
   }
 
-  private Name convertName(Symbol symbol, SourcePosition pos) {
+  private Name convertName(Symbol symbol) {
     if (symbol.owner == null || symbol.owner.name.isEmpty()) {
       return new SimpleName(symbol);
     }
-    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner, pos));
+    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner));
   }
 
   private TreeNode convertNewArray(JCTree.JCNewArray node) {
@@ -1047,22 +1057,22 @@ public class TreeConverter {
         .setToken(getTreeSource(node));
   }
 
-  private PackageDeclaration convertPackage(PackageElement pkg, Trees trees) {
-    JCTree node = (JCTree) trees.getTree(pkg);
+  private PackageDeclaration convertPackage(PackageElement pkg) {
+    Tree node = trees.getTree(pkg);
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
-    for (JCTree.JCAnnotation pkgAnnotation : unit.getPackageAnnotations()) {
+    for (AnnotationTree pkgAnnotation : unit.getPackageAnnotations()) {
       newNode.addAnnotation((Annotation) convert(pkgAnnotation));
     }
-    if (unit.sourcefile.toUri().getPath().endsWith("package-info.java")) {
+    if (unit.getSourceFile().toUri().getPath().endsWith("package-info.java")) {
       if (node == null) {
         // Java 8 javac bug, fixed in Java 9. Doc-comments in package-info.java
         // sources are keyed to their compilation unit, not their package node.
         node = unit;
       }
-      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, pkg));
+      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc((JCTree) node, pkg));
     }
-    return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, getPosition(node)))
+    return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg))
         .setPosition(SourcePosition.NO_POSITION);
   }
 
@@ -1273,7 +1283,7 @@ public class TreeConverter {
 
   private Comment convertAssociatedComment(JCTree node, Element element) {
     boolean docCommentsEnabled = newUnit.getEnv().options().docCommentsEnabled();
-    DocCommentTable docComments = unit.docComments;
+    DocCommentTable docComments = ((JCTree.JCCompilationUnit) unit).docComments;
     if (!docCommentsEnabled || docComments == null || !docComments.hasComment(node)) {
       return null;
     }
@@ -1296,7 +1306,7 @@ public class TreeConverter {
     int startPos = javacComment.getSourcePos(0);
     int endPos = startPos + javacComment.getText().length();
     comment.setSourceRange(startPos, endPos);
-    comment.setLineNumber(unit.getLineMap().getLineNumber(startPos));
+    comment.setLineNumber((int) unit.getLineMap().getLineNumber(startPos));
     return comment;
   }
 
@@ -1348,7 +1358,10 @@ public class TreeConverter {
   private String getTreeSource(JCTree node) {
     try {
       CharSequence source = unit.getSourceFile().getCharContent(true);
-      return source.subSequence(node.getStartPosition(), node.getEndPosition(unit.endPositions))
+      return source
+          .subSequence(
+              (int) sourcePositions.getStartPosition(unit, node),
+              (int) sourcePositions.getEndPosition(unit, node))
           .toString();
     } catch (IOException e) {
       return node.toString();
@@ -1366,7 +1379,7 @@ public class TreeConverter {
 
   private SourcePosition getSourcePosition(int start, int end) {
     if (unit.getLineMap() != null) {
-      int line = unit.getLineMap().getLineNumber(start);
+      int line = (int) unit.getLineMap().getLineNumber(start);
       return new SourcePosition(start, end, line);
     } else {
       return new SourcePosition(start, end);

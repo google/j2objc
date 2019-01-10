@@ -16,7 +16,8 @@ package com.google.devtools.j2objc.javac;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.sun.tools.javac.tree.EndPosTable;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.util.SourcePositions;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotatedType;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
@@ -27,7 +28,6 @@ import com.sun.tools.javac.tree.JCTree.JCIdent;
 import com.sun.tools.javac.tree.JCTree.JCImport;
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import com.sun.tools.javac.tree.TreeInfo;
 import com.sun.tools.javac.tree.TreeScanner;
 import java.util.Comparator;
 import java.util.List;
@@ -38,7 +38,8 @@ import java.util.TreeSet;
  * Removes elements annotated as "J2ObjCIncompatible".
  */
 class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
-  private final EndPosTable endPositions;
+  private final CompilationUnitTree unit;
+  private final SourcePositions sourcePositions;
 
   private final TreeSet<JCTree> nodesToStrip = Sets.newTreeSet(START_POS_COMPARATOR);
   private final Map<String, JCImport> unusedImports = Maps.newHashMap();
@@ -51,14 +52,18 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
     }
   };
 
-  public static String strip(String source, JCCompilationUnit unit) {
-    JavacJ2ObjCIncompatibleStripper stripper = new JavacJ2ObjCIncompatibleStripper(unit);
+  public static String strip(
+      String source, JCCompilationUnit unit, SourcePositions sourcePositions) {
+    JavacJ2ObjCIncompatibleStripper stripper =
+        new JavacJ2ObjCIncompatibleStripper(unit, sourcePositions);
     unit.accept(stripper);
     return stripper.stripSource(source);
   }
 
-  private JavacJ2ObjCIncompatibleStripper(JCCompilationUnit unit) {
-    endPositions = unit.endPositions;
+  private JavacJ2ObjCIncompatibleStripper(
+      CompilationUnitTree unit, SourcePositions sourcePositions) {
+    this.unit = unit;
+    this.sourcePositions = sourcePositions;
   }
 
   // TreeScanner methods.
@@ -131,11 +136,11 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
   }
 
   private int startPosition(JCTree node) {
-    return TreeInfo.getStartPos(node);
+    return (int) sourcePositions.getStartPosition(unit, node);
   }
 
   private int endPosition(JCTree node) {
-    return TreeInfo.getEndPos(node, endPositions);
+    return (int) sourcePositions.getEndPosition(unit, node);
   }
 
   private String stripSource(String source) {
@@ -176,39 +181,6 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
         return ((JCFieldAccess) name).getIdentifier().toString();
       default:
         return "";
-    }
-  }
-
-  static class Node implements Comparable<Node> {
-    private final JCTree tree;
-    private final int startPos;
-
-    Node(JCTree tree) {
-      this.tree = tree;
-      this.startPos = TreeInfo.getStartPos(tree);
-    }
-
-    @Override
-    public int compareTo(Node other) {
-      return Integer.compare(this.startPos, other.startPos);
-    }
-
-    JCTree getTree() {
-      return tree;
-    }
-
-    int getStartpos() {
-      return startPos;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      return obj instanceof Node && tree.equals(((Node) obj).tree);
-    }
-
-    @Override
-    public int hashCode() {
-      return tree.hashCode();
     }
   }
 }

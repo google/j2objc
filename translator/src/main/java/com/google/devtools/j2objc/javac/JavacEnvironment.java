@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.sun.source.util.JavacTask;
+import com.sun.source.util.Trees;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -30,6 +31,7 @@ class JavacEnvironment implements ParserEnvironment {
   private final DiagnosticCollector<JavaFileObject> diagnostics;
   private final Elements elements;
   private final Types types;
+  private final Trees trees;
 
   JavacEnvironment(JavacTask task, StandardJavaFileManager fileManager,
       DiagnosticCollector<JavaFileObject> diagnostics) {
@@ -38,6 +40,7 @@ class JavacEnvironment implements ParserEnvironment {
     this.diagnostics = diagnostics;
     elements = task.getElements();
     types = task.getTypes();
+    trees = Trees.instance(task);
   }
 
   public PackageElement defaultPackage() {
@@ -52,6 +55,10 @@ class JavacEnvironment implements ParserEnvironment {
   @Override
   public Types typeUtilities() {
     return types;
+  }
+
+  public Trees treeUtilities() {
+    return trees;
   }
 
   public JavacTask task() {

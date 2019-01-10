@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.JavacTask;
+import com.sun.source.util.SourcePositions;
 import com.sun.tools.javac.tree.JCTree;
 import java.io.File;
 import java.io.IOException;
@@ -225,7 +226,8 @@ public class JavacParser extends Parser {
       JavacTask task = parserEnv.task();
       JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
       processDiagnostics(parserEnv.diagnostics());
-      return new JavacParseResult(file, source, unit);
+      return new JavacParseResult(
+          file, source, unit, parserEnv.treeUtilities().getSourcePositions());
     } catch (IOException e) {
       ErrorUtil.fatalError(e, path);
     }
@@ -331,16 +333,22 @@ public class JavacParser extends Parser {
     private final InputFile file;
     private String source;
     private final JCTree.JCCompilationUnit unit;
+    private final SourcePositions sourcePositions;
 
-    private JavacParseResult(InputFile file, String source, JCTree.JCCompilationUnit unit) {
+    private JavacParseResult(
+        InputFile file,
+        String source,
+        JCTree.JCCompilationUnit unit,
+        SourcePositions sourcePositions) {
       this.file = file;
       this.source = source;
       this.unit = unit;
+      this.sourcePositions = sourcePositions;
     }
 
     @Override
     public void stripIncompatibleSource() {
-      source = JavacJ2ObjCIncompatibleStripper.strip(source, unit);
+      source = JavacJ2ObjCIncompatibleStripper.strip(source, unit, sourcePositions);
     }
 
     @Override
