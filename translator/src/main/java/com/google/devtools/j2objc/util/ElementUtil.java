@@ -18,6 +18,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
@@ -524,6 +526,23 @@ public final class ElementUtil {
       e = e.getEnclosingElement();
     }
     return (PackageElement) e;
+  }
+
+  public com.google.devtools.j2objc.ast.Name getPackageName(PackageElement element) {
+    PackageElement parent = getParentPackage(element);
+    if (parent == null) {
+      return new SimpleName(element);
+    }
+    return new QualifiedName(element, element.asType(), getPackageName(parent));
+  }
+
+  public PackageElement getParentPackage(PackageElement element) {
+    String name = element.getQualifiedName().toString();
+    if (name.isEmpty() || !name.contains(".")) {
+      return null;
+    }
+    name = name.substring(0, name.lastIndexOf('.'));
+    return javacElements.getPackageElement(name);
   }
 
   public String getBinaryName(TypeElement e) {

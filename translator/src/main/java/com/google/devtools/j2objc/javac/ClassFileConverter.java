@@ -52,7 +52,6 @@ import com.google.j2objc.annotations.Property;
 import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -213,7 +212,7 @@ public class ClassFileConverter {
   private TreeNode convertPackage(PackageElement element) {
     return new PackageDeclaration()
         .setPackageElement(element)
-        .setName(convertName((PackageSymbol) element));
+        .setName(translationEnv.elementUtil().getPackageName(element));
   }
 
   private BodyDeclaration convertBodyDeclaration(BodyDeclaration newNode, Element element) {

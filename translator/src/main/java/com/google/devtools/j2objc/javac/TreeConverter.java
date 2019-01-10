@@ -126,7 +126,6 @@ import com.sun.source.util.SourcePositions;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.code.Types;
@@ -168,14 +167,14 @@ public class TreeConverter {
       JavaFileObject sourceFile = javacUnit.getSourceFile();
       String source = sourceFile.getCharContent(false).toString();
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
-      converter.newUnit = new CompilationUnit(new TranslationEnvironment(options, env),
-          sourceFilePath, mainTypeName, source);
+      TranslationEnvironment translationEnv = new TranslationEnvironment(options, env);
+      converter.newUnit = new CompilationUnit(translationEnv, sourceFilePath, mainTypeName, source);
       ExpressionTree pkgName = javacUnit.getPackageName();
       PackageElement pkg =
           pkgName != null
               ? env.elementUtilities().getPackageElement(pkgName.toString())
               : env.defaultPackage();
-      converter.newUnit.setPackage(converter.convertPackage(pkg));
+      converter.newUnit.setPackage(converter.convertPackage(pkg, translationEnv.elementUtil()));
       for (Tree type : javacUnit.getTypeDecls()) {
         TreeNode newNode = converter.convert(type);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
@@ -1013,13 +1012,6 @@ public class TreeConverter {
     return (SimpleName) new SimpleName(element, type).setPosition(pos);
   }
 
-  private Name convertName(Symbol symbol) {
-    if (symbol.owner == null || symbol.owner.name.isEmpty()) {
-      return new SimpleName(symbol);
-    }
-    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner));
-  }
-
   private TreeNode convertNewArray(JCTree.JCNewArray node) {
     ArrayCreation newNode = new ArrayCreation();
     List<Expression> dimensions = new ArrayList<>();
@@ -1057,7 +1049,7 @@ public class TreeConverter {
         .setToken(getTreeSource(node));
   }
 
-  private PackageDeclaration convertPackage(PackageElement pkg) {
+  private PackageDeclaration convertPackage(PackageElement pkg, ElementUtil elementUtil) {
     Tree node = trees.getTree(pkg);
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
@@ -1072,7 +1064,7 @@ public class TreeConverter {
       }
       newNode.setJavadoc((Javadoc) getAssociatedJavaDoc((JCTree) node, pkg));
     }
-    return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg))
+    return (PackageDeclaration) newNode.setName(elementUtil.getPackageName(pkg))
         .setPosition(SourcePosition.NO_POSITION);
   }
 
