@@ -222,14 +222,10 @@ public class TreeConverter {
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
       TranslationEnvironment translationEnv = new TranslationEnvironment(options, env);
       converter.newUnit = new CompilationUnit(translationEnv, sourceFilePath, mainTypeName, source);
-      ExpressionTree pkgName = javacUnit.getPackageName();
-      PackageElement pkg =
-          pkgName != null
-              ? env.elementUtilities().getPackageElement(pkgName.toString())
-              : env.defaultPackage();
-      converter.newUnit.setPackage(converter.convertPackage(pkg, translationEnv.elementUtil()));
+      TreePath path = new TreePath(javacUnit);
+      converter.newUnit.setPackage(converter.convertPackage(path));
       for (Tree type : javacUnit.getTypeDecls()) {
-        TreeNode newNode = converter.convert(type);
+        TreeNode newNode = converter.convert(type, path);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
           converter.newUnit.addType((AbstractTypeDeclaration) newNode);
         }
@@ -254,11 +250,11 @@ public class TreeConverter {
     sourcePositions = trees.getSourcePositions();
   }
 
-  private TreeNode convert(Tree node) {
+  private TreeNode convert(Tree node, TreePath parent) {
     if (node == null) {
       return null;
     }
-    TreeNode newNode = convertInner(node).setPosition(getPosition(node));
+    TreeNode newNode = convertInner(node, parent).setPosition(getPosition(node));
     if (newNode instanceof Expression) {
       copyConstantValue(node, (Expression) newNode);
     }
@@ -276,110 +272,110 @@ public class TreeConverter {
   }
 
   @SuppressWarnings("fallthrough")
-  private TreeNode convertInner(Tree javacNode) {
+  private TreeNode convertInner(Tree javacNode, TreePath parent) {
     switch (javacNode.getKind()) {
       case ANNOTATION:
       case TYPE_ANNOTATION:
-        return convertAnnotation((AnnotationTree) javacNode);
+        return convertAnnotation((AnnotationTree) javacNode, parent);
       case ANNOTATION_TYPE:
-        return convertAnnotationTypeDeclaration((ClassTree) javacNode);
+        return convertAnnotationTypeDeclaration((ClassTree) javacNode, parent);
       case ARRAY_ACCESS:
-        return convertArrayAccess((ArrayAccessTree) javacNode);
+        return convertArrayAccess((ArrayAccessTree) javacNode, parent);
       case ARRAY_TYPE:
-        return convertArrayType((ArrayTypeTree) javacNode);
+        return convertArrayType((ArrayTypeTree) javacNode, parent);
       case ASSERT:
-        return convertAssert((AssertTree) javacNode);
+        return convertAssert((AssertTree) javacNode, parent);
       case ASSIGNMENT:
-        return convertAssignment((AssignmentTree) javacNode);
+        return convertAssignment((AssignmentTree) javacNode, parent);
       case BLOCK:
-        return convertBlock((BlockTree) javacNode);
+        return convertBlock((BlockTree) javacNode, parent);
       case BREAK:
         return convertBreakStatement((BreakTree) javacNode);
       case CASE:
-        return convertCase((CaseTree) javacNode);
+        return convertCase((CaseTree) javacNode, parent);
       case CATCH:
-        return convertCatch((CatchTree) javacNode);
+        return convertCatch((CatchTree) javacNode, parent);
       case CLASS:
-        return convertClassDeclaration((ClassTree) javacNode);
+        return convertClassDeclaration((ClassTree) javacNode, parent);
       case COMPILATION_UNIT:
         throw new AssertionError(
             "CompilationUnit must be converted using convertCompilationUnit()");
       case CONDITIONAL_EXPRESSION:
-        return convertConditionalExpression((ConditionalExpressionTree) javacNode);
+        return convertConditionalExpression((ConditionalExpressionTree) javacNode, parent);
       case CONTINUE:
         return convertContinueStatement((ContinueTree) javacNode);
       case DO_WHILE_LOOP:
-        return convertDoStatement((DoWhileLoopTree) javacNode);
+        return convertDoStatement((DoWhileLoopTree) javacNode, parent);
       case EMPTY_STATEMENT:
         return new EmptyStatement();
       case ENHANCED_FOR_LOOP:
-        return convertEnhancedForStatement((EnhancedForLoopTree) javacNode);
+        return convertEnhancedForStatement((EnhancedForLoopTree) javacNode, parent);
       case ENUM:
-        return convertEnum((ClassTree) javacNode);
+        return convertEnum((ClassTree) javacNode, parent);
       case EXPRESSION_STATEMENT:
-        return convertExpressionStatement((ExpressionStatementTree) javacNode);
+        return convertExpressionStatement((ExpressionStatementTree) javacNode, parent);
       case FOR_LOOP:
-        return convertForLoop((ForLoopTree) javacNode);
+        return convertForLoop((ForLoopTree) javacNode, parent);
       case IDENTIFIER:
-        return convertIdent((IdentifierTree) javacNode);
+        return convertIdent((IdentifierTree) javacNode, parent);
       case INSTANCE_OF:
-        return convertInstanceOf((InstanceOfTree) javacNode);
+        return convertInstanceOf((InstanceOfTree) javacNode, parent);
       case INTERFACE:
-        return convertClassDeclaration((ClassTree) javacNode);
+        return convertClassDeclaration((ClassTree) javacNode, parent);
       case IF:
-        return convertIf((IfTree) javacNode);
+        return convertIf((IfTree) javacNode, parent);
       case LABELED_STATEMENT:
-        return convertLabeledStatement((LabeledStatementTree) javacNode);
+        return convertLabeledStatement((LabeledStatementTree) javacNode, parent);
       case LAMBDA_EXPRESSION:
-        return convertLambda((LambdaExpressionTree) javacNode);
+        return convertLambda((LambdaExpressionTree) javacNode, parent);
       case MEMBER_REFERENCE:
-        return convertMemberReference((MemberReferenceTree) javacNode);
+        return convertMemberReference((MemberReferenceTree) javacNode, parent);
       case MEMBER_SELECT:
-        return convertFieldAccess((MemberSelectTree) javacNode);
+        return convertFieldAccess((MemberSelectTree) javacNode, parent);
       case METHOD:
-        return convertMethodDeclaration((MethodTree) javacNode);
+        return convertMethodDeclaration((MethodTree) javacNode, parent);
       case METHOD_INVOCATION:
-        return convertMethodInvocation((MethodInvocationTree) javacNode);
+        return convertMethodInvocation((MethodInvocationTree) javacNode, parent);
       case NEW_ARRAY:
-        return convertNewArray((NewArrayTree) javacNode);
+        return convertNewArray((NewArrayTree) javacNode, parent);
       case NEW_CLASS:
-        return convertNewClass((NewClassTree) javacNode);
+        return convertNewClass((NewClassTree) javacNode, parent);
       case PARAMETERIZED_TYPE:
-        return convertTypeApply((ParameterizedTypeTree) javacNode);
+        return convertTypeApply((ParameterizedTypeTree) javacNode, parent);
       case PARENTHESIZED:
-        return convertParens((ParenthesizedTree) javacNode);
+        return convertParens((ParenthesizedTree) javacNode, parent);
       case PRIMITIVE_TYPE:
-        return convertPrimitiveType((PrimitiveTypeTree) javacNode);
+        return convertPrimitiveType((PrimitiveTypeTree) javacNode, parent);
       case RETURN:
-        return convertReturn((ReturnTree) javacNode);
+        return convertReturn((ReturnTree) javacNode, parent);
       case SWITCH:
-        return convertSwitch((SwitchTree) javacNode);
+        return convertSwitch((SwitchTree) javacNode, parent);
       case THROW:
-        return convertThrow((ThrowTree) javacNode);
+        return convertThrow((ThrowTree) javacNode, parent);
       case TRY:
-        return convertTry((TryTree) javacNode);
+        return convertTry((TryTree) javacNode, parent);
       case TYPE_CAST:
-        return convertTypeCast((TypeCastTree) javacNode);
+        return convertTypeCast((TypeCastTree) javacNode, parent);
       case VARIABLE:
-        return convertVariableDeclaration((VariableTree) javacNode);
+        return convertVariableDeclaration((VariableTree) javacNode, parent);
       case WHILE_LOOP:
-        return convertWhileLoop((WhileLoopTree) javacNode);
+        return convertWhileLoop((WhileLoopTree) javacNode, parent);
 
       case BOOLEAN_LITERAL:
-        return convertBooleanLiteral((LiteralTree) javacNode);
+        return convertBooleanLiteral((LiteralTree) javacNode, parent);
       case CHAR_LITERAL:
-        return convertCharLiteral((LiteralTree) javacNode);
+        return convertCharLiteral((LiteralTree) javacNode, parent);
       case DOUBLE_LITERAL:
       case FLOAT_LITERAL:
       case INT_LITERAL:
       case LONG_LITERAL:
-        return convertNumberLiteral((LiteralTree) javacNode);
+        return convertNumberLiteral((LiteralTree) javacNode, parent);
       case STRING_LITERAL:
-        return convertStringLiteral((LiteralTree) javacNode);
+        return convertStringLiteral((LiteralTree) javacNode, parent);
       case SYNCHRONIZED:
-        return convertSynchronized((SynchronizedTree) javacNode);
+        return convertSynchronized((SynchronizedTree) javacNode, parent);
       case NULL_LITERAL:
-        return new NullLiteral(getTypeMirror(javacNode));
+        return new NullLiteral(getTypeMirror(getTreePath(parent, javacNode)));
 
       case AND:
       case CONDITIONAL_AND:
@@ -400,7 +396,7 @@ public class TreeConverter {
       case RIGHT_SHIFT:
       case UNSIGNED_RIGHT_SHIFT:
       case XOR:
-        return convertBinary((BinaryTree) javacNode);
+        return convertBinary((BinaryTree) javacNode, parent);
 
       case BITWISE_COMPLEMENT:
       case LOGICAL_COMPLEMENT:
@@ -408,11 +404,11 @@ public class TreeConverter {
       case PREFIX_INCREMENT:
       case UNARY_MINUS:
       case UNARY_PLUS:
-        return convertPrefixExpr((UnaryTree) javacNode);
+        return convertPrefixExpr((UnaryTree) javacNode, parent);
 
       case POSTFIX_DECREMENT:
       case POSTFIX_INCREMENT:
-        return convertPostExpr((UnaryTree) javacNode);
+        return convertPostExpr((UnaryTree) javacNode, parent);
 
       case AND_ASSIGNMENT:
       case DIVIDE_ASSIGNMENT:
@@ -425,7 +421,7 @@ public class TreeConverter {
       case RIGHT_SHIFT_ASSIGNMENT:
       case UNSIGNED_RIGHT_SHIFT_ASSIGNMENT:
       case XOR_ASSIGNMENT:
-        return convertAssignOp((CompoundAssignmentTree) javacNode);
+        return convertAssignOp((CompoundAssignmentTree) javacNode, parent);
 
       case OTHER:
         {
@@ -433,7 +429,7 @@ public class TreeConverter {
             // Skip javac's nullchk operators, since j2objc provides its own.
             // TODO(tball): convert to nil_chk() functions in this class, to
             // always check references that javac flagged?
-            return convert(((UnaryTree) javacNode).getExpression());
+            return convert(((UnaryTree) javacNode).getExpression(), getTreePath(parent, javacNode));
           }
           throw new AssertionError("Unknown OTHER node, tag: " + ((JCTree) javacNode).getTag());
         }
@@ -443,26 +439,7 @@ public class TreeConverter {
     }
   }
 
-  private TreeNode convertAbstractTypeDeclaration(ClassTree node, AbstractTypeDeclaration newNode) {
-    TypeElement element = (TypeElement) getElement(node);
-    convertBodyDeclaration(node, node.getModifiers(), newNode, element);
-    List<BodyDeclaration> bodyDeclarations = newNode.getBodyDeclarations();
-    for (Tree bodyDecl : node.getMembers()) {
-      Object member = convert(bodyDecl);
-      if (member instanceof BodyDeclaration) { // Not true for enum constants.
-        bodyDeclarations.add((BodyDeclaration) member);
-      } else if (member instanceof Block) {
-        BlockTree javacBlock = (BlockTree) bodyDecl;
-        Block block = (Block) member;
-        bodyDeclarations.add(new Initializer(block, javacBlock.isStatic()));
-      }
-    }
-    return newNode
-        .setName(convertSimpleName(element, getTypeMirror(node), getNamePosition(node)))
-        .setTypeElement(element);
-  }
-
-  private TreeNode convertAnnotation(AnnotationTree node) {
+  private TreeNode convertAnnotation(AnnotationTree node, TreePath parent) {
     List<? extends ExpressionTree> args = node.getArguments();
     String annotationName = node.getAnnotationType().toString();
     AnnotationMirror annotationMirror = ((JCAnnotation) node).attribute;
@@ -470,6 +447,7 @@ public class TreeConverter {
         annotationName.equals(Property.class.getSimpleName())
             || annotationName.equals(Property.class.getName());
     Annotation newNode;
+    TreePath path = getTreePath(parent, node);
     if (isPropertyAnnotation) {
       newNode = new PropertyAnnotation().setAnnotationMirror(annotationMirror);
       if (!args.isEmpty()) {
@@ -481,99 +459,118 @@ public class TreeConverter {
       newNode = new MarkerAnnotation().setAnnotationMirror(annotationMirror);
     } else if (args.size() == 1) {
       AssignmentTree assign = (AssignmentTree) args.get(0);
-      newNode = new SingleMemberAnnotation().setValue((Expression) convert(assign.getExpression()));
+      ExpressionTree expression = assign.getExpression();
+      newNode =
+          new SingleMemberAnnotation()
+              .setValue((Expression) convert(expression, getTreePath(path, assign)));
     } else {
       NormalAnnotation normalAnn = new NormalAnnotation();
       for (ExpressionTree obj : node.getArguments()) {
         AssignmentTree assign = (AssignmentTree) obj;
         ExpressionTree variable = assign.getVariable();
         ExpressionTree expression = assign.getExpression();
+        TreePath assignPath = getTreePath(path, assign);
+        TreePath variablePath = getTreePath(assignPath, variable);
         SimpleName name =
-            convertSimpleName(getElement(variable), getTypeMirror(variable), getPosition(variable));
+            convertSimpleName(
+                getElement(variablePath), getTypeMirror(variablePath), getPosition(variable));
         MemberValuePair memberPair =
-            new MemberValuePair().setName(name).setValue((Expression) convert(expression));
+            new MemberValuePair()
+                .setName(name)
+                .setValue((Expression) convert(expression, assignPath));
         normalAnn.addValue(memberPair);
       }
       newNode = normalAnn;
     }
     return newNode
         .setAnnotationMirror(annotationMirror)
-        .setTypeName((Name) convert(node.getAnnotationType()));
+        .setTypeName((Name) convert(node.getAnnotationType(), path));
   }
 
-  private List<Annotation> convertAnnotations(ModifiersTree modifiers) {
+  private List<Annotation> convertAnnotations(ModifiersTree modifiers, TreePath parent) {
     List<Annotation> annotations = new ArrayList<>();
+    TreePath path = getTreePath(parent, modifiers);
     for (AnnotationTree annotation : modifiers.getAnnotations()) {
-      annotations.add((Annotation) convert(annotation));
+      annotations.add((Annotation) convert(annotation, path));
     }
     return annotations;
   }
 
-  private TreeNode convertAnnotationTypeDeclaration(ClassTree node) {
+  private TreeNode convertAnnotationTypeDeclaration(ClassTree node, TreePath parent) {
     AnnotationTypeDeclaration newNode = new AnnotationTypeDeclaration();
-    Element element = getElement(node);
-    convertBodyDeclaration(node, node.getModifiers(), newNode, element);
+    TreePath path = getTreePath(parent, node);
+    Element element = getElement(path);
+    convertBodyDeclaration(node, path, node.getModifiers(), newNode, element);
     for (Tree bodyDecl : node.getMembers()) {
       if (bodyDecl.getKind() == Kind.METHOD) {
         MethodTree methodTree = (MethodTree) bodyDecl;
-        ExecutableElement methodElement = (ExecutableElement) getElement(methodTree);
+        TreePath methodPath = getTreePath(path, methodTree);
+        ExecutableElement methodElement = (ExecutableElement) getElement(methodPath);
+        Tree defaultValue = methodTree.getDefaultValue();
+        ModifiersTree modifiers = methodTree.getModifiers();
         AnnotationTypeMemberDeclaration newMember =
             new AnnotationTypeMemberDeclaration()
-                .setDefault((Expression) convert(methodTree.getDefaultValue()))
+                .setDefault((Expression) convert(defaultValue, methodPath))
                 .setExecutableElement(methodElement);
         newMember
-            .setModifiers((int) ((JCModifiers) methodTree.getModifiers()).flags)
-            .setAnnotations(convertAnnotations(methodTree.getModifiers()))
+            .setModifiers((int) ((JCModifiers) modifiers).flags)
+            .setAnnotations(convertAnnotations(modifiers, getTreePath(methodPath, modifiers)))
             .setJavadoc((Javadoc) getAssociatedJavaDoc(methodTree, methodElement));
         newNode.addBodyDeclaration(newMember);
       } else {
-        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
+        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl, path));
       }
     }
     return newNode
-        .setName(convertSimpleName(element, getTypeMirror(node), getNamePosition(node)))
+        .setName(convertSimpleName(element, getTypeMirror(path), getNamePosition(node)))
         .setTypeElement((TypeElement) element);
   }
 
-  private TreeNode convertArrayAccess(ArrayAccessTree node) {
+  private TreeNode convertArrayAccess(ArrayAccessTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new ArrayAccess()
-        .setArray((Expression) convert(node.getExpression()))
-        .setIndex((Expression) convert(node.getIndex()));
+        .setArray((Expression) convert(node.getExpression(), path))
+        .setIndex((Expression) convert(node.getIndex(), path));
   }
 
-  private TreeNode convertArrayType(ArrayTypeTree node) {
+  private TreeNode convertArrayType(ArrayTypeTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     ArrayType newNode = new ArrayType();
-    Type componentType = Type.newType(getTypeMirror(node.getType()));
-    return newNode.setComponentType(componentType).setTypeMirror(getTypeMirror(node));
+    Type componentType = Type.newType(getTypeMirror(getTreePath(path, node.getType())));
+    return newNode.setComponentType(componentType).setTypeMirror(getTypeMirror(path));
   }
 
-  private TreeNode convertAssert(AssertTree node) {
+  private TreeNode convertAssert(AssertTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new AssertStatement()
-        .setExpression((Expression) convert(node.getCondition()))
-        .setMessage((Expression) convert(node.getDetail()));
+        .setExpression((Expression) convert(node.getCondition(), path))
+        .setMessage((Expression) convert(node.getDetail(), path));
   }
 
-  private TreeNode convertAssignment(AssignmentTree node) {
+  private TreeNode convertAssignment(AssignmentTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     Assignment newNode = new Assignment();
     return newNode
         .setOperator(Assignment.Operator.ASSIGN)
-        .setLeftHandSide((Expression) convert(node.getVariable()))
-        .setRightHandSide((Expression) convert(node.getExpression()));
+        .setLeftHandSide((Expression) convert(node.getVariable(), path))
+        .setRightHandSide((Expression) convert(node.getExpression(), path));
   }
 
-  private TreeNode convertAssignOp(CompoundAssignmentTree node) {
+  private TreeNode convertAssignOp(CompoundAssignmentTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     Assignment newNode = new Assignment();
-    String operatorName = ((JCAssignOp) node).getOperator().getSimpleName().toString() + "=";
+    String operatorName = ((JCAssignOp) node).getOperator().getSimpleName() + "=";
     return newNode
         .setOperator(Assignment.Operator.fromOperatorName(operatorName))
-        .setLeftHandSide((Expression) convert(node.getVariable()))
-        .setRightHandSide((Expression) convert(node.getExpression()));
+        .setLeftHandSide((Expression) convert(node.getVariable(), path))
+        .setRightHandSide((Expression) convert(node.getExpression(), path));
   }
 
-  private TreeNode convertBinary(BinaryTree node) {
+  private TreeNode convertBinary(BinaryTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     InfixExpression newNode = new InfixExpression();
     newNode
-        .setTypeMirror(getTypeMirror(node))
+        .setTypeMirror(getTypeMirror(path))
         .setOperator(
             InfixExpression.Operator.parse(((JCBinary) node).getOperator().name.toString()));
 
@@ -596,15 +593,16 @@ public class TreeConverter {
           continue;
         }
       }
-      newNode.addOperand((Expression) convert(child));
+      newNode.addOperand((Expression) convert(child, path));
     }
     return newNode;
   }
 
-  private TreeNode convertBlock(BlockTree node) {
+  private TreeNode convertBlock(BlockTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     Block newNode = new Block();
     for (StatementTree stmt : node.getStatements()) {
-      TreeNode tree = convert(stmt);
+      TreeNode tree = convert(stmt, path);
       if (tree instanceof AbstractTypeDeclaration) {
         tree = new TypeDeclarationStatement().setDeclaration((AbstractTypeDeclaration) tree);
       }
@@ -614,15 +612,20 @@ public class TreeConverter {
   }
 
   private TreeNode convertBodyDeclaration(
-      Tree node, ModifiersTree modifiers, BodyDeclaration newNode, Element element) {
+      Tree node,
+      TreePath parent,
+      ModifiersTree modifiers,
+      BodyDeclaration newNode,
+      Element element) {
+    TreePath path = getTreePath(parent, node);
     return newNode
         .setModifiers((int) ((JCModifiers) modifiers).flags)
-        .setAnnotations(convertAnnotations(modifiers))
+        .setAnnotations(convertAnnotations(modifiers, path))
         .setJavadoc((Javadoc) getAssociatedJavaDoc(node, element));
   }
 
-  private TreeNode convertBooleanLiteral(LiteralTree node) {
-    return new BooleanLiteral((Boolean) node.getValue(), getTypeMirror(node));
+  private TreeNode convertBooleanLiteral(LiteralTree node, TreePath parent) {
+    return new BooleanLiteral((Boolean) node.getValue(), getTypeMirror(getTreePath(parent, node)));
   }
 
   private TreeNode convertBreakStatement(BreakTree node) {
@@ -635,53 +638,77 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertCase(CaseTree node) {
+  private TreeNode convertCase(CaseTree node, TreePath parent) {
     // Case statements are converted in convertSwitch().
     SwitchCase newNode = new SwitchCase();
     ExpressionTree expressionTree = node.getExpression();
     if (expressionTree != null) {
-      newNode.setExpression((Expression) convert(expressionTree));
+      newNode.setExpression((Expression) convert(expressionTree, getTreePath(parent, node)));
     } else {
       newNode.setIsDefault(true);
     }
     return newNode;
   }
 
-  private TreeNode convertCatch(CatchTree node) {
+  private TreeNode convertCatch(CatchTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new CatchClause()
-        .setException((SingleVariableDeclaration) convert(node.getParameter()))
-        .setBody((Block) convert(node.getBlock()));
+        .setException((SingleVariableDeclaration) convert(node.getParameter(), path))
+        .setBody((Block) convert(node.getBlock(), path));
   }
 
-  private TreeNode convertCharLiteral(LiteralTree node) {
-    return new CharacterLiteral((Character) node.getValue(), getTypeMirror(node));
+  private TreeNode convertCharLiteral(LiteralTree node, TreePath parent) {
+    return new CharacterLiteral(
+        (Character) node.getValue(), getTypeMirror(getTreePath(parent, node)));
   }
 
-  private TreeNode convertClassDeclaration(ClassTree node) {
-    TypeElement element = (TypeElement) getElement(node);
+  private TreeNode convertClassDeclaration(ClassTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    TypeElement element = (TypeElement) getElement(path);
     // javac defines all type declarations with JCClassDecl, so differentiate here
     // to support our different declaration nodes.
     if (element.getKind() == ElementKind.ANNOTATION_TYPE) {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
     }
 
-    TypeDeclaration newNode =
-        (TypeDeclaration) convertAbstractTypeDeclaration(node, new TypeDeclaration());
+    TypeDeclaration newNode = convertClassDeclarationHelper(node, parent);
 
     newNode.setInterface(
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
     if (ElementUtil.isAnonymous(element)) {
-      newUnit.getEnv().elementUtil().mapElementType(element, getTypeMirror(node));
+      newUnit.getEnv().elementUtil().mapElementType(element, getTypeMirror(path));
     }
     return newNode;
   }
 
-  private TreeNode convertConditionalExpression(ConditionalExpressionTree node) {
+  private TypeDeclaration convertClassDeclarationHelper(ClassTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    TypeDeclaration newNode = new TypeDeclaration();
+    TypeElement element = (TypeElement) getElement(path);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+    List<BodyDeclaration> bodyDeclarations = newNode.getBodyDeclarations();
+    for (Tree bodyDecl : node.getMembers()) {
+      Object member = convert(bodyDecl, path);
+      if (member instanceof BodyDeclaration) { // Not true for enum constants.
+        bodyDeclarations.add((BodyDeclaration) member);
+      } else if (member instanceof Block) {
+        BlockTree javacBlock = (BlockTree) bodyDecl;
+        Block block = (Block) member;
+        bodyDeclarations.add(new Initializer(block, javacBlock.isStatic()));
+      }
+    }
+    newNode.setName(convertSimpleName(element, getTypeMirror(path), getNamePosition(node)));
+    newNode.setTypeElement(element);
+    return newNode;
+  }
+
+  private TreeNode convertConditionalExpression(ConditionalExpressionTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new ConditionalExpression()
-        .setTypeMirror(getTypeMirror(node))
-        .setExpression((Expression) convert(node.getCondition()))
-        .setThenExpression((Expression) convert(node.getTrueExpression()))
-        .setElseExpression((Expression) convert(node.getFalseExpression()));
+        .setTypeMirror(getTypeMirror(path))
+        .setExpression((Expression) convert(node.getCondition(), path))
+        .setThenExpression((Expression) convert(node.getTrueExpression(), path))
+        .setElseExpression((Expression) convert(node.getFalseExpression(), path));
   }
 
   private TreeNode convertContinueStatement(ContinueTree node) {
@@ -694,34 +721,37 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertDoStatement(DoWhileLoopTree node) {
+  private TreeNode convertDoStatement(DoWhileLoopTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new DoStatement()
-        .setExpression(convertWithoutParens(node.getCondition()))
-        .setBody((Statement) convert(node.getStatement()));
+        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setBody((Statement) convert(node.getStatement(), path));
   }
 
-  private TreeNode convertEnhancedForStatement(EnhancedForLoopTree node) {
+  private TreeNode convertEnhancedForStatement(EnhancedForLoopTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new EnhancedForStatement()
         .setParameter(
             (SingleVariableDeclaration)
-                convertSingleVariable(node.getVariable()).setPosition(getPosition(node)))
-        .setExpression((Expression) convert(node.getExpression()))
-        .setBody((Statement) convert(node.getStatement()));
+                convertSingleVariable(node.getVariable(), path).setPosition(getPosition(node)))
+        .setExpression((Expression) convert(node.getExpression(), path))
+        .setBody((Statement) convert(node.getStatement(), path));
   }
 
-  private TreeNode convertEnum(ClassTree node) {
-    TypeElement element = (TypeElement) getElement(node);
+  private TreeNode convertEnum(ClassTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    TypeElement element = (TypeElement) getElement(path);
     if (ElementUtil.isAnonymous(element)) {
-      return convertClassDeclaration(node).setPosition(getPosition(node));
+      return convertClassDeclaration(node, parent).setPosition(getPosition(node));
     }
     EnumDeclaration newNode = new EnumDeclaration();
-    convertBodyDeclaration(node, node.getModifiers(), newNode, element);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
     newNode
-        .setName(convertSimpleName(element, getTypeMirror(node), getNamePosition(node)))
+        .setName(convertSimpleName(element, getTypeMirror(path), getNamePosition(node)))
         .setTypeElement(element);
     for (Tree bodyDecl : node.getMembers()) {
       if (bodyDecl.getKind() == Kind.VARIABLE) {
-        TreeNode var = convertVariableDeclaration((VariableTree) bodyDecl);
+        TreeNode var = convertVariableDeclaration((VariableTree) bodyDecl, path);
         if (var.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
           newNode.addEnumConstant((EnumConstantDeclaration) var);
         } else {
@@ -729,10 +759,10 @@ public class TreeConverter {
         }
       } else if (bodyDecl.getKind() == Kind.BLOCK) {
         BlockTree javacBlock = (BlockTree) bodyDecl;
-        Block block = (Block) convert(javacBlock);
+        Block block = (Block) convert(javacBlock, path);
         newNode.addBodyDeclaration(new Initializer(block, javacBlock.isStatic()));
       } else {
-        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
+        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl, path));
       }
     }
     return newNode;
@@ -755,22 +785,26 @@ public class TreeConverter {
     return value != null ? newNode.setConstantValue(value) : newNode;
   }
 
-  private TreeNode convertExpressionStatement(ExpressionStatementTree node) {
-    TreeNode expr = convert(node.getExpression());
+  private TreeNode convertExpressionStatement(ExpressionStatementTree node, TreePath parent) {
+    TreeNode expr = convert(node.getExpression(), getTreePath(parent, node));
     if (expr instanceof Statement) {
       return expr;
     }
     return new ExpressionStatement().setExpression((Expression) expr);
   }
 
-  private TreeNode convertFieldAccess(MemberSelectTree node) {
+  private TreeNode convertFieldAccess(MemberSelectTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     String fieldName = node.getIdentifier().toString();
     SourcePosition pos = getPosition(node);
     ExpressionTree selected = node.getExpression();
-    Element element = getElement(node);
-    TypeMirror typeMirror = getTypeMirror(node);
+    TreePath selectedPath = getTreePath(path, selected);
+    Element element = getElement(path);
+    TypeMirror typeMirror = getTypeMirror(path);
     if (fieldName.equals("this")) {
-      return new ThisExpression().setQualifier((Name) convert(selected)).setTypeMirror(typeMirror);
+      return new ThisExpression()
+          .setQualifier((Name) convert(selected, path))
+          .setTypeMirror(typeMirror);
     }
     if ("super".equals(getMemberName(selected))) {
       SuperFieldAccess newNode =
@@ -778,12 +812,13 @@ public class TreeConverter {
               .setVariableElement((VariableElement) element)
               .setTypeMirror(typeMirror);
       if (selected.getKind() == Kind.MEMBER_SELECT) {
-        newNode.setQualifier((Name) convert(((MemberSelectTree) selected).getExpression()));
+        newNode.setQualifier(
+            (Name) convert(((MemberSelectTree) selected).getExpression(), selectedPath));
       }
       return newNode;
     }
     if (node.getIdentifier().toString().equals("class")) {
-      Type type = convertType(getTypeMirror(selected), pos, false);
+      Type type = convertType(getTypeMirror(selectedPath), pos, false);
       type.setPosition(getPosition(node));
       return new TypeLiteral(typeMirror).setType(type);
     }
@@ -793,14 +828,14 @@ public class TreeConverter {
         // Just return the constant.
         return new SimpleName(element);
       }
-      IdentifierTree ident = (IdentifierTree) selected;
       return new QualifiedName()
           .setName(convertSimpleName(element, typeMirror, pos))
-          .setQualifier(convertSimpleName(getElement(ident), getTypeMirror(ident), pos))
+          .setQualifier(
+              convertSimpleName(getElement(selectedPath), getTypeMirror(selectedPath), pos))
           .setElement(element);
     }
     if (selected.getKind() == Kind.MEMBER_SELECT) {
-      TreeNode newSelected = convertFieldAccess((MemberSelectTree) selected).setPosition(pos);
+      TreeNode newSelected = convertFieldAccess((MemberSelectTree) selected, path).setPosition(pos);
       if (newSelected.getKind() == TreeNode.Kind.QUALIFIED_NAME) {
         return new QualifiedName()
             .setName(convertSimpleName(element, typeMirror, pos))
@@ -814,25 +849,26 @@ public class TreeConverter {
         && !(selected.getKind() == Kind.MEMBER_SELECT)) {
       return new QualifiedName()
           .setName(convertSimpleName(element, typeMirror, pos))
-          .setQualifier((Name) convert(selected))
+          .setQualifier((Name) convert(selected, path))
           .setElement(element);
     }
     return new FieldAccess()
         .setVariableElement((VariableElement) element)
-        .setExpression((Expression) convert(selected))
+        .setExpression((Expression) convert(selected, path))
         .setName(convertSimpleName(element, typeMirror, pos).setTypeMirror(typeMirror));
   }
 
-  private TreeNode convertForLoop(ForLoopTree node) {
+  private TreeNode convertForLoop(ForLoopTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     ForStatement newNode =
         new ForStatement()
-            .setExpression((Expression) convert(node.getCondition()))
-            .setBody((Statement) convert(node.getStatement()));
+            .setExpression((Expression) convert(node.getCondition(), path))
+            .setBody((Statement) convert(node.getStatement(), path));
     VariableDeclarationExpression lastVar = null;
     for (StatementTree initializer : node.getInitializer()) {
       if (initializer.getKind() == Kind.VARIABLE) {
         VariableTree var = (VariableTree) initializer;
-        VariableDeclarationExpression newVar = convertVariableExpression(var);
+        VariableDeclarationExpression newVar = convertVariableExpression(var, path);
         if (lastVar == null) {
           newNode.addInitializer(newVar);
           lastVar = newVar;
@@ -841,12 +877,14 @@ public class TreeConverter {
         }
       } else {
         assert initializer.getKind() == Kind.EXPRESSION_STATEMENT;
-        newNode.addInitializer(
-            (Expression) convert(((ExpressionStatementTree) initializer).getExpression()));
+        TreePath initializerPath = getTreePath(path, initializer);
+        TreeNode expr =
+            convert(((ExpressionStatementTree) initializer).getExpression(), initializerPath);
+        newNode.addInitializer((Expression) expr);
       }
     }
     for (ExpressionStatementTree updater : node.getUpdate()) {
-      newNode.addUpdater((Expression) convert(updater.getExpression()));
+      newNode.addUpdater((Expression) convert(updater.getExpression(), getTreePath(path, updater)));
     }
     return newNode;
   }
@@ -886,9 +924,10 @@ public class TreeConverter {
     }
   }
 
-  private TreeNode convertIdent(IdentifierTree node) {
-    Element element = getElement(node);
-    TypeMirror typeMirror = getTypeMirror(node);
+  private TreeNode convertIdent(IdentifierTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    Element element = getElement(path);
+    TypeMirror typeMirror = getTypeMirror(path);
     String text = element.toString();
     if (text.equals("this")) {
       return new ThisExpression().setTypeMirror(typeMirror);
@@ -896,38 +935,44 @@ public class TreeConverter {
     return new SimpleName(element, typeMirror);
   }
 
-  private TreeNode convertIf(IfTree node) {
+  private TreeNode convertIf(IfTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new IfStatement()
-        .setExpression(convertWithoutParens(node.getCondition()))
-        .setThenStatement((Statement) convert(node.getThenStatement()))
-        .setElseStatement((Statement) convert(node.getElseStatement()));
+        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setThenStatement((Statement) convert(node.getThenStatement(), path))
+        .setElseStatement((Statement) convert(node.getElseStatement(), path));
   }
 
-  private TreeNode convertInstanceOf(InstanceOfTree node) {
-    TypeMirror clazz = getTypeMirror(node.getType());
+  private TreeNode convertInstanceOf(InstanceOfTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    TypeMirror clazz = getTypeMirror(getTreePath(path, node.getType()));
     return new InstanceofExpression()
-        .setLeftOperand((Expression) convert(node.getExpression()))
+        .setLeftOperand((Expression) convert(node.getExpression(), path))
         .setRightOperand(Type.newType(clazz))
-        .setTypeMirror(getTypeMirror(node));
+        .setTypeMirror(getTypeMirror(path));
   }
 
-  private TreeNode convertLabeledStatement(LabeledStatementTree node) {
+  private TreeNode convertLabeledStatement(LabeledStatementTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new LabeledStatement()
         .setLabel(
             (SimpleName) new SimpleName(node.getLabel().toString()).setPosition(getPosition(node)))
-        .setBody((Statement) convert(node.getStatement()));
+        .setBody((Statement) convert(node.getStatement(), path));
   }
 
-  private TreeNode convertLambda(LambdaExpressionTree node) {
+  private TreeNode convertLambda(LambdaExpressionTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     LambdaExpression newNode = new LambdaExpression();
     convertFunctionalExpression((JCFunctionalExpression) node, newNode);
     for (VariableTree param : node.getParameters()) {
-      newNode.addParameter((VariableDeclaration) convert(param));
+      newNode.addParameter((VariableDeclaration) convert(param, path));
     }
-    return newNode.setBody(convert(node.getBody()));
+    return newNode.setBody(convert(node.getBody(), path));
   }
 
-  private TreeNode convertMethodReference(MemberReferenceTree node, MethodReference newNode) {
+  private TreeNode convertMethodReference(
+      MemberReferenceTree node, TreePath parent, MethodReference newNode) {
+    TreePath path = getTreePath(parent, node);
     convertFunctionalExpression((JCMemberReference) node, newNode);
     if (node.getTypeArguments() != null) {
       for (ExpressionTree typeArg : node.getTypeArguments()) {
@@ -935,48 +980,52 @@ public class TreeConverter {
       }
     }
     return newNode
-        .setExecutableElement((ExecutableElement) getElement(node))
+        .setExecutableElement((ExecutableElement) getElement(path))
         .setVarargsType(((JCMemberReference) node).varargsElement);
   }
 
-  private TreeNode convertMemberReference(MemberReferenceTree node) {
-    Element element = getElement(node);
+  private TreeNode convertMemberReference(MemberReferenceTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    Element element = getElement(path);
     SourcePosition pos = getPosition(node);
     if (ElementUtil.isConstructor(element)) {
       CreationReference newNode = new CreationReference();
-      convertMethodReference(node, newNode);
-      return newNode.setType(Type.newType(getTypeMirror(node.getQualifierExpression())));
+      convertMethodReference(node, parent, newNode);
+      TypeMirror qualifierType = getTypeMirror(getTreePath(path, node.getQualifierExpression()));
+      return newNode.setType(Type.newType(qualifierType));
     }
     if (((JCMemberReference) node).hasKind(JCMemberReference.ReferenceKind.SUPER)) {
       SuperMethodReference newNode = new SuperMethodReference();
-      convertMethodReference(node, newNode);
+      convertMethodReference(node, parent, newNode);
       if (node.getQualifierExpression().getKind() == Kind.IDENTIFIER) {
         // super::foo
         return newNode;
       } else {
         // Qualifier expression is <name>."super", so it's always a JCFieldAccess.
         MemberSelectTree expr = (MemberSelectTree) node.getQualifierExpression();
+        TreePath exprPath = getTreePath(path, expr);
         return newNode.setQualifier(
             convertSimpleName(
-                getElement(expr.getExpression()),
-                getTypeMirror(expr),
+                getElement(getTreePath(exprPath, expr.getExpression())),
+                getTypeMirror(exprPath),
                 getPosition(expr.getExpression())));
       }
     }
     if (((JCMemberReference) node).hasKind(JCMemberReference.ReferenceKind.UNBOUND)
         || ((JCMemberReference) node).hasKind(JCMemberReference.ReferenceKind.STATIC)) {
       TypeMethodReference newNode = new TypeMethodReference();
-      convertMethodReference(node, newNode);
-      return newNode.setType(convertType(getTypeMirror(node), pos, false));
+      convertMethodReference(node, parent, newNode);
+      return newNode.setType(convertType(getTypeMirror(path), pos, false));
     }
 
     ExpressionMethodReference newNode = new ExpressionMethodReference();
-    convertMethodReference(node, newNode);
-    return newNode.setExpression((Expression) convert(node.getQualifierExpression()));
+    convertMethodReference(node, parent, newNode);
+    return newNode.setExpression((Expression) convert(node.getQualifierExpression(), path));
   }
 
-  private TreeNode convertMethodDeclaration(MethodTree node) {
-    ExecutableElement element = (ExecutableElement) getElement(node);
+  private TreeNode convertMethodDeclaration(MethodTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    ExecutableElement element = (ExecutableElement) getElement(path);
     MethodDeclaration newNode = new MethodDeclaration();
 
     // JCMethodDecl's preferred diagnostic position is the beginning of the method name.
@@ -990,14 +1039,14 @@ public class TreeConverter {
     Name name = Name.newName(null /* qualifier */, element);
     name.setPosition(new SourcePosition(methodStartPosition, length));
 
-    convertBodyDeclaration(node, node.getModifiers(), newNode, element);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
     for (VariableTree param : node.getParameters()) {
-      newNode.addParameter((SingleVariableDeclaration) convert(param));
+      newNode.addParameter((SingleVariableDeclaration) convert(param, path));
     }
     return newNode
         .setIsConstructor(ElementUtil.isConstructor(element))
         .setExecutableElement(element)
-        .setBody((Block) convert(node.getBody()))
+        .setBody((Block) convert(node.getBody(), path))
         .setName(name);
   }
 
@@ -1012,11 +1061,13 @@ public class TreeConverter {
     }
   }
 
-  private TreeNode convertMethodInvocation(MethodInvocationTree node) {
+  private TreeNode convertMethodInvocation(MethodInvocationTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     ExpressionTree method = node.getMethodSelect();
+    TreePath methodPath = getTreePath(path, method);
     String methodName = getMemberName(method);
-    ExecutableType type = (ExecutableType) getTypeMirror(method);
-    ExecutableElement element = (ExecutableElement) getElement(method);
+    ExecutableType type = (ExecutableType) getTypeMirror(methodPath);
+    ExecutableElement element = (ExecutableElement) getElement(methodPath);
     ExpressionTree target =
         method.getKind() == Kind.MEMBER_SELECT ? ((MemberSelectTree) method).getExpression() : null;
 
@@ -1026,7 +1077,7 @@ public class TreeConverter {
               .setExecutablePair(new ExecutablePair(element))
               .setVarargsType(((JCMethodInvocation) node).varargsElement);
       for (ExpressionTree arg : node.getArguments()) {
-        newNode.addArgument((Expression) convert(arg));
+        newNode.addArgument((Expression) convert(arg, path));
       }
       return newNode;
     }
@@ -1037,10 +1088,10 @@ public class TreeConverter {
               .setExecutablePair(new ExecutablePair(element))
               .setVarargsType(((JCMethodInvocation) node).varargsElement);
       if (target != null) {
-        newNode.setExpression((Expression) convert(target));
+        newNode.setExpression((Expression) convert(target, methodPath));
       }
       for (ExpressionTree arg : node.getArguments()) {
-        newNode.addArgument((Expression) convert(arg));
+        newNode.addArgument((Expression) convert(arg, path));
       }
       return newNode;
     }
@@ -1054,23 +1105,25 @@ public class TreeConverter {
         // foo.bar.MyClass.super.print(...):
         //   target: foo.bar.MyClass.super
         //   target.selected: foo.bar.MyClass
-        newNode.setQualifier((Name) convert(((MemberSelectTree) target).getExpression()));
+        TreePath targetPath = getTreePath(getTreePath(path, method), target);
+        newNode.setQualifier(
+            (Name) convert(((MemberSelectTree) target).getExpression(), targetPath));
       }
       for (ExpressionTree arg : node.getArguments()) {
-        newNode.addArgument((Expression) convert(arg));
+        newNode.addArgument((Expression) convert(arg, path));
       }
       return newNode;
     }
 
     MethodInvocation newNode = new MethodInvocation();
     if (target != null) {
-      newNode.setExpression((Expression) convert(target));
+      newNode.setExpression((Expression) convert(target, methodPath));
     }
     for (ExpressionTree arg : node.getArguments()) {
-      newNode.addArgument((Expression) convert(arg));
+      newNode.addArgument((Expression) convert(arg, path));
     }
     return newNode
-        .setTypeMirror(getTypeMirror(node))
+        .setTypeMirror(getTypeMirror(path))
         .setExecutablePair(new ExecutablePair(element, type))
         .setVarargsType(((JCMethodInvocation) node).varargsElement);
   }
@@ -1079,17 +1132,18 @@ public class TreeConverter {
     return (SimpleName) new SimpleName(element, type).setPosition(pos);
   }
 
-  private TreeNode convertNewArray(NewArrayTree node) {
+  private TreeNode convertNewArray(NewArrayTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     ArrayCreation newNode = new ArrayCreation();
     List<Expression> dimensions = new ArrayList<>();
     for (ExpressionTree dimension : node.getDimensions()) {
-      dimensions.add((Expression) convert(dimension));
+      dimensions.add((Expression) convert(dimension, path));
     }
-    javax.lang.model.type.ArrayType type = (javax.lang.model.type.ArrayType) getTypeMirror(node);
+    javax.lang.model.type.ArrayType type = (javax.lang.model.type.ArrayType) getTypeMirror(path);
     if (node.getInitializers() != null) {
       ArrayInitializer initializers = new ArrayInitializer(type);
       for (ExpressionTree initializer : node.getInitializers()) {
-        initializers.addExpression((Expression) convert(initializer));
+        initializers.addExpression((Expression) convert(initializer, path));
       }
       newNode.setInitializer(initializers);
     }
@@ -1098,29 +1152,35 @@ public class TreeConverter {
         .setDimensions(dimensions);
   }
 
-  private TreeNode convertNewClass(NewClassTree node) {
+  private TreeNode convertNewClass(NewClassTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     ClassInstanceCreation newNode = new ClassInstanceCreation();
     for (ExpressionTree arg : node.getArguments()) {
-      newNode.addArgument((Expression) convert(arg));
+      newNode.addArgument((Expression) convert(arg, path));
     }
     return newNode
-        .setExecutablePair(new ExecutablePair((ExecutableElement) getElement(node)))
+        .setExecutablePair(new ExecutablePair((ExecutableElement) getElement(path)))
         .setVarargsType(((JCNewClass) node).varargsElement)
-        .setExpression((Expression) convert(node.getEnclosingExpression()))
-        .setType(convertType(getTypeMirror(node.getIdentifier())))
-        .setAnonymousClassDeclaration((TypeDeclaration) convert(node.getClassBody()));
+        .setExpression((Expression) convert(node.getEnclosingExpression(), path))
+        .setType(convertType(getTypeMirror(getTreePath(path, node.getIdentifier()))))
+        .setAnonymousClassDeclaration((TypeDeclaration) convert(node.getClassBody(), path));
   }
 
-  private TreeNode convertNumberLiteral(LiteralTree node) {
-    return new NumberLiteral((Number) node.getValue(), getTypeMirror(node))
+  private TreeNode convertNumberLiteral(LiteralTree node, TreePath parent) {
+    return new NumberLiteral((Number) node.getValue(), getTypeMirror(getTreePath(parent, node)))
         .setToken(getTreeSource(node));
   }
 
-  private PackageDeclaration convertPackage(PackageElement pkg, ElementUtil elementUtil) {
+  private PackageDeclaration convertPackage(TreePath parent) {
+    ExpressionTree pkgName = unit.getPackageName();
+    PackageElement pkg =
+        pkgName != null
+            ? env.elementUtilities().getPackageElement(pkgName.toString())
+            : env.defaultPackage();
     Tree node = trees.getTree(pkg);
     PackageDeclaration newNode = new PackageDeclaration().setPackageElement(pkg);
     for (AnnotationTree pkgAnnotation : unit.getPackageAnnotations()) {
-      newNode.addAnnotation((Annotation) convert(pkgAnnotation));
+      newNode.addAnnotation((Annotation) convert(pkgAnnotation, parent));
     }
     if (unit.getSourceFile().toUri().getPath().endsWith("package-info.java")) {
       if (node == null) {
@@ -1130,75 +1190,85 @@ public class TreeConverter {
       }
       newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, pkg));
     }
-    return (PackageDeclaration)
-        newNode.setName(elementUtil.getPackageName(pkg)).setPosition(SourcePosition.NO_POSITION);
+    newNode.setName(newUnit.getEnv().elementUtil().getPackageName(pkg));
+    newNode.setPosition(SourcePosition.NO_POSITION);
+    return newNode;
   }
 
-  private TreeNode convertPrefixExpr(UnaryTree node) {
+  private TreeNode convertPrefixExpr(UnaryTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new PrefixExpression()
-        .setTypeMirror(getTypeMirror(node))
+        .setTypeMirror(getTypeMirror(path))
         .setOperator(
             PrefixExpression.Operator.parse(((JCUnary) node).getOperator().name.toString()))
-        .setOperand((Expression) convert(node.getExpression()));
+        .setOperand((Expression) convert(node.getExpression(), path));
   }
 
-  private TreeNode convertParens(ParenthesizedTree node) {
-    return new ParenthesizedExpression().setExpression((Expression) convert(node.getExpression()));
+  private TreeNode convertParens(ParenthesizedTree node, TreePath parent) {
+    return new ParenthesizedExpression()
+        .setExpression((Expression) convert(node.getExpression(), getTreePath(parent, node)));
   }
 
-  private TreeNode convertPostExpr(UnaryTree node) {
+  private TreeNode convertPostExpr(UnaryTree node, TreePath parent) {
     return new PostfixExpression()
         .setOperator(
             PostfixExpression.Operator.parse(((JCUnary) node).getOperator().name.toString()))
-        .setOperand((Expression) convert(node.getExpression()));
+        .setOperand((Expression) convert(node.getExpression(), getTreePath(parent, node)));
   }
 
-  private TreeNode convertPrimitiveType(PrimitiveTypeTree node) {
-    return new PrimitiveType(getTypeMirror(node));
+  private TreeNode convertPrimitiveType(PrimitiveTypeTree node, TreePath parent) {
+    return new PrimitiveType(getTypeMirror(getTreePath(parent, node)));
   }
 
-  private TreeNode convertReturn(ReturnTree node) {
-    return new ReturnStatement((Expression) convert(node.getExpression()));
+  private TreeNode convertReturn(ReturnTree node, TreePath parent) {
+    return new ReturnStatement(
+        (Expression) convert(node.getExpression(), getTreePath(parent, node)));
   }
 
-  private TreeNode convertStringLiteral(LiteralTree node) {
-    return new StringLiteral((String) node.getValue(), getTypeMirror(node));
+  private TreeNode convertStringLiteral(LiteralTree node, TreePath parent) {
+    return new StringLiteral((String) node.getValue(), getTypeMirror(getTreePath(parent, node)));
   }
 
-  private TreeNode convertSwitch(SwitchTree node) {
+  private TreeNode convertSwitch(SwitchTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     SwitchStatement newNode =
-        new SwitchStatement().setExpression(convertWithoutParens(node.getExpression()));
+        new SwitchStatement().setExpression(convertWithoutParens(node.getExpression(), path));
     for (CaseTree switchCase : node.getCases()) {
-      newNode.addStatement((SwitchCase) convert(switchCase));
+      newNode.addStatement((SwitchCase) convert(switchCase, path));
+      TreePath switchCasePath = getTreePath(path, switchCase);
       for (StatementTree s : switchCase.getStatements()) {
-        newNode.addStatement((Statement) convert(s));
+        newNode.addStatement((Statement) convert(s, switchCasePath));
       }
     }
     return newNode;
   }
 
-  private TreeNode convertSynchronized(SynchronizedTree node) {
+  private TreeNode convertSynchronized(SynchronizedTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    Expression expr = convertWithoutParens(node.getExpression(), path);
+    expr.setPosition(getPosition(node));
     return new SynchronizedStatement()
-        .setExpression(
-            (Expression) convertWithoutParens(node.getExpression()).setPosition(getPosition(node)))
-        .setBody((Block) convert(node.getBlock()));
+        .setExpression(expr)
+        .setBody((Block) convert(node.getBlock(), path));
   }
 
-  private TreeNode convertThrow(ThrowTree node) {
-    return new ThrowStatement().setExpression((Expression) convert(node.getExpression()));
+  private TreeNode convertThrow(ThrowTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    return new ThrowStatement().setExpression((Expression) convert(node.getExpression(), path));
   }
 
-  private TreeNode convertTry(TryTree node) {
+  private TreeNode convertTry(TryTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     TryStatement newNode = new TryStatement();
-    for (Object obj : node.getResources()) {
-      newNode.addResource(convertVariableExpression((VariableTree) obj));
+    for (Tree obj : node.getResources()) {
+      newNode.addResource(convertVariableExpression((VariableTree) obj, path));
     }
-    for (Object obj : node.getCatches()) {
-      newNode.addCatchClause((CatchClause) convert((CatchTree) obj));
+    for (CatchTree obj : node.getCatches()) {
+      newNode.addCatchClause((CatchClause) convert(obj, path));
     }
     return newNode
-        .setBody((Block) convert(node.getBlock()))
-        .setFinally((Block) convert(node.getFinallyBlock()));
+        .setBody((Block) convert(node.getBlock(), path))
+        .setFinally((Block) convert(node.getFinallyBlock(), path));
   }
 
   private Type convertType(TypeMirror typeMirror) {
@@ -1246,30 +1316,34 @@ public class TreeConverter {
     return (Type) newType.setPosition(pos);
   }
 
-  private TreeNode convertTypeApply(ParameterizedTypeTree node) {
-    TypeMirror typeMirror = getTypeMirror(node);
+  private TreeNode convertTypeApply(ParameterizedTypeTree node, TreePath parent) {
+    TypeMirror typeMirror = getTypeMirror(getTreePath(parent, node));
     return new ParameterizedType().setType(Type.newType(typeMirror)).setTypeMirror(typeMirror);
   }
 
-  private TreeNode convertTypeCast(TypeCastTree node) {
-    return new CastExpression(getTypeMirror(node), (Expression) convert(node.getExpression()));
+  private TreeNode convertTypeCast(TypeCastTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    return new CastExpression(
+        getTypeMirror(path), (Expression) convert(node.getExpression(), path));
   }
 
-  private TreeNode convertVariableDeclaration(VariableTree node) {
-    VariableElement element = (VariableElement) getElement(node);
+  private TreeNode convertVariableDeclaration(VariableTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    VariableElement element = (VariableElement) getElement(path);
     if (element.getKind() == ElementKind.FIELD) {
       FieldDeclaration newNode =
-          new FieldDeclaration(element, (Expression) convert(node.getInitializer()));
-      convertBodyDeclaration(node, node.getModifiers(), newNode, element);
+          new FieldDeclaration(element, (Expression) convert(node.getInitializer(), path));
+      convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
       return newNode;
     }
     if (element.getKind() == ElementKind.LOCAL_VARIABLE) {
-      return new VariableDeclarationStatement(element, (Expression) convert(node.getInitializer()));
+      return new VariableDeclarationStatement(
+          element, (Expression) convert(node.getInitializer(), path));
     }
     if (element.getKind() == ElementKind.ENUM_CONSTANT) {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration().setVariableElement(element);
-      convertBodyDeclaration(node, node.getModifiers(), newNode, element);
-      ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
+      convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+      ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer(), path);
       TreeUtil.moveList(init.getArguments(), newNode.getArguments());
       if (init.getAnonymousClassDeclaration() != null) {
         newNode.setAnonymousClassDeclaration(TreeUtil.remove(init.getAnonymousClassDeclaration()));
@@ -1278,37 +1352,41 @@ public class TreeConverter {
           .setExecutablePair(init.getExecutablePair())
           .setVarargsType(init.getVarargsType());
     }
-    return convertSingleVariable(node);
+    return convertSingleVariable(node, parent);
   }
 
-  private TreeNode convertSingleVariable(VariableTree node) {
-    VariableElement element = (VariableElement) getElement(node);
+  private TreeNode convertSingleVariable(VariableTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    VariableElement element = (VariableElement) getElement(path);
     SourcePosition pos = getPosition(node);
     boolean isVarargs = (((VarSymbol) element).flags() & Flags.VARARGS) > 0;
-    Type newType = convertType(getTypeMirror(node), pos, isVarargs);
+    Type newType = convertType(getTypeMirror(path), pos, isVarargs);
     return new SingleVariableDeclaration()
         .setType(newType)
         .setIsVarargs(isVarargs)
-        .setAnnotations(convertAnnotations(node.getModifiers()))
+        .setAnnotations(convertAnnotations(node.getModifiers(), path))
         .setVariableElement(element)
-        .setInitializer((Expression) convert(node.getInitializer()));
+        .setInitializer((Expression) convert(node.getInitializer(), path));
   }
 
-  private VariableDeclarationExpression convertVariableExpression(VariableTree node) {
-    VariableElement element = (VariableElement) getElement(node);
+  private VariableDeclarationExpression convertVariableExpression(
+      VariableTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    VariableElement element = (VariableElement) getElement(path);
     boolean isVarargs = (((JCVariableDecl) node).sym.flags() & Flags.VARARGS) > 0;
-    Type newType = convertType(getTypeMirror(node), getPosition(node), isVarargs);
+    Type newType = convertType(getTypeMirror(path), getPosition(node), isVarargs);
     VariableDeclarationFragment fragment = new VariableDeclarationFragment();
     fragment
         .setVariableElement(element)
-        .setInitializer((Expression) convert(node.getInitializer()));
+        .setInitializer((Expression) convert(node.getInitializer(), path));
     return new VariableDeclarationExpression().setType(newType).addFragment(fragment);
   }
 
-  private TreeNode convertWhileLoop(WhileLoopTree node) {
+  private TreeNode convertWhileLoop(WhileLoopTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
     return new WhileStatement()
-        .setExpression(convertWithoutParens(node.getCondition()))
-        .setBody((Statement) convert(node.getStatement()));
+        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setBody((Statement) convert(node.getStatement(), path));
   }
 
   private TreeNode getAssociatedJavaDoc(Tree node, Element element) {
@@ -1403,8 +1481,8 @@ public class TreeConverter {
   }
 
   // javac uses a ParenthesizedExpression for the if, do, and while statements, while JDT doesn't.
-  private Expression convertWithoutParens(ExpressionTree condition) {
-    Expression result = (Expression) convert(condition);
+  private Expression convertWithoutParens(ExpressionTree condition, TreePath parent) {
+    Expression result = (Expression) convert(condition, parent);
     if (result.getKind() == TreeNode.Kind.PARENTHESIZED_EXPRESSION) {
       result = TreeUtil.remove(((ParenthesizedExpression) result).getExpression());
     }
@@ -1447,16 +1525,16 @@ public class TreeConverter {
     return getSourcePosition(start, endPos);
   }
 
-  private Element getElement(Tree node) {
-    // TODO(b/122321493): investigate how to avoid scanning the whole AST.
-    TreePath path = trees.getPath(unit, node);
+  private Element getElement(TreePath path) {
     return trees.getElement(path);
   }
 
-  private TypeMirror getTypeMirror(Tree node) {
-    // TODO(b/122321493): investigate how to avoid scanning the whole AST.
-    TreePath path = trees.getPath(unit, node);
+  private TypeMirror getTypeMirror(TreePath path) {
     return trees.getTypeMirror(path);
+  }
+
+  private static TreePath getTreePath(TreePath path, Tree tree) {
+    return new TreePath(path, tree);
   }
 
   // Helper class for convertBinary().
