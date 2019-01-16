@@ -428,7 +428,10 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/BlockingQueue.java \
   java/util/concurrent/Callable.java \
   java/util/concurrent/CancellationException.java \
+  java/util/concurrent/CompletableFuture.java \
+  java/util/concurrent/CompletionException.java \
   java/util/concurrent/CompletionService.java \
+  java/util/concurrent/CompletionStage.java \
   java/util/concurrent/ConcurrentHashMap.java \
   java/util/concurrent/ConcurrentMap.java \
   java/util/concurrent/CopyOnWriteArrayList.java \

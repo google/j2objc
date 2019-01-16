@@ -223,6 +223,7 @@ TEST_SOURCES := \
     jsr166/AbstractQueueTest.java \
     jsr166/ArrayBlockingQueueTest.java \
     jsr166/ArrayDequeTest.java \
+    jsr166/CompletableFutureTest.java \
     jsr166/ConcurrentHashMapTest.java \
     jsr166/ConcurrentSkipListMapTest.java \
     jsr166/ConcurrentSkipListSetTest.java \

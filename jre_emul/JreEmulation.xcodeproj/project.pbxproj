@@ -797,6 +797,7 @@
 		FA1DD7BD215418F300D0B800 /* TestCertUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7BC215418F200D0B800 /* TestCertUtils.m */; };
 		FA1DD7BF2154190800D0B800 /* mySSLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7BE2154190700D0B800 /* mySSLSession.m */; };
 		FA1DD7C1215419D400D0B800 /* TestSSLSocketPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */; };
+		FA2EECB521EFB55000B88A06 /* CompletableFutureTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */; };
 		FA40676321C07E6100988DFD /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40674F21C07E5E00988DFD /* package-info.m */; };
 		FA40676421C07E6100988DFD /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40675021C07E5E00988DFD /* MethodTest.m */; };
 		FA40676521C07E6100988DFD /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40675121C07E5E00988DFD /* package-info.m */; };
@@ -3964,6 +3965,7 @@
 		FA1DD7BC215418F200D0B800 /* TestCertUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCertUtils.m; path = org/apache/harmony/security/tests/support/TestCertUtils.m; sourceTree = "<group>"; };
 		FA1DD7BE2154190700D0B800 /* mySSLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = mySSLSession.m; path = org/apache/harmony/xnet/tests/support/mySSLSession.m; sourceTree = "<group>"; };
 		FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestSSLSocketPair.m; path = libcore/javax/net/ssl/TestSSLSocketPair.m; sourceTree = "<group>"; };
+		FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompletableFutureTest.m; path = jsr166/CompletableFutureTest.m; sourceTree = "<group>"; };
 		FA40674F21C07E5E00988DFD /* package-info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "package-info.m"; path = "libcore/java/lang/reflect/annotations/multipleannotationexplicitsingle/package-info.m"; sourceTree = "<group>"; };
 		FA40675021C07E5E00988DFD /* MethodTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MethodTest.m; path = libcore/java/lang/reflect/annotations/MethodTest.m; sourceTree = "<group>"; };
 		FA40675121C07E5E00988DFD /* package-info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "package-info.m"; path = "libcore/java/lang/reflect/annotations/noannotation/package-info.m"; sourceTree = "<group>"; };
@@ -6559,6 +6561,7 @@
 				FACA982D21CC222A00B3D2E2 /* Collections2Test.m */,
 				FACA982721CC21EA00B3D2E2 /* CollectionsTest.m */,
 				FA5C0C3E21BFFBA3000B6275 /* CollectionsTest.m */,
+				FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */,
 				0612B8C41F4373730069EF58 /* ConcurrencyTests.m */,
 				0612B8C51F4373730069EF58 /* ConcurrentHashMapTest.m */,
 				067B13151EEDC3DC0013CBAF /* ConcurrentLinkedDequeTest.m */,
@@ -8198,6 +8201,7 @@
 				062026301D512CA1001EE455 /* OldDataOutputStreamTest.m in Sources */,
 				FA5C0CB521BFFE6B000B6275 /* NegativeArraySizeExceptionTest.m in Sources */,
 				6A5D0D65219CCBB200709765 /* TestStringLiteralPrinter.m in Sources */,
+				FA2EECB521EFB55000B88A06 /* CompletableFutureTest.m in Sources */,
 				069C24311E9EEF7B00CE6BAF /* ZipEntryTest.m in Sources */,
 				0612B9181F4373740069EF58 /* ThreadTest.m in Sources */,
 				062029001D512EDB001EE455 /* JSONTokenerTest.m in Sources */,

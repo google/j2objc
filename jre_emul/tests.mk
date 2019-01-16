@@ -185,7 +185,7 @@ run-beans-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore org.apache.harmony.beans.tests.java.beans.AllTests
 
 run-concurrency-tests: link resources $(TEST_BIN)
-	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
+	@$(TEST_BIN) org.junit.runner.JUnitCore jsr166.ConcurrencyTests
 
 run-icu-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore android.icu.dev.test.Tests
