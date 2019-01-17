@@ -174,8 +174,6 @@ import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCAssignOp;
-import com.sun.tools.javac.tree.JCTree.JCBinary;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCFunctionalExpression;
@@ -184,7 +182,6 @@ import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCModifiers;
 import com.sun.tools.javac.tree.JCTree.JCNewClass;
-import com.sun.tools.javac.tree.JCTree.JCUnary;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.JCTree.Tag;
 import com.sun.tools.javac.util.Position;
@@ -559,9 +556,8 @@ public class TreeConverter {
   private TreeNode convertAssignOp(CompoundAssignmentTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     Assignment newNode = new Assignment();
-    String operatorName = ((JCAssignOp) node).getOperator().getSimpleName() + "=";
     return newNode
-        .setOperator(Assignment.Operator.fromOperatorName(operatorName))
+        .setOperator(Assignment.Operator.from(node.getKind()))
         .setLeftHandSide((Expression) convert(node.getVariable(), path))
         .setRightHandSide((Expression) convert(node.getExpression(), path));
   }
@@ -571,8 +567,7 @@ public class TreeConverter {
     InfixExpression newNode = new InfixExpression();
     newNode
         .setTypeMirror(getTypeMirror(path))
-        .setOperator(
-            InfixExpression.Operator.parse(((JCBinary) node).getOperator().name.toString()));
+        .setOperator(InfixExpression.Operator.from(node.getKind()));
 
     // Flatten this tree to avoid stack overflow with very deep trees. This
     // code traverses the subtree non-recursively and merges all children
@@ -1199,8 +1194,7 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
     return new PrefixExpression()
         .setTypeMirror(getTypeMirror(path))
-        .setOperator(
-            PrefixExpression.Operator.parse(((JCUnary) node).getOperator().name.toString()))
+        .setOperator(PrefixExpression.Operator.from(node.getKind()))
         .setOperand((Expression) convert(node.getExpression(), path));
   }
 
@@ -1211,8 +1205,7 @@ public class TreeConverter {
 
   private TreeNode convertPostExpr(UnaryTree node, TreePath parent) {
     return new PostfixExpression()
-        .setOperator(
-            PostfixExpression.Operator.parse(((JCUnary) node).getOperator().name.toString()))
+        .setOperator(PostfixExpression.Operator.from(node.getKind()))
         .setOperand((Expression) convert(node.getExpression(), getTreePath(parent, node)));
   }
 

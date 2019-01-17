@@ -14,8 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Maps;
-import java.util.Map;
+import com.sun.source.tree.Tree;
+import java.util.EnumMap;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -26,33 +26,36 @@ public final class Assignment extends Expression {
   /**
    * Assignment operators.
    */
-  public static enum Operator {
-    ASSIGN("=", "Assign"),
-    PLUS_ASSIGN("+=", "PlusAssign"),
-    MINUS_ASSIGN("-=", "MinusAssign"),
-    TIMES_ASSIGN("*=", "TimesAssign"),
-    DIVIDE_ASSIGN("/=", "DivideAssign"),
-    BIT_AND_ASSIGN("&=", "BitAndAssign"),
-    BIT_OR_ASSIGN("|=", "BitOrAssign"),
-    BIT_XOR_ASSIGN("^=", "BitXorAssign"),
-    REMAINDER_ASSIGN("%=", "ModAssign"),
-    LEFT_SHIFT_ASSIGN("<<=", "LShiftAssign"),
-    RIGHT_SHIFT_SIGNED_ASSIGN(">>=", "RShiftAssign"),
-    RIGHT_SHIFT_UNSIGNED_ASSIGN(">>>=", "URShiftAssign");
+  public enum Operator {
+    ASSIGN("=", "Assign", Tree.Kind.ASSIGNMENT),
+    PLUS_ASSIGN("+=", "PlusAssign", Tree.Kind.PLUS_ASSIGNMENT),
+    MINUS_ASSIGN("-=", "MinusAssign", Tree.Kind.MINUS_ASSIGNMENT),
+    TIMES_ASSIGN("*=", "TimesAssign", Tree.Kind.MULTIPLY_ASSIGNMENT),
+    DIVIDE_ASSIGN("/=", "DivideAssign", Tree.Kind.DIVIDE_ASSIGNMENT),
+    BIT_AND_ASSIGN("&=", "BitAndAssign", Tree.Kind.AND_ASSIGNMENT),
+    BIT_OR_ASSIGN("|=", "BitOrAssign", Tree.Kind.OR_ASSIGNMENT),
+    BIT_XOR_ASSIGN("^=", "BitXorAssign", Tree.Kind.XOR_ASSIGNMENT),
+    REMAINDER_ASSIGN("%=", "ModAssign", Tree.Kind.REMAINDER_ASSIGNMENT),
+    LEFT_SHIFT_ASSIGN("<<=", "LShiftAssign", Tree.Kind.LEFT_SHIFT_ASSIGNMENT),
+    RIGHT_SHIFT_SIGNED_ASSIGN(">>=", "RShiftAssign", Tree.Kind.RIGHT_SHIFT_ASSIGNMENT),
+    RIGHT_SHIFT_UNSIGNED_ASSIGN(">>>=", "URShiftAssign", Tree.Kind.UNSIGNED_RIGHT_SHIFT_ASSIGNMENT);
 
     private final String opString;
     private final String name;
-    private static Map<String, Operator> stringLookup = Maps.newHashMap();
+    private final Tree.Kind javacKind;
+    private static final EnumMap<Tree.Kind, Operator> javacKindLookup =
+        new EnumMap<>(Tree.Kind.class);
 
     static {
       for (Operator operator : Operator.values()) {
-        stringLookup.put(operator.toString(), operator);
+        javacKindLookup.put(operator.javacKind, operator);
       }
     }
 
-    private Operator(String opString, String name) {
+    Operator(String opString, String name, Tree.Kind javacKind) {
       this.opString = opString;
       this.name = name;
+      this.javacKind = javacKind;
     }
 
     public String getName() {
@@ -64,8 +67,8 @@ public final class Assignment extends Expression {
       return opString;
     }
 
-    public static Operator fromOperatorName(String operatorName) {
-      Operator result = stringLookup.get(operatorName);
+    public static Operator from(Tree.Kind kind) {
+      Operator result = javacKindLookup.get(kind);
       assert result != null;
       return result;
     }

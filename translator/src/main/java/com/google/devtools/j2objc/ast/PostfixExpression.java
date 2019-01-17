@@ -14,8 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Maps;
-import java.util.Map;
+import com.sun.source.tree.Tree;
+import java.util.EnumMap;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -27,21 +27,24 @@ public class PostfixExpression extends Expression {
   /**
    * Postfix operators.
    */
-  public static enum Operator {
-    INCREMENT("++"),
-    DECREMENT("--");
+  public enum Operator {
+    INCREMENT("++", Tree.Kind.POSTFIX_INCREMENT),
+    DECREMENT("--", Tree.Kind.POSTFIX_DECREMENT);
 
     private final String opString;
-    private static Map<String, Operator> stringLookup = Maps.newHashMap();
+    private final Tree.Kind javacKind;
+    private static final EnumMap<Tree.Kind, Operator> javacKindLookup =
+        new EnumMap<>(Tree.Kind.class);
 
     static {
       for (Operator operator : Operator.values()) {
-        stringLookup.put(operator.toString(), operator);
+        javacKindLookup.put(operator.javacKind, operator);
       }
     }
 
-    private Operator(String opString) {
+    Operator(String opString, Tree.Kind javacKind) {
       this.opString = opString;
+      this.javacKind = javacKind;
     }
 
     @Override
@@ -49,8 +52,8 @@ public class PostfixExpression extends Expression {
       return opString;
     }
 
-    public static Operator parse(String op) {
-      Operator result = stringLookup.get(op);
+    public static Operator from(Tree.Kind kind) {
+      Operator result = javacKindLookup.get(kind);
       assert result != null;
       return result;
     }

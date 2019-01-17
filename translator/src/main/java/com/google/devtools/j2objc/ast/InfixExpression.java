@@ -14,9 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import java.util.HashMap;
+import com.sun.source.tree.Tree;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -27,38 +27,41 @@ public class InfixExpression extends Expression {
   /**
    * Infix operators.
    */
-  public static enum Operator {
-    TIMES("*"),
-    DIVIDE("/"),
-    REMAINDER("%"),
-    PLUS("+"),
-    MINUS("-"),
-    LEFT_SHIFT("<<"),
-    RIGHT_SHIFT_SIGNED(">>"),
-    RIGHT_SHIFT_UNSIGNED(">>>"),
-    LESS("<"),
-    GREATER(">"),
-    LESS_EQUALS("<="),
-    GREATER_EQUALS(">="),
-    EQUALS("=="),
-    NOT_EQUALS("!="),
-    XOR("^"),
-    AND("&"),
-    OR("|"),
-    CONDITIONAL_AND("&&"),
-    CONDITIONAL_OR("||");
+  public enum Operator {
+    TIMES("*", Tree.Kind.MULTIPLY),
+    DIVIDE("/", Tree.Kind.DIVIDE),
+    REMAINDER("%", Tree.Kind.REMAINDER),
+    PLUS("+", Tree.Kind.PLUS),
+    MINUS("-", Tree.Kind.MINUS),
+    LEFT_SHIFT("<<", Tree.Kind.LEFT_SHIFT),
+    RIGHT_SHIFT_SIGNED(">>", Tree.Kind.RIGHT_SHIFT),
+    RIGHT_SHIFT_UNSIGNED(">>>", Tree.Kind.UNSIGNED_RIGHT_SHIFT),
+    LESS("<", Tree.Kind.LESS_THAN),
+    GREATER(">", Tree.Kind.GREATER_THAN),
+    LESS_EQUALS("<=", Tree.Kind.LESS_THAN_EQUAL),
+    GREATER_EQUALS(">=", Tree.Kind.GREATER_THAN_EQUAL),
+    EQUALS("==", Tree.Kind.EQUAL_TO),
+    NOT_EQUALS("!=", Tree.Kind.NOT_EQUAL_TO),
+    XOR("^", Tree.Kind.XOR),
+    AND("&", Tree.Kind.AND),
+    OR("|", Tree.Kind.OR),
+    CONDITIONAL_AND("&&", Tree.Kind.CONDITIONAL_AND),
+    CONDITIONAL_OR("||", Tree.Kind.CONDITIONAL_OR);
 
     private final String opString;
-    private static Map<String, Operator> stringLookup = new HashMap<>();
+    private final Tree.Kind javacKind;
+    private static final EnumMap<Tree.Kind, Operator> javacKindLookup =
+        new EnumMap<>(Tree.Kind.class);
 
     static {
       for (Operator operator : Operator.values()) {
-        stringLookup.put(operator.toString(), operator);
+        javacKindLookup.put(operator.javacKind, operator);
       }
     }
 
-    private Operator(String opString) {
+    Operator(String opString, Tree.Kind javacKind) {
       this.opString = opString;
+      this.javacKind = javacKind;
     }
 
     @Override
@@ -66,8 +69,8 @@ public class InfixExpression extends Expression {
       return opString;
     }
 
-    public static Operator parse(String op) {
-      Operator result = stringLookup.get(op);
+    public static Operator from(Tree.Kind kind) {
+      Operator result = javacKindLookup.get(kind);
       assert result != null;
       return result;
     }
