@@ -19,13 +19,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.net.URL;
+import java.util.Enumeration;
 import junit.framework.TestCase;
 
 /** Tests that embedded resources are found and returned. */
 public final class EmbeddedResourceTest extends TestCase {
 
-  public void testEmbeddedResource() throws IOException {
-    InputStream resource = getClass().getResourceAsStream("embedded_resource.data");
+  private static final String RESOURCE_NAME = "embedded_resource.data";
+  private static final String RESOURCE_PATH = "com/google/j2objc/embedded_resource.data";
+
+  private void assertResourceData(InputStream resource) throws IOException {
     Reader in = new InputStreamReader(resource);
     StringWriter out = new StringWriter();
     char[] buffer = new char[64];
@@ -34,6 +38,36 @@ public final class EmbeddedResourceTest extends TestCase {
       out.write(buffer, 0, n);
     }
     assertEquals("Success!\n", out.toString());
+  }
+
+  public void testClassGetResourceAsStream() throws IOException {
+    InputStream resource = getClass().getResourceAsStream(RESOURCE_NAME);
+    assertNotNull("resource not found", resource);
+    assertResourceData(resource);
+  }
+
+  public void testClassLoaderGetResourceAsStream() throws IOException {
+    InputStream resource = getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH);
+    assertNotNull("resource not found", resource);
+    assertResourceData(resource);
+  }
+
+  public void testClassGetResource() throws IOException {
+    URL url = getClass().getResource(RESOURCE_NAME);
+    assertNotNull("resource not found", url);
+    assertResourceData(url.openStream());
+  }
+
+  public void testClassLoaderGetResource() throws IOException {
+    URL url = getClass().getClassLoader().getResource(RESOURCE_PATH);
+    assertNotNull("resource not found", url);
+    assertResourceData(url.openStream());
+  }
+
+  public void testClassLoaderGetResources() throws IOException {
+    Enumeration<URL> urls = getClass().getClassLoader().getResources(RESOURCE_PATH);
+    assertTrue("resource not found", urls.hasMoreElements());
+    assertResourceData(urls.nextElement().openStream());
   }
 
   /*-[

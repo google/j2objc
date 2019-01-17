@@ -25,45 +25,16 @@
  */
 package java.lang;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.AccessControlContext;
-import java.security.CodeSource;
-import java.security.Policy;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
-import java.security.cert.Certificate;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Map;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Map;
 import sun.misc.CompoundEnumeration;
 import sun.reflect.CallerSensitive;
-import sun.reflect.Reflection;
-
-/*-[
-#import "NSDataInputStream.h"
-#import "java/io/BufferedInputStream.h"
-#import "java/io/FileInputStream.h"
-#import "java/util/ArrayList.h"
-#import "java/util/Collections.h"
-]-*/
 
 /**
  * A class loader is an object that is responsible for loading classes. The
@@ -208,12 +179,14 @@ public abstract class ClassLoader {
      * Pointer to the allocator used by the runtime to allocate metadata such
      * as ArtFields and ArtMethods.
      */
-    private transient long allocator;
+    // j2objc: unused
+    // private transient long allocator;
 
     /**
      * Pointer to the class table, only used from within the runtime.
      */
-    private transient long classTable;
+    // j2objc: unused
+    // private transient long classTable;
 
     private static Void checkCreateClassLoader() {
         return null;
@@ -1177,7 +1150,6 @@ public abstract class ClassLoader {
         synchronized (packages) {
             map = new HashMap<>(packages);
         }
-        Package[] pkgs;
         return map.values().toArray(new Package[map.size()]);
     }
 
@@ -1318,79 +1290,17 @@ class SystemClassLoader extends ClassLoader {
   }
 
   @Override
-  protected native Class<?> findClass(String name) throws ClassNotFoundException /*-[
-    (void)nil_chk(name);
-    return [IOSClass forName:name initialize:YES classLoader:self];
-  ]-*/;
+  protected native Class<?> findClass(String name) throws ClassNotFoundException;
 
   @Override
-  protected native URL findResource(String name) /*-[
-    if (!name) {
-      return nil;
-    }
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-    return nativeURL ? create_JavaNetURL_initWithNSString_([nativeURL description]) : nil;
-  ]-*/;
+  protected native URL findResource(String name);
 
   @Override
-  protected native Enumeration<URL> findResources(String name) throws IOException /*-[
-    if (!name) {
-      return [super findResourcesWithNSString:name];
-    }
-    JavaUtilArrayList *urls = AUTORELEASE([[JavaUtilArrayList alloc] init]);
-    for (NSBundle *bundle in [NSBundle allBundles]) {
-      NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-      if (nativeURL) {
-        [urls addWithId:create_JavaNetURL_initWithNSString_([nativeURL description])];
-      }
-    }
-    for (NSBundle *bundle in [NSBundle allFrameworks]) {
-      NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-      if (nativeURL) {
-        [urls addWithId:create_JavaNetURL_initWithNSString_([nativeURL description])];
-      }
-    }
-    return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
-  ]-*/;
-
-  /*-[
-  static JavaIoInputStream *GetLinkedResource(NSString *name) {
-    const char *resourceName = [[[name stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
-        stringByReplacingOccurrencesOfString:@"."
-                                  withString:@"_"] UTF8String];
-    extern J2ObjcResourceDefinition start_resource_section __asm(
-        "section$start$__DATA$__j2objcresource");
-    extern J2ObjcResourceDefinition end_resource_section __asm(
-        "section$end$__DATA$__j2objcresource");
-    NSUInteger nResources = (NSUInteger)(&end_resource_section - &start_resource_section);
-    for (long i = 0; i < nResources; i++) {
-      J2ObjcResourceDefinition *resource = (&start_resource_section) + i;
-      if (strcmp(resourceName, resource->full_name) == 0) {
-        NSData *data = [[NSData alloc] initWithBytesNoCopy:(void *)resource->data
-                                                    length:(NSUInteger)resource->length
-                                              freeWhenDone:NO];
-        return [NSDataInputStream streamWithData:data];
-      }
-    }
-    return nil;
-  }
-  ]-*/
+  protected native Enumeration<URL> findResources(String name) throws IOException;
 
   // Gets the resource stream without needing to construct a URL object, which is in libjre_net.
   @Override
-  public native InputStream getResourceAsStream(String name) /*-[
-    if (!name) {
-      return nil;
-    }
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *path = [bundle pathForResource:name ofType:nil];
-    if (path) {
-      return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
-          create_JavaIoFileInputStream_initWithNSString_(path));
-    }
-    return GetLinkedResource(name);
-  ]-*/;
+  public native InputStream getResourceAsStream(String name);
 
   @Override
   protected synchronized Class<?> loadClass(String name, boolean resolve)
