@@ -1092,7 +1092,7 @@ public class JSR166TestCase extends TestCase {
      * getPolicy/setPolicy.
      */
     public void runWithPermissions(Runnable r, Permission... permissions) {
-        // Android-changed - no SecurityManager
+        // Android-changed: no SecurityManager
         // SecurityManager sm = System.getSecurityManager();
         // if (sm == null) {
         //     r.run();
@@ -1110,7 +1110,7 @@ public class JSR166TestCase extends TestCase {
      */
     public void runWithSecurityManagerWithPermissions(Runnable r,
                                                       Permission... permissions) {
-        // Android-changed - no SecurityManager
+        // Android-changed: no SecurityManager
         // SecurityManager sm = System.getSecurityManager();
         // if (sm == null) {
         //     Policy savedPolicy = Policy.getPolicy();
@@ -1224,18 +1224,58 @@ public class JSR166TestCase extends TestCase {
                 fail("Unexpected thread termination");
             else if (millisElapsedSince(startTime) > timeoutMillis) {
                 threadAssertTrue(thread.isAlive());
-                return;
+                fail("timed out waiting for thread to enter wait state");
             }
             Thread.yield();
         }
     }
 
     /**
-     * Waits up to LONG_DELAY_MS for the given thread to enter a wait
-     * state: BLOCKED, WAITING, or TIMED_WAITING.
+     * Spin-waits up to the specified number of milliseconds for the given
+     * thread to enter a wait state: BLOCKED, WAITING, or TIMED_WAITING,
+     * and additionally satisfy the given condition.
+     */
+    void waitForThreadToEnterWaitState(
+        Thread thread, long timeoutMillis, Callable<Boolean> waitingForGodot) {
+        long startTime = 0L;
+        for (;;) {
+            Thread.State s = thread.getState();
+            if (s == Thread.State.BLOCKED ||
+                s == Thread.State.WAITING ||
+                s == Thread.State.TIMED_WAITING) {
+                try {
+                    if (waitingForGodot.call())
+                        return;
+                } catch (Throwable fail) { threadUnexpectedException(fail); }
+            }
+            else if (s == Thread.State.TERMINATED)
+                fail("Unexpected thread termination");
+            else if (startTime == 0L)
+                startTime = System.nanoTime();
+            else if (millisElapsedSince(startTime) > timeoutMillis) {
+                threadAssertTrue(thread.isAlive());
+                fail("timed out waiting for thread to enter wait state");
+            }
+            Thread.yield();
+        }
+    }
+
+    /**
+     * Spin-waits up to LONG_DELAY_MS milliseconds for the given thread to
+     * enter a wait state: BLOCKED, WAITING, or TIMED_WAITING.
      */
     void waitForThreadToEnterWaitState(Thread thread) {
         waitForThreadToEnterWaitState(thread, LONG_DELAY_MS);
+    }
+
+    /**
+     * Spin-waits up to LONG_DELAY_MS milliseconds for the given thread to
+     * enter a wait state: BLOCKED, WAITING, or TIMED_WAITING,
+     * and additionally satisfy the given condition.
+     */
+    void waitForThreadToEnterWaitState(
+        Thread thread, Callable<Boolean> waitingForGodot) {
+        waitForThreadToEnterWaitState(thread, LONG_DELAY_MS, waitingForGodot);
     }
 
     /**
