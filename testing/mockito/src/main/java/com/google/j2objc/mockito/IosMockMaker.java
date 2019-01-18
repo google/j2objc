@@ -10,12 +10,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.mockito.internal.creation.ios;
-
-import org.mockito.exceptions.base.MockitoException;
-import org.mockito.invocation.MockHandler;
-import org.mockito.mock.MockCreationSettings;
-import org.mockito.plugins.MockMaker;
+package com.google.j2objc.mockito;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
@@ -24,6 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import org.mockito.exceptions.base.MockitoException;
+import org.mockito.invocation.MockHandler;
+import org.mockito.mock.MockCreationSettings;
+import org.mockito.plugins.MockMaker;
 
 /*-[
 #include "java/lang/IllegalArgumentException.h"
@@ -135,7 +134,7 @@ public final class IosMockMaker implements MockMaker {
   private static native <T> Class<T> generateClassProxy(String name, Class<T> classToMock,
       Class<?>[] interfaces) throws IllegalArgumentException /*-[
     Class proxyClass =
-        objc_allocateClassPair([OrgMockitoInternalCreationIosIosMockMaker_ClassProxy class],
+        objc_allocateClassPair([ComGoogleJ2objcMockitoIosMockMaker_ClassProxy class],
             [name UTF8String], 0);
     jint interfaceCount = interfaces->size_;
     for (jint i = 0; i < interfaceCount; i++) {
@@ -150,20 +149,20 @@ public final class IosMockMaker implements MockMaker {
   ]-*/;
 
   static class ClassProxy {
-    InvocationHandler $__handler;
+    InvocationHandler invocationHandler;
 
     InvocationHandler getHandler() {
-      return $__handler;
+      return invocationHandler;
     }
 
     void setHandler(InvocationHandler handler) {
-      $__handler = handler;
+      invocationHandler = handler;
     }
 
     /*-[
     static JavaLangReflectMethod *FindMethod(id self, SEL selector) {
       IOSClass *mockedClass =
-          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self java_getClass]];
+          [ComGoogleJ2objcMockitoIosMockMaker_proxyCache getWithId:[self java_getClass]];
       return [mockedClass getMethodWithSelector:sel_getName(selector)];
     }
     ]-*/
@@ -171,7 +170,7 @@ public final class IosMockMaker implements MockMaker {
     /*-[
     + (BOOL)isSubclassOfClass:(Class)aClass {
       IOSClass *mockedClass =
-          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self java_getClass]];
+          [ComGoogleJ2objcMockitoIosMockMaker_proxyCache getWithId:[self java_getClass]];
       return self == aClass
           || [[self superclass] isSubclassOfClass:aClass]
           || [[mockedClass objcClass] isSubclassOfClass:aClass];
@@ -224,3 +223,15 @@ public final class IosMockMaker implements MockMaker {
     ]-*/
   }
 }
+
+/*-[
+  // Defines an embedded resource defining this class as the default MockMaker.
+  // To update it, see j2objc/testing/mockito/README.
+  static jbyte _mockito_extensions_org_mockito_plugins_MockMaker[] = {
+    0x63, 0x6F, 0x6D, 0x2E, 0x67, 0x6F, 0x6F, 0x67, 0x6C, 0x65,
+    0x2E, 0x6A, 0x32, 0x6F, 0x62, 0x6A, 0x63, 0x2E, 0x6D, 0x6F,
+    0x63, 0x6B, 0x69, 0x74, 0x6F, 0x2E, 0x49, 0x6F, 0x73, 0x4D,
+    0x6F, 0x63, 0x6B, 0x4D, 0x61, 0x6B, 0x65, 0x72, 0x0A,
+  };
+  J2OBJC_RESOURCE(_mockito_extensions_org_mockito_plugins_MockMaker, 39, 0x76f6e007);
+]-*/

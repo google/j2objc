@@ -10,17 +10,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.mockito.internal.creation.ios;
+package com.google.j2objc.mockito;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import org.mockito.internal.invocation.InvocationImpl;
 import org.mockito.internal.invocation.MockitoMethod;
 import org.mockito.internal.invocation.realmethod.RealMethod;
 import org.mockito.internal.progress.SequenceNumber;
 import org.mockito.internal.util.ObjectMethodsGuru;
 import org.mockito.invocation.MockHandler;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * InvocationHandler adapter, inspired by the dexmaker project's version.
@@ -90,6 +90,10 @@ public class InvocationHandlerAdapter implements InvocationHandler {
 
     public Object invoke(Object target, Object[] arguments) throws Throwable {
       return method.invoke(target, arguments);
+    }
+
+    public boolean isAbstract() {
+      return Modifier.isAbstract(method.getModifiers());
     }
   }
 }

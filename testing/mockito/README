@@ -1,10 +1,28 @@
 This package creates an Objective-C library that support tests that use
-Mockito (https://code.google.com/p/mockito/). Source files in this project
-are those that were modified from the Mockito distribution; the others are
-extracted from the source distribution when building.
+Mockito (https://code.google.com/p/mockito/), version 1.10.19. Source files
+in this project include those modified from the Mockito distribution; the
+other Mockito sources are extracted from the source distribution when building
+(in build_output/java/).
 
 Modifications:
   Added a mock maker that works with iOS and Mac OS X.
-  Modified ClassPathLoader to load the iOS mock maker by default.
-  Stubbed out unused ASM and Cglib classes, removed use of Objenesis,
-    since iOS doesn't support bytecode.
+  Removed reference to Objenesis library, since iOS doesn't support bytecode.
+
+Notes:
+
+The IosMockMaker plugin is specified with an embedded resource file, defined
+in its com/google/j2objc/mockito/IosMockMaker.java source. To change the
+plugin's class name:
+
+  . Update mockito-extensions/org.mockito.plugins.MockMaker with the new class.
+  . Run "../../scripts/gen_resource_source.py -o output.res
+         mockito-extensions/org.mockito.plugins.MockMaker"
+  . Copy definitions from _mockito_extensions_org_mockito_plugins_MockMaker.h
+         to the embedded resource section in IosMockMaker.java
+
+Similar steps can be used to specify future Mockito plugins:
+
+  . Create a mockito-extensions/<plugin-interface-name> file.
+  . Add the name of the implementing class as a single line entry.
+  . Run gen_resource_source.py on the new file.
+  . Copy definitions from the generated header file to IosMockMaker.java.

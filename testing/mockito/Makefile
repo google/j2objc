@@ -46,6 +46,8 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/exceptions/Reporter.java \
     org/mockito/exceptions/base/MockitoAssertionError.java \
     org/mockito/exceptions/base/MockitoException.java \
+    org/mockito/exceptions/misusing/CannotStubVoidMethodWithReturnValue.java \
+    org/mockito/exceptions/misusing/CannotVerifyStubOnlyMock.java \
     org/mockito/exceptions/misusing/FriendlyReminderException.java \
     org/mockito/exceptions/misusing/InvalidUseOfMatchersException.java \
     org/mockito/exceptions/misusing/MissingMethodInvocationException.java \
@@ -64,10 +66,12 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/exceptions/verification/TooManyActualInvocations.java \
     org/mockito/exceptions/verification/VerificationInOrderFailure.java \
     org/mockito/exceptions/verification/WantedButNotInvoked.java \
+    org/mockito/exceptions/verification/junit/ArgumentsAreDifferent.java \
     org/mockito/internal/InOrderImpl.java \
     org/mockito/internal/InternalMockHandler.java \
     org/mockito/internal/MockitoCore.java \
     org/mockito/internal/configuration/CaptorAnnotationProcessor.java \
+    org/mockito/internal/configuration/ClassPathLoader.java \
     org/mockito/internal/configuration/DefaultAnnotationEngine.java \
     org/mockito/internal/configuration/DefaultInjectionEngine.java \
     org/mockito/internal/configuration/FieldAnnotationProcessor.java \
@@ -88,7 +92,12 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java \
     org/mockito/internal/configuration/injection/scanner/InjectMocksScanner.java \
     org/mockito/internal/configuration/injection/scanner/MockScanner.java \
-    org/mockito/internal/creation/ClassNameFinder.java \
+    org/mockito/internal/configuration/plugins/DefaultPluginSwitch.java \
+    org/mockito/internal/configuration/plugins/PluginFileReader.java \
+    org/mockito/internal/configuration/plugins/PluginFinder.java \
+    org/mockito/internal/configuration/plugins/PluginLoader.java \
+    org/mockito/internal/configuration/plugins/PluginRegistry.java \
+    org/mockito/internal/configuration/plugins/Plugins.java \
     org/mockito/internal/creation/DelegatingMethod.java \
     org/mockito/internal/creation/MockSettingsImpl.java \
     org/mockito/internal/creation/settings/CreationSettings.java \
@@ -96,6 +105,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/debugging/LocationImpl.java \
     org/mockito/internal/debugging/MockitoDebuggerImpl.java \
     org/mockito/internal/debugging/VerboseMockInvocationLogger.java \
+    org/mockito/internal/exceptions/MockitoLimitations.java \
     org/mockito/internal/exceptions/VerificationAwareInvocation.java \
     org/mockito/internal/exceptions/stacktrace/ConditionalStackTraceFilter.java \
     org/mockito/internal/exceptions/stacktrace/DefaultStackTraceCleaner.java \
@@ -106,6 +116,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/handler/MockHandlerFactory.java \
     org/mockito/internal/handler/MockHandlerImpl.java \
     org/mockito/internal/handler/NullResultGuardian.java \
+    org/mockito/internal/invocation/AbstractAwareMethod.java \
     org/mockito/internal/invocation/CapturesArgumensFromInvocation.java \
     org/mockito/internal/invocation/InvocationImpl.java \
     org/mockito/internal/invocation/InvocationMarker.java \
@@ -119,6 +130,9 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/invocation/finder/AllInvocationsFinder.java \
     org/mockito/internal/invocation/finder/VerifiableInvocationsFinder.java \
     org/mockito/internal/invocation/realmethod/RealMethod.java \
+    org/mockito/internal/junit/FriendlyExceptionMaker.java \
+    org/mockito/internal/junit/JUnitDetecter.java \
+    org/mockito/internal/junit/JUnitRule.java \
     org/mockito/internal/junit/JUnitTool.java \
     org/mockito/internal/listeners/MockingProgressListener.java \
     org/mockito/internal/listeners/MockingStartedListener.java \
@@ -201,40 +215,46 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/util/MockCreationValidator.java \
     org/mockito/internal/util/MockNameImpl.java \
     org/mockito/internal/util/MockUtil.java \
-    org/mockito/internal/util/MockitoSpy.java \
     org/mockito/internal/util/ObjectMethodsGuru.java \
     org/mockito/internal/util/Primitives.java \
     org/mockito/internal/util/RemoveFirstLine.java \
     org/mockito/internal/util/StringJoiner.java \
+    org/mockito/internal/util/Timer.java \
     org/mockito/internal/util/collections/ArrayUtils.java \
     org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java \
     org/mockito/internal/util/collections/HashCodeAndEqualsSafeSet.java \
     org/mockito/internal/util/collections/IdentitySet.java \
+    org/mockito/internal/util/collections/Iterables.java \
     org/mockito/internal/util/collections/ListUtil.java \
     org/mockito/internal/util/collections/Sets.java \
+    org/mockito/internal/util/io/IOUtil.java \
     org/mockito/internal/util/reflection/AccessibilityChanger.java \
     org/mockito/internal/util/reflection/BeanPropertySetter.java \
+    org/mockito/internal/util/reflection/Constructors.java \
     org/mockito/internal/util/reflection/FieldCopier.java \
     org/mockito/internal/util/reflection/FieldInitializationReport.java \
     org/mockito/internal/util/reflection/FieldInitializer.java \
     org/mockito/internal/util/reflection/FieldReader.java \
     org/mockito/internal/util/reflection/FieldSetter.java \
     org/mockito/internal/util/reflection/GenericMaster.java \
+    org/mockito/internal/util/reflection/GenericMetadataSupport.java \
     org/mockito/internal/util/reflection/LenientCopyTool.java \
     org/mockito/internal/util/reflection/Whitebox.java \
     org/mockito/internal/verification/AtLeast.java \
     org/mockito/internal/verification/AtMost.java \
     org/mockito/internal/verification/Calls.java \
+    org/mockito/internal/verification/DefaultRegisteredInvocations.java \
     org/mockito/internal/verification/InOrderContextImpl.java \
     org/mockito/internal/verification/InOrderWrapper.java \
     org/mockito/internal/verification/MockAwareVerificationMode.java \
     org/mockito/internal/verification/NoMoreInteractions.java \
     org/mockito/internal/verification/Only.java \
     org/mockito/internal/verification/RegisteredInvocations.java \
+    org/mockito/internal/verification/SingleRegisteredInvocation.java \
     org/mockito/internal/verification/Times.java \
     org/mockito/internal/verification/VerificationDataImpl.java \
     org/mockito/internal/verification/VerificationModeFactory.java \
-    org/mockito/internal/verification/VerificationWithTimeoutImpl.java \
+    org/mockito/internal/verification/VerificationOverTimeImpl.java \
     org/mockito/internal/verification/api/InOrderContext.java \
     org/mockito/internal/verification/api/VerificationData.java \
     org/mockito/internal/verification/api/VerificationDataInOrder.java \
@@ -257,11 +277,16 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/invocation/Location.java \
     org/mockito/invocation/MockHandler.java \
     org/mockito/invocation/StubInfo.java \
+    org/mockito/junit/MockitoJUnit.java \
+    org/mockito/junit/MockitoJUnitRule.java \
+    org/mockito/junit/MockitoRule.java \
     org/mockito/listeners/InvocationListener.java \
     org/mockito/listeners/MethodInvocationReport.java \
     org/mockito/mock/MockCreationSettings.java \
     org/mockito/mock/MockName.java \
+    org/mockito/mock/SerializableMode.java \
     org/mockito/plugins/MockMaker.java \
+    org/mockito/plugins/PluginSwitch.java \
     org/mockito/plugins/StackTraceCleanerProvider.java \
     org/mockito/runners/MockitoJUnitRunner.java \
     org/mockito/stubbing/Answer.java \
@@ -269,15 +294,16 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/stubbing/OngoingStubbing.java \
     org/mockito/stubbing/Stubber.java \
     org/mockito/stubbing/VoidMethodStubbable.java \
+    org/mockito/verification/After.java \
     org/mockito/verification/Timeout.java \
+    org/mockito/verification/VerificationAfterDelay.java \
     org/mockito/verification/VerificationMode.java \
-    org/mockito/verification/VerificationWithTimeout.java
+    org/mockito/verification/VerificationWithTimeout.java \
+    org/mockito/verification/VerificationWrapper.java
 
 SUPERSOURCE_JAVA_SOURCES = \
-    org/mockito/internal/configuration/ClassPathLoader.java \
-    org/mockito/internal/creation/ios/InvocationHandlerAdapter.java \
-    org/mockito/internal/creation/ios/IosMockMaker.java \
-    org/mockito/internal/creation/jmock/ClassImposterizer.java \
+    com/google/j2objc/mockito/InvocationHandlerAdapter.java \
+    com/google/j2objc/mockito/IosMockMaker.java \
     org/mockito/internal/matchers/LocalizedMatcher.java \
     org/mockito/internal/stubbing/answers/ThrowsExceptionClass.java
 
