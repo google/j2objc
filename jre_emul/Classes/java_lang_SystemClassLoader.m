@@ -29,9 +29,10 @@ static IOSByteArray *GetLinkedResource(NSString *name) {
   if ([name characterAtIndex:0] != '/') {
     name = [NSString stringWithFormat:@"/%@", name];
   }
-  const char *resourceName = [[[name stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
-                               stringByReplacingOccurrencesOfString:@"."
-                               withString:@"_"] UTF8String];
+  const char *resourceName =
+      [[[[name stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
+               stringByReplacingOccurrencesOfString:@"." withString:@"_"]
+               stringByReplacingOccurrencesOfString:@"-" withString:@"_"] UTF8String];
   extern J2ObjcResourceDefinition start_resource_section __asm(
       "section$start$__DATA$__j2objcresource");
   extern J2ObjcResourceDefinition end_resource_section __asm(
