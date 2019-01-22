@@ -497,7 +497,7 @@ public class TreeConverter {
     AnnotationTypeDeclaration newNode = new AnnotationTypeDeclaration();
     TreePath path = getTreePath(parent, node);
     Element element = getElement(path);
-    convertBodyDeclaration(node, path, node.getModifiers(), newNode, element);
+    convertBodyDeclaration(node, path, node.getModifiers(), newNode);
     for (Tree bodyDecl : node.getMembers()) {
       if (bodyDecl.getKind() == Kind.METHOD) {
         MethodTree methodTree = (MethodTree) bodyDecl;
@@ -512,7 +512,7 @@ public class TreeConverter {
         newMember
             .setModifiers((int) ((JCModifiers) modifiers).flags)
             .setAnnotations(convertAnnotations(modifiers, getTreePath(methodPath, modifiers)))
-            .setJavadoc((Javadoc) getAssociatedJavaDoc(methodTree, methodElement));
+            .setJavadoc((Javadoc) getAssociatedJavaDoc(methodTree, methodPath));
         newNode.addBodyDeclaration(newMember);
       } else {
         newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl, path));
@@ -610,13 +610,12 @@ public class TreeConverter {
       Tree node,
       TreePath parent,
       ModifiersTree modifiers,
-      BodyDeclaration newNode,
-      Element element) {
+      BodyDeclaration newNode) {
     TreePath path = getTreePath(parent, node);
     return newNode
         .setModifiers((int) ((JCModifiers) modifiers).flags)
         .setAnnotations(convertAnnotations(modifiers, path))
-        .setJavadoc((Javadoc) getAssociatedJavaDoc(node, element));
+        .setJavadoc((Javadoc) getAssociatedJavaDoc(node, path));
   }
 
   private TreeNode convertBooleanLiteral(LiteralTree node, TreePath parent) {
@@ -680,7 +679,7 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
     TypeDeclaration newNode = new TypeDeclaration();
     TypeElement element = (TypeElement) getElement(path);
-    convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
     List<BodyDeclaration> bodyDeclarations = newNode.getBodyDeclarations();
     for (Tree bodyDecl : node.getMembers()) {
       Object member = convert(bodyDecl, path);
@@ -740,7 +739,7 @@ public class TreeConverter {
       return convertClassDeclaration(node, parent).setPosition(getPosition(node));
     }
     EnumDeclaration newNode = new EnumDeclaration();
-    convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
     newNode
         .setName(convertSimpleName(element, getTypeMirror(path), getNamePosition(node)))
         .setTypeElement(element);
@@ -1034,7 +1033,7 @@ public class TreeConverter {
     Name name = Name.newName(null /* qualifier */, element);
     name.setPosition(new SourcePosition(methodStartPosition, length));
 
-    convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
     for (VariableTree param : node.getParameters()) {
       newNode.addParameter((SingleVariableDeclaration) convert(param, path));
     }
@@ -1183,7 +1182,7 @@ public class TreeConverter {
         // sources are keyed to their compilation unit, not their package node.
         node = unit;
       }
-      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, pkg));
+      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, getTreePath(parent, node)));
     }
     newNode.setName(newUnit.getEnv().elementUtil().getPackageName(pkg));
     newNode.setPosition(SourcePosition.NO_POSITION);
@@ -1326,7 +1325,7 @@ public class TreeConverter {
     if (element.getKind() == ElementKind.FIELD) {
       FieldDeclaration newNode =
           new FieldDeclaration(element, (Expression) convert(node.getInitializer(), path));
-      convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+      convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
       return newNode;
     }
     if (element.getKind() == ElementKind.LOCAL_VARIABLE) {
@@ -1335,7 +1334,7 @@ public class TreeConverter {
     }
     if (element.getKind() == ElementKind.ENUM_CONSTANT) {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration().setVariableElement(element);
-      convertBodyDeclaration(node, parent, node.getModifiers(), newNode, element);
+      convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer(), path);
       TreeUtil.moveList(init.getArguments(), newNode.getArguments());
       if (init.getAnonymousClassDeclaration() != null) {
@@ -1382,12 +1381,12 @@ public class TreeConverter {
         .setBody((Statement) convert(node.getStatement(), path));
   }
 
-  private TreeNode getAssociatedJavaDoc(Tree node, Element element) {
-    Comment comment = convertAssociatedComment(node, element);
+  private TreeNode getAssociatedJavaDoc(Tree node, TreePath path) {
+    Comment comment = convertAssociatedComment(node, path);
     return comment != null && comment.isDocComment() ? comment : null;
   }
 
-  private Comment convertAssociatedComment(Tree node, Element element) {
+  private Comment convertAssociatedComment(Tree node, TreePath path) {
     boolean docCommentsEnabled = newUnit.getEnv().options().docCommentsEnabled();
     DocCommentTable docComments = ((JCCompilationUnit) unit).docComments;
     if (!docCommentsEnabled || docComments == null || !docComments.hasComment((JCTree) node)) {
@@ -1400,7 +1399,7 @@ public class TreeConverter {
         comment = new BlockComment();
         break;
       case JAVADOC:
-        comment = docCommentsEnabled ? convertJavadocComment(element) : new Javadoc();
+        comment = convertJavadocComment(path);
         break;
       case LINE:
         comment = new LineComment();
@@ -1415,9 +1414,9 @@ public class TreeConverter {
     return comment;
   }
 
-  private Javadoc convertJavadocComment(Element element) {
+  private Javadoc convertJavadocComment(TreePath path) {
     return JavadocConverter.convertJavadoc(
-        element, newUnit.getSource(), env, newUnit.getEnv().options().reportJavadocWarnings());
+        path, newUnit.getSource(), env, newUnit.getEnv().options().reportJavadocWarnings());
   }
 
   private static void addOcniComments(CompilationUnit unit, boolean jsniWarnings) {
