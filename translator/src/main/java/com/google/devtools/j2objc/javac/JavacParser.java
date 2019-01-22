@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.SourcePositions;
-import com.sun.tools.javac.tree.JCTree;
 import java.io.File;
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -91,7 +90,7 @@ public class JavacParser extends Parser {
     try {
       JavacEnvironment parserEnv = createEnvironment(path, source);
       JavacTask task = parserEnv.task();
-      JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
+      CompilationUnitTree unit = task.parse().iterator().next();
       task.analyze();
       processDiagnostics(parserEnv.diagnostics());
       return TreeConverter.convertCompilationUnit(options, parserEnv, unit);
@@ -177,7 +176,7 @@ public class JavacParser extends Parser {
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
-              .convertCompilationUnit(options, env, (JCTree.JCCompilationUnit) ast);
+              .convertCompilationUnit(options, env, ast);
           processDiagnostics(env.diagnostics());
           handler.handleParsedUnit(unit.getSourceFilePath(), unit);
         }
@@ -224,7 +223,7 @@ public class JavacParser extends Parser {
     try {
       JavacEnvironment parserEnv = createEnvironment(path, source);
       JavacTask task = parserEnv.task();
-      JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
+      CompilationUnitTree unit = task.parse().iterator().next();
       processDiagnostics(parserEnv.diagnostics());
       return new JavacParseResult(
           file, source, unit, parserEnv.treeUtilities().getSourcePositions());
@@ -332,13 +331,13 @@ public class JavacParser extends Parser {
   private static class JavacParseResult implements Parser.ParseResult {
     private final InputFile file;
     private String source;
-    private final JCTree.JCCompilationUnit unit;
+    private final CompilationUnitTree unit;
     private final SourcePositions sourcePositions;
 
     private JavacParseResult(
         InputFile file,
         String source,
-        JCTree.JCCompilationUnit unit,
+        CompilationUnitTree unit,
         SourcePositions sourcePositions) {
       this.file = file;
       this.source = source;
