@@ -109,7 +109,6 @@ import com.strobel.decompiler.languages.java.ast.UnaryOperatorExpression;
 import com.strobel.decompiler.languages.java.ast.VariableInitializer;
 import com.strobel.decompiler.languages.java.ast.WildcardType;
 import com.strobel.decompiler.patterns.Pattern;
-import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -123,7 +122,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -247,9 +245,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   }
 
   private ExecutableElement findMethod(String name, TypeMirror type, MethodReference methodDef) {
-    TypeElement typeElement = (TypeElement) (type.getKind() == TypeKind.ARRAY
-        ? ((com.sun.tools.javac.code.Type.ArrayType) type).tsym
-        : parserEnv.typeUtilities().asElement(type));
+    TypeElement typeElement = (TypeElement) parserEnv.typeUtilities().asElement(type);
     String signature = methodDef.getSignature();
     String erasedSignature = methodDef.getErasedSignature();
     for (Element e : typeElement.getEnclosedElements()) {
@@ -281,7 +277,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitTypeReference(TypeReferenceExpression node, Void data) {
     SimpleType typeNode = (SimpleType) node.getFirstChild().acceptVisitor(this, null);
     DeclaredType type = (DeclaredType) typeNode.getTypeMirror();
-    return ClassFileConverter.convertName((ClassSymbol) type.asElement());
+    return ClassFileConverter.convertName(type.asElement());
   }
 
   @Override

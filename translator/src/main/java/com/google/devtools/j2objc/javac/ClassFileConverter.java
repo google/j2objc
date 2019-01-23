@@ -51,7 +51,6 @@ import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
-import com.sun.tools.javac.code.Symbol;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -202,11 +201,12 @@ public class ClassFileConverter {
     return node;
   }
 
-  static Name convertName(Symbol symbol) {
-    if (symbol.owner == null || symbol.owner.name.isEmpty()) {
-      return new SimpleName(symbol);
+  static Name convertName(Element element) {
+    Element parent = element.getEnclosingElement();
+    if (parent == null || parent.getSimpleName().toString().isEmpty()) {
+      return new SimpleName(element);
     }
-    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner));
+    return new QualifiedName(element, element.asType(), convertName(parent));
   }
 
   private TreeNode convertPackage(PackageElement element) {
