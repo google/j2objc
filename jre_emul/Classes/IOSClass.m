@@ -55,9 +55,8 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
-#import "java/util/Enumeration.h"
+#import "java/util/ArrayList.h"
 #import "java/util/Iterator.h"
-#import "java/util/LinkedHashMap.h"
 #import "java/util/Properties.h"
 #import "java/util/Set.h"
 #import "libcore/reflect/AnnotatedElements.h"
@@ -76,6 +75,24 @@
 
 J2OBJC_INITIALIZED_DEFN(IOSClass)
 
+#define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
+
+// Package to prefix mappings, initialized in FindRenamedPackagePrefix().
+static JavaUtilArrayList *prefixMapping;
+
+@interface PackagePrefixEntry : NSObject {
+  NSString *key_;
+  NSString *value_;
+}
+- (instancetype)initWithNSString:(NSString *)key withNSString:(NSString *)value;
+- (NSString *)key;
+- (NSString *)value;
+@end
+
+@interface PackagePrefixLoader : NSObject < JavaUtilProperties_KeyValueLoader >
+- (void)load__WithNSString:(NSString *)key withNSString:(NSString *)value;
+@end
+
 @implementation IOSClass
 
 // Primitive class instances.
@@ -93,11 +110,6 @@ static IOSPrimitiveClass *IOSClass_voidClass;
 static IOSClass *IOSClass_objectClass;
 
 static IOSObjectArray *IOSClass_emptyClassArray;
-
-#define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
-
-// Package to prefix mappings, initialized in FindRenamedPackagePrefix().
-static JavaUtilLinkedHashMap *prefixMapping;
 
 - (Class)objcClass {
   return nil;
@@ -473,25 +485,27 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
     prefix = method_invoke(pkgInfoCls, prefixMethod);
   }
   if (!prefix) {
-    // Check whether package has a mapped prefix property.
+    // Initialize prefix mappings, if defined.
     static dispatch_once_t once;
     dispatch_once(&once, ^{
       JavaIoInputStream *prefixesResource =
           [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
       if (prefixesResource) {
-        JreStrongAssignAndConsume(&prefixMapping, new_JavaUtilLinkedHashMap_init());
-        JavaUtilProperties_load0WithJavaUtilMap_withJavaUtilProperties_LineReader_(
-            prefixMapping,
-            create_JavaUtilProperties_LineReader_initWithJavaIoInputStream_(prefixesResource));
+        JreStrongAssignAndConsume(&prefixMapping, new_JavaUtilArrayList_init());
+        JavaUtilProperties_LineReader *lr =
+            create_JavaUtilProperties_LineReader_initWithJavaIoInputStream_(prefixesResource);
+        PackagePrefixLoader *loader = [[PackagePrefixLoader alloc] init];
+        [JavaUtilProperties loadLineReaderWithJavaUtilProperties_LineReader:lr
+                                      withJavaUtilProperties_KeyValueLoader:loader];
       }
     });
-    prefix = [prefixMapping getWithId:package];
   }
   if (!prefix && prefixMapping) {
     // Check each prefix mapping to see if it's a matching wildcard.
-    id<JavaUtilIterator> names = [[prefixMapping keySet] iterator];
+    id<JavaUtilIterator> names = [prefixMapping iterator];
     while ([names hasNext]) {
-      NSString *key = (NSString *) [names next];
+      PackagePrefixEntry *entry = (PackagePrefixEntry *)[names next];
+      NSString *key = [entry key];
       // Same translation as j2objc's PackagePrefixes.wildcardToRegex().
       NSString *regex;
       if ([key hasSuffix:@".*"]) {
@@ -504,7 +518,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
                   java_replace:@"\\*" withSequence:@".*"]];
       }
       if ([package java_matches:regex]) {
-        prefix = [prefixMapping getWithId:key];
+        prefix = [entry value];
         break;
       }
     }
@@ -1424,3 +1438,39 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)
 
 J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
+
+@implementation PackagePrefixEntry
+
+- (instancetype)initWithNSString:(NSString *)key
+                    withNSString:(NSString *)value {
+  if ((self = [super init])) {
+    key_ = [key retain];
+    value_ = [value retain];
+  }
+  return self;
+}
+
+- (NSString *)key {
+  return key_;
+}
+
+- (NSString *)value {
+  return value_;
+}
+
+- (void)dealloc {
+  [key_ release];
+  [value_ release];
+  [super dealloc];
+}
+
+@end
+
+@implementation PackagePrefixLoader
+
+- (void)load__WithNSString:(NSString *)key withNSString:(NSString *)value {
+  [nil_chk(prefixMapping) addWithId:[[PackagePrefixEntry alloc] initWithNSString:key
+                                                                    withNSString:value]];
+}
+
+@end

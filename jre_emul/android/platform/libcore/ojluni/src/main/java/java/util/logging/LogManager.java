@@ -1257,7 +1257,7 @@ public class LogManager {
         reset();
 
         // Load the properties
-        Properties.load0(props, new Properties.LineReader(ins));
+        Properties.loadLineReader(new Properties.LineReader(ins), props::put);
         if (ReflectionUtil.isJreReflectionStripped()) {
           reflectionStrippedProcessing();
         }

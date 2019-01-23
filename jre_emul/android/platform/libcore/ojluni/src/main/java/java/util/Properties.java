@@ -315,7 +315,7 @@ class Properties extends Hashtable<Object,Object> {
      * @since   1.6
      */
     public synchronized void load(Reader reader) throws IOException {
-        load0(this, new LineReader(reader));
+        load0(new LineReader(reader));
     }
 
     /**
@@ -339,11 +339,28 @@ class Properties extends Hashtable<Object,Object> {
      * @since 1.2
      */
     public synchronized void load(InputStream inStream) throws IOException {
-        load0(this, new LineReader(inStream));
+        load0(new LineReader(inStream));
     }
 
-    // j2objc: modified to support IOSClass loading of a prefixes.properties resource.
-    public static void load0(Map<Object, Object> map, LineReader lr) throws IOException {
+    // j2objc: modified to support IOSClass loading of a prefixes.properties resource with
+    // minimal dependencies.
+    /**
+     * Defines a functional interface for loading key/value properties.
+     *
+     * @hide internal use only
+     */
+    public static interface KeyValueLoader {
+      void load(String key, String value);
+    }
+
+    /**
+     * Loads properties using a key/value loader. This allows properties files to be
+     * parsed the same way as for for Properties classes, but key/value pairs can be
+     * stored independently.
+     *
+     * @hide internal use only
+     */
+    public static void loadLineReader(LineReader lr, KeyValueLoader loader) throws IOException {
         char[] convtBuf = new char[1024];
         int limit;
         int keyLen;
@@ -394,8 +411,12 @@ class Properties extends Hashtable<Object,Object> {
             }
             String key = loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
             String value = loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
-            map.put(key, value);
+            loader.load(key, value);
         }
+    }
+
+    private void load0(LineReader lr) throws IOException {
+        loadLineReader(lr, this::put);
     }
 
     /**
