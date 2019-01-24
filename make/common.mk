@@ -125,12 +125,16 @@ TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
 # Use Java 8 by default.
 # TODO(tball): remove when Java 9 is supported.
-JAVA_HOME = $(shell /usr/libexec/java_home -v 1.8)
-JAVA = $(JAVA_HOME)/jre/bin/java
-ifdef J2OBJC_JAVAC
-JAVAC = $(J2OBJC_JAVAC)
+ifdef J2OBJC_JAVA_HOME
+JAVA_HOME = $(J2OBJC_JAVA_HOME)
 else
+JAVA_HOME = $(shell /usr/libexec/java_home -v 1.8)
+endif
+JAVA = $(JAVA_HOME)/bin/java
 JAVAC = $(JAVA_HOME)/bin/javac
+ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
+# Flag used to include tools.jar. This jar was removed in JDK 9.
+JAVA_8 = 1
 endif
 
 comma=,

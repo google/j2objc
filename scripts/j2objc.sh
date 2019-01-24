@@ -44,11 +44,13 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
-# Run command with Java 8.
-if [ -x "/usr/libexec/java_home" ]; then
+if [ ! -z "${J2OBJC_JAVA_HOME}" ]; then
+  readonly JAVA_HOME="${J2OBJC_JAVA_HOME}"
+  readonly JAVA=${JAVA_HOME}/bin/java
+elif [ -x "/usr/libexec/java_home" ]; then
   # java_home is available on all Mac systems.
   readonly JAVA_HOME=`/usr/libexec/java_home -v 1.8 2> /dev/null`
-  readonly JAVA=${JAVA_HOME}/jre/bin/java
+  readonly JAVA=${JAVA_HOME}/bin/java
 else
   # Non-Mac system (not supported, but should still work).
   readonly JAVA=`which java`

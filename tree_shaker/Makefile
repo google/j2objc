@@ -45,7 +45,10 @@ RESOURCES = \
     com/google/devtools/j2objc/JRE.mappings
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(GUAVA_JAR) $(JAVAC_JAR) $(PROCYON_JARS)
+INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS)
+ifdef JAVA_8
+INTERNAL_DEPS += $(JAVAC_JAR)
+endif
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
