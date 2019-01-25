@@ -884,22 +884,23 @@ public class TreeConverter {
   }
 
   private TreeNode convertFunctionalExpression(
-      JCFunctionalExpression node, FunctionalExpression newNode) {
-    for (TypeMirror type : getTargets(node)) {
+      JCFunctionalExpression node, TreePath parent, FunctionalExpression newNode) {
+    List<? extends TypeMirror> targets = getTargets(node, parent);
+    for (TypeMirror type : targets) {
       newNode.addTargetType(type);
     }
     Types types =
         Types.instance(((com.sun.tools.javac.api.BasicJavacTask) env.task()).getContext());
     return newNode
-        .setTypeMirror(getTargets(node).iterator().next())
+        .setTypeMirror(targets.iterator().next())
         .setDescriptor(
             new ExecutablePair(
-                (ExecutableElement) types.findDescriptorSymbol(getTargets(node).head.tsym),
+                (ExecutableElement) types
+                    .findDescriptorSymbol(((com.sun.tools.javac.code.Type) targets.get(0)).tsym),
                 (ExecutableType) node.getDescriptorType(types)));
   }
 
-  private static com.sun.tools.javac.util.List<com.sun.tools.javac.code.Type> getTargets(
-      JCFunctionalExpression node) {
+  private List<? extends TypeMirror> getTargets(JCFunctionalExpression node, TreePath parent) {
     try {
       @SuppressWarnings("unchecked")
       com.sun.tools.javac.util.List<com.sun.tools.javac.code.Type> result =
@@ -909,13 +910,10 @@ public class TreeConverter {
     } catch (ReflectiveOperationException e) {
       // continue below
     }
-    try {
-      return com.sun.tools.javac.util.List.of(
-          (com.sun.tools.javac.code.Type)
-              JCFunctionalExpression.class.getField("target").get(node));
-    } catch (ReflectiveOperationException e) {
-      throw new LinkageError(e.getMessage(), e);
-    }
+    // In earlier versions, the TypeMirror just contained the first type of an intersection type.
+    // That's why, the field "targets" is used above. This issue is fixed in JDK 11.
+    TypeMirror t = getTypeMirror(getTreePath(parent, node));
+    return newUnit.getEnv().typeUtil().getUpperBounds(t);
   }
 
   private TreeNode convertIdent(IdentifierTree node, TreePath parent) {
@@ -957,7 +955,7 @@ public class TreeConverter {
   private TreeNode convertLambda(LambdaExpressionTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     LambdaExpression newNode = new LambdaExpression();
-    convertFunctionalExpression((JCFunctionalExpression) node, newNode);
+    convertFunctionalExpression((JCFunctionalExpression) node, parent, newNode);
     for (VariableTree param : node.getParameters()) {
       newNode.addParameter((VariableDeclaration) convert(param, path));
     }
@@ -967,7 +965,7 @@ public class TreeConverter {
   private TreeNode convertMethodReference(
       MemberReferenceTree node, TreePath parent, MethodReference newNode) {
     TreePath path = getTreePath(parent, node);
-    convertFunctionalExpression((JCMemberReference) node, newNode);
+    convertFunctionalExpression((JCMemberReference) node, parent, newNode);
     if (node.getTypeArguments() != null) {
       for (ExpressionTree typeArg : node.getTypeArguments()) {
         newNode.addTypeArgument(Type.newType(((JCExpression) typeArg).type));
