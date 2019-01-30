@@ -274,6 +274,13 @@ public final class TypeUtil {
     return javacTypes.isSubtype(t1, t2);
   }
 
+  public boolean isSameType(TypeMirror t1, TypeMirror t2) {
+    if (isGeneratedType(t1) || isGeneratedType(t2)) {
+      return t1.equals(t2);
+    }
+    return javacTypes.isSameType(t1, t2);
+  }
+
   public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
     if (isGeneratedType(m1) || isGeneratedType(m2)) {
       return m1.equals(m2);
