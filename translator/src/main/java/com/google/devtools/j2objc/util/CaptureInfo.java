@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -106,11 +107,6 @@ public class CaptureInfo {
     return automaticOuterParam(type) ? getOrCreateOuterCapture(type) : outerCaptures.get(type);
   }
 
-  public VariableElement getOuterParam(TypeElement type) {
-    Capture outerCapture = getOuterCapture(type);
-    return outerCapture != null ? outerCapture.param : null;
-  }
-
   public VariableElement getOuterField(TypeElement type) {
     Capture outerCapture = outerCaptures.get(type);
     return outerCapture != null ? outerCapture.field : null;
@@ -176,7 +172,7 @@ public class CaptureInfo {
   }
 
   private static boolean automaticOuterParam(TypeElement type) {
-    return ElementUtil.hasOuterContext(type) && !ElementUtil.isLocal(type);
+    return type.getNestingKind() == NestingKind.MEMBER && !ElementUtil.isStatic(type);
   }
 
   private static TypeMirror getDeclaringType(TypeElement type) {

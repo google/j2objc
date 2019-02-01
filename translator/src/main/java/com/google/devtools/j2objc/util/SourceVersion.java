@@ -62,14 +62,6 @@ public enum SourceVersion {
     throw new IllegalArgumentException("Unsupported version: " + majorVersion);
   }
 
-  public static boolean java7Minimum(SourceVersion sourceVersion) {
-    return sourceVersion.version >= 7;
-  }
-
-  public static boolean java8Minimum(SourceVersion sourceVersion) {
-    return sourceVersion.version >= 8;
-  }
-
   public static boolean java9Minimum(SourceVersion sourceVersion) {
     return sourceVersion.version >= 9;
   }
