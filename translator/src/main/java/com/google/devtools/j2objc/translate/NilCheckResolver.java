@@ -68,6 +68,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -470,11 +471,6 @@ public class NilCheckResolver extends UnitTreeVisitor {
       outerTarget.accept(this);
       addNilCheck(outerTarget);
     }
-    Expression superOuterArg = node.getSuperOuterArg();
-    if (superOuterArg != null) {
-      superOuterArg.accept(this);
-      addNilCheck(superOuterArg);
-    }
     for (Expression arg : node.getArguments()) {
       arg.accept(this);
     }
@@ -818,7 +814,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
   // added nil_chk's.
   @Override
   public void endVisit(FunctionInvocation node) {
-    if (node.getFunctionElement() == NIL_CHK_ELEM) {
+    if (Objects.equals(node.getFunctionElement(), NIL_CHK_ELEM)) {
       VariableElement var = TreeUtil.getVariableElement(node.getArgument(0));
       if (var != null) {
         addSafeVar(var);

@@ -321,10 +321,6 @@ public class Functionizer extends UnitTreeVisitor {
     } else if (captureInfo.needsOuterParam(type)) {
       args.add(new ThisExpression(ElementUtil.getDeclaringClass(type).asType()));
     }
-    Expression superOuterArg = node.getSuperOuterArg();
-    if (superOuterArg != null) {
-      args.add(TreeUtil.remove(superOuterArg));
-    }
     TreeUtil.moveList(node.getCaptureArgs(), args);
     TreeUtil.moveList(node.getArguments(), args);
     node.replaceWith(invocation);
