@@ -1147,13 +1147,25 @@ public class TreeConverter {
   private TreeNode convertNewClass(NewClassTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     ClassInstanceCreation newNode = new ClassInstanceCreation();
+    Expression enclosingExpression = (Expression) convert(node.getEnclosingExpression(), path);
+    ExecutableElement executable = (ExecutableElement) getElement(path);
+    TypeMirror vargarsType = ((JCNewClass) node).varargsElement;
+    // Case where the first parameter of the constructor of an inner class is the outer class (e.g.
+    // new Outer().new Inner(...). Move the enclosing expression (e.g. new Outer()) as the first
+    // argument. A varargs parameter could unintentionally trigger this condition because it could
+    // map to zero arguments.
+    if (executable.getParameters().size() - node.getArguments().size() == 1
+        && vargarsType == null) {
+      newNode.addArgument(enclosingExpression);
+      enclosingExpression = null;
+    }
     for (ExpressionTree arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg, path));
     }
     return newNode
-        .setExecutablePair(new ExecutablePair((ExecutableElement) getElement(path)))
-        .setVarargsType(((JCNewClass) node).varargsElement)
-        .setExpression((Expression) convert(node.getEnclosingExpression(), path))
+        .setExecutablePair(new ExecutablePair(executable))
+        .setVarargsType(vargarsType)
+        .setExpression(enclosingExpression)
         .setType(convertType(getTypeMirror(getTreePath(path, node.getIdentifier()))))
         .setAnonymousClassDeclaration((TypeDeclaration) convert(node.getClassBody(), path));
   }
