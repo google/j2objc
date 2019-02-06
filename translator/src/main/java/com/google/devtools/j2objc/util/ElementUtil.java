@@ -30,6 +30,7 @@ import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -542,7 +543,17 @@ public final class ElementUtil {
       return null;
     }
     name = name.substring(0, name.lastIndexOf('.'));
-    return javacElements.getPackageElement(name);
+    // Try the Java 9+ API where the module needs to be specified to find the package.
+    try {
+      Method getModuleOf = Elements.class.getMethod("getModuleOf", Element.class);
+      Object module = getModuleOf.invoke(javacElements, element);
+      Method getPackageElement = Elements.class
+          .getMethod("getPackageElement", getModuleOf.getReturnType(), CharSequence.class);
+      return (PackageElement) getPackageElement.invoke(javacElements, module, name);
+    } catch (ReflectiveOperationException e) {
+      // Default behavior: Java 8.
+      return javacElements.getPackageElement(name);
+    }
   }
 
   public String getBinaryName(TypeElement e) {
