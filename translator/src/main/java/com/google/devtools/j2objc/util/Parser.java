@@ -35,7 +35,6 @@ public abstract class Parser implements Closeable {
   protected final List<String> classpathEntries = Lists.newArrayList();
   protected final List<String> sourcepathEntries = Lists.newArrayList();
   protected final Options options;
-  protected boolean includeRunningVMBootclasspath = true;
 
   protected static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
 
@@ -111,10 +110,6 @@ public abstract class Parser implements Closeable {
    */
   public void prependSourcepathEntry(String entry) {
     sourcepathEntries.add(0, entry);
-  }
-
-  public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {
-    includeRunningVMBootclasspath = includeVMBootclasspath;
   }
 
   public Options options() {

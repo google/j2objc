@@ -73,9 +73,7 @@ public class J2ObjC {
   public static Parser createParser(Options options) {
     Parser parser = Parser.newParser(options);
     parser.addClasspathEntries(options.fileUtil().getClassPathEntries());
-    parser.addClasspathEntries(options.getBootClasspath());
     parser.addSourcepathEntries(options.fileUtil().getSourcePathEntries());
-    parser.setIncludeRunningVMBootclasspath(false);
     parser.setEnableDocComments(options.docCommentsEnabled());
     return parser;
   }
