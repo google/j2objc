@@ -229,10 +229,18 @@ public class InitializationNormalizerTest extends GenerationTest {
    * Object's supertype is null.
    */
   public void testTranslateObject() throws IOException {
-    String source = "package java.lang;"
-        + "public class Object {"
-        + "  public Object() {}}";
-    String translation = translateSourceFile(source, "Object", "java/lang/Object.h");
+    if (onJava9OrAbove()) {
+      // Allow overwriting the system java.lang.Object with our own.
+      options.addExtraJavacParserFlags("--patch-module", "java.base=" + tempDir);
+    }
+    // Translate the file in the temp directory (i.e. avoid in-memory copy) because the temp
+    // directory is already configured as a patch-module location.
+    String filename = "java/lang/Object";
+    String path = addSourceFile("package java.lang;"
+            + "public class Object {"
+            + "  public Object() {}}",
+        filename + ".java");
+    String translation = translateSourceFileNoInMemory(path, filename + ".h");
     assertTranslation(translation, "@interface NSObject");
   }
 
