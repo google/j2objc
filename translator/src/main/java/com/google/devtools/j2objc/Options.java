@@ -37,6 +37,7 @@ import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -962,5 +963,16 @@ public class Options {
 
   public List<String> entryClasses() {
     return entryClasses;
+  }
+
+  // Used for testing.
+  private final List<String> extraJavacParserFlags = new ArrayList<>();
+
+  public void addExtraJavacParserFlags(String... flags) {
+    Collections.addAll(extraJavacParserFlags, flags);
+  }
+
+  public List<String> getExtraJavacParserFlags() {
+    return extraJavacParserFlags;
   }
 }

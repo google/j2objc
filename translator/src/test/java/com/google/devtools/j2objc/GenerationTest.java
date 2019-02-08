@@ -554,6 +554,31 @@ public class GenerationTest extends TestCase {
   }
 
   /**
+   * Similar to the versions above, but it does not generate an in-memory file.
+   *
+   * @param inputFile the name of the file to be transpiled
+   * @param outputFile the name of the file whose contents should be returned,
+   *                   which is either the Obj-C header or implementation file
+   */
+  protected String translateSourceFileNoInMemory(String inputFile, String outputFile)
+      throws IOException {
+    Parser.Handler handler = (String path, CompilationUnit newUnit) -> {
+      try {
+        TranslationProcessor.applyMutations(
+            newUnit, deadCodeMap, options.externalAnnotations(), TimeTracker.noop());
+        generateFromUnit(newUnit, outputFile);
+      } catch (IOException e) {
+        // Ignore.
+      }
+    };
+    parser.parseFiles(Arrays.asList(inputFile), handler, null);
+    if (ErrorUtil.errorCount() > 0) {
+      failWithMessages("Compilation errors:", ErrorUtil.getErrorMessages());
+    }
+    return getTranslatedFile(outputFile);
+  }
+
+  /**
    * Compile Java source and translate the resulting class file, returning the
    * contents of either the generated header or implementation file.
    *

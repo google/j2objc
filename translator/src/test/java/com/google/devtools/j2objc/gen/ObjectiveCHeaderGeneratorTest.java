@@ -356,10 +356,20 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testNativeSuperInterfaceTranslation() throws IOException {
-    String translation = translateSourceFile("package java.lang;"
-        + "import com.google.j2objc.NSFastEnumeration;"
-        + "public interface Iterable<T> extends NSFastEnumeration { String foo(); }",
-        "Iterable", "java/lang/Iterable.h");
+    if (onJava9OrAbove()) {
+      // Allow overwriting the system java.lang.Iterable with our own.
+      options.addExtraJavacParserFlags("--patch-module", "java.base=" + tempDir);
+      // Allow java.base to see com.google.j2objc.
+      options.addExtraJavacParserFlags("--add-reads", "java.base=ALL-UNNAMED");
+    }
+    // Translate the file in the temp directory (i.e. avoid in-memory copy) because the temp
+    // directory is already configured as a patch-module location.
+    String filename = "java/lang/Iterable";
+    String path = addSourceFile("package java.lang;"
+            + "import com.google.j2objc.NSFastEnumeration;"
+            + "public interface Iterable<T> extends NSFastEnumeration { String foo(); }",
+        filename + ".java");
+    String translation = translateSourceFileNoInMemory(path, filename + ".h");
     assertTranslation(translation,
         "@protocol JavaLangIterable < NSFastEnumeration, JavaObject >");
   }

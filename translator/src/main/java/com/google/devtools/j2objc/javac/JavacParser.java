@@ -155,6 +155,7 @@ public class JavacParser extends Parser {
     } else {
       javacOptions.add("-proc:none");
     }
+    javacOptions.addAll(options.getExtraJavacParserFlags());
     return javacOptions;
   }
 
