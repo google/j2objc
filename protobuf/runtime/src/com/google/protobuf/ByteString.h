@@ -38,12 +38,18 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wzero-length-array"
 
+#import "java/io/Serializable.h"
+#import "java/lang/Iterable.h"
+#import "java/util/Iterator.h"
+
 @class IOSByteArray;
 @class JavaNioCharsetCharset;
 @class JavaIoInputStream;
 @class JavaIoOutputStream;
+@class JavaLangByte;
+@protocol ComGoogleProtobufByteString_ByteIterator;
 
-@interface ComGoogleProtobufByteString : NSObject {
+@interface ComGoogleProtobufByteString : NSObject < JavaLangIterable, JavaIoSerializable > {
  @package
   jint size_;
   int8_t buffer_[0];
@@ -69,6 +75,8 @@
                                                        withInt:(jint)minChunkSize
                                                        withInt:(jint)maxChunkSize;
 - (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output;
+
+- (id<ComGoogleProtobufByteString_ByteIterator>)iterator;
 
 @end
 
@@ -101,6 +109,14 @@ FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY
 J2OBJC_STATIC_FIELD_OBJ_FINAL(ComGoogleProtobufByteString, EMPTY, ComGoogleProtobufByteString *)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
+
+@protocol ComGoogleProtobufByteString_ByteIterator < JavaUtilIterator, JavaObject >
+- (jbyte)nextByte;
+- (JavaLangByte *)next;
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufByteString_ByteIterator)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString_ByteIterator)
 
 #pragma clang diagnostic pop
 #endif // __ComGoogleProtobufByteString_H__
