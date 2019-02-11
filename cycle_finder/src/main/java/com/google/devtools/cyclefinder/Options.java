@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.BufferedReader;
@@ -62,6 +63,7 @@ class Options {
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean printReferenceGraph = false;
   private SourceVersion sourceVersion = SourceVersion.defaultVersion();
+  private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -136,6 +138,19 @@ class Options {
   @VisibleForTesting
   public void setPrintReferenceGraph() {
      printReferenceGraph = true;
+  }
+
+  public ExternalAnnotations externalAnnotations() {
+    return externalAnnotations;
+  }
+
+  private void addExternalAnnotationFile(String file) throws IOException {
+    externalAnnotations.addExternalAnnotationFile(file);
+  }
+
+  @VisibleForTesting
+  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
+    externalAnnotations.addExternalAnnotationFileContents(fileContents);
   }
 
   public static void usage(String invalidUseMsg) {
@@ -214,6 +229,11 @@ class Options {
         }
       } else if (arg.equals("--print-reference-graph")) {
         options.printReferenceGraph = true;
+      } else if (arg.equals("-Xexternal-annotation-file")) {
+        if (++nArg == args.length) {
+          usage(arg + " requires an argument");
+        }
+        options.addExternalAnnotationFile(args[nArg]);
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {

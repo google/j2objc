@@ -137,7 +137,8 @@ public class CycleFinder {
     Parser parser = createParser();
     NameList whitelist =
         NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
-    final GraphBuilder graphBuilder = new GraphBuilder(whitelist);
+    final GraphBuilder graphBuilder =
+        new GraphBuilder(whitelist, options.externalAnnotations());
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);

@@ -401,6 +401,57 @@ public class CycleFinderTest extends TestCase {
     assertContains("C -> (field a with type A)", graph);
   }
 
+  public void testInnerClassWithExternalWeakOuter() throws Exception {
+    String externalWeakOuterAnnotation =
+        "package com.google.j2objc.annotations: "
+            + "annotation @WeakOuter: "
+            + "@java.lang.annotation.Target(value={TYPE, LOCAL_VARIABLE})\n\n"
+            + "package p: "
+            + "class A$B: "
+            + "  @com.google.j2objc.annotations.WeakOuter ";
+    String source = "package p; "
+        + "public class A { class B { int test() { return o.hashCode(); }} B o; }";
+    addSourceFile("A.java", source);
+    Options options = new Options();
+    options.addExternalAnnotationFileContents(externalWeakOuterAnnotation);
+    findCycles(options);
+    assertNoCycles();
+  }
+
+  public void testFieldWithExternalWeak() throws Exception {
+    String externalWeakAnnotation =
+        "package com.google.j2objc.annotations: "
+            + "annotation @Weak: "
+            + "@java.lang.annotation.Target(value={FIELD, LOCAL_VARIABLE, PARAMETER})\n\n"
+            + "package p: "
+            + "class A: "
+            + "field b:"
+            + "  @com.google.j2objc.annotations.Weak ";
+    addSourceFile("A.java", "package p; class A { B b; }");
+    addSourceFile("B.java", "package p; class B { A a; }");
+    Options options = new Options();
+    options.addExternalAnnotationFileContents(externalWeakAnnotation);
+    findCycles(options);
+    assertNoCycles();
+  }
+
+  public void testFieldWithExternalRetainedWith() throws Exception {
+    String externalRetainedWithAnnotation =
+        "package com.google.j2objc.annotations: "
+            + "annotation @RetainedWith: "
+            + "@java.lang.annotation.Target(value={FIELD})\n\n"
+            + "package p: "
+            + "class A: "
+            + "field b:"
+            + "  @com.google.j2objc.annotations.RetainedWith ";
+    addSourceFile("A.java", "package p; class A { B b; }");
+    addSourceFile("B.java", "package p; class B { A a; }");
+    Options options = new Options();
+    options.addExternalAnnotationFileContents(externalRetainedWithAnnotation);
+    findCycles(options);
+    assertNoCycles();
+  }
+
   private void assertContains(String substr, String str) {
     assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
   }
@@ -441,7 +492,10 @@ public class CycleFinderTest extends TestCase {
   }
 
   private void findCycles() throws IOException {
-    Options options = new Options();
+    findCycles(new Options());
+  }
+
+  private void findCycles(Options options) throws IOException {
     if (!whitelistEntries.isEmpty()) {
       File whitelistFile = new File(tempDir, "whitelist");
       Files.asCharSink(whitelistFile, Charset.defaultCharset())
