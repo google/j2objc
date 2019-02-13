@@ -574,4 +574,16 @@ public class AutoboxerTest extends GenerationTest {
         + "  long tmp_long = (long)tmp_int; }}", "Test", "Test.m");
     assertTranslation(translation, "jlong tmp_long = [tmp_int longLongValue];");
   }
+
+  // https://github.com/google/j2objc/issues/1031
+  public void testWrapperClassArrayInitializer() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "private static Integer SIZE = 32; "
+        + "public byte[] test() { "
+        + "  return new byte[SIZE]; }}", "Test", "Test.m");
+    assertTranslation(translation,
+        "return [IOSByteArray arrayWithLength:"
+        + "[((JavaLangInteger *) nil_chk(Test_SIZE)) intValue]];");
+  }
 }

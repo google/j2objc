@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.ArrayAccess;
+import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.AssertStatement;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -216,6 +217,15 @@ public class Autoboxer extends UnitTreeVisitor {
     Expression index = node.getIndex();
     if (!index.getTypeMirror().getKind().isPrimitive()) {
       unbox(index);
+    }
+  }
+
+  @Override
+  public void endVisit(ArrayCreation node) {
+    for (Expression dim : node.getDimensions()) {
+      if (!dim.getTypeMirror().getKind().isPrimitive()) {
+        unbox(dim);
+      }
     }
   }
 
