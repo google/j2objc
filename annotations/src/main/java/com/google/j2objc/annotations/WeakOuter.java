@@ -1,4 +1,6 @@
 /*
+ * Copyright 2012 Google Inc. All Rights Reserved.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +18,6 @@ package com.google.j2objc.annotations;
 
 import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import java.lang.annotation.Retention;
@@ -31,7 +32,7 @@ import java.lang.annotation.Target;
  *
  * @author Tom Ball
  */
-@Target({TYPE, TYPE_USE, LOCAL_VARIABLE})
+@Target({TYPE, LOCAL_VARIABLE})
 @Retention(SOURCE)
 public @interface WeakOuter {
 }
