@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -2179,6 +2180,13 @@ public class TimeZoneTest extends TestFmwk
         boolean observesDaylight;
         long current = System.currentTimeMillis();
 
+        // J2ObjC change: time zones going through adjustments are problematic when comparing
+        // the ICU tz data vs. the operating system tz data.
+        Set<String> unstableTzids = new HashSet<>();
+        // https://github.com/eggert/tz/blob/379f7ba9b81eee97f0209a322540b4a522122b5d/africa#L847
+        unstableTzids.add("Africa/Casablanca");
+        unstableTzids.add("Africa/El_Aaiun");
+
         String[] tzids = TimeZone.getAvailableIDs();
         for (String tzid : tzids) {
             // OlsonTimeZone
@@ -2200,7 +2208,8 @@ public class TimeZoneTest extends TestFmwk
             // JavaTimeZone
             tz = TimeZone.getTimeZone(tzid, TimeZone.TIMEZONE_JDK);
             observesDaylight = tz.observesDaylightTime();
-            if (observesDaylight != isDaylightTimeAvailable(tz, current)) {
+            if (!unstableTzids.contains(tzid)
+                && observesDaylight != isDaylightTimeAvailable(tz, current)) {
                 errln("Fail: [JavaTimeZone] observesDaylightTime() returned " + observesDaylight + " for " + tzid);
             }
 
