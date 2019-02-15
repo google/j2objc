@@ -90,7 +90,7 @@ clean:
 	@cd protobuf/tests && $(MAKE) clean
 	@cd xalan && $(MAKE) clean
 
-test_translator: annotations_dist java_deps_dist
+test_translator: annotations_dist java_deps_dist jre_emul_jars_dist
 	@cd translator && $(MAKE) test
 
 test_jre_emul: jre_emul_dist junit_dist
