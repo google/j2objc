@@ -111,6 +111,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -1181,20 +1182,28 @@ public class TreeConverter {
         pkgName != null
             ? env.elementUtilities().getPackageElement(pkgName.toString())
             : env.defaultPackage();
-    Tree node = trees.getTree(pkg);
-    PackageDeclaration newNode = new PackageDeclaration().setPackageElement(pkg);
-    for (AnnotationTree pkgAnnotation : unit.getPackageAnnotations()) {
-      newNode.addAnnotation((Annotation) convert(pkgAnnotation, parent));
-    }
-    if (unit.getSourceFile().toUri().getPath().endsWith("package-info.java")) {
-      if (node == null) {
-        // Java 8 javac bug, fixed in Java 9. Doc-comments in package-info.java
-        // sources are keyed to their compilation unit, not their package node.
-        node = unit;
+    PackageDeclaration newNode = null;
+    if (pkg == null) {
+      // Synthetic package, create from name.
+      pkg = new GeneratedPackageElement(pkgName != null ? pkgName.toString() : "");
+      newNode = new PackageDeclaration().setPackageElement(pkg);
+      newNode.setName(new SimpleName(pkg, null));
+    } else {
+      Tree node = trees.getTree(pkg);
+      newNode = new PackageDeclaration().setPackageElement(pkg);
+      for (AnnotationTree pkgAnnotation : unit.getPackageAnnotations()) {
+        newNode.addAnnotation((Annotation) convert(pkgAnnotation, parent));
       }
-      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, getTreePath(parent, node)));
+      if (unit.getSourceFile().toUri().getPath().endsWith("package-info.java")) {
+        if (node == null) {
+          // Java 8 javac bug, fixed in Java 9. Doc-comments in package-info.java
+          // sources are keyed to their compilation unit, not their package node.
+          node = unit;
+        }
+        newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, getTreePath(parent, node)));
+      }
+      newNode.setName(newUnit.getEnv().elementUtil().getPackageName(pkg));
     }
-    newNode.setName(newUnit.getEnv().elementUtil().getPackageName(pkg));
     newNode.setPosition(SourcePosition.NO_POSITION);
     return newNode;
   }

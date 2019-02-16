@@ -39,6 +39,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -187,10 +189,40 @@ public class JavacParser extends Parser {
     }
   }
 
+  /**
+   * To allow Java 9 libraries like GSON to be transpiled using -source 1.8, stub out
+   * the module-info source. This creates an empty .o file, like package-info.java
+   * files without annotations. Skipping the file isn't feasible because of build tool
+   * output file expectations.
+   */
+  private static JavaFileObject filterJavaFileObject(JavaFileObject fobj) {
+    String path = fobj.getName();
+    if (path.endsWith("module-info.java")) {
+      String pkgName = null;
+      try {
+        pkgName = moduleName(fobj.getCharContent(true).toString());
+        String source = "package " + pkgName + ";";
+        return new MemoryFileObject(path, JavaFileObject.Kind.SOURCE, source);
+      } catch (IOException e) {
+        // Fall-through
+      }
+    }
+    return fobj;
+  }
+
+  private static String moduleName(String moduleSource) {
+    Pattern p = Pattern.compile("module\\s+([a-zA_Z_][\\.\\w]*)");
+    Matcher matcher = p.matcher(moduleSource);
+    if (matcher.find()) {
+      return matcher.group(1);
+    }
+    return "";
+  }
+
   // Creates a javac environment from a memory source.
   private JavacEnvironment createEnvironment(String path, String source) throws IOException {
     List<JavaFileObject> inputFiles = new ArrayList<>();
-    inputFiles.add(MemoryFileObject.createJavaFile(path, source));
+    inputFiles.add(filterJavaFileObject(MemoryFileObject.createJavaFile(path, source)));
     return createEnvironment(Collections.emptyList(), inputFiles, false);
   }
 
@@ -205,7 +237,7 @@ public class JavacParser extends Parser {
       fileObjects = new ArrayList<>();
     }
     for (JavaFileObject jfo : fileManager.getJavaFileObjectsFromFiles(files)) {
-      fileObjects.add(jfo);
+      fileObjects.add(filterJavaFileObject(jfo));
     }
     JavacTask task = (JavacTask) compiler.getTask(null, fileManager, diagnostics,
         javacOptions, null, fileObjects);

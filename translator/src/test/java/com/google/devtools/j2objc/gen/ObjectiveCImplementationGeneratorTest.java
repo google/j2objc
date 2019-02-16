@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
+import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.IOException;
 import javax.tools.ToolProvider;
 
@@ -905,5 +906,19 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "FooBarMumblepackage_info");
     assertNotInTranslation(translation, "FBMpackage_info");
     assertNotInTranslation(translation, "J2OBJC_NAME_MAPPING");
+  }
+
+  // Verify module-info.java files generate no-code output files with "-source 1.8" flag.
+  public void testSource8EmptyModuleInfo() throws IOException {
+    options.setSourceVersion(SourceVersion.JAVA_8);
+    String translation = translateSourceFile(
+        "module foo.bar {"
+        + "  exports foo.bar;"
+        + "}",
+        "foo.bar.module-info", "foo/bar/module-info.h");
+    assertTranslation(translation, "INCLUDE_ALL_FooBarModule_info");
+    translation = getTranslatedFile("foo/bar/module-info.m");
+    assertTranslation(translation, "foo/bar/module-info.h");
+    assertNotInTranslation(translation, "@implementation");
   }
 }
