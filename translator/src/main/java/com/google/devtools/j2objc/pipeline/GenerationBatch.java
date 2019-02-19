@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
@@ -81,6 +82,16 @@ public class GenerationBatch {
 
     try {
       inputFile = new RegularInputFile(filename, filename);
+
+      if (!inputFile.exists()) {
+        // Check source path for regular file.
+        for (String path : options.fileUtil().getSourcePathEntries()) {
+          inputFile = new RegularInputFile(Paths.get(path, filename).toString(), filename);
+          if (inputFile.exists()) {
+            break;
+          }
+        }
+      }
 
       if (!inputFile.exists()) {
         // Convert to a qualified name and search on the sourcepath.
