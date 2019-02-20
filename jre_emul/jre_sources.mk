@@ -896,7 +896,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/Semaphore.java \
   java/util/concurrent/ThreadFactory.java \
   java/util/concurrent/TransferQueue.java \
-  java/util/concurrent/package-info.java \
   java/util/concurrent/atomic/AtomicIntegerArray.java \
   java/util/concurrent/atomic/AtomicIntegerFieldUpdater.java \
   java/util/concurrent/atomic/AtomicLongArray.java \
@@ -904,11 +903,9 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicMarkableReference.java \
   java/util/concurrent/atomic/AtomicReferenceArray.java \
   java/util/concurrent/atomic/AtomicStampedReference.java \
-  java/util/concurrent/atomic/package-info.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/ReadWriteLock.java \
-  java/util/concurrent/locks/ReentrantReadWriteLock.java \
-  java/util/concurrent/locks/package-info.java
+  java/util/concurrent/locks/ReentrantReadWriteLock.java
 
 JAVA_PRIVATE_SOURCES_CONCURRENT =
 
@@ -1387,8 +1384,7 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/x509/X509CertInfo.java \
   sun/security/x509/X509CRLEntryImpl.java \
   sun/security/x509/X509CRLImpl.java \
-  sun/security/x509/X509Key.java \
-  sun/security/x509/package-info.java
+  sun/security/x509/X509Key.java
 
 NATIVE_JRE_SOURCES_SSL = \
   com/google/j2objc/net/ssl/IosSslSocket.m
@@ -1773,7 +1769,6 @@ JAVA_PUBLIC_SOURCES_TIME = \
   java/time/chrono/Era.java \
   java/time/chrono/IsoChronology.java \
   java/time/chrono/IsoEra.java \
-  java/time/chrono/package-info.java \
   java/time/format/DateTimeFormatter.java \
   java/time/format/DateTimeFormatterBuilder.java \
   java/time/format/DateTimeParseException.java \
@@ -1782,8 +1777,6 @@ JAVA_PUBLIC_SOURCES_TIME = \
   java/time/format/ResolverStyle.java \
   java/time/format/SignStyle.java \
   java/time/format/TextStyle.java \
-  java/time/format/package-info.java \
-  java/time/package-info.java \
   java/time/temporal/ChronoField.java \
   java/time/temporal/ChronoUnit.java \
   java/time/temporal/IsoFields.java \
@@ -1800,12 +1793,10 @@ JAVA_PUBLIC_SOURCES_TIME = \
   java/time/temporal/UnsupportedTemporalTypeException.java \
   java/time/temporal/ValueRange.java \
   java/time/temporal/WeekFields.java \
-  java/time/temporal/package-info.java \
   java/time/zone/ZoneOffsetTransition.java \
   java/time/zone/ZoneOffsetTransitionRule.java \
   java/time/zone/ZoneRules.java \
-  java/time/zone/ZoneRulesException.java \
-  java/time/zone/package-info.java
+  java/time/zone/ZoneRulesException.java
 
 JAVA_PRIVATE_SOURCES_TIME = \
   java/time/Ser.java \
@@ -2170,7 +2161,16 @@ PUBLIC_NATIVE_HEADERS = \
   java/lang/reflect/Method.h \
   jni.h
 
-NO_TRANSLATE_JAVA_SOURCES = $(SOURCE_RETENTION_ANNOTATIONS) $(EMULATED_JAVA_SOURCES)
+# They are only needed while translating files in the corresponding packages,
+# but they do not need to be translated.
+ANNOTATED_PACKAGE_INFO = \
+  java/util/concurrent/package-info.java \
+  sun/security/x509/package-info.java
+
+NO_TRANSLATE_JAVA_SOURCES = \
+  $(SOURCE_RETENTION_ANNOTATIONS) \
+  $(EMULATED_JAVA_SOURCES) \
+  $(ANNOTATED_PACKAGE_INFO)
 
 JAVA_PUBLIC_SOURCES_JRE = \
   $(JAVA_PUBLIC_SOURCES_CORE) \
