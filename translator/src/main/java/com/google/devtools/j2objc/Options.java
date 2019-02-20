@@ -17,6 +17,7 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -215,6 +216,11 @@ public class Options {
       return combinedUnit;
     }
   }
+
+  // Flags that are directly forwarded to the javac parser.
+  private static final ImmutableSet<String> EXTRA_JAVAC_PARSER_FLAGS =
+      ImmutableSet.of("--patch-module", "--system", "--add-reads");
+  private final List<String> extraJavacParserFlags = new ArrayList<>();
 
 
   static {
@@ -504,6 +510,8 @@ public class Options {
       } else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.
         getArgValue(args, arg);  // ignore
+      } else if (EXTRA_JAVAC_PARSER_FLAGS.contains(arg)) {
+        addExtraJavacParserFlags(arg, getArgValue(args, arg));
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
@@ -964,9 +972,6 @@ public class Options {
   public List<String> entryClasses() {
     return entryClasses;
   }
-
-  // Used for testing.
-  private final List<String> extraJavacParserFlags = new ArrayList<>();
 
   public void addExtraJavacParserFlags(String... flags) {
     Collections.addAll(extraJavacParserFlags, flags);
