@@ -756,7 +756,7 @@ didCompleteWithError:(NSError *)error {
    * Returns an SSLException if that class is linked into the application,
    * otherwise IOException.
    */
-  private static IOException secureConnectionException(String description) {
+  static IOException secureConnectionException(String description) {
     try {
       Class<?> sslExceptionClass = Class.forName("javax.net.ssl.SSLException");
       Constructor<?> constructor = sslExceptionClass.getConstructor(String.class);
