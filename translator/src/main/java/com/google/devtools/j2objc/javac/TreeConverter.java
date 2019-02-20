@@ -223,6 +223,9 @@ public class TreeConverter {
       TreePath path = new TreePath(javacUnit);
       converter.newUnit.setPackage(converter.convertPackage(path));
       for (Tree type : javacUnit.getTypeDecls()) {
+        if (type.getKind() == Kind.IMPORT) {
+          continue;
+        }
         TreeNode newNode = converter.convert(type, path);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
           converter.newUnit.addType((AbstractTypeDeclaration) newNode);
