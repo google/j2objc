@@ -43,7 +43,9 @@ import java.lang.annotation.Target;
 public @interface ObjectiveCName {
 
   /**
-   * The Objective-C name to use.
+   * The Objective-C name to use for this element.
+   *
+   * @return the Objective-C name.
    */
   String value();
 }

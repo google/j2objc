@@ -34,14 +34,12 @@ import java.lang.annotation.Target;
  *     since they are defaults.</li>
  *   <li>Strings will include the <b>copy</b> attribute.</li>
  * </ul>
- * <p>
  * Example:
  * <pre>
  * class Foo {
  *   &#64;Property("copy, nonatomic") protected String bar;
  * }</pre>
  * generates:
- * <p>
  * <pre>
  * &#64;property (copy, nonatomic) NSString *bar;</pre>
  *
