@@ -105,11 +105,6 @@ jarray Java_java_lang_Throwable_nativeGetStackTrace(
         [[element getMethodName] isEqualToString:@"invoke"]) {
       [frames removeLastObject];
     }
-    // If symbols were removed, the stack trace will be empty at this point.
-    // In order to help with debugging, return the raw stack trace.
-    if ([frames count] == 0) {
-      ProcessRawStack(rawStack, frames, false);
-    }
   }
   return [IOSObjectArray arrayWithNSArray:frames type:JavaLangStackTraceElement_class_()];
 }
