@@ -80,7 +80,7 @@ public class BuildClosureQueue {
   private InputFile getFileForName(String name) {
     InputFile inputFile = null;
     try {
-      inputFile = options.fileUtil().findOnSourcePath(name);
+      inputFile = options.fileUtil().findTypeOnSourcePath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
@@ -106,7 +106,7 @@ public class BuildClosureQueue {
   private boolean findClassFile(String name) {
     InputFile f = null;
     try {
-      f = options.fileUtil().findOnClassPath(name);
+      f = options.fileUtil().findTypeOnClassPath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc;
 
 import com.google.devtools.j2objc.util.HeaderMap;
+import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -318,5 +319,21 @@ public class J2ObjCTest extends GenerationTest {
 
     // ... and that there isn't a "type not found" import.
     assertNotInTranslation(translation, "Example.h");
+  }
+
+  // Verify module-info.java files generate no-code output files with "-source 1.8" flag.
+  public void testSource8EmptyModuleInfo() throws IOException {
+    options.setSourceVersion(SourceVersion.JAVA_8);
+    String srcPath = addSourceFile(
+        "module foo.bar {"
+        + "  exports foo.bar;"
+        + "}",
+        "foo.bar/module-info.java");
+    J2ObjC.run(Collections.singletonList(srcPath), options);
+    String translation = getTranslatedFile("foo/bar/module-info.h");
+    assertTranslation(translation, "INCLUDE_ALL_FooBarModule_info");
+    translation = getTranslatedFile("foo/bar/module-info.m");
+    assertTranslation(translation, "foo/bar/module-info.h");
+    assertNotInTranslation(translation, "@implementation");
   }
 }

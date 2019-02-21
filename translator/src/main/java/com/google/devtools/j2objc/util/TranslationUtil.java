@@ -172,7 +172,7 @@ public final class TranslationUtil {
     }
     // Check if package-info.java contains ReflectionSupport annotation
     level = options.getPackageInfoLookup().getReflectionSupportLevel(
-        node.getSimpleName().toString());
+        node.getQualifiedName().toString());
     return level;
   }
 
