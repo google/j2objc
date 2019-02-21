@@ -98,6 +98,8 @@ include ../java_deps/jars.mk
 CLASS_DIR = $(BUILD_DIR)/Classes
 EMULATION_JAR = $(BUILD_DIR)/jre_emul.jar
 EMULATION_JAR_DIST = $(DIST_JAR_DIR)/jre_emul.jar
+EMULATION_MODULE = $(BUILD_DIR)/jre_emul_module
+EMULATION_MODULE_DIST = $(DIST_JAR_DIR)/jre_emul_module
 EMULATION_SRC_JAR = $(BUILD_DIR)/jre_emul-src.jar
 EMULATION_SRC_JAR_DIST = $(DIST_JAR_DIR)/jre_emul-src.jar
 EMULATION_LIB_DIST = $(ARCH_LIB_DIR)/libjre_emul.a

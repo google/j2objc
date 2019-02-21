@@ -32,8 +32,14 @@ clean:
 	@rm -f $(EMULATION_JAR_DIST) $(EMULATION_SRC_JAR_DIST)
 
 jars_dist: emul_jar_dist emul_src_jar_dist
+ifndef JAVA_8
+jars_dist: emul_module_dist
+endif
 
 emul_jar_dist: $(EMULATION_JAR_DIST)
+	@:
+
+emul_module_dist: $(EMULATION_MODULE_DIST)
 	@:
 
 emul_src_jar_dist: $(EMULATION_SRC_JAR_DIST)
@@ -42,6 +48,10 @@ emul_src_jar_dist: $(EMULATION_SRC_JAR_DIST)
 $(EMULATION_JAR_DIST): $(EMULATION_JAR)
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
+
+$(EMULATION_MODULE_DIST): $(EMULATION_MODULE)
+	@mkdir -p $(@D)
+	@cp -r $< $@
 
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR)
 	@mkdir -p $(@D)
@@ -64,6 +74,26 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES)
 	  -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
+
+$(EMULATION_MODULE): $(EMULATION_JAR)
+	@echo "building jre_emul_module"
+	@rm -rf $(EMULATION_MODULE)
+	@mkdir $(BUILD_DIR)/jre_emul
+	@cd $(BUILD_DIR)/jre_emul; jar xf $(EMULATION_JAR)
+	@../scripts/gen_module_info.py --name java.base --root $(BUILD_DIR)/jre_emul \
+	  --output $(BUILD_DIR)/module-info.java
+	@$(JAVAC) --system=none --patch-module=java.base=$(EMULATION_JAR) \
+	  -d $(BUILD_DIR) $(BUILD_DIR)/module-info.java
+	@jar uf $(EMULATION_JAR) -C $(BUILD_DIR) module-info.class
+	@mkdir $(BUILD_DIR)/jmod
+	@$(JAVA_HOME)/bin/jmod create --module-version 11 --target-platform osx \
+	  --class-path $(EMULATION_JAR) $(BUILD_DIR)/jmod/jre_emul.jmod
+	@$(JAVA_HOME)/bin/jlink --module-path $(BUILD_DIR)/jmod \
+	  --add-modules java.base  --output $(EMULATION_MODULE)
+	@cp $(JAVA_HOME)/lib/jrt-fs.jar $(EMULATION_MODULE)/lib/
+	@rm -rf $(BUILD_DIR)/jre_emul
+	@rm -rf $(BUILD_DIR)/jmod
+	@rm $(BUILD_DIR)/module-info.*
 
 $(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES)
 	@mkdir -p $(@D)
