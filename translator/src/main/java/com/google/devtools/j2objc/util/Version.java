@@ -32,7 +32,10 @@ public class Version {
     String path = jarClass.getProtectionDomain().getCodeSource().getLocation().getPath();
     try (JarFile jar = new JarFile(URLDecoder.decode(path, "UTF-8"))) {
       Manifest manifest = jar.getManifest();
-      return manifest.getMainAttributes().getValue("version");
+      String version = manifest.getMainAttributes().getValue("version");
+      if (version != null) {
+        return version;
+      }
     } catch (IOException e) {
     }
     return "(version info not available)";
