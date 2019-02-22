@@ -14,8 +14,10 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.SourceVersion;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -335,5 +337,21 @@ public class J2ObjCTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/module-info.m");
     assertTranslation(translation, "foo/bar/module-info.h");
     assertNotInTranslation(translation, "@implementation");
+  }
+
+  public void testHeaderOutputDirectory() throws IOException {
+    File headerOutputDir = FileUtil.createTempDir("testout-hdrs");
+    options.fileUtil().setHeaderOutputDirectory(headerOutputDir);
+    String srcPath = addSourceFile("package foo.bar; class Test {}", "foo/bar/Test.java");
+    J2ObjC.run(Collections.singletonList(srcPath), options);
+
+    // Just the generated header should be in the header output directory.
+    assertTrue(new File(headerOutputDir, "foo/bar/Test.h").exists());
+    assertFalse(new File(headerOutputDir, "foo/bar/Test.m").exists());
+
+    // Everything else is still in the regular output directory.
+    assertFalse(new File(tempDir, "foo/bar/Test.h").exists());
+    assertTrue(new File(tempDir, "foo/bar/Test.m").exists());
+    assertTrue(new File(tempDir, "foo/bar/Test.java").exists());
   }
 }

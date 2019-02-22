@@ -366,6 +366,8 @@ public class Options {
         setGlobalCombinedOutput(getArgValue(args, arg));
       } else if (arg.equals("-XincludeGeneratedSources")) {
         headerMap.setIncludeGeneratedSources();
+      } else if (arg.equals("-Xpublic-hdrs")) {
+        fileUtil.setHeaderOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {

@@ -95,7 +95,8 @@ public class BuildClosureQueue {
 
     // Check if the source file is older than the generated header file.
     File headerSource = new File(
-        options.fileUtil().getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
+        options.fileUtil().getHeaderOutputDirectory(),
+        name.replace('.', File.separatorChar) + ".h");
     if (headerSource.exists() && inputFile.lastModified() < headerSource.lastModified()) {
       return null;
     }

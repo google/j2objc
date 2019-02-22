@@ -325,8 +325,10 @@ public class TranslationProcessor extends FileProcessor {
     assert unit.isFullyParsed();
     TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName(), unit.options().timingLevel());
     logger.fine("Generating " + unit.getOutputPath());
-    logger.finest("writing output file(s) to "
+    logger.finest("writing source file(s) to "
         + unit.options().fileUtil().getOutputDirectory().getAbsolutePath());
+    logger.finest("writing header file(s) to "
+        + unit.options().fileUtil().getHeaderOutputDirectory().getAbsolutePath());
     ticker.push();
 
     // write header

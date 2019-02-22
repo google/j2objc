@@ -80,7 +80,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       generateTypeMappings();
     }
 
-    save(getOutputPath());
+    save(getOutputPath(), options.fileUtil().getHeaderOutputDirectory());
   }
 
   protected void printTypeDeclaration(GeneratedType generatedType) {

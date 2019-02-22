@@ -90,9 +90,8 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     return typesByName.containsKey(name);
   }
 
-  protected void save(String path) {
+  protected void save(String path, File outputDirectory) {
     try {
-      File outputDirectory = unit.options().fileUtil().getOutputDirectory();
       File outputFile = new File(outputDirectory, path);
       File dir = outputFile.getParentFile();
       if (dir != null && !dir.exists()) {

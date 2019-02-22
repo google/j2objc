@@ -48,6 +48,7 @@ public class FileUtil {
   private List<String> sourcePathEntries = new ArrayList<>();
   private List<String> classPathEntries = new ArrayList<>();
   private File outputDirectory = new File(".");
+  private File headerOutputDirectory = null;
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private Charset charset = Charset.forName(fileEncoding);
 
@@ -75,11 +76,26 @@ public class FileUtil {
     this.outputDirectory = outputDirectory;
   }
 
+  public void setHeaderOutputDirectory(File outputDirectory) {
+    this.headerOutputDirectory = outputDirectory;
+  }
+
   public File getOutputDirectory() {
     if (!outputDirectory.exists()) {
       outputDirectory.mkdirs();
     }
     return outputDirectory;
+  }
+
+  public File getHeaderOutputDirectory() {
+    if (headerOutputDirectory != null) {
+      if (!headerOutputDirectory.exists()) {
+        headerOutputDirectory.mkdirs();
+      }
+      return headerOutputDirectory;
+    } else {
+      return getOutputDirectory();
+    }
   }
 
   public void setFileEncoding(String fileEncoding) {

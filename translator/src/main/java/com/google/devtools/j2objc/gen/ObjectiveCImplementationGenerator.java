@@ -62,9 +62,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       print(generatedType.getImplementationCode());
     }
     popIgnoreDeprecatedDeclarationsPragma();
-
-    // TODO(kstanger): We should write directly to file instead of using a builder.
-    save(getOutputPath());
+    save(getOutputPath(), options.fileUtil().getOutputDirectory());
   }
 
   private void printIgnoreIncompletePragmas() {
