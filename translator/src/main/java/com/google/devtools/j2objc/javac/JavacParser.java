@@ -73,6 +73,14 @@ public class JavacParser extends Parser {
   public CompilationUnit parse(InputFile file) {
     try {
       if (file.getUnitName().endsWith(".java")) {
+        if (file instanceof RegularInputFile) {
+          // Avoid creating an in-memory file.
+          CompilationUnit[] result = new CompilationUnit[1];
+          Parser.Handler handler = (String path, CompilationUnit unit) -> result[0] = unit;
+          parseFiles(Collections.singletonList(file.getAbsolutePath()), handler,
+              options.getSourceVersion());
+          return result[0];
+        }
         String source = options.fileUtil().readFile(file);
         return parse(null, file.getUnitName(), source);
       } else {

@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -109,11 +108,9 @@ public class InputFilePreprocessor {
     }
   }
 
-  private void processPackageInfoSource(ProcessingContext input) throws IOException {
+  private void processPackageInfoSource(ProcessingContext input) {
     InputFile file = input.getFile();
-    String source = options.fileUtil().readFile(file);
-    CompilationUnit compilationUnit =
-        parser.parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
+    CompilationUnit compilationUnit = parser.parse(file);
     if (compilationUnit != null) {
       extractPackagePrefix(file, compilationUnit);
     }
