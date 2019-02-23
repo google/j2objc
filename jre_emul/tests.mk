@@ -76,6 +76,11 @@ TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR) \
     -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
     -encoding UTF-8 --prefixes Tests/resources/prefixes.properties
+ifndef JAVA_8
+TRANSLATE_ARGS += --system $(EMULATION_MODULE_DIST) \
+  --patch-module java.base=$(TEST_SRC):$(GEN_JAVA_DIR) \
+  --add-reads java.base=ALL-UNNAMED
+endif
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
