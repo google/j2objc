@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.TimeTracker;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -96,6 +97,9 @@ public class GenerationTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = FileUtil.createTempDir("testout");
+    if (onJava9OrAbove()) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
+    }
     loadOptions();
     createParser();
   }

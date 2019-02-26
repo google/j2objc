@@ -62,7 +62,7 @@ class Options {
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean printReferenceGraph = false;
-  private SourceVersion sourceVersion = SourceVersion.defaultVersion();
+  private SourceVersion sourceVersion = null;
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
 
   public List<String> getSourceFiles() {
@@ -123,6 +123,9 @@ class Options {
   }
 
   public SourceVersion sourceVersion() {
+    if (sourceVersion == null) {
+      sourceVersion = SourceVersion.defaultVersion();
+    }
     return sourceVersion;
   }
 
@@ -214,15 +217,11 @@ class Options {
         }
         try {
           options.sourceVersion = SourceVersion.parse(args[nArg]);
-          // TODO(tball): remove when Java 9 source is supported.
-          if (options.sourceVersion == SourceVersion.JAVA_9) {
-            ErrorUtil.warning("Java 9 source version is not supported, using Java 8.");
-            options.sourceVersion = SourceVersion.JAVA_8;
-          }
-          // TODO(tball): remove when Java 10 source is supported.
-          if (options.sourceVersion == SourceVersion.JAVA_10) {
-            ErrorUtil.warning("Java 10 source version is not supported, using Java 8.");
-            options.sourceVersion = SourceVersion.JAVA_8;
+          SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
+          if (options.sourceVersion.version() > maxVersion.version()) {
+            ErrorUtil.warning("Java " + options.sourceVersion.version() + " source version is not "
+                + "supported, using Java " + maxVersion.version() + ".");
+            options.sourceVersion = maxVersion;
           }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + args[nArg]);

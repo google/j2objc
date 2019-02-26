@@ -99,7 +99,7 @@ public class Options {
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
   private final List<String> entryClasses = new ArrayList<>();
 
-  private SourceVersion sourceVersion = SourceVersion.defaultVersion();
+  private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
 
@@ -496,15 +496,11 @@ public class Options {
         // Handle aliasing of version numbers as supported by javac.
         try {
           sourceVersion = SourceVersion.parse(s);
-          // TODO(tball): remove when Java 9 source is supported.
-          if (sourceVersion == SourceVersion.JAVA_9) {
-            ErrorUtil.warning("Java 9 source version is not supported, using Java 8.");
-            sourceVersion = SourceVersion.JAVA_8;
-          }
-          // TODO(tball): remove when Java 10 source is supported.
-          if (sourceVersion == SourceVersion.JAVA_10) {
-            ErrorUtil.warning("Java 10 source version is not supported, using Java 8.");
-            sourceVersion = SourceVersion.JAVA_8;
+          SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
+          if (sourceVersion.version() > maxVersion.version()) {
+            ErrorUtil.warning("Java " + sourceVersion.version() + " source version is not "
+                + "supported, using Java " + maxVersion.version() + ".");
+            sourceVersion = maxVersion;
           }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + s);
@@ -513,6 +509,9 @@ public class Options {
         // Dummy out passed target argument, since we don't care about target.
         getArgValue(args, arg);  // ignore
       } else if (EXTRA_JAVAC_PARSER_FLAGS.contains(arg)) {
+        if (arg.equals("--system")) {
+          SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
+        }
         addExtraJavacParserFlags(arg, getArgValue(args, arg));
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         // Ignore, batch processing isn't used with javac front-end.
@@ -849,6 +848,9 @@ public class Options {
 
 
   public SourceVersion getSourceVersion(){
+    if (sourceVersion == null) {
+      sourceVersion = SourceVersion.defaultVersion();
+    }
     return sourceVersion;
   }
 

@@ -27,17 +27,12 @@ import java.util.List;
 public class OptionsTest extends GenerationTest {
 
   public void testSourceVersionFlags() throws IOException {
-    if (onJava9OrAbove()) {
-      // TODO(tball): change to 1.9 when Java 9 is supported.
-      assertEquals("1.8", options.getSourceVersion().toString());
-    } else {
-      // Check that version default is correctly pulled from system properties.
       String javaVersion = System.getProperty("java.specification.version");
-
       options = new Options();
       options.load(new String[] {});
-      assertEquals(javaVersion.substring(0, 3), options.getSourceVersion().toString());
+      assertTrue(javaVersion.startsWith(options.getSourceVersion().toString()));
 
+    if (!onJava9OrAbove()) {
       System.setProperty("java.specification.version", "1.8");
       options = new Options();
       options.load(new String[] {});
