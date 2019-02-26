@@ -423,4 +423,28 @@ public class DefaultMethodsTest extends GenerationTest {
         "  [self fooWithB:arg0];",
         "}");
   }
+
+  /* TODO(b/126364629)
+  public void testPrivateInterfaceMethod() throws IOException {
+    if (!onJava9OrAbove()) {
+      return;
+    }
+    String translation = translateSourceFile(
+        "public interface Test { "
+            + "  String name(); "
+            + "  default boolean isPalindrome() { "
+            + "    return name().equals(reverse(name())); "
+            + "  } "
+            + "  default boolean isPalindromeIgnoreCase() { "
+            + "    return name().equalsIgnoreCase(reverse(name())); "
+            + "  } "
+            + "  private String reverse(String s) { "
+            + "    return new StringBuilder(s).reverse().toString(); "
+            + " } "
+            + "}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "NSString *Test_reverseWithNSString_(id<Test> self, NSString *s)");
+    assertNotInTranslation(translation, "- (NSString *)reverseWithNSString:(NSString *)s {");
+  }*/
 }

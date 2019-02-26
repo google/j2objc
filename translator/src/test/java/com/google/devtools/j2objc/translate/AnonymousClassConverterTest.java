@@ -552,4 +552,24 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  Test_initWithId_(self, t);",
         "}");
   }
+
+  public void testAnonymousClassWithDiamondOperator() throws IOException {
+    if (!onJava9OrAbove()) {
+      return;
+    }
+    String translation = translateSourceFile(
+        "public class Test { "
+            + "  public void test() { "
+            + "    Comparable<Runnable> c = new Comparable<>() { "
+            + "      @Override "
+            + "      public int compareTo(Runnable r) { "
+            + "        return 17; "
+            + "      } "
+            + "    }; "
+            + "  } "
+            + "} ",
+        "Test", "Test.m");
+    assertTranslation(translation, "@interface Test_1 : NSObject < JavaLangComparable >");
+    assertTranslation(translation, "- (jint)compareToWithId:(id<JavaLangRunnable>)r;");
+  }
 }
