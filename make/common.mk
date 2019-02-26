@@ -137,6 +137,17 @@ ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
 JAVA_8 = 1
 endif
 
+TRANSLATOR_BUILD_FLAGS = \
+  -Xlint:unchecked -encoding UTF-8 -nowarn
+ifndef JAVA_8
+TRANSLATOR_BUILD_FLAGS += \
+  --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+endif
+
 comma=,
 space=$(eval) $(eval)
 

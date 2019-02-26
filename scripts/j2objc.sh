@@ -67,6 +67,11 @@ if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
   J2OBJC_ARGS+=("-Xbootclasspath:${LIB_DIR}/jre_emul.jar")
 fi
 
+${JAVA} -version 2>&1 | fgrep -q "build 1.8"
+if [ $? -ne 0 ]; then
+  J2OBJC_ARGS+=("--system" "${LIB_DIR}/jre_emul_module")
+fi
+
 J2OBJC_ARGS+=(-Xannotations-jar "${LIB_DIR}/j2objc_annotations.jar")
 
 PARSING_JAVA_ARGS=0

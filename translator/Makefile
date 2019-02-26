@@ -317,20 +317,8 @@ default: $(J2OBJC_JAR)
 $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo building j2objc jar
-ifdef JAVA_8
-	@$(JAVAC) -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
-	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.8 -target 1.8 -nowarn \
-	    $(JAVA_SOURCES_FULL)
-else
-	@$(JAVAC) -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
-	    -d $(CLASS_DIR) -encoding UTF-8 -nowarn \
-	    --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
-	    --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
-	    --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
-	    --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
-	    --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
-	    $(JAVA_SOURCES_FULL)
-endif
+	@$(JAVAC) -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) -d $(CLASS_DIR) \
+	    $(TRANSLATOR_BUILD_FLAGS) $(JAVA_SOURCES_FULL)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
 ifdef JAVA_8
