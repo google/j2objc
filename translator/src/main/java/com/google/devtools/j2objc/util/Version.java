@@ -29,16 +29,21 @@ public class Version {
    * @param jarClass any class from the target jar
    */
   public static String jarVersion(Class<?> jarClass) {
+    String j2objcVersion = null;
+
     String path = jarClass.getProtectionDomain().getCodeSource().getLocation().getPath();
     try (JarFile jar = new JarFile(URLDecoder.decode(path, "UTF-8"))) {
       Manifest manifest = jar.getManifest();
-      String version = manifest.getMainAttributes().getValue("version");
-      if (version != null) {
-        return version;
-      }
+      j2objcVersion = manifest.getMainAttributes().getValue("version");
     } catch (IOException e) {
+      // fall-through
     }
-    return "(version info not available)";
+    if (j2objcVersion == null) {
+      j2objcVersion = "(j2objc version not available)";
+    }
+
+    String javacVersion = Parser.newParser(null).version();
+    return String.format("%s (javac %s)", j2objcVersion, javacVersion);
   }
 
   private Version() {}  // Don't instantiate.

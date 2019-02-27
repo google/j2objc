@@ -117,6 +117,12 @@ public abstract class Parser implements Closeable {
   }
 
   /**
+   * Returns the version of the parser library used as the front-end.
+   */
+  public abstract String version();
+
+
+  /**
    * Set whether to include doc comment AST nodes.
    */
   public abstract void setEnableDocComments(boolean enable);

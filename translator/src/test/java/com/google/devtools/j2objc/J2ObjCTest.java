@@ -17,6 +17,7 @@ package com.google.devtools.j2objc;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.SourceVersion;
+import com.google.devtools.j2objc.util.Version;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -353,5 +354,9 @@ public class J2ObjCTest extends GenerationTest {
     assertFalse(new File(tempDir, "foo/bar/Test.h").exists());
     assertTrue(new File(tempDir, "foo/bar/Test.m").exists());
     assertTrue(new File(tempDir, "foo/bar/Test.java").exists());
+  }
+
+  public void testJavacVersionString() {
+    assertTrue(Version.jarVersion(Options.class).contains("(javac "));
   }
 }

@@ -29,10 +29,12 @@ import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.SourcePositions;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,6 +64,18 @@ public class JavacParser extends Parser {
 
   public JavacParser(Options options){
     super(options);
+  }
+
+  @Override
+  public String version() {
+    // Avoid using private API (Java 9+) to get version string.
+    try {
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      ToolProvider.getSystemJavaCompiler().run(null, null, out, "-version");
+      return out.toString("UTF-8").trim();
+    } catch (UnsupportedEncodingException e) {
+      return "javac version not available";
+    }
   }
 
   @Override
