@@ -321,13 +321,8 @@ $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 	    $(TRANSLATOR_BUILD_FLAGS) $(JAVA_SOURCES_FULL)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
-ifdef JAVA_8
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
 	@$(JAVA) -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR_JAR) process jarjar.rules $@-combined $@
-else
-	# TODO(user): update jarjar to work with Java 11 bytecode.
-	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
-endif
 
 # Format manifest classpath with each jar on a separate line, to avoid
 # maximum line length of 72 bytes in UTF-8 encoding.

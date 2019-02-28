@@ -20,7 +20,7 @@ unzip jarjar-src-1.4.zip
 rm jarjar-src-1.4.zip
 cd jarjar-1.4-patched
 rm -f lib/asm-4.0.jar lib/asm-commons-4.0.jar
-curl -o lib/asm-5.0.4.jar http://central.maven.org/maven2/org/ow2/asm/asm/5.0.4/asm-5.0.4.jar
-curl -o lib/asm-commons-5.0.4.jar http://central.maven.org/maven2/org/ow2/asm/asm-commons/5.0.4/asm-commons-5.0.4.jar
+curl -o lib/asm-7.0.jar http://central.maven.org/maven2/org/ow2/asm/asm/7.0/asm-7.0.jar
+curl -o lib/asm-commons-7.0.jar http://central.maven.org/maven2/org/ow2/asm/asm-commons/7.0/asm-commons-7.0.jar
 patch -p1 < ../jarjar.patch
 cd ..
