@@ -161,6 +161,15 @@ $(foreach root,$(TEST_RESOURCE_ROOTS),$(eval $(call resource_copy_rule,$(root)))
 run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 	@ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
+# Useful when investigating flaky tests. Example:
+# make -f tests.mk run-single-test NUM_TEST_RUNS=50 TEST_TO_RUN=jsr166.CompletableFutureTest
+run-single-test: link resources $(TEST_BIN)
+	@test=0 ; while [[ $$test -lt $(NUM_TEST_RUNS) ]] ; do \
+	  echo test $$test ; \
+	  ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(TEST_TO_RUN) ; \
+	  ((test = test + 1)) ; \
+	done
+
 run-initialization-test: resources $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
