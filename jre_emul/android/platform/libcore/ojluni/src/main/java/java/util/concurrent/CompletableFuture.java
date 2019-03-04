@@ -508,14 +508,16 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
         }
     }
 
+    // J2ObjC: added volatile to all member variables of Completion objects because they are
+    // nulled out after firing. volatile is required for atomicity in J2ObjC.
     /* ------------- One-input Completions -------------- */
 
     /** A Completion with a source, dependent, and executor. */
     @SuppressWarnings("serial")
     abstract static class UniCompletion<T,V> extends Completion {
-        Executor executor;                 // executor to use (null if none)
-        CompletableFuture<V> dep;          // the dependent to complete
-        CompletableFuture<T> src;          // source for action
+        volatile Executor executor;                 // executor to use (null if none)
+        volatile CompletableFuture<V> dep;          // the dependent to complete
+        volatile CompletableFuture<T> src;          // source for action
 
         UniCompletion(Executor executor, CompletableFuture<V> dep,
                       CompletableFuture<T> src) {
@@ -573,7 +575,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniApply<T,V> extends UniCompletion<T,V> {
-        Function<? super T,? extends V> fn;
+        volatile Function<? super T,? extends V> fn;
         UniApply(Executor executor, CompletableFuture<V> dep,
                  CompletableFuture<T> src,
                  Function<? super T,? extends V> fn) {
@@ -629,7 +631,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniAccept<T> extends UniCompletion<T,Void> {
-        Consumer<? super T> fn;
+        volatile Consumer<? super T> fn;
         UniAccept(Executor executor, CompletableFuture<Void> dep,
                   CompletableFuture<T> src, Consumer<? super T> fn) {
             super(executor, dep, src); this.fn = fn;
@@ -684,7 +686,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniRun<T> extends UniCompletion<T,Void> {
-        Runnable fn;
+        volatile Runnable fn;
         UniRun(Executor executor, CompletableFuture<Void> dep,
                CompletableFuture<T> src, Runnable fn) {
             super(executor, dep, src); this.fn = fn;
@@ -732,7 +734,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniWhenComplete<T> extends UniCompletion<T,T> {
-        BiConsumer<? super T, ? super Throwable> fn;
+        volatile BiConsumer<? super T, ? super Throwable> fn;
         UniWhenComplete(Executor executor, CompletableFuture<T> dep,
                         CompletableFuture<T> src,
                         BiConsumer<? super T, ? super Throwable> fn) {
@@ -795,7 +797,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniHandle<T,V> extends UniCompletion<T,V> {
-        BiFunction<? super T, Throwable, ? extends V> fn;
+        volatile BiFunction<? super T, Throwable, ? extends V> fn;
         UniHandle(Executor executor, CompletableFuture<V> dep,
                   CompletableFuture<T> src,
                   BiFunction<? super T, Throwable, ? extends V> fn) {
@@ -851,7 +853,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniExceptionally<T> extends UniCompletion<T,T> {
-        Function<? super Throwable, ? extends T> fn;
+        volatile Function<? super Throwable, ? extends T> fn;
         UniExceptionally(CompletableFuture<T> dep, CompletableFuture<T> src,
                          Function<? super Throwable, ? extends T> fn) {
             super(null, dep, src); this.fn = fn;
@@ -948,7 +950,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class UniCompose<T,V> extends UniCompletion<T,V> {
-        Function<? super T, ? extends CompletionStage<V>> fn;
+        volatile Function<? super T, ? extends CompletionStage<V>> fn;
         UniCompose(Executor executor, CompletableFuture<V> dep,
                    CompletableFuture<T> src,
                    Function<? super T, ? extends CompletionStage<V>> fn) {
@@ -1038,7 +1040,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
     /** A Completion for an action with two sources */
     @SuppressWarnings("serial")
     abstract static class BiCompletion<T,U,V> extends UniCompletion<T,V> {
-        CompletableFuture<U> snd; // second source for action
+        volatile CompletableFuture<U> snd; // second source for action
         BiCompletion(Executor executor, CompletableFuture<V> dep,
                      CompletableFuture<T> src, CompletableFuture<U> snd) {
             super(executor, dep, src); this.snd = snd;
@@ -1048,7 +1050,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
     /** A Completion delegating to a BiCompletion */
     @SuppressWarnings("serial")
     static final class CoCompletion extends Completion {
-        BiCompletion<?,?,?> base;
+        volatile BiCompletion<?,?,?> base;
         CoCompletion(BiCompletion<?,?,?> base) { this.base = base; }
         final CompletableFuture<?> tryFire(int mode) {
             BiCompletion<?,?,?> c; CompletableFuture<?> d;
@@ -1091,7 +1093,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class BiApply<T,U,V> extends BiCompletion<T,U,V> {
-        BiFunction<? super T,? super U,? extends V> fn;
+        volatile BiFunction<? super T,? super U,? extends V> fn;
         BiApply(Executor executor, CompletableFuture<V> dep,
                 CompletableFuture<T> src, CompletableFuture<U> snd,
                 BiFunction<? super T,? super U,? extends V> fn) {
@@ -1162,7 +1164,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class BiAccept<T,U> extends BiCompletion<T,U,Void> {
-        BiConsumer<? super T,? super U> fn;
+        volatile BiConsumer<? super T,? super U> fn;
         BiAccept(Executor executor, CompletableFuture<Void> dep,
                  CompletableFuture<T> src, CompletableFuture<U> snd,
                  BiConsumer<? super T,? super U> fn) {
@@ -1234,7 +1236,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class BiRun<T,U> extends BiCompletion<T,U,Void> {
-        Runnable fn;
+        volatile Runnable fn;
         BiRun(Executor executor, CompletableFuture<Void> dep,
               CompletableFuture<T> src,
               CompletableFuture<U> snd,
@@ -1370,7 +1372,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class OrApply<T,U extends T,V> extends BiCompletion<T,U,V> {
-        Function<? super T,? extends V> fn;
+        volatile Function<? super T,? extends V> fn;
         OrApply(Executor executor, CompletableFuture<V> dep,
                 CompletableFuture<T> src,
                 CompletableFuture<U> snd,
@@ -1434,7 +1436,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class OrAccept<T,U extends T> extends BiCompletion<T,U,Void> {
-        Consumer<? super T> fn;
+        volatile Consumer<? super T> fn;
         OrAccept(Executor executor, CompletableFuture<Void> dep,
                  CompletableFuture<T> src,
                  CompletableFuture<U> snd,
@@ -1498,7 +1500,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
     @SuppressWarnings("serial")
     static final class OrRun<T,U> extends BiCompletion<T,U,Void> {
-        Runnable fn;
+        volatile Runnable fn;
         OrRun(Executor executor, CompletableFuture<Void> dep,
               CompletableFuture<T> src,
               CompletableFuture<U> snd,
@@ -1607,7 +1609,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
     @SuppressWarnings("serial")
     static final class AsyncSupply<T> extends ForkJoinTask<Void>
         implements Runnable, AsynchronousCompletionTask {
-        CompletableFuture<T> dep; Supplier<? extends T> fn;
+        volatile CompletableFuture<T> dep; volatile Supplier<? extends T> fn;
         AsyncSupply(CompletableFuture<T> dep, Supplier<? extends T> fn) {
             this.dep = dep; this.fn = fn;
         }
@@ -1643,7 +1645,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
     @SuppressWarnings("serial")
     static final class AsyncRun extends ForkJoinTask<Void>
         implements Runnable, AsynchronousCompletionTask {
-        CompletableFuture<Void> dep; Runnable fn;
+        volatile CompletableFuture<Void> dep; volatile Runnable fn;
         AsyncRun(CompletableFuture<Void> dep, Runnable fn) {
             this.dep = dep; this.fn = fn;
         }
