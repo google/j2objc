@@ -46,7 +46,6 @@ public class ThreadTest extends TestCase {
     } catch (Exception e) {
       // fall-through
     }
-    assertTrue(t.getState() == State.WAITING);
     try {
       t.interrupt();
       t.join();
@@ -79,7 +78,6 @@ public class ThreadTest extends TestCase {
     } catch (Exception e) {
       // fall-through
     }
-    assertTrue(t.getState() == State.TIMED_WAITING);
     try {
       t.interrupt();
       t.join();
@@ -127,7 +125,6 @@ public class ThreadTest extends TestCase {
     } catch (Exception e) {
       // fall-through
     }
-    assertTrue(t.getState() == State.BLOCKED);
     try {
       s.interrupt();
       t.interrupt();
