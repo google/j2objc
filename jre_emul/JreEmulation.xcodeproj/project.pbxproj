@@ -803,6 +803,7 @@
 		FA1DD7BF2154190800D0B800 /* mySSLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7BE2154190700D0B800 /* mySSLSession.m */; };
 		FA1DD7C1215419D400D0B800 /* TestSSLSocketPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */; };
 		FA2EECB521EFB55000B88A06 /* CompletableFutureTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */; };
+		FA3ACD812229A27B00ECCC8F /* IosHttpURLConnectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACD802229A27A00ECCC8F /* IosHttpURLConnectionTest.m */; };
 		FA40676421C07E6100988DFD /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40675021C07E5E00988DFD /* MethodTest.m */; };
 		FA40676621C07E6100988DFD /* ExecutableParameterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40675221C07E5E00988DFD /* ExecutableParameterTest.m */; };
 		FA40676721C07E6100988DFD /* NoAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40675321C07E5E00988DFD /* NoAnnotation.m */; };
@@ -3982,6 +3983,9 @@
 		FA1DD7BE2154190700D0B800 /* mySSLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = mySSLSession.m; path = org/apache/harmony/xnet/tests/support/mySSLSession.m; sourceTree = "<group>"; };
 		FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestSSLSocketPair.m; path = libcore/javax/net/ssl/TestSSLSocketPair.m; sourceTree = "<group>"; };
 		FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompletableFutureTest.m; path = jsr166/CompletableFutureTest.m; sourceTree = "<group>"; };
+		FA3ACD802229A27A00ECCC8F /* IosHttpURLConnectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosHttpURLConnectionTest.m; path = com/google/j2objc/net/IosHttpURLConnectionTest.m; sourceTree = "<group>"; };
+		FA3ACD822229A94300ECCC8F /* CompletableFuture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CompletableFuture.m; path = build_result/Classes/java/util/concurrent/CompletableFuture.m; sourceTree = "<group>"; };
+		FA3ACD832229A94300ECCC8F /* CompletableFuture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompletableFuture.h; path = build_result/Classes/java/util/concurrent/CompletableFuture.h; sourceTree = "<group>"; };
 		FA40675021C07E5E00988DFD /* MethodTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MethodTest.m; path = libcore/java/lang/reflect/annotations/MethodTest.m; sourceTree = "<group>"; };
 		FA40675221C07E5E00988DFD /* ExecutableParameterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExecutableParameterTest.m; path = libcore/java/lang/reflect/annotations/ExecutableParameterTest.m; sourceTree = "<group>"; };
 		FA40675321C07E5E00988DFD /* NoAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoAnnotation.m; path = libcore/java/lang/reflect/annotations/noannotation/NoAnnotation.m; sourceTree = "<group>"; };
@@ -4324,6 +4328,8 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
+				FA3ACD832229A94300ECCC8F /* CompletableFuture.h */,
+				FA3ACD822229A94300ECCC8F /* CompletableFuture.m */,
 				06721AC51559CB4200645E1B /* AbstractCollection.h */,
 				06721A291559C91600645E1B /* AbstractCollection.m */,
 				06F290BD18972DF800676F1D /* AbstractExecutorService.h */,
@@ -6758,6 +6764,7 @@
 				062029291D512F25001EE455 /* InvalidKeySpecExceptionTest.m */,
 				0620292A1D512F25001EE455 /* InvalidParameterSpecExceptionTest.m */,
 				DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */,
+				FA3ACD802229A27A00ECCC8F /* IosHttpURLConnectionTest.m */,
 				06C143BC1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m */,
 				067B13401EEDEA600013CBAF /* IosRSAKeyTest.m */,
 				067B13391EEDE95C0013CBAF /* IosRSASignatureTest.m */,
@@ -8409,6 +8416,7 @@
 				062024F81D512AA2001EE455 /* SpannableTest.m in Sources */,
 				062026BD1D512D08001EE455 /* CollatorTest.m in Sources */,
 				0620264B1D512CA1001EE455 /* OldStringReaderTest.m in Sources */,
+				FA3ACD812229A27B00ECCC8F /* IosHttpURLConnectionTest.m in Sources */,
 				0612B91A1F4373740069EF58 /* TreeMapTest.m in Sources */,
 				062029981D512F57001EE455 /* MessageDigestTestMD5.m in Sources */,
 				069C24351E9EEF7B00CE6BAF /* ZipOutputStreamTest.m in Sources */,
