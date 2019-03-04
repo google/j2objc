@@ -65,7 +65,7 @@ public abstract class AbstractCalendar extends CalendarSystem {
     public Era getEra(String eraName) {
         if (eras != null) {
             for (int i = 0; i < eras.length; i++) {
-                if (eras[i].equals(eraName)) {
+                if (eras[i].getName().equals(eraName)) {
                     return eras[i];
                 }
             }
