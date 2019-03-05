@@ -27,6 +27,11 @@ CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(JAVA_SRC_DIR)/%=%)
 TRANSLATE_ARGS = -classpath $(CLASSPATH) -encoding UTF-8
+ifndef JAVA_8
+TRANSLATE_ARGS += \
+  --patch-module java.base=$(DIST_JAR_DIR)/$(JSR305_JAR) \
+  --add-reads java.base=ALL-UNNAMED
+endif
 include $(J2OBJC_ROOT)/make/translate.mk
 
 J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c -I$(GEN_OBJC_DIR) $(CC_WARNINGS)

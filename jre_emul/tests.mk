@@ -77,7 +77,7 @@ TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR) \
     -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
     -encoding UTF-8 --prefixes Tests/resources/prefixes.properties
 ifndef JAVA_8
-TRANSLATE_ARGS += --system $(EMULATION_MODULE_DIST) \
+TRANSLATE_ARGS += \
   --patch-module java.base=$(TEST_SRC):$(GEN_JAVA_DIR) \
   --add-reads java.base=ALL-UNNAMED
 endif

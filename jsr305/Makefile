@@ -33,8 +33,12 @@ include ../make/create_jar.mk
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES)
-# Batch translate is turned off due to an open JDT bug.
 TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR)
+ifndef JAVA_8
+TRANSLATE_ARGS += \
+  --patch-module java.base=$(JAVA_SRC_DIR) \
+  --add-reads java.base=ALL-UNNAMED
+endif
 include ../make/translate.mk
 
 ARCH_HEADERS = $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=$(ARCH_INCLUDE_DIR)/%)

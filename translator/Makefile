@@ -355,17 +355,9 @@ clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 test: compile-tests copy-test-resources
-ifdef JAVA_8
-	$(JAVA) -classpath $(TEST_CLASSPATH) -Xss4m -XX:+UseParallelGC \
-	    -Xbootclasspath/a:$(TEST_BOOT_CLASSPATH) \
-	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
-else
-	# TODO(user): move bootclasspath to --system=bootclasspath
-	# once jre_emul.jar is modularized.
 	$(JAVA) -classpath $(TEST_CLASSPATH):$(TEST_BOOT_CLASSPATH) \
 	    -Xss4m -XX:+UseParallelGC \
 	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
-endif
 
 compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
