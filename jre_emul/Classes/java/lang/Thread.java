@@ -416,11 +416,11 @@ public class Thread implements Runnable {
       throw new IllegalThreadStateException("This thread was already started!");
     }
     threadGroup.add(this);
+    state = STATE_RUNNABLE;
     start0();
     if (priority != NORM_PRIORITY) {
       nativeSetPriority(priority);
     }
-    state = STATE_RUNNABLE;
   }
 
   private native void start0() /*-[
