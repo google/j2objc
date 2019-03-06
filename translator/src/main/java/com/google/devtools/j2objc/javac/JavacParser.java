@@ -179,7 +179,7 @@ public class JavacParser extends Parser {
     } else {
       javacOptions.add("-proc:none");
     }
-    javacOptions.addAll(options.getExtraJavacParserFlags());
+    javacOptions.addAll(options.getPlatformModuleSystemOptions());
     return javacOptions;
   }
 

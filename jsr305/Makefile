@@ -35,9 +35,7 @@ TRANSLATE_JAVA_FULL = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES)
 TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR)
 ifndef JAVA_8
-TRANSLATE_ARGS += \
-  --patch-module java.base=$(JAVA_SRC_DIR) \
-  --add-reads java.base=ALL-UNNAMED
+TRANSLATE_ARGS += --patch-module java.base=$(JAVA_SRC_DIR)
 endif
 include ../make/translate.mk
 

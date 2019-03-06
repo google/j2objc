@@ -28,9 +28,7 @@ TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(JAVA_SRC_DIR)/%=%)
 TRANSLATE_ARGS = -classpath $(CLASSPATH) -encoding UTF-8
 ifndef JAVA_8
-TRANSLATE_ARGS += \
-  --patch-module java.base=$(DIST_JAR_DIR)/$(JSR305_JAR) \
-  --add-reads java.base=ALL-UNNAMED
+TRANSLATE_ARGS += --patch-module java.base=$(DIST_JAR_DIR)/$(JSR305_JAR)
 endif
 include $(J2OBJC_ROOT)/make/translate.mk
 

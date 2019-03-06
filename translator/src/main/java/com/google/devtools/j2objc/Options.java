@@ -218,9 +218,9 @@ public class Options {
   }
 
   // Flags that are directly forwarded to the javac parser.
-  private static final ImmutableSet<String> EXTRA_JAVAC_PARSER_FLAGS =
+  private static final ImmutableSet<String> PLATFORM_MODULE_SYSTEM_OPTIONS =
       ImmutableSet.of("--patch-module", "--system", "--add-reads");
-  private final List<String> extraJavacParserFlags = new ArrayList<>();
+  private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
 
   static {
@@ -496,23 +496,15 @@ public class Options {
         // Handle aliasing of version numbers as supported by javac.
         try {
           sourceVersion = SourceVersion.parse(s);
-          SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
-          if (sourceVersion.version() > maxVersion.version()) {
-            ErrorUtil.warning("Java " + sourceVersion.version() + " source version is not "
-                + "supported, using Java " + maxVersion.version() + ".");
-            sourceVersion = maxVersion;
-          }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + s);
         }
       } else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.
         getArgValue(args, arg);  // ignore
-      } else if (EXTRA_JAVAC_PARSER_FLAGS.contains(arg)) {
-        if (arg.equals("--system")) {
-          SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
-        }
-        addExtraJavacParserFlags(arg, getArgValue(args, arg));
+      } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
+        SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
+        addPlatformModuleSystemOptions(arg, getArgValue(args, arg));
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
@@ -529,6 +521,7 @@ public class Options {
   }
 
   private void postProcessArgs() {
+    postProcessSourceVersion();
     // Fix up the classpath, adding the current dir if it is empty, as javac would.
     List<String> classPaths = fileUtil.getClassPathEntries();
     if (classPaths.isEmpty()) {
@@ -573,6 +566,24 @@ public class Options {
     if (bootclasspath == null) {
       // Fall back to Java 8 and earlier property.
       bootclasspath = System.getProperty("sun.boot.class.path", "");
+    }
+  }
+
+  private void postProcessSourceVersion() {
+    if (sourceVersion == null) {
+      sourceVersion = SourceVersion.defaultVersion();
+    }
+    SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
+    if (sourceVersion.version() > maxVersion.version()) {
+      ErrorUtil.warning("Java " + sourceVersion.version() + " source version is not "
+          + "supported, using Java " + maxVersion.version() + ".");
+      sourceVersion = maxVersion;
+    }
+    if (sourceVersion.version() > 8) {
+      // Allow the modularized JRE to read the J2ObjC annotations (they are in the unnamed module).
+      addPlatformModuleSystemOptions("--add-reads", "java.base=ALL-UNNAMED");
+    } else {
+      platformModuleSystemOptions.clear();
     }
   }
 
@@ -848,15 +859,13 @@ public class Options {
 
 
   public SourceVersion getSourceVersion(){
-    if (sourceVersion == null) {
-      sourceVersion = SourceVersion.defaultVersion();
-    }
     return sourceVersion;
   }
 
   @VisibleForTesting
   public void setSourceVersion(SourceVersion version) {
     sourceVersion = version;
+    postProcessSourceVersion();
   }
 
   public boolean staticAccessorMethods() {
@@ -977,11 +986,11 @@ public class Options {
     return entryClasses;
   }
 
-  public void addExtraJavacParserFlags(String... flags) {
-    Collections.addAll(extraJavacParserFlags, flags);
+  public void addPlatformModuleSystemOptions(String... flags) {
+    Collections.addAll(platformModuleSystemOptions, flags);
   }
 
-  public List<String> getExtraJavacParserFlags() {
-    return extraJavacParserFlags;
+  public List<String> getPlatformModuleSystemOptions() {
+    return platformModuleSystemOptions;
   }
 }
