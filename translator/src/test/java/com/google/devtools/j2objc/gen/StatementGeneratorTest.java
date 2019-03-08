@@ -1604,4 +1604,23 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "if (a < b) ;");
     assertTranslatedLines(translation, "if (c < d)", ";");
   }
+
+  public void testVarLocalVariables() throws IOException {
+    if (!onJava9OrAbove()) {
+      return;
+    }
+    String translation = translateSourceFile(String.join("\n",
+        "import java.util.ArrayList;",
+        "import java.util.stream.Stream;",
+        "class Test {",
+        "  Stream test() {",
+        "    var list = new ArrayList<String>();",
+        "    var stream = list.stream();",
+        "    return stream;",
+        "  }",
+        "}"), "Test", "Test.m");
+    // Verify correct type inference.
+    assertTranslation(translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
+    assertTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
+  }
 }
