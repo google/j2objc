@@ -21,8 +21,7 @@ import java.util.List;
  */
 public class TryStatement extends Statement {
 
-  private ChildList<VariableDeclarationExpression> resources =
-      ChildList.create(VariableDeclarationExpression.class, this);
+  private ChildList<TreeNode> resources = ChildList.create(TreeNode.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
   private ChildList<CatchClause> catchClauses = ChildList.create(CatchClause.class, this);
   private ChildLink<Block> finallyBlock = ChildLink.create(Block.class, this);
@@ -42,11 +41,11 @@ public class TryStatement extends Statement {
     return Kind.TRY_STATEMENT;
   }
 
-  public List<VariableDeclarationExpression> getResources() {
+  public List<TreeNode> getResources() {
     return resources;
   }
 
-  public TryStatement addResource(VariableDeclarationExpression resource) {
+  public TryStatement addResource(TreeNode resource) {
     resources.add(resource);
     return this;
   }

@@ -1275,7 +1275,11 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
     TryStatement newNode = new TryStatement();
     for (Tree obj : node.getResources()) {
-      newNode.addResource(convertVariableExpression((VariableTree) obj, path));
+      if (obj.getKind() == Kind.VARIABLE) {
+        newNode.addResource(convertVariableExpression((VariableTree) obj, path));
+      } else {
+        newNode.addResource(convertInner(obj, path));
+      }
     }
     for (CatchTree obj : node.getCatches()) {
       newNode.addCatchClause((CatchClause) convert(obj, path));

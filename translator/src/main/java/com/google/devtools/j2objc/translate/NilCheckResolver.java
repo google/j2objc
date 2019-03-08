@@ -56,7 +56,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionElement;
@@ -730,7 +729,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
   @Override
   public boolean visit(TryStatement node) {
     pushTryScope();
-    for (VariableDeclarationExpression resource : node.getResources()) {
+    for (TreeNode resource : node.getResources()) {
       resource.accept(this);
     }
     node.getBody().accept(this);

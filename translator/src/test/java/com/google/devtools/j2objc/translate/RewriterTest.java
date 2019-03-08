@@ -471,7 +471,6 @@ public class RewriterTest extends GenerationTest {
         "}");
   }
 
-  /* TODO(b/126361806)
   public void testTryWithResourceOnEffectivelyFinalVariable() throws IOException {
     if (!onJava9OrAbove()) {
       return;
@@ -490,28 +489,30 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
             + "create_JavaIoFileReader_initWithNSString_(path));",
-        "JavaLangThrowable *__primaryException1 = nil;",
-        "@try {",
-        "  return [br readLine];",
-        "}",
-        "@catch (JavaLangThrowable *e) {",
-        "  __primaryException1 = e;",
-        "  @throw e;",
-        "}",
-        "@finally {",
-        "  if (br != nil) {",
-        "    if (__primaryException1 != nil) {",
-        "      @try {",
+        "{",
+        "  JavaLangThrowable *__primaryException1 = nil;",
+        "  @try {",
+        "    return [br readLine];",
+        "  }",
+        "  @catch (JavaLangThrowable *e) {",
+        "    __primaryException1 = e;",
+        "    @throw e;",
+        "  }",
+        "  @finally {",
+        "    if (br != nil) {",
+        "      if (__primaryException1 != nil) {",
+        "        @try {",
+        "          [br close];",
+        "        }",
+        "        @catch (JavaLangThrowable *e) {",
+        "          [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
+        "        }",
+        "      }",
+        "      else {",
         "        [br close];",
         "      }",
-        "      @catch (JavaLangThrowable *e) {",
-        "        [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
-        "      }",
-        "    }",
-        "    else {",
-        "      [br close];",
         "    }",
         "  }",
         "}");
-  }*/
+  }
 }
