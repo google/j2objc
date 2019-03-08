@@ -1,0 +1,165 @@
+From b6d76a3acf6dfacd9a20d5dd0cc6e43a753624fc Mon Sep 17 00:00:00 2001
+From: Alan Pincus <40048260+alanpincus@users.noreply.github.com>
+Date: Mon, 4 Mar 2019 16:56:44 -0500
+Subject: [PATCH] Update to Java 11 using asm-7.0
+
+---
+ MANIFEST.MF                                              |  2 ++
+ build.xml                                                | 16 ++++++++--------
+ src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java  |  8 ++++----
+ src/main/com/tonicsystems/jarjar/StringReader.java       |  8 ++++----
+ .../com/tonicsystems/jarjar/util/GetNameClassWriter.java |  2 +-
+ 5 files changed, 19 insertions(+), 17 deletions(-)
+ create mode 100644 MANIFEST.MF
+
+diff --git a/MANIFEST.MF b/MANIFEST.MF
+new file mode 100644
+index 0000000..f47db03
+--- /dev/null
++++ b/MANIFEST.MF
+@@ -0,0 +1,2 @@
++Manifest-Version: 1.0
++Main-Class: com.tonicsystems.jarjar.Main
+diff --git a/build.xml b/build.xml
+index d293cdc..85e1996 100644
+--- a/build.xml
++++ b/build.xml
+@@ -5,8 +5,8 @@
+ 
+     <property name="javadoc.access" value="public"/>
+ 
+-    <property name="compile.source" value="1.5"/>
+-    <property name="compile.target" value="1.5"/>
++    <property name="compile.source" value="11"/>
++    <property name="compile.target" value="11"/>
+     <property name="compile.bootclasspath" value=""/>
+     <property name="compile.extdirs" value=""/>
+ 
+@@ -21,7 +21,7 @@
+     <!-- define Maven coordinates -->
+ 	<property name="groupId" value="com.googlecode.jarjar" />
+ 	<property name="artifactId" value="jarjar" />
+-    <property name="version" value="1.4"/>
++    <property name="version" value="11"/>
+ 
+     <!-- define artifacts' name, which follows the convention of Maven -->
+ 	<property name="maven-jar" value="${dist}/${artifactId}-${version}.jar" />
+@@ -95,8 +95,8 @@
+         <mkdir dir="dist"/>
+         <jarjar jarfile="${jarfile}">
+             <fileset dir="build/main"/>
+-            <zipfileset src="lib/asm-6.0.jar"/>
+-            <zipfileset src="lib/asm-commons-6.0.jar">
++            <zipfileset src="lib/asm-7.0.jar"/>
++            <zipfileset src="lib/asm-commons-7.0.jar">
+                 <include name="org/objectweb/asm/commons/*Remapper.class"/>
+                 <include name="org/objectweb/asm/commons/LocalVariablesSorter.class"/>
+             </zipfileset>
+@@ -208,8 +208,8 @@
+         <delete file="${test.jar}"/>
+         <jarjar2 jarfile="${test.jar}">
+             <fileset dir="build/main"/>
+-            <zipfileset src="lib/asm-6.0.jar"/>
+-            <zipfileset src="lib/asm-commons-6.0.jar"/>
++            <zipfileset src="lib/asm-7.0.jar"/>
++            <zipfileset src="lib/asm-commons-7.0.jar"/>
+             <rule pattern="org.objectweb.asm.**" result="com.tonicsystems.jarjar.asm.@1"/>
+         </jarjar2>
+         <delete file="${test.jar}"/>
+@@ -256,7 +256,7 @@
+     <!-- TODO: reference ant javadocs -->
+     <target name="javadoc" depends="compile" description="Generate the javadoc">
+         <mkdir dir="dist/javadoc"/>
+-        <javadoc 
++        <javadoc
+           sourcepath="${src}/main"
+           destdir="${dist}/javadoc"
+           access="${javadoc.access}"
+diff --git a/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java b/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
+index 901e237..a0e0b9d 100644
+--- a/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
++++ b/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
+@@ -29,23 +29,23 @@ import org.objectweb.asm.Opcodes;
+ public class EmptyClassVisitor extends ClassVisitor {
+ 
+   public EmptyClassVisitor() {
+-    super(Opcodes.ASM6);
++    super(Opcodes.ASM7);
+   }
+ 
+   @Override
+   public MethodVisitor visitMethod(
+       int access, String name, String desc, String signature, String[] exceptions) {
+-    return new MethodVisitor(Opcodes.ASM6) {};
++    return new MethodVisitor(Opcodes.ASM7) {};
+   }
+ 
+   @Override
+   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+-    return new AnnotationVisitor(Opcodes.ASM6) {};
++    return new AnnotationVisitor(Opcodes.ASM7) {};
+   }
+ 
+   @Override
+   public FieldVisitor visitField(
+       int access, String name, String desc, String signature, Object value) {
+-    return new FieldVisitor(Opcodes.ASM6) {};
++    return new FieldVisitor(Opcodes.ASM7) {};
+   }
+ }
+diff --git a/src/main/com/tonicsystems/jarjar/StringReader.java b/src/main/com/tonicsystems/jarjar/StringReader.java
+index d1c1108..3f28bd0 100644
+--- a/src/main/com/tonicsystems/jarjar/StringReader.java
++++ b/src/main/com/tonicsystems/jarjar/StringReader.java
+@@ -23,7 +23,7 @@ abstract class StringReader extends ClassVisitor {
+   private String className;
+ 
+   public StringReader() {
+-    super(Opcodes.ASM6);
++    super(Opcodes.ASM7);
+   }
+ 
+   public abstract void visitString(String className, String value, int line);
+@@ -49,7 +49,7 @@ abstract class StringReader extends ClassVisitor {
+   public FieldVisitor visitField(
+       int access, String name, String desc, String signature, Object value) {
+     handleObject(value);
+-    return new FieldVisitor(Opcodes.ASM6) {
++    return new FieldVisitor(Opcodes.ASM7) {
+       @Override
+       public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+         return StringReader.this.visitAnnotation(desc, visible);
+@@ -59,7 +59,7 @@ abstract class StringReader extends ClassVisitor {
+ 
+   @Override
+   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+-    return new AnnotationVisitor(Opcodes.ASM6) {
++    return new AnnotationVisitor(Opcodes.ASM7) {
+       @Override
+       public void visit(String name, Object value) {
+         handleObject(value);
+@@ -81,7 +81,7 @@ abstract class StringReader extends ClassVisitor {
+   public MethodVisitor visitMethod(
+       int access, String name, String desc, String signature, String[] exceptions) {
+     MethodVisitor mv =
+-        new MethodVisitor(Opcodes.ASM6) {
++        new MethodVisitor(Opcodes.ASM7) {
+           @Override
+           public void visitLdcInsn(Object cst) {
+             handleObject(cst);
+diff --git a/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java b/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
+index 19011be..9c83288 100644
+--- a/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
++++ b/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
+@@ -24,7 +24,7 @@ public class GetNameClassWriter extends ClassVisitor {
+   private String className;
+ 
+   public GetNameClassWriter(int flags) {
+-    super(Opcodes.ASM6, new ClassWriter(flags));
++    super(Opcodes.ASM7, new ClassWriter(flags));
+   }
+ 
+   public void visit(
+-- 
+2.7.4
+
