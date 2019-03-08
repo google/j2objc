@@ -338,9 +338,10 @@ public class Functionizer extends UnitTreeVisitor {
     boolean isConstructor = ElementUtil.isConstructor(element);
     boolean isInstanceMethod = !ElementUtil.isStatic(element) && !isConstructor;
     boolean isDefaultMethod = ElementUtil.isDefault(element);
+    boolean isPrivate = ElementUtil.isPrivate(element);
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     if (!isInstanceMethod || isDefaultMethod || Modifier.isNative(node.getModifiers())
-        || ElementUtil.isPrivate(element) || functionizableMethods.contains(element)) {
+        || isPrivate || functionizableMethods.contains(element)) {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
       boolean isEnumConstructor = isConstructor && ElementUtil.isEnum(declaringClass);
       if (isConstructor) {
@@ -355,13 +356,15 @@ public class Functionizer extends UnitTreeVisitor {
         // Enums with ARC need the retaining constructor.
         declarationList.add(makeAllocatingConstructor(node, false));
       }
-      if (isDefaultMethod) {
+      if (isDefaultMethod || (isPrivate && ElementUtil.isInterface(declaringClass))) {
         // For default methods keep only the declaration. Implementing classes will add a shim.
+        // Private interface methods do not need an implementation because functionized default
+        // methods only use functionized private methods.
         node.setBody(null);
         node.addModifiers(Modifier.ABSTRACT);
       } else if (isInstanceMethod) {
         // We can remove private instance methods if reflection is stripped.
-        if (translationUtil.needsReflection(declaringClass) || !ElementUtil.isPrivate(element)) {
+        if (translationUtil.needsReflection(declaringClass) || !isPrivate) {
           setFunctionCaller(node, element);
         } else {
           node.remove();
@@ -379,7 +382,7 @@ public class Functionizer extends UnitTreeVisitor {
       } else {
         // Static methods and constructors, no reflection.
         if (options.emitWrapperMethods() && !ElementUtil.isPrivateInnerType(declaringClass)
-            && !ElementUtil.isPrivate(element)) {
+            && !isPrivate) {
           setFunctionCaller(node, element);
         } else {
           node.remove();

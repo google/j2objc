@@ -424,7 +424,6 @@ public class DefaultMethodsTest extends GenerationTest {
         "}");
   }
 
-  /* TODO(b/126364629)
   public void testPrivateInterfaceMethod() throws IOException {
     if (!onJava9OrAbove()) {
       return;
@@ -444,7 +443,8 @@ public class DefaultMethodsTest extends GenerationTest {
             + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "NSString *Test_reverseWithNSString_(id<Test> self, NSString *s)");
+        "NSString *Test_reverseWithNSString_(id<Test> self, NSString *s) {");
+    assertOccurrences(translation, "Test_reverseWithNSString_(self, [self name])", 2);
     assertNotInTranslation(translation, "- (NSString *)reverseWithNSString:(NSString *)s {");
-  }*/
+  }
 }
