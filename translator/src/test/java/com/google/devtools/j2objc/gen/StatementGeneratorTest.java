@@ -1606,7 +1606,7 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testVarLocalVariables() throws IOException {
-    if (!onJava9OrAbove()) {
+    if (!onJava10OrAbove()) {
       return;
     }
     String translation = translateSourceFile(String.join("\n",
