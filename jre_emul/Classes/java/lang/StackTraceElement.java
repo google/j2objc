@@ -33,6 +33,8 @@ import java.util.Objects;
  */
 public class StackTraceElement implements Serializable {
 
+  public static final String STRIPPED = "<stripped>";
+
   private String declaringClass;
   private String methodName;
   private String fileName;
@@ -60,14 +62,17 @@ public class StackTraceElement implements Serializable {
   }
 
   public StackTraceElement(String className, String methodName, String fileName, int lineNumber) {
-    this.declaringClass = className;
-    this.methodName = methodName;
+    this.declaringClass = Objects.requireNonNull(className, "Declaring class is null");
+    this.methodName = Objects.requireNonNull(methodName, "Method name is null");
     this.fileName = fileName;
     this.lineNumber = lineNumber;
   }
 
   StackTraceElement(long address) {
-    this(null, null, null, -1);
+    this.declaringClass = null;
+    this.methodName = null;
+    this.fileName = null;
+    this.lineNumber = -1;
     this.address = address;
   }
 
@@ -76,11 +81,11 @@ public class StackTraceElement implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append(hexAddress);
     sb.append(" ");
-    if (declaringClass != null) {
+    if (!declaringClass.equals(STRIPPED)) {
       sb.append(declaringClass);
       sb.append('.');
     }
-    if (methodName != null) {
+    if (!methodName.equals(STRIPPED)) {
       sb.append(methodName);
     }
     if (fileName != null || lineNumber != -1) {
@@ -93,7 +98,7 @@ public class StackTraceElement implements Serializable {
         sb.append(lineNumber);
       }
       sb.append(')');
-    } else if (declaringClass != null) {
+    } else if (!declaringClass.equals(STRIPPED)) {
       sb.append("()");
     }
     if (offset != null) {
@@ -128,6 +133,8 @@ public class StackTraceElement implements Serializable {
       if (!(obj instanceof StackTraceElement))
           return false;
       StackTraceElement e = (StackTraceElement)obj;
+      initializeFromAddress();
+      e.initializeFromAddress();
       return e.declaringClass.equals(declaringClass) &&
           e.lineNumber == lineNumber &&
           Objects.equals(methodName, e.methodName) &&
@@ -138,6 +145,7 @@ public class StackTraceElement implements Serializable {
    * Returns a hash code value for this stack trace element.
    */
   public int hashCode() {
+      initializeFromAddress();
       int result = 31*declaringClass.hashCode() + methodName.hashCode();
       result = 31*result + Objects.hashCode(fileName);
       result = 31*result + lineNumber;
@@ -297,6 +305,12 @@ public class StackTraceElement implements Serializable {
       if (!self->methodName_) {
         self->methodName_ = ExtractMethodName(start, '_', encoding);
       }
+    }
+    if (!self->declaringClass_) {
+      self->declaringClass_ = JavaLangStackTraceElement_STRIPPED;
+    }
+    if (!self->methodName_) {
+      self->methodName_ = JavaLangStackTraceElement_STRIPPED;
     }
     free(stackSymbol);
   ]-*/;
