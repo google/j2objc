@@ -44,12 +44,13 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
-if [ ! -z "${J2OBJC_JAVA_HOME}" ]; then
-  readonly JAVA_HOME="${J2OBJC_JAVA_HOME}"
-  readonly JAVA=${JAVA_HOME}/bin/java
-elif [ -x "/usr/libexec/java_home" ]; then
+if [ -z "${J2OBJC_JAVA_VERSION}" ]; then
+  readonly J2OBJC_JAVA_VERSION=1.8
+fi
+
+if [ -x "/usr/libexec/java_home" ]; then
   # java_home is available on all Mac systems.
-  readonly JAVA_HOME=`/usr/libexec/java_home -v 1.8 2> /dev/null`
+  readonly JAVA_HOME=`/usr/libexec/java_home -v ${J2OBJC_JAVA_VERSION} 2> /dev/null`
   readonly JAVA=${JAVA_HOME}/bin/java
 else
   # Non-Mac system (not supported, but should still work).

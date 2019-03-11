@@ -125,11 +125,10 @@ TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
 # Use Java 8 by default.
 # TODO(tball): remove when Java 9 is supported.
-ifdef J2OBJC_JAVA_HOME
-JAVA_HOME = $(J2OBJC_JAVA_HOME)
-else
-JAVA_HOME = $(shell /usr/libexec/java_home -v 1.8)
+ifndef J2OBJC_JAVA_VERSION
+J2OBJC_JAVA_VERSION = 1.8
 endif
+JAVA_HOME = $(shell /usr/libexec/java_home -v $(J2OBJC_JAVA_VERSION))
 JAVA = $(JAVA_HOME)/bin/java
 JAVAC = $(JAVA_HOME)/bin/javac
 ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
