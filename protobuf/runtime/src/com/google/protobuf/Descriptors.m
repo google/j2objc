@@ -219,8 +219,7 @@ static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPF
 }
 
 - (NSString *)getName {
-  NSAssert(NO, @"unimplemented");  // TODO(b/122974087): Implement this.
-  return nil;
+  return [[self java_getClass] getSimpleName];
 }
 
 - (id<JavaUtilList>)getFields {
