@@ -83,11 +83,11 @@ $(EMULATION_MODULE): $(EMULATION_JAR)
 	@../scripts/gen_module_info.py --name java.base --root $(BUILD_DIR)/jre_emul \
 	  --output $(BUILD_DIR)/module-info.java
 	@$(JAVAC) --system=none --patch-module=java.base=$(EMULATION_JAR) \
-	  -d $(BUILD_DIR) $(BUILD_DIR)/module-info.java
-	@jar uf $(EMULATION_JAR) -C $(BUILD_DIR) module-info.class
+	  -d $(BUILD_DIR)/jre_emul $(BUILD_DIR)/module-info.java
 	@mkdir $(BUILD_DIR)/jmod
-	@$(JAVA_HOME)/bin/jmod create --module-version 11 --target-platform osx \
-	  --class-path $(EMULATION_JAR) $(BUILD_DIR)/jmod/jre_emul.jmod
+	@$(JAVA_HOME)/bin/jmod create --module-version $(J2OBJC_JAVA_VERSION) \
+	  --target-platform osx --class-path $(BUILD_DIR)/jre_emul \
+	  $(BUILD_DIR)/jmod/jre_emul.jmod
 	@$(JAVA_HOME)/bin/jlink --module-path $(BUILD_DIR)/jmod \
 	  --add-modules java.base  --output $(EMULATION_MODULE)
 	@cp $(JAVA_HOME)/lib/jrt-fs.jar $(EMULATION_MODULE)/lib/
