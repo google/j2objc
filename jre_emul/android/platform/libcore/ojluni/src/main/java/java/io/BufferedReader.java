@@ -328,7 +328,8 @@ public class BufferedReader extends Reader {
             ensureOpen();
             boolean omitLF = ignoreLF || skipLF;
 
-        bufferLoop:
+        // j2objc: unused label, avoids LLVM warning.
+        // bufferLoop:
             for (;;) {
 
                 if (nextChar >= nChars)
