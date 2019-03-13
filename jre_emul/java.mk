@@ -85,7 +85,7 @@ $(EMULATION_MODULE): $(EMULATION_JAR)
 	@$(JAVAC) --system=none --patch-module=java.base=$(EMULATION_JAR) \
 	  -d $(BUILD_DIR)/jre_emul $(BUILD_DIR)/module-info.java
 	@mkdir $(BUILD_DIR)/jmod
-	@$(JAVA_HOME)/bin/jmod create --module-version $(J2OBJC_JAVA_VERSION) \
+	@$(JAVA_HOME)/bin/jmod create --module-version $(JAVA_VERSION) \
 	  --target-platform osx --class-path $(BUILD_DIR)/jre_emul \
 	  $(BUILD_DIR)/jmod/jre_emul.jmod
 	@$(JAVA_HOME)/bin/jlink --module-path $(BUILD_DIR)/jmod \

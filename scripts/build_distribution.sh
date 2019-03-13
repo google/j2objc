@@ -31,12 +31,9 @@ DISTRIBUTION_NAME=j2objc-$1
 # Set j2objc flags used for public builds.
 TRANSLATE_GLOBAL_FLAGS="--doc-comments;--generate-deprecated;--swift-friendly"
 
-if [ -z "${J2OBJC_JAVA_VERSION}" ]; then
-  readonly J2OBJC_JAVA_VERSION=1.8
-fi
-
+JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 ENV_CMD="env -i PATH=$PATH HOME=$HOME J2OBJC_VERSION=${1%/} PROTOBUF_ROOT_DIR=${2%/}"
-ENV_CMD="${ENV_CMD} J2OBJC_JAVA_VERSION=${J2OBJC_JAVA_VERSION}"
+ENV_CMD="${ENV_CMD} JAVA_HOME=${JAVA_HOME}"
 ENV_CMD="${ENV_CMD} TRANSLATE_GLOBAL_FLAGS=${TRANSLATE_GLOBAL_FLAGS}"
 
 echo "make clean"
@@ -58,6 +55,15 @@ fi
 
 echo "make test_all"
 $ENV_CMD make -j8 test_all
+ERR=$?
+if [ ${ERR} -ne 0 ]; then
+  exit ${ERR}
+fi
+
+echo "make emul_module_dist"
+JAVA_HOME=`/usr/libexec/java_home -v 11`
+ENV_CMD="${ENV_CMD} JAVA_HOME=${JAVA_HOME}"
+$ENV_CMD make -C jre_emul/ -f java.mk emul_module_dist
 ERR=$?
 if [ ${ERR} -ne 0 ]; then
   exit ${ERR}

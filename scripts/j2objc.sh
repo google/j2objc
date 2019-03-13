@@ -44,21 +44,27 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
-if [ -z "${J2OBJC_JAVA_VERSION}" ]; then
-  readonly J2OBJC_JAVA_VERSION=1.8
-fi
-
 if [ -x "/usr/libexec/java_home" ]; then
   # java_home is available on all Mac systems.
-  readonly JAVA_HOME=`/usr/libexec/java_home -v ${J2OBJC_JAVA_VERSION} 2> /dev/null`
+  if [ -z "${JAVA_HOME}" ]; then
+    readonly JAVA_HOME=`/usr/libexec/java_home -v 1.8 2> /dev/null`
+  fi
   readonly JAVA=${JAVA_HOME}/bin/java
 else
   # Non-Mac system (not supported, but should still work).
   readonly JAVA=`which java`
-  ${JAVA} -version 2>&1 | fgrep -q 1.8
 fi
-if [ $? -ne 0 ]; then
-  echo "JDK 8 is not installed"
+
+SUPPORTED_JAVA_VERSIONS=(1.8 11)
+JAVA_VERSION=0
+for version in ${SUPPORTED_JAVA_VERSIONS[@]}; do
+  ${JAVA} -version 2>&1 | fgrep -q "build ${version}"
+  if [ $? -eq 0 ]; then
+    JAVA_VERSION=${version}
+  fi
+done
+if [ "${JAVA_VERSION}" = "0" ]; then
+  echo "JDK not supported. Please set JAVA_HOME to JDK 1.8 or 11."
   exit 1
 fi
 
