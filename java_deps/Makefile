@@ -51,8 +51,16 @@ BUILD_DIR_DOCLET_JARS = $(DOCLET_JARS:%=$(BUILD_DIR)/%)
 
 $(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 
+# Postprocessing: update procyon to not depend on URLClassPath.
 $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	mvn -q generate-resources dependency:sources
+	@curl -s -o $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
+	  http://central.maven.org/maven2/org/bitbucket/mstrobel/procyon-compilertools/0.5.33/$(NEW_PROCYON_COMPILERTOOLS_JAR)
+	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
+	  com/strobel/assembler/metadata/ClasspathTypeLoader.class
+	@cd $(BUILD_DIR) && jar uf $(PROCYON_COMPILERTOOLS_JAR) com/strobel/assembler/metadata/ClasspathTypeLoader.class
+	@rm -rf $(BUILD_DIR)/com
+	@rm $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR)
 	@touch $@
 
 $(BUILD_DIR)/$(JUNIT_JAR): $(BUILD_DIR)/$(JUNIT_ROOT_JAR)
@@ -65,7 +73,7 @@ $(BUILD_DIR)/$(JAVAC_JAR): | $(BUILD_DIR)
 	@cp -f $(JAVA_HOME)/lib/$(JAVAC_JAR) $@
 
 $(BUILD_DIR)/$(SCENELIB_JAR): | $(BUILD_DIR)
-	@curl -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.8.0.zip
+	@curl -s -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.8.0.zip
 	@unzip -qq -d $(BUILD_DIR) $@.zip annotation-tools/annotation-file-utilities/annotation-file-utilities.jar
 	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/annotation-tools/annotation-file-utilities/annotation-file-utilities.jar "scenelib/*"
 	@cd $(BUILD_DIR) && zip -q -r $(SCENELIB_JAR) scenelib/
