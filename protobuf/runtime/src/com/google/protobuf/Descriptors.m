@@ -219,7 +219,7 @@ static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPF
 }
 
 - (NSString *)getName {
-  return [[self java_getClass] getSimpleName];
+  return [[messageClass_ java_getClass] getSimpleName];
 }
 
 - (id<JavaUtilList>)getFields {
