@@ -69,5 +69,11 @@ if [ ${ERR} -ne 0 ]; then
   exit ${ERR}
 fi
 
+$ENV_CMD make test_translator
+ERR=$?
+if [ ${ERR} -ne 0 ]; then
+  exit ${ERR}
+fi
+
 mv dist ${DISTRIBUTION_NAME}
-zip -ry ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME}
+zip -qry ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME}

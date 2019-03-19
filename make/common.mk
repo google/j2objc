@@ -131,6 +131,8 @@ JAVAC = $(JAVA_HOME)/bin/javac
 ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
 # Flag used to include tools.jar. This jar was removed in JDK 9.
 JAVA_8 = 1
+else ifneq (,$(findstring build 10, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 10
 else ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 11
 else
