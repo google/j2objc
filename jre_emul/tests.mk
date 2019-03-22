@@ -164,7 +164,7 @@ run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 run-single-test: link resources $(TEST_BIN)
 	@test=0 ; while [[ $$test -lt $(NUM_TEST_RUNS) ]] ; do \
 	  echo test $$test ; \
-	  ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(TEST_TO_RUN) ; \
+	  ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(TEST_TO_RUN) || exit 1; \
 	  ((test = test + 1)) ; \
 	done
 
