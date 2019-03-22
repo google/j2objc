@@ -1225,7 +1225,7 @@ public class File implements Serializable, Comparable<File> {
     public long getTotalSpace() {
         try {
             StructStatVfs sb = Libcore.os.statvfs(path);
-            return sb.f_blocks * sb.f_bsize; // total block count * block size in bytes.
+            return sb.f_blocks * sb.f_frsize; // total block count * fragment size in bytes.
         } catch (ErrnoException errnoException) {
             return 0;
         }
@@ -1247,7 +1247,7 @@ public class File implements Serializable, Comparable<File> {
     public long getUsableSpace() {
         try {
             StructStatVfs sb = Libcore.os.statvfs(path);
-            return sb.f_bavail * sb.f_bsize; // non-root free block count * block size in bytes.
+            return sb.f_bavail * sb.f_frsize; // non-root free block count * fragment size in bytes.
         } catch (ErrnoException errnoException) {
             return 0;
         }
@@ -1265,7 +1265,7 @@ public class File implements Serializable, Comparable<File> {
     public long getFreeSpace() {
         try {
             StructStatVfs sb = Libcore.os.statvfs(path);
-            return sb.f_bfree * sb.f_bsize; // free block count * block size in bytes.
+            return sb.f_bfree * sb.f_frsize; // free block count * fragment size in bytes.
         } catch (ErrnoException errnoException) {
             return 0;
         }
