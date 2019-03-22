@@ -995,25 +995,34 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
             // require 2GB of free disk space
             return;
         }
-        // (all?) unix platforms support sparse files so this should not
-        // need to have 2GB free disk space to pass
-        RandomAccessFile raf = new RandomAccessFile(f, "rw");
-        // write a few bytes so we get more helpful error messages
-        // if we land in the wrong places
-        raf.write(1);
-        raf.write(2);
-        raf.seek(2147483647);
-        raf.write(3);
-        raf.write(4);
-        raf.write(5);
-        raf.write(6);
-        raf.seek(0);
-        assertEquals("seek 0", 1, raf.read());
-        raf.seek(2147483649L);
-        assertEquals("seek >2gb", 5, raf.read());
-        raf.seek(0);
-        assertEquals("seek back to 0", 1, raf.read());
-        raf.close();
+        // J2ObjC modified: print disk space metrics when there is an exception.
+        try {
+            // (all?) unix platforms support sparse files so this should not
+            // need to have 2GB free disk space to pass
+            RandomAccessFile raf = new RandomAccessFile(f, "rw");
+            // write a few bytes so we get more helpful error messages
+            // if we land in the wrong places
+            raf.write(1);
+            raf.write(2);
+            raf.seek(2147483647);
+            raf.write(3);
+            raf.write(4);
+            raf.write(5);
+            raf.write(6);
+            raf.seek(0);
+            assertEquals("seek 0", 1, raf.read());
+            raf.seek(2147483649L);
+            assertEquals("seek >2gb", 5, raf.read());
+            raf.seek(0);
+            assertEquals("seek back to 0", 1, raf.read());
+            raf.close();
+        } catch (IOException e) {
+            long gb = 1024L * 1024L * 1024L;
+            System.err.println("Total space: " + ((double) f.getTotalSpace())/gb + " GB");
+            System.err.println("Free space: " + ((double) f.getFreeSpace())/gb + " GB");
+            System.err.println("Usable space: " + ((double) f.getUsableSpace())/gb + " GB");
+            throw e;
+        }
     }
 
     /**
