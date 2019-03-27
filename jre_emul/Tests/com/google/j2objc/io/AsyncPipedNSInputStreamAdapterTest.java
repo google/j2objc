@@ -145,12 +145,12 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
       dataSize = stopWritingAt;
     }
 
-    int getTotalWritten() {
+    synchronized int getTotalWritten() {
       return offset;
     }
 
     @Override
-    public void offerData(OutputStream stream) {
+    public synchronized void offerData(OutputStream stream) {
       try {
         int remaining = dataSize - offset;
         int len = (remaining > WRITE_CHUNK_SIZE) ? WRITE_CHUNK_SIZE : remaining;
