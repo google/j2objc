@@ -190,7 +190,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
 
-    assertTrue("The entire source is read", Arrays.equals(randomData, consumer.getBytes()));
+    assertTrue("The source was not fully read", Arrays.equals(randomData, consumer.getBytes()));
   }
 
   @AutoreleasePool
@@ -209,7 +209,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer(0);
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
-    assertTrue("May provide more than actually read", provider.getTotalWritten() >= 0);
+    assertTrue("Less was written than expected", provider.getTotalWritten() >= 0);
     assertEquals(0, consumer.getBytes().length);
   }
 
@@ -219,7 +219,8 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer(PARTIAL_SIZE);
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
-    assertTrue("May provide more than actually read", provider.getTotalWritten() >= PARTIAL_SIZE);
+    assertTrue("Less was written than expected: " + provider.getTotalWritten(),
+        provider.getTotalWritten() >= PARTIAL_SIZE);
     assertEquals(PARTIAL_SIZE, consumer.getBytes().length);
     assertTrue(Arrays.equals(Arrays.copyOfRange(randomData, 0, PARTIAL_SIZE), consumer.getBytes()));
   }
@@ -233,7 +234,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
     assertEquals(PARTIAL_SIZE, provider.getTotalWritten());
     assertEquals(PARTIAL_SIZE, consumer.getBytes().length);
     assertTrue(
-        "Part of the source is read",
+        "Unexpected data was read",
         Arrays.equals(Arrays.copyOfRange(randomData, 0, PARTIAL_SIZE), consumer.getBytes()));
   }
 
