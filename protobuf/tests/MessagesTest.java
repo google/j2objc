@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.ExtensionRegistry;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import protos.GroupFe;
 import protos.GroupRe;
 import protos.MessageData;
@@ -25,9 +25,6 @@ import protos.MessageData.SubMsg.InnerMsg;
 import protos.MessageDataOrBuilder;
 import protos.MessageFields;
 import protos.MessageSet;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Tests for correct behavior of message and group fields.
@@ -64,6 +61,28 @@ public class MessagesTest extends ProtobufTest {
     MessageData.Builder builder = MessageData.newBuilder();
     builder.setExtension(MessageFields.msgFe, SubMsg.newBuilder().setIntF(1).build());
     builder.mergeFrom(filledMsg);
+    MessageData msg = builder.build();
+    checkFields(builder);
+    checkFields(msg);
+  }
+
+  public void testMergeFromByteArray() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+    MessageData filledMsg = getFilledMessage();
+    MessageData.Builder builder =
+        MessageData.newBuilder().mergeFrom(filledMsg.toByteArray(), registry);
+    MessageData msg = builder.build();
+    checkFields(builder);
+    checkFields(msg);
+  }
+
+  public void testMergeFromByteString() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+    MessageData filledMsg = getFilledMessage();
+    MessageData.Builder builder =
+        MessageData.newBuilder().mergeFrom(filledMsg.toByteString(), registry);
     MessageData msg = builder.build();
     checkFields(builder);
     checkFields(msg);

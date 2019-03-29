@@ -153,12 +153,12 @@ $(BUILD_DIR):
 $(OBJS_DIR)/%.o: $(GEN_OBJC_DIR)/%.m \
   | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
-	$(TEST_J2OBJCC) -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -o $@ $<
+	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -o $@ $<
 
 $(OBJS_DIR)/arc/%.o: $(GEN_OBJC_DIR)/arc/%.m \
   | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
-	$(TEST_J2OBJCC) -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -fobjc-arc -o $@ $<
+	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -fobjc-arc -o $@ $<
 
 $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	@mkdir -p $(@D)
