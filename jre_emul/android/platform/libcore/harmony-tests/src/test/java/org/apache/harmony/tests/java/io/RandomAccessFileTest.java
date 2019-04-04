@@ -995,7 +995,6 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
             // require 2GB of free disk space
             return;
         }
-        // J2ObjC modified: print disk space metrics when there is an exception.
         try {
             // (all?) unix platforms support sparse files so this should not
             // need to have 2GB free disk space to pass
@@ -1017,11 +1016,15 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
             assertEquals("seek back to 0", 1, raf.read());
             raf.close();
         } catch (IOException e) {
+            // J2ObjC modified: print disk space metrics and absorb the exception
+            // if the usable space is low.
             long gb = 1024L * 1024L * 1024L;
             System.err.println("Total space: " + ((double) f.getTotalSpace())/gb + " GB");
             System.err.println("Free space: " + ((double) f.getFreeSpace())/gb + " GB");
             System.err.println("Usable space: " + ((double) f.getUsableSpace())/gb + " GB");
-            throw e;
+            if (f.getUsableSpace() > 2L * gb) {
+                throw e;
+            }
         }
     }
 
