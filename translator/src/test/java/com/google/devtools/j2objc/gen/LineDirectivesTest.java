@@ -179,6 +179,25 @@ public class LineDirectivesTest extends GenerationTest {
         "- (NSString *)DummyTwoWithInt:(jint)i {");
   }
 
+  public void testSyncAfterMultilineMethodSignature() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {\n"
+            + "  int sum(int a, int b, int c) {\n"
+            + "    return a + b + c;\n"
+            + "  }\n"
+            + "}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "#line 2",
+        "- (jint)sumWithInt:(jint)a",
+        "           withInt:(jint)b",
+        "           withInt:(jint)c {",
+        "",
+        "#line 3",
+        "  return a + b + c;",
+        "}");
+  }
+
   private static final Pattern LINE_DIRECTIVE_PATTERN = Pattern.compile(
       "\\n#line \\d+ \"(\\S*)\"\\n");
 
