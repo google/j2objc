@@ -48,8 +48,8 @@ LINK_CLASS_TEMPLATE = """
 """
 
 
-def GenerateResourceFile(resource_path, dirname):
-  """Generates data structures from the contents of a resource file.
+def ProcessResourceFile(resource_path, output_file):
+  """Appends the embedded version of the resource to file.
 
   This function generates a static byte array for the resource, then a
   J2OBJC_RESOURCE macro which describes it.
@@ -58,36 +58,25 @@ def GenerateResourceFile(resource_path, dirname):
       resource_path: the path to the resource file, which is used to generate a
         resource name that matches the path Class.getResource() uses to find a
         Java resource.
-      dirname: where to write the output file.
-
-  Returns:
-    The basename of the output file.
+      output_file: the file that is updated with the embedded data.
   """
   array_name = resource_path.replace("/", "_").replace(".", "_").replace(
       "-", "_")
   if array_name[0] != "_":
     array_name = "_" + array_name
   array_name_hash = "0x{:02x}".format(hash(array_name) & (2**32 - 1))
-  filename = array_name + ".h"
-  out = open(os.path.join(dirname, filename), "w")
-  out.write(HEADER_COMMENT)
-  out.write("#ifndef " + array_name.upper() + "_H\n")
-  out.write("#define " + array_name.upper() + "_H\n")
-  out.write("\nstatic jbyte {}[] = {{".format(array_name))
+  output_file.write("\nstatic jbyte {}[] = {{".format(array_name))
   length = 0
   file_path = os.path.join(args.sourcepath, resource_path)
   with open(file_path, "rb") as in_file:
     for byte in iter(functools.partial(in_file.read, 1), b""):
       if length % 10 == 0:
-        out.write("\n ")
-      out.write(" 0x%02X," % ord(byte))
+        output_file.write("\n ")
+      output_file.write(" 0x%02X," % ord(byte))
       length += 1
-  out.write("\n};\n")
-  out.write("J2OBJC_RESOURCE(\\\n  {}, \\\n  {}, \\\n  {});\n".format(
+  output_file.write("\n};\n")
+  output_file.write("J2OBJC_RESOURCE(\\\n  {}, \\\n  {}, \\\n  {});\n".format(
       array_name, length, array_name_hash))
-  out.write("#endif\n")
-  out.close()
-  return filename
 
 
 if __name__ == "__main__":
@@ -117,8 +106,7 @@ if __name__ == "__main__":
   out.write(HEADER_COMMENT)
   out.write("#include \"J2ObjC_source.h\"\n")
   for rf in args.files:
-    h_file = GenerateResourceFile(rf, os.path.dirname(args.o))
-    out.write("#include \"{}\"\n".format(h_file))
+    ProcessResourceFile(rf, out)
 
   if args.link_class:
     out.write(LINK_CLASS_TEMPLATE.format(args.link_class, args.link_class))
