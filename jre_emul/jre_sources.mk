@@ -2018,8 +2018,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/UResourceTypeMismatchException.java \
   android/icu/util/VTimeZone.java \
 
-NATIVE_JRE_SOURCES_ICU = \
-  ICUData.m
+NATIVE_JRE_ICU_EMBEDDED_DATA = ICUData.m
 
 # These sources are not included in any sub-library, only the full jre_emul.
 # javax.lang.model.element.Modifier is required by mockito, so it is only needed
@@ -2212,4 +2211,4 @@ JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
   $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET) $(NATIVE_JRE_SOURCES_SSL) \
-  $(NATIVE_JRE_SOURCES_ICU)
+  $(NATIVE_JRE_ICU_EMBEDDED_DATA)

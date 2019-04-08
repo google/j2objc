@@ -80,7 +80,8 @@ OJLUNI_TEST_BASE = $(LIBCORE_BASE)/ojluni/src/test
 JAVA_TIME_TEST_ROOT = $(OJLUNI_TEST_BASE)/java/time
 ICU_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/java
 ICU_TEST_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/tests
-ICU_DATA_ROOT = $(ANDROID_PLATFORM)/external/icu/data
+ICU_RES_DIR = $(BUILD_DIR)/icu_res
+ICU_EMBEDDED_RES_DIR = $(ICU_RES_DIR)/embedded
 
 OPENJDK_ROOT = openjdk/src/share/classes
 
@@ -145,7 +146,7 @@ vpath %.java $(JRE_SRC):$(TEST_SRC)
 
 NATIVE_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR) \
   $(ANDROID_OPENJDK_NATIVE) $(J2OBJC_LUNI_NATIVE) \
-  $(ICU_DATA_ROOT)
+  $(ICU_EMBEDDED_RES_DIR)
 
 # Clang warnings
 WARNINGS := $(CC_WARNINGS) $(WARNINGS) -Wno-unused-label -Wno-dangling-else
