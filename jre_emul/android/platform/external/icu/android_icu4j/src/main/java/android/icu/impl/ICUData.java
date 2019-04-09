@@ -24,7 +24,7 @@ import android.icu.util.VersionInfo;
 
 /*-[
 // J2ObjC: make sure that the embedded resources are linked by referencing
-// the class defined in jre_emul/android/platform/external/icu/data/ICUData.m.
+// the class ICUData.m which is generated at build time (see jre_emul/icu_data.mk).
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wreceiver-forward-class"
 @class ICUData;

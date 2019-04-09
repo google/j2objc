@@ -189,9 +189,9 @@ public final class Norm2AllModes {
             return impl.isDecompYes(impl.getNorm16(c)) ? 1 : 0;
         }
         @Override
-        public boolean hasBoundaryBefore(int c) { return impl.hasDecompBoundary(c, true); }
+        public boolean hasBoundaryBefore(int c) { return impl.hasDecompBoundaryBefore(c); }
         @Override
-        public boolean hasBoundaryAfter(int c) { return impl.hasDecompBoundary(c, false); }
+        public boolean hasBoundaryAfter(int c) { return impl.hasDecompBoundaryAfter(c); }
         @Override
         public boolean isInert(int c) { return impl.isDecompInert(c); }
     }
@@ -242,11 +242,11 @@ public final class Norm2AllModes {
         public boolean hasBoundaryBefore(int c) { return impl.hasCompBoundaryBefore(c); }
         @Override
         public boolean hasBoundaryAfter(int c) {
-            return impl.hasCompBoundaryAfter(c, onlyContiguous, false);
+            return impl.hasCompBoundaryAfter(c, onlyContiguous);
         }
         @Override
         public boolean isInert(int c) {
-            return impl.hasCompBoundaryAfter(c, onlyContiguous, true);
+            return impl.isCompInert(c, onlyContiguous);
         }
 
         private final boolean onlyContiguous;

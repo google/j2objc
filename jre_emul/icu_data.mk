@@ -13,7 +13,7 @@
 # Rules for generating the embedded ICU resources.
 
 ICU_EXTRACTED_RES_DIR = $(ICU_RES_DIR)/extracted
-ICU_RES_PACKAGE = com/ibm/icu/impl/data/icudt58b
+ICU_RES_PACKAGE = com/ibm/icu/impl/data/icudt60b
 
 ICU_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icudata.jar
 
