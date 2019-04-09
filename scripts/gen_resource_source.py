@@ -112,7 +112,8 @@ if __name__ == "__main__":
     out.write(LINK_CLASS_TEMPLATE.format(args.link_class, args.link_class))
 
   out.write(
-      "\n// Resources checksums (run \"openssl sha256 <file>\" to verify)\n//\n"
+    "\n// Resources checksums (run \"openssl sha256 <file>\" "
+    + "to verify)\n//\n"
   )
   os.chdir(args.sourcepath)
   checksums = subprocess.check_output(["openssl", "sha256"] +
