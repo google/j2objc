@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -54,6 +55,7 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
@@ -568,9 +570,18 @@ public final class ElementUtil {
     return javacElements.getBinaryName(e).toString();
   }
 
-  Map<? extends ExecutableElement, ? extends AnnotationValue>
-      getElementValuesWithDefaults(AnnotationMirror a) {
-    return javacElements.getElementValuesWithDefaults(a);
+  Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
+      AnnotationMirror annotation) {
+    DeclaredType type = annotation.getAnnotationType();
+    Map<ExecutableElement, AnnotationValue> map = new LinkedHashMap<>(
+        annotation.getElementValues());
+    for (ExecutableElement method : getMethods((TypeElement) type.asElement())) {
+      AnnotationValue defaultValue = method.getDefaultValue();
+      if (defaultValue != null && !map.containsKey(method)) {
+        map.put(method, defaultValue);
+      }
+    }
+    return map;
   }
 
   public static Set<Modifier> getVisibilityModifiers(Element e) {
