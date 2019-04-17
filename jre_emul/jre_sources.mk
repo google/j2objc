@@ -661,6 +661,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/EmptyArray.java \
   libcore/util/MutableInt.java \
   libcore/util/MutableLong.java \
+  libcore/util/NonNull.java \
+  libcore/util/NullFromTypeParam.java \
+  libcore/util/Nullable.java \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java \
   sun/misc/Cleaner.java \
