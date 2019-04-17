@@ -23,13 +23,8 @@ import java.io.IOException;
  */
 public class ExternalAnnotationInjectorTest extends GenerationTest {
 
-  // In order to test different paths, the non-null version is a type annotation and the nullable
-  // version is a declaration annotation.
-  private static final String EXTERNAL_NULLABILITY_ANNOTATIONS =
-      "package p: "
-          + "annotation @NonNull: @java.lang.annotation.Target(value={TYPE_USE}) "
-          + "annotation @Nullable: "
-          + "class Test: "
+  private static final String SIMPLE_NULLABILITY_ANNOTATIONS =
+      "class Test: "
           + "  method foo()Ljava/lang/String;:"
           + "    return: @p.NonNull"
           + "  method bar()Ljava/lang/String;: @p.Nullable"
@@ -38,9 +33,28 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
           + "  method qux()Ljava/lang/String;:"
           + "    return: @p.Nullable";
 
-  public void testInjectNullability_returnType_instanceMethod() throws IOException {
+  // In order to test different paths, the non-null version is a type annotation and the nullable
+  // version is a declaration annotation.
+  private void setupNullabilityAnnotations(String externalAnnotations) throws IOException {
     options.setNullability(true);
-    options.addExternalAnnotationFileContents(EXTERNAL_NULLABILITY_ANNOTATIONS);
+    options.addExternalAnnotationFileContents(
+        "package p: "
+            + "annotation @NonNull: @java.lang.annotation.Target(value={TYPE_USE}) "
+            + "annotation @Nullable: "
+            + externalAnnotations);
+    addSourceFile(
+        "package p; "
+            + "@java.lang.annotation.Target(value={TYPE_USE}) "
+            + "public @interface NonNull {}",
+        "p/NonNull.java");
+    addSourceFile(
+        "package p; "
+            + "public @interface Nullable {}",
+        "p/Nullable.java");
+  }
+
+  public void testInjectNullability_returnType_instanceMethod() throws IOException {
+    setupNullabilityAnnotations(SIMPLE_NULLABILITY_ANNOTATIONS);
     String source =
         "package p;"
             + "public class Test { "
@@ -56,8 +70,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
   }
 
   public void testInjectNullability_returnType_classMethod() throws IOException {
-    options.setNullability(true);
-    options.addExternalAnnotationFileContents(EXTERNAL_NULLABILITY_ANNOTATIONS);
+    setupNullabilityAnnotations(SIMPLE_NULLABILITY_ANNOTATIONS);
     String source =
         "package p;"
             + "public class Test { "
@@ -70,8 +83,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
   }
 
   public void testInjectNullability_returnType_enumMethod() throws IOException {
-    options.setNullability(true);
-    options.addExternalAnnotationFileContents(EXTERNAL_NULLABILITY_ANNOTATIONS);
+    setupNullabilityAnnotations(SIMPLE_NULLABILITY_ANNOTATIONS);
     String source =
         "package p;"
             + "public enum Test { "
@@ -85,8 +97,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
   }
 
   public void testInjectNullability_returnType_interfaceMethod() throws IOException {
-    options.setNullability(true);
-    options.addExternalAnnotationFileContents(EXTERNAL_NULLABILITY_ANNOTATIONS);
+    setupNullabilityAnnotations(SIMPLE_NULLABILITY_ANNOTATIONS);
     String source =
         "package p;"
             + "public interface Test { "
@@ -99,18 +110,13 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
   }
 
   public void testInjectNullability_returnType_nestedClassMethod() throws IOException {
-    options.setNullability(true);
-    String externalNullabilityAnnotations =
-        "package p: "
-            + "annotation @NonNull: "
-            + "annotation @Nullable: "
-            + "class Test$StaticNestedClass: "
+    setupNullabilityAnnotations(
+        "class Test$StaticNestedClass: "
             + "  method foo()Ljava/lang/String;:"
             + "    return: @p.NonNull "
             + "class Test$InnerClass: "
             + "  method bar()Ljava/lang/String;:"
-            + "    return: @p.Nullable";
-    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+            + "    return: @p.Nullable");
     String source =
         "package p;"
             + "public class Test { "
@@ -128,14 +134,10 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
 
   // Nullability specifiers should not be applied to primitive types.
   public void testInjectNullability_returnType_primitiveType() throws IOException {
-    options.setNullability(true);
-    String externalNullabilityAnnotations =
-        "package p: "
-            + "annotation @NonNull: "
-            + "class Test: "
+    setupNullabilityAnnotations(
+        "class Test: "
             + "  method foo()Z:"
-            + "    return: @p.NonNull ";
-    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+            + "    return: @p.NonNull ");
     String source =
         "package p;"
             + "public class Test { "
@@ -154,6 +156,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "class Test: "
             + "  method <init>()V: @p.AnAnnotation";
     options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     String source = "package p; public class Test { public Test() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
     assertTranslation(translation, "- (instancetype __nonnull)init;");
@@ -171,6 +174,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "annotation @AnAnnotation: "
             + "class Test: "
             + "  method foo(Ljava/lang/Thread;)V: @p.AnAnnotation";
+    addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
     String source =
         "package p;"

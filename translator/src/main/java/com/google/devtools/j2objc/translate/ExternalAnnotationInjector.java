@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import scenelib.annotations.Annotation;
 import scenelib.annotations.el.AClass;
@@ -136,7 +137,8 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   }
 
   private GeneratedAnnotationMirror generateAnnotationMirror(Annotation annotation) {
-    GeneratedAnnotationMirror annotationMirror = new GeneratedAnnotationMirror(annotation.def.name);
+    DeclaredType type = (DeclaredType) typeUtil.resolveJavaType(annotation.def.name).asType();
+    GeneratedAnnotationMirror annotationMirror = new GeneratedAnnotationMirror(type);
     for (Map.Entry<String, Object> entry : annotation.fieldValues.entrySet()) {
       String fieldName = entry.getKey();
       // For our uses cases, the scenelib library encodes the annotation value as a string.
