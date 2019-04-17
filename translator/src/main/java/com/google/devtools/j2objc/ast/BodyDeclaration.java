@@ -87,6 +87,11 @@ public abstract class BodyDeclaration extends TreeNode {
     return this;
   }
 
+  public BodyDeclaration addAnnotation(Annotation annotation) {
+    annotations.add(annotation);
+    return this;
+  }
+
   @Override
   public abstract BodyDeclaration copy();
 }

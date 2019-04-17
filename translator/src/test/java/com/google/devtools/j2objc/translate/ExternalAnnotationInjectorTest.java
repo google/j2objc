@@ -243,4 +243,19 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertNotInTranslation(translation, "__metadata");
   }
 
+  public void testInjectRuntimeAnnotation() throws IOException {
+    String externalReflectionSupportAnnotations =
+        "package org.junit: "
+            + "annotation @Ignore: @java.lang.annotation.Retention(value=RUNTIME) "
+            + "                    @java.lang.annotation.Target(value={METHOD,TYPE}) "
+            + "package p: "
+            + "class Test: "
+            + "  method test()V: @Ignore";
+    options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
+    String source = "package p; public class Test { public void test() {} }";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    assertTranslation(translation, "#include \"org/junit/Ignore.h\"");
+    assertTranslation(translation, "create_OrgJunitIgnore");
+  }
+
 }

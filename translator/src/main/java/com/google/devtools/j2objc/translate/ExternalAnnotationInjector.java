@@ -15,9 +15,12 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
@@ -36,6 +39,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.DeclaredType;
@@ -120,6 +124,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
     GeneratedTypeElement generatedElement = GeneratedTypeElement.mutableCopy(node.getTypeElement());
     injectAnnotationsToElement(generatedElement, annotations);
     node.setTypeElement(generatedElement);
+    injectAnnotationsToNode(node, annotations);
   }
 
   private void injectAnnotationsToMethod(MethodDeclaration node, Set<Annotation> annotations) {
@@ -128,11 +133,22 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
         GeneratedExecutableElement.mutableCopy(nameTable.getMethodSelector(element), element);
     injectAnnotationsToElement(generatedElement, annotations);
     node.setExecutableElement(generatedElement);
+    injectAnnotationsToNode(node, annotations);
   }
 
   private void injectAnnotationsToElement(GeneratedElement element, Set<Annotation> annotations) {
     for (Annotation annotation : annotations) {
       element.addAnnotationMirror(generateAnnotationMirror(annotation));
+    }
+  }
+
+  private void injectAnnotationsToNode(BodyDeclaration declaration, Set<Annotation> annotations) {
+    for (Annotation annotation : annotations) {
+      NormalAnnotation newAnnotation = new NormalAnnotation();
+      AnnotationMirror annotationMirror = generateAnnotationMirror(annotation);
+      newAnnotation.setAnnotationMirror(annotationMirror);
+      newAnnotation.setTypeName(new SimpleName(annotationMirror.getAnnotationType().asElement()));
+      declaration.addAnnotation(newAnnotation);
     }
   }
 
