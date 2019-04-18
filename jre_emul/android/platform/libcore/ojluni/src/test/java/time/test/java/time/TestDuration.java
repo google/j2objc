@@ -63,7 +63,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.time.Duration;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -72,7 +71,6 @@ import org.junit.Test;
 public class TestDuration extends AbstractTest {
 
     //-----------------------------------------------------------------------
-    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(Duration.class);

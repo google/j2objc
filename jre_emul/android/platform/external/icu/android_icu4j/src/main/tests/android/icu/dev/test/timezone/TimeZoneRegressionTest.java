@@ -24,7 +24,6 @@ import java.security.AccessControlException;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import android.icu.dev.test.TestFmwk;
@@ -140,7 +139,6 @@ public class TimeZoneRegressionTest extends TestFmwk {
             warnln("Fail: TimeZone misbehaving");
     }
 
-    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void Test4096952() {
         String[] ZONES = { "GMT", "MET", "IST" };

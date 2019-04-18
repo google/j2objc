@@ -67,7 +67,6 @@ import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.time.DateTimeException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ValueRange;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import test.java.time.AbstractTest;
@@ -81,7 +80,6 @@ public class TestDateTimeValueRange extends AbstractTest {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(ValueRange.class);

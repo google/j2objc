@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import android.icu.dev.test.TestFmwk;
@@ -1142,7 +1141,6 @@ public class TimeZoneTest extends TestFmwk
     }
 
     // jb4484
-    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void TestSimpleTimeZoneSerialization() 
     {

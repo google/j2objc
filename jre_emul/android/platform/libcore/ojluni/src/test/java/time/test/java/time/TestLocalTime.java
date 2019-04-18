@@ -65,7 +65,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Clock;
 import java.time.LocalTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -77,7 +76,6 @@ public class TestLocalTime extends AbstractTest {
     static final long NANOS_PER_DAY = 24 * 60 * NANOS_PER_MINUTE;
 
     //-----------------------------------------------------------------------
-    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(LocalTime.class);

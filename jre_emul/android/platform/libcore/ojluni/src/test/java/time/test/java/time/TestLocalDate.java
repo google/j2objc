@@ -71,7 +71,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -89,7 +88,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    @Ignore("J2ObjC: requires reflection metadata.")
     @Test
     public void test_immutable() {
         assertImmutable(LocalDate.class);
