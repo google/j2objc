@@ -46,7 +46,7 @@ import javax.lang.model.type.TypeVisitor;
  */
 public class GeneratedExecutableElement extends GeneratedElement implements ExecutableElement {
 
-  private final String selector;
+  private String selector;
   private final List<VariableElement> parameters = Lists.newArrayList();
   private final List<TypeMirror> thrownTypes = Lists.newArrayList();
   private final List<TypeParameterElement> typeParameters = Lists.newArrayList();
@@ -116,6 +116,10 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   public String getSelector() {
     return selector;
+  }
+
+  public void setSelector(String selector) {
+    this.selector = selector;
   }
 
   public GeneratedExecutableElement addParameter(VariableElement param) {

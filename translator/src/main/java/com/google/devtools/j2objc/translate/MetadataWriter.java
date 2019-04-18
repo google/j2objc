@@ -244,7 +244,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       String methodName = ElementUtil.getName(method);
       String selector = nameTable.getMethodSelector(method);
       boolean isConstructor = ElementUtil.isConstructor(method);
-      if (selector.equals(methodName) || isConstructor) {
+      if (selector.equals(methodName) || isConstructor || translationUtil.isJUnit3TestClass(type)) {
         methodName = null;  // Reduce redundant data.
       }
 

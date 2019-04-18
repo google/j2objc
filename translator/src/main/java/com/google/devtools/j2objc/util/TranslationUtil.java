@@ -153,7 +153,7 @@ public final class TranslationUtil {
     return isJUnit3TestClass(type) || isJUnit4TestClass(type);
   }
 
-  private boolean isJUnit3TestClass(TypeElement type) {
+  public boolean isJUnit3TestClass(TypeElement type) {
     TypeElement testType = typeUtil.resolveJavaType("junit.framework.Test");
     return testType != null && typeUtil.isAssignable(type.asType(), testType.asType());
   }

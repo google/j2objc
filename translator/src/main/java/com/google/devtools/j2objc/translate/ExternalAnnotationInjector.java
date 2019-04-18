@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Mappings;
+import com.google.devtools.j2objc.util.NameTable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashSet;
@@ -50,6 +51,7 @@ import scenelib.annotations.el.AElement;
 import scenelib.annotations.el.AMethod;
 import scenelib.annotations.el.AScene;
 import scenelib.annotations.field.AnnotationFieldType;
+import scenelib.annotations.field.BasicAFT;
 import scenelib.annotations.field.EnumAFT;
 
 /** Adds external annotations from an annotated AST to matching declarations in a J2ObjC AST. */
@@ -134,6 +136,11 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
     injectAnnotationsToElement(generatedElement, annotations);
     node.setExecutableElement(generatedElement);
     injectAnnotationsToNode(node, annotations);
+    // Update the selector in case an ObjectiveCName annotation was injected.
+    String updatedSelector = NameTable.getMethodNameFromAnnotation(generatedElement);
+    if (updatedSelector != null) {
+      generatedElement.setSelector(updatedSelector);
+    }
   }
 
   private void injectAnnotationsToElement(GeneratedElement element, Set<Annotation> annotations) {
@@ -169,7 +176,16 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   private AnnotationField generateAnnotationField(
       AnnotationFieldType type, String name, String value) {
     AnnotationField field = new AnnotationField();
-    if (type instanceof EnumAFT) {
+    if (type instanceof BasicAFT) {
+      Class<?> enclosedType = ((BasicAFT) type).type;
+      if (String.class.isAssignableFrom(enclosedType)) {
+        field.element = GeneratedExecutableElement
+            .newMethodWithSelector(name, typeUtil.getJavaString().asType(), null);
+        field.value = new GeneratedAnnotationValue(value);
+      } else {
+        ErrorUtil.error("ExternalAnnotationInjector: unsupported field type " + type);
+      }
+    } else if (type instanceof EnumAFT) {
       int index = value.lastIndexOf('.');
       String enumTypeString = value.substring(0, index);
       String enumValue = value.substring(index + 1);
@@ -182,7 +198,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
               GeneratedVariableElement.newParameter(
                   enumValue, enumType, /* enclosingElement = */ null));
     } else {
-      ErrorUtil.error("Unsupported field type in external annotation: " + type);
+      ErrorUtil.error("ExternalAnnotationInjector: unsupported field type " + type);
     }
     return field;
   }

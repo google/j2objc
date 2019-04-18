@@ -258,4 +258,36 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "create_OrgJunitIgnore");
   }
 
+  private void setupObjectiveCNameAnnotations() throws IOException {
+    options.addExternalAnnotationFileContents(
+        "package com.google.j2objc.annotations: "
+            + "annotation @ObjectiveCName: @java.lang.annotation.Retention(value=CLASS) "
+            + "  @java.lang.annotation.Target(value={TYPE,METHOD,CONSTRUCTOR,PACKAGE}) "
+            + "  String value "
+            + "package p: "
+            + "class Test: "
+            + "  method testMethod()V: @ObjectiveCName(value=\"ignoreMethod\")");
+  }
+
+  public void testInjectObjectiveCName_method() throws IOException {
+    setupObjectiveCNameAnnotations();
+    String source = "package p; public class Test { public void testMethod() {} }";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    // The selector is renamed.
+    assertTranslation(translation, "- (void)ignoreMethod {");
+    // The original name is kept in the metadata.
+    assertTranslation(translation, "\"testMethod\"");
+  }
+
+  public void testInjectObjectiveCName_junit3Method() throws IOException {
+    setupObjectiveCNameAnnotations();
+    String source = "package p; "
+        + "public class Test extends junit.framework.TestCase { public void testMethod() {} }";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    // The selector is renamed.
+    assertTranslation(translation, "- (void)ignoreMethod {");
+    // The original name is not in the metadata. This allows to hide renamed methods from the
+    // JUnit runner.
+    assertNotInTranslation(translation, "\"testMethod\"");
+  }
 }
