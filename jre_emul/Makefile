@@ -43,8 +43,8 @@ TRANSLATE_ARGS = -sourcepath $(JRE_SRC) \
 ifndef JAVA_8
 TRANSLATE_ARGS += --patch-module java.base=$(JRE_SRC)
 endif
-ifdef J2OBJC_JRE_REFLECTION
-TRANSLATE_ARGS += --reflection:$(J2OBJC_JRE_REFLECTION)
+ifdef J2OBJC_JRE_STRIP_REFLECTION
+TRANSLATE_ARGS += --strip-reflection
 endif
 include ../make/translate.mk
 
