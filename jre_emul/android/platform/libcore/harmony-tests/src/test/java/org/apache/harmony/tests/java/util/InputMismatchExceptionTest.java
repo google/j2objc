@@ -15,8 +15,6 @@
  */
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.io.Serializable;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
@@ -54,9 +52,6 @@ public class InputMismatchExceptionTest extends TestCase {
      * serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(new InputMismatchException(ERROR_MESSAGE));
     }
 
@@ -64,9 +59,6 @@ public class InputMismatchExceptionTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifyGolden(this, new InputMismatchException(
                 ERROR_MESSAGE));
     }

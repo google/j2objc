@@ -16,8 +16,6 @@
 
 package libcore.java.lang.reflect;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 
@@ -131,9 +129,6 @@ public final class ConstructorTest extends TestCase {
     }
 
     public void testToString() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         checkToString(
                 "public libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper() throws java.lang.IndexOutOfBoundsException",
                 ConstructorTestHelper.class);
@@ -161,9 +156,6 @@ public final class ConstructorTest extends TestCase {
     }
 
     public void testToGenericString() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         checkToGenericString(
                 "public libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper() throws java.lang.IndexOutOfBoundsException",
                 ConstructorTestHelper.class);

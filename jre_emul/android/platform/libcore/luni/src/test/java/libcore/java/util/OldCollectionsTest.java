@@ -17,7 +17,6 @@
 
 package libcore.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -584,9 +583,6 @@ public class OldCollectionsTest extends TestCase {
      * java.util.Collections.EmptyList#readResolve()
      */
     public void test_EmptyList_readResolve() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(Collections.EMPTY_LIST, comparator);
     }
 
@@ -594,9 +590,6 @@ public class OldCollectionsTest extends TestCase {
      * java.util.Collections.EmptyMap#readResolve()
      */
     public void test_EmptyMap_readResolve() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(Collections.EMPTY_MAP, comparator);
     }
 
@@ -604,16 +597,10 @@ public class OldCollectionsTest extends TestCase {
      * java.util.Collections.EmptySet#readResolve()
      */
     public void test_EmptySet_readResolve() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(Collections.EMPTY_SET, comparator);
     }
 
     public void test_checkedCollectionSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced0005737200276a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b6564436f6c6c656374696f6e15e96dfd18e6cc6f0200034c00016374001"
                 + "64c6a6176612f7574696c2f436f6c6c656374696f6e3b4c000474797065740011"
@@ -626,9 +613,6 @@ public class OldCollectionsTest extends TestCase {
                 Collections.<String>emptySet(), String.class), s, false);
     }
     public void test_checkedListRandomAccessSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced00057372002d6a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b656452616e646f6d4163636573734c69737416bc0e55a2d7f2f10200007"
                 + "87200216a6176612e7574696c2e436f6c6c656374696f6e7324436865636b6564"
@@ -644,9 +628,6 @@ public class OldCollectionsTest extends TestCase {
         assertSerialized(Collections.checkedList(new ArrayList<String>(), String.class), s, true);
     }
     public void test_checkedListSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced0005737200216a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b65644c69737400e7ce7692c45f7c0200014c00046c6973747400104c6a6"
                 + "176612f7574696c2f4c6973743b787200276a6176612e7574696c2e436f6c6c65"
@@ -660,9 +641,6 @@ public class OldCollectionsTest extends TestCase {
         assertSerialized(Collections.checkedList(new LinkedList<String>(), String.class), s, true);
     }
     public void test_checkedSetSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced0005737200206a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b656453657441249ba27ad9ffab020000787200276a6176612e7574696c2"
                 + "e436f6c6c656374696f6e7324436865636b6564436f6c6c656374696f6e15e96d"
@@ -676,9 +654,6 @@ public class OldCollectionsTest extends TestCase {
         assertSerialized(Collections.checkedSet(new HashSet<String>(), String.class), s, true);
     }
     public void test_checkedMapSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced0005737200206a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b65644d61704fb2bcdf0d1863680200054c00076b6579547970657400114"
                 + "c6a6176612f6c616e672f436c6173733b4c00016d74000f4c6a6176612f757469"
@@ -693,9 +668,6 @@ public class OldCollectionsTest extends TestCase {
                 new HashMap<String, String>(), String.class, String.class), s);
     }
     public void test_checkedSortedSetSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced0005737200266a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b6564536f72746564536574163406ba7362eb0f0200014c0002737374001"
                 + "54c6a6176612f7574696c2f536f727465645365743b787200206a6176612e7574"
@@ -711,9 +683,6 @@ public class OldCollectionsTest extends TestCase {
         assertSerialized(Collections.checkedSortedSet(new TreeSet<String>(), String.class), s, true);
     }
     public void test_checkedSortedMapSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         String s = "aced0005737200266a6176612e7574696c2e436f6c6c656374696f6e73244368"
                 + "65636b6564536f727465644d617016332c973afe036e0200014c0002736d74001"
                 + "54c6a6176612f7574696c2f536f727465644d61703b787200206a6176612e7574"

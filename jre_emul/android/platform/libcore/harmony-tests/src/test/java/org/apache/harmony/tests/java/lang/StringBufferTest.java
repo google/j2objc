@@ -16,8 +16,6 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.io.Serializable;
 
 import junit.framework.TestCase;
@@ -609,10 +607,6 @@ public class StringBufferTest extends TestCase {
      * serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         SerializationTest.verifySelf(new StringBuffer("0123456789"),
                 STRING_BUFFER_COMPARATOR);
     }
@@ -621,10 +615,6 @@ public class StringBufferTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         SerializationTest.verifyGolden(this, new StringBuffer("0123456789"),
                 STRING_BUFFER_COMPARATOR);
     }

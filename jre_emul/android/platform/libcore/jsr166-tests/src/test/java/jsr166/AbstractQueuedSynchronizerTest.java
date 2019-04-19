@@ -11,8 +11,6 @@ package jsr166;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -1082,10 +1080,6 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
      * A serialized AQS deserializes with current state, but no queued threads
      */
     public void testSerialization() {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         Mutex sync = new Mutex();
         assertFalse(serialClone(sync).isHeldExclusively());
         sync.acquire();

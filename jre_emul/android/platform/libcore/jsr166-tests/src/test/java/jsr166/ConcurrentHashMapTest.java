@@ -9,7 +9,6 @@
 package jsr166;
 
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -780,10 +779,6 @@ public class ConcurrentHashMapTest extends JSR166TestCase {
      * A deserialized map equals original
      */
     public void testSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         Map x = map5();
         Map y = serialClone(x);
 

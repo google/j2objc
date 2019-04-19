@@ -17,7 +17,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 import tests.support.Support_CollectionTest;
@@ -2133,10 +2132,6 @@ public class CollectionsTest extends junit.framework.TestCase {
      */
     @SuppressWarnings({ "unchecked", "boxing" })
     public void testSerializationSelf_newSetFromMap() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         Integer testInt[] = new Integer[100];
         for (int i = 0; i < testInt.length; i++) {
             testInt[i] = new Integer(i);
@@ -2188,10 +2183,6 @@ public class CollectionsTest extends junit.framework.TestCase {
      */
     @SuppressWarnings({ "unchecked", "boxing" })
     public void testSerializationSelf_asLifoQueue() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         Integer testInt[] = new Integer[100];
         for (int i = 0; i < testInt.length; i++) {
             testInt[i] = new Integer(i);

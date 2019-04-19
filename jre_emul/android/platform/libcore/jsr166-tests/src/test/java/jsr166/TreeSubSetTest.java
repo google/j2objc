@@ -6,8 +6,6 @@
 
 package jsr166;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -483,10 +481,6 @@ public class TreeSubSetTest extends JSR166TestCase {
      * A deserialized serialized set has same elements
      */
     public void testSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         NavigableSet x = populatedSet(SIZE);
         NavigableSet y = serialClone(x);
 
@@ -975,10 +969,6 @@ public class TreeSubSetTest extends JSR166TestCase {
      * A deserialized serialized set has same elements
      */
     public void testDescendingSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         NavigableSet x = dset5();
         NavigableSet y = serialClone(x);
 

@@ -17,8 +17,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
@@ -308,10 +306,6 @@ public class RandomTest extends junit.framework.TestCase {
     }
 
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         Random rand = new Random(0x8123aea6267e055dL);
         rand.nextGaussian();
         // SerializationTest.createGoldenFile("/tmp", this, rand);

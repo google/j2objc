@@ -17,7 +17,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
 import junit.framework.TestCase;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
@@ -398,9 +397,6 @@ public class Collections2Test extends TestCase {
      * java.util.Collections.EmptyList#readResolve()
      */
     public void test_EmptyList_readResolve() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(Collections.EMPTY_LIST, comparator);
     }
 
@@ -408,9 +404,6 @@ public class Collections2Test extends TestCase {
      * java.util.Collections.EmptyMap#readResolve()
      */
     public void test_EmptyMap_readResolve() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(Collections.EMPTY_MAP, comparator);
     }
 
@@ -418,25 +411,16 @@ public class Collections2Test extends TestCase {
      * java.util.Collections.EmptySet#readResolve()
      */
     public void test_EmptySet_readResolve() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SerializationTest.verifySelf(Collections.EMPTY_SET, comparator);
     }
 
     public void test_checkedCollectionSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         Collection<String> c = Collections.emptySet();
         c = Collections.checkedCollection(c, String.class);
         SerializationTester.assertCompabilityEquals(c, "serialization/org/apache/harmony/tests/java/util/Collections_CheckedCollection.golden.ser");
     }
 
     public void test_checkedListRandomAccessSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         List<String> c = new ArrayList<String>();
         assertTrue(c instanceof RandomAccess);
         c = Collections.checkedList(c, String.class);
@@ -444,9 +428,6 @@ public class Collections2Test extends TestCase {
     }
 
     public void test_checkedListSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         List<String> c = new LinkedList<String>();
         assertFalse(c instanceof RandomAccess);
         c = Collections.checkedList(c, String.class);
@@ -454,9 +435,6 @@ public class Collections2Test extends TestCase {
     }
 
     public void test_checkedSetSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         Set<String> c = new HashSet<String>();
         assertFalse(c instanceof SortedSet);
         c = Collections.checkedSet(c, String.class);
@@ -464,9 +442,6 @@ public class Collections2Test extends TestCase {
     }
 
     public void test_checkedMapSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         Map<String, String> c = new HashMap<String, String>();
         assertFalse(c instanceof SortedMap);
         c = Collections.checkedMap(c, String.class, String.class);
@@ -474,18 +449,12 @@ public class Collections2Test extends TestCase {
     }
 
     public void test_checkedSortedSetSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SortedSet<String> c = new TreeSet<String>();
         c = Collections.checkedSortedSet(c, String.class);
         SerializationTester.assertCompabilityEquals(c, "serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedSet.golden.ser");
     }
 
     public void test_checkedSortedMapSerializationCompatability() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         SortedMap<String, String> c = new TreeMap<String, String>();
         c = Collections.checkedSortedMap(c, String.class, String.class);
         SerializationTester.assertCompabilityEquals(c, "serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedMap.golden.ser");

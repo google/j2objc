@@ -8,8 +8,6 @@
 
 package jsr166;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
@@ -327,10 +325,6 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
      * a deserialized serialized array holds same values
      */
     public void testSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         AtomicIntegerArray x = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++)
             x.set(i, -i);

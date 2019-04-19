@@ -8,8 +8,6 @@
 
 package jsr166;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.Test;
@@ -126,10 +124,6 @@ public class AtomicReferenceTest extends JSR166TestCase {
      * a deserialized serialized atomic holds same value
      */
     public void testSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         AtomicReference x = new AtomicReference();
         AtomicReference y = serialClone(x);
         assertNotSame(x, y);

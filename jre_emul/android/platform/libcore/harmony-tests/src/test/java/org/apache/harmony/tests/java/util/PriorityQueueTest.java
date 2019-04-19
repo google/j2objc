@@ -16,8 +16,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -672,10 +670,6 @@ public class PriorityQueueTest extends TestCase {
      * serialization/deserialization.
      */
     public void test_Serialization() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
         List<Integer> list = Arrays.asList(array);
         PriorityQueue<Integer> srcIntegerQueue = new PriorityQueue<Integer>(
@@ -693,10 +687,6 @@ public class PriorityQueueTest extends TestCase {
      * serialization/deserialization.
      */
     public void test_Serialization_casting() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
         List<Integer> list = Arrays.asList(array);
         PriorityQueue<Integer> srcIntegerQueue = new PriorityQueue<Integer>(
@@ -714,10 +704,6 @@ public class PriorityQueueTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void test_SerializationCompatibility_cast() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
         List<Integer> list = Arrays.asList(array);
         PriorityQueue<Integer> srcIntegerQueue = new PriorityQueue<Integer>(

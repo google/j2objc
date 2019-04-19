@@ -8,8 +8,6 @@
 
 package jsr166;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -743,10 +741,6 @@ public class CopyOnWriteArrayListTest extends JSR166TestCase {
      * a deserialized serialized list is equal
      */
     public void testSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         List x = populatedArray(SIZE);
         List y = serialClone(x);
 

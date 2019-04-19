@@ -8,8 +8,6 @@
 
 package jsr166;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.Test;
@@ -203,10 +201,6 @@ public class AtomicLongTest extends JSR166TestCase {
      * a deserialized serialized atomic holds same value
      */
     public void testSerialization() throws Exception {
-        // J2ObjC reflection-stripping change.
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         AtomicLong x = new AtomicLong();
         AtomicLong y = serialClone(x);
         assertNotSame(x, y);

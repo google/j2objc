@@ -17,8 +17,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -214,10 +212,6 @@ public class HashSetTest extends junit.framework.TestCase {
      * java.util.HashSet#SerializationTest
      */
     public void test_Serialization() throws Exception{
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         HashSet<String> hs = new HashSet<String>();
         hs.add("hello");
         hs.add("world");

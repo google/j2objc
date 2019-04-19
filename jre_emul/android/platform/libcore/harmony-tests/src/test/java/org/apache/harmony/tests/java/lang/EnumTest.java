@@ -16,8 +16,6 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.HashMap;
 
 import junit.framework.TestCase;
@@ -207,10 +205,6 @@ public class EnumTest extends TestCase {
     }
 
     public void test_compatibilitySerialization_inClass_Complex_Harmony() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         // TODO migrate to the new testing framework 
         assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),
                 "serialization/org/apache/harmony/tests/java/lang/EnumTest.harmony.ser"));
@@ -220,10 +214,6 @@ public class EnumTest extends TestCase {
      * serialization/deserialization compatibility.
      */
     public void testSerializationSelf() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         // test a map class that has enums.
         // regression test for Harmony-1163
         HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
@@ -253,10 +243,6 @@ public class EnumTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         // regression test for Harmony-1163
         HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
         enumColorMap.put(Color.Red, 1);

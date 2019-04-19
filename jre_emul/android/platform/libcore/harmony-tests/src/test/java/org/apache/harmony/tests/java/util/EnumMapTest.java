@@ -16,8 +16,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -1152,9 +1150,6 @@ public class EnumMapTest extends TestCase {
      */
     @SuppressWarnings({ "unchecked", "boxing" })
     public void testSerializationSelf() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
         enumColorMap.put(Color.Blue, 3);
         SerializationTest.verifySelf(enumColorMap);
@@ -1165,9 +1160,6 @@ public class EnumMapTest extends TestCase {
      */
     @SuppressWarnings({ "unchecked", "boxing" })
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
         EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
         enumColorMap.put(Color.Red, 1);
         enumColorMap.put(Color.Blue, 3);

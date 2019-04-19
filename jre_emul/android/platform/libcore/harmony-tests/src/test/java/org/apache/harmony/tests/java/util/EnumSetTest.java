@@ -16,8 +16,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -1990,10 +1988,6 @@ public class EnumSetTest extends TestCase {
      * java.util.EnumSet#Serialization()
      */
     public void test_serialization() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         EnumSet<EnumFoo> set = EnumSet.allOf(EnumFoo.class);
         SerializationTest.verifySelf(set);
     }
@@ -2003,10 +1997,6 @@ public class EnumSetTest extends TestCase {
      */
     @SuppressWarnings( { "unchecked", "boxing" })
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         EnumSet<EnumFoo> set = EnumSet.allOf(EnumFoo.class);
         SerializationTest.verifyGolden(this, set);
     }

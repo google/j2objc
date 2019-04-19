@@ -17,8 +17,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
@@ -842,10 +840,6 @@ public class TreeMapTest extends junit.framework.TestCase {
      */
     // Regression for Harmony-1066
     public void test_SubMap_Serializable() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         TreeMap<Integer, Double> map = new TreeMap<Integer, Double>();
         map.put(1, 2.1);
         map.put(2, 3.1);

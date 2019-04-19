@@ -17,8 +17,6 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import com.google.j2objc.util.ReflectionUtil;
-
 import junit.framework.TestCase;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
@@ -83,10 +81,6 @@ public class IllegalStateExceptionTest extends TestCase {
      * serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         SerializationTest.verifySelf(new IllegalStateException());
     }
 
@@ -94,10 +88,6 @@ public class IllegalStateExceptionTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         SerializationTest.verifyGolden(this, new IllegalStateException());
     }
 }
