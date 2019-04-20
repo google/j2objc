@@ -957,50 +957,8 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/io/OldAndroidSerializationTest.java \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
-    libcore/java/lang/EnumTest.java \
-    libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
-    libcore/java/net/InetAddressTest.java \
-    libcore/java/net/URITest.java \
-    libcore/java/net/URLTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
-    libcore/java/text/DateFormatSymbolsTest.java \
-    libcore/java/text/DecimalFormatSymbolsTest.java \
-    libcore/java/util/CurrencyTest.java \
-    libcore/java/util/EventObjectTest.java \
-    libcore/java/util/LocaleTest.java \
-    libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
-    libcore/java/util/concurrent/CopyOnWriteArrayListTest.java \
-    org/apache/harmony/luni/tests/java/lang/EnumTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
-    org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
-    org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
-    org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/ClosedByInterruptExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/ClosedChannelExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/ClosedSelectorExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/ConnectionPendingExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/FileLockInterruptionExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/IllegalBlockingModeExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/IllegalSelectorExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/NoConnectionPendingExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/NonReadableChannelExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/NonWritableChannelExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/NotYetBoundExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/NotYetConnectedExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/OverlappingFileLockExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/UnresolvedAddressExceptionTest.java \
-    org/apache/harmony/tests/java/nio/channels/UnsupportedAddressTypeExceptionTest.java \
-    org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
-    org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
-    org/apache/harmony/tests/java/text/DecimalFormatTest.java \
-    org/apache/harmony/tests/java/text/MessageFormatTest.java \
-    org/apache/harmony/tests/java/util/BitSetTest.java \
-    org/apache/harmony/tests/java/util/HashMapTest.java \
-    org/apache/harmony/tests/java/util/zip/ZipErrorTest.java \
 
 TESTS_USE_REFLECTION = \
     com/google/j2objc/ClassTest.java \
@@ -1009,25 +967,19 @@ TESTS_USE_REFLECTION = \
     com/google/j2objc/reflect/ProxyTest.java \
     libcore/java/io/OldObjectOutputStreamTest.java \
     libcore/java/lang/CharacterTest.java \
-    libcore/java/lang/reflect/ReflectionTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
-    libcore/java/nio/BufferTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
-    org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
-    org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
     org/apache/harmony/security/tests/java/security/KeyTest.java \
     org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
     org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
-    org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     test/java/time/TestOffsetTime.java \
     test/java/time/TestYear.java \
     test/java/time/TestYearMonth.java \
     test/java/time/TestZonedDateTime.java \
-    tests/api/java/lang/reflect/ProxyTest.java \
 
 TEST_RESOURCES_SRCS = \
     lib/logging.properties \
