@@ -18,8 +18,6 @@ package com.google.j2objc;
 
 import junit.framework.TestCase;
 
-import javax.annotation.Resource;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.AccessibleObject;
@@ -278,7 +276,6 @@ public class ClassTest extends TestCase {
     assertEquals("java.lang.reflect.Constructor", Constructor.class.getName());
     assertEquals("java.lang.reflect.Field", Field.class.getName());
     assertEquals("java.lang.reflect.Method", Method.class.getName());
-    assertEquals("javax.annotation.Resource", Resource.class.getName());
   }
 
   // Verify that mapped classes return the correct superclass from a Java view.
@@ -286,7 +283,6 @@ public class ClassTest extends TestCase {
     assertNull("Non-null Object superclass", Object.class.getSuperclass());
     assertNull("Non-null Cloneable superclass", Cloneable.class.getSuperclass());
     assertNull("Non-null Iterable superclass", Iterable.class.getSuperclass());
-    assertNull("Non-null Resource superclass", Resource.class.getSuperclass());
 
     assertEquals("Bad String superclass", Object.class, String.class.getSuperclass());
     assertEquals("Bad Number superclass", Object.class, Number.class.getSuperclass());

@@ -1817,12 +1817,6 @@
 		0649A6E31AE078D800DE2494 /* LinkedHashMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LinkedHashMap.m; path = build_result/Classes/java/util/LinkedHashMap.m; sourceTree = "<group>"; };
 		0649A6E41AE078D800DE2494 /* Scanner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Scanner.h; path = build_result/Classes/java/util/Scanner.h; sourceTree = "<group>"; };
 		0649A6E51AE078D800DE2494 /* Scanner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Scanner.m; path = build_result/Classes/java/util/Scanner.m; sourceTree = "<group>"; };
-		0649A6E81AE0796400DE2494 /* PostConstruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PostConstruct.h; path = build_result/Classes/javax/annotation/PostConstruct.h; sourceTree = "<group>"; };
-		0649A6E91AE0796400DE2494 /* PostConstruct.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PostConstruct.m; path = build_result/Classes/javax/annotation/PostConstruct.m; sourceTree = "<group>"; };
-		0649A6EA1AE0796400DE2494 /* PreDestroy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PreDestroy.h; path = build_result/Classes/javax/annotation/PreDestroy.h; sourceTree = "<group>"; };
-		0649A6EB1AE0796400DE2494 /* PreDestroy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PreDestroy.m; path = build_result/Classes/javax/annotation/PreDestroy.m; sourceTree = "<group>"; };
-		0649A6EC1AE0796400DE2494 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = build_result/Classes/javax/annotation/Resources.h; sourceTree = "<group>"; };
-		0649A6ED1AE0796400DE2494 /* Resources.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Resources.m; path = build_result/Classes/javax/annotation/Resources.m; sourceTree = "<group>"; };
 		0649A6EE1AE0796400DE2494 /* SecretKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecretKey.h; path = build_result/Classes/javax/crypto/SecretKey.h; sourceTree = "<group>"; };
 		0649A6EF1AE0796400DE2494 /* SecretKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecretKey.m; path = build_result/Classes/javax/crypto/SecretKey.m; sourceTree = "<group>"; };
 		0649A6F01AE0796400DE2494 /* Modifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Modifier.h; path = build_result/Classes/javax/lang/model/element/Modifier.h; sourceTree = "<group>"; };
@@ -3294,8 +3288,6 @@
 		06DE64CF1E3AB98C00DACBF7 /* Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Extension.m; path = build_result/Classes/java/security/cert/Extension.m; sourceTree = "<group>"; };
 		06DE64D01E3AC09F00DACBF7 /* TimeZoneTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneTest.m; path = org/apache/harmony/tests/java/util/TimeZoneTest.m; sourceTree = "<group>"; };
 		06DE64D21E3AC4B600DACBF7 /* TimeZoneTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZoneTest.m; path = libcore/java/util/TimeZoneTest.m; sourceTree = "<group>"; };
-		06DED82A1D0B66CD00870669 /* Resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resource.h; path = build_result/Classes/javax/annotation/Resource.h; sourceTree = "<group>"; };
-		06DED82B1D0B66CD00870669 /* Resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Resource.m; path = build_result/Classes/javax/annotation/Resource.m; sourceTree = "<group>"; };
 		06DED82C1D0B688E00870669 /* Mac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Mac.h; path = build_result/Classes/javax/crypto/Mac.h; sourceTree = "<group>"; };
 		06DED82D1D0B688E00870669 /* Mac.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Mac.m; path = build_result/Classes/javax/crypto/Mac.m; sourceTree = "<group>"; };
 		06DED82E1D0B688E00870669 /* MacSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MacSpi.h; path = build_result/Classes/javax/crypto/MacSpi.h; sourceTree = "<group>"; };
@@ -5724,10 +5716,6 @@
 				06C73DE219180C99001D3CC8 /* PortUnreachableException.m */,
 				06ED3DF417D1669D0014750E /* Posix.h */,
 				06ED3DF517D1669D0014750E /* Posix.m */,
-				0649A6E81AE0796400DE2494 /* PostConstruct.h */,
-				0649A6E91AE0796400DE2494 /* PostConstruct.m */,
-				0649A6EA1AE0796400DE2494 /* PreDestroy.h */,
-				0649A6EB1AE0796400DE2494 /* PreDestroy.m */,
 				0649A6A01AE0780500DE2494 /* PreparedStatement.h */,
 				0649A6A11AE0780500DE2494 /* PreparedStatement.m */,
 				0671E4ED21BDCEF6002E0681 /* PrimitiveIterator.h */,
@@ -5851,16 +5839,12 @@
 				06F2910518972DFA00676F1D /* RejectedExecutionException.m */,
 				06F2910618972DFA00676F1D /* RejectedExecutionHandler.h */,
 				06F2910718972DFA00676F1D /* RejectedExecutionHandler.m */,
-				06DED82A1D0B66CD00870669 /* Resource.h */,
-				06DED82B1D0B66CD00870669 /* Resource.m */,
 				06AA056C17E111190017C34A /* ResourceBundle.h */,
 				06AA056D17E111190017C34A /* ResourceBundle.m */,
 				06CB552621EFCFD000116799 /* ResourceDataStreamHandler.h */,
 				06CB552B21EFCFD100116799 /* ResourceDataStreamHandler.m */,
 				0671E4F421BDCF7D002E0681 /* ResourceManager.h */,
 				0671E4FC21BDCF7F002E0681 /* ResourceManager.m */,
-				0649A6EC1AE0796400DE2494 /* Resources.h */,
-				0649A6ED1AE0796400DE2494 /* Resources.m */,
 				06C73DEB19180C99001D3CC8 /* ResponseCache.h */,
 				06C73DEC19180C99001D3CC8 /* ResponseCache.m */,
 				064FB7761727072B00DC0D51 /* Result.h */,

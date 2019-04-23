@@ -540,10 +540,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/stream/Stream.java \
   java/util/stream/Streams.java \
   java/util/stream/StreamSupport.java \
-  javax/annotation/PostConstruct.java \
-  javax/annotation/PreDestroy.java \
-  javax/annotation/Resource.java \
-  javax/annotation/Resources.java \
   javax/lang/model/type/TypeKind.java \
   sun/misc/Unsafe.java
 
@@ -2114,7 +2110,6 @@ SOURCE_RETENTION_ANNOTATIONS = \
   java/lang/Override.java \
   java/lang/SuppressWarnings.java \
   java/lang/annotation/Native.java \
-  javax/annotation/Generated.java
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
 # but need to include the .java file in jre_emul.jar.
