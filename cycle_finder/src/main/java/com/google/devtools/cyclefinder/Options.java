@@ -17,6 +17,7 @@ package com.google.devtools.cyclefinder;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -29,6 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -64,6 +67,11 @@ class Options {
   private boolean printReferenceGraph = false;
   private SourceVersion sourceVersion = null;
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
+
+  // Flags that are directly forwarded to the javac parser.
+  private static final ImmutableSet<String> PLATFORM_MODULE_SYSTEM_OPTIONS =
+      ImmutableSet.of("--patch-module", "--system", "--add-reads");
+  private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -156,6 +164,14 @@ class Options {
     externalAnnotations.addExternalAnnotationFileContents(fileContents);
   }
 
+  public void addPlatformModuleSystemOptions(String... flags) {
+    Collections.addAll(platformModuleSystemOptions, flags);
+  }
+
+  public List<String> getPlatformModuleSystemOptions() {
+    return platformModuleSystemOptions;
+  }
+
   public static void usage(String invalidUseMsg) {
     System.err.println("cycle_finder: " + invalidUseMsg);
     System.err.println(usageMessage);
@@ -233,6 +249,12 @@ class Options {
           usage(arg + " requires an argument");
         }
         options.addExternalAnnotationFile(args[nArg]);
+      } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
+        String option = arg;
+        if (++nArg == args.length) {
+          usage(option + " requires an argument");
+        }
+        options.addPlatformModuleSystemOptions(option, args[nArg]);
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
