@@ -82,7 +82,8 @@ $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_xalan.jar"
 	@stage_dir=`mktemp -d -t j2objc-xalan`; \
 	$(JAVAC) -sourcepath $(SOURCEPATH) -encoding UTF-8 \
-	    -d $$stage_dir -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \
+	    -cp $(DIST_JAR_DIR)/j2objc_annotations.jar -d $$stage_dir \
+	    -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \
 	jar cf $@ -C $$stage_dir .; \
 	rm -rf $$stage_dir
 
