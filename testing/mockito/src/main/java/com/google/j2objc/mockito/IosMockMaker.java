@@ -49,7 +49,7 @@ public final class IosMockMaker implements MockMaker {
   public <T> T createMock(MockCreationSettings<T> settings, MockHandler handler) {
     Class<T> typeToMock = settings.getTypeToMock();
     @SuppressWarnings("rawtypes")
-    Set<Class> interfacesSet = settings.getExtraInterfaces();
+Set<Class> interfacesSet = settings.getExtraInterfaces();
     Class<?>[] extraInterfaces = interfacesSet.toArray(new Class[interfacesSet.size()]);
     InvocationHandler invocationHandler = new InvocationHandlerAdapter(handler);
 
@@ -90,28 +90,6 @@ public final class IosMockMaker implements MockMaker {
     InvocationHandlerAdapter adapter = getInvocationHandlerAdapter(mock);
     adapter.setHandler(newHandler);
   }
-
-// TODO(tball): uncomment when upgrading to Mockito 2.x.
-//   @Override
-//   public TypeMockability isTypeMockable(final Class<?> type) {
-//     return new TypeMockability() {
-//       @Override
-//       public boolean mockable() {
-//         return !type.isPrimitive() && !Modifier.isFinal(type.getModifiers());
-//       }
-//
-//       @Override
-//       public String nonMockableReason() {
-//         if (type.isPrimitive()) {
-//           return "primitive type";
-//         }
-//         if (Modifier.isFinal(type.getModifiers())) {
-//           return "final or anonymous class";
-//         }
-//         return "not handled type";
-//       }
-//     };
-//   }
 
   private InvocationHandlerAdapter getInvocationHandlerAdapter(Object mock) {
       if (Proxy.isProxyClass(mock.getClass())) {
@@ -244,6 +222,7 @@ public final class IosMockMaker implements MockMaker {
     }
     ]-*/
   }
+
 }
 
 /*-[

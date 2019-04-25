@@ -78,7 +78,6 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/configuration/GlobalConfiguration.java \
     org/mockito/internal/configuration/InjectingAnnotationEngine.java \
     org/mockito/internal/configuration/MockAnnotationProcessor.java \
-    org/mockito/internal/configuration/MockitoAnnotationsMockAnnotationProcessor.java \
     org/mockito/internal/configuration/SpyAnnotationEngine.java \
     org/mockito/internal/configuration/injection/ConstructorInjection.java \
     org/mockito/internal/configuration/injection/MockInjection.java \
@@ -158,7 +157,6 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/matchers/LessOrEqual.java \
     org/mockito/internal/matchers/LessThan.java \
     org/mockito/internal/matchers/MatcherDecorator.java \
-    org/mockito/internal/matchers/MatchersPrinter.java \
     org/mockito/internal/matchers/Matches.java \
     org/mockito/internal/matchers/Not.java \
     org/mockito/internal/matchers/NotNull.java \
@@ -301,9 +299,15 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/verification/VerificationWithTimeout.java \
     org/mockito/verification/VerificationWrapper.java
 
+EXTRACTED_JAVA_SOURCES := $(EXTRACTED_JAVA_SOURCES) \
+    org/mockito/internal/configuration/MockitoAnnotationsMockAnnotationProcessor.java \
+    org/mockito/internal/matchers/MatchersPrinter.java
+
 SUPERSOURCE_JAVA_SOURCES = \
     com/google/j2objc/mockito/InvocationHandlerAdapter.java \
     com/google/j2objc/mockito/IosMockMaker.java \
+    org/objenesis/ObjenesisHelper.java
+SUPERSOURCE_JAVA_SOURCES := $(SUPERSOURCE_JAVA_SOURCES) \
     org/mockito/internal/matchers/LocalizedMatcher.java \
     org/mockito/internal/stubbing/answers/ThrowsExceptionClass.java
 
