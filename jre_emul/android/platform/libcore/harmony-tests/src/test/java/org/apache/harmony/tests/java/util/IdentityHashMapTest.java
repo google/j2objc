@@ -17,7 +17,6 @@
 
 package org.apache.harmony.tests.java.util;
 
-import com.google.j2objc.util.ReflectionUtil;
 import libcore.java.util.SpliteratorTester;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
@@ -405,10 +404,6 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
      * java.util.IdentityHashMap#Serialization()
      */
     public void test_Serialization() throws Exception {
-        if (ReflectionUtil.isJreReflectionStripped()) {
-            return;
-        }
-
         IdentityHashMap<String, String> map = new IdentityHashMap<String, String>();
         map.put(ID, "world");
         // BEGIN Android-added
