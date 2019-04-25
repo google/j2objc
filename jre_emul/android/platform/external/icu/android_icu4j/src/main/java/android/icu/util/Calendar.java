@@ -5480,6 +5480,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      *     changed in a future release. See <a href="http://bugs.icu-project.org/trac/ticket/11632">
      *     ICU ticket #11632</a> for details.
      */
+    @Deprecated
     protected int computeMillisInDay() {
         // Do the time portion of the conversion.
 
@@ -5528,6 +5529,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      *     changed in a future release. See <a href="http://bugs.icu-project.org/trac/ticket/11632">
      *     ICU ticket #11632</a> for details.
      */
+    @Deprecated
     protected int computeZoneOffset(long millis, int millisInDay) {
         int[] offsets = new int[2];
         long wall = millis + millisInDay;
