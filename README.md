@@ -46,3 +46,7 @@ The protocol buffers library is distributed under the same BSD license as
 Google's protocol buffers. See its
 [README](https://github.com/protocolbuffers/protobuf/blob/master/README.md) and
 [LICENSE](https://github.com/protocolbuffers/protobuf/blob/master/LICENSE).
+
+## Running on GNU/Linux ##
+
+For GNU/Linux, visit [Darling](https://github.com/darlinghq/darling)
