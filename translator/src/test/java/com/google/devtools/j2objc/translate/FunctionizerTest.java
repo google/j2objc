@@ -137,7 +137,6 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String str(int i) { return str(); }"
         + "  private String str() { return hello; } }",
         "A", "A.m");
-    translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (NSString *)test {",
         "return A_strWithInt_(self, 0);");
@@ -609,5 +608,24 @@ public class FunctionizerTest extends GenerationTest {
         "NSString *A_testWithNSString_(id<A> self, NSString *msg) {",
         "A_initialize();",  // Issue 1009: this initialize call was missing.
         "return [((NSString *) nil_chk(msg)) uppercaseString];");
+  }
+
+  public void testEnumValuesMethodIsNotRemoved() throws IOException {
+    // Preconditions:
+    // 1) Reflection stripped.
+    // 2) Private enum.
+    // 3) No explicit reference to values method.
+    options.setStripReflection(true);
+    String translation = translateSourceFile(
+        "public class Test { "
+            + "  private enum AnEnum { "
+            + "    A, B, C; "
+            + "  } "
+            + "  public String test() { "
+            + "    return AnEnum.B.toString(); "
+            + "  } "
+            + "} ",
+        "Test", "Test.m");
+    assertTranslation(translation, "+ (IOSObjectArray *)values {");
   }
 }
