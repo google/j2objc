@@ -46,3 +46,7 @@ The protocol buffers library is distributed under the same BSD license as
 Google's protocol buffers. See its
 [README](https://github.com/protocolbuffers/protobuf/blob/master/README.md) and
 [LICENSE](https://github.com/protocolbuffers/protobuf/blob/master/LICENSE).
+
+## Running on GNU/Linux ##
+
+To build and run on GNU/Linux, install [the Darling project](http://www.darlinghq.org/), then following [its Compile and Run a Program example](https://wiki.darlinghq.org/what_to_try#compile_and_run_a_program). Please note that j2objc is only supported on IOS/macOS.
