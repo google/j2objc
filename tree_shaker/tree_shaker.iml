@@ -16,6 +16,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/build_result" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
@@ -45,6 +46,7 @@
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/javac.jar!/" />
         </CLASSES>
         <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
