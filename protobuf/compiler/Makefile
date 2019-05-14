@@ -44,7 +44,7 @@ $(call check_protobuf_dir)
 PROTOBUF_LIB = $(PROTOBUF_LIB_PATH)/libprotobuf.a
 PROTOC_LIB = $(PROTOBUF_LIB_PATH)/libprotoc.a
 
-CXXFLAGS = -x c++ -stdlib=libc++ -Isrc -I../google/src -I$(PROTOBUF_INCLUDE_PATH) \
+CXXFLAGS = -x c++ -std=c++11 -stdlib=libc++ -Isrc -I../google/src -I$(PROTOBUF_INCLUDE_PATH) \
   -Wno-deprecated-declarations
 LDFLAGS = $(PROTOBUF_LIB) $(PROTOC_LIB) /usr/lib/libc++.dylib
 
