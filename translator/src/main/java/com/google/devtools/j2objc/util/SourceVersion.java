@@ -29,7 +29,7 @@ public enum SourceVersion {
   JAVA_6(6, "1.6"),
   JAVA_5(5, "1.5");
 
-  private static SourceVersion maxSupportedVersion = JAVA_8;
+  private static SourceVersion maxSupportedVersion = JAVA_11;
 
   private final int version;
   private final String flag;
