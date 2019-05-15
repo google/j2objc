@@ -26,7 +26,7 @@ public class IosRSAKeyTest extends TestCase {
 
   // TODO(tball): remove when macOS signature support implemented.
   private static boolean supportedPlatform() {
-   return System.getProperty("os.name").equals("iPhone");
+   return System.getProperty("os.name").startsWith("iPhone");
   }
 
   public void testOpenRSAPublicKey_512() throws Exception {
