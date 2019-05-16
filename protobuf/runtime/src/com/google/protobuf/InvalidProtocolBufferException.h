@@ -37,7 +37,11 @@
 
 #import "java/io/IOException.h"
 
+@class ComGoogleProtobufMessageLite;
+
 @interface ComGoogleProtobufInvalidProtocolBufferException : JavaIoIOException
+- (ComGoogleProtobufMessageLite *)getUnfinishedMessage;
+- (void)setUnfinishedMessage:(ComGoogleProtobufMessageLite *)message;
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufInvalidProtocolBufferException)
