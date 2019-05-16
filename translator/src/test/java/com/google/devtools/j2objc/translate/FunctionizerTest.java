@@ -612,10 +612,11 @@ public class FunctionizerTest extends GenerationTest {
 
   public void testEnumValuesMethodIsNotRemoved() throws IOException {
     // Preconditions:
-    // 1) Reflection stripped.
+    // 1) Reflection stripped and no wrapper methods.
     // 2) Private enum.
     // 3) No explicit reference to values method.
     options.setStripReflection(true);
+    options.setEmitWrapperMethods(false);
     String translation = translateSourceFile(
         "public class Test { "
             + "  private enum AnEnum { "

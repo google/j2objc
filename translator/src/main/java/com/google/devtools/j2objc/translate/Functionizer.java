@@ -379,13 +379,14 @@ public class Functionizer extends UnitTreeVisitor {
           // Take out of the header, only needed for reflection.
           node.setHasDeclaration(false);
         }
+      } else if (ElementUtil.isEnum(declaringClass)
+          && ElementUtil.getName(element).equals("values")) {
+        // Keep enum values method because it is used via native reflection in java.lang.Enum.
+        setFunctionCaller(node, element);
       } else {
         // Static methods and constructors, no reflection.
-        // Keep enum values method because it is used via native reflection in java.lang.Enum.
-        boolean isEnumValuesMethod =
-            ElementUtil.isEnum(declaringClass) && ElementUtil.getName(element).equals("values");
         if (options.emitWrapperMethods()
-            && (!ElementUtil.isPrivateInnerType(declaringClass) || isEnumValuesMethod)
+            && !ElementUtil.isPrivateInnerType(declaringClass)
             && !isPrivate) {
           setFunctionCaller(node, element);
         } else {
