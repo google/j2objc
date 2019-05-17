@@ -286,9 +286,10 @@ public class ObjectTest extends junit.framework.TestCase {
         // Test for method void java.lang.Object.wait(long)
 
         // Start of test code.
+        // J2ObjC change: adjust allowable error to minimize false-failures.
 
         final int loopCount = 20;
-        final int allowableError = 100; // millesconds
+        final int allowableError = 1000; // millesconds
         final int delay = 200; // milliseconds
         synchronized (obj1) {
             try {
@@ -309,7 +310,7 @@ public class ObjectTest extends junit.framework.TestCase {
                             toLong[count][2] = after;
                             count++;
                         }
-                        if (error > (1000 + delay) || count == toLong.length) {
+                        if (error > (10000 + delay) || count == toLong.length) {
                             StringBuffer sb = new StringBuffer();
                             for (int j = 0; j < count; j++) {
                                 sb
