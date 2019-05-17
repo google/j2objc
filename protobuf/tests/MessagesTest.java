@@ -115,6 +115,18 @@ public class MessagesTest extends ProtobufTest {
     checkBytes(expected, bytes);
   }
 
+  public void testRemoveRepeatedMessageField() throws Exception {
+    MessageData data = MessageData.newBuilder()
+        .addMsgR(SubMsg.newBuilder().setUintF(40).build())
+        .addMsgR(SubMsg.newBuilder().setUintF(41).build())
+        .addMsgR(SubMsg.newBuilder().setUintF(42).build())
+        .removeMsgR(1)
+        .build();
+    assertEquals(2, data.getMsgRCount());
+    assertEquals(40, data.getMsgR(0).getUintF());
+    assertEquals(42, data.getMsgR(1).getUintF());
+  }
+
   public void testMergeExistingMessageFields() throws Exception {
     ExtensionRegistry registry = ExtensionRegistry.newInstance();
     MessageFields.registerAllExtensions(registry);

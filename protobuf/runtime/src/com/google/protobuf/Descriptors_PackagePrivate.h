@@ -251,6 +251,10 @@ CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsMessage(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE;
 }
 
+CGP_ALWAYS_INLINE inline BOOL CGPFieldTypeIsMessage(const CGPFieldDescriptor *field) {
+  return CGPJavaTypeIsMessage(CGPFieldGetJavaType(field));
+}
+
 CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
 }
