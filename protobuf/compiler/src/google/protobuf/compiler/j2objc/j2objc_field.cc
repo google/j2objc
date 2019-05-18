@@ -320,9 +320,7 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     printer->Print(variables_,
         "- ($classname$_Builder*)\n"
         "    add$capitalized_name$With$parameter_type$_Builder:\n"
-        "    ($parameter_type$_Builder *)value;\n"
-        "- ($classname$_Builder *)remove$capitalized_name$WithInt:(int)index;\n"
-    );
+        "    ($parameter_type$_Builder *)value;\n");
   }
 }
 

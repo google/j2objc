@@ -51,7 +51,7 @@
 }
 
 - (id<ComGoogleProtobufMessage>)getMessageDefaultInstance {
-  if (CGPFieldTypeIsMessage(fieldDescriptor_)) {
+  if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(fieldDescriptor_))) {
     return ((CGPDescriptor *)fieldDescriptor_->valueType_)->defaultInstance_;
   }
   return nil;

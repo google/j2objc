@@ -758,8 +758,8 @@ static BOOL AddPutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, encoding);
 }
 
-#define GET_MAP_REMOVE_IMP(NAME) \
-  static IMP GetMapRemoveImp##NAME( \
+#define GET_REMOVE_IMP(NAME) \
+  static IMP GetRemoveImp##NAME( \
       size_t offset, CGPFieldJavaType keyType, CGPFieldJavaType valueType) { \
     return imp_implementationWithBlock(^id(id msg, TYPE_##NAME pKey) { \
       CGPValue key; \
@@ -769,14 +769,14 @@ static BOOL AddPutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
     }); \
   }
 
-GET_MAP_REMOVE_IMP(Int)
-GET_MAP_REMOVE_IMP(Long)
-GET_MAP_REMOVE_IMP(Bool)
-GET_MAP_REMOVE_IMP(Id)
+GET_REMOVE_IMP(Int)
+GET_REMOVE_IMP(Long)
+GET_REMOVE_IMP(Bool)
+GET_REMOVE_IMP(Id)
 
 #undef GET_REMOVE_IMP
 
-static BOOL AddMapRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+static BOOL AddRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   IMP imp = NULL;
   char encoding[64];
   strcpy(encoding, "@@:");
@@ -785,7 +785,7 @@ static BOOL AddMapRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   CGPFieldJavaType valueType = CGPFieldGetJavaType(CGPFieldMapValue(field));
 
 #define REMOVE_METHOD_CASE(NAME) \
-  imp = GetMapRemoveImp##NAME(offset, keyType, valueType); \
+  imp = GetRemoveImp##NAME(offset, keyType, valueType); \
   strcat(encoding, @encode(TYPE_##NAME)); \
   break;
 
@@ -809,15 +809,6 @@ static BOOL AddMapRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 #undef REMOVE_METHOD_CASE
 
   return class_addMethod(cls, sel, imp, encoding);
-}
-
-static BOOL AddRepeatedMessageRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
-  size_t offset = CGPFieldGetOffset(field, cls);
-  IMP imp = imp_implementationWithBlock(^id(id msg, TYPE_Int index) {
-    CGPRepeatedMessageFieldRemove(REPEATED_FIELD_PTR(msg, offset), index);
-    return msg;
-  });
-  return class_addMethod(cls, sel, imp, "@@:i");
 }
 
 static IMP GetOneofImp(size_t offset, Class cls) {
@@ -1054,13 +1045,9 @@ static BOOL ResolveRemoveAccessor(
   for (NSUInteger i = 0; i < count; ++i) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (MatchesName(&tail, field) && Matches(&tail, "With", 4)
+    if (CGPFieldIsMap(field) && MatchesName(&tail, field) && Matches(&tail, "With", 4)
         && MatchesKeyword(&tail, CGPFieldMapKey(field)) && MatchesEnd(tail, ":")) {
-      if (CGPFieldIsMap(field)) {
-        return AddMapRemoveMethod(cls, sel, field);
-      } else if (CGPFieldTypeIsMessage(field) && CGPFieldIsRepeated(field)) {
-        return AddRepeatedMessageRemoveMethod(cls, sel, field);
-      }
+      return AddRemoveMethod(cls, sel, field);
     }
   }
   return NO;
@@ -1336,7 +1323,7 @@ static void MergeExtensions(CGPExtensionMap *msgExtensionMap, CGPExtensionMap *o
       }
       [list addAllWithJavaUtilCollection:otherValue];
     } else {
-      if (CGPFieldTypeIsMessage(field) && value != nil) {
+      if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field)) && value != nil) {
         extValue.set_retained(NewMergedMessageField(value, otherValue, field->valueType_));
       } else {
         extValue.set(otherValue);
@@ -1621,7 +1608,7 @@ static BOOL MergeExtensionFromStream(
   } else {
     id existingValue = nil;
     // For message types we need to keep the fields from the existing message.
-    if (CGPFieldTypeIsMessage(field)) {
+    if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field))) {
       CGPExtensionMap::iterator it = extensionMap->find(field);
       if (it != extensionMap->end()) {
         existingValue = it->second.get();
@@ -2685,7 +2672,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     if (CGPFieldIsMap(field)) {
       CGPFieldDescriptor *valueField = CGPFieldMapValue(field);
-      if (CGPFieldTypeIsMessage(field)) {
+      if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(valueField))) {
         size_t offset = CGPFieldGetOffset(field, object_getClass(msg));
         CGPMapFieldData *data = MAP_FIELD_PTR(msg, offset)->data;
         if (data != NULL) {
@@ -2702,7 +2689,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
         }
       }
     } else if (CGPFieldIsRepeated(field)) {
-      if (CGPFieldTypeIsMessage(field)) {
+      if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field))) {
         size_t offset = CGPFieldGetOffset(field, object_getClass(msg));
         CGPRepeatedField *repeatedField = REPEATED_FIELD_PTR(msg, offset);
         CGPRepeatedFieldData *data = repeatedField->data;
@@ -2716,7 +2703,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
         }
       }
     } else {
-      BOOL isMessage = CGPFieldTypeIsMessage(field);
+      BOOL isMessage = CGPJavaTypeIsMessage(CGPFieldGetJavaType(field));
       BOOL required = CGPFieldIsRequired(field);
       if (!required && !isMessage) continue;
       Class msgCls = object_getClass(msg);
