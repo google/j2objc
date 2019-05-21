@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/procyon-decompiler.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/plume-util-1.0.5.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/plume-util-1.0.6.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

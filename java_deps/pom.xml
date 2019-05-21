@@ -222,7 +222,7 @@
     <dependency>
       <groupId>org.plumelib</groupId>
       <artifactId>plume-util</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.6</version>
     </dependency>
   </dependencies>
 </project>
