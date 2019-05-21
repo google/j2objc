@@ -97,7 +97,7 @@ ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyR
 - (instancetype)initWithField:(CGPFieldDescriptor *)field {
   if (self = [super init]) {
     descriptor_ = field;
-    if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field))) {
+    if (CGPFieldTypeIsMessage(field)) {
       // No need to retain. Default message values are eternal.
       defaultInstance_ = CGPFieldGetDefaultValue(field);
     }
