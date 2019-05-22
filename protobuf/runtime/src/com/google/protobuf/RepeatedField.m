@@ -140,7 +140,7 @@ void CGPRepeatedMessageFieldRemove(CGPRepeatedField *field, jint index) {
   uint32_t count = CGPRepeatedFieldSize(field);
   id *msgBuffer = (id *)field->data->buffer;
   [msgBuffer[index] autorelease];
-  if (count > index + 1) {
+  if (count > (uint32_t)index + 1) {
     memmove(&(msgBuffer[index]),
             &(msgBuffer[index + 1]),
             sizeof(id) * (count - (index + 1)));
