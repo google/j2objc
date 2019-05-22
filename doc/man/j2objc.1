@@ -45,12 +45,6 @@ Provide source compatibility with specified release
 .BI \-g
 Generate Java source debugging support
 .TP
-.BI \-g:none
-Do not generate Java source debugging support
-.TP
-.BI \-g:relative
-Generate Java source debugging support with relative paths
-.TP
 \fB\-l\fR, \fB\-\-list\fR
 List files that are translated
 .TP
@@ -86,27 +80,36 @@ Translate Javadoc comments into Xcode-compatible comments.
 .BI \-\-doc\-comment-warnings
 Report warnings when translating Javadoc comments.
 .TP
-.BI \-\-no\-extract\-unsequenced
-Don't rewrite expressions that would produce unsequenced modification errors.
-.TP
 .BI \-g:none
-Do not generate Java source debugging support.
+Do not generate Java source debugging support
+.TP
+.BI \-g:relative
+Generate Java source debugging support with relative paths
 .TP
 .BI \-\-generate\-deprecated
 Generate deprecated attributes for deprecated methods, classes, and interfaces.
 .TP
+.BI \-\J<flag>
+Pass <flag> directly to the Java runtime.
+.TP
 .BI \-\-mapping " file "
 Add a method mapping file.
 .TP
-.BI \-\-no\-class\-methods
-Don't emit class methods for static Java methods.
-(static methods are converted to functions)
-.TP
-.BI \-\-nullability
-Converts Nullable and Nonnull annotations to Objective-C.
+.BI \-\-no\-extract\-unsequenced
+Don't rewrite expressions that would produce unsequenced modification errors.
 .TP
 .BI \-\-no\-package\-directories
 Generate output files to specified directory, without creating package sub-directories.
+.TP
+\fB\-\-no\-segmented\-headers\fR
+Do not generate headers with guards around each declared type.
+.TP
+.BI \-\-no\-wrapper\-methods
+Do not generate Objective-C wrapper methods for constructors and static methods.
+(J2ObjC generates C functions for these kinds of executables)
+.TP
+.BI \-\-nullability
+Converts Nullable and Nonnull annotations to Objective-C.
 .TP
 .BI \-\-patch\-module
 Option forwarded directly to the Java compiler (see javac help for details).
@@ -126,9 +129,6 @@ Names of the annotation processors to run; bypasses default discovery process.
 .BI \-processorpath " path "
 Specify where to find annotation processors.
 .TP
-\fB\-\-no\-segmented\-headers\fR
-Do not generate headers with guards around each declared type.
-.TP
 .BI \-\-static\-accessor\-methods
 Generates accessor methods for static variables and enum constants.
 .TP
@@ -138,10 +138,6 @@ annotation, unless its value is known to be compatible.
 .TP
 .BI \-\-strip\-reflection
 Do not generate metadata needed for Java reflection.
-.TP
-.BI \-\-no\-wrapper\-methods
-Do not generate Objective-C wrapper methods for constructors and static methods.
-(J2ObjC generates C functions for these kinds of executables)
 .TP
 .BI \-\-swift\-friendly
 Generate code that facilitates Swift importing (equivalent to
@@ -164,10 +160,6 @@ Do not print timing information (default).
 .TP
 .BI \-use\-arc
 Generate Objective\-C code to support Automatic Reference Counting (ARC).
-.TP
-.BI \-use\-gc
-Generate Objective\-C code to support garbage collection (requires
-libjre_emul.a rebuild).
 .TP
 .BI \-use\-reference\-counting
 Generate Objective\-C code to support iOS manual reference counting (default).
@@ -237,9 +229,6 @@ in particular, those that contain non-reifiable arguments.
 .TP
 .BI \-Xno\-jsni\-warnings
 Warn if JSNI (GWT) native code delimiters are used instead of OCNI delimiters.
-.TP
-.BI \-\J<flag>
-Pass <flag> directly to the Java runtime.
 
 .SH "SEE ALSO"
 .BR j2objcc (1)
