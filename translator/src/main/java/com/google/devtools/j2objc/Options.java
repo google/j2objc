@@ -61,7 +61,7 @@ public class Options {
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private MemoryManagementOption memoryManagementOption = null;
-  private boolean emitLineDirectives = false;
+  private EmitLineDirectivesOption emitLineDirectives = EmitLineDirectivesOption.NONE;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
   private HeaderMap headerMap = new HeaderMap();
@@ -192,6 +192,23 @@ public class Options {
 
     // Generate all metadata.
     FULL
+  }
+
+  /**
+   * Different ways that #line debug directives can be emitted.
+   */
+  private enum EmitLineDirectivesOption {
+    // Don't emit #line directives.
+    NONE,
+
+    // Emit #line directives using the unmodified source file path of the compilation unit; this may
+    // be an absolute path or a relative path.
+    NORMAL,
+
+    // Emit #line directives using the source file path of the compilation unit converted to a
+    // relative path, relative to the current working directory; if the file is not in a
+    // subdirectory of the current working directory then the emitted path is the same as NORMAL.
+    RELATIVE,
   }
 
   /**
@@ -371,9 +388,11 @@ public class Options {
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
-        emitLineDirectives = true;
+        emitLineDirectives = EmitLineDirectivesOption.NORMAL;
       } else if (arg.equals("-g:none")) {
-        emitLineDirectives = false;
+        emitLineDirectives = EmitLineDirectivesOption.NONE;
+      } else if (arg.equals("-g:relative")) {
+        emitLineDirectives = EmitLineDirectivesOption.RELATIVE;
       } else if (arg.equals("-Werror")) {
         warningsAsErrors = true;
       } else if (arg.equals("--generate-deprecated")) {
@@ -698,11 +717,21 @@ public class Options {
   }
 
   public boolean emitLineDirectives() {
-    return emitLineDirectives;
+    return emitLineDirectives != EmitLineDirectivesOption.NONE;
   }
 
+  @VisibleForTesting
   public void setEmitLineDirectives(boolean b) {
-    emitLineDirectives = b;
+    emitLineDirectives = b ? EmitLineDirectivesOption.NORMAL : EmitLineDirectivesOption.NONE;
+  }
+
+  public boolean emitRelativeLineDirectives() {
+    return emitLineDirectives == EmitLineDirectivesOption.RELATIVE;
+  }
+
+  @VisibleForTesting
+  public void setEmitRelativeLineDirectives() {
+    emitLineDirectives = EmitLineDirectivesOption.RELATIVE;
   }
 
   public boolean treatWarningsAsErrors() {

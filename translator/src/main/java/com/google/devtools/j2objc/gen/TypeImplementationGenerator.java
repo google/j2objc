@@ -33,6 +33,8 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +76,25 @@ public class TypeImplementationGenerator extends TypeGenerator {
     new TypeImplementationGenerator(builder, node).generate();
   }
 
+  private static Path toNormalizedSourcePath(String pathString) {
+    return Paths.get(pathString).normalize().toAbsolutePath();
+  }
+
+  private String getSourceFilePath() {
+    String sourceFilePathString = compilationUnit.getSourceFilePath();
+    if (!options.emitRelativeLineDirectives()) {
+      return sourceFilePathString;
+    }
+
+    Path sourceFilePath = toNormalizedSourcePath(sourceFilePathString);
+    Path cwdPath = toNormalizedSourcePath(".");
+    if (!sourceFilePath.startsWith(cwdPath)) {
+      return sourceFilePathString;
+    }
+
+    return cwdPath.relativize(sourceFilePath).toString();
+  }
+
   protected void generate() {
     if (typeNode.isDeadClass()) {
       newline();
@@ -81,7 +102,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       return;
     }
 
-    syncFilename(compilationUnit.getSourceFilePath());
+    syncFilename(getSourceFilePath());
 
     printInitFlagDefinition();
     printStaticVars();
