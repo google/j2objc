@@ -1095,7 +1095,7 @@ TEST_RESOURCE_ROOTS = \
   android/platform/libcore/support/src/test/java \
   apache_harmony/classlib/modules/logging/src/test/resources \
   apache_harmony/classlib/modules/beans/src/test/resources \
-  Tests/resources
+  $(MISC_TEST_ROOT)/resources
 
 TEST_RESOURCES_RELATIVE = \
   $(TEST_RESOURCES_SRCS) \

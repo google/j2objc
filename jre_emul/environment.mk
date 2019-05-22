@@ -80,7 +80,7 @@ OPENJDK_ROOT = openjdk/src/share/classes
 
 APPLE_ROOT = apple_apsl
 
-MISC_TEST_ROOT = Tests
+MISC_TEST_ROOT = misc_tests
 J2OBJC_ROOT = ..
 
 ANDROID_INCLUDE = $(LIBCORE_BASE)/include

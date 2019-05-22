@@ -75,7 +75,7 @@ TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR) \
     -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
-    -encoding UTF-8 --prefixes Tests/resources/prefixes.properties
+    -encoding UTF-8 --prefixes $(MISC_TEST_ROOT)/resources/prefixes.properties
 ifndef JAVA_8
 TRANSLATE_ARGS += --patch-module java.base=$(TEST_SRC):$(GEN_JAVA_DIR)
 endif
@@ -284,8 +284,8 @@ $(ALL_TESTS_SOURCE): tests.mk test_sources.mk
 	@mkdir -p $(@D)
 	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
 
-$(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m $(DIST_JRE_EMUL_LIB)
-	@$(J2OBJCC) -o $@ -ljre_emul -ObjC -Os Tests/JreInitialization.m
+$(TESTS_DIR)/jreinitialization: $(MISC_TEST_ROOT)/JreInitialization.m $(DIST_JRE_EMUL_LIB)
+	@$(J2OBJCC) -o $@ -ljre_emul -ObjC -Os $(MISC_TEST_ROOT)/JreInitialization.m
 
 $(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2objc/%.java
 	@mkdir -p $(@D)

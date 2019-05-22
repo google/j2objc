@@ -21,7 +21,7 @@
 	<classpathentry kind="src" path="Classes"/>
 	<classpathentry kind="src" path="misc-tests"/>
 	<classpathentry kind="src" path="stub_classes"/>
-	<classpathentry kind="src" path="Tests"/>
+	<classpathentry kind="src" path="misc_tests"/>
 	<classpathentry kind="src" path="android/platform/external/mockwebserver/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/test/java"/>

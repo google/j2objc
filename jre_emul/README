@@ -30,7 +30,7 @@ Java source files come from four sources:
   modified for use by this project.
 
 * The remaining sources were created for this project: sources are in the
-  Classes directory, tests are in the Tests directory. Classes that are
+  Classes directory, tests are in the misc_tests directory. Classes that are
   either mapped to Foundation classes or natively implemented have empty
   Java versions in the stubl_classes directory, so that jre_emul.jar has
   definitions for them during translation.

@@ -2732,7 +2732,7 @@
 		06AA056C17E111190017C34A /* ResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceBundle.h; path = build_result/Classes/java/util/ResourceBundle.h; sourceTree = "<group>"; };
 		06AA056D17E111190017C34A /* ResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceBundle.m; path = build_result/Classes/java/util/ResourceBundle.m; sourceTree = "<group>"; };
 		06AFD3DA183D3F4D001C90C6 /* IOSReflection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSReflection.m; sourceTree = "<group>"; };
-		06B390731BB32549004A4099 /* prefixes.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prefixes.properties; path = Tests/resources/prefixes.properties; sourceTree = SOURCE_ROOT; };
+		06B390731BB32549004A4099 /* prefixes.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prefixes.properties; path = misc_tests/resources/prefixes.properties; sourceTree = SOURCE_ROOT; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
 		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
 		06BED66A18EDE33F004EA17D /* J2ObjC_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_common.h; sourceTree = "<group>"; };
@@ -7506,6 +7506,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
