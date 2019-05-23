@@ -504,6 +504,8 @@ public class Options {
         emitSourceHeaders = false;
       } else if (arg.equals("-Xexternal-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
+      } else if (arg.equals("--reserved-names")) {
+        NameTable.addReservedNames(getArgValue(args, arg));
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {

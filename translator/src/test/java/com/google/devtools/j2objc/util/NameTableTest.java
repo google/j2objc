@@ -306,4 +306,20 @@ public class NameTableTest extends GenerationTest {
     assertFalse(NameTable.isValidClassName("foo/bar/Test.java"));
     assertFalse(NameTable.isValidClassName("test-src.jar"));
   }
+
+  public void testUserDefinedReservedNames() throws IOException {
+    String file = addSourceFile("aReservedMethodName aReservedParamName", "user_defined.txt");
+    options.load(new String[] {"--reserved-names", file});
+    // stdin is a predefined reserved name.
+    String source = "public class Test { "
+        + "  public void aReservedMethodName() {} "
+        + "  public void test(int noReserved, int stdin, int aReservedParamName) {} "
+        + "} ";
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslation(translation, "- (void)aReservedMethodName__;");
+    assertTranslatedLines(translation,
+        "- (void)testWithInt:(jint)noReserved",
+        "            withInt:(jint)stdin_",
+        "            withInt:(jint)aReservedParamName_;");
+  }
 }
