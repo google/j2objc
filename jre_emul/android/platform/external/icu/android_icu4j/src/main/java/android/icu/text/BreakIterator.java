@@ -903,6 +903,7 @@ public abstract class BreakIterator implements Cloneable
         // it's all in the class init.  The worst problem is we might instantiate
         // two shim instances, but they'll share the same state so that's ok.
         if (shim == null) {
+            /* J2ObjC removed: use of reflection.
             try {
                 Class<?> cls = Class.forName("android.icu.text.BreakIteratorFactory");
                 shim = (BreakIteratorServiceShim)cls.newInstance();
@@ -918,7 +919,8 @@ public abstract class BreakIterator implements Cloneable
                 }
                 throw new RuntimeException(e.getMessage());
                 ///CLOVER:ON
-            }
+            } */
+            shim = new android.icu.text.BreakIteratorFactory();
         }
         return shim;
     }
