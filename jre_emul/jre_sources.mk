@@ -1871,10 +1871,12 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/ULocale.java \
   android/icu/util/ValueIterator.java \
   android/icu/util/VersionInfo.java \
+  java/text/BreakIterator.java \
 
 JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/impl/Assert.java \
   android/icu/impl/BMPSet.java \
+  android/icu/impl/CSCharacterIterator.java \
   android/icu/impl/CacheBase.java \
   android/icu/impl/CacheValue.java \
   android/icu/impl/CalendarCache.java \
@@ -1921,6 +1923,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/impl/ResourceBundleWrapper.java \
   android/icu/impl/RuleCharacterIterator.java \
   android/icu/impl/SimpleCache.java \
+  android/icu/impl/SimpleFilteredSentenceBreakIterator.java \
   android/icu/impl/SimpleFormatterImpl.java \
   android/icu/impl/SoftCache.java \
   android/icu/impl/SortedSetRelation.java \
@@ -1967,12 +1970,14 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/impl/locale/UnicodeLocaleExtension.java \
   android/icu/lang/CharSequences.java \
   android/icu/lang/UCharacterNameIterator.java \
+  android/icu/text/BreakIteratorFactory.java \
   android/icu/text/CurrencyDisplayNames.java \
   android/icu/text/CurrencyMetaInfo.java \
   android/icu/text/DictionaryBreakEngine.java \
   android/icu/text/DictionaryMatcher.java \
   android/icu/text/DigitList.java \
   android/icu/text/Edits.java \
+  android/icu/text/FilteredBreakIteratorBuilder.java \
   android/icu/text/FilteredNormalizer2.java \
   android/icu/text/LanguageBreakEngine.java \
   android/icu/text/NFRule.java \
@@ -2001,6 +2006,8 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/AnnualTimeZoneRule.java \
   android/icu/util/BasicTimeZone.java \
   android/icu/util/BytesTrie.java \
+  android/icu/util/CharsTrie.java \
+  android/icu/util/CharsTrieBuilder.java \
   android/icu/util/DateTimeRule.java \
   android/icu/util/ICUCloneNotSupportedException.java \
   android/icu/util/ICUException.java \
@@ -2009,6 +2016,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/RuleBasedTimeZone.java \
   android/icu/util/STZInfo.java \
   android/icu/util/SimpleTimeZone.java \
+  android/icu/util/StringTrieBuilder.java \
   android/icu/util/TimeArrayTimeZoneRule.java \
   android/icu/util/TimeZoneRule.java \
   android/icu/util/TimeZoneTransition.java \
@@ -2016,6 +2024,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/UResourceBundleIterator.java \
   android/icu/util/UResourceTypeMismatchException.java \
   android/icu/util/VTimeZone.java \
+  java/text/IcuIteratorWrapper.java \
 
 NATIVE_JRE_ICU_EMBEDDED_DATA = ICUData.m
 

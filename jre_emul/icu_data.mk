@@ -1080,7 +1080,48 @@ ICU_ZONE_RES = \
     $(ICU_RES_PACKAGE)/zone/zh_Hant_TW.res \
     $(ICU_RES_PACKAGE)/zone/zu.res \
 
-ICU_DATA_RES = $(ICU_COMMON_RES) $(ICU_LOCALE_RES) $(ICU_ZONE_RES)
+ICU_BRKITR_RES = \
+    $(ICU_RES_PACKAGE)/brkitr/burmesedict.dict \
+    $(ICU_RES_PACKAGE)/brkitr/char.brk \
+    $(ICU_RES_PACKAGE)/brkitr/cjdict.dict \
+    $(ICU_RES_PACKAGE)/brkitr/de.res \
+    $(ICU_RES_PACKAGE)/brkitr/el.res \
+    $(ICU_RES_PACKAGE)/brkitr/en.res \
+    $(ICU_RES_PACKAGE)/brkitr/en_US.res \
+    $(ICU_RES_PACKAGE)/brkitr/en_US_POSIX.res \
+    $(ICU_RES_PACKAGE)/brkitr/es.res \
+    $(ICU_RES_PACKAGE)/brkitr/fi.res \
+    $(ICU_RES_PACKAGE)/brkitr/fr.res \
+    $(ICU_RES_PACKAGE)/brkitr/it.res \
+    $(ICU_RES_PACKAGE)/brkitr/ja.res \
+    $(ICU_RES_PACKAGE)/brkitr/khmerdict.dict \
+    $(ICU_RES_PACKAGE)/brkitr/laodict.dict \
+    $(ICU_RES_PACKAGE)/brkitr/line.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_fi.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_loose.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_loose_cj.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_loose_fi.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_normal.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_normal_cj.brk \
+    $(ICU_RES_PACKAGE)/brkitr/line_normal_fi.brk \
+    $(ICU_RES_PACKAGE)/brkitr/pt.res \
+    $(ICU_RES_PACKAGE)/brkitr/res_index.res \
+    $(ICU_RES_PACKAGE)/brkitr/root.res \
+    $(ICU_RES_PACKAGE)/brkitr/ru.res \
+    $(ICU_RES_PACKAGE)/brkitr/sent.brk \
+    $(ICU_RES_PACKAGE)/brkitr/sent_el.brk \
+    $(ICU_RES_PACKAGE)/brkitr/thaidict.dict \
+    $(ICU_RES_PACKAGE)/brkitr/title.brk \
+    $(ICU_RES_PACKAGE)/brkitr/word.brk \
+    $(ICU_RES_PACKAGE)/brkitr/word_POSIX.brk \
+    $(ICU_RES_PACKAGE)/brkitr/zh.res \
+    $(ICU_RES_PACKAGE)/brkitr/zh_Hant.res \
+
+ICU_DATA_RES = \
+    $(ICU_COMMON_RES) \
+    $(ICU_LOCALE_RES) \
+    $(ICU_ZONE_RES) \
+    $(ICU_BRKITR_RES) \
 
 
 ICU_TZ_DATA_ZIP = \

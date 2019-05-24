@@ -90,10 +90,17 @@ abstract class DictionaryBreakEngine implements LanguageBreakEngine {
      *  For internal use only.
      * @hide draft / provisional / internal are hidden on Android
      */
-    static class DequeI {
+    static class DequeI implements Cloneable {
         private int[] data = new int[50];
         private int lastIdx = 4;   // or base of stack. Index of element.
         private int firstIdx = 4;  // or Top of Stack. Index of element + 1.
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            DequeI result = (DequeI)super.clone();
+            result.data = data.clone();
+            return result;
+        }
 
         int size() {
             return firstIdx - lastIdx;
@@ -151,6 +158,15 @@ abstract class DictionaryBreakEngine implements LanguageBreakEngine {
             }
             return false;
         }
+
+        int elementAt(int i) {
+            assert i < size();
+            return data[lastIdx + i];
+        }
+
+        void removeAllElements() {
+            lastIdx = firstIdx = 4;
+        }
     }
 
     UnicodeSet fSet = new UnicodeSet();
@@ -174,8 +190,8 @@ abstract class DictionaryBreakEngine implements LanguageBreakEngine {
 
     @Override
     public int findBreaks(CharacterIterator text, int startPos, int endPos,
-            boolean reverse, int breakType, DequeI foundBreaks) {
-         int result = 0;
+            int breakType, DequeI foundBreaks) {
+        int result = 0;
 
          // Find the span of characters included in the set.
          //   The span to break begins at the current position int the text, and
@@ -186,24 +202,15 @@ abstract class DictionaryBreakEngine implements LanguageBreakEngine {
         int rangeStart;
         int rangeEnd;
         int c = CharacterIteration.current32(text);
-        if (reverse) {
-            boolean isDict = fSet.contains(c);
-            while ((current = text.getIndex()) > startPos && isDict) {
-                c = CharacterIteration.previous32(text);
-                isDict = fSet.contains(c);
-            }
-            rangeStart = (current < startPos) ? startPos :
-                                                current + (isDict ? 0 : 1);
-            rangeEnd = start + 1;
-        } else {
-            while ((current = text.getIndex()) < endPos && fSet.contains(c)) {
-                CharacterIteration.next32(text);
-                c = CharacterIteration.current32(text);
-            }
-            rangeStart = start;
-            rangeEnd = current;
+        while ((current = text.getIndex()) < endPos && fSet.contains(c)) {
+            CharacterIteration.next32(text);
+            c = CharacterIteration.current32(text);
         }
+        rangeStart = start;
+        rangeEnd = current;
 
+        // if (breakType >= 0 && breakType < 32 && (((uint32_t)1 << breakType) & fTypes)) {
+        // TODO: Why does icu4c have this?
         result = divideUpDictionaryRange(text, rangeStart, rangeEnd, foundBreaks);
         text.setIndex(current);
 

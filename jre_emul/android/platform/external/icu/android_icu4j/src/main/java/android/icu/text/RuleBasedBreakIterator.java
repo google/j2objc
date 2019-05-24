@@ -15,19 +15,21 @@ import static android.icu.impl.CharacterIteration.next32;
 import static android.icu.impl.CharacterIteration.nextTrail32;
 import static android.icu.impl.CharacterIteration.previous32;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.CharacterIterator;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.icu.impl.Assert;
-import android.icu.impl.CharTrie;
 import android.icu.impl.CharacterIteration;
 import android.icu.impl.ICUBinary;
 import android.icu.impl.ICUDebug;
+import android.icu.impl.Trie2;
 import android.icu.lang.UCharacter;
 import android.icu.lang.UProperty;
 import android.icu.lang.UScript;
@@ -47,9 +49,10 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * private constructor
      */
     private RuleBasedBreakIterator() {
-        fLastStatusIndexValid = true;
         fDictionaryCharCount  = 0;
-        fBreakEngines.put(-1, fUnhandledBreakEngine);
+        synchronized(gAllBreakEngines) {
+            fBreakEngines = new ArrayList<LanguageBreakEngine>(gAllBreakEngines);
+        }
     }
 
     /**
@@ -126,14 +129,21 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * behavior as this one.
      */
     @Override
-    public Object clone()
-    {
-        RuleBasedBreakIterator result = (RuleBasedBreakIterator)super.clone();
+    public Object clone()  {
+        RuleBasedBreakIterator result;
+        result = (RuleBasedBreakIterator)super.clone();
         if (fText != null) {
             result.fText = (CharacterIterator)(fText.clone());
         }
+        synchronized (gAllBreakEngines)  {
+            result.fBreakEngines = new ArrayList<LanguageBreakEngine>(gAllBreakEngines);
+        }
+        result.fLookAheadMatches = new LookAheadResults();
+        result.fBreakCache = result.new BreakCache(fBreakCache);
+        result.fDictionaryCache = result.new DictionaryCache(fDictionaryCache);
         return result;
     }
+
 
     /**
      * Returns true if both BreakIterators are of the same class, have the same
@@ -159,10 +169,10 @@ public class RuleBasedBreakIterator extends BreakIterator {
             if (fText == null && other.fText == null) {
                 return true;
             }
-            if (fText == null || other.fText == null) {
+            if (fText == null || other.fText == null || !fText.equals(other.fText)) {
                 return false;
             }
-            return fText.equals(other.fText);
+            return fPosition == other.fPosition;
         }
         catch(ClassCastException e) {
             return false;
@@ -213,17 +223,32 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     RBBIDataWrapper             fRData;
 
-    /*
+    /**
+     *  The iteration state - current position, rule status for the current position,
+     *                        and whether the iterator ran off the end, yielding UBRK_DONE.
+     *                        Current position is pinned to be 0 < position <= text.length.
+     *                        Current position is always set to a boundary.
+     *
+     *  The current  position of the iterator. Pinned, 0 < fPosition <= text.length.
+     *  Never has the value UBRK_DONE (-1).
+     */
+    private int                fPosition;
+
+    /**
      * Index of the Rule {tag} values for the most recent match.
      */
-    private int                 fLastRuleStatusIndex;
+    private int                fRuleStatusIndex;
 
-    /*
-     * Rule tag value valid flag.
-     * Some iterator operations don't intrinsically set the correct tag value.
-     * This flag lets us lazily compute the value if we are ever asked for it.
+    /**
+     * True when iteration has run off the end, and iterator functions should return UBRK_DONE.
      */
-    private boolean             fLastStatusIndexValid;
+    private boolean            fDone;
+
+    /**
+     *   Cache of previously determined boundary positions.
+     */
+    private BreakCache         fBreakCache = new BreakCache();
+
 
     /**
      * Counter for the number of characters encountered with the "dictionary"
@@ -233,6 +258,8 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * @hide draft / provisional / internal are hidden on Android
      */
     private int fDictionaryCharCount;
+
+    private DictionaryCache     fDictionaryCache = new DictionaryCache();
 
     /*
      * ICU debug argument name for RBBI
@@ -246,46 +273,43 @@ public class RuleBasedBreakIterator extends BreakIterator {
             && ICUDebug.value(RBBI_DEBUG_ARG).indexOf("trace") >= 0;
 
     /**
-     * What kind of break iterator this is. Set to KIND_LINE by default,
-     * since this produces sensible output.
+     * What kind of break iterator this is.
+     * Defaulting BreakType to word gives reasonable dictionary behavior for
+     * Break Iterators that are built from rules.
      */
-    private int fBreakType = KIND_LINE;
+    private int fBreakType = KIND_WORD;
 
     /**
      * The "default" break engine - just skips over ranges of dictionary words,
      * producing no breaks. Should only be used if characters need to be handled
      * by a dictionary but we have no dictionary implementation for them.
+     *
+     * Only one instance; shared by all break iterators.
      */
-    private final UnhandledBreakEngine fUnhandledBreakEngine = new UnhandledBreakEngine();
+    private static final UnhandledBreakEngine gUnhandledBreakEngine;
 
     /**
-     * when a range of characters is divided up using the dictionary, the break
-     * positions that are discovered are stored here, preventing us from having
-     * to use either the dictionary or the state table again until the iterator
-     * leaves this range of text
+     * List of all known break engines, common for all break iterators.
+     * Lazily updated as break engines are needed, because instantiation of
+     * break engines is expensive.
+     *
+     * Because gAllBreakEngines can be referenced concurrently from different
+     * BreakIterator instances, all access is synchronized.
      */
-    private int[] fCachedBreakPositions;
+    private static final List<LanguageBreakEngine> gAllBreakEngines;
 
-    /**
-     * if fCachedBreakPositions is not null, this indicates which item in the
-     * cache the current iteration position refers to
-     */
-    private int fPositionInCache;
-
-
-    private final ConcurrentHashMap<Integer, LanguageBreakEngine> fBreakEngines =
-            new ConcurrentHashMap<Integer, LanguageBreakEngine>();
-    /**
-     * Dumps caches and performs other actions associated with a complete change
-     * in text or iteration position.
-     */
-    private void reset() {
-        fCachedBreakPositions = null;
-        // fNumCachedBreakPositions = 0;
-        fDictionaryCharCount = 0;
-        fPositionInCache = 0;
-
+    static {
+        gUnhandledBreakEngine = new UnhandledBreakEngine();
+        gAllBreakEngines = new ArrayList<LanguageBreakEngine>();
+        gAllBreakEngines.add(gUnhandledBreakEngine);
     }
+
+    /**
+     * List of all known break engines. Similar to gAllBreakEngines, but local to a
+     * break iterator, allowing it to be used without synchronization.
+     */
+    private List<LanguageBreakEngine> fBreakEngines;
+
     /**
      * Dump the contents of the state table and character classes for this break iterator.
      * For debugging only.
@@ -329,16 +353,17 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public int first() {
-        fCachedBreakPositions = null;
-        fDictionaryCharCount = 0;
-        fPositionInCache = 0;
-        fLastRuleStatusIndex  = 0;
-        fLastStatusIndexValid = true;
         if (fText == null) {
             return BreakIterator.DONE;
         }
         fText.first();
-        return fText.getIndex();
+        int start =  fText.getIndex();
+        if (!fBreakCache.seek(start)) {
+            fBreakCache.populateNear(start);
+        }
+        fBreakCache.current();
+        assert(fPosition == start);
+        return fPosition;
     }
 
     /**
@@ -348,24 +373,16 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public int last() {
-        fCachedBreakPositions = null;
-        fDictionaryCharCount = 0;
-        fPositionInCache = 0;
-
         if (fText == null) {
-            fLastRuleStatusIndex  = 0;
-            fLastStatusIndexValid = true;
             return BreakIterator.DONE;
         }
-
-        // t.last() returns the offset of the last character,
-        // rather than the past-the-end offset
-        // so a loop like for(p=it.last(); p!=DONE; p=it.previous()) ...
-        // will work correctly.
-        fLastStatusIndexValid = false;
-        int pos = fText.getEndIndex();
-        fText.setIndex(pos);
-        return pos;
+        int endPos = fText.getEndIndex();
+        boolean endShouldBeBoundary = isBoundary(endPos);      // Has side effect of setting iterator position.
+        assert(endShouldBeBoundary);
+        if (fPosition != endPos) {
+            assert(fPosition == endPos);
+        }
+        return endPos;
     }
 
     /**
@@ -379,14 +396,17 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public int next(int n) {
-        int result = current();
-        while (n > 0) {
-            result = next();
-            --n;
-        }
-        while (n < 0) {
-            result = previous();
-            ++n;
+        int result = 0;
+        if (n > 0) {
+            for (; n > 0 && result != DONE; --n) {
+                result = next();
+            }
+        } else if (n < 0) {
+            for (; n < 0 && result != DONE; ++n) {
+                result = previous();
+            }
+        } else {
+            result = current();
         }
         return result;
     }
@@ -397,399 +417,42 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public int next() {
-        // if we have cached break positions and we're still in the range
-        // covered by them, just move one step forward in the cache
-        if (fCachedBreakPositions != null) {
-            if (fPositionInCache < fCachedBreakPositions.length - 1) {
-                ++fPositionInCache;
-                int pos = fCachedBreakPositions[fPositionInCache];
-                fText.setIndex(pos);
-                return pos;
-            }
-            else {
-                reset();
-            }
-        }
-
-        int startPos = current();
-        fDictionaryCharCount = 0;
-        int result = handleNext(fRData.fFTable);
-        if (fDictionaryCharCount > 0) {
-            result = checkDictionary(startPos, result, false);
-        }
-        return result;
+        fBreakCache.next();
+        return fDone ? DONE : fPosition;
     }
 
     /**
-      *  checkDictionary      This function handles all processing of characters in
-      *                       the "dictionary" set. It will determine the appropriate
-      *                       course of action, and possibly set up a cache in the
-      *                       process.
-      */
-    private int checkDictionary(int startPos, int endPos, boolean reverse) {
-
-        // Reset the old break cache first.
-        reset();
-
-        // note: code segment below assumes that dictionary chars are in the
-        // startPos-endPos range
-        // value returned should be next character in sequence
-        if ((endPos - startPos) <= 1) {
-            return (reverse ? startPos : endPos);
-        }
-
-        // Starting from the starting point, scan towards the proposed result,
-        // looking for the first dictionary character (which may be the one
-        // we're on, if we're starting in the middle of a range).
-        fText.setIndex(reverse ? endPos : startPos);
-        if (reverse) {
-            CharacterIteration.previous32(fText);
-        }
-
-        int  rangeStart = startPos;
-        int  rangeEnd = endPos;
-
-        int    category;
-        int    current;
-        DictionaryBreakEngine.DequeI breaks = new DictionaryBreakEngine.DequeI();
-        int     foundBreakCount = 0;
-        int     c = CharacterIteration.current32(fText);
-        category = (short)fRData.fTrie.getCodePointValue(c);
-
-        // Is the character we're starting on a dictionary character? If so, we
-        // need to back up to include the entire run; otherwise the results of
-        // the break algorithm will differ depending on where we start. Since
-        // the result is cached and there is typically a non-dictionary break
-        // within a small number of words, there should be little performance impact.
-        if ((category & 0x4000) != 0) {
-            if (reverse) {
-                do {
-                    CharacterIteration.next32(fText);
-                    c = CharacterIteration.current32(fText);
-                    category = (short)fRData.fTrie.getCodePointValue(c);
-                } while (c != CharacterIteration.DONE32 && ((category & 0x4000)) != 0);
-
-                // Back up to the last dictionary character
-                rangeEnd = fText.getIndex();
-                if (c == CharacterIteration.DONE32) {
-                    // c = fText->last32();
-                    //   TODO:  why was this if needed?
-                    c = CharacterIteration.previous32(fText);
-                }
-                else {
-                    c = CharacterIteration.previous32(fText);
-                }
-            }
-            else {
-                do {
-                    c = CharacterIteration.previous32(fText);
-                    category = (short)fRData.fTrie.getCodePointValue(c);
-                }
-                while (c != CharacterIteration.DONE32 && ((category & 0x4000) != 0));
-                // Back up to the last dictionary character
-                if (c == CharacterIteration.DONE32) {
-                    // c = fText->first32();
-                    c = CharacterIteration.current32(fText);
-                }
-                else {
-                    CharacterIteration.next32(fText);
-                    c = CharacterIteration.current32(fText);
-                }
-                rangeStart = fText.getIndex();
-            }
-            category = (short)fRData.fTrie.getCodePointValue(c);
-        }
-
-
-        // Loop through the text, looking for ranges of dictionary characters.
-        // For each span, find the appropriate break engine, and ask it to find
-        // any breaks within the span.
-        // Note: we always do this in the forward direction, so that the break
-        // cache is built in the right order.
-        if (reverse) {
-            fText.setIndex(rangeStart);
-            c = CharacterIteration.current32(fText);
-            category = (short)fRData.fTrie.getCodePointValue(c);
-        }
-        LanguageBreakEngine lbe = null;
-        while(true) {
-            while((current = fText.getIndex()) < rangeEnd && (category & 0x4000) == 0) {
-                CharacterIteration.next32(fText);
-                c = CharacterIteration.current32(fText);
-                category = (short)fRData.fTrie.getCodePointValue(c);
-            }
-            if (current >= rangeEnd) {
-                break;
-            }
-
-            // We now have a dictionary character. Get the appropriate language object
-            // to deal with it.
-            lbe = getLanguageBreakEngine(c);
-
-            // Ask the language object if there are any breaks. It will leave the text
-            // pointer on the other side of its range, ready to search for the next one.
-            if (lbe != null) {
-                int startingIdx = fText.getIndex();
-                foundBreakCount += lbe.findBreaks(fText, rangeStart, rangeEnd, false, fBreakType, breaks);
-                assert fText.getIndex() > startingIdx;
-            }
-
-            // Reload the loop variables for the next go-round
-            c = CharacterIteration.current32(fText);
-            category = (short)fRData.fTrie.getCodePointValue(c);
-        }
-
-        // If we found breaks, build a new break cache. The first and last entries must
-        // be the original starting and ending position.
-        if (foundBreakCount > 0) {
-            if (foundBreakCount != breaks.size()) {
-                System.out.println("oops, foundBreakCount != breaks.size().  LBE = " + lbe.getClass());
-            }
-            assert foundBreakCount == breaks.size();
-            if (startPos < breaks.peekLast()) {
-                breaks.offer(startPos);
-            }
-            if (endPos > breaks.peek()) {
-                breaks.push(endPos);
-            }
-
-            // TODO: get rid of this array, use results from the deque directly
-            fCachedBreakPositions = new int[breaks.size()];
-
-            int i = 0;
-            while (breaks.size() > 0) {
-                fCachedBreakPositions[i++] = breaks.pollLast();
-            }
-
-            // If there are breaks, then by definition, we are replacing the original
-            // proposed break by one of the breaks we found. Use following() and
-            // preceding() to do the work. They should never recurse in this case.
-            if (reverse) {
-                return preceding(endPos);
-            }
-            else {
-                return following(startPos);
-            }
-        }
-
-        // If we get here, there were no language-based breaks. Set the text pointer
-        // to the original proposed break.
-        fText.setIndex(reverse ? startPos : endPos);
-        return (reverse ? startPos : endPos);
-
-        }
-
-
-    /**
-     * Moves the iterator backwards, to the last boundary preceding this one.
-     * @return The position of the last boundary position preceding this one.
+     * Moves the iterator backwards, to the boundary preceding the current one.
+     * @return The position of the boundary position immediately preceding the starting position.
      */
     @Override
     public int previous() {
-        int result;
-        int startPos;
-
-        CharacterIterator text = getText();
-
-        fLastStatusIndexValid = false;
-
-        // if we have cached break positions and we're still in the range
-        // covered by them, just move one step backward in the cache
-        if (fCachedBreakPositions != null) {
-            if (fPositionInCache > 0) {
-                --fPositionInCache;
-                // If we're at the beginning of the cache, need to reevaluate the
-                // rule status
-                if (fPositionInCache <= 0) {
-                    fLastStatusIndexValid = false;
-                }
-                int pos = fCachedBreakPositions[fPositionInCache];
-                text.setIndex(pos);
-                return pos;
-            } else {
-                reset();
-            }
-        }
-
-        // if we're already sitting at the beginning of the text, return DONE
-        startPos = current();
-        if (fText == null || startPos == fText.getBeginIndex()) {
-            fLastRuleStatusIndex  = 0;
-            fLastStatusIndexValid = true;
-            return BreakIterator.DONE;
-        }
-
-        // Rules with an exact reverse table are handled here.
-        if (fRData.fSRTable != null || fRData.fSFTable != null) {
-            result =  handlePrevious(fRData.fRTable);
-            if (fDictionaryCharCount > 0) {
-                result = checkDictionary(result, startPos, true);
-            }
-            return result;
-        }
-
-        // old rule syntax
-        // set things up.  handlePrevious() will back us up to some valid
-        // break position before the current position (we back our internal
-        // iterator up one step to prevent handlePrevious() from returning
-        // the current position), but not necessarily the last one before
-        // where we started
-
-        int       start = current();
-
-        previous32(fText);
-        int       lastResult    = handlePrevious(fRData.fRTable);
-        if (lastResult == BreakIterator.DONE) {
-            lastResult = fText.getBeginIndex();
-            fText.setIndex(lastResult);
-        }
-        result = lastResult;
-        int      lastTag       = 0;
-        boolean  breakTagValid = false;
-
-        // iterate forward from the known break position until we pass our
-        // starting point.  The last break position before the starting
-        // point is our return value
-
-        for (;;) {
-            result         = next();
-            if (result == BreakIterator.DONE || result >= start) {
-                break;
-            }
-            lastResult     = result;
-            lastTag        = fLastRuleStatusIndex;
-            breakTagValid  = true;
-        }
-
-        // fLastBreakTag wants to have the value for section of text preceding
-        // the result position that we are to return (in lastResult.)  If
-        // the backwards rules overshot and the above loop had to do two or more
-        // handleNext()s to move up to the desired return position, we will have a valid
-        // tag value. But, if handlePrevious() took us to exactly the correct result position,
-        // we wont have a tag value for that position, which is only set by handleNext().
-
-        // Set the current iteration position to be the last break position
-        // before where we started, and then return that value.
-        fText.setIndex(lastResult);
-        fLastRuleStatusIndex  = lastTag;       // for use by getRuleStatus()
-        fLastStatusIndexValid = breakTagValid;
-        return lastResult;
+        fBreakCache.previous();
+        return fDone ? DONE : fPosition;
     }
 
     /**
      * Sets the iterator to refer to the first boundary position following
      * the specified position.
-     * @param offset The position from which to begin searching for a break position.
+     * @param startPos The position from which to begin searching for a break position.
      * @return The position of the first break after the current position.
      */
     @Override
-    public int following(int offset) {
-        CharacterIterator text = getText();
-
-        // if we have no cached break positions, or if "offset" is outside the
-        // range covered by the cache, then dump the cache and call our
-        // inherited following() method.  This will call other methods in this
-        // class that may refresh the cache.
-        if (fCachedBreakPositions == null || offset < fCachedBreakPositions[0] ||
-                offset >= fCachedBreakPositions[fCachedBreakPositions.length - 1]) {
-            fCachedBreakPositions = null;
-            return rulesFollowing(offset);
-        }
-
-        // on the other hand, if "offset" is within the range covered by the
-        // cache, then just search the cache for the first break position
-        // after "offset"
-        else {
-            fPositionInCache = 0;
-            while (fPositionInCache < fCachedBreakPositions.length
-                   && offset >= fCachedBreakPositions[fPositionInCache])
-                ++fPositionInCache;
-            text.setIndex(fCachedBreakPositions[fPositionInCache]);
-            return text.getIndex();
-        }
-    }
-
-    private int rulesFollowing(int offset) {
-        // if the offset passed in is already past the end of the text,
-        // just return DONE; if it's before the beginning, return the
+    public int following(int startPos) {
+        // if the supplied position is before the beginning, return the
         // text's starting offset
-        fLastRuleStatusIndex  = 0;
-        fLastStatusIndexValid = true;
-        if (fText == null || offset >= fText.getEndIndex()) {
-            last();
-            return next();
-        }
-        else if (offset < fText.getBeginIndex()) {
+        if (startPos < fText.getBeginIndex()) {
             return first();
         }
 
-        // otherwise, set our internal iteration position (temporarily)
-        // to the position passed in.  If this is the _beginning_ position,
-        // then we can just use next() to get our return value
-
-        int result = 0;
-
-        if (fRData.fSRTable != null) {
-            // Safe Point Reverse rules exist.
-            //   This allows us to use the optimum algorithm.
-            fText.setIndex(offset);
-            // move forward one codepoint to prepare for moving back to a
-            // safe point.
-            // this handles offset being between a supplementary character
-            next32(fText);
-            // handlePrevious will move most of the time to < 1 boundary away
-            handlePrevious(fRData.fSRTable);
-            result = next();
-            while (result <= offset) {
-                result = next();
-            }
-            return result;
-        }
-        if (fRData.fSFTable != null) {
-            // No Safe point reverse table, but there is a safe pt forward table.
-            //
-            fText.setIndex(offset);
-            previous32(fText);
-            // handle next will give result >= offset
-            handleNext(fRData.fSFTable);
-            // previous will give result 0 or 1 boundary away from offset,
-            // most of the time
-            // we have to
-            int oldresult = previous();
-            while (oldresult > offset) {
-                result = previous();
-                if (result <= offset) {
-                    return oldresult;
-                }
-                oldresult = result;
-            }
-            result = next();
-            if (result <= offset) {
-                return next();
-            }
-            return result;
-        }
-        // otherwise, we have to sync up first.  Use handlePrevious() to back
-        // us up to a known break position before the specified position (if
-        // we can determine that the specified position is a break position,
-        // we don't back up at all).  This may or may not be the last break
-        // position at or before our starting position.  Advance forward
-        // from here until we've passed the starting position.  The position
-        // we stop on will be the first break position after the specified one.
-        // old rule syntax
-
-        fText.setIndex(offset);
-        if (offset == fText.getBeginIndex()) {
-            return next();
-        }
-        result = previous();
-
-        while (result != BreakIterator.DONE && result <= offset) {
-            result = next();
-        }
-
-        return result;
+        // Move requested offset to a code point start. It might be on a trail surrogate.
+        // Or it may be beyond the end of the text.
+        startPos = CISetIndex32(fText, startPos);
+        fBreakCache.following(startPos);
+        return fDone ? DONE : fPosition;
     }
+
+
     /**
      * Sets the iterator to refer to the last boundary position before the
      * specified position.
@@ -798,94 +461,20 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public int preceding(int offset) {
-        CharacterIterator text = getText();
-
-        // if we have no cached break positions, or "offset" is outside the
-        // range covered by the cache, we can just call the inherited routine
-        // (which will eventually call other routines in this class that may
-        // refresh the cache)
-        if (fCachedBreakPositions == null || offset <= fCachedBreakPositions[0] ||
-                offset > fCachedBreakPositions[fCachedBreakPositions.length - 1]) {
-            fCachedBreakPositions = null;
-            return rulesPreceding(offset);
-        }
-
-        // on the other hand, if "offset" is within the range covered by the cache,
-        // then all we have to do is search the cache for the last break position
-        // before "offset"
-        else {
-            fPositionInCache = 0;
-            while (fPositionInCache < fCachedBreakPositions.length
-                   && offset > fCachedBreakPositions[fPositionInCache])
-                ++fPositionInCache;
-            --fPositionInCache;
-            text.setIndex(fCachedBreakPositions[fPositionInCache]);
-            return text.getIndex();
-        }
-    }
-
-    private int rulesPreceding(int offset) {
-        // if the offset passed in is already past the end of the text,
-        // just return DONE; if it's before the beginning, return the
-
-        // text's starting offset
         if (fText == null || offset > fText.getEndIndex()) {
-            // return BreakIterator::DONE;
             return last();
-        }
-        else if (offset < fText.getBeginIndex()) {
+        } else if (offset < fText.getBeginIndex()) {
             return first();
         }
 
-        // if we start by updating the current iteration position to the
-        // position specified by the caller, we can just use previous()
-        // to carry out this operation
+        // Move requested offset to a code point start. It might be on a trail surrogate.
+        // int adjustedOffset = CISetIndex32(fText, offset);    // TODO: restore to match ICU4C behavior.
+        int adjustedOffset = offset;
+        fBreakCache.preceding(adjustedOffset);
+        return fDone ? DONE : fPosition;
 
-        int  result;
-        if (fRData.fSFTable != null) {
-            /// todo synwee
-            // new rule syntax
-            fText.setIndex(offset);
-            // move backwards one codepoint to prepare for moving forwards to a
-            // safe point.
-            // this handles offset being between a supplementary character
-            previous32(fText);
-            handleNext(fRData.fSFTable);
-            result = previous();
-            while (result >= offset) {
-                result = previous();
-            }
-            return result;
-        }
-        if (fRData.fSRTable != null) {
-            // backup plan if forward safe table is not available
-            fText.setIndex(offset);
-            next32(fText);
-            // handle previous will give result <= offset
-            handlePrevious(fRData.fSRTable);
-
-            // next will give result 0 or 1 boundary away from offset,
-            // most of the time
-            // we have to
-            int oldresult = next();
-            while (oldresult < offset) {
-                result = next();
-                if (result >= offset) {
-                    return oldresult;
-                }
-                oldresult = result;
-            }
-            result = previous();
-            if (result >= offset) {
-                return previous();
-            }
-            return result;
-        }
-
-        // old rule syntax
-        fText.setIndex(offset);
-        return previous();
     }
+
 
     /**
      * Throw IllegalArgumentException unless begin &lt;= offset &lt; end.
@@ -906,64 +495,41 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public boolean isBoundary(int offset) {
+        // TODO: behavior difference with ICU4C, which considers out-of-range offsets
+        //       to not be boundaries, and to not be errors.
         checkOffset(offset, fText);
 
-        // the beginning index of the iterator is always a boundary position by definition
-        if (offset == fText.getBeginIndex()) {
-            first();       // For side effects on current position, tag values.
-            return true;
+        // Adjust offset to be on a code point boundary and not beyond the end of the text.
+        // Note that isBoundary() is always be false for offsets that are not on code point boundaries.
+        // But we still need the side effect of leaving iteration at the following boundary.
+        int adjustedOffset = CISetIndex32(fText, offset);
+
+        boolean result = false;
+        if (fBreakCache.seek(adjustedOffset) || fBreakCache.populateNear(adjustedOffset)) {
+            result = (fBreakCache.current() == offset);
         }
 
-        if (offset == fText.getEndIndex()) {
-            last();       // For side effects on current position, tag values.
-            return true;
+        if (!result) {
+            // Not on a boundary. isBoundary() must leave iterator on the following boundary.
+            // fBreakCache.seek(), above, left us on the preceding boundary, so advance one.
+            next();
         }
-
-        // otherwise, we can use following() on the position before the specified
-        // one and return true if the position we get back is the one the user
-        // specified
-
-        // return following(offset - 1) == offset;
-        // TODO:  check whether it is safe to revert to the simpler offset-1 code
-        //         The safe rules may take care of unpaired surrogates ok.
-        fText.setIndex(offset);
-        previous32(fText);
-        int  pos = fText.getIndex();
-        boolean result = following(pos) == offset;
         return result;
+
     }
 
     /**
-     * Returns the current iteration position.
+     * Returns the current iteration position.  Note that UBRK_DONE is never
+     * returned from this function; if iteration has run to the end of a
+     * string, current() will return the length of the string while
+     * next() will return BreakIterator.DONE).
      * @return The current iteration position.
      */
     @Override
     public int current() {
-        return (fText != null) ? fText.getIndex() : BreakIterator.DONE;
+        return (fText != null) ? fPosition : BreakIterator.DONE;
     }
 
-    private void makeRuleStatusValid() {
-        if (fLastStatusIndexValid == false) {
-            //  No cached status is available.
-            int curr = current();
-            if (curr == BreakIterator.DONE || curr == fText.getBeginIndex()) {
-                //  At start of text, or there is no text.  Status is always zero.
-                fLastRuleStatusIndex = 0;
-                fLastStatusIndexValid = true;
-            } else {
-                //  Not at start of text.  Find status the tedious way.
-                int pa = fText.getIndex();
-                first();
-                int pb = current();
-                while (fText.getIndex() < pa) {
-                    pb = next();
-                }
-                Assert.assrt(pa == pb);
-            }
-            Assert.assrt(fLastStatusIndexValid == true);
-            Assert.assrt(fLastRuleStatusIndex >= 0  &&  fLastRuleStatusIndex < fRData.fStatusTable.length);
-        }
-    }
 
     /**
      * Return the status tag from the break rule that determined the most recently
@@ -972,7 +538,7 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * status, a default value of 0 is returned.  If more than one rule applies,
      * the numerically largest of the possible status values is returned.
      * <p>
-     * Of the standard types of ICU break iterators, only the word break
+     * Of the standard types of ICU break iterators, only the word and line break
      * iterator provides status values.  The values are defined in
      * class RuleBasedBreakIterator, and allow distinguishing between words
      * that contain alphabetic letters, "words" that appear to be numbers,
@@ -983,13 +549,10 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * <p>
      * @return the status from the break rule that determined the most recently
      * returned break position.
-     *
-     * @hide draft / provisional / internal are hidden on Android
      */
 
     @Override
     public int  getRuleStatus() {
-        makeRuleStatusValid();
         //   Status records have this form:
         //           Count N         <--  fLastRuleStatusIndex points here.
         //           Status val 0
@@ -998,7 +561,7 @@ public class RuleBasedBreakIterator extends BreakIterator {
         //           Status val N-1  <--  the value we need to return
         //   The status values are sorted in ascending order.
         //   This function returns the last (largest) of the array of status values.
-        int  idx = fLastRuleStatusIndex + fRData.fStatusTable[fLastRuleStatusIndex];
+        int  idx = fRuleStatusIndex + fRData.fStatusTable[fRuleStatusIndex];
         int  tagVal = fRData.fStatusTable[idx];
         return tagVal;
     }
@@ -1022,16 +585,14 @@ public class RuleBasedBreakIterator extends BreakIterator {
      *                  In the event that the array is too small, the return value
      *                  is the total number of status values that were available,
      *                  not the reduced number that were actually returned.
-     * @hide draft / provisional / internal are hidden on Android
      */
     @Override
     public int getRuleStatusVec(int[] fillInArray) {
-        makeRuleStatusValid();
-        int numStatusVals = fRData.fStatusTable[fLastRuleStatusIndex];
+        int numStatusVals = fRData.fStatusTable[fRuleStatusIndex];
         if (fillInArray != null) {
             int numToCopy = Math.min(numStatusVals, fillInArray.length);
             for (int i=0; i<numToCopy; i++) {
-                fillInArray[i] = fRData.fStatusTable[fLastRuleStatusIndex + i + 1];
+                fillInArray[i] = fRData.fStatusTable[fRuleStatusIndex + i + 1];
             }
         }
         return numStatusVals;
@@ -1056,8 +617,13 @@ public class RuleBasedBreakIterator extends BreakIterator {
      */
     @Override
     public void setText(CharacterIterator newText) {
+        if (newText != null) {
+            fBreakCache.reset(newText.getBeginIndex(), 0);
+        } else {
+            fBreakCache.reset();
+        }
+        fDictionaryCache.reset();
         fText = newText;
-        // first() resets the caches
         this.first();
     }
 
@@ -1087,26 +653,32 @@ public class RuleBasedBreakIterator extends BreakIterator {
 
         // We have a dictionary character.
         // Does an already instantiated break engine handle it?
-        for (LanguageBreakEngine candidate : fBreakEngines.values()) {
+        for (LanguageBreakEngine candidate : fBreakEngines) {
             if (candidate.handles(c, fBreakType)) {
                 return candidate;
             }
         }
 
-        // if we don't have an existing engine, build one.
-        int script = UCharacter.getIntPropertyValue(c, UProperty.SCRIPT);
-        if (script == UScript.KATAKANA || script == UScript.HIRAGANA) {
-            // Katakana, Hiragana and Han are handled by the same dictionary engine.
-            // Fold them together for mapping from script -> engine.
-            script = UScript.HAN;
-        }
+        synchronized (gAllBreakEngines) {
+            // This break iterator's list of break engines didn't handle the character.
+            // Check the global list, another break iterator may have instantiated the
+            // desired engine.
+            for (LanguageBreakEngine candidate : gAllBreakEngines) {
+                if (candidate.handles(c, fBreakType)) {
+                    fBreakEngines.add(candidate);
+                    return candidate;
+                }
+            }
 
-        LanguageBreakEngine eng = fBreakEngines.get(script);
-        /*
-        if (eng != null && !eng.handles(c, fBreakType)) {
-            fUnhandledBreakEngine.handleChar(c, getBreakType());
-            eng = fUnhandledBreakEngine;
-        } else  */  {
+            // The global list doesn't have an existing engine, build one.
+            int script = UCharacter.getIntPropertyValue(c, UProperty.SCRIPT);
+            if (script == UScript.KATAKANA || script == UScript.HIRAGANA) {
+                // Katakana, Hiragana and Han are handled by the same dictionary engine.
+                // Fold them together for mapping from script -> engine.
+                script = UScript.HAN;
+            }
+
+            LanguageBreakEngine eng;
             /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
             try {
                 switch (script) {
@@ -1127,40 +699,33 @@ public class RuleBasedBreakIterator extends BreakIterator {
                         eng = new CjkBreakEngine(false);
                     }
                     else {
-                        fUnhandledBreakEngine.handleChar(c, getBreakType());
-                        eng = fUnhandledBreakEngine;
+                        gUnhandledBreakEngine.handleChar(c, getBreakType());
+                        eng = gUnhandledBreakEngine;
                     }
                     break;
                 case UScript.HANGUL:
                     if (getBreakType() == KIND_WORD) {
                         eng = new CjkBreakEngine(true);
                     } else {
-                        fUnhandledBreakEngine.handleChar(c, getBreakType());
-                        eng = fUnhandledBreakEngine;
+                        gUnhandledBreakEngine.handleChar(c, getBreakType());
+                        eng = gUnhandledBreakEngine;
                     }
                     break;
-                default:
-                    fUnhandledBreakEngine.handleChar(c, getBreakType());
-                    eng = fUnhandledBreakEngine;
-                    break;
+                default: */
+                    gUnhandledBreakEngine.handleChar(c, getBreakType());
+                    eng = gUnhandledBreakEngine;
+                    /* break;
                 }
             } catch (IOException e) {
                 eng = null;
             } */
-            fUnhandledBreakEngine.handleChar(c, getBreakType());
-            eng = fUnhandledBreakEngine;
-        }
 
-        if (eng != null && eng != fUnhandledBreakEngine) {
-            LanguageBreakEngine existingEngine = fBreakEngines.putIfAbsent(script, eng);
-            if (existingEngine != null) {
-                // There was a race & another thread was first to register an engine for this script.
-                // Use theirs and discard the one we just created.
-                eng = existingEngine;
+            if (eng != null && eng != gUnhandledBreakEngine) {
+                gAllBreakEngines.add(eng);
+                fBreakEngines.add(eng);
             }
-            // assert eng.handles(c, fBreakType);
-        }
-        return eng;
+            return eng;
+        }   // end synchronized(gAllBreakEngines)
     }
 
     private static final int kMaxLookaheads = 8;
@@ -1214,7 +779,14 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * The State Machine Engine for moving forward is here.
      * This function is the heart of the RBBI run time engine.
      *
-     * @param stateTable
+     * Input
+     *    fPosition, the position in the text to begin from.
+     * Output
+     *    fPosition:           the boundary following the starting position.
+     *    fDictionaryCharCount the number of dictionary characters encountered.
+     *                         If > 0, the segment will be further subdivided
+     *    fRuleStatusIndex     Info from the state table indicating which rules caused the boundary.
+     *
      * @return the new iterator position
      *
      * A note on supplementary characters and the position of underlying
@@ -1225,29 +797,34 @@ public class RuleBasedBreakIterator extends BreakIterator {
      * This is different from everywhere else, where an iterator always
      * points at the lead surrogate of a supplementary.
      */
-    private int handleNext(short stateTable[]) {
+    private int handleNext() {
         if (TRACE) {
             System.out.println("Handle Next   pos      char  state category");
         }
 
-        // No matter what, handleNext alway correctly sets the break tag value.
-        fLastStatusIndexValid = true;
-        fLastRuleStatusIndex  = 0;
+        // handleNext always sets the break tag value.
+        // Set the default for it.
+        fRuleStatusIndex  = 0;
+        fDictionaryCharCount = 0;
 
         // caches for quicker access
         CharacterIterator text = fText;
-        CharTrie trie = fRData.fTrie;
+        Trie2 trie = fRData.fTrie;
+
+        short[] stateTable  = fRData.fFTable;
+        int initialPosition = fPosition;
+        text.setIndex(initialPosition);
+        int result          = initialPosition;
 
         // Set up the starting char
-        int c               = text.current();
+        int c = text.current();
         if (c >= UTF16.LEAD_SURROGATE_MIN_VALUE) {
             c = nextTrail32(text, c);
             if (c == DONE32) {
+                fDone = true;
                 return BreakIterator.DONE;
             }
         }
-        int initialPosition = text.getIndex();
-        int result          = initialPosition;
 
         // Set the initial state for the state machine
         int state           = START_STATE;
@@ -1289,7 +866,7 @@ public class RuleBasedBreakIterator extends BreakIterator {
                 // look up the current character's character category, which tells us
                 // which column in the state table to look at.
                 //
-                category = (short) trie.getCodePointValue(c);
+                category = (short) trie.get(c);
 
                 // Check the dictionary bit in the character's category.
                 //    Counter is only used by dictionary based iterators (subclasses).
@@ -1334,7 +911,7 @@ public class RuleBasedBreakIterator extends BreakIterator {
                 }
 
                 //  Remember the break status (tag) values.
-                fLastRuleStatusIndex = stateTable[row + RBBIDataWrapper.TAGIDX];
+                fRuleStatusIndex = stateTable[row + RBBIDataWrapper.TAGIDX];
             }
 
             int completedRule = stateTable[row + RBBIDataWrapper.ACCEPTING];
@@ -1342,8 +919,8 @@ public class RuleBasedBreakIterator extends BreakIterator {
                 // Lookahead match is completed
                 int lookaheadResult = fLookAheadMatches.getPosition(completedRule);
                 if (lookaheadResult >= 0) {
-                    fLastRuleStatusIndex = stateTable[row + RBBIDataWrapper.TAGIDX];
-                    text.setIndex(lookaheadResult);
+                    fRuleStatusIndex = stateTable[row + RBBIDataWrapper.TAGIDX];
+                    fPosition = lookaheadResult;
                     return lookaheadResult;
                 }
             }
@@ -1376,21 +953,32 @@ public class RuleBasedBreakIterator extends BreakIterator {
             text.setIndex(initialPosition);
             next32(text);
             result = text.getIndex();
+            fRuleStatusIndex = 0;
         }
-        else {
-            // Leave the iterator at our result position.
-            //   (we may have advanced beyond the last accepting position chasing after
-            //    longer matches that never completed.)
-            text.setIndex(result);
-        }
+
+        // Leave the iterator at our result position.
+        //   (we may have advanced beyond the last accepting position chasing after
+        //    longer matches that never completed.)
+        fPosition = result;
+
         if (TRACE) {
             System.out.println("result = " + result);
         }
         return result;
     }
 
-    private int handlePrevious(short stateTable[]) {
-        if (fText == null || stateTable == null) {
+    /**
+     * Iterate backwards from an arbitrary position in the input text using the Safe Reverse rules.
+     * This locates a "Safe Position" from which the forward break rules
+     * will operate correctly. A Safe Position is not necessarily a boundary itself.
+     *
+     * The logic of this function is very similar to handleNext(), above.
+     *
+     * @param fromPosition the position in the input text to begin the iteration.
+     * @hide draft / provisional / internal are hidden on Android
+     */
+    private int handlePrevious(int fromPosition) {
+        if (fText == null) {
             return 0;
         }
 
@@ -1400,18 +988,15 @@ public class RuleBasedBreakIterator extends BreakIterator {
         int            row;
         int            c;
         int            result             = 0;
-        int            initialPosition    = 0;
+        int            initialPosition    = fromPosition;
         fLookAheadMatches.reset();
-
-        // handlePrevious() never gets the rule status.
-        // Flag the status as invalid; if the user ever asks for status, we will need
-        // to back up, then re-find the break position using handleNext(), which does
-        // get the status value.
-        fLastStatusIndexValid = false;
-        fLastRuleStatusIndex  = 0;
+        short[] stateTable = fRData.fSRTable;
+        CISetIndex32(fText, fromPosition);
+        if (fromPosition == fText.getBeginIndex()) {
+            return BreakIterator.DONE;
+        }
 
         // set up the starting char
-        initialPosition = fText.getIndex();
         result          = initialPosition;
         c               = previous32(fText);
 
@@ -1434,17 +1019,9 @@ public class RuleBasedBreakIterator extends BreakIterator {
         mainLoop: for (;;) {
             if (c == DONE32) {
                 // Reached end of input string.
-                if (mode == RBBI_END || fRData.fHeader.fVersion == 1) {
-                    // Either this is the old (ICU 3.2 and earlier) format data which
-                    // does not support explicit support for matching {eof}, or
-                    // we have already done the {eof} iteration.  Now is the time
+                if (mode == RBBI_END) {
+                    // We have already done the {eof} iteration.  Now is the time
                     // to unconditionally bail out.
-                    if (result == initialPosition) {
-                        // Ran off start, no match found.
-                        // Move one position (towards the start, since we are doing previous.)
-                        fText.setIndex(initialPosition);
-                        previous32(fText);
-                    }
                     break mainLoop;
                 }
                 mode = RBBI_END;
@@ -1455,20 +1032,10 @@ public class RuleBasedBreakIterator extends BreakIterator {
                 // look up the current character's category, which tells us
                 // which column in the state table to look at.
                 //
-                category = (short) fRData.fTrie.getCodePointValue(c);
-
-                // Check the dictionary bit in the character's category.
-                //    Counter is only used by dictionary based iterators (subclasses).
-                //    Chars that need to be handled by a dictionary have a flag bit set
-                //    in their category values.
-                //
-                if ((category & 0x4000) != 0)  {
-                    fDictionaryCharCount++;
-                    //  And off the dictionary flag bit.
-                    category &= ~0x4000;
-                }
+                //  And off the dictionary flag bit. For reverse iteration it is not used.
+                category = (short) fRData.fTrie.get(c);
+                category &= ~0x4000;
             }
-
 
             if (TRACE) {
                 System.out.print("             " + fText.getIndex() + "   ");
@@ -1528,21 +1095,775 @@ public class RuleBasedBreakIterator extends BreakIterator {
 
         // The state machine is done.  Check whether it found a match...
         //
-        // If the iterator failed to advance in the match engine, force it ahead by one.
+        // If the iterator failed to move in the match engine, force it back by one code point.
         //   (This really indicates a defect in the break rules.  They should always match
         //    at least one character.)
         if (result == initialPosition) {
-            result = fText.setIndex(initialPosition);
+            CISetIndex32(fText, initialPosition);
             previous32(fText);
             result = fText.getIndex();
         }
 
-        fText.setIndex(result);
         if (TRACE) {
             System.out.println("Result = " + result);
         }
 
         return result;
     }
+
+    /**
+     * Set the index of a CharacterIterator.
+     * Pin the index to the valid range range of BeginIndex <= index <= EndIndex.
+     * If the index points to a trail surrogate of a supplementary character, adjust it
+     * to the start (lead surrogate) index.
+     *
+     * @param ci A CharacterIterator to set
+     * @param index the index to set
+     * @return the resulting index, possibly pinned or adjusted.
+     */
+    private static int CISetIndex32(CharacterIterator ci, int index) {
+        if (index <= ci.getBeginIndex()) {
+            ci.first();
+        } else if (index >= ci.getEndIndex()) {
+            ci.setIndex(ci.getEndIndex());
+        } else if (Character.isLowSurrogate(ci.setIndex(index))) {
+            if (!Character.isHighSurrogate(ci.previous())) {
+                ci.next();
+            }
+        }
+        return ci.getIndex();
+    }
+
+    /* DictionaryCache  stores the boundaries obtained from a run of dictionary characters.
+     *                 Dictionary boundaries are moved first to this cache, then from here
+     *                 to the main BreakCache, where they may inter-leave with non-dictionary
+     *                 boundaries. The public BreakIterator API always fetches directly
+     *                 from the main BreakCache, not from here.
+     *
+     *                 In common situations, the number of boundaries in a single dictionary run
+     *                 should be quite small, it will be terminated by punctuation, spaces,
+     *                 or any other non-dictionary characters. The main BreakCache may end
+     *                 up with boundaries from multiple dictionary based runs.
+     *
+     *                 The boundaries are stored in a simple ArrayList (vector), with the
+     *                 assumption that they will be accessed sequentially.
+     */
+    @WeakOuter
+    class DictionaryCache  {
+
+         void reset() {
+             fPositionInCache = -1;
+             fStart = 0;
+             fLimit = 0;
+             fFirstRuleStatusIndex = 0;
+             fOtherRuleStatusIndex = 0;
+             fBreaks.removeAllElements();
+         };
+
+         boolean following(int fromPos) {
+             if (fromPos >= fLimit || fromPos < fStart) {
+                 fPositionInCache = -1;
+                 return false;
+             }
+
+             // Sequential iteration, move from previous boundary to the following
+
+             int r = 0;
+             if (fPositionInCache >= 0 && fPositionInCache < fBreaks.size() && fBreaks.elementAt(fPositionInCache) == fromPos) {
+                 ++fPositionInCache;
+                 if (fPositionInCache >= fBreaks.size()) {
+                     fPositionInCache = -1;
+                     return false;
+                 }
+                 r = fBreaks.elementAt(fPositionInCache);
+                 assert(r > fromPos);
+                 fBoundary = r;
+                 fStatusIndex = fOtherRuleStatusIndex;
+                 return true;
+             }
+
+             // Random indexing. Linear search for the boundary following the given position.
+
+             for (fPositionInCache = 0; fPositionInCache < fBreaks.size(); ++fPositionInCache) {
+                 r= fBreaks.elementAt(fPositionInCache);
+                 if (r > fromPos) {
+                     fBoundary = r;
+                     fStatusIndex = fOtherRuleStatusIndex;
+                     return true;
+                 }
+             }
+
+             // Internal error. fStart <= fromPos < fLimit, but no cached boundary.
+             assert(false);
+             fPositionInCache = -1;
+             return false;
+         };
+
+         boolean preceding(int fromPos) {
+             if (fromPos <= fStart || fromPos > fLimit) {
+                 fPositionInCache = -1;
+                 return false;
+             }
+
+             if (fromPos == fLimit) {
+                 fPositionInCache = fBreaks.size() - 1;
+                 if (fPositionInCache >= 0) {
+                     assert(fBreaks.elementAt(fPositionInCache) == fromPos);
+                 }
+             }
+
+             int r;
+             if (fPositionInCache > 0 && fPositionInCache < fBreaks.size() && fBreaks.elementAt(fPositionInCache) == fromPos) {
+                 --fPositionInCache;
+                 r = fBreaks.elementAt(fPositionInCache);
+                 assert(r < fromPos);
+                 fBoundary = r;
+                 fStatusIndex = ( r== fStart) ? fFirstRuleStatusIndex : fOtherRuleStatusIndex;
+                 return true;
+             }
+
+             if (fPositionInCache == 0) {
+                 fPositionInCache = -1;
+                 return false;
+             }
+
+             for (fPositionInCache = fBreaks.size()-1; fPositionInCache >= 0; --fPositionInCache) {
+                 r = fBreaks.elementAt(fPositionInCache);
+                 if (r < fromPos) {
+                     fBoundary = r;
+                     fStatusIndex = ( r == fStart) ? fFirstRuleStatusIndex : fOtherRuleStatusIndex;
+                     return true;
+                 }
+             }
+             assert(false);
+             fPositionInCache = -1;
+             return false;
+         };
+
+        /**
+         * Populate the cache with the dictionary based boundaries within a region of text.
+         * @param startPos  The start position of a range of text
+         * @param endPos    The end position of a range of text
+         * @param firstRuleStatus The rule status index that applies to the break at startPos
+         * @param otherRuleStatus The rule status index that applies to boundaries other than startPos
+         * @hide draft / provisional / internal are hidden on Android
+         */
+        void populateDictionary(int startPos, int endPos,
+                                int firstRuleStatus, int otherRuleStatus) {
+            if ((endPos - startPos) <= 1) {
+                return;
+            }
+
+            reset();
+            fFirstRuleStatusIndex = firstRuleStatus;
+            fOtherRuleStatusIndex = otherRuleStatus;
+
+            int rangeStart = startPos;
+            int rangeEnd = endPos;
+
+            int         category;
+            int         current;
+            int         foundBreakCount = 0;
+
+            // Loop through the text, looking for ranges of dictionary characters.
+            // For each span, find the appropriate break engine, and ask it to find
+            // any breaks within the span.
+
+            fText.setIndex(rangeStart);
+            int     c = CharacterIteration.current32(fText);
+            category = (short)fRData.fTrie.get(c);
+
+            while(true) {
+                while((current = fText.getIndex()) < rangeEnd && (category & 0x4000) == 0) {
+                    c = CharacterIteration.next32(fText);    // pre-increment
+                    category = (short)fRData.fTrie.get(c);
+                }
+                if (current >= rangeEnd) {
+                    break;
+                }
+
+                // We now have a dictionary character. Get the appropriate language object
+                // to deal with it.
+                LanguageBreakEngine lbe = getLanguageBreakEngine(c);
+
+                // Ask the language object if there are any breaks. It will add them to the cache and
+                // leave the text pointer on the other side of its range, ready to search for the next one.
+                if (lbe != null) {
+                    foundBreakCount += lbe.findBreaks(fText, rangeStart, rangeEnd, fBreakType, fBreaks);
+                }
+
+                // Reload the loop variables for the next go-round
+                c = CharacterIteration.current32(fText);
+                category = (short)fRData.fTrie.get(c);
+            }
+
+            // If we found breaks, ensure that the first and last entries are
+            // the original starting and ending position. And initialize the
+            // cache iteration position to the first entry.
+
+            // System.out.printf("foundBreakCount = %d%n", foundBreakCount);
+            if (foundBreakCount > 0) {
+                assert(foundBreakCount == fBreaks.size());
+                if (startPos < fBreaks.elementAt(0)) {
+                    // The dictionary did not place a boundary at the start of the segment of text.
+                    // Add one now. This should not commonly happen, but it would be easy for interactions
+                    // of the rules for dictionary segments and the break engine implementations to
+                    // inadvertently cause it. Cover it here, just in case.
+                    fBreaks.offer(startPos);
+                }
+                if (endPos > fBreaks.peek()) {
+                    fBreaks.push(endPos);
+                }
+                fPositionInCache = 0;
+                // Note: Dictionary matching may extend beyond the original limit.
+                fStart = fBreaks.elementAt(0);
+                fLimit = fBreaks.peek();
+            } else {
+                // there were no language-based breaks, even though the segment contained
+                // dictionary characters. Subsequent attempts to fetch boundaries from the dictionary cache
+                // for this range will fail, and the calling code will fall back to the rule based boundaries.
+            }
+
+        };
+
+
+        DictionaryCache() {
+            fPositionInCache = -1;
+            fBreaks = new DictionaryBreakEngine.DequeI();
+        }
+
+        /**
+         * copy constructor. Used by RuleBasedBreakIterator.clone().
+         *
+         * @param src the source object to be copied.
+         */
+        DictionaryCache(DictionaryCache src)  {
+            try {
+                fBreaks = (DictionaryBreakEngine.DequeI)src.fBreaks.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+            fPositionInCache      = src.fPositionInCache;
+            fStart                = src.fStart;
+            fLimit                = src.fLimit;
+            fFirstRuleStatusIndex = src.fFirstRuleStatusIndex;
+            fOtherRuleStatusIndex = src.fOtherRuleStatusIndex;
+            fBoundary             = src.fBoundary;
+            fStatusIndex          = src.fStatusIndex;
+        }
+
+        // A data structure containing the boundaries themselves. Essentially a vector of raw ints.
+        DictionaryBreakEngine.DequeI fBreaks;
+        int             fPositionInCache;       // Index in fBreaks of last boundary returned by following()
+        //                                      //    or preceding(). Optimizes sequential access.
+        int             fStart;                 // Text position of first boundary in cache.
+        int             fLimit;                 // Last boundary in cache. Which is the limit of the
+        //                                      //    text segment being handled by the dictionary.
+        int             fFirstRuleStatusIndex;  // Rule status info for first boundary.
+        int             fOtherRuleStatusIndex;  // Rule status info for 2nd through last boundaries.
+        int             fBoundary;              // Current boundary. Set by preceding(), following().
+        int             fStatusIndex;           // Current rule status index. Set by preceding, following().
+    };
+
+
+
+
+/*
+ * class BreakCache
+ *
+ * Cache of break boundary positions and rule status values.
+ * Break iterator API functions, next(), previous(), etc., will use cached results
+ * when possible, and otherwise cache new results as they are obtained.
+ *
+ * Uniformly caches both dictionary and rule based (non-dictionary) boundaries.
+ *
+ * The cache is implemented as a single circular buffer.
+ */
+
+/*
+ * size of the circular cache buffer.
+ */
+@WeakOuter
+class BreakCache {
+
+    BreakCache() {
+        reset();
+    };
+
+    void  reset(int pos, int ruleStatus) {
+        fStartBufIdx = 0;
+        fEndBufIdx = 0;
+        fTextIdx = pos;
+        fBufIdx = 0;
+        fBoundaries[0] = pos;
+        fStatuses[0] = (short)ruleStatus;
+    }
+
+    void  reset() {reset(0, 0); };
+
+    void  next() {
+        if (fBufIdx == fEndBufIdx) {
+            fDone = !populateFollowing();
+            fPosition = fTextIdx;
+            fRuleStatusIndex = fStatuses[fBufIdx];
+        } else {
+            fBufIdx = modChunkSize(fBufIdx + 1);
+            fTextIdx = fPosition = fBoundaries[fBufIdx];
+            fRuleStatusIndex = fStatuses[fBufIdx];
+        }
+    };
+
+    void  previous() {
+        int initialBufIdx = fBufIdx;
+        if (fBufIdx == fStartBufIdx) {
+            // At start of cache. Prepend to it.
+            populatePreceding();
+        } else {
+            // Cache already holds the next boundary
+            fBufIdx = modChunkSize(fBufIdx - 1);
+            fTextIdx = fBoundaries[fBufIdx];
+        }
+        fDone = (fBufIdx == initialBufIdx);
+        fPosition = fTextIdx;
+        fRuleStatusIndex = fStatuses[fBufIdx];
+        return;
+    };
+
+    // Move the iteration state to the position following the startPosition.
+    // Input position must be pinned to the input length.
+    void following(int startPos) {
+        if (startPos == fTextIdx || seek(startPos) || populateNear(startPos)) {
+            // startPos is in the cache. Do a next() from that position.
+            // TODO: an awkward set of interactions with bi->fDone
+            //       seek() does not clear it; it can't because of interactions with populateNear().
+            //       next() does not clear it in the fast-path case, where everything matters. Maybe it should.
+            //       So clear it here, for the case where seek() succeeded on an iterator that had previously run off the end.
+            fDone = false;
+            next();
+        }
+
+    };
+
+    void  preceding(int startPos) {
+        if (startPos == fTextIdx || seek(startPos) || populateNear(startPos)) {
+            if (startPos == fTextIdx) {
+                previous();
+            } else {
+                // seek() leaves the BreakCache positioned at the preceding boundary
+                //        if the requested position is between two bounaries.
+                // current() pushes the BreakCache position out to the BreakIterator itself.
+                assert(startPos > fTextIdx);
+                current();
+            }
+        }
+        return;
+    };
+
+    /*
+     * Update the state of the public BreakIterator (fBI) to reflect the
+     * current state of the break iterator cache (this).
+     */
+    int current() {
+        fPosition = fTextIdx;
+        fRuleStatusIndex = fStatuses[fBufIdx];
+        fDone = false;
+        return fTextIdx;
+    };
+
+    /**
+     * Add boundaries to the cache near the specified position.
+     * The given position need not be a boundary itself.
+     * The input position must be within the range of the text, and
+     * on a code point boundary.
+     * If the requested position is a break boundary, leave the iteration
+     * position on it.
+     * If the requested position is not a boundary, leave the iteration
+     * position on the preceding boundary and include both the the
+     * preceding and following boundaries in the cache.
+     * Additional boundaries, either preceding or following, may be added
+     * to the cache as a side effect.
+     *
+     * Return false if the operation failed.
+     */
+    boolean populateNear(int position) {
+        assert(position < fBoundaries[fStartBufIdx] || position > fBoundaries[fEndBufIdx]);
+
+        // Find a boundary somewhere in the vicinity of the requested position.
+        // Depending on the safe rules and the text data, it could be either before, at, or after
+        // the requested position.
+
+
+        // If the requested position is not near already cached positions, clear the existing cache,
+        // find a near-by boundary and begin new cache contents there.
+
+        if ((position < fBoundaries[fStartBufIdx] - 15) || position > (fBoundaries[fEndBufIdx] + 15)) {
+            int aBoundary = fText.getBeginIndex();
+            int ruleStatusIndex = 0;
+            // TODO: check for position == length of text. Although may still need to back up to get rule status.
+            if (position > aBoundary + 20) {
+                int backupPos = handlePrevious(position);
+                fPosition = backupPos;
+                aBoundary = handleNext();                // Ignore dictionary, just finding a rule based boundary.
+                ruleStatusIndex = fRuleStatusIndex;
+            }
+            reset(aBoundary, ruleStatusIndex);               // Reset cache to hold aBoundary as a single starting point.
+        }
+
+        // Fill in boundaries between existing cache content and the new requested position.
+
+        if (fBoundaries[fEndBufIdx] < position) {
+            // The last position in the cache precedes the requested position.
+            // Add following position(s) to the cache.
+            while (fBoundaries[fEndBufIdx] < position) {
+                if (!populateFollowing()) {
+                    assert false;
+                    return false;
+                }
+            }
+            fBufIdx = fEndBufIdx;                      // Set iterator position to the end of the buffer.
+            fTextIdx = fBoundaries[fBufIdx];           // Required because populateFollowing may add extra boundaries.
+            while (fTextIdx > position) {              // Move backwards to a position at or preceding the requested pos.
+                previous();
+            }
+            return true;
+        }
+
+        if (fBoundaries[fStartBufIdx] > position) {
+            // The first position in the cache is beyond the requested position.
+            // back up more until we get a boundary <= the requested position.
+            while (fBoundaries[fStartBufIdx] > position) {
+                populatePreceding();
+            }
+            fBufIdx = fStartBufIdx;                    // Set iterator position to the start of the buffer.
+            fTextIdx = fBoundaries[fBufIdx];           // Required because populatePreceding may add extra boundaries.
+            while (fTextIdx < position) {              // Move forwards to a position at or following the requested pos.
+                next();
+            }
+            if (fTextIdx > position) {
+                // If position is not itself a boundary, the next() loop above will overshoot.
+                // Back up one, leaving cache position at the boundary preceding the requested position.
+                previous();
+            }
+            return true;
+        }
+
+        assert fTextIdx == position;
+        return true;
+
+    };
+
+    /**
+     *  Add boundary(s) to the cache following the current last boundary.
+     *  Return false if at the end of the text, and no more boundaries can be added.
+     *  Leave iteration position at the first newly added boundary, or unchanged if no boundary was added.
+     */
+    boolean populateFollowing() {
+        int fromPosition = fBoundaries[fEndBufIdx];
+        int fromRuleStatusIdx = fStatuses[fEndBufIdx];
+        int pos = 0;
+        int ruleStatusIdx = 0;
+
+        if (fDictionaryCache.following(fromPosition)) {
+            addFollowing(fDictionaryCache.fBoundary, fDictionaryCache.fStatusIndex, UpdateCachePosition);
+            return true;
+        }
+
+        fPosition = fromPosition;
+        pos = handleNext();
+        if (pos == BreakIterator.DONE) {
+            return false;
+        }
+
+        ruleStatusIdx = fRuleStatusIndex;
+        if (fDictionaryCharCount > 0) {
+            // The text segment obtained from the rules includes dictionary characters.
+            // Subdivide it, with subdivided results going into the dictionary cache.
+            fDictionaryCache.populateDictionary(fromPosition, pos, fromRuleStatusIdx, ruleStatusIdx);
+            if (fDictionaryCache.following(fromPosition)) {
+                addFollowing(fDictionaryCache.fBoundary, fDictionaryCache.fStatusIndex, UpdateCachePosition);
+                return true;
+                // TODO: may want to move a sizable chunk of the dictionary cache to the break cache at this point.
+                //       But be careful with interactions with populateNear().
+            }
+        }
+
+        // Rule based segment did not include dictionary characters.
+        // Or, it did contain dictionary chars, but the dictionary segmenter didn't handle them,
+        //    meaning that we didn't take the return, above.
+        // Add its end point to the cache.
+        addFollowing(pos, ruleStatusIdx, UpdateCachePosition);
+
+        // Add several non-dictionary boundaries at this point, to optimize straight forward iteration.
+        //    (subsequent calls to BreakIterator::next() will take the fast path, getting cached results.
+        //
+        for (int count=0; count<6; ++count) {
+            pos = handleNext();
+            if (pos == BreakIterator.DONE || fDictionaryCharCount > 0) {
+                break;
+            }
+            addFollowing(pos, fRuleStatusIndex, RetainCachePosition);
+        }
+        return true;
+    };
+
+    /**
+     *  Add one or more boundaries to the cache preceding the first currently cached boundary.
+     *  Leave the iteration position on the first added boundary.
+     *  Return false if no boundaries could be added (if at the start of the text.)
+     */
+    boolean populatePreceding() {
+        int textBegin = fText.getBeginIndex();
+        int fromPosition = fBoundaries[fStartBufIdx];
+        if (fromPosition == textBegin) {
+            return false;
+        }
+
+        int position = textBegin;
+        int positionStatusIdx = 0;
+
+        if (fDictionaryCache.preceding(fromPosition)) {
+            addPreceding(fDictionaryCache.fBoundary, fDictionaryCache.fStatusIndex, UpdateCachePosition);
+            return true;
+        }
+
+        int backupPosition = fromPosition;
+
+        // Find a boundary somewhere preceding the first already-cached boundary
+        do {
+            backupPosition = backupPosition - 30;
+            if (backupPosition <= textBegin) {
+                backupPosition = textBegin;
+            } else {
+                backupPosition = handlePrevious(backupPosition);
+            }
+            if (backupPosition == BreakIterator.DONE || backupPosition == textBegin) {
+                position = textBegin;
+                positionStatusIdx = 0;
+            } else {
+                fPosition = backupPosition;  // TODO: pass starting position in a clearer way.
+                position = handleNext();
+                positionStatusIdx = fRuleStatusIndex;
+
+            }
+        } while (position >= fromPosition);
+
+        // Find boundaries between the one we just located and the first already-cached boundary
+        // Put them in a side buffer, because we don't yet know where they will fall in the circular cache buffer..
+
+        fSideBuffer.removeAllElements();
+        fSideBuffer.push(position);
+        fSideBuffer.push(positionStatusIdx);
+
+        do {
+            int prevPosition = fPosition = position;
+            int prevStatusIdx = positionStatusIdx;
+            position = handleNext();
+            positionStatusIdx = fRuleStatusIndex;
+            if (position == BreakIterator.DONE) {
+                break;
+            }
+
+            boolean segmentHandledByDictionary = false;
+            if (fDictionaryCharCount != 0) {
+                // Segment from the rules includes dictionary characters.
+                // Subdivide it, with subdivided results going into the dictionary cache.
+                int dictSegEndPosition = position;
+                fDictionaryCache.populateDictionary(prevPosition, dictSegEndPosition, prevStatusIdx, positionStatusIdx);
+                while (fDictionaryCache.following(prevPosition)) {
+                    position = fDictionaryCache.fBoundary;
+                    positionStatusIdx = fDictionaryCache.fStatusIndex;
+                    segmentHandledByDictionary = true;
+                    assert(position > prevPosition);
+                    if (position >= fromPosition) {
+                        break;
+                    }
+                    assert(position <= dictSegEndPosition);
+                    fSideBuffer.push(position);
+                    fSideBuffer.push(positionStatusIdx);
+                    prevPosition = position;
+                }
+                assert(position==dictSegEndPosition || position>=fromPosition);
+            }
+
+            if (!segmentHandledByDictionary && position < fromPosition) {
+                fSideBuffer.push(position);
+                fSideBuffer.push(positionStatusIdx);
+            }
+        } while (position < fromPosition);
+
+        // Move boundaries from the side buffer to the main circular buffer.
+        boolean success = false;
+        if (!fSideBuffer.isEmpty()) {
+            positionStatusIdx = fSideBuffer.pop();
+            position = fSideBuffer.pop();
+            addPreceding(position, positionStatusIdx, UpdateCachePosition);
+            success = true;
+        }
+
+        while (!fSideBuffer.isEmpty()) {
+            positionStatusIdx = fSideBuffer.pop();
+            position = fSideBuffer.pop();
+            if (!addPreceding(position, positionStatusIdx, RetainCachePosition)) {
+                // No space in circular buffer to hold a new preceding result while
+                // also retaining the current cache (iteration) position.
+                // Bailing out is safe; the cache will refill again if needed.
+                break;
+            }
+        }
+        return success;
+    };
+
+
+    static final boolean RetainCachePosition = false;
+    static final boolean UpdateCachePosition = true;
+
+    /*
+     * Add the boundary following the current position.
+     * The current position can be left as it was, or changed to the newly added boundary,
+     * as specified by the update parameter.
+     */
+    void addFollowing(int position, int ruleStatusIdx, boolean update) {
+        assert(position > fBoundaries[fEndBufIdx]);
+        assert(ruleStatusIdx <= Short.MAX_VALUE);
+        int nextIdx = modChunkSize(fEndBufIdx + 1);
+        if (nextIdx == fStartBufIdx) {
+            fStartBufIdx = modChunkSize(fStartBufIdx + 6);    // TODO: experiment. Probably revert to 1.
+        }
+        fBoundaries[nextIdx] = position;
+        fStatuses[nextIdx] = (short)ruleStatusIdx;
+        fEndBufIdx = nextIdx;
+        if (update == UpdateCachePosition) {
+            // Set current position to the newly added boundary.
+            fBufIdx = nextIdx;
+            fTextIdx = position;
+        } else {
+            // Retaining the original cache position.
+            // Check if the added boundary wraps around the buffer, and would over-write the original position.
+            // It's the responsibility of callers of this function to not add too many.
+            assert(nextIdx != fBufIdx);
+        }
+
+    };
+
+
+    /*
+     * Add the boundary preceding the current position.
+     * The current position can be left as it was, or changed to the newly added boundary,
+     * as specified by the update parameter.
+     */
+    boolean addPreceding(int position, int ruleStatusIdx, boolean update) {
+        assert(position < fBoundaries[fStartBufIdx]);
+        assert(ruleStatusIdx <= Short.MAX_VALUE);
+        int nextIdx = modChunkSize(fStartBufIdx - 1);
+        if (nextIdx == fEndBufIdx) {
+            if (fBufIdx == fEndBufIdx && update == RetainCachePosition) {
+                // Failure. The insertion of the new boundary would claim the buffer position that is the
+                // current iteration position. And we also want to retain the current iteration position.
+                // (The buffer is already completely full of entries that precede the iteration position.)
+                return false;
+            }
+            fEndBufIdx = modChunkSize(fEndBufIdx - 1);
+        }
+        fBoundaries[nextIdx] = position;
+        fStatuses[nextIdx] = (short)ruleStatusIdx;
+        fStartBufIdx = nextIdx;
+        if (update == UpdateCachePosition) {
+            fBufIdx = nextIdx;
+            fTextIdx = position;
+        }
+        return true;
+    };
+
+    /**
+     *  Set the cache position to the specified position, or, if the position
+     *  falls between to cached boundaries, to the preceding boundary.
+     *  Fails if the requested position is outside of the range of boundaries currently held by the cache.
+     *  The startPosition must be on a code point boundary.
+     *
+     *  Return true if successful, false if the specified position is after
+     *  the last cached boundary or before the first.
+     */
+    boolean seek(int pos) {
+        if (pos < fBoundaries[fStartBufIdx] || pos > fBoundaries[fEndBufIdx]) {
+            return false;
+        }
+        if (pos == fBoundaries[fStartBufIdx]) {
+            // Common case: seek(0), from BreakIterator::first()
+            fBufIdx = fStartBufIdx;
+            fTextIdx = fBoundaries[fBufIdx];
+            return true;
+        }
+        if (pos == fBoundaries[fEndBufIdx]) {
+            fBufIdx = fEndBufIdx;
+            fTextIdx = fBoundaries[fBufIdx];
+            return true;
+        }
+
+        int min = fStartBufIdx;
+        int max = fEndBufIdx;
+        while (min != max) {
+            int probe = (min + max + (min>max ? CACHE_SIZE : 0)) / 2;
+            probe = modChunkSize(probe);
+            if (fBoundaries[probe] > pos) {
+                max = probe;
+            } else {
+                min = modChunkSize(probe + 1);
+            }
+        }
+        assert(fBoundaries[max] > pos);
+        fBufIdx = modChunkSize(max - 1);
+        fTextIdx = fBoundaries[fBufIdx];
+        assert(fTextIdx <= pos);
+        return true;
+
+    };
+
+
+    /**
+     * copy constructor, used from RuleBasedBreakIterator.clone().
+     *
+     * @param src
+     */
+    BreakCache(BreakCache src)  {
+        fStartBufIdx = src.fStartBufIdx;
+        fEndBufIdx = src.fEndBufIdx;
+        fTextIdx = src.fTextIdx;
+        fBufIdx = src.fBufIdx;
+        fBoundaries = src.fBoundaries.clone();
+        fStatuses = src.fStatuses.clone();
+        fSideBuffer = new DictionaryBreakEngine.DequeI();  // Transient, no need to clone contents.
+    }
+
+    void dumpCache() {
+        System.out.printf("fTextIdx:%d   fBufIdx:%d%n", fTextIdx, fBufIdx);
+        for (int i=fStartBufIdx; ; i=modChunkSize(i+1)) {
+            System.out.printf("%d  %d%n", i, fBoundaries[i]);
+            if (i == fEndBufIdx) {
+                break;
+            }
+        }
+    };
+
+    private final int   modChunkSize(int index) { return index & (CACHE_SIZE - 1); };
+
+    static final int CACHE_SIZE = 128;
+    // static_assert((CACHE_SIZE & (CACHE_SIZE-1)) == 0, "CACHE_SIZE must be power of two.");
+
+    int                 fStartBufIdx;
+    int                 fEndBufIdx;    // inclusive
+
+    int                 fTextIdx;
+    int                 fBufIdx;
+
+    int[]               fBoundaries = new int[CACHE_SIZE];
+    short[]             fStatuses = new short[CACHE_SIZE];
+
+    DictionaryBreakEngine.DequeI   fSideBuffer = new DictionaryBreakEngine.DequeI();
+};
+
+
+
+
 }
 

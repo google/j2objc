@@ -11,6 +11,7 @@ package android.icu.impl;
 
 import java.text.CharacterIterator;
 import java.util.HashSet;
+import java.util.Locale;
 
 import android.icu.impl.ICUResourceBundle.OpenType;
 import android.icu.text.BreakIterator;
@@ -59,7 +60,7 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
     /**
      * Is there an exception at this point?
      *
-     * @param n
+     * @param n the location of the possible break
      * @return
      */
     private final boolean breakExceptionAt(int n) {
@@ -72,6 +73,8 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
         text.setIndex(n);
         backwardsTrie.reset();
         int uch;
+
+
 
         // Assume a space is following the '.' (so we handle the case: "Mr. /Brown")
         if ((uch = text.previousCodePoint()) == ' ') { // TODO: skip a class of chars here??
@@ -272,13 +275,16 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
         /**
          * filter set to store all exceptions
          */
-        private HashSet<String> filterSet = new HashSet<String>();
+        private HashSet<CharSequence> filterSet = new HashSet<CharSequence>();
 
         static final int PARTIAL = (1 << 0); // < partial - need to run through forward trie
         static final int MATCH = (1 << 1); // < exact match - skip this one.
         static final int SuppressInReverse = (1 << 0);
         static final int AddToForward = (1 << 1);
 
+        public Builder(Locale loc) {
+            this(ULocale.forLocale(loc));
+        }
         /**
          * Create SimpleFilteredBreakIteratorBuilder using given locale
          * @param loc the locale to get filtered iterators
@@ -302,28 +308,20 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
          * Create SimpleFilteredBreakIteratorBuilder with no exception
          */
         public Builder() {
-            filterSet = new HashSet<String>();
         }
 
         @Override
-        public boolean suppressBreakAfter(String str) {
-            if (filterSet == null) {
-                filterSet = new HashSet<String>();
-            }
+        public boolean suppressBreakAfter(CharSequence str) {
             return filterSet.add(str);
         }
 
         @Override
-        public boolean unsuppressBreakAfter(String str) {
-            if (filterSet == null) {
-                return false;
-            } else {
-                return filterSet.remove(str);
-            }
+        public boolean unsuppressBreakAfter(CharSequence str) {
+            return filterSet.remove(str);
         }
 
         @Override
-        public BreakIterator build(BreakIterator adoptBreakIterator) {
+        public BreakIterator wrapIteratorWithFilter(BreakIterator adoptBreakIterator) {
             if( filterSet.isEmpty() ) {
                 // Short circuit - nothing to except.
                 return adoptBreakIterator;
@@ -336,29 +334,30 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
             int fwdCount = 0;
 
             int subCount = filterSet.size();
-            String[] ustrs = new String[subCount];
+            CharSequence[] ustrs = new CharSequence[subCount];
             int[] partials = new int[subCount];
 
             CharsTrie backwardsTrie = null; // i.e. ".srM" for Mrs.
             CharsTrie forwardsPartialTrie = null; // Has ".a" for "a.M."
 
             int i = 0;
-            for (String s : filterSet) {
+            for (CharSequence s : filterSet) {
                 ustrs[i] = s; // copy by value?
                 partials[i] = 0; // default: no partial
                 i++;
             }
 
             for (i = 0; i < subCount; i++) {
-                int nn = ustrs[i].indexOf('.'); // TODO: non-'.' abbreviations
-                if (nn > -1 && (nn + 1) != ustrs[i].length()) {
+                String thisStr = ustrs[i].toString(); // TODO: don't cast to String?
+                int nn = thisStr.indexOf('.'); // TODO: non-'.' abbreviations
+                if (nn > -1 && (nn + 1) != thisStr.length()) {
                     // is partial.
                     // is it unique?
                     int sameAs = -1;
                     for (int j = 0; j < subCount; j++) {
                         if (j == i)
                             continue;
-                        if (ustrs[i].regionMatches(0, ustrs[j], 0, nn + 1)) {
+                        if (thisStr.regionMatches(0, ustrs[j].toString() /* TODO */, 0, nn + 1)) {
                             if (partials[j] == 0) { // hasn't been processed yet
                                 partials[j] = SuppressInReverse | AddToForward;
                             } else if ((partials[j] & SuppressInReverse) != 0) {
@@ -368,7 +367,7 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
                     }
 
                     if ((sameAs == -1) && (partials[i] == 0)) {
-                        StringBuilder prefix = new StringBuilder(ustrs[i].substring(0, nn + 1));
+                        StringBuilder prefix = new StringBuilder(thisStr.substring(0, nn + 1));
                         // first one - add the prefix to the reverse table.
                         prefix.reverse();
                         builder.add(prefix, PARTIAL);
@@ -379,8 +378,9 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
             }
 
             for (i = 0; i < subCount; i++) {
+                final String thisStr = ustrs[i].toString(); // TODO
                 if (partials[i] == 0) {
-                    StringBuilder reversed = new StringBuilder(ustrs[i]).reverse();
+                    StringBuilder reversed = new StringBuilder(thisStr).reverse();
                     builder.add(reversed, MATCH);
                     revCount++;
                 } else {
@@ -389,7 +389,7 @@ public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
                     // forward,
                     // instead of "Ph.D." since we already know the "Ph." part is a match.
                     // would need the trie to be able to hold 0-length strings, though.
-                    builder2.add(ustrs[i], MATCH); // forward
+                    builder2.add(thisStr, MATCH); // forward
                     fwdCount++;
                 }
             }

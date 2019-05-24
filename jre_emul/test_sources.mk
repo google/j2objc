@@ -465,6 +465,7 @@ TEST_SOURCES := \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
+    libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DateFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
@@ -708,6 +709,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectionKeyTest.java \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectorTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
+    org/apache/harmony/tests/java/text/BreakIteratorTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DateFormatTest.java \

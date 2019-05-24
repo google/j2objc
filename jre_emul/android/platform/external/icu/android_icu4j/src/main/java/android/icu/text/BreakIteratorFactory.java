@@ -169,7 +169,7 @@ final class BreakIteratorFactory extends BreakIterator.BreakIteratorServiceShim 
             final String ssKeyword = locale.getKeywordValue("ss");
             if (ssKeyword != null && ssKeyword.equals("standard")) {
                 final ULocale base = new ULocale(locale.getBaseName());
-                return FilteredBreakIteratorBuilder.createInstance(base).build(iter);
+                return FilteredBreakIteratorBuilder.getInstance(base).wrapIteratorWithFilter(iter);
             }
         }
 
