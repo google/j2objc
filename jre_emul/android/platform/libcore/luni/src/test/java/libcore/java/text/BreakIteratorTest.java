@@ -29,7 +29,6 @@ public class BreakIteratorTest extends junit.framework.TestCase {
         iterator = BreakIterator.getCharacterInstance(Locale.US);
     }
 
-    /* TODO(b/34460433): enable.
     public void testGetAvailableLocales() {
         Locale[] locales = BreakIterator.getAvailableLocales();
         assertTrue("Array available locales is null", locales != null);
@@ -43,7 +42,7 @@ public class BreakIteratorTest extends junit.framework.TestCase {
             }
         }
         assertTrue("At least locale " + Locale.US + " must be presented", found);
-    } */
+    }
 
     public void testGetWordInstanceLocale() {
         BreakIterator it1 = BreakIterator.getWordInstance(Locale.CANADA_FRENCH);

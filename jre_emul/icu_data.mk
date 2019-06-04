@@ -18,21 +18,33 @@ ICU_RES_PACKAGE = com/ibm/icu/impl/data/icudt60b
 ICU_DATA_ZIP = android/platform/external/icu/icu4j/main/shared/data/icudata.jar
 
 ICU_COMMON_RES = \
+    $(ICU_RES_PACKAGE)/cnvalias.icu \
+    $(ICU_RES_PACKAGE)/confusables.cfu \
+    $(ICU_RES_PACKAGE)/currencyNumericCodes.res \
     $(ICU_RES_PACKAGE)/dayPeriods.res \
+    $(ICU_RES_PACKAGE)/genderList.res \
+    $(ICU_RES_PACKAGE)/icustd.res \
+    $(ICU_RES_PACKAGE)/icuver.res \
     $(ICU_RES_PACKAGE)/keyTypeData.res \
     $(ICU_RES_PACKAGE)/likelySubtags.res \
+    $(ICU_RES_PACKAGE)/metadata.res \
     $(ICU_RES_PACKAGE)/nfc.nrm \
     $(ICU_RES_PACKAGE)/nfkc.nrm \
     $(ICU_RES_PACKAGE)/nfkc_cf.nrm \
+    $(ICU_RES_PACKAGE)/numberingSystems.res \
+    $(ICU_RES_PACKAGE)/plurals.res \
     $(ICU_RES_PACKAGE)/pnames.icu \
     $(ICU_RES_PACKAGE)/pool.res \
+    $(ICU_RES_PACKAGE)/res_index.res \
     $(ICU_RES_PACKAGE)/root.res \
     $(ICU_RES_PACKAGE)/supplementalData.res \
     $(ICU_RES_PACKAGE)/ubidi.icu \
     $(ICU_RES_PACKAGE)/ucase.icu \
     $(ICU_RES_PACKAGE)/unames.icu \
     $(ICU_RES_PACKAGE)/uprops.icu \
+    $(ICU_RES_PACKAGE)/uts46.nrm \
     $(ICU_RES_PACKAGE)/zone/pool.res \
+    $(ICU_RES_PACKAGE)/zone/res_index.res \
     $(ICU_RES_PACKAGE)/zone/root.res \
     $(ICU_RES_PACKAGE)/zone/tzdbNames.res \
 
