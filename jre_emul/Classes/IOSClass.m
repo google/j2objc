@@ -482,7 +482,9 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
   Class pkgInfoCls = NSClassFromString(pkgInfoName);
   Method prefixMethod = JreFindClassMethod(pkgInfoCls, sel_registerName("__prefix"));
   if (prefixMethod) {
-    prefix = method_invoke(pkgInfoCls, prefixMethod);
+    static NSString *(*method_invoke_prefix)(Class, Method) =
+        (NSString * (*)(Class, Method)) method_invoke;
+    prefix = method_invoke_prefix(pkgInfoCls, prefixMethod);
   }
   if (!prefix) {
     // Initialize prefix mappings, if defined.

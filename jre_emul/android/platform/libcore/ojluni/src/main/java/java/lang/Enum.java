@@ -283,7 +283,9 @@ public abstract class Enum<E extends Enum<E>>
           SEL valuesSelector = sel_registerName("values");
           Method valuesMethod = class_getClassMethod(cls, valuesSelector);
           if (valuesMethod) {
-            return method_invoke(cls, valuesMethod);
+            static IOSObjectArray* (*method_invoke_values)(Class, Method) =
+                (IOSObjectArray* (*)(Class, Method)) method_invoke;
+            return method_invoke_values(cls, valuesMethod);
           }
           @throw create_JavaLangAssertionError_initWithId_(
               [@"Enum type with no values method: " stringByAppendingString:[enumType getName]]);
