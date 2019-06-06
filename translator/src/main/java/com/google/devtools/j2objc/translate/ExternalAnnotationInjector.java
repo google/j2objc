@@ -25,21 +25,19 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
 import com.google.devtools.j2objc.types.GeneratedAnnotationValue;
-import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Mappings;
-import com.google.devtools.j2objc.util.NameTable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
@@ -54,7 +52,7 @@ import scenelib.annotations.field.AnnotationFieldType;
 import scenelib.annotations.field.BasicAFT;
 import scenelib.annotations.field.EnumAFT;
 
-/** Adds external annotations from an annotated AST to matching declarations in a J2ObjC AST. */
+/** Records external annotations from an annotated AST that match declarations in a J2ObjC AST. */
 public final class ExternalAnnotationInjector extends UnitTreeVisitor {
 
   // Contains the external annotations.
@@ -62,7 +60,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
 
   // While visiting the J2ObjC AST, the position in the annotated AST is maintained using this
   // stack.
-  Deque<Optional<AElement>> annotatedElementStack = new ArrayDeque<>();
+  private final Deque<Optional<AElement>> annotatedElementStack = new ArrayDeque<>();
 
   public ExternalAnnotationInjector(CompilationUnit unit, ExternalAnnotations externalAnnotations) {
     super(unit);
@@ -93,7 +91,8 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       Set<Annotation> annotations = new LinkedHashSet<>();
       annotations.addAll(annotatedMethod.tlAnnotationsHere);
       annotations.addAll(annotatedMethod.returnType.tlAnnotationsHere);
-      injectAnnotationsToMethod(node, annotations);
+      recordAnnotations(node.getExecutableElement(), annotations);
+      injectAnnotationsToNode(node, annotations);
     }
     return false;
   }
@@ -112,7 +111,8 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
     String elementName = elementUtil.getBinaryName(node.getTypeElement());
     AClass annotatedElement = annotatedAst.classes.get(elementName);
     if (annotatedElement != null && !annotatedElement.tlAnnotationsHere.isEmpty()) {
-      injectAnnotationsToType(node, annotatedElement.tlAnnotationsHere);
+      recordAnnotations(node.getTypeElement(), annotatedElement.tlAnnotationsHere);
+      injectAnnotationsToNode(node, annotatedElement.tlAnnotationsHere);
     }
     annotatedElementStack.addLast(Optional.ofNullable(annotatedElement));
     return true;
@@ -122,30 +122,9 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
     annotatedElementStack.removeLast();
   }
 
-  private void injectAnnotationsToType(AbstractTypeDeclaration node, Set<Annotation> annotations) {
-    GeneratedTypeElement generatedElement = GeneratedTypeElement.mutableCopy(node.getTypeElement());
-    injectAnnotationsToElement(generatedElement, annotations);
-    node.setTypeElement(generatedElement);
-    injectAnnotationsToNode(node, annotations);
-  }
-
-  private void injectAnnotationsToMethod(MethodDeclaration node, Set<Annotation> annotations) {
-    ExecutableElement element = node.getExecutableElement();
-    GeneratedExecutableElement generatedElement =
-        GeneratedExecutableElement.mutableCopy(nameTable.getMethodSelector(element), element);
-    injectAnnotationsToElement(generatedElement, annotations);
-    node.setExecutableElement(generatedElement);
-    injectAnnotationsToNode(node, annotations);
-    // Update the selector in case an ObjectiveCName annotation was injected.
-    String updatedSelector = NameTable.getMethodNameFromAnnotation(generatedElement);
-    if (updatedSelector != null) {
-      generatedElement.setSelector(updatedSelector);
-    }
-  }
-
-  private void injectAnnotationsToElement(GeneratedElement element, Set<Annotation> annotations) {
+  private void recordAnnotations(AnnotatedConstruct construct, Set<Annotation> annotations) {
     for (Annotation annotation : annotations) {
-      element.addAnnotationMirror(generateAnnotationMirror(annotation));
+      ExternalAnnotations.add(construct, generateAnnotationMirror(annotation));
     }
   }
 

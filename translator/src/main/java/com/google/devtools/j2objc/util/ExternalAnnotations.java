@@ -14,18 +14,39 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.collect.ImmutableList;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.lang.model.AnnotatedConstruct;
 import scenelib.annotations.el.AScene;
 import scenelib.annotations.io.IndexFileParser;
 
 /**
  * Helps to forward external annotations from {@link com.google.devtools.j2objc.Options} to {@link
  * com.google.devtools.j2objc.translate.ExternalAnnotationInjector}
+ *
+ * Records external annotations found by the
+ * {@link com.google.devtools.j2objc.translate.ExternalAnnotationInjector}.
  */
 public final class ExternalAnnotations {
 
   // An annotated scene represents the annotations on a set of Java classes and packages.
   private final AScene scene = new AScene();
+
+  private static final Map<AnnotatedConstruct, List<GeneratedAnnotationMirror>> annotations =
+      new HashMap<>();
+
+  public static void add(AnnotatedConstruct construct, GeneratedAnnotationMirror annotation) {
+    annotations.computeIfAbsent(construct, k -> new ArrayList<>()).add(annotation);
+  }
+
+  public static List<GeneratedAnnotationMirror> get(AnnotatedConstruct construct) {
+    return annotations.getOrDefault(construct, ImmutableList.of());
+  }
 
   /**
    * {@link com.google.devtools.j2objc.Options} should use this method to process external

@@ -645,7 +645,7 @@ public final class ElementUtil {
   }
 
   private static boolean hasRetentionPolicy(Element e, String policy) {
-    for (AnnotationMirror ann : e.getAnnotationMirrors()) {
+    for (AnnotationMirror ann : getAllAnnotations(e)) {
       String annotationName = ann.getAnnotationType().asElement().getSimpleName().toString();
       if (annotationName.equals("Retention")) {
         for (AnnotationValue value : ann.getElementValues().values()) {
@@ -671,7 +671,7 @@ public final class ElementUtil {
    * Less strict version of the above where we don't care about the annotation's package.
    */
   public static boolean hasNamedAnnotation(AnnotatedConstruct ac, String name) {
-    for (AnnotationMirror annotation : ac.getAnnotationMirrors()) {
+    for (AnnotationMirror annotation : getAllAnnotations(ac)) {
       if (getName(annotation.getAnnotationType().asElement()).equals(name)) {
         return true;
       }
@@ -681,7 +681,7 @@ public final class ElementUtil {
 
   /** Similar to the above but matches against a pattern. */
   public static boolean hasNamedAnnotation(AnnotatedConstruct ac, Pattern pattern) {
-    for (AnnotationMirror annotation : ac.getAnnotationMirrors()) {
+    for (AnnotationMirror annotation : getAllAnnotations(ac)) {
       if (pattern.matcher(getName(annotation.getAnnotationType().asElement())).matches()) {
         return true;
       }
@@ -694,12 +694,16 @@ public final class ElementUtil {
   }
 
   public static AnnotationMirror getQualifiedNamedAnnotation(Element element, String name) {
-    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+    for (AnnotationMirror annotation : getAllAnnotations(element)) {
       if (getQualifiedName((TypeElement) annotation.getAnnotationType().asElement()).equals(name)) {
         return annotation;
       }
     }
     return null;
+  }
+
+  private static Iterable<? extends AnnotationMirror> getAllAnnotations(AnnotatedConstruct ac) {
+    return Iterables.concat(ac.getAnnotationMirrors(), ExternalAnnotations.get(ac));
   }
 
   /**
