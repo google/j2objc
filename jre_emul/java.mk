@@ -112,5 +112,6 @@ java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder --patch-module java.base=$(JRE_SRC) \
-	  -w cycle_whitelist.txt -s $(JAVA_SOURCES_MANIFEST)
+	  -w cycle_whitelist.txt -s $(JAVA_SOURCES_MANIFEST) \
+	  -Xexternal-annotation-file $(J2OBJC_ANNOTATIONS)
 
