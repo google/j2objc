@@ -15,9 +15,11 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -41,11 +43,13 @@ import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import scenelib.annotations.Annotation;
 import scenelib.annotations.el.AClass;
 import scenelib.annotations.el.AElement;
+import scenelib.annotations.el.AField;
 import scenelib.annotations.el.AMethod;
 import scenelib.annotations.el.AScene;
 import scenelib.annotations.field.AnnotationFieldType;
@@ -65,6 +69,11 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   public ExternalAnnotationInjector(CompilationUnit unit, ExternalAnnotations externalAnnotations) {
     super(unit);
     this.annotatedAst = externalAnnotations.getScene();
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    return visitAbstractTypeDeclaration(node);
   }
 
   @Override
@@ -95,6 +104,25 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       injectAnnotationsToNode(node, annotations);
     }
     return false;
+  }
+
+  @Override
+  public boolean visit(FieldDeclaration node) {
+    if (!annotatedElementStack.peekLast().isPresent()) {
+      return false;
+    }
+    AClass annotatedParent = (AClass) annotatedElementStack.peekLast().get();
+    VariableElement element = node.getFragment(0).getVariableElement();
+    AField annotatedField = annotatedParent.fields.get(ElementUtil.getName(element));
+    if (annotatedField != null) {
+      recordAnnotations(element, annotatedField.tlAnnotationsHere);
+    }
+    return false;
+  }
+
+  @Override
+  public void endVisit(AnnotationTypeDeclaration node) {
+    endVisitAbstractTypeDeclaration();
   }
 
   @Override
@@ -146,14 +174,14 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       // For our uses cases, the scenelib library encodes the annotation value as a string.
       String fieldValue = (String) entry.getValue();
       AnnotationFieldType fieldType = annotation.def.fieldTypes.get(fieldName);
-      AnnotationField field = generateAnnotationField(fieldType, fieldName, fieldValue);
+      AnnotationField field = generateAnnotationField(annotation, fieldType, fieldName, fieldValue);
       annotationMirror.addElementValue(field.element, field.value);
     }
     return annotationMirror;
   }
 
   private AnnotationField generateAnnotationField(
-      AnnotationFieldType type, String name, String value) {
+      Annotation annotation, AnnotationFieldType type, String name, String value) {
     AnnotationField field = new AnnotationField();
     if (type instanceof BasicAFT) {
       Class<?> enclosedType = ((BasicAFT) type).type;
@@ -165,9 +193,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
         ErrorUtil.error("ExternalAnnotationInjector: unsupported field type " + type);
       }
     } else if (type instanceof EnumAFT) {
-      int index = value.lastIndexOf('.');
-      String enumTypeString = value.substring(0, index);
-      String enumValue = value.substring(index + 1);
+      String enumTypeString = annotation.def.name + "." + ((EnumAFT) type).typeName;
       TypeMirror enumType = typeUtil.resolveJavaType(enumTypeString).asType();
       field.element =
           GeneratedExecutableElement.newMethodWithSelector(
@@ -175,7 +201,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       field.value =
           new GeneratedAnnotationValue(
               GeneratedVariableElement.newParameter(
-                  enumValue, enumType, /* enclosingElement = */ null));
+                  value, enumType, /* enclosingElement = */ null));
     } else {
       ErrorUtil.error("ExternalAnnotationInjector: unsupported field type " + type);
     }

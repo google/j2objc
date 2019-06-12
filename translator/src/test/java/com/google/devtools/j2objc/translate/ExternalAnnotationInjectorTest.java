@@ -187,18 +187,14 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "@class JavaLangThreadGroup;");
   }
 
-  // TODO(user): This visitor replaces the original ExecutableElement with a
-  // GeneratedExecutableElement to inject annotations. The Functionizer visitor is not able to
-  // match method invocations (ExecutableElements) with annotated method declarations
-  // (GeneratedExecutableElement).
-  /*public void testFunctionizer() throws IOException {
-    options.setNullability(true);
-    String externalNullabilityAnnotations =
+  public void testFunctionizer() throws IOException {
+    String externalAnnotations =
         "package p: "
             + "annotation @AnAnnotation: "
             + "class Test: "
             + "  method foo()V: @p.AnAnnotation";
-    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    options.addExternalAnnotationFileContents(externalAnnotations);
+    addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     String source =
         "package p;"
             + "public class Test { "
@@ -208,20 +204,18 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
     assertTranslation(translation, "__attribute__((unused)) static void PTest_foo(PTest *self);");
     assertTranslatedLines(translation, "- (void)bar {", "  PTest_foo(self);", "}");
-  }*/
+  }
 
   private static final String REFLECTION_SUPPORT_ANNOTATION =
       "package com.google.j2objc.annotations: "
           + "annotation @ReflectionSupport: "
-          + "  enum com.google.j2objc.annotations.ReflectionSupport.Level value ";
+          + "  enum Level value ";
 
   public void testInjectReflectionSupport_type_keepReflection() throws IOException {
     String externalReflectionSupportAnnotations =
         REFLECTION_SUPPORT_ANNOTATION
             + "package p: "
-            + "class Test: "
-            + "  @com.google.j2objc.annotations.ReflectionSupport( "
-            + "    com.google.j2objc.annotations.ReflectionSupport.Level.FULL) ";
+            + "class Test: @ReflectionSupport(FULL) ";
     options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
     options.setStripReflection(true);
     String source = "package p; public class Test {}";
@@ -233,9 +227,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     String externalReflectionSupportAnnotations =
         REFLECTION_SUPPORT_ANNOTATION
             + "package p: "
-            + "class Test: "
-            + "  @com.google.j2objc.annotations.ReflectionSupport( "
-            + "    com.google.j2objc.annotations.ReflectionSupport.Level.NATIVE_ONLY) ";
+            + "class Test: @ReflectionSupport(NATIVE_ONLY) ";
     options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
     options.setStripReflection(false);
     String source = "package p; public class Test {}";
@@ -289,5 +281,46 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     // The original name is not in the metadata. This allows to hide renamed methods from the
     // JUnit runner.
     assertNotInTranslation(translation, "\"testMethod\"");
+  }
+
+  public void testWeakOuter() throws IOException {
+    String source = "package p; "
+        + "import com.google.j2objc.annotations.WeakOuter; "
+        + "public class A { "
+        + "  Object o; "
+        + "  class B { "
+        + "    int i; "
+        + "    int foo() { return o.hashCode(); } "
+        + "    int bar() { return i; } "
+        + "  } "
+        + "}";
+    options.addExternalAnnotationFileContents(
+        "package com.google.j2objc.annotations: "
+            + "annotation @WeakOuter: "
+            + "package p: "
+            + "class A$B: @WeakOuter");
+    String translation = translateSourceFile(source, "p.A", "p/A.m");
+    assertTranslation(translation, "__unsafe_unretained PA *this$0_;");
+    assertTranslation(translation, "this$0_ = outer$;");
+  }
+
+  public void testWeak() throws IOException {
+    String source = "package p; "
+        + "import com.google.j2objc.annotations.Weak;"
+        + "public class A { "
+        + "  private Thread t;"
+        + "  public A(Thread otherT) {"
+        + "    t = otherT;"
+        + "  }"
+        + "}";
+    options.addExternalAnnotationFileContents(
+        "package com.google.j2objc.annotations: "
+            + "annotation @Weak: "
+            + "package p: "
+            + "class A:"
+            + "  field t: @Weak ");
+    String translation = translateSourceFile(source, "p.A", "p/A.m");
+    assertTranslation(translation, "__unsafe_unretained JavaLangThread *t_;");
+    assertTranslation(translation, "t_ = otherT;");
   }
 }
