@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.PackageElement;
 
 /**
@@ -121,6 +123,12 @@ public final class PackagePrefixes {
     }
 
     prefix = packageLookup.getObjectiveCName(packageName);
+    if (prefix == null) {
+      AnnotationMirror annotation = ElementUtil.getAnnotation(packageElement, ObjectiveCName.class);
+      if (annotation != null) {
+        prefix = (String) ElementUtil.getAnnotationValue(annotation, "value");
+      }
+    }
     if (prefix == null) {
       prefix = NameTable.camelCaseQualifiedName(packageName);
     }

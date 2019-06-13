@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -43,6 +44,7 @@ import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -69,6 +71,17 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   public ExternalAnnotationInjector(CompilationUnit unit, ExternalAnnotations externalAnnotations) {
     super(unit);
     this.annotatedAst = externalAnnotations.getScene();
+  }
+
+  @Override
+  public boolean visit(PackageDeclaration node) {
+    PackageElement element = node.getPackageElement();
+    String elementName = element.getQualifiedName() + ".package-info";
+    AClass annotatedElement = annotatedAst.classes.get(elementName);
+    if (annotatedElement != null) {
+      recordAnnotations(element, annotatedElement.tlAnnotationsHere);
+    }
+    return false;
   }
 
   @Override

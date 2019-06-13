@@ -250,6 +250,33 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "create_OrgJunitIgnore");
   }
 
+  public void testInjectToPackageInfo() throws IOException {
+    addSourceFile("package p; "
+        + "public class Test { "
+        + "  public void test(String s) {} "
+        + "}", "p/Test.java");
+    addSourceFile("package p;", "p/package-info.java");
+    options.addExternalAnnotationFileContents("package com.google.j2objc.annotations: "
+        + "annotation @ObjectiveCName: "
+        + "  String value "
+        + "annotation @ReflectionSupport: "
+        + "  enum Level value "
+        + "package javax.annotation: "
+        + "annotation @ParametersAreNonnullByDefault: "
+        + "package p: @ObjectiveCName(\"XYZ\") "
+        + "           @ParametersAreNonnullByDefault "
+        + "           @ReflectionSupport(NATIVE_ONLY)");
+    options.setNullability(true);
+    String translation = translateSourceFile("p.Test", "p/Test.h");
+    // Verify @ObjectiveCName.
+    assertTranslation(translation, "@interface XYZTest");
+    // Verify @ParametersAreNonnullByDefault.
+    assertTranslation(translation, "- (void)testWithNSString:(NSString * __nonnull)s");
+    // Verify @ReflectionSupport.
+    translation = getTranslatedFile("p/Test.m");
+    assertNotInTranslation(translation, "__metadata");
+  }
+
   private void setupObjectiveCNameAnnotations() throws IOException {
     options.addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
