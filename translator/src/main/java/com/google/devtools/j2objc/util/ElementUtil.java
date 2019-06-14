@@ -84,8 +84,8 @@ public final class ElementUtil {
 
   private static final String LAZY_INIT = "com.google.errorprone.annotations.concurrent.LazyInit";
 
-  private static final Pattern NULLABLE_PATTERN = Pattern.compile("Nullable");
-  private static final Pattern NONNULL_PATTERN = Pattern.compile("No[nt][Nn]ull");
+  private static final Pattern NULLABLE_PATTERN = Pattern.compile("Nullable.*");
+  private static final Pattern NONNULL_PATTERN = Pattern.compile("No[nt][Nn]ull.*");
 
   private final Elements javacElements;
   private final Map<Element, TypeMirror> elementTypeMap = new HashMap<>();
