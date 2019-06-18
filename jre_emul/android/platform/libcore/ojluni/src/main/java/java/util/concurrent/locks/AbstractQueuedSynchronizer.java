@@ -35,8 +35,6 @@
 
 package java.util.concurrent.locks;
 
-import com.google.j2objc.annotations.ReflectionSupport;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -288,7 +286,6 @@ import java.util.concurrent.TimeUnit;
  * @since 1.5
  * @author Doug Lea
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public abstract class AbstractQueuedSynchronizer
     extends AbstractOwnableSynchronizer
     implements java.io.Serializable {
@@ -380,7 +377,6 @@ public abstract class AbstractQueuedSynchronizer
      * expert group, for helpful ideas, discussions, and critiques
      * on the design of this class.
      */
-    @ReflectionSupport(value = ReflectionSupport.Level.FULL)
     static final class Node {
         /** Marker to indicate a node is waiting in shared mode */
         static final Node SHARED = new Node();

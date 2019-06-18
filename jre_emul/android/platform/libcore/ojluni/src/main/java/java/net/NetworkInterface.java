@@ -25,7 +25,6 @@
 
 package java.net;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
@@ -39,7 +38,6 @@ import java.util.NoSuchElementException;
  *
  * @since 1.4
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public final class NetworkInterface {
     private String name;
     private String displayName;

@@ -25,7 +25,6 @@
  */
 package java.net;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -51,7 +50,6 @@ import java.io.ObjectStreamField;
  * @see java.net.ServerSocket
  * @since 1.4
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class InetSocketAddress
     extends SocketAddress
 {

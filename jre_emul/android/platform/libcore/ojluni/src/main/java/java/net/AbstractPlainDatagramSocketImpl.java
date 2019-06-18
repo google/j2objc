@@ -24,7 +24,6 @@
  */
 package java.net;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -44,7 +43,6 @@ import sun.net.ResourceManager;
  * @author Pavani Diwanji
  */
 
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 {
     /* timeout value for receive() */

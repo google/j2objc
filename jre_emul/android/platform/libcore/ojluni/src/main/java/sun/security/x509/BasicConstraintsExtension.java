@@ -25,8 +25,6 @@
 
 package sun.security.x509;
 
-import com.google.j2objc.annotations.ReflectionSupport;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
@@ -52,7 +50,6 @@ import sun.security.util.*;
  * @see CertAttrSet
  * @see Extension
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class BasicConstraintsExtension extends Extension
 implements CertAttrSet<String> {
     /**

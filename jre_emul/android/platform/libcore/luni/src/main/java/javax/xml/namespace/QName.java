@@ -19,7 +19,6 @@
 
 package javax.xml.namespace;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -63,7 +62,6 @@ import javax.xml.XMLConstants;
  * @since 1.5
  */
 
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class QName implements Serializable {
 
     /**

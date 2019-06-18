@@ -25,7 +25,6 @@
 
 package java.sql;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -52,7 +51,6 @@ import sun.misc.Unsafe;
  *   <LI> the causal relationship, if any for this <code>SQLException</code>.
  * </UL>
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class SQLException extends java.lang.Exception
                           implements Iterable<Throwable> {
 

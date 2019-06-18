@@ -26,7 +26,6 @@
 
 package javax.net.ssl;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.IOException;
 
 /**
@@ -37,7 +36,6 @@ import java.io.IOException;
  * @since 1.4
  * @author David Brownell
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public
 class SSLException extends IOException
 {

@@ -29,7 +29,6 @@
 
 package java.math;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.Arrays;
 import static java.math.BigInteger.LONG_MASK;
 
@@ -218,7 +217,6 @@ import static java.math.BigInteger.LONG_MASK;
  * @author  Joseph D. Darcy
  * @author  Sergey V. Kuksenko
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class BigDecimal extends Number implements Comparable<BigDecimal> {
     /**
      * The unscaled value of this BigDecimal, as returned by {@link

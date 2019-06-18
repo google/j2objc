@@ -17,7 +17,6 @@
 
 package com.google.j2objc.net;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +30,6 @@ import java.net.URLStreamHandler;
  * return linked in data resources as URLs, such as from Class.getResource()
  * and ClassLoader.findResources().
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class ResourceDataStreamHandler extends URLStreamHandler {
   private final String path;
   private final byte[] data;

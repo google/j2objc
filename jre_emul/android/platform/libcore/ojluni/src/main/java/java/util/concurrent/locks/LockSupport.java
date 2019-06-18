@@ -35,8 +35,6 @@
 
 package java.util.concurrent.locks;
 
-import com.google.j2objc.annotations.ReflectionSupport;
-
 /**
  * Basic thread blocking primitives for creating locks and other
  * synchronization classes.
@@ -134,7 +132,6 @@ import com.google.j2objc.annotations.ReflectionSupport;
  *   }
  * }}</pre>
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class LockSupport {
     private LockSupport() {} // Cannot be instantiated.
 

@@ -25,7 +25,6 @@
 
 package java.net;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -36,7 +35,6 @@ import java.io.InterruptedIOException;
  * @since  JDK1.1
  */
 
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public abstract class DatagramSocketImpl implements SocketOptions {
 
     /**

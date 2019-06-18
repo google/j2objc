@@ -25,7 +25,6 @@
 
 package java.nio.channels;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.io.IOException;
 
@@ -107,7 +106,6 @@ import java.io.IOException;
  * @see SelectableChannel
  * @see Selector
  */
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public abstract class SelectionKey {
 
     /**

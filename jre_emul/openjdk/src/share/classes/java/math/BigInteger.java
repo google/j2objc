@@ -29,7 +29,6 @@
 
 package java.math;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -121,7 +120,6 @@ import sun.misc.FloatConsts;
  * @since JDK1.1
  */
 
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public class BigInteger extends Number implements Comparable<BigInteger> {
     /**
      * The signum of this BigInteger: -1 for negative, 0 for zero, or

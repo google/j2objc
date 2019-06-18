@@ -26,7 +26,6 @@
 
 package java.net;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import com.google.j2objc.annotations.Weak;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -172,7 +171,6 @@ import static libcore.io.OsConstants.*;
  * @since 1.4
  */
 
-@ReflectionSupport(value = ReflectionSupport.Level.FULL)
 public final
 class Inet6Address extends InetAddress {
     final static int INADDRSZ = 16;
