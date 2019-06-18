@@ -84,7 +84,6 @@ GUAVA_SOURCES = \
     com/google/common/cache/RemovalNotification.java \
     com/google/common/cache/Striped64.java \
     com/google/common/cache/Weigher.java \
-    com/google/common/cache/package-info.java \
     com/google/common/collect/AbstractBiMap.java \
     com/google/common/collect/AbstractIndexedListIterator.java \
     com/google/common/collect/AbstractIterator.java \
@@ -305,7 +304,6 @@ GUAVA_SOURCES = \
     com/google/common/collect/UnmodifiableSortedMultiset.java \
     com/google/common/collect/UsingToStringOrdering.java \
     com/google/common/collect/WellBehavedMap.java \
-    com/google/common/collect/package-info.java \
     com/google/common/escape/ArrayBasedCharEscaper.java \
     com/google/common/escape/ArrayBasedEscaperMap.java \
     com/google/common/escape/ArrayBasedUnicodeEscaper.java \
@@ -375,7 +373,6 @@ GUAVA_SOURCES = \
     com/google/common/graph/UndirectedNetworkConnections.java \
     com/google/common/graph/ValueGraph.java \
     com/google/common/graph/ValueGraphBuilder.java \
-    com/google/common/graph/package-info.java \
     com/google/common/hash/AbstractByteHasher.java \
     com/google/common/hash/AbstractCompositeHashFunction.java \
     com/google/common/hash/AbstractHashFunction.java \
