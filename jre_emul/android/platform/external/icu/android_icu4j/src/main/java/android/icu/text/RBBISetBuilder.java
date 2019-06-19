@@ -9,9 +9,6 @@
 */
 package android.icu.text;
 
-import com.google.j2objc.annotations.Weak;
-import com.google.j2objc.annotations.WeakOuter;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -123,7 +120,7 @@ class RBBISetBuilder {
         }
     }
 
-    @Weak RBBIRuleBuilder fRB;             // The RBBI Rule Compiler that owns us.
+    RBBIRuleBuilder       fRB;             // The RBBI Rule Compiler that owns us.
     RangeDescriptor       fRangeList;      // Head of the linked list of RangeDescriptors
 
     IntTrieBuilder        fTrie;           // The mapping TRIE that is the end result of processing
@@ -306,7 +303,6 @@ class RBBISetBuilder {
     //                       getFoldedValue() function needed for Trie table creation.
     //
     //-----------------------------------------------------------------------------------
-   @WeakOuter
    class RBBIDataManipulate implements IntTrieBuilder.DataManipulate {
         public int getFoldedValue(int start, int offset) {
             int  value;

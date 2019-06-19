@@ -16,13 +16,48 @@
 // This file is used via the -external-annotation-file flag
 // when transpiling the JRE.
 //
-// For convenience, the entries are sorted alphabetically.
+// Annotations are defined at the top of the file and the rest of the entries
+// are sorted alphabetically.
 
 package com.google.j2objc.annotations:
 annotation @ReflectionSupport:
   @Target({TYPE, PACKAGE})
   @Retention(CLASS)
   enum Level value
+annotation @Weak:
+  @Target({FIELD, LOCAL_VARIABLE, PARAMETER})
+  @Retention(CLASS)
+annotation @WeakOuter:
+  @Target({TYPE, TYPE_USE, LOCAL_VARIABLE})
+  @Retention(SOURCE)
+
+package android.icu.impl:
+class ICUNotifier$NotifyThread:
+  field notifier: @Weak
+
+package android.icu.text:
+class MessageFormat$PluralSelectorProvider:
+  field msgFormat: @Weak
+class ModulusSubstitution:
+  field ruleToUse: @Weak
+class NFRule:
+  field formatter: @Weak
+class NFRuleSet:
+  field owner: @Weak
+class NFSubstitution:
+  field ruleSet: @Weak
+class PluralFormat$PluralSelectorAdapter: @WeakOuter
+class RBBIRuleScanner:
+  field fRB: @Weak
+class RBBISetBuilder:
+  field fRB: @Weak
+class RBBISetBuilder$RBBIDataManipulate: @WeakOuter
+class RBBISymbolTable:
+  field fRuleScanner: @Weak
+class RBBITableBuilder:
+  field fRB: @Weak
+class RuleBasedBreakIterator$BreakCache: @WeakOuter
+class RuleBasedBreakIterator$DictionaryCache: @WeakOuter
 
 package com.google.j2objc.net:
 class ResourceDataStreamHandler: @ReflectionSupport(FULL)

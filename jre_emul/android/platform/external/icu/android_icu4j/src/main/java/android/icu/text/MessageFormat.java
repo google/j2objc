@@ -13,8 +13,6 @@
 */
 package android.icu.text;
 
-import com.google.j2objc.annotations.Weak;
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -2072,7 +2070,7 @@ public class MessageFormat extends UFormat {
                 return rules.select(number);
             }
         }
-        @Weak private MessageFormat msgFormat;
+        private MessageFormat msgFormat;
         private PluralRules rules;
         private PluralType type;
     }

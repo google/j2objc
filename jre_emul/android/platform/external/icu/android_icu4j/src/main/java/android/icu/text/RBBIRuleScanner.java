@@ -9,8 +9,6 @@
 
 package android.icu.text;
 
-import com.google.j2objc.annotations.Weak;
-
 import java.text.ParsePosition;
 import java.util.HashMap;
 
@@ -36,7 +34,7 @@ class RBBIRuleScanner {
     }
 
 
-    @Weak RBBIRuleBuilder     fRB;              // The rule builder that we are part of.
+    RBBIRuleBuilder           fRB;              // The rule builder that we are part of.
 
     int                       fScanIndex;        // Index of current character being processed
                                                      //   in the rule input string.

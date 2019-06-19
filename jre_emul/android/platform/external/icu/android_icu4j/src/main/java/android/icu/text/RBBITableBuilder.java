@@ -10,8 +10,6 @@
 
 package android.icu.text;
 
-import com.google.j2objc.annotations.Weak;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -65,7 +63,7 @@ class RBBITableBuilder {
     }
 
 
-    @Weak private RBBIRuleBuilder fRB;
+    private RBBIRuleBuilder fRB;
     private  int             fRootIx;             // The array index into RBBIRuleBuilder.fTreeRoots
                                                    //   for the parse tree to operate on.
                                                    //   Too bad Java can't do indirection more easily!

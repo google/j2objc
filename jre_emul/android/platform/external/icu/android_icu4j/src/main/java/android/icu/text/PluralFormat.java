@@ -10,8 +10,6 @@
 
 package android.icu.text;
 
-import com.google.j2objc.annotations.WeakOuter;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.FieldPosition;
@@ -538,7 +536,6 @@ public class PluralFormat extends UFormat {
     // See PluralSelector:
     // We could avoid this adapter class if we made PluralSelector public
     // (or at least publicly visible) and had PluralRules implement PluralSelector.
-    @WeakOuter
     private final class PluralSelectorAdapter implements PluralSelector {
         @Override
         public String select(Object context, double number) {

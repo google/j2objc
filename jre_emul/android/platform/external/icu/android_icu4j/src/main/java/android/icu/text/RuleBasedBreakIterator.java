@@ -15,8 +15,6 @@ import static android.icu.impl.CharacterIteration.next32;
 import static android.icu.impl.CharacterIteration.nextTrail32;
 import static android.icu.impl.CharacterIteration.previous32;
 
-import com.google.j2objc.annotations.WeakOuter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1148,7 +1146,6 @@ public class RuleBasedBreakIterator extends BreakIterator {
      *                 The boundaries are stored in a simple ArrayList (vector), with the
      *                 assumption that they will be accessed sequentially.
      */
-    @WeakOuter
     class DictionaryCache  {
 
          void reset() {
@@ -1384,7 +1381,6 @@ public class RuleBasedBreakIterator extends BreakIterator {
 /*
  * size of the circular cache buffer.
  */
-@WeakOuter
 class BreakCache {
 
     BreakCache() {
