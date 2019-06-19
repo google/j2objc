@@ -80,7 +80,7 @@ ifndef JAVA_8
 TRANSLATE_ARGS += --patch-module java.base=$(TEST_SRC):$(GEN_JAVA_DIR)
 endif
 ifdef J2OBJC_JRE_STRIP_REFLECTION
-TRANSLATE_ARGS += -Xexternal-annotation-file lite/ignore_tests.jaif
+TRANSLATE_ARGS += -external-annotation-file lite/ignore_tests.jaif
 endif
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)

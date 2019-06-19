@@ -244,7 +244,7 @@ class Options {
         }
       } else if (arg.equals("--print-reference-graph")) {
         options.printReferenceGraph = true;
-      } else if (arg.equals("-Xexternal-annotation-file")) {
+      } else if (arg.equals("-external-annotation-file")) {
         if (++nArg == args.length) {
           usage(arg + " requires an argument");
         }

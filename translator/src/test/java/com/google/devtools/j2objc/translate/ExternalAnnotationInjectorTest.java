@@ -350,4 +350,38 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertTranslation(translation, "__unsafe_unretained JavaLangThread *t_;");
     assertTranslation(translation, "t_ = otherT;");
   }
+
+  public void testRetainedWith() throws IOException {
+    String source = "package p; "
+        + "import com.google.j2objc.annotations.RetainedWith; "
+        + "public class A { "
+        + "  private Object o; "
+        + "  public void setO(Object o) { this.o = o; } "
+        + "}";
+    options.addExternalAnnotationFileContents(
+        "package com.google.j2objc.annotations: "
+            + "annotation @RetainedWith: "
+            + "package p: "
+            + "class A: "
+            + "  field o: @RetainedWith ");
+    String translation = translateSourceFile(source, "p.A", "p/A.m");
+    assertTranslation(translation, "JreRetainedWithAssign");
+    assertTranslation(translation, "JreRetainedWithRelease");
+  }
+
+  public void testAutoreleasePool() throws IOException {
+    String source = "package p; "
+        + "import com.google.j2objc.annotations.AutoreleasePool; "
+        + "public class A { "
+        + "  public void test() {} "
+        + "}";
+    options.addExternalAnnotationFileContents(
+        "package com.google.j2objc.annotations: "
+            + "annotation @AutoreleasePool: "
+            + "package p: "
+            + "class A: "
+            + "  method test()V: @AutoreleasePool ");
+    String translation = translateSourceFile(source, "p.A", "p/A.m");
+    assertTranslation(translation, "@autoreleasepool");
+  }
 }

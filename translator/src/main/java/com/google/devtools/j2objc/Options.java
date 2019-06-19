@@ -502,7 +502,7 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
-      } else if (arg.equals("-Xexternal-annotation-file")) {
+      } else if (arg.equals("-external-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
         NameTable.addReservedNames(getArgValue(args, arg));
