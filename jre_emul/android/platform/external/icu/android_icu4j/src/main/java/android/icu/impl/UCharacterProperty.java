@@ -509,61 +509,6 @@ public final class UCharacterProperty
         }
     }
 
-    /*
-     * J2ObjC: the following 3 classes were created from anonymous classes in order to
-     * annotate them with @WeakOuter.
-     */
-    @WeakOuter
-    private class IntProperty_GeneralCategory extends IntProperty {
-        IntProperty_GeneralCategory() {
-            super(SRC_CHAR);
-        }
-        @Override
-        int getValue(int c) {
-            return getType(c);
-        }
-        @Override
-        int getMaxValue(int which) {
-            return UCharacterCategory.CHAR_CATEGORY_COUNT-1;
-        }
-    }
-
-    @WeakOuter
-    private class IntProperty_NumericType extends IntProperty {
-        IntProperty_NumericType() {
-            super(SRC_CHAR);
-        }
-        @Override
-        int getValue(int c) {
-            return ntvGetType(getNumericTypeValue(getProperty(c)));
-        }
-        @Override
-        int getMaxValue(int which) {
-            return NumericType.COUNT-1;
-        }
-    }
-
-    @WeakOuter
-    private class IntProperty_HangulSyllableType extends IntProperty {
-        IntProperty_HangulSyllableType() {
-            super(SRC_PROPSVEC);
-        }
-        @Override
-        int getValue(int c) {
-            /* see comments on gcbToHst[] above */
-            int gcb=(getAdditional(c, 2)&GCB_MASK)>>>GCB_SHIFT;
-            if(gcb<gcbToHst.length) {
-                return gcbToHst[gcb];
-            } else {
-                return HangulSyllableType.NOT_APPLICABLE;
-            }
-        }
-        @Override
-        int getMaxValue(int which) {
-            return HangulSyllableType.COUNT-1;
-        }
-    }
-
     IntProperty intProps[]={
         new BiDiIntProperty() {  // BIDI_CLASS
             @Override
@@ -580,7 +525,16 @@ public final class UCharacterProperty
         },
         new IntProperty(2, DECOMPOSITION_TYPE_MASK_, 0),
         new IntProperty(0, EAST_ASIAN_MASK_, EAST_ASIAN_SHIFT_),
-        new IntProperty_GeneralCategory(),  // GENERAL_CATEGORY
+        new @WeakOuter IntProperty(SRC_CHAR) {  // GENERAL_CATEGORY
+            @Override
+            int getValue(int c) {
+                return getType(c);
+            }
+            @Override
+            int getMaxValue(int which) {
+                return UCharacterCategory.CHAR_CATEGORY_COUNT-1;
+            }
+        },
         new BiDiIntProperty() {  // JOINING_GROUP
             @Override
             int getValue(int c) {
@@ -594,14 +548,38 @@ public final class UCharacterProperty
             }
         },
         new IntProperty(2, LB_MASK, LB_SHIFT),  // LINE_BREAK
-        new IntProperty_NumericType(),  // NUMERIC_TYPE
+        new @WeakOuter IntProperty(SRC_CHAR) {  // NUMERIC_TYPE
+            @Override
+            int getValue(int c) {
+                return ntvGetType(getNumericTypeValue(getProperty(c)));
+            }
+            @Override
+            int getMaxValue(int which) {
+                return NumericType.COUNT-1;
+            }
+        },
         new IntProperty(0, SCRIPT_MASK_, 0) {
             @Override
             int getValue(int c) {
                 return UScript.getScript(c);
             }
         },
-        new IntProperty_HangulSyllableType(),  // HANGUL_SYLLABLE_TYPE
+        new @WeakOuter IntProperty(SRC_PROPSVEC) {  // HANGUL_SYLLABLE_TYPE
+            @Override
+            int getValue(int c) {
+                /* see comments on gcbToHst[] above */
+                int gcb=(getAdditional(c, 2)&GCB_MASK)>>>GCB_SHIFT;
+                if(gcb<gcbToHst.length) {
+                    return gcbToHst[gcb];
+                } else {
+                    return HangulSyllableType.NOT_APPLICABLE;
+                }
+            }
+            @Override
+            int getMaxValue(int which) {
+                return HangulSyllableType.COUNT-1;
+            }
+        },
         // max=1=YES -- these are never "maybe", only "no" or "yes"
         new NormQuickCheckIntProperty(SRC_NFC, UProperty.NFD_QUICK_CHECK, 1),
         new NormQuickCheckIntProperty(SRC_NFKC, UProperty.NFKD_QUICK_CHECK, 1),
