@@ -13,13 +13,10 @@
 package com.google.j2objc.mockito;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import org.mockito.internal.invocation.InvocationImpl;
-import org.mockito.internal.invocation.MockitoMethod;
-import org.mockito.internal.invocation.realmethod.RealMethod;
-import org.mockito.internal.progress.SequenceNumber;
-import org.mockito.internal.util.ObjectMethodsGuru;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationFactory.RealMethodBehavior;
 import org.mockito.invocation.MockHandler;
 
 /**
@@ -28,25 +25,33 @@ import org.mockito.invocation.MockHandler;
  */
 public class InvocationHandlerAdapter implements InvocationHandler {
   private MockHandler handler;
-  private final ObjectMethodsGuru objectMethodsGuru = new ObjectMethodsGuru();
 
   public InvocationHandlerAdapter(MockHandler handler) {
     this.handler = handler;
   }
 
-  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    if (objectMethodsGuru.isEqualsMethod(method)) {
+  @Override
+  public Object invoke(Object proxy, Method method, Object[] rawArgs) throws Throwable {
+    // args can be null if the method invoked has no arguments, but Mockito expects a non-null array
+    Object[] args = rawArgs != null ? rawArgs : new Object[0];
+    if (isEqualsMethod(method)) {
       return proxy == args[0];
-    } else if (objectMethodsGuru.isHashCodeMethod(method)) {
+    } else if (isHashCodeMethod(method)) {
       return System.identityHashCode(proxy);
     }
-    if (args == null) {
-      throw new IllegalArgumentException();
-    }
 
-    ProxiedMethod proxiedMethod = new ProxiedMethod(method);
-    return handler.handle(new InvocationImpl(proxy, proxiedMethod, args, SequenceNumber.next(),
-        proxiedMethod));
+    RealMethodBehavior<Object> realMethod = new RealMethodBehavior<Object>() {
+      @Override
+      public Object call() throws Throwable {
+        try {
+          return method.invoke(proxy, rawArgs);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+      }
+    };
+    return handler.handle(Mockito.framework().getInvocationFactory().createInvocation(proxy,
+        Mockito.withSettings().build(proxy.getClass().getSuperclass()), method, realMethod, args));
   }
 
   public MockHandler getHandler() {
@@ -57,43 +62,14 @@ public class InvocationHandlerAdapter implements InvocationHandler {
     this.handler = handler;
   }
 
-  private static class ProxiedMethod implements MockitoMethod, RealMethod {
-    private final Method method;
+  private static boolean isEqualsMethod(Method method) {
+    return method.getName().equals("equals")
+        && method.getParameterTypes().length == 1
+        && method.getParameterTypes()[0] == Object.class;
+  }
 
-    public ProxiedMethod(Method method) {
-      this.method = method;
-    }
-
-    public String getName() {
-      return method.getName();
-    }
-
-    public Class<?> getReturnType() {
-      return method.getReturnType();
-    }
-
-    public Class<?>[] getParameterTypes() {
-      return method.getParameterTypes();
-    }
-
-    public Class<?>[] getExceptionTypes() {
-      return method.getExceptionTypes();
-    }
-
-    public boolean isVarArgs() {
-      return method.isVarArgs();
-    }
-
-    public Method getJavaMethod() {
-      return method;
-    }
-
-    public Object invoke(Object target, Object[] arguments) throws Throwable {
-      return method.invoke(target, arguments);
-    }
-
-    public boolean isAbstract() {
-      return Modifier.isAbstract(method.getModifiers());
-    }
+  private static boolean isHashCodeMethod(Method method) {
+    return method.getName().equals("hashCode")
+        && method.getParameterTypes().length == 0;
   }
 }

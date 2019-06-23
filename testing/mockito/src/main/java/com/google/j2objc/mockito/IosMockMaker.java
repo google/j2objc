@@ -50,7 +50,7 @@ public final class IosMockMaker implements MockMaker {
     Class<T> typeToMock = settings.getTypeToMock();
     @SuppressWarnings("rawtypes")
 Set<Class> interfacesSet = settings.getExtraInterfaces();
-    Class<?>[] extraInterfaces = interfacesSet.toArray(new Class[interfacesSet.size()]);
+    Class<?>[] extraInterfaces = interfacesSet.toArray(new Class<?>[interfacesSet.size()]);
     InvocationHandler invocationHandler = new InvocationHandlerAdapter(handler);
 
     if (typeToMock.isInterface()) {

@@ -53,8 +53,8 @@ GUAVA_ANDROID_SOURCE_JAR = guava-25.1-android-sources.jar
 SCENELIB_JAR = scenelib.jar
 PLUME_UTIL_JAR = plume-util-1.0.6.jar
 
-MOCKITO_JAR = mockito-core-1.10.19.jar
-MOCKITO_SOURCE_JAR = mockito-core-1.10.19-sources.jar
+MOCKITO_JAR = mockito-core-2.23.4.jar
+MOCKITO_SOURCE_JAR = mockito-core-2.23.4-sources.jar
 
 JSR305_JAR = jsr305-3.0.0.jar
 JSR305_SOURCE_JAR = jsr305-3.0.0.jar

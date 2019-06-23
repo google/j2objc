@@ -19,12 +19,12 @@ include environment.mk
 TEST_JAVA_SRC_DIR = tests
 TESTS_DIR = $(BUILD_DIR)/tests
 
-TEST_JAVA_SOURCES = $(TEST_JAVA_SRC_DIR)/MockMakerTest.java
+TEST_JAVA_SOURCES = $(TEST_JAVA_SRC_DIR)/com/google/j2objc/mockito/MockMakerTest.java
 TEST_OBJC_SOURCES = $(TEST_JAVA_SOURCES:$(TEST_JAVA_SRC_DIR)/%.java=$(TESTS_DIR)/%.m)
-TEST_CLASSES = MockMakerTest
+TEST_CLASSES = com.google.j2objc.mockito.MockMakerTest
 
 CLASS_PATH_OPT = -classpath $(DIST_JAR_DIR)/$(JUNIT_JAR):$(DIST_JAR_DIR)/$(MOCKITO_JAR):$(DIST_JAR_DIR)/$(HAMCREST_JAR)
-LINKER_OPT = -ObjC -ljunit -lmockito -ljre_emul
+LINKER_OPT = -ObjC -ljunit -lmockito -ljre_emul -I$(TESTS_DIR)
 
 TEST_BIN = $(TESTS_DIR)/mockito_tests
 
