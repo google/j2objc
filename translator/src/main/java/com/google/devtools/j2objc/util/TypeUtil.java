@@ -274,6 +274,7 @@ public final class TypeUtil {
     return javacTypes.isSubtype(t1, t2);
   }
 
+  @SuppressWarnings("TypeEquals")
   public boolean isSameType(TypeMirror t1, TypeMirror t2) {
     if (isGeneratedType(t1) || isGeneratedType(t2)) {
       return t1.equals(t2);
@@ -281,6 +282,7 @@ public final class TypeUtil {
     return javacTypes.isSameType(t1, t2);
   }
 
+  @SuppressWarnings("TypeEquals")
   public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
     if (isGeneratedType(m1) || isGeneratedType(m2)) {
       return m1.equals(m2);
@@ -656,6 +658,7 @@ public final class TypeUtil {
     return isReferenceType(t) && getObjcUpperBounds(t).isEmpty();
   }
 
+  @SuppressWarnings("TypeEquals")
   public boolean isObjcAssignable(TypeMirror t1, TypeMirror t2) {
     if (!isReferenceType(t1) || !isReferenceType(t2)) {
       if (t1 instanceof PointerType && t2 instanceof PointerType) {

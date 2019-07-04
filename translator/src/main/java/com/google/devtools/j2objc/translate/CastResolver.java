@@ -380,6 +380,7 @@ public class CastResolver extends UnitTreeVisitor {
    * well in sorted collections which rely on Java's runtime type checking.
    */
   @Override
+  @SuppressWarnings("TypeEquals")
   public void endVisit(MethodDeclaration node) {
     ExecutableElement element = node.getExecutableElement();
     if (!ElementUtil.getName(element).equals("compareTo") || node.getBody() == null) {
