@@ -119,6 +119,36 @@ public final class Integer extends Number implements Comparable<Integer> {
     public static native String toString(int i, int radix);
 
     /**
+     * Returns a string representation of the first argument as an
+     * unsigned integer value in the radix specified by the second
+     * argument.
+     *
+     * <p>If the radix is smaller than {@code Character.MIN_RADIX}
+     * or larger than {@code Character.MAX_RADIX}, then the radix
+     * {@code 10} is used instead.
+     *
+     * <p>Note that since the first argument is treated as an unsigned
+     * value, no leading sign character is printed.
+     *
+     * <p>If the magnitude is zero, it is represented by a single zero
+     * character {@code '0'} ({@code '\u005Cu0030'}); otherwise,
+     * the first character of the representation of the magnitude will
+     * not be the zero character.
+     *
+     * <p>The behavior of radixes and the characters used as digits
+     * are the same as {@link #toString(int, int) toString}.
+     *
+     * @param   i       an integer to be converted to an unsigned string.
+     * @param   radix   the radix to use in the string representation.
+     * @return  an unsigned string representation of the argument in the specified radix.
+     * @see     #toString(int, int)
+     * @since 1.8
+     */
+    public static String toUnsignedString(int i, int radix) {
+        return Long.toUnsignedString(toUnsignedLong(i), radix);
+    }
+
+    /**
      * Returns a string representation of the integer argument as an
      * unsigned integer in base&nbsp;16.
      *
@@ -161,7 +191,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since   JDK1.0.2
      */
     public static String toHexString(int i) {
-        return toUnsignedString(i, 4);
+        return toUnsignedString0(i, 4);
     }
 
     /**
@@ -199,7 +229,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since   JDK1.0.2
      */
     public static String toOctalString(int i) {
-        return toUnsignedString(i, 3);
+        return toUnsignedString0(i, 3);
     }
 
     /**
@@ -231,13 +261,13 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since   JDK1.0.2
      */
     public static String toBinaryString(int i) {
-        return toUnsignedString(i, 1);
+        return toUnsignedString0(i, 1);
     }
 
     /**
      * Convert the integer to an unsigned number.
      */
-    private static native String toUnsignedString(int i, int shift);
+    private static native String toUnsignedString0(int i, int shift);
 
         // I use the "invariant division by multiplication" trick to
         // accelerate Integer.toString.  In particular we want to
@@ -269,6 +299,24 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @return  a string representation of the argument in base&nbsp;10.
      */
     public static native String toString(int i);
+
+    /**
+     * Returns a string representation of the argument as an unsigned
+     * decimal value.
+     *
+     * The argument is converted to unsigned decimal representation
+     * and returned as a string exactly as if the argument and radix
+     * 10 were given as arguments to the {@link #toUnsignedString(int,
+     * int)} method.
+     *
+     * @param   i  an integer to be converted to an unsigned string.
+     * @return  an unsigned string representation of the argument.
+     * @see     #toUnsignedString(int, int)
+     * @since 1.8
+     */
+    public static String toUnsignedString(int i) {
+        return Long.toString(toUnsignedLong(i));
+    }
 
     /**
      * Places characters representing the integer i into the
@@ -356,6 +404,7 @@ public final class Integer extends Number implements Comparable<Integer> {
          */
 
         if (s == null) {
+            // Android-changed: Improve exception message for parseInt.
             throw new NumberFormatException("s == null");
         }
 

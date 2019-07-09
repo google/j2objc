@@ -59,7 +59,7 @@ jstring Java_java_lang_Long_toString(JNIEnv *env, jclass cls, jlong i, jint radi
   return [NSString stringWithCharacters:buf + charPos length:65 - charPos];
 }
 
-jstring Java_java_lang_Long_toUnsignedString(JNIEnv *env, jclass cls, jlong i, jint shift) {
+jstring Java_java_lang_Long_toUnsignedString0(JNIEnv *env, jclass cls, jlong i, jint shift) {
   jchar buf[64];
   jint charPos = 64;
   jint radix = 1 << shift;

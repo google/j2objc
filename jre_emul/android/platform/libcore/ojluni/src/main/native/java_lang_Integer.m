@@ -128,7 +128,7 @@ jstring Java_java_lang_Integer_toString__II(JNIEnv *env, jclass cls, jint i, jin
   return [NSString stringWithCharacters:buf + charPos length:33 - charPos];
 }
 
-jstring Java_java_lang_Integer_toUnsignedString(JNIEnv *env, jclass cls, jint i, jint shift) {
+jstring Java_java_lang_Integer_toUnsignedString0(JNIEnv *env, jclass cls, jint i, jint shift) {
   jchar buf[32];
   jint charPos = 32;
   jint radix = 1 << shift;

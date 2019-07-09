@@ -423,6 +423,8 @@ TEST_SOURCES := \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/EnumTest.java \
     libcore/java/lang/FloatTest.java \
+    libcore/java/lang/IntegerTest.java \
+    libcore/java/lang/LongTest.java \
     libcore/java/lang/ThrowableTest.java \
     libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/lang/ref/ReferenceQueueTest.java \

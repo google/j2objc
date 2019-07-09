@@ -121,6 +121,71 @@ public final class Long extends Number implements Comparable<Long> {
     public static native String toString(long i, int radix);
 
     /**
+     * Returns a string representation of the first argument as an
+     * unsigned integer value in the radix specified by the second
+     * argument.
+     *
+     * <p>If the radix is smaller than {@code Character.MIN_RADIX}
+     * or larger than {@code Character.MAX_RADIX}, then the radix
+     * {@code 10} is used instead.
+     *
+     * <p>Note that since the first argument is treated as an unsigned
+     * value, no leading sign character is printed.
+     *
+     * <p>If the magnitude is zero, it is represented by a single zero
+     * character {@code '0'} ({@code '\u005Cu0030'}); otherwise,
+     * the first character of the representation of the magnitude will
+     * not be the zero character.
+     *
+     * <p>The behavior of radixes and the characters used as digits
+     * are the same as {@link #toString(long, int) toString}.
+     *
+     * @param   i       an integer to be converted to an unsigned string.
+     * @param   radix   the radix to use in the string representation.
+     * @return  an unsigned string representation of the argument in the specified radix.
+     * @see     #toString(long, int)
+     * @since 1.8
+     */
+    public static String toUnsignedString(long i, int radix) {
+        if (i >= 0)
+            return toString(i, radix);
+        else {
+            switch (radix) {
+                case 2:
+                    return toBinaryString(i);
+                    
+                case 4:
+                    return toUnsignedString0(i, 2);
+                    
+                case 8:
+                    return toOctalString(i);
+                    
+                case 10:
+                    /*
+                     * We can get the effect of an unsigned division by 10
+                     * on a long value by first shifting right, yielding a
+                     * positive value, and then dividing by 5.  This
+                     * allows the last digit and preceding digits to be
+                     * isolated more quickly than by an initial conversion
+                     * to BigInteger.
+                     */
+                    long quot = (i >>> 1) / 5;
+                    long rem = i - quot * 10;
+                    return toString(quot) + rem;
+                    
+                case 16:
+                    return toHexString(i);
+                    
+                case 32:
+                    return toUnsignedString0(i, 5);
+                    
+                default:
+                    return toUnsignedBigInteger(i).toString(radix);
+            }
+        }
+    }
+    
+    /**
      * Return a BigInteger equal to the unsigned value of the
      * argument.
      */
@@ -181,7 +246,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @since   JDK 1.0.2
      */
     public static String toHexString(long i) {
-        return toUnsignedString(i, 4);
+        return toUnsignedString0(i, 4);
     }
 
     /**
@@ -220,7 +285,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @since   JDK 1.0.2
      */
     public static String toOctalString(long i) {
-        return toUnsignedString(i, 3);
+        return toUnsignedString0(i, 3);
     }
 
     /**
@@ -253,13 +318,15 @@ public final class Long extends Number implements Comparable<Long> {
      * @since   JDK 1.0.2
      */
     public static String toBinaryString(long i) {
-        return toUnsignedString(i, 1);
+        return toUnsignedString0(i, 1);
     }
 
     /**
-     * Convert the integer to an unsigned number.
+     * Format a long (treated as unsigned) into a String.
+     * @param val the value to format
+     * @param shift the log2 of the base to format in (4 for hex, 3 for octal, 1 for binary)
      */
-    private static native String toUnsignedString(long i, int shift);
+    private static native String toUnsignedString0(long i, int shift);
 
     /**
      * Returns a {@code String} object representing the specified
@@ -277,6 +344,8 @@ public final class Long extends Number implements Comparable<Long> {
         int size = (i < 0) ? stringSize(-i) + 1 : stringSize(i);
         char[] buf = new char[size];
         getChars(i, size, buf);
+        // Android-changed: Use regular constructor instead of one which takes over "buf".
+        // return new String(buf, true);
         return new String(buf);
     }
 
