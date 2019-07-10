@@ -12,6 +12,8 @@
 
 licenses(["notice"])  # Apache License 2.0
 
+load("@rules_java//java:defs.bzl", "java_import")
+
 exports_files(["LICENSE"])
 
 package(
