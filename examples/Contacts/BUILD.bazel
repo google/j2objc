@@ -20,6 +20,7 @@ ios_application(
     deps = [":ContactsMainLib"],
     app_icons = [":ContactsAppIcons"],
     launch_images = [":ContactsLaunchImages"],
+    minimum_os_version = "10.0",
 )
 
 filegroup(
@@ -37,10 +38,8 @@ objc_library(
     srcs = glob(["src/*.m"]),
     hdrs = glob(["src/*.h"]),
     sdk_frameworks = ["CoreGraphics"],
-    deps = [
-        ":ContactsJava",
-        "//resources",
-    ],
+    deps = [":ContactsJava"],
+    data = ["//resources"],
 )
 
 j2objc_library(
