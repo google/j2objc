@@ -180,7 +180,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_STATIC_INIT(CLASS) \
   FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized; \
   __attribute__((always_inline)) inline void CLASS##_initialize() { \
-    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
+    if (!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE)) { \
       [CLASS class]; \
     } \
   }
