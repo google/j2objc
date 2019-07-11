@@ -11,6 +11,7 @@
 # limitations under the License.
 
 load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
+load("@rules_java//java:defs.bzl", "java_library")
 
 ios_application(
     name = "Contacts",
