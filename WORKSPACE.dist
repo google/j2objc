@@ -25,7 +25,7 @@ http_archive(
     ],
 )
 
- # Needed only because of java_tools.
+# Needed only because of java_tools.
 http_archive(
     name = "rules_cc",
     sha256 = "36fa66d4d49debd71d05fba55c1353b522e8caef4a20f8080a3d17cdda001d89",
