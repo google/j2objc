@@ -52,6 +52,7 @@ import com.google.devtools.j2objc.translate.DefaultMethodsTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
 import com.google.devtools.j2objc.translate.EnhancedForRewriterTest;
 import com.google.devtools.j2objc.translate.EnumRewriterTest;
+import com.google.devtools.j2objc.translate.ExternalAnnotationInjectorTest;
 import com.google.devtools.j2objc.translate.FunctionizerTest;
 import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
@@ -122,6 +123,7 @@ public class SmallTests {
         EnhancedForRewriterTest.class,
         EnumRewriterTest.class,
         ErrorUtilTest.class,
+        ExternalAnnotationInjectorTest.class,
         FileUtilTest.class,
         FunctionizerTest.class,
         GwtConverterTest.class,
