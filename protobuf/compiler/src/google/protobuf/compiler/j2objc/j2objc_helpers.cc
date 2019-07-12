@@ -396,7 +396,7 @@ string GetFieldFlags(const FieldDescriptor *field) {
   if (field->is_extension()) {
     flags.push_back("CGPFieldFlagExtension");
   }
-  if (field->options().packed()) {
+  if (field->is_packed()) {
     flags.push_back("CGPFieldFlagPacked");
   }
   if (IsMapField(field)) {
