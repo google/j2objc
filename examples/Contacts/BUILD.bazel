@@ -19,19 +19,7 @@ ios_application(
     infoplists = ["src/Info.plist"],
     families = ["iphone", "ipad"],
     deps = [":ContactsMainLib"],
-    app_icons = [":ContactsAppIcons"],
-    launch_images = [":ContactsLaunchImages"],
     minimum_os_version = "10.0",
-)
-
-filegroup(
-    name = "ContactsAppIcons",
-    srcs = glob(["Assets.xcassets/AppIcon.appiconset/**"]),
-)
-
-filegroup(
-    name = "ContactsLaunchImages",
-    srcs = glob(["Assets.xcassets/LaunchImage.launchimage/**"]),
 )
 
 objc_library(
