@@ -355,8 +355,17 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   private static String getInfixFunction(InfixExpression.Operator op, TypeMirror nodeType) {
     switch (op) {
+      case DIVIDE:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntDiv";
+          case LONG: return "JreLongDiv";
+          default: return null;
+
+        }
       case REMAINDER:
         switch (nodeType.getKind()) {
+          case INT: return "JreIntMod";
+          case LONG: return "JreLongMod";
           case FLOAT: return "fmodf";
           case DOUBLE: return "fmod";
           default: return null;

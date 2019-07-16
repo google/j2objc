@@ -358,6 +358,19 @@ BIT_OPERATORS_DEFN(Long, jlong)
 #undef BIT_OPERATOR_DEFN
 #undef BIT_OPERATORS_DEFN
 
+#define JRE_HANDLE_DIV_BY_ZERO(NAME, TYPE, OP) \
+  __attribute__((always_inline)) inline TYPE Jre##NAME(TYPE op1, TYPE op2) { \
+    if (op2 == 0) { \
+      JreThrowArithmeticExceptionWithNSString(@"/ by zero"); \
+    } \
+    return op1 OP op2; \
+  }
+
+JRE_HANDLE_DIV_BY_ZERO(IntDiv, jint, /);
+JRE_HANDLE_DIV_BY_ZERO(LongDiv, jlong, /);
+JRE_HANDLE_DIV_BY_ZERO(IntMod, jint, %);
+JRE_HANDLE_DIV_BY_ZERO(LongMod, jlong, %);
+
 #pragma pop_macro("I")
 
 #endif  // _J2OBJC_SOURCE_H_
