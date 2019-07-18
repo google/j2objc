@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.json;
+package libcore.org.json;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class ParsingTest extends TestCase {
 
@@ -125,11 +130,6 @@ public class ParsingTest extends TestCase {
         String message = "Hex values are parsed as Strings if their signed " +
                 "value is greater than Integer.MAX_VALUE.";
         assertParsed(message, 0x80000000L, "0x80000000");
-    }
-
-    public void test64BitHexValues() throws JSONException {
-        assertParsed("Large hex longs should be returned as strings",
-            "0xFFFFFFFFFFFFFFFF", "0xFFFFFFFFFFFFFFFF");
     }
 
     public void testParsingWithCommentsAndWhitespace() throws JSONException {

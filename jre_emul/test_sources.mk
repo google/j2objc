@@ -542,6 +542,12 @@ TEST_SOURCES := \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
+    libcore/org/json/JSONArrayTest.java \
+    libcore/org/json/JSONObjectTest.java \
+    libcore/org/json/JSONStringerTest.java \
+    libcore/org/json/JSONTokenerTest.java \
+    libcore/org/json/ParsingTest.java \
+    libcore/org/json/SelfUseTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
@@ -828,12 +834,6 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderAdapterTest.java \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
-    org/json/JSONArrayTest.java \
-    org/json/JSONObjectTest.java \
-    org/json/JSONStringerTest.java \
-    org/json/JSONTokenerTest.java \
-    org/json/ParsingTest.java \
-    org/json/SelfUseTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
     test/java/time/TestClock_Fixed.java \
@@ -926,7 +926,7 @@ SUITE_SOURCES = \
     libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
-    org/json/SmallTests.java \
+    libcore/org/json/SmallTests.java \
     test/java/time/Tests.java
 
 ARC_TEST_SOURCES = \

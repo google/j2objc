@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.json;
+package libcore.org.json;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.TestCase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * This black box test was written without inspecting the non-free org.json sourcecode.

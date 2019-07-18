@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.json;
+package libcore.org.json;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,9 +27,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import junit.framework.TestCase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * This black box test was written without inspecting the non-free org.json sourcecode.
@@ -828,6 +834,12 @@ public class JSONObjectTest extends TestCase {
         assertTrue(object.isNull("bar"));
     }
 
+    public void testNullValue_equalsAndHashCode() {
+        assertTrue(JSONObject.NULL.equals(null)); // guaranteed by javadoc
+        // not guaranteed by javadoc, but seems like a good idea
+        assertEquals(Objects.hashCode(null), JSONObject.NULL.hashCode());
+    }
+
     public void testHas() throws JSONException {
         JSONObject object = new JSONObject();
         object.put("foo", 5);
@@ -1031,6 +1043,15 @@ public class JSONObjectTest extends TestCase {
             object.append(null, 5);
             fail();
         } catch (JSONException e) {
+        }
+    }
+
+    // https://code.google.com/p/android/issues/detail?id=103641
+    public void testInvalidUnicodeEscape() {
+        try {
+            new JSONObject("{\"q\":\"\\u\", \"r\":[]}");
+            fail();
+        } catch (JSONException expected) {
         }
     }
 }

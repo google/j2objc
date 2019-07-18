@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.json;
+package libcore.org.json;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONTokener;
 
 /**
  * This black box test was written without inspecting the non-free org.json sourcecode.
@@ -402,7 +406,6 @@ public class JSONTokenerTest extends TestCase {
         try {
             new JSONTokener("abc\\u002\"").nextString('"');
             fail();
-        } catch (NumberFormatException e) {
         } catch (JSONException e) {
         }
         try {
@@ -413,13 +416,13 @@ public class JSONTokenerTest extends TestCase {
         try {
             new JSONTokener("abc\\u    \"").nextString('"');
             fail();
-        } catch (NumberFormatException e) {
+        } catch (JSONException e) {
         }
         assertEquals("abc\"def", new JSONTokener("abc\\u0022def\"ghi").nextString('"'));
         try {
             new JSONTokener("abc\\u000G\"").nextString('"');
             fail();
-        } catch (NumberFormatException e) {
+        } catch (JSONException e) {
         }
     }
 

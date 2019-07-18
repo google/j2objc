@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package org.json;
+package libcore.org.json;
 
 import junit.framework.TestCase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * These tests checks self use calls. For the most part we doesn't attempt to

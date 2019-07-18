@@ -552,9 +552,11 @@ JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/nio/charset/IconvCharsetEncoder.java \
   com/google/j2objc/util/NativeTimeZone.java \
   com/google/j2objc/util/ReflectionUtil.java \
+  dalvik/annotation/compat/UnsupportedAppUsage.java \
   dalvik/annotation/optimization/FastNative.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
+  dalvik/system/VersionCodes.java \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
@@ -619,6 +621,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/StreamSpliterators.java \
   java/util/stream/TerminalOp.java \
   jdk/internal/module/SystemModulesMap.java \
+  libcore/api/CorePlatformApi.java \
+  libcore/api/Hide.java \
+  libcore/api/IntraCoreApi.java \
   libcore/icu/ICU.java \
   libcore/icu/LocaleData.java \
   libcore/icu/TimeZoneNames.java \
