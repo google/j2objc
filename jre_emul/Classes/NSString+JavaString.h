@@ -333,7 +333,7 @@ FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaL
 // Use the category dummy to initialize static variables for the String class.
 FOUNDATION_EXPORT _Atomic(jboolean) NSString__initialized;
 __attribute__((always_inline)) inline void NSString_initialize() {
-  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
+  if (__builtin_expect(!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE), 0)) {
     [JreStringCategoryDummy class];
   }
 }
