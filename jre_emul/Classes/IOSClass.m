@@ -935,13 +935,21 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   };
 }
 
+__attribute__((noreturn))
+static void ThrowNoSuchFieldException(IOSClass *iosClass, NSString *fieldName) {
+  NSMutableString *msg = [NSMutableString stringWithString:fieldName];
+  [msg appendString:@". "];
+  [msg appendString:JreMetadataToString(IOSClass_GetMetadataOrFail(iosClass))];
+  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:msg]);
+}
+
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   (void)nil_chk(name);
   JavaLangReflectField *field = FindDeclaredField(self, name, false);
   if (field) {
     return field;
   }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  ThrowNoSuchFieldException(self, name);
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
@@ -950,7 +958,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   if (field) {
     return field;
   }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  ThrowNoSuchFieldException(self, name);
 }
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
