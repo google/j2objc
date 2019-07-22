@@ -155,8 +155,18 @@ public class IOSLogHandler extends Handler {
   #endif
   ]-*/;
 
-  private void publishWithAsl(LogRecord record) {
+  private String getLogMessage(LogRecord record) {
     StringBuilder sb = new StringBuilder(getFormatter().format(record));
+    if (record.getThrown() != null) {
+      sb.append('\n');
+      StringWriter stringWriter = new StringWriter();
+      record.getThrown().printStackTrace(new PrintWriter(stringWriter));
+      sb.append(stringWriter.toString());
+    }
+    return sb.toString();
+  }
+
+  private void publishWithAsl(LogRecord record) {
     int aslLevel;
     switch (record.getLevel().intValue()) {
       case 1000:       // Level.SEVERE
@@ -172,14 +182,7 @@ public class IOSLogHandler extends Handler {
       default:
         aslLevel = 6;  // ASL_LEVEL_INFO
     }
-
-    if (record.getThrown() != null) {
-      sb.append('\n');
-      StringWriter stringWriter = new StringWriter();
-      record.getThrown().printStackTrace(new PrintWriter(stringWriter));
-      sb.append(stringWriter.toString());
-    }
-    aslLog(sb.toString(), aslLevel);
+    aslLog(getLogMessage(record), aslLevel);
   }
 
   private native void aslLog(String logMessage, int aslLevel) /*-[
@@ -209,8 +212,7 @@ public class IOSLogHandler extends Handler {
   ]-*/;
 
   private void publishWithOSLog(LogRecord record) {
-    StringBuilder sb = new StringBuilder(getFormatter().format(record));
-    osLog(sb.toString(), record.getLevel().intValue());
+    osLog(getLogMessage(record), record.getLevel().intValue());
   }
 
   private native void osLog(String logMessage, int logLevel) /*-[
