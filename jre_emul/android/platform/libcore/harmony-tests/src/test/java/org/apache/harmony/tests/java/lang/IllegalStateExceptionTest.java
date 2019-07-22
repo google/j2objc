@@ -81,6 +81,7 @@ public class IllegalStateExceptionTest extends TestCase {
      * serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
+
         SerializationTest.verifySelf(new IllegalStateException());
     }
 
@@ -88,6 +89,7 @@ public class IllegalStateExceptionTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
+
         SerializationTest.verifyGolden(this, new IllegalStateException());
     }
 }

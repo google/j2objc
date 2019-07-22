@@ -550,6 +550,10 @@ TEST_SOURCES := \
     libcore/org/json/SelfUseTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/IncompleteAnnotationExceptionTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/RetentionPolicyTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
@@ -601,34 +605,49 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
     org/apache/harmony/tests/java/io/RandomAccessFileTest.java \
+    org/apache/harmony/tests/java/lang/AbstractMethodErrorTest.java \
     org/apache/harmony/tests/java/lang/ArithmeticExceptionTest.java \
     org/apache/harmony/tests/java/lang/ArrayIndexOutOfBoundsExceptionTest.java \
     org/apache/harmony/tests/java/lang/ArrayStoreExceptionTest.java \
     org/apache/harmony/tests/java/lang/AssertionErrorTest.java \
     org/apache/harmony/tests/java/lang/BooleanTest.java \
     org/apache/harmony/tests/java/lang/ByteTest.java \
+    org/apache/harmony/tests/java/lang/Character_SubsetTest.java \
+    org/apache/harmony/tests/java/lang/Character_UnicodeBlockTest.java \
+    org/apache/harmony/tests/java/lang/CharacterImplTest.java \
     org/apache/harmony/tests/java/lang/CharacterTest.java \
     org/apache/harmony/tests/java/lang/ClassCastExceptionTest.java \
+    org/apache/harmony/tests/java/lang/ClassCircularityErrorTest.java \
+    org/apache/harmony/tests/java/lang/ClassFormatErrorTest.java \
     org/apache/harmony/tests/java/lang/ClassNotFoundExceptionTest.java \
     org/apache/harmony/tests/java/lang/ClassTest.java \
     org/apache/harmony/tests/java/lang/CloneNotSupportedExceptionTest.java \
     org/apache/harmony/tests/java/lang/DoubleTest.java \
+    org/apache/harmony/tests/java/lang/EnumConstantNotPresentExceptionTest.java \
     org/apache/harmony/tests/java/lang/EnumTest.java \
     org/apache/harmony/tests/java/lang/ErrorTest.java \
+    org/apache/harmony/tests/java/lang/ExceptionInInitializerErrorTest.java \
     org/apache/harmony/tests/java/lang/ExceptionTest.java \
     org/apache/harmony/tests/java/lang/FloatTest.java \
+    org/apache/harmony/tests/java/lang/IllegalAccessErrorTest.java \
     org/apache/harmony/tests/java/lang/IllegalAccessExceptionTest.java \
     org/apache/harmony/tests/java/lang/IllegalArgumentExceptionTest.java \
     org/apache/harmony/tests/java/lang/IllegalMonitorStateExceptionTest.java \
     org/apache/harmony/tests/java/lang/IllegalStateExceptionTest.java \
     org/apache/harmony/tests/java/lang/IllegalThreadStateExceptionTest.java \
+    org/apache/harmony/tests/java/lang/IncompatibleClassChangeErrorTest.java \
     org/apache/harmony/tests/java/lang/IndexOutOfBoundsExceptionTest.java \
+    org/apache/harmony/tests/java/lang/InheritableThreadLocalTest.java \
+    org/apache/harmony/tests/java/lang/InstantiationErrorTest.java \
     org/apache/harmony/tests/java/lang/InstantiationExceptionTest.java \
     org/apache/harmony/tests/java/lang/IntegerTest.java \
+    org/apache/harmony/tests/java/lang/InternalErrorTest.java \
     org/apache/harmony/tests/java/lang/InterruptedExceptionTest.java \
+    org/apache/harmony/tests/java/lang/LinkageErrorTest.java \
     org/apache/harmony/tests/java/lang/LongTest.java \
     org/apache/harmony/tests/java/lang/MathTest.java \
     org/apache/harmony/tests/java/lang/NegativeArraySizeExceptionTest.java \
+    org/apache/harmony/tests/java/lang/NoClassDefFoundErrorTest.java \
     org/apache/harmony/tests/java/lang/NoSuchFieldErrorTest.java \
     org/apache/harmony/tests/java/lang/NoSuchFieldExceptionTest.java \
     org/apache/harmony/tests/java/lang/NoSuchMethodErrorTest.java \
@@ -639,7 +658,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/ObjectTest.java \
     org/apache/harmony/tests/java/lang/OutOfMemoryErrorTest.java \
     org/apache/harmony/tests/java/lang/RuntimeExceptionTest.java \
+    org/apache/harmony/tests/java/lang/SecurityExceptionTest.java \
     org/apache/harmony/tests/java/lang/ShortTest.java \
+    org/apache/harmony/tests/java/lang/StackOverflowErrorTest.java \
     org/apache/harmony/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/tests/java/lang/String2Test.java \
     org/apache/harmony/tests/java/lang/StringBufferTest.java \
@@ -649,6 +670,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/ThreadDeathTest.java \
     org/apache/harmony/tests/java/lang/ThreadTest.java \
     org/apache/harmony/tests/java/lang/TypeNotPresentExceptionTest.java \
+    org/apache/harmony/tests/java/lang/UnknownErrorTest.java \
+    org/apache/harmony/tests/java/lang/UnsatisfiedLinkErrorTest.java \
+    org/apache/harmony/tests/java/lang/UnsupportedClassVersionErrorTest.java \
     org/apache/harmony/tests/java/lang/UnsupportedOperationExceptionTest.java \
     org/apache/harmony/tests/java/lang/VirtualMachineErrorTest.java \
     org/apache/harmony/tests/java/lang/reflect/AccessibleObjectTest.java \
@@ -992,6 +1016,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     org/apache/harmony/tests/test_resource.txt \
     org/apache/harmony/tests/java/lang/test_resource.txt \
     org/apache/harmony/luni/tests/java/io/testfile-utf8.txt \
+    serialization/org/apache/harmony/tests/java/lang/AbstractMethodErrorTest.golden.ser \
     serialization/org/apache/harmony/tests/java/lang/EnumTest.harmony.ser \
     serialization/org/apache/harmony/tests/java/lang/EnumTest.golden.0.ser \
     serialization/org/apache/harmony/tests/java/lang/EnumTest.golden.1.ser \
@@ -999,6 +1024,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/lang/EnumTest.golden.3.ser \
     serialization/org/apache/harmony/tests/java/lang/IllegalArgumentExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/lang/IllegalStateExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/lang/SecurityExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/lang/StringBufferTest.golden.ser \
     serialization/org/apache/harmony/tests/java/lang/StringBuilderTest.golden.ser \
     serialization/org/apache/harmony/tests/java/lang/UnsupportedOperationExceptionTest.golden.ser \

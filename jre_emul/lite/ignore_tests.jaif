@@ -289,6 +289,11 @@ class ObjectStreamFieldTest:
     @ObjectiveCName("ignore_isUnshared")
 
 package org.apache.harmony.tests.java.lang:
+class AbstractMethodErrorTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
 class EnumTest:
   method test_compatibilitySerialization_inClass_Complex_Harmony()V:
     @ObjectiveCName("ignore_compatibilitySerialization_inClass_Complex_Harmony")
@@ -302,6 +307,11 @@ class IllegalArgumentExceptionTest:
   method testSerializationCompatibility()V:
     @ObjectiveCName("ignoreSerializationCompatibility")
 class IllegalStateExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class SecurityExceptionTest:
   method testSerializationSelf()V:
     @ObjectiveCName("ignoreSerializationSelf")
   method testSerializationCompatibility()V:

@@ -995,6 +995,7 @@ public class FloatTest extends TestCase {
     /**
      * java.lang.Float#equals(java.lang.Object)
      */
+    @SuppressWarnings("EqualsNaN")
     public void test_equalsLjava_lang_Object() {
         Float f1 = new Float(8765.4321f);
         Float f2 = new Float(8765.4321f);
