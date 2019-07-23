@@ -207,7 +207,6 @@ SUPPORT_SOURCES = \
     tests/support/resource/Support_Resources.java \
     tests/targets/security/KeyStoreTest.java \
     tests/targets/security/cert/CertificateFactoryTestX509.java \
-    tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java \
 
 NATIVE_SOURCES = dalvik_system_JniTest.cpp
@@ -554,7 +553,6 @@ TEST_SOURCES := \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/IncompleteAnnotationExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/RetentionPolicyTest.java \
-    org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/FeatureDescriptorTest.java \
@@ -568,10 +566,6 @@ TEST_SOURCES := \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/SimpleBeanInfoTest.java \
-    org/apache/harmony/luni/tests/java/lang/reflect/ArrayTest.java \
-    org/apache/harmony/luni/tests/java/lang/reflect/FieldTest.java \
-    org/apache/harmony/luni/tests/java/lang/reflect/ModifierTest.java \
-    org/apache/harmony/luni/tests/java/util/AbstractMapTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
@@ -743,6 +737,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/BreakIteratorTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
+    org/apache/harmony/tests/java/text/CollatorTest.java \
     org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DateFormatTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
@@ -857,7 +852,6 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLFilterImplTest.java \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderAdapterTest.java \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
-    org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
     test/java/time/TestClock_Fixed.java \
@@ -1015,7 +1009,6 @@ TEST_RESOURCES_SRCS = \
 HARMONY_TEST_RESOURCES_SRCS = \
     org/apache/harmony/tests/test_resource.txt \
     org/apache/harmony/tests/java/lang/test_resource.txt \
-    org/apache/harmony/luni/tests/java/io/testfile-utf8.txt \
     serialization/org/apache/harmony/tests/java/lang/AbstractMethodErrorTest.golden.ser \
     serialization/org/apache/harmony/tests/java/lang/EnumTest.harmony.ser \
     serialization/org/apache/harmony/tests/java/lang/EnumTest.golden.0.ser \
