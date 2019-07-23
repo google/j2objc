@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.math;
+package org.apache.harmony.tests.java.math;
 
 import java.math.BigInteger;
 import java.util.Random;
@@ -98,31 +98,6 @@ public class BigIntegerTest extends junit.framework.TestCase {
 				"Two random numbers in a row are the same (might not be a bug but it very likely is)",
 				!bi.equals(bi2));
 		assertTrue("Not zero", new BigInteger(0, rand).equals(BigInteger.ZERO));
-	}
-
-	/**
-	 * @tests java.math.BigInteger#BigInteger(int, int, java.util.Random)
-	 */
-	public void test_ConstructorIILjava_util_Random() {
-		bi = new BigInteger(10, 5, rand);
-		bi2 = new BigInteger(10, 5, rand);
-		assertTrue("Random number one is negative", bi.compareTo(zero) >= 0);
-		assertTrue("Random number one is too big",
-				bi.compareTo(twoToTheTen) < 0);
-		assertTrue("Random number two is negative", bi2.compareTo(zero) >= 0);
-		assertTrue("Random number two is too big",
-				bi2.compareTo(twoToTheTen) < 0);
-
-		Random rand = new Random();
-		BigInteger bi;
-		int certainty[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-				Integer.MIN_VALUE, Integer.MIN_VALUE + 1, -2, -1 };
-		for (int i = 2; i <= 20; i++) {
-            for (int c = 0; c < certainty.length; c++) {
-				bi = new BigInteger(i, c, rand); // Create BigInteger
-				assertTrue("Bit length incorrect", bi.bitLength() == i);
-			}
-        }
 	}
 
 	/**
@@ -326,6 +301,7 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.math.BigInteger#negate()
 	 */
+	@SuppressWarnings("ConstantOverflow")
 	public void test_negate() {
 		assertTrue("Single negation of zero did not result in zero", zero
 				.negate().equals(zero));

@@ -244,8 +244,6 @@ public class BigDecimalConstructorsTest extends TestCase {
             new BigDecimal(a);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertEquals("Improper exception message", "Infinite or NaN", e
-                    .getMessage());
         }
     }
 
@@ -258,8 +256,6 @@ public class BigDecimalConstructorsTest extends TestCase {
             new BigDecimal(a);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertEquals("Improper exception message", "Infinite or NaN",
-                    e.getMessage());
         }
     }
 
@@ -272,8 +268,6 @@ public class BigDecimalConstructorsTest extends TestCase {
             new BigDecimal(a);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertEquals("Improper exception message", "Infinite or NaN",
-                    e.getMessage());
         }
     }
 
@@ -491,8 +485,6 @@ public class BigDecimalConstructorsTest extends TestCase {
            new BigDecimal(a);
            fail("NumberFormatException expected");
        } catch (NumberFormatException e) {
-           assertEquals("Improper exception message","Scale out of range.", 
-               e.getMessage());
        }
     }
 

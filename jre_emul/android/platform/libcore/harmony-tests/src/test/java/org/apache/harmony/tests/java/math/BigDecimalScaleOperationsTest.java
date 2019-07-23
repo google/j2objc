@@ -332,7 +332,6 @@ public class BigDecimalScaleOperationsTest extends TestCase {
             aNumber.movePointRight(shift);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "Underflow", e.getMessage());
         }
     }
 

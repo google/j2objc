@@ -285,7 +285,6 @@ public class BigIntegerMultiplyTest extends TestCase {
             aNumber.pow(exp);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "Negative exponent", e.getMessage());
         }
     }
 

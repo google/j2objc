@@ -698,6 +698,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
+    org/apache/harmony/tests/java/math/MathContextTest.java \
+    org/apache/harmony/tests/java/math/OldBigIntegerTest.java \
+    org/apache/harmony/tests/java/math/RoundingModeTest.java \
     org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.java \
     org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.java \
     org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.java \

@@ -15,8 +15,12 @@
  *  limitations under the License.
  */
 
-package tests.api.java.math;
+package org.apache.harmony.tests.java.math;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -874,6 +878,24 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				valueOfJI.toString().equals("0.000"));
 
 	}
+
+	public void test_BigDecimal_serialization() throws Exception {
+        // Regression for HARMONY-1896
+        char[] in = { '1', '5', '6', '7', '8', '7', '.', '0', '0' };
+        BigDecimal bd = new BigDecimal(in, 0, 9);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(bd);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        BigDecimal nbd = (BigDecimal) ois.readObject();
+
+        assertEquals(bd.intValue(), nbd.intValue());
+        assertEquals(bd.doubleValue(), nbd.doubleValue(), 0.0);
+        assertEquals(bd.toString(), nbd.toString());
+    }
 	
 	/**
 	 * @tests java.math.BigDecimal#stripTrailingZero(long)
@@ -890,12 +912,9 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				((notrailingzerotest.stripTrailingZeros()).scale() == 0)
 				);
 		
-		/* Zero */
-        //regression for HARMONY-4623, NON-BUG DIFF with RI
 		BigDecimal zerotest = new BigDecimal("0.0000");
-		assertTrue("stripTrailingZero failed for 0.0000",
-				((zerotest.stripTrailingZeros()).scale() == 0)
-				);		
+                assertEquals("stripTrailingZero failed for 0.0000", 0,
+				zerotest.stripTrailingZeros().scale());
 	}	
 
 	public void testMathContextConstruction() {

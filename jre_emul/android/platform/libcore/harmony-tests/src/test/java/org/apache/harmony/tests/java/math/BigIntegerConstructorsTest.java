@@ -40,7 +40,6 @@ public class BigIntegerConstructorsTest extends TestCase {
             new BigInteger(aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertEquals("Improper exception message", "Zero length BigInteger", e.getMessage());
         }
     }
     
@@ -198,7 +197,6 @@ public class BigIntegerConstructorsTest extends TestCase {
             new BigInteger(aSign, aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertEquals("Improper exception message", "Invalid signum value", e.getMessage());
         }
     }
     
@@ -580,7 +578,6 @@ public class BigIntegerConstructorsTest extends TestCase {
             new BigInteger(value, radix);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertEquals("Improper exception message", "Radix out of range", e.getMessage());
         }
     }
     
@@ -748,25 +745,42 @@ public class BigIntegerConstructorsTest extends TestCase {
         assertTrue("incorrect bitLength", aNumber.bitLength() <= bitLen);
     }
 
-    /**
-     * Create a prime number of 25 bits length.
-     */
-    public void testConstructorPrime() {
-        int bitLen = 25;
-        Random rnd = new Random();
-        BigInteger aNumber = new BigInteger(bitLen, 80, rnd);
-        assertTrue("incorrect bitLength", aNumber.bitLength() == bitLen);
-    }
+  public void testConstructorPrime() {
+    for (int rep = 0; rep < 2048; ++rep) {
+      Random rnd = new Random();
+      BigInteger b;
+      int bits;
 
-    /**
-     * Create a prime number of 2 bits length.
-     */
-    public void testConstructorPrime2() {
-        int bitLen = 2;
-        Random rnd = new Random();
-        BigInteger aNumber = new BigInteger(bitLen, 80, rnd);
-        assertTrue("incorrect bitLength", aNumber.bitLength() == bitLen);
-        int num = aNumber.intValue();
-        assertTrue("incorrect value", num == 2 || num == 3);
+      // Create a 128-bit prime number.
+      bits = 128;
+      b = new BigInteger(bits, 10, rnd);
+      assertEquals(b.toString(), bits, b.bitLength());
+
+      // Create a prime number of 25 bits length.
+      bits = 25;
+      b = new BigInteger(bits, 10, rnd);
+      assertEquals(b.toString(), bits, b.bitLength());
+
+      // Create a prime number of 18 bits length.
+      bits = 18;
+      b = new BigInteger(bits, 10, rnd);
+      assertEquals(b.toString(), bits, b.bitLength());
+
+      // On Android, anything less than 16 bits used to be at least 16 bits
+      // because that's how OpenSSL behaves, but we recently fixed this...
+      bits = 2;
+      b = new BigInteger(bits, 10, rnd);
+      assertEquals(b.toString(), bits, b.bitLength());
+
+      // The 2-arg constructor has never used OpenSSL.
+      bits = 2;
+      b = new BigInteger(bits, rnd);
+      assertTrue(b.toString(), b.bitLength() <= bits);
+      assertTrue(b.toString(), b.intValue() <= 3);
+
+      bits = 16;
+      b = new BigInteger(bits, rnd);
+      assertTrue(b.toString(), b.bitLength() <= bits);
     }
+  }
 }

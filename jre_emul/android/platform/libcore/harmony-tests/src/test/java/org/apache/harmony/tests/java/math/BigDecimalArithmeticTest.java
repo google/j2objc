@@ -1297,8 +1297,7 @@ public class BigDecimalArithmeticTest extends TestCase {
     	BigDecimal arg1 = new BigDecimal("320.0E+2147483647");
 		BigDecimal arg2 = new BigDecimal("6E-2147483647");
     	try {
-    		@SuppressWarnings("unused")
-		BigDecimal result = arg1.divide(arg2, Integer.MAX_VALUE,
+    		BigDecimal result = arg1.divide(arg2, Integer.MAX_VALUE, 
     				java.math.RoundingMode.CEILING);
     		fail("Expected ArithmeticException when dividing with a scale that's too large");
     	} catch (ArithmeticException e) {
