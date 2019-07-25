@@ -484,7 +484,7 @@ public class DateTest extends junit.framework.TestCase {
     /**
      * java.util.Date#toLocaleString() Test for method java.lang.String
      *        java.util.Date.toGMTString()
-     * TODO(kstanger): Enable when DateFormat is ported.
+     */
     public void test_toLocaleString() {
         Locale loc = Locale.getDefault();
         Locale.setDefault(Locale.US);
@@ -502,7 +502,7 @@ public class DateTest extends junit.framework.TestCase {
             Locale.setDefault(loc);
             TimeZone.setDefault(tz);
         }
-    }*/
+    }
 
     static TimeZone defaultTimeZone = TimeZone.getDefault();
 

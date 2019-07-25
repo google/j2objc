@@ -756,11 +756,14 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/AbstractQueueTest.java \
     org/apache/harmony/tests/java/util/AbstractSequentialListTest.java \
     org/apache/harmony/tests/java/util/ArrayListTest.java \
+    org/apache/harmony/tests/java/util/ArrayDequeTest.java \
+    org/apache/harmony/tests/java/util/Arrays2Test.java \
     org/apache/harmony/tests/java/util/ArraysTest.java \
     org/apache/harmony/tests/java/util/BitSetTest.java \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/Collections2Test.java \
     org/apache/harmony/tests/java/util/CollectionsTest.java \
+    org/apache/harmony/tests/java/util/ConcurrentModificationExceptionTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
     org/apache/harmony/tests/java/util/EmptyStackExceptionTest.java \
@@ -774,12 +777,20 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashSetTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/IdentityHashMapTest.java \
+    org/apache/harmony/tests/java/util/IllegalFormatCodePointExceptionTest.java \
+    org/apache/harmony/tests/java/util/IllegalFormatConversionExceptionTest.java \
+    org/apache/harmony/tests/java/util/IllegalFormatFlagsExceptionTest.java \
+    org/apache/harmony/tests/java/util/IllegalFormatPrecisionExceptionTest.java \
+    org/apache/harmony/tests/java/util/IllegalFormatWidthExceptionTest.java \
     org/apache/harmony/tests/java/util/InputMismatchExceptionTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/tests/java/util/LinkedHashSetTest.java \
     org/apache/harmony/tests/java/util/LinkedListTest.java \
     org/apache/harmony/tests/java/util/ListResourceBundleTest.java \
     org/apache/harmony/tests/java/util/LocaleTest.java \
+    org/apache/harmony/tests/java/util/MissingFormatArgumentExceptionTest.java \
+    org/apache/harmony/tests/java/util/MissingFormatWidthExceptionTest.java \
+    org/apache/harmony/tests/java/util/MissingResourceExceptionTest.java \
     org/apache/harmony/tests/java/util/NoSuchElementExceptionTest.java \
     org/apache/harmony/tests/java/util/ObservableTest.java \
     org/apache/harmony/tests/java/util/PriorityQueueTest.java \
@@ -796,6 +807,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/TreeMapTest.java \
     org/apache/harmony/tests/java/util/TreeSetTest.java \
     org/apache/harmony/tests/java/util/UUIDTest.java \
+    org/apache/harmony/tests/java/util/UnknownFormatConversionExceptionTest.java \
+    org/apache/harmony/tests/java/util/UnknownFormatFlagsExceptionTest.java \
     org/apache/harmony/tests/java/util/VectorTest.java \
     org/apache/harmony/tests/java/util/zip/Adler32Test.java \
     org/apache/harmony/tests/java/util/zip/CRC32Test.java \
@@ -1047,6 +1060,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/ArrayDequeTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedCollection.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedList.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedListRandomAccess.golden.ser \
@@ -1058,10 +1072,19 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/util/EnumMapTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/HashSetTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/IdentityHashMapTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/IllegalFormatCodePointExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/IllegalFormatConversionExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/IllegalFormatFlagsExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/IllegalFormatPrecisionExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/IllegalFormatWidthExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/InputMismatchExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser \
+    serialization/org/apache/harmony/tests/java/util/MissingFormatArgumentExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/MissingFormatWidthExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/RandomTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/PriorityQueue.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/UnknownFormatConversionExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/UnknownFormatFlagsExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/zip/ZipErrorTest.golden.ser \
     tests/resources/hyts_compDiction.bin \
     tests/resources/hyts_compressD.bin \

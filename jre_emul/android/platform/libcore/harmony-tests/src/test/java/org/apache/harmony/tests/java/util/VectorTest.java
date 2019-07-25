@@ -1437,8 +1437,8 @@ public class VectorTest extends junit.framework.TestCase {
     }
 
     public void test_forEachRemaining_iterator() throws Exception {
-        ForEachRemainingTester.runTests(Vector.class, new String[] { "foo", "bar", "baz" });
-        ForEachRemainingTester.runTests(Vector.class, new String[] { "foo" });
+        ForEachRemainingTester.runTests(Vector::new, new String[] { "foo", "bar", "baz" });
+        ForEachRemainingTester.runTests(Vector::new, new String[] { "foo" });
     }
 
     public void test_spliterator() throws Exception {

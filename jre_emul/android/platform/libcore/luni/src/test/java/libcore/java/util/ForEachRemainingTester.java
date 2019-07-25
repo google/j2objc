@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.function.Supplier;
 
 import static junit.framework.Assert.*;
 
@@ -32,15 +33,15 @@ import static junit.framework.Assert.*;
  */
 public class ForEachRemainingTester {
 
-    @SuppressWarnings("unchecked")
-    public static <T> void runTests(Class<?> collectionClazz, T[] initialData)
-            throws Exception {
-        test_forEachRemaining((Collection<T>) collectionClazz.newInstance(), initialData);
-        test_forEachRemaining_NPE((Collection<T>) collectionClazz.newInstance(), initialData);
-        test_forEachRemaining_CME((Collection<T>) collectionClazz.newInstance(), initialData);
+    public static <T> void runTests(Supplier<? extends Collection<T>> collectionSupplier,
+            T[] initialData) throws Exception {
+        test_forEachRemaining(collectionSupplier.get(), initialData);
+        test_forEachRemaining_NPE(collectionSupplier.get(), initialData);
+        test_forEachRemaining_CME(collectionSupplier.get(), initialData);
 
-        if (List.class.isAssignableFrom(collectionClazz)) {
-            List<T> asList = (List<T>) collectionClazz.newInstance();
+        Collection<T> collection = collectionSupplier.get();
+        if (collection instanceof List) {
+            List<T> asList = (List<T>) collection;
             test_forEachRemaining_list(asList, initialData);
             test_forEachRemaining_NPE_list(asList, initialData);
             test_forEachRemaining_CME_list(asList, initialData);

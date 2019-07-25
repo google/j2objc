@@ -16,10 +16,10 @@
  */
 package org.apache.harmony.tests.java.util;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Vector;
+import java.util.function.Supplier;
 
 import libcore.java.util.SpliteratorTester;
 import tests.support.Support_ListTest;
@@ -888,6 +889,23 @@ public class ArrayListTest extends junit.framework.TestCase {
         list.trimToSize();
     }
 
+    /**
+     * Checks that an element can successfully be added to an ArrayList that
+     * was previously {@link ArrayList#trimToSize() trimmed} to the empty size.
+     */
+    public void test_trimToEmpty_add() {
+        ArrayList<String> list = new ArrayList<>();
+        list.trimToSize(); // empty after construction
+        list.add("element");
+        assertEquals(Arrays.asList("element"), list);
+
+        list.remove("element");
+        assertEquals(Collections.emptyList(), list);
+        list.trimToSize(); // empty after all elements have been removed
+        list.add("element");
+        assertEquals(Arrays.asList("element"), list);
+    }
+
     public void test_addAll() {
         ArrayList list = new ArrayList();
         list.add("one");
@@ -1109,8 +1127,12 @@ public class ArrayListTest extends junit.framework.TestCase {
     }
 
     public void test_forEachRemaining_iterator() throws Exception {
-        ForEachRemainingTester.runTests(ArrayList.class, new String[] { "foo", "bar", "baz"});
-        ForEachRemainingTester.runTests(ArrayList.class, new String[] { "foo" });
+        ForEachRemainingTester.runTests(ArrayList::new, new String[] { "foo", "bar", "baz"});
+        ForEachRemainingTester.runTests(ArrayList::new, new String[] { "foo" });
+
+        Supplier<List<String>> sublistSupplier = () -> new ArrayList<String>().subList(0, 0);
+        ForEachRemainingTester.runTests(sublistSupplier, new String[] { "foo", "bar", "baz"});
+        ForEachRemainingTester.runTests(sublistSupplier, new String[] { "foo" });
     }
 
     public void test_spliterator() throws Exception {

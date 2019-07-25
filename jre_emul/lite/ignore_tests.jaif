@@ -447,6 +447,14 @@ class MessageFormatTest:
     @ObjectiveCName("ignore_ConstructorLjava_lang_String")
 
 package org.apache.harmony.tests.java.util:
+class ArrayDequeTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class Arrays2Test:
+  method test_asListTvararg()V:
+    @ObjectiveCName("ignore_asListTvararg")
 class BitSetTest:
   method test_serialization()V:
     @ObjectiveCName("ignore_serialization")
@@ -495,6 +503,31 @@ class HashSetTest:
 class IdentityHashMapTest:
   method test_Serialization()V:
     @ObjectiveCName("ignore_Serialization")
+class IllegalFormatCodePointExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalFormatConversionExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalFormatFlagsExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalFormatPrecisionExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalFormatWidthExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
 class InputMismatchExceptionTest:
   method testSerializationSelf()V:
     @ObjectiveCName("ignoreSerializationSelf")
@@ -503,9 +536,16 @@ class InputMismatchExceptionTest:
 class LinkedListTest:
   method test_serialization()V:
     @ObjectiveCName("ignore_serialization")
-class TreeMapTest:
-  method test_SubMap_Serializable()V:
-    @ObjectiveCName("ignore_SubMap_Serializable")
+class MissingFormatArgumentExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class MissingFormatWidthExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
 class PriorityQueueTest:
   method test_Serialization()V:
     @ObjectiveCName("ignore_Serialization")
@@ -514,6 +554,19 @@ class PriorityQueueTest:
   method test_SerializationCompatibility_cast()V:
     @ObjectiveCName("ignore_SerializationCompatibility_cast")
 class RandomTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class TreeMapTest:
+  method test_SubMap_Serializable()V:
+    @ObjectiveCName("ignore_SubMap_Serializable")
+class UnknownFormatConversionExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class UnknownFormatFlagsExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
   method testSerializationCompatibility()V:
     @ObjectiveCName("ignoreSerializationCompatibility")
 class VectorTest:

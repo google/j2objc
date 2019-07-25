@@ -968,7 +968,8 @@ public class CalendarTest extends junit.framework.TestCase {
 							.getAmPmStrings() : symbols.getEras();
 					assertDisplayNameMap(values, shortResult, 0);
 					assertDisplayNameMap(values, longResult, 0);
-					assertDisplayNameMap(values, allResult, 0);
+					assertTrue(allResult.size() >= shortResult.size());
+					assertTrue(allResult.size() >= longResult.size());
 					break;
 				case Calendar.MONTH:
 					values = symbols.getShortMonths();
@@ -977,8 +978,6 @@ public class CalendarTest extends junit.framework.TestCase {
 					assertDisplayNameMap(values, longResult, 0);
 					assertTrue(allResult.size() >= shortResult.size());
 					assertTrue(allResult.size() >= longResult.size());
-					assertTrue(allResult.size() <= shortResult.size()
-							+ longResult.size());
 					break;
 				case Calendar.DAY_OF_WEEK:
 					values = symbols.getShortWeekdays();
@@ -987,8 +986,6 @@ public class CalendarTest extends junit.framework.TestCase {
 					assertDisplayNameMap(values, longResult, 1);
 					assertTrue(allResult.size() >= shortResult.size());
 					assertTrue(allResult.size() >= longResult.size());
-					assertTrue(allResult.size() <= shortResult.size()
-							+ longResult.size());
 					break;
 				default:
 					assertNull(shortResult);
