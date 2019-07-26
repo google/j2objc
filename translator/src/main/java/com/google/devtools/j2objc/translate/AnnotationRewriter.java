@@ -168,7 +168,8 @@ public class AnnotationRewriter extends UnitTreeVisitor {
 
       VariableElement param = GeneratedVariableElement.newParameter(propName, memberType, null);
       constructorDecl.addParameter(new SingleVariableDeclaration(param));
-      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + propName + ")" : propName;
+      String paramName = nameTable.getVariableShortName(param);
+      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + paramName + ")" : paramName;
       stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
     }
 

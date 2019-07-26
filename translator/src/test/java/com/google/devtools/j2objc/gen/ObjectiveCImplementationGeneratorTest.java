@@ -773,13 +773,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   public void testReservedWordAsAnnotationPropertyName() throws IOException {
     String translation = translateSourceFile(
-        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
-        + "public @interface Bar { String namespace() default \"\"; } "
-        + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
+        "package foo; "
+            + "import java.lang.annotation.*; "
+            + "@Retention(RetentionPolicy.RUNTIME) "
+            + "public @interface Bar { "
+            + "  String in() default \"XYZ\"; "
+            + "  String namespace() default \"\"; "
+            + "} "
+            + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
         "Bar", "foo/Bar.m");
+    assertTranslation(translation, "@synthesize in = in_;");
     assertTranslation(translation, "@synthesize namespace__ = namespace___;");
-    assertTranslation(translation, "id<FooBar> create_FooBar(NSString *namespace__) {");
+    assertTranslation(translation,
+        "id<FooBar> create_FooBar(NSString *inArg, NSString *namespace__) {");
+    assertTranslation(translation, "self->in_ = RETAIN_(inArg);");
     assertTranslation(translation, "self->namespace___ = RETAIN_(namespace__);");
+    assertTranslation(translation, "+ (NSString *)inDefault {");
     assertTranslation(translation, "+ (NSString *)namespace__Default {");
   }
 
