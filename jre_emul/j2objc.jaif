@@ -96,6 +96,10 @@ class Random: @ReflectionSupport(FULL)
 
 package java.util.concurrent: @ReflectionSupport(FULL)
 
+package java.util.concurrent.atomic:
+class Striped64: @ReflectionSupport(FULL)
+class Striped64$Cell: @ReflectionSupport(FULL)
+
 package java.util.concurrent.locks:
 class AbstractQueuedLongSynchronizer: @ReflectionSupport(FULL)
 class AbstractQueuedSynchronizer: @ReflectionSupport(FULL)

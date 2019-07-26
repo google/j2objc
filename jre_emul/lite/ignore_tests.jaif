@@ -64,6 +64,9 @@ class AtomicReferenceArrayTest:
 class AtomicReferenceTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
+class ConcurrentHashMap8Test:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
 class ConcurrentHashMapTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
@@ -95,6 +98,9 @@ class CopyOnWriteArrayListTest:
 class CopyOnWriteArraySetTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
+class DoubleAdderTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
 class LinkedBlockingDequeTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
@@ -102,6 +108,9 @@ class LinkedBlockingQueueTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
 class LinkedTransferQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class LongAdderTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
 class PriorityBlockingQueueTest:

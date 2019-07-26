@@ -840,6 +840,14 @@
 		FA24DEA322EA1335000DEC19 /* IllegalFormatPrecisionExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DE9622EA1335000DEC19 /* IllegalFormatPrecisionExceptionTest.m */; };
 		FA24DEA422EA1335000DEC19 /* Arrays2Test.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DE9722EA1335000DEC19 /* Arrays2Test.m */; };
 		FA24DEA522EA1335000DEC19 /* ArrayDequeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DE9822EA1335000DEC19 /* ArrayDequeTest.m */; };
+		FA24DEA822EA47CB000DEC19 /* Collection8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEA622EA47CA000DEC19 /* Collection8Test.m */; };
+		FA24DEA922EA47CB000DEC19 /* CollectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEA722EA47CB000DEC19 /* CollectionTest.m */; };
+		FA24DEB022EA4822000DEC19 /* ConcurrentHashMap8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEAA22EA4821000DEC19 /* ConcurrentHashMap8Test.m */; };
+		FA24DEB122EA4822000DEC19 /* DoubleAdderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEAB22EA4821000DEC19 /* DoubleAdderTest.m */; };
+		FA24DEB222EA4822000DEC19 /* LongAccumulatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEAC22EA4821000DEC19 /* LongAccumulatorTest.m */; };
+		FA24DEB322EA4822000DEC19 /* DoubleAccumulatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEAD22EA4821000DEC19 /* DoubleAccumulatorTest.m */; };
+		FA24DEB422EA4822000DEC19 /* LongAdderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEAE22EA4821000DEC19 /* LongAdderTest.m */; };
+		FA24DEB522EA4822000DEC19 /* ThreadLocalRandom8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEAF22EA4822000DEC19 /* ThreadLocalRandom8Test.m */; };
 		FA2EECB521EFB55000B88A06 /* CompletableFutureTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */; };
 		FA3ACD812229A27B00ECCC8F /* IosHttpURLConnectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACD802229A27A00ECCC8F /* IosHttpURLConnectionTest.m */; };
 		FA40676421C07E6100988DFD /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40675021C07E5E00988DFD /* MethodTest.m */; };
@@ -4054,6 +4062,24 @@
 		FA24DE9622EA1335000DEC19 /* IllegalFormatPrecisionExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IllegalFormatPrecisionExceptionTest.m; path = org/apache/harmony/tests/java/util/IllegalFormatPrecisionExceptionTest.m; sourceTree = "<group>"; };
 		FA24DE9722EA1335000DEC19 /* Arrays2Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Arrays2Test.m; path = org/apache/harmony/tests/java/util/Arrays2Test.m; sourceTree = "<group>"; };
 		FA24DE9822EA1335000DEC19 /* ArrayDequeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayDequeTest.m; path = org/apache/harmony/tests/java/util/ArrayDequeTest.m; sourceTree = "<group>"; };
+		FA24DEA622EA47CA000DEC19 /* Collection8Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Collection8Test.m; path = jsr166/Collection8Test.m; sourceTree = "<group>"; };
+		FA24DEA722EA47CB000DEC19 /* CollectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CollectionTest.m; path = jsr166/CollectionTest.m; sourceTree = "<group>"; };
+		FA24DEAA22EA4821000DEC19 /* ConcurrentHashMap8Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrentHashMap8Test.m; path = jsr166/ConcurrentHashMap8Test.m; sourceTree = "<group>"; };
+		FA24DEAB22EA4821000DEC19 /* DoubleAdderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoubleAdderTest.m; path = jsr166/DoubleAdderTest.m; sourceTree = "<group>"; };
+		FA24DEAC22EA4821000DEC19 /* LongAccumulatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongAccumulatorTest.m; path = jsr166/LongAccumulatorTest.m; sourceTree = "<group>"; };
+		FA24DEAD22EA4821000DEC19 /* DoubleAccumulatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoubleAccumulatorTest.m; path = jsr166/DoubleAccumulatorTest.m; sourceTree = "<group>"; };
+		FA24DEAE22EA4821000DEC19 /* LongAdderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongAdderTest.m; path = jsr166/LongAdderTest.m; sourceTree = "<group>"; };
+		FA24DEAF22EA4822000DEC19 /* ThreadLocalRandom8Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadLocalRandom8Test.m; path = jsr166/ThreadLocalRandom8Test.m; sourceTree = "<group>"; };
+		FA24DEB622EA489F000DEC19 /* LongAdder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LongAdder.h; path = build_result/Classes/java/util/concurrent/atomic/LongAdder.h; sourceTree = "<group>"; };
+		FA24DEB722EA489F000DEC19 /* DoubleAccumulator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DoubleAccumulator.m; path = build_result/Classes/java/util/concurrent/atomic/DoubleAccumulator.m; sourceTree = "<group>"; };
+		FA24DEB822EA48A0000DEC19 /* LongAdder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LongAdder.m; path = build_result/Classes/java/util/concurrent/atomic/LongAdder.m; sourceTree = "<group>"; };
+		FA24DEB922EA48A0000DEC19 /* DoubleAccumulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DoubleAccumulator.h; path = build_result/Classes/java/util/concurrent/atomic/DoubleAccumulator.h; sourceTree = "<group>"; };
+		FA24DEBA22EA48A0000DEC19 /* DoubleAdder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DoubleAdder.h; path = build_result/Classes/java/util/concurrent/atomic/DoubleAdder.h; sourceTree = "<group>"; };
+		FA24DEBB22EA48A0000DEC19 /* Striped64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Striped64.h; path = build_result/Classes/java/util/concurrent/atomic/Striped64.h; sourceTree = "<group>"; };
+		FA24DEBC22EA48A1000DEC19 /* LongAccumulator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LongAccumulator.m; path = build_result/Classes/java/util/concurrent/atomic/LongAccumulator.m; sourceTree = "<group>"; };
+		FA24DEBD22EA48A1000DEC19 /* Striped64.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Striped64.m; path = build_result/Classes/java/util/concurrent/atomic/Striped64.m; sourceTree = "<group>"; };
+		FA24DEBE22EA48A1000DEC19 /* LongAccumulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LongAccumulator.h; path = build_result/Classes/java/util/concurrent/atomic/LongAccumulator.h; sourceTree = "<group>"; };
+		FA24DEBF22EA48A1000DEC19 /* DoubleAdder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DoubleAdder.m; path = build_result/Classes/java/util/concurrent/atomic/DoubleAdder.m; sourceTree = "<group>"; };
 		FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompletableFutureTest.m; path = jsr166/CompletableFutureTest.m; sourceTree = "<group>"; };
 		FA3ACD802229A27A00ECCC8F /* IosHttpURLConnectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosHttpURLConnectionTest.m; path = com/google/j2objc/net/IosHttpURLConnectionTest.m; sourceTree = "<group>"; };
 		FA3ACD822229A94300ECCC8F /* CompletableFuture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CompletableFuture.m; path = build_result/Classes/java/util/concurrent/CompletableFuture.m; sourceTree = "<group>"; };
@@ -4968,6 +4994,10 @@
 				0649A7841AE07A4200DE2494 /* DOMStringList.m */,
 				06721B3A1559CC0300645E1B /* Double.h */,
 				067219D71559C87100645E1B /* Double.m */,
+				FA24DEB922EA48A0000DEC19 /* DoubleAccumulator.h */,
+				FA24DEB722EA489F000DEC19 /* DoubleAccumulator.m */,
+				FA24DEBA22EA48A0000DEC19 /* DoubleAdder.h */,
+				FA24DEBF22EA48A1000DEC19 /* DoubleAdder.m */,
 				06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */,
 				06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */,
 				0671E4CB21BDCEEF002E0681 /* DoubleSummaryStatistics.h */,
@@ -5510,6 +5540,10 @@
 				06721A581559C99E00645E1B /* LogRecord.m */,
 				06721B4B1559CC0300645E1B /* Long.h */,
 				067219E71559C87100645E1B /* Long.m */,
+				FA24DEBE22EA48A1000DEC19 /* LongAccumulator.h */,
+				FA24DEBC22EA48A1000DEC19 /* LongAccumulator.m */,
+				FA24DEB622EA489F000DEC19 /* LongAdder.h */,
+				FA24DEB822EA48A0000DEC19 /* LongAdder.m */,
 				06DD32BB16A13FA000AD7ACE /* LongBuffer.h */,
 				06DD32BC16A13FA000AD7ACE /* LongBuffer.m */,
 				0671E4E621BDCEF5002E0681 /* LongSummaryStatistics.h */,
@@ -6280,6 +6314,8 @@
 				064FB757172706E100DC0D51 /* StringTokenizer.m */,
 				06721A9D1559CB2500645E1B /* StringWriter.h */,
 				067219AA1559C7FC00645E1B /* StringWriter.m */,
+				FA24DEBB22EA48A0000DEC19 /* Striped64.h */,
+				FA24DEBD22EA48A1000DEC19 /* Striped64.m */,
 				0649A6D81AE0780700DE2494 /* Struct.h */,
 				0649A6D91AE0780700DE2494 /* Struct.m */,
 				0671E4C321BDCE66002E0681 /* StructAddrinfo.h */,
@@ -6528,6 +6564,14 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FA24DEAA22EA4821000DEC19 /* ConcurrentHashMap8Test.m */,
+				FA24DEAD22EA4821000DEC19 /* DoubleAccumulatorTest.m */,
+				FA24DEAB22EA4821000DEC19 /* DoubleAdderTest.m */,
+				FA24DEAC22EA4821000DEC19 /* LongAccumulatorTest.m */,
+				FA24DEAE22EA4821000DEC19 /* LongAdderTest.m */,
+				FA24DEAF22EA4822000DEC19 /* ThreadLocalRandom8Test.m */,
+				FA24DEA622EA47CA000DEC19 /* Collection8Test.m */,
+				FA24DEA722EA47CB000DEC19 /* CollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */,
@@ -7734,6 +7778,7 @@
 				06C143991F46138600CABE9A /* CancelledKeyExceptionTest.m in Sources */,
 				06C1439A1F46138600CABE9A /* ClosedByInterruptExceptionTest.m in Sources */,
 				06C1439B1F46138600CABE9A /* ClosedChannelExceptionTest.m in Sources */,
+				FA24DEB322EA4822000DEC19 /* DoubleAccumulatorTest.m in Sources */,
 				06C1439C1F46138600CABE9A /* ClosedSelectorExceptionTest.m in Sources */,
 				06C1439D1F46138600CABE9A /* ConnectionPendingExceptionTest.m in Sources */,
 				FA5C0CBE21BFFE6B000B6275 /* CloneNotSupportedExceptionTest.m in Sources */,
@@ -7824,6 +7869,7 @@
 				062026441D512CA1001EE455 /* OldPushbackInputStreamTest.m in Sources */,
 				062028CF1D512E89001EE455 /* BigIntegerMultiplyTest.m in Sources */,
 				069C24281E9EEF7B00CE6BAF /* CRC32Test.m in Sources */,
+				FA24DEB022EA4822000DEC19 /* ConcurrentHashMap8Test.m in Sources */,
 				063A62D81F67267C001DC971 /* BrokenInputStream.m in Sources */,
 				062029361D512F25001EE455 /* MessageDigestTest.m in Sources */,
 				067FC8211EFAE75E001D0627 /* LockSupportTest.m in Sources */,
@@ -7899,6 +7945,7 @@
 				062028731D512E3E001EE455 /* KeyPairGeneratorSpiTest.m in Sources */,
 				062029AC1D512FFE001EE455 /* Lambdas.m in Sources */,
 				062028801D512E3E001EE455 /* MyAlgorithmParameterGeneratorSpi.m in Sources */,
+				FA24DEA922EA47CB000DEC19 /* CollectionTest.m in Sources */,
 				062026F21D512D17001EE455 /* OldZipExceptionTest.m in Sources */,
 				062028831D512E3E001EE455 /* MySignature1.m in Sources */,
 				062026481D512CA1001EE455 /* OldSequenceInputStreamTest.m in Sources */,
@@ -7985,6 +8032,7 @@
 				062029811D512F41001EE455 /* Support_Proxy_ParentException.m in Sources */,
 				6A5D0D66219CCBB200709765 /* TestTextPrinter.m in Sources */,
 				0620262B1D512CA1001EE455 /* OldByteArrayOutputStreamTest.m in Sources */,
+				FA24DEB422EA4822000DEC19 /* LongAdderTest.m in Sources */,
 				0612B9401F4374C60069EF58 /* SSLSessionBindingEventTest.m in Sources */,
 				FAD38CE121CABB46003EDCDF /* OldAndroidHashMapTest.m in Sources */,
 				069C23F71E9EEECA00CE6BAF /* SimpleDateFormatTest.m in Sources */,
@@ -8086,6 +8134,7 @@
 				06E4E835197F1E4E005DDE69 /* main.m in Sources */,
 				0620293E1D512F25001EE455 /* ECParameterSpecTest.m in Sources */,
 				062026621D512CBE001EE455 /* ClassTest.m in Sources */,
+				FA24DEB222EA4822000DEC19 /* LongAccumulatorTest.m in Sources */,
 				0612B8F11F4373740069EF58 /* ArrayDequeTest.m in Sources */,
 				062026191D512CA1001EE455 /* OldAndroidDataInputStreamTest.m in Sources */,
 				069C24461E9EF04900CE6BAF /* X509CertificateTest.m in Sources */,
@@ -8335,6 +8384,7 @@
 				063A62E11F67267C001DC971 /* NoInstanceXMLReader.m in Sources */,
 				062029761D512F41001EE455 /* Support_Field.m in Sources */,
 				0620274B1D512D82001EE455 /* MisprintListenerr.m in Sources */,
+				FA24DEB122EA4822000DEC19 /* DoubleAdderTest.m in Sources */,
 				062029901D512F41001EE455 /* Support_Resources.m in Sources */,
 				062026B81D512D08001EE455 /* Charset_TestGenerator.m in Sources */,
 				062028EA1D512EBD001EE455 /* FactoryConfigurationErrorTest.m in Sources */,
@@ -8578,6 +8628,7 @@
 				0612B9021F4373740069EF58 /* ExecutorsTest.m in Sources */,
 				069C24441E9EF04900CE6BAF /* CertificateParsingExceptionTest.m in Sources */,
 				FA5C0C5621BFFBA5000B6275 /* StackTest.m in Sources */,
+				FA24DEB522EA4822000DEC19 /* ThreadLocalRandom8Test.m in Sources */,
 				FA6C09C52187C5AC006C646A /* TestPeriod.m in Sources */,
 				FA24DEA422EA1335000DEC19 /* Arrays2Test.m in Sources */,
 				062026C11D512D08001EE455 /* NormalizerTest.m in Sources */,
@@ -8648,6 +8699,7 @@
 				062025551D512B37001EE455 /* RetainedWithTest.m in Sources */,
 				062028A91D512E78001EE455 /* FloatTest.m in Sources */,
 				FA5C0CA421BFFE6B000B6275 /* MockEnum.m in Sources */,
+				FA24DEA822EA47CB000DEC19 /* Collection8Test.m in Sources */,
 				062026231D512CA1001EE455 /* OldAndroidStreamTokenizerTest.m in Sources */,
 				0620260B1D512CA1001EE455 /* DataOutputStreamTest.m in Sources */,
 				063A62FD1F6726C1001DC971 /* XMLReaderFactoryTest.m in Sources */,

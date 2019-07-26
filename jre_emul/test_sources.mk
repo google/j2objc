@@ -45,6 +45,8 @@ SUPPORT_SOURCES = \
     java/lang/test/Example.java \
     java/lang/test/package-info.java \
     jsr166/BlockingQueueTest.java \
+    jsr166/Collection8Test.java \
+    jsr166/CollectionTest.java \
     jsr166/CollectionImplementation.java \
     jsr166/JSR166TestCase.java \
     libcore/java/io/NullPrintStream.java \
@@ -293,6 +295,7 @@ TEST_SOURCES := \
     jsr166/AtomicReferenceTest.java \
     jsr166/AtomicStampedReferenceTest.java \
     jsr166/CompletableFutureTest.java \
+    jsr166/ConcurrentHashMap8Test.java \
     jsr166/ConcurrentHashMapTest.java \
     jsr166/ConcurrentLinkedDequeTest.java \
     jsr166/ConcurrentLinkedQueueTest.java \
@@ -306,6 +309,8 @@ TEST_SOURCES := \
     jsr166/CountedCompleterTest.java \
     jsr166/CyclicBarrierTest.java \
     jsr166/DelayQueueTest.java \
+    jsr166/DoubleAccumulatorTest.java \
+    jsr166/DoubleAdderTest.java \
     jsr166/EntryTest.java \
     jsr166/ExchangerTest.java \
     jsr166/ExecutorCompletionServiceTest.java \
@@ -320,6 +325,8 @@ TEST_SOURCES := \
     jsr166/LinkedListTest.java \
     jsr166/LinkedTransferQueueTest.java \
     jsr166/LockSupportTest.java \
+    jsr166/LongAccumulatorTest.java \
+    jsr166/LongAdderTest.java \
     jsr166/PhaserTest.java \
     jsr166/PriorityBlockingQueueTest.java \
     jsr166/PriorityQueueTest.java \
@@ -331,6 +338,7 @@ TEST_SOURCES := \
     jsr166/ScheduledExecutorTest.java \
     jsr166/SynchronousQueueTest.java \
     jsr166/SystemTest.java \
+    jsr166/ThreadLocalRandom8Test.java \
     jsr166/ThreadLocalRandomTest.java \
     jsr166/ThreadPoolExecutorSubclassTest.java \
     jsr166/ThreadPoolExecutorTest.java \

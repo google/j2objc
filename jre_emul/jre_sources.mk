@@ -907,6 +907,11 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicMarkableReference.java \
   java/util/concurrent/atomic/AtomicReferenceArray.java \
   java/util/concurrent/atomic/AtomicStampedReference.java \
+  java/util/concurrent/atomic/DoubleAccumulator.java \
+  java/util/concurrent/atomic/DoubleAdder.java \
+  java/util/concurrent/atomic/LongAccumulator.java \
+  java/util/concurrent/atomic/LongAdder.java \
+  java/util/concurrent/atomic/Striped64.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/ReadWriteLock.java \
   java/util/concurrent/locks/ReentrantReadWriteLock.java
