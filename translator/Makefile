@@ -90,7 +90,6 @@ JAVA_SOURCES = \
 	ast/CreationReference.java \
 	ast/DebugASTDump.java \
 	ast/DebugASTPrinter.java \
-	ast/Dimension.java \
 	ast/DoStatement.java \
 	ast/EmptyStatement.java \
 	ast/EnhancedForStatement.java \
@@ -120,7 +119,6 @@ JAVA_SOURCES = \
 	ast/MethodInvocation.java \
 	ast/MethodReference.java \
 	ast/Name.java \
-	ast/NameQualifiedType.java \
 	ast/NativeDeclaration.java \
 	ast/NativeExpression.java \
 	ast/NativeStatement.java \

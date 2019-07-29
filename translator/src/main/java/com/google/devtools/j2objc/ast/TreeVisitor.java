@@ -169,12 +169,6 @@ public class TreeVisitor {
 
   public void endVisit(DoStatement node) {}
 
-  public boolean visit(Dimension node) {
-    return true;
-  }
-
-  public void endVisit(Dimension node) {}
-
   public boolean visit(EmptyStatement node) {
     return true;
   }
@@ -320,12 +314,6 @@ public class TreeVisitor {
   }
 
   public void endVisit(MethodInvocation node) {}
-
-  public boolean visit(NameQualifiedType node) {
-    return true;
-  }
-
-  public void endVisit(NameQualifiedType node) {}
 
   public boolean visit(NativeDeclaration node) {
     return true;

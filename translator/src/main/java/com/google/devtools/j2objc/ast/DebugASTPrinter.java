@@ -317,19 +317,6 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
-  public boolean visit(Dimension node) {
-    if (!node.annotations().isEmpty()) {
-      sb.append(' ');
-    }
-    for (Annotation x : node.annotations()) {
-      x.accept(this);
-      sb.append(' ');
-    }
-    sb.append("[]");
-    return false;
-  }
-
-  @Override
   public boolean visit(DoStatement node) {
     sb.printIndent();
     sb.print("do ");
@@ -695,18 +682,6 @@ public class DebugASTPrinter extends TreeVisitor {
       }
     }
     sb.print(')');
-    return false;
-  }
-
-  @Override
-  public boolean visit(NameQualifiedType node) {
-    node.getQualifier().accept(this);
-    sb.print('.');
-    for (Annotation x : node.annotations()) {
-      x.accept(this);
-      sb.print(' ');
-    }
-    node.getName().accept(this);
     return false;
   }
 
