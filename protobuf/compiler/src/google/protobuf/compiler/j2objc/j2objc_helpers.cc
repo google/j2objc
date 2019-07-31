@@ -48,6 +48,10 @@ namespace {
 
 const char* kDefaultPackage = "";
 
+// A suffix that will be appended to the file's outer class name if the name
+// conflicts with some other types defined in the file.
+const char *kOuterClassNameSuffix = "OuterClass";
+
 // The field number of the "j2objc_package_prefix" file option defined in
 // j2objc-descriptor.proto.
 const int kPackagePrefixFieldNumber = 102687446;
@@ -243,8 +247,33 @@ string FileClassName(const FileDescriptor* file) {
   if (file->options().has_java_outer_classname()) {
     return file->options().java_outer_classname();
   } else {
-    return UnderscoresToCamelCase(StripProto(FileBaseName(file)), true);
+    string class_name =
+        UnderscoresToCamelCase(StripProto(FileBaseName(file)), true);
+    if (HasConflictingClassName(file, class_name)) {
+      class_name += kOuterClassNameSuffix;
+    }
+    return class_name;
   }
+}
+
+bool HasConflictingClassName(const FileDescriptor *file,
+                             const std::string &classname) {
+  for (int i = 0; i < file->enum_type_count(); i++) {
+    if (file->enum_type(i)->name() == classname) {
+      return true;
+    }
+  }
+  for (int i = 0; i < file->message_type_count(); i++) {
+    if (file->message_type(i)->name() == classname) {
+      return true;
+    }
+  }
+  for (int i = 0; i < file->service_count(); i++) {
+    if (file->service(i)->name() == classname) {
+      return true;
+    }
+  }
+  return false;
 }
 
 string FileParentDir(const FileDescriptor* file) {

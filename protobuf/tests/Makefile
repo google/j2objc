@@ -30,6 +30,7 @@ OTHER_JAVA_SOURCES_ARC = \
   ProtobufTest.java
 
 PROTOS = \
+  conflicting_class_name.proto \
   empty_file.proto \
   enum_fields.proto \
   funny_names.proto \

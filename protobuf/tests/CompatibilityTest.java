@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import protos.ConflictingClassNameOuterClass.ConflictingClassName;
 import protos.EmptyFile;
 import protos.MsgWithDefaults;
 import protos.MsgWithDefaultsOrBuilder;
@@ -99,6 +100,11 @@ public class CompatibilityTest extends ProtobufTest {
   public void testObjcClassPrefix() throws Exception {
     @SuppressWarnings("unused")
     PrefixDummy2 dummy2 = PrefixDummy2.newBuilder().build();
+  }
+
+  public void testConflictingClassName() throws Exception {
+    @SuppressWarnings("unused")
+    ConflictingClassName dummy = ConflictingClassName.getDefaultInstance();
   }
 
   public void testSetAndGetInt() throws Exception {

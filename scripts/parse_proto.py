@@ -19,6 +19,7 @@ level messages and enums declared within the proto file.
 """
 
 
+import itertools
 import re
 import string
 
@@ -95,9 +96,16 @@ def MatchGroups(line, data):
     data.messages.append(match.group(2))
 
 
+def SetOuterClass(filename, data):
+  if not data.outer_class:
+    outer_class = CamelCase(filename.rsplit('/', 1)[-1].split('.', 1)[0])
+    if outer_class in itertools.chain(data.messages, data.enums):
+      outer_class += 'OuterClass'
+    data.outer_class = outer_class
+
+
 def ParseProto(filename):
   data = ProtoMetadata()
-  data.outer_class = CamelCase(filename.rsplit('/', 1)[-1].split('.', 1)[0])
   with open(filename, 'r') as fh:
     brace_depth = 0
     inside_extend = False
@@ -122,5 +130,7 @@ def ParseProto(filename):
       brace_depth -= line.count('}')
       if brace_depth == 0:
         inside_extend = False
+
+  SetOuterClass(filename, data)
 
   return data

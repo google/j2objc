@@ -72,6 +72,11 @@ string FileParentDir(const FileDescriptor* file);
 // single Java class, with all its contents nested in that class.
 string FileClassName(const FileDescriptor* file);
 
+// Check whether there is any type defined in the proto file that has
+// the given class name.
+bool HasConflictingClassName(const FileDescriptor *file,
+                             const string &classname);
+
 // Returns the file's Java package name.
 string FileJavaPackage(const FileDescriptor* file);
 

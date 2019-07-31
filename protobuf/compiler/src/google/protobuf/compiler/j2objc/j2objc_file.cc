@@ -109,25 +109,7 @@ bool FileGenerator::Validate(string* error) {
   // problem that leads to Java compile errors that can be hard to understand.
   // It's especially bad when using the java_multiple_files, since we would
   // end up overwriting the outer class with one of the inner ones.
-
-  bool found_conflict = false;
-  for (int i = 0; i < file_->enum_type_count() && !found_conflict; i++) {
-    if (file_->enum_type(i)->name() == classname_) {
-      found_conflict = true;
-    }
-  }
-  for (int i = 0; i < file_->message_type_count() && !found_conflict; i++) {
-    if (file_->message_type(i)->name() == classname_) {
-      found_conflict = true;
-    }
-  }
-  for (int i = 0; i < file_->service_count() && !found_conflict; i++) {
-    if (file_->service(i)->name() == classname_) {
-      found_conflict = true;
-    }
-  }
-
-  if (found_conflict) {
+  if (HasConflictingClassName(file_, classname_)) {
     error->assign(file_->name());
     error->append(
       ": Cannot generate Java output because the file's outer class name, \"");
