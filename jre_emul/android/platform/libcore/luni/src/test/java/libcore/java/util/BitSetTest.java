@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Random;
 
 public class BitSetTest extends junit.framework.TestCase {
     public void test_toString() throws Exception {
@@ -31,6 +32,22 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.set(4);
         bs.set(10);
         assertEquals("{2, 4, 10}", bs.toString());
+    }
+
+    // b/31234459
+    public void test_toString_highestPossibleBitSet() {
+        // 2^28 bytes for the bits in the BitSet, plus extra bytes for everything else
+        int bytesRequired = (1 << 28) + (1 << 27);
+        if (Runtime.getRuntime().maxMemory() < bytesRequired) {
+            return;
+        }
+        try {
+            BitSet bitSet = new BitSet();
+            bitSet.set(Integer.MAX_VALUE);
+            assertEquals("{2147483647}", bitSet.toString());
+        } catch (OutOfMemoryError e) {
+            // ignore
+        }
     }
 
     private static void assertBitSet(BitSet bs, long[] longs, String s) {
@@ -230,5 +247,18 @@ public class BitSetTest extends junit.framework.TestCase {
         result = small();
         result.xor(big());
         assertEquals("{10, 1000}", result.toString());
+    }
+
+    public void test_stream() {
+        final int size = 128;
+
+        // Generate an arbitrary array of bytes.
+        byte[] bytes = new byte[size];
+        new Random(0).nextBytes(bytes);
+
+        BitSet bs = BitSet.valueOf(bytes);
+
+        assertEquals(bs.cardinality(), bs.stream().count());
+        bs.stream().forEach(x -> assertTrue(bs.get(x)));
     }
 }

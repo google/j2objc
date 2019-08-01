@@ -318,11 +318,6 @@ public final class CopyOnWriteArrayListTest extends TestCase {
         assertEquals(-3.0, l.get(0));
         assertEquals(2.0, l.get(1));
         assertEquals(5.0, l.get(2));
-
-        try {
-            l.sort((v1, v2) -> v1.compareTo(v2));
-        } catch (NullPointerException expected) {
-        }
     }
 
     public void test_forEach() {
@@ -341,6 +336,7 @@ public final class CopyOnWriteArrayListTest extends TestCase {
 
         try {
             l.forEach(null);
+            fail();
         } catch (NullPointerException expected) {
         }
     }
@@ -406,11 +402,6 @@ public final class CopyOnWriteArrayListTest extends TestCase {
         assertEquals(9, (int)completeList.get(3));
         assertEquals(22, (int)completeList.get(4));
         assertEquals(12, (int)completeList.get(5));
-
-        try {
-            l.sort((v1, v2) -> v1.compareTo(v2));
-        } catch (NullPointerException expected) {
-        }
     }
 
     public void test_subList_forEach() {
@@ -430,6 +421,7 @@ public final class CopyOnWriteArrayListTest extends TestCase {
 
         try {
             l.forEach(null);
+            fail();
         } catch (NullPointerException expected) {
         }
     }

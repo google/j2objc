@@ -70,6 +70,7 @@ SUPPORT_SOURCES = \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
     libcore/java/util/ListDefaultMethodTester.java \
+    libcore/java/util/Locales.java \
     libcore/java/util/MapDefaultMethodTester.java \
     libcore/java/util/RemoveIfTester.java \
     libcore/java/util/ResourceLeakageDetector.java \
@@ -482,29 +483,51 @@ TEST_SOURCES := \
     libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/text/SimpleDateFormatTest.java \
+    libcore/java/util/AbstractCollectionTest.java \
+    libcore/java/util/ArrayListTest.java \
+    libcore/java/util/ArraysTest.java \
     libcore/java/util/Base64Test.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
+    libcore/java/util/CalendarWeekOfMonthTest.java \
     libcore/java/util/CollectionsTest.java \
+    libcore/java/util/ConcurrentHashMapTest.java \
     libcore/java/util/CurrencyTest.java \
     libcore/java/util/DateTest.java \
+    libcore/java/util/DoubleSummaryStatisticsTest.java \
     libcore/java/util/EventObjectTest.java \
+    libcore/java/util/EvilMapTest.java \
     libcore/java/util/FormatterTest.java \
     libcore/java/util/GregorianCalendarTest.java \
     libcore/java/util/HashMapTest.java \
+    libcore/java/util/HashtableTest.java \
+    libcore/java/util/IntSummaryStatisticsTest.java \
     libcore/java/util/LinkedHashMapTest.java \
+    libcore/java/util/ListTest.java \
     libcore/java/util/LocaleTest.java \
+    libcore/java/util/LongSummaryStatisticsTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldAndroidHashMapTest.java \
     libcore/java/util/OldCollectionsTest.java \
     libcore/java/util/OldLinkedHashMapTest.java \
     libcore/java/util/OldTimeZoneTest.java \
+    libcore/java/util/OptionalDoubleTest.java \
+    libcore/java/util/OptionalIntTest.java \
+    libcore/java/util/OptionalLongTest.java \
+    libcore/java/util/OptionalTest.java \
+    libcore/java/util/PrimitiveIteratorTest.java \
+    libcore/java/util/RandomTest.java \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/SimpleTimeZoneTest.java \
+    libcore/java/util/SpliteratorsTest.java \
+    libcore/java/util/StringJoinerTest.java \
+    libcore/java/util/TimSortTest.java \
     libcore/java/util/TimeZoneTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
+    libcore/java/util/VectorTest.java \
+    libcore/java/util/WeakHashMapTest.java \
     libcore/java/util/concurrent/ConcurrentSkipListMapTest.java \
     libcore/java/util/concurrent/CopyOnWriteArrayListTest.java \
     libcore/java/util/concurrent/ThreadPoolExecutorTest.java \
@@ -556,6 +579,7 @@ TEST_SOURCES := \
     libcore/org/json/ParsingTest.java \
     libcore/org/json/SelfUseTest.java \
     libcore/net/url/UrlUtilsTest.java \
+    libcore/util/HexEncodingTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \

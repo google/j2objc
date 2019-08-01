@@ -254,6 +254,76 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         assertFalse(m.containsKey("foo"));
     }
 
+    // This tests the behavior of removeEldestEntry when it modifies underlying map on its own,
+    // removing the eldest entry by key if necessary.
+    public void test_removeEldestEntry_removeKey() {
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>() {
+            @Override
+            protected boolean removeEldestEntry(Entry<String, String> eldest) {
+                int size = size();
+                if (size > 2) {
+                    remove(eldest.getKey());
+                }
+                return false;
+            }
+        };
+        m.putAll(createMap("K1", "V1", "K2", "V2", "K3", "V3", "K4", "V4"));
+        assertEquals(createMap("K3", "V3", "K4", "V4"), m);
+    }
+
+    // This tests the behavior of removeEldestEntry when it modifies underlying map on its own,
+    // removing the eldest entry by both key and value if necessary.
+    public void test_removeEldestEntry_removeEntry() {
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>() {
+            @Override
+            protected boolean removeEldestEntry(Entry<String, String> eldest) {
+                int size = size();
+                if (size > 2) {
+                    remove(eldest.getKey(), eldest.getValue());
+                }
+                return false;
+            }
+        };
+        m.putAll(createMap("K1", "V1", "K2", "V2", "K3", "V3", "K4", "V4"));
+        assertEquals(createMap("K3", "V3", "K4", "V4"), m);
+    }
+
+    // This tests the behavior of removeEldestEntry when it modifies underlying map with order
+    // access on its own, removing the eldest entry by key if necessary.
+    public void test_removeEldestEntry_orderedAccess() {
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(4, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Entry<String, String> eldest) {
+                int size = size();
+                if (size > 2) {
+                    remove(eldest.getKey(), eldest.getValue());
+                }
+                return false;
+            }
+        };
+        m.putAll(createMap("K1", "V1", "K2", "V2", "K3", "V3"));
+        m.get("K2");
+        m.putAll(createMap("K4", "V4"));
+        assertEquals(createMap("K2", "V2", "K4", "V4"), m);
+    }
+
+    // This tests the behavior of removeEldestEntry when it modifies underlying map on its own,
+    // removing other than passed entry by key if necessary.
+    public void test_removeEldestEntry_removeOtherThanPassedEldest() {
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>() {
+            @Override
+            protected boolean removeEldestEntry(Entry<String, String> eldest) {
+                int size = size();
+                if (size > 2) {
+                    remove("K2");
+                }
+                return false;
+            }
+        };
+        m.putAll(createMap("K1", "V1", "K2", "V2", "K3", "V3"));
+        assertEquals(createMap("K1", "V1", "K3", "V3"), m);
+    }
+
     private static<E> int iterableSize(Iterable<E> iterable) {
         int result = 0;
         for (E element : iterable) {

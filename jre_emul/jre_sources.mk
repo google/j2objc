@@ -660,6 +660,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/reflect/WildcardTypeImpl.java \
   libcore/util/BasicLruCache.java \
   libcore/util/EmptyArray.java \
+  libcore/util/HexEncoding.java \
   libcore/util/MutableInt.java \
   libcore/util/MutableLong.java \
   libcore/util/NonNull.java \
