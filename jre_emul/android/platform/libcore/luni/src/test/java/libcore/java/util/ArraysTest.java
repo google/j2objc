@@ -534,4 +534,11 @@ public class ArraysTest extends junit.framework.TestCase {
         } catch (IllegalArgumentException expected) {
         }
     }
+
+    // http://b/74236526
+    public void test_deepEquals_nestedArraysOfDifferentTypesButEqualValues() {
+        assertTrue(Arrays.deepEquals(
+            new Object[] { new Object[] { "Hello", "world" } },
+            new Object[] { new String[] { "Hello", "world" } }));
+    }
 }
