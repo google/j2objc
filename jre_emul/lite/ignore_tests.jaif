@@ -20,7 +20,7 @@ annotation @ObjectiveCName: @java.lang.annotation.Retention(CLASS)
   String value
 
 package org.junit:
-annotation @Ignore: @java.lang.annotation.Retention(RUNTIME) 
+annotation @Ignore: @java.lang.annotation.Retention(RUNTIME)
                     @java.lang.annotation.Target({METHOD,TYPE})
 
 
@@ -432,6 +432,38 @@ class UnsupportedAddressTypeExceptionTest:
     @ObjectiveCName("ignoreSerializationSelf")
   method testSerializationCompatibility()V:
     @ObjectiveCName("ignoreSerializationCompatibility")
+
+package org.apache.harmony.tests.java.nio.charset:
+class CharacterCodingExceptionTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+class CoderMalfunctionErrorTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+class IllegalCharsetNameExceptionTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+class MalformedInputExceptionTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+class UnmappableCharacterExceptionTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+class UnsupportedCharsetExceptionTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
 
 package org.apache.harmony.tests.java.text:
 class DateFormatSymbolsTest:

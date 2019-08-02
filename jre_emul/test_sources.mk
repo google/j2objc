@@ -65,6 +65,7 @@ SUPPORT_SOURCES = \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/nio/charset/SettableCharsetProvider.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
@@ -143,6 +144,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/java/nio/channels/MockServerSocketChannel.java \
     org/apache/harmony/tests/java/nio/channels/MockSocketChannel.java \
     org/apache/harmony/tests/java/nio/channels/spi/MockAbstractSelector.java \
+    org/apache/harmony/tests/java/nio/charset/AbstractCharsetTestCase.java \
     org/apache/harmony/tests/java/text/Support_DecimalFormat.java \
     org/apache/harmony/tests/java/text/Support_Format.java \
     org/apache/harmony/tests/java/text/Support_MessageFormat.java \
@@ -569,12 +571,6 @@ TEST_SOURCES := \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
-    libcore/org/json/JSONArrayTest.java \
-    libcore/org/json/JSONObjectTest.java \
-    libcore/org/json/JSONStringerTest.java \
-    libcore/org/json/JSONTokenerTest.java \
-    libcore/org/json/ParsingTest.java \
-    libcore/org/json/SelfUseTest.java \
     libcore/libcore/icu/ICUTest.java \
     libcore/libcore/icu/LocaleDataTest.java \
     libcore/libcore/io/MemoryTest.java \
@@ -582,6 +578,12 @@ TEST_SOURCES := \
     libcore/libcore/util/BasicLruCacheTest.java \
     libcore/libcore/util/HexEncodingTest.java \
     libcore/libcore/util/SneakyThrowTest.java \
+    libcore/org/json/JSONArrayTest.java \
+    libcore/org/json/JSONObjectTest.java \
+    libcore/org/json/JSONStringerTest.java \
+    libcore/org/json/JSONTokenerTest.java \
+    libcore/org/json/ParsingTest.java \
+    libcore/org/json/SelfUseTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
@@ -771,6 +773,23 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectableChannelTest.java \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectionKeyTest.java \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectorTest.java \
+    org/apache/harmony/tests/java/nio/charset/ASCCharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/CharacterCodingExceptionTest.java \
+    org/apache/harmony/tests/java/nio/charset/CharsetDecoder2Test.java \
+    org/apache/harmony/tests/java/nio/charset/CharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/CharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/CoderMalfunctionErrorTest.java \
+    org/apache/harmony/tests/java/nio/charset/CoderResultTest.java \
+    org/apache/harmony/tests/java/nio/charset/CodingErrorActionTest.java \
+    org/apache/harmony/tests/java/nio/charset/ISOCharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/IllegalCharsetNameExceptionTest.java \
+    org/apache/harmony/tests/java/nio/charset/MalformedInputExceptionTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16CharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF8CharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/UnmappableCharacterExceptionTest.java \
+    org/apache/harmony/tests/java/nio/charset/UnsupportedCharsetExceptionTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/BreakIteratorTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
@@ -1024,6 +1043,27 @@ FAILING_MATH_TESTS = \
     org/apache/harmony/tests/java/math/BigIntegerXorTest.java \
     tests/api/java/math/BigIntegerTest.java \
 
+# b/138842886: update java.nio.charset to Android Oreo. These tests fail
+# during the upgrade, but should all be fixed or disabled when this issue
+# is completed.
+FAILING_CHARSET_TESTS = \
+    org/apache/harmony/tests/java/nio/charset/ASCCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/ASCIICharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/CharsetEncoder2Test.java \
+    org/apache/harmony/tests/java/nio/charset/CharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/GBCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/GBCharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/ISOCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/ISOCharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16CharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16CharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTFCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTFCharsetEncoderTest.java \
+
 TESTS_USE_SERIALIZATION = \
     SerializationTest.java \
     libcore/java/io/ObjectOutputStreamTest.java \
@@ -1091,6 +1131,12 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/nio/channels/OverlappingFileLockExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/nio/channels/UnresolvedAddressExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/nio/channels/UnsupportedAddressTypeExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/charset/CharacterCodingExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/charset/CoderMalfunctionErrorTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/charset/IllegalCharsetNameExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/charset/MalformedInputExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/charset/UnmappableCharacterExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/nio/charset/UnsupportedCharsetExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \
