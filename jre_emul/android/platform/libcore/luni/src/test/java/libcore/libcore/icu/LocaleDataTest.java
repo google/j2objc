@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package libcore.icu;
+package libcore.libcore.icu;
 
 import com.google.j2objc.EnvironmentUtil;
 import java.util.Locale;
+import libcore.icu.LocaleData;
 
 public class LocaleDataTest extends junit.framework.TestCase {
   public void testAll() throws Exception {

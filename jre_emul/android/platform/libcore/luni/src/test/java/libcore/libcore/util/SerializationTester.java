@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package libcore.util;
+package libcore.libcore.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

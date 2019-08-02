@@ -15,10 +15,13 @@
  * limitations under the License.
  */
 
-package libcore.io;
+package libcore.libcore.io;
 
 import java.util.Arrays;
 import junit.framework.TestCase;
+
+import libcore.io.Memory;
+import libcore.io.SizeOf;
 
 public class MemoryTest extends TestCase {
     public void testSetIntArray() {

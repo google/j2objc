@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import junit.framework.TestCase;
 import libcore.java.util.ForEachRemainingTester;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 public final class CopyOnWriteArrayListTest extends TestCase {
 
     public void testIteratorAndNonStructuralChanges() {

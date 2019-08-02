@@ -20,7 +20,7 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Set;
 
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public class CurrencyTest extends junit.framework.TestCase {
     // Regression test to ensure that Currency.getSymbol(Locale) returns the

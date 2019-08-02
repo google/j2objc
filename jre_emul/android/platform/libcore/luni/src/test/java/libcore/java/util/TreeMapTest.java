@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.Spliterator;
 import java.util.TreeMap;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public class TreeMapTest extends TestCase {
 

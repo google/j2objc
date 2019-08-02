@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public class InetAddressTest extends junit.framework.TestCase {
     private static final byte[] LOOPBACK4_BYTES = new byte[] { 127, 0, 0, 1 };

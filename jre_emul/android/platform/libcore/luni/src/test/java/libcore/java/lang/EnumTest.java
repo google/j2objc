@@ -17,7 +17,7 @@
 package libcore.java.lang;
 
 import junit.framework.TestCase;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 import java.util.EnumSet;
 import java.util.concurrent.CountDownLatch;

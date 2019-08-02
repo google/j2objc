@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package libcore.icu;
+package libcore.libcore.icu;
 
 //import java.text.BreakIterator;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Locale;
-//import libcore.util.ZoneInfoDB;
+import libcore.icu.ICU;
 
 public class ICUTest extends junit.framework.TestCase {
   public void test_getISOLanguages() throws Exception {

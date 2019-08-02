@@ -37,7 +37,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 import junit.framework.TestCase;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 

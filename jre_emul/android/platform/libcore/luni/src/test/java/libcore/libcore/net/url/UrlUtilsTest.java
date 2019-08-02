@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package libcore.net.url;
+package libcore.libcore.net.url;
 
 import junit.framework.TestCase;
+import libcore.net.url.UrlUtils;
 
 public final class UrlUtilsTest extends TestCase {
     public void testCanonicalizePath() {

@@ -81,7 +81,7 @@ SUPPORT_SOURCES = \
     libcore/javax/net/ssl/TestSSLContext.java \
     libcore/javax/net/ssl/TestSSLSocketPair.java \
     libcore/javax/net/ssl/TestTrustManager.java \
-    libcore/util/SerializationTester.java \
+    libcore/libcore/util/SerializationTester.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
@@ -349,10 +349,7 @@ TEST_SOURCES := \
     jsr166/TreeSetTest.java \
     jsr166/TreeSubMapTest.java \
     jsr166/TreeSubSetTest.java \
-    libcore/icu/ICUTest.java \
-    libcore/icu/LocaleDataTest.java \
     libcore/icu/NativeDecimalFormatTest.java \
-    libcore/io/MemoryTest.java \
     libcore/io/PosixTest.java \
     libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/io/CharArrayWriterTest.java \
@@ -578,8 +575,13 @@ TEST_SOURCES := \
     libcore/org/json/JSONTokenerTest.java \
     libcore/org/json/ParsingTest.java \
     libcore/org/json/SelfUseTest.java \
-    libcore/net/url/UrlUtilsTest.java \
-    libcore/util/HexEncodingTest.java \
+    libcore/libcore/icu/ICUTest.java \
+    libcore/libcore/icu/LocaleDataTest.java \
+    libcore/libcore/io/MemoryTest.java \
+    libcore/libcore/net/url/UrlUtilsTest.java \
+    libcore/libcore/util/BasicLruCacheTest.java \
+    libcore/libcore/util/HexEncodingTest.java \
+    libcore/libcore/util/SneakyThrowTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
