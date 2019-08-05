@@ -212,6 +212,9 @@ class CurrencyTest:
 class EventObjectTest:
   method testSerializationNullsOutSource()V:
     @ObjectiveCName("ignoreSerializationNullsOutSource")
+class HashtableTest:
+  method test_deserializedArrayLength()V:
+    @ObjectiveCName("ignore_deserializedArrayLength")
 class LocaleTest:
   method test_SerializationBug_26387905()V:
     @ObjectiveCName("ignore_SerializationBug_26387905")
