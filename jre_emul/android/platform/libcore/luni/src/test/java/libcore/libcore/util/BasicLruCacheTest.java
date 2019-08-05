@@ -111,6 +111,22 @@ public final class BasicLruCacheTest extends TestCase {
         assertSnapshot(cache, "a", "A", "c", "C", "b", "B2");
     }
 
+    public void testEvictAll() {
+        final List<String> evictionLog = new ArrayList<String>();
+        BasicLruCache<String, String> cache = new BasicLruCache<String, String>(10) {
+            @Override protected void entryEvicted(String key, String value) {
+                evictionLog.add(key + "=" + value);
+            }
+        };
+
+        cache.put("a", "A");
+        cache.put("b", "B");
+        cache.put("c", "C");
+        cache.evictAll();
+        assertSnapshot(cache);
+        assertEquals(Arrays.asList("a=A", "b=B", "c=C"), evictionLog);
+    }
+
     private BasicLruCache<String, String> newCreatingCache() {
         return new BasicLruCache<String, String>(3) {
             @Override protected String create(String key) {

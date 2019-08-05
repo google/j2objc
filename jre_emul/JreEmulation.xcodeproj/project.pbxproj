@@ -1015,6 +1015,25 @@
 		FAD38CE121CABB46003EDCDF /* OldAndroidHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */; };
 		FAD38CE221CABB46003EDCDF /* OldLinkedHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */; };
 		FAD38CE321CABB46003EDCDF /* LinkedHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD38CDF21CABB46003EDCDF /* LinkedHashMapTest.m */; };
+		FAF104F822F8828300ED7FF6 /* SettableCharsetProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB2322F4B76E0065498B /* SettableCharsetProvider.m */; };
+		FAF104F922F8828300ED7FF6 /* AbstractCharsetTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */; };
+		FAF104FB22F8828300ED7FF6 /* ASCCharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1322F4B6D50065498B /* ASCCharsetTest.m */; };
+		FAF104FC22F8828300ED7FF6 /* CharacterCodingExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1D22F4B6D70065498B /* CharacterCodingExceptionTest.m */; };
+		FAF104FD22F8828300ED7FF6 /* CharsetDecoder2Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1A22F4B6D70065498B /* CharsetDecoder2Test.m */; };
+		FAF104FE22F8828300ED7FF6 /* CharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1522F4B6D60065498B /* CharsetDecoderTest.m */; };
+		FAF104FF22F8828300ED7FF6 /* CharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1E22F4B6D80065498B /* CharsetEncoderTest.m */; };
+		FAF1050022F8828300ED7FF6 /* CoderMalfunctionErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB2122F4B6D80065498B /* CoderMalfunctionErrorTest.m */; };
+		FAF1050122F8828300ED7FF6 /* CoderResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1922F4B6D70065498B /* CoderResultTest.m */; };
+		FAF1050222F8828300ED7FF6 /* CodingErrorActionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB2222F4B6D80065498B /* CodingErrorActionTest.m */; };
+		FAF1050422F8828300ED7FF6 /* IllegalCharsetNameExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1822F4B6D60065498B /* IllegalCharsetNameExceptionTest.m */; };
+		FAF1050622F8828300ED7FF6 /* ISOCharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1F22F4B6D80065498B /* ISOCharsetTest.m */; };
+		FAF1050722F8828300ED7FF6 /* MalformedInputExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1222F4B6D50065498B /* MalformedInputExceptionTest.m */; };
+		FAF1050822F8828300ED7FF6 /* UnmappableCharacterExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0C22F4B6D40065498B /* UnmappableCharacterExceptionTest.m */; };
+		FAF1050922F8828300ED7FF6 /* UnsupportedCharsetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0E22F4B6D40065498B /* UnsupportedCharsetExceptionTest.m */; };
+		FAF1050A22F8828300ED7FF6 /* UTF8CharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB2022F4B6D80065498B /* UTF8CharsetTest.m */; };
+		FAF1050D22F8828300ED7FF6 /* UTF16BECharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0822F4B6D30065498B /* UTF16BECharsetTest.m */; };
+		FAF1050E22F8828300ED7FF6 /* UTF16CharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */; };
+		FAF1051122F8828300ED7FF6 /* UTF16LECharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1722F4B6D60065498B /* UTF16LECharsetTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1051,25 +1070,16 @@
 /* Begin PBXFileReference section */
 		0600EB0822F4B6D30065498B /* UTF16BECharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16BECharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16BECharsetTest.m; sourceTree = "<group>"; };
 		0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractCharsetTestCase.m; path = org/apache/harmony/tests/java/nio/charset/AbstractCharsetTestCase.m; sourceTree = "<group>"; };
-		0600EB0A22F4B6D40065498B /* UTF16LECharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16LECharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16LECharsetDecoderTest.m; sourceTree = "<group>"; };
 		0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16CharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16CharsetTest.m; sourceTree = "<group>"; };
 		0600EB0C22F4B6D40065498B /* UnmappableCharacterExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnmappableCharacterExceptionTest.m; path = org/apache/harmony/tests/java/nio/charset/UnmappableCharacterExceptionTest.m; sourceTree = "<group>"; };
-		0600EB0D22F4B6D40065498B /* ASCCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASCCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/ASCCharsetDecoderTest.m; sourceTree = "<group>"; };
 		0600EB0E22F4B6D40065498B /* UnsupportedCharsetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnsupportedCharsetExceptionTest.m; path = org/apache/harmony/tests/java/nio/charset/UnsupportedCharsetExceptionTest.m; sourceTree = "<group>"; };
-		0600EB0F22F4B6D40065498B /* UTF16LECharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16LECharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16LECharsetEncoderTest.m; sourceTree = "<group>"; };
-		0600EB1022F4B6D50065498B /* UTF16BECharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16BECharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16BECharsetDecoderTest.m; sourceTree = "<group>"; };
-		0600EB1122F4B6D50065498B /* UTFCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTFCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTFCharsetDecoderTest.m; sourceTree = "<group>"; };
 		0600EB1222F4B6D50065498B /* MalformedInputExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MalformedInputExceptionTest.m; path = org/apache/harmony/tests/java/nio/charset/MalformedInputExceptionTest.m; sourceTree = "<group>"; };
 		0600EB1322F4B6D50065498B /* ASCCharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASCCharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/ASCCharsetTest.m; sourceTree = "<group>"; };
-		0600EB1422F4B6D60065498B /* UTFCharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTFCharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTFCharsetEncoderTest.m; sourceTree = "<group>"; };
 		0600EB1522F4B6D60065498B /* CharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/CharsetDecoderTest.m; sourceTree = "<group>"; };
-		0600EB1622F4B6D60065498B /* GBCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GBCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/GBCharsetDecoderTest.m; sourceTree = "<group>"; };
 		0600EB1722F4B6D60065498B /* UTF16LECharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16LECharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16LECharsetTest.m; sourceTree = "<group>"; };
 		0600EB1822F4B6D60065498B /* IllegalCharsetNameExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IllegalCharsetNameExceptionTest.m; path = org/apache/harmony/tests/java/nio/charset/IllegalCharsetNameExceptionTest.m; sourceTree = "<group>"; };
 		0600EB1922F4B6D70065498B /* CoderResultTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoderResultTest.m; path = org/apache/harmony/tests/java/nio/charset/CoderResultTest.m; sourceTree = "<group>"; };
 		0600EB1A22F4B6D70065498B /* CharsetDecoder2Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharsetDecoder2Test.m; path = org/apache/harmony/tests/java/nio/charset/CharsetDecoder2Test.m; sourceTree = "<group>"; };
-		0600EB1B22F4B6D70065498B /* ISOCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ISOCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/ISOCharsetDecoderTest.m; sourceTree = "<group>"; };
-		0600EB1C22F4B6D70065498B /* UTF16BECharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16BECharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16BECharsetEncoderTest.m; sourceTree = "<group>"; };
 		0600EB1D22F4B6D70065498B /* CharacterCodingExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingExceptionTest.m; path = org/apache/harmony/tests/java/nio/charset/CharacterCodingExceptionTest.m; sourceTree = "<group>"; };
 		0600EB1E22F4B6D80065498B /* CharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/CharsetEncoderTest.m; sourceTree = "<group>"; };
 		0600EB1F22F4B6D80065498B /* ISOCharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ISOCharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/ISOCharsetTest.m; sourceTree = "<group>"; };
@@ -6644,34 +6654,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				0600EB2322F4B76E0065498B /* SettableCharsetProvider.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
-				0600EB0D22F4B6D40065498B /* ASCCharsetDecoderTest.m */,
-				0600EB1322F4B6D50065498B /* ASCCharsetTest.m */,
-				0600EB1D22F4B6D70065498B /* CharacterCodingExceptionTest.m */,
-				0600EB1A22F4B6D70065498B /* CharsetDecoder2Test.m */,
-				0600EB1522F4B6D60065498B /* CharsetDecoderTest.m */,
-				0600EB1E22F4B6D80065498B /* CharsetEncoderTest.m */,
-				0600EB2122F4B6D80065498B /* CoderMalfunctionErrorTest.m */,
-				0600EB1922F4B6D70065498B /* CoderResultTest.m */,
-				0600EB2222F4B6D80065498B /* CodingErrorActionTest.m */,
-				0600EB1622F4B6D60065498B /* GBCharsetDecoderTest.m */,
-				0600EB1822F4B6D60065498B /* IllegalCharsetNameExceptionTest.m */,
-				0600EB1B22F4B6D70065498B /* ISOCharsetDecoderTest.m */,
-				0600EB1F22F4B6D80065498B /* ISOCharsetTest.m */,
-				0600EB1222F4B6D50065498B /* MalformedInputExceptionTest.m */,
-				0600EB0C22F4B6D40065498B /* UnmappableCharacterExceptionTest.m */,
-				0600EB0E22F4B6D40065498B /* UnsupportedCharsetExceptionTest.m */,
-				0600EB2022F4B6D80065498B /* UTF8CharsetTest.m */,
-				0600EB1022F4B6D50065498B /* UTF16BECharsetDecoderTest.m */,
-				0600EB1C22F4B6D70065498B /* UTF16BECharsetEncoderTest.m */,
-				0600EB0822F4B6D30065498B /* UTF16BECharsetTest.m */,
-				0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */,
-				0600EB0A22F4B6D40065498B /* UTF16LECharsetDecoderTest.m */,
-				0600EB0F22F4B6D40065498B /* UTF16LECharsetEncoderTest.m */,
-				0600EB1722F4B6D60065498B /* UTF16LECharsetTest.m */,
-				0600EB1122F4B6D50065498B /* UTFCharsetDecoderTest.m */,
-				0600EB1422F4B6D60065498B /* UTFCharsetEncoderTest.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
@@ -6721,6 +6704,7 @@
 				062028921D512E78001EE455 /* ArrayTest.m */,
 				0620265C1D512CBE001EE455 /* ArrayTest.m */,
 				0620251A1D512B37001EE455 /* ArrayTest.m */,
+				0600EB1322F4B6D50065498B /* ASCCharsetTest.m */,
 				FA5C0C7A21BFFE66000B6275 /* AssertionErrorTest.m */,
 				0620251B1D512B37001EE455 /* AssertTest.m */,
 				06C143761F46135100CABE9A /* AsynchronousCloseExceptionTest.m */,
@@ -6783,13 +6767,17 @@
 				062028D31D512EBD001EE455 /* ChannelsTest.m */,
 				FA24DE6722E7628A000DEC19 /* Character_SubsetTest.m */,
 				FA24DE6422E76289000DEC19 /* Character_UnicodeBlockTest.m */,
+				0600EB1D22F4B6D70065498B /* CharacterCodingExceptionTest.m */,
 				FA24DE5D22E76288000DEC19 /* CharacterImplTest.m */,
 				0620288C1D512E78001EE455 /* CharacterTest.m */,
 				062026531D512CBE001EE455 /* CharacterTest.m */,
 				062025C11D512CA1001EE455 /* CharArrayWriterTest.m */,
 				06C143BA1F46142600CABE9A /* CharBufferTest.m */,
 				062026871D512D08001EE455 /* Charset_TestGenerator.m */,
+				0600EB1A22F4B6D70065498B /* CharsetDecoder2Test.m */,
+				0600EB1522F4B6D60065498B /* CharsetDecoderTest.m */,
 				062026881D512D08001EE455 /* CharsetDecoderTest.m */,
+				0600EB1E22F4B6D80065498B /* CharsetEncoderTest.m */,
 				062026891D512D08001EE455 /* CharsetEncoderTest.m */,
 				069C23DC1E9EEECA00CE6BAF /* CharsetTest.m */,
 				069C240F1E9EEF7B00CE6BAF /* CheckedInputStreamTest.m */,
@@ -6808,6 +6796,9 @@
 				06C143791F46135100CABE9A /* ClosedChannelExceptionTest.m */,
 				06C1437A1F46135100CABE9A /* ClosedSelectorExceptionTest.m */,
 				069FAFE51FFD8A50001A5383 /* CloseGuardMonitor.m */,
+				0600EB2122F4B6D80065498B /* CoderMalfunctionErrorTest.m */,
+				0600EB1922F4B6D70065498B /* CoderResultTest.m */,
+				0600EB2222F4B6D80065498B /* CodingErrorActionTest.m */,
 				FA24DE5022E76057000DEC19 /* CollatorTest.m */,
 				0620268C1D512D08001EE455 /* CollatorTest.m */,
 				FA24DEA622EA47CA000DEC19 /* Collection8Test.m */,
@@ -6978,6 +6969,7 @@
 				FA5C0C6C21BFFE64000B6275 /* IllegalAccessExceptionTest.m */,
 				FA5C0C8B21BFFE69000B6275 /* IllegalArgumentExceptionTest.m */,
 				06C143811F46135100CABE9A /* IllegalBlockingModeExceptionTest.m */,
+				0600EB1822F4B6D60065498B /* IllegalCharsetNameExceptionTest.m */,
 				FA24DE9222EA1334000DEC19 /* IllegalFormatCodePointExceptionTest.m */,
 				FA24DE8D22EA1333000DEC19 /* IllegalFormatConversionExceptionTest.m */,
 				FA24DE9522EA1335000DEC19 /* IllegalFormatFlagsExceptionTest.m */,
@@ -7021,6 +7013,7 @@
 				6A5D0293219CCF01004F1BA7 /* IosSecureRandomImplTest.m */,
 				06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */,
 				062C393B1FD09B87009B232F /* IosSHAMessageDigestTest.m */,
+				0600EB1F22F4B6D80065498B /* ISOCharsetTest.m */,
 				0612B9451F4381750069EF58 /* IterableTest.m */,
 				0620253B1D512B37001EE455 /* JniTest.m */,
 				FA24DE4522E75B26000DEC19 /* JSONArrayTest.m */,
@@ -7064,6 +7057,7 @@
 				FA61CF8C22F35D86006F903E /* LongSummaryStatisticsTest.m */,
 				FA24DE8322E764D5000DEC19 /* LongTest.m */,
 				FA5C0C8D21BFFE69000B6275 /* LongTest.m */,
+				0600EB1222F4B6D50065498B /* MalformedInputExceptionTest.m */,
 				062028991D512E78001EE455 /* MalformedParameterizedTypeExceptionTest.m */,
 				0620289A1D512E78001EE455 /* MalformedParameterizedTypeExceptionTests.m */,
 				DEE827351F6AE0D30069C75C /* MapDefaultMethodTester.m */,
@@ -7403,6 +7397,7 @@
 				062026761D512D08001EE455 /* ServerSocketTest.m */,
 				0620269C1D512D08001EE455 /* ServiceLoaderTest.m */,
 				0620269D1D512D08001EE455 /* ServiceLoaderTestInterface.m */,
+				0600EB2322F4B76E0065498B /* SettableCharsetProvider.m */,
 				FA5C0C8921BFFE69000B6275 /* ShortTest.m */,
 				062028661D512E3E001EE455 /* SignatureSpiTest.m */,
 				062028671D512E3E001EE455 /* SignatureTest.m */,
@@ -7606,10 +7601,12 @@
 				FA24DE7B22E762DE000DEC19 /* UnknownErrorTest.m */,
 				FA24DE8F22EA1334000DEC19 /* UnknownFormatConversionExceptionTest.m */,
 				FA24DE9422EA1334000DEC19 /* UnknownFormatFlagsExceptionTest.m */,
+				0600EB0C22F4B6D40065498B /* UnmappableCharacterExceptionTest.m */,
 				06C143951F46135100CABE9A /* UnresolvedAddressExceptionTest.m */,
 				065F96351DAC03F900807A81 /* UnsafeTest.m */,
 				FA24DE7A22E762DD000DEC19 /* UnsatisfiedLinkErrorTest.m */,
 				06C143961F46135100CABE9A /* UnsupportedAddressTypeExceptionTest.m */,
+				0600EB0E22F4B6D40065498B /* UnsupportedCharsetExceptionTest.m */,
 				FA24DE7D22E762DE000DEC19 /* UnsupportedClassVersionErrorTest.m */,
 				FA5C0C7121BFFE65000B6275 /* UnsupportedOperationExceptionTest.m */,
 				062026791D512D08001EE455 /* URITest.m */,
@@ -7618,7 +7615,11 @@
 				0620267C1D512D08001EE455 /* URLStreamHandlerFactoryTest.m */,
 				0620267D1D512D08001EE455 /* URLTest.m */,
 				FAAB053D22F39A97002A32D0 /* UrlUtilsTest.m */,
+				0600EB2022F4B6D80065498B /* UTF8CharsetTest.m */,
+				0600EB0822F4B6D30065498B /* UTF16BECharsetTest.m */,
+				0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */,
 				062025A31D512C8E001EE455 /* UTF16EncodingTest.m */,
+				0600EB1722F4B6D60065498B /* UTF16LECharsetTest.m */,
 				062029201D512F25001EE455 /* Util.m */,
 				FA5C0C3C21BFFBA2000B6275 /* UUIDTest.m */,
 				FA61CF8E22F35D87006F903E /* VectorTest.m */,
@@ -7912,6 +7913,7 @@
 				06C1439A1F46138600CABE9A /* ClosedByInterruptExceptionTest.m in Sources */,
 				06C1439B1F46138600CABE9A /* ClosedChannelExceptionTest.m in Sources */,
 				FA24DEB322EA4822000DEC19 /* DoubleAccumulatorTest.m in Sources */,
+				FAF104FE22F8828300ED7FF6 /* CharsetDecoderTest.m in Sources */,
 				06C1439C1F46138600CABE9A /* ClosedSelectorExceptionTest.m in Sources */,
 				06C1439D1F46138600CABE9A /* ConnectionPendingExceptionTest.m in Sources */,
 				FA5C0CBE21BFFE6B000B6275 /* CloneNotSupportedExceptionTest.m in Sources */,
@@ -7928,6 +7930,7 @@
 				06C143A61F46138600CABE9A /* MockDatagramChannel.m in Sources */,
 				06C143A71F46138600CABE9A /* MockServerSocketChannel.m in Sources */,
 				FA40676B21C07E6100988DFD /* AnnotatedElementParameterTest.m in Sources */,
+				FAF104FD22F8828300ED7FF6 /* CharsetDecoder2Test.m in Sources */,
 				06C143A81F46138600CABE9A /* MockSocketChannel.m in Sources */,
 				06C143A91F46138600CABE9A /* NoConnectionPendingExceptionTest.m in Sources */,
 				06C143AA1F46138600CABE9A /* NonReadableChannelExceptionTest.m in Sources */,
@@ -7973,6 +7976,7 @@
 				067B13351EEDCE720013CBAF /* AtomicReferenceFieldUpdaterTest.m in Sources */,
 				067B13361EEDCE720013CBAF /* AtomicReferenceTest.m in Sources */,
 				067B13371EEDCE720013CBAF /* AtomicStampedReferenceTest.m in Sources */,
+				FAF104F922F8828300ED7FF6 /* AbstractCharsetTestCase.m in Sources */,
 				065F96361DAC05A300807A81 /* Base64Test.m in Sources */,
 				065F96381DAC05A300807A81 /* UnsafeTest.m in Sources */,
 				FA5C0C4F21BFFBA5000B6275 /* AbstractSequentialListTest.m in Sources */,
@@ -7988,6 +7992,7 @@
 				0612B91B1F4373740069EF58 /* TreeSetTest.m in Sources */,
 				062026F61D512D17001EE455 /* ZipFileTest.m in Sources */,
 				FA61CFB022F35D8A006F903E /* AbstractCollectionTest.m in Sources */,
+				FAF1050022F8828300ED7FF6 /* CoderMalfunctionErrorTest.m in Sources */,
 				FA40677121C07E6100988DFD /* ClassTest.m in Sources */,
 				069C23FA1E9EEECA00CE6BAF /* Support_MessageFormat.m in Sources */,
 				FA24DE8022E762DE000DEC19 /* StackOverflowErrorTest.m in Sources */,
@@ -8003,6 +8008,7 @@
 				0612B9011F4373740069EF58 /* ExecutorCompletionServiceTest.m in Sources */,
 				062026441D512CA1001EE455 /* OldPushbackInputStreamTest.m in Sources */,
 				062028CF1D512E89001EE455 /* BigIntegerMultiplyTest.m in Sources */,
+				FAF1050A22F8828300ED7FF6 /* UTF8CharsetTest.m in Sources */,
 				069C24281E9EEF7B00CE6BAF /* CRC32Test.m in Sources */,
 				FA24DEB022EA4822000DEC19 /* ConcurrentHashMap8Test.m in Sources */,
 				063A62D81F67267C001DC971 /* BrokenInputStream.m in Sources */,
@@ -8123,6 +8129,7 @@
 				FA5C0C9A21BFFE6B000B6275 /* VirtualMachineErrorTest.m in Sources */,
 				0612B90D1F4373740069EF58 /* PriorityBlockingQueueTest.m in Sources */,
 				062026CE1D512D08001EE455 /* ServiceLoaderTestInterface.m in Sources */,
+				FAF1051122F8828300ED7FF6 /* UTF16LECharsetTest.m in Sources */,
 				0620266D1D512CBE001EE455 /* MethodTest.m in Sources */,
 				062028AF1D512E78001EE455 /* ConstructorTest.m in Sources */,
 				062029AE1D512FFE001EE455 /* SmallTests.m in Sources */,
@@ -8162,6 +8169,7 @@
 				069C24031E9EEEF700CE6BAF /* GregorianCalendarTest.m in Sources */,
 				062027811D512D9D001EE455 /* MockPropertyChangeListener2.m in Sources */,
 				FA1DD7BF2154190800D0B800 /* mySSLSession.m in Sources */,
+				FAF1050922F8828300ED7FF6 /* UnsupportedCharsetExceptionTest.m in Sources */,
 				062025AF1D512C8E001EE455 /* PackagePrefixesTest.m in Sources */,
 				062025491D512B37001EE455 /* FieldTest.m in Sources */,
 				063A62E21F67267C001DC971 /* NoSubclassParser.m in Sources */,
@@ -8183,6 +8191,7 @@
 				062026451D512CA1001EE455 /* OldPushbackReaderTest.m in Sources */,
 				FA24DE5622E761AB000DEC19 /* ElementTypeTest.m in Sources */,
 				062026471D512CA1001EE455 /* OldReaderTest.m in Sources */,
+				FAF1050E22F8828300ED7FF6 /* UTF16CharsetTest.m in Sources */,
 				FA5C0CC621BFFFAA000B6275 /* RemoveIfTester.m in Sources */,
 				0612B9121F4373740069EF58 /* ScheduledExecutorTest.m in Sources */,
 				062026C21D512D08001EE455 /* NumberFormatTest.m in Sources */,
@@ -8299,6 +8308,7 @@
 				0620263C1D512CA1001EE455 /* OldLineNumberReaderTest.m in Sources */,
 				062029B21D514671001EE455 /* TextAttributeTest.m in Sources */,
 				FA61CFB522F35D8A006F903E /* ListTest.m in Sources */,
+				FAF104FB22F8828300ED7FF6 /* ASCCharsetTest.m in Sources */,
 				FA5C0C6221BFFBA5000B6275 /* TreeMapTest.m in Sources */,
 				FA24DEA222EA1335000DEC19 /* IllegalFormatFlagsExceptionTest.m in Sources */,
 				0620277E1D512D9D001EE455 /* MockNullSuperClass.m in Sources */,
@@ -8324,6 +8334,7 @@
 				062029741D512F41001EE455 /* Support_CollectionTest.m in Sources */,
 				0620254F1D512B37001EE455 /* NativeUtil.m in Sources */,
 				069C23F81E9EEECA00CE6BAF /* Support_DecimalFormat.m in Sources */,
+				FAF104FC22F8828300ED7FF6 /* CharacterCodingExceptionTest.m in Sources */,
 				0612B90A1F4373740069EF58 /* LinkedBlockingQueueTest.m in Sources */,
 				FA1DD7A82154124E00D0B800 /* SSLSocketTest.m in Sources */,
 				FA40676A21C07E6100988DFD /* MultipleAnnotation.m in Sources */,
@@ -8336,6 +8347,7 @@
 				0620293B1D512F25001EE455 /* ECFieldF2mTest.m in Sources */,
 				FA24DE7E22E762DE000DEC19 /* UnsatisfiedLinkErrorTest.m in Sources */,
 				FA5C0C5C21BFFBA5000B6275 /* AbstractQueueTest.m in Sources */,
+				FAF1050122F8828300ED7FF6 /* CoderResultTest.m in Sources */,
 				FA5C0C5321BFFBA5000B6275 /* UUIDTest.m in Sources */,
 				062026ED1D512D17001EE455 /* OldAndroidChecksumTest.m in Sources */,
 				062026271D512CA1001EE455 /* OldBufferedOutputStreamTest.m in Sources */,
@@ -8379,6 +8391,7 @@
 				062026401D512CA1001EE455 /* OldObjectStreamFieldTest.m in Sources */,
 				0620255E1D512B37001EE455 /* QueueDispatcher.m in Sources */,
 				063A62F41F6726C1001DC971 /* AttributeListImplTest.m in Sources */,
+				FAF1050722F8828300ED7FF6 /* MalformedInputExceptionTest.m in Sources */,
 				062028541D512E21001EE455 /* PatternTest.m in Sources */,
 				FA5C0C6021BFFBA5000B6275 /* TooManyListenersExceptionTest.m in Sources */,
 				FA5C0C5221BFFBA5000B6275 /* TreeSetTest.m in Sources */,
@@ -8400,6 +8413,7 @@
 				062026C31D512D08001EE455 /* SimpleDateFormatTest.m in Sources */,
 				069C24521E9EF14E00CE6BAF /* TestUtils.m in Sources */,
 				062028861D512E3E001EE455 /* MyEncodedKeySpec.m in Sources */,
+				FAF1050822F8828300ED7FF6 /* UnmappableCharacterExceptionTest.m in Sources */,
 				FA61CFB422F35D8A006F903E /* EvilMapTest.m in Sources */,
 				0620274F1D512D82001EE455 /* SampleListener.m in Sources */,
 				FA24DEA122EA1335000DEC19 /* UnknownFormatFlagsExceptionTest.m in Sources */,
@@ -8425,6 +8439,7 @@
 				FA61CFAB22F35D8A006F903E /* HashtableTest.m in Sources */,
 				0620261A1D512CA1001EE455 /* OldAndroidDataOutputStreamTest.m in Sources */,
 				062027761D512D9D001EE455 /* MockFooChild.m in Sources */,
+				FAF1050622F8828300ED7FF6 /* ISOCharsetTest.m in Sources */,
 				062026C01D512D08001EE455 /* LargeTests.m in Sources */,
 				0612B93D1F4374C60069EF58 /* SSLKeyExceptionTest.m in Sources */,
 				0612B8FD1F4373740069EF58 /* CyclicBarrierTest.m in Sources */,
@@ -8563,6 +8578,7 @@
 				FA61CFA722F35D8A006F903E /* ArrayListTest.m in Sources */,
 				062026301D512CA1001EE455 /* OldDataOutputStreamTest.m in Sources */,
 				FA5C0CB521BFFE6B000B6275 /* NegativeArraySizeExceptionTest.m in Sources */,
+				FAF1050D22F8828300ED7FF6 /* UTF16BECharsetTest.m in Sources */,
 				6A5D0D65219CCBB200709765 /* TestStringLiteralPrinter.m in Sources */,
 				FA2EECB521EFB55000B88A06 /* CompletableFutureTest.m in Sources */,
 				069C24311E9EEF7B00CE6BAF /* ZipEntryTest.m in Sources */,
@@ -8784,6 +8800,7 @@
 				0612B9021F4373740069EF58 /* ExecutorsTest.m in Sources */,
 				069C24441E9EF04900CE6BAF /* CertificateParsingExceptionTest.m in Sources */,
 				FA5C0C5621BFFBA5000B6275 /* StackTest.m in Sources */,
+				FAF104FF22F8828300ED7FF6 /* CharsetEncoderTest.m in Sources */,
 				FA24DEB522EA4822000DEC19 /* ThreadLocalRandom8Test.m in Sources */,
 				FA6C09C52187C5AC006C646A /* TestPeriod.m in Sources */,
 				FA24DEA422EA1335000DEC19 /* Arrays2Test.m in Sources */,
@@ -8808,12 +8825,14 @@
 				6A5D0D46219CCB0E00709765 /* TestClock_System.m in Sources */,
 				FA40676621C07E6100988DFD /* ExecutableParameterTest.m in Sources */,
 				062026EC1D512D17001EE455 /* LargeTests.m in Sources */,
+				FAF1050422F8828300ED7FF6 /* IllegalCharsetNameExceptionTest.m in Sources */,
 				FA5C0CAE21BFFE6B000B6275 /* ExceptionTest.m in Sources */,
 				FA24DE4F22E75B27000DEC19 /* JSONObjectTest.m in Sources */,
 				062024F91D512AA2001EE455 /* TextUtilsTest.m in Sources */,
 				0612B8F71F4373740069EF58 /* ConcurrentSkipListSubMapTest.m in Sources */,
 				0620262D1D512CA1001EE455 /* OldCharArrayWriterTest.m in Sources */,
 				0620294C1D512F25001EE455 /* RSAPrivateKeySpecTest.m in Sources */,
+				FAF1050222F8828300ED7FF6 /* CodingErrorActionTest.m in Sources */,
 				062B4F2C1ED76C1200D4E7D8 /* OldManifestTest.m in Sources */,
 				069C23F61E9EEECA00CE6BAF /* ParsePositionTest.m in Sources */,
 				062025C01D512C8E001EE455 /* PosixTest.m in Sources */,
@@ -8857,6 +8876,7 @@
 				062025551D512B37001EE455 /* RetainedWithTest.m in Sources */,
 				062028A91D512E78001EE455 /* FloatTest.m in Sources */,
 				FA5C0CA421BFFE6B000B6275 /* MockEnum.m in Sources */,
+				FAF104F822F8828300ED7FF6 /* SettableCharsetProvider.m in Sources */,
 				FA24DEA822EA47CB000DEC19 /* Collection8Test.m in Sources */,
 				062026231D512CA1001EE455 /* OldAndroidStreamTokenizerTest.m in Sources */,
 				0620260B1D512CA1001EE455 /* DataOutputStreamTest.m in Sources */,
