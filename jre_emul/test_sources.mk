@@ -490,6 +490,7 @@ TEST_SOURCES := \
     libcore/java/util/CalendarTest.java \
     libcore/java/util/CalendarWeekOfMonthTest.java \
     libcore/java/util/CollectionsTest.java \
+    libcore/java/util/ComparatorTest.java \
     libcore/java/util/ConcurrentHashMapTest.java \
     libcore/java/util/CurrencyTest.java \
     libcore/java/util/DateTest.java \

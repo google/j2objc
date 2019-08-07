@@ -1035,6 +1035,7 @@
 		FAF1050E22F8828300ED7FF6 /* UTF16CharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */; };
 		FAF1051122F8828300ED7FF6 /* UTF16LECharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1722F4B6D60065498B /* UTF16LECharsetTest.m */; };
 		FAF1051522F8A31600ED7FF6 /* Locales.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1051422F8A31600ED7FF6 /* Locales.m */; };
+		FAF1051722F9D94C00ED7FF6 /* ComparatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1051622F9D94C00ED7FF6 /* ComparatorTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4321,6 +4322,7 @@
 		FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldLinkedHashMapTest.m; path = libcore/java/util/OldLinkedHashMapTest.m; sourceTree = "<group>"; };
 		FAD38CDF21CABB46003EDCDF /* LinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedHashMapTest.m; path = libcore/java/util/LinkedHashMapTest.m; sourceTree = "<group>"; };
 		FAF1051422F8A31600ED7FF6 /* Locales.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Locales.m; path = libcore/java/util/Locales.m; sourceTree = "<group>"; };
+		FAF1051622F9D94C00ED7FF6 /* ComparatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComparatorTest.m; path = libcore/java/util/ComparatorTest.m; sourceTree = "<group>"; };
 		FAF4EEF8215AF32400413554 /* IosSslSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocket.m; path = com/google/j2objc/net/ssl/IosSslSocket.m; sourceTree = "<group>"; };
 		FAF4EEF9215AF32500413554 /* IosSslSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslSocket.h; path = com/google/j2objc/net/ssl/IosSslSocket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -6656,7 +6658,6 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				FAF1051422F8A31600ED7FF6 /* Locales.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
@@ -6810,6 +6811,7 @@
 				FACA982721CC21EA00B3D2E2 /* CollectionsTest.m */,
 				FA5C0C3E21BFFBA3000B6275 /* CollectionsTest.m */,
 				FA24DEA722EA47CB000DEC19 /* CollectionTest.m */,
+				FAF1051622F9D94C00ED7FF6 /* ComparatorTest.m */,
 				FA2EECB421EFB54F00B88A06 /* CompletableFutureTest.m */,
 				0612B8C41F4373730069EF58 /* ConcurrencyTests.m */,
 				FA24DEAA22EA4821000DEC19 /* ConcurrentHashMap8Test.m */,
@@ -7049,6 +7051,7 @@
 				0612B9211F4374A30069EF58 /* ListResourceBundleTest.m */,
 				FA61CF9F22F35D89006F903E /* ListTest.m */,
 				FAAB053A22F39A97002A32D0 /* LocaleDataTest.m */,
+				FAF1051422F8A31600ED7FF6 /* Locales.m */,
 				6A77143A1E3957B10038F773 /* LocaleTest.m */,
 				0620281E1D512E03001EE455 /* LocaleTest.m */,
 				6A4BAAF5200C7C5600BF59E4 /* LocaleTest.m */,
@@ -8396,6 +8399,7 @@
 				063A62F41F6726C1001DC971 /* AttributeListImplTest.m in Sources */,
 				FAF1050722F8828300ED7FF6 /* MalformedInputExceptionTest.m in Sources */,
 				062028541D512E21001EE455 /* PatternTest.m in Sources */,
+				FAF1051722F9D94C00ED7FF6 /* ComparatorTest.m in Sources */,
 				FA5C0C6021BFFBA5000B6275 /* TooManyListenersExceptionTest.m in Sources */,
 				FA5C0C5221BFFBA5000B6275 /* TreeSetTest.m in Sources */,
 				062028EC1D512EBD001EE455 /* SAXParserTestSupport.m in Sources */,
