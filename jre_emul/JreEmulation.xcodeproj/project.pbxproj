@@ -1034,6 +1034,7 @@
 		FAF1050D22F8828300ED7FF6 /* UTF16BECharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0822F4B6D30065498B /* UTF16BECharsetTest.m */; };
 		FAF1050E22F8828300ED7FF6 /* UTF16CharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */; };
 		FAF1051122F8828300ED7FF6 /* UTF16LECharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600EB1722F4B6D60065498B /* UTF16LECharsetTest.m */; };
+		FAF1051522F8A31600ED7FF6 /* Locales.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1051422F8A31600ED7FF6 /* Locales.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4319,6 +4320,7 @@
 		FAD38CDD21CABB46003EDCDF /* OldAndroidHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldAndroidHashMapTest.m; path = libcore/java/util/OldAndroidHashMapTest.m; sourceTree = "<group>"; };
 		FAD38CDE21CABB46003EDCDF /* OldLinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldLinkedHashMapTest.m; path = libcore/java/util/OldLinkedHashMapTest.m; sourceTree = "<group>"; };
 		FAD38CDF21CABB46003EDCDF /* LinkedHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedHashMapTest.m; path = libcore/java/util/LinkedHashMapTest.m; sourceTree = "<group>"; };
+		FAF1051422F8A31600ED7FF6 /* Locales.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Locales.m; path = libcore/java/util/Locales.m; sourceTree = "<group>"; };
 		FAF4EEF8215AF32400413554 /* IosSslSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocket.m; path = com/google/j2objc/net/ssl/IosSslSocket.m; sourceTree = "<group>"; };
 		FAF4EEF9215AF32500413554 /* IosSslSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSslSocket.h; path = com/google/j2objc/net/ssl/IosSslSocket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -6654,6 +6656,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FAF1051422F8A31600ED7FF6 /* Locales.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
@@ -8809,6 +8812,7 @@
 				062028D01D512E89001EE455 /* BigIntegerNotTest.m in Sources */,
 				062027591D512D82001EE455 /* FakeFox0411.m in Sources */,
 				FA5C0C5821BFFBA5000B6275 /* ArrayListTest.m in Sources */,
+				FAF1051522F8A31600ED7FF6 /* Locales.m in Sources */,
 				062028501D512E21001EE455 /* Matcher2Test.m in Sources */,
 				FA40677221C07E6100988DFD /* ConstructorTest.m in Sources */,
 				FA6C09DF21925DE4006C646A /* TestFmwk.m in Sources */,

@@ -42,6 +42,21 @@ public class CurrencyTest extends junit.framework.TestCase {
         assertEquals("DEM", currency.getSymbol(Locale.US));
     }
 
+    /**
+     * Checks that the no-argument version of {@link Currency#getSymbol()} uses the
+     * default DISPLAY locale as opposed to the default locale or the default FORMAT
+     * locale.
+     */
+    public void test_getSymbol_noLocaleArgument() {
+        Currency currency = Currency.getInstance("DEM");
+        Locales locales = Locales.getAndSetDefaultForTest(Locale.US, Locale.GERMANY, Locale.FRANCE);
+        try {
+            // getAndSetDefaultForTest(uncategorizedLocale, displayLocale, formatLocale)
+            assertEquals("DM", currency.getSymbol());
+        } finally {
+            locales.setAsDefault();
+        }
+    }
 
     // Regression test to ensure that Currency.getInstance(String) throws if
     // given an invalid ISO currency code.
@@ -85,6 +100,22 @@ public class CurrencyTest extends junit.framework.TestCase {
             currency.getDisplayName(null);
             fail();
         } catch (NullPointerException expected) {
+        }
+    }
+
+    /**
+     * Checks that the no-argument version of {@link Currency#getDisplayName()} uses
+     * the default DISPLAY locale, as opposed to the default locale or the default
+     * FORMAT locale.
+     */
+    public void test_getDisplayName_noLocaleArgument() {
+        Currency currency = Currency.getInstance("DEM");
+        // getAndSetDefaultForTest(uncategorizedLocale, displayLocale, formatLocale)
+        Locales locales = Locales.getAndSetDefaultForTest(Locale.US, Locale.GERMANY, Locale.FRANCE);
+        try {
+            assertEquals("Deutsche Mark", currency.getDisplayName());
+        } finally {
+            locales.setAsDefault();
         }
     }
 
