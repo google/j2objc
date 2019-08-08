@@ -23,7 +23,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class FieldDeclaration extends BodyDeclaration {
 
-  // TODO(user): Change fragments to ChildLink after JDT code is dropped. With Javac,
+  // TODO(zgao): Change fragments to ChildLink after JDT code is dropped. With Javac,
   // FieldDeclaration only has one VariableDeclarationFragment.
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);

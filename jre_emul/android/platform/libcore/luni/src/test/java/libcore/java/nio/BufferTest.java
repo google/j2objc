@@ -635,7 +635,7 @@ public class BufferTest extends TestCase {
         assertEquals(0, address % 8);
     }
 
-    /* TODO(user): fix and enable.
+    /* TODO(zgao): fix and enable.
     public static native long jniGetDirectBufferAddress(Buffer buf);
     public static native long jniGetDirectBufferCapacity(Buffer buf);
 

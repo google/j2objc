@@ -91,12 +91,12 @@ public class TestUScript extends TestFmwk {
             }
         }
         reportDataErrors(numErrors);
-
-        //
-        ULocale defaultLoc = ULocale.getDefault();
+        
+        // 
+        ULocale defaultLoc = ULocale.getDefault(); 
         ULocale esperanto = new ULocale("eo_DE");
         ULocale.setDefault(esperanto);
-        int[] code = UScript.getCode(esperanto);
+        int[] code = UScript.getCode(esperanto); 
         if(code != null){
             if( code[0] != UScript.LATIN){
                 errln("Did not get the expected script code for Esperanto");
@@ -137,7 +137,7 @@ public class TestUScript extends TestFmwk {
                 UScript.getCode("ro-RO"));  // String not ULocale
     }
 
-    // TODO(user): remove this and convert the tests that use this to be parameterized
+    // TODO(junit): remove this and convert the tests that use this to be parameterized
     private void reportDataErrors(int numErrors) {
         if (numErrors >0) {
             // assume missing locale data, so not an error, just a warning
@@ -172,7 +172,7 @@ public class TestUScript extends TestFmwk {
             }
         }
         reportDataErrors(numErrors);
-
+        
         //cover UScript.getCode(Locale)
         Locale[] testLocales = new Locale[] {
             Locale.JAPANESE,
@@ -197,7 +197,7 @@ public class TestUScript extends TestFmwk {
                 logln("  Error getting script code for name "+testNames[i]);
             }
         }
-        reportDataErrors(numErrors);
+        reportDataErrors(numErrors);                 
     }
 
     @Test
@@ -205,7 +205,7 @@ public class TestUScript extends TestFmwk {
 
         final String[] testNames={
             /* test locale */
-            "en", "en_US", "sr", "ta", "gu", "te_IN",
+            "en", "en_US", "sr", "ta", "gu", "te_IN", 
             "hi", "he", "ar",
             /* test abbr */
             "Hani", "Hang","Hebr","Hira",
@@ -335,7 +335,7 @@ public class TestUScript extends TestFmwk {
                 {0x0000FFBE, UScript.HANGUL },
                 {0x0000FFC7, UScript.HANGUL },
                 {0x0000FFCF, UScript.HANGUL },
-                {0x0000FFD7, UScript.HANGUL},
+                {0x0000FFD7, UScript.HANGUL}, 
                 {0x0000FFDC, UScript.HANGUL},
                 {0x00010300, UScript.OLD_ITALIC},
                 {0x00010330, UScript.GOTHIC},
@@ -627,8 +627,8 @@ public class TestUScript extends TestFmwk {
             "Geok", "Hans", "Hant", "Pahawh_Hmong", "Old_Hungarian", "Inds",
             "Javanese", "Kayah_Li", "Latf", "Latg",
             "Lepcha", "Linear_A", "Mandaic", "Maya", "Meroitic_Hieroglyphs",
-            "Nko", "Old_Turkic", "Old_Permic", "Phags_Pa", "Phoenician",
-            "Miao", "Roro", "Sara", "Syre", "Syrj", "Syrn", "Teng", "Vai", "Visp", "Cuneiform",
+            "Nko", "Old_Turkic", "Old_Permic", "Phags_Pa", "Phoenician", 
+            "Miao", "Roro", "Sara", "Syre", "Syrj", "Syrn", "Teng", "Vai", "Visp", "Cuneiform", 
             "Zxxx", "Unknown",
             "Carian", "Jpan", "Tai_Tham", "Lycian", "Lydian", "Ol_Chiki", "Rejang", "Saurashtra", "SignWriting", "Sundanese",
             "Moon", "Meetei_Mayek",

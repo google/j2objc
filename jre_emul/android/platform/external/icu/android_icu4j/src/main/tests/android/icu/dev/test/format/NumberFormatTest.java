@@ -4431,14 +4431,14 @@ public class NumberFormatTest extends TestFmwk {
     }
 
 
-    //TODO(user): investigate
+    //TODO(junit): investigate
     @Test
     public void TestDataDrivenICU() {
         DataDrivenNumberFormatTestUtility.runSuite(
                 "numberformattestspecification.txt", ICU);
     }
 
-    //TODO(user): investigate
+    //TODO(junit): investigate
     @Test
     public void TestDataDrivenJDK() {
         // Android patch: Android java.text.DecimalFormat is actually ICU.

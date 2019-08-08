@@ -368,7 +368,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * timedJoin throws InterruptedException when interrupted
      */
-    /* TODO(user): enable after b/62899314 is fixed.
+    /* TODO(zgao): enable after b/62899314 is fixed.
     public void testTimedJoin_Interruptible() {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         final Thread s = newStartedThread(new CheckedInterruptedRunnable() {

@@ -76,6 +76,7 @@ public class Support_DecimalFormat extends Support_Format {
     // test currency instance with TR Locale
     number = new Double(350.76);
     format = (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale("tr", "TR"));
+    // Turkey either uses "123,45 TL" or "₺123,45"; google3 uses the former because most
     // platforms' fonts don't include U+20BA TURKISH LIRA SIGN. http://b/16727554.
     text = "₺350,76";
     t_FormatWithField(23, format, number, text, NumberFormat.Field.CURRENCY, 0, 1);

@@ -1327,7 +1327,7 @@ public class DatagramChannelTest extends TestCase {
         assertAscii(buf, strHello);
     }
 
-    /* TODO(user): fix and enable.
+    /* TODO(zgao): fix and enable.
     public void testReceive_Peek_NoSecurity_Nonblocking() throws Exception {
         String strHello = "hello";
 

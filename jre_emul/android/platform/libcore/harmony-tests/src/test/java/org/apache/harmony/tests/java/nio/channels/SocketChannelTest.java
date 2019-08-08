@@ -31,6 +31,7 @@ import java.net.SocketOption;
 import java.net.SocketException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.channels.AlreadyBoundException;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ConnectionPendingException;
@@ -1045,7 +1046,7 @@ public class SocketChannelTest extends TestCase {
 
     }
 
-    /* TODO(user): fix and enable.
+    /* TODO(zgao): fix and enable.
      * connect-->finish-->connect-->close
     public void testCFII_ConnectAfterFinish_Server_NonBlock() throws Exception {
         connectServerNonBlock();

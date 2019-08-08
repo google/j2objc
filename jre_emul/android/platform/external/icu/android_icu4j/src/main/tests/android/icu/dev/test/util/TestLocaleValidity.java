@@ -74,7 +74,7 @@ public class TestLocaleValidity extends TestFmwk {
                 {"OK", "en-u-sd-usny"},
                 {"OK", "en-u-tz-adalv"},
                 {"OK", "en-u-va-posix"},
-
+                
                 {"OK", "en-t-d0-accents"},
                 {"OK", "en-u-em-default"},
                 {"OK", "en-t-i0-handwrit"},
@@ -95,9 +95,9 @@ public class TestLocaleValidity extends TestFmwk {
                 {"OK", "en-u-sd-uszzzz"},
 
                 // really long case
-
+                
                 {"OK", "en-u-ca-buddhist-ca-islamic-umalqura-cf-account-co-big5han-cu-adp-fw-fri-hc-h11-ka-noignore-kb-false-kc-false-kf-false-kk-false-kn-false-kr-latn-digit-symbol-ks-identic-kv-currency-nu-ahom-sd-usny-tz-adalv-va-posix"},
-
+                
                 // bad case (for language tag)
                 {"{language, root}", "root"},
 
@@ -115,16 +115,16 @@ public class TestLocaleValidity extends TestFmwk {
                 {"Incomplete privateuse [at index 0]", "x-abc$defg"},
                 {"Invalid subtag: $ [at index 3]", "EN-$"},
                 {"Invalid subtag: $ [at index 0]", "$"},
-
+                
                 // bad extension
-
+                
                 {"{illegal, q}", "en-q-abcdefg"},
-
+                
                 {"Incomplete privateuse [at index 3]", "en-x-123456789"},
                 {"Empty subtag [at index 14]", "en-x-12345678--a"},
 
                 // bad subtags
-
+                
                 {"{variant, FOOBAR}", "zh-Hant-1606nict-1694acad-foobar"},
                 {"{region, AB}", "zh-Hant-AB"},
                 {"{language, ex}", "ex"},
@@ -132,11 +132,11 @@ public class TestLocaleValidity extends TestFmwk {
                 {"{language, qaa}", "qaa"},
 
                 // bad types for keys
-
+                
                 {"{u, ca-chinesx}", "en-u-ca-chinesx"},
                 {"{script, Latx}", "und-Cyrl-t-und-latx"},
                 {"{u, sd-usca}", "en-AQ-u-sd-usca"},
-
+                
                 {"{u, ca-buddhisx}", "en-u-ca-buddhisx"},
                 {"{u, ca-islamic-umalqurx}", "en-u-ca-islamic-umalqurx"}, // additive
                 {"{u, cf-accounx}", "en-u-cf-accounx"},
@@ -154,16 +154,16 @@ public class TestLocaleValidity extends TestFmwk {
                 {"{u, kr-latn}", "en-u-kr-latn-digit-latn"}, // reorder codes, duplicat
                 {"{u, kr-zzzz}", "en-u-kr-latn-others-digit-Zzzz"}, // reorder codes, duplicat
                 {"{u, kr-zsym}", "en-u-kr-Zsym"}, // reorder codes, duplicat
-                {"{u, kr-qaai}", "en-u-kr-Qaai"}, // reorder codes, duplicat
+                {"{u, kr-qaai}", "en-u-kr-Qaai"}, // reorder codes, duplicat                
                 {"{u, ks-identix}", "en-u-ks-identix"},
                 {"{u, kv-currencx}", "en-u-kv-currencx"},
                 {"{u, nu-ahox}", "en-u-nu-ahox"},
                 {"{u, sd-usnx}", "en-u-sd-usnx"},
                 {"{u, tz-adalx}", "en-u-tz-adalx"},
                 {"{u, va-posit}", "en-u-va-posit"},
-
+                
                 // too many items
-
+                
                 {"{u, cu-usd}", "en-u-cu-adp-usd"},
 
                 // use deprecated subtags. testDeprecated checks if they work when Datasubtype.deprecated is added
@@ -175,7 +175,7 @@ public class TestLocaleValidity extends TestFmwk {
         };
         final LinkedHashSet<String> foundKeys = new LinkedHashSet<String>();
         check(tests, foundKeys, Datasubtype.regular, Datasubtype.unknown);
-
+        
         LinkedHashSet<String> missing = new LinkedHashSet(KeyTypeData.getBcp47Keys());
         missing.removeAll(foundKeys);
         if (!assertEquals("Missing keys", Collections.EMPTY_SET, missing)) {
@@ -196,7 +196,7 @@ public class TestLocaleValidity extends TestFmwk {
         }
     }
 
-    // TODO(user): turned off for failure - need to investigate
+    // TODO(junit): turned off for failure - need to investigate
     @Ignore
     @Test
     public void testMissing() {
@@ -274,8 +274,8 @@ public class TestLocaleValidity extends TestFmwk {
     private void addKeys(ULocale ulocale, Set<String> keys) {
         for (char cp : ulocale.getExtensionKeys()) {
             switch (cp) {
-            case 't':
-            case 'u':
+            case 't': 
+            case 'u': 
                 String extensionString = ulocale.getExtension(cp);
                 String[] parts = extensionString.split("-");
                 for (String part : parts) {
@@ -316,11 +316,11 @@ public class TestLocaleValidity extends TestFmwk {
     }
 
     private void showValid(Datasubtype expected, Datatype datatype, Set<Datasubtype> datasubtypes, String code) {
-        Datasubtype value = ValidIdentifiers.isValid(datatype, datasubtypes, code);
+        Datasubtype value = ValidIdentifiers.isValid(datatype, datasubtypes, code);   
         assertEquals(datatype + ", " + datasubtypes + ", " + code, expected, value);
     }
     private void showValid(Datasubtype expected, Datatype datatype, Set<Datasubtype> datasubtypes, String code, String code2) {
-        Datasubtype value = ValidIdentifiers.isValid(datatype, datasubtypes, code, code2);
+        Datasubtype value = ValidIdentifiers.isValid(datatype, datasubtypes, code, code2);   
         assertEquals(datatype + ", " + datasubtypes + ", " + code + ", " + code2, expected, value);
     }
 }

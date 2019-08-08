@@ -20,18 +20,18 @@ import android.icu.text.ArabicShapingException;
  * Interactive test for Arabic shaping.
  * Invoke from a command line passing args and strings.  Use '-help' to see description of arguments.
  */
-// TODO(user): wasn't running before - needs to be fixed
+// TODO(junit): wasn't running before - needs to be fixed
 public class ArabicShapingTest{
     private static final int COPY = 0;
     private static final int INPLACE = 1;
     private static final int STRING = 2;
 
-    // TODO(user): marked with a test to keep from failing during ant run
+    // TODO(junit): marked with a test to keep from failing during ant run
     @Ignore
     @Test
     public void dummyTest() {
     }
-
+    
     public static final void main(String[] args) {
         int testtype = COPY;
         int options = 0;
@@ -51,7 +51,7 @@ public class ArabicShapingTest{
                     opt = opt.substring(0, Math.min(index, 3));
                     val = arg.substring(index + 1);
                 }
-
+                
                 if (opt.equalsIgnoreCase("len")) {
                     options &= ~ArabicShaping.LENGTH_MASK;
                     if (val.equalsIgnoreCase("gs")) {
@@ -234,7 +234,7 @@ public class ArabicShapingTest{
         throw new Error(buf.toString());
     }
 
-    private static final String usage =
+    private static final String usage = 
         "Usage: [option]* [text]\n" +
         "  where option is in the format '-opt[:val]'\n" +
         "  options are:\n" +
@@ -251,7 +251,7 @@ public class ArabicShapingTest{
         "    -tes:[cp|ip|st]       (test type: copy, in place, string)\n" +
         "    -help                 (print this help message)\n" +
         "  text can contain unicode escape values in the format '\\uXXXX' only\n";
-
+        
     private static String escapedText(char[] text, int start, int length) {
         StringBuffer buf = new StringBuffer();
         for (int i = start, e = start + length; i < e; ++i) {

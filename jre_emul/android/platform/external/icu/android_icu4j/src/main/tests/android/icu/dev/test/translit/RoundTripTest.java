@@ -168,7 +168,7 @@ public class RoundTripTest extends TestFmwk {
     public void TestHangul() throws IOException {
         long start = System.currentTimeMillis();
         TransliterationTest t = new TransliterationTest("Latin-Hangul", 5);
-        boolean TEST_ALL = getBooleanProperty("HangulRoundTripAll", false);
+        boolean TEST_ALL = getBooleanProperty("HangulRoundTripAll", false); 
         if (TEST_ALL && TestFmwk.getExhaustiveness() == 10) {
             t.setPairLimit(Integer.MAX_VALUE); // only go to the limit if we have TEST_ALL and getInclusion
         }
@@ -345,7 +345,7 @@ public class RoundTripTest extends TestFmwk {
             logln("TestGreek needs to be updated to remove delete the section marked [:Age=4.0:] filter");
         }
 
-        return
+        return 
                 "[\u003B\u00B7[[:Greek:]&[:Letter:]]-[" +
                 "\u1D26-\u1D2A" + // L&   [5] GREEK LETTER SMALL CAPITAL GAMMA..GREEK LETTER SMALL CAPITAL PSI
                 "\u1D5D-\u1D61" + // Lm   [5] MODIFIER LETTER SMALL BETA..MODIFIER LETTER SMALL CHI
@@ -423,15 +423,15 @@ public class RoundTripTest extends TestFmwk {
         if (FIX_ME) {
             new TransliterationTest("Latin-Thai")
             .test("[a-zA-Z\u0142\u1ECD\u00E6\u0131\u0268\u02CC]",
-                    "[\u0E01-\u0E3A\u0E40-\u0E5B]",
+                    "[\u0E01-\u0E3A\u0E40-\u0E5B]", 
                     "[a-zA-Z\u0142\u1ECD\u00E6\u0131\u0268\u02B9\u02CC]",
                     null, this, new LegalThai());
         } else {
             new TransliterationTest("Latin-Thai")
             .test("[a-zA-Z\u0142\u1ECD\u00E6\u0131\u0268\u02CC]",
-                    "[\u0E01-\u0E3A\u0E40-\u0E5B]",
+                    "[\u0E01-\u0E3A\u0E40-\u0E5B]", 
                     "[a-zA-Z\u0142\u1ECD\u00E6\u0131\u0268\u02B9\u02CC]",
-                    "[\u0E4F]", this, new LegalThai());
+                    "[\u0E4F]", this, new LegalThai());   
         }
 
         showElapsed(start, "TestThai");
@@ -897,7 +897,7 @@ public class RoundTripTest extends TestFmwk {
              */
             /* comment lines below  when transliterator is fixed */
             // start
-            // TODO(user): Fix ticket #8989, transliterate U+0970.
+            // TODO(Mark): Fix ticket #8989, transliterate U+0970.
             String minusDevAbb = logKnownIssue("cldrbug:4375", null) ? "-[\u0970]" : "";
 
             new TransliterationTest(interIndicArray[i][0], 50)
@@ -1180,7 +1180,7 @@ public class RoundTripTest extends TestFmwk {
         }
 
         /**
-         * Will test
+         * Will test 
          * that everything in sourceRange maps to targetRange,
          * that everything in targetRange maps to backtoSourceRange
          * that everything roundtrips from target -> source -> target, except roundtripExceptions
@@ -1626,7 +1626,7 @@ public class RoundTripTest extends TestFmwk {
             StringBuffer result = new StringBuffer();
             result.append("\u200E").append(s).append("\u200E (").append(TestUtility.hex(s)).append("/");
             if (false) { // append age, as a check
-                int cp = 0;
+                int cp = 0;    
                 for (int i = 0; i < s.length(); i += UTF16.getCharCount(cp)) {
                     cp = UTF16.charAt(s, i);
                     if (i > 0) result.append(", ");
@@ -1637,7 +1637,7 @@ public class RoundTripTest extends TestFmwk {
             return result.toString();
         }
 
-        final void logWrongScript(String label, String from, String to,
+        final void logWrongScript(String label, String from, String to, 
                 UnicodeSet shouldContainAll, UnicodeSet shouldNotContainAny) {
             if (++errorCount > errorLimit) {
                 throw new TestTruncated("Test truncated; too many failures");

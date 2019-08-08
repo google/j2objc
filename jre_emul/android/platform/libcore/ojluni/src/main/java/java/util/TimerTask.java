@@ -121,6 +121,34 @@ public abstract class TimerTask implements Runnable {
         }
     }
 
+    /**
+     * Returns the <i>scheduled</i> execution time of the most recent
+     * <i>actual</i> execution of this task.  (If this method is invoked
+     * while task execution is in progress, the return value is the scheduled
+     * execution time of the ongoing task execution.)
+     *
+     * <p>This method is typically invoked from within a task's run method, to
+     * determine whether the current execution of the task is sufficiently
+     * timely to warrant performing the scheduled activity:
+     * <pre>{@code
+     *   public void run() {
+     *       if (System.currentTimeMillis() - scheduledExecutionTime() >=
+     *           MAX_TARDINESS)
+     *               return;  // Too late; skip this execution.
+     *       // Perform the task
+     *   }
+     * }</pre>
+     * This method is typically <i>not</i> used in conjunction with
+     * <i>fixed-delay execution</i> repeating tasks, as their scheduled
+     * execution times are allowed to drift over time, and so are not terribly
+     * significant.
+     *
+     * @return the time at which the most recent execution of this task was
+     *         scheduled to occur, in the format returned by Date.getTime().
+     *         The return value is undefined if the task has yet to commence
+     *         its first execution.
+     * @see Date#getTime()
+     */
     public long scheduledExecutionTime() {
         synchronized(lock) {
             return (period < 0 ? nextExecutionTime + period

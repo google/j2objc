@@ -358,7 +358,7 @@ public abstract class AbstractCookiesTest extends TestCase {
                 + "b=\"banana\";$Path=\"/\";$Domain=\"" + server.getCookieDomain() + "\"");
     }
 
-// TODO(user): b/65289980.
+// TODO(zgao): b/65289980.
 //    public void testRedirectsDoNotIncludeTooManyCookies() throws Exception {
 //        MockWebServer redirectTarget = new MockWebServer();
 //        redirectTarget.enqueue(new MockResponse().setBody("A"));
@@ -399,7 +399,7 @@ public abstract class AbstractCookiesTest extends TestCase {
      * manager should show up in the request and in {@code
      * getRequestProperties}.
      */
-// TODO(user): b/65289980.
+// TODO(zgao): b/65289980.
 //    public void testHeadersSentToCookieHandler() throws IOException, InterruptedException {
 //        final Map<String, List<String>> cookieHandlerHeaders = new HashMap<String, List<String>>();
 //        CookieHandler.setDefault(new CookieManager(createCookieStore(), null) {

@@ -333,7 +333,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (options.nullability()) {
           print(", nonnull");
         }
-        // TODO(user): use nameTable.getSwiftName() when it is implemented.
+        // TODO(antoniocortes): use nameTable.getSwiftName() when it is implemented.
         printf(") %s *%s NS_SWIFT_NAME(%s);", typeName, accessorName, accessorName);
       }
     }

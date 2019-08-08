@@ -387,7 +387,7 @@ public class SocketTest extends junit.framework.TestCase {
                     s.connect(unreachableIp, 0 /* infinite */);
                     fail("Connect returned unexpectedly for: " + unreachableIp);
                 } catch (SocketException expected) {
-                    /* TODO(user): fix NET_ThrowByNameWithLastError() and enable.
+                    /* TODO(zgao): fix NET_ThrowByNameWithLastError() and enable.
                     assertTrue(expected.getMessage().contains("Socket closed"));
                     */
                     assertTrue(expected.getMessage().contains("connect failed"));

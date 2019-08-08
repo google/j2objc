@@ -820,6 +820,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/ConcurrentModificationExceptionTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
+    org/apache/harmony/tests/java/util/DuplicateFormatFlagsExceptionTest.java \
     org/apache/harmony/tests/java/util/EmptyStackExceptionTest.java \
     org/apache/harmony/tests/java/util/EnumMapTest.java \
     org/apache/harmony/tests/java/util/EnumSetTest.java \
@@ -1149,6 +1150,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedSet.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedMap.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Collections_CheckedSortedSet.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/DuplicateFormatFlagsExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/EnumSetTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/EnumMapTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/HashSetTest.golden.ser \

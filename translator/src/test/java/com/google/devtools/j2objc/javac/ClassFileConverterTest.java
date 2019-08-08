@@ -239,7 +239,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  static final int e = 1984;",
         "  static final long f = 87539319L;",
         "  static final float g = 3.14F;",
-       /* TODO(user): format specifiers, casts, floating point roundoff
+       /* TODO(manvithn): format specifiers, casts, floating point roundoff
         * "  static final float h = (float) 3.14;",
         * "  static final double gh = 3.14F;", */
         "  static final double i = 2.718D;",
@@ -251,7 +251,7 @@ public class ClassFileConverterTest extends GenerationTest {
         "  final int ee = 1984;",
         "  final long ff = 87539319L;",
         "  final float gg = 3.14F;",
-       /* TODO(user): format specifiers, casts, floating point roundoff
+       /* TODO(manvithn): format specifiers, casts, floating point roundoff
         * "  final float hh = (float) 3.14;",
         * "  final double ghgh = 3.14F;", */
         "  final double ii = 2.718D;",
@@ -307,7 +307,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //    assertEqualSrcClassfile(type, source);
 //  }
 //
-/* TODO(user): enum constants are created in static initializer; executable pairs not complete
+/* TODO(manvithn): enum constants are created in static initializer; executable pairs not complete
  * cite example: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html */
 //  public void testInitializedEnum() throws IOException {
 //    String type = "foo.bar.Planet";
@@ -835,7 +835,7 @@ public class ClassFileConverterTest extends GenerationTest {
     String source = String.join("\n",
         "package foo.bar;",
         "class Test {",
-//        //TODO(user): decompiled code seems needlessly verbose for this test
+//        //TODO(manvithn): decompiled code seems needlessly verbose for this test
 //        "  int unaryPlusMinus(byte i) {",
 //        "    int j = +i;",
 //        "    int k = -j;",
@@ -1246,7 +1246,7 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualSrcClassfile(type, source);
   }
 
-//  //TODO(user): run above nested loop test but with labeled outer loops
+//  //TODO(manvithn): run above nested loop test but with labeled outer loops
 //  public void testLabeledBranches() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
@@ -1259,7 +1259,7 @@ public class ClassFileConverterTest extends GenerationTest {
 //    assertEqualSrcClassfile(type, source);
 //  }
 //
-//  //TODO(user): may not be decompiled properly
+//  //TODO(manvithn): may not be decompiled properly
 //  public void testSwitch() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",

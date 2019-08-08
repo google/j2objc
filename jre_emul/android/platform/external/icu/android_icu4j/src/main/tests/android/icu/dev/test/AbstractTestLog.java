@@ -50,7 +50,7 @@ public abstract class AbstractTestLog implements TestLog {
      * Add a message.
      */
     public static final void log(String message) {
-        // TODO(user): turned off - causing OOM running under ant
+        // TODO(stuartg): turned off - causing OOM running under ant
         // Probably temporary - must decide what to do with these
         //System.out.print(message);
         //msg(message, LOG, true, false);
@@ -60,7 +60,7 @@ public abstract class AbstractTestLog implements TestLog {
      * Add a message and newline.
      */
     public static final void logln(String message) {
-        // TODO(user): turned off - causing OOM running under ant
+        // TODO(stuartg): turned off - causing OOM running under ant
         // Probably temporary - must decide what to do with these
         //System.out.println(message);
         //msg(message, LOG, true, true);
@@ -87,7 +87,7 @@ public abstract class AbstractTestLog implements TestLog {
      */
     public static final void warn(String message) {
         Assert.fail(message);
-        // TODO(user): turned off - causing OOM running under ant
+        // TODO(stuartg): turned off - causing OOM running under ant
         //System.out.print(message);
         //msg(message, WARN, true, false);
     }
@@ -97,7 +97,7 @@ public abstract class AbstractTestLog implements TestLog {
      */
     public static final void warnln(String message) {
         Assert.fail(message);
-        // TODO(user): turned off - causing OOM running under ant
+        // TODO(stuartg): turned off - causing OOM running under ant
         //System.out.println(message);
         //msg(message, WARN, true, true);
     }
@@ -127,7 +127,7 @@ public abstract class AbstractTestLog implements TestLog {
 
         public void msg(String message, int level, boolean incCount, boolean newln) {
             if (delegate != null) {
-                // TODO(user): figure out what to do with this message call
+                // TODO(junit): figure out what to do with this message call
                 TestFmwk.msg(message, level, incCount, newln);
                 //delegate.msg(message, level, incCount, newln);
             }

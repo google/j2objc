@@ -1120,7 +1120,7 @@ public class Thread implements Runnable {
   /**
    * Returns a map of stack traces for all live threads.
    */
-  // TODO(user): Can we update this to return something useful?
+  // TODO(dweis): Can we update this to return something useful?
   public static Map<Thread,StackTraceElement[]> getAllStackTraces() {
     return Collections.<Thread, StackTraceElement[]>emptyMap();
   }

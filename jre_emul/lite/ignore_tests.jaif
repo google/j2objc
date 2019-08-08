@@ -528,6 +528,11 @@ class CollectionsTest:
     @ObjectiveCName("ignoreSerializationSelf_newSetFromMap")
   method testSerializationSelf_asLifoQueue()V:
     @ObjectiveCName("ignoreSerializationSelf_asLifoQueue")
+class DuplicateFormatFlagsExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
 class EnumMapTest:
   method testSerializationSelf()V:
     @ObjectiveCName("ignoreSerializationSelf")

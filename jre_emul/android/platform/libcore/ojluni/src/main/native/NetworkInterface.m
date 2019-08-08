@@ -692,7 +692,7 @@ static netif *enumInterfaces(JNIEnv *env) {
 
   int sock = openSocket(env, AF_INET);
 
-  // TODO(user): fix ExceptionOccurred().
+  // TODO(zgao): fix ExceptionOccurred().
   // if (sock < 0 && (*env)->ExceptionOccurred(env)) {
   if (sock < 0) {
     return NULL;

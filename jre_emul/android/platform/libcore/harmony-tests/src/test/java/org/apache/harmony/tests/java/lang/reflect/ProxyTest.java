@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.security.AllPermission;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 
 public class ProxyTest extends junit.framework.TestCase {
@@ -107,7 +109,7 @@ public class ProxyTest extends junit.framework.TestCase {
     }
 
 
-// TODO(user): fix/enable.
+// TODO(zgao): fix/enable.
 //    /**
 //     * java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader,
 //     *        java.lang.Class[], java.lang.reflect.InvocationHandler)
@@ -245,7 +247,7 @@ public class ProxyTest extends junit.framework.TestCase {
         assertNotNull(o);
     }
 
-// TODO(user): fix/enable.
+// TODO(zgao): fix/enable.
 //    public void test_newProxyInstance_withNonCompatibleReturnTypes() {
 //        try {
 //            Proxy.newProxyInstance(this.getClass().getClassLoader(),

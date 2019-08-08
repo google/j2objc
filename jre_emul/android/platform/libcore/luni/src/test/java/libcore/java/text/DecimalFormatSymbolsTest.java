@@ -75,7 +75,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
     // https://code.google.com/p/android/issues/detail?id=170718
     public void testSerializationOfMultiCharNegativeAndPercentage() throws Exception {
         DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.forLanguageTag("ar-AR"));
-        // TODO(user): Investigate.
+        // TODO(narayan): Investigate.
         // assertTrue(dfs.getMinusSignString().length() > 1);
         // assertTrue(dfs.getPercentString().length() > 1);
 

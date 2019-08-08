@@ -785,6 +785,7 @@
 		FA1DD7C1215419D400D0B800 /* TestSSLSocketPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7C0215419D400D0B800 /* TestSSLSocketPair.m */; };
 		FA1F0236229749AF00AE9C73 /* BreakIteratorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F02352297499F00AE9C73 /* BreakIteratorTest.m */; };
 		FA1F0238229749FC00AE9C73 /* BreakIteratorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F0237229749FB00AE9C73 /* BreakIteratorTest.m */; };
+		FA23455522FC9761007FABB9 /* DuplicateFormatFlagsExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA23455422FC9761007FABB9 /* DuplicateFormatFlagsExceptionTest.m */; };
 		FA24DE4922E75B27000DEC19 /* SelfUseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DE4222E75B26000DEC19 /* SelfUseTest.m */; };
 		FA24DE4A22E75B27000DEC19 /* JSONTokenerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DE4322E75B26000DEC19 /* JSONTokenerTest.m */; };
 		FA24DE4B22E75B27000DEC19 /* JSONStringerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DE4422E75B26000DEC19 /* JSONStringerTest.m */; };
@@ -4072,6 +4073,7 @@
 		FA1F0234229748EC00AE9C73 /* IcuIteratorWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IcuIteratorWrapper.h; path = build_result/Classes/java/text/IcuIteratorWrapper.h; sourceTree = "<group>"; };
 		FA1F02352297499F00AE9C73 /* BreakIteratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakIteratorTest.m; path = libcore/java/text/BreakIteratorTest.m; sourceTree = "<group>"; };
 		FA1F0237229749FB00AE9C73 /* BreakIteratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakIteratorTest.m; path = org/apache/harmony/tests/java/text/BreakIteratorTest.m; sourceTree = "<group>"; };
+		FA23455422FC9761007FABB9 /* DuplicateFormatFlagsExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DuplicateFormatFlagsExceptionTest.m; path = org/apache/harmony/tests/java/util/DuplicateFormatFlagsExceptionTest.m; sourceTree = "<group>"; };
 		FA24DE4222E75B26000DEC19 /* SelfUseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelfUseTest.m; path = libcore/org/json/SelfUseTest.m; sourceTree = "<group>"; };
 		FA24DE4322E75B26000DEC19 /* JSONTokenerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONTokenerTest.m; path = libcore/org/json/JSONTokenerTest.m; sourceTree = "<group>"; };
 		FA24DE4422E75B26000DEC19 /* JSONStringerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONStringerTest.m; path = libcore/org/json/JSONStringerTest.m; sourceTree = "<group>"; };
@@ -6878,6 +6880,7 @@
 				FA61CF9222F35D87006F903E /* DoubleSummaryStatisticsTest.m */,
 				0620288D1D512E78001EE455 /* DoubleTest.m */,
 				062026551D512CBE001EE455 /* DoubleTest.m */,
+				FA23455422FC9761007FABB9 /* DuplicateFormatFlagsExceptionTest.m */,
 				062029211D512F25001EE455 /* ECFieldF2mTest.m */,
 				062029221D512F25001EE455 /* ECFieldFpTest.m */,
 				062029231D512F25001EE455 /* ECGenParameterSpecTest.m */,
@@ -8424,6 +8427,7 @@
 				FA61CFB422F35D8A006F903E /* EvilMapTest.m in Sources */,
 				0620274F1D512D82001EE455 /* SampleListener.m in Sources */,
 				FA24DEA122EA1335000DEC19 /* UnknownFormatFlagsExceptionTest.m in Sources */,
+				FA23455522FC9761007FABB9 /* DuplicateFormatFlagsExceptionTest.m in Sources */,
 				062027491D512D82001EE455 /* MisprintBean.m in Sources */,
 				062026101D512CA1001EE455 /* InputStreamReaderTest.m in Sources */,
 				FA5C0CA521BFFE6B000B6275 /* NoSuchMethodErrorTest.m in Sources */,

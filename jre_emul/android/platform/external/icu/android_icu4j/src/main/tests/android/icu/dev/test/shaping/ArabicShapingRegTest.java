@@ -132,17 +132,17 @@ public class ArabicShapingRegTest extends TestFmwk {
         "\u0628\u0653\u0631\u0653\u0639\u0020" +
         "\u0628\u0654\u0631\u0654\u0639\u0020" +
         "\u0628\u0655\u0631\u0655\u0639\u0020";
-
+    
     private static final String tashkeelShaddaRTL=
             "\u0634\u0651\u0645\u0652\u0633";
     private static final String tashkeelShaddaLTR=
             "\u0633\u0652\u0645\u0651\u0634";
 
     private static final String ArMathSym =
-        "\uD83B\uDE00\uD83B\uDE01\uD83B\uDE02\uD83B\uDE03\u0020" +
+        "\uD83B\uDE00\uD83B\uDE01\uD83B\uDE02\uD83B\uDE03\u0020" + 
         "\uD83B\uDE24\uD83B\uDE05\uD83B\uDE06\u0020" +
         "\uD83B\uDE07\uD83B\uDE08\uD83B\uDE09\u0020" +
-        "\uD83B\uDE0A\uD83B\uDE0B\uD83B\uDE0C\uD83B\uDE0D\u0020" +
+        "\uD83B\uDE0A\uD83B\uDE0B\uD83B\uDE0C\uD83B\uDE0D\u0020" + 
         "\uD83B\uDE0E\uD83B\uDE0F\uD83B\uDE10\uD83B\uDE11\u0020" +
         "\uD83B\uDE12\uD83B\uDE13\uD83B\uDE14\uD83B\uDE15\u0020" +
         "\uD83B\uDE16\uD83B\uDE17\uD83B\uDE18\u0020" +
@@ -153,7 +153,7 @@ public class ArabicShapingRegTest extends TestFmwk {
         "\uD83B\uDE84\uD83B\uDE85\uD83B\uDE86\u0020" +
         "\uD83B\uDE87\uD83B\uDE88\uD83B\uDE89\u0020" +
         "\uD83B\uDE8B\uD83B\uDE8C\uD83B\uDE8D\u0020" +
-        "\uD83B\uDE8E\uD83B\uDE8F\uD83B\uDE90\uD83B\uDE91\u0020" +
+        "\uD83B\uDE8E\uD83B\uDE8F\uD83B\uDE90\uD83B\uDE91\u0020" + 
         "\uD83B\uDE92\uD83B\uDE93\uD83B\uDE94\uD83B\uDE95\u0020" +
         "\uD83B\uDE96\uD83B\uDE97\uD83B\uDE98\u0020" +
         "\uD83B\uDE99\uD83B\uDE9A\uD83B\uDE9B";
@@ -161,9 +161,9 @@ public class ArabicShapingRegTest extends TestFmwk {
     private static final String ArMathSymDoubleStruck =
         "\uD83B\uDEA1\uD83B\uDEA2\uD83B\uDEA3\u0020" +
         "\uD83B\uDEA5\uD83B\uDEA6\u0020" +
-        "\uD83B\uDEA7\uD83B\uDEA8\uD83B\uDEA9\u0020" +
+        "\uD83B\uDEA7\uD83B\uDEA8\uD83B\uDEA9\u0020" + 
         "\uD83B\uDEAB\uD83B\uDEAC\uD83B\uDEAD\u0020" +
-        "\uD83B\uDEAE\uD83B\uDEAF\uD83B\uDEB0\uD83B\uDEB1\u0020" +
+        "\uD83B\uDEAE\uD83B\uDEAF\uD83B\uDEB0\uD83B\uDEB1\u0020" + 
         "\uD83B\uDEB2\uD83B\uDEB3\uD83B\uDEB4\uD83B\uDEB5\u0020" +
         "\uD83B\uDEB6\uD83B\uDEB7\uD83B\uDEB8\u0020" +
         "\uD83B\uDEB9\uD83B\uDEBA\uD83B\uDEBB";
@@ -171,7 +171,7 @@ public class ArabicShapingRegTest extends TestFmwk {
     private static final String ArMathSymInitial =
         "\uD83B\uDE21\uD83B\uDE22\u0020" +
         "\uD83B\uDE27\uD83B\uDE29\u0020" +
-        "\uD83B\uDE2A\uD83B\uDE2B\uD83B\uDE2C\uD83B\uDE2D\u0020" +
+        "\uD83B\uDE2A\uD83B\uDE2B\uD83B\uDE2C\uD83B\uDE2D\u0020" + 
         "\uD83B\uDE2E\uD83B\uDE2F\uD83B\uDE30\uD83B\uDE31\u0020" +
         "\uD83B\uDE32\uD83B\uDE34\uD83B\uDE35\u0020" +
         "\uD83B\uDE36\uD83B\uDE37\u0020" +
@@ -180,7 +180,7 @@ public class ArabicShapingRegTest extends TestFmwk {
     private static final String ArMathSymTailed =
         "\uD83B\uDE42\uD83B\uDE47\uD83B\uDE49\uD83B\uDE4B\u0020" +
         "\uD83B\uDE4D\uD83B\uDE4E\uD83B\uDE4F\u0020" +
-        "\uD83B\uDE51\uD83B\uDE52\uD83B\uDE54\uD83B\uDE57\u0020" +
+        "\uD83B\uDE51\uD83B\uDE52\uD83B\uDE54\uD83B\uDE57\u0020" + 
         "\uD83B\uDE59\uD83B\uDE5B\uD83B\uDE5D\uD83B\uDE5F";
 
     private static final String ArMathSymStretched =
@@ -294,7 +294,7 @@ public class ArabicShapingRegTest extends TestFmwk {
                           "\ufe8f\u0653\ufeae\u0653\ufecb\u0020" +
                           "\ufe8f\u0654\ufeae\u0654\ufecb\u0020" +
                           "\ufe8f\u0655\ufeae\u0655\ufecb\u0020"),
-
+        
         TestData.standard(tashkeelShaddaRTL,
                           ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_BEGIN |ArabicShaping.TEXT_DIRECTION_VISUAL_RTL ,
                           "\u0020\ufeb7\ufe7d\ufee4\ufeb2"),
@@ -340,7 +340,7 @@ public class ArabicShapingRegTest extends TestFmwk {
                           "\uD83B\uDE8E\uD83B\uDE8F\uD83B\uDE90\uD83B\uDE91\u0020" +
                           "\uD83B\uDE92\uD83B\uDE93\uD83B\uDE94\uD83B\uDE95\u0020" +
                           "\uD83B\uDE96\uD83B\uDE97\uD83B\uDE98\u0020" +
-                          "\uD83B\uDE99\uD83B\uDE9A\uD83B\uDE9B"),
+                          "\uD83B\uDE99\uD83B\uDE9A\uD83B\uDE9B"),  
         TestData.standard(ArMathSymDoubleStruck,
                           ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_RESIZE|ArabicShaping.TEXT_DIRECTION_VISUAL_RTL ,
                           "\uD83B\uDEA1\uD83B\uDEA2\uD83B\uDEA3\u0020" +
@@ -350,25 +350,25 @@ public class ArabicShapingRegTest extends TestFmwk {
                           "\uD83B\uDEAE\uD83B\uDEAF\uD83B\uDEB0\uD83B\uDEB1\u0020" +
                           "\uD83B\uDEB2\uD83B\uDEB3\uD83B\uDEB4\uD83B\uDEB5\u0020" +
                           "\uD83B\uDEB6\uD83B\uDEB7\uD83B\uDEB8\u0020" +
-                          "\uD83B\uDEB9\uD83B\uDEBA\uD83B\uDEBB"),
+                          "\uD83B\uDEB9\uD83B\uDEBA\uD83B\uDEBB"),  
 
         TestData.standard(ArMathSymInitial,
-                          ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_BEGIN |ArabicShaping.TEXT_DIRECTION_VISUAL_LTR ,
+                          ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_BEGIN |ArabicShaping.TEXT_DIRECTION_VISUAL_LTR , 
                           "\uD83B\uDE21\uD83B\uDE22\u0020" +
                           "\uD83B\uDE27\uD83B\uDE29\u0020" +
                           "\uD83B\uDE2A\uD83B\uDE2B\uD83B\uDE2C\uD83B\uDE2D\u0020" +
                           "\uD83B\uDE2E\uD83B\uDE2F\uD83B\uDE30\uD83B\uDE31\u0020" +
                           "\uD83B\uDE32\uD83B\uDE34\uD83B\uDE35\u0020" +
                           "\uD83B\uDE36\uD83B\uDE37\u0020" +
-                          "\uD83B\uDE39\uD83B\uDE3B"),
+                          "\uD83B\uDE39\uD83B\uDE3B"), 
         TestData.standard(ArMathSymTailed,
-                          ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_END |ArabicShaping.TEXT_DIRECTION_VISUAL_LTR ,
+                          ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_END |ArabicShaping.TEXT_DIRECTION_VISUAL_LTR , 
                           "\uD83B\uDE42\uD83B\uDE47\uD83B\uDE49\uD83B\uDE4B\u0020" +
                           "\uD83B\uDE4D\uD83B\uDE4E\uD83B\uDE4F\u0020" +
                           "\uD83B\uDE51\uD83B\uDE52\uD83B\uDE54\uD83B\uDE57\u0020" +
-                          "\uD83B\uDE59\uD83B\uDE5B\uD83B\uDE5D\uD83B\uDE5F"),
+                          "\uD83B\uDE59\uD83B\uDE5B\uD83B\uDE5D\uD83B\uDE5F"), 
         TestData.standard(ArMathSymStretched,
-                          ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_RESIZE |ArabicShaping.TEXT_DIRECTION_VISUAL_LTR ,
+                          ArabicShaping.LETTERS_SHAPE|ArabicShaping.TASHKEEL_RESIZE |ArabicShaping.TEXT_DIRECTION_VISUAL_LTR , 
                           "\uD83B\uDE21\uFEB1\uD83B\uDE62\uFEE9"),
 
         /* logical unshape */
@@ -573,7 +573,7 @@ public class ArabicShapingRegTest extends TestFmwk {
         }
     }
 
-    // TODO(user): remove this and convert callers to parameterized tests
+    // TODO(junit): remove this and convert callers to parameterized tests
     private void reportTestFailure(int index, TestData test, ArabicShaping shaper, String result, Exception error) {
         if (error != null && error instanceof MissingResourceException ) {
             warnln(error.getMessage());
@@ -644,8 +644,8 @@ public class ArabicShapingRegTest extends TestFmwk {
         char[] source = {'d','u','m','m','y'};
         char[] dest = {'d','u','m','m','y'};
         int[] negNum = {-1,-2,-5,-10,-100};
-
-
+        
+        
         for(int i=0; i<negNum.length; i++){
             try{
                 // Checks when "sourceStart < 0"
@@ -653,7 +653,7 @@ public class ArabicShapingRegTest extends TestFmwk {
                 errln("ArabicShaping.shape(char[],int,int,char[],int,int) was " +
                         "suppose to return an exception when 'sourceStart < 0'.");
             } catch(Exception e){}
-
+            
             try{
                 // Checks when "sourceLength < 0"
                 as.shape(source, 0, negNum[i], dest, 0, 0);
@@ -661,7 +661,7 @@ public class ArabicShapingRegTest extends TestFmwk {
                         "suppose to return an exception when 'sourceLength < 0'.");
             } catch(Exception e){}
         }
-
+        
         // Checks when "sourceStart + sourceLength > source.length"
         try{
             as.shape(source, 3, 3, dest, 0, 0);
@@ -683,14 +683,14 @@ public class ArabicShapingRegTest extends TestFmwk {
             errln("ArabicShaping.shape(char[],int,int,char[],int,int) was " +
                     "suppose to return an exception when 'sourceStart + sourceLength > source.length'.");
         } catch(Exception e){}
-
+        
         // Checks when "if (dest == null && destSize != 0)" is true
         try{
             as.shape(source, 2, 2, null, 0, 1);
             errln("ArabicShaping.shape(char[],int,int,char[],int,int) was " +
                     "suppose to return an exception when 'dest == null && destSize != 0'.");
         } catch(Exception e){}
-
+        
         // Checks when
         // if ((destSize != 0) && (destStart < 0 || destSize < 0 || destStart + destSize > dest.length))
         for(int i=0; i<negNum.length; i++){
@@ -700,7 +700,7 @@ public class ArabicShapingRegTest extends TestFmwk {
                         "suppose to return an exception when " +
                         "(destSize != 0) && (destStart < 0 || destSize < 0 || destStart + destSize > dest.length).");
             } catch(Exception e){}
-
+            
             try{
                 as.shape(source, 2, 2, dest, 0, negNum[i]);
                 errln("ArabicShaping.shape(char[],int,int,char[],int,int) was " +
@@ -708,7 +708,7 @@ public class ArabicShapingRegTest extends TestFmwk {
                         "(destSize != 0) && (destStart < 0 || destSize < 0 || destStart + destSize > dest.length).");
             } catch(Exception e){}
         }
-
+        
         // Checks when "destStart + destSize > dest.length"
         try{
             as.shape(source, 2, 2, dest, 3, 3);
@@ -734,9 +734,9 @@ public class ArabicShapingRegTest extends TestFmwk {
                     "suppose to return an exception when " +
                     "(destSize != 0) && (destStart < 0 || destSize < 0 || destStart + destSize > dest.length).");
         } catch(Exception e){}
-
+        
         // Tests when "throw new IllegalArgumentException("Wrong Tashkeel argument")"
-        int[] invalid_Tashkeel = {-1000, -500, -100};
+        int[] invalid_Tashkeel = {-1000, -500, -100}; 
         for(int i=0; i < invalid_Tashkeel.length; i++){
             ArabicShaping arabicShape = new ArabicShaping(invalid_Tashkeel[i]);
             try {
@@ -795,3 +795,4 @@ public class ArabicShapingRegTest extends TestFmwk {
 
     }
 }
+
