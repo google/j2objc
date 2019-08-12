@@ -69,13 +69,7 @@ public final class ProviderList {
     // used to avoid explicit null checks in various places
     private static final Provider EMPTY_PROVIDER =
         new Provider("##Empty##", 1.0d, "initialization in progress") {
-            // BEGIN Android-added
-            // TODO(user): the computation of the default in Android yields
-            // -2591074641286775682L . Check why there's a difference and possibly change number
-            // accordingly.
-            // END Android-added
             private static final long serialVersionUID = 1151354171352296389L;
-            // END Android-changed
             // override getService() to return null slightly faster
             public Service getService(String type, String algorithm) {
                 return null;
