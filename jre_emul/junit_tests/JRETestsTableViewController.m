@@ -48,14 +48,15 @@
   NSArray *initialTests = @[
     // Test display name          Test class name
     @"All JRE Tests",             @"AllJreTests",
-    @"Concurrency Tests",         @"ConcurrencyTests",
+    @"Concurrency Tests",         @"jsr166.ConcurrencyTests",
     @"IosSecurityProvider Tests", @"com.google.j2objc.security.IosSecurityProviderTests",
     @"java.beans Tests",          @"org.apache.harmony.beans.tests.java.beans.AllTests",
     @"java.io Tests",             @"libcore.java.io.SmallTests",
     @"java.net Tests",            @"libcore.java.net.SmallTests",
-    @"java.util.logging Tests",   @"org.apache.harmony.logging.tests.java.util.logging.AllTests",
+    @"java.text Tests",           @"libcore.java.text.SmallTests",
     @"java.util.zip Tests",       @"libcore.java.util.zip.SmallTests",
-    @"JSON Tests",                @"org.json.SmallTests",
+    @"Java 8 Tests",              @"com.google.j2objc.java8.SmallTests",
+    @"JSON Tests",                @"libcore.org.json.SmallTests",
     @"Reflection Tests",          @"com.google.j2objc.ReflectionTests",
   ];
   self.testNames = [NSMutableArray array];

@@ -9011,7 +9011,7 @@
 		06619390155848D70004DAFE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_TESTABILITY = YES;
@@ -9035,14 +9035,14 @@
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation";
-				VALID_ARCHS = "x86_64 i386";
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
 		06619391155848D70004DAFE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -9058,7 +9058,7 @@
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "x86_64 i386";
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};
@@ -9235,7 +9235,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests build_result/tests/arc";
-				VALID_ARCHS = "armv7 armv7s i386 x86_64 arm64";
+				VALID_ARCHS = "x86_64 i386";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -9293,7 +9293,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests build_result/tests/arc";
-				VALID_ARCHS = "armv7 armv7s i386 x86_64 arm64";
+				VALID_ARCHS = "x86_64 i386";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
