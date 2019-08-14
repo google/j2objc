@@ -1293,6 +1293,15 @@ class SystemClassLoader extends ClassLoader {
   protected native Class<?> findClass(String name) throws ClassNotFoundException;
 
   @Override
+  public Package getPackage(String name) {
+      Package pkg = super.getPackage(name);
+      if (pkg == null) {
+          pkg = definePackage(name, null, null, null, null, null, null, null);
+      }
+      return pkg;
+  }
+
+  @Override
   protected native URL findResource(String name);
 
   @Override

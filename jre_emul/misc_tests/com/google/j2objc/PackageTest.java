@@ -15,7 +15,6 @@
 package com.google.j2objc;
 
 import junit.framework.TestCase;
-
 import java.lang.annotation.Annotation;
 
 /**
@@ -36,5 +35,14 @@ public class PackageTest extends TestCase {
   public void testLookupPackageInfoClass() throws Exception {
     Class<?> cls = Class.forName("com.google.j2objc.package-info");
     assertEquals("com.google.j2objc.package-info", cls.getName());
+  }
+
+  // Verify that a package is created when it's not part of a loaded class.
+  public void testGetUnloadedPackage() {
+    Package pkg = Package.getPackage("foo.bar.mumble");
+    assertNotNull(pkg);
+
+    // Verify cached package is now returned.
+    assertSame(pkg, Package.getPackage("foo.bar.mumble"));
   }
 }

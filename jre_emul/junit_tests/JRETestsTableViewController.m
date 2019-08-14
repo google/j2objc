@@ -53,6 +53,7 @@
     @"java.beans Tests",          @"org.apache.harmony.beans.tests.java.beans.AllTests",
     @"java.io Tests",             @"libcore.java.io.SmallTests",
     @"java.net Tests",            @"libcore.java.net.SmallTests",
+    @"java.nio Tests",            @"com.google.j2objc.nio.NioTests",
     @"java.text Tests",           @"libcore.java.text.SmallTests",
     @"java.util.zip Tests",       @"libcore.java.util.zip.SmallTests",
     @"Java 8 Tests",              @"com.google.j2objc.java8.SmallTests",
