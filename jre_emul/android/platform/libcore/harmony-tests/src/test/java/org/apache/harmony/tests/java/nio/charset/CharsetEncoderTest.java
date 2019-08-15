@@ -796,16 +796,16 @@ public class CharsetEncoderTest extends TestCase {
 		assertByteArray(out, addSurrogate(unibytes));
 	}
 
-	void printByteBuffer(ByteBuffer buffer) {
-		System.out.println("print buffer");
-		if (buffer.position() != 0) {
-			buffer.flip();
-		}
-		byte[] ba = buffer.array();
-		for (int i = 0; i < ba.length; i++) {
-			System.out.println(Integer.toHexString(ba[i]));
-		}
-	}
+//	void printByteBuffer(ByteBuffer buffer) {
+//		System.out.println("print buffer");
+//		if (buffer.position() != 0) {
+//			buffer.flip();
+//		}
+//		byte[] ba = buffer.array();
+//		for (int i = 0; i < ba.length; i++) {
+//			System.out.println(Integer.toHexString(ba[i]));
+//		}
+//	}
 
 	public void testEncodeCharBufferByteBufferbooleanExceptionFalse()
 			throws CharacterCodingException {
@@ -853,9 +853,9 @@ public class CharsetEncoderTest extends TestCase {
 			assertSame(CoderResult.UNDERFLOW, encoder.encode(in, out,
 					endOfInput));
 			assertCodingErrorAction(endOfInput, out, in, unibytesWithRep);
-		} else {
-			System.out.println("Cannot find malformed char buffer for "
-					+ cs.name());
+//		} else {
+//			System.out.println("Cannot find malformed char buffer for "
+//					+ cs.name());
 		}
 
 		// Unmapped Exception:
@@ -882,9 +882,9 @@ public class CharsetEncoderTest extends TestCase {
 			assertSame(CoderResult.UNDERFLOW, encoder.encode(in, out,
 					endOfInput));
 			assertCodingErrorAction(endOfInput, out, in, unibytesWithRep);
-		} else {
-			System.out.println("Cannot find unmapped char buffer for "
-					+ cs.name());
+//		} else {
+//			System.out.println("Cannot find unmapped char buffer for "
+//					+ cs.name());
 		}
 
 		// RuntimeException
