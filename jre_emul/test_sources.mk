@@ -780,6 +780,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/charset/CharsetDecoder2Test.java \
     org/apache/harmony/tests/java/nio/charset/CharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/CharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/CharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/CoderMalfunctionErrorTest.java \
     org/apache/harmony/tests/java/nio/charset/CoderResultTest.java \
     org/apache/harmony/tests/java/nio/charset/CodingErrorActionTest.java \
@@ -1056,7 +1057,6 @@ FAILING_CHARSET_TESTS = \
     org/apache/harmony/tests/java/nio/charset/ASCCharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/ASCIICharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/CharsetEncoder2Test.java \
-    org/apache/harmony/tests/java/nio/charset/CharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/GBCharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/GBCharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/ISOCharsetDecoderTest.java \

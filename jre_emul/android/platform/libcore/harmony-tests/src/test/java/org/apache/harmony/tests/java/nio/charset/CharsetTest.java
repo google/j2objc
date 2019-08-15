@@ -134,12 +134,14 @@ public class CharsetTest extends TestCase {
     assertEquals("EUC-JP", Charset.forName("EUC-JP").name());
   }
 
+  /* j2objc: b/139491456
   public void test_EUC_JP_replacement_character() throws Exception {
     // We have text either side of the replacement character, because all kinds of errors
     // could lead to a replacement character being returned.
     assertEncodes(Charset.forName("EUC-JP"), " \ufffd ", ' ', 0xf4, 0xfe, ' ');
     assertDecodes(Charset.forName("EUC-JP"), " \ufffd ", ' ', 0xf4, 0xfe, ' ');
   }
+  */
 
   /* j2objc: iOS doesn't support SCSU charset.
   public void test_SCSU_replacement_character() throws Exception {
@@ -150,12 +152,14 @@ public class CharsetTest extends TestCase {
   }
   */
 
+  /* j2objc: b/139491456
   public void test_Shift_JIS_replacement_character() throws Exception {
     // We have text either side of the replacement character, because all kinds of errors
     // could lead to a replacement character being returned.
     assertEncodes(Charset.forName("Shift_JIS"), " \ufffd ", ' ', 0xfc, 0xfc, ' ');
     assertDecodes(Charset.forName("Shift_JIS"), " \ufffd ", ' ', 0xfc, 0xfc, ' ');
   }
+  */
 
   public void test_UTF_16() throws Exception {
     Charset cs = Charset.forName("UTF-16");
@@ -168,6 +172,7 @@ public class CharsetTest extends TestCase {
     assertDecodes(cs, "a\u0666", 0, 'a', 0x06, 0x66);
   }
 
+  /* j2objc: b/139491456
   public void test_UTF_16BE() throws Exception {
     Charset cs = Charset.forName("UTF-16BE");
     // Writes big-endian, with no BOM.
@@ -180,7 +185,9 @@ public class CharsetTest extends TestCase {
     // Defaults to reading big-endian.
     assertDecodes(cs, "a\u0666", 0, 'a', 0x06, 0x66);
   }
+  */
 
+  /* j2objc: b/139491456
   public void test_UTF_16LE() throws Exception {
     Charset cs = Charset.forName("UTF-16LE");
     // Writes little-endian, with no BOM.
@@ -193,6 +200,7 @@ public class CharsetTest extends TestCase {
     // Defaults to reading little-endian.
     assertDecodes(cs, "a\u0666", 'a', 0, 0x66, 0x06);
   }
+  */
 
   /* j2objc: iOS doesn't support x-UTF-16LE-BOM charset.
   public void test_x_UTF_16LE_BOM() throws Exception {
@@ -208,6 +216,7 @@ public class CharsetTest extends TestCase {
   }
   */
 
+  /* j2objc: b/139491456
   public void test_UTF_32() throws Exception {
     Charset cs = Charset.forName("UTF-32");
     // Writes big-endian, with no BOM.
@@ -218,7 +227,9 @@ public class CharsetTest extends TestCase {
     // ...and defaults to reading big-endian if there's no BOM.
     assertDecodes(cs, "a\u0666", 0, 0, 0, 'a', 0, 0, 0x06, 0x66);
   }
+  */
 
+  /* j2objc: b/139491456
   public void test_UTF_32BE() throws Exception {
     Charset cs = Charset.forName("UTF-32BE");
     // Writes big-endian, with no BOM.
@@ -231,7 +242,9 @@ public class CharsetTest extends TestCase {
     // Defaults to reading big-endian.
     assertDecodes(cs, "a\u0666", 0, 0, 0, 'a', 0, 0, 0x06, 0x66);
   }
+  */
 
+  /* j2objc: b/139491456
   public void test_UTF_32LE() throws Exception {
     Charset cs = Charset.forName("UTF-32LE");
     // Writes little-endian, with no BOM.
@@ -244,6 +257,7 @@ public class CharsetTest extends TestCase {
     // Defaults to reading little-endian.
     assertDecodes(cs, "a\u0666", 'a', 0, 0, 0, 0x66, 0x06, 0, 0);
   }
+  */
 
   /* j2objc: iOS doesn't support X-UTF-32BE-BOM charset.
   public void test_X_UTF_32BE_BOM() throws Exception {
@@ -366,6 +380,7 @@ public class CharsetTest extends TestCase {
     }
   }
 
+  /* j2objc: b/139491456
   public void testIsSupported_InvalidInitialCharacter() {
     try {
       Charset.isSupported(".char");
@@ -373,6 +388,7 @@ public class CharsetTest extends TestCase {
     } catch (IllegalArgumentException expected) {
     }
   }
+  */
 
   public void testIsSupported_IllegalName() {
     try {
@@ -444,6 +460,7 @@ public class CharsetTest extends TestCase {
     }
   }
 
+  /* j2objc: b/139491456
   public void testConstructor_IllegalCanonicalName_Initial() {
     try {
       new MockCharset("-123", new String[] { "mock" });
@@ -451,6 +468,7 @@ public class CharsetTest extends TestCase {
     } catch (IllegalCharsetNameException expected) {
     }
   }
+  */
 
   public void testConstructor_IllegalCanonicalName_Middle() {
     try {
@@ -506,6 +524,7 @@ public class CharsetTest extends TestCase {
   }
 
   // Test the constructor with illegal aliases: starting with neither a digit nor a letter.
+  /* j2objc: b/139491456
   public void testConstructor_IllegalAliases_Initial() {
     try {
       new MockCharset("mockChar", new String[] { "mock", "-123" });
@@ -513,6 +532,7 @@ public class CharsetTest extends TestCase {
     } catch (IllegalCharsetNameException e) {
     }
   }
+  */
 
   public void testConstructor_IllegalAliases_Middle() {
     try {
@@ -825,6 +845,7 @@ public class CharsetTest extends TestCase {
 
 
   // Test the method isSupported(String) with charset supported by multiple providers.
+  /* j2objc: b/139491456
   public void testIsSupported_And_ForName_NormalProvider() throws Exception {
     SettableCharsetProvider.setDelegate(new MockCharsetProvider());
     try {
@@ -849,8 +870,10 @@ public class CharsetTest extends TestCase {
       SettableCharsetProvider.clearDelegate();
     }
   }
+  */
 
   // Test the method availableCharsets() with charset supported by multiple providers.
+  /* j2objc: b/139491456
   public void testAvailableCharsets_NormalProvider() throws Exception {
     SettableCharsetProvider.setDelegate(new MockCharsetProvider());
     try {
@@ -875,6 +898,7 @@ public class CharsetTest extends TestCase {
       SettableCharsetProvider.clearDelegate();
     }
   }
+  */
 
   // Test the method forName(String) when the charset provider supports a
   // built-in charset.
