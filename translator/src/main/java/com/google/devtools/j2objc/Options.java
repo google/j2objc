@@ -239,7 +239,6 @@ public class Options {
       ImmutableSet.of("--patch-module", "--system", "--add-reads");
   private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
-
   static {
     // Load string resources.
     URL propertiesUrl = Resources.getResource(J2ObjC.class, "J2ObjC.properties");

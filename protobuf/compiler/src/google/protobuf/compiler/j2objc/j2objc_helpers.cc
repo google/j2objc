@@ -56,7 +56,6 @@ const char *kOuterClassNameSuffix = "OuterClass";
 // j2objc-descriptor.proto.
 const int kPackagePrefixFieldNumber = 102687446;
 
-
 static std::map<string, string> prefixes;
 static std::map<string, string> wildcardPrefixes;
 
@@ -299,7 +298,6 @@ string FileJavaPackage(const FileDescriptor* file) {
       result += file->package();
     }
   }
-
 
   return result;
 }

@@ -619,7 +619,6 @@ public final class Matcher implements MatchResult {
         return this;
     }
 
-
     /**
      * Internal helper method to append a given string to a given string buffer.
      * If the string contains any references to groups, these are replaced by
@@ -653,7 +652,6 @@ public final class Matcher implements MatchResult {
         }
     }
 
-
     /**
      * Implements a terminal append-and-replace step.
      *
@@ -674,7 +672,6 @@ public final class Matcher implements MatchResult {
         }
         return sb;
     }
-
 
 
     /**

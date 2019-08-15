@@ -40,7 +40,6 @@
 #ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 #define GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 
-
 #include <google/protobuf/compiler/code_generator.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
@@ -50,6 +49,5 @@
 #include <google/protobuf/stubs/strutil.h>
 
 using namespace google::protobuf::compiler;
-
 
 #endif  // GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__

@@ -119,4 +119,3 @@ find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) -source 1.7 \
       -cp $(CLASSPATH) -w cycle_whitelist.txt -w ../jre_emul/cycle_whitelist.txt \
       -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)
-

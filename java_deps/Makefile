@@ -48,7 +48,6 @@ DOCLET_JARS = $(DOCLAVA_JAR) $(JSILVER_JAR)
 BUILD_DIR_JARS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(INTERNAL_JARS:%=$(BUILD_DIR)/%)
 BUILD_DIR_DOCLET_JARS = $(DOCLET_JARS:%=$(BUILD_DIR)/%)
 
-
 $(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 
 # Postprocessing: update procyon to not depend on URLClassPath.

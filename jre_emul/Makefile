@@ -249,4 +249,3 @@ $(DIST_LICENSE_DIR)/icu_license.txt: icu4c/LICENSE
 $(DIST_LICENSE_DIR)/openjdk_license.txt: openjdk/LICENSE
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
-

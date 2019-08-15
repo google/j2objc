@@ -63,7 +63,6 @@ def MatchOptions(line, data):
   if match:
     data.java_package = match.group(1)
 
-
   # outer classname
   match = re.match(r'option\s+java_outer_classname\s*=\s*"([^"]+)"', line)
   if match:

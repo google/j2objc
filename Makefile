@@ -70,7 +70,6 @@ dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
 
 protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 
-
 all_dist: dist all_frameworks examples_dist
 
 clean:
@@ -109,7 +108,6 @@ test: test_translator test_jre_emul test_cycle_finder test_jre_cycles
 
 test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 	@cd protobuf/tests && $(MAKE) test
-
 
 test_all: test test_protobuf
 
