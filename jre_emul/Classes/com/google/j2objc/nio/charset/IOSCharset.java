@@ -178,7 +178,7 @@ public class IOSCharset extends Charset {
   // All encoding names must be uppercase, so map lookups are case-insensitive.
   static const CharsetInfo iosCharsets[] = {
     { kCFStringEncodingUTF8, "UTF-8", @"UTF-8", utf8_aliases, 2,
-      1.1f, 3.0f, 1.0f, 1.0f, ascii_replacement, 1 },
+      2.0f, 3.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingASCII, "ASCII", @"US-ASCII", ascii_aliases, 16,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingEUC_JP, "EUC-JP", @"EUC-JP", eucjp_aliases, 7,

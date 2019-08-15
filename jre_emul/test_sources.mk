@@ -790,6 +790,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16LECharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF8CharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTFCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTFCharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UnmappableCharacterExceptionTest.java \
     org/apache/harmony/tests/java/nio/charset/UnsupportedCharsetExceptionTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
@@ -1065,8 +1067,6 @@ FAILING_CHARSET_TESTS = \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16LECharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16LECharsetEncoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/UTFCharsetDecoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/UTFCharsetEncoderTest.java \
 
 TESTS_USE_SERIALIZATION = \
     SerializationTest.java \

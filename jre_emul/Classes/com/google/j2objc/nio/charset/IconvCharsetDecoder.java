@@ -95,7 +95,7 @@ public class IconvCharsetDecoder extends CharsetDecoder {
 
   @Override
   protected native CoderResult decodeLoop(ByteBuffer inBuf, CharBuffer outBuf) /*-[
-    jint inSize = [inBuf remaining];
+    jint inSize = [nil_chk(inBuf) remaining];
     if (inSize <= 0) {
       return JavaNioCharsetCoderResult_get_UNDERFLOW();
     }
@@ -121,7 +121,7 @@ public class IconvCharsetDecoder extends CharsetDecoder {
     }
     size_t inRawBytes = inSize;
 
-    jint outSize = [outBuf remaining];
+    jint outSize = [nil_chk(outBuf) remaining];
     IOSCharArray *outArray = nil;
     char *outRaw = NULL;
     size_t outRawBytes = outSize * BYTES_PER_CHAR;
