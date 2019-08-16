@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 public class CharsetEncoder2Test extends TestCase {
 
+    private static final boolean J2OBJC = true;
+
     /**
      * @tests java.nio.charset.CharsetEncoder.CharsetEncoder(
      *        java.nio.charset.Charset, float, float)
@@ -157,22 +159,32 @@ public class CharsetEncoder2Test extends TestCase {
     public void test_EncodeLjava_nio_CharBufferLjava_nio_ByteBufferB() throws Exception {
         Charset utf8 = Charset.forName("utf-8");
         CharsetEncoder encoder = utf8.newEncoder();
-        CharBuffer char1 = CharBuffer.wrap("\ud800");
-        CharBuffer char2 = CharBuffer.wrap("\udc00");
         ByteBuffer bytes = ByteBuffer.allocate(4);
         encoder.reset();
 
-        // If we supply just the high surrogate...
-        CoderResult result = encoder.encode(char1, bytes, false);
-        // ...we're not done...
-        assertTrue(result.isUnderflow());
-        assertEquals(4, bytes.remaining());
-        // ...but if we then supply the low surrogate...
-        result = encoder.encode(char2, bytes, true);
-        assertTrue(result.isUnderflow());
-        // ...we're done. Note that the RI loses its state in
-        // between the two characters, so it can't do this.
-        assertEquals(0, bytes.remaining());
+        // Testing between surrogate characters isn't spec'd (AFAIK) to return underflow,
+        // and iconv returns a malformed-input result instead of an underflow. Encoding
+        // the surrogate character pair together, though, works on all platforms.
+        if (!J2OBJC) {
+            CharBuffer char1 = CharBuffer.wrap("\ud800");
+            CharBuffer char2 = CharBuffer.wrap("\udc00");
+
+            // If we supply just the high surrogate...
+            CoderResult result = encoder.encode(char1, bytes, false);
+            // ...we're not done...
+            assertTrue(result.isUnderflow());
+            assertEquals(4, bytes.remaining());
+            // ...but if we then supply the low surrogate...
+            result = encoder.encode(char2, bytes, true);
+            assertTrue(result.isUnderflow());
+            // ...we're done. Note that the RI loses its state in
+            // between the two characters, so it can't do this.
+        } else {
+            CharBuffer charBuf = CharBuffer.wrap("\ud800\udc00");
+            CoderResult result = encoder.encode(charBuf, bytes, true);
+            assertTrue(result.isUnderflow());
+            assertEquals(0, bytes.remaining());
+        }
 
         // Did we get the UTF-8 for U+10000?
         assertEquals(4, bytes.limit());
@@ -199,7 +211,13 @@ public class CharsetEncoder2Test extends TestCase {
                 (byte) 0x80 };
         String s = new String(orig, "UTF-8");
         assertEquals(1, s.length());
-        assertEquals(55296, s.charAt(0));
+        if (!J2OBJC) {
+            // Android bug -- different but still incorrect in Oreo.
+            assertEquals(55296, s.charAt(0));
+        } else {
+            // This value is returned by Java runtime and utf8.js (https://mothereff.in/utf-8).
+            assertEquals(65533, s.charAt(0));
+        }
         Charset.forName("UTF-8").encode(CharBuffer.wrap(s));
 //        ByteBuffer buf = <result>
 //        for (byte o : orig) {
