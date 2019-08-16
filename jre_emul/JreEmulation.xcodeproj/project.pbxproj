@@ -3638,6 +3638,8 @@
 		06F093BA2305141D00BF7E3D /* UTF16CharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16CharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16CharsetEncoderTest.m; sourceTree = "<group>"; };
 		06F093BF2305A27E00BF7E3D /* ISOCharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ISOCharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/ISOCharsetEncoderTest.m; sourceTree = "<group>"; };
 		06F093C12305E4C600BF7E3D /* CharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/CharsetTest.m; sourceTree = "<group>"; };
+		06F093C32307201100BF7E3D /* IconvCharsetEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IconvCharsetEncoder.m; path = build_result/Classes/com/google/j2objc/nio/charset/IconvCharsetEncoder.m; sourceTree = "<group>"; };
+		06F093C42307201100BF7E3D /* IconvCharsetDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IconvCharsetDecoder.m; path = build_result/Classes/com/google/j2objc/nio/charset/IconvCharsetDecoder.m; sourceTree = "<group>"; };
 		06F28FE118972C2300676F1D /* IosMD5MessageDigest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosMD5MessageDigest.h; path = build_result/Classes/com/google/j2objc/security/IosMD5MessageDigest.h; sourceTree = "<group>"; };
 		06F28FE218972C2300676F1D /* IosMD5MessageDigest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosMD5MessageDigest.m; path = build_result/Classes/com/google/j2objc/security/IosMD5MessageDigest.m; sourceTree = "<group>"; };
 		06F28FE318972C2300676F1D /* IosSecureRandomImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSecureRandomImpl.h; path = build_result/Classes/com/google/j2objc/security/IosSecureRandomImpl.h; sourceTree = "<group>"; };
@@ -5380,6 +5382,8 @@
 				0649A7061AE0796500DE2494 /* HttpsURLConnection.m */,
 				06C73DC719180C8A001D3CC8 /* HttpURLConnection.h */,
 				06C73DC819180C8A001D3CC8 /* HttpURLConnection.m */,
+				06F093C42307201100BF7E3D /* IconvCharsetDecoder.m */,
+				06F093C32307201100BF7E3D /* IconvCharsetEncoder.m */,
 				FA6C098D2187C1B6006C646A /* icu */,
 				06ED3DE217D1666A0014750E /* ICU.h */,
 				06ED3DE317D1666A0014750E /* ICU.m */,

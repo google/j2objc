@@ -776,6 +776,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectionKeyTest.java \
     org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectorTest.java \
     org/apache/harmony/tests/java/nio/charset/ASCCharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/ASCCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/ASCIICharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/CharacterCodingExceptionTest.java \
     org/apache/harmony/tests/java/nio/charset/CharsetDecoder2Test.java \
     org/apache/harmony/tests/java/nio/charset/CharsetDecoderTest.java \
@@ -785,6 +787,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/charset/CoderMalfunctionErrorTest.java \
     org/apache/harmony/tests/java/nio/charset/CoderResultTest.java \
     org/apache/harmony/tests/java/nio/charset/CodingErrorActionTest.java \
+    org/apache/harmony/tests/java/nio/charset/GBCharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/GBCharsetEncoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/ISOCharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/ISOCharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/IllegalCharsetNameExceptionTest.java \
     org/apache/harmony/tests/java/nio/charset/MalformedInputExceptionTest.java \
@@ -1055,11 +1060,6 @@ FAILING_MATH_TESTS = \
 # during the upgrade, but should all be fixed or disabled when this issue
 # is completed.
 FAILING_CHARSET_TESTS = \
-    org/apache/harmony/tests/java/nio/charset/ASCCharsetDecoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/ASCIICharsetEncoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/GBCharsetDecoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/GBCharsetEncoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/ISOCharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/ISOCharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16BECharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16BECharsetEncoderTest.java \

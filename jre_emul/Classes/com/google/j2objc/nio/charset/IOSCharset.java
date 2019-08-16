@@ -167,6 +167,7 @@ public class IOSCharset extends Charset {
   static const NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
 
   static const jbyte ascii_replacement[] = { 63 };
+  static const jbyte gb18030_replacement[] =  { 0x1a };
   static const jbyte utf16be_replacement[] = { -1, -3 };
   static const jbyte utf16le_replacement[] = { -3, -1 };
   static const jbyte iso2022_replacement[] = { 33, 41 };
@@ -225,7 +226,7 @@ public class IOSCharset extends Charset {
     { kCFStringEncodingGBK_95, "GBK", @"GBK", gbk_aliases, 4,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingGB_18030_2000, "GB18030", @"GB18030", gb18030_aliases, 1,
-      4.0f, 4.0f, 1.0f, 2.0f, ascii_replacement, 1 },
+      2.5f, 4.0f, 1.0f, 2.0f, gb18030_replacement, 1 },
     { kCFStringEncodingBig5, "BIG5", @"BIG5", big5_aliases, 4,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingBig5_HKSCS_1999, "BIG5-HKSCS", @"BIG5-HKSCS", big5hkscs_aliases, 2,
