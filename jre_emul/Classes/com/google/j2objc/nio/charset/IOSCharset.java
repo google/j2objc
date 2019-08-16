@@ -191,7 +191,7 @@ public class IOSCharset extends Charset {
     { kCFStringEncodingISOLatin2, "ISO-8859-2", @"ISO-8859-2", latin2_aliases, 13,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingUnicode, "UTF-16", @"UTF-16", utf16_aliases, 5,
-      2.0f, 4.0f, 0.5f, 1.0f, utf16be_replacement, 2 },
+      4.0f, 4.0f, 0.5f, 1.0f, utf16be_replacement, 2 },
     { kCFStringEncodingWindowsCyrillic, "CP1251", @"WINDOWS-1251", win1251_aliases, 3,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingWindowsLatin1, "CP1252", @"WINDOWS-1252", win1252_aliases, 2,

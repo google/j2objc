@@ -793,8 +793,12 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/charset/ISOCharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/IllegalCharsetNameExceptionTest.java \
     org/apache/harmony/tests/java/nio/charset/MalformedInputExceptionTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16BECharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetDecoderTest.java \
+    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16LECharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF8CharsetTest.java \
     org/apache/harmony/tests/java/nio/charset/UTFCharsetDecoderTest.java \
@@ -1061,12 +1065,8 @@ FAILING_MATH_TESTS = \
 # is completed.
 FAILING_CHARSET_TESTS = \
     org/apache/harmony/tests/java/nio/charset/ISOCharsetEncoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetDecoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/UTF16BECharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetEncoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetDecoderTest.java \
-    org/apache/harmony/tests/java/nio/charset/UTF16LECharsetEncoderTest.java \
 
 TESTS_USE_SERIALIZATION = \
     SerializationTest.java \
