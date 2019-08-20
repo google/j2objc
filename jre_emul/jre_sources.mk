@@ -581,7 +581,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/HeapLongBuffer.java \
   java/nio/HeapShortBuffer.java \
   java/nio/StringCharBuffer.java \
-  java/nio/charset/Charsets.java \
   java/nio/charset/ModifiedUtf8.java \
   java/text/CalendarBuilder.java \
   java/text/CharacterIteratorFieldDelegate.java \

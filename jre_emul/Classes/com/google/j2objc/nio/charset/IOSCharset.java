@@ -44,8 +44,6 @@ public class IOSCharset extends Charset {
 
   private static Map<String, IOSCharset> encodings = new HashMap<String, IOSCharset>();
 
-  public static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
-
   private IOSCharset(String canonicalName, String[] aliases, long info) {
     super(canonicalName, aliases);
     charsetInfo = info;
@@ -245,21 +243,6 @@ public class IOSCharset extends Charset {
     return cs;
   }
   ]-*/
-
-  private static native IOSCharset getDefaultCharset() /*-[
-    NSString *fileEncoding = JavaLangSystem_getPropertyWithNSString_(@"file.encoding");
-    if (fileEncoding) {
-      @try {
-        return (ComGoogleJ2objcNioCharsetIOSCharset *)
-            JavaNioCharsetCharset_forNameUEEWithNSString_(fileEncoding);
-      }
-      @catch (JavaIoUnsupportedEncodingException *e) {
-        // Fall-through to use system default.
-      }
-    }
-    // Return UTF-8 default, like JRE does.
-    return addEncoding(&iosCharsets[0]);
-  ]-*/;
 
   private static native Map<String, IOSCharset> getEncodings() /*-[
     static dispatch_once_t onceToken;

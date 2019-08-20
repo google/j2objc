@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charsets;
-import static java.nio.charset.Charsets.UTF_8;
+import java.nio.charset.StandardCharsets;
 import libcore.io.IoUtils;
 
 /**
@@ -517,7 +516,8 @@ public abstract class ResourceBundle {
                     : ClassLoader.getSystemResourceAsStream(fileName);
             if (stream != null) {
                 try {
-                    bundle = new PropertyResourceBundle(new InputStreamReader(stream, UTF_8));
+                    bundle = new PropertyResourceBundle(
+                        new InputStreamReader(stream, StandardCharsets.UTF_8));
                     bundle.setLocale(locale);
                 } catch (IOException ignored) {
                 } finally {

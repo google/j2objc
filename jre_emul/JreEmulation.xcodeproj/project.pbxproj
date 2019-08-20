@@ -2819,8 +2819,6 @@
 		06AA054D17E110D00017C34A /* CharsetDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharsetDecoder.m; path = build_result/Classes/java/nio/charset/CharsetDecoder.m; sourceTree = "<group>"; };
 		06AA054E17E110D00017C34A /* CharsetEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharsetEncoder.h; path = build_result/Classes/java/nio/charset/CharsetEncoder.h; sourceTree = "<group>"; };
 		06AA054F17E110D00017C34A /* CharsetEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharsetEncoder.m; path = build_result/Classes/java/nio/charset/CharsetEncoder.m; sourceTree = "<group>"; };
-		06AA055017E110D00017C34A /* Charsets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charsets.h; path = build_result/Classes/java/nio/charset/Charsets.h; sourceTree = "<group>"; };
-		06AA055117E110D00017C34A /* Charsets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Charsets.m; path = build_result/Classes/java/nio/charset/Charsets.m; sourceTree = "<group>"; };
 		06AA055217E110D00017C34A /* CoderMalfunctionError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoderMalfunctionError.h; path = build_result/Classes/java/nio/charset/CoderMalfunctionError.h; sourceTree = "<group>"; };
 		06AA055317E110D00017C34A /* CoderMalfunctionError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CoderMalfunctionError.m; path = build_result/Classes/java/nio/charset/CoderMalfunctionError.m; sourceTree = "<group>"; };
 		06AA055417E110D00017C34A /* CoderResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoderResult.h; path = build_result/Classes/java/nio/charset/CoderResult.h; sourceTree = "<group>"; };
@@ -4887,8 +4885,6 @@
 				06AA054D17E110D00017C34A /* CharsetDecoder.m */,
 				06AA054E17E110D00017C34A /* CharsetEncoder.h */,
 				06AA054F17E110D00017C34A /* CharsetEncoder.m */,
-				06AA055017E110D00017C34A /* Charsets.h */,
-				06AA055117E110D00017C34A /* Charsets.m */,
 				06F2915D18972E6800676F1D /* CheckedInputStream.h */,
 				06F2915E18972E6800676F1D /* CheckedInputStream.m */,
 				06F2915F18972E6800676F1D /* CheckedOutputStream.h */,

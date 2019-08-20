@@ -178,7 +178,7 @@ public class CharsetEncoderTest extends TestCase {
 		assertSame(ec.charset(), cs);
 		assertEquals(1.0, ec.averageBytesPerChar(), 0.0);
 		assertTrue(ec.maxBytesPerChar() == MAX_BYTES);
-		assertSame(ba, ec.replacement());
+		assertTrue(Arrays.equals(ba, ec.replacement()));
 
 		/*
 		 * ------------------------ Exceptional cases -------------------------
@@ -996,7 +996,7 @@ public class CharsetEncoderTest extends TestCase {
 
 		byte[] nr = getLegalByteArray();
 		assertSame(encoder, encoder.replaceWith(nr));
-		assertSame(nr, encoder.replacement());
+		assertTrue(Arrays.equals(nr, encoder.replacement()));
 
 		nr = getIllegalByteArray();
 		try {
@@ -1099,7 +1099,7 @@ public class CharsetEncoderTest extends TestCase {
 		}
 
 		protected void implReplaceWith(byte[] ba) {
-			assertSame(ba, replacement());
+			assertTrue(Arrays.equals(ba, replacement()));
 		}
 
 	}

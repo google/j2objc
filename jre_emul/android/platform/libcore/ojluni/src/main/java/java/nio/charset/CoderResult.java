@@ -1,279 +1,288 @@
-/* Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+/*
+ * Copyright (c) 2001, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.nio.charset;
 
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
+import java.lang.ref.WeakReference;
+import java.nio.*;
+import java.util.Map;
 import java.util.HashMap;
-import java.util.WeakHashMap;
+
 
 /**
- * Used to indicate the result of encoding/decoding. There are four types of
- * results:
- * <ol>
- * <li>UNDERFLOW indicates that all input has been processed but more input is
- * required. It is represented by the unique object
- * <code>CoderResult.UNDERFLOW</code>.
- * <li>OVERFLOW indicates an insufficient output buffer size. It is represented
- * by the unique object <code>CoderResult.OVERFLOW</code>.
- * <li>A malformed-input error indicates that an unrecognizable sequence of
- * input units has been encountered. Get an instance of this type of result by
- * calling <code>CoderResult.malformedForLength(int)</code> with the length of
- * the malformed-input.
- * <li>An unmappable-character error indicates that a sequence of input units
- * can not be mapped to the output charset. Get an instance of this type of
- * result by calling <code>CoderResult.unmappableForLength(int)</code> with
- * the input sequence size indicating the identity of the unmappable character.
- * </ol>
+ * A description of the result state of a coder.
+ *
+ * <p> A charset coder, that is, either a decoder or an encoder, consumes bytes
+ * (or characters) from an input buffer, translates them, and writes the
+ * resulting characters (or bytes) to an output buffer.  A coding process
+ * terminates for one of four categories of reasons, which are described by
+ * instances of this class:
+ *
+ * <ul>
+ *
+ *   <li><p> <i>Underflow</i> is reported when there is no more input to be
+ *   processed, or there is insufficient input and additional input is
+ *   required.  This condition is represented by the unique result object
+ *   {@link #UNDERFLOW}, whose {@link #isUnderflow() isUnderflow} method
+ *   returns <tt>true</tt>.  </p></li>
+ *
+ *   <li><p> <i>Overflow</i> is reported when there is insufficient room
+ *   remaining in the output buffer.  This condition is represented by the
+ *   unique result object {@link #OVERFLOW}, whose {@link #isOverflow()
+ *   isOverflow} method returns <tt>true</tt>.  </p></li>
+ *
+ *   <li><p> A <i>malformed-input error</i> is reported when a sequence of
+ *   input units is not well-formed.  Such errors are described by instances of
+ *   this class whose {@link #isMalformed() isMalformed} method returns
+ *   <tt>true</tt> and whose {@link #length() length} method returns the length
+ *   of the malformed sequence.  There is one unique instance of this class for
+ *   all malformed-input errors of a given length.  </p></li>
+ *
+ *   <li><p> An <i>unmappable-character error</i> is reported when a sequence
+ *   of input units denotes a character that cannot be represented in the
+ *   output charset.  Such errors are described by instances of this class
+ *   whose {@link #isUnmappable() isUnmappable} method returns <tt>true</tt> and
+ *   whose {@link #length() length} method returns the length of the input
+ *   sequence denoting the unmappable character.  There is one unique instance
+ *   of this class for all unmappable-character errors of a given length.
+ *   </p></li>
+ *
+ * </ul>
+ *
+ * <p> For convenience, the {@link #isError() isError} method returns <tt>true</tt>
+ * for result objects that describe malformed-input and unmappable-character
+ * errors but <tt>false</tt> for those that describe underflow or overflow
+ * conditions.  </p>
+ *
+ *
+ * @author Mark Reinhold
+ * @author JSR-51 Expert Group
+ * @since 1.4
  */
+
 public class CoderResult {
 
-    // indicating underflow error type
-    private static final int TYPE_UNDERFLOW = 1;
+    private static final int CR_UNDERFLOW  = 0;
+    private static final int CR_OVERFLOW   = 1;
+    private static final int CR_ERROR_MIN  = 2;
+    private static final int CR_MALFORMED  = 2;
+    private static final int CR_UNMAPPABLE = 3;
 
-    // indicating overflow error type
-    private static final int TYPE_OVERFLOW = 2;
+    private static final String[] names
+        = { "UNDERFLOW", "OVERFLOW", "MALFORMED", "UNMAPPABLE" };
 
-    // indicating malformed-input error type
-    private static final int TYPE_MALFORMED_INPUT = 3;
-
-    // indicating unmappable character error type
-    private static final int TYPE_UNMAPPABLE_CHAR = 4;
-
-    /**
-     * Result object indicating that there is insufficient data in the
-     * encoding/decoding buffer or that additional data is required.
-     */
-    public static final CoderResult UNDERFLOW = new CoderResult(TYPE_UNDERFLOW,
-            0);
-
-    /**
-     * Result object used to indicate that the output buffer does not have
-     * enough space available to store the result of the encoding/decoding.
-     */
-    public static final CoderResult OVERFLOW = new CoderResult(TYPE_OVERFLOW, 0);
-
-    /*
-     * Stores unique result objects for each malformed-input error of a certain
-     * length
-     */
-    private static WeakHashMap<Integer, CoderResult> _malformedErrors = new WeakHashMap<Integer, CoderResult>();
-
-    /*
-     * Stores unique result objects for each unmappable-character error of a
-     * certain length
-     */
-    private static WeakHashMap<Integer, CoderResult> _unmappableErrors = new WeakHashMap<Integer, CoderResult>();
-
-    // the type of this result
     private final int type;
-
-    // the length of the erroneous input
     private final int length;
 
-    /**
-     * Constructs a <code>CoderResult</code> object with its text description.
-     *
-     * @param type
-     *            the type of this result
-     * @param length
-     *            the length of the erroneous input
-     */
     private CoderResult(int type, int length) {
         this.type = type;
         this.length = length;
     }
 
     /**
-     * Gets a <code>CoderResult</code> object indicating a malformed-input
-     * error.
+     * Returns a string describing this coder result.
      *
-     * @param length
-     *            the length of the malformed-input.
-     * @return a <code>CoderResult</code> object indicating a malformed-input
-     *         error.
-     * @throws IllegalArgumentException
-     *             if <code>length</code> is non-positive.
+     * @return  A descriptive string
      */
-    public static synchronized CoderResult malformedForLength(int length)
-            throws IllegalArgumentException {
-        if (length > 0) {
-            Integer key = Integer.valueOf(length);
-            synchronized (_malformedErrors) {
-                CoderResult r = _malformedErrors.get(key);
-                if (r == null) {
-                    r = new CoderResult(TYPE_MALFORMED_INPUT, length);
-                    _malformedErrors.put(key, r);
-                }
-                return r;
-            }
-        }
-        throw new IllegalArgumentException("length <= 0: " + length);
+    public String toString() {
+        String nm = names[type];
+        return isError() ? nm + "[" + length + "]" : nm;
     }
 
     /**
-     * Gets a <code>CoderResult</code> object indicating an unmappable
-     * character error.
+     * Tells whether or not this object describes an underflow condition.
      *
-     * @param length
-     *            the length of the input unit sequence denoting the unmappable
-     *            character.
-     * @return a <code>CoderResult</code> object indicating an unmappable
-     *         character error.
-     * @throws IllegalArgumentException
-     *             if <code>length</code> is non-positive.
-     */
-    public static synchronized CoderResult unmappableForLength(int length)
-            throws IllegalArgumentException {
-        if (length > 0) {
-            Integer key = Integer.valueOf(length);
-            synchronized (_unmappableErrors) {
-                CoderResult r = _unmappableErrors.get(key);
-                if (r == null) {
-                    r = new CoderResult(TYPE_UNMAPPABLE_CHAR, length);
-                    _unmappableErrors.put(key, r);
-                }
-                return r;
-            }
-        }
-        throw new IllegalArgumentException("length <= 0: " + length);
-    }
-
-    /**
-     * Returns true if this result is an underflow condition.
-     *
-     * @return true if an underflow, otherwise false.
+     * @return  <tt>true</tt> if, and only if, this object denotes underflow
      */
     public boolean isUnderflow() {
-        return this.type == TYPE_UNDERFLOW;
+        return (type == CR_UNDERFLOW);
     }
 
     /**
-     * Returns true if this result represents a malformed-input error or an
-     * unmappable-character error.
+     * Tells whether or not this object describes an overflow condition.
      *
-     * @return true if this is a malformed-input error or an
-     *         unmappable-character error, otherwise false.
-     */
-    public boolean isError() {
-        return this.type == TYPE_MALFORMED_INPUT
-                || this.type == TYPE_UNMAPPABLE_CHAR;
-    }
-
-    /**
-     * Returns true if this result represents a malformed-input error.
-     *
-     * @return true if this is a malformed-input error, otherwise false.
-     */
-    public boolean isMalformed() {
-        return this.type == TYPE_MALFORMED_INPUT;
-    }
-
-    /**
-     * Returns true if this result is an overflow condition.
-     *
-     * @return true if this is an overflow, otherwise false.
+     * @return  <tt>true</tt> if, and only if, this object denotes overflow
      */
     public boolean isOverflow() {
-        return this.type == TYPE_OVERFLOW;
+        return (type == CR_OVERFLOW);
     }
 
     /**
-     * Returns true if this result represents an unmappable-character error.
+     * Tells whether or not this object describes an error condition.
      *
-     * @return true if this is an unmappable-character error, otherwise false.
+     * @return  <tt>true</tt> if, and only if, this object denotes either a
+     *          malformed-input error or an unmappable-character error
+     */
+    public boolean isError() {
+        return (type >= CR_ERROR_MIN);
+    }
+
+    /**
+     * Tells whether or not this object describes a malformed-input error.
+     *
+     * @return  <tt>true</tt> if, and only if, this object denotes a
+     *          malformed-input error
+     */
+    public boolean isMalformed() {
+        return (type == CR_MALFORMED);
+    }
+
+    /**
+     * Tells whether or not this object describes an unmappable-character
+     * error.
+     *
+     * @return  <tt>true</tt> if, and only if, this object denotes an
+     *          unmappable-character error
      */
     public boolean isUnmappable() {
-        return this.type == TYPE_UNMAPPABLE_CHAR;
+        return (type == CR_UNMAPPABLE);
     }
 
     /**
-     * Gets the length of the erroneous input. The length is only meaningful to
-     * a malformed-input error or an unmappable character error.
+     * Returns the length of the erroneous input described by this
+     * object&nbsp;&nbsp;<i>(optional operation)</i>.
      *
-     * @return the length, as an integer, of this object's erroneous input.
-     * @throws UnsupportedOperationException
-     *             if this result is an overflow or underflow.
+     * @return  The length of the erroneous input, a positive integer
+     *
+     * @throws  UnsupportedOperationException
+     *          If this object does not describe an error condition, that is,
+     *          if the {@link #isError() isError} does not return <tt>true</tt>
      */
-    public int length() throws UnsupportedOperationException {
-        if (this.type == TYPE_MALFORMED_INPUT || this.type == TYPE_UNMAPPABLE_CHAR) {
-            return this.length;
-        }
-        throw new UnsupportedOperationException("length meaningless for " + toString());
+    public int length() {
+        if (!isError())
+            throw new UnsupportedOperationException();
+        return length;
     }
 
     /**
-     * Throws an exception corresponding to this coder result.
-     *
-     * @throws BufferUnderflowException
-     *             in case this is an underflow.
-     * @throws BufferOverflowException
-     *             in case this is an overflow.
-     * @throws UnmappableCharacterException
-     *             in case this is an unmappable-character error.
-     * @throws MalformedInputException
-     *             in case this is a malformed-input error.
-     * @throws CharacterCodingException
-     *             the default exception.
+     * Result object indicating underflow, meaning that either the input buffer
+     * has been completely consumed or, if the input buffer is not yet empty,
+     * that additional input is required.
      */
-    public void throwException() throws BufferUnderflowException,
-            BufferOverflowException, UnmappableCharacterException,
-            MalformedInputException, CharacterCodingException {
-        switch (this.type) {
-            case TYPE_UNDERFLOW:
-                throw new BufferUnderflowException();
-            case TYPE_OVERFLOW:
-                throw new BufferOverflowException();
-            case TYPE_UNMAPPABLE_CHAR:
-                throw new UnmappableCharacterException(this.length);
-            case TYPE_MALFORMED_INPUT:
-                throw new MalformedInputException(this.length);
-            default:
-                throw new CharacterCodingException();
+    public static final CoderResult UNDERFLOW
+        = new CoderResult(CR_UNDERFLOW, 0);
+
+    /**
+     * Result object indicating overflow, meaning that there is insufficient
+     * room in the output buffer.
+     */
+    public static final CoderResult OVERFLOW
+        = new CoderResult(CR_OVERFLOW, 0);
+
+    private static abstract class Cache {
+
+        private Map<Integer,WeakReference<CoderResult>> cache = null;
+
+        protected abstract CoderResult create(int len);
+
+        private synchronized CoderResult get(int len) {
+            if (len <= 0)
+                throw new IllegalArgumentException("Non-positive length");
+            Integer k = new Integer(len);
+            WeakReference<CoderResult> w;
+            CoderResult e = null;
+            if (cache == null) {
+                cache = new HashMap<Integer,WeakReference<CoderResult>>();
+            } else if ((w = cache.get(k)) != null) {
+                e = w.get();
+            }
+            if (e == null) {
+                e = create(len);
+                cache.put(k, new WeakReference<CoderResult>(e));
+            }
+            return e;
         }
+
+    }
+
+    private static Cache malformedCache
+        = new Cache() {
+                public CoderResult create(int len) {
+                    return new CoderResult(CR_MALFORMED, len);
+                }};
+
+    /**
+     * Static factory method that returns the unique object describing a
+     * malformed-input error of the given length.
+     *
+     * @param   length
+     *          The given length
+     *
+     * @return  The requested coder-result object
+     */
+    public static CoderResult malformedForLength(int length) {
+        return malformedCache.get(length);
+    }
+
+    private static Cache unmappableCache
+        = new Cache() {
+                public CoderResult create(int len) {
+                    return new CoderResult(CR_UNMAPPABLE, len);
+                }};
+
+    /**
+     * Static factory method that returns the unique result object describing
+     * an unmappable-character error of the given length.
+     *
+     * @param   length
+     *          The given length
+     *
+     * @return  The requested coder-result object
+     */
+    public static CoderResult unmappableForLength(int length) {
+        return unmappableCache.get(length);
     }
 
     /**
-     * Returns a text description of this result.
+     * Throws an exception appropriate to the result described by this object.
      *
-     * @return a text description of this result.
+     * @throws  BufferUnderflowException
+     *          If this object is {@link #UNDERFLOW}
+     *
+     * @throws  BufferOverflowException
+     *          If this object is {@link #OVERFLOW}
+     *
+     * @throws  MalformedInputException
+     *          If this object represents a malformed-input error; the
+     *          exception's length value will be that of this object
+     *
+     * @throws  UnmappableCharacterException
+     *          If this object represents an unmappable-character error; the
+     *          exceptions length value will be that of this object
      */
-    @Override
-    public String toString() {
-        String dsc = null;
-        switch (this.type) {
-            case TYPE_UNDERFLOW:
-                dsc = "UNDERFLOW error";
-                break;
-            case TYPE_OVERFLOW:
-                dsc = "OVERFLOW error";
-                break;
-            case TYPE_UNMAPPABLE_CHAR:
-                dsc = "Unmappable-character error with erroneous input length "
-                        + this.length;
-                break;
-            case TYPE_MALFORMED_INPUT:
-                dsc = "Malformed-input error with erroneous input length "
-                        + this.length;
-                break;
-            default:
-                dsc = "";
-                break;
+    public void throwException()
+        throws CharacterCodingException
+    {
+        switch (type) {
+        case CR_UNDERFLOW:   throw new BufferUnderflowException();
+        case CR_OVERFLOW:    throw new BufferOverflowException();
+        case CR_MALFORMED:   throw new MalformedInputException(length);
+        case CR_UNMAPPABLE:  throw new UnmappableCharacterException(length);
+        default:
+            assert false;
         }
-        return getClass().getName() + "[" + dsc + "]";
     }
+
 }
