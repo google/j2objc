@@ -474,6 +474,7 @@ TEST_SOURCES := \
     libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
+    libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
@@ -1084,6 +1085,7 @@ TESTS_USE_REFLECTION = \
     libcore/java/io/OldObjectOutputStreamTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
+    libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
@@ -1178,6 +1180,12 @@ HARMONY_TEST_RESOURCES_SRCS = \
     tests/resources/hyts_gInput.txt.gz
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
+    libcore/java/nio/charset/encodings_ISO-8859-1.txt \
+    libcore/java/nio/charset/encodings_US-ASCII.txt \
+    libcore/java/nio/charset/encodings_UTF-16.txt \
+    libcore/java/nio/charset/encodings_UTF-16BE.txt \
+    libcore/java/nio/charset/encodings_UTF-16LE.txt \
+    libcore/java/nio/charset/encodings_UTF-8.txt \
     org/apache/harmony/tests/java/util/TestUtf8ResourceBundle.properties \
     tests/targets/security/MD5.check \
     tests/targets/security/MD5.data \

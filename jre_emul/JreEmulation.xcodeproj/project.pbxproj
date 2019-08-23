@@ -670,6 +670,7 @@
 		069FAFE31FFD83AF001A5383 /* MDGoldenData.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FAFDD1FFD8384001A5383 /* MDGoldenData.m */; };
 		069FAFE41FFD83AF001A5383 /* CertificateFactoryTestX509.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FAFD91FFD8346001A5383 /* CertificateFactoryTestX509.m */; };
 		069FAFE61FFD8A50001A5383 /* CloseGuardMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FAFE51FFD8A50001A5383 /* CloseGuardMonitor.m */; };
+		06A2994F230DECF500ADEA40 /* StandardCharsetsEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A2994E230DECF500ADEA40 /* StandardCharsetsEncoderTest.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
 		06B60ACE1FDA1EFC008274B3 /* AbstractResourceLeakageDetectorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = DEADDCBF1F757E4700A1E65B /* AbstractResourceLeakageDetectorTestCase.m */; };
 		06B60ACF1FDA1EFC008274B3 /* ConcurrentSkipListMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9C53861F6ADFCF000E8C71 /* ConcurrentSkipListMapTest.m */; };
@@ -2810,6 +2811,7 @@
 		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/platform/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
 		069FE7FB1D8B2042006D0FD8 /* AnnotatedElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotatedElements.h; path = build_result/Classes/libcore/reflect/AnnotatedElements.h; sourceTree = "<group>"; };
 		069FE7FC1D8B2043006D0FD8 /* AnnotatedElements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotatedElements.m; path = build_result/Classes/libcore/reflect/AnnotatedElements.m; sourceTree = "<group>"; };
+		06A2994E230DECF500ADEA40 /* StandardCharsetsEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StandardCharsetsEncoderTest.m; path = libcore/java/nio/charset/StandardCharsetsEncoderTest.m; sourceTree = "<group>"; };
 		06A4CD131B8B9FEA0082FEB2 /* J2ObjC_common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = J2ObjC_common.m; sourceTree = "<group>"; };
 		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
 		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
@@ -7500,6 +7502,7 @@
 				FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */,
 				FA24DE7C22E762DE000DEC19 /* StackOverflowErrorTest.m */,
 				FA5C0C3F21BFFBA3000B6275 /* StackTest.m */,
+				06A2994E230DECF500ADEA40 /* StandardCharsetsEncoderTest.m */,
 				FA1DD7B32154186000D0B800 /* StandardNames.m */,
 				062026081D512CA1001EE455 /* StreamTokenizerTest.m */,
 				062028901D512E78001EE455 /* StrictMathTest.m */,
@@ -8434,6 +8437,7 @@
 				062028AB1D512E78001EE455 /* StrictMathTest.m in Sources */,
 				0612B9381F4374C60069EF58 /* SSLEngineResultHandshakeStatusTest.m in Sources */,
 				062028B61D512E78001EE455 /* MethodTest.m in Sources */,
+				06A2994F230DECF500ADEA40 /* StandardCharsetsEncoderTest.m in Sources */,
 				062026371D512CA1001EE455 /* OldFilterReaderTest.m in Sources */,
 				062026F11D512D17001EE455 /* OldDataFormatExceptionTest.m in Sources */,
 				062B4F2B1ED76C1200D4E7D8 /* OldJarOutputStreamTest.m in Sources */,
