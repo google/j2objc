@@ -677,6 +677,42 @@ public final class Matcher implements MatchResult {
     }
 
     /**
+     * Internal helper method to append a given string to a given string builder.
+     * If the string contains any references to groups, these are replaced by
+     * the corresponding group's contents.
+     *
+     * @param buffer
+     *            the string builder.
+     * @param s
+     *            the string to append.
+     */
+      private void appendEvaluated(StringBuilder buffer, String s) {
+          boolean escape = false;
+          boolean dollar = false;
+
+          for (int i = 0; i < s.length(); i++) {
+              char c = s.charAt(i);
+              if (c == '\\' && !escape) {
+                  escape = true;
+              } else if (c == '$' && !escape) {
+                  dollar = true;
+              } else if (c >= '0' && c <= '9' && dollar) {
+                  buffer.append(group(c - '0'));
+                  dollar = false;
+              } else {
+                  buffer.append(c);
+                  dollar = false;
+                  escape = false;
+              }
+          }
+
+          // This seemingly stupid piece of code reproduces a JDK bug.
+          if (escape) {
+              throw new ArrayIndexOutOfBoundsException(s.length());
+          }
+      }
+
+    /**
      * Implements a terminal append-and-replace step.
      *
      * <p> This method reads characters from the input sequence, starting at
