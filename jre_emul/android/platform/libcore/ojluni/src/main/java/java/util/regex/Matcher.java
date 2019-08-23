@@ -620,6 +620,30 @@ public final class Matcher implements MatchResult {
     }
 
     /**
+     * Appends a literal part of the input plus a replacement for the current
+     * match to a given {@link StringBuilder}. The literal part is exactly the
+     * part of the input between the previous match and the current match. The
+     * method can be used in conjunction with {@link #find()} and
+     * {@link #appendTail(StringBuilder)} to walk through the input and replace
+     * all occurrences of the {@code Pattern} with something else.
+     *
+     * @param buffer
+     *            the {@code StringBuilder} to append to.
+     * @param replacement
+     *            the replacement text.
+     * @return the {@code Matcher} itself.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
+     */
+    public Matcher appendReplacement(StringBuilder buffer, String replacement) {
+        buffer.append(input.substring(appendPos, start()));
+        appendEvaluated(buffer, replacement);
+        appendPos = end();
+
+        return this;
+    }
+
+    /**
      * Internal helper method to append a given string to a given string buffer.
      * If the string contains any references to groups, these are replaced by
      * the corresponding group's contents.
@@ -673,6 +697,23 @@ public final class Matcher implements MatchResult {
         return sb;
     }
 
+    /**
+     * Appends the (unmatched) remainder of the input to the given
+     * {@link StringBuilder}. The method can be used in conjunction with
+     * {@link #find()} and {@link #appendReplacement(StringBuilder, String)} to
+     * walk through the input and replace all matches of the {@code Pattern}
+     * with something else.
+     *
+     * @return the {@code StringBuilder}.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
+     */
+    public StringBuilder appendTail(StringBuilder buffer) {
+        if (appendPos < regionEnd) {
+            buffer.append(input.substring(appendPos, regionEnd));
+        }
+        return buffer;
+    }
 
     /**
      * Replaces every subsequence of the input sequence that matches the
