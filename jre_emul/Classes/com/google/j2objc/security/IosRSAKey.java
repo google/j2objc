@@ -341,7 +341,12 @@ public abstract class IosRSAKey implements RSAKey, Key {
       // Store key in keychain.
       // Set kSecAttrAccessible to Always, since this fails when the app launches before the phone
       // is unlocked (b/72042384).
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+      // Set kSecAttrAccessible to Always, since this fails when the app launches before the phone
+      // is unlocked (b/72042384).
       keyQuery[(id)kSecAttrAccessible] = (id)kSecAttrAccessibleAlways;
+#pragma clang diagnostic pop
       keyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanTrue;
       keyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanTrue;
       keyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
@@ -378,7 +383,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
         if (osStatus != errSecSuccess || !secKeyRef) {
           NSString *msg = [NSString stringWithFormat:
-              @"Problem adding the private key to the keychain after truncating, OSStatus: %d", 
+              @"Problem adding the private key to the keychain after truncating, OSStatus: %d",
               (int)osStatus];
           @throw create_JavaSecurityProviderException_initWithNSString_(msg);
         }
