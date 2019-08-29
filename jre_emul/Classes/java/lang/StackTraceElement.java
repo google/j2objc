@@ -78,10 +78,11 @@ public class StackTraceElement implements Serializable {
 
   public String toString() {
     initializeFromAddress();
+    boolean strippedClass = declaringClass.startsWith(STRIPPED);
     StringBuilder sb = new StringBuilder();
     sb.append(hexAddress);
     sb.append(" ");
-    if (!declaringClass.equals(STRIPPED)) {
+    if (!strippedClass) {
       sb.append(declaringClass);
       sb.append('.');
     }
@@ -98,7 +99,7 @@ public class StackTraceElement implements Serializable {
         sb.append(lineNumber);
       }
       sb.append(')');
-    } else if (!declaringClass.equals(STRIPPED)) {
+    } else if (!strippedClass) {
       sb.append("()");
     }
     if (offset != null) {
@@ -307,7 +308,8 @@ public class StackTraceElement implements Serializable {
       }
     }
     if (!self->declaringClass_) {
-      self->declaringClass_ = JavaLangStackTraceElement_STRIPPED;
+      self->declaringClass_ = [[NSString alloc] initWithFormat:@"%@ %@",
+          JavaLangStackTraceElement_STRIPPED, self->hexAddress_];
     }
     if (!self->methodName_) {
       self->methodName_ = JavaLangStackTraceElement_STRIPPED;

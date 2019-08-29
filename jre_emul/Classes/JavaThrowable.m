@@ -66,7 +66,7 @@ jobject Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _c
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
 static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   NSString *className = [element getClassName];
-  if ([className isEqualToString:JavaLangStackTraceElement_STRIPPED]) {
+  if ([className hasPrefix:JavaLangStackTraceElement_STRIPPED]) {
     return true;
   }
   if ([className isEqualToString:@"NSInvocation"]) {
