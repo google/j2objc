@@ -112,6 +112,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printNativeEnum();
 
     printTypeDocumentation();
+    if (options.defaultNonnull()) {
+      println("NS_ASSUME_NONNULL_BEGIN");
+    }
     if (typeElement.getKind().isInterface()) {
       printf("@protocol %s", typeName);
     } else {
@@ -129,6 +132,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     printInnerDeclarations();
     println("\n@end");
+    if (options.defaultNonnull()) {
+      println("NS_ASSUME_NONNULL_END");
+    }
 
     if (ElementUtil.isPackageInfo(typeElement)) {
       printOuterDeclarations();

@@ -603,6 +603,22 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         translation, "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg");
   }
 
+  public void testDefaultNonnull() throws IOException {
+    String source = "package foo.bar; import javax.annotation.*; "
+        + "public class Test {"
+        + "  String test(@Nullable String msg, Object var, int count) { "
+        + "    return msg.isEmpty() ? null : msg; }"
+        + "}";
+    options.setDefaultNonnull(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(translation,
+        "NS_ASSUME_NONNULL_BEGIN",
+        "@interface FooBarTest : NSObject");
+    assertTranslatedLines(translation,
+        "@end",
+        "NS_ASSUME_NONNULL_END");
+  }
+
   public void testFieldWithIntersectionType() throws IOException {
     String translation = translateSourceFile(
         "class Test <T extends Comparable & Runnable> { T foo; }", "Test", "Test.h");

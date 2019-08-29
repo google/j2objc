@@ -80,6 +80,7 @@ public class Options {
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
   private boolean nullability = false;
+  private boolean defaultNonnull = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
   private String lintArgument = null;
@@ -487,6 +488,8 @@ public class Options {
         disallowInheritedConstructors = false;
       } else if (arg.equals("--nullability")) {
         nullability = true;
+      } else if (arg.equals("-Xdefault-nonnull")) {
+        defaultNonnull = true;
       } else if (arg.startsWith("-Xlint")) {
         lintArgument = arg;
       } else if (arg.equals("-Xtranslate-bootclasspath")) {
@@ -947,6 +950,16 @@ public class Options {
   @VisibleForTesting
   public void setNullability(boolean b) {
     nullability = b;
+  }
+
+  public boolean defaultNonnull() {
+    return nullability && defaultNonnull;
+  }
+
+  @VisibleForTesting
+  public void setDefaultNonnull(boolean b) {
+    nullability = true;
+    defaultNonnull = b;
   }
 
   public String lintArgument() {
