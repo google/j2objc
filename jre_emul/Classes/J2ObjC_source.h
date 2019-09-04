@@ -93,7 +93,7 @@ typedef struct J2ObjcNameMapping {
  * Defines a mapping between Java and iOS names, using a custom data segment.
  */
 #define J2OBJC_NAME_MAPPING(CLASS, JAVANAME, IOSNAME) \
-  static J2ObjcNameMapping CLASS##_mapping __attribute__((used,\
+  static J2ObjcNameMapping CLASS##_mapping __attribute__((used, no_sanitize("address"), \
   section("__DATA,__j2objc_aliases"))) = { JAVANAME, IOSNAME };
 
 /*!
