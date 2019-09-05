@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -159,9 +160,15 @@ public final class TranslationUtil {
   }
 
   private boolean isJUnit4TestClass(TypeElement type) {
-    AnnotationMirror annotation =
-        ElementUtil.getQualifiedNamedAnnotation(type, "org.junit.runner.RunWith");
-    return annotation != null;
+    if (ElementUtil.hasQualifiedNamedAnnotation(type, "org.junit.runner.RunWith")) {
+      return true;
+    }
+    for (Element e : type.getEnclosedElements()) {
+      if (ElementUtil.hasQualifiedNamedAnnotation(e, "org.junit.Test")) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private ReflectionSupport.Level getReflectionSupportLevelOnPackage(PackageElement node) {
