@@ -78,7 +78,10 @@ public class StackTraceElement implements Serializable {
 
   public String toString() {
     initializeFromAddress();
-    boolean strippedClass = declaringClass.startsWith(STRIPPED);
+    boolean strippedClass = false;
+    if (declaringClass != null) {
+      strippedClass = declaringClass.startsWith(STRIPPED);
+    }
     StringBuilder sb = new StringBuilder();
     sb.append(hexAddress);
     sb.append(" ");
@@ -86,7 +89,7 @@ public class StackTraceElement implements Serializable {
       sb.append(declaringClass);
       sb.append('.');
     }
-    if (!methodName.equals(STRIPPED)) {
+    if (methodName != null && !methodName.equals(STRIPPED)) {
       sb.append(methodName);
     }
     if (fileName != null || lineNumber != -1) {
