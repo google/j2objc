@@ -153,6 +153,8 @@ public class OneofTest extends ProtobufTest {
       case ONEOF_MESSAGE:
         assertEquals("bar", msg.getOneofMessage().getFoo());
         break;
+      default:
+        fail("Invalid field to check");
     }
     if (!fieldToCheck.equals(OneofGroupCase.ONEOF_STRING)) {
       assertFalse(msg.hasOneofString());

@@ -16,7 +16,15 @@
 
 package libcore.java.lang.reflect;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
 
 import junit.framework.TestCase;
 
@@ -34,8 +42,12 @@ public final class MethodTest extends TestCase {
     }
 
     public void test_getParameterTypes() throws Exception {
-        Class[] expectedParameters = new Class[] { Object.class };
-        Method method = MethodTestHelper.class.getMethod("m2", expectedParameters);
+        Class[] expectedParameters = new Class[0];
+        Method method = MethodTestHelper.class.getMethod("m1", expectedParameters);
+        assertEquals(0, method.getParameterTypes().length);
+
+        expectedParameters = new Class[] { Object.class };
+        method = MethodTestHelper.class.getMethod("m2", expectedParameters);
         Class[] parameters = method.getParameterTypes();
         assertEquals(1, parameters.length);
         assertEquals(expectedParameters[0], parameters[0]);
@@ -44,6 +56,38 @@ public final class MethodTest extends TestCase {
         parameters = method.getParameterTypes();
         assertEquals(1, parameters.length);
         assertEquals(expectedParameters[0], parameters[0]);
+    }
+
+    public void test_getParameterCount() throws Exception {
+        Class[] expectedParameters = new Class[0];
+        Method method = MethodTestHelper.class.getMethod("m1", expectedParameters);
+        assertEquals(0, method.getParameterCount());
+
+        expectedParameters = new Class[] { Object.class };
+        method = MethodTestHelper.class.getMethod("m2", expectedParameters);
+        int count = method.getParameterCount();
+        assertEquals(1, count);
+    }
+
+    public void test_getParameters() throws Exception {
+        Class[] expectedParameters = new Class[0];
+        Method method = MethodTestHelper.class.getMethod("m1", expectedParameters);
+        assertEquals(0, method.getParameters().length);
+
+        expectedParameters = new Class[] { Object.class };
+        method = MethodTestHelper.class.getMethod("m2", expectedParameters);
+
+        // Test the information available via other Method methods. See ParameterTest and
+        // annotations.ParameterTest for more in-depth Parameter testing.
+        Parameter[] parameters = method.getParameters();
+        assertEquals(1, parameters.length);
+        assertEquals(Object.class, parameters[0].getType());
+
+        // Check that corrupting our array doesn't affect other callers.
+        parameters[0] = null;
+        parameters = method.getParameters();
+        assertEquals(1, parameters.length);
+        assertEquals(Object.class, parameters[0].getType());
     }
 
     public void testGetMethodWithPrivateMethodAndInterfaceMethod() throws Exception {
@@ -229,14 +273,321 @@ public final class MethodTest extends TestCase {
         private void a() {}
         public static void b() {}
     }
-    public static interface InterfaceA {
+    public interface InterfaceA {
         void a();
     }
     public static abstract class Sub extends Super implements InterfaceA {
     }
 
-    public static interface InterfaceB extends InterfaceA {}
-    public static interface InterfaceC extends InterfaceB {}
+    public interface InterfaceB extends InterfaceA {}
+    public interface InterfaceC extends InterfaceB {}
     public static abstract class ImplementsC implements InterfaceC {}
     public static abstract class ExtendsImplementsC extends ImplementsC {}
+
+    // Static interface method reflection.
+
+    public interface InterfaceWithStatic {
+        static String staticMethod() {
+            return identifyCaller();
+        }
+    }
+
+    public void testStaticInterfaceMethod_getMethod() throws Exception {
+        Method method = InterfaceWithStatic.class.getMethod("staticMethod");
+        assertFalse(method.isDefault());
+        assertEquals(Modifier.PUBLIC | Modifier.STATIC, method.getModifiers());
+        assertEquals(InterfaceWithStatic.class, method.getDeclaringClass());
+    }
+
+    public void testStaticInterfaceMethod_getDeclaredMethod() throws Exception {
+        Method declaredMethod = InterfaceWithStatic.class.getDeclaredMethod("staticMethod");
+        assertFalse(declaredMethod.isDefault());
+        assertEquals(Modifier.PUBLIC | Modifier.STATIC, declaredMethod.getModifiers());
+        assertEquals(InterfaceWithStatic.class, declaredMethod.getDeclaringClass());
+    }
+
+    public void testStaticInterfaceMethod_invoke() throws Exception {
+        String interfaceWithStaticClassName = InterfaceWithStatic.class.getName();
+        assertEquals(interfaceWithStaticClassName, InterfaceWithStatic.staticMethod());
+
+        Method method = InterfaceWithStatic.class.getMethod("staticMethod");
+        assertEquals(interfaceWithStaticClassName, method.invoke(null));
+        assertEquals(interfaceWithStaticClassName, method.invoke(new InterfaceWithStatic() {}));
+    }
+
+    public void testStaticInterfaceMethod_setAccessible() throws Exception {
+        String interfaceWithStaticClassName = InterfaceWithStatic.class.getName();
+        Method method = InterfaceWithStatic.class.getMethod("staticMethod");
+        method.setAccessible(false);
+        // No effect expected.
+        assertEquals(interfaceWithStaticClassName, method.invoke(null));
+    }
+
+    // Default method reflection.
+
+    public interface InterfaceWithDefault {
+        default String defaultMethod() {
+            return identifyCaller();
+        }
+    }
+
+    public static class ImplementationWithDefault implements InterfaceWithDefault {
+    }
+
+    public void testDefaultMethod_getDeclaredMethod_interface() throws Exception {
+        Class<InterfaceWithDefault> interfaceWithDefaultClass = InterfaceWithDefault.class;
+        Method defaultMethod = interfaceWithDefaultClass.getDeclaredMethod("defaultMethod");
+        assertEquals(InterfaceWithDefault.class, defaultMethod.getDeclaringClass());
+        assertTrue(defaultMethod.isDefault());
+    }
+
+    public void testDefaultMethod_inheritance() throws Exception {
+        Class<InterfaceWithDefault> interfaceWithDefaultClass = InterfaceWithDefault.class;
+        String interfaceWithDefaultClassName = interfaceWithDefaultClass.getName();
+        Method defaultMethod = interfaceWithDefaultClass.getDeclaredMethod("defaultMethod");
+
+        InterfaceWithDefault anon = new InterfaceWithDefault() {};
+        Class<?> anonClass = anon.getClass();
+        Method inheritedDefaultMethod = anonClass.getMethod("defaultMethod");
+        assertEquals(inheritedDefaultMethod, defaultMethod);
+
+        // Check invocation behavior.
+        assertEquals(interfaceWithDefaultClassName, defaultMethod.invoke(anon));
+        assertEquals(interfaceWithDefaultClassName, inheritedDefaultMethod.invoke(anon));
+        assertEquals(interfaceWithDefaultClassName, anon.defaultMethod());
+
+        // Check other method properties.
+        assertEquals(InterfaceWithDefault.class, inheritedDefaultMethod.getDeclaringClass());
+        assertTrue(inheritedDefaultMethod.isDefault());
+
+        // Confirm the method is not considered declared on the anonymous class.
+        assertNull(getDeclaredMethodOrNull(anonClass, "defaultMethod"));
+    }
+
+    public void testDefaultMethod_override() throws Exception {
+        Class<InterfaceWithDefault> interfaceWithDefaultClass = InterfaceWithDefault.class;
+        Method defaultMethod = interfaceWithDefaultClass.getDeclaredMethod("defaultMethod");
+
+        InterfaceWithDefault anon = new InterfaceWithDefault() {
+            @Override public String defaultMethod() {
+                return identifyCaller();
+            }
+        };
+
+        Class<? extends InterfaceWithDefault> anonClass = anon.getClass();
+        String anonymousClassName = anonClass.getName();
+
+        Method overriddenDefaultMethod = getDeclaredMethodOrNull(anonClass, "defaultMethod");
+        assertNotNull(overriddenDefaultMethod);
+        assertFalse(overriddenDefaultMethod.equals(defaultMethod));
+
+        // Check invocation behavior.
+        assertEquals(anonymousClassName, defaultMethod.invoke(anon));
+        assertEquals(anonymousClassName, overriddenDefaultMethod.invoke(anon));
+        assertEquals(anonymousClassName, anon.defaultMethod());
+
+        // Check other method properties.
+        assertEquals(anonClass, overriddenDefaultMethod.getDeclaringClass());
+        assertFalse(overriddenDefaultMethod.isDefault());
+    }
+
+    public void testDefaultMethod_setAccessible() throws Exception {
+        InterfaceWithDefault anon = new InterfaceWithDefault() {};
+
+        Method defaultMethod = anon.getClass().getMethod("defaultMethod");
+        defaultMethod.setAccessible(false);
+        // setAccessible(false) should have no effect.
+        assertEquals(InterfaceWithDefault.class.getName(), defaultMethod.invoke(anon));
+
+        InterfaceWithDefault anon2 = new InterfaceWithDefault() {
+            @Override public String defaultMethod() {
+                return identifyCaller();
+            }
+        };
+
+        Class<? extends InterfaceWithDefault> anon2Class = anon2.getClass();
+        Method overriddenDefaultMethod = anon2Class.getDeclaredMethod("defaultMethod");
+        overriddenDefaultMethod.setAccessible(false);
+        // setAccessible(false) should have no effect.
+        assertEquals(anon2Class.getName(), overriddenDefaultMethod.invoke(anon2));
+    }
+
+    interface InterfaceWithReAbstractedMethod extends InterfaceWithDefault {
+        // Re-abstract a default method.
+        @Override String defaultMethod();
+    }
+
+    public void testDefaultMethod_reabstracted() throws Exception {
+        Class<InterfaceWithReAbstractedMethod> subclass = InterfaceWithReAbstractedMethod.class;
+
+        Method reabstractedDefaultMethod = subclass.getMethod("defaultMethod");
+        assertFalse(reabstractedDefaultMethod.isDefault());
+        assertEquals(reabstractedDefaultMethod, subclass.getDeclaredMethod("defaultMethod"));
+        assertEquals(subclass, reabstractedDefaultMethod.getDeclaringClass());
+    }
+
+    public void testDefaultMethod_reimplementedInClass() throws Exception {
+        InterfaceWithDefault impl = new InterfaceWithReAbstractedMethod() {
+            // Implement a reabstracted default method.
+            @Override public String defaultMethod() {
+                return identifyCaller();
+            }
+        };
+        Class<?> implClass = impl.getClass();
+        String implClassName = implClass.getName();
+
+        Method implClassDefaultMethod = getDeclaredMethodOrNull(implClass, "defaultMethod");
+        assertEquals(implClassDefaultMethod, implClass.getMethod("defaultMethod"));
+
+        // Check invocation behavior.
+        assertEquals(implClassName, impl.defaultMethod());
+        assertEquals(implClassName, implClassDefaultMethod.invoke(impl));
+
+        // Check other method properties.
+        assertEquals(implClass, implClassDefaultMethod.getDeclaringClass());
+        assertFalse(implClassDefaultMethod.isDefault());
+    }
+
+    interface InterfaceWithRedefinedMethods extends InterfaceWithReAbstractedMethod {
+        // Reimplement an abstracted default method.
+        @Override default String defaultMethod() {
+            return identifyCaller();
+        }
+    }
+
+    public void testDefaultMethod_reimplementInInterface() throws Exception {
+        Class<?> interfaceClass = InterfaceWithRedefinedMethods.class;
+        String interfaceClassName = interfaceClass.getName();
+
+        // NOTE: The line below defines an anonymous class that implements
+        // InterfaceWithReDefinedMethods (and does not need to provide any declarations).
+        // See the {}.
+        InterfaceWithDefault impl = new InterfaceWithRedefinedMethods() {};
+        Class<?> implClass = impl.getClass();
+
+        Method implClassDefaultMethod = implClass.getMethod("defaultMethod");
+        assertNull(getDeclaredMethodOrNull(implClass, "defaultMethod"));
+
+        // Check invocation behavior.
+        assertEquals(interfaceClassName, impl.defaultMethod());
+        assertEquals(interfaceClassName, implClassDefaultMethod.invoke(impl));
+
+        // Check other method properties.
+        assertEquals(interfaceClass, implClassDefaultMethod.getDeclaringClass());
+        assertTrue(implClassDefaultMethod.isDefault());
+    }
+
+    public void testDefaultMethod_invoke() throws Exception {
+        InterfaceWithDefault impl1 = new InterfaceWithRedefinedMethods() {};
+        InterfaceWithDefault impl2 = new InterfaceWithReAbstractedMethod() {
+            @Override public String defaultMethod() {
+                return identifyCaller();
+            }
+        };
+        InterfaceWithDefault impl3 = new InterfaceWithDefault() {};
+
+        Class[] classes = {
+            InterfaceWithRedefinedMethods.class,
+            impl1.getClass(),
+            InterfaceWithReAbstractedMethod.class,
+            impl2.getClass(),
+            InterfaceWithDefault.class,
+            impl3.getClass(),
+        };
+        Object[] instances = { impl1, impl2, impl3 };
+
+        // Attempt to invoke all declarations of defaultMethod() on a selection of instances.
+        for (Class<?> clazz : classes) {
+            Method method = clazz.getMethod("defaultMethod");
+            for (Object instance : instances) {
+                if (method.getDeclaringClass().isAssignableFrom(instance.getClass())) {
+                    Method trueMethod = instance.getClass().getMethod("defaultMethod");
+                    // All implementations of defaultMethod return the class where the method is
+                    // declared, enabling us to tell if the correct implementation has been called.
+                    Class<?> declaringClass = trueMethod.getDeclaringClass();
+                    assertEquals(declaringClass.getName(), method.invoke(instance));
+                } else {
+                    try {
+                        method.invoke(instance);
+                        fail();
+                    } catch (IllegalArgumentException expected) {
+                    }
+                }
+            }
+        }
+    }
+
+    interface OtherInterfaceWithDefault {
+        default String defaultMethod() {
+            return identifyCaller();
+        }
+    }
+
+    public void testDefaultMethod_superSyntax() throws Exception {
+        class ImplementationSuperUser implements InterfaceWithDefault, OtherInterfaceWithDefault {
+            @Override public String defaultMethod() {
+                return identifyCaller() + ":" +
+                        InterfaceWithDefault.super.defaultMethod() + ":" +
+                        OtherInterfaceWithDefault.super.defaultMethod();
+            }
+        }
+
+        String implementationSuperUserClassName = ImplementationSuperUser.class.getName();
+        String interfaceWithDefaultClassName = InterfaceWithDefault.class.getName();
+        String otherInterfaceWithDefaultClassName = OtherInterfaceWithDefault.class.getName();
+        String expectedReturnValue = implementationSuperUserClassName + ":" +
+            interfaceWithDefaultClassName + ":" + otherInterfaceWithDefaultClassName;
+        ImplementationSuperUser obj = new ImplementationSuperUser();
+        assertEquals(expectedReturnValue, obj.defaultMethod());
+
+        Method defaultMethod = ImplementationSuperUser.class.getMethod("defaultMethod");
+        assertEquals(expectedReturnValue, defaultMethod.invoke(obj));
+    }
+
+    /* J2ObjC: enable and fix.
+    public void testProxyWithDefaultMethods() throws Exception {
+        InvocationHandler invocationHandler = new InvocationHandler() {
+            @Override public Object invoke(Object proxy, Method method, Object[] args)
+                    throws Throwable {
+                assertSame(InterfaceWithDefault.class, method.getDeclaringClass());
+                return identifyCaller();
+            }
+        };
+
+        InterfaceWithDefault proxyWithDefaultMethod = (InterfaceWithDefault) Proxy.newProxyInstance(
+                Thread.currentThread().getContextClassLoader(),
+                new Class[] { InterfaceWithDefault.class },
+                invocationHandler);
+        String invocationHandlerClassName = invocationHandler.getClass().getName();
+
+        // Check the proxy implements the default method.
+        Class<? extends InterfaceWithDefault> proxyClass = proxyWithDefaultMethod.getClass();
+        Method defaultMethod = proxyClass.getMethod("defaultMethod");
+        assertEquals(proxyClass, defaultMethod.getDeclaringClass());
+        assertFalse(defaultMethod.isDefault());
+
+        // The default method is intercepted like anything else.
+        assertEquals(invocationHandlerClassName, proxyWithDefaultMethod.defaultMethod());
+    } */
+
+    private static Method getDeclaredMethodOrNull(Class<?> clazz, String methodName) {
+        try {
+            Method m = clazz.getDeclaredMethod(methodName);
+            assertNotNull(m);
+            return m;
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Keep this package-protected or public to avoid the introduction of synthetic methods that
+     * throw off the offset.
+     */
+    static String identifyCaller() {
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        int i = 0;
+        while (!stack[i++].getMethodName().equals("identifyCaller")) {}
+        return stack[i].getClassName();
+    }
 }

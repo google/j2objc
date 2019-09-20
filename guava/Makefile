@@ -11,101 +11,43 @@
 # limitations under the License.
 
 # Builds a J2ObjC translated Guava library.
-#
-# Author: Keith Stanger
 
 SUFFIXES:
 
 default: dist
 
-include environment.mk
-
-JAVA_SOURCES_INCLUDE = $(BUILD_DIR)/java_sources.mk
-ifndef IS_CLEAN_GOAL
--include $(JAVA_SOURCES_INCLUDE)
-endif
-
-OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
-
-CLASSPATH = $(DIST_JAR_DIR)/$(JSR305_JAR):$(DIST_JAR_DIR)/j2objc_annotations.jar
-
-INCLUDE_DIRS = $(GEN_OBJC_DIR)
-
-J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%) $(CC_WARNINGS)
-
-# Headers are installed in dist/include/guava/, so that developers can translate
-# and use other versions of Guava without conflict.
-DIST_GUAVA_INCLUDE_DIR = $(ARCH_INCLUDE_DIR)/guava
-
-TRANSLATE_ARGS = -classpath $(CLASSPATH) -encoding UTF-8
-
-TRANSLATE_MARK = $(BUILD_DIR)/.translate_mark
-OBJC_SOURCES = $(JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.m)
-OBJC_HEADERS = $(JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.h)
-DIST_HEADERS = $(OBJC_HEADERS:$(GEN_OBJC_DIR)/%=$(DIST_GUAVA_INCLUDE_DIR)/%)
-
-FAT_LIB_NAME = guava
-FAT_LIB_SOURCES_RELATIVE = $(JAVA_SOURCES:.java=.m)
-FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
-FAT_LIB_COMPILE = $(J2OBJCC)
-include ../make/fat_lib.mk
-
-STATIC_FRAMEWORK_NAME = Guava
-STATIC_FRAMEWORK_HEADERS = $(OBJC_HEADERS)
-include ../make/static_framework.mk
-
-fat_lib_dependencies: jre_emul_dist jsr305_dist
-
-DIST_JAR = $(DIST_JAR_DIR)/$(GUAVA_JAR)
-
-dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(DIST_HEADERS)
-
-clean:
-	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(DIST_GUAVA_INCLUDE_DIR) $(DIST_JAR)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
-
-java: $(DIST_JAR)
-
-$(SRC_JAR) $(JAR): | java_deps_dist
+clean: clean_jre clean_android
 	@:
 
-$(JAVA_SOURCES_INCLUDE): $(SRC_JAR)
-	@mkdir -p $(@D)
-	@echo "JAVA_SOURCES = \\" > $@
-	@for file in `jar tf $< | grep \.java$$`; do \
-	  echo "  $$file \\" >> $@; \
-	done;
+clean_jre:
+	@$(MAKE) -f jre.mk clean
 
-translate: $(TRANSLATE_MARK)
+clean_android:
+	@$(MAKE) -C android -f android.mk clean
+
+dist: dist_jre dist_android
 	@:
 
-$(DIST_DIR)/j2objc: | translator_dist
+dist_jre:
+	@$(MAKE) -f jre.mk dist
+
+dist_android:
+	@$(MAKE) -C android -f android.mk dist
+
+framework: framework_jre framework_android
 	@:
 
-$(TRANSLATE_MARK): $(DIST_DIR)/j2objc $(SRC_JAR)
-	@echo "Translating Guava sources"
-	@mkdir -p $(GEN_OBJC_DIR) $(@D)
-	@$(DIST_DIR)/j2objc $(TRANSLATE_ARGS) -d $(GEN_OBJC_DIR) $(SRC_JAR)
-	@touch $@
+framework_jre:
+	@$(MAKE) -f jre.mk framework
 
-$(OBJC_SOURCES) $(OBJC_HEADERS): $(TRANSLATE_MARK)
+framework_android:
+	@$(MAKE) -C android -f android.mk framework
+
+java: java_jre java_android
 	@:
 
-$(DIST_JAR): $(JAR)
-	@mkdir -p $(@D)
-	@install -m 0644 $< $@
+java_jre:
+	@$(MAKE) -f jre.mk java
 
-$(DIST_GUAVA_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
-	@mkdir -p $(@D)
-	@install -m 0644 $< $@
-
-$(OBJC_SOURCES_MANIFEST): $(SRC_JAR)
-	@mkdir -p $(@D)
-	@echo "Building $$(basename $@)"
-	@if [ -e $@ ]; then rm $@; fi
-	@files='$(sort $(OBJC_SOURCES) $(OBJC_HEADERS))' && for i in $$files; do \
-	  echo $$i >> $@; \
-	done
-
-objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
-	@:
+java_android:
+	@$(MAKE) -C android -f android.mk java

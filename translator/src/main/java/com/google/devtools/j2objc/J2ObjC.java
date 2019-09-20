@@ -53,8 +53,10 @@ public class J2ObjC {
     }
   }
 
-  public static String getFileHeader(String sourceFileName) {
-    return UnicodeUtils.format(Options.getFileHeader(), sourceFileName);
+  public static String getFileHeader(Options options, String sourceFileName) {
+    return options.emitSourceHeaders()
+        ? UnicodeUtils.format(Options.getFileHeader(), sourceFileName)
+        : "";
   }
 
   private static void checkErrors(boolean treatWarningsAsErrors) {
@@ -71,9 +73,7 @@ public class J2ObjC {
   public static Parser createParser(Options options) {
     Parser parser = Parser.newParser(options);
     parser.addClasspathEntries(options.fileUtil().getClassPathEntries());
-    parser.addClasspathEntries(options.getBootClasspath());
     parser.addSourcepathEntries(options.fileUtil().getSourcePathEntries());
-    parser.setIncludeRunningVMBootclasspath(false);
     parser.setEnableDocComments(options.docCommentsEnabled());
     return parser;
   }
@@ -135,7 +135,6 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      translationProcessor.processBuildClosureDependencies();
       if (ErrorUtil.errorCount() > 0) {
         return;
       }

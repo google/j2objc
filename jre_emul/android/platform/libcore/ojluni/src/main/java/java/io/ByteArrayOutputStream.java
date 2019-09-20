@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -94,6 +94,14 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     /**
+     * The maximum size of array to allocate.
+     * Some VMs reserve some header words in an array.
+     * Attempts to allocate larger arrays may result in
+     * OutOfMemoryError: Requested array size exceeds VM limit
+     */
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+
+    /**
      * Increases the capacity to ensure that it can hold at least the
      * number of elements specified by the minimum capacity argument.
      *
@@ -105,12 +113,17 @@ public class ByteArrayOutputStream extends OutputStream {
         int newCapacity = oldCapacity << 1;
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
-        if (newCapacity < 0) {
-            if (minCapacity < 0) // overflow
-                throw new OutOfMemoryError();
-            newCapacity = Integer.MAX_VALUE;
-        }
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
         buf = Arrays.copyOf(buf, newCapacity);
+    }
+
+    private static int hugeCapacity(int minCapacity) {
+        if (minCapacity < 0) // overflow
+            throw new OutOfMemoryError();
+        return (minCapacity > MAX_ARRAY_SIZE) ?
+            Integer.MAX_VALUE :
+            MAX_ARRAY_SIZE;
     }
 
     /**
@@ -210,21 +223,21 @@ public class ByteArrayOutputStream extends OutputStream {
 
     /**
      * Converts the buffer's contents into a string by decoding the bytes using
-     * the specified {@link java.nio.charset.Charset charsetName}. The length of
-     * the new <tt>String</tt> is a function of the charset, and hence may not be
-     * equal to the length of the byte array.
+     * the named {@link java.nio.charset.Charset charset}. The length of the new
+     * <tt>String</tt> is a function of the charset, and hence may not be equal
+     * to the length of the byte array.
      *
      * <p> This method always replaces malformed-input and unmappable-character
      * sequences with this charset's default replacement string. The {@link
      * java.nio.charset.CharsetDecoder} class should be used when more control
      * over the decoding process is required.
      *
-     * @param  charsetName  the name of a supported
-     *              {@linkplain java.nio.charset.Charset </code>charset<code>}
-     * @return String decoded from the buffer's contents.
+     * @param      charsetName  the name of a supported
+     *             {@link java.nio.charset.Charset charset}
+     * @return     String decoded from the buffer's contents.
      * @exception  UnsupportedEncodingException
      *             If the named charset is not supported
-     * @since   JDK1.1
+     * @since      JDK1.1
      */
     public synchronized String toString(String charsetName)
         throws UnsupportedEncodingException
@@ -263,8 +276,6 @@ public class ByteArrayOutputStream extends OutputStream {
      * Closing a <tt>ByteArrayOutputStream</tt> has no effect. The methods in
      * this class can be called after the stream has been closed without
      * generating an <tt>IOException</tt>.
-     * <p>
-     *
      */
     public void close() throws IOException {
     }

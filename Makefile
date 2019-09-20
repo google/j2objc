@@ -90,7 +90,7 @@ clean:
 	@cd protobuf/tests && $(MAKE) clean
 	@cd xalan && $(MAKE) clean
 
-test_translator: annotations_dist java_deps_dist
+test_translator: annotations_dist java_deps_dist jre_emul_jars_dist
 	@cd translator && $(MAKE) test
 
 test_jre_emul: jre_emul_dist junit_dist
@@ -113,12 +113,20 @@ test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 
 test_all: test test_protobuf
 
+<<<<<<< HEAD
 examples_dist: copy_examples fix_dist_references
+=======
+examples_dist: install_examples
+>>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 
 copy_examples:
 	@cp -r examples $(DIST_DIR)
 
+<<<<<<< HEAD
 fix_dist_references:
+=======
+install_examples: copy_examples
+>>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcconfig
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/protobuf/Makefile
 	@sed -i '' 's/\<path to local j2objc distribution\>/..\/../' \

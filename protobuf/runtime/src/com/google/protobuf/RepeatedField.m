@@ -135,19 +135,32 @@ id CGPRepeatedFieldGet(CGPRepeatedField *field, jint index, CGPFieldDescriptor *
 #undef REPEATED_GET_CASE
 }
 
+void CGPRepeatedMessageFieldRemove(CGPRepeatedField *field, jint index) {
+  CGPRepeatedFieldCheckBounds(field, index);
+  uint32_t count = CGPRepeatedFieldSize(field);
+  id *msgBuffer = (id *)field->data->buffer;
+  [msgBuffer[index] autorelease];
+  if (count > (uint32_t)index + 1) {
+    memmove(&(msgBuffer[index]),
+            &(msgBuffer[index + 1]),
+            sizeof(id) * (count - (index + 1)));
+  }
+  field->data->size -= 1;
+}
+
 void CGPRepeatedFieldSet(CGPRepeatedField *field, jint index, id value, CGPFieldJavaType type) {
   CGPRepeatedFieldCheckBounds(field, index);
 
-#define REPEATED_GET_CASE(NAME) \
+#define REPEATED_SET_CASE(NAME) \
   { \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[index]; \
     TYPE_ASSIGN_##NAME(*ptr, CGPFromReflectionType##NAME(value)); \
     break; \
   }
 
-  SWITCH_TYPES_WITH_ENUM(type, REPEATED_GET_CASE)
+  SWITCH_TYPES_WITH_ENUM(type, REPEATED_SET_CASE)
 
-#undef REPEATED_GET_CASE
+#undef REPEATED_SET_CASE
 }
 
 // Make sure to reserve enough space in the buffer BEFORE calling this.

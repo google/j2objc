@@ -177,7 +177,7 @@ public class OcniExtractor extends UnitTreeVisitor {
       bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
           "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
           + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"
-          + "  return JreDefaultFastEnumeration(self, state, stackbuf, len);\n}\n"));
+          + "  return JreDefaultFastEnumeration(self, state, stackbuf);\n}\n"));
     }
   }
 

@@ -38,6 +38,7 @@ public class BuildClosureQueue {
 
   public BuildClosureQueue(Options options) {
     this.options = options;
+    queuedNames.addAll(options.entryClasses());
   }
 
   /**
@@ -77,26 +78,25 @@ public class BuildClosureQueue {
   }
 
   private InputFile getFileForName(String name) {
-    // Check if class exists on classpath.
-    if (findClassFile(name)) {
-      logger.finest("no source for " + name + ", class found");
-      return null;
-    }
-
     InputFile inputFile = null;
     try {
-      inputFile = options.fileUtil().findOnSourcePath(name);
+      inputFile = options.fileUtil().findTypeOnSourcePath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
 
     if (inputFile == null) {
+      // Check if class exists on classpath.
+      if (findClassFile(name)) {
+        logger.finest("no source for " + name + ", class found");
+      }
       return null;
     }
 
     // Check if the source file is older than the generated header file.
     File headerSource = new File(
-        options.fileUtil().getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
+        options.fileUtil().getHeaderOutputDirectory(),
+        name.replace('.', File.separatorChar) + ".h");
     if (headerSource.exists() && inputFile.lastModified() < headerSource.lastModified()) {
       return null;
     }
@@ -107,7 +107,7 @@ public class BuildClosureQueue {
   private boolean findClassFile(String name) {
     InputFile f = null;
     try {
-      f = options.fileUtil().findOnClassPath(name);
+      f = options.fileUtil().findTypeOnClassPath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }

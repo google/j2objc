@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2006, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -97,7 +97,7 @@ public class InflaterOutputStream extends FilterOutputStream {
      * @param out output stream to write the uncompressed data to
      * @param infl decompressor ("inflater") for this stream
      * @param bufLen decompression buffer size
-     * @throws IllegalArgumentException if {@code bufLen} is <= 0
+     * @throws IllegalArgumentException if {@code bufLen <= 0}
      * @throws NullPointerException if {@code out} or {@code infl} is null
      */
     public InflaterOutputStream(OutputStream out, Inflater infl, int bufLen) {
@@ -211,8 +211,8 @@ public class InflaterOutputStream extends FilterOutputStream {
      * the output stream
      * @param off starting offset of the compressed data within {@code b}
      * @param len number of bytes to decompress from {@code b}
-     * @throws IndexOutOfBoundsException if {@code off} < 0, or if
-     * {@code len} < 0, or if {@code len} > {@code b.length - off}
+     * @throws IndexOutOfBoundsException if {@code off < 0}, or if
+     * {@code len < 0}, or if {@code len > b.length - off}
      * @throws IOException if an I/O error occurs or this stream is already
      * closed
      * @throws NullPointerException if {@code b} is null

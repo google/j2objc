@@ -77,4 +77,18 @@ public class JavacTreeConverterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(translation, "jint i = FooA_FOO;", "FooA_bar();");
   }
+
+  // The source file was generating:
+  //   java.lang.AssertionError: Unknown node type: IMPORT
+  // Note the ";" between the imports.
+  // https://groups.google.com/forum/#!topic/j2objc-discuss/HWN0i1HsQKg
+  public void testSkipTreeKindImport() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.Collection;"
+            + ";"
+            + "import java.util.Iterator;"
+            + "public class Example {}",
+        "Example", "Example.h");
+    assertTranslation(translation, "@interface Example : NSObject");
+  }
 }

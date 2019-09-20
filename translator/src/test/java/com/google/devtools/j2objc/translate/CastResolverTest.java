@@ -267,4 +267,51 @@ public class CastResolverTest extends GenerationTest {
         + " int fooLength() { return super.foo.length(); } }", "Test", "Test.m");
     assertTranslation(translation, "(NSString *) nil_chk(foo_)");
   }
+
+  public void testIfStatementCastChkOptimization() throws IOException {
+    String translation = translateSourceFile(String.join("\n",
+        "class Test {",
+        "  int test(Object o) {",
+        "    if (o instanceof Integer) {",
+        "      return ((Integer) o).intValue();",
+        "    } else if (o instanceof Double) {",
+        "      return ((Double) o).intValue();",
+        "    } else if (o instanceof Character) {",
+        "      return ((Character) o).charValue();",
+        "    }",
+        "    return -1;",
+        "  }",
+        "}"), "Test", "Test.m");
+    assertNotInTranslation(translation, "cast_chk");
+    assertTranslation(translation,
+        "return [((JavaLangInteger *) nil_chk(((JavaLangInteger *) o))) intValue];");
+    assertTranslation(translation,
+        "return [((JavaLangDouble *) nil_chk(((JavaLangDouble *) o))) intValue];");
+    assertTranslation(translation,
+        "return [((JavaLangCharacter *) nil_chk(((JavaLangCharacter *) o))) charValue];");
+  }
+
+  public void testIfStatementCastChkNoOpt() throws IOException {
+    String translation = translateSourceFile(String.join("\n",
+        "class Test {",
+        "  Exception test(Object o) {",
+        "    if (o instanceof RuntimeException) {",
+        // Should not have cast_chk().
+        "      return (RuntimeException) o;",
+        "    } else if (o instanceof Exception) {",
+        // Should have (failing at runtime) cast_chk().
+        "      return (RuntimeException) o;",
+        "    }",
+        // Should have (failing at runtime) cast_chk().
+        "    return (NullPointerException) o;",
+        "  }",
+        "}"), "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "if ([o isKindOfClass:[JavaLangRuntimeException class]]) {",
+        "return (JavaLangRuntimeException *) o;");
+    assertTranslation(translation, "return (JavaLangRuntimeException *) "
+        + "cast_chk(o, [JavaLangRuntimeException class]);");
+    assertTranslation(translation, "return (JavaLangNullPointerException *) "
+        + "cast_chk(o, [JavaLangNullPointerException class]);");
+  }
 }

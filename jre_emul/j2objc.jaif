@@ -1,0 +1,122 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// The file format specification is at
+// https://checkerframework.org/annotation-file-utilities/annotation-file-format.html
+//
+// This file is used via the -external-annotation-file flag
+// when transpiling the JRE.
+//
+// Annotations are defined at the top of the file and the rest of the entries
+// are sorted alphabetically.
+
+package com.google.j2objc.annotations:
+annotation @ReflectionSupport:
+  @Target({TYPE, PACKAGE})
+  @Retention(CLASS)
+  enum Level value
+annotation @Weak:
+  @Target({FIELD, LOCAL_VARIABLE, PARAMETER})
+  @Retention(CLASS)
+annotation @WeakOuter:
+  @Target({TYPE, TYPE_USE, LOCAL_VARIABLE})
+  @Retention(SOURCE)
+
+package android.icu.impl:
+class ICUNotifier$NotifyThread:
+  field notifier: @Weak
+
+package android.icu.text:
+class MessageFormat$PluralSelectorProvider:
+  field msgFormat: @Weak
+class ModulusSubstitution:
+  field ruleToUse: @Weak
+class NFRule:
+  field formatter: @Weak
+class NFRuleSet:
+  field owner: @Weak
+class NFSubstitution:
+  field ruleSet: @Weak
+class PluralFormat$PluralSelectorAdapter: @WeakOuter
+class RBBIRuleScanner:
+  field fRB: @Weak
+class RBBISetBuilder:
+  field fRB: @Weak
+class RBBISetBuilder$RBBIDataManipulate: @WeakOuter
+class RBBISymbolTable:
+  field fRuleScanner: @Weak
+class RBBITableBuilder:
+  field fRB: @Weak
+class RuleBasedBreakIterator$BreakCache: @WeakOuter
+class RuleBasedBreakIterator$DictionaryCache: @WeakOuter
+
+package com.google.j2objc.net:
+class ResourceDataStreamHandler: @ReflectionSupport(FULL)
+
+package java.io:
+class FileDescriptor: @ReflectionSupport(FULL)
+
+package java.lang:
+class Thread: @ReflectionSupport(FULL)
+
+package java.math:
+class BigInteger: @ReflectionSupport(FULL)
+class BigDecimal: @ReflectionSupport(FULL)
+
+package java.net:
+class AbstractPlainDatagramSocketImpl: @ReflectionSupport(FULL)
+class DatagramPacket: @ReflectionSupport(FULL)
+class DatagramSocketImpl: @ReflectionSupport(FULL)
+class Inet4Address: @ReflectionSupport(FULL)
+class Inet6Address: @ReflectionSupport(FULL)
+class InetAddress: @ReflectionSupport(FULL)
+class InetAddressContainer: @ReflectionSupport(FULL)
+class InetSocketAddress: @ReflectionSupport(FULL)
+class InterfaceAddress: @ReflectionSupport(FULL)
+class NetworkInterface: @ReflectionSupport(FULL)
+class PlainDatagramSocketImpl: @ReflectionSupport(FULL)
+
+package java.nio.channels:
+class SelectionKey: @ReflectionSupport(FULL)
+
+package java.sql:
+class SQLException: @ReflectionSupport(FULL)
+
+package java.util:
+class Random: @ReflectionSupport(FULL)
+
+package java.util.concurrent: @ReflectionSupport(FULL)
+
+package java.util.concurrent.locks:
+class AbstractQueuedLongSynchronizer: @ReflectionSupport(FULL)
+class AbstractQueuedSynchronizer: @ReflectionSupport(FULL)
+class AbstractQueuedSynchronizer$Node: @ReflectionSupport(FULL)
+class LockSupport: @ReflectionSupport(FULL)
+
+package java.util.logging:
+class LoggingProxyImpl: @ReflectionSupport(FULL)
+
+package javax.net.ssl:
+class SSLException: @ReflectionSupport(FULL)
+
+package javax.security.auth.x500:
+class X500Principal: @ReflectionSupport(FULL)
+
+package javax.xml.namespace:
+class QName: @ReflectionSupport(FULL)
+
+package sun.nio.ch:
+class DatagramChannelImpl: @ReflectionSupport(FULL)
+class DatagramSocketAdaptor$DummyDatagramSocket: @ReflectionSupport(FULL)
+class FileDescriptorHolderSocketImpl: @ReflectionSupport(FULL)
+
+package sun.security.x509: @ReflectionSupport(FULL)

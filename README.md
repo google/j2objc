@@ -1,10 +1,8 @@
 # J2ObjC: Java to Objective-C Translator and Runtime #
 
-[![Build Status](https://travis-ci.org/google/j2objc.svg)](https://travis-ci.org/google/j2objc)
-
-**Project site:** <http://j2objc.org><br>
-**J2ObjC blog:** <http://j2objc.blogspot.com><br>
-**Questions and discussion:** <http://groups.google.com/group/j2objc-discuss>
+**Project site:** <https://j2objc.org><br>
+**J2ObjC blog:** <https://j2objc.blogspot.com><br>
+**Questions and discussion:** <https://groups.google.com/group/j2objc-discuss>
 
 ### What J2ObjC Is ###
 J2ObjC is an open-source command-line tool from Google that translates
@@ -37,13 +35,18 @@ code for their Android app, which they either own or are licensed to use.
 
 * JDK 1.8 or higher
 * Mac workstation or laptop
-* OS X 10.11 or higher
-* Xcode 7 or higher
+* OS X 10.12 or higher
+* Xcode 8 or higher
 
 ## License ##
 
 This library is distributed under the Apache 2.0 license found in the
-[LICENSE](./LICENSE) file with the following exceptions.
+[LICENSE](https://github.com/google/j2objc/blob/master/LICENSE) file.
 The protocol buffers library is distributed under the same BSD license as
-Google's protocol buffers. See [README](protobuf/README.md) and
-[LICENSE](protobuf/LICENSE).
+Google's protocol buffers. See its
+[README](https://github.com/protocolbuffers/protobuf/blob/master/README.md) and
+[LICENSE](https://github.com/protocolbuffers/protobuf/blob/master/LICENSE).
+
+## Running on GNU/Linux ##
+
+To build and run on GNU/Linux, install [the Darling project](http://www.darlinghq.org/), then following [its Compile and Run a Program example](https://wiki.darlinghq.org/what_to_try#compile_and_run_a_program). Please note that j2objc is only supported on iOS/macOS.

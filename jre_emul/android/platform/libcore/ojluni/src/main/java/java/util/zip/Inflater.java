@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -77,13 +77,14 @@ public
 class Inflater {
 
     private final ZStreamRef zsRef;
-    /*private*/ byte[] buf = defaultBuf;
-    /*private*/ int off, len;
-    /*private*/ boolean finished;
-    /*private*/ boolean needDict;
+    /* J2ObjC removed: private */ byte[] buf = defaultBuf;
+    /* J2ObjC removed: private */ int off, len;
+    /* J2ObjC removed: private */ boolean finished;
+    /* J2ObjC removed: private */ boolean needDict;
     private long bytesRead;
     private long bytesWritten;
 
+    // Android-changed: added CloseGuard instance
     private final CloseGuard guard = CloseGuard.get();
 
     private static final byte[] defaultBuf = new byte[0];
@@ -101,6 +102,7 @@ class Inflater {
      */
     public Inflater(boolean nowrap) {
         zsRef = new ZStreamRef(init(nowrap));
+        // Android-changed: added close guard
         guard.open("end");
     }
 
@@ -306,7 +308,7 @@ class Inflater {
     }
 
     /**
-     * Returns the total number of compressed bytes input so far.</p>
+     * Returns the total number of compressed bytes input so far.
      *
      * @return the total (non-negative) number of compressed bytes input so far
      * @since 1.5
@@ -332,7 +334,7 @@ class Inflater {
     }
 
     /**
-     * Returns the total number of uncompressed bytes output so far.</p>
+     * Returns the total number of uncompressed bytes output so far.
      *
      * @return the total (non-negative) number of uncompressed bytes output so far
      * @since 1.5
@@ -383,6 +385,7 @@ class Inflater {
      * Closes the decompressor when garbage is collected.
      */
     protected void finalize() {
+        // Android-changed: added close guard
         if (guard != null) {
             guard.warnIfOpen();
         }
@@ -392,7 +395,7 @@ class Inflater {
 
     private void ensureOpen () {
         assert Thread.holdsLock(zsRef);
-        // Android changed : Throw IllegalStateException instead of a NullPointerException.
+        // Android-changed: Throw IllegalStateException instead of a NullPointerException.
         if (zsRef.address() == 0)
             throw new IllegalStateException("Inflater has been closed");
     }
@@ -403,6 +406,8 @@ class Inflater {
         }
     }
 
+    // Android-changed: initIDs handled in register method.
+    // private native static void initIDs();
     private native static long init(boolean nowrap);
     private native static void setDictionary(long addr, byte[] b, int off,
                                              int len);

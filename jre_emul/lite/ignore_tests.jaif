@@ -1,0 +1,547 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Used to ignore tests that require reflection metadata.
+// - JUnit 3 tests: rename testX to ignoreX
+// - JUnit 4 tests: inject @Ignore
+
+package com.google.j2objc.annotations:
+annotation @ObjectiveCName: @java.lang.annotation.Retention(CLASS)
+                            @java.lang.annotation.Target({METHOD,TYPE})
+  String value
+
+package org.junit:
+annotation @Ignore: @java.lang.annotation.Retention(RUNTIME) 
+                    @java.lang.annotation.Target({METHOD,TYPE})
+
+
+package android.icu.dev.test.timezone:
+class TimeZoneTest:
+  method TestSimpleTimeZoneSerialization()V: @Ignore
+class TimeZoneRegressionTest:
+  method Test4096952()V: @Ignore
+
+package jsr166:
+class AbstractQueuedLongSynchronizerTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AbstractQueuedSynchronizerTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ArrayBlockingQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ArrayDequeTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicBooleanTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicIntegerArrayTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicIntegerTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicLongArrayTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicLongTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicReferenceArrayTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class AtomicReferenceTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ConcurrentHashMapTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ConcurrentLinkedDequeTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ConcurrentLinkedQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ConcurrentSkipListMapTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ConcurrentSkipListSetTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ConcurrentSkipListSubMapTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testDescendingSerialization()V:
+    @ObjectiveCName("ignoreDescendingSerialization")
+class ConcurrentSkipListSubSetTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testDescendingSerialization()V:
+    @ObjectiveCName("ignoreDescendingSerialization")
+class CopyOnWriteArrayListTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class CopyOnWriteArraySetTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class LinkedBlockingDequeTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class LinkedBlockingQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class LinkedTransferQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class PriorityBlockingQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class PriorityQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class ReentrantLockTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testSerialization_fair()V:
+    @ObjectiveCName("ignoreSerialization_fair")
+class ReentrantReadWriteLockTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testSerialization_fair()V:
+    @ObjectiveCName("ignoreSerialization_fair")
+class SynchronousQueueTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class TimeUnitTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class TreeMapTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class TreeSetTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class TreeSubMapTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testDescendingSerialization()V:
+    @ObjectiveCName("ignoreDescendingSerialization")
+class TreeSubSetTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testDescendingSerialization()V:
+    @ObjectiveCName("ignoreDescendingSerialization")
+
+package libcore.java.lang:
+class EnumTest:
+  method testEnumSerialization()V:
+    @ObjectiveCName("ignoreEnumSerialization")
+  method testEnumSubclassSerialization()V:
+    @ObjectiveCName("ignoreEnumSubclassSerialization")
+
+package libcore.java.lang.annotation:
+class AnnotationTypeMismatchExceptionTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+
+package libcore.java.lang.reflect:
+class ConstructorTest:
+  method testToGenericString()V:
+    @ObjectiveCName("ignoreToGenericString")
+  method testToString()V:
+    @ObjectiveCName("ignoreToString")
+class ReflectionTest:
+  method testMethodToString()V:
+    @ObjectiveCName("ignoreMethodToString")
+
+package libcore.java.net:
+class InetAddressTest:
+  method test_isReachable()V:
+    @ObjectiveCName("ignore_isReachable")
+class URITest:
+  method testUriSerialization()V:
+    @ObjectiveCName("ignoreUriSerialization")
+class URLTest:
+  method testUrlSerialization()V:
+    @ObjectiveCName("ignoreUrlSerialization")
+  method testUrlSerializationWithHashCode()V:
+    @ObjectiveCName("ignoreUrlSerializationWithHashCode")
+
+package libcore.java.nio:
+class BufferTest:
+  method testDirectByteBufferAlignment()V:
+    @ObjectiveCName("ignoreDirectByteBufferAlignment")
+  method testHasArrayOnJniDirectByteBuffer()V:
+    @ObjectiveCName("ignoreHasArrayOnJniDirectByteBuffer")
+
+
+package libcore.java.text:
+class DateFormatSymbolsTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class DecimalFormatSymbolsTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testSerializationOfMultiCharNegativeAndPercentage()V:
+    @ObjectiveCName("ignoreSerializationOfMultiCharNegativeAndPercentage")
+
+package libcore.java.util:
+class CurrencyTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+class EventObjectTest:
+  method testSerializationNullsOutSource()V:
+    @ObjectiveCName("ignoreSerializationNullsOutSource")
+class LocaleTest:
+  method test_SerializationBug_26387905()V:
+    @ObjectiveCName("ignore_SerializationBug_26387905")
+class OldCollectionsTest:
+  method test_EmptyList_readResolve()V:
+    @ObjectiveCName("ignore_EmptyList_readResolve")
+  method test_EmptyMap_readResolve()V:
+    @ObjectiveCName("ignore_EmptyMap_readResolve")
+  method test_EmptySet_readResolve()V:
+    @ObjectiveCName("ignore_EmptySet_readResolve")
+  method test_checkedCollectionSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedCollectionSerializationCompatibility")
+  method test_checkedListRandomAccessSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedListRandomAccessSerializationCompatibility")
+  method test_checkedListSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedListSerializationCompatibility")
+  method test_checkedSetSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedSetSerializationCompatibility")
+  method test_checkedMapSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedMapSerializationCompatibility")
+  method test_checkedSortedSetSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedSortedSetSerializationCompatibility")
+  method test_checkedSortedMapSerializationCompatibility()V:
+    @ObjectiveCName("ignore_checkedSortedMapSerializationCompatibility")
+class TreeMapTest:
+  method testSubMapSerialization()V:
+    @ObjectiveCName("ignoreSubMapSerialization")
+  method testNavigableSubMapSerialization()V:
+    @ObjectiveCName("ignoreNavigableSubMapSerialization")
+  method testDescendingMapSerialization()V:
+    @ObjectiveCName("ignoreDescendingMapSerialization")
+  method testSerializationWithComparator()V:
+    @ObjectiveCName("ignoreSerializationWithComparator")
+  method testEmptyMapSerialization()V:
+    @ObjectiveCName("ignoreEmptyMapSerialization")
+  method testJava5SerializationWithComparator()V:
+    @ObjectiveCName("ignoreJava5SerializationWithComparator")
+  method testJava5SubMapSerialization()V:
+    @ObjectiveCName("ignoreJava5SubMapSerialization")
+
+package libcore.java.util.concurrent:
+class CopyOnWriteArrayListTest:
+  method testSerialize()V:
+    @ObjectiveCName("ignoreSerialize")
+
+package org.apache.harmony.beans.tests.java.beans:
+class IntrospectionExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class PropertyChangeEventTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+
+package org.apache.harmony.regex.tests.java.util.regex:
+class PatternSyntaxExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method test_objectStreamField()V:
+    @ObjectiveCName("ignore_objectStreamField")
+class PatternTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+
+package org.apache.harmony.tests.java.io:
+class ObjectStreamClassTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method test_specialTypes()V:
+    @ObjectiveCName("ignore_specialTypes")
+class ObjectStreamFieldTest:
+  method test_getType_Deserialized()V:
+    @ObjectiveCName("ignore_getType_Deserialized")
+  method test_getType_MockObjectInputStream()V:
+    @ObjectiveCName("ignore_getType_MockObjectInputStream")
+  method test_ObjectWithPrimitiveField()V:
+    @ObjectiveCName("ignore_ObjectWithPrimitiveField")
+  method test_isUnshared()V:
+    @ObjectiveCName("ignore_isUnshared")
+
+package org.apache.harmony.tests.java.lang:
+class EnumTest:
+  method test_compatibilitySerialization_inClass_Complex_Harmony()V:
+    @ObjectiveCName("ignore_compatibilitySerialization_inClass_Complex_Harmony")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalArgumentExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalStateExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class StringBufferTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class UnsupportedOperationExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+
+package org.apache.harmony.tests.java.lang.reflect:
+class InvocationTargetExceptionTest:
+  method test_Constructor()V:
+    @ObjectiveCName("ignore_Constructor")
+
+package org.apache.harmony.tests.java.nio.channels:
+class AlreadyConnectedExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class AsynchronousCloseExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class CancelledKeyExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class ClosedByInterruptExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class ClosedChannelExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class ClosedSelectorExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class ConnectionPendingExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class FileLockInterruptionExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalBlockingModeExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class IllegalSelectorExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class NoConnectionPendingExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class NonReadableChannelExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class NonWritableChannelExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class NotYetBoundExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class NotYetConnectedExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class OverlappingFileLockExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class UnresolvedAddressExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class UnsupportedAddressTypeExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+
+package org.apache.harmony.tests.java.text:
+class DateFormatSymbolsTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+class DecimalFormatSymbolsTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+  method test_RIHarmony_compatible()V:
+    @ObjectiveCName("ignore_RIHarmony_compatible")
+class DecimalFormatTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationHarmonyRICompatible()V:
+    @ObjectiveCName("ignoreSerializationHarmonyRICompatible")
+class MessageFormatTest:
+  method test_ConstructorLjava_lang_String()V:
+    @ObjectiveCName("ignore_ConstructorLjava_lang_String")
+
+package org.apache.harmony.tests.java.util:
+class BitSetTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+class Collections2Test:
+  method test_EmptyList_readResolve()V:
+    @ObjectiveCName("ignore_EmptyList_readResolve")
+  method test_EmptyMap_readResolve()V:
+    @ObjectiveCName("ignore_EmptyMap_readResolve")
+  method test_EmptySet_readResolve()V:
+    @ObjectiveCName("ignore_EmptySet_readResolve")
+  method test_checkedCollectionSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedCollectionSerializationCompatability")
+  method test_checkedListRandomAccessSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedListRandomAccessSerializationCompatability")
+  method test_checkedListSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedListSerializationCompatability")
+  method test_checkedSetSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedSetSerializationCompatability")
+  method test_checkedMapSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedMapSerializationCompatability")
+  method test_checkedSortedSetSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedSortedSetSerializationCompatability")
+  method test_checkedSortedMapSerializationCompatability()V:
+    @ObjectiveCName("ignore_checkedSortedMapSerializationCompatability")
+class CollectionsTest:
+  method testSerializationSelf_newSetFromMap()V:
+    @ObjectiveCName("ignoreSerializationSelf_newSetFromMap")
+  method testSerializationSelf_asLifoQueue()V:
+    @ObjectiveCName("ignoreSerializationSelf_asLifoQueue")
+class EnumMapTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class EnumSetTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class HashMapTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+class HashSetTest:
+  method test_Serialization()V:
+    @ObjectiveCName("ignore_Serialization")
+class IdentityHashMapTest:
+  method test_Serialization()V:
+    @ObjectiveCName("ignore_Serialization")
+class InputMismatchExceptionTest:
+  method testSerializationSelf()V:
+    @ObjectiveCName("ignoreSerializationSelf")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class LinkedListTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+class TreeMapTest:
+  method test_SubMap_Serializable()V:
+    @ObjectiveCName("ignore_SubMap_Serializable")
+class PriorityQueueTest:
+  method test_Serialization()V:
+    @ObjectiveCName("ignore_Serialization")
+  method test_Serialization_casting()V:
+    @ObjectiveCName("ignore_Serialization_casting")
+  method test_SerializationCompatibility_cast()V:
+    @ObjectiveCName("ignore_SerializationCompatibility_cast")
+class RandomTest:
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+class VectorTest:
+  method test_subListII()V:
+    @ObjectiveCName("ignore_subListII")
+
+package org.apache.harmony.tests.java.util.zip:
+class ZipErrorTest:
+  method test_serialization()V:
+    @ObjectiveCName("ignore_serialization")
+  method testSerializationCompatibility()V:
+    @ObjectiveCName("ignoreSerializationCompatibility")
+
+package test.java.time:
+class TestLocalDate:
+  method test_immutable()V: @Ignore
+class TestPeriod:
+  method test_immutable()V: @Ignore
+class TestZoneId:
+  method test_immutable()V: @Ignore
+class TestInstant:
+  method test_immutable()V: @Ignore
+class TestDuration:
+  method test_immutable()V: @Ignore
+class TestLocalTime:
+  method test_immutable()V: @Ignore
+class TestZoneOffset:
+  method test_immutable()V: @Ignore
+class TestLocalDateTime:
+  method test_immutable()V: @Ignore
+class TestOffsetDateTime:
+  method test_immutable()V: @Ignore
+
+package test.java.time.temporal:
+class TestDateTimeValueRange:
+  method test_immutable()V: @Ignore
+
+package tests.api.java.lang.reflect:
+class ProxyTest:
+  method test_newProxyInstanceLjava_lang_ClassLoader$Ljava_lang_ClassLjava_lang_reflect_InvocationHandler()V:
+    @ObjectiveCName("ignore_newProxyInstanceLjava_lang_ClassLoader_Ljava_lang_ClassLjava_lang_reflect_InvocationHandler")

@@ -396,7 +396,7 @@ string GetFieldFlags(const FieldDescriptor *field) {
   if (field->is_extension()) {
     flags.push_back("CGPFieldFlagExtension");
   }
-  if (field->options().packed()) {
+  if (field->is_packed()) {
     flags.push_back("CGPFieldFlagPacked");
   }
   if (IsMapField(field)) {
@@ -589,23 +589,6 @@ string GetDefaultValueTypeName(const FieldDescriptor *descriptor) {
     case JAVATYPE_STRING:
     case JAVATYPE_MESSAGE:
       return "Id";
-  }
-}
-
-string GetFieldDataClassName(const FieldDescriptor *descriptor) {
-  switch (GetJavaType(descriptor)) {
-    case JAVATYPE_INT:
-    case JAVATYPE_LONG:
-    case JAVATYPE_FLOAT:
-    case JAVATYPE_DOUBLE:
-    case JAVATYPE_BOOLEAN:
-    case JAVATYPE_STRING:
-    case JAVATYPE_BYTES:
-      return "NULL";
-    case JAVATYPE_ENUM:
-      return "\"" + ClassName(descriptor->enum_type()) + "\"";
-    case JAVATYPE_MESSAGE:
-      return "\"" + ClassName(descriptor->message_type()) + "\"";
   }
 }
 

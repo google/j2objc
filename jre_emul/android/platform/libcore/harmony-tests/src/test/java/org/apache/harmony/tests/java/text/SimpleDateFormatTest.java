@@ -134,7 +134,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 
         // test invalid patterns
         try {
-            f2.applyLocalizedPattern("b");
+            f2.applyLocalizedPattern("j");
             fail();
         } catch (IllegalArgumentException expected) {
         }
@@ -161,8 +161,8 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 
         // test invalid patterns
         try {
-            f2.applyPattern("b");
-            fail("Expected IllegalArgumentException for pattern with invalid patter letter: b");
+            f2.applyPattern("j");
+            fail("Expected IllegalArgumentException for pattern with invalid patter letter: j");
         } catch (IllegalArgumentException e) {
         }
 

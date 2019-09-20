@@ -62,7 +62,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
     TypeElement type = node.getTypeElement();
-    if (!ElementUtil.isRuntimeAnnotation(type)) {
+    if (!ElementUtil.isGeneratedAnnotation(type)) {
       return;
     }
     List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(node);

@@ -758,8 +758,8 @@ static BOOL AddPutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, encoding);
 }
 
-#define GET_REMOVE_IMP(NAME) \
-  static IMP GetRemoveImp##NAME( \
+#define GET_MAP_REMOVE_IMP(NAME) \
+  static IMP GetMapRemoveImp##NAME( \
       size_t offset, CGPFieldJavaType keyType, CGPFieldJavaType valueType) { \
     return imp_implementationWithBlock(^id(id msg, TYPE_##NAME pKey) { \
       CGPValue key; \
@@ -769,14 +769,14 @@ static BOOL AddPutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
     }); \
   }
 
-GET_REMOVE_IMP(Int)
-GET_REMOVE_IMP(Long)
-GET_REMOVE_IMP(Bool)
-GET_REMOVE_IMP(Id)
+GET_MAP_REMOVE_IMP(Int)
+GET_MAP_REMOVE_IMP(Long)
+GET_MAP_REMOVE_IMP(Bool)
+GET_MAP_REMOVE_IMP(Id)
 
 #undef GET_REMOVE_IMP
 
-static BOOL AddRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+static BOOL AddMapRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   IMP imp = NULL;
   char encoding[64];
   strcpy(encoding, "@@:");
@@ -785,7 +785,7 @@ static BOOL AddRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   CGPFieldJavaType valueType = CGPFieldGetJavaType(CGPFieldMapValue(field));
 
 #define REMOVE_METHOD_CASE(NAME) \
-  imp = GetRemoveImp##NAME(offset, keyType, valueType); \
+  imp = GetMapRemoveImp##NAME(offset, keyType, valueType); \
   strcat(encoding, @encode(TYPE_##NAME)); \
   break;
 
@@ -809,6 +809,15 @@ static BOOL AddRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 #undef REMOVE_METHOD_CASE
 
   return class_addMethod(cls, sel, imp, encoding);
+}
+
+static BOOL AddRepeatedMessageRemoveMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  size_t offset = CGPFieldGetOffset(field, cls);
+  IMP imp = imp_implementationWithBlock(^id(id msg, TYPE_Int index) {
+    CGPRepeatedMessageFieldRemove(REPEATED_FIELD_PTR(msg, offset), index);
+    return msg;
+  });
+  return class_addMethod(cls, sel, imp, "@@:i");
 }
 
 static IMP GetOneofImp(size_t offset, Class cls) {
@@ -838,7 +847,7 @@ static const char *GetParamKeyword(CGPFieldDescriptor *field) {
       return "ComGoogleProtobufByteString";
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
-      return field->data_->className;
+      return class_getName(field->data_->objcType);
   }
   __builtin_unreachable();
 }
@@ -1047,7 +1056,12 @@ static BOOL ResolveRemoveAccessor(
     const char *tail = selName;
     if (CGPFieldIsMap(field) && MatchesName(&tail, field) && Matches(&tail, "With", 4)
         && MatchesKeyword(&tail, CGPFieldMapKey(field)) && MatchesEnd(tail, ":")) {
-      return AddRemoveMethod(cls, sel, field);
+      return AddMapRemoveMethod(cls, sel, field);
+    }
+    tail = selName;
+    if (CGPFieldIsRepeated(field) && CGPFieldTypeIsMessage(field) && MatchesName(&tail, field)
+        && MatchesEnd(tail, "WithInt:")) {
+      return AddRepeatedMessageRemoveMethod(cls, sel, field);
     }
   }
   return NO;
@@ -1323,7 +1337,7 @@ static void MergeExtensions(CGPExtensionMap *msgExtensionMap, CGPExtensionMap *o
       }
       [list addAllWithJavaUtilCollection:otherValue];
     } else {
-      if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field)) && value != nil) {
+      if (CGPFieldTypeIsMessage(field) && value != nil) {
         extValue.set_retained(NewMergedMessageField(value, otherValue, field->valueType_));
       } else {
         extValue.set(otherValue);
@@ -1443,7 +1457,7 @@ static BOOL ReadMapEntryField(
       return stream->ReadRetainedNSString(&value->valueId);
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP:
       isGroup = YES;
-      // fall through.
+      FALLTHROUGH_INTENDED;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_MESSAGE: {
       ComGoogleProtobufGeneratedMessage *newMsg = CGPNewMessage(field->valueType_);
       if (!(isGroup ?
@@ -1554,7 +1568,7 @@ static BOOL MergeExtensionValueFromStream(
       return YES;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP:
       isGroup = YES;
-      // fall through.
+      FALLTHROUGH_INTENDED;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_MESSAGE:
       {
         CGPDescriptor *fieldType = field->valueType_;
@@ -1608,7 +1622,7 @@ static BOOL MergeExtensionFromStream(
   } else {
     id existingValue = nil;
     // For message types we need to keep the fields from the existing message.
-    if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field))) {
+    if (CGPFieldTypeIsMessage(field)) {
       CGPExtensionMap::iterator it = extensionMap->find(field);
       if (it != extensionMap->end()) {
         existingValue = it->second.get();
@@ -1806,7 +1820,7 @@ static BOOL MergeFieldFromStream(
       return YES;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP:
       isGroup = YES;
-      // fall through.
+      FALLTHROUGH_INTENDED;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_MESSAGE:
       {
         CGPDescriptor *fieldType = field->valueType_;
@@ -2672,7 +2686,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     if (CGPFieldIsMap(field)) {
       CGPFieldDescriptor *valueField = CGPFieldMapValue(field);
-      if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(valueField))) {
+      if (CGPFieldTypeIsMessage(valueField)) {
         size_t offset = CGPFieldGetOffset(field, object_getClass(msg));
         CGPMapFieldData *data = MAP_FIELD_PTR(msg, offset)->data;
         if (data != NULL) {
@@ -2689,7 +2703,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
         }
       }
     } else if (CGPFieldIsRepeated(field)) {
-      if (CGPJavaTypeIsMessage(CGPFieldGetJavaType(field))) {
+      if (CGPFieldTypeIsMessage(field)) {
         size_t offset = CGPFieldGetOffset(field, object_getClass(msg));
         CGPRepeatedField *repeatedField = REPEATED_FIELD_PTR(msg, offset);
         CGPRepeatedFieldData *data = repeatedField->data;
@@ -2703,7 +2717,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
         }
       }
     } else {
-      BOOL isMessage = CGPJavaTypeIsMessage(CGPFieldGetJavaType(field));
+      BOOL isMessage = CGPFieldTypeIsMessage(field);
       BOOL required = CGPFieldIsRequired(field);
       if (!required && !isMessage) continue;
       Class msgCls = object_getClass(msg);

@@ -3133,10 +3133,15 @@ public class TreeMap<K,V>
           (ARCBRIDGE id) (void *) state->extra[2];
       if (state->state == 0) {
         state->state = 1;
-        state->mutationsPtr = (unsigned long *) &map->modCount_;
+        // Detect mutations here to properly raise ConcurrentModificationException.
+        state->mutationsPtr = &state->state;
+        state->extra[3] = map->modCount_;
         node = startNode;
       } else {
         node = (ARCBRIDGE id) (void *) state->extra[0];
+      }
+      if (state->extra[3] != map->modCount_) {
+        @throw create_JavaUtilConcurrentModificationException_init();
       }
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;

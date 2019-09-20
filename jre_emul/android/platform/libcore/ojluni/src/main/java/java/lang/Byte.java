@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
  * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -60,6 +59,7 @@ public final class Byte extends Number implements Comparable<Byte> {
      * The {@code Class} instance representing the primitive type
      * {@code byte}.
      */
+    @SuppressWarnings("unchecked")
     public static final Class<Byte>     TYPE = (Class<Byte>) byte[].class.getComponentType();
 
     /**
@@ -122,8 +122,8 @@ public final class Byte extends Number implements Comparable<Byte> {
      * determined by whether {@link java.lang.Character#digit(char,
      * int)} returns a nonnegative value) except that the first
      * character may be an ASCII minus sign {@code '-'}
-     * (<code>'&#92;u002D'</code>) to indicate a negative value or an
-     * ASCII plus sign {@code '+'} (<code>'&#92;u002B'</code>) to
+     * ({@code '\u005Cu002D'}) to indicate a negative value or an
+     * ASCII plus sign {@code '+'} ({@code '\u005Cu002B'}) to
      * indicate a positive value.  The resulting {@code byte} value is
      * returned.
      *
@@ -139,8 +139,8 @@ public final class Byte extends Number implements Comparable<Byte> {
      *
      * <li> Any character of the string is not a digit of the
      * specified radix, except that the first character may be a minus
-     * sign {@code '-'} (<code>'&#92;u002D'</code>) or plus sign
-     * {@code '+'} (<code>'&#92;u002B'</code>) provided that the
+     * sign {@code '-'} ({@code '\u005Cu002D'}) or plus sign
+     * {@code '+'} ({@code '\u005Cu002B'}) provided that the
      * string is longer than length 1.
      *
      * <li> The value represented by the string is not a value of type
@@ -169,9 +169,9 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Parses the string argument as a signed decimal {@code
      * byte}. The characters in the string must all be decimal digits,
      * except that the first character may be an ASCII minus sign
-     * {@code '-'} (<code>'&#92;u002D'</code>) to indicate a negative
+     * {@code '-'} ({@code '\u005Cu002D'}) to indicate a negative
      * value or an ASCII plus sign {@code '+'}
-     * (<code>'&#92;u002B'</code>) to indicate a positive value. The
+     * ({@code '\u005Cu002B'}) to indicate a positive value. The
      * resulting {@code byte} value is returned, exactly as if the
      * argument and the radix 10 were given as arguments to the {@link
      * #parseByte(java.lang.String, int)} method.
@@ -256,7 +256,7 @@ public final class Byte extends Number implements Comparable<Byte> {
      * <dd><i>Sign<sub>opt</sub></i> {@code 0X} <i>HexDigits</i>
      * <dd><i>Sign<sub>opt</sub></i> {@code #} <i>HexDigits</i>
      * <dd><i>Sign<sub>opt</sub></i> {@code 0} <i>OctalDigits</i>
-     * <p>
+     *
      * <dt><i>Sign:</i>
      * <dd>{@code -}
      * <dd>{@code +}
@@ -337,40 +337,45 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
-     * Returns the value of this {@code Byte} as a
-     * {@code short}.
+     * Returns the value of this {@code Byte} as a {@code short} after
+     * a widening primitive conversion.
+     * @jls 5.1.2 Widening Primitive Conversions
      */
     public short shortValue() {
         return (short)value;
     }
 
     /**
-     * Returns the value of this {@code Byte} as an
-     * {@code int}.
+     * Returns the value of this {@code Byte} as an {@code int} after
+     * a widening primitive conversion.
+     * @jls 5.1.2 Widening Primitive Conversions
      */
     public int intValue() {
         return (int)value;
     }
 
     /**
-     * Returns the value of this {@code Byte} as a
-     * {@code long}.
+     * Returns the value of this {@code Byte} as a {@code long} after
+     * a widening primitive conversion.
+     * @jls 5.1.2 Widening Primitive Conversions
      */
     public long longValue() {
         return (long)value;
     }
 
     /**
-     * Returns the value of this {@code Byte} as a
-     * {@code float}.
+     * Returns the value of this {@code Byte} as a {@code float} after
+     * a widening primitive conversion.
+     * @jls 5.1.2 Widening Primitive Conversions
      */
     public float floatValue() {
         return (float)value;
     }
 
     /**
-     * Returns the value of this {@code Byte} as a
-     * {@code double}.
+     * Returns the value of this {@code Byte} as a {@code double}
+     * after a widening primitive conversion.
+     * @jls 5.1.2 Widening Primitive Conversions
      */
     public double doubleValue() {
         return (double)value;
@@ -396,6 +401,7 @@ public final class Byte extends Number implements Comparable<Byte> {
      *
      * @return a hash code value for this {@code Byte}
      */
+    @Override
     public int hashCode() {
         return Byte.hashCode(value);
     }
@@ -465,6 +471,47 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
+     * Converts the argument to an {@code int} by an unsigned
+     * conversion.  In an unsigned conversion to an {@code int}, the
+     * high-order 24 bits of the {@code int} are zero and the
+     * low-order 8 bits are equal to the bits of the {@code byte} argument.
+     *
+     * Consequently, zero and positive {@code byte} values are mapped
+     * to a numerically equal {@code int} value and negative {@code
+     * byte} values are mapped to an {@code int} value equal to the
+     * input plus 2<sup>8</sup>.
+     *
+     * @param  x the value to convert to an unsigned {@code int}
+     * @return the argument converted to {@code int} by an unsigned
+     *         conversion
+     * @since 1.8
+     */
+    public static int toUnsignedInt(byte x) {
+        return ((int) x) & 0xff;
+    }
+
+    /**
+     * Converts the argument to a {@code long} by an unsigned
+     * conversion.  In an unsigned conversion to a {@code long}, the
+     * high-order 56 bits of the {@code long} are zero and the
+     * low-order 8 bits are equal to the bits of the {@code byte} argument.
+     *
+     * Consequently, zero and positive {@code byte} values are mapped
+     * to a numerically equal {@code long} value and negative {@code
+     * byte} values are mapped to a {@code long} value equal to the
+     * input plus 2<sup>8</sup>.
+     *
+     * @param  x the value to convert to an unsigned {@code long}
+     * @return the argument converted to {@code long} by an unsigned
+     *         conversion
+     * @since 1.8
+     */
+    public static long toUnsignedLong(byte x) {
+        return ((long) x) & 0xffL;
+    }
+
+
+    /**
      * The number of bits used to represent a {@code byte} value in two's
      * complement binary form.
      *
@@ -483,7 +530,8 @@ public final class Byte extends Number implements Comparable<Byte> {
     /** use serialVersionUID from JDK 1.1. for interoperability */
     private static final long serialVersionUID = -7183698231559129828L;
 
-    /** ----- BEGIN android -----
+    // BEGIN Android-changed
+    /**
      * @hide
      */
     public static String toHexString(byte b, boolean upperCase) {

@@ -78,9 +78,15 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
 
 - (id)invokeWithId:(id)object
     withNSObjectArray:(IOSObjectArray *)arguments {
-  if (!IsStatic(metadata_) && object == nil) {
-    @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
-      @"null object specified for non-final method"]);
+  if (!IsStatic(metadata_)) {
+    if (object == nil) {
+      @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
+                          @"null object specified for non-final method"]);
+    }
+    if (![[self getDeclaringClass] isAssignableFrom:[object java_getClass]]) {
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+                          @"wrong receiver"]);
+    }
   }
 
   IOSObjectArray *paramTypes = [self getParameterTypesInternal];
@@ -140,7 +146,8 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 - (NSInvocation *)invocationForTarget:(id)object {
   NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[self getSignature]];
   SEL sel = JreMethodSelector(metadata_);
-  if (object == nil || [object isKindOfClass:[IOSClass class]]) {
+  bool isStatic = (metadata_->modifiers & JavaLangReflectModifier_STATIC) > 0;
+  if (object == nil || [object isKindOfClass:[IOSClass class]] || isStatic) {
     [invocation setTarget:class_.objcClass];
   } else {
     [invocation setTarget:object];
@@ -176,7 +183,10 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   if (protocol) {
     struct objc_method_description methodDesc =
         protocol_getMethodDescription(protocol, sel, YES, YES);
-    return [NSMethodSignature signatureWithObjCTypes:methodDesc.types];
+    if (methodDesc.types != NULL) {
+      return [NSMethodSignature signatureWithObjCTypes:methodDesc.types];
+    }
+    // Let's look for the selector in the companion class.
   }
   Class cls = class_.objcClass;
   bool isStatic = (metadata_->modifiers & JavaLangReflectModifier_STATIC) > 0;

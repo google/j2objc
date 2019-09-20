@@ -72,4 +72,15 @@ public class VariableRenamerTest extends GenerationTest {
     assertTranslation(impl, "jint Test_bar_");
     assertTranslation(impl, "void Test_bar(Test *self)");
   }
+
+  public void testErrorStaticFieldValuesInEnum() throws IOException {
+    String source = "enum Example { A, B, C; static final String values = \"\"; }";
+    addSourceFile(source, "Example.java");
+    String translation = translateSourceFile("Example", "Example.h");
+    // J2ObjC generated variable.
+    assertTranslation(translation, "FOUNDATION_EXPORT Example *Example_values_[];");
+    // User variable.
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_values_;");
+    assertErrorCount(1);
+  }
 }

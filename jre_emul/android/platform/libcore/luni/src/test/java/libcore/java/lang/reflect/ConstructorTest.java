@@ -17,6 +17,8 @@
 package libcore.java.lang.reflect;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
+
 import junit.framework.TestCase;
 
 public final class ConstructorTest extends TestCase {
@@ -33,8 +35,12 @@ public final class ConstructorTest extends TestCase {
     }
 
     public void test_getParameterTypes() throws Exception {
-        Class[] expectedParameters = new Class[] { Object.class };
+        Class[] expectedParameters = new Class[0];
         Constructor<?> constructor = ConstructorTestHelper.class.getConstructor(expectedParameters);
+        assertEquals(0, constructor.getParameterTypes().length);
+
+        expectedParameters = new Class[] { Object.class };
+        constructor = ConstructorTestHelper.class.getConstructor(expectedParameters);
         Class[] parameters = constructor.getParameterTypes();
         assertEquals(1, parameters.length);
         assertEquals(expectedParameters[0], parameters[0]);
@@ -43,6 +49,38 @@ public final class ConstructorTest extends TestCase {
         parameters = constructor.getParameterTypes();
         assertEquals(1, parameters.length);
         assertEquals(expectedParameters[0], parameters[0]);
+    }
+
+    public void test_getParameterCount() throws Exception {
+        Class[] expectedParameters = new Class[0];
+        Constructor<?> constructor = ConstructorTestHelper.class.getConstructor(expectedParameters);
+        assertEquals(0, constructor.getParameterCount());
+
+        expectedParameters = new Class[] { Object.class };
+        constructor = ConstructorTestHelper.class.getConstructor(expectedParameters);
+        int count = constructor.getParameterCount();
+        assertEquals(1, count);
+    }
+
+    public void test_getParameters() throws Exception {
+        Class[] expectedParameters = new Class[0];
+        Constructor<?> constructor = ConstructorTestHelper.class.getConstructor(expectedParameters);
+        assertEquals(0, constructor.getParameters().length);
+
+        expectedParameters = new Class[] { Object.class };
+        constructor = ConstructorTestHelper.class.getConstructor(expectedParameters);
+
+        // Test the information available via other Constructor methods. See ParameterTest and
+        // annotations.ParameterTest for more in-depth Parameter testing.
+        Parameter[] parameters = constructor.getParameters();
+        assertEquals(1, parameters.length);
+        assertEquals(Object.class, parameters[0].getType());
+
+        // Check that corrupting our array doesn't affect other callers.
+        parameters[0] = null;
+        parameters = constructor.getParameters();
+        assertEquals(1, parameters.length);
+        assertEquals(Object.class, parameters[0].getType());
     }
 
     public void testGetConstructorWithNullArgumentsArray() throws Exception {
@@ -90,9 +128,69 @@ public final class ConstructorTest extends TestCase {
         assertFalse(c1.equals(c2));
     }
 
+    public void testToString() throws Exception {
+        checkToString(
+                "public libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper() throws java.lang.IndexOutOfBoundsException",
+                ConstructorTestHelper.class);
+        checkToString(
+                "public libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper(java.lang.Object)",
+                ConstructorTestHelper.class, Object.class);
+        checkToString(
+                "private libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper(java.lang.Object,java.lang.Object)",
+                ConstructorTestHelper.class, Object.class, Object.class);
+        checkToString(
+                "public libcore.java.lang.reflect.ConstructorTest$GenericConstructorTestHelper() throws java.lang.Exception",
+                GenericConstructorTestHelper.class);
+        checkToString(
+                "public libcore.java.lang.reflect.ConstructorTest$GenericConstructorTestHelper(java.lang.String)",
+                GenericConstructorTestHelper.class, String.class);
+        checkToString(
+                "public libcore.java.lang.reflect.ConstructorTest$GenericConstructorTestHelper(java.lang.String,java.lang.Integer)",
+                GenericConstructorTestHelper.class, String.class, Integer.class);
+    }
+
+    private static void checkToString(String expected, Class<?> clazz, Class... constructorArgTypes)
+            throws Exception {
+        Constructor c = clazz.getDeclaredConstructor(constructorArgTypes);
+        assertEquals(expected, c.toString());
+    }
+
+    public void testToGenericString() throws Exception {
+        checkToGenericString(
+                "public libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper() throws java.lang.IndexOutOfBoundsException",
+                ConstructorTestHelper.class);
+        checkToGenericString(
+                "public libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper(java.lang.Object)",
+                ConstructorTestHelper.class, Object.class);
+        checkToGenericString(
+                "private libcore.java.lang.reflect.ConstructorTest$ConstructorTestHelper(java.lang.Object,java.lang.Object)",
+                ConstructorTestHelper.class, Object.class, Object.class);
+        checkToGenericString(
+                "public libcore.java.lang.reflect.ConstructorTest$GenericConstructorTestHelper() throws E",
+                GenericConstructorTestHelper.class);
+        checkToGenericString(
+                "public libcore.java.lang.reflect.ConstructorTest$GenericConstructorTestHelper(A)",
+                GenericConstructorTestHelper.class, String.class);
+        checkToGenericString(
+                "public <B> libcore.java.lang.reflect.ConstructorTest$GenericConstructorTestHelper(A,B)",
+                GenericConstructorTestHelper.class, String.class, Integer.class);
+    }
+
+    private static void checkToGenericString(String expected, Class<?> clazz,
+            Class... constructorArgTypes) throws Exception {
+        Constructor c = clazz.getDeclaredConstructor(constructorArgTypes);
+        assertEquals(expected, c.toGenericString());
+    }
+
     static class ConstructorTestHelper {
         public ConstructorTestHelper() throws IndexOutOfBoundsException { }
         public ConstructorTestHelper(Object o) { }
         private ConstructorTestHelper(Object a, Object b) { }
+    }
+
+    static class GenericConstructorTestHelper<A extends String, E extends Exception> {
+        public GenericConstructorTestHelper() throws E { }
+        public GenericConstructorTestHelper(A a) { }
+        public <B extends Integer> GenericConstructorTestHelper(A a, B b) { }
     }
 }

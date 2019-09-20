@@ -475,7 +475,8 @@ public final class Unsafe {
      * Allocates an instance of the given class without running the constructor.
      * The class' <clinit> will be run, if necessary.
      */
-    public native Object allocateInstance(Class<?> c);
+    // j2objc: added throws to match OpenJDK signature.
+    public native Object allocateInstance(Class<?> c) throws InstantiationException;
 
     public native int addressSize();
 

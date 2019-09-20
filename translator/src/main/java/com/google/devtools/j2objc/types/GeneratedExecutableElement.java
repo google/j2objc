@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -49,6 +48,8 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   private final String selector;
   private final List<VariableElement> parameters = Lists.newArrayList();
+  private final List<TypeMirror> thrownTypes = Lists.newArrayList();
+  private final List<TypeParameterElement> typeParameters = Lists.newArrayList();
   private final TypeMirror returnType;
   private final boolean varargs;
 
@@ -88,6 +89,24 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     return new GeneratedExecutableElement(
         selector, selector, ElementKind.METHOD, returnType, method.getEnclosingElement(),
         method.isVarArgs(), ElementUtil.isSynthetic(method));
+  }
+
+  public static GeneratedExecutableElement mutableCopy(String selector, ExecutableElement method) {
+    GeneratedExecutableElement generatedMethod =
+        new GeneratedExecutableElement(
+            method.getSimpleName().toString(),
+            selector,
+            method.getKind(),
+            method.getReturnType(),
+            method.getEnclosingElement(),
+            method.isVarArgs(),
+            ElementUtil.isSynthetic(method));
+    generatedMethod.addAnnotationMirrors(method.getAnnotationMirrors());
+    generatedMethod.addModifiers(method.getModifiers());
+    generatedMethod.parameters.addAll(method.getParameters());
+    generatedMethod.thrownTypes.addAll(method.getThrownTypes());
+    generatedMethod.typeParameters.addAll(method.getTypeParameters());
+    return generatedMethod;
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
@@ -151,7 +170,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   @Override
   public List<? extends TypeParameterElement> getTypeParameters() {
-    return Collections.emptyList();
+    return typeParameters;
   }
 
   @Override
@@ -181,7 +200,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   @Override
   public List<? extends TypeMirror> getThrownTypes() {
-    return Collections.emptyList();
+    return thrownTypes;
   }
 
   @Override

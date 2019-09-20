@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -58,7 +58,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /* the runtime uses these directly; do not rename */
     static final ThreadGroup systemThreadGroup = new ThreadGroup();
 
-    static final ThreadGroup mainThreadGroup = new ThreadGroup(systemThreadGroup, "main");
+    static final ThreadGroup mainThreadGroup = new MainThreadGroup(systemThreadGroup);
 
     private final ThreadGroup parent;
     String name;
@@ -260,14 +260,14 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @see        java.lang.ThreadGroup#checkAccess()
      * @since      JDK1.0
      */
-    // Android changed: We clamp the priority to the range [MIN_PRIORITY, MAX_PRIORITY]
+    // Android-changed: We clamp the priority to the range [MIN_PRIORITY, MAX_PRIORITY]
     // before using it.
     public final void setMaxPriority(int pri) {
         int ngroupsSnapshot;
         ThreadGroup[] groupsSnapshot;
         synchronized (this) {
             checkAccess();
-            // Android changed: Clamp to MIN_PRIORITY, MAX_PRIORITY.
+            // Android-changed: Clamp to MIN_PRIORITY, MAX_PRIORITY.
             // if (pri < Thread.MIN_PRIORITY || pri > Thread.MAX_PRIORITY) {
             //     return;
             // }
@@ -680,6 +680,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      *     {@link Thread#suspend} for details.
      */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public final void suspend() {
         if (stopOrSuspend(true))
             Thread.currentThread().suspend();
@@ -692,6 +693,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * if (and only if) the current thread is found to be in this thread
      * group or one of its subgroups.
      */
+    @SuppressWarnings("deprecation")
     private boolean stopOrSuspend(boolean suspend) {
         boolean suicide = false;
         Thread us = Thread.currentThread();
@@ -741,6 +743,7 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      *       deadlock-prone.  See {@link Thread#suspend} for details.
      */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public final void resume() {
         int ngroupsSnapshot;
         ThreadGroup[] groupsSnapshot;
@@ -925,9 +928,6 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      *
      * @param  t
      *         the Thread whose start method was invoked
-     *
-     * @param  failed
-     *         true if the thread could not be started successfully
      */
     void threadStartFailed(Thread t) {
         synchronized(this) {
@@ -1081,5 +1081,14 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      */
     public String toString() {
         return getClass().getName() + "[name=" + getName() + ",maxpri=" + maxPriority + "]";
+    }
+
+    // j2objc: main thread group needs to potentially handle lots of native
+    // thread additions and removals, so start with a bigger threads array.
+    private static class MainThreadGroup extends ThreadGroup {
+      MainThreadGroup(ThreadGroup parent) {
+        super(parent, "main");
+        threads = new Thread[32];
+      }
     }
 }

@@ -17,6 +17,7 @@
 
 package libcore.java.util;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.util.EventObject;
 import junit.framework.TestCase;
 import libcore.util.SerializationTester;
@@ -37,7 +38,9 @@ public final class EventObjectTest extends TestCase {
     }
 
     public void testToString() {
-        assertEquals("java.util.EventObject[source=x]", new EventObject("x").toString());
+        // J2ObjC reflection-stripping change.
+        String expected = "java.util.EventObject[source=x]";
+        assertTrue(ReflectionUtil.matchClassNamePrefix(new EventObject("x").toString(), expected));
     }
 
     public void testSerializationNullsOutSource() {

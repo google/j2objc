@@ -63,21 +63,20 @@ import protos.TypicalDataSet;
  */
 public class CompatibilityTest extends ProtobufTest {
 
-  private static InputStream getResourceStream(String path) throws FileNotFoundException {
-    InputStream result = ClassLoader.getSystemResourceAsStream(path);
-    if (result == null) {
-      throw new FileNotFoundException(path);
-    }
-    return result;
-  }
-
+  // Fetch test resource from application root or relative path, depending on build.
   private static InputStream getTestData(String name) throws FileNotFoundException {
-    String osName = System.getProperty("os.name");
-    if (osName.contains("iPhone")) {
-      return getResourceStream(name);
-    } else {
-      return new FileInputStream(new File("testdata/" + name));
+    // For iOS the test data might be available at root in the bundle.
+    InputStream resource = ClassLoader.getSystemResourceAsStream(name);
+    if (resource != null) {
+      return resource;
     }
+    // For Java the test data is added as a resource in the jar.
+    resource = ClassLoader.getSystemResourceAsStream("testdata/" + name);
+    if (resource != null) {
+      return resource;
+    }
+    // For macos, the files are not available in the bundle.
+    return new FileInputStream(new File("testdata/" + name));
   }
 
   private static byte[] readStream(InputStream in) throws IOException {
@@ -1342,5 +1341,13 @@ public class CompatibilityTest extends ProtobufTest {
         0x7A, 0x0A, 0x61, 0x62, 0x63, 0xFF, 0xD8, 0xFF, 0xE0, 0x64, 0x65, 0x66 });
     TypicalData data = TypicalData.parseFrom(new ByteArrayInputStream(rawData));
     assertEquals("abc\ufffd\ufffd\ufffd\ufffddef", data.getMyString());
+  }
+
+  public void testDescriptorGetName() throws Exception {
+    Descriptor descriptor = TypicalData.Builder.getDescriptor();
+    // Java returns TypicalData.
+    // The transpiled code returns ProtosTypicalData because it does not have
+    // reflection metadata (i.e. defaults to NSStringFromClass).
+    assertTrue(descriptor.getName().endsWith("TypicalData"));
   }
 }

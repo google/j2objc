@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.tests.java.text;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 
@@ -219,17 +220,20 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		FieldPosition fpos = new FieldPosition(1);
 		fpos.setBeginIndex(2);
 		fpos.setEndIndex(3);
-		assertEquals(
-				"ToString returned the wrong value:",
-				"java.text.FieldPosition[field=1,attribute=null,beginIndex=2,endIndex=3]",
-				fpos.toString());
+		// J2ObjC reflection-stripping change.
+		String expected = "java.text.FieldPosition"
+				+ "[field=1,attribute=null,beginIndex=2,endIndex=3]";
+		assertTrue("ToString returned the wrong value:",
+				ReflectionUtil.matchClassNamePrefix(fpos.toString(), expected));
 
 		FieldPosition fpos2 = new FieldPosition(DateFormat.Field.ERA);
 		fpos2.setBeginIndex(4);
 		fpos2.setEndIndex(5);
-		assertEquals("ToString returned the wrong value:",
-				"java.text.FieldPosition[field=-1,attribute=" + DateFormat.Field.ERA
-						+ ",beginIndex=4,endIndex=5]", fpos2.toString());
+		// J2ObjC reflection-stripping change.
+		expected = "java.text.FieldPosition[field=-1,attribute="
+				+ DateFormat.Field.ERA.toString() + ",beginIndex=4,endIndex=5]";
+		assertTrue("ToString returned the wrong value:",
+				ReflectionUtil.matchClassNamePrefix(fpos2.toString(), expected));
 	}
 
 	/**

@@ -255,7 +255,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
         // Armenian Dram 0 fractional digits.
         nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
-        assertEquals("֏\u00a050", nf.format(50.00));
+        result = nf.format(50.00);
+        // Allow different versions of the ICU CLDR.
+        assertTrue(result.equals("֏\u00a050") || result.equals("50\u00a0֏"));
 
         // Swiss Francs 2 fractional digits.
         nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));

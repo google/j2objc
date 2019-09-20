@@ -16,16 +16,9 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.Parser;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
 
 /**
  * Tests for {@link TranslationProcessor}.
@@ -33,36 +26,6 @@ import java.util.jar.JarOutputStream;
  * @author kstanger@google.com (Keith Stanger)
  */
 public class TranslationProcessorTest extends GenerationTest {
-	  
-  public void testJarBatchTranslation() throws IOException {
-    String fooSource = "package mypkg; class Foo {}";
-    String barSource = "package mypkg; class Bar {}";
-    File jarFile = getTempFile("test.jar");
-    JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarFile));
-    try {
-      JarEntry fooEntry = new JarEntry("mypkg/Foo.java");
-      jar.putNextEntry(fooEntry);
-      jar.write(fooSource.getBytes());
-      jar.closeEntry();
-      JarEntry barEntry = new JarEntry("mypkg/Bar.java");
-      jar.putNextEntry(barEntry);
-      jar.write(barSource.getBytes());
-      jar.closeEntry();
-    } finally {
-      jar.close();
-    }
-
-    options.fileUtil().appendSourcePath(jarFile.getPath());
-    options.setBatchTranslateMaximum(2);
-
-    GenerationBatch batch = new GenerationBatch(options, parser);
-    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
-    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
-    processor.processInputs(batch.getInputs());
-
-    assertEquals(0, ErrorUtil.errorCount());
-  }
 
   public void testSingleSourceFileBuildClosure() throws IOException {
     options.setBuildClosure(true);
@@ -73,7 +36,6 @@ public class TranslationProcessorTest extends GenerationTest {
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
-    processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Test.h");
     assertTranslation(translation, "@interface Test");
@@ -97,10 +59,33 @@ public class TranslationProcessorTest extends GenerationTest {
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
-    processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Foo.h");
     assertTranslation(translation, "- (void)foo2;");
     assertNotInTranslation(translation, "foo1");
+  }
+
+  public void testEntryClasses() throws IOException {
+    addSourceFile("class A { B test() { return new B(); }}", "A.java");
+    addSourceFile("class B extends C {}", "B.java");
+    addSourceFile("class C {}", "C.java");
+
+    // Specify B as an entry class for building a class closure.
+    options.load(new String[] {
+        "--build-closure",
+        "B"
+    });
+    GenerationBatch batch = new GenerationBatch(options);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
+    processor.processInputs(batch.getInputs());
+
+    // Assert B entry class was compiled.
+    assertTrue(new File(tempDir, "B.m").exists());
+
+    // Verify C.java was compiled, since it depends upon B.
+    assertTrue(new File(tempDir, "C.m").exists());
+
+    // Verify A.java wasn't compiled; it has a B reference, but B doesn't depend on it.
+    assertFalse(new File(tempDir, "A.m").exists());
   }
 }

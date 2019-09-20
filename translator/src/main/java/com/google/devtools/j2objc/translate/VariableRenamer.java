@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +66,13 @@ public class VariableRenamer extends UnitTreeVisitor {
       }
       for (VariableElement field : ElementUtil.getDeclaredFields(type)) {
         String fieldName = field.getSimpleName().toString();
+        if (ElementUtil.isEnum(type) && ElementUtil.isStatic(field) && fieldName.equals("values")) {
+          ErrorUtil.error(
+              "\"values\" field in "
+                  + type.getQualifiedName()
+                  + " collides with the generated Enum values field. "
+                  + "Consider using ObjectiveCName to rename it.");
+        }
         if (ElementUtil.isGlobalVar(field)) {
           if (staticMethodNames.contains(fieldName)) {
             while (staticMethodNames.contains(fieldName)) {

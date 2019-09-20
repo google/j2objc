@@ -64,10 +64,19 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   }
 
   public static GeneratedTypeElement mutableCopy(TypeElement element) {
-    return new GeneratedTypeElement(
-        element.getSimpleName().toString(), element.getKind(), element.getEnclosingElement(),
-        element.getSuperclass(), element.getNestingKind(), ElementUtil.getHeader(element),
-        ElementUtil.isIosType(element), ElementUtil.isSynthetic(element));
+    GeneratedTypeElement generatedTypeElement =
+        new GeneratedTypeElement(
+            element.getSimpleName().toString(),
+            element.getKind(),
+            element.getEnclosingElement(),
+            element.getSuperclass(),
+            element.getNestingKind(),
+            ElementUtil.getHeader(element),
+            ElementUtil.isIosType(element),
+            ElementUtil.isSynthetic(element));
+    generatedTypeElement.addModifiers(element.getModifiers());
+    generatedTypeElement.addAnnotationMirrors(element.getAnnotationMirrors());
+    return generatedTypeElement;
   }
 
   private static GeneratedTypeElement newEmulatedType(

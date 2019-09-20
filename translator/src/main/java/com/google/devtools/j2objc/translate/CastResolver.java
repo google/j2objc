@@ -25,8 +25,10 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
+import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
@@ -34,6 +36,7 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -43,8 +46,10 @@ import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -62,6 +67,8 @@ import javax.lang.model.type.TypeMirror;
  * of the expression.
  */
 public class CastResolver extends UnitTreeVisitor {
+
+  private final Map<VariableElement, TypeMirror> narrowingMap = new HashMap<>();
 
   public CastResolver(CompilationUnit unit) {
     super(unit);
@@ -111,7 +118,7 @@ public class CastResolver extends UnitTreeVisitor {
     FunctionInvocation invocation = new FunctionInvocation(element, funcReturnType);
     invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
-    if (!castType.equals(funcReturnType)) {
+    if (!typeUtil.isSameType(castType, funcReturnType)) {
       newExpr = new CastExpression(castType, newExpr);
     }
     return newExpr;
@@ -125,14 +132,15 @@ public class CastResolver extends UnitTreeVisitor {
     type = typeUtil.erasure(type);
     TypeMirror idType = TypeUtil.ID_TYPE;
     if (TypeUtil.isInterface(type) || isObjectArray(type)) {
-      // Interfaces and object arrays requre a isInstance call.
+      // Interfaces and object arrays require an isInstance call.
       FunctionElement element = new FunctionElement("cast_check", idType, null)
           .addParameters(idType, TypeUtil.IOS_CLASS.asType());
       FunctionInvocation invocation = new FunctionInvocation(element, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       invocation.addArgument(new TypeLiteral(type, typeUtil));
       return invocation;
-    } else if (TypeUtil.isArray(type) || TypeUtil.isDeclaredType(type)) {
+    } else if (TypeUtil.isArray(type)
+        || (TypeUtil.isDeclaredType(type) && needsCastChk(expr, type))) {
       // Primitive array and non-interface type casts are checked using Objective-C's
       // isKindOfClass:.
       TypeElement objcClass = typeUtil.getObjcClass(type);
@@ -372,6 +380,7 @@ public class CastResolver extends UnitTreeVisitor {
    * well in sorted collections which rely on Java's runtime type checking.
    */
   @Override
+  @SuppressWarnings("TypeEquals")
   public void endVisit(MethodDeclaration node) {
     ExecutableElement element = node.getExecutableElement();
     if (!ElementUtil.getName(element).equals("compareTo") || node.getBody() == null) {
@@ -430,5 +439,47 @@ public class CastResolver extends UnitTreeVisitor {
     TypeMirror bType = b.getTypeMirror();
     return TypeUtil.isReferenceType(aType) && TypeUtil.isReferenceType(bType)
         && !typeUtil.isObjcAssignable(aType, bType) && !typeUtil.isObjcAssignable(bType, aType);
+  }
+
+  @Override
+  public boolean visit(IfStatement node) {
+    // Adds a narrowed type to the narrowing map for a statement with
+    // an instanceof expression where the body would have a redundant
+    // cast check (since the instanceof test shows it's not necessary).
+    Expression expr = node.getExpression();
+    VariableElement var = getInstanceofVar(expr);
+    if (var != null) {
+      TypeMirror instanceofType =
+          ((InstanceofExpression) expr).getRightOperand().getTypeMirror();
+      narrowingMap.put(var, instanceofType);
+    }
+    return true;
+  }
+
+  @Override
+  public void endVisit(IfStatement node) {
+    VariableElement var = getInstanceofVar(node.getExpression());
+    if (var != null) {
+      narrowingMap.remove(var);
+    }
+  }
+
+  private VariableElement getInstanceofVar(Expression expr) {
+    if (expr.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
+      InstanceofExpression ie = (InstanceofExpression) expr;
+      return TreeUtil.getVariableElement(ie.getLeftOperand());
+    }
+    return null;
+  }
+
+  private boolean needsCastChk(Expression expr, TypeMirror type) {
+    VariableElement var = TreeUtil.getVariableElement(expr);
+    if (var != null) {
+      TypeMirror narrowing = narrowingMap.get(var);
+      if (narrowing != null) {
+        return !typeUtil.isSubtype(narrowing, type);
+      }
+    }
+    return true;
   }
 }

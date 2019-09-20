@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.net.URL;
 
-//import sun.security.util.Debug;
+import sun.security.util.Debug;
 
 /**
  * This class extends ClassLoader with additional support for defining
@@ -52,7 +52,7 @@ public class SecureClassLoader extends ClassLoader {
     private final HashMap<CodeSource, ProtectionDomain> pdcache =
                         new HashMap<>(11);
 
-//    private static final Debug debug = Debug.getInstance("scl");
+    private static final Debug debug = Debug.getInstance("scl");
 
     static {
         ClassLoader.registerAsParallelCapable();
@@ -63,12 +63,12 @@ public class SecureClassLoader extends ClassLoader {
      * class loader for delegation.
      *
      * <p>If there is a security manager, this method first
-     * calls the security manager's <code>checkCreateClassLoader</code>
+     * calls the security manager's {@code checkCreateClassLoader}
      * method  to ensure creation of a class loader is allowed.
      * <p>
      * @param parent the parent ClassLoader
      * @exception  SecurityException  if a security manager exists and its
-     *             <code>checkCreateClassLoader</code> method doesn't allow
+     *             {@code checkCreateClassLoader} method doesn't allow
      *             creation of a class loader.
      * @see SecurityManager#checkCreateClassLoader
      */
@@ -87,11 +87,11 @@ public class SecureClassLoader extends ClassLoader {
      * loader for delegation.
      *
      * <p>If there is a security manager, this method first
-     * calls the security manager's <code>checkCreateClassLoader</code>
+     * calls the security manager's {@code checkCreateClassLoader}
      * method  to ensure creation of a class loader is allowed.
      *
      * @exception  SecurityException  if a security manager exists and its
-     *             <code>checkCreateClassLoader</code> method doesn't allow
+     *             {@code checkCreateClassLoader} method doesn't allow
      *             creation of a class loader.
      * @see SecurityManager#checkCreateClassLoader
      */
@@ -113,22 +113,22 @@ public class SecureClassLoader extends ClassLoader {
      * If a non-null CodeSource is supplied a ProtectionDomain is
      * constructed and associated with the class being defined.
      * <p>
-     * @param      name the expected name of the class, or <code>null</code>
+     * @param      name the expected name of the class, or {@code null}
      *                  if not known, using '.' and not '/' as the separator
      *                  and without a trailing ".class" suffix.
      * @param      b    the bytes that make up the class data. The bytes in
-     *             positions <code>off</code> through <code>off+len-1</code>
+     *             positions {@code off} through {@code off+len-1}
      *             should have the format of a valid class file as defined by
      *             <cite>The Java&trade; Virtual Machine Specification</cite>.
-     * @param      off  the start offset in <code>b</code> of the class data
+     * @param      off  the start offset in {@code b} of the class data
      * @param      len  the length of the class data
-     * @param      cs   the associated CodeSource, or <code>null</code> if none
-     * @return the <code>Class</code> object created from the data,
+     * @param      cs   the associated CodeSource, or {@code null} if none
+     * @return the {@code Class} object created from the data,
      *         and optional CodeSource.
      * @exception  ClassFormatError if the data did not contain a valid class
-     * @exception  IndexOutOfBoundsException if either <code>off</code> or
-     *             <code>len</code> is negative, or if
-     *             <code>off+len</code> is greater than <code>b.length</code>.
+     * @exception  IndexOutOfBoundsException if either {@code off} or
+     *             {@code len} is negative, or if
+     *             {@code off+len} is greater than {@code b.length}.
      *
      * @exception  SecurityException if an attempt is made to add this class
      *             to a package that contains classes that were signed by
@@ -143,22 +143,22 @@ public class SecureClassLoader extends ClassLoader {
     }
 
     /**
-     * Converts a {@link java.nio.ByteBuffer <tt>ByteBuffer</tt>}
-     * into an instance of class <tt>Class</tt>, with an optional CodeSource.
+     * Converts a {@link java.nio.ByteBuffer ByteBuffer}
+     * into an instance of class {@code Class}, with an optional CodeSource.
      * Before the class can be used it must be resolved.
      * <p>
      * If a non-null CodeSource is supplied a ProtectionDomain is
      * constructed and associated with the class being defined.
      * <p>
-     * @param      name the expected name of the class, or <code>null</code>
+     * @param      name the expected name of the class, or {@code null}
      *                  if not known, using '.' and not '/' as the separator
      *                  and without a trailing ".class" suffix.
      * @param      b    the bytes that make up the class data.  The bytes from positions
-     *                  <tt>b.position()</tt> through <tt>b.position() + b.limit() -1</tt>
+     *                  {@code b.position()} through {@code b.position() + b.limit() -1}
      *                  should have the format of a valid class file as defined by
      *                  <cite>The Java&trade; Virtual Machine Specification</cite>.
-     * @param      cs   the associated CodeSource, or <code>null</code> if none
-     * @return the <code>Class</code> object created from the data,
+     * @param      cs   the associated CodeSource, or {@code null} if none
+     * @return the {@code Class} object created from the data,
      *         and optional CodeSource.
      * @exception  ClassFormatError if the data did not contain a valid class
      * @exception  SecurityException if an attempt is made to add this class
@@ -206,10 +206,10 @@ public class SecureClassLoader extends ClassLoader {
                 PermissionCollection perms = getPermissions(cs);
                 pd = new ProtectionDomain(cs, perms, this, null);
                 pdcache.put(cs, pd);
-//                if (debug != null) {
-//                    debug.println(" getPermissions "+ pd);
-//                    debug.println("");
-//                }
+                if (debug != null) {
+                    debug.println(" getPermissions "+ pd);
+                    debug.println("");
+                }
             }
         }
         return pd;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@ package java.util;
 
 import com.google.j2objc.annotations.WeakOuter;
 
-import java.io.*;
 import java.lang.reflect.Array;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /*-[
@@ -79,7 +79,7 @@ import java.util.function.Consumer;
  * maximum size and the number of buckets is unspecified.
  *
  * <p>If the size of the map (the number of key-value mappings) sufficiently
- * exceeds the expected maximum size, the number of buckets is increased
+ * exceeds the expected maximum size, the number of buckets is increased.
  * Increasing the number of buckets ("rehashing") may be fairly expensive, so
  * it pays to create identity hash maps with a sufficiently large expected
  * maximum size.  On the other hand, iteration over collection views requires
@@ -128,7 +128,7 @@ import java.util.function.Consumer;
  * {@link HashMap} (which uses <i>chaining</i> rather than linear-probing).
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @see     System#identityHashCode(Object)
@@ -165,35 +165,34 @@ public class IdentityHashMap<K,V>
      * The maximum capacity, used if a higher value is implicitly specified
      * by either of the constructors with arguments.
      * MUST be a power of two <= 1<<29.
+     *
+     * In fact, the map can hold no more than MAXIMUM_CAPACITY-1 items
+     * because it has to have at least one slot with the key == null
+     * in order to avoid infinite loops in get(), put(), remove()
      */
     private static final int MAXIMUM_CAPACITY = 1 << 29;
 
     /**
      * The table, resized as necessary. Length MUST always be a power of two.
      */
-    private transient Object[] table;
+    transient Object[] table; // non-private to simplify nested class access
 
     /**
      * The number of key-value mappings contained in this identity hash map.
      *
      * @serial
      */
-    private int size;
+    int size;
 
     /**
      * The number of modifications, to support fast-fail iterators
      */
-    private transient int modCount;
-
-    /**
-     * The next size value at which to resize (capacity * load factor).
-     */
-    private transient int threshold;
+    transient int modCount;
 
     /**
      * Value representing null keys inside tables.
      */
-    private static final Object NULL_KEY = new Object();
+    static final Object NULL_KEY = new Object();
 
     /**
      * Use NULL_KEY for key if it is null.
@@ -205,7 +204,7 @@ public class IdentityHashMap<K,V>
     /**
      * Returns internal representation of null key back to caller as null.
      */
-    private static Object unmaskNull(Object key) {
+    static final Object unmaskNull(Object key) {
         return (key == NULL_KEY ? null : key);
     }
 
@@ -234,27 +233,18 @@ public class IdentityHashMap<K,V>
     }
 
     /**
-     * Returns the appropriate capacity for the specified expected maximum
-     * size.  Returns the smallest power of two between MINIMUM_CAPACITY
-     * and MAXIMUM_CAPACITY, inclusive, that is greater than
-     * (3 * expectedMaxSize)/2, if such a number exists.  Otherwise
-     * returns MAXIMUM_CAPACITY.  If (3 * expectedMaxSize)/2 is negative, it
-     * is assumed that overflow has occurred, and MAXIMUM_CAPACITY is returned.
+     * Returns the appropriate capacity for the given expected maximum size.
+     * Returns the smallest power of two between MINIMUM_CAPACITY and
+     * MAXIMUM_CAPACITY, inclusive, that is greater than (3 *
+     * expectedMaxSize)/2, if such a number exists.  Otherwise returns
+     * MAXIMUM_CAPACITY.
      */
-    private int capacity(int expectedMaxSize) {
-        // Compute min capacity for expectedMaxSize given a load factor of 2/3
-        int minCapacity = (3 * expectedMaxSize)/2;
-
-        // Compute the appropriate capacity
-        int result;
-        if (minCapacity > MAXIMUM_CAPACITY || minCapacity < 0) {
-            result = MAXIMUM_CAPACITY;
-        } else {
-            result = MINIMUM_CAPACITY;
-            while (result < minCapacity)
-                result <<= 1;
-        }
-        return result;
+    private static int capacity(int expectedMaxSize) {
+        // assert expectedMaxSize >= 0;
+        return
+            (expectedMaxSize > MAXIMUM_CAPACITY / 3) ? MAXIMUM_CAPACITY :
+            (expectedMaxSize <= 2 * MINIMUM_CAPACITY / 3) ? MINIMUM_CAPACITY :
+            Integer.highestOneBit(expectedMaxSize + (expectedMaxSize << 1));
     }
 
     /**
@@ -267,7 +257,6 @@ public class IdentityHashMap<K,V>
         // assert initCapacity >= MINIMUM_CAPACITY;
         // assert initCapacity <= MAXIMUM_CAPACITY;
 
-        threshold = (initCapacity * 2)/3;
         table = new Object[2 * initCapacity];
     }
 
@@ -434,52 +423,58 @@ public class IdentityHashMap<K,V>
      * @see     #containsKey(Object)
      */
     public V put(K key, V value) {
-        Object k = maskNull(key);
-        Object[] tab = table;
-        int len = tab.length;
-        int i = hash(k, len);
+        final Object k = maskNull(key);
 
-        Object item;
-        while ( (item = tab[i]) != null) {
-            if (item == k) {
-                @SuppressWarnings("unchecked")
-                    V oldValue = (V) tab[i + 1];
-                tab[i + 1] = value;
-                return oldValue;
+        retryAfterResize: for (;;) {
+            final Object[] tab = table;
+            final int len = tab.length;
+            int i = hash(k, len);
+
+            for (Object item; (item = tab[i]) != null;
+                 i = nextKeyIndex(i, len)) {
+                if (item == k) {
+                    @SuppressWarnings("unchecked")
+                        V oldValue = (V) tab[i + 1];
+                    tab[i + 1] = value;
+                    return oldValue;
+                }
             }
-            i = nextKeyIndex(i, len);
-        }
 
-        modCount++;
-        tab[i] = k;
-        tab[i + 1] = value;
-        if (++size >= threshold)
-            resize(len); // len == 2 * current capacity.
-        return null;
+            final int s = size + 1;
+            // Use optimized form of 3 * s.
+            // Next capacity is len, 2 * current capacity.
+            if (s + (s << 1) > len && resize(len))
+                continue retryAfterResize;
+
+            modCount++;
+            tab[i] = k;
+            tab[i + 1] = value;
+            size = s;
+            return null;
+        }
     }
 
     /**
-     * Resize the table to hold given capacity.
+     * Resizes the table if necessary to hold given capacity.
      *
      * @param newCapacity the new capacity, must be a power of two.
+     * @return whether a resize did in fact take place
      */
-    private void resize(int newCapacity) {
+    private boolean resize(int newCapacity) {
         // assert (newCapacity & -newCapacity) == newCapacity; // power of 2
         int newLength = newCapacity * 2;
 
         Object[] oldTable = table;
         int oldLength = oldTable.length;
-        if (oldLength == 2*MAXIMUM_CAPACITY) { // can't expand any further
-            if (threshold == MAXIMUM_CAPACITY-1)
+        if (oldLength == 2 * MAXIMUM_CAPACITY) { // can't expand any further
+            if (size == MAXIMUM_CAPACITY - 1)
                 throw new IllegalStateException("Capacity exhausted.");
-            threshold = MAXIMUM_CAPACITY-1;  // Gigantic map!
-            return;
+            return false;
         }
         if (oldLength >= newLength)
-            return;
+            return false;
 
         Object[] newTable = new Object[newLength];
-        threshold = newLength / 3;
 
         for (int j = 0; j < oldLength; j += 2) {
             Object key = oldTable[j];
@@ -495,6 +490,7 @@ public class IdentityHashMap<K,V>
             }
         }
         table = newTable;
+        return true;
     }
 
     /**
@@ -509,8 +505,8 @@ public class IdentityHashMap<K,V>
         int n = m.size();
         if (n == 0)
             return;
-        if (n > threshold) // conservatively pre-expand
-            resize(capacity(n));
+        if (n > size)
+            resize(capacity(n)); // conservatively pre-expand
 
         for (Entry<? extends K, ? extends V> e : m.entrySet())
             put(e.getKey(), e.getValue());
@@ -547,7 +543,6 @@ public class IdentityHashMap<K,V>
                 return null;
             i = nextKeyIndex(i, len);
         }
-
     }
 
     /**
@@ -979,10 +974,11 @@ public class IdentityHashMap<K,V>
      */
     public Set<K> keySet() {
         Set<K> ks = keySet;
-        if (ks != null)
-            return ks;
-        else
-            return keySet = new KeySet();
+        if (ks == null) {
+            ks = new KeySet();
+            keySet = ks;
+        }
+        return ks;
     }
 
     @WeakOuter
@@ -1087,10 +1083,11 @@ public class IdentityHashMap<K,V>
      */
     public Collection<V> values() {
         Collection<V> vs = values;
-        if (vs != null)
-            return vs;
-        else
-            return values = new Values();
+        if (vs == null) {
+            vs = new Values();
+            values = vs;
+        }
+        return vs;
     }
 
     @WeakOuter
@@ -1284,8 +1281,8 @@ public class IdentityHashMap<K,V>
     private static final long serialVersionUID = 8188218128353913216L;
 
     /**
-     * Save the state of the <tt>IdentityHashMap</tt> instance to a stream
-     * (i.e., serialize it).
+     * Saves the state of the <tt>IdentityHashMap</tt> instance to a stream
+     * (i.e., serializes it).
      *
      * @serialData The <i>size</i> of the HashMap (the number of key-value
      *          mappings) (<tt>int</tt>), followed by the key (Object) and
@@ -1313,8 +1310,8 @@ public class IdentityHashMap<K,V>
     }
 
     /**
-     * Reconstitute the <tt>IdentityHashMap</tt> instance from a stream (i.e.,
-     * deserialize it).
+     * Reconstitutes the <tt>IdentityHashMap</tt> instance from a stream (i.e.,
+     * deserializes it).
      */
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException  {
@@ -1323,9 +1320,10 @@ public class IdentityHashMap<K,V>
 
         // Read in size (number of Mappings)
         int size = s.readInt();
-
-        // Allow for 33% growth (i.e., capacity is >= 2* size()).
-        init(capacity((size*4)/3));
+        if (size < 0)
+            throw new java.io.StreamCorruptedException
+                ("Illegal mappings count: " + size);
+        init(capacity(size));
 
         // Read the keys and values, and put the mappings in the table
         for (int i=0; i<size; i++) {
@@ -1342,7 +1340,7 @@ public class IdentityHashMap<K,V>
      * update modCount, etc.
      */
     private void putForCreate(K key, V value)
-        throws IOException
+        throws java.io.StreamCorruptedException
     {
         Object k = maskNull(key);
         Object[] tab = table;
@@ -1370,6 +1368,25 @@ public class IdentityHashMap<K,V>
             Object k = t[index];
             if (k != null) {
                 action.accept((K) unmaskNull(k), (V) t[index + 1]);
+            }
+
+            if (modCount != expectedModCount) {
+                throw new ConcurrentModificationException();
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+        Objects.requireNonNull(function);
+        int expectedModCount = modCount;
+
+        Object[] t = table;
+        for (int index = 0; index < t.length; index += 2) {
+            Object k = t[index];
+            if (k != null) {
+                t[index + 1] = function.apply((K) unmaskNull(k), (V) t[index + 1]);
             }
 
             if (modCount != expectedModCount) {

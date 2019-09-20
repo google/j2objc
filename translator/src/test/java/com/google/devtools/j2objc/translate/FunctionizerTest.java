@@ -137,7 +137,6 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String str(int i) { return str(); }"
         + "  private String str() { return hello; } }",
         "A", "A.m");
-    translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (NSString *)test {",
         "return A_strWithInt_(self, 0);");
@@ -192,14 +191,6 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void A_C_testWithA_B_(A_C *self, A_B *b) {",
         "A_B_test(nil_chk(b));");
-  }
-
-  // Verify annotation parameters are ignored.
-  public void testAnnotationParameters() throws IOException {
-    String translation = translateSourceFile(
-        "import java.lang.annotation.*; @Target({ElementType.METHOD}) public @interface Test {}",
-        "Test", "Test.m");
-    assertNotInTranslation(translation, "self");
   }
 
   // Verify function declaration is in .m file, not the header.
@@ -600,5 +591,42 @@ public class FunctionizerTest extends GenerationTest {
          "void Test_foo(Test *self) {",
          "  Test_super$_description(self, @selector(description));",
          "}");
+  }
+
+  public void testDefaultMethod() throws IOException {
+    String translation = translateSourceFile(
+        "interface A { default String test(String msg) { return msg.toUpperCase(); }}",
+        "A", "A.h");
+    // Protocol method declaration.
+    assertTranslation(translation, "- (NSString *)testWithNSString:(NSString *)msg;");
+    // Default method's function declaration.
+    assertTranslation(translation, "NSString *A_testWithNSString_(id<A> self, NSString *msg);");
+
+    translation = getTranslatedFile("A.m");
+    // Check default method function.
+    assertTranslatedLines(translation,
+        "NSString *A_testWithNSString_(id<A> self, NSString *msg) {",
+        "A_initialize();",  // Issue 1009: this initialize call was missing.
+        "return [((NSString *) nil_chk(msg)) uppercaseString];");
+  }
+
+  public void testEnumValuesMethodIsNotRemoved() throws IOException {
+    // Preconditions:
+    // 1) Reflection stripped and no wrapper methods.
+    // 2) Private enum.
+    // 3) No explicit reference to values method.
+    options.setStripReflection(true);
+    options.setEmitWrapperMethods(false);
+    String translation = translateSourceFile(
+        "public class Test { "
+            + "  private enum AnEnum { "
+            + "    A, B, C; "
+            + "  } "
+            + "  public String test() { "
+            + "    return AnEnum.B.toString(); "
+            + "  } "
+            + "} ",
+        "Test", "Test.m");
+    assertTranslation(translation, "+ (IOSObjectArray *)values {");
   }
 }

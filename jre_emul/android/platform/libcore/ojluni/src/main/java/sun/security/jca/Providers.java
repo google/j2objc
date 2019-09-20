@@ -103,11 +103,11 @@ public class Providers {
     // sun.security.util.ManifestEntryVerifier and java.security.SecureRandom.
     public static Provider getSunProvider() {
         try {
-            Class clazz = Class.forName(jarVerificationProviders[0]);
+            Class<?> clazz = Class.forName(jarVerificationProviders[0]);
             return (Provider)clazz.newInstance();
         } catch (Exception e) {
             try {
-                Class clazz = Class.forName(BACKUP_PROVIDER_CLASSNAME);
+                Class<?> clazz = Class.forName(BACKUP_PROVIDER_CLASSNAME);
                 return (Provider)clazz.newInstance();
             } catch (Exception ee) {
                 throw new RuntimeException("Sun provider not found", e);

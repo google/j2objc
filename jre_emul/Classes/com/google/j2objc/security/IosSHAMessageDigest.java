@@ -17,8 +17,6 @@
 
 package com.google.j2objc.security;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.MessageDigest;
 
 /*-[
@@ -33,60 +31,75 @@ import java.security.MessageDigest;
  */
 public abstract class IosSHAMessageDigest extends MessageDigest implements Cloneable {
 
-  protected ByteArrayOutputStream buffer;
+  // Malloc'd CommonCrypto context.
+  protected long shaCtx;
 
   public IosSHAMessageDigest(String algorithm) {
     super(algorithm);
-    buffer = new ByteArrayOutputStream();
   }
+
+  native void close() /*-[
+    if (shaCtx_ != 0LL) {
+      free((void *)shaCtx_);
+      shaCtx_ = 0LL;
+    }
+  ]-*/;
 
   @Override
-  protected void engineUpdate(byte input) {
-    buffer.write(input);
-  }
-
-  @Override
-  protected void engineUpdate(byte[] input, int offset, int len) {
-    buffer.write(input, offset, len);
-  }
-
-  @Override
-  protected void engineReset() {
-    buffer.reset();
-  }
-
-  public Object clone() throws CloneNotSupportedException {
-      IosSHAMessageDigest obj = (IosSHAMessageDigest) super.clone();
-      // ByteArrayOutputStreams are not cloneable, so copy it.
-      obj.buffer = new ByteArrayOutputStream();
-      if (buffer.size() > 0) {
-        try {
-          obj.buffer.write(buffer.toByteArray());
-        } catch (IOException e) {
-          // Should never happen.
-          throw new AssertionError(e);
-        }
-      }
-      return obj;
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
   }
 
   public static class SHA1 extends IosSHAMessageDigest {
 
     public SHA1() {
       super("SHA-1");
+      allocContext();
     }
-
-    @Override
-    protected native byte[] engineDigest() /*-[
-      IOSByteArray *bytes = [buffer_ toByteArray];
-      unsigned char digest[CC_SHA1_DIGEST_LENGTH];
-      CC_SHA1(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA1_DIGEST_LENGTH];
-    ]-*/;
 
     @Override
     protected native int engineGetDigestLength() /*-[
       return CC_SHA1_DIGEST_LENGTH;
+    ]-*/;
+
+    private native void allocContext() /*-[
+      self->shaCtx_ = (jlong)calloc(1, sizeof(CC_SHA1_CTX));
+      [self engineReset];
+    ]-*/;
+
+    @Override
+    protected native void engineReset() /*-[
+      CC_SHA1_Init((CC_SHA1_CTX *)shaCtx_);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte input) /*-[
+      CC_SHA1_Update((CC_SHA1_CTX *)shaCtx_, &input, 1);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte[] input, int offset, int len) /*-[
+      IOSArray_checkRange(input->size_, offset, len);
+      CC_SHA1_Update((CC_SHA1_CTX *)shaCtx_, input->buffer_ + offset, len);
+    ]-*/;
+
+    @Override
+    protected native byte[] engineDigest() /*-[
+      IOSByteArray *md = [IOSByteArray arrayWithLength:CC_SHA1_DIGEST_LENGTH];
+      CC_SHA1_Final((unsigned char *)md->buffer_, (CC_SHA1_CTX *)shaCtx_);
+      [self engineReset];
+      return md;
+    ]-*/;
+
+    public native Object clone() throws CloneNotSupportedException /*-[
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA1 *obj =
+          (ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA1 *) [super java_clone];
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA1_allocContext(obj);
+      if (shaCtx_ != 0LL) {
+        memcpy((void *)obj->shaCtx_, (const void *)shaCtx_, sizeof(CC_SHA1_CTX));
+      }
+      return obj;
     ]-*/;
   }
 
@@ -94,19 +107,51 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
 
     public SHA256() {
       super("SHA-256");
+      allocContext();
     }
-
-    @Override
-    protected native byte[] engineDigest() /*-[
-      IOSByteArray *bytes = [buffer_ toByteArray];
-      unsigned char digest[CC_SHA256_DIGEST_LENGTH];
-      CC_SHA256(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA256_DIGEST_LENGTH];
-    ]-*/;
 
     @Override
     protected native int engineGetDigestLength() /*-[
       return CC_SHA256_DIGEST_LENGTH;
+    ]-*/;
+
+    private native void allocContext() /*-[
+      self->shaCtx_ = (jlong)calloc(1, sizeof(CC_SHA256_CTX));
+      [self engineReset];
+    ]-*/;
+
+    @Override
+    protected native void engineReset() /*-[
+      CC_SHA256_Init((CC_SHA256_CTX *)shaCtx_);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte input) /*-[
+      CC_SHA256_Update((CC_SHA256_CTX *)shaCtx_, &input, 1);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte[] input, int offset, int len) /*-[
+      IOSArray_checkRange(input->size_, offset, len);
+      CC_SHA256_Update((CC_SHA256_CTX *)shaCtx_, input->buffer_ + offset, len);
+    ]-*/;
+
+    @Override
+    protected native byte[] engineDigest() /*-[
+      IOSByteArray *md = [IOSByteArray arrayWithLength:CC_SHA256_DIGEST_LENGTH];
+      CC_SHA256_Final((unsigned char *)md->buffer_, (CC_SHA256_CTX *)shaCtx_);
+      [self engineReset];
+      return md;
+    ]-*/;
+
+    public native Object clone() throws CloneNotSupportedException /*-[
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA256 *obj =
+          (ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA256 *) [super java_clone];
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA256_allocContext(obj);
+      if (shaCtx_ != 0LL) {
+        memcpy((void *)obj->shaCtx_, (const void *)shaCtx_, sizeof(CC_SHA256_CTX));
+      }
+      return obj;
     ]-*/;
   }
 
@@ -114,19 +159,52 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
 
     public SHA384() {
       super("SHA-384");
+      allocContext();
     }
-
-    @Override
-    protected native byte[] engineDigest() /*-[
-      IOSByteArray *bytes = [buffer_ toByteArray];
-      unsigned char digest[CC_SHA384_DIGEST_LENGTH];
-      CC_SHA384(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA384_DIGEST_LENGTH];
-    ]-*/;
 
     @Override
     protected native int engineGetDigestLength() /*-[
       return CC_SHA384_DIGEST_LENGTH;
+    ]-*/;
+
+    private native void allocContext() /*-[
+      // SHA384 and SHA512 use the same context struct.
+      self->shaCtx_ = (jlong)calloc(1, sizeof(CC_SHA512_CTX));
+      [self engineReset];
+    ]-*/;
+
+    @Override
+    protected native void engineReset() /*-[
+      CC_SHA384_Init((CC_SHA512_CTX *)shaCtx_);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte input) /*-[
+      CC_SHA384_Update((CC_SHA512_CTX *)shaCtx_, &input, 1);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte[] input, int offset, int len) /*-[
+      IOSArray_checkRange(input->size_, offset, len);
+      CC_SHA384_Update((CC_SHA512_CTX *)shaCtx_, input->buffer_ + offset, len);
+    ]-*/;
+
+    @Override
+    protected native byte[] engineDigest() /*-[
+      IOSByteArray *md = [IOSByteArray arrayWithLength:CC_SHA384_DIGEST_LENGTH];
+      CC_SHA384_Final((unsigned char *)md->buffer_, (CC_SHA512_CTX *)shaCtx_);
+      [self engineReset];
+      return md;
+    ]-*/;
+
+    public native Object clone() throws CloneNotSupportedException /*-[
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA384 *obj =
+          (ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA384 *) [super java_clone];
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA384_allocContext(obj);
+      if (shaCtx_ != 0LL) {
+        memcpy((void *)obj->shaCtx_, (const void *)shaCtx_, sizeof(CC_SHA512_CTX));
+      }
+      return obj;
     ]-*/;
   }
 
@@ -134,19 +212,51 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
 
     public SHA512() {
       super("SHA-512");
+      allocContext();
     }
-
-    @Override
-    protected native byte[] engineDigest() /*-[
-      IOSByteArray *bytes = [buffer_ toByteArray];
-      unsigned char digest[CC_SHA512_DIGEST_LENGTH];
-      CC_SHA512(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA512_DIGEST_LENGTH];
-    ]-*/;
 
     @Override
     protected native int engineGetDigestLength() /*-[
       return CC_SHA512_DIGEST_LENGTH;
+    ]-*/;
+
+    private native void allocContext() /*-[
+      self->shaCtx_ = (jlong)calloc(1, sizeof(CC_SHA512_CTX));
+      [self engineReset];
+    ]-*/;
+
+    @Override
+    protected native void engineReset() /*-[
+      CC_SHA512_Init((CC_SHA512_CTX *)shaCtx_);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte input) /*-[
+      CC_SHA512_Update((CC_SHA512_CTX *)shaCtx_, &input, 1);
+    ]-*/;
+
+    @Override
+    protected native void engineUpdate(byte[] input, int offset, int len) /*-[
+      IOSArray_checkRange(input->size_, offset, len);
+      CC_SHA512_Update((CC_SHA512_CTX *)shaCtx_, input->buffer_ + offset, len);
+    ]-*/;
+
+    @Override
+    protected native byte[] engineDigest() /*-[
+      IOSByteArray *md = [IOSByteArray arrayWithLength:CC_SHA512_DIGEST_LENGTH];
+      CC_SHA512_Final((unsigned char *)md->buffer_, (CC_SHA512_CTX *)shaCtx_);
+      [self engineReset];
+      return md;
+    ]-*/;
+
+    public native Object clone() throws CloneNotSupportedException /*-[
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA512 *obj =
+          (ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA512 *) [super java_clone];
+      ComGoogleJ2objcSecurityIosSHAMessageDigest_SHA512_allocContext(obj);
+      if (shaCtx_ != 0LL) {
+        memcpy((void *)obj->shaCtx_, (const void *)shaCtx_, sizeof(CC_SHA512_CTX));
+      }
+      return obj;
     ]-*/;
   }
 }

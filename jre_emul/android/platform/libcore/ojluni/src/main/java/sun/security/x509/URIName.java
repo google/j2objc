@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2004, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -106,8 +106,7 @@ public class URIName implements GeneralNameInterface {
         try {
             uri = new URI(name);
         } catch (URISyntaxException use) {
-            throw (IOException) new IOException
-                ("invalid URI name:" + name).initCause(use);
+            throw new IOException("invalid URI name:" + name, use);
         }
         if (uri.getScheme() == null) {
             throw new IOException("URI name must include scheme:" + name);
@@ -160,8 +159,7 @@ public class URIName implements GeneralNameInterface {
         try {
             uri = new URI(name);
         } catch (URISyntaxException use) {
-            throw (IOException) new IOException
-                ("invalid URI name constraint:" + name).initCause(use);
+            throw new IOException("invalid URI name constraint:" + name, use);
         }
         if (uri.getScheme() == null) {
             String host = uri.getSchemeSpecificPart();
@@ -174,8 +172,7 @@ public class URIName implements GeneralNameInterface {
                 }
                 return new URIName(uri, host, hostDNS);
             } catch (IOException ioe) {
-                throw (IOException) new IOException
-                    ("invalid URI name constraint:" + name).initCause(ioe);
+                throw new IOException("invalid URI name constraint:" + name, ioe);
             }
         } else {
             throw new IOException("invalid URI name constraint (should not " +

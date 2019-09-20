@@ -33,9 +33,14 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -71,8 +76,33 @@ public class TypeImplementationGenerator extends TypeGenerator {
     new TypeImplementationGenerator(builder, node).generate();
   }
 
+  private static Path toNormalizedSourcePath(String pathString) {
+    return Paths.get(pathString).normalize().toAbsolutePath();
+  }
+
+  private String getSourceFilePath() {
+    String sourceFilePathString = compilationUnit.getSourceFilePath();
+    if (!options.emitRelativeLineDirectives()) {
+      return sourceFilePathString;
+    }
+
+    Path sourceFilePath = toNormalizedSourcePath(sourceFilePathString);
+    Path cwdPath = toNormalizedSourcePath(".");
+    if (!sourceFilePath.startsWith(cwdPath)) {
+      return sourceFilePathString;
+    }
+
+    return cwdPath.relativize(sourceFilePath).toString();
+  }
+
   protected void generate() {
-    syncFilename(compilationUnit.getSourceFilePath());
+    if (typeNode.isDeadClass()) {
+      newline();
+      printStaticVars();
+      return;
+    }
+
+    syncFilename(getSourceFilePath());
 
     printInitFlagDefinition();
     printStaticVars();
@@ -91,6 +121,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     printOuterDeclarations();
     printTypeLiteralImplementation();
+    printNameMapping();
   }
 
   private void printInitFlagDefinition() {
@@ -174,13 +205,22 @@ public class TypeImplementationGenerator extends TypeGenerator {
         String varName = nameTable.getVariableQualifiedName(varElement);
         String objcType = nameTable.getObjCType(type);
         String typeSuffix = isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id";
-        if (isVolatile) {
-          printf("\n+ (%s)%s {\n  return JreLoadVolatile%s(&%s);\n}\n",
-                 objcType, accessorName, typeSuffix, varName);
-        } else {
-          printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
+        TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
+        String baseName = nameTable.getVariableBaseName(varElement);
+        ExecutableElement getter =
+            ElementUtil.findGetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
+        if (getter == null) {
+          if (isVolatile) {
+            printf(
+                "\n+ (%s)%s {\n  return JreLoadVolatile%s(&%s);\n}\n",
+                objcType, accessorName, typeSuffix, varName);
+          } else {
+            printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
+          }
         }
-        if (!ElementUtil.isFinal(varElement)) {
+        ExecutableElement setter =
+            ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
+        if (setter == null && !ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
               ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : (options.useGC() && ElementUtil.isStatic(varElement) ? "JreVolatileNativeAssign" : "JreVolatileStrongAssign"))
               : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStrongAssign");
@@ -220,6 +260,16 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
+  private void printNameMapping() {
+    if (!options.stripNameMapping()) {
+      Optional<String> mapping = nameTable.getNameMapping(typeElement, typeName);
+      if (mapping.isPresent()) {
+        newline();
+        printf(mapping.get());
+      }
+    }
+  }
+
   private boolean isDesignatedInitializer(ExecutableElement method) {
     if (!ElementUtil.isConstructor(method)) {
       return false;
@@ -242,8 +292,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
       println("J2OBJC_IGNORE_DESIGNATED_BEGIN");
     }
     syncLineNumbers(m);  // avoid doc-comment
-    String methodBody = generateStatement(m.getBody());
-    print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
+    print(getMethodSignature(m) + " ");
+    print(reindent(generateStatement(m.getBody())) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
     }
@@ -342,5 +392,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   protected String generateStatement(Statement stmt) {
     return StatementGenerator.generate(stmt, getBuilder().getCurrentLine());
+  }
+
+  @Override
+  protected String nullability(Element element) {
+    return "";
   }
 }

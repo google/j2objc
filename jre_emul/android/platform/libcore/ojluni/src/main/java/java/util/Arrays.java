@@ -26,7 +26,7 @@
 
 package java.util;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -61,7 +61,7 @@ import java.util.stream.StreamSupport;
  * a MergeSort, but it does have to be <i>stable</i>.)
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author Josh Bloch
@@ -78,8 +78,11 @@ public class Arrays {
      * tasks that makes parallel speedups unlikely.
      * @hide
      */
+    // Android-changed: make public (used by harmony ArraysTest)
     public static final int MIN_ARRAY_SORT_GRAN = 1 << 13;
 
+    // Suppresses default constructor, ensuring non-instantiability.
+    private Arrays() {}
 
     /**
      * A comparator that implements the natural ordering of a group of
@@ -104,11 +107,43 @@ public class Arrays {
         static final NaturalOrder INSTANCE = new NaturalOrder();
     }
 
-    // Suppresses default constructor, ensuring non-instantiability.
-    private Arrays() {}
+    /**
+     * Checks that {@code fromIndex} and {@code toIndex} are in
+     * the range and throws an exception if they aren't.
+     */
+    private static void rangeCheck(int arrayLength, int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException(
+                    "fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+        }
+        if (fromIndex < 0) {
+            throw new ArrayIndexOutOfBoundsException(fromIndex);
+        }
+        if (toIndex > arrayLength) {
+            throw new ArrayIndexOutOfBoundsException(toIndex);
+        }
+    }
+
+    /**
+     * Checks that the range described by {@code offset} and {@code count} doesn't exceed
+     * {@code arrayLength}.
+     *
+     * Android-changed.
+     * @hide
+     */
+    public static void checkOffsetAndCount(int arrayLength, int offset, int count) {
+        if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
+            throw new ArrayIndexOutOfBoundsException(arrayLength, offset,
+                    count);
+        }
+    }
 
     /*
-     * Sorting of primitive type arrays.
+     * Sorting methods. Note that all public "sort" methods take the
+     * same form: Performing argument checks if necessary, and then
+     * expanding arguments into those required for the internal
+     * implementation methods residing in other package-private
+     * classes (except for legacyMergeSort, included in this class).
      */
 
     /**
@@ -1167,50 +1202,6 @@ public class Arrays {
      */
 
     /**
-     * Old merge sort implementation can be selected (for
-     * compatibility with broken comparators) using a system property.
-     * Cannot be a static boolean in the enclosing class due to
-     * circular dependencies. To be removed in a future release.
-     */
-    static final class LegacyMergeSort {
-        // Android-changed: Never use circular merge sort.
-        private static final boolean userRequested = false;
-    }
-
-    /*
-     * If this platform has an optimizing VM, check whether ComparableTimSort
-     * offers any performance benefit over TimSort in conjunction with a
-     * comparator that returns:
-     *    {@code ((Comparable)first).compareTo(Second)}.
-     * If not, you are better off deleting ComparableTimSort to
-     * eliminate the code duplication.  In other words, the commented
-     * out code below is the preferable implementation for sorting
-     * arrays of Comparables if it offers sufficient performance.
-     */
-
-//    /**
-//     * A comparator that implements the natural ordering of a group of
-//     * mutually comparable elements.  Using this comparator saves us
-//     * from duplicating most of the code in this file (one version for
-//     * Comparables, one for explicit Comparators).
-//     */
-//    private static final Comparator<Object> NATURAL_ORDER =
-//            new Comparator<Object>() {
-//        @SuppressWarnings("unchecked")
-//        public int compare(Object first, Object second) {
-//            return ((Comparable<Object>)first).compareTo(second);
-//        }
-//    };
-//
-//    public static void sort(Object[] a) {
-//        sort(a, 0, a.length, NATURAL_ORDER);
-//    }
-//
-//    public static void sort(Object[] a, int fromIndex, int toIndex) {
-//        sort(a, fromIndex, toIndex, NATURAL_ORDER);
-//    }
-
-    /**
      * Sorts the specified array of objects into ascending order, according
      * to the {@linkplain Comparable natural ordering} of its elements.
      * All elements in the array must implement the {@link Comparable}
@@ -1240,7 +1231,7 @@ public class Arrays {
      *
      * <p>The implementation was adapted from Tim Peters's list sort for Python
      * (<a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">
-     * TimSort</a>).  It uses techiques from Peter McIlroy's "Optimistic
+     * TimSort</a>).  It uses techniques from Peter McIlroy's "Optimistic
      * Sorting and Information Theoretic Complexity", in Proceedings of the
      * Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp 467-474,
      * January 1993.
@@ -1253,16 +1244,11 @@ public class Arrays {
      *         {@link Comparable} contract
      */
     public static void sort(Object[] a) {
-        if (LegacyMergeSort.userRequested)
-            legacyMergeSort(a);
-        else
+        // Android-changed: LegacyMergeSort is no longer supported
+        // if (LegacyMergeSort.userRequested)
+        //     legacyMergeSort(a);
+        // else
             ComparableTimSort.sort(a, 0, a.length, null, 0, 0);
-    }
-
-    /** To be removed in a future release. */
-    private static void legacyMergeSort(Object[] a) {
-        Object[] aux = a.clone();
-        mergeSort(aux, a, 0, a.length, 0);
     }
 
     /**
@@ -1299,7 +1285,7 @@ public class Arrays {
      *
      * <p>The implementation was adapted from Tim Peters's list sort for Python
      * (<a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">
-     * TimSort</a>).  It uses techiques from Peter McIlroy's "Optimistic
+     * TimSort</a>).  It uses techniques from Peter McIlroy's "Optimistic
      * Sorting and Information Theoretic Complexity", in Proceedings of the
      * Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp 467-474,
      * January 1993.
@@ -1319,18 +1305,11 @@ public class Arrays {
      */
     public static void sort(Object[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
-        if (LegacyMergeSort.userRequested)
-            legacyMergeSort(a, fromIndex, toIndex);
-        else
+        // Android-changed: LegacyMergeSort is no longer supported
+        // if (LegacyMergeSort.userRequested)
+        //     legacyMergeSort(a, fromIndex, toIndex);
+        // else
             ComparableTimSort.sort(a, fromIndex, toIndex, null, 0, 0);
-    }
-
-    /** To be removed in a future release. */
-    private static void legacyMergeSort(Object[] a,
-                                        int fromIndex, int toIndex) {
-        rangeCheck(a.length, fromIndex, toIndex);
-        Object[] aux = copyOfRange(a, fromIndex, toIndex);
-        mergeSort(aux, a, fromIndex, toIndex, -fromIndex);
     }
 
     /**
@@ -1348,6 +1327,7 @@ public class Arrays {
      * off is the offset to generate corresponding low, high in src
      * To be removed in a future release.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static void mergeSort(Object[] src,
                                   Object[] dest,
                                   int low,
@@ -1426,11 +1406,12 @@ public class Arrays {
      *
      * <p>The implementation was adapted from Tim Peters's list sort for Python
      * (<a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">
-     * TimSort</a>).  It uses techiques from Peter McIlroy's "Optimistic
+     * TimSort</a>).  It uses techniques from Peter McIlroy's "Optimistic
      * Sorting and Information Theoretic Complexity", in Proceedings of the
      * Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp 467-474,
      * January 1993.
      *
+     * @param <T> the class of the objects to be sorted
      * @param a the array to be sorted
      * @param c the comparator to determine the order of the array.  A
      *        {@code null} value indicates that the elements'
@@ -1444,20 +1425,12 @@ public class Arrays {
         if (c == null) {
             sort(a);
         } else {
-            if (LegacyMergeSort.userRequested)
-                legacyMergeSort(a, c);
-            else
+            // Android-changed: LegacyMergeSort is no longer supported
+            // if (LegacyMergeSort.userRequested)
+            //     legacyMergeSort(a, c);
+            // else
                 TimSort.sort(a, 0, a.length, c, null, 0, 0);
         }
-    }
-
-    /** To be removed in a future release. */
-    private static <T> void legacyMergeSort(T[] a, Comparator<? super T> c) {
-        T[] aux = a.clone();
-        if (c==null)
-            mergeSort(aux, a, 0, a.length, 0);
-        else
-            mergeSort(aux, a, 0, a.length, 0, c);
     }
 
     /**
@@ -1491,11 +1464,12 @@ public class Arrays {
      *
      * <p>The implementation was adapted from Tim Peters's list sort for Python
      * (<a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">
-     * TimSort</a>).  It uses techiques from Peter McIlroy's "Optimistic
+     * TimSort</a>).  It uses techniques from Peter McIlroy's "Optimistic
      * Sorting and Information Theoretic Complexity", in Proceedings of the
      * Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp 467-474,
      * January 1993.
      *
+     * @param <T> the class of the objects to be sorted
      * @param a the array to be sorted
      * @param fromIndex the index of the first element (inclusive) to be
      *        sorted
@@ -1517,88 +1491,13 @@ public class Arrays {
             sort(a, fromIndex, toIndex);
         } else {
             rangeCheck(a.length, fromIndex, toIndex);
-            if (LegacyMergeSort.userRequested)
-                legacyMergeSort(a, fromIndex, toIndex, c);
-            else
+            // Android-changed: LegacyMergeSort is no longer supported
+            // if (LegacyMergeSort.userRequested)
+            //     legacyMergeSort(a, fromIndex, toIndex, c);
+            // else
                 TimSort.sort(a, fromIndex, toIndex, c, null, 0, 0);
         }
     }
-
-    /** To be removed in a future release. */
-    private static <T> void legacyMergeSort(T[] a, int fromIndex, int toIndex,
-                                            Comparator<? super T> c) {
-        rangeCheck(a.length, fromIndex, toIndex);
-        T[] aux = copyOfRange(a, fromIndex, toIndex);
-        if (c==null)
-            mergeSort(aux, a, fromIndex, toIndex, -fromIndex);
-        else
-            mergeSort(aux, a, fromIndex, toIndex, -fromIndex, c);
-    }
-
-    /**
-     * Src is the source array that starts at index 0
-     * Dest is the (possibly larger) array destination with a possible offset
-     * low is the index in dest to start sorting
-     * high is the end index in dest to end sorting
-     * off is the offset into src corresponding to low in dest
-     * To be removed in a future release.
-     */
-    private static void mergeSort(Object[] src,
-                                  Object[] dest,
-                                  int low, int high, int off,
-                                  Comparator c) {
-        int length = high - low;
-
-        // Insertion sort on smallest arrays
-        if (length < INSERTIONSORT_THRESHOLD) {
-            for (int i=low; i<high; i++)
-                for (int j=i; j>low && c.compare(dest[j-1], dest[j])>0; j--)
-                    swap(dest, j, j-1);
-            return;
-        }
-
-        // Recursively sort halves of dest into src
-        int destLow  = low;
-        int destHigh = high;
-        low  += off;
-        high += off;
-        int mid = (low + high) >>> 1;
-        mergeSort(dest, src, low, mid, -off, c);
-        mergeSort(dest, src, mid, high, -off, c);
-
-        // If list is already sorted, just copy from src to dest.  This is an
-        // optimization that results in faster sorts for nearly ordered lists.
-        if (c.compare(src[mid-1], src[mid]) <= 0) {
-           System.arraycopy(src, low, dest, destLow, length);
-           return;
-        }
-
-        // Merge sorted halves (now in src) into dest
-        for(int i = destLow, p = low, q = mid; i < destHigh; i++) {
-            if (q >= high || p < mid && c.compare(src[p], src[q]) <= 0)
-                dest[i] = src[p++];
-            else
-                dest[i] = src[q++];
-        }
-    }
-
-    /**
-     * Checks that {@code fromIndex} and {@code toIndex} are in
-     * the range and throws an appropriate exception, if they aren't.
-     */
-    private static void rangeCheck(int length, int fromIndex, int toIndex) {
-        if (fromIndex > toIndex) {
-            throw new IllegalArgumentException(
-                "fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-        }
-        if (fromIndex < 0) {
-            throw new ArrayIndexOutOfBoundsException(fromIndex);
-        }
-        if (toIndex > length) {
-            throw new ArrayIndexOutOfBoundsException(toIndex);
-        }
-    }
-
 
     // Parallel prefix
 
@@ -2462,7 +2361,9 @@ public class Arrays {
 
         while (low <= high) {
             int mid = (low + high) >>> 1;
+            @SuppressWarnings("rawtypes")
             Comparable midVal = (Comparable)a[mid];
+            @SuppressWarnings("unchecked")
             int cmp = midVal.compareTo(key);
 
             if (cmp < 0)
@@ -2486,6 +2387,7 @@ public class Arrays {
      * elements equal to the specified object, there is no guarantee which one
      * will be found.
      *
+     * @param <T> the class of the objects in the array
      * @param a the array to be searched
      * @param key the value to be searched for
      * @param c the comparator by which the array is ordered.  A
@@ -2521,6 +2423,7 @@ public class Arrays {
      * If the range contains multiple elements equal to the specified object,
      * there is no guarantee which one will be found.
      *
+     * @param <T> the class of the objects in the array
      * @param a the array to be searched
      * @param fromIndex the index of the first element (inclusive) to be
      *          searched
@@ -3192,6 +3095,7 @@ public class Arrays {
      * is greater than that of the original array.
      * The resulting array is of exactly the same class as the original array.
      *
+     * @param <T> the class of the objects in the array
      * @param original the array to be copied
      * @param newLength the length of the copy to be returned
      * @return a copy of the original array, truncated or padded with nulls
@@ -3200,6 +3104,7 @@ public class Arrays {
      * @throws NullPointerException if <tt>original</tt> is null
      * @since 1.6
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] copyOf(T[] original, int newLength) {
         return (T[]) copyOf(original, newLength, original.getClass());
     }
@@ -3214,6 +3119,8 @@ public class Arrays {
      * is greater than that of the original array.
      * The resulting array is of the class <tt>newType</tt>.
      *
+     * @param <U> the class of the objects in the original array
+     * @param <T> the class of the objects in the returned array
      * @param original the array to be copied
      * @param newLength the length of the copy to be returned
      * @param newType the class of the copy to be returned
@@ -3227,6 +3134,7 @@ public class Arrays {
      * @since 1.6
      */
     public static <T,U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
+        @SuppressWarnings("unchecked")
         T[] copy = ((Object)newType == (Object)Object[].class)
             ? (T[]) new Object[newLength]
             : (T[]) Array.newInstance(newType.getComponentType(), newLength);
@@ -3443,6 +3351,7 @@ public class Arrays {
      * <p>
      * The resulting array is of exactly the same class as the original array.
      *
+     * @param <T> the class of the objects in the array
      * @param original the array from which a range is to be copied
      * @param from the initial index of the range to be copied, inclusive
      * @param to the final index of the range to be copied, exclusive.
@@ -3455,8 +3364,9 @@ public class Arrays {
      * @throws NullPointerException if <tt>original</tt> is null
      * @since 1.6
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] copyOfRange(T[] original, int from, int to) {
-        return copyOfRange(original, from, to, (Class<T[]>) original.getClass());
+        return copyOfRange(original, from, to, (Class<? extends T[]>) original.getClass());
     }
 
     /**
@@ -3474,6 +3384,8 @@ public class Arrays {
      * of the returned array will be <tt>to - from</tt>.
      * The resulting array is of the class <tt>newType</tt>.
      *
+     * @param <U> the class of the objects in the original array
+     * @param <T> the class of the objects in the returned array
      * @param original the array from which a range is to be copied
      * @param from the initial index of the range to be copied, inclusive
      * @param to the final index of the range to be copied, exclusive.
@@ -3494,6 +3406,7 @@ public class Arrays {
         int newLength = to - from;
         if (newLength < 0)
             throw new IllegalArgumentException(from + " > " + to);
+        @SuppressWarnings("unchecked")
         T[] copy = ((Object)newType == (Object)Object[].class)
             ? (T[]) new Object[newLength]
             : (T[]) Array.newInstance(newType.getComponentType(), newLength);
@@ -3805,10 +3718,12 @@ public class Arrays {
      *     List&lt;String&gt; stooges = Arrays.asList("Larry", "Moe", "Curly");
      * </pre>
      *
+     * @param <T> the class of the objects in the array
      * @param a the array by which the list will be backed
      * @return a list view of the specified array
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> List<T> asList(T... a) {
         return new ArrayList<>(a);
     }
@@ -3863,12 +3778,13 @@ public class Arrays {
 
         @Override
         public int indexOf(Object o) {
-            if (o==null) {
-                for (int i=0; i<a.length; i++)
-                    if (a[i]==null)
+            E[] a = this.a;
+            if (o == null) {
+                for (int i = 0; i < a.length; i++)
+                    if (a[i] == null)
                         return i;
             } else {
-                for (int i=0; i<a.length; i++)
+                for (int i = 0; i < a.length; i++)
                     if (o.equals(a[i]))
                         return i;
             }
@@ -3878,6 +3794,11 @@ public class Arrays {
         @Override
         public boolean contains(Object o) {
             return indexOf(o) != -1;
+        }
+
+        @Override
+        public Spliterator<E> spliterator() {
+            return Spliterators.spliterator(a, Spliterator.ORDERED);
         }
 
         @Override
@@ -3898,8 +3819,8 @@ public class Arrays {
         }
 
         @Override
-        public Spliterator<E> spliterator() {
-            return Spliterators.spliterator(a, Spliterator.ORDERED);
+        public void sort(Comparator<? super E> c) {
+            Arrays.sort(a, c);
         }
     }
 
@@ -4192,6 +4113,7 @@ public class Arrays {
 
         for (Object element : a) {
             int elementHash = 0;
+            // BEGIN Android-changed: getComponentType() is faster than instanceof()
             if (element != null) {
                 Class<?> cl = element.getClass().getComponentType();
                 if (cl == null)
@@ -4217,6 +4139,7 @@ public class Arrays {
                 else
                     elementHash = element.hashCode();
             }
+            // END Android-changed: getComponentType() is faster than instanceof()
             result = 31 * result + elementHash;
         }
 
@@ -4273,6 +4196,7 @@ public class Arrays {
 
             if (e1 == e2)
                 continue;
+            // Android-changed: Return early if e2 == null
             if (e1 == null || e2 == null)
                 return false;
 
@@ -4286,6 +4210,7 @@ public class Arrays {
     }
 
     static boolean deepEquals0(Object e1, Object e2) {
+        // BEGIN Android-changed: getComponentType() is faster than instanceof()
         Class<?> cl1 = e1.getClass().getComponentType();
         Class<?> cl2 = e2.getClass().getComponentType();
 
@@ -4312,6 +4237,7 @@ public class Arrays {
             return equals((boolean[]) e1, (boolean[]) e2);
         else
             return e1.equals(e2);
+        // END Android-changed: getComponentType() is faster than instanceof()
     }
 
     /**
@@ -4654,7 +4580,7 @@ public class Arrays {
             if (element == null) {
                 buf.append("null");
             } else {
-                Class eClass = element.getClass();
+                Class<?> eClass = element.getClass();
 
                 if (eClass.isArray()) {
                     if (eClass == byte[].class)
@@ -4690,6 +4616,7 @@ public class Arrays {
         buf.append(']');
         dejaVu.remove(a);
     }
+
 
     /**
      * Set all elements of the specified array, using the provided
@@ -4844,21 +4771,6 @@ public class Arrays {
         Objects.requireNonNull(generator);
         IntStream.range(0, array.length).parallel().forEach(i -> { array[i] = generator.applyAsDouble(i); });
     }
-
-    /**
-     * Checks that the range described by {@code offset} and {@code count} doesn't exceed
-     * {@code arrayLength}.
-     *
-     * Android changed.
-     * @hide
-     */
-    public static void checkOffsetAndCount(int arrayLength, int offset, int count) {
-        if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
-            throw new ArrayIndexOutOfBoundsException(arrayLength, offset,
-                    count);
-        }
-    }
-
 
     /**
      * Returns a {@link Spliterator} covering all of the specified array.
@@ -5018,7 +4930,6 @@ public class Arrays {
         return Spliterators.spliterator(array, startInclusive, endExclusive,
                                         Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
-
 
     /**
      * Returns a sequential {@link Stream} with the specified array as its

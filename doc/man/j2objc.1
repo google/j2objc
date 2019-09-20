@@ -59,15 +59,17 @@ Print this message.
 
 .SH TRANSLATION OPTIONS
 .TP
+.BI \-\-add\-reads
+Option forwarded directly to the Java compiler (see javac help for details).
+.TP
 .BI \-\-allow\-inherited\-constructors
 Don't issue compiler warnings when native code accesses inherited constructors.
 .TP
-\fB\-batch-translate-max\fR\=\fIn\fR
-The maximum number of source files that are translated together. Batching
-speeds up translation, but requires more memory.
-.TP
 .BI \-\-build\-closure
 Translate dependent classes if out-of-date.
+.TP
+.BI \-\-class\-properties
+Generates class properties for static variables and enum constants.
 .TP
 .BI \-\-dead\-code\-report " file "
 Specify a ProGuard usage report for dead code elimination.
@@ -78,27 +80,44 @@ Translate Javadoc comments into Xcode-compatible comments.
 .BI \-\-doc\-comment-warnings
 Report warnings when translating Javadoc comments.
 .TP
-.BI \-\-no\-extract\-unsequenced
-Don't rewrite expressions that would produce unsequenced modification errors.
+.BI \-external\-annotation\-file
+Specify the most common annotations that affect
+transpilation in a Java Annotation Index File
+(format defined by the Checker Framework).
 .TP
 .BI \-g:none
-Do not generate Java source debugging support.
+Do not generate Java source debugging support
+.TP
+.BI \-g:relative
+Generate Java source debugging support with relative paths
 .TP
 .BI \-\-generate\-deprecated
 Generate deprecated attributes for deprecated methods, classes, and interfaces.
 .TP
+.BI \-\J<flag>
+Pass <flag> directly to the Java runtime.
+.TP
 .BI \-\-mapping " file "
 Add a method mapping file.
 .TP
-.BI \-\-no\-class\-methods
-Don't emit class methods for static Java methods.
-(static methods are converted to functions)
+.BI \-\-no\-extract\-unsequenced
+Don't rewrite expressions that would produce unsequenced modification errors.
+.TP
+.BI \-\-no\-package\-directories
+Generate output files to specified directory, without creating package sub-directories.
+.TP
+\fB\-\-no\-segmented\-headers\fR
+Do not generate headers with guards around each declared type.
+.TP
+.BI \-\-no\-wrapper\-methods
+Do not generate Objective-C wrapper methods for constructors and static methods.
+(J2ObjC generates C functions for these kinds of executables)
 .TP
 .BI \-\-nullability
 Converts Nullable and Nonnull annotations to Objective-C.
 .TP
-.BI \-\-no\-package\-directories
-Generate output files to specified directory, without creating package sub-directories.
+.BI \-\-patch\-module
+Option forwarded directly to the Java compiler (see javac help for details).
 .TP
 .BI \-\-prefix " package=prefix "
 Substitute a specified prefix for a package name.
@@ -115,8 +134,8 @@ Names of the annotation processors to run; bypasses default discovery process.
 .BI \-processorpath " path "
 Specify where to find annotation processors.
 .TP
-\fB\-\-no\-segmented\-headers\fR
-Do not generate headers with guards around each declared type.
+.BI \-\-reserved\-names " file "
+Avoids redefining identifiers present in system headers.
 .TP
 .BI \-\-static\-accessor\-methods
 Generates accessor methods for static variables and enum constants.
@@ -128,12 +147,12 @@ annotation, unless its value is known to be compatible.
 .BI \-\-strip\-reflection
 Do not generate metadata needed for Java reflection.
 .TP
-.BI \-\-no\-wrapper\-methods
-Do not generate Objective-C wrapper methods for constructors and static methods.
-(J2ObjC generates C functions for these kinds of executables)
-.TP
 .BI \-\-swift\-friendly
-Generate code that facilitates Swift importing.
+Generate code that facilitates Swift importing (equivalent to
+\-\-class\-properties \-\-nullability).
+.TP
+.BI \-\-system
+Option forwarded directly to the Java compiler (see javac help for details).
 .TP
 \fB\-t\fR, \fB\-\-timing\-info\fR
 Print time spent in translation steps and total execution time.
@@ -149,10 +168,6 @@ Do not print timing information (default).
 .TP
 .BI \-use\-arc
 Generate Objective\-C code to support Automatic Reference Counting (ARC).
-.TP
-.BI \-use\-gc
-Generate Objective\-C code to support garbage collection (requires
-libjre_emul.a rebuild).
 .TP
 .BI \-use\-reference\-counting
 Generate Objective\-C code to support iOS manual reference counting (default).
@@ -222,9 +237,6 @@ in particular, those that contain non-reifiable arguments.
 .TP
 .BI \-Xno\-jsni\-warnings
 Warn if JSNI (GWT) native code delimiters are used instead of OCNI delimiters.
-.TP
-.BI \-\J<flag>
-Pass <flag> directly to the Java runtime.
 
 .SH "SEE ALSO"
 .BR j2objcc (1)

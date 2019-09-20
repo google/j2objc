@@ -1211,3 +1211,5 @@ IOSObjectArray *NSString_serialPersistentFields;
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSString)
+
+J2OBJC_NAME_MAPPING(NSString, "java.lang.String", "NSString")

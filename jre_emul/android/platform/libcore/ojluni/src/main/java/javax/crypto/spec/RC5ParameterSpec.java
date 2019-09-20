@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
      * </code> bytes of the buffer are copied to protect against subsequent
      * modification.
      * @exception IllegalArgumentException if <code>iv</code> is
-     * <code>null</code> or <code>(iv.length < 2 * (wordSize / 8))</code>
+     * <code>null</code> or {@code (iv.length < 2 * (wordSize / 8))}
      */
     public RC5ParameterSpec(int version, int rounds, int wordSize, byte[] iv) {
         this(version, rounds, wordSize, iv, 0);
@@ -107,7 +107,7 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
      * @param offset the offset in <code>iv</code> where the IV starts.
      * @exception IllegalArgumentException if <code>iv</code> is
      * <code>null</code> or
-     * <code>(iv.length - offset < 2 * (wordSize / 8))</code>
+     * {@code (iv.length - offset < 2 * (wordSize / 8))}
      */
     public RC5ParameterSpec(int version, int rounds, int wordSize,
                             byte[] iv, int offset) {
@@ -157,7 +157,7 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
      * Returns a new array each time this method is called.
      */
     public byte[] getIV() {
-        return (iv == null? null:(byte[])iv.clone());
+        return (iv == null? null:iv.clone());
     }
 
    /**

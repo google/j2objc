@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -30,10 +30,10 @@ import java.security.spec.*;
 
 /**
  * This class provides a delegate for the identity cipher - one that does not
- * tranform the plaintext.
+ * transform the plain text.
  *
  * @author  Li Gong
- * @see Nullcipher
+ * @see NullCipher
  *
  * @since 1.4
  */

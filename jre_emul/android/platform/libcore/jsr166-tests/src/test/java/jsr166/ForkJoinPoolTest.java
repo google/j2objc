@@ -531,7 +531,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                     future.get();
                     shouldThrow();
                 } catch (ExecutionException success) {
-                    assertTrue(success.getCause() instanceof IndexOutOfBoundsException);
+                    // J2ObjC reflection-stripping change.
+                    assertTrue(success.toString().contains("IndexOutOfBoundsException"));
                 }
             }
         }};
@@ -604,7 +605,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                     .get();
                 shouldThrow();
             } catch (ExecutionException success) {
-                assertTrue(success.getCause() instanceof ArithmeticException);
+                // J2ObjC reflection-stripping change.
+                assertTrue(success.toString().contains("ArithmeticException"));
             }
         }
     }
@@ -680,7 +682,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                 e.invokeAny(l);
                 shouldThrow();
             } catch (ExecutionException success) {
-                assertTrue(success.getCause() instanceof NullPointerException);
+                // J2ObjC reflection-stripping change.
+                assertTrue(success.toString().contains("NullPointerException"));
             }
         }
     }
@@ -755,7 +758,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                 futures.get(0).get();
                 shouldThrow();
             } catch (ExecutionException success) {
-                assertTrue(success.getCause() instanceof NullPointerException);
+                // J2ObjC reflection-stripping change.
+                assertTrue(success.toString().contains("NullPointerException"));
             }
         }
     }
@@ -849,7 +853,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                 e.invokeAny(l, LONG_DELAY_MS, MILLISECONDS);
                 shouldThrow();
             } catch (ExecutionException success) {
-                assertTrue(success.getCause() instanceof NullPointerException);
+                // J2ObjC reflection-stripping change.
+                assertTrue(success.toString().contains("NullPointerException"));
             }
             assertTrue(millisElapsedSince(startTime) < LONG_DELAY_MS);
         }
@@ -943,7 +948,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                 futures.get(0).get();
                 shouldThrow();
             } catch (ExecutionException success) {
-                assertTrue(success.getCause() instanceof NullPointerException);
+                // J2ObjC reflection-stripping change.
+                assertTrue(success.toString().contains("NullPointerException"));
             }
         }
     }

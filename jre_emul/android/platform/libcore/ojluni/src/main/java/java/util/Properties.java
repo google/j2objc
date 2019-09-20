@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,23 +27,23 @@
 package java.util;
 
 import com.google.j2objc.LibraryNotLinkedError;
-
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
+// Android-changed: Removed dead native2ascii links
 /**
- * The <code>Properties</code> class represents a persistent set of
- * properties. The <code>Properties</code> can be saved to a stream
+ * The {@code Properties} class represents a persistent set of
+ * properties. The {@code Properties} can be saved to a stream
  * or loaded from a stream. Each key and its corresponding value in
  * the property list is a string.
  * <p>
@@ -51,17 +51,17 @@ import java.nio.charset.UnsupportedCharsetException;
  * "defaults"; this second property list is searched if
  * the property key is not found in the original property list.
  * <p>
- * Because <code>Properties</code> inherits from <code>Hashtable</code>, the
- * <code>put</code> and <code>putAll</code> methods can be applied to a
- * <code>Properties</code> object.  Their use is strongly discouraged as they
+ * Because {@code Properties} inherits from {@code Hashtable}, the
+ * {@code put} and {@code putAll} methods can be applied to a
+ * {@code Properties} object.  Their use is strongly discouraged as they
  * allow the caller to insert entries whose keys or values are not
- * <code>Strings</code>.  The <code>setProperty</code> method should be used
- * instead.  If the <code>store</code> or <code>save</code> method is called
- * on a "compromised" <code>Properties</code> object that contains a
- * non-<code>String</code> key or value, the call will fail. Similarly,
- * the call to the <code>propertyNames</code> or <code>list</code> method
- * will fail if it is called on a "compromised" <code>Properties</code>
- * object that contains a non-<code>String</code> key.
+ * {@code Strings}.  The {@code setProperty} method should be used
+ * instead.  If the {@code store} or {@code save} method is called
+ * on a "compromised" {@code Properties} object that contains a
+ * non-{@code String} key or value, the call will fail. Similarly,
+ * the call to the {@code propertyNames} or {@code list} method
+ * will fail if it is called on a "compromised" {@code Properties}
+ * object that contains a non-{@code String} key.
  *
  * <p>
  * The {@link #load(java.io.Reader) load(Reader)} <tt>/</tt>
@@ -83,8 +83,9 @@ import java.nio.charset.UnsupportedCharsetException;
  * <p> The {@link #loadFromXML(InputStream)} and {@link
  * #storeToXML(OutputStream, String, String)} methods load and store properties
  * in a simple XML format.  By default the UTF-8 character encoding is used,
- * however a specific encoding may be specified if required.  An XML properties
- * document has the following DOCTYPE declaration:
+ * however a specific encoding may be specified if required. Implementations
+ * are required to support UTF-8 and UTF-16 and may support other encodings.
+ * An XML properties document has the following DOCTYPE declaration:
  *
  * <pre>
  * &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
@@ -110,9 +111,6 @@ import java.nio.charset.UnsupportedCharsetException;
  *
  * <p>This class is thread-safe: multiple threads can share a single
  * <tt>Properties</tt> object without the need for external synchronization.
- *
- * @see <a href="{@docRoot}/../technotes/tools/solaris/native2ascii.html">native2ascii tool for Solaris</a>
- * @see <a href="{@docRoot}/../technotes/tools/windows/native2ascii.html">native2ascii tool for Windows</a>
  *
  * @author  Arthur van Hoff
  * @author  Michael McCloskey
@@ -153,15 +151,15 @@ class Properties extends Hashtable<Object,Object> {
     }
 
     /**
-     * Calls the <tt>Hashtable</tt> method <code>put</code>. Provided for
+     * Calls the <tt>Hashtable</tt> method {@code put}. Provided for
      * parallelism with the <tt>getProperty</tt> method. Enforces use of
      * strings for property keys and values. The value returned is the
-     * result of the <tt>Hashtable</tt> call to <code>put</code>.
+     * result of the <tt>Hashtable</tt> call to {@code put}.
      *
      * @param key the key to be placed into this property list.
      * @param value the value corresponding to <tt>key</tt>.
      * @return     the previous value of the specified key in this property
-     *             list, or <code>null</code> if it did not have one.
+     *             list, or {@code null} if it did not have one.
      * @see #getProperty
      * @since    1.2
      */
@@ -178,13 +176,13 @@ class Properties extends Hashtable<Object,Object> {
      * kinds of line, <i>natural lines</i> and <i>logical lines</i>.
      * A natural line is defined as a line of
      * characters that is terminated either by a set of line terminator
-     * characters (<code>\n</code> or <code>\r</code> or <code>\r\n</code>)
+     * characters ({@code \n} or {@code \r} or {@code \r\n})
      * or by the end of the stream. A natural line may be either a blank line,
      * a comment line, or hold all or some of a key-element pair. A logical
      * line holds all the data of a key-element pair, which may be spread
      * out across several adjacent natural lines by escaping
      * the line terminator sequence with a backslash character
-     * <code>\</code>.  Note that a comment line cannot be extended
+     * {@code \}.  Note that a comment line cannot be extended
      * in this manner; every natural line that is a comment must have
      * its own comment indicator, as described below. Lines are read from
      * input until the end of the stream is reached.
@@ -192,13 +190,13 @@ class Properties extends Hashtable<Object,Object> {
      * <p>
      * A natural line that contains only white space characters is
      * considered blank and is ignored.  A comment line has an ASCII
-     * <code>'#'</code> or <code>'!'</code> as its first non-white
+     * {@code '#'} or {@code '!'} as its first non-white
      * space character; comment lines are also ignored and do not
      * encode key-element information.  In addition to line
      * terminators, this format considers the characters space
-     * (<code>' '</code>, <code>'&#92;u0020'</code>), tab
-     * (<code>'\t'</code>, <code>'&#92;u0009'</code>), and form feed
-     * (<code>'\f'</code>, <code>'&#92;u000C'</code>) to be white
+     * ({@code ' '}, {@code '\u005Cu0020'}), tab
+     * ({@code '\t'}, {@code '\u005Cu0009'}), and form feed
+     * ({@code '\f'}, {@code '\u005Cu000C'}) to be white
      * space.
      *
      * <p>
@@ -222,32 +220,31 @@ class Properties extends Hashtable<Object,Object> {
      * <p>
      * The key contains all of the characters in the line starting
      * with the first non-white space character and up to, but not
-     * including, the first unescaped <code>'='</code>,
-     * <code>':'</code>, or white space character other than a line
+     * including, the first unescaped {@code '='},
+     * {@code ':'}, or white space character other than a line
      * terminator. All of these key termination characters may be
      * included in the key by escaping them with a preceding backslash
      * character; for example,<p>
      *
-     * <code>\:\=</code><p>
+     * {@code \:\=}<p>
      *
-     * would be the two-character key <code>":="</code>.  Line
-     * terminator characters can be included using <code>\r</code> and
-     * <code>\n</code> escape sequences.  Any white space after the
+     * would be the two-character key {@code ":="}.  Line
+     * terminator characters can be included using {@code \r} and
+     * {@code \n} escape sequences.  Any white space after the
      * key is skipped; if the first non-white space character after
-     * the key is <code>'='</code> or <code>':'</code>, then it is
+     * the key is {@code '='} or {@code ':'}, then it is
      * ignored and any white space characters after it are also
      * skipped.  All remaining characters on the line become part of
      * the associated element string; if there are no remaining
      * characters, the element is the empty string
-     * <code>&quot;&quot;</code>.  Once the raw character sequences
+     * {@code ""}.  Once the raw character sequences
      * constituting the key and element are identified, escape
      * processing is performed as described above.
      *
      * <p>
      * As an example, each of the following three lines specifies the key
-     * <code>"Truth"</code> and the associated element value
-     * <code>"Beauty"</code>:
-     * <p>
+     * {@code "Truth"} and the associated element value
+     * {@code "Beauty"}:
      * <pre>
      * Truth = Beauty
      *  Truth:Beauty
@@ -255,29 +252,25 @@ class Properties extends Hashtable<Object,Object> {
      * </pre>
      * As another example, the following three lines specify a single
      * property:
-     * <p>
      * <pre>
      * fruits                           apple, banana, pear, \
      *                                  cantaloupe, watermelon, \
      *                                  kiwi, mango
      * </pre>
-     * The key is <code>"fruits"</code> and the associated element is:
-     * <p>
+     * The key is {@code "fruits"} and the associated element is:
      * <pre>"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"</pre>
-     * Note that a space appears before each <code>\</code> so that a space
-     * will appear after each comma in the final result; the <code>\</code>,
+     * Note that a space appears before each {@code \} so that a space
+     * will appear after each comma in the final result; the {@code \},
      * line terminator, and leading white space on the continuation line are
      * merely discarded and are <i>not</i> replaced by one or more other
      * characters.
      * <p>
      * As a third example, the line:
-     * <p>
      * <pre>cheeses
      * </pre>
-     * specifies that the key is <code>"cheeses"</code> and the associated
-     * element is the empty string <code>""</code>.<p>
+     * specifies that the key is {@code "cheeses"} and the associated
+     * element is the empty string {@code ""}.
      * <p>
-     *
      * <a name="unicodeescapes"></a>
      * Characters in keys and elements can be represented in escape
      * sequences similar to those used for character and string literals
@@ -290,24 +283,24 @@ class Properties extends Hashtable<Object,Object> {
      * <ul>
      * <li> Octal escapes are not recognized.
      *
-     * <li> The character sequence <code>\b</code> does <i>not</i>
+     * <li> The character sequence {@code \b} does <i>not</i>
      * represent a backspace character.
      *
      * <li> The method does not treat a backslash character,
-     * <code>\</code>, before a non-valid escape character as an
+     * {@code \}, before a non-valid escape character as an
      * error; the backslash is silently dropped.  For example, in a
-     * Java string the sequence <code>"\z"</code> would cause a
+     * Java string the sequence {@code "\z"} would cause a
      * compile time error.  In contrast, this method silently drops
      * the backslash.  Therefore, this method treats the two character
-     * sequence <code>"\b"</code> as equivalent to the single
-     * character <code>'b'</code>.
+     * sequence {@code "\b"} as equivalent to the single
+     * character {@code 'b'}.
      *
      * <li> Escapes are not necessary for single and double quotes;
      * however, by the rule above, single and double quote characters
      * preceded by a backslash still yield single and double quote
      * characters, respectively.
      *
-     * <li> Only a single 'u' character is allowed in a Uniocde escape
+     * <li> Only a single 'u' character is allowed in a Unicode escape
      * sequence.
      *
      * </ul>
@@ -349,7 +342,25 @@ class Properties extends Hashtable<Object,Object> {
         load0(new LineReader(inStream));
     }
 
-    private void load0 (LineReader lr) throws IOException {
+    // j2objc: modified to support IOSClass loading of a prefixes.properties resource with
+    // minimal dependencies.
+    /**
+     * Defines a functional interface for loading key/value properties.
+     *
+     * @hide internal use only
+     */
+    public static interface KeyValueLoader {
+      void load(String key, String value);
+    }
+
+    /**
+     * Loads properties using a key/value loader. This allows properties files to be
+     * parsed the same way as for for Properties classes, but key/value pairs can be
+     * stored independently.
+     *
+     * @hide internal use only
+     */
+    public static void loadLineReader(LineReader lr, KeyValueLoader loader) throws IOException {
         char[] convtBuf = new char[1024];
         int limit;
         int keyLen;
@@ -373,7 +384,9 @@ class Properties extends Hashtable<Object,Object> {
                     valueStart = keyLen + 1;
                     hasSep = true;
                     break;
-                } else if (Character.isWhitespace(c) && !precedingBackslash) {
+                }
+                // Android-changed: use of Character.isWhitespace(c) b/25998006
+                else if (Character.isWhitespace(c) && !precedingBackslash) {
                     valueStart = keyLen + 1;
                     break;
                 }
@@ -386,6 +399,7 @@ class Properties extends Hashtable<Object,Object> {
             }
             while (valueStart < limit) {
                 c = lr.lineBuf[valueStart];
+                // Android-changed: use of Character.isWhitespace(c) b/25998006
                 if (!Character.isWhitespace(c)) {
                     if (!hasSep && (c == '=' ||  c == ':')) {
                         hasSep = true;
@@ -397,17 +411,22 @@ class Properties extends Hashtable<Object,Object> {
             }
             String key = loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
             String value = loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
-            put(key, value);
+            loader.load(key, value);
         }
     }
 
-    /* Read in a "logical line" from an InputStream/Reader, skip all comment
+    private void load0(LineReader lr) throws IOException {
+        loadLineReader(lr, this::put);
+    }
+
+    /**
+     * Read in a "logical line" from an InputStream/Reader, skip all comment
      * and blank lines and filter out those leading whitespace characters
      * (\u0020, \u0009 and \u000c) from the beginning of a "natural line".
      * Method returns the char length of the "logical line" and stores
      * the line in "lineBuf".
      */
-    class LineReader {
+    public static class LineReader {
         public LineReader(InputStream inStream) {
             this.inStream = inStream;
             inByteBuf = new byte[8192];
@@ -446,6 +465,9 @@ class Properties extends Hashtable<Object,Object> {
                         if (len == 0 || isCommentLine) {
                             return -1;
                         }
+                        if (precedingBackslash) {
+                            len--;
+                        }
                         return len;
                     }
                 }
@@ -463,6 +485,7 @@ class Properties extends Hashtable<Object,Object> {
                     }
                 }
                 if (skipWhiteSpace) {
+                    // Android-changed: use of Character.isWhitespace(c) b/25998006
                     if (Character.isWhitespace(c)) {
                         continue;
                     }
@@ -513,6 +536,9 @@ class Properties extends Hashtable<Object,Object> {
                                   :inStream.read(inByteBuf);
                         inOff = 0;
                         if (inLimit <= 0) {
+                            if (precedingBackslash) {
+                                len--;
+                            }
                             return len;
                         }
                     }
@@ -537,7 +563,7 @@ class Properties extends Hashtable<Object,Object> {
      * Converts encoded &#92;uxxxx to unicode chars
      * and changes special saved chars to their original forms
      */
-    private String loadConvert (char[] in, int off, int len, char[] convtBuf) {
+    private static String loadConvert (char[] in, int off, int len, char[] convtBuf) {
         if (convtBuf.length < len) {
             int newLen = len * 2;
             if (newLen < 0) {
@@ -696,20 +722,20 @@ class Properties extends Hashtable<Object,Object> {
     }
 
     /**
-     * Calls the <code>store(OutputStream out, String comments)</code> method
+     * Calls the {@code store(OutputStream out, String comments)} method
      * and suppresses IOExceptions that were thrown.
      *
      * @deprecated This method does not throw an IOException if an I/O error
      * occurs while saving the property list.  The preferred way to save a
-     * properties list is via the <code>store(OutputStream out,
-     * String comments)</code> method or the
-     * <code>storeToXML(OutputStream os, String comment)</code> method.
+     * properties list is via the {@code store(OutputStream out,
+     * String comments)} method or the
+     * {@code storeToXML(OutputStream os, String comment)} method.
      *
      * @param   out      an output stream.
      * @param   comments   a description of the property list.
-     * @exception  ClassCastException  if this <code>Properties</code> object
+     * @exception  ClassCastException  if this {@code Properties} object
      *             contains any keys or values that are not
-     *             <code>Strings</code>.
+     *             {@code Strings}.
      */
     @Deprecated
     public void save(OutputStream out, String comments)  {
@@ -721,37 +747,37 @@ class Properties extends Hashtable<Object,Object> {
 
     /**
      * Writes this property list (key and element pairs) in this
-     * <code>Properties</code> table to the output character stream in a
+     * {@code Properties} table to the output character stream in a
      * format suitable for using the {@link #load(java.io.Reader) load(Reader)}
      * method.
      * <p>
-     * Properties from the defaults table of this <code>Properties</code>
+     * Properties from the defaults table of this {@code Properties}
      * table (if any) are <i>not</i> written out by this method.
      * <p>
-     * If the comments argument is not null, then an ASCII <code>#</code>
+     * If the comments argument is not null, then an ASCII {@code #}
      * character, the comments string, and a line separator are first written
-     * to the output stream. Thus, the <code>comments</code> can serve as an
+     * to the output stream. Thus, the {@code comments} can serve as an
      * identifying comment. Any one of a line feed ('\n'), a carriage
      * return ('\r'), or a carriage return followed immediately by a line feed
-     * in comments is replaced by a line separator generated by the <code>Writer</code>
-     * and if the next character in comments is not character <code>#</code> or
-     * character <code>!</code> then an ASCII <code>#</code> is written out
+     * in comments is replaced by a line separator generated by the {@code Writer}
+     * and if the next character in comments is not character {@code #} or
+     * character {@code !} then an ASCII {@code #} is written out
      * after that line separator.
      * <p>
      * Next, a comment line is always written, consisting of an ASCII
-     * <code>#</code> character, the current date and time (as if produced
-     * by the <code>toString</code> method of <code>Date</code> for the
-     * current time), and a line separator as generated by the <code>Writer</code>.
+     * {@code #} character, the current date and time (as if produced
+     * by the {@code toString} method of {@code Date} for the
+     * current time), and a line separator as generated by the {@code Writer}.
      * <p>
-     * Then every entry in this <code>Properties</code> table is
+     * Then every entry in this {@code Properties} table is
      * written out, one per line. For each entry the key string is
-     * written, then an ASCII <code>=</code>, then the associated
+     * written, then an ASCII {@code =}, then the associated
      * element string. For the key, all space characters are
-     * written with a preceding <code>\</code> character.  For the
+     * written with a preceding {@code \} character.  For the
      * element, leading space characters, but not embedded or trailing
-     * space characters, are written with a preceding <code>\</code>
-     * character. The key and element characters <code>#</code>,
-     * <code>!</code>, <code>=</code>, and <code>:</code> are written
+     * space characters, are written with a preceding {@code \}
+     * character. The key and element characters {@code #},
+     * {@code !}, {@code =}, and {@code :} are written
      * with a preceding backslash to ensure that they are properly loaded.
      * <p>
      * After the entries have been written, the output stream is flushed.
@@ -762,9 +788,9 @@ class Properties extends Hashtable<Object,Object> {
      * @param   comments   a description of the property list.
      * @exception  IOException if writing this property list to the specified
      *             output stream throws an <tt>IOException</tt>.
-     * @exception  ClassCastException  if this <code>Properties</code> object
-     *             contains any keys or values that are not <code>Strings</code>.
-     * @exception  NullPointerException  if <code>writer</code> is null.
+     * @exception  ClassCastException  if this {@code Properties} object
+     *             contains any keys or values that are not {@code Strings}.
+     * @exception  NullPointerException  if {@code writer} is null.
      * @since 1.6
      */
     public void store(Writer writer, String comments)
@@ -778,11 +804,11 @@ class Properties extends Hashtable<Object,Object> {
 
     /**
      * Writes this property list (key and element pairs) in this
-     * <code>Properties</code> table to the output stream in a format suitable
-     * for loading into a <code>Properties</code> table using the
+     * {@code Properties} table to the output stream in a format suitable
+     * for loading into a {@code Properties} table using the
      * {@link #load(InputStream) load(InputStream)} method.
      * <p>
-     * Properties from the defaults table of this <code>Properties</code>
+     * Properties from the defaults table of this {@code Properties}
      * table (if any) are <i>not</i> written out by this method.
      * <p>
      * This method outputs the comments, properties keys and values in
@@ -793,12 +819,12 @@ class Properties extends Hashtable<Object,Object> {
      * <li>The stream is written using the ISO 8859-1 character encoding.
      *
      * <li>Characters not in Latin-1 in the comments are written as
-     * <code>&#92;u</code><i>xxxx</i> for their appropriate unicode
+     * {@code \u005Cu}<i>xxxx</i> for their appropriate unicode
      * hexadecimal value <i>xxxx</i>.
      *
-     * <li>Characters less than <code>&#92;u0020</code> and characters greater
-     * than <code>&#92;u007E</code> in property keys or values are written
-     * as <code>&#92;u</code><i>xxxx</i> for the appropriate hexadecimal
+     * <li>Characters less than {@code \u005Cu0020} and characters greater
+     * than {@code \u005Cu007E} in property keys or values are written
+     * as {@code \u005Cu}<i>xxxx</i> for the appropriate hexadecimal
      * value <i>xxxx</i>.
      * </ul>
      * <p>
@@ -809,9 +835,9 @@ class Properties extends Hashtable<Object,Object> {
      * @param   comments   a description of the property list.
      * @exception  IOException if writing this property list to the specified
      *             output stream throws an <tt>IOException</tt>.
-     * @exception  ClassCastException  if this <code>Properties</code> object
-     *             contains any keys or values that are not <code>Strings</code>.
-     * @exception  NullPointerException  if <code>out</code> is null.
+     * @exception  ClassCastException  if this {@code Properties} object
+     *             contains any keys or values that are not {@code Strings}.
+     * @exception  NullPointerException  if {@code out} is null.
      * @since 1.2
      */
     public void store(OutputStream out, String comments)
@@ -831,7 +857,7 @@ class Properties extends Hashtable<Object,Object> {
         bw.write("#" + new Date().toString());
         bw.newLine();
         synchronized (this) {
-            for (Enumeration e = keys(); e.hasMoreElements();) {
+            for (Enumeration<?> e = keys(); e.hasMoreElements();) {
                 String key = (String)e.nextElement();
                 String val = (String)get(key);
                 key = saveConvert(key, true, escUnicode);
@@ -857,15 +883,24 @@ class Properties extends Hashtable<Object,Object> {
      * Furthermore, the document must satisfy the properties DTD described
      * above.
      *
+     * <p> An implementation is required to read XML documents that use the
+     * "{@code UTF-8}" or "{@code UTF-16}" encoding. An implementation may
+     * support additional encodings.
+     *
      * <p>The specified stream is closed after this method returns.
      *
      * @param in the input stream from which to read the XML document.
      * @throws IOException if reading from the specified input stream
      *         results in an <tt>IOException</tt>.
+     * @throws java.io.UnsupportedEncodingException if the document's encoding
+     *         declaration can be read and it specifies an encoding that is not
+     *         supported
      * @throws InvalidPropertiesFormatException Data on input stream does not
      *         constitute a valid XML document with the mandated document type.
-     * @throws NullPointerException if <code>in</code> is null.
+     * @throws NullPointerException if {@code in} is null.
      * @see    #storeToXML(OutputStream, String, String)
+     * @see    <a href="http://www.w3.org/TR/REC-xml/#charencoding">Character
+     *         Encoding in Entities</a>
      * @since 1.5
      */
     public synchronized void loadFromXML(InputStream in)
@@ -906,22 +941,20 @@ class Properties extends Hashtable<Object,Object> {
      * <tt>props.storeToXML(os, comment, "UTF-8");</tt>.
      *
      * @param os the output stream on which to emit the XML document.
-     * @param comment a description of the property list, or <code>null</code>
+     * @param comment a description of the property list, or {@code null}
      *        if no comment is desired.
      * @throws IOException if writing to the specified output stream
      *         results in an <tt>IOException</tt>.
-     * @throws NullPointerException if <code>os</code> is null.
-     * @throws ClassCastException  if this <code>Properties</code> object
+     * @throws NullPointerException if {@code os} is null.
+     * @throws ClassCastException  if this {@code Properties} object
      *         contains any keys or values that are not
-     *         <code>Strings</code>.
+     *         {@code Strings}.
      * @see    #loadFromXML(InputStream)
      * @since 1.5
      */
     public void storeToXML(OutputStream os, String comment)
         throws IOException
     {
-        if (os == null)
-            throw new NullPointerException();
         storeToXML(os, comment, "UTF-8");
     }
 
@@ -934,13 +967,17 @@ class Properties extends Hashtable<Object,Object> {
      * &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
      * </pre>
      *
-     *<p>If the specified comment is <code>null</code> then no comment
+     * <p>If the specified comment is {@code null} then no comment
      * will be stored in the document.
+     *
+     * <p> An implementation is required to support writing of XML documents
+     * that use the "{@code UTF-8}" or "{@code UTF-16}" encoding. An
+     * implementation may support additional encodings.
      *
      * <p>The specified stream remains open after this method returns.
      *
      * @param os        the output stream on which to emit the XML document.
-     * @param comment   a description of the property list, or <code>null</code>
+     * @param comment   a description of the property list, or {@code null}
      *                  if no comment is desired.
      * @param  encoding the name of a supported
      *                  <a href="../lang/package-summary.html#charenc">
@@ -948,12 +985,16 @@ class Properties extends Hashtable<Object,Object> {
      *
      * @throws IOException if writing to the specified output stream
      *         results in an <tt>IOException</tt>.
-     * @throws NullPointerException if <code>os</code> is <code>null</code>,
-     *         or if <code>encoding</code> is <code>null</code>.
-     * @throws ClassCastException  if this <code>Properties</code> object
+     * @throws java.io.UnsupportedEncodingException if the encoding is not
+     *         supported by the implementation.
+     * @throws NullPointerException if {@code os} is {@code null},
+     *         or if {@code encoding} is {@code null}.
+     * @throws ClassCastException  if this {@code Properties} object
      *         contains any keys or values that are not
-     *         <code>Strings</code>.
+     *         {@code Strings}.
      * @see    #loadFromXML(InputStream)
+     * @see    <a href="http://www.w3.org/TR/REC-xml/#charencoding">Character
+     *         Encoding in Entities</a>
      * @since 1.5
      */
     public void storeToXML(OutputStream os, String comment, String encoding)
@@ -1030,7 +1071,7 @@ class Properties extends Hashtable<Object,Object> {
      * Searches for the property with the specified key in this property list.
      * If the key is not found in this property list, the default property list,
      * and its defaults, recursively, are then checked. The method returns
-     * <code>null</code> if the property is not found.
+     * {@code null} if the property is not found.
      *
      * @param   key   the property key.
      * @return  the value in this property list with the specified key value.
@@ -1076,7 +1117,7 @@ class Properties extends Hashtable<Object,Object> {
      * @see     #stringPropertyNames
      */
     public Enumeration<?> propertyNames() {
-        Hashtable h = new Hashtable();
+        Hashtable<String,Object> h = new Hashtable<>();
         enumerate(h);
         return h.keys();
     }
@@ -1115,10 +1156,10 @@ class Properties extends Hashtable<Object,Object> {
      */
     public void list(PrintStream out) {
         out.println("-- listing properties --");
-        Hashtable h = new Hashtable();
+        Hashtable<String,Object> h = new Hashtable<>();
         enumerate(h);
-        for (Enumeration e = h.keys() ; e.hasMoreElements() ;) {
-            String key = (String)e.nextElement();
+        for (Enumeration<String> e = h.keys() ; e.hasMoreElements() ;) {
+            String key = e.nextElement();
             String val = (String)h.get(key);
             if (val.length() > 40) {
                 val = val.substring(0, 37) + "...";
@@ -1143,10 +1184,10 @@ class Properties extends Hashtable<Object,Object> {
      */
     public void list(PrintWriter out) {
         out.println("-- listing properties --");
-        Hashtable h = new Hashtable();
+        Hashtable<String,Object> h = new Hashtable<>();
         enumerate(h);
-        for (Enumeration e = h.keys() ; e.hasMoreElements() ;) {
-            String key = (String)e.nextElement();
+        for (Enumeration<String> e = h.keys() ; e.hasMoreElements() ;) {
+            String key = e.nextElement();
             String val = (String)h.get(key);
             if (val.length() > 40) {
                 val = val.substring(0, 37) + "...";
@@ -1161,11 +1202,11 @@ class Properties extends Hashtable<Object,Object> {
      * @throws ClassCastException if any of the property keys
      *         is not of String type.
      */
-    private synchronized void enumerate(Hashtable h) {
+    private synchronized void enumerate(Hashtable<String,Object> h) {
         if (defaults != null) {
             defaults.enumerate(h);
         }
-        for (Enumeration e = keys() ; e.hasMoreElements() ;) {
+        for (Enumeration<?> e = keys() ; e.hasMoreElements() ;) {
             String key = (String)e.nextElement();
             h.put(key, get(key));
         }
@@ -1180,7 +1221,7 @@ class Properties extends Hashtable<Object,Object> {
         if (defaults != null) {
             defaults.enumerateStringProperties(h);
         }
-        for (Enumeration e = keys() ; e.hasMoreElements() ;) {
+        for (Enumeration<?> e = keys() ; e.hasMoreElements() ;) {
             Object k = e.nextElement();
             Object v = get(k);
             if (k instanceof String && v instanceof String) {

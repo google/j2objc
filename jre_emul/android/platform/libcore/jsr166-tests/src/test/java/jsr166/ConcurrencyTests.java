@@ -15,23 +15,6 @@ package jsr166;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import jsr166.AbstractQueuedLongSynchronizerTest;
-import jsr166.AbstractQueuedSynchronizerTest;
-import jsr166.AtomicBooleanTest;
-import jsr166.AtomicIntegerArrayTest;
-import jsr166.AtomicIntegerFieldUpdaterTest;
-import jsr166.AtomicIntegerTest;
-import jsr166.AtomicLongArrayTest;
-import jsr166.AtomicLongFieldUpdaterTest;
-import jsr166.AtomicLongTest;
-import jsr166.AtomicMarkableReferenceTest;
-import jsr166.AtomicReferenceArrayTest;
-import jsr166.AtomicReferenceFieldUpdaterTest;
-import jsr166.AtomicReferenceTest;
-import jsr166.AtomicStampedReferenceTest;
-import jsr166.LockSupportTest;
-import jsr166.ReentrantLockTest;
-import jsr166.ReentrantReadWriteLockTest;
 
 /**
  * Test suite for java.util.concurrent package.
@@ -40,9 +23,12 @@ public class ConcurrencyTests extends TestSuite {
 
   private static final Class<?>[] testClasses = new Class[] {
     AbstractExecutorServiceTest.class,
-    AbstractQueuedSynchronizerTest.class,
     AbstractQueueTest.class,
+    AbstractQueuedLongSynchronizerTest.class,
+    AbstractQueuedSynchronizerTest.class,
     ArrayBlockingQueueTest.class,
+    ArrayDequeTest.class,
+    Atomic8Test.class,
     AtomicBooleanTest.class,
     AtomicIntegerArrayTest.class,
     AtomicIntegerFieldUpdaterTest.class,
@@ -55,30 +41,54 @@ public class ConcurrencyTests extends TestSuite {
     AtomicReferenceFieldUpdaterTest.class,
     AtomicReferenceTest.class,
     AtomicStampedReferenceTest.class,
+    CompletableFutureTest.class,
     ConcurrentHashMapTest.class,
+    ConcurrentLinkedDequeTest.class,
+    ConcurrentLinkedQueueTest.class,
+    ConcurrentSkipListMapTest.class,
+    ConcurrentSkipListSetTest.class,
+    ConcurrentSkipListSubMapTest.class,
+    ConcurrentSkipListSubSetTest.class,
     CopyOnWriteArrayListTest.class,
     CopyOnWriteArraySetTest.class,
     CountDownLatchTest.class,
+    CountedCompleterTest.class,
     CyclicBarrierTest.class,
     DelayQueueTest.class,
+    EntryTest.class,
     ExchangerTest.class,
     ExecutorCompletionServiceTest.class,
     ExecutorsTest.class,
+    ForkJoinPool8Test.class,
+    ForkJoinPoolTest.class,
+    ForkJoinTask8Test.class,
+    ForkJoinTaskTest.class,
     FutureTaskTest.class,
+    LinkedBlockingDequeTest.class,
     LinkedBlockingQueueTest.class,
     LinkedListTest.class,
+    LinkedTransferQueueTest.class,
     LockSupportTest.class,
+    PhaserTest.class,
     PriorityBlockingQueueTest.class,
     PriorityQueueTest.class,
+    RecursiveActionTest.class,
+    RecursiveTaskTest.class,
     ReentrantLockTest.class,
     ReentrantReadWriteLockTest.class,
+    ScheduledExecutorSubclassTest.class,
     ScheduledExecutorTest.class,
-//    SemaphoreTest.class,
     SynchronousQueueTest.class,
-//    SystemTest.class,
-//    ThreadLocalTest.class,
+    SystemTest.class,
+    ThreadLocalRandomTest.class,
+    ThreadPoolExecutorSubclassTest.class,
     ThreadPoolExecutorTest.class,
+    ThreadTest.class,
     TimeUnitTest.class,
+    TreeMapTest.class,
+    TreeSetTest.class,
+    TreeSubMapTest.class,
+    TreeSubSetTest.class,
   };
 
   public static Test suite() {

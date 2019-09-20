@@ -190,10 +190,6 @@ public class JavadocGenerator extends AbstractSourceGenerator {
 
   public String formatLinkTag(TagElement tag, String template) {
     String text = printTagFragments(tag.getFragments()).trim();
-    int iLabel = text.indexOf(' ');
-    if (iLabel > 0) {
-      return String.format(template, text.substring(iLabel).trim());
-    }
     // Delete leading '#' characters (method links), and change embedded ones
     // (such as "class#method") to '.'.
     if (text.indexOf('#') == 0) {

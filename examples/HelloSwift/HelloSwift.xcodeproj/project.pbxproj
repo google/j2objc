@@ -1,0 +1,519 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA8AEA8D210F718A00FDC9ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */; };
+		FA8AEA8F210F718A00FDC9ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8AEA8E210F718A00FDC9ED /* ViewController.swift */; };
+		FA8AEA92210F718A00FDC9ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA8AEA90210F718A00FDC9ED /* Main.storyboard */; };
+		FA8AEA94210F718B00FDC9ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA8AEA93210F718B00FDC9ED /* Assets.xcassets */; };
+		FA8AEA97210F718B00FDC9ED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA8AEA95210F718B00FDC9ED /* LaunchScreen.storyboard */; };
+		FA8AEB10210FB4BE00FDC9ED /* libHelloSwiftJava.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8AEAFF210FB05000FDC9ED /* libHelloSwiftJava.a */; };
+		FAB2C72C21100C0800C63F0D /* Example.java in Sources */ = {isa = PBXBuildFile; fileRef = FAB2C72B21100C0800C63F0D /* Example.java */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		FA8AEB0A210FB14000FDC9ED /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = sourcecode.java;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}.h",
+				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}.m",
+			);
+			script = "if [ ! -f \"${J2OBJC_HOME}/j2objc\" ]; then echo \"J2OBJC_HOME is not correctly defined, currently set to '${J2OBJC_HOME}'\"; exit 1; fi;\n\"${J2OBJC_HOME}/j2objc\" -d ${DERIVED_FILE_DIR} --no-package-directories -g --swift-friendly --class-properties ${INPUT_FILE_PATH};";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		FA8AEB0D210FB4AF00FDC9ED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA8AEA81210F718A00FDC9ED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA8AEAFE210FB05000FDC9ED;
+			remoteInfo = HelloSwiftJava;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		FA8AEA89210F718A00FDC9ED /* HelloSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FA8AEA8E210F718A00FDC9ED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FA8AEA91210F718A00FDC9ED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		FA8AEA93210F718B00FDC9ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA8AEA96210F718B00FDC9ED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		FA8AEA98210F718B00FDC9ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA8AEAA7210F82B000FDC9ED /* HelloSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HelloSwift-Bridging-Header.h"; sourceTree = "<group>"; };
+		FA8AEAFF210FB05000FDC9ED /* libHelloSwiftJava.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libHelloSwiftJava.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAB2C72B21100C0800C63F0D /* Example.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Example.java; path = org/j2objc/Example.java; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA8AEA86210F718A00FDC9ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA8AEB10210FB4BE00FDC9ED /* libHelloSwiftJava.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA8AEAFC210FB05000FDC9ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FA8AEA80210F718A00FDC9ED = {
+			isa = PBXGroup;
+			children = (
+				FA8AEA8B210F718A00FDC9ED /* HelloSwift */,
+				FA8AEB00210FB05000FDC9ED /* HelloSwiftJava */,
+				FA8AEA8A210F718A00FDC9ED /* Products */,
+				FA8AEB0F210FB4BE00FDC9ED /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		FA8AEA8A210F718A00FDC9ED /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA8AEA89210F718A00FDC9ED /* HelloSwift.app */,
+				FA8AEAFF210FB05000FDC9ED /* libHelloSwiftJava.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FA8AEA8B210F718A00FDC9ED /* HelloSwift */ = {
+			isa = PBXGroup;
+			children = (
+				FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */,
+				FA8AEA8E210F718A00FDC9ED /* ViewController.swift */,
+				FA8AEA90210F718A00FDC9ED /* Main.storyboard */,
+				FA8AEA93210F718B00FDC9ED /* Assets.xcassets */,
+				FA8AEA95210F718B00FDC9ED /* LaunchScreen.storyboard */,
+				FA8AEA98210F718B00FDC9ED /* Info.plist */,
+				FA8AEAA7210F82B000FDC9ED /* HelloSwift-Bridging-Header.h */,
+			);
+			path = HelloSwift;
+			sourceTree = "<group>";
+		};
+		FA8AEB00210FB05000FDC9ED /* HelloSwiftJava */ = {
+			isa = PBXGroup;
+			children = (
+				FAB2C72B21100C0800C63F0D /* Example.java */,
+			);
+			path = HelloSwiftJava;
+			sourceTree = "<group>";
+		};
+		FA8AEB0F210FB4BE00FDC9ED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FA8AEA88210F718A00FDC9ED /* HelloSwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA8AEA9B210F718B00FDC9ED /* Build configuration list for PBXNativeTarget "HelloSwift" */;
+			buildPhases = (
+				FA8AEA85210F718A00FDC9ED /* Sources */,
+				FA8AEA86210F718A00FDC9ED /* Frameworks */,
+				FA8AEA87210F718A00FDC9ED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA8AEB0E210FB4AF00FDC9ED /* PBXTargetDependency */,
+			);
+			name = HelloSwift;
+			productName = HelloSwift;
+			productReference = FA8AEA89210F718A00FDC9ED /* HelloSwift.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FA8AEAFE210FB05000FDC9ED /* HelloSwiftJava */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA8AEB07210FB05000FDC9ED /* Build configuration list for PBXNativeTarget "HelloSwiftJava" */;
+			buildPhases = (
+				FA8AEAFB210FB05000FDC9ED /* Sources */,
+				FA8AEAFC210FB05000FDC9ED /* Frameworks */,
+				FA8AEB12210FB51800FDC9ED /* ShellScript */,
+			);
+			buildRules = (
+				FA8AEB0A210FB14000FDC9ED /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = HelloSwiftJava;
+			productName = HelloSwiftJava;
+			productReference = FA8AEAFF210FB05000FDC9ED /* libHelloSwiftJava.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA8AEA81210F718A00FDC9ED /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0940;
+				LastUpgradeCheck = 0940;
+				ORGANIZATIONNAME = com.google;
+				TargetAttributes = {
+					FA8AEA88210F718A00FDC9ED = {
+						CreatedOnToolsVersion = 9.4;
+						LastSwiftMigration = 0940;
+					};
+					FA8AEAFE210FB05000FDC9ED = {
+						CreatedOnToolsVersion = 9.4;
+					};
+				};
+			};
+			buildConfigurationList = FA8AEA84210F718A00FDC9ED /* Build configuration list for PBXProject "HelloSwift" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FA8AEA80210F718A00FDC9ED;
+			productRefGroup = FA8AEA8A210F718A00FDC9ED /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA8AEA88210F718A00FDC9ED /* HelloSwift */,
+				FA8AEAFE210FB05000FDC9ED /* HelloSwiftJava */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FA8AEA87210F718A00FDC9ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA8AEA97210F718B00FDC9ED /* LaunchScreen.storyboard in Resources */,
+				FA8AEA94210F718B00FDC9ED /* Assets.xcassets in Resources */,
+				FA8AEA92210F718A00FDC9ED /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FA8AEB12210FB51800FDC9ED /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -a ${DERIVED_FILE_DIR}/*.h ${BUILT_PRODUCTS_DIR}";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA8AEA85210F718A00FDC9ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA8AEA8F210F718A00FDC9ED /* ViewController.swift in Sources */,
+				FA8AEA8D210F718A00FDC9ED /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA8AEAFB210FB05000FDC9ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB2C72C21100C0800C63F0D /* Example.java in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FA8AEB0E210FB4AF00FDC9ED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA8AEAFE210FB05000FDC9ED /* HelloSwiftJava */;
+			targetProxy = FA8AEB0D210FB4AF00FDC9ED /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FA8AEA90210F718A00FDC9ED /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA8AEA91210F718A00FDC9ED /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		FA8AEA95210F718B00FDC9ED /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA8AEA96210F718B00FDC9ED /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FA8AEA99210F718B00FDC9ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FA8AEA9A210F718B00FDC9ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FA8AEA9C210F718B00FDC9ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
+				INFOPLIST_FILE = HelloSwift/Info.plist;
+				J2OBJC_HOME = ../..;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
+				OTHER_LDFLAGS = (
+					"-ljre_emul",
+					"-liconv",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.HelloSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HelloSwift/HelloSwift-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "${J2OBJC_HOME}/include";
+			};
+			name = Debug;
+		};
+		FA8AEA9D210F718B00FDC9ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
+				INFOPLIST_FILE = HelloSwift/Info.plist;
+				J2OBJC_HOME = ../..;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
+				OTHER_LDFLAGS = (
+					"-ljre_emul",
+					"-liconv",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.HelloSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HelloSwift/HelloSwift-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "${J2OBJC_HOME}/include";
+			};
+			name = Release;
+		};
+		FA8AEB05210FB05000FDC9ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
+				J2OBJC_HOME = ../..;
+				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-liconv",
+					"-ljre_emul",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "${J2OBJC_HOME}/include";
+			};
+			name = Debug;
+		};
+		FA8AEB06210FB05000FDC9ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
+				J2OBJC_HOME = ../..;
+				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-liconv",
+					"-ljre_emul",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "${J2OBJC_HOME}/include";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA8AEA84210F718A00FDC9ED /* Build configuration list for PBXProject "HelloSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA8AEA99210F718B00FDC9ED /* Debug */,
+				FA8AEA9A210F718B00FDC9ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA8AEA9B210F718B00FDC9ED /* Build configuration list for PBXNativeTarget "HelloSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA8AEA9C210F718B00FDC9ED /* Debug */,
+				FA8AEA9D210F718B00FDC9ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA8AEB07210FB05000FDC9ED /* Build configuration list for PBXNativeTarget "HelloSwiftJava" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA8AEB05210FB05000FDC9ED /* Debug */,
+				FA8AEB06210FB05000FDC9ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FA8AEA81210F718A00FDC9ED /* Project object */;
+}

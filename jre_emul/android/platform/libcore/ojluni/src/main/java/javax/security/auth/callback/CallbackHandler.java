@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 package javax.security.auth.callback;
 
 /**
- * <p> An application implements a <code>CallbackHandler</code> and passes
+ * <p> An application implements a {@code CallbackHandler} and passes
  * it to underlying security services so that they may interact with
  * the application to retrieve specific authentication data,
  * such as usernames and passwords, or to display certain information,
@@ -40,33 +40,30 @@ package javax.security.auth.callback;
  *
  * <p> Underlying security services make requests for different types
  * of information by passing individual Callbacks to the
- * <code>CallbackHandler</code>.  The <code>CallbackHandler</code>
+ * {@code CallbackHandler}.  The {@code CallbackHandler}
  * implementation decides how to retrieve and display information
  * depending on the Callbacks passed to it.  For example,
  * if the underlying service needs a username and password to
- * authenticate a user, it uses a <code>NameCallback</code> and
- * <code>PasswordCallback</code>.  The <code>CallbackHandler</code>
+ * authenticate a user, it uses a {@code NameCallback} and
+ * {@code PasswordCallback}.  The {@code CallbackHandler}
  * can then choose to prompt for a username and password serially,
  * or to prompt for both in a single window.
  *
- * <p> A default <code>CallbackHandler</code> class implementation
- * may be specified in the <i>auth.login.defaultCallbackHandler</i>
- * security property.  The security property can be set
- * in the Java security properties file located in the file named
- * &lt;JAVA_HOME&gt;/lib/security/java.security.
- * &lt;JAVA_HOME&gt; refers to the value of the java.home system property,
- * and specifies the directory where the JRE is installed.
+ * <p> A default {@code CallbackHandler} class implementation
+ * may be specified by setting the value of the
+ * {@code auth.login.defaultCallbackHandler} security property.
  *
  * <p> If the security property is set to the fully qualified name of a
- * <code>CallbackHandler</code> implementation class,
- * then a <code>LoginContext</code> will load the specified
- * <code>CallbackHandler</code> and pass it to the underlying LoginModules.
- * The <code>LoginContext</code> only loads the default handler
+ * {@code CallbackHandler} implementation class,
+ * then a {@code LoginContext} will load the specified
+ * {@code CallbackHandler} and pass it to the underlying LoginModules.
+ * The {@code LoginContext} only loads the default handler
  * if it was not provided one.
  *
  * <p> All default handler implementations must provide a public
  * zero-argument constructor.
  *
+ * @see java.security.Security security properties
  */
 public interface CallbackHandler {
 
@@ -74,15 +71,15 @@ public interface CallbackHandler {
      * <p> Retrieve or display the information requested in the
      * provided Callbacks.
      *
-     * <p> The <code>handle</code> method implementation checks the
-     * instance(s) of the <code>Callback</code> object(s) passed in
+     * <p> The {@code handle} method implementation checks the
+     * instance(s) of the {@code Callback} object(s) passed in
      * to retrieve or display the requested information.
      * The following example is provided to help demonstrate what an
-     * <code>handle</code> method implementation might look like.
+     * {@code handle} method implementation might look like.
      * This example code is for guidance only.  Many details,
      * including proper error handling, are left out for simplicity.
      *
-     * <pre>
+     * <pre>{@code
      * public void handle(Callback[] callbacks)
      * throws IOException, UnsupportedCallbackException {
      *
@@ -136,9 +133,9 @@ public interface CallbackHandler {
      * private char[] readPassword(InputStream in) throws IOException {
      *    // insert code to read a user password from the input stream
      * }
-     * </pre>
+     * }</pre>
      *
-     * @param callbacks an array of <code>Callback</code> objects provided
+     * @param callbacks an array of {@code Callback} objects provided
      *          by an underlying security service which contains
      *          the information requested to be retrieved or displayed.
      *
@@ -146,7 +143,7 @@ public interface CallbackHandler {
      *
      * @exception UnsupportedCallbackException if the implementation of this
      *          method does not support one or more of the Callbacks
-     *          specified in the <code>callbacks</code> parameter.
+     *          specified in the {@code callbacks} parameter.
      */
     void handle(Callback[] callbacks)
     throws java.io.IOException, UnsupportedCallbackException;

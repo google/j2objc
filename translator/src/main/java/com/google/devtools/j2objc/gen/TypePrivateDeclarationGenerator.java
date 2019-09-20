@@ -20,7 +20,11 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Generates private type declarations within the source file.
@@ -90,6 +94,26 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   @Override
+  protected void printDeadClassConstant(VariableDeclarationFragment fragment) {
+    VariableElement var = fragment.getVariableElement();
+    Object value = var.getConstantValue();
+    assert value != null;
+    String declType = getDeclarationType(var);
+    declType += (declType.endsWith("*") ? "" : " ");
+    String name = nameTable.getVariableShortName(var);
+    if (ElementUtil.isPrimitiveConstant(var)) {
+      printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
+    } else {
+      print("static " + UnicodeUtils.format("%s%s_%s", declType, typeName, name));
+      Expression initializer = fragment.getInitializer();
+      if (initializer != null) {
+        print(" = " + generateExpression(initializer));
+      }
+      println(";");
+    }
+  }
+
+  @Override
   protected void printFunctionDeclaration(FunctionDeclaration function) {
     newline();
     // We expect native functions to be defined externally.
@@ -101,5 +125,10 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
       print(" NS_RETURNS_RETAINED");
     }
     println(";");
+  }
+
+  @Override
+  protected String nullability(Element element) {
+    return "";
   }
 }

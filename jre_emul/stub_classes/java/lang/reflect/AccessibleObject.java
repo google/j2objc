@@ -28,13 +28,16 @@ import java.lang.annotation.Annotation;
  */
 public class AccessibleObject implements AnnotatedElement {
 
+  protected AccessibleObject() {}
+
   public boolean isAccessible() {
     return false;
   }
 
-  public void setAccessible(boolean b) {}
+  public void setAccessible(boolean b) throws SecurityException {}
 
-  public static void setAccessible(AccessibleObject[] objects, boolean b) {}
+  public static void setAccessible(AccessibleObject[] objects, boolean b)
+      throws SecurityException {}
 
   public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
     return null;
@@ -49,6 +52,18 @@ public class AccessibleObject implements AnnotatedElement {
   }
 
   public Annotation[] getDeclaredAnnotations() {
+    return null;
+  }
+
+  public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
+    return null;
+  }
+
+  public <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
+    return null;
+  }
+
+  public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
     return null;
   }
 }

@@ -80,6 +80,10 @@
 - (IOSObjectArray *)getDeclaredAnnotations;
 - (IOSObjectArray *)getParameterAnnotations;
 
+// Empty implementations.
+- (id<JavaLangReflectAnnotatedType>)getAnnotatedReturnType;
+- (IOSObjectArray *)getAnnotatedParameterTypes;
+
 - (NSString *)toGenericString;
 - (IOSObjectArray *)getAllGenericParameterTypes;
 

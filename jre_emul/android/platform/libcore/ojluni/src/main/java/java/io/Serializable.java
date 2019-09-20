@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ package java.io;
  *
  * Classes that require special handling during the serialization and
  * deserialization process must implement special methods with these exact
- * signatures: <p>
+ * signatures:
  *
  * <PRE>
  * private void writeObject(java.io.ObjectOutputStream out)
@@ -101,7 +101,7 @@ package java.io;
  *
  * <p>Serializable classes that need to designate an alternative object to be
  * used when writing an object to the stream should implement this
- * special method with the exact signature: <p>
+ * special method with the exact signature:
  *
  * <PRE>
  * ANY-ACCESS-MODIFIER Object writeReplace() throws ObjectStreamException;
@@ -115,7 +115,7 @@ package java.io;
  *
  * Classes that need to designate a replacement when an instance of it
  * is read from the stream should implement this special method with the
- * exact signature.<p>
+ * exact signature.
  *
  * <PRE>
  * ANY-ACCESS-MODIFIER Object readResolve() throws ObjectStreamException;
@@ -133,7 +133,7 @@ package java.io;
  * deserialization will result in an {@link InvalidClassException}.  A
  * serializable class can declare its own serialVersionUID explicitly by
  * declaring a field named <code>"serialVersionUID"</code> that must be static,
- * final, and of type <code>long</code>:<p>
+ * final, and of type <code>long</code>:
  *
  * <PRE>
  * ANY-ACCESS-MODIFIER static final long serialVersionUID = 42L;

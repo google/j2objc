@@ -34,6 +34,7 @@
 
 #include <google/protobuf/compiler/j2objc/j2objc_extension.h>
 
+#include <google/protobuf/compiler/j2objc/j2objc_field.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
 namespace google {
@@ -59,28 +60,27 @@ ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
 ExtensionGenerator::~ExtensionGenerator() {
 }
 
-void ExtensionGenerator::CollectSourceImports(std::set<string>* imports) {
+void ExtensionGenerator::CollectSourceImports(std::set<string>* imports) const {
   imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
-  if (!descriptor_->is_repeated()
-      && GetJavaType(descriptor_) == JAVATYPE_ENUM) {
-    imports->insert(GetHeader(descriptor_->enum_type()));
-  }
+  // Imports needed for metadata of enum and message types.
+  CollectSourceImportsForField(imports, descriptor_);
 }
 
-void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
-  printer->Print("\n"
+void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) const {
+  printer->Print(
+      "\n"
       "inline ComGoogleProtobufGeneratedMessage_GeneratedExtension"
-          " *$classname$_get_$name$();\n"
+      " *$classname$_get_$name$(void);\n"
       "/*! INTERNAL ONLY - Use accessor function from above. */\n"
       "FOUNDATION_EXPORT ComGoogleProtobufGeneratedMessage_GeneratedExtension"
-          " *$classname$_$name$;\n"
+      " *$classname$_$name$;\n"
       "J2OBJC_STATIC_FIELD_OBJ_FINAL($classname$, $name$, "
-          "ComGoogleProtobufGeneratedMessage_GeneratedExtension *)\n",
-      "name", UnderscoresToCamelCase(descriptor_),
-      "classname", ContainingClassName(descriptor_));
+      "ComGoogleProtobufGeneratedMessage_GeneratedExtension *)\n",
+      "name", UnderscoresToCamelCase(descriptor_), "classname",
+      ContainingClassName(descriptor_));
 }
 
-void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) {
+void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) const {
   printer->Print(
       "ComGoogleProtobufGeneratedMessage_GeneratedExtension"
           " *$classname$_$name$;\n",
@@ -88,7 +88,7 @@ void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) {
       "classname", ContainingClassName(descriptor_));
 }
 
-void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
+void ExtensionGenerator::GenerateFieldData(io::Printer* printer) const {
   std::map<string, string> vars;
   vars["field_name"] = descriptor_->name();
   vars["capitalized_name"] = UnderscoresToCapitalizedCamelCase(descriptor_);
@@ -97,7 +97,6 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
   vars["field_type"] = GetFieldTypeEnumValue(descriptor_);
   vars["default_value_type"] = GetDefaultValueTypeName(descriptor_);
   vars["default_value"] = DefaultValue(descriptor_);
-  vars["field_data_class_name"] = GetFieldDataClassName(descriptor_);
   vars["containing_type_name"] = ClassName(descriptor_->containing_type());
   vars["options_data"] = GetFieldOptionsData(descriptor_);
   printer->Print(vars,
@@ -111,13 +110,18 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
       "  .defaultValue.value$default_value_type$ = $default_value$,\n"
       "  .hasBitIndex = 0,\n"
       "  .offset = 0,\n"
-      "  .className = $field_data_class_name$,\n"
+      "  .objcType = NULL,\n"
       "  .containingType = \"$containing_type_name$\",\n"
       "  .optionsData = $options_data$,\n"
       "},\n");
 }
 
-void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) {
+void ExtensionGenerator::GenerateNonStaticFieldData(
+      io::Printer *printer, const string& arr_name, uint32_t idx) const {
+  GenerateObjcClass(printer, descriptor_, arr_name, idx);
+}
+
+void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) const {
   printer->Print(
       "$classname$_$name$ = "
           "[[ComGoogleProtobufGeneratedMessage_GeneratedExtension alloc] "
@@ -127,7 +131,7 @@ void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) {
       "num", SimpleItoa(descriptor_->index()));
 }
 
-void ExtensionGenerator::GenerateRegistrationCode(io::Printer* printer) {
+void ExtensionGenerator::GenerateRegistrationCode(io::Printer* printer) const {
   printer->Print(
       "CGPExtensionRegistryAdd(extensionRegistry, $classname$_get_$name$());\n",
       "classname", ContainingClassName(descriptor_),

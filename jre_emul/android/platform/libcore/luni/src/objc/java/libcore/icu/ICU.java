@@ -445,13 +445,13 @@ public final class ICU {
   /* J2ObjC unused.
   public static Locale addLikelySubtags(Locale locale) {
       return Locale.forLanguageTag(addLikelySubtags(locale.toLanguageTag()).replace('_', '-'));
-  }*/
+  }
 
   /**
    * @deprecated use {@link #addLikelySubtags(java.util.Locale)} instead.
    * J2ObjC unused.
   @Deprecated
-  public static native String addLikelySubtags(String locale);*/
+  public static native String addLikelySubtags(String locale);
 
   /**
    * @deprecated use {@link java.util.Locale#getScript()} instead. This has been kept

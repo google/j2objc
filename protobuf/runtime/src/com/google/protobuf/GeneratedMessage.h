@@ -67,6 +67,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
 - (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
+- (id)mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data;
+- (id)mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data
+    withComGoogleProtobufExtensionRegistryLite:
+        (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
+- (id)mergeFromWithByteArray:(IOSByteArray *)data;
+- (id)mergeFromWithByteArray:(IOSByteArray *)data
+    withComGoogleProtobufExtensionRegistryLite:
+        (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
 @end
 

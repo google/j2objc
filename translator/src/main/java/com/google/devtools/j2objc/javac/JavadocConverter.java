@@ -15,8 +15,6 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.ast.Javadoc;
-import com.google.devtools.j2objc.ast.Name;
-import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.TagElement;
@@ -27,6 +25,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.sun.source.doctree.AuthorTree;
 import com.sun.source.doctree.CommentTree;
 import com.sun.source.doctree.DeprecatedTree;
+import com.sun.source.doctree.DocCommentTree;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.EndElementTree;
 import com.sun.source.doctree.EntityTree;
@@ -49,7 +48,6 @@ import com.sun.source.util.DocTreeScanner;
 import com.sun.source.util.DocTrees;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.tree.DCTree;
-import com.sun.tools.javac.tree.JCTree;
 import java.util.Collections;
 import java.util.List;
 import javax.lang.model.element.Element;
@@ -62,13 +60,13 @@ import javax.lang.model.element.VariableElement;
 class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   private final Element element;
-  private final DCTree.DCDocComment docComment;
+  private final DocCommentTree docComment;
   private final DocSourcePositions docSourcePositions;
   private final String source;
   private final CompilationUnitTree unit;
   private final boolean reportWarnings;
 
-  private JavadocConverter(Element element, DCTree.DCDocComment docComment, String source,
+  private JavadocConverter(Element element, DocCommentTree docComment, String source,
       DocTrees docTrees, CompilationUnitTree unit, boolean reportWarnings) {
     this.element = element;
     this.docComment = docComment;
@@ -78,23 +76,22 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
     this.reportWarnings = reportWarnings;
   }
 
-  /**
-   * Returns an AST node for the javadoc comment of a specified class,
-   * method, or field element.
-   */
-  static Javadoc convertJavadoc(Element element, String source, JavacEnvironment env,
-      boolean reportWarnings) {
+  /** Returns an AST node for the javadoc comment of a specified class, method, or field element. */
+  static Javadoc convertJavadoc(
+      TreePath path, String source, JavacEnvironment env, boolean reportWarnings) {
     DocTrees docTrees = DocTrees.instance(env.task());
-    TreePath path = docTrees.getPath(element);
-    if (path == null) {
-      throw new AssertionError("could not find tree path for element");
-    }
-    DCTree.DCDocComment docComment = (DCTree.DCDocComment) docTrees.getDocCommentTree(path);
+    DocCommentTree docComment = docTrees.getDocCommentTree(path);
     if (docComment == null) {
       return null; // Declaration does not have a javadoc comment.
     }
-    JavadocConverter converter = new JavadocConverter(element, docComment, source, docTrees,
-        path.getCompilationUnit(), reportWarnings);
+    JavadocConverter converter =
+        new JavadocConverter(
+            env.treeUtilities().getElement(path),
+            docComment,
+            source,
+            docTrees,
+            path.getCompilationUnit(),
+            reportWarnings);
     Javadoc result = new Javadoc();
 
     // First tag is the description.
@@ -158,7 +155,8 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
       // Update node's position to be relative to the whole source file, instead of just
       // the doc-comment's start. That way, the diagnostic printer will fetch the correct
       // text for the line the error is on.
-      ((DCTree.DCErroneous) node).pos = ((DCTree) node).pos(docComment).getStartPosition();
+      ((DCTree.DCErroneous) node).pos =
+          ((DCTree) node).pos((DCTree.DCDocComment) docComment).getStartPosition();
       ErrorUtil.warning(node.getDiagnostic().toString());
     } else {
       // Include erroneous text in doc-comment as is.
@@ -198,7 +196,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitParam(ParamTree node, TagElement tag) {
-    DCTree.DCIdentifier identifier = (DCTree.DCIdentifier) node.getName();
+    IdentifierTree identifier = node.getName();
     if (identifier == null || node.isTypeParameter()) {
       return null;
     }
@@ -238,14 +236,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitReference(ReferenceTree node, TagElement tag) {
-    DCTree.DCReference ref = (DCTree.DCReference) node;
-    JCTree qualifier = ref.qualifierExpression;
-    TreeNode newNode;
-    if (qualifier != null && qualifier.getKind() == com.sun.source.tree.Tree.Kind.MEMBER_SELECT) {
-      newNode = convertQualifiedName(qualifier);
-    } else {
-      newNode = new TextElement().setText(node.getSignature());
-    }
+    TreeNode newNode = new TextElement().setText(node.getSignature());
     tag.addFragment(setPos(node, newNode));
     return null;
   }
@@ -362,16 +353,5 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   private int length(DocTree node) {
     return endPos(node) - pos(node);
-  }
-
-  private Name convertQualifiedName(JCTree qualifier) {
-    if (qualifier.getKind() == com.sun.source.tree.Tree.Kind.MEMBER_SELECT) {
-      JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) qualifier;
-      return new QualifiedName()
-          .setName(new SimpleName(select.getIdentifier().toString()))
-          .setQualifier(convertQualifiedName(select.getExpression()));
-    } else {
-      return new SimpleName(qualifier.toString());
-    }
   }
 }

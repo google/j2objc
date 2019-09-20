@@ -19,10 +19,8 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Properties;
 
 /**
  * Unit tests for {@link PackagePrefixes}.
@@ -36,13 +34,10 @@ public class PackagePrefixesTest extends GenerationTest {
         "# Prefix mappings\n"
         + "java.lang: JL\n"
         + "foo.bar: FB\n";
-    StringReader reader = new StringReader(prefixes);
-    Properties properties = new Properties();
-    properties.load(reader);
     PackagePrefixes prefixMap = options.getPackagePrefixes();
     assertNull(prefixMap.getPrefix("java.lang"));
     assertNull(prefixMap.getPrefix("foo.bar"));
-    prefixMap.addPrefixProperties(properties);
+    prefixMap.addPrefixProperties(new StringReader(prefixes));
     assertEquals("JL", prefixMap.getPrefix("java.lang"));
     assertEquals("FB", prefixMap.getPrefix("foo.bar"));
   }
@@ -55,11 +50,8 @@ public class PackagePrefixesTest extends GenerationTest {
         "# Prefix mappings\n"
         + "java.lang: JL\n"
         + "foo.bar: FB \n";  // Trailing space should be ignored.
-    StringReader reader = new StringReader(prefixes);
-    Properties properties = new Properties();
-    properties.load(reader);
     PackagePrefixes prefixMap = options.getPackagePrefixes();
-    prefixMap.addPrefixProperties(properties);
+    prefixMap.addPrefixProperties(new StringReader(prefixes));
     assertEquals("JL", prefixMap.getPrefix("java.lang"));
     assertEquals("FB", prefixMap.getPrefix("foo.bar"));
   }
@@ -106,5 +98,17 @@ public class PackagePrefixesTest extends GenerationTest {
     assertTrue("foo.bar".matches(regex));
     assertTrue("foo.bar.mumble".matches(regex));
     assertFalse("foo.bars".matches(regex));
+  }
+
+  /**
+   * Regression test for http://code.google.com/p/j2objc/issues/detail?id=995.
+   */
+  public void testPackagePrefixesLineOrder() throws IOException {
+    String prefixes =
+        "foo.bar.b.*=FBB\n"
+        + "foo.bar.*=FBX\n";
+    PackagePrefixes prefixMap = options.getPackagePrefixes();
+    prefixMap.addPrefixProperties(new StringReader(prefixes));
+    assertEquals("FBB", prefixMap.getPrefix("foo.bar.b.Cat"));
   }
 }

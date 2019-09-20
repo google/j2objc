@@ -1,0 +1,2370 @@
+# Copyright (C) 2016 and later: Unicode, Inc. and others. License & terms of use: http://www.unicode.org/copyright.html#License
+# Copyright (C) 2013, Google Inc, International Business Machines Corporation and others
+af	0 dae
+af	0.00 dae
+af	0.000 dae
+af	0.001 dae
+af	0.002 dae
+af	0.01 dae
+af	0.010 dae
+af	0.011 dae
+af	0.02 dae
+af	0.1 dae
+af	0.10 dae
+af	0.11 dae
+af	0.2 dae
+af	1.0 dag
+af	1.00 dag
+af	1.000 dag
+af	1.002 dae
+af	1.010 dae
+af	1.011 dae
+af	1.02 dae
+af	1.10 dae
+af	1.11 dae
+af	1.2 dae
+af	2.0 dae
+af	2.00 dae
+af	2.000 dae
+af	2.001 dae
+af	2.01 dae
+af	2.1 dae
+am	0.0 ቀን
+am	0.00 ቀን
+am	0.000 ቀን
+am	0.001 ቀን
+am	0.002 ቀን
+am	0.01 ቀን
+am	0.010 ቀን
+am	0.011 ቀን
+am	0.02 ቀን
+am	0.1 ቀን
+am	0.10 ቀን
+am	0.11 ቀን
+am	0.2 ቀን
+am	2 ቀናት
+am	1.0 ቀን
+am	1.00 ቀን
+am	1.000 ቀን
+am	1.002 ቀናት
+am	1.010 ቀናት
+am	1.011 ቀናት
+am	1.02 ቀናት
+am	1.10 ቀናት
+am	1.11 ቀናት
+am	1.2 ቀናት
+am	2.0 ቀናት
+am	2.00 ቀናት
+am	2.000 ቀናት
+am	2.001 ቀናት
+am	2.01 ቀናት
+am	2.1 ቀናት
+ar	0 ساعة
+ar	0.0 ساعة
+ar	0.00 ساعة
+ar	0.000 ساعة
+ar	0.001 ساعة
+ar	0.002 ساعة
+ar	0.003 ساعة
+ar	0.01 ساعة
+ar	0.010 ساعة
+ar	0.011 ساعة
+ar	0.012 ساعة
+ar	0.013 ساعة
+ar	0.02 ساعة
+ar	0.020 ساعة
+ar	0.03 ساعة
+ar	0.1 ساعة
+ar	0.10 ساعة
+ar	0.100 ساعة
+ar	0.101 ساعة
+ar	0.102 ساعة
+ar	0.11 ساعة
+ar	0.12 ساعة
+ar	0.13 ساعة
+ar	0.2 ساعة
+ar	0.20 ساعة
+ar	0.3 ساعة
+ar	1.0 ساعة
+ar	1.00 ساعة
+ar	1.000 ساعة
+ar	1.002 ساعة
+ar	1.003 ساعة
+ar	1.010 ساعة
+ar	1.011 ساعة
+ar	1.012 ساعة
+ar	1.013 ساعة
+ar	1.02 ساعة
+ar	1.020 ساعة
+ar	1.03 ساعة
+ar	1.10 ساعة
+ar	1.100 ساعة
+ar	1.101 ساعة
+ar	1.102 ساعة
+ar	1.11 ساعة
+ar	1.12 ساعة
+ar	1.13 ساعة
+ar	1.2 ساعة
+ar	1.20 ساعة
+ar	1.3 ساعة
+ar	2.0 ساعة
+ar	2.00 ساعة
+ar	2.000 ساعة
+ar	2.001 ساعة
+ar	2.003 ساعة
+ar	2.01 ساعة
+ar	2.010 ساعة
+ar	2.011 ساعة
+ar	2.012 ساعة
+ar	2.013 ساعة
+ar	2.020 ساعة
+ar	2.03 ساعة
+ar	2.1 ساعة
+ar	2.10 ساعة
+ar	2.100 ساعة
+ar	2.101 ساعة
+ar	2.102 ساعة
+ar	2.11 ساعة
+ar	2.12 ساعة
+ar	2.13 ساعة
+ar	2.20 ساعة
+ar	2.3 ساعة
+ar	3.0 ساعة
+ar	3.00 ساعة
+ar	3.000 ساعة
+ar	3.001 ساعة
+ar	3.002 ساعة
+ar	3.01 ساعة
+ar	3.011 ساعة
+ar	3.012 ساعة
+ar	3.013 ساعة
+ar	3.02 ساعة
+ar	3.020 ساعة
+ar	3.1 ساعة
+ar	3.100 ساعة
+ar	3.101 ساعة
+ar	3.102 ساعة
+ar	3.11 ساعة
+ar	3.12 ساعة
+ar	3.13 ساعة
+ar	3.2 ساعة
+ar	3.20 ساعة
+ar	11.0 ساعة
+ar	11.00 ساعة
+ar	11.000 ساعة
+ar	11.001 ساعة
+ar	11.002 ساعة
+ar	11.003 ساعة
+ar	11.01 ساعة
+ar	11.010 ساعة
+ar	11.02 ساعة
+ar	11.03 ساعة
+ar	11.1 ساعة
+ar	11.10 ساعة
+ar	11.100 ساعة
+ar	11.101 ساعة
+ar	11.102 ساعة
+ar	11.2 ساعة
+ar	11.3 ساعة
+ar	100.0 ساعة
+ar	100.00 ساعة
+ar	100.000 ساعة
+ar	100.001 ساعة
+ar	100.002 ساعة
+ar	100.003 ساعة
+ar	100.01 ساعة
+ar	100.010 ساعة
+ar	100.011 ساعة
+ar	100.012 ساعة
+ar	100.013 ساعة
+ar	100.02 ساعة
+ar	100.020 ساعة
+ar	100.03 ساعة
+ar	100.1 ساعة
+ar	100.10 ساعة
+ar	100.11 ساعة
+ar	100.12 ساعة
+ar	100.13 ساعة
+ar	100.2 ساعة
+ar	100.20 ساعة
+ar	100.3 ساعة
+bg	0 дена
+bg	0.0 дена
+bg	0.00 дена
+bg	0.000 дена
+bg	0.001 дена
+bg	0.002 дена
+bg	0.01 дена
+bg	0.010 дена
+bg	0.011 дена
+bg	0.02 дена
+bg	0.1 дена
+bg	0.10 дена
+bg	0.11 дена
+bg	0.2 дена
+bg	1.0 ден
+bg	1.00 ден
+bg	1.000 ден
+bg	1.002 дена
+bg	1.010 дена
+bg	1.011 дена
+bg	1.02 дена
+bg	1.10 дена
+bg	1.11 дена
+bg	1.2 дена
+bg	2.0 дена
+bg	2.00 дена
+bg	2.000 дена
+bg	2.001 дена
+bg	2.01 дена
+bg	2.1 дена
+br	0.0 deiz
+br	0.00 deiz
+br	0.000 deiz
+br	0.001 deiz
+br	0.002 deiz
+br	0.003 deiz
+br	0.005 deiz
+br	0.01 deiz
+br	0.010 deiz
+br	0.011 deiz
+br	0.012 deiz
+br	0.013 deiz
+br	0.02 deiz
+br	0.03 deiz
+br	0.05 deiz
+br	0.1 deiz
+br	0.10 deiz
+br	0.11 deiz
+br	0.12 deiz
+br	0.13 deiz
+br	0.2 deiz
+br	0.3 deiz
+br	0.5 deiz
+br	1.0 deiz
+br	1.00 deiz
+br	1.000 deiz
+br	1.002 deiz
+br	1.003 deiz
+br	1.005 deiz
+br	1.010 deiz
+br	1.011 deiz
+br	1.012 deiz
+br	1.013 deiz
+br	1.02 deiz
+br	1.03 deiz
+br	1.05 deiz
+br	1.10 deiz
+br	1.11 deiz
+br	1.12 deiz
+br	1.13 deiz
+br	1.2 deiz
+br	1.3 deiz
+br	1.5 deiz
+br	2 zeiz
+br	2.0 zeiz
+br	2.00 zeiz
+br	2.000 zeiz
+br	2.001 zeiz
+br	2.003 zeiz
+br	2.005 zeiz
+br	2.01 zeiz
+br	2.010 zeiz
+br	2.011 zeiz
+br	2.012 zeiz
+br	2.013 zeiz
+br	2.03 zeiz
+br	2.05 zeiz
+br	2.1 zeiz
+br	2.10 zeiz
+br	2.11 zeiz
+br	2.12 zeiz
+br	2.13 zeiz
+br	2.3 zeiz
+br	2.5 zeiz
+br	3.0 deiz
+br	3.00 deiz
+br	3.000 deiz
+br	3.001 deiz
+br	3.002 deiz
+br	3.005 deiz
+br	3.01 deiz
+br	3.010 deiz
+br	3.011 deiz
+br	3.012 deiz
+br	3.013 deiz
+br	3.02 deiz
+br	3.05 deiz
+br	3.1 deiz
+br	3.10 deiz
+br	3.11 deiz
+br	3.12 deiz
+br	3.13 deiz
+br	3.2 deiz
+br	3.5 deiz
+br	5.0 deiz
+br	5.00 deiz
+br	5.000 deiz
+br	5.001 deiz
+br	5.002 deiz
+br	5.003 deiz
+br	5.01 deiz
+br	5.02 deiz
+br	5.03 deiz
+br	5.1 deiz
+br	5.2 deiz
+br	5.3 deiz
+br	1000000.0 a zeizioù
+br	1000000.00 a zeizioù
+br	1000000.000 a zeizioù
+br	1000000.001 a zeizioù
+br	1000000.002 a zeizioù
+br	1000000.003 a zeizioù
+br	1000000.005 a zeizioù
+br	1000000.01 a zeizioù
+br	1000000.010 a zeizioù
+br	1000000.011 a zeizioù
+br	1000000.012 a zeizioù
+br	1000000.013 a zeizioù
+br	1000000.02 a zeizioù
+br	1000000.03 a zeizioù
+br	1000000.05 a zeizioù
+br	1000000.1 a zeizioù
+br	1000000.10 a zeizioù
+br	1000000.11 a zeizioù
+br	1000000.12 a zeizioù
+br	1000000.13 a zeizioù
+br	1000000.2 a zeizioù
+br	1000000.3 a zeizioù
+br	1000000.5 a zeizioù
+ca	0 dies
+ca	0.0 dies
+ca	0.00 dies
+ca	0.000 dies
+ca	0.001 dies
+ca	0.002 dies
+ca	0.01 dies
+ca	0.010 dies
+ca	0.011 dies
+ca	0.02 dies
+ca	0.1 dies
+ca	0.10 dies
+ca	0.11 dies
+ca	0.2 dies
+ca	1.0 dies
+ca	1.00 dies
+ca	1.000 dies
+ca	1.002 dies
+ca	1.010 dies
+ca	1.011 dies
+ca	1.02 dies
+ca	1.10 dies
+ca	1.11 dies
+ca	1.2 dies
+ca	2.0 dies
+ca	2.00 dies
+ca	2.000 dies
+ca	2.001 dies
+ca	2.01 dies
+ca	2.1 dies
+cs	0 dní
+cs	0.0 dne
+cs	0.00 dne
+cs	0.000 dne
+cs	0.001 dne
+cs	0.002 dne
+cs	0.005 dne
+cs	0.01 dne
+cs	0.010 dne
+cs	0.011 dne
+cs	0.012 dne
+cs	0.02 dne
+cs	0.05 dne
+cs	0.1 dne
+cs	0.10 dne
+cs	0.11 dne
+cs	0.12 dne
+cs	0.2 dne
+cs	0.5 dne
+cs	1.0 dne
+cs	1.00 dne
+cs	1.000 dne
+cs	1.002 dne
+cs	1.005 dne
+cs	1.010 dne
+cs	1.011 dne
+cs	1.012 dne
+cs	1.02 dne
+cs	1.05 dne
+cs	1.10 dne
+cs	1.11 dne
+cs	1.12 dne
+cs	1.2 dne
+cs	1.5 dne
+cs	2.0 dne
+cs	2.00 dne
+cs	2.000 dne
+cs	2.001 dne
+cs	2.005 dne
+cs	2.01 dne
+cs	2.010 dne
+cs	2.011 dne
+cs	2.012 dne
+cs	2.05 dne
+cs	2.1 dne
+cs	2.10 dne
+cs	2.11 dne
+cs	2.12 dne
+cs	2.5 dne
+cs	5.0 dne
+cs	5.00 dne
+cs	5.000 dne
+cs	5.001 dne
+cs	5.002 dne
+cs	5.01 dne
+cs	5.02 dne
+cs	5.1 dne
+cs	5.2 dne
+cy	0.0 cilo.  0.0 peint
+cy	0.00 cilo.  0.00 peint
+cy	0.000 cilo.  0.000 peint
+cy	0.001 cilo.  0.001 peint
+cy	0.002 cilo.  0.002 peint
+cy	0.003 cilo.  0.003 peint
+cy	0.004 cilo.  0.004 peint
+cy	0.006 cilo.  0.006 peint
+cy	0.01 cilo.  0.01 peint
+cy	0.010 cilo.  0.010 peint
+cy	0.011 cilo.  0.011 peint
+cy	0.012 cilo.  0.012 peint
+cy	0.013 cilo.  0.013 peint
+cy	0.016 cilo.  0.016 peint
+cy	0.02 cilo.  0.02 peint
+cy	0.03 cilo.  0.03 peint
+cy	0.04 cilo.  0.04 peint
+cy	0.06 cilo.  0.06 peint
+cy	0.1 cilo.  0.1 peint
+cy	0.10 cilo.  0.10 peint
+cy	0.11 cilo.  0.11 peint
+cy	0.12 cilo.  0.12 peint
+cy	0.13 cilo.  0.13 peint
+cy	0.16 cilo.  0.16 peint
+cy	0.2 cilo.  0.2 peint
+cy	0.3 cilo.  0.3 peint
+cy	0.4 cilo.  0.4 peint
+cy	0.6 cilo.  0.6 peint
+cy	1.0 cilo.  1.0 peint
+cy	1.00 cilo.  1.00 peint
+cy	1.000 cilo.  1.000 peint
+cy	1.002 cilo.  1.002 peint
+cy	1.003 cilo.  1.003 peint
+cy	1.004 cilo.  1.004 peint
+cy	1.006 cilo.  1.006 peint
+cy	1.010 cilo.  1.010 peint
+cy	1.011 cilo.  1.011 peint
+cy	1.012 cilo.  1.012 peint
+cy	1.013 cilo.  1.013 peint
+cy	1.016 cilo.  1.016 peint
+cy	1.02 cilo.  1.02 peint
+cy	1.03 cilo.  1.03 peint
+cy	1.04 cilo.  1.04 peint
+cy	1.06 cilo.  1.06 peint
+cy	1.10 cilo.  1.10 peint
+cy	1.11 cilo.  1.11 peint
+cy	1.12 cilo.  1.12 peint
+cy	1.13 cilo.  1.13 peint
+cy	1.16 cilo.  1.16 peint
+cy	1.2 cilo.  1.2 peint
+cy	1.3 cilo.  1.3 peint
+cy	1.4 cilo.  1.4 peint
+cy	1.6 cilo.  1.6 peint
+cy	2.0 cilo.  2.0 peint
+cy	2.00 cilo.  2.00 peint
+cy	2.000 cilo.  2.000 peint
+cy	2.001 cilo.  2.001 peint
+cy	2.003 cilo.  2.003 peint
+cy	2.004 cilo.  2.004 peint
+cy	2.006 cilo.  2.006 peint
+cy	2.01 cilo.  2.01 peint
+cy	2.010 cilo.  2.010 peint
+cy	2.011 cilo.  2.011 peint
+cy	2.012 cilo.  2.012 peint
+cy	2.013 cilo.  2.013 peint
+cy	2.016 cilo.  2.016 peint
+cy	2.03 cilo.  2.03 peint
+cy	2.04 cilo.  2.04 peint
+cy	2.06 cilo.  2.06 peint
+cy	2.1 cilo.  2.1 peint
+cy	2.10 cilo.  2.10 peint
+cy	2.11 cilo.  2.11 peint
+cy	2.12 cilo.  2.12 peint
+cy	2.13 cilo.  2.13 peint
+cy	2.16 cilo.  2.16 peint
+cy	2.3 cilo.  2.3 peint
+cy	2.4 cilo.  2.4 peint
+cy	2.6 cilo.  2.6 peint
+cy	3.0 cilo.  3.0 peint
+cy	3.00 cilo.  3.00 peint
+cy	3.000 cilo.  3.000 peint
+cy	3.001 cilo.  3.001 peint
+cy	3.002 cilo.  3.002 peint
+cy	3.004 cilo.  3.004 peint
+cy	3.006 cilo.  3.006 peint
+cy	3.01 cilo.  3.01 peint
+cy	3.010 cilo.  3.010 peint
+cy	3.011 cilo.  3.011 peint
+cy	3.012 cilo.  3.012 peint
+cy	3.013 cilo.  3.013 peint
+cy	3.016 cilo.  3.016 peint
+cy	3.02 cilo.  3.02 peint
+cy	3.04 cilo.  3.04 peint
+cy	3.06 cilo.  3.06 peint
+cy	3.1 cilo.  3.1 peint
+cy	3.10 cilo.  3.10 peint
+cy	3.11 cilo.  3.11 peint
+cy	3.12 cilo.  3.12 peint
+cy	3.13 cilo.  3.13 peint
+cy	3.16 cilo.  3.16 peint
+cy	3.2 cilo.  3.2 peint
+cy	3.4 cilo.  3.4 peint
+cy	3.6 cilo.  3.6 peint
+cy	4.0 cilo.  4.0 peint
+cy	4.00 cilo.  4.00 peint
+cy	4.000 cilo.  4.000 peint
+cy	4.001 cilo.  4.001 peint
+cy	4.002 cilo.  4.002 peint
+cy	4.003 cilo.  4.003 peint
+cy	4.006 cilo.  4.006 peint
+cy	4.01 cilo.  4.01 peint
+cy	4.02 cilo.  4.02 peint
+cy	4.03 cilo.  4.03 peint
+cy	4.06 cilo.  4.06 peint
+cy	4.1 cilo.  4.1 peint
+cy	4.2 cilo.  4.2 peint
+cy	4.3 cilo.  4.3 peint
+cy	4.6 cilo.  4.6 peint
+cy	6.0 cilo.  6.0 peint
+cy	6.00 cilo.  6.00 peint
+cy	6.000 cilo.  6.000 peint
+cy	6.001 cilo.  6.001 peint
+cy	6.002 cilo.  6.002 peint
+cy	6.003 cilo.  6.003 peint
+cy	6.004 cilo.  6.004 peint
+cy	6.01 cilo.  6.01 peint
+cy	6.010 cilo.  6.010 peint
+cy	6.011 cilo.  6.011 peint
+cy	6.012 cilo.  6.012 peint
+cy	6.013 cilo.  6.013 peint
+cy	6.016 cilo.  6.016 peint
+cy	6.02 cilo.  6.02 peint
+cy	6.03 cilo.  6.03 peint
+cy	6.04 cilo.  6.04 peint
+cy	6.1 cilo.  6.1 peint
+cy	6.10 cilo.  6.10 peint
+cy	6.11 cilo.  6.11 peint
+cy	6.12 cilo.  6.12 peint
+cy	6.13 cilo.  6.13 peint
+cy	6.16 cilo.  6.16 peint
+cy	6.2 cilo.  6.2 peint
+cy	6.3 cilo.  6.3 peint
+cy	6.4 cilo.  6.4 peint
+cy	8 cadair (f) 8 peint (m)
+da	0 dage
+da	0.0 dage
+da	0.00 dage
+da	0.000 dage
+da	0.001 dag
+da	0.002 dage
+da	0.01 dag
+da	0.010 dage
+da	0.011 dage
+da	0.02 dage
+da	0.1 dag
+da	0.10 dage
+da	0.11 dage
+da	0.2 dage
+da	1.0 dage
+da	1.00 dage
+da	1.000 dage
+da	1.002 dage
+da	1.010 dage
+da	1.011 dage
+da	1.02 dage
+da	1.10 dage
+da	1.11 dage
+da	1.2 dage
+da	2.0 dage
+da	2.00 dage
+da	2.000 dage
+da	2.001 dag
+da	2.01 dag
+da	2.1 dag
+de	0 Tage
+de	0.0 Tage
+de	0.00 Tage
+de	0.000 Tage
+de	0.001 Tage
+de	0.002 Tage
+de	0.01 Tage
+de	0.010 Tage
+de	0.011 Tage
+de	0.02 Tage
+de	0.1 Tage
+de	0.10 Tage
+de	0.11 Tage
+de	0.2 Tage
+de	1.0 Tage
+de	1.00 Tage
+de	1.000 Tage
+de	1.002 Tage
+de	1.010 Tage
+de	1.011 Tage
+de	1.02 Tage
+de	1.10 Tage
+de	1.11 Tage
+de	1.2 Tage
+de	2.0 Tage
+de	2.00 Tage
+de	2.000 Tage
+de	2.001 Tage
+de	2.01 Tage
+de	2.1 Tage
+dz	ཉིནམ་ 0 
+dz	ཉིནམ་ 0.0
+dz	ཉིནམ་ 0.00
+dz	ཉིནམ་ 0.000
+dz	 ཉིནམ་ 0.001
+dz	ཉིནམ་ 0.01
+dz	 ཉིནམ་ 0.010
+dz	ཉིནམ་ 0.1 
+dz	ཉིནམ་ 0.10
+dz	ཉིནམ་ 1.0 
+dz	ཉིནམ་ 1.00
+dz	ཉིནམ་ 1.000
+el	2 ημέρες
+el	0.0 ημέρες
+el	0.00 ημέρες
+el	0.000 ημέρες
+el	0.001 ημέρες
+el	0.002 ημέρες
+el	0.01 ημέρες
+el	0.010 ημέρες
+el	0.011 ημέρες
+el	0.02 ημέρες
+el	0.1 ημέρες
+el	0.10 ημέρες
+el	0.11 ημέρες
+el	0.2 ημέρες
+el	1.0 ημέρα
+el	1.00 ημέρα
+el	1.000 ημέρα
+el	1.002 ημέρες
+el	1.010 ημέρες
+el	1.011 ημέρες
+el	1.02 ημέρες
+el	1.10 ημέρες
+el	1.11 ημέρες
+el	1.2 ημέρες
+el	2.0 ημέρες
+el	2.00 ημέρες
+el	2.000 ημέρες
+el	2.001 ημέρες
+el	2.01 ημέρες
+el	2.1 ημέρες
+es	0 días
+es	0.0 días
+es	0.00 días
+es	0.000 días
+es	0.001 días
+es	0.002 días
+es	0.01 días
+es	0.010 días
+es	0.011 días
+es	0.02 días
+es	0.1 días
+es	0.10 días
+es	0.11 días
+es	0.2 días
+es	1.0 día
+es	1.00 día
+es	1.000 día
+es	1.002 días
+es	1.010 días
+es	1.011 días
+es	1.02 días
+es	1.10 días
+es	1.11 días
+es	1.2 días
+es	2.0 días
+es	2.00 días
+es	2.000 días
+es	2.001 días
+es	2.01 días
+es	2.1 días
+et	0 ööpäeva
+et	0.0 ööpäeva
+et	0.00 ööpäeva
+et	0.000 ööpäeva
+et	0.001 ööpäeva
+et	0.002 ööpäeva
+et	0.01 ööpäeva
+et	0.010 ööpäeva
+et	0.011 ööpäeva
+et	0.02 ööpäeva
+et	0.1 ööpäeva
+et	0.10 ööpäeva
+et	0.11 ööpäeva
+et	0.2 ööpäeva
+et	1.0 ööpäeva
+et	1.00 ööpäeva
+et	1.000 ööpäeva
+et	1.002 ööpäeva
+et	1.010 ööpäeva
+et	1.011 ööpäeva
+et	1.02 ööpäeva
+et	1.10 ööpäeva
+et	1.11 ööpäeva
+et	1.2 ööpäeva
+et	2.0 ööpäeva
+et	2.00 ööpäeva
+et	2.000 ööpäeva
+et	2.001 ööpäeva
+et	2.01 ööpäeva
+et	2.1 ööpäeva
+eu	Nire 0.0 lagunekin nago
+eu	Nire 0.00 lagunekin nago
+eu	Nire 0.000 lagunekin nago
+eu	Nire 0.001 lagunekin nago
+eu	Nire 0.002 lagunekin nago
+eu	Nire 0.01 lagunekin nago
+eu	Nire 0.010 lagunekin nago
+eu	Nire 0.011 lagunekin nago
+eu	Nire 0.02 lagunekin nago
+eu	Nire 0.1 lagunekin nago
+eu	Nire 0.10 lagunekin nago
+eu	Nire 0.11 lagunekin nago
+eu	Nire 0.2 lagunekin nago
+eu	Nire 1.0 lagunarekin nago
+eu	Nire 1.00 lagunarekin nago
+eu	Nire 1.000 lagunarekin nago
+eu	Nire 1.002 lagunekin nago
+eu	Nire 1.010 lagunekin nago
+eu	Nire 1.011 lagunekin nago
+eu	Nire 1.02 lagunekin nago
+eu	Nire 1.10 lagunekin nago
+eu	Nire 1.11 lagunekin nago
+eu	Nire 1.2 lagunekin nago
+eu	Nire 2.0 lagunekin nago
+eu	Nire 2.00 lagunekin nago
+eu	Nire 2.000 lagunekin nago
+eu	Nire 2.001 lagunekin nago
+eu	Nire 2.01 lagunekin nago
+eu	Nire 2.1 lagunekin nago
+eu	Nire 4 lagunekin nago
+fa	0 روز
+fa	0.0 روز
+fa	0.00 روز
+fa	0.000 روز
+fa	0.001 روز
+fa	0.01 روز
+fa	0.010 روز
+fa	0.1 روز
+fa	0.10 روز
+fa	1.0 روز
+fa	1.00 روز
+fa	1.000 روز
+fi	0 päivää
+fi	0.0 päivää
+fi	0.00 päivää
+fi	0.000 päivää
+fi	0.001 päivää
+fi	0.002 päivää
+fi	0.01 päivää
+fi	0.010 päivää
+fi	0.011 päivää
+fi	0.02 päivää
+fi	0.1 päivää
+fi	0.10 päivää
+fi	0.11 päivää
+fi	0.2 päivää
+fi	1.0 päivää
+fi	1.00 päivää
+fi	1.000 päivää
+fi	1.002 päivää
+fi	1.010 päivää
+fi	1.011 päivää
+fi	1.02 päivää
+fi	1.10 päivää
+fi	1.11 päivää
+fi	1.2 päivää
+fi	2.0 päivää
+fi	2.00 päivää
+fi	2.000 päivää
+fi	2.001 päivää
+fi	2.01 päivää
+fi	2.1 päivää
+fil	sa 0.0 (na) araw
+fil	sa 0.00 (na) araw
+fil	sa 0.000 (na) araw
+fil	sa 0.001 (na) araw
+fil	sa 0.002 (na) araw
+fil	sa 0.01 (na) araw
+fil	sa 0.010 (na) araw
+fil	sa 0.011 (na) araw
+fil	sa 0.02 (na) araw
+fil	sa 0.1 (na) araw
+fil	sa 0.10 (na) araw
+fil	sa 0.11 (na) araw
+fil	sa 0.2 (na) araw
+fil	sa 0.5 (na) araw
+fil	sa 1.0 (na) araw
+fil	sa 1.00 (na) araw
+fil	sa 1.000 (na) araw
+fil	sa 1.002 (na) araw
+fil	sa 1.010 (na) araw
+fil	sa 1.011 (na) araw
+fil	sa 1.02 (na) araw
+fil	sa 1.10 (na) araw
+fil	sa 1.11 (na) araw
+fil	sa 1.2 (na) araw
+fil	sa 2.0 (na) araw
+fil	sa 2.00 (na) araw
+fil	sa 2.000 (na) araw
+fil	sa 2.001 (na) araw
+fil	sa 2.01 (na) araw
+fil	sa 2.1 (na) araw
+fr	0.0 jour
+fr	0.00 jour
+fr	0.000 jour
+fr	0.001 jour
+fr	0.002 jour
+fr	0.01 jour
+fr	0.010 jour
+fr	0.011 jour
+fr	0.02 jour
+fr	0.1 jour
+fr	0.10 jour
+fr	0.11 jour
+fr	0.2 jour
+fr	1.0 jour
+fr	1.00 jour
+fr	1.000 jour
+fr	1.002 jour
+fr	1.010 jour
+fr	1.011 jour
+fr	1.02 jour
+fr	1.10 jour
+fr	1.11 jour
+fr	1.2 jour
+fr	2 jours
+fr	2.0 jours
+fr	2.00 jours
+fr	2.000 jours
+fr	2.001 jours
+fr	2.01 jours
+fr	2.1 jours
+gl	0 días
+gl	0.0 días
+gl	0.00 días
+gl	0.000 días
+gl	0.001 días
+gl	0.002 días
+gl	0.01 días
+gl	0.010 días
+gl	0.011 días
+gl	0.02 días
+gl	0.1 días
+gl	0.10 días
+gl	0.11 días
+gl	0.2 días
+gl	1.0 días
+gl	1.00 días
+gl	1.000 días
+gl	1.002 días
+gl	1.010 días
+gl	1.011 días
+gl	1.02 días
+gl	1.10 días
+gl	1.11 días
+gl	1.2 días
+gl	2.0 días
+gl	2.00 días
+gl	2.000 días
+gl	2.001 días
+gl	2.01 días
+gl	2.1 días
+gu	0 અઠવાડિયા
+gu	0.0 અઠવાડિયા
+gu	0.00 અઠવાડિયા
+gu	0.000 અઠવાડિયા
+gu	0.001 અઠવાડિયા
+gu	0.002 અઠવાડિયા
+gu	0.01 અઠવાડિયા
+gu	0.010 અઠવાડિયા
+gu	0.011 અઠવાડિયા
+gu	0.02 અઠવાડિયા
+gu	0.1 અઠવાડિયા
+gu	0.10 અઠવાડિયા
+gu	0.11 અઠવાડિયા
+gu	0.2 અઠવાડિયા
+gu	1.0 અઠવાડિયું
+gu	1.00 અઠવાડિયું
+gu	1.000 અઠવાડિયું
+gu	1.002 અઠવાડિયું
+gu	1.010 અઠવાડિયું
+gu	1.011 અઠવાડિયું
+gu	1.02 અઠવાડિયું
+gu	1.10 અઠવાડિયું
+gu	1.11 અઠવાડિયું
+gu	1.2 અઠવાડિયું
+gu	2.0 અઠવાડિયા
+gu	2.00 અઠવાડિયા
+gu	2.000 અઠવાડિયા
+gu	2.001 અઠવાડિયા
+gu	2.01 અઠવાડિયા
+gu	2.1 અઠવાડિયા
+he	0.0 ימים
+he	0.00 ימים
+he	0.000 ימים
+he	0.001 ימים
+he	0.002 ימים
+he	0.003 ימים
+he	0.01 ימים
+he	0.010 ימים
+he	0.011 ימים
+he	0.012 ימים
+he	0.02 ימים
+he	0.03 ימים
+he	0.1 ימים
+he	0.10 ימים
+he	0.11 ימים
+he	0.12 ימים
+he	0.2 ימים
+he	0.3 ימים
+he	1.0 ימים
+he	1.00 ימים
+he	1.000 ימים
+he	1.002 ימים
+he	1.003 ימים
+he	1.010 ימים
+he	1.011 ימים
+he	1.012 ימים
+he	1.02 ימים
+he	1.03 ימים
+he	1.10 ימים
+he	1.11 ימים
+he	1.12 ימים
+he	1.2 ימים
+he	1.3 ימים
+he	2.0 ימים
+he	2.00 ימים
+he	2.000 ימים
+he	2.001 ימים
+he	2.003 ימים
+he	2.01 ימים
+he	2.010 ימים
+he	2.011 ימים
+he	2.012 ימים
+he	2.03 ימים
+he	2.1 ימים
+he	2.10 ימים
+he	2.11 ימים
+he	2.12 ימים
+he	2.3 ימים
+he	3.0 ימים
+he	3.00 ימים
+he	3.000 ימים
+he	3.001 ימים
+he	3.002 ימים
+he	3.01 ימים
+he	3.010 ימים
+he	3.02 ימים
+he	3.1 ימים
+he	3.10 ימים
+he	3.2 ימים
+he	10.0 ימים
+he	10.00 ימים
+he	10.000 ימים
+he	10.001 ימים
+he	10.002 ימים
+he	10.003 ימים
+he	10.01 ימים
+he	10.011 ימים
+he	10.012 ימים
+he	10.02 ימים
+he	10.03 ימים
+he	10.1 ימים
+he	10.11 ימים
+he	10.12 ימים
+he	10.2 ימים
+he	10.3 ימים
+hi	0.0 घंटा
+hi	0.00 घंटा
+hi	1.0 घंटा
+hi	0.001 घंटा
+hi	0.002 घंटा
+hi	0.01 घंटा
+hi	0.010 घंटा
+hi	0.011 घंटा
+hi	0.02 घंटा
+hi	0.1 घंटा
+hi	0.10 घंटा
+hi	0.11 घंटा
+hi	0.2 घंटा
+hi	1.0 घंटा
+hi	1.0 घंटा
+hi	1.0 घंटा
+hi	1.002 घंटे
+hi	1.010 घंटे
+hi	1.011 घंटे
+hi	1.02 घंटे
+hi	1.10 घंटे
+hi	1.11 घंटे
+hi	1.2 घंटे
+hi	2 घंटे
+hi	2.0 घंटे
+hi	2.00 घंटे
+hi	2.000 घंटे
+hi	2.001 घंटे
+hi	2.01 घंटे
+hi	2.1 घंटे
+hr	za sljedeći broj mjeseci: 0.0
+hr	za sljedeći broj mjeseci: 0.00
+hr	za sljedeći broj mjeseci: 0.000
+hr	za sljedeći broj mjeseci: 0.001
+hr	za sljedeći broj mjeseci: 0.002
+hr	za sljedeći broj mjeseci: 0.005
+hr	za sljedeći broj mjeseci: 0.01
+hr	za sljedeći broj mjeseci: 0.010
+hr	za sljedeći broj mjeseci: 0.011
+hr	za sljedeći broj mjeseci: 0.012
+hr	za sljedeći broj mjeseci: 0.02
+hr	za sljedeći broj mjeseci: 0.05
+hr	za sljedeći broj mjeseci: 0.1
+hr	za sljedeći broj mjeseci: 0.10
+hr	za sljedeći broj mjeseci: 0.11
+hr	za sljedeći broj mjeseci: 0.12
+hr	za sljedeći broj mjeseci: 0.2
+hr	za sljedeći broj mjeseci: 0.5
+hr	za sljedeći broj mjeseci: 0.5
+hr	za sljedeći broj mjeseci: 1.0
+hr	za sljedeći broj mjeseci: 1.00
+hr	za sljedeći broj mjeseci: 1.000
+hr	za sljedeći broj mjeseci: 1.002
+hr	za sljedeći broj mjeseci: 1.005
+hr	za sljedeći broj mjeseci: 1.010
+hr	za sljedeći broj mjeseci: 1.011
+hr	za sljedeći broj mjeseci: 1.012
+hr	za sljedeći broj mjeseci: 1.02
+hr	za sljedeći broj mjeseci: 1.05
+hr	za sljedeći broj mjeseci: 1.10
+hr	za sljedeći broj mjeseci: 1.11
+hr	za sljedeći broj mjeseci: 1.12
+hr	za sljedeći broj mjeseci: 1.2
+hr	za sljedeći broj mjeseci: 1.5
+hr	za sljedeći broj mjeseci: 2.0
+hr	za sljedeći broj mjeseci: 2.00
+hr	za sljedeći broj mjeseci: 2.000
+hr	za sljedeći broj mjeseci: 2.001
+hr	za sljedeći broj mjeseci: 2.005
+hr	za sljedeći broj mjeseci: 2.01
+hr	za sljedeći broj mjeseci: 2.010
+hr	za sljedeći broj mjeseci: 2.011
+hr	za sljedeći broj mjeseci: 2.012
+hr	za sljedeći broj mjeseci: 2.05
+hr	za sljedeći broj mjeseci: 2.1
+hr	za sljedeći broj mjeseci: 2.10
+hr	za sljedeći broj mjeseci: 2.11
+hr	za sljedeći broj mjeseci: 2.12
+hr	za sljedeći broj mjeseci: 2.5
+hr	za sljedeći broj mjeseci: 5.0
+hr	za sljedeći broj mjeseci: 5.00
+hr	za sljedeći broj mjeseci: 5.000
+hr	za sljedeći broj mjeseci: 5.001
+hr	za sljedeći broj mjeseci: 5.002
+hr	za sljedeći broj mjeseci: 5.01
+hr	za sljedeći broj mjeseci: 5.02
+hr	za sljedeći broj mjeseci: 5.1
+hr	za sljedeći broj mjeseci: 5.2
+hu	0 nap
+hu	0.0 nap
+hu	0.00 nap
+hu	0.000 nap
+hu	0.001 nap
+hu	0.01 nap
+hu	0.010 nap
+hu	0.1 nap
+hu	0.10 nap
+hu	1.0 nap
+hu	1.00 nap
+hu	1.000 nap
+hy	0 օր
+hy	0 օր
+hy	0 օր
+hy	0 օր
+hy	0.001 օր
+hy	0.002 օր
+hy	0.003 օր
+hy	0.01 օր
+hy	0.01 օր
+hy	0.011 օր
+hy	0.012 օր
+hy	0.013 օր
+hy	0.02 օր
+hy	0.02 օր
+hy	0.03 օր
+hy	0.1 օր
+hy	0.1 օր
+hy	0.1 օր
+hy	0.101 օր
+hy	0.102 օր
+hy	0.11 օր
+hy	0.12 օր
+hy	0.13 օր
+hy	0.2 օր
+hy	0.2 օր
+hy	0.3 օր
+hy	1 օր
+hy	1 օր
+hy	1 օր
+hy	1.002 օր
+hy	1.003 օր
+hy	1.01 օր
+hy	1.011 օր
+hy	1.012 օր
+hy	1.013 օր
+hy	1.02 օր
+hy	1.02 օր
+hy	1.03 օր
+hy	1.1 օր
+hy	1.1 օր
+hy	1.101 օր
+hy	1.102 օր
+hy	1.11 օր
+hy	1.12 օր
+hy	1.13 օր
+hy	1.2 օր
+hy	1.2 օր
+hy	1.3 օր
+hy	2 օր
+hy	2 օր
+hy	2 օր
+hy	2.001 օր
+hy	2.003 օր
+hy	2.01 օր
+hy	2.01 օր
+hy	2.011 օր
+hy	2.012 օր
+hy	2.013 օր
+hy	2.02 օր
+hy	2.03 օր
+hy	2.1 օր
+hy	2.1 օր
+hy	2.1 օր
+hy	2.101 օր
+hy	2.102 օր
+hy	2.11 օր
+hy	2.12 օր
+hy	2.13 օր
+hy	2.2 օր
+hy	2.3 օր
+hy	3 օր
+hy	3 օր
+hy	3 օր
+hy	3.001 օր
+hy	3.002 օր
+hy	3.01 օր
+hy	3.011 օր
+hy	3.012 օր
+hy	3.013 օր
+hy	3.02 օր
+hy	3.02 օր
+hy	3.1 օր
+hy	3.1 օր
+hy	3.101 օր
+hy	3.102 օր
+hy	3.11 օր
+hy	3.12 օր
+hy	3.13 օր
+hy	3.2 օր
+hy	3.2 օր
+hy	11 օր
+hy	11 օր
+hy	11 օր
+hy	11.001 օր
+hy	11.002 օր
+hy	11.003 օր
+hy	11.01 օր
+hy	11.01 օր
+hy	11.02 օր
+hy	11.03 օր
+hy	11.1 օր
+hy	11.1 օր
+hy	11.1 օր
+hy	11.101 օր
+hy	11.102 օր
+hy	11.2 օր
+hy	11.3 օր
+hy	100 օր
+hy	100 օր
+hy	100 օր
+hy	100.001 օր
+hy	100.002 օր
+hy	100.003 օր
+hy	100.01 օր
+hy	100.01 օր
+hy	100.011 օր
+hy	100.012 օր
+hy	100.013 օր
+hy	100.02 օր
+hy	100.02 օր
+hy	100.03 օր
+hy	100.1 օր
+hy	100.1 օր
+hy	100.11 օր
+hy	100.12 օր
+hy	100.13 օր
+hy	100.2 օր
+hy	100.2 օր
+hy	100.3 օր
+id	0 hari
+id	0.0 hari
+id	0.00 hari
+id	0.000 hari
+id	0.001 hari
+id	0.01 hari
+id	0.010 hari
+id	0.1 hari
+id	0.10 hari
+id	1.0 hari
+id	1.00 hari
+id	1.000 hari
+is	0 dagar
+is	0.0 dagar
+is	0.00 dagar
+is	0.000 dagar
+is	0.001 dagur
+is	0.002 dagar
+is	0.01 dagur
+is	0.010 dagar
+is	0.011 dagar
+is	0.02 dagar
+is	0.1 dagur
+is	0.10 dagar
+is	0.11 dagar
+is	0.2 dagar
+is	1.0 dagar
+is	1.00 dagar
+is	1.000 dagar
+is	1.002 dagar
+is	1.010 dagar
+is	1.011 dagar
+is	1.02 dagar
+is	1.10 dagar
+is	1.11 dagar
+is	1.2 dagar
+is	2.0 dagar
+is	2.00 dagar
+is	2.000 dagar
+is	2.001 dagur
+is	2.01 dagur
+is	2.1 dagur
+it	0 giorni
+it	0.0 giorni
+it	0.00 giorni
+it	0.000 giorni
+it	0.001 giorni
+it	0.002 giorni
+it	0.01 giorni
+it	0.010 giorni
+it	0.011 giorni
+it	0.02 giorni
+it	0.1 giorni
+it	0.10 giorni
+it	0.11 giorni
+it	0.2 giorni
+it	1.0 giorni
+it	1.00 giorni
+it	1.000 giorni
+it	1.002 giorni
+it	1.010 giorni
+it	1.011 giorni
+it	1.02 giorni
+it	1.10 giorni
+it	1.11 giorni
+it	1.2 giorni
+it	2.0 giorni
+it	2.00 giorni
+it	2.000 giorni
+it	2.001 giorni
+it	2.01 giorni
+it	2.1 giorni
+ja	0日
+ja	0.0日
+ja	0.00日
+ja	0.000日
+ja	0.001日
+ja	0.01日
+ja	0.010日
+ja	0.1日
+ja	0.10日
+ja	1.0日
+ja	1.00日
+ja	1.000日
+km	0 ថ្ងៃ
+km	0.0 ថ្ងៃ
+km	0.00 ថ្ងៃ
+km	0.000 ថ្ងៃ
+km	0.001 ថ្ងៃ
+km	0.01 ថ្ងៃ
+km	0.010 ថ្ងៃ
+km	0.1 ថ្ងៃ
+km	0.10 ថ្ងៃ
+km	1.0 ថ្ងៃ
+km	1.00 ថ្ងៃ
+km	1.000 ថ្ងៃ
+kn	0 ದಿನಗಳು
+kn	0.0 ದಿನಗಳು
+kn	0.00 ದಿನಗಳು
+kn	0.000 ದಿನಗಳು
+kn	0.001 ದಿನಗಳು
+kn	0.01 ದಿನಗಳು
+kn	0.010 ದಿನಗಳು
+kn	0.1 ದಿನಗಳು
+kn	0.10 ದಿನಗಳು
+kn	1.0 ದಿನಗಳು
+kn	1.00 ದಿನಗಳು
+kn	1.000 ದಿನಗಳು
+ko	0일
+ko	0.0일
+ko	0.00일
+ko	0.000일
+ko	0.001일
+ko	0.01일
+ko	0.010일
+ko	0.1일
+ko	0.10일
+ko	1.0일
+ko	1.00일
+ko	1.000일
+lo	0 ມື້
+lo	0.0 ມື້
+lo	0.00 ມື້
+lo	0.000 ມື້
+lo	0.001 ມື້
+lo	0.01 ມື້
+lo	0.010 ມື້
+lo	0.1 ມື້
+lo	0.10 ມື້
+lo	1.0 ມື້
+lo	1.00 ມື້
+lo	1.000 ມື້
+lt	0 dienų
+lt	0.0 dienų
+lt	0.00 dienų
+lt	0.000 dienų
+lt	0.001 dienos
+lt	0.002 dienos
+lt	0.01 dienos
+lt	0.010 dienos
+lt	0.011 dienos
+lt	0.012 dienos
+lt	0.02 dienos
+lt	0.1 dienos
+lt	0.10 dienos
+lt	0.11 dienos
+lt	0.12 dienos
+lt	0.2 dienos
+lt	1.0 diena
+lt	1.00 diena
+lt	1.000 diena
+lt	1.002 dienos
+lt	1.010 dienos
+lt	1.011 dienos
+lt	1.012 dienos
+lt	1.02 dienos
+lt	1.10 dienos
+lt	1.11 dienos
+lt	1.12 dienos
+lt	1.2 dienos
+lt	2.0 dienos
+lt	2.00 dienos
+lt	2.000 dienos
+lt	2.001 dienos
+lt	2.01 dienos
+lt	2.010 dienos
+lt	2.011 dienos
+lt	2.012 dienos
+lt	2.1 dienos
+lt	2.10 dienos
+lt	2.11 dienos
+lt	2.12 dienos
+lt	10.0 dienų
+lt	10.00 dienų
+lt	10.000 dienų
+lt	10.001 dienos
+lt	10.002 dienos
+lt	10.01 dienos
+lt	10.02 dienos
+lt	10.1 dienos
+lt	10.2 dienos
+lv	0 diennaktis
+lv	0.0 diennaktis
+lv	0.00 diennaktis
+lv	0.000 diennaktis
+lv	0.001 diennakts
+lv	0.002 diennaktis
+lv	0.01 diennakts
+lv	0.010 diennaktis
+lv	0.011 diennaktis
+lv	0.02 diennaktis
+lv	0.1 diennakts
+lv	0.10 diennaktis
+lv	0.11 diennaktis
+lv	0.2 diennaktis
+lv	1.0 diennakts
+lv	1.00 diennakts
+lv	1.000 diennakts
+lv	1.002 diennaktis
+lv	1.010 diennaktis
+lv	1.011 diennaktis
+lv	1.02 diennaktis
+lv	1.10 diennaktis
+lv	1.11 diennaktis
+lv	1.2 diennaktis
+lv	2.0 diennaktis
+lv	2.00 diennaktis
+lv	2.000 diennaktis
+lv	2.001 diennakts
+lv	2.01 diennakts
+lv	2.1 diennakts
+ml	0.0 വ്യക്തികൾ
+ml	0.00 വ്യക്തികൾ
+ml	0.000 വ്യക്തികൾ
+ml	0.001 വ്യക്തികൾ
+ml	0.002 വ്യക്തികൾ
+ml	0.01 വ്യക്തികൾ
+ml	0.010 വ്യക്തികൾ
+ml	0.011 വ്യക്തികൾ
+ml	0.02 വ്യക്തികൾ
+ml	0.1 വ്യക്തികൾ
+ml	0.10 വ്യക്തികൾ
+ml	0.11 വ്യക്തികൾ
+ml	0.2 വ്യക്തികൾ
+ml	1.0 വ്യക്തി
+ml	1.00 വ്യക്തി
+ml	1.000 വ്യക്തി
+ml	1.002 വ്യക്തികൾ
+ml	1.010 വ്യക്തികൾ
+ml	1.011 വ്യക്തികൾ
+ml	1.02 വ്യക്തികൾ
+ml	1.10 വ്യക്തികൾ
+ml	1.11 വ്യക്തികൾ
+ml	1.2 വ്യക്തികൾ
+ml	2 വ്യക്തികൾ
+ml	2.0 വ്യക്തികൾ
+ml	2.00 വ്യക്തികൾ
+ml	2.000 വ്യക്തികൾ
+ml	2.001 വ്യക്തികൾ
+ml	2.01 വ്യക്തികൾ
+ml	2.1 വ്യക്തികൾ
+mr	0 घरे
+mr	0.0 घरे
+mr	0.00 घरे
+mr	0.000 घरे
+mr	0.001 घरे
+mr	0.002 घरे
+mr	0.01 घरे
+mr	0.010 घरे
+mr	0.011 घरे
+mr	0.02 घरे
+mr	0.1 घरे
+mr	0.10 घरे
+mr	0.11 घरे
+mr	0.2 घरे
+mr	1.0 घर
+mr	1.00 घर
+mr	1.000 घर
+mr	1.002 घरे
+mr	1.010 घरे
+mr	1.011 घरे
+mr	1.02 घरे
+mr	1.10 घरे
+mr	1.11 घरे
+mr	1.2 घरे
+mr	2.0 घरे
+mr	2.00 घरे
+mr	2.000 घरे
+mr	2.001 घरे
+mr	2.01 घरे
+mr	2.1 घरे
+ms	0 hari
+ms	0.0 hari
+ms	0.00 hari
+ms	0.000 hari
+ms	0.001 hari
+ms	0.01 hari
+ms	0.010 hari
+ms	0.1 hari
+ms	0.10 hari
+ms	1.0 hari
+ms	1.00 hari
+ms	1.000 hari
+nb	0 dager
+nb	0.0 dager
+nb	0.00 dager
+nb	0.000 dager
+nb	0.001 dager
+nb	0.002 dager
+nb	0.01 dager
+nb	0.010 dager
+nb	0.011 dager
+nb	0.02 dager
+nb	0.1 dager
+nb	0.10 dager
+nb	0.11 dager
+nb	0.2 dager
+nb	1.0 dag
+nb	1.00 dag
+nb	1.000 dag
+nb	1.002 dager
+nb	1.010 dager
+nb	1.011 dager
+nb	1.02 dager
+nb	1.10 dager
+nb	1.11 dager
+nb	1.2 dager
+nb	2.0 dager
+nb	2.00 dager
+nb	2.000 dager
+nb	2.001 dager
+nb	2.01 dager
+nb	2.1 dager
+ne	तपाईंसँग 0.0 निमन्त्रणा छ
+ne	तपाईंसँग 0.00 निमन्त्रणा छ
+ne	तपाईंसँग 0.000 निमन्त्रणा छ
+ne	तपाईंसँग 0.001 निमन्त्रणा छ
+ne	तपाईंसँग 0.002 निमन्त्रणा छ
+ne	तपाईंसँग 0.01 निमन्त्रणा छ
+ne	तपाईंसँग 0.010 निमन्त्रणा छ
+ne	तपाईंसँग 0.011 निमन्त्रणा छ
+ne	तपाईंसँग 0.02 निमन्त्रणा छ
+ne	तपाईंसँग 0.1 निमन्त्रणा छ
+ne	तपाईंसँग 0.10 निमन्त्रणा छ
+ne	तपाईंसँग 0.11 निमन्त्रणा छ
+ne	तपाईंसँग 0.2 निमन्त्रणा छ
+ne	तपाईंसँग 1.0 निमन्त्रणा छ
+ne	तपाईंसँग 1.00 निमन्त्रणा छ
+ne	तपाईंसँग 1.000 निमन्त्रणा छ
+ne	तपाईँसँग 1.002 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 1.010 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 1.011 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 1.02 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 1.10 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 1.11 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 1.2 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2.0 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2.00 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2.000 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2.001 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2.01 निमन्त्रणाहरू छन्
+ne	तपाईँसँग 2.1 निमन्त्रणाहरू छन्
+ne	2 दिन बाँकी छ ।
+ne	1 दिन बाँकी छ ।
+ne	0 दिन बाँकी छ ।
+ne	2 जनाहरू पाहुना बाँकी छ ।
+ne	1 जना पाहुना बाँकी छ ।
+ne	0 जना पाहुना बाँकी छ ।
+nl	0 dagen
+nl	0.0 dagen
+nl	0.00 dagen
+nl	0.000 dagen
+nl	0.001 dagen
+nl	0.002 dagen
+nl	0.01 dagen
+nl	0.010 dagen
+nl	0.011 dagen
+nl	0.02 dagen
+nl	0.1 dagen
+nl	0.10 dagen
+nl	0.11 dagen
+nl	0.2 dagen
+nl	1.0 dagen
+nl	1.00 dagen
+nl	1.000 dagen
+nl	1.002 dagen
+nl	1.010 dagen
+nl	1.011 dagen
+nl	1.02 dagen
+nl	1.10 dagen
+nl	1.11 dagen
+nl	1.2 dagen
+nl	2.0 dagen
+nl	2.00 dagen
+nl	2.000 dagen
+nl	2.001 dagen
+nl	2.01 dagen
+nl	2.1 dagen
+pl	0.0 miesiąca
+pl	0.00 miesiąca
+pl	0.000 miesiąca
+pl	0.001 miesiąca
+pl	0.002 miesiąca
+pl	0.005 miesiąca
+pl	0.01 miesiąca
+pl	0.010 miesiąca
+pl	0.011 miesiąca
+pl	0.012 miesiąca
+pl	0.02 miesiąca
+pl	0.05 miesiąca
+pl	0.1 miesiąca
+pl	0.10 miesiąca
+pl	0.11 miesiąca
+pl	0.12 miesiąca
+pl	0.2 miesiąca
+pl	0.5 miesiąca
+pl	0.5 miesiąca
+pl	1.0 miesiąca
+pl	1.00 miesiąca
+pl	1.000 miesiąca
+pl	1.002 miesiąca
+pl	1.005 miesiąca
+pl	1.010 miesiąca
+pl	1.011 miesiąca
+pl	1.012 miesiąca
+pl	1.02 miesiąca
+pl	1.05 miesiąca
+pl	1.10 miesiąca
+pl	1.11 miesiąca
+pl	1.12 miesiąca
+pl	1.2 miesiąca
+pl	1.5 miesiąca
+pl	2.0 miesiąca
+pl	2.00 miesiąca
+pl	2.000 miesiąca
+pl	2.001 miesiąca
+pl	2.005 miesiąca
+pl	2.01 miesiąca
+pl	2.010 miesiąca
+pl	2.011 miesiąca
+pl	2.012 miesiąca
+pl	2.05 miesiąca
+pl	2.1 miesiąca
+pl	2.10 miesiąca
+pl	2.11 miesiąca
+pl	2.12 miesiąca
+pl	2.5 miesiąca
+pl	5.0 miesiąca
+pl	5.00 miesiąca
+pl	5.000 miesiąca
+pl	5.001 miesiąca
+pl	5.002 miesiąca
+pl	5.01 miesiąca
+pl	5.02 miesiąca
+pl	5.1 miesiąca
+pl	5.2 miesiąca
+pt	0 dias
+pt	0.0 dias
+pt	0.00 dias
+pt	0.000 dias
+pt	0.001 dias
+pt	0.002 dias
+pt	0.01 dias
+pt	0.010 dias
+pt	0.011 dias
+pt	0.02 dias
+pt	0.1 dias
+pt	0.10 dias
+pt	0.11 dias
+pt	0.2 dias
+pt	1.0 dias
+pt	1.00 dias
+pt	1.000 dias
+pt	1.002 dias
+pt	1.010 dias
+pt	1.011 dias
+pt	1.02 dias
+pt	1.10 dias
+pt	1.11 dias
+pt	1.2 dias
+pt	2.0 dias
+pt	2.00 dias
+pt	2.000 dias
+pt	2.001 dias
+pt	2.01 dias
+pt	2.1 dias
+pt_PT	0 dias
+pt_PT	0.0 dias
+pt_PT	0.00 dias
+pt_PT	0.000 dias
+pt_PT	0.001 dias
+pt_PT	0.002 dias
+pt_PT	0.01 dias
+pt_PT	0.010 dias
+pt_PT	0.011 dias
+pt_PT	0.02 dias
+pt_PT	0.1 dias
+pt_PT	0.10 dias
+pt_PT	0.11 dias
+pt_PT	0.2 dias
+pt_PT	1.0 dias
+pt_PT	1.00 dias
+pt_PT	1.000 dias
+pt_PT	1.002 dias
+pt_PT	1.010 dias
+pt_PT	1.011 dias
+pt_PT	1.02 dias
+pt_PT	1.10 dias
+pt_PT	1.11 dias
+pt_PT	1.2 dias
+pt_PT	2.0 dias
+pt_PT	2.00 dias
+pt_PT	2.000 dias
+pt_PT	2.001 dias
+pt_PT	2.01 dias
+pt_PT	2.1 dias
+ro	0.0 zile
+ro	0.00 zile
+ro	0.000 zile
+ro	0.001 zile
+ro	0.002 zile
+ro	0.01 zile
+ro	0.010 zile
+ro	0.011 zile
+ro	0.02 zile
+ro	0.020 zile
+ro	0.021 zile
+ro	0.022 zile
+ro	0.1 zile
+ro	0.10 zile
+ro	0.11 zile
+ro	0.2 zile
+ro	0.20 zile
+ro	0.21 zile
+ro	0.22 zile
+ro	1.0 zile
+ro	1.00 zile
+ro	1.000 zile
+ro	1.002 zile
+ro	1.010 zile
+ro	1.011 zile
+ro	1.02 zile
+ro	1.020 zile
+ro	1.021 zile
+ro	1.022 zile
+ro	1.10 zile
+ro	1.11 zile
+ro	1.2 zile
+ro	1.20 zile
+ro	1.21 zile
+ro	1.22 zile
+ro	2.0 zile
+ro	2.00 zile
+ro	2.000 zile
+ro	2.001 zile
+ro	2.01 zile
+ro	2.020 zile
+ro	2.021 zile
+ro	2.022 zile
+ro	2.1 zile
+ro	2.20 zile
+ro	2.21 zile
+ro	2.22 zile
+ro	20 de zile
+ro	20.0 zile
+ro	20.00 zile
+ro	20.000 zile
+ro	20.001 zile
+ro	20.002 zile
+ro	20.01 zile
+ro	20.010 zile
+ro	20.011 zile
+ro	20.02 zile
+ro	20.1 zile
+ro	20.10 zile
+ro	20.11 zile
+ro	20.2 zile
+ru	0.0 года
+ru	0.00 года
+ru	0.000 года
+ru	0.001 года
+ru	0.002 года
+ru	0.005 года
+ru	0.01 года
+ru	0.010 года
+ru	0.011 года
+ru	0.012 года
+ru	0.02 года
+ru	0.05 года
+ru	0.1 года
+ru	0.10 года
+ru	0.11 года
+ru	0.12 года
+ru	0.2 года
+ru	0.5 года
+ru	0.5 года
+ru	1.0 года
+ru	1.00 года
+ru	1.000 года
+ru	1.002 года
+ru	1.005 года
+ru	1.010 года
+ru	1.011 года
+ru	1.012 года
+ru	1.02 года
+ru	1.05 года
+ru	1.10 года
+ru	1.11 года
+ru	1.12 года
+ru	1.2 года
+ru	1.5 года
+ru	2.0 года
+ru	2.00 года
+ru	2.000 года
+ru	2.001 года
+ru	2.005 года
+ru	2.01 года
+ru	2.010 года
+ru	2.011 года
+ru	2.012 года
+ru	2.05 года
+ru	2.1 года
+ru	2.10 года
+ru	2.11 года
+ru	2.12 года
+ru	2.5 года
+ru	5.0 года
+ru	5.00 года
+ru	5.000 года
+ru	5.001 года
+ru	5.002 года
+ru	5.01 года
+ru	5.02 года
+ru	5.1 года
+ru	5.2 года
+si	දින 0ක්
+si	දින 0.0ක්
+si	දින 0.00ක්
+si	දින 0.000ක්
+si	දින 0.001ක්
+si	දින 0.01ක්
+si	දින 0.010ක්
+si	දින 0.1ක්
+si	දින 0.10ක්
+si	දින 1.0ක්
+si	දින 1.00ක්
+si	දින 1.000ක්
+sk	0 dní
+sk	0.0 dňa
+sk	0.00 dňa
+sk	0.000 dňa
+sk	0.001 dňa
+sk	0.002 dňa
+sk	0.005 dňa
+sk	0.01 dňa
+sk	0.010 dňa
+sk	0.011 dňa
+sk	0.012 dňa
+sk	0.02 dňa
+sk	0.05 dňa
+sk	0.1 dňa
+sk	0.10 dňa
+sk	0.11 dňa
+sk	0.12 dňa
+sk	0.2 dňa
+sk	0.5 dňa
+sk	1.0 dňa
+sk	1.00 dňa
+sk	1.000 dňa
+sk	1.002 dňa
+sk	1.005 dňa
+sk	1.010 dňa
+sk	1.011 dňa
+sk	1.012 dňa
+sk	1.02 dňa
+sk	1.05 dňa
+sk	1.10 dňa
+sk	1.11 dňa
+sk	1.12 dňa
+sk	1.2 dňa
+sk	1.5 dňa
+sk	2.0 dňa
+sk	2.00 dňa
+sk	2.000 dňa
+sk	2.001 dňa
+sk	2.005 dňa
+sk	2.01 dňa
+sk	2.010 dňa
+sk	2.011 dňa
+sk	2.012 dňa
+sk	2.05 dňa
+sk	2.1 dňa
+sk	2.10 dňa
+sk	2.11 dňa
+sk	2.12 dňa
+sk	2.5 dňa
+sk	5.0 dňa
+sk	5.00 dňa
+sk	5.000 dňa
+sk	5.001 dňa
+sk	5.002 dňa
+sk	5.01 dňa
+sk	5.02 dňa
+sk	5.1 dňa
+sk	5.2 dňa
+sl	0.0 ure
+sl	0.00 ure
+sl	0.000 ure
+sl	0.001 ure
+sl	0.002 ure
+sl	0.003 ure
+sl	0.005 ure
+sl	0.01 ure
+sl	0.010 ure
+sl	0.011 ure
+sl	0.012 ure
+sl	0.013 ure
+sl	0.02 ure
+sl	0.03 ure
+sl	0.05 ure
+sl	0.1 ure
+sl	0.10 ure
+sl	0.11 ure
+sl	0.12 ure
+sl	0.13 ure
+sl	0.2 ure
+sl	0.3 ure
+sl	0.5 ure
+sl	1.0 ure
+sl	1.00 ure
+sl	1.000 ure
+sl	1.002 ure
+sl	1.003 ure
+sl	1.005 ure
+sl	1.010 ure
+sl	1.011 ure
+sl	1.012 ure
+sl	1.013 ure
+sl	1.02 ure
+sl	1.03 ure
+sl	1.05 ure
+sl	1.10 ure
+sl	1.11 ure
+sl	1.12 ure
+sl	1.13 ure
+sl	1.2 ure
+sl	1.3 ure
+sl	1.5 ure
+sl	2 uri
+sl	2.0 ure
+sl	2.00 ure
+sl	2.000 ure
+sl	2.001 ure
+sl	2.003 ure
+sl	2.005 ure
+sl	2.01 ure
+sl	2.010 ure
+sl	2.011 ure
+sl	2.012 ure
+sl	2.013 ure
+sl	2.03 ure
+sl	2.05 ure
+sl	2.1 ure
+sl	2.10 ure
+sl	2.11 ure
+sl	2.12 ure
+sl	2.13 ure
+sl	2.3 ure
+sl	2.5 ure
+sl	3.0 ure
+sl	3.00 ure
+sl	3.000 ure
+sl	3.001 ure
+sl	3.002 ure
+sl	3.005 ure
+sl	3.01 ure
+sl	3.010 ure
+sl	3.011 ure
+sl	3.012 ure
+sl	3.013 ure
+sl	3.02 ure
+sl	3.05 ure
+sl	3.1 ure
+sl	3.10 ure
+sl	3.11 ure
+sl	3.12 ure
+sl	3.13 ure
+sl	3.2 ure
+sl	3.5 ure
+sl	5.0 ure
+sl	5.00 ure
+sl	5.000 ure
+sl	5.001 ure
+sl	5.002 ure
+sl	5.003 ure
+sl	5.01 ure
+sl	5.02 ure
+sl	5.03 ure
+sl	5.1 ure
+sl	5.2 ure
+sl	5.3 ure
+sr	0.0 сати
+sr	0.00 сати
+sr	0.000 сати
+sr	0.001 сат
+sr	0.002 сата
+sr	0.005 сати
+sr	0.01 сат
+sr	0.010 сати
+sr	0.011 сати
+sr	0.012 сати
+sr	0.02 сата
+sr	0.05 сати
+sr	0.1 сат
+sr	0.10 сати
+sr	0.11 сати
+sr	0.12 сати
+sr	0.2 сата
+sr	0.5 сати
+sr	0.5 сати
+sr	1.0 сати
+sr	1.00 сати
+sr	1.000 сати
+sr	1.002 сатa
+sr	1.005 сати
+sr	1.010 сати
+sr	1.011 сати
+sr	1.012 сати
+sr	1.02 сата
+sr	1.05 сати
+sr	1.10 сати
+sr	1.11 сати
+sr	1.12 сати
+sr	1.2 сата
+sr	1.5 сати
+sr	2.0 сати
+sr	2.00 сати
+sr	2.000 сати
+sr	2.001 сат
+sr	2.005 сати
+sr	2.01 сат
+sr	2.010 сати
+sr	2.011 сати
+sr	2.012 сати
+sr	2.05 сати
+sr	2.1 сат
+sr	2.10 сати
+sr	2.11 сати
+sr	2.12 сати
+sr	2.5 сати
+sr	5.0 сати
+sr	5.00 сати
+sr	5.000 сати
+sr	5.001 сат
+sr	5.002 сата
+sr	5.01 сат
+sr	5.02 сата
+sr	5.1 сат
+sr	5.2 сата
+sv	om 0 dagar
+sv	om 0.0 dagar
+sv	om 0.00 dagar
+sv	om 0.000 dagar
+sv	om 0.001 dagar
+sv	om 0.002 dagar
+sv	om 0.01 dagar
+sv	om 0.010 dagar
+sv	om 0.011 dagar
+sv	om 0.02 dagar
+sv	om 0.1 dagar
+sv	om 0.10 dagar
+sv	om 0.11 dagar
+sv	om 0.2 dagar
+sv	om 1.0 dagar
+sv	om 1.00 dagar
+sv	om 1.000 dagar
+sv	om 1.002 dagar
+sv	om 1.010 dagar
+sv	om 1.011 dagar
+sv	om 1.02 dagar
+sv	om 1.10 dagar
+sv	om 1.11 dagar
+sv	om 1.2 dagar
+sv	om 2.0 dagar
+sv	om 2.00 dagar
+sv	om 2.000 dagar
+sv	om 2.001 dagar
+sv	om 2.01 dagar
+sv	om 2.1 dagar
+sw	siku 0 zilizopita
+sw	siku 0.0 zilizopita
+sw	siku 0.00 zilizopita
+sw	siku 0.000 zilizopita
+sw	siku 0.001 zilizopita
+sw	siku 0.002 zilizopita
+sw	siku 0.01 zilizopita
+sw	siku 0.010 zilizopita
+sw	siku 0.011 zilizopita
+sw	siku 0.02 zilizopita
+sw	siku 0.1 zilizopita
+sw	siku 0.10 zilizopita
+sw	siku 0.11 zilizopita
+sw	siku 0.2 zilizopita
+sw	siku 1.0 zilizopita
+sw	siku 1.00 zilizopita
+sw	siku 1.000 zilizopita
+sw	siku 1.002 zilizopita
+sw	siku 1.010 zilizopita
+sw	siku 1.011 zilizopita
+sw	siku 1.02 zilizopita
+sw	siku 1.10 zilizopita
+sw	siku 1.11 zilizopita
+sw	siku 1.2 zilizopita
+sw	siku 2.0 zilizopita
+sw	siku 2.00 zilizopita
+sw	siku 2.000 zilizopita
+sw	siku 2.001 zilizopita
+sw	siku 2.01 zilizopita
+sw	siku 2.1 zilizopita
+ta	0 நாட்கள்
+ta	0.0 நாட்கள்
+ta	0.00 நாட்கள்
+ta	0.000 நாட்கள்
+ta	0.001 நாட்கள்
+ta	0.002 நாட்கள்
+ta	0.01 நாட்கள்
+ta	0.010 நாட்கள்
+ta	0.011 நாட்கள்
+ta	0.02 நாட்கள்
+ta	0.1 நாட்கள்
+ta	0.10 நாட்கள்
+ta	0.11 நாட்கள்
+ta	0.2 நாட்கள்
+ta	1.0 நாட்கள்
+ta	1.00 நாட்கள்
+ta	1.000 நாட்கள்
+ta	1.002 நாட்கள்
+ta	1.010 நாட்கள்
+ta	1.011 நாட்கள்
+ta	1.02 நாட்கள்
+ta	1.10 நாட்கள்
+ta	1.11 நாட்கள்
+ta	1.2 நாட்கள்
+ta	2.0 நாட்கள்
+ta	2.00 நாட்கள்
+ta	2.000 நாட்கள்
+ta	2.001 நாட்கள்
+ta	2.01 நாட்கள்
+ta	2.1 நாட்கள்
+te	0 రోజులు
+te	0.0 రోజులు
+te	0.00 రోజులు
+te	0.000 రోజులు
+te	0.001 రోజులు
+te	0.002 రోజులు
+te	0.01 రోజులు
+te	0.010 రోజులు
+te	0.011 రోజులు
+te	0.02 రోజులు
+te	0.1 రోజులు
+te	0.10 రోజులు
+te	0.11 రోజులు
+te	0.2 రోజులు
+te	1.0 రోజులు
+te	1.00 రోజులు
+te	1.000 రోజులు
+te	1.002 రోజులు
+te	1.010 రోజులు
+te	1.011 రోజులు
+te	1.02 రోజులు
+te	1.10 రోజులు
+te	1.11 రోజులు
+te	1.2 రోజులు
+te	2.0 రోజులు
+te	2.00 రోజులు
+te	2.000 రోజులు
+te	2.001 రోజులు
+te	2.01 రోజులు
+te	2.1 రోజులు
+th	0 วัน
+th	0.0 วัน
+th	0.00 วัน
+th	0.000 วัน
+th	0.001 วัน
+th	0.01 วัน
+th	0.010 วัน
+th	0.1 วัน
+th	0.10 วัน
+th	1.0 วัน
+th	1.00 วัน
+th	1.000 วัน
+tr	0 gün
+tr	0.0 gün
+tr	0.00 gün
+tr	0.000 gün
+tr	0.001 gün
+tr	0.01 gün
+tr	0.010 gün
+tr	0.1 gün
+tr	0.10 gün
+tr	1.0 gün
+tr	1.00 gün
+tr	1.000 gün
+uk	0.0 дня
+uk	0.00 дня
+uk	0.000 дня
+uk	0.001 дня
+uk	0.002 дня
+uk	0.005 дня
+uk	0.01 дня
+uk	0.010 дня
+uk	0.011 дня
+uk	0.012 дня
+uk	0.02 дня
+uk	0.05 дня
+uk	0.1 дня
+uk	0.10 дня
+uk	0.11 дня
+uk	0.12 дня
+uk	0.2 дня
+uk	0.5 дня
+uk	0.5 дня
+uk	1.0 дня
+uk	1.00 дня
+uk	1.000 дня
+uk	1.002 дня
+uk	1.005 дня
+uk	1.010 дня
+uk	1.011 дня
+uk	1.012 дня
+uk	1.02 дня
+uk	1.05 дня
+uk	1.10 дня
+uk	1.11 дня
+uk	1.12 дня
+uk	1.2 дня
+uk	1.5 дня
+uk	2.0 дня
+uk	2.00 дня
+uk	2.000 дня
+uk	2.001 дня
+uk	2.005 дня
+uk	2.01 дня
+uk	2.010 дня
+uk	2.011 дня
+uk	2.012 дня
+uk	2.05 дня
+uk	2.1 дня
+uk	2.10 дня
+uk	2.11 дня
+uk	2.12 дня
+uk	2.5 дня
+uk	5.0 дня
+uk	5.00 дня
+uk	5.000 дня
+uk	5.001 дня
+uk	5.002 дня
+uk	5.01 дня
+uk	5.02 дня
+uk	5.1 дня
+uk	5.2 дня
+ur	0 گھنٹے
+ur	0.0 گھنٹے
+ur	0.00 گھنٹے
+ur	0.000 گھنٹے
+ur	0.001 گھنٹے
+ur	0.002 گھنٹے
+ur	0.01 گھنٹے
+ur	0.010 گھنٹے
+ur	0.011 گھنٹے
+ur	0.02 گھنٹے
+ur	0.1 گھنٹے
+ur	0.10 گھنٹے
+ur	0.11 گھنٹے
+ur	0.2 گھنٹے
+ur	1.0 گھنٹے
+ur	1.00 گھنٹے
+ur	1.000 گھنٹے
+ur	1.002 گھنٹے
+ur	1.010 گھنٹے
+ur	1.011 گھنٹے
+ur	1.02 گھنٹے
+ur	1.10 گھنٹے
+ur	1.11 گھنٹے
+ur	1.2 گھنٹے
+ur	2.0 گھنٹے
+ur	2.00 گھنٹے
+ur	2.000 گھنٹے
+ur	2.001 گھنٹے
+ur	2.01 گھنٹے
+ur	2.1 گھنٹے
+vi	0 ngày
+vi	0.0 ngày
+vi	0.00 ngày
+vi	0.000 ngày
+vi	0.001 ngày
+vi	0.01 ngày
+vi	0.010 ngày
+vi	0.1 ngày
+vi	0.10 ngày
+vi	1.0 ngày
+vi	1.00 ngày
+vi	1.000 ngày
+zh	0 天
+zh	0.0 天
+zh	0.00 天
+zh	0.000 天
+zh	0.001 天
+zh	0.01 天
+zh	0.010 天
+zh	0.1 天
+zh	0.10 天
+zh	1.0 天
+zh	1.00 天
+zh	1.000 天
+zh_Hant	0 日
+zh_Hant	0.0 日
+zh_Hant	0.00 日
+zh_Hant	0.000 日
+zh_Hant	0.001 日
+zh_Hant	0.01 日
+zh_Hant	0.010 日
+zh_Hant	0.1 日
+zh_Hant	0.10 日
+zh_Hant	1.0 日
+zh_Hant	1.00 日
+zh_Hant	1.000 日
+zu	0 usuku
+zu	0.0 usuku
+zu	0.00 usuku
+zu	0.000 usuku
+zu	0.001 usuku
+zu	0.002 usuku
+zu	0.01 usuku
+zu	0.010 usuku
+zu	0.011 usuku
+zu	0.02 usuku
+zu	0.1 usuku
+zu	0.10 usuku
+zu	0.11 usuku
+zu	0.2 usuku
+zu	1 usuku
+zu	1.0 usuku
+zu	1.00 usuku
+zu	1.000 usuku
+zu	1.002 izinsuku
+zu	1.010 izinsuku
+zu	1.011 izinsuku
+zu	1.02 izinsuku
+zu	1.10 izinsuku
+zu	1.11 izinsuku
+zu	1.2 izinsuku
+zu	2 izinsuku
+zu	2.0 izinsuku
+zu	2.00 izinsuku
+zu	2.000 izinsuku
+zu	2.001 izinsuku
+zu	2.01 izinsuku
+zu	2.1 izinsuku
+zu	10 izinsuku

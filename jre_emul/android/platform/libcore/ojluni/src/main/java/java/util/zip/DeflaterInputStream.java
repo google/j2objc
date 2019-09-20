@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2006, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -98,7 +98,7 @@ public class DeflaterInputStream extends FilterInputStream {
      * @param in input stream to read the uncompressed data to
      * @param defl compressor ("deflater") for this stream
      * @param bufLen compression buffer size
-     * @throws IllegalArgumentException if {@code bufLen} is <= 0
+     * @throws IllegalArgumentException if {@code bufLen <= 0}
      * @throws NullPointerException if {@code in} or {@code defl} is null
      */
     public DeflaterInputStream(InputStream in, Deflater defl, int bufLen) {
@@ -164,8 +164,7 @@ public class DeflaterInputStream extends FilterInputStream {
      * @param len maximum number of compressed bytes to read into {@code b}
      * @return the actual number of bytes read, or -1 if the end of the
      * uncompressed input stream is reached
-     * @throws IndexOutOfBoundsException  if {@code len} > {@code b.length -
-     * off}
+     * @throws IndexOutOfBoundsException  if {@code len > b.length - off}
      * @throws IOException if an I/O error occurs or if this input stream is
      * already closed
      */
@@ -202,8 +201,7 @@ public class DeflaterInputStream extends FilterInputStream {
             off += n;
             len -= n;
         }
-
-        // Android changed : set reachEOF eagerly (not just when the number of bytes is zero).
+        // Android-changed: set reachEOF eagerly (not just when the number of bytes is zero).
         // so that available is more accurate.
         if (def.finished()) {
             reachEOF =true;

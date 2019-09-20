@@ -12,6 +12,8 @@
 
 licenses(["notice"])  # Apache License 2.0
 
+load("@rules_java//java:defs.bzl", "java_import")
+
 exports_files(["LICENSE"])
 
 package(
@@ -23,6 +25,15 @@ genrule(
     srcs = ["lib/jre_emul.jar"],
     outs = ["jre_emul.jar"],
     cmd = "cp $< $@",
+)
+
+filegroup(
+    name = "jre_emul_module",
+    srcs = [
+        "lib/jre_emul_module/lib/jrt-fs.jar",
+        "lib/jre_emul_module/lib/modules",
+        "lib/jre_emul_module/release",
+    ],
 )
 
 java_import(

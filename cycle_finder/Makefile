@@ -49,8 +49,11 @@ RESOURCES = \
     com/google/devtools/j2objc/JRE.mappings \
     com/google/devtools/j2objc/reserved_names.txt
 
-DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(GUAVA_JAR) $(JAVAC_JAR) $(PROCYON_JARS)
+DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar jre_emul.jar
+INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) $(PLUME_UTIL_JAR)
+ifdef JAVA_8
+INTERNAL_DEPS += $(JAVAC_JAR)
+endif
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -69,7 +72,7 @@ TEST_CLASSPATH = \
 # Files in dependent jars that aren't needed in combined jar.
 UNUSED_JAR_CONTENTS = \
   $(CLASS_DIR)/[A-Z]* \
-  $(CLASS_DIR)/[ahps]* \
+  $(CLASS_DIR)/[ahp]* \
   $(CLASS_DIR)/about_files \
   $(CLASS_DIR)/ant_tasks \
   $(CLASS_DIR)/compiler* \
@@ -91,9 +94,15 @@ clean:
 $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(CLASS_DIR) java_deps_dist annotations_dist translator
 	@echo building cycle_finder jar
+<<<<<<< HEAD
 	@$(JAVAC) -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR) \
 	    -classpath $(JAR_DEPS_PATH) -encoding UTF-8 \
 	    -d $(CLASS_DIR) -source 1.8 -target 1.8 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+=======
+	@$(JAVAC) -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR) \
+	    -classpath $(JAR_DEPS_PATH) -d $(CLASS_DIR) \
+	    $(TRANSLATOR_BUILD_FLAGS) $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+>>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .

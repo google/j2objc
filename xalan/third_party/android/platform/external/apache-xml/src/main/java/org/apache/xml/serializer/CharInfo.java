@@ -21,20 +21,20 @@
 package org.apache.xml.serializer;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import javax.xml.transform.TransformerException;
-
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.SystemIDResolver;
 import org.apache.xml.serializer.utils.Utils;
@@ -227,6 +227,15 @@ final class CharInfo
                             is = url.openStream();
                         } catch (Exception e) {}
                     }
+                }
+                
+                // j2objc: resource wasn't found, load defaults from string.
+                if (entitiesResource.equals(HTML_ENTITIES_RESOURCE)) {
+                  is = new ByteArrayInputStream(
+                      HTML_ENTITIES_RESOURCE_STR.getBytes(StandardCharsets.UTF_8));
+                } else if (entitiesResource.equals(XML_ENTITIES_RESOURCE)) {
+                  is = new ByteArrayInputStream(
+                      XML_ENTITIES_RESOURCE_STR.getBytes(StandardCharsets.UTF_8));
                 }
 
                 if (is == null) {
@@ -803,5 +812,209 @@ final class CharInfo
       }
     }
    
+    // j2objc: the default resource values, for when resources weren't linked into app.
+    // These strings are created by taking each .properties file and removing the
+    // comments and whitespace.
+    
+    private static final String XML_ENTITIES_RESOURCE_STR =
+        "quot=34\n"
+        + "amp=38\n"
+        + "lt=60\n"
+        + "gt=62\n";
+
+    private static final String HTML_ENTITIES_RESOURCE_STR =
+        "quot=34\n"
+        + "amp=38\n"
+        + "lt=60\n"
+        + "gt=62\n"
+        + "nbsp=160\n"
+        + "iexcl=161\n"
+        + "cent=162\n"
+        + "pound=163\n"
+        + "curren=164\n"
+        + "yen=165\n"
+        + "brvbar=166\n"
+        + "sect=167\n"
+        + "uml=168\n"
+        + "copy=169\n"
+        + "ordf=170\n"
+        + "laquo=171\n"
+        + "not=172\n"
+        + "shy=173\n"
+        + "reg=174\n"
+        + "macr=175\n"
+        + "deg=176\n"
+        + "plusmn=177\n"
+        + "sup2=178\n"
+        + "sup3=179\n"
+        + "acute=180\n"
+        + "micro=181\n"
+        + "para=182\n"
+        + "middot=183\n"
+        + "cedil=184\n"
+        + "sup1=185\n"
+        + "ordm=186\n"
+        + "raquo=187\n"
+        + "frac14=188\n"
+        + "frac12=189\n"
+        + "frac34=190\n"
+        + "iquest=191\n"
+        + "Agrave=192\n"
+        + "Aacute=193\n"
+        + "Acirc=194\n"
+        + "Atilde=195\n"
+        + "Auml=196\n"
+        + "Aring=197\n"
+        + "AElig=198\n"
+        + "Ccedil=199\n"
+        + "Egrave=200\n"
+        + "Eacute=201\n"
+        + "Ecirc=202\n"
+        + "Euml=203\n"
+        + "Igrave=204\n"
+        + "Iacute=205\n"
+        + "Icirc=206\n"
+        + "Iuml=207\n"
+        + "ETH=208\n"
+        + "Ntilde=209\n"
+        + "Ograve=210\n"
+        + "Oacute=211\n"
+        + "Ocirc=212\n"
+        + "Otilde=213\n"
+        + "Ouml=214\n"
+        + "times=215\n"
+        + "Oslash=216\n"
+        + "Ugrave=217\n"
+        + "Uacute=218\n"
+        + "Ucirc=219\n"
+        + "Uuml=220\n"
+        + "Yacute=221\n"
+        + "THORN=222\n"
+        + "szlig=223\n"
+        + "agrave=224\n"
+        + "aacute=225\n"
+        + "acirc=226\n"
+        + "atilde=227\n"
+        + "auml=228\n"
+        + "aring=229\n"
+        + "aelig=230\n"
+        + "ccedil=231\n"
+        + "egrave=232\n"
+        + "eacute=233\n"
+        + "ecirc=234\n"
+        + "euml=235\n"
+        + "igrave=236\n"
+        + "iacute=237\n"
+        + "icirc=238\n"
+        + "iuml=239\n"
+        + "eth=240\n"
+        + "ntilde=241\n"
+        + "ograve=242\n"
+        + "oacute=243\n"
+        + "ocirc=244\n"
+        + "otilde=245\n"
+        + "ouml=246\n"
+        + "divide=247\n"
+        + "oslash=248\n"
+        + "ugrave=249\n"
+        + "uacute=250\n"
+        + "ucirc=251\n"
+        + "uuml=252\n"
+        + "yacute=253\n"
+        + "thorn=254\n"
+        + "yuml=255\n"
+        + "bull=8226\n"
+        + "hellip=8230\n"
+        + "prime=8242\n"
+        + "Prime=8243\n"
+        + "oline=8254\n"
+        + "frasl=8260\n"
+        + "weierp=8472\n"
+        + "image=8465\n"
+        + "real=8476\n"
+        + "trade=8482\n"
+        + "alefsym=8501\n"
+        + "larr=8592\n"
+        + "uarr=8593\n"
+        + "rarr=8594\n"
+        + "darr=8595\n"
+        + "harr=8596\n"
+        + "crarr=8629\n"
+        + "lArr=8656\n"
+        + "uArr=8657\n"
+        + "rArr=8658\n"
+        + "dArr=8659\n"
+        + "hArr=8660\n"
+        + "forall=8704\n"
+        + "part=8706\n"
+        + "exist=8707\n"
+        + "empty=8709\n"
+        + "nabla=8711\n"
+        + "isin=8712\n"
+        + "notin=8713\n"
+        + "ni=8715\n"
+        + "prod=8719\n"
+        + "sum=8721\n"
+        + "minus=8722\n"
+        + "lowast=8727\n"
+        + "radic=8730\n"
+        + "prop=8733\n"
+        + "infin=8734\n"
+        + "ang=8736\n"
+        + "and=8743\n"
+        + "or=8744\n"
+        + "cap=8745\n"
+        + "cup=8746\n"
+        + "int=8747\n"
+        + "there4=8756\n"
+        + "sim=8764\n"
+        + "cong=8773\n"
+        + "asymp=8776\n"
+        + "ne=8800\n"
+        + "equiv=8801\n"
+        + "le=8804\n"
+        + "ge=8805\n"
+        + "sub=8834\n"
+        + "sup=8835\n"
+        + "nsub=8836\n"
+        + "sube=8838\n"
+        + "supe=8839\n"
+        + "oplus=8853\n"
+        + "otimes=8855\n"
+        + "perp=8869\n"
+        + "sdot=8901\n"
+        + "lceil=8968\n"
+        + "rceil=8969\n"
+        + "lfloor=8970\n"
+        + "rfloor=8971\n"
+        + "lang=9001\n"
+        + "rang=9002\n"
+        + "loz=9674\n"
+        + "spades=9824\n"
+        + "clubs=9827\n"
+        + "hearts=9829\n"
+        + "diams=9830\n"
+        + "ensp=8194\n"
+        + "emsp=8195\n"
+        + "thinsp=8201\n"
+        + "zwnj=8204\n"
+        + "zwj=8205\n"
+        + "lrm=8206\n"
+        + "rlm=8207\n"
+        + "ndash=8211\n"
+        + "mdash=8212\n"
+        + "lsquo=8216\n"
+        + "rsquo=8217\n"
+        + "sbquo=8218\n"
+        + "ldquo=8220\n"
+        + "rdquo=8221\n"
+        + "bdquo=8222\n"
+        + "dagger=8224\n"
+        + "Dagger=8225\n"
+        + "permil=8240\n"
+        + "lsaquo=8249\n"
+        + "rsaquo=8250\n"
+        + "euro=8364\n";
+        
 
 }

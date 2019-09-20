@@ -101,6 +101,7 @@ public class PackageDeclaration extends TreeNode {
   public void validateInner() {
     super.validateInner();
     Preconditions.checkNotNull(name);
+    Preconditions.checkNotNull(packageElement);
   }
 
   public boolean isDefaultPackage() {

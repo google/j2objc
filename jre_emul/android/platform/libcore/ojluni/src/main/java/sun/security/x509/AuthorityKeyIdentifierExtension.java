@@ -307,4 +307,16 @@ implements CertAttrSet<String> {
     public String getName() {
         return (NAME);
     }
+
+    /**
+     * Return the encoded key identifier, or null if not specified.
+     */
+    public byte[] getEncodedKeyIdentifier() throws IOException {
+        if (id != null) {
+            DerOutputStream derOut = new DerOutputStream();
+            id.encode(derOut);
+            return derOut.toByteArray();
+        }
+        return null;
+    }
 }

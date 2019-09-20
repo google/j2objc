@@ -80,7 +80,7 @@ typedef struct CGPFieldData {
   uint32_t hasBitIndex;
   uint32_t offset;
   union {
-    const char *className;
+    Class objcType;
     struct CGPFieldData *mapEntryFields;
   };
   const char *containingType;
@@ -173,10 +173,13 @@ typedef struct CGPOneofData {
 
 CF_EXTERN_C_BEGIN
 
-void CGPInitDescriptor(
-    CGPDescriptor **pDescriptor, Class messageClass, Class builderClass, CGPMessageFlags flags,
-    size_t storageSize, jint fieldCount, CGPFieldData *fieldData, jint oneofCount,
-    CGPOneofData *oneofData);
+CGPDescriptor *CGPInitDescriptor(
+    Class messageClass, Class builderClass, CGPMessageFlags flags,
+    size_t storageSize);
+
+void CGPInitFields(
+    CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
+    jint oneofCount, CGPOneofData *oneofData);
 
 CGP_ALWAYS_INLINE inline BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagExtendable;
@@ -246,6 +249,10 @@ CGP_ALWAYS_INLINE inline BOOL CGPTypeIsGroup(CGPFieldType type) {
 
 CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsMessage(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE;
+}
+
+CGP_ALWAYS_INLINE inline BOOL CGPFieldTypeIsMessage(const CGPFieldDescriptor *field) {
+  return CGPJavaTypeIsMessage(CGPFieldGetJavaType(field));
 }
 
 CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {

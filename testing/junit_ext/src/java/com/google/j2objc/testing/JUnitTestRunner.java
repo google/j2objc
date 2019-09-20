@@ -16,24 +16,11 @@ package com.google.j2objc.testing;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.WeakOuter;
-
-import junit.framework.Test;
-import junit.runner.Version;
-
-import org.junit.internal.TextListener;
-import org.junit.runner.Description;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import org.junit.runner.RunWith;
-import org.junit.runner.notification.Failure;
-import org.junit.runner.notification.RunListener;
-import org.junit.runners.JUnit4;
-import org.junit.runners.Suite;
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -44,6 +31,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+import junit.framework.Test;
+import junit.runner.Version;
+import org.junit.internal.TextListener;
+import org.junit.runner.Description;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.RunWith;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
+import org.junit.runners.Suite;
 
 /*-[
 #include <objc/runtime.h>
@@ -112,7 +109,8 @@ public class JUnitTestRunner {
 
   public static int main(String[] args) {
     // Create JUnit test runner.
-    JUnitTestRunner runner = new JUnitTestRunner();
+    PrintStream nsLogOut = new PrintStream(new NSLogOutputStream(), true);
+    JUnitTestRunner runner = new JUnitTestRunner(nsLogOut);
     runner.loadPropertiesFromResource(PROPERTIES_FILE_NAME);
     return runner.run();
   }
@@ -263,24 +261,9 @@ public class JUnitTestRunner {
     return false;
   }
 
-  /**
-   * @return true if {@param cls} is {@link JUnit4} annotated.
-   */
+  /** @return true if {@param cls} is {@link RunWith} annotated. */
   protected boolean isJUnit4TestClass(Class<?> cls) {
-    // Need to find test classes, otherwise crashes with b/11790448.
-    if (!cls.getName().endsWith("Test")) {
-      return false;
-    }
-    // Check the annotations.
-    Annotation annotation = cls.getAnnotation(RunWith.class);
-    if (annotation != null) {
-      RunWith runWith = (RunWith) annotation;
-      Object value = runWith.value();
-      if (value.equals(JUnit4.class) || value.equals(Suite.class)) {
-        return true;
-      }
-    }
-    return false;
+    return cls.getAnnotation(RunWith.class) != null;
   }
 
   /**
@@ -458,5 +441,31 @@ public class JUnitTestRunner {
       // interleaving with logger messages.
       out.print(String.format(format, args));
     }
+  }
+
+  /**
+   * Logs test runner output using NSLog().
+   */
+  private static class NSLogOutputStream extends OutputStream {
+    private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+    @Override
+    public void write(int b) throws IOException {
+      buffer.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      buffer.write(b, off, len);
+    }
+
+    @Override
+    public native void flush() /*-[
+      NSString *s = [buffer_ toStringWithNSString:@"UTF-8"];
+      if (s.length) {
+        NSLog(@"%@", s);
+      }
+      [buffer_ reset];
+    ]-*/;
   }
 }

@@ -47,8 +47,9 @@ public class EventObjectTest extends junit.framework.TestCase {
      */
     public void test_toString() {
         // Test for method java.lang.String java.util.EventObject.toString()
+        String regex = "[Jj]ava\\.?[Uu]til\\.?[Ee]ventObject\\[source=.*Object.*";
         assertTrue("Incorrect toString returned: " + myEventObject.toString(),
-            myEventObject.toString().matches("java.util.EventObject\\[source=.*Object.*"));
+            myEventObject.toString().matches(regex));
     }
 
     /**

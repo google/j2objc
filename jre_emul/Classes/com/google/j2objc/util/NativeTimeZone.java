@@ -69,13 +69,13 @@ public final class NativeTimeZone extends TimeZone {
 
 
   public static native NativeTimeZone get(String name) /*-[
-    return [ComGoogleJ2objcUtilNativeTimeZone fromNativeTimeZoneWithId:
-        [NSTimeZone timeZoneWithName:name]];
+    return ComGoogleJ2objcUtilNativeTimeZone_fromNativeTimeZoneWithId_(
+        [NSTimeZone timeZoneWithName:name]);
   ]-*/;
 
   public static native NativeTimeZone getDefaultNativeTimeZone() /*-[
-    return [ComGoogleJ2objcUtilNativeTimeZone fromNativeTimeZoneWithId:
-        [NSTimeZone defaultTimeZone]];
+    return ComGoogleJ2objcUtilNativeTimeZone_fromNativeTimeZoneWithId_(
+        [NSTimeZone defaultTimeZone]);
   ]-*/;
 
   private static native NativeTimeZone fromNativeTimeZone(Object nativeTimeZone) /*-[
@@ -116,10 +116,12 @@ public final class NativeTimeZone extends TimeZone {
   ]-*/;
 
   private static native void setUpTimeZoneDidChangeNotificationHandler() /*-[
-    [[NSNotificationCenter defaultCenter] addObserver:[ComGoogleJ2objcUtilNativeTimeZone class]
-                                             selector:@selector(handleTimeZoneChangeWithId:)
-                                                 name:NSSystemTimeZoneDidChangeNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserverForName: NSSystemTimeZoneDidChangeNotification
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+        ComGoogleJ2objcUtilNativeTimeZone_handleTimeZoneChangeWithId_(note);
+    }];
   ]-*/;
 
   private static void handleTimeZoneChange(Object notification) {

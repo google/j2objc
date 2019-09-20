@@ -48,6 +48,7 @@ public class FileUtil {
   private List<String> sourcePathEntries = new ArrayList<>();
   private List<String> classPathEntries = new ArrayList<>();
   private File outputDirectory = new File(".");
+  private File headerOutputDirectory = null;
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private Charset charset = Charset.forName(fileEncoding);
 
@@ -75,11 +76,26 @@ public class FileUtil {
     this.outputDirectory = outputDirectory;
   }
 
+  public void setHeaderOutputDirectory(File outputDirectory) {
+    this.headerOutputDirectory = outputDirectory;
+  }
+
   public File getOutputDirectory() {
     if (!outputDirectory.exists()) {
       outputDirectory.mkdirs();
     }
     return outputDirectory;
+  }
+
+  public File getHeaderOutputDirectory() {
+    if (headerOutputDirectory != null) {
+      if (!headerOutputDirectory.exists()) {
+        headerOutputDirectory.mkdirs();
+      }
+      return headerOutputDirectory;
+    } else {
+      return getOutputDirectory();
+    }
   }
 
   public void setFileEncoding(String fileEncoding) {
@@ -134,29 +150,45 @@ public class FileUtil {
 
   /**
    * Find a {@link com.google.devtools.j2objc.file.InputFile} on the source path,
-   * either in a directory or a jar.
+   * either in a directory or a jar, using a fully-qualified type name.
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public InputFile findOnSourcePath(String qualifiedName) throws IOException {
-    return findOnPaths(qualifiedName, sourcePathEntries, ".java");
+  public InputFile findTypeOnSourcePath(String qualifiedName) throws IOException {
+    return findTypeOnPaths(qualifiedName, sourcePathEntries, ".java");
   }
 
   /**
    * Find a {@link com.google.devtools.j2objc.file.InputFile} on the class path,
-   * either in a directory or a jar.
+   * either in a directory or a jar, using a fully-qualified type name.
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public InputFile findOnClassPath(String qualifiedName) throws IOException {
-    return findOnPaths(qualifiedName, classPathEntries, ".class");
+  public InputFile findTypeOnClassPath(String qualifiedName) throws IOException {
+    return findTypeOnPaths(qualifiedName, classPathEntries, ".class");
   }
 
-  private static InputFile findOnPaths(
+  private static InputFile findTypeOnPaths(
       String qualifiedName, List<String> paths, String extension) throws IOException {
     String sourceFileName = qualifiedName.replace('.', File.separatorChar) + extension;
+    return findFileOnPaths(sourceFileName, paths);
+  }
+
+  /**
+   * Find a source file on the source path(s), either in a directory or a jar.
+   *
+   * @param sourceFileName the relative path of the source file.
+   * @return an InputFile guaranteed to exist, or null.
+   */
+  @Nullable
+  public InputFile findFileOnSourcePath(String sourceFileName) throws IOException {
+    return findFileOnPaths(sourceFileName, sourcePathEntries);
+  }
+
+  private static InputFile findFileOnPaths(
+      String sourceFileName, List<String> paths) throws IOException {
     // Zip/jar files always use forward slashes.
-    String jarEntryName = qualifiedName.replace('.', '/') + extension;
+    String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
     for (String pathEntry : paths) {
       File f = new File(pathEntry);
       if (f.isDirectory()) {
@@ -248,8 +280,9 @@ public class FileUtil {
   public File extractZipEntry(File dir, ZipFile zipFile, ZipEntry entry) throws IOException {
     File outputFile = new File(dir, entry.getName());
     File parentFile = outputFile.getParentFile();
-    if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
-      throw new IOException("Could not extract file to " + dir.getPath());
+    if (!outputFile.getCanonicalPath().startsWith(dir.getCanonicalPath() + File.separator)
+        || (!parentFile.isDirectory() && !parentFile.mkdirs())) {
+      throw new IOException("Could not extract " + entry.getName() + " to " + dir.getPath());
     }
     try (InputStream inputStream = zipFile.getInputStream(entry);
         FileOutputStream outputStream = new FileOutputStream(outputFile)) {

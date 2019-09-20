@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -71,76 +71,38 @@ public final class SecurityConstants {
     public static final AllPermission ALL_PERMISSION = new AllPermission();
 
     /**
-     * Permission type used when AWT is not present.
-     */
-    /* ----- BEGIN android -----
-    private static class FakeAWTPermission extends BasicPermission {
-        private static final long serialVersionUID = -1L;
-        public FakeAWTPermission(String name) {
-            super(name);
-        }
-        public String toString() {
-            return "(\"java.awt.AWTPermission\" \"" + getName() + "\")";
-        }
-    }
-    ----- END android ----- */
-
-    /**
-     * Permission factory used when AWT is not present.
-     */
-    /* ----- BEGIN android -----
-    private static class FakeAWTPermissionFactory
-        implements PermissionFactory<FakeAWTPermission>
-    {
-        @Override
-        public FakeAWTPermission newPermission(String name) {
-            return new FakeAWTPermission(name);
-        }
-    }
-    ----- END android ----- */
-
-    /**
      * AWT Permissions used in the JDK.
      */
-    /* ----- BEGIN android -----
+    // BEGIN Android-removed
+    /*
     public static class AWT {
         private AWT() { }
 
         // The class name of the factory to create java.awt.AWTPermission objects.
         private static final String AWTFactory = "sun.awt.AWTPermissionFactory";
 
-         // The PermissionFactory to create AWT permissions (or fake permissions
-         // if AWT is not present).
+        // The PermissionFactory to create AWT permissions (or null if AWT is
+        // not present)
         private static final PermissionFactory<?> factory = permissionFactory();
 
         private static PermissionFactory<?> permissionFactory() {
-            Class<?> c = AccessController
-                .doPrivileged(new PrivilegedAction<Class<?>>() {
-                    public Class<?> run() {
-                        try {
-                           return Class.forName(AWTFactory, true, null);
-                        } catch (ClassNotFoundException e) {
-                            // not available
-                            return null;
-                        }
-                    }});
-            if (c != null) {
-                // AWT present
-                try {
-                    return (PermissionFactory<?>)c.newInstance();
-                } catch (InstantiationException x) {
-                    throw new InternalError(x.getMessage());
-                } catch (IllegalAccessException x) {
-                    throw new InternalError(x.getMessage());
-                }
-            } else {
-                // AWT not present
-                return new FakeAWTPermissionFactory();
+            Class<?> c;
+            try {
+                c = Class.forName(AWTFactory, false, AWT.class.getClassLoader());
+            } catch (ClassNotFoundException e) {
+                // not available
+                return null;
+            }
+            // AWT present
+            try {
+                return (PermissionFactory<?>)c.newInstance();
+            } catch (ReflectiveOperationException x) {
+                throw new InternalError(x);
             }
         }
 
         private static Permission newAWTPermission(String name) {
-            return factory.newPermission(name);
+            return (factory == null) ? null : factory.newPermission(name);
         }
 
         // java.lang.SecurityManager
@@ -183,7 +145,8 @@ public final class SecurityConstants {
         public static final Permission ACCESS_SYSTEM_TRAY_PERMISSION =
             newAWTPermission("accessSystemTray");
     }
-    ----- END android ----- */
+    */
+    // END Android-removed
 
     // java.net.URL
     public static final NetPermission SPECIFY_HANDLER_PERMISSION =
@@ -259,5 +222,5 @@ public final class SecurityConstants {
 
     // java.lang.SecurityManager
     public static final SocketPermission LOCAL_LISTEN_PERMISSION =
-        new SocketPermission("localhost:1024-", SOCKET_LISTEN_ACTION);
+        new SocketPermission("localhost:0", SOCKET_LISTEN_ACTION);
 }

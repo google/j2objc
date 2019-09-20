@@ -57,12 +57,12 @@ public class JavadocGeneratorTest extends GenerationTest {
         "/** Class javadoc for {@link Test}. */ class Test {"
         + " /** See {@link #bar}. */ void foo() {}"
         + " /** See {@linkplain #bar}. */ void foo2() {}"
-        + " /** See {@link Test#bar()}. */ void foo3() {}"
+        + " /** See {@link Test#bar(int, double)}. */ void foo3() {}"
         + " /** See {@link foo.bar.Mumble Mumble}.*/ void foo4() {}}", "Test", "Test.h");
     assertTranslation(translation, "@brief Class javadoc for <code>Test</code>.");
     assertTranslation(translation, "@brief See <code>bar</code>.");
     assertTranslation(translation, "@brief See bar.");
-    assertTranslation(translation, "@brief See <code>Test.bar()</code>.");
+    assertTranslation(translation, "@brief See <code>Test.bar(int, double)</code>.");
     assertTranslation(translation, "@brief See <code>Mumble</code>.");
   }
 

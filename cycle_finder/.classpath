@@ -4,10 +4,11 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC translator"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/translator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/annotations"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar" sourcepath="../java_deps/build_result/javac-src.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

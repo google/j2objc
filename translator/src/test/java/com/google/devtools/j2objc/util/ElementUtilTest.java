@@ -30,18 +30,75 @@ import javax.lang.model.element.TypeElement;
  */
 public class ElementUtilTest extends GenerationTest {
 
+  @Override
+  protected void setUp() throws IOException {
+    super.setUp();
+    addSourceFile(String.join("\n",
+        "@interface DefaultRetentionAnnotation {",
+        "  String name();",
+        "}"),
+        "DefaultRetentionAnnotation.java");
+    addSourceFile(String.join("\n",
+        "import java.lang.annotation.*;",
+        "@Retention(RetentionPolicy.CLASS)",
+        "@interface ClassRetentionAnnotation {}"),
+        "ClassRetentionAnnotation.java");
+  }
+
   public void testIsRuntimeAnnotation() throws IOException {
     // SuppressWarnings is a source-level annotation.
-    CompilationUnit unit = translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
+    CompilationUnit unit =
+        translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     Annotation annotation = decl.getAnnotations().get(0);
     assertFalse(ElementUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
 
-    // Deprecated is a runtime annotation..
+    // Deprecated is a runtime annotation.
     unit = translateType("Example", "@Deprecated class Example {}");
     decl = unit.getTypes().get(0);
     annotation = decl.getAnnotations().get(0);
     assertTrue(ElementUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
+
+    // Check class annotation.
+    unit = translateType("Example", "@ClassRetentionAnnotation class Example {}");
+    decl = unit.getTypes().get(0);
+    annotation = decl.getAnnotations().get(0);
+    assertFalse(ElementUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
+
+    // Check default retention, also class.
+    unit =
+        translateType("Example", "@DefaultRetentionAnnotation(name = \"foo\") class Example {}");
+    decl = unit.getTypes().get(0);
+    annotation = decl.getAnnotations().get(0);
+    assertFalse(ElementUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
+  }
+
+  public void testIsGeneratedAnnotation() throws IOException {
+    // SuppressWarnings is a source-level annotation.
+    CompilationUnit unit =
+        translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    Annotation annotation = decl.getAnnotations().get(0);
+    assertFalse(ElementUtil.isGeneratedAnnotation(annotation.getAnnotationMirror()));
+
+    // Deprecated is a runtime annotation.
+    unit = translateType("Example", "@Deprecated class Example {}");
+    decl = unit.getTypes().get(0);
+    annotation = decl.getAnnotations().get(0);
+    assertTrue(ElementUtil.isGeneratedAnnotation(annotation.getAnnotationMirror()));
+
+    // Check class annotation.
+    unit = translateType("Example", "@ClassRetentionAnnotation class Example {}");
+    decl = unit.getTypes().get(0);
+    annotation = decl.getAnnotations().get(0);
+    assertTrue(ElementUtil.isGeneratedAnnotation(annotation.getAnnotationMirror()));
+
+    // Check default retention, also class.
+    unit =
+        translateType("Example", "@DefaultRetentionAnnotation(name = \"foo\") class Example {}");
+    decl = unit.getTypes().get(0);
+    annotation = decl.getAnnotations().get(0);
+    assertTrue(ElementUtil.isGeneratedAnnotation(annotation.getAnnotationMirror()));
   }
 
   public void testGetAnnotation() throws IOException {

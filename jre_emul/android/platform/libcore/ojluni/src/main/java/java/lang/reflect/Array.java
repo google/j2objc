@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -55,6 +55,8 @@ class Array {
      * Array.newInstance(componentType, x);
      * </pre>
      * </blockquote>
+     * <p>The number of dimensions of the new array must not
+     * exceed 255.
      *
      * @param componentType the {@code Class} object representing the
      * component type of the new array
@@ -62,7 +64,9 @@ class Array {
      * @return the new array
      * @exception NullPointerException if the specified
      * {@code componentType} parameter is null
-     * @exception IllegalArgumentException if componentType is {@link Void#TYPE}
+     * @exception IllegalArgumentException if componentType is {@link
+     * Void#TYPE} or if the number of dimensions of the requested array
+     * instance exceed 255.
      * @exception NegativeArraySizeException if the specified {@code length}
      * is negative
      */
@@ -86,8 +90,7 @@ class Array {
      * {@code componentType}.
      *
      * <p>The number of dimensions of the new array must not
-     * exceed the number of array dimensions supported by the
-     * implementation (typically 255).
+     * exceed 255.
      *
      * @param componentType the {@code Class} object representing the component
      * type of the new array
@@ -97,10 +100,9 @@ class Array {
      * @exception NullPointerException if the specified
      * {@code componentType} argument is null
      * @exception IllegalArgumentException if the specified {@code dimensions}
-     * argument is a zero-dimensional array, or if the number of
-     * requested dimensions exceeds the limit on the number of array dimensions
-     * supported by the implementation (typically 255), or if componentType
-     * is {@link Void#TYPE}.
+     * argument is a zero-dimensional array, if componentType is {@link
+     * Void#TYPE}, or if the number of dimensions of the requested array
+     * instance exceed 255.
      * @exception NegativeArraySizeException if any of the components in
      * the specified {@code dimensions} argument is negative.
      */
@@ -489,7 +491,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/z/value
+    // Android-changed param name s/z/value
     public static void setBoolean(Object array, int index, boolean value) {
         if (array instanceof boolean[]) {
             ((boolean[]) array)[index] = value;
@@ -515,7 +517,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/b/value
+    // Android-changed param name s/b/value
     public static void setByte(Object array, int index, byte value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof byte[]) {
             ((byte[]) array)[index] = value;
@@ -551,7 +553,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/c/value
+    // Android-changed param name s/c/value
     public static void setChar(Object array, int index, char value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof char[]) {
             ((char[]) array)[index] = value;
@@ -585,7 +587,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/s/value
+    // Android-changed param name s/s/value
     public static void setShort(Object array, int index, short value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof short[]) {
             ((short[]) array)[index] = value;
@@ -619,7 +621,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/i/value
+    // Android-changed param name s/i/value
     public static void setInt(Object array, int index, int value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof int[]) {
             ((int[]) array)[index] = value;
@@ -651,7 +653,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/l/value
+    // Android-changed param name s/l/value
     public static void setLong(Object array, int index, long value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof long[]) {
             ((long[]) array)[index] = value;
@@ -681,7 +683,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/f/value
+    // Android-changed param name s/f/value
     public static void setFloat(Object array, int index, float value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof float[]) {
             ((float[]) array)[index] = value;
@@ -709,7 +711,7 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android changed param name s/d/value
+    // Android-changed param name s/d/value
     public static void setDouble(Object array, int index, double value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof double[]) {
             ((double[]) array)[index] = value;

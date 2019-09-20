@@ -120,7 +120,6 @@ JavaType GetJavaType(const FieldDescriptor* field);
 string DefaultValue(const FieldDescriptor *field);
 string GetFieldTypeEnumValue(const FieldDescriptor *descriptor);
 string GetDefaultValueTypeName(const FieldDescriptor *descriptor);
-string GetFieldDataClassName(const FieldDescriptor *descriptor);
 string GetFieldOptionsData(const FieldDescriptor *descriptor);
 
 void ParsePrefixFile(string prefix_file);

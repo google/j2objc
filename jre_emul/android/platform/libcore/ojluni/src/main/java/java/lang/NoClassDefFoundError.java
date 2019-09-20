@@ -60,7 +60,6 @@ class NoClassDefFoundError extends LinkageError {
         super(s);
     }
 
-
     /**
      * Constructs a new {@code NoClassDefFoundError} with the current stack
      * trace, the specified detail message and the specified cause. Used

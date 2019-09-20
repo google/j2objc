@@ -31,7 +31,6 @@ import java.net.*;
 import javax.net.SocketFactory;
 import java.io.IOException;
 import java.security.*;
-import java.util.Locale;
 
 //import sun.security.action.GetPropertyAction;
 
@@ -48,7 +47,8 @@ public abstract class SSLSocketFactory extends SocketFactory
 
     private static int lastVersion = -1;
 
-//    static final boolean DEBUG;
+    /* J2ObjC modified. */
+    static final boolean DEBUG = false;
 //
 //    static {
 //        String s = java.security.AccessController.doPrivileged(

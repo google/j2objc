@@ -39,7 +39,10 @@
 #import "java/io/InputStream.h"
 #import "java/io/OutputStream.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
+#import "java/lang/Byte.h"
 #import "java/lang/IndexOutOfBoundsException.h"
+#import "java/lang/UnsupportedOperationException.h"
+#import "java/util/NoSuchElementException.h"
 
 #define MIN_READ_FROM_CHUNK_SIZE 0x100   // 256b
 #define MAX_READ_FROM_CHUNK_SIZE 0x2000  // 8k
@@ -75,6 +78,29 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
       remainingRange:NULL];
   return [byteString autorelease];
 }
+
+
+@interface ByteStringIterator : NSObject < ComGoogleProtobufByteString_ByteIterator > {
+ @public
+  ComGoogleProtobufByteString *byteString_;
+  jint position_;
+  jint limit_;
+}
+
+- (instancetype)initWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString;
+- (jboolean)hasNext;
+- (JavaLangByte *)next;
+- (jbyte)nextByte;
+- (void)remove;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ByteStringIterator)
+
+static void ByteStringIterator_initWithComGoogleProtobufByteString_(
+    ByteStringIterator *self, ComGoogleProtobufByteString *byteString);
+static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufByteString_(
+    ComGoogleProtobufByteString *byteString);
 
 @implementation ComGoogleProtobufByteString
 
@@ -136,6 +162,10 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
                                  encoding:NSUTF8StringEncoding] autorelease];
 }
 
+- (id<ComGoogleProtobufByteString_ByteIterator>)iterator {
+  return create_ByteStringIterator_initWithComGoogleProtobufByteString_(self);
+}
+
 + (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain {
   return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_(streamToDrain);
 }
@@ -179,6 +209,20 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
     return YES;
   }
   return memcmp(buffer_, otherByteString->buffer_, size_) == 0;
+}
+
+- (void)forEachWithJavaUtilFunctionConsumer:(id<JavaUtilFunctionConsumer>)arg0 {
+  JavaLangIterable_forEachWithJavaUtilFunctionConsumer_(self, arg0);
+}
+
+- (id<JavaUtilSpliterator>)spliterator {
+  return JavaLangIterable_spliterator(self);
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  return JreDefaultFastEnumeration(self, state, stackbuf);
 }
 
 - (NSUInteger)hash {
@@ -291,3 +335,54 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInput
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)
+
+@implementation ByteStringIterator
+
+- (instancetype)initWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString {
+  ByteStringIterator_initWithComGoogleProtobufByteString_(self, byteString);
+  return self;
+}
+
+- (jboolean)hasNext {
+  return position_ < limit_;
+}
+
+- (JavaLangByte *)next {
+  return JavaLangByte_valueOfWithByte_([self nextByte]);
+}
+
+- (jbyte)nextByte {
+  @try {
+    return [byteString_ byteAtWithInt:position_++];
+  } @catch (JavaLangIndexOutOfBoundsException *e) {
+    @throw create_JavaUtilNoSuchElementException_initWithNSString_([e getMessage]);
+  }
+}
+
+- (void)remove {
+  @throw create_JavaLangUnsupportedOperationException_init();
+}
+
+- (void)forEachRemainingWithJavaUtilFunctionConsumer:(id<JavaUtilFunctionConsumer>)arg0 {
+  JavaUtilIterator_forEachRemainingWithJavaUtilFunctionConsumer_(self, arg0);
+}
+
+- (void)dealloc {
+  RELEASE_(byteString_);
+  [super dealloc];
+}
+
+@end
+
+void ByteStringIterator_initWithComGoogleProtobufByteString_(
+    ByteStringIterator *self, ComGoogleProtobufByteString *byteString) {
+  JreStrongAssign(&self->byteString_, byteString);
+  NSObject_init(self);
+  self->position_ = 0;
+  self->limit_ = [byteString size];
+}
+
+ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufByteString_(
+    ComGoogleProtobufByteString *byteString) {
+  J2OBJC_CREATE_IMPL(ByteStringIterator, initWithComGoogleProtobufByteString_, byteString)
+}

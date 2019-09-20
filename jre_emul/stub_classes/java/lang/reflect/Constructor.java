@@ -26,7 +26,9 @@ import java.lang.annotation.Annotation;
  *
  * @see Object
  */
-public class Constructor<T> extends AccessibleObject implements GenericDeclaration, Member {
+public final class Constructor<T> extends Executable {
+
+  private Constructor() {}
 
   public String getName() {
     return null;
@@ -60,12 +62,20 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
   public Annotation[] getDeclaredAnnotations() {
     return null;
   }
-  
+
+  public AnnotatedType[] getAnnotatedParameterTypes() {
+    return null;
+  }
+
+  public AnnotatedType getAnnotatedReturnType() {
+    return null;
+  }
+
   public Annotation[][] getParameterAnnotations() {
     return null;
   }
   
-  public TypeVariable<Method>[] getTypeParameters() {
+  public TypeVariable<Constructor<T>>[] getTypeParameters() {
     return null;
   }
   
@@ -73,7 +83,7 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
     return false;
   }
 
-  public Class[] getExceptionTypes() {
+  public Class<?>[] getExceptionTypes() {
     return null;
   }
 
@@ -87,5 +97,21 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
 
   public boolean isVarArgs() {
     return false;
+  }
+
+  public boolean equals(Object obj) {
+    return false;
+  }
+
+  public int getParameterCount() {
+    return -1;
+  }
+
+  public int hashCode() {
+    return -1;
+  }
+
+  public java.lang.String toString() {
+    return null;
   }
 }

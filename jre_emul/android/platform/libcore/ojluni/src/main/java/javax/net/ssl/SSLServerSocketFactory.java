@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1997, 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -50,9 +50,9 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
     private static int lastVersion = -1;
 
     private static void log(String msg) {
-//        if (SSLSocketFactory.DEBUG) {
-//            System.out.println(msg);
-//        }
+        if (SSLSocketFactory.DEBUG) {
+            System.out.println(msg);
+        }
     }
 
     /**
@@ -192,23 +192,27 @@ class DefaultSSLServerSocketFactory extends SSLServerSocketFactory {
             new SocketException(reason.toString()).initCause(reason);
     }
 
+    @Override
     public ServerSocket createServerSocket() throws IOException {
         return throwException();
     }
 
 
+    @Override
     public ServerSocket createServerSocket(int port)
     throws IOException
     {
         return throwException();
     }
 
+    @Override
     public ServerSocket createServerSocket(int port, int backlog)
     throws IOException
     {
         return throwException();
     }
 
+    @Override
     public ServerSocket
     createServerSocket(int port, int backlog, InetAddress ifAddress)
     throws IOException
@@ -216,10 +220,12 @@ class DefaultSSLServerSocketFactory extends SSLServerSocketFactory {
         return throwException();
     }
 
+    @Override
     public String [] getDefaultCipherSuites() {
         return new String[0];
     }
 
+    @Override
     public String [] getSupportedCipherSuites() {
         return new String[0];
     }

@@ -16,19 +16,18 @@
 #
 # The format for this is simpler than it looks:  it's just a
 # java.util.Properties file where a Java method signature is the key, and
-# a modified iOS method signature is the value.
+# an iOS selector is the value.
 #
 # Java method signatures are defined in the Java Virtual Machine
 # Specification, and are what's shown when viewing a JVM class using
-# "javap -v". iOS method signatures are defined as the class name, followed by
-# the signature as declared in the class' header file, minus the return value.
+# "javap -v". iOS selectors are what you would pass to @selector().
 #
 # Method matching has the following restrictions:
 #
 # 1. The Java and iOS methods must either both be instance or both be
 #    class (static) methods.  In Objective-C terms, the receiver of these
 #    messages doesn't change.
-# 2. The parameters must be the same type and in the same order.
+# 2. They must have the same number of parameters.
 #
 # Since the JRE and Foundation APIs aren't identical, these rules block many
 # essential mappings.  However, the list below contains several NSString

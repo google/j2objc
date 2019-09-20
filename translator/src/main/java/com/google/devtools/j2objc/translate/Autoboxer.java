@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.ArrayAccess;
+import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.AssertStatement;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -58,6 +59,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -219,6 +221,15 @@ public class Autoboxer extends UnitTreeVisitor {
   }
 
   @Override
+  public void endVisit(ArrayCreation node) {
+    for (Expression dim : node.getDimensions()) {
+      if (!dim.getTypeMirror().getKind().isPrimitive()) {
+        unbox(dim);
+      }
+    }
+  }
+
+  @Override
   public void endVisit(ArrayInitializer node) {
     TypeMirror type = node.getTypeMirror().getComponentType();
     for (Expression expr : node.getExpressions()) {
@@ -243,6 +254,17 @@ public class Autoboxer extends UnitTreeVisitor {
       if (typeUtil.isAssignable(exprType, typeUtil.getJavaNumber().asType())) {
         // Casting a Number object to a primitive, convert to value method.
         unbox(expr, (PrimitiveType) castType);
+      } else if (exprType == typeUtil.boxedClass(typeUtil.getChar()).asType()) {
+        // Unboxing and casting Character, which does not have number value functions.
+        unbox(expr);
+        if (castType.getKind() != TypeKind.CHAR) {
+          // If the resulting type is not char - keep the cast, to preserve type information in
+          // case of reboxing.
+          CastExpression castExpr = new CastExpression(castType, null);
+          Expression unboxedExpression = node.getExpression();
+          unboxedExpression.replaceWith(castExpr);
+          castExpr.setExpression(unboxedExpression);
+        }
       } else {
         // Casting an object to a primitive. Convert the cast type to the wrapper
         // so that we do a proper cast check, as Java would.

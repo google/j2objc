@@ -31,9 +31,6 @@ public class ClassInstanceCreation extends Expression {
   // count of 1. (i.e. does not call autorelease)
   private boolean hasRetainedResult = false;
   private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
-  // Used by anonymous classes where we have two outer scopes, one for the class and one for the
-  // superclass.
-  private final ChildLink<Expression> superOuterArg = ChildLink.create(Expression.class, this);
   private final ChildList<Expression> captureArgs = ChildList.create(Expression.class, this);
   private final ChildLink<Type> type = ChildLink.create(Type.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -48,7 +45,6 @@ public class ClassInstanceCreation extends Expression {
     varargsType = other.getVarargsType();
     hasRetainedResult = other.hasRetainedResult();
     expression.copyFrom(other.getExpression());
-    superOuterArg.copyFrom(other.getSuperOuterArg());
     captureArgs.copyFrom(other.getCaptureArgs());
     type.copyFrom(other.getType());
     arguments.copyFrom(other.getArguments());
@@ -118,15 +114,6 @@ public class ClassInstanceCreation extends Expression {
     return this;
   }
 
-  public Expression getSuperOuterArg() {
-    return superOuterArg.get();
-  }
-
-  public ClassInstanceCreation setSuperOuterArg(Expression newSuperOuterArg) {
-    superOuterArg.set(newSuperOuterArg);
-    return this;
-  }
-
   public List<Expression> getCaptureArgs() {
     return captureArgs;
   }
@@ -172,7 +159,6 @@ public class ClassInstanceCreation extends Expression {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       expression.accept(visitor);
-      superOuterArg.accept(visitor);
       captureArgs.accept(visitor);
       type.accept(visitor);
       arguments.accept(visitor);

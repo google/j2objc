@@ -79,4 +79,44 @@ public class TranslationUtilTest extends GenerationTest {
     translationUtil = unit.getEnv().translationUtil();
     assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
   }
+
+  public void testJUnit3TestKeepsReflection() {
+    options.setStripReflection(true);
+    String source =
+        "package foo; "
+            + "import junit.framework.TestSuite; "
+            + "public class A extends TestSuite {} ";
+    CompilationUnit unit = translateType("foo.A", source);
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+  }
+
+  public void testJUnit4TestKeepsReflection() {
+    options.setStripReflection(true);
+    String source =
+        "package foo; "
+            + "import org.junit.runner.RunWith; "
+            + "import org.junit.runners.JUnit4; "
+            + "@RunWith(JUnit4.class) public class A {} ";
+    CompilationUnit unit = translateType("foo.A", source);
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+  }
+
+  public void testRuntimeAnnotationKeepsReflection() {
+    options.setStripReflection(true);
+    String source =
+        "package foo; "
+            + "import static java.lang.annotation.ElementType.TYPE; "
+            + "import static java.lang.annotation.RetentionPolicy.RUNTIME; "
+            + "import java.lang.annotation.Retention; "
+            + "import java.lang.annotation.Target; "
+            + "import org.junit.runners.JUnit4; "
+            + "@Retention(RUNTIME) "
+            + "@Target(value={TYPE}) "
+            + "public @interface AnAnnotation {} ";
+    CompilationUnit unit = translateType("foo.AnAnnotation", source);
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+  }
 }

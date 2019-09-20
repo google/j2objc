@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
  * A single unit of generated code, to be turned into a single pair of .h and .m files.
  * <p/>
  * Some attributes, like the name and output path, might not be known before parsing.
- * These are set by a {@link com.google.devtools.j2objc.FileProcessor}.
+ * These are set by a {@link com.google.devtools.j2objc.pipeline.FileProcessor}.
  *
  * @author Mike Thvedt
  */

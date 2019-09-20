@@ -36,7 +36,41 @@
 
 #import "IOSClass.h"
 
-@implementation ComGoogleProtobufInvalidProtocolBufferException
+@implementation ComGoogleProtobufInvalidProtocolBufferException {
+  ComGoogleProtobufMessageLite *unfinishedMessage_;
+}
+
+- (instancetype)initWithNSString:(NSString *)s {
+  if ((self = [super initWithNSString:s])) {
+    unfinishedMessage_ = nil;
+  }
+  return self;
+}
+
+- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause {
+  if ((self = [super initWithJavaLangThrowable:cause])) {
+    unfinishedMessage_ = nil;
+  }
+  return self;
+}
+
+- (instancetype)initWithNSString:(NSString *)detailMessage
+           withJavaLangThrowable:(JavaLangThrowable *)cause {
+  if ((self = [super initWithNSString:detailMessage
+                withJavaLangThrowable:cause])) {
+    unfinishedMessage_ = nil;
+  }
+  return self;
+}
+
+- (ComGoogleProtobufMessageLite *)getUnfinishedMessage {
+  return unfinishedMessage_;
+}
+
+- (void)setUnfinishedMessage:(ComGoogleProtobufMessageLite *)message {
+  unfinishedMessage_ = message;
+}
+
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufInvalidProtocolBufferException)

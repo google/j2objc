@@ -39,6 +39,10 @@ public class ModifierTest extends junit.framework.TestCase {
         assertEquals(0xd3f, Modifier.methodModifiers());
     }
 
+    public void test_parameterModifiers() {
+        assertEquals(0x10, Modifier.parameterModifiers());
+    }
+
     public void test_isAbstractI() {
         assertTrue(Modifier.isAbstract(Modifier.ABSTRACT));
         assertTrue(!Modifier.isAbstract(-1 & ~Modifier.ABSTRACT));

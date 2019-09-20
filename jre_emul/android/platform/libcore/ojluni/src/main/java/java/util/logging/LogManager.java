@@ -28,6 +28,7 @@
 package java.util.logging;
 
 import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.util.ReflectionUtil;
 import com.google.j2objc.util.logging.IOSLogHandler;
 
 import java.io.*;
@@ -159,7 +160,7 @@ public class LogManager {
     // The global LogManager object
     private static LogManager manager;
 
-    private Properties props = new Properties();
+    private Hashtable<Object, Object> props = new Hashtable<>();
     /* J2ObjC removed.
     private PropertyChangeSupport changes
                          = new PropertyChangeSupport(LogManager.class);
@@ -1168,7 +1169,7 @@ public class LogManager {
     public void reset() {
         checkPermission();
         synchronized (this) {
-            props = new Properties();
+            props = new Hashtable<>();
             // Since we are doing a reset we no longer want to initialize
             // the global handlers, if they haven't been initialized yet.
             initializedGlobalHandlers = true;
@@ -1256,7 +1257,10 @@ public class LogManager {
         reset();
 
         // Load the properties
-        props.load(ins);
+        Properties.loadLineReader(new Properties.LineReader(ins), props::put);
+        if (ReflectionUtil.isJreReflectionStripped()) {
+          reflectionStrippedProcessing();
+        }
         // Instantiate new configuration objects.
         String names[] = parseClassNames("config");
 
@@ -1293,7 +1297,9 @@ public class LogManager {
      * @return          property value
      */
     public String getProperty(String name) {
-        return props.getProperty(name);
+      Object oval = props.get(name);
+      String sval = (oval instanceof String) ? (String) oval : null;
+      return sval;
     }
 
     // Package private method to get a String property.
@@ -1501,9 +1507,9 @@ public class LogManager {
     // Private method to be called when the configuration has
     // changed to apply any level settings to any pre-existing loggers.
     synchronized private void setLevelsOnExistingLoggers() {
-        Enumeration<?> enum_ = props.propertyNames();
-        while (enum_.hasMoreElements()) {
-            String key = (String)enum_.nextElement();
+        Enumeration<?> enm = props.keys();
+        while (enm.hasMoreElements()) {
+            String key = (String) enm.nextElement();
             if (!key.endsWith(".level")) {
                 // Not a level definition.
                 continue;
@@ -1566,4 +1572,23 @@ public class LogManager {
         return loggingMXBean;
     }
 
+    // Adds versions of the properties that are expected when reflection is stripped (e.g.
+    // JavaIoFileOutputStream.level instead of java.io.FileOutputStream.level).
+    private void reflectionStrippedProcessing() {
+        HashMap<Object, Object> newEntries = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
+            String key = (String) entry.getKey();
+            int index = key.lastIndexOf('.');
+            if (index == -1 || index == 0 || index == key.length() - 1) {
+                continue;
+            }
+            String prefix = key.substring(0, index);
+            String suffix = key.substring(index + 1);
+            String newKey = ReflectionUtil.getCamelCase(prefix) + "." + suffix;
+            if (!props.containsKey(newKey)) {
+                newEntries.put(newKey, entry.getValue());
+            }
+        }
+        props.putAll(newEntries);
+    }
 }

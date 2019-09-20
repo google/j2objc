@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -60,13 +61,14 @@ public class CycleFinder {
   public CycleFinder(Options options) throws IOException {
     this.options = options;
     j2objcOptions = new com.google.devtools.j2objc.Options();
-
-    j2objcOptions.load(new String[] {
-      "-sourcepath", Strings.nullToEmpty(options.getSourcepath()),
-      "-classpath", Strings.nullToEmpty(options.getClasspath()),
-      "-encoding", options.fileEncoding(),
-      "-source",   options.sourceVersion().flag()
-    });
+    List<String> list = new ArrayList<>(Arrays.asList(
+        "-sourcepath", Strings.nullToEmpty(options.getSourcepath()),
+        "-classpath", Strings.nullToEmpty(options.getClasspath()),
+        "-encoding", options.fileEncoding(),
+        "-source",   options.sourceVersion().flag()
+    ));
+    list.addAll(options.getPlatformModuleSystemOptions());
+    j2objcOptions.load(list.toArray(new String[0]));
     blacklist = getBlacklist();
   }
 
@@ -126,7 +128,8 @@ public class CycleFinder {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, Charset.forName(options.fileEncoding()));
+      Files.asCharSink(strippedFile, Charset.forName(options.fileEncoding()))
+          .write(parseResult.getSource());
       sourceFileNames.set(i, strippedFile.getPath());
     }
     return strippedDir;
@@ -136,7 +139,8 @@ public class CycleFinder {
     Parser parser = createParser();
     NameList whitelist =
         NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
-    final GraphBuilder graphBuilder = new GraphBuilder(whitelist);
+    final GraphBuilder graphBuilder =
+        new GraphBuilder(whitelist, options.externalAnnotations());
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);

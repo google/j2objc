@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -156,7 +156,7 @@ public class PropertyChangeSupport implements Serializable {
      * <code>PropertyChangeListenerProxy</code>, perform the cast, and examine
      * the parameter.
      *
-     * <pre>
+     * <pre>{@code
      * PropertyChangeListener[] listeners = bean.getPropertyChangeListeners();
      * for (int i = 0; i < listeners.length; i++) {
      *   if (listeners[i] instanceof PropertyChangeListenerProxy) {
@@ -168,7 +168,7 @@ public class PropertyChangeSupport implements Serializable {
      *     }
      *   }
      * }
-     *</pre>
+     * }</pre>
      *
      * @see PropertyChangeListenerProxy
      * @return all of the <code>PropertyChangeListeners</code> added or an
@@ -431,7 +431,7 @@ public class PropertyChangeSupport implements Serializable {
                     listeners = entry.getValue();
                 } else {
                     if (children == null) {
-                        children = new Hashtable<String, PropertyChangeSupport>();
+                        children = new Hashtable<>();
                     }
                     PropertyChangeSupport pcs = new PropertyChangeSupport(this.source);
                     pcs.map.set(null, entry.getValue());
@@ -460,6 +460,7 @@ public class PropertyChangeSupport implements Serializable {
 
         ObjectInputStream.GetField fields = s.readFields();
 
+        @SuppressWarnings("unchecked")
         Hashtable<String, PropertyChangeSupport> children = (Hashtable<String, PropertyChangeSupport>) fields.get("children", null);
         this.source = fields.get("source", null);
         fields.get("propertyChangeSupportSerializedDataVersion", 2);

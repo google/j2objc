@@ -20,6 +20,10 @@ FIELD java.net.NetworkInterface.children
 FIELD java.util.HashSet.map
 FIELD java.util.TreeSet.m
 
+FIELD java.util.concurrent.CompletableFuture.UniCompletion.executor
+FIELD java.util.concurrent.CompletableFuture.UniCompletion.dep
+FIELD java.util.concurrent.CompletableFuture.UniCompletion.src
+FIELD java.util.concurrent.CompletableFuture.BiCompletion.snd
 FIELD java.util.concurrent.ConcurrentHashMap.CollectionView.map
 FIELD java.util.concurrent.ConcurrentSkipListSet.m
 FIELD java.util.concurrent.ForkJoinWorkerThread.pool
@@ -81,3 +85,14 @@ FIELD sun.nio.ch.ChannelInputStream.ch
 
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
+
+# False positives in android.icu.
+FIELD android.icu.impl.CharacterIteratorWrapper.iterator android.icu.impl.UCharacterIteratorWrapper
+FIELD android.icu.impl.JavaTimeZone.javacal
+FIELD android.icu.impl.JavaTimeZone.javatz android.icu.impl.TimeZoneAdapter
+FIELD android.icu.text.MessageFormat.stockDateFormatter
+FIELD android.icu.text.NFRule.rulePatternFormat
+FIELD android.icu.text.UnicodeSet.stringSpan
+
+# False positives in java.time.
+FIELD java.time.zone.IcuZoneRulesProvider.cache

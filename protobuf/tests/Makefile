@@ -44,6 +44,10 @@ PROTOS = \
   string_fields.proto \
   typical.proto
 
+TESTDATA = \
+  testdata/largeproto \
+  testdata/randombytes
+
 $(call check_protobuf_dir)
 
 DESCRIPTOR_INCLUDE_DIR = ../compiler/src
@@ -81,6 +85,7 @@ include $(J2OBJC_ROOT)/make/j2objc_protos.mk
 
 CREATE_JAR_NAME = protobuf_tests
 CREATE_JAR_SOURCES = $(JAVA_SOURCES) $(J2OBJC_PROTOS_JAVA)
+CREATE_JAR_RESOURCES = $(TESTDATA)
 CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -encoding UTF-8
 CREATE_JAR_DEPENDENCIES = annotations_dist junit_java protobuf_runtime_java
 include $(J2OBJC_ROOT)/make/create_jar.mk
@@ -122,7 +127,7 @@ BIN = $(BUILD_DIR)/protobuf_tests
 BIN_ARC = $(BUILD_DIR)/protobuf_tests_arc
 
 test_java: $(CREATE_JAR_RESULT)
-	java -classpath $(CLASSPATH):$(CREATE_JAR_RESULT) \
+	$(JAVA) -classpath $(CLASSPATH):$(CREATE_JAR_RESULT) \
 	  org.junit.runner.JUnitCore $(TESTS_TO_RUN)
 
 test_objc: $(BIN)
@@ -148,12 +153,12 @@ $(BUILD_DIR):
 $(OBJS_DIR)/%.o: $(GEN_OBJC_DIR)/%.m \
   | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
-	$(TEST_J2OBJCC) -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -o $@ $<
+	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -o $@ $<
 
 $(OBJS_DIR)/arc/%.o: $(GEN_OBJC_DIR)/arc/%.m \
   | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
-	$(TEST_J2OBJCC) -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -fobjc-arc -o $@ $<
+	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -fobjc-arc -o $@ $<
 
 $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	@mkdir -p $(@D)

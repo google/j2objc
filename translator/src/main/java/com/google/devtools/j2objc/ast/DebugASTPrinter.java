@@ -1019,10 +1019,10 @@ public class DebugASTPrinter extends TreeVisitor {
   public boolean visit(TryStatement node) {
     sb.printIndent();
     sb.print("try ");
-    List<VariableDeclarationExpression> resources = node.getResources();
+    List<TreeNode> resources = node.getResources();
     if (!resources.isEmpty()) {
       sb.print('(');
-      for (Iterator<VariableDeclarationExpression> it = resources.iterator(); it.hasNext(); ) {
+      for (Iterator<TreeNode> it = resources.iterator(); it.hasNext(); ) {
         it.next().accept(this);
         if (it.hasNext()) {
           sb.print(';');

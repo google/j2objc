@@ -188,20 +188,16 @@ public class MetadataWriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { @Deprecated Test() {} }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "IOSObjectArray *Test__Annotations$0() {",
-        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
-        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+    assertTranslation(translation, "IOSObjectArray *Test__Annotations$0()");
+    assertTranslation(translation, "create_JavaLangDeprecated");
   }
 
   public void testConstructorAnnotationWithParameter() throws IOException {
     String translation = translateSourceFile(
         "public class Test { @Deprecated Test(int i) {} }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "IOSObjectArray *Test__Annotations$0() {",
-        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
-        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+    assertTranslation(translation, "IOSObjectArray *Test__Annotations$0()");
+    assertTranslation(translation, "create_JavaLangDeprecated");
   }
 
   public void testTypeAnnotationDefaultParameter() throws IOException {
@@ -251,5 +247,12 @@ public class MetadataWriterTest extends GenerationTest {
         "  { \"this$0_\", \"LTest;\", .constantValue.asLong = 0, 0x1012, -1, -1, -1, -1 },",
         "  { \"val$j_\", \"I\", .constantValue.asLong = 0, 0x1012, -1, -1, -1, -1 },",
         "};");
+  }
+
+  // Verify that the stub NS types, such as NSFastEnumeration, are not included in metadata.
+  public void testNSTypesNotInMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "interface Test<T> extends com.google.j2objc.NSFastEnumeration {}", "Test", "Test.m");
+    assertNotInTranslation(translation, "NSFastEnumeration");
   }
 }

@@ -59,6 +59,8 @@
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSNumber)
 
+J2OBJC_NAME_MAPPING(NSNumber, "java.lang.Number", "NSNumber")
+
 // Empty class to force category to be loaded.
 @implementation JreNumberCategoryDummy
 @end

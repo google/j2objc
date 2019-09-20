@@ -16,22 +16,28 @@
 
 package libcore.java.lang.reflect;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public final class ReflectionTest extends TestCase {
@@ -431,5 +437,223 @@ public final class ReflectionTest extends TestCase {
             @SuppressWarnings("unused")
             void foobar() {}
         }
+    }
+
+    public void testGetEnclosingClass() {
+        assertNull(ReflectionTest.class.getEnclosingClass());
+        assertEquals(ReflectionTest.class, Foo.class.getEnclosingClass());
+        assertEquals(ReflectionTest.class, HasMemberClassesInterface.class.getEnclosingClass());
+        assertEquals(HasMemberClassesInterface.class,
+                HasMemberClassesInterface.D.class.getEnclosingClass());
+        assertEquals(ReflectionTest.class, Foo.class.getEnclosingClass());
+    }
+
+    public void testGetDeclaringClass() {
+        assertNull(ReflectionTest.class.getDeclaringClass());
+        assertEquals(ReflectionTest.class, Foo.class.getDeclaringClass());
+        assertEquals(ReflectionTest.class, HasMemberClassesInterface.class.getDeclaringClass());
+        assertEquals(HasMemberClassesInterface.class,
+                HasMemberClassesInterface.D.class.getDeclaringClass());
+    }
+
+    public void testGetEnclosingClassIsTransitiveForClassesDefinedInAMethod() {
+        class C {}
+        assertEquals(ReflectionTest.class, C.class.getEnclosingClass());
+    }
+
+    public void testGetDeclaringClassIsNotTransitiveForClassesDefinedInAMethod() {
+        class C {}
+        assertEquals(null, C.class.getDeclaringClass());
+    }
+
+    public void testGetEnclosingMethodIsNotTransitive() {
+        class C {
+            class D {}
+        }
+        assertEquals(null, C.D.class.getEnclosingMethod());
+    }
+
+    private static final Object staticAnonymous = new Object() {};
+
+    public void testStaticFieldAnonymousClass() {
+        // The class declared in the <clinit> is enclosed by the <clinit>'s class.
+        // http://b/11245138
+        assertEquals(ReflectionTest.class, staticAnonymous.getClass().getEnclosingClass());
+        // However, because it is anonymous, it has no declaring class.
+        // https://code.google.com/p/android/issues/detail?id=61003
+        assertNull(staticAnonymous.getClass().getDeclaringClass());
+        // Because the class is declared in <clinit> which is not exposed through reflection,
+        // it has no enclosing method or constructor.
+        assertNull(staticAnonymous.getClass().getEnclosingMethod());
+        assertNull(staticAnonymous.getClass().getEnclosingConstructor());
+    }
+
+    public void testGetEnclosingMethodOfTopLevelClass() {
+        assertNull(ReflectionTest.class.getEnclosingMethod());
+    }
+
+    public void testGetEnclosingConstructorOfTopLevelClass() {
+        assertNull(ReflectionTest.class.getEnclosingConstructor());
+    }
+
+    public void testClassEnclosedByConstructor() throws Exception {
+        Foo foo = new Foo("string");
+        assertEquals(Foo.class, foo.c.getEnclosingClass());
+        assertEquals(Foo.class.getDeclaredConstructor(String.class),
+                foo.c.getEnclosingConstructor());
+        assertNull(foo.c.getEnclosingMethod());
+        assertNull(foo.c.getDeclaringClass());
+    }
+
+    public void testClassEnclosedByMethod() throws Exception {
+        Foo foo = new Foo();
+        foo.foo("string");
+        assertEquals(Foo.class, foo.c.getEnclosingClass());
+        assertNull(foo.c.getEnclosingConstructor());
+        assertEquals(Foo.class.getDeclaredMethod("foo", String.class),
+                foo.c.getEnclosingMethod());
+        assertNull(foo.c.getDeclaringClass());
+    }
+
+    public void testGetClasses() throws Exception {
+        // getClasses() doesn't include classes inherited from interfaces!
+        assertSetEquals(HasMemberClasses.class.getClasses(),
+                HasMemberClassesSuperclass.B.class, HasMemberClasses.H.class);
+    }
+
+    public void testGetDeclaredClasses() throws Exception {
+        assertSetEquals(HasMemberClasses.class.getDeclaredClasses(),
+                HasMemberClasses.G.class, HasMemberClasses.H.class, HasMemberClasses.I.class,
+                HasMemberClasses.J.class, HasMemberClasses.K.class, HasMemberClasses.L.class);
+    }
+
+    public void testConstructorGetExceptions() throws Exception {
+        assertSetEquals(HasThrows.class.getConstructor().getExceptionTypes(),
+                IOException.class, InvocationTargetException.class, IllegalStateException.class);
+        assertSetEquals(HasThrows.class.getConstructor(Void.class).getExceptionTypes());
+    }
+
+    public void testClassMethodGetExceptions() throws Exception {
+        assertSetEquals(HasThrows.class.getMethod("foo").getExceptionTypes(),
+                IOException.class, InvocationTargetException.class, IllegalStateException.class);
+        assertSetEquals(HasThrows.class.getMethod("foo", Void.class).getExceptionTypes());
+    }
+
+    public void testProxyMethodGetExceptions() throws Exception {
+        InvocationHandler emptyInvocationHandler = new InvocationHandler() {
+            @Override public Object invoke(Object proxy, Method method, Object[] args) {
+                return null;
+            }
+        };
+
+        Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class[] { ThrowsInterface.class }, emptyInvocationHandler);
+        assertSetEquals(proxy.getClass().getMethod("foo").getExceptionTypes(),
+                IOException.class, InvocationTargetException.class, IllegalStateException.class);
+        assertSetEquals(proxy.getClass().getMethod("foo", Void.class).getExceptionTypes());
+    }
+
+    public void testClassModifiers() {
+        int modifiers = ReflectionTest.class.getModifiers();
+        assertTrue(Modifier.isPublic(modifiers));
+        assertFalse(Modifier.isProtected(modifiers));
+        assertFalse(Modifier.isPrivate(modifiers));
+        assertFalse(Modifier.isAbstract(modifiers));
+        assertFalse(Modifier.isStatic(modifiers));
+        assertTrue(Modifier.isFinal(modifiers));
+        assertFalse(Modifier.isStrict(modifiers));
+    }
+
+    public void testInnerClassModifiers() {
+        int modifiers = Foo.class.getModifiers();
+        assertFalse(Modifier.isPublic(modifiers));
+        assertFalse(Modifier.isProtected(modifiers));
+        assertTrue(Modifier.isPrivate(modifiers));
+        assertFalse(Modifier.isAbstract(modifiers));
+        assertTrue(Modifier.isStatic(modifiers));
+        assertFalse(Modifier.isFinal(modifiers));
+        assertFalse(Modifier.isStrict(modifiers));
+    }
+
+    public void testAnonymousClassModifiers() {
+        int modifiers = staticAnonymous.getClass().getModifiers();
+        assertFalse(Modifier.isPublic(modifiers));
+        assertFalse(Modifier.isProtected(modifiers));
+        assertFalse(Modifier.isPrivate(modifiers));
+        assertFalse(Modifier.isAbstract(modifiers));
+        // http://b/62290080
+        // OpenJDK 9b08 changed the behavior of Modifier.isStatic(modifiers)
+        // to return false, consistent with JLS 15.9.5 ("An anonymous class
+        // is never static"). Earlier versions of OpenJDK returned true.
+        // This test accepts either behavior.
+        Modifier.isStatic(modifiers); // return value is ignored
+        // J2ObjC: recent versions of the JDK return false, but some versions return true.
+        // This test accepts either behavior.
+        Modifier.isFinal(modifiers); // return value is ignored
+        assertFalse(Modifier.isStrict(modifiers));
+    }
+
+    public void testInnerClassName() {
+        assertEquals("ReflectionTest", ReflectionTest.class.getSimpleName());
+        assertEquals("Foo", Foo.class.getSimpleName());
+        assertEquals("", staticAnonymous.getClass().getSimpleName());
+    }
+
+    private static class Foo {
+        Class<?> c;
+        private Foo() {
+        }
+        private Foo(String s) {
+            c = new Object() {}.getClass();
+        }
+        private Foo(int i) {
+            c = new Object() {}.getClass();
+        }
+        private void foo(String s) {
+            c = new Object() {}.getClass();
+        }
+        private void foo(int i) {
+            c = new Object() {}.getClass();
+        }
+    }
+
+    static class HasMemberClassesSuperclass {
+        class A {}
+        public class B {}
+        static class C {}
+    }
+
+    public interface HasMemberClassesInterface {
+        class D {}
+        public class E {}
+        static class F {}
+    }
+
+    public static class HasMemberClasses extends HasMemberClassesSuperclass
+            implements HasMemberClassesInterface {
+        class G {}
+        public class H {}
+        static class I {}
+        enum J {}
+        interface K {}
+        @interface L {}
+    }
+
+    public static class HasThrows {
+        public HasThrows() throws IOException, InvocationTargetException, IllegalStateException {}
+        public HasThrows(Void v) {}
+        public void foo() throws IOException, InvocationTargetException, IllegalStateException {}
+        public void foo(Void v) {}
+    }
+
+    public static interface ThrowsInterface {
+        void foo() throws IOException, InvocationTargetException, IllegalStateException;
+        void foo(Void v);
+    }
+
+    private void assertSetEquals(Object[] actual, Object... expected) {
+        Set<Object> actualSet = new HashSet<Object>(Arrays.asList(actual));
+        Set<Object> expectedSet = new HashSet<Object>(Arrays.asList(expected));
+        assertEquals(expectedSet, actualSet);
     }
 }

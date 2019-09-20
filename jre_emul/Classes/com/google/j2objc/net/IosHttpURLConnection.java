@@ -610,12 +610,13 @@ public class IosHttpURLConnection extends HttpURLConnection {
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
     NSString *statusLine = [NSString stringWithFormat:@"HTTP/1.1 %d %@", responseCode,
         self->responseMessage_];
-    [self addHeaderWithNSString:nil withNSString:statusLine];
+    ComGoogleJ2objcNetIosHttpURLConnection_addHeaderWithNSString_withNSString_(
+        self, nil, statusLine);
 
     // Copy remaining response headers.
     [response.allHeaderFields enumerateKeysAndObjectsUsingBlock:
         ^(id key, id value, BOOL *stop) {
-      [self addHeaderWithNSString:key withNSString:value];
+      ComGoogleJ2objcNetIosHttpURLConnection_addHeaderWithNSString_withNSString_(self, key, value);
     }];
 
     if (response.statusCode >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
@@ -755,7 +756,7 @@ didCompleteWithError:(NSError *)error {
    * Returns an SSLException if that class is linked into the application,
    * otherwise IOException.
    */
-  private static IOException secureConnectionException(String description) {
+  static IOException secureConnectionException(String description) {
     try {
       Class<?> sslExceptionClass = Class.forName("javax.net.ssl.SSLException");
       Constructor<?> constructor = sslExceptionClass.getConstructor(String.class);

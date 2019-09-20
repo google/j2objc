@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -245,14 +244,19 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
 
   public void testCopyWithZoneParameterIsNullable() throws IOException {
     options.setNullability(true);
-    String translation = translateSourceFile(
-        "import javax.annotation.*; "
-        + "@ParametersAreNonnullByDefault class Test implements Cloneable { int i; "
-        + "void test(String s) {}}",
-        "Test", "Test.m");
-    // Verify parameters are non-null by default.
-    assertTranslation(translation, "testWithNSString:(NSString * __nonnull)s {");
-    // Verify that zone is nullable, in spite of the default.
-    assertTranslation(translation, "- (id)copyWithZone:(NSZone * __nullable)zone {");
+    String hFile =
+        translateSourceFile(
+            "import javax.annotation.*; "
+                + "@ParametersAreNonnullByDefault class Test implements Cloneable { int i; "
+                + "void test(String s) {}}",
+            "Test",
+            "Test.h");
+    // Verify interface.
+    assertTranslation(hFile, "testWithNSString:(NSString * __nonnull)s;");
+    assertNotInTranslation(hFile, "copyWithZone");
+    // Verify implementation.
+    String mFile = getTranslatedFile("Test.m");
+    assertTranslation(mFile, "- (void)testWithNSString:(NSString *)s {");
+    assertTranslation(mFile, "- (id)copyWithZone:(NSZone *)zone {");
   }
 }

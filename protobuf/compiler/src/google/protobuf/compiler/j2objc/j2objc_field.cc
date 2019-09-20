@@ -118,7 +118,6 @@ namespace {
     (*variables)["field_name"] = GetFieldName(descriptor);
     (*variables)["flags"] = GetFieldFlags(descriptor);
     (*variables)["field_type"] = GetFieldTypeEnumValue(descriptor);
-    (*variables)["field_data_class_name"] = GetFieldDataClassName(descriptor);
     (*variables)["default_value_type"] = GetDefaultValueTypeName(descriptor);
     (*variables)["default_value"] = DefaultValue(descriptor);
     (*variables)["has_bit_index"] = "0";
@@ -144,6 +143,41 @@ namespace {
   }
 }  // namespace
 
+void CollectSourceImportsForField(
+    std::set<string>* imports, const FieldDescriptor *descriptor) {
+  // Enums and messages have their Class referenced in the field metadata.
+  switch (GetJavaType(descriptor)) {
+    case JAVATYPE_ENUM:
+      imports->insert(GetHeader(descriptor->enum_type()));
+      break;
+    case JAVATYPE_MESSAGE:
+      imports->insert(GetHeader(descriptor->message_type()));
+      break;
+    default:
+      // add nothing.
+      break;
+  }
+}
+
+void GenerateObjcClass(
+    io::Printer *printer, const FieldDescriptor *descriptor,
+    const string& arr_name, uint32_t idx) {
+  JavaType type = GetJavaType(descriptor);
+  string classname;
+  if (type == JAVATYPE_ENUM) {
+    classname = ClassName(descriptor->enum_type());
+  } else if (type == JAVATYPE_MESSAGE) {
+    classname = ClassName(descriptor->message_type());
+  } else {
+    return;  // Other types remain NULL.
+  }
+  printer->Print(
+      "$field_arr$[$idx$].objcType = [$classname$ class];\n",
+      "field_arr", arr_name,
+      "idx", SimpleItoa(idx),
+      "classname", classname);
+}
+
 FieldGenerator::FieldGenerator(const FieldDescriptor *descriptor)
     : descriptor_(descriptor) {
   SetCommonFieldVariables(descriptor, &variables_);
@@ -163,6 +197,8 @@ void FieldGenerator::CollectMessageOrBuilderForwardDeclarations(
 }
 
 void FieldGenerator::CollectSourceImports(std::set<string>* imports) const {
+  // Imports needed for generated metadata of enum and message fields.
+  CollectSourceImportsForField(imports, descriptor_);
 }
 
 void FieldGenerator::CollectMessageOrBuilderImports(
@@ -174,6 +210,10 @@ void FieldGenerator::GenerateFieldHeader(io::Printer *printer) const {
 }
 
 void FieldGenerator::GenerateMapEntryFieldData(io::Printer *printer) const {
+}
+
+void FieldGenerator::GenerateMapEntryNonStaticFieldData(
+    io::Printer *printer, const string& arr_name) const {
 }
 
 void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
@@ -202,7 +242,12 @@ void FieldGenerator::GenerateFieldDataOffset(io::Printer *printer) const {
 }
 
 void FieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
-  printer->Print(variables_, "  .className = $field_data_class_name$,\n");
+  printer->Print("  .objcType = NULL,\n");
+}
+
+void FieldGenerator::GenerateNonStaticFieldData(
+    io::Printer *printer, const string &arr_name, uint32_t idx) const {
+  GenerateObjcClass(printer, descriptor_, arr_name, idx);
 }
 
 SingleFieldGenerator::SingleFieldGenerator(
@@ -210,14 +255,6 @@ SingleFieldGenerator::SingleFieldGenerator(
   : FieldGenerator(descriptor) {
   if (descriptor->containing_oneof() == NULL) {
     variables_["has_bit_index"] = SimpleItoa((*numHasBits)++);
-  }
-}
-
-void SingleFieldGenerator::CollectSourceImports(
-    std::set<string>* imports) const {
-  FieldGenerator::CollectSourceImports(imports);
-  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
-    imports->insert(GetHeader(descriptor_->enum_type()));
   }
 }
 
@@ -283,7 +320,9 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     printer->Print(variables_,
         "- ($classname$_Builder*)\n"
         "    add$capitalized_name$With$parameter_type$_Builder:\n"
-        "    ($parameter_type$_Builder *)value;\n");
+        "    ($parameter_type$_Builder *)value;\n"
+        "- ($classname$_Builder *)remove$capitalized_name$WithInt:(int)index;\n"
+    );
   }
 }
 
@@ -301,8 +340,9 @@ void RepeatedFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
 }
 
 MapFieldGenerator::MapFieldGenerator(
-    const FieldDescriptor *descriptor, uint32_t entry_fields_idx)
-    : FieldGenerator(descriptor) {
+    const FieldDescriptor *descriptor, uint32_t map_fields_idx)
+    : FieldGenerator(descriptor),
+    entry_fields_idx_(map_fields_idx * 2) {
   GOOGLE_CHECK_EQ(FieldDescriptor::TYPE_MESSAGE, descriptor->type());
   const Descriptor* entry_message = descriptor->message_type();
   GOOGLE_CHECK(entry_message->options().map_entry());
@@ -315,8 +355,7 @@ MapFieldGenerator::MapFieldGenerator(
   variables_["value_storage_type"] = GetStorageType(value_field_);
   variables_["value_parameter_type"] = GetParameterType(value_field_);
   variables_["value_descriptor_type"] = GetFieldTypeEnumValue(value_field_);
-  variables_["value_class_name"] = GetFieldDataClassName(value_field_);
-  variables_["map_entry_fields_idx"] = SimpleItoa(entry_fields_idx * 2);
+  variables_["map_entry_fields_idx"] = SimpleItoa(entry_fields_idx_);
 }
 
 void MapFieldGenerator::CollectForwardDeclarations(
@@ -330,7 +369,10 @@ void MapFieldGenerator::CollectMessageOrBuilderForwardDeclarations(
 }
 
 void MapFieldGenerator::CollectSourceImports(std::set<string>* imports) const {
+  // Don't call super. Map fields are a special case.
   imports->insert("com/google/protobuf/MapField.h");
+  CollectSourceImportsForField(imports, key_field_);
+  CollectSourceImportsForField(imports, value_field_);
 }
 
 void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
@@ -368,9 +410,20 @@ void MapFieldGenerator::GenerateMapEntryFieldData(io::Printer *printer) const {
   MapEntryFieldGenerator(value_field_).GenerateFieldData(printer);
 }
 
+void MapFieldGenerator::GenerateMapEntryNonStaticFieldData(
+    io::Printer *printer, const string& arr_name) const {
+  GenerateObjcClass(printer, key_field_, arr_name, entry_fields_idx_);
+  GenerateObjcClass(printer, value_field_, arr_name, entry_fields_idx_ + 1);
+}
+
 void MapFieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
   printer->Print(variables_,
       "  .mapEntryFields = &mapEntryFields[$map_entry_fields_idx$],\n");
+}
+
+void MapFieldGenerator::GenerateNonStaticFieldData(
+    io::Printer *printer, const string& arr_name, uint32_t idx) const {
+  // Generate nothing.
 }
 
 void MapEntryFieldGenerator::GenerateFieldDataOffset(io::Printer *printer)

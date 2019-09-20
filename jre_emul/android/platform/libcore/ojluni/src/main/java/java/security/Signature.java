@@ -1,6 +1,6 @@
 /*
+ * Copyright (c) 1996, 2015, Oracle and/or its affiliates. All rights reserved.
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -42,8 +42,6 @@ import javax.crypto.CipherSpi;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.NoSuchPaddingException;
-
-//import sun.security.util.Debug;
 import sun.security.jca.*;
 import sun.security.jca.GetInstance.Instance;
 
@@ -54,10 +52,10 @@ import sun.security.jca.GetInstance.Instance;
  *
  * <p> The signature algorithm can be, among others, the NIST standard
  * DSA, using DSA and SHA-1. The DSA algorithm using the
- * SHA-1 message digest algorithm can be specified as <tt>SHA1withDSA</tt>.
+ * SHA-1 message digest algorithm can be specified as {@code SHA1withDSA}.
  * In the case of RSA, there are multiple choices for the message digest
  * algorithm, so the signing algorithm could be specified as, for example,
- * <tt>MD2withRSA</tt>, <tt>MD5withRSA</tt>, or <tt>SHA1withRSA</tt>.
+ * {@code MD2withRSA}, {@code MD5withRSA}, or {@code SHA1withRSA}.
  * The algorithm name must be specified, as there is no default.
  *
  * <p> A Signature object can be used to generate and verify digital
@@ -78,13 +76,13 @@ import sun.security.jca.GetInstance.Instance;
  *     (see {@link #initSign(PrivateKey)}
  *     and {@link #initSign(PrivateKey, SecureRandom)}).
  *
- *     </ul><p>
+ *     </ul>
  *
- * <li>Updating<p>
+ * <li>Updating
  *
  * <p>Depending on the type of initialization, this will update the
  * bytes to be signed or verified. See the
- * {@link #update(byte) update} methods.<p>
+ * {@link #update(byte) update} methods.
  *
  * <li>Signing or Verifying a signature on all updated bytes. See the
  * {@link #sign() sign} methods and the {@link #verify(byte[]) verify}
@@ -93,114 +91,150 @@ import sun.security.jca.GetInstance.Instance;
  * </ol>
  *
  * <p>Note that this class is abstract and extends from
- * <code>SignatureSpi</code> for historical reasons.
+ * {@code SignatureSpi} for historical reasons.
  * Application developers should only take notice of the methods defined in
- * this <code>Signature</code> class; all the methods in
+ * this {@code Signature} class; all the methods in
  * the superclass are intended for cryptographic service providers who wish to
  * supply their own implementations of digital signature algorithms.
  *
- * <p> Android provides the following <code>Signature</code> algorithms:
+ * <p> Android provides the following {@code Signature} algorithms:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>DSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>DSAwithSHA1</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>DSS</td>
- *             <td>1&ndash;19</td>
- *         </tr>
- *         <tr>
- *             <td>ECDSA</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>ECDSAwithSHA1</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>MD2withRSA</td>
- *             <td>1&ndash;3</td>
- *         </tr>
- *         <tr>
- *             <td>MD4withRSA</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>MD5withRSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>MD5withRSA/ISO9796-2</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>NONEwithDSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>NONEwithECDSA</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>NONEwithRSA</td>
- *             <td>17+</td>
- *         </tr>
- *         <tr>
- *             <td>RSASSA-PSS</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>SHA1withDSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA1withECDSA</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA1withRSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA1withRSA/ISO9796-2</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>SHA256withECDSA</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA256withRSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA384withECDSA</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA384withRSA</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA512withECDSA</td>
- *             <td>11+</td>
- *         </tr>
- *         <tr>
- *             <td>SHA512withRSA</td>
- *             <td>1+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>DSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>DSAwithSHA1</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DSS</td>
+ *       <td>1-19</td>
+ *     </tr>
+ *     <tr>
+ *       <td>ECDSA</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>ECDSAwithSHA1</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>MD2withRSA</td>
+ *       <td>1-3</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>MD4withRSA</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>MD5withRSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>MD5withRSA/ISO9796-2</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>NONEwithDSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>NONEwithECDSA</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>NONEwithRSA</td>
+ *       <td>17+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>RSASSA-PSS</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA1withDSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA1withECDSA</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA1withRSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>SHA1withRSA/ISO9796-2</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA1withRSA/PSS</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA224withDSA</td>
+ *       <td>20+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA224withECDSA</td>
+ *       <td>20+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA224withRSA</td>
+ *       <td>20+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA224withRSA/PSS</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA256withDSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA256withECDSA</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA256withRSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA256withRSA/PSS</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA384withECDSA</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA384withRSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA384withRSA/PSS</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA512withECDSA</td>
+ *       <td>11+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA512withRSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SHA512withRSA/PSS</td>
+ *       <td>23+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * These algorithms are described in the <a href=
@@ -214,8 +248,17 @@ import sun.security.jca.GetInstance.Instance;
 
 public abstract class Signature extends SignatureSpi {
 
-//    private static final Debug debug =
-//                        Debug.getInstance("jca", "Signature");
+    // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+    /*
+    private static final Debug debug =
+                        Debug.getInstance("jca", "Signature");
+
+    private static final Debug pdebug =
+                        Debug.getInstance("provider", "Provider");
+    private static final boolean skipDebug =
+        Debug.isOn("engine=") && !Debug.isOn("signature");
+    // END Android-removed: this debugging mechanism is not supported in Android.
+    */
 
     /*
      * The algorithm for this signature object.
@@ -344,6 +387,7 @@ public abstract class Signature extends SignatureSpi {
         Signature sig;
         if (instance.impl instanceof Signature) {
             sig = (Signature)instance.impl;
+            sig.algorithm = algorithm;
         } else {
             SignatureSpi spi = (SignatureSpi)instance.impl;
             sig = new Delegate(spi, algorithm);
@@ -358,8 +402,9 @@ public abstract class Signature extends SignatureSpi {
         signatureInfo = new ConcurrentHashMap<String,Boolean>();
         Boolean TRUE = Boolean.TRUE;
         // pre-initialize with values for our SignatureSpi implementations
-//        signatureInfo.put("sun.security.provider.DSA$RawDSA", TRUE);
-//        signatureInfo.put("sun.security.provider.DSA$SHA1withDSA", TRUE);
+        /* J2ObjC removed.
+        signatureInfo.put("sun.security.provider.DSA$RawDSA", TRUE);
+        signatureInfo.put("sun.security.provider.DSA$SHA1withDSA", TRUE); */
         signatureInfo.put("sun.security.rsa.RSASignature$MD2withRSA", TRUE);
         signatureInfo.put("sun.security.rsa.RSASignature$MD5withRSA", TRUE);
         signatureInfo.put("sun.security.rsa.RSASignature$SHA1withRSA", TRUE);
@@ -385,11 +430,15 @@ public abstract class Signature extends SignatureSpi {
                 // instance of SignatureSpi but not Signature
                 boolean r = (instance instanceof SignatureSpi)
                                 && (instance instanceof Signature == false);
-//                if ((debug != null) && (r == false)) {
-//                    debug.println("Not a SignatureSpi " + className);
-//                    debug.println("Delayed provider selection may not be "
-//                        + "available for algorithm " + s.getAlgorithm());
-//                }
+                // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+                /*
+                if ((debug != null) && (r == false)) {
+                    debug.println("Not a SignatureSpi " + className);
+                    debug.println("Delayed provider selection may not be "
+                        + "available for algorithm " + s.getAlgorithm());
+                }
+                */
+                // END Android-removed: this debugging mechanism is not supported in Android.
                 result = Boolean.valueOf(r);
                 signatureInfo.put(className, result);
             } catch (Exception e) {
@@ -546,6 +595,15 @@ public abstract class Signature extends SignatureSpi {
             throws InvalidKeyException {
         engineInitVerify(publicKey);
         state = VERIFY;
+
+        // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+        /*
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("Signature." + algorithm +
+                " verification algorithm from: " + this.provider.getName());
+        }
+        */
+        // END Android-removed: this debugging mechanism is not supported in Android.
     }
 
     /**
@@ -556,7 +614,7 @@ public abstract class Signature extends SignatureSpi {
      * extension field implies that the public key in
      * the certificate and its corresponding private key are not
      * supposed to be used for digital signatures, an
-     * <code>InvalidKeyException</code> is thrown.
+     * {@code InvalidKeyException} is thrown.
      *
      * @param certificate the certificate of the identity whose signature is
      * going to be verified.
@@ -590,6 +648,15 @@ public abstract class Signature extends SignatureSpi {
         PublicKey publicKey = certificate.getPublicKey();
         engineInitVerify(publicKey);
         state = VERIFY;
+
+        // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+        /*
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("Signature." + algorithm +
+                " verification algorithm from: " + this.provider.getName());
+        }
+        */
+        // END Android-removed: this debugging mechanism is not supported in Android.
     }
 
     /**
@@ -606,6 +673,15 @@ public abstract class Signature extends SignatureSpi {
             throws InvalidKeyException {
         engineInitSign(privateKey);
         state = SIGN;
+
+        // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+        /*
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("Signature." + algorithm +
+                " signing algorithm from: " + this.provider.getName());
+        }
+        */
+        // END Android-removed: this debugging mechanism is not supported in Android.
     }
 
     /**
@@ -624,6 +700,15 @@ public abstract class Signature extends SignatureSpi {
             throws InvalidKeyException {
         engineInitSign(privateKey, random);
         state = SIGN;
+
+        // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+        /*
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("Signature." + algorithm +
+                " signing algorithm from: " + this.provider.getName());
+        }
+        */
+        // END Android-removed: this debugging mechanism is not supported in Android.
     }
 
     /**
@@ -633,10 +718,10 @@ public abstract class Signature extends SignatureSpi {
      *
      * <p>A call to this method resets this signature object to the state
      * it was in when previously initialized for signing via a
-     * call to <code>initSign(PrivateKey)</code>. That is, the object is
+     * call to {@code initSign(PrivateKey)}. That is, the object is
      * reset and available to generate another signature from the same
-     * signer, if desired, via new calls to <code>update</code> and
-     * <code>sign</code>.
+     * signer, if desired, via new calls to {@code update} and
+     * {@code sign}.
      *
      * @return the signature bytes of the signing operation's result.
      *
@@ -654,28 +739,28 @@ public abstract class Signature extends SignatureSpi {
 
     /**
      * Finishes the signature operation and stores the resulting signature
-     * bytes in the provided buffer <code>outbuf</code>, starting at
-     * <code>offset</code>.
+     * bytes in the provided buffer {@code outbuf}, starting at
+     * {@code offset}.
      * The format of the signature depends on the underlying
      * signature scheme.
      *
      * <p>This signature object is reset to its initial state (the state it
-     * was in after a call to one of the <code>initSign</code> methods) and
+     * was in after a call to one of the {@code initSign} methods) and
      * can be reused to generate further signatures with the same private key.
      *
      * @param outbuf buffer for the signature result.
      *
-     * @param offset offset into <code>outbuf</code> where the signature is
+     * @param offset offset into {@code outbuf} where the signature is
      * stored.
      *
-     * @param len number of bytes within <code>outbuf</code> allotted for the
+     * @param len number of bytes within {@code outbuf} allotted for the
      * signature.
      *
-     * @return the number of bytes placed into <code>outbuf</code>.
+     * @return the number of bytes placed into {@code outbuf}.
      *
      * @exception SignatureException if this signature object is not
      * initialized properly, if this signature algorithm is unable to
-     * process the input data provided, or if <code>len</code> is less
+     * process the input data provided, or if {@code len} is less
      * than the actual signature length.
      *
      * @since 1.2
@@ -684,6 +769,9 @@ public abstract class Signature extends SignatureSpi {
         throws SignatureException {
         if (outbuf == null) {
             throw new IllegalArgumentException("No output buffer given");
+        }
+        if (offset < 0 || len < 0) {
+            throw new IllegalArgumentException("offset or len is less than 0");
         }
         if (outbuf.length - offset < len) {
             throw new IllegalArgumentException
@@ -701,9 +789,9 @@ public abstract class Signature extends SignatureSpi {
      *
      * <p>A call to this method resets this signature object to the state
      * it was in when previously initialized for verification via a
-     * call to <code>initVerify(PublicKey)</code>. That is, the object is
+     * call to {@code initVerify(PublicKey)}. That is, the object is
      * reset and available to verify another signature from the identity
-     * whose public key was specified in the call to <code>initVerify</code>.
+     * whose public key was specified in the call to {@code initVerify}.
      *
      * @param signature the signature bytes to be verified.
      *
@@ -728,9 +816,9 @@ public abstract class Signature extends SignatureSpi {
      *
      * <p>A call to this method resets this signature object to the state
      * it was in when previously initialized for verification via a
-     * call to <code>initVerify(PublicKey)</code>. That is, the object is
+     * call to {@code initVerify(PublicKey)}. That is, the object is
      * reset and available to verify another signature from the identity
-     * whose public key was specified in the call to <code>initVerify</code>.
+     * whose public key was specified in the call to {@code initVerify}.
      *
      *
      * @param signature the signature bytes to be verified.
@@ -743,19 +831,26 @@ public abstract class Signature extends SignatureSpi {
      * initialized properly, the passed-in signature is improperly
      * encoded or of the wrong type, if this signature algorithm is unable to
      * process the input data provided, etc.
-     * @exception IllegalArgumentException if the <code>signature</code>
-     * byte array is null, or the <code>offset</code> or <code>length</code>
-     * is less than 0, or the sum of the <code>offset</code> and
-     * <code>length</code> is greater than the length of the
-     * <code>signature</code> byte array.
+     * @exception IllegalArgumentException if the {@code signature}
+     * byte array is null, or the {@code offset} or {@code length}
+     * is less than 0, or the sum of the {@code offset} and
+     * {@code length} is greater than the length of the
+     * {@code signature} byte array.
      * @since 1.4
      */
     public final boolean verify(byte[] signature, int offset, int length)
         throws SignatureException {
         if (state == VERIFY) {
-            if ((signature == null) || (offset < 0) || (length < 0) ||
-                (length > signature.length - offset)) {
-                throw new IllegalArgumentException("Bad arguments");
+            if (signature == null) {
+                throw new IllegalArgumentException("signature is null");
+            }
+            if (offset < 0 || length < 0) {
+                throw new IllegalArgumentException
+                    ("offset or length is less than 0");
+            }
+            if (signature.length - offset < length) {
+                throw new IllegalArgumentException
+                    ("signature too small for specified offset and length");
             }
 
             return engineVerify(signature, offset, length);
@@ -807,17 +902,17 @@ public abstract class Signature extends SignatureSpi {
      */
     public final void update(byte[] data, int off, int len)
             throws SignatureException {
-        // Android-changed: Check data, off & len early and throw an exception
-        // as soon as possible.
-        if (data == null) {
-            throw new IllegalArgumentException("data == null");
-        }
-
-        if (off < 0 || len < 0 || off + len > data.length) {
-            throw new IllegalArgumentException();
-        }
-
         if (state == SIGN || state == VERIFY) {
+            if (data == null) {
+                throw new IllegalArgumentException("data is null");
+            }
+            if (off < 0 || len < 0) {
+                throw new IllegalArgumentException("off or len is less than 0");
+            }
+            if (data.length - off < len) {
+                throw new IllegalArgumentException
+                    ("data too small for specified offset and length");
+            }
             engineUpdate(data, off, len);
         } else {
             throw new SignatureException("object not initialized for "
@@ -827,8 +922,8 @@ public abstract class Signature extends SignatureSpi {
 
     /**
      * Updates the data to be signed or verified using the specified
-     * ByteBuffer. Processes the <code>data.remaining()</code> bytes
-     * starting at at <code>data.position()</code>.
+     * ByteBuffer. Processes the {@code data.remaining()} bytes
+     * starting at at {@code data.position()}.
      * Upon return, the buffer's position will be equal to its limit;
      * its limit will not have changed.
      *
@@ -895,7 +990,7 @@ public abstract class Signature extends SignatureSpi {
      * @param param the string identifier of the parameter.
      * @param value the parameter value.
      *
-     * @exception InvalidParameterException if <code>param</code> is an
+     * @exception InvalidParameterException if {@code param} is an
      * invalid parameter for this signature algorithm engine,
      * the parameter is already set
      * and cannot be set again, a security exception occurs, and so on.
@@ -961,7 +1056,7 @@ public abstract class Signature extends SignatureSpi {
      * @return the object that represents the parameter value, or null if
      * there is none.
      *
-     * @exception InvalidParameterException if <code>param</code> is an invalid
+     * @exception InvalidParameterException if {@code param} is an invalid
      * parameter for this engine, or another exception occurs while
      * trying to get this parameter.
      *
@@ -970,7 +1065,7 @@ public abstract class Signature extends SignatureSpi {
      * @deprecated Deprecated.
      */
     @Deprecated
-    // Android changed add "Deprecated."
+    // Android-changed add "Deprecated."
     public final Object getParameter(String param)
             throws InvalidParameterException {
         return engineGetParameter(param);
@@ -982,7 +1077,7 @@ public abstract class Signature extends SignatureSpi {
      * @return a clone if the implementation is cloneable.
      *
      * @exception CloneNotSupportedException if this is called
-     * on an implementation that does not support <code>Cloneable</code>.
+     * on an implementation that does not support {@code Cloneable}.
      */
     public Object clone() throws CloneNotSupportedException {
         if (this instanceof Cloneable) {
@@ -1015,10 +1110,17 @@ public abstract class Signature extends SignatureSpi {
      * and its original parent (Object).
      */
 
+    @SuppressWarnings("deprecation")
     private static class Delegate extends Signature {
 
         // The provider implementation (delegate)
         // filled in once the provider is selected
+        // BEGIN Android-added
+        // (Not necessarily Android specific)
+        // Invariant to be preserved: sigSpi cannot be changed once it was assigned to something
+        // different than null and lock is null. That is the case when sigSpi is specified in the
+        // constructor.
+        // END Android-added
         private SignatureSpi sigSpi;
 
         // lock for mutex during provider selection
@@ -1043,7 +1145,7 @@ public abstract class Signature extends SignatureSpi {
          * @return a clone if the delegate is cloneable.
          *
          * @exception CloneNotSupportedException if this is called on a
-         * delegate that does not support <code>Cloneable</code>.
+         * delegate that does not support {@code Cloneable}.
          */
         public Object clone() throws CloneNotSupportedException {
             chooseFirstProvider();
@@ -1097,18 +1199,22 @@ public abstract class Signature extends SignatureSpi {
                 if (sigSpi != null) {
                     return;
                 }
-//                if (debug != null) {
-//                    int w = --warnCount;
-//                    if (w >= 0) {
-//                        debug.println("Signature.init() not first method "
-//                            + "called, disabling delayed provider selection");
-//                        if (w == 0) {
-//                            debug.println("Further warnings of this type will "
-//                                + "be suppressed");
-//                        }
-//                        new Exception("Call trace").printStackTrace();
-//                    }
-//                }
+                // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+                /*
+                if (debug != null) {
+                    int w = --warnCount;
+                    if (w >= 0) {
+                        debug.println("Signature.init() not first method "
+                            + "called, disabling delayed provider selection");
+                        if (w == 0) {
+                            debug.println("Further warnings of this type will "
+                                + "be suppressed");
+                        }
+                        new Exception("Call trace").printStackTrace();
+                    }
+                }
+                */
+                // END Android-removed: this debugging mechanism is not supported in Android.
                 Exception lastException = null;
                 List<Service> list;
                 if (((Signature)this).algorithm.equalsIgnoreCase(RSA_SIGNATURE)) {
@@ -1306,6 +1412,9 @@ public abstract class Signature extends SignatureSpi {
 
         @Override
         public SignatureSpi getCurrentSpi() {
+            if (lock == null) {
+                return sigSpi;
+            }
             synchronized (lock) {
                 return sigSpi;
             }
@@ -1313,6 +1422,7 @@ public abstract class Signature extends SignatureSpi {
     }
 
     // adapter for RSA/ECB/PKCS1Padding ciphers
+    @SuppressWarnings("deprecation")
     private static class CipherAdapter extends SignatureSpi {
 
         private final Cipher cipher;
@@ -1378,7 +1488,7 @@ public abstract class Signature extends SignatureSpi {
                 byte[] out = cipher.doFinal(sigBytes);
                 byte[] dataBytes = data.toByteArray();
                 data.reset();
-                return Arrays.equals(out, dataBytes);
+                return MessageDigest.isEqual(out, dataBytes);
             } catch (BadPaddingException e) {
                 // e.g. wrong public key used
                 // return false rather than throwing exception

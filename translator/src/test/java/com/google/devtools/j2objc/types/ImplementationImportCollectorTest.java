@@ -221,4 +221,17 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         + "elem.hashCode(); } } } }", "B", "B.m");
     assertTranslation(translation, "#include \"java/util/ArrayList.h\"");
   }
+
+  // Issue #924.
+  public void testImportMultipleOuterClass() throws IOException {
+    createClassFile("a.b.c.Test", "package a.b.c; public class Test {} class Foo {}");
+    parser.addClasspathEntry(tempDir.getAbsolutePath());
+    String translation = translateSourceFile(
+        "package a.b.c; public class Bar { Object test() { return new Foo(); }}",
+        "a.b.c.Bar", "a/b/c/Bar.m");
+
+    // Verify that Test.h is imported, since that's what is generated from Test.java.
+    assertTranslation(translation, "#include \"a/b/c/Test.h\"");
+    assertNotInTranslation(translation, "#include \"a/b/c/Foo.h\"");
+  }
 }

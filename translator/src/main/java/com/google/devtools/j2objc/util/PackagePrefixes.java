@@ -17,12 +17,20 @@ package com.google.devtools.j2objc.util;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.FileInputStream;
+import com.google.j2objc.annotations.ObjectiveCName;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.PackageElement;
 
 /**
@@ -46,7 +54,7 @@ import javax.lang.model.element.PackageElement;
 public final class PackagePrefixes {
 
   private final PackageInfoLookup packageLookup;
-  private Map<String, String> mappedPrefixes = Maps.newHashMap();
+  private final Map<String, String> mappedPrefixes = Maps.newHashMap();
 
   // A key array is used so that wildcards are checked in declared order.
   // There is one wildcard value for each key, enforced within this class.
@@ -116,6 +124,12 @@ public final class PackagePrefixes {
 
     prefix = packageLookup.getObjectiveCName(packageName);
     if (prefix == null) {
+      AnnotationMirror annotation = ElementUtil.getAnnotation(packageElement, ObjectiveCName.class);
+      if (annotation != null) {
+        prefix = (String) ElementUtil.getAnnotationValue(annotation, "value");
+      }
+    }
+    if (prefix == null) {
       prefix = NameTable.camelCaseQualifiedName(packageName);
     }
     addPrefix(packageName, prefix);
@@ -126,19 +140,25 @@ public final class PackagePrefixes {
    * Add a file map of packages to their respective prefixes, using the Properties file format.
    */
   public void addPrefixesFile(String filename) throws IOException {
-    Properties props = new Properties();
-    FileInputStream fis = new FileInputStream(filename);
-    props.load(fis);
-    fis.close();
-    addPrefixProperties(props);
+    try (Reader r = Files.newBufferedReader(Paths.get(filename), StandardCharsets.UTF_8)) {
+      addPrefixProperties(r);
+    }
   }
 
-  /**
-   * Add a set of package=prefix properties.
-   */
-  public void addPrefixProperties(Properties props) {
-    for (String pkg : props.stringPropertyNames()) {
-      addPrefix(pkg, props.getProperty(pkg).trim());
+  @VisibleForTesting
+  void addPrefixProperties(Reader r) throws IOException {
+    // To avoid Properties using key hash ordering, parse each line as a separate Properties.
+    try (BufferedReader br = new BufferedReader(r)) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        Properties props = new Properties();
+        props.load(new StringReader(line));
+        Enumeration<?> names = props.propertyNames();
+        while (names.hasMoreElements()) {
+          String name = (String) names.nextElement();
+          addPrefix(name.trim(), props.getProperty(name).trim());
+        }
+      }
     }
   }
 

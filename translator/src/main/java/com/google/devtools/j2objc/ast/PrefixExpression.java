@@ -14,8 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Maps;
-import java.util.Map;
+import com.sun.source.tree.Tree;
+import java.util.EnumMap;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -26,30 +26,32 @@ public class PrefixExpression extends Expression {
   /**
    * Prefix operators.
    */
-  public static enum Operator {
-    INCREMENT("++"),
-    DECREMENT("--"),
-    POSITIVE("+"),
-    NEGATIVE("-"),
-    COMPLEMENT("~"),
-    NOT("!"),
-    DEREFERENCE("*"),
-    ADDRESS_OF("&");
+  public enum Operator {
+    INCREMENT("++", Tree.Kind.PREFIX_INCREMENT),
+    DECREMENT("--", Tree.Kind.PREFIX_DECREMENT),
+    POSITIVE("+", Tree.Kind.UNARY_PLUS),
+    NEGATIVE("-", Tree.Kind.UNARY_MINUS),
+    COMPLEMENT("~", Tree.Kind.BITWISE_COMPLEMENT),
+    NOT("!", Tree.Kind.LOGICAL_COMPLEMENT),
+    DEREFERENCE("*", null),
+    ADDRESS_OF("&", null);
 
     private final String opString;
-    private static Map<String, Operator> stringLookup = Maps.newHashMap();
+    private final Tree.Kind javacKind;
+    private static final EnumMap<Tree.Kind, Operator> javacKindLookup =
+        new EnumMap<>(Tree.Kind.class);
 
     static {
       for (Operator operator : Operator.values()) {
-        stringLookup.put(operator.toString(), operator);
+        if (operator.javacKind != null) {
+          javacKindLookup.put(operator.javacKind, operator);
+        }
       }
-      // javac uses "+++" and "---" to differentiate from infix operators.
-      stringLookup.put("+++", POSITIVE);
-      stringLookup.put("---", NEGATIVE);
     }
 
-    private Operator(String opString) {
+    Operator(String opString, Tree.Kind javacKind) {
       this.opString = opString;
+      this.javacKind = javacKind;
     }
 
     @Override
@@ -57,8 +59,8 @@ public class PrefixExpression extends Expression {
       return opString;
     }
 
-    public static Operator parse(String newOp) {
-      Operator result = stringLookup.get(newOp);
+    public static Operator from(Tree.Kind kind) {
+      Operator result = javacKindLookup.get(kind);
       assert result != null;
       return result;
     }

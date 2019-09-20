@@ -17,10 +17,12 @@ package com.google.devtools.cyclefinder;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.BufferedReader;
@@ -28,6 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -61,7 +65,13 @@ class Options {
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean printReferenceGraph = false;
-  private SourceVersion sourceVersion = SourceVersion.defaultVersion();
+  private SourceVersion sourceVersion = null;
+  private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
+
+  // Flags that are directly forwarded to the javac parser.
+  private static final ImmutableSet<String> PLATFORM_MODULE_SYSTEM_OPTIONS =
+      ImmutableSet.of("--patch-module", "--system", "--add-reads");
+  private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -121,6 +131,9 @@ class Options {
   }
 
   public SourceVersion sourceVersion() {
+    if (sourceVersion == null) {
+      sourceVersion = SourceVersion.defaultVersion();
+    }
     return sourceVersion;
   }
 
@@ -136,6 +149,27 @@ class Options {
   @VisibleForTesting
   public void setPrintReferenceGraph() {
      printReferenceGraph = true;
+  }
+
+  public ExternalAnnotations externalAnnotations() {
+    return externalAnnotations;
+  }
+
+  private void addExternalAnnotationFile(String file) throws IOException {
+    externalAnnotations.addExternalAnnotationFile(file);
+  }
+
+  @VisibleForTesting
+  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
+    externalAnnotations.addExternalAnnotationFileContents(fileContents);
+  }
+
+  public void addPlatformModuleSystemOptions(String... flags) {
+    Collections.addAll(platformModuleSystemOptions, flags);
+  }
+
+  public List<String> getPlatformModuleSystemOptions() {
+    return platformModuleSystemOptions;
   }
 
   public static void usage(String invalidUseMsg) {
@@ -199,16 +233,28 @@ class Options {
         }
         try {
           options.sourceVersion = SourceVersion.parse(args[nArg]);
-          // TODO(tball): remove when Java 9 source is supported.
-          if (options.sourceVersion == SourceVersion.JAVA_9) {
-            ErrorUtil.warning("Java 9 source version is not supported, using Java 8.");
-            options.sourceVersion = SourceVersion.JAVA_8;
+          SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
+          if (options.sourceVersion.version() > maxVersion.version()) {
+            ErrorUtil.warning("Java " + options.sourceVersion.version() + " source version is not "
+                + "supported, using Java " + maxVersion.version() + ".");
+            options.sourceVersion = maxVersion;
           }
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + args[nArg]);
         }
       } else if (arg.equals("--print-reference-graph")) {
         options.printReferenceGraph = true;
+      } else if (arg.equals("-external-annotation-file")) {
+        if (++nArg == args.length) {
+          usage(arg + " requires an argument");
+        }
+        options.addExternalAnnotationFile(args[nArg]);
+      } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
+        String option = arg;
+        if (++nArg == args.length) {
+          usage(option + " requires an argument");
+        }
+        options.addPlatformModuleSystemOptions(option, args[nArg]);
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {

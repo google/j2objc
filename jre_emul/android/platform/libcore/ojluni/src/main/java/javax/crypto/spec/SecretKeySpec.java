@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,9 +25,9 @@
 
 package javax.crypto.spec;
 
-import java.io.UnsupportedEncodingException;
-import java.security.Key;
+import java.security.MessageDigest;
 import java.security.spec.KeySpec;
+import java.util.Locale;
 import javax.crypto.SecretKey;
 
 /**
@@ -95,7 +95,7 @@ public class SecretKeySpec implements KeySpec, SecretKey {
         if (key.length == 0) {
             throw new IllegalArgumentException("Empty key");
         }
-        this.key = (byte[])key.clone();
+        this.key = key.clone();
         this.algorithm = algorithm;
     }
 
@@ -132,7 +132,7 @@ public class SecretKeySpec implements KeySpec, SecretKey {
      * for information about standard algorithm names.
      * @exception IllegalArgumentException if <code>algorithm</code>
      * is null or <code>key</code> is null, empty, or too short,
-     * i.e. <code>key.length-offset<len</code>.
+     * i.e. {@code key.length-offset<len}.
      * @exception ArrayIndexOutOfBoundsException is thrown if
      * <code>offset</code> or <code>len</code> index bytes outside the
      * <code>key</code>.
@@ -181,7 +181,7 @@ public class SecretKeySpec implements KeySpec, SecretKey {
      * each time this method is called.
      */
     public byte[] getEncoded() {
-        return (byte[])this.key.clone();
+        return this.key.clone();
     }
 
     /**
@@ -196,7 +196,8 @@ public class SecretKeySpec implements KeySpec, SecretKey {
         if (this.algorithm.equalsIgnoreCase("TripleDES"))
             return (retval ^= "desede".hashCode());
         else
-            return (retval ^= this.algorithm.toLowerCase().hashCode());
+            return (retval ^=
+                    this.algorithm.toLowerCase(Locale.ENGLISH).hashCode());
     }
 
    /**
@@ -228,6 +229,6 @@ public class SecretKeySpec implements KeySpec, SecretKey {
 
         byte[] thatKey = ((SecretKey)obj).getEncoded();
 
-        return java.util.Arrays.equals(this.key, thatKey);
+        return MessageDigest.isEqual(this.key, thatKey);
     }
 }

@@ -1,0 +1,171 @@
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/build.xml jarjar-1.4-patched/build.xml
+--- jarjar-1.4/build.xml	2012-07-02 13:28:08.000000000 -0700
++++ jarjar-1.4-patched/build.xml	2019-02-27 14:47:11.000000000 -0800
+@@ -95,9 +95,9 @@
+         <mkdir dir="dist"/>
+         <jarjar jarfile="${jarfile}">
+             <fileset dir="build/main"/>
+-            <zipfileset src="lib/asm-4.0.jar"/>
+-            <zipfileset src="lib/asm-commons-4.0.jar">
+-                <include name="org/objectweb/asm/commons/Remap*.class"/>
++            <zipfileset src="lib/asm-7.0.jar"/>
++            <zipfileset src="lib/asm-commons-7.0.jar">
++                <include name="org/objectweb/asm/commons/*Remap*.class"/>
+                 <include name="org/objectweb/asm/commons/LocalVariablesSorter.class"/>
+             </zipfileset>
+         	<keep pattern="com.tonicsystems.jarjar.Main"/>
+@@ -208,8 +208,8 @@
+         <delete file="${test.jar}"/>
+         <jarjar2 jarfile="${test.jar}">
+             <fileset dir="build/main"/>
+-            <zipfileset src="lib/asm-4.0.jar"/>
+-            <zipfileset src="lib/asm-commons-4.0.jar"/>
++            <zipfileset src="lib/asm-7.0.jar"/>
++            <zipfileset src="lib/asm-commons-7.0.jar"/>
+             <rule pattern="org.objectweb.asm.**" result="com.tonicsystems.jarjar.asm.@1"/>
+         </jarjar2>
+         <delete file="${test.jar}"/>
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/DepFindVisitor.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/DepFindVisitor.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/DepFindVisitor.java	2012-07-02 13:19:28.000000000 -0700
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/DepFindVisitor.java	2019-02-27 14:47:11.000000000 -0800
+@@ -25,7 +25,7 @@
+ import org.objectweb.asm.Type;
+ import org.objectweb.asm.commons.*;
+ 
+-class DepFindVisitor extends RemappingClassAdapter
++class DepFindVisitor extends ClassRemapper
+ {
+     public DepFindVisitor(Map<String, String> classes, String source, DepHandler handler) throws IOException {
+         super(null, new DepFindRemapper(classes, source, handler));
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java	2012-07-02 13:19:28.000000000 -0700
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java	2019-02-27 14:47:11.000000000 -0800
+@@ -28,23 +28,23 @@
+ public class EmptyClassVisitor extends ClassVisitor {
+ 
+     public EmptyClassVisitor() {
+-        super(Opcodes.ASM4);
++        super(Opcodes.ASM7);
+     }
+     
+     @Override
+     public MethodVisitor visitMethod(int access, String name, String desc,
+             String signature, String[] exceptions) {
+-        return new MethodVisitor(Opcodes.ASM4) {};
++        return new MethodVisitor(Opcodes.ASM7) {};
+     }
+     
+     @Override
+     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+-        return new AnnotationVisitor(Opcodes.ASM4) {};
++        return new AnnotationVisitor(Opcodes.ASM7) {};
+     }
+     
+     @Override
+     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+-        return new FieldVisitor(Opcodes.ASM4) {};
++        return new FieldVisitor(Opcodes.ASM7) {};
+     }
+ 
+ }
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/KeepProcessor.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/KeepProcessor.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/KeepProcessor.java	2012-07-02 13:22:34.000000000 -0700
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/KeepProcessor.java	2019-02-27 14:47:11.000000000 -0800
+@@ -26,7 +26,7 @@
+ // TODO: this can probably be refactored into JarClassVisitor, etc.
+ class KeepProcessor extends Remapper implements JarProcessor
+ {
+-    private final ClassVisitor cv = new RemappingClassAdapter(new EmptyClassVisitor(), this);
++    private final ClassVisitor cv = new ClassRemapper(new EmptyClassVisitor(), this);
+     private final List<Wildcard> wildcards;
+     private final List<String> roots = new ArrayList<String>();
+     private final Map<String, Set<String>> depend = new HashMap<String, Set<String>>();
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/StringReader.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/StringReader.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/StringReader.java	2012-07-02 13:19:28.000000000 -0700
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/StringReader.java	2019-02-27 14:47:11.000000000 -0800
+@@ -24,7 +24,7 @@
+     private String className;
+ 
+     public StringReader() {
+-        super(Opcodes.ASM4);
++        super(Opcodes.ASM7);
+     }
+     
+     abstract public void visitString(String className, String value, int line);
+@@ -42,7 +42,7 @@
+ 
+     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+         handleObject(value);
+-        return new FieldVisitor(Opcodes.ASM4){
++        return new FieldVisitor(Opcodes.ASM7){
+             @Override
+             public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+                 return StringReader.this.visitAnnotation(desc, visible);
+@@ -52,7 +52,7 @@
+     
+     @Override
+     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+-        return new AnnotationVisitor(Opcodes.ASM4) {
++        return new AnnotationVisitor(Opcodes.ASM7) {
+             @Override
+             public void visit(String name, Object value) {
+                 handleObject(value);
+@@ -71,7 +71,7 @@
+     @Override
+     public MethodVisitor visitMethod(int access, String name, String desc,
+             String signature, String[] exceptions) {
+-        MethodVisitor mv = new MethodVisitor(Opcodes.ASM4){
++        MethodVisitor mv = new MethodVisitor(Opcodes.ASM7){
+             @Override
+             public void visitLdcInsn(Object cst) {
+                 handleObject(cst);
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/Wildcard.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/Wildcard.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/Wildcard.java	2012-02-01 20:41:50.000000000 -0800
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/Wildcard.java	2019-02-27 14:47:11.000000000 -0800
+@@ -36,7 +36,7 @@
+     public Wildcard(String pattern, String result) {
+         if (pattern.equals("**"))
+             throw new IllegalArgumentException("'**' is not a valid pattern");
+-        if (!checkIdentifierChars(pattern, "/*"))
++        if (!checkIdentifierChars(pattern, "/*-"))
+             throw new IllegalArgumentException("Not a valid package pattern: " + pattern);
+         if (pattern.indexOf("***") >= 0)
+             throw new IllegalArgumentException("The sequence '***' is invalid in a package pattern");
+@@ -110,7 +110,7 @@
+ 
+     private Matcher getMatcher(String value) {
+         Matcher matcher = pattern.matcher(value);
+-        if (matcher.matches() && checkIdentifierChars(value, "/"))
++        if (matcher.matches() && checkIdentifierChars(value, "/-"))
+             return matcher;
+         return null;
+     }
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java	2012-07-02 13:19:28.000000000 -0700
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java	2019-02-27 14:47:11.000000000 -0800
+@@ -25,7 +25,7 @@
+     private String className;
+     
+     public GetNameClassWriter(int flags) {
+-        super(Opcodes.ASM4,new ClassWriter(flags));
++        super(Opcodes.ASM7,new ClassWriter(flags));
+     }
+ 
+     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+diff -x '*.jar' -x build -x dist -ur jarjar-1.4/src/main/com/tonicsystems/jarjar/util/RemappingClassTransformer.java jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/util/RemappingClassTransformer.java
+--- jarjar-1.4/src/main/com/tonicsystems/jarjar/util/RemappingClassTransformer.java	2012-07-02 13:19:28.000000000 -0700
++++ jarjar-1.4-patched/src/main/com/tonicsystems/jarjar/util/RemappingClassTransformer.java	2019-02-27 14:47:11.000000000 -0800
+@@ -18,11 +18,11 @@
+ 
+ import org.objectweb.asm.ClassVisitor;
+ import org.objectweb.asm.commons.Remapper;
+-import org.objectweb.asm.commons.RemappingClassAdapter;
++import org.objectweb.asm.commons.ClassRemapper;
+ 
+ import com.tonicsystems.jarjar.EmptyClassVisitor;
+ 
+-public class RemappingClassTransformer extends RemappingClassAdapter
++public class RemappingClassTransformer extends ClassRemapper
+ {
+     public RemappingClassTransformer(Remapper pr) {
+         super(new EmptyClassVisitor(), pr);

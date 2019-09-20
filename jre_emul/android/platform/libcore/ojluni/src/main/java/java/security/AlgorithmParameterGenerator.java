@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,10 +28,10 @@ package java.security;
 import java.security.spec.AlgorithmParameterSpec;
 
 /**
- * The <code>AlgorithmParameterGenerator</code> class is used to generate a
+ * The {@code AlgorithmParameterGenerator} class is used to generate a
  * set of
  * parameters to be used with a certain algorithm. Parameter generators
- * are constructed using the <code>getInstance</code> factory methods
+ * are constructed using the {@code getInstance} factory methods
  * (static methods that return instances of a given class).
  *
  * <P>The object that will generate the parameters can be initialized
@@ -48,7 +48,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * of the prime modulus (in bits).
  * When using this approach, algorithm-specific parameter generation
  * values - if any - default to some standard values, unless they can be
- * derived from the specified size.<P>
+ * derived from the specified size.
  *
  * <li>The other approach initializes a parameter generator object
  * using algorithm-specific semantics, which are represented by a set of
@@ -61,41 +61,41 @@ import java.security.spec.AlgorithmParameterSpec;
  *
  * <P>In case the client does not explicitly initialize the
  * AlgorithmParameterGenerator
- * (via a call to an <code>init</code> method), each provider must supply (and
+ * (via a call to an {@code init} method), each provider must supply (and
  * document) a default initialization. For example, the Sun provider uses a
  * default modulus prime size of 1024 bits for the generation of DSA
  * parameters.
  *
  * <p> Android provides the following <code>AlgorithmParameterGenerator</code> algorithms:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>AES</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DES</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DESede</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>DH</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>DSA</td>
- *             <td>1+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr class="deprecated">
+ *       <td>AES</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DES</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>DESede</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>DH</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>DSA</td>
+ *       <td>1+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * These algorithms are described in the <a href=
@@ -295,11 +295,11 @@ public class AlgorithmParameterGenerator {
 
     /**
      * Initializes this parameter generator for a certain size.
-     * To create the parameters, the <code>SecureRandom</code>
+     * To create the parameters, the {@code SecureRandom}
      * implementation of the highest-priority installed provider is used as
      * the source of randomness.
      * (If none of the installed providers supply an implementation of
-     * <code>SecureRandom</code>, a system-provided source of randomness is
+     * {@code SecureRandom}, a system-provided source of randomness is
      * used.)
      *
      * @param size the size (number of bits).
@@ -322,11 +322,11 @@ public class AlgorithmParameterGenerator {
     /**
      * Initializes this parameter generator with a set of algorithm-specific
      * parameter generation values.
-     * To generate the parameters, the <code>SecureRandom</code>
+     * To generate the parameters, the {@code SecureRandom}
      * implementation of the highest-priority installed provider is used as
      * the source of randomness.
      * (If none of the installed providers supply an implementation of
-     * <code>SecureRandom</code>, a system-provided source of randomness is
+     * {@code SecureRandom}, a system-provided source of randomness is
      * used.)
      *
      * @param genParamSpec the set of algorithm-specific parameter generation values.

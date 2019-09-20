@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #import <UIKit/UIKit.h>
+#import <XCTest/XCTest.h>
 
 static void signalHandler(int sig) {
   // Ensure this looks like a GTM_UNIT_TESTING failure.
@@ -35,18 +36,13 @@ void installSignalHandler() {
   signal(SIGPIPE, signalHandler);
 }
 
-@interface TestRunnerAppDelegate : UIResponder <UIApplicationDelegate>
+@interface JUnitXCTestCase : XCTestCase
 @end
 
-@implementation TestRunnerAppDelegate
+@implementation JUnitXCTestCase
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
-  [self performSelector:@selector(runTestsAndExit) withObject:nil afterDelay:0];
-}
-
-- (void)runTestsAndExit {
-  jint exitStatus = [ComGoogleJ2objcTestingJUnitTestRunner mainWithNSStringArray:nil];
-  exit(exitStatus);
+- (void)testAll {
+  XCTAssertEqual([ComGoogleJ2objcTestingJUnitTestRunner mainWithNSStringArray:nil], 0);
 }
 
 @end
@@ -55,7 +51,7 @@ int main(int argc, char *argv[]) {
   installSignalHandler();
   @autoreleasepool {
     @try {
-      UIApplicationMain(argc, argv, nil, @"TestRunnerAppDelegate");
+      UIApplicationMain(argc, argv, nil, nil);
     }
     @catch (JavaLangThrowable *e) {
       JavaLangThread *currentThread = JavaLangThread_currentThread();

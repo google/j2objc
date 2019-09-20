@@ -27,13 +27,12 @@
 
 package sun.util.logging;
 
-import java.lang.ref.WeakReference;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -182,21 +181,24 @@ public class PlatformLogger {
     }
 
     // Table of known loggers.  Maps names to PlatformLoggers.
-    private static Map<String,WeakReference<PlatformLogger>> loggers =
-        new HashMap<>();
+    // j2objc: changed to fixed size LRU cache, as weak references can get released too quickly
+    //    to help performance.
+    private static final int MAX_CACHED_LOGGERS = 15;
+    private static Map<String, PlatformLogger> loggers =
+        new LinkedHashMap<String, PlatformLogger>(MAX_CACHED_LOGGERS + 1, .75F, true) {
+      public boolean removeEldestEntry(Map.Entry eldest) {
+        return size() > MAX_CACHED_LOGGERS;
+      }
+    };
 
     /**
      * Returns a PlatformLogger of a given name.
      */
     public static synchronized PlatformLogger getLogger(String name) {
-        PlatformLogger log = null;
-        WeakReference<PlatformLogger> ref = loggers.get(name);
-        if (ref != null) {
-            log = ref.get();
-        }
+        PlatformLogger log = loggers.get(name);
         if (log == null) {
             log = new PlatformLogger(name);
-            loggers.put(name, new WeakReference<>(log));
+            loggers.put(name, log);
         }
         return log;
     }
@@ -209,9 +211,8 @@ public class PlatformLogger {
         if (loggingEnabled || !LoggingSupport.isAvailable()) return;
 
         loggingEnabled = true;
-        for (Map.Entry<String, WeakReference<PlatformLogger>> entry : loggers.entrySet()) {
-            WeakReference<PlatformLogger> ref = entry.getValue();
-            PlatformLogger plog = ref.get();
+        for (Map.Entry<String, PlatformLogger> entry : loggers.entrySet()) {
+            PlatformLogger plog = entry.getValue();
             if (plog != null) {
                 plog.redirectToJavaLoggerProxy();
             }

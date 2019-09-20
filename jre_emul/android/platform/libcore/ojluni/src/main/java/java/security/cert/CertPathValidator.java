@@ -32,7 +32,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivilegedAction;
 import java.security.Provider;
 import java.security.Security;
-//import sun.security.util.Debug;
+import sun.security.util.Debug;
 
 import sun.security.jca.*;
 import sun.security.jca.GetInstance.Instance;
@@ -70,18 +70,18 @@ import sun.security.jca.GetInstance.Instance;
  *
  * <p> Android provides the following {@code CertPathValidator} algorithms:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>PKIX</td>
- *             <td>1+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>PKIX</td>
+ *       <td>1+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * This algorithm is described in the <a href=

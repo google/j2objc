@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -100,6 +100,11 @@ import sun.util.ResourceBundleEnumeration;
  * </blockquote>
  *
  * <p>
+ * The implementation of a {@code PropertyResourceBundle} subclass must be
+ * thread-safe if it's simultaneously used by multiple threads. The default
+ * implementations of the non-abstract methods in this class are thread-safe.
+ *
+ * <p>
  * <strong>Note:</strong> PropertyResourceBundle can be constructed either
  * from an InputStream or a Reader, which represents a property file.
  * Constructing a PropertyResourceBundle instance from an InputStream requires
@@ -124,7 +129,10 @@ public class PropertyResourceBundle extends ResourceBundle {
      *        to read from.
      * @throws IOException if an I/O error occurs
      * @throws NullPointerException if <code>stream</code> is null
+     * @throws IllegalArgumentException if {@code stream} contains a
+     *     malformed Unicode escape sequence.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public PropertyResourceBundle (InputStream stream) throws IOException {
         Properties properties = new Properties();
         properties.load(stream);
@@ -141,8 +149,11 @@ public class PropertyResourceBundle extends ResourceBundle {
      *        read from.
      * @throws IOException if an I/O error occurs
      * @throws NullPointerException if <code>reader</code> is null
+     * @throws IllegalArgumentException if a malformed Unicode escape sequence appears
+     *     from {@code reader}.
      * @since 1.6
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public PropertyResourceBundle (Reader reader) throws IOException {
         Properties properties = new Properties();
         properties.load(reader);
@@ -186,5 +197,8 @@ public class PropertyResourceBundle extends ResourceBundle {
 
     // ==================privates====================
 
-    private Map<String,Object> lookup;
+    // Android-changed: Fix unsafe publication http://b/31467561
+    // Fixed in OpenJDK 9: http://hg.openjdk.java.net/jdk9/dev/jdk/rev/29ecac30ecae
+    // was: private Map<String,Object> lookup;
+    private final Map<String,Object> lookup;
 }

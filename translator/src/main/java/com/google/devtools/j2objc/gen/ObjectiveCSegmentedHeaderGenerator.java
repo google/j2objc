@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.types.Import;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +62,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       printLocalIncludes(type);
     }
     pushIgnoreDeprecatedDeclarationsPragma();
-    pushIgnoreNullabilityCompletenessPragma();
+    pushIgnoreNullabilityPragmas();
 
     // Print OCNI blocks
     Collection<String> nativeBlocks = getGenerationUnit().getNativeHeaderBlocks();
@@ -111,7 +110,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
     newline();
-    popIgnoreNullabilityCompletenessPragma();
+    popIgnoreNullabilityPragmas();
     popIgnoreDeprecatedDeclarationsPragma();
     printf("#pragma pop_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
   }
@@ -160,6 +159,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     printForwardDeclarations(forwardDeclarations);
 
+    type.getGeneratedSourceMappings().setTargetOffset(getBuilder().length());
     print(code);
     newline();
     if (!ARGC.inPureObjCMode()) {

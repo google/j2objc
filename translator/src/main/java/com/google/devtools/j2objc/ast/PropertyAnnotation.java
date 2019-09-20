@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -65,6 +66,8 @@ public class PropertyAnnotation extends Annotation {
       return ATTRIBUTE_ORDERING.compare(a, b);
     }
   };
+  private static final ImmutableSet<String> MEMORY_MANAGEMENT_ATTRIBUTES =
+      ImmutableSet.of("weak", "copy", "assign", "retain", "unsafe_unretained", "strong");
 
   public PropertyAnnotation() {
     this.attributes = Sets.newHashSet();
@@ -95,6 +98,10 @@ public class PropertyAnnotation extends Annotation {
 
   public boolean hasAttribute(String attribute) {
     return getAttribute(attribute) != null;
+  }
+
+  public static boolean hasMemoryManagementAttribute(Set<String> attributes) {
+    return !Sets.intersection(attributes, MEMORY_MANAGEMENT_ATTRIBUTES).isEmpty();
   }
 
   public void removeAttribute(String attribute) {

@@ -36,9 +36,8 @@ public class TypeUseAnnotationTest extends GenerationTest {
     assertNotInTranslation(translation, "JavaLangString");
   }
 
-  // TODO(nbraswell): Use com.google.j2objc.annotations.WeakOuter when transitioned to Java 8
   String testWeakOuterSetup = "import java.lang.annotation.*;\n"
-      + "@Target(ElementType.TYPE_USE) @interface WeakOuter {}"
+      + "import com.google.j2objc.annotations.WeakOuter;"
       + "interface Simple { public int run(); }"
       + "class SimpleClass { public int run() {return 1;}; }"
       + "abstract class SimpleAbstractClass { public int run(){return 2;}; }"

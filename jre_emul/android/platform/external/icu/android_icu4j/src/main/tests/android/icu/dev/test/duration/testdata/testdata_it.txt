@@ -1,0 +1,401 @@
+=fullPluralizedFormCounts
+-3
+-2
+-1
+0
+1
+2
+3
+5
+10
+11
+12
+20
+21
+22
+23
+25
+=fullPluralizedFormTargets
+tre anni fa
+due anni fa
+un anno fa
+zero anni
+fra un anno
+fra due anni
+fra tre anni
+fra cinque anni
+fra dieci anni
+fra 11 anni
+fra 12 anni
+fra 20 anni
+fra 21 anni
+fra 22 anni
+fra 23 anni
+fra 25 anni
+tre mesi fa
+due mesi fa
+un mese fa
+zero mesi
+fra un mese
+fra due mesi
+fra tre mesi
+fra cinque mesi
+fra dieci mesi
+fra 11 mesi
+fra 12 mesi
+fra 20 mesi
+fra 21 mesi
+fra 22 mesi
+fra 23 mesi
+fra 25 mesi
+tre settimane fa
+due settimane fa
+una settimana fa
+zero settimane
+fra una settimana
+fra due settimane
+fra tre settimane
+fra cinque settimane
+fra dieci settimane
+fra 11 settimane
+fra 12 settimane
+fra 20 settimane
+fra 21 settimane
+fra 22 settimane
+fra 23 settimane
+fra 25 settimane
+tre giorni fa
+due giorni fa
+un giorno fa
+zero giorni
+fra un giorno
+fra due giorni
+fra tre giorni
+fra cinque giorni
+fra dieci giorni
+fra 11 giorni
+fra 12 giorni
+fra 20 giorni
+fra 21 giorni
+fra 22 giorni
+fra 23 giorni
+fra 25 giorni
+tre ore fa
+due ore fa
+un'ora fa
+zero ore
+fra un'ora
+fra due ore
+fra tre ore
+fra cinque ore
+fra dieci ore
+fra 11 ore
+fra 12 ore
+fra 20 ore
+fra 21 ore
+fra 22 ore
+fra 23 ore
+fra 25 ore
+tre minuti fa
+due minuti fa
+un minuto fa
+zero minuti
+fra un minuto
+fra due minuti
+fra tre minuti
+fra cinque minuti
+fra dieci minuti
+fra 11 minuti
+fra 12 minuti
+fra 20 minuti
+fra 21 minuti
+fra 22 minuti
+fra 23 minuti
+fra 25 minuti
+tre secondi fa
+due secondi fa
+un secondo fa
+zero secondi
+fra un secondo
+fra due secondi
+fra tre secondi
+fra cinque secondi
+fra dieci secondi
+fra 11 secondi
+fra 12 secondi
+fra 20 secondi
+fra 21 secondi
+fra 22 secondi
+fra 23 secondi
+fra 25 secondi
+tre millisecondi fa
+due millisecondi fa
+un millisecondo fa
+zero millisecondi
+fra un millisecondo
+fra due millisecondi
+fra tre millisecondi
+fra cinque millisecondi
+fra dieci millisecondi
+fra 11 millisecondi
+fra 12 millisecondi
+fra 20 millisecondi
+fra 21 millisecondi
+fra 22 millisecondi
+fra 23 millisecondi
+fra 25 millisecondi
+=mediumFormTargets
+tre ann.
+tre mes.
+tre sett.
+tre gg.
+tre or.
+tre min.
+tre sec.
+tre msec.
+=shortFormTargets
+tre A
+tre M
+tre S
+tre G
+tre H
+tre M
+tre S
+tre msec.
+=customMinuteTargets
+cinque minuti
+un'ora e cinque minuti
+dieci minuti
+un'ora e dieci minuti
+15 minuti
+un'ora e 15 minuti
+20 minuti
+un'ora e 20 minuti
+25 minuti
+un'ora e 25 minuti
+30 minuti
+un'ora e 30 minuti
+35 minuti
+un'ora e 35 minuti
+40 minuti
+un'ora e 40 minuti
+45 minuti
+un'ora e 45 minuti
+50 minuti
+un'ora e 50 minuti
+55 minuti
+un'ora e 55 minuti
+=limitedUnitTargets
+un mese
+un mese e due settimane
+un mese, due settimane e tre giorni
+un mese fa
+un mese e due settimane fa
+un mese, due settimane e tre giorni fa
+fra un mese
+fra un mese e due settimane
+fra un mese, due settimane e tre giorni
+meno di un mese
+meno di un mese e due settimane
+meno di un mese, due settimane e tre giorni
+meno di un mese fa
+meno di un mese e due settimane fa
+meno di un mese, due settimane e tre giorni fa
+fra meno di un mese
+fra meno di un mese e due settimane
+fra meno di un mese, due settimane e tre giorni
+oltre un mese
+oltre un mese e due settimane
+oltre un mese, due settimane e tre giorni
+oltre un mese fa
+oltre un mese e due settimane fa
+oltre un mese, due settimane e tre giorni fa
+fra oltre un mese
+fra oltre un mese e due settimane
+fra oltre un mese, due settimane e tre giorni
+un'ora
+un'ora e due minuti
+un'ora, due minuti e tre secondi
+un'ora fa
+un'ora e due minuti fa
+un'ora, due minuti e tre secondi fa
+fra un'ora
+fra un'ora e due minuti
+fra un'ora, due minuti e tre secondi
+meno di un'ora
+meno di un'ora e due minuti
+meno di un'ora, due minuti e tre secondi
+meno di un'ora fa
+meno di un'ora e due minuti fa
+meno di un'ora, due minuti e tre secondi fa
+fra meno di un'ora
+fra meno di un'ora e due minuti
+fra meno di un'ora, due minuti e tre secondi
+oltre un'ora
+oltre un'ora e due minuti
+oltre un'ora, due minuti e tre secondi
+oltre un'ora fa
+oltre un'ora e due minuti fa
+oltre un'ora, due minuti e tre secondi fa
+fra oltre un'ora
+fra oltre un'ora e due minuti
+fra oltre un'ora, due minuti e tre secondi
+=halfUnitCounts
+0
+1
+2
+5
+10
+11
+12
+20
+21
+22
+=halfUnitTargets
+mezzo  anno
+un anno e mezzo
+due anni e mezzo
+cinque anni e mezzo
+dieci anni e mezzo
+11 anni e mezzo
+12 anni e mezzo
+20 anni e mezzo
+21 anni e mezzo
+22 anni e mezzo
+mezzo  mese
+un mese e mezzo
+due mesi e mezzo
+cinque mesi e mezzo
+dieci mesi e mezzo
+11 mesi e mezzo
+12 mesi e mezzo
+20 mesi e mezzo
+21 mesi e mezzo
+22 mesi e mezzo
+mezza  settimana
+una settimana e mezza
+due settimane e mezza
+cinque settimane e mezza
+dieci settimane e mezza
+11 settimane e mezza
+12 settimane e mezza
+20 settimane e mezza
+21 settimane e mezza
+22 settimane e mezza
+mezzo  giorno
+un giorno e mezzo
+due giorni e mezzo
+cinque giorni e mezzo
+dieci giorni e mezzo
+11 giorni e mezzo
+12 giorni e mezzo
+20 giorni e mezzo
+21 giorni e mezzo
+22 giorni e mezzo
+mezz'ora
+un'ora e mezza
+due ore e mezza
+cinque ore e mezza
+dieci ore e mezza
+11 ore e mezza
+12 ore e mezza
+20 ore e mezza
+21 ore e mezza
+22 ore e mezza
+mezzo  minuto
+un minuto e mezzo
+due minuti e mezzo
+cinque minuti e mezzo
+dieci minuti e mezzo
+11 minuti e mezzo
+12 minuti e mezzo
+20 minuti e mezzo
+21 minuti e mezzo
+22 minuti e mezzo
+mezzo  secondo
+un secondo e mezzo
+due secondi e mezzo
+cinque secondi e mezzo
+dieci secondi e mezzo
+11 secondi e mezzo
+12 secondi e mezzo
+20 secondi e mezzo
+21 secondi e mezzo
+22 secondi e mezzo
+mezzo  millisecondo
+un millisecondo e mezzo
+due millisecondi e mezzo
+cinque millisecondi e mezzo
+dieci millisecondi e mezzo
+11 millisecondi e mezzo
+12 millisecondi e mezzo
+20 millisecondi e mezzo
+21 millisecondi e mezzo
+22 millisecondi e mezzo
+=fractionalUnitCounts
+0.025
+1.0
+1.205
+2.125
+12.05
+=fractionalUnitTargets
+0.02 anni
+1.00 anni
+1.20 anni
+2.12 anni
+12.05 anni
+0.02 mesi
+1.00 mesi
+1.20 mesi
+2.12 mesi
+12.05 mesi
+0.02 settimane
+1.00 settimane
+1.20 settimane
+2.12 settimane
+12.05 settimane
+0.02 giorni
+1.00 giorni
+1.20 giorni
+2.12 giorni
+12.05 giorni
+0.02 ore
+1.00 ore
+1.20 ore
+2.12 ore
+12.05 ore
+0.02 minuti
+1.00 minuti
+1.20 minuti
+2.12 minuti
+12.05 minuti
+0.02 secondi
+1.00 secondi
+1.20 secondi
+2.12 secondi
+12.05 secondi
+0.02 millisecondi
+1.00 millisecondi
+1.20 millisecondi
+2.12 millisecondi
+12.05 millisecondi
+=multipleUnitTargets
+un anno e due mesi
+un anno e tre settimane
+un anno, due mesi e tre settimane
+un mese e due settimane
+un mese e tre giorni
+un mese, due settimane e tre giorni
+una settimana e due giorni
+una settimana e tre ore
+una settimana, due giorni e tre ore
+un giorno e due ore
+un giorno e tre minuti
+un giorno, due ore e tre minuti
+un'ora e due minuti
+un'ora e tre secondi
+un'ora, due minuti e tre secondi
+un minuto e due secondi
+un minuto e tre millisecondi
+un minuto, due secondi e tre millisecondi
+un secondo e due millisecondi

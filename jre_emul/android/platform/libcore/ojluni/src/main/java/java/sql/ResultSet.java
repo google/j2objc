@@ -479,6 +479,7 @@ public interface ResultSet extends Wrapper, AutoCloseable {
      * @deprecated use <code>getCharacterStream</code> in place of
      *              <code>getUnicodeStream</code>
      */
+    @Deprecated
     java.io.InputStream getUnicodeStream(int columnIndex) throws SQLException;
 
     /**
@@ -763,6 +764,7 @@ public interface ResultSet extends Wrapper, AutoCloseable {
      * this method
      * @deprecated use <code>getCharacterStream</code> instead
      */
+    @Deprecated
     java.io.InputStream getUnicodeStream(String columnLabel) throws SQLException;
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     // Redundant - maintained for performance
     private int size = 0;
 
-    JumboEnumSet(Class<E>elementType, Enum[] universe) {
+    JumboEnumSet(Class<E>elementType, Enum<?>[] universe) {
         super(elementType, universe);
         elements = new long[(universe.length + 63) >>> 6];
     }
@@ -121,12 +121,15 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
             unseen = elements[0];
         }
 
+        @Override
         public boolean hasNext() {
             while (unseen == 0 && unseenIndex < elements.length - 1)
                 unseen = elements[++unseenIndex];
             return unseen != 0;
         }
 
+        @Override
+        @SuppressWarnings("unchecked")
         public E next() {
             if (!hasNext())
                 throw new NoSuchElementException();
@@ -137,6 +140,7 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
                                 + Long.numberOfTrailingZeros(lastReturned)];
         }
 
+        @Override
         public void remove() {
             if (lastReturned == 0)
                 throw new IllegalStateException();
@@ -176,11 +180,11 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     public boolean contains(Object e) {
         if (e == null)
             return false;
-        Class eClass = e.getClass();
+        Class<?> eClass = e.getClass();
         if (eClass != elementType && eClass.getSuperclass() != elementType)
             return false;
 
-        int eOrdinal = ((Enum)e).ordinal();
+        int eOrdinal = ((Enum<?>)e).ordinal();
         return (elements[eOrdinal >>> 6] & (1L << eOrdinal)) != 0;
     }
 
@@ -217,10 +221,10 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     public boolean remove(Object e) {
         if (e == null)
             return false;
-        Class eClass = e.getClass();
+        Class<?> eClass = e.getClass();
         if (eClass != elementType && eClass.getSuperclass() != elementType)
             return false;
-        int eOrdinal = ((Enum)e).ordinal();
+        int eOrdinal = ((Enum<?>)e).ordinal();
         int eWordNum = eOrdinal >>> 6;
 
         long oldElements = elements[eWordNum];
@@ -246,7 +250,7 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(c instanceof JumboEnumSet))
             return super.containsAll(c);
 
-        JumboEnumSet es = (JumboEnumSet)c;
+        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
         if (es.elementType != elementType)
             return es.isEmpty();
 
@@ -268,7 +272,7 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(c instanceof JumboEnumSet))
             return super.addAll(c);
 
-        JumboEnumSet es = (JumboEnumSet)c;
+        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
         if (es.elementType != elementType) {
             if (es.isEmpty())
                 return false;
@@ -294,7 +298,7 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(c instanceof JumboEnumSet))
             return super.removeAll(c);
 
-        JumboEnumSet es = (JumboEnumSet)c;
+        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
         if (es.elementType != elementType)
             return false;
 
@@ -341,14 +345,14 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * the same size, and every member of the given set is contained in
      * this set.
      *
-     * @param e object to be compared for equality with this set
+     * @param o object to be compared for equality with this set
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o) {
         if (!(o instanceof JumboEnumSet))
             return super.equals(o);
 
-        JumboEnumSet es = (JumboEnumSet)o;
+        JumboEnumSet<?> es = (JumboEnumSet<?>)o;
         if (es.elementType != elementType)
             return size == 0 && es.size == 0;
 

@@ -42,6 +42,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -69,7 +70,7 @@ public class MetadataWriter extends UnitTreeVisitor {
   private final ArrayType annotationArray;
   private final ArrayType annotationArray2D;
 
-  public MetadataWriter(CompilationUnit unit) {
+  public MetadataWriter(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
     super(unit);
     TypeMirror annotationType =
         GeneratedTypeElement.newEmulatedInterface("java.lang.annotation.Annotation").asType();
@@ -93,6 +94,9 @@ public class MetadataWriter extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
+    if (node.isDeadClass()) {
+      return;
+    }
     TypeElement type = node.getTypeElement();
     if (!translationUtil.needsReflection(type)) {
       return;
@@ -225,6 +229,8 @@ public class MetadataWriter extends UnitTreeVisitor {
         stmts.add(new NativeStatement("#pragma clang diagnostic push"));
         stmts.add(new NativeStatement(
             "#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\""));
+        stmts.add(new NativeStatement(
+            "#pragma clang diagnostic ignored \"-Wundeclared-selector\""));
         for (String selector : selectorMetadata) {
           stmts.add(new NativeStatement(selector));
         }
@@ -238,7 +244,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       String methodName = ElementUtil.getName(method);
       String selector = nameTable.getMethodSelector(method);
       boolean isConstructor = ElementUtil.isConstructor(method);
-      if (selector.equals(methodName) || isConstructor) {
+      if (selector.equals(methodName) || isConstructor || translationUtil.isJUnit3TestClass(type)) {
         methodName = null;  // Reduce redundant data.
       }
 
@@ -468,10 +474,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       modifiers |= ElementUtil.ACC_ENUM;
     }
     if (ElementUtil.isAnonymous(type)) {
-      // Anonymous classes are always static, though their closure may include an instance.
-      modifiers |= ElementUtil.ACC_ANONYMOUS | java.lang.reflect.Modifier.STATIC;
-      // Anonymous classes are always implicitly final (JLS 15.9.5.).
-      modifiers |= java.lang.reflect.Modifier.FINAL;
+      modifiers |= ElementUtil.ACC_ANONYMOUS;
     }
     return modifiers;
   }

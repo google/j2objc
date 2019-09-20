@@ -60,138 +60,194 @@ import sun.security.jca.GetInstance.Instance;
  *
  * <p> Android provides the following <code>SecretKeyFactory</code> algorithms:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>AES</td>
- *             <td>23+</td>
- *         </tr>
- *         <tr>
- *             <td>DES</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>DESede</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA1</td>
- *             <td>23+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA224</td>
- *             <td>23+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA256</td>
- *             <td>23+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA384</td>
- *             <td>23+</td>
- *         </tr>
- *         <tr>
- *             <td>HmacSHA512</td>
- *             <td>23+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithHmacSHA1</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithMD5and128BITAES-CBC-OPENSSL</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithMD5and192BITAES-CBC-OPENSSL</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithMD5and256BITAES-CBC-OPENSSL</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithMD5andDES</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithMD5andRC2</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHA1andDES</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHA1andRC2</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHA256and128BITAES-CBC-BC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHA256and192BITAES-CBC-BC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHA256and256BITAES-CBC-BC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand128BITAES-CBC-BC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand128BITRC2-CBC</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand128BITRC4</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand192BITAES-CBC-BC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand2-KEYTRIPLEDES-CBC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand256BITAES-CBC-BC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand3-KEYTRIPLEDES-CBC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand40BITRC2-CBC</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAand40BITRC4</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>PBEwithSHAandTWOFISH-CBC</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>PBKDF2withHmacSHA1</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>PBKDF2withHmacSHA1and8BIT</td>
- *             <td>19+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>AES</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>DES</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>DESede</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA1</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA224</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA256</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA384</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>HmacSHA512</td>
+ *       <td>23+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA1</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA1AndAES_128</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA1AndAES_256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA224AndAES_128</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA224AndAES_256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA256AndAES_128</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA256AndAES_256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA384AndAES_128</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA384AndAES_256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA512AndAES_128</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithHmacSHA512AndAES_256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithMD5AND128BITAES-CBC-OPENSSL</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithMD5AND192BITAES-CBC-OPENSSL</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithMD5AND256BITAES-CBC-OPENSSL</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithMD5ANDDES</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithMD5ANDRC2</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHA1ANDDES</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHA1ANDRC2</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHA256AND128BITAES-CBC-BC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHA256AND192BITAES-CBC-BC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHA256AND256BITAES-CBC-BC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND128BITAES-CBC-BC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND128BITRC2-CBC</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND128BITRC4</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND192BITAES-CBC-BC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND2-KEYTRIPLEDES-CBC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND256BITAES-CBC-BC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND3-KEYTRIPLEDES-CBC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND40BITRC2-CBC</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAAND40BITRC4</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBEwithSHAANDTWOFISH-CBC</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBKDF2withHmacSHA1</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBKDF2withHmacSHA1And8BIT</td>
+ *       <td>19+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBKDF2withHmacSHA224</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBKDF2withHmacSHA256</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBKDF2withHmacSHA384</td>
+ *       <td>26+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PBKDF2withHmacSHA512</td>
+ *       <td>26+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * These algorithms are described in the <a href=
@@ -224,7 +280,7 @@ public class SecretKeyFactory {
 
     // remaining services to try in provider selection
     // null once provider is selected
-    private Iterator serviceIterator;
+    private Iterator<Service> serviceIterator;
 
     /**
      * Creates a SecretKeyFactory object.
@@ -242,7 +298,8 @@ public class SecretKeyFactory {
 
     private SecretKeyFactory(String algorithm) throws NoSuchAlgorithmException {
         this.algorithm = algorithm;
-        List list = GetInstance.getServices("SecretKeyFactory", algorithm);
+        List<Service> list =
+                GetInstance.getServices("SecretKeyFactory", algorithm);
         serviceIterator = list.iterator();
         // fetch and instantiate initial spi
         if (nextSpi(null) == null) {
@@ -418,7 +475,7 @@ public class SecretKeyFactory {
                 return null;
             }
             while (serviceIterator.hasNext()) {
-                Service s = (Service)serviceIterator.next();
+                Service s = serviceIterator.next();
                 if (JceSecurity.canUseProvider(s.getProvider()) == false) {
                     continue;
                 }
@@ -495,7 +552,7 @@ public class SecretKeyFactory {
      * (e.g., the given key has an algorithm or format not supported by this
      * secret-key factory).
      */
-    public final KeySpec getKeySpec(SecretKey key, Class keySpec)
+    public final KeySpec getKeySpec(SecretKey key, Class<?> keySpec)
             throws InvalidKeySpecException {
         if (serviceIterator == null) {
             return spi.engineGetKeySpec(key, keySpec);

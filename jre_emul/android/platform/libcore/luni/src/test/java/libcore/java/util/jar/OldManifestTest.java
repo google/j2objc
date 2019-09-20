@@ -16,6 +16,7 @@
  */
 package libcore.java.util.jar;
 
+import com.google.j2objc.util.ReflectionUtil;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -81,8 +82,9 @@ public class OldManifestTest extends TestCase {
         assertTrue("Should have no main attributes", emptyClone
                 .getMainAttributes().isEmpty());
         assertEquals(emptyClone, emptyManifest);
-        assertEquals(emptyManifest.clone().getClass().getName(),
-                "java.util.jar.Manifest");
+        // J2ObjC reflection-stripping change.
+        assertTrue(ReflectionUtil.matchClassNamePrefix(emptyManifest.clone().getClass().getName(),
+                "java.util.jar.Manifest"));
 
         Manifest manifest = new Manifest(new URL(Support_Resources
                 .getURL("manifest/hyts_MANIFEST.MF")).openStream());

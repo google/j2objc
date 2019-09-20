@@ -41,9 +41,7 @@ public class OcniExtractorTest extends GenerationTest {
   }
 
   public void testBadNativeCodeBlock_badEndDelimiter() throws IOException {
-    CompilationUnit unit = maybeCompileType(
-        "Example", "public class Example { native void test() /*-[ ]*/; }");
-
+    maybeCompileType("Example", "public class Example { native void test() /*-[ ]*/; }");
     assertTrue(ErrorUtil.getErrorMessages()
         .contains("Error finding OCNI closing delimiter for OCNI comment at line 1"));
   }

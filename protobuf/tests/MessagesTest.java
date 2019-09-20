@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.ExtensionRegistry;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import protos.GroupFe;
 import protos.GroupRe;
 import protos.MessageData;
@@ -25,9 +25,6 @@ import protos.MessageData.SubMsg.InnerMsg;
 import protos.MessageDataOrBuilder;
 import protos.MessageFields;
 import protos.MessageSet;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Tests for correct behavior of message and group fields.
@@ -69,6 +66,28 @@ public class MessagesTest extends ProtobufTest {
     checkFields(msg);
   }
 
+  public void testMergeFromByteArray() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+    MessageData filledMsg = getFilledMessage();
+    MessageData.Builder builder =
+        MessageData.newBuilder().mergeFrom(filledMsg.toByteArray(), registry);
+    MessageData msg = builder.build();
+    checkFields(builder);
+    checkFields(msg);
+  }
+
+  public void testMergeFromByteString() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+    MessageData filledMsg = getFilledMessage();
+    MessageData.Builder builder =
+        MessageData.newBuilder().mergeFrom(filledMsg.toByteString(), registry);
+    MessageData msg = builder.build();
+    checkFields(builder);
+    checkFields(msg);
+  }
+
   public void testSerialization() throws Exception {
     MessageData msg = getFilledMessage();
 
@@ -94,6 +113,18 @@ public class MessagesTest extends ProtobufTest {
     byte[] bytes = group.toByteArray();
     byte[] expected = asBytes(new int[] { 0x08, 0x01 });
     checkBytes(expected, bytes);
+  }
+
+  public void testRemoveRepeatedMessageField() throws Exception {
+    MessageData data = MessageData.newBuilder()
+        .addMsgR(SubMsg.newBuilder().setUintF(40).build())
+        .addMsgR(SubMsg.newBuilder().setUintF(41).build())
+        .addMsgR(SubMsg.newBuilder().setUintF(42).build())
+        .removeMsgR(1)
+        .build();
+    assertEquals(2, data.getMsgRCount());
+    assertEquals(40, data.getMsgR(0).getUintF());
+    assertEquals(42, data.getMsgR(1).getUintF());
   }
 
   public void testMergeExistingMessageFields() throws Exception {

@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
+import com.google.devtools.j2objc.translate.ExternalAnnotationInjector;
 import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
@@ -51,6 +52,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.PackageInfoRewriter;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
+import com.google.devtools.j2objc.translate.SerializationStripper;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriter;
 import com.google.devtools.j2objc.translate.SwitchRewriter;
@@ -62,9 +64,11 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,7 +84,7 @@ public class TranslationProcessor extends FileProcessor {
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
   private final CodeReferenceMap deadCodeMap;
-
+  private final List<GenerationUnit> outputs = new ArrayList<>();
   private int processedCount = 0;
 
   public TranslationProcessor(Parser parser, CodeReferenceMap deadCodeMap) {
@@ -99,34 +103,39 @@ public class TranslationProcessor extends FileProcessor {
       // Dump compilation unit to an .ast output file instead of translating.
       DebugASTDump.dumpUnit(unit);
     } else {
-      applyMutations(unit, deadCodeMap, ticker);
+      applyMutations(unit, deadCodeMap, options.externalAnnotations(), ticker);
       ticker.tick("Tree mutations");
       ticker.printResults(System.out);
 
       GenerationUnit genUnit = input.getGenerationUnit();
       genUnit.addCompilationUnit(unit);
+      outputs.add(genUnit);
 
       // Add out-of-date dependencies to translation list.
       if (closureQueue != null) {
         checkDependencies(unit);
       }
-
-      if (genUnit.isFullyParsed()) {
-        generateObjectiveCSource(genUnit);
-      }
     }
     processedCount++;
   }
 
+  @Override
+  protected void processOutputs(Iterable<ProcessingContext> outputs) {
+    for (ProcessingContext output : outputs) {
+      generateObjectiveCSource(output.getGenerationUnit());
+    }
+  }
+
   /**
-   * Translates a parsed source file, modifying the compilation unit by
-   * substituting core Java type and method references with iOS equivalents.
-   * For example, <code>java.lang.Object</code> maps to <code>NSObject</code>,
-   * and <code>java.lang.String</code> to <code>NSString</code>. The source is
-   * also modified to add support for iOS memory management, extract inner
-   * classes, etc.
+   * Translates a parsed source file, modifying the compilation unit by substituting core Java type
+   * and method references with iOS equivalents. For example, <code>java.lang.Object</code> maps to
+   * <code>NSObject</code>, and <code>java.lang.String</code> to <code>NSString</code>. The source
+   * is also modified to add support for iOS memory management, extract inner classes, etc.
    */
-  public static void applyMutations(CompilationUnit unit, CodeReferenceMap deadCodeMap,
+  public static void applyMutations(
+      CompilationUnit unit,
+      CodeReferenceMap deadCodeMap,
+      ExternalAnnotations externalAnnotations,
       TimeTracker ticker) {
     ticker.push();
 
@@ -139,12 +148,19 @@ public class TranslationProcessor extends FileProcessor {
       ticker.tick("DeadCodeEliminator");
     }
 
+    new ExternalAnnotationInjector(unit, externalAnnotations).run();
+    ticker.tick("ExternalAnnotationInjector");
+
     new OuterReferenceResolver(unit).run();
     ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
     new GwtConverter(unit).run();
     ticker.tick("GwtConverter");
+
+    // Remove serialization related members if needed.
+    new SerializationStripper(unit).run();
+    ticker.tick("SerializationStripper");
 
     // Add default equals/hashCode methods to Number subclasses, if necessary.
     new NumberMethodRewriter(unit).run();
@@ -241,7 +257,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("DestructorGenerator");
 
     // Before: StaticVarRewriter - Generates static variable access expressions.
-    new MetadataWriter(unit).run();
+    new MetadataWriter(unit, deadCodeMap).run();
     ticker.tick("MetadataWriter");
 
     // Before: Functionizer - Needs to rewrite some ClassInstanceCreation nodes
@@ -288,9 +304,14 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("CastResolver");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
-    //   top-level and functionizing to have occured.
+    //   top-level and functionizing to have occurred.
     new PrivateDeclarationResolver(unit).run();
     ticker.tick("PrivateDeclarationResolver");
+
+    if (deadCodeMap != null) {
+      DeadCodeEliminator.removeDeadClasses(unit, deadCodeMap);
+      ticker.tick("removeDeadClasses");
+    }
 
     // Make sure we still have a valid AST.
     unit.validate();
@@ -304,8 +325,10 @@ public class TranslationProcessor extends FileProcessor {
     assert unit.isFullyParsed();
     TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName(), unit.options().timingLevel());
     logger.fine("Generating " + unit.getOutputPath());
-    logger.finest("writing output file(s) to "
+    logger.finest("writing source file(s) to "
         + unit.options().fileUtil().getOutputDirectory().getAbsolutePath());
+    logger.finest("writing header file(s) to "
+        + unit.options().fileUtil().getHeaderOutputDirectory().getAbsolutePath());
     ticker.push();
 
     // write header

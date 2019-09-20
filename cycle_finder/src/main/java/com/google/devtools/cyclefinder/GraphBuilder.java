@@ -32,7 +32,11 @@ import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.j2objc.annotations.RetainedWith;
+import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.WeakOuter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +52,10 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.TypeVisitor;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.SimpleTypeVisitor8;
+import scenelib.annotations.Annotation;
+import scenelib.annotations.el.AClass;
+import scenelib.annotations.el.AField;
+import scenelib.annotations.el.AScene;
 
 /**
  * Builds the graph of possible references between types.
@@ -58,14 +66,16 @@ public class GraphBuilder {
 
   private final Map<String, TypeNode> allTypes = new HashMap<>();
   private final NameList whitelist;
+  private final AScene scene;
   private final ReferenceGraph graph = new ReferenceGraph();
   private final Map<TypeNode, TypeNode> superclasses = new HashMap<>();
   private final SetMultimap<TypeNode, TypeNode> subtypes = HashMultimap.create();
   private final SetMultimap<TypeNode, Edge> possibleOuterEdges = HashMultimap.create();
   private final Set<TypeNode> hasOuterRef = new HashSet<>();
 
-  public GraphBuilder(NameList whitelist) {
+  public GraphBuilder(NameList whitelist, ExternalAnnotations externalAnnotations) {
     this.whitelist = whitelist;
+    this.scene = externalAnnotations.getScene();
   }
 
   public GraphBuilder constructGraph() {
@@ -267,8 +277,8 @@ public class GraphBuilder {
             && !ElementUtil.isStatic(field)
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !typeUtil.isAssignable(type, fieldType)
-            && !ElementUtil.isWeakReference(field)
-            && !ElementUtil.isRetainedWithField(field)) {
+            && !isWeakReference(field)
+            && !isRetainedWithField(field)) {
           addEdge(Edge.newFieldEdge(node, target, fieldName));
         }
       }
@@ -284,7 +294,7 @@ public class GraphBuilder {
       TypeNode declarationType = getOrCreateNode(element.asType());
       if (declarationType != null && enclosingTypeNode != null
           && ElementUtil.hasOuterContext(element)
-          && !elementUtil.isWeakOuterType(element)
+          && !isWeakOuterType(element)
           && !whitelist.containsType(enclosingTypeNode)
           && !whitelist.hasOuterForType(typeNode)) {
         possibleOuterEdges.put(
@@ -302,6 +312,48 @@ public class GraphBuilder {
               typeNode, targetNode, ElementUtil.getName(capturedVarElement)));
         }
       }
+    }
+
+    private boolean isWeakReference(VariableElement field) {
+      return ElementUtil.isWeakReference(field) || hasExternalAnnotation(field, Weak.class);
+    }
+
+    private boolean isRetainedWithField(VariableElement field) {
+      return ElementUtil.isRetainedWithField(field)
+          || hasExternalAnnotation(field, RetainedWith.class);
+    }
+
+    private boolean isWeakOuterType(TypeElement element) {
+      return elementUtil.isWeakOuterType(element)
+          || hasExternalAnnotation(element, WeakOuter.class);
+    }
+
+    private boolean hasExternalAnnotation(VariableElement element, Class<?> annotationClass) {
+      String className = elementUtil.getBinaryName((TypeElement) element.getEnclosingElement());
+      String fieldName = element.getSimpleName().toString();
+      AClass cls = scene.classes.get(className);
+      if (cls != null) {
+        AField field = cls.fields.get(fieldName);
+        if (field != null) {
+          return hasExternalAnnotation(field.tlAnnotationsHere, annotationClass);
+        }
+      }
+      return false;
+    }
+
+    private boolean hasExternalAnnotation(TypeElement element, Class<?> annotationClass) {
+      String className = elementUtil.getBinaryName(element);
+      AClass cls = scene.classes.get(className);
+      return cls != null && hasExternalAnnotation(cls.tlAnnotationsHere, annotationClass);
+    }
+
+    private boolean hasExternalAnnotation(Set<Annotation> annotations, Class<?> annotationClass) {
+      for (Annotation annotation : annotations) {
+        if (annotationClass.getCanonicalName().equals(annotation.def.name)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     private String getTypeDeclarationName(TreeNode node, TypeElement typeElem) {

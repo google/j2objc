@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
@@ -25,6 +26,7 @@ import javax.lang.model.type.TypeMirror;
 public class MethodDeclaration extends BodyDeclaration {
 
   private ExecutableElement executableElement = null;
+  private Name name = null;
   private boolean isConstructor = false;
   private boolean hasDeclaration = true;
   private boolean isUnavailable = false;
@@ -37,6 +39,7 @@ public class MethodDeclaration extends BodyDeclaration {
   public MethodDeclaration(MethodDeclaration other) {
     super(other);
     executableElement = other.getExecutableElement();
+    name = other.getName();
     isConstructor = other.isConstructor();
     hasDeclaration = other.hasDeclaration();
     isUnavailable = other.isUnavailable();
@@ -61,6 +64,17 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public MethodDeclaration setExecutableElement(ExecutableElement newElement) {
     executableElement = newElement;
+    return this;
+  }
+
+  public Name getName() {
+    return name != null
+        ? name
+        : (executableElement != null ? Name.newName(null, executableElement) : null);
+  }
+
+  public MethodDeclaration setName(Name newName) {
+    name = newName;
     return this;
   }
 
@@ -136,5 +150,11 @@ public class MethodDeclaration extends BodyDeclaration {
   public MethodDeclaration addParameter(int index, SingleVariableDeclaration param) {
     parameters.add(index, param);
     return this;
+  }
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(executableElement);
   }
 }

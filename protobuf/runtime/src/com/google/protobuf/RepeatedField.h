@@ -146,6 +146,8 @@ void CGPRepeatedFieldSet(CGPRepeatedField *field, jint index, id value, CGPField
 void CGPRepeatedFieldAssignFromList(
     CGPRepeatedField *field, id<JavaUtilList> list, CGPFieldJavaType type);
 
+void CGPRepeatedMessageFieldRemove(CGPRepeatedField *field, jint index);
+
 id<JavaUtilList> CGPRepeatedFieldCopyList(CGPRepeatedField *field, CGPFieldDescriptor *descriptor);
 
 BOOL CGPRepeatedFieldIsEqual(CGPRepeatedField *a, CGPRepeatedField *b, CGPFieldJavaType type);

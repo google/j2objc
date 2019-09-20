@@ -287,4 +287,39 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "@implementation FooBarpackage_info");
     assertNotInTranslation(translation, "FBpackage_info");
   }
+
+  public void testIsValidClassName() {
+    assertTrue(NameTable.isValidClassName("Test"));
+    assertTrue(NameTable.isValidClassName("foo.bar.Test"));
+    assertTrue(NameTable.isValidClassName("foo.bar.Test.InnerClass"));
+    assertTrue(NameTable.isValidClassName("foo.bar.Test$InnerClass"));
+
+    // A package name can also be a class name.
+    assertTrue(NameTable.isValidClassName("java.util"));
+
+    // Unicode names are valid package or class names.
+    assertTrue(NameTable.isValidClassName("数据.字符串"));
+
+    // File names without path separators are valid!
+    assertTrue(NameTable.isValidClassName("Test.java"));
+
+    assertFalse(NameTable.isValidClassName("foo/bar/Test.java"));
+    assertFalse(NameTable.isValidClassName("test-src.jar"));
+  }
+
+  public void testUserDefinedReservedNames() throws IOException {
+    String file = addSourceFile("aReservedMethodName aReservedParamName", "user_defined.txt");
+    options.load(new String[] {"--reserved-names", file});
+    // stdin is a predefined reserved name.
+    String source = "public class Test { "
+        + "  public void aReservedMethodName() {} "
+        + "  public void test(int noReserved, int stdin, int aReservedParamName) {} "
+        + "} ";
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslation(translation, "- (void)aReservedMethodName__;");
+    assertTranslatedLines(translation,
+        "- (void)testWithInt:(jint)noReserved",
+        "            withInt:(jint)stdin_",
+        "            withInt:(jint)aReservedParamName_;");
+  }
 }

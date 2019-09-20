@@ -87,7 +87,13 @@ import java.util.Set;
  * necessary locking. Multiple threads each manipulating separate objects
  * need not synchronize.
  *
+ * <p>See RFC 2560: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol -
+ * OCSP, RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation
+ * List (CRL) Profile (Android note: this paragraph was originally in a malformed "see" tag below,
+ * moved here for correct construction of the docs).
+ *
  * @since 1.8
+
  */
 public abstract class PKIXRevocationChecker extends PKIXCertPathChecker {
     private URI ocspResponder;

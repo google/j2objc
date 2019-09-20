@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -62,17 +62,17 @@ import java.nio.ByteBuffer;
  * algorithm (e.g., <i>DES</i>), and may be followed by a feedback mode and
  * padding scheme.
  *
- * <p> A transformation is of the form:<p>
+ * <p> A transformation is of the form:
  *
  * <ul>
  * <li>"<i>algorithm/mode/padding</i>" or
- * <p>
+ *
  * <li>"<i>algorithm</i>"
  * </ul>
  *
  * <P> (in the latter case,
  * provider-specific default values for the mode and padding scheme are used).
- * For example, the following is a valid transformation:<p>
+ * For example, the following is a valid transformation:
  *
  * <pre>
  *     Cipher c = Cipher.getInstance("<i>DES/CBC/PKCS5Padding</i>");
@@ -129,7 +129,7 @@ import java.nio.ByteBuffer;
  * <i>DES/CBC/PKCS5Padding</i>, one that implements
  * <i>DES/CFB/PKCS5Padding</i>, and yet another one that implements
  * <i>DES/OFB/PKCS5Padding</i>. That provider would have the following
- * <code>Cipher</code> properties in its master class:<p>
+ * <code>Cipher</code> properties in its master class:
  *
  * <ul>
  *
@@ -160,7 +160,7 @@ import java.nio.ByteBuffer;
  * and one for <i>OFB</i>), one class for <i>PKCS5Padding</i>,
  * and a generic <i>DES</i> class that subclasses from <code>CipherSpi</code>.
  * That provider would have the following
- * <code>Cipher</code> properties in its master class:<p>
+ * <code>Cipher</code> properties in its master class:
  *
  * <ul>
  *
@@ -197,20 +197,20 @@ import java.nio.ByteBuffer;
  * Check if the provider has registered a subclass of <code>CipherSpi</code>
  * for the specified "<i>algorithm/mode/padding</i>" transformation.
  * <p>If the answer is YES, instantiate it.
- * <p>If the answer is NO, go to the next step.<p>
+ * <p>If the answer is NO, go to the next step.
  * <li>
  * Check if the provider has registered a subclass of <code>CipherSpi</code>
  * for the sub-transformation "<i>algorithm/mode</i>".
  * <p>If the answer is YES, instantiate it, and call
  * <code>engineSetPadding(<i>padding</i>)</code> on the new instance.
- * <p>If the answer is NO, go to the next step.<p>
+ * <p>If the answer is NO, go to the next step.
  * <li>
  * Check if the provider has registered a subclass of <code>CipherSpi</code>
  * for the sub-transformation "<i>algorithm//padding</i>" (note the double
  * slashes).
  * <p>If the answer is YES, instantiate it, and call
  * <code>engineSetMode(<i>mode</i>)</code> on the new instance.
- * <p>If the answer is NO, go to the next step.<p>
+ * <p>If the answer is NO, go to the next step.
  * <li>
  * Check if the provider has registered a subclass of <code>CipherSpi</code>
  * for the sub-transformation "<i>algorithm</i>".
@@ -347,6 +347,9 @@ public abstract class CipherSpi {
      * initializing this cipher, or requires
      * algorithm parameters that cannot be
      * determined from the given key.
+     * @throws UnsupportedOperationException if {@code opmode} is
+     * {@code WRAP_MODE} or {@code UNWRAP_MODE} is not implemented
+     * by the cipher.
      */
     protected abstract void engineInit(int opmode, Key key,
                                        SecureRandom random)
@@ -399,6 +402,9 @@ public abstract class CipherSpi {
      * parameters are inappropriate for this cipher,
      * or if this cipher requires
      * algorithm parameters and <code>params</code> is null.
+     * @throws UnsupportedOperationException if {@code opmode} is
+     * {@code WRAP_MODE} or {@code UNWRAP_MODE} is not implemented
+     * by the cipher.
      */
     protected abstract void engineInit(int opmode, Key key,
                                        AlgorithmParameterSpec params,
@@ -452,6 +458,9 @@ public abstract class CipherSpi {
      * parameters are inappropriate for this cipher,
      * or if this cipher requires
      * algorithm parameters and <code>params</code> is null.
+     * @throws UnsupportedOperationException if {@code opmode} is
+     * {@code WRAP_MODE} or {@code UNWRAP_MODE} is not implemented
+     * by the cipher.
      */
     protected abstract void engineInit(int opmode, Key key,
                                        AlgorithmParameters params,
@@ -777,7 +786,9 @@ public abstract class CipherSpi {
             int total = 0;
             do {
                 int chunk = Math.min(inLen, inArray.length);
-                input.get(inArray, 0, chunk);
+                if (chunk > 0) {
+                    input.get(inArray, 0, chunk);
+                }
                 int n;
                 if (isUpdate || (inLen != chunk)) {
                     n = engineUpdate(inArray, 0, chunk, outArray, outOfs);
@@ -805,8 +816,9 @@ public abstract class CipherSpi {
             int total = 0;
             boolean resized = false;
             do {
-                int chunk = Math.min(inLen, outSize);
-                if ((a1 == false) && (resized == false)) {
+                int chunk =
+                    Math.min(inLen, (outSize == 0? inArray.length : outSize));
+                if (!a1 && !resized && chunk > 0) {
                     input.get(inArray, 0, chunk);
                     inOfs = 0;
                 }
@@ -820,8 +832,10 @@ public abstract class CipherSpi {
                     resized = false;
                     inOfs += chunk;
                     inLen -= chunk;
-                    output.put(outArray, 0, n);
-                    total += n;
+                    if (n > 0) {
+                        output.put(outArray, 0, n);
+                        total += n;
+                    }
                 } catch (ShortBufferException e) {
                     if (resized) {
                         // we just resized the output buffer, but it still
@@ -831,11 +845,13 @@ public abstract class CipherSpi {
                     }
                     // output buffer is too small, realloc and try again
                     resized = true;
-                    int newOut = engineGetOutputSize(chunk);
-                    outArray = new byte[newOut];
+                    outSize = engineGetOutputSize(chunk);
+                    outArray = new byte[outSize];
                 }
             } while (inLen > 0);
-            input.position(inLimit);
+            if (a1) {
+                input.position(inLimit);
+            }
             return total;
         }
     }
@@ -863,6 +879,8 @@ public abstract class CipherSpi {
      * @exception InvalidKeyException if it is impossible or unsafe to
      * wrap the key with this cipher (e.g., a hardware protected key is
      * being passed to a software-only cipher).
+     *
+     * @throws UnsupportedOperationException if this method is not supported.
      */
     protected byte[] engineWrap(Key key)
         throws IllegalBlockSizeException, InvalidKeyException
@@ -899,6 +917,8 @@ public abstract class CipherSpi {
      * @exception InvalidKeyException if <code>wrappedKey</code> does not
      * represent a wrapped key of type <code>wrappedKeyType</code> for
      * the <code>wrappedKeyAlgorithm</code>.
+     *
+     * @throws UnsupportedOperationException if this method is not supported.
      */
     protected Key engineUnwrap(byte[] wrappedKey,
                                String wrappedKeyAlgorithm,

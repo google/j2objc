@@ -76,7 +76,7 @@ public final class TranslationUtil {
     this.options = options;
     this.elementUtil = elementUtil;
     this.jreEmulLoader = getJreEmulClassPath(options);
-    
+
   }
 
   public static TypeElement getSuperType(AbstractTypeDeclaration node) {
@@ -120,6 +120,9 @@ public final class TranslationUtil {
     if (ElementUtil.isLambda(type)) {
       return false;
     }
+    if (isJUnitTestClass(type) || ElementUtil.isRuntimeAnnotation(type)) {
+      return true;
+    }
     PackageElement packageElement = ElementUtil.getPackage(type);
     ReflectionSupport.Level level = null;
     while (type != null) {
@@ -143,6 +146,24 @@ public final class TranslationUtil {
     }
   }
 
+  private boolean isJUnitTestClass(TypeElement type) {
+    if (ElementUtil.isPackageInfo(type)) {
+      return false;
+    }
+    return isJUnit3TestClass(type) || isJUnit4TestClass(type);
+  }
+
+  public boolean isJUnit3TestClass(TypeElement type) {
+    TypeElement testType = typeUtil.resolveJavaType("junit.framework.Test");
+    return testType != null && typeUtil.isAssignable(type.asType(), testType.asType());
+  }
+
+  private boolean isJUnit4TestClass(TypeElement type) {
+    AnnotationMirror annotation =
+        ElementUtil.getQualifiedNamedAnnotation(type, "org.junit.runner.RunWith");
+    return annotation != null;
+  }
+
   private ReflectionSupport.Level getReflectionSupportLevelOnPackage(PackageElement node) {
     ReflectionSupport.Level level = getReflectionSupportLevel(
         ElementUtil.getAnnotation(node, ReflectionSupport.class));
@@ -151,7 +172,7 @@ public final class TranslationUtil {
     }
     // Check if package-info.java contains ReflectionSupport annotation
     level = options.getPackageInfoLookup().getReflectionSupportLevel(
-        node.getSimpleName().toString());
+        node.getQualifiedName().toString());
     return level;
   }
 
@@ -346,10 +367,11 @@ public final class TranslationUtil {
 
   /**
    * Returns true if an implementation for a type element should be generated.
-   * Normally this is true unless the type is defined in the translator's
-   * jre_emul.jar, to avoid duplicate types causing link errors. Types defined
-   * on the system bootclasspath are ignored, since translating them won't
-   * cause link errors later.
+   * Normally this is true, but in Java 8 a few interfaces from JSR 250
+   * (https://jcp.org/en/jsr/detail?id=250) were added, causing duplicate
+   * symbol link errors when building an app that uses the other JSR 250
+   * annotations. javax.annotation defined on the bootclasspath are therefore
+   * ignored, since translating them won't cause link errors later.
    * <p>
    * If the <code>-Xtranslate-bootclasspath</code> flag is specified
    * (normally only when building the jre_emul libraries), then types
@@ -360,6 +382,9 @@ public final class TranslationUtil {
       return true;
     }
     String className = elementUtil.getBinaryName(typeElement).replace('.', '/');
+    if (!className.startsWith("javax/annotation/")) {
+      return true;
+    }
     String resourcePath = className.replace('.', '/') + ".class";
     return jreEmulLoader.findResource(resourcePath) == null;
   }

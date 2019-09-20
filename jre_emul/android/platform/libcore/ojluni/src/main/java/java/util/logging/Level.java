@@ -69,7 +69,8 @@ import dalvik.system.VMStack;
  */
 
 public class Level implements java.io.Serializable {
-    private static String defaultBundle = "sun.util.logging.resources.logging";
+    // j2objc: disable level name localization to reduce app size.
+    private static String defaultBundle = /* "sun.util.logging.resources.logging" */ null;
 
     /**
      * @serial  The non-localized name of the level.

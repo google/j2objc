@@ -112,7 +112,7 @@ import libcore.icu.TimeZoneNames;
  * </pre></blockquote>
  * For example, TimeZone.getTimeZone("GMT-8").getID() returns "GMT-08:00".
  *
- * <h4>Three-letter time zone IDs</h4>
+ * <h3>Three-letter time zone IDs</h3>
  *
  * For compatibility with JDK 1.1.x, some other three-letter time zone IDs
  * (such as "PST", "CTT", "AST") are also supported. However, <strong>their
@@ -152,7 +152,8 @@ abstract public class TimeZone implements Serializable, Cloneable {
      */
     public static final int LONG  = 1;
 
-    // Use a preload holder to allow compile-time initialization of TimeZone and dependents.
+    // Android-changed: Use a preload holder to allow compile-time initialization of TimeZone and
+    // dependents.
     private static class NoImagePreloadHolder {
         public static final Pattern CUSTOM_ZONE_ID_PATTERN = Pattern.compile("^GMT[-+](\\d{1,2})(:?(\\d\\d))?$");
     }
@@ -224,7 +225,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
      * @param date the milliseconds (since January 1, 1970,
      * 00:00:00.000 GMT) at which the time zone offset and daylight
      * saving amount are found
-     * @param offset an array of int where the raw GMT offset
+     * @param offsets an array of int where the raw GMT offset
      * (offset[0]) and daylight saving amount (offset[1]) are stored,
      * or null if those values are not needed. The method assumes that
      * the length of the given array is two or larger.
@@ -306,10 +307,10 @@ abstract public class TimeZone implements Serializable, Cloneable {
      * presentation to the user in the default locale.
      *
      * <p>This method is equivalent to:
-     * <pre><blockquote>
+     * <blockquote><pre>
      * getDisplayName(false, {@link #LONG},
      *                Locale.getDefault({@link Locale.Category#DISPLAY}))
-     * </blockquote></pre>
+     * </pre></blockquote>
      *
      * @return the human-readable name of this time zone in the default locale.
      * @since 1.2
@@ -327,9 +328,9 @@ abstract public class TimeZone implements Serializable, Cloneable {
      * presentation to the user in the specified {@code locale}.
      *
      * <p>This method is equivalent to:
-     * <pre><blockquote>
+     * <blockquote><pre>
      * getDisplayName(false, {@link #LONG}, locale)
-     * </blockquote></pre>
+     * </pre></blockquote>
      *
      * @param locale the locale in which to supply the display name.
      * @return the human-readable name of this time zone in the given locale.
@@ -349,10 +350,10 @@ abstract public class TimeZone implements Serializable, Cloneable {
      * Time). Otherwise, a Standard Time name is returned.
      *
      * <p>This method is equivalent to:
-     * <pre><blockquote>
+     * <blockquote><pre>
      * getDisplayName(daylight, style,
      *                Locale.getDefault({@link Locale.Category#DISPLAY}))
-     * </blockquote></pre>
+     * </pre></blockquote>
      *
      * @param daylight {@code true} specifying a Daylight Saving Time name, or
      *                 {@code false} specifying a Standard Time name
@@ -382,7 +383,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
      */
     public String getDisplayName(boolean daylightTime, int style, Locale locale) {
         if (style != SHORT && style != LONG) {
-            throw new IllegalArgumentException("Bad style: " + style);
+            throw new IllegalArgumentException("Illegal style: " + style);
         }
 
         String[][] zoneStrings = TimeZoneNames.getZoneStrings(locale);
@@ -733,7 +734,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
             other.ID = ID;
             return other;
         } catch (CloneNotSupportedException e) {
-            throw new InternalError();
+            throw new InternalError(e);
         }
     }
 

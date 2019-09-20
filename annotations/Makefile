@@ -35,7 +35,7 @@ $(BUILD_DIR) $(CLASSES_DIR) $(DIST_JAR_DIR):
 
 $(JAR): $(SOURCE_JAVA_FULL) | $(BUILD_DIR) $(CLASSES_DIR)
 	@echo Building j2objc annotations
-	@javac -encoding UTF-8 -d $(CLASSES_DIR) -source 1.7 -target 1.7 \
+	@$(JAVAC) -encoding UTF-8 -d $(CLASSES_DIR) -source 1.7 -target 1.7 \
 	    -nowarn $^
 	@jar cf $(JAR) -C $(CLASSES_DIR) .
 
