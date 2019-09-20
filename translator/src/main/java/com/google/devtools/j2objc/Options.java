@@ -86,6 +86,7 @@ public class Options {
 
   // Property not defined in Java 9, so use empty bootclasspath.
   private String bootclasspath = System.getProperty("sun.boot.class.path", "");
+  private List<String> bootcps;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -506,6 +507,7 @@ public class Options {
   private List<String> getPathArgument(String argument, boolean expandAarFiles) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
+      entry = entry.trim();
       if (entry.startsWith("~/")) {
         // Expand bash/csh tildes, which don't get expanded by the shell
         // first if in the middle of a path string.
@@ -518,6 +520,9 @@ public class Options {
       }
       if (f.exists()) {
         entries.add(f.toString());
+      }
+      else {
+    	  System.err.println("invalid path: " + entry);
       }
     }
     return entries;
@@ -616,7 +621,11 @@ public class Options {
   }
 
   public List<String> getBootClasspath() {
-    return getPathArgument(bootclasspath, false);
+	  if (this.bootcps == null) {
+		  bootcps = getPathArgument(bootclasspath, false);
+		  System.out.println(bootcps);
+	  }
+	  return this.bootcps;
   }
 
   public Mappings getMappings() {

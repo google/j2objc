@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -72,7 +73,7 @@ public class GenerationBatch {
   }
 
   private void processSourceFile(String filename) {
-    logger.finest("processing " + filename);
+    logger.finest("processing  " + filename);
     if (filename.endsWith(".java")
         || (options.translateClassfiles() && filename.endsWith(".class"))) {
       processJavaFile(filename);
@@ -125,13 +126,21 @@ public class GenerationBatch {
     return null;
   }
 
+  static HashMap<File, File> gInflatedJars = new HashMap<>();
+  
   private void processJarFile(String filename) {
     File f = findJarFile(filename);
     if (f == null) {
-      ErrorUtil.error("No such file: " + filename);
+      ErrorUtil.error("No such file:" + filename);
       return;
     }
 
+    if (gInflatedJars.get(f) != null) {
+    	return;
+    }
+    
+    gInflatedJars.put(f, f);
+    
     // Warn if source debugging is specified for a jar file, since native debuggers
     // don't support Java-like source paths.
     if (options.emitLineDirectives()) {

@@ -53,7 +53,7 @@
 @implementation IOSReference
 
 static int assocKey;
-static NSMutableSet* g_softRefSet_ = NULL;
+static NSMutableArray* g_softRefSet_ = NULL;
 
 //#define DBGLog(...) NSLog(__VAR_ARGS__)
 #define DBGLog(...) //NSLog(__VAR_ARGS__)
@@ -70,7 +70,7 @@ BOOL ARGC_isAliveObject(__unsafe_unretained ARGCObject* reference);
     }
     @synchronized (self) {
         if (g_softRefSet_ == NULL) {
-            g_softRefSet_ = [[NSMutableSet alloc]init];
+            g_softRefSet_ = [[NSMutableArray alloc]init];
         }
         if ([[[referent class] description] isEqualToString:@"IOSConcreteClass"]) {
             DBGLog(@"Adding ref: %p %@", referent, [referent class]);
@@ -145,6 +145,13 @@ void removeSoftReference(JavaLangRefReference *reference) {
     }
 }
 
+void clearReclaimingReference(__unsafe_unretained id referent) {
+    IOSReference* rm = objc_getAssociatedObject(referent, &assocKey);
+    if (rm != NULL) {
+        objc_setAssociatedObject(referent, &assocKey, NULL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+}
+
 + (void)clearReferent:(JavaLangRefReference *)reference
 {
     if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
@@ -156,9 +163,11 @@ void removeSoftReference(JavaLangRefReference *reference) {
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
+    @autoreleasepool {
     @synchronized (self) {
         [g_softRefSet_ removeAllObjects];
     };
+    }
     ARGC_collectGarbage();
 }
 

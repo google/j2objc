@@ -85,7 +85,7 @@ define compile_rule
 $(1)/%.o: $(2)/%.mm $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling++  '$$<'
-	clang++ -x objective-c++ -g -O2 -fobjc-arc-exceptions -fno-objc-arc -std=gnu++11 -I/Users/zeedh/work/j2objc/jre_emul/Classes -I$(GEN_OBJC_DIR) -I$(DT_TOOLCHAIN_DIR)/usr/include/c++/v1 $(5) -MD -c '$$<' -o '$$@'
+clang++ -x objective-c++ -g -O2 -fobjc-arc-exceptions -fno-objc-arc -std=gnu++11 -Ijre_emul/Classes -I$(GEN_OBJC_DIR) -I$(DT_TOOLCHAIN_DIR)/usr/include/c++/v1 $(5) -MD -c '$$<' -o '$$@'
 
 $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)

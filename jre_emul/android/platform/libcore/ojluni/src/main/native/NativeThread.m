@@ -79,8 +79,12 @@ Java_sun_nio_ch_NativeThread_current(JNIEnv *env, jclass cl)
 JNIEXPORT void JNICALL
 Java_sun_nio_ch_NativeThread_signal(JNIEnv *env, jclass cl, jlong thread)
 {
-    if (pthread_kill((pthread_t)thread, INTERRUPT_SIGNAL))
+    int err = pthread_kill((pthread_t)thread, INTERRUPT_SIGNAL);
+    if (err) {
+        char* errm = strerror(err);
+        NSLog(@"%s", errm);
         JNU_ThrowIOExceptionWithLastError(env, "Thread signal failed");
+    }
 }
 
 /* J2ObjC unused.

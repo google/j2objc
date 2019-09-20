@@ -106,8 +106,9 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
                                      type:array->elementType_];
 }
 
-void ARGC_genericRetain(id obj);
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
+  void ARGC_genericRetain(id obj);
+  
   NSUInteger count = [array count];
   IOSObjectArray *result = IOSObjectArray_CreateArray((jint)count, type, false);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];

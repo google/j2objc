@@ -485,7 +485,11 @@ public class SocketTest extends junit.framework.TestCase {
                     byte[] result = new byte[receiveByteCount];
                     int total = 0;
                     while (total < receiveByteCount) {
-                        total += in.read(result, total, result.length - total);
+                        int read = in.read(result, total, result.length - total);
+                        if (read < 0) {
+                           break;
+                        }
+                        total += read;
                     }
                     socket.close();
                     return result;

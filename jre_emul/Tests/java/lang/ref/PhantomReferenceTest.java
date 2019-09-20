@@ -60,7 +60,8 @@ public class PhantomReferenceTest extends TestCase {
       assertNull("phantomRef returned referent", phantomRef.get());
     }
 
-    // Verify phantom reference was queued.
+    System.gc(); 
+    // Verify phantom reference was queued. 
     Reference<?> queuedRef = queue.poll();
     assertNotNull("phantomRef wasn't queued", queuedRef);
   }

@@ -41,6 +41,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RetainedWithTest extends TestCase {
 
   private static Set<Integer> finalizedObjects = new HashSet<>();
+  private static boolean isGarbageCollectionEnabled;
+
+  static {
+    detectGarbageCollectionMode();
+  }
+
+  private native static void detectGarbageCollectionMode()  
+  /*-[
+    #ifdef J2OBJC_USE_GC
+       ComGoogleJ2objcRetainedWithTest_isGarbageCollectionEnabled = TRUE;
+    #endif
+  ]-*/;
 
   @Override
   public void tearDown() throws Exception {
@@ -89,6 +101,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testObjectPairIsDeallocated() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<Integer>();
     newA(objectCodes);
     for (Integer i : objectCodes) {
@@ -114,6 +127,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testSymmetricObjectPairIsDeallocated() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<Integer>();
     newSymmetric(objectCodes);
     for (Integer i : objectCodes) {
@@ -136,6 +150,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testCloneParentObject() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<Integer>();
     newAPlusClone(objectCodes);
     for (Integer i : objectCodes) {
@@ -154,6 +169,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testCloneChildObject() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<Integer>();
     newAPlusCloneChild(objectCodes);
     for (Integer i : objectCodes) {
@@ -171,6 +187,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testReassignChild() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<Integer>();
     newAPlusReassignChild(objectCodes);
     for (Integer i : objectCodes) {
@@ -248,6 +265,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testMapChildren() {
+    if (isGarbageCollectionEnabled) return;
     runMapTest(new MapFactory(new Object()) {
       public Map newMap() {
         return new IdentityHashMap();

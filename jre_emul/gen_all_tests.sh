@@ -25,7 +25,11 @@ BEGIN {
     printf("  %s.class,\n", ARGV[i])
   }
   print("})")
-  print("public class AllJreTests {\n")
+  print("public class AllJreTests extends Thread {\n")
+  print(" public native void run() /*-[")
+  print("   void runAllJreTests();")
+  print("   runAllJreTests();")
+  print(" ]-*/;")
   print("}")
   exit(0)
 }

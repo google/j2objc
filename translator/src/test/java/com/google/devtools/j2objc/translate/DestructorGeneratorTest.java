@@ -96,6 +96,16 @@ public class DestructorGeneratorTest extends GenerationTest {
   }
 
   /**
+   * Verify fields are not released for GC code, and a dealloc method is not created.
+   */
+  public void testFieldReleaseGC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.GC);
+    String translation = translateSourceFile("class Test { Object o; Runnable r; }",
+        "Test", "Test.m");
+    assertNotInTranslation(translation, "dealloc");
+  }
+
+  /**
    * Verify fields are released for reference counted code when a finalize() method is defined.
    */
   public void testFieldReleaseFinalizeReferenceCounting() throws IOException {
@@ -122,6 +132,25 @@ public class DestructorGeneratorTest extends GenerationTest {
    */
   public void testFieldReleaseFinalizeARC() throws IOException {
     options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String translation = translateSourceFile("class Test { Object o; Runnable r;"
+        + "public void finalize() throws Throwable { System.out.println(this); }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (void)java_finalize {",
+        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+          + "printlnWithId:self];",
+        "}");
+    assertTranslatedLines(translation,
+        "- (void)dealloc {",
+        "  JreCheckFinalize(self, [Test class]);",
+        "}");
+  }
+
+  /**
+   * Verify fields are not released for GC code when a finalize() method is defined.
+   */
+  public void testFieldReleaseFinalizeGC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.GC);
     String translation = translateSourceFile("class Test { Object o; Runnable r;"
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");

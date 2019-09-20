@@ -28,6 +28,7 @@
 #import "java/lang/Thread.h"
 #import "org/junit/internal/RealSystem.h"
 #import "org/junit/runner/JUnitCore.h"
+#import "AllJreTests.h"
 
 @interface JRELogPaneViewController ()
 
@@ -61,9 +62,7 @@
   return self;
 }
 
-void printRefCount(id obj);
-void ARGC_executeGC(int interval);
-
+JRELogPaneViewController* controller ;
 - (void)viewDidAppear:(BOOL)animated {
   CGRect textFrame = self.textPane.frame;
   textFrame.size.height -= 20;
@@ -72,25 +71,26 @@ void ARGC_executeGC(int interval);
   [self.saveButton setEnabled:NO];
   [self.logPane setDelegate:self];
 
-    NSObject* c = [[NSObject alloc] init];
-    printRefCount(c);
-    printRefCount([c init]);
-    ARGC_executeGC(1000);
-    
   // Redirect all stdout and stderr output to the log pane.
   JRELogOutputStream *logStream = [[JRELogOutputStream alloc] initWithJRELogPane:self.logPane];
   JavaIoPrintStream *printStream =
       [[JavaIoPrintStream alloc] initWithJavaIoOutputStream:logStream withBoolean:YES];
   [JavaLangSystem setOutWithJavaIoPrintStream:printStream];
   [JavaLangSystem setErrWithJavaIoPrintStream:printStream];
+    controller = self;
+    
+    JavaLangThread* thread = new_AllJreTests_init();
+    [thread start];
+}
 
+void runAllJreTests() {
   // Execute test runner on new dispatch queue.
   dispatch_queue_t backgroundQueue =
       dispatch_queue_create("JUnit Test Runner", DISPATCH_QUEUE_CONCURRENT);
   dispatch_async(backgroundQueue, ^{
-    self.testThread = [JavaLangThread currentThread];
+    controller.testThread = [JavaLangThread currentThread];
     IOSObjectArray *testClasses =
-        [IOSObjectArray arrayWithObjects:(id[]) { self.className }
+        [IOSObjectArray arrayWithObjects:(id[]) { controller.className }
                                    count:1
                                     type:NSString_class_()];
     OrgJunitRunnerJUnitCore *testRunner = [[OrgJunitRunnerJUnitCore alloc] init];
@@ -100,7 +100,7 @@ void ARGC_executeGC(int interval);
         AUTORELEASE([[OrgJunitInternalRealSystem alloc] init]);
     [testRunner runMainWithOrgJunitInternalJUnitSystem:junitSystem withNSStringArray:testClasses];
       NSLog(@"Test done");
-    self.testThread = nil;
+    controller.testThread = nil;
   });
 }
 

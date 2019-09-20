@@ -395,7 +395,12 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
 
 done:
     if (javaThread != NULL) {
-      JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_RUNNABLE);
+        if (JreLoadVolatileInt(&javaThread->state_) != JavaLangThread_STATE_TERMINATED) {
+            JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_RUNNABLE);
+        }
+        else {
+            NSLog(@"Invalid thread state");
+        }
     }
 
     if ( result == EPERM )

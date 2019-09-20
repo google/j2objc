@@ -48,6 +48,8 @@ typedef uint16_t scan_offset_t;
 typedef ARGCObject* ObjP;
 typedef std::atomic<ObjP> RefSlot;
 
+static const BOOL ENABLE_DELAY_FINALIZE = false;
+static const BOOL ENABLE_PENDING_RELEASE = false;
 static const int _1M = 1024*1024;
 static const int REFS_IN_BUCKET = _1M / sizeof(ObjP);
 
@@ -63,7 +65,8 @@ static const int64_t SLOT_INDEX_MASK = (uint64_t)-1 << SLOT_INDEX_SHIFT;
 
 extern "C" {
     id ARGC_cloneInstance(id);
-    void JreFinalizeEx(id self);
+    void clearReclaimingReference(__unsafe_unretained id referent);
+    void JreFinalize(id self);
 };
 
 class RefContext {
@@ -361,7 +364,7 @@ public:
     }
     
     static BOOL markPendingRelease(ObjP obj) {
-        if (NSExtraRefCount(obj) != 0) {
+        if (!ENABLE_PENDING_RELEASE || NSExtraRefCount(obj) != 0) {
             return false;
         }
         return obj->_gc_info.markPendingRelease();
@@ -377,7 +380,7 @@ public:
              */
             NSLog(@"over release %p %d(%d) %@", obj, (int)NSExtraRefCount(obj), obj->_gc_info.refCount(), [obj class]);
             obj->_gc_info.incRefCount();
-            GC_TRACE_REF = obj;
+            //GC_TRACE_REF = obj;
             return false;
         }
         return true;
@@ -444,17 +447,17 @@ public:
     
     static BOOL releaseReferenceCountEx(ObjP obj) {
         if (!NSDecrementExtraRefCountWasZero(obj)) {
+            // Do not use NSExtraRefCount() to determine to dealloc.
             return true;
         }
-        // 주의) NSExtraRefCount() 사용해선 안된다.
-        // NSExtraRefCount(__NSCFConstantString*) 는 항상 0을 반환.
-        if (!obj->_gc_info.isFinalized()) {
-            // GC에서 일괄 수행.
+
+        if (ENABLE_DELAY_FINALIZE && !obj->_gc_info.isFinalized()) {
+            // dealloc in next GC cycle.
             return false;
         }
         if (_instance.unregisterRef(obj)) {
             if (gc_state >= SCANNING && !obj->_gc_info.isReachable()) {
-                /* sub-ref 가 즉각 삭제되지 못하도록 한다 */
+                /* do not dealloc sub-references. */
                 markRootInstance(obj, false);
             }
             [obj dealloc];
@@ -478,7 +481,7 @@ public:
     }
     
     static const scan_offset_t* getScanOffsets(Class clazz) {
-        ScanOffsetArray* scanOffsets = _instance._scanOffsetCache[clazz];
+        ScanOffsetArray* scanOffsets = objc_getAssociatedObject(clazz, &_instance);
         if (scanOffsets == NULL) {
             return NULL;
         }
@@ -575,8 +578,10 @@ private:
     void addPhantom(ObjP dead, BOOL isThreadSafe) {
         ARGCPhantom* obj = (ARGCPhantom*)dead;
 
+        clearReclaimingReference(dead);
+
         if (GC_TRACE(obj, GC_LOG_ALLOC)) {
-            NSLog(@"dealloc: %p %@", obj, [obj class]);
+            NSLog(@"dealloc-addPhantom: %p %@", obj, [obj class]);
         }
 
         if (isThreadSafe && NSExtraRefCount(dead) <= 0) {
@@ -757,7 +762,7 @@ ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
     ScanOffsetArray* res;
     
     @synchronized (_scanOffsetCache) {
-        ScanOffsetArray* res = _instance._scanOffsetCache[clazz];
+        ScanOffsetArray* res = objc_getAssociatedObject(clazz, &_instance);
         if (res != NULL) {
             return res;
         }
@@ -810,7 +815,7 @@ ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
         int memsize = cntARGC * sizeof(scan_offset_t);
         ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
         memcpy(offsetArray->offsets, _offset_buf, memsize);
-        _scanOffsetCache[clazz] = res = offsetArray;
+        objc_setAssociatedObject(clazz, &_instance, offsetArray, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return res;
 }
@@ -878,10 +883,14 @@ void ARGC_collectGarbage() {
 
 void ARGC::dealloc_in_collecting(ObjP obj) {
     if (GC_TRACE(obj, GC_LOG_ALLOC)) {
-        NSLog(@"dealloc: %p %@", obj, [obj class]);
+        NSLog(@"dealloc-in-collecting: %p %@", obj, [obj class]);
     }
-        [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
-        _instance.addPhantom(obj, false);
+    if (obj->_gc_info.markFinalized()) {
+        JreFinalize(obj);
+    }
+    
+    [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
+    _instance.addPhantom(obj, false);
 }
 
 void ARGC::dealloc_in_scan(ObjP obj) {
@@ -900,11 +909,11 @@ void ARGC::dealloc_in_scan(ObjP obj) {
 
 void ARGC::dealloc_now(ObjP obj) {
     _instance._cntDellocThread ++;
-    if (GC_DEBUG &&  obj == GC_TRACE_REF) {
-        int a = 3;
+    if (obj->_gc_info.markFinalized()) {
+        JreFinalize(obj);
     }
-        [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
-        _instance.addPhantom(obj, true);
+    [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
+    _instance.addPhantom(obj, true);
     _instance._cntDellocThread --;
 }
 
@@ -999,25 +1008,22 @@ void ARGC::markArrayItems(id obj, BOOL isStrong) {
     _instance._cntMarkingThread --;
 }
 
-
+#define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
-    if (_cntRef == 0) {
+    if (_cntRef == 0 || mayHaveGarbage <= 0) {
         return;
     }
+    mayHaveGarbage --;
     NSMutableDictionary<Class, Counter*>* roots =
         (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
     @synchronized (scanLock) {
-        while (_cntMarkingThread > 0) {
-            NSLog(@"waiting scanning done.");
-        }
+        SLEEP_WHILE (_cntMarkingThread > 0);
         gc_state = SCANNING;
         RefContext::change_generation();
         //deallocInstance.exchange(dealloc_in_scan);
         deallocInstance.exchange(dealloc_in_collecting);
-        while (_cntDellocThread > 0) {
-            NSLog(@"waiting dealloc threads %d", (int)_cntDellocThread);
-        }
+        SLEEP_WHILE (_cntDellocThread > 0);
         
         int idxSlot = 0;
         int cntRoot = 0;
@@ -1049,13 +1055,11 @@ void ARGC::doGC() {
         deallocInstance.exchange(dealloc_in_collecting);
 
         int cntScan = idxSlot;
-        usleep(1000);
+        usleep(100);
         gc_state = FINALIZING;
-        usleep(1000);
+        usleep(100);
 
-        while (_cntMarkingThread > 0) {
-            NSLog(@"waiting scanning done.");
-        }
+        SLEEP_WHILE (_cntMarkingThread > 0);
         
         if (GC_DEBUG && GC_LOG_ROOTS > 0) {
             for (Class c in roots) {
@@ -1084,7 +1088,7 @@ void ARGC::doGC() {
                      */
                     markRootInstance(obj, false);
                     if (obj->_gc_info.markFinalized()) {
-                        JreFinalizeEx(obj);
+                        JreFinalize(obj);
                     }
                 }
             }
@@ -1192,7 +1196,7 @@ void ARGC::doGC() {
                         NSLog(@"alive %d %@", cnt, c);
                     }
                 }
-                [roots removeAllObjects];
+                [roots release];
             }
             
             NSLog(@"scan: %d root: %d alive:%d/%d", cntScan, cntRoot, cntAlivedGenerarion, cntAlive);
@@ -1210,7 +1214,6 @@ extern "C" {
     void ARGC_loopGC() {
         void (^SCAN)() = ^{
             if (ARGC::mayHaveGarbage > 0) {
-                ARGC::mayHaveGarbage --;
                 ARGC::_instance.doGC();
             }
             ARGC_loopGC();
@@ -1410,7 +1413,7 @@ extern "C" {
     }
     
     void ARGC_deallocClass(IOSClass* cls) {
-        NSLog(@"dealloc cls %@", cls);
+        NSLog(@"dealloc class %@", cls);
         int a = 3;
     }
     

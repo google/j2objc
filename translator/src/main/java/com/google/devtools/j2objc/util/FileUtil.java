@@ -210,14 +210,19 @@ public class FileUtil {
     }
   }
 
-  public static File createTempDir(String dirname) throws IOException {
-    File tmpDirectory = File.createTempFile(dirname, ".tmp");
-    tmpDirectory.delete();
-    if (!tmpDirectory.mkdir()) {
-      throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
-    }
-    tmpDirectory.deleteOnExit();
-    return tmpDirectory;
+  public static File createTempDir(String dirname) {
+	  try {
+		  File tmpDirectory = File.createTempFile(dirname, ".tmp");
+		  tmpDirectory.delete();
+		  if (!tmpDirectory.mkdir()) {
+			  throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
+		  }
+		  tmpDirectory.deleteOnExit();
+		  return tmpDirectory;
+	  }
+	  catch (Exception e) {
+		  throw new RuntimeException(e);
+	  }
   }
 
   /**

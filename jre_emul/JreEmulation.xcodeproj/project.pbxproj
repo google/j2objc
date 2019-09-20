@@ -821,6 +821,7 @@
 		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
+		783BEEC21FFE02B20096D5C4 /* CloseGuardMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 783BEEC11FFDFDBA0096D5C4 /* CloseGuardMonitor.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
 /* End PBXBuildFile section */
@@ -3775,6 +3776,7 @@
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
+		783BEEC11FFDFDBA0096D5C4 /* CloseGuardMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CloseGuardMonitor.m; path = dalvik/system/CloseGuardMonitor.m; sourceTree = "<group>"; };
 		78794D2E1FF5DA34000F391F /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ARGC.mm; path = Classes/ARGC/ARGC.mm; sourceTree = SOURCE_ROOT; };
 		78794D2F1FF5DA34000F391F /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARGC.h; path = Classes/ARGC/ARGC.h; sourceTree = SOURCE_ROOT; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
@@ -6013,6 +6015,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				783BEEC11FFDFDBA0096D5C4 /* CloseGuardMonitor.m */,
 				0620280D1D512E03001EE455 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */,
@@ -6953,7 +6956,7 @@
 						CreatedOnToolsVersion = 7.0;
 					};
 					06ED87B719759EFF00633227 = {
-						DevelopmentTeam = EQHXZ8M8AV;
+						DevelopmentTeam = PUF22HK4ND;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -7402,6 +7405,7 @@
 				0612B9381F4374C60069EF58 /* SSLEngineResultHandshakeStatusTest.m in Sources */,
 				062028B61D512E78001EE455 /* MethodTest.m in Sources */,
 				062026371D512CA1001EE455 /* OldFilterReaderTest.m in Sources */,
+				783BEEC21FFE02B20096D5C4 /* CloseGuardMonitor.m in Sources */,
 				062026F11D512D17001EE455 /* OldDataFormatExceptionTest.m in Sources */,
 				062B4F2B1ED76C1200D4E7D8 /* OldJarOutputStreamTest.m in Sources */,
 				062026141D512CA1001EE455 /* OldAndroidBufferedReaderTest.m in Sources */,
@@ -8134,7 +8138,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = PUF22HK4ND;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "junit_tests/junit_tests-Prefix.pch";
@@ -8158,13 +8162,14 @@
 					../dist/lib,
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fobjc-arc-exceptions ";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-ljunit",
 					"-lguava",
 					"-ljsr305",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Google.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ninefolders.JREJUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -8197,7 +8202,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = PUF22HK4ND;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -8217,13 +8222,14 @@
 					build_result,
 					../dist/lib,
 				);
+				OTHER_CFLAGS = "-fobjc-arc-exceptions ";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-ljunit",
 					"-lguava",
 					"-ljsr305",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Google.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ninefolders.JREJUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

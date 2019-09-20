@@ -50,7 +50,6 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);
 }
 
-#ifndef J2OBJC_USE_GC
 void JreFinalize(id self) {
   @try {
     [self java_finalize];
@@ -61,21 +60,6 @@ void JreFinalize(id self) {
               withJavaLangThrowable:e];
   }
 }
-#else
-void JreFinalize(id self) {
-}
-
-void JreFinalizeEx(id self) {
-    @try {
-        [self java_finalize];
-    } @catch (JavaLangThrowable *e) {
-        [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
-         logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
-         withNSString:@"Uncaught exception in finalizer"
-         withJavaLangThrowable:e];
-    }
-}
-#endif
 
 
 #ifndef J2OBJC_USE_GC
@@ -348,7 +332,7 @@ NSString *JreStrcat(const char *types, ...) {
   __unsafe_unretained NSString *objDescriptions[CountObjectArgs(types)];
   va_list va;
   va_start(va, types);
-  jint capacity = ComputeCapacity(types, va, objDescriptions);
+    jint capacity = ComputeCapacity(types, va, objDescriptions);
   va_end(va);
 
   // Create a string builder and fill it.

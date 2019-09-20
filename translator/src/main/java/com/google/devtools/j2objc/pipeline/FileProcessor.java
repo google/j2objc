@@ -126,8 +126,13 @@ abstract class FileProcessor {
     final Map<String, ProcessingContext> inputMap = new CanonicalPathMap(batchInputs.size());
     for (ProcessingContext input : batchInputs) {
       String path = input.getFile().getAbsolutePath();
-      paths.add(path);
-      inputMap.put(path, input);
+      if (paths.indexOf(path) < 0) {
+    	  paths.add(path);
+    	  inputMap.put(path, input);
+      }
+      else {
+    	  System.out.println("warning! duplicated path: " + path);
+      }
     }
 
     Parser.Handler handler = new Parser.Handler() {
