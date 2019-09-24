@@ -743,7 +743,6 @@
 		06F0939F2303C98000BF7E3D /* TestUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F0939D2303C97F00BF7E3D /* TestUtil.m */; };
 		06F093A02303C98000BF7E3D /* ObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F0939E2303C98000BF7E3D /* ObjectTest.m */; };
 		06F093AD2304A53300BF7E3D /* UTF16BECharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093A12304A53200BF7E3D /* UTF16BECharsetEncoderTest.m */; };
-		06F093AE2304A53300BF7E3D /* UTF16CharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093A22304A53200BF7E3D /* UTF16CharsetDecoderTest.m */; };
 		06F093AF2304A53300BF7E3D /* GBCharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093A32304A53200BF7E3D /* GBCharsetDecoderTest.m */; };
 		06F093B02304A53300BF7E3D /* UTF16LECharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093A42304A53200BF7E3D /* UTF16LECharsetDecoderTest.m */; };
 		06F093B12304A53300BF7E3D /* UTF16LECharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093A52304A53200BF7E3D /* UTF16LECharsetEncoderTest.m */; };
@@ -755,8 +754,6 @@
 		06F093B72304A53300BF7E3D /* ISOCharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093AB2304A53300BF7E3D /* ISOCharsetDecoderTest.m */; };
 		06F093B82304A53300BF7E3D /* ASCCharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093AC2304A53300BF7E3D /* ASCCharsetDecoderTest.m */; };
 		06F093BB2305141D00BF7E3D /* UTFCharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093B92305141D00BF7E3D /* UTFCharsetEncoderTest.m */; };
-		06F093BC2305141D00BF7E3D /* UTF16CharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093BA2305141D00BF7E3D /* UTF16CharsetEncoderTest.m */; };
-		06F093C02305A27E00BF7E3D /* ISOCharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093BF2305A27E00BF7E3D /* ISOCharsetEncoderTest.m */; };
 		06F093C22305E4C600BF7E3D /* CharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093C12305E4C600BF7E3D /* CharsetTest.m */; };
 		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
 		6A4BAAF7200C7C8300BF59E4 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A4BAAF5200C7C5600BF59E4 /* LocaleTest.m */; };
@@ -3623,7 +3620,6 @@
 		06F0939D2303C97F00BF7E3D /* TestUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUtil.m; path = com/google/j2objc/TestUtil.m; sourceTree = "<group>"; };
 		06F0939E2303C98000BF7E3D /* ObjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectTest.m; path = com/google/j2objc/ObjectTest.m; sourceTree = "<group>"; };
 		06F093A12304A53200BF7E3D /* UTF16BECharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16BECharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16BECharsetEncoderTest.m; sourceTree = "<group>"; };
-		06F093A22304A53200BF7E3D /* UTF16CharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16CharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16CharsetDecoderTest.m; sourceTree = "<group>"; };
 		06F093A32304A53200BF7E3D /* GBCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GBCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/GBCharsetDecoderTest.m; sourceTree = "<group>"; };
 		06F093A42304A53200BF7E3D /* UTF16LECharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16LECharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16LECharsetDecoderTest.m; sourceTree = "<group>"; };
 		06F093A52304A53200BF7E3D /* UTF16LECharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16LECharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16LECharsetEncoderTest.m; sourceTree = "<group>"; };
@@ -3635,8 +3631,6 @@
 		06F093AB2304A53300BF7E3D /* ISOCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ISOCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/ISOCharsetDecoderTest.m; sourceTree = "<group>"; };
 		06F093AC2304A53300BF7E3D /* ASCCharsetDecoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASCCharsetDecoderTest.m; path = org/apache/harmony/tests/java/nio/charset/ASCCharsetDecoderTest.m; sourceTree = "<group>"; };
 		06F093B92305141D00BF7E3D /* UTFCharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTFCharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTFCharsetEncoderTest.m; sourceTree = "<group>"; };
-		06F093BA2305141D00BF7E3D /* UTF16CharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UTF16CharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/UTF16CharsetEncoderTest.m; sourceTree = "<group>"; };
-		06F093BF2305A27E00BF7E3D /* ISOCharsetEncoderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ISOCharsetEncoderTest.m; path = org/apache/harmony/tests/java/nio/charset/ISOCharsetEncoderTest.m; sourceTree = "<group>"; };
 		06F093C12305E4C600BF7E3D /* CharsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharsetTest.m; path = org/apache/harmony/tests/java/nio/charset/CharsetTest.m; sourceTree = "<group>"; };
 		06F093C32307201100BF7E3D /* IconvCharsetEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IconvCharsetEncoder.m; path = build_result/Classes/com/google/j2objc/nio/charset/IconvCharsetEncoder.m; sourceTree = "<group>"; };
 		06F093C42307201100BF7E3D /* IconvCharsetDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IconvCharsetDecoder.m; path = build_result/Classes/com/google/j2objc/nio/charset/IconvCharsetDecoder.m; sourceTree = "<group>"; };
@@ -7068,7 +7062,6 @@
 				06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */,
 				062C393B1FD09B87009B232F /* IosSHAMessageDigestTest.m */,
 				06F093AB2304A53300BF7E3D /* ISOCharsetDecoderTest.m */,
-				06F093BF2305A27E00BF7E3D /* ISOCharsetEncoderTest.m */,
 				0600EB1F22F4B6D80065498B /* ISOCharsetTest.m */,
 				0612B9451F4381750069EF58 /* IterableTest.m */,
 				0620253B1D512B37001EE455 /* JniTest.m */,
@@ -7680,8 +7673,6 @@
 				06F093A92304A53200BF7E3D /* UTF16BECharsetDecoderTest.m */,
 				06F093A12304A53200BF7E3D /* UTF16BECharsetEncoderTest.m */,
 				0600EB0822F4B6D30065498B /* UTF16BECharsetTest.m */,
-				06F093A22304A53200BF7E3D /* UTF16CharsetDecoderTest.m */,
-				06F093BA2305141D00BF7E3D /* UTF16CharsetEncoderTest.m */,
 				0600EB0B22F4B6D40065498B /* UTF16CharsetTest.m */,
 				062025A31D512C8E001EE455 /* UTF16EncodingTest.m */,
 				06F093A42304A53200BF7E3D /* UTF16LECharsetDecoderTest.m */,
@@ -8311,7 +8302,6 @@
 				069C24331E9EEF7B00CE6BAF /* ZipFileTest.m in Sources */,
 				FA5C0CA321BFFE6B000B6275 /* ArrayIndexOutOfBoundsExceptionTest.m in Sources */,
 				0620258B1D512B77001EE455 /* TreeMapTest.m in Sources */,
-				06F093BC2305141D00BF7E3D /* UTF16CharsetEncoderTest.m in Sources */,
 				0612B8FA1F4373740069EF58 /* CopyOnWriteArraySetTest.m in Sources */,
 				069C23EC1E9EEECA00CE6BAF /* CharsetTest.m in Sources */,
 				062026AE1D512D08001EE455 /* URLTest.m in Sources */,
@@ -8596,7 +8586,6 @@
 				0620299A1D512F57001EE455 /* MessageDigestTestSHA256.m in Sources */,
 				FA1DD7B9215418AF00D0B800 /* SSLConfigurationAsserts.m in Sources */,
 				0620294A1D512F25001EE455 /* RSAOtherPrimeInfoTest.m in Sources */,
-				06F093C02305A27E00BF7E3D /* ISOCharsetEncoderTest.m in Sources */,
 				0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */,
 				062028BA1D512E78001EE455 /* UndeclaredThrowableExceptionTest.m in Sources */,
 				FA5C0C5B21BFFBA5000B6275 /* EnumSetTest.m in Sources */,
@@ -8857,7 +8846,6 @@
 				062027851D512D9D001EE455 /* MockHomonymySubject.m in Sources */,
 				0620299B1D512F57001EE455 /* MessageDigestTestSHA384.m in Sources */,
 				067B13531EEF6C570013CBAF /* ConcurrentLinkedQueueTest.m in Sources */,
-				06F093AE2304A53300BF7E3D /* UTF16CharsetDecoderTest.m in Sources */,
 				0620274C1D512D82001EE455 /* OtherBean.m in Sources */,
 				0612B91C1F4373740069EF58 /* TreeSubMapTest.m in Sources */,
 				DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */,
@@ -9109,7 +9097,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				ONLY_ACTIVE_ARCH = YES;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SDKROOT = iphoneos;
@@ -9132,7 +9120,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
