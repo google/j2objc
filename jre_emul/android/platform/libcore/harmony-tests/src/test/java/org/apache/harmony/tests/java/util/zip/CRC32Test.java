@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.tests.java.util.zip;
 
+import java.nio.ByteBuffer;
 import java.util.zip.CRC32;
 
 public class CRC32Test extends junit.framework.TestCase {
@@ -172,6 +173,39 @@ public class CRC32Test extends junit.framework.TestCase {
         }
         assertEquals("update(byte[],int,int) failed b/c offError>byte[].length",
                 2, r);
+    }
+
+
+    private void assertChecksumFromByteBuffer(long expectedChecksum, ByteBuffer byteBuffer) {
+        CRC32 checksum = new CRC32();
+        checksum.update(byteBuffer);
+        assertEquals("update(ByteBuffer) failed to update the checksum to the correct value ",
+                     expectedChecksum, checksum.getValue());
+        assertEquals(0, byteBuffer.remaining());
+    }
+
+    /**
+     * java.util.zip.CRC32#update(ByteBuffer)
+     */
+    public void test_update$ByteBuffer() {
+        // test methods of java.util.zip.update(ByteBuffer)
+        // Heap ByteBuffer
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] {1,2,3,4});
+        byteBuffer.position(2);
+        assertChecksumFromByteBuffer(0x6d998525, byteBuffer);
+
+        // Direct ByteBuffer
+        byteBuffer.flip();
+        byteBuffer = ByteBuffer.allocateDirect(4).put(byteBuffer);
+        byteBuffer.flip();
+        byteBuffer.position(2);
+        assertChecksumFromByteBuffer(0x6d998525, byteBuffer);
+
+        CRC32 checksum = new CRC32();
+        try {
+            checksum.update((ByteBuffer)null);
+            fail();
+        } catch (NullPointerException expected) {}
     }
 
     @Override
