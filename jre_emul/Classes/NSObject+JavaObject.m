@@ -232,6 +232,8 @@ static void doWait(id obj, long long timeout) {
 @implementation JreObjectCategoryDummy
 @end
 
+#ifdef J2OBJC_USE_GC
+
 @implementation JavaLangObject
 - (IOSClass *)getSuperclass {
     return NSObject_class_();
@@ -242,6 +244,8 @@ J2OBJC_EMPTY_STATIC_INIT(JavaLangObject)
 J2OBJC_TYPE_LITERAL_HEADER(JavaLangObject)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangObject)
+
+#endif
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)
 

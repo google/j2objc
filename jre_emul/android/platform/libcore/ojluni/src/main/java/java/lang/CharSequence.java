@@ -49,7 +49,7 @@ import java.util.stream.StreamSupport;
  * is no guarantee that each class will be capable of testing its instances
  * for equality with those of the other.  It is therefore inappropriate to use
  * arbitrary <tt>CharSequence</tt> instances as elements in a set or as keys in
- * a map. <p/>
+ * a map. </p>
  *
  * @author Mike McCloskey
  * @since 1.4

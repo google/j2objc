@@ -44,20 +44,17 @@ abstract class FileProcessor {
   private final Parser parser;
   protected final BuildClosureQueue closureQueue;
   protected final Options options;
-
-  private final int batchSize;
   private final Set<ProcessingContext> batchInputs = new HashSet<>();
-
-  private final boolean doBatching;
+  private final Set<ProcessingContext> outputs = new HashSet<>();
 
   public FileProcessor(Parser parser) {
     this.parser = Preconditions.checkNotNull(parser);
     this.options = parser.options();
-    batchSize = options.batchTranslateMaximum();
-    doBatching = batchSize > 0;
     if (options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
       assert !options.getHeaderMap().useSourceDirectories();
+      closureQueue = new BuildClosureQueue(options);
+    } else if (options.globalCombinedOutput() != null) {
       closureQueue = new BuildClosureQueue(options);
     } else {
       closureQueue = null;
@@ -69,9 +66,11 @@ abstract class FileProcessor {
       processInput(input);
     }
     processBatch();
+    processBuildClosureDependencies();
+    if (!options.useGC()/*??*/) processOutputs(outputs);
   }
 
-  public void processBuildClosureDependencies() {
+  private void processBuildClosureDependencies() {
     if (closureQueue != null) {
       while (true) {
         InputFile file = closureQueue.getNextFile();
@@ -93,9 +92,6 @@ abstract class FileProcessor {
 
       if (isBatchable(file)) {
         batchInputs.add(input);
-        if (batchInputs.size() == batchSize) {
-          processBatch();
-        }
         return;
       }
 
@@ -114,7 +110,7 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-    return doBatching && file.getAbsolutePath().endsWith(".java");
+    return file.getAbsolutePath().endsWith(".java");
   }
 
   private void processBatch() {
@@ -165,16 +161,17 @@ abstract class FileProcessor {
       ARGC.startSourceFileGeneration(file);
       processConvertedTree(input, unit);
       ARGC.endSourceFileGeneration();
+      if (!options.useGC()/*??*/) outputs.add(input);
     } catch (Throwable t) {
       // Report any uncaught exceptions.
       ErrorUtil.fatalError(t, input.getOriginalSourcePath());
-    } finally {
-      unit.getEnv().reset();
     }
   }
 
   protected abstract void processConvertedTree(
       ProcessingContext input, com.google.devtools.j2objc.ast.CompilationUnit unit);
+
+  protected abstract void processOutputs(Iterable<ProcessingContext> inputs);
 
   protected abstract void handleError(ProcessingContext input);
 

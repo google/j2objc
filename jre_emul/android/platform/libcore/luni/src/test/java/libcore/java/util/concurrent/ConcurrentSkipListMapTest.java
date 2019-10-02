@@ -24,7 +24,8 @@ public class ConcurrentSkipListMapTest extends junit.framework.TestCase {
 
     public void test_getOrDefault() {
         MapDefaultMethodTester.test_getOrDefault(new ConcurrentSkipListMap<>(),
-                false /*doesNotAcceptNullKey*/, false /*doesNotAcceptNullValue*/);
+                false /*doesNotAcceptNullKey*/, false /*doesNotAcceptNullValue*/,
+                false /*getAcceptsAnyObject*/);
     }
 
     public void test_forEach() {

@@ -349,20 +349,26 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {
     String translation = translateSourceFile("class Test { "
-        + "  class B { class Inner { Inner(int i) { } } } "
-        + "  class A {"
-        + "    B outerB;"
-        + "    public B.Inner foo(final B b) {"
-        + "      return b.new Inner(1) { public boolean bar() { return b.equals(outerB); } }; } } "
-        + "}",
+            + "  class B { class Inner { Inner(int i) { } } } "
+            + "  class C { } "
+            + "  class A {"
+            + "    B outerB;"
+            + "    public B.Inner foo(final C c) {"
+            + "      return new B().new Inner(1) { "
+            + "        public boolean bar() { return c.equals(outerB); }"
+            + "      };"
+            + "    }"
+            + "  } "
+            + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "create_Test_A_1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
+        "create_Test_A_1_initWithTest_A_withTest_C_withTest_B_withInt_("
+            + "self, c, create_Test_B_initWithTest_(this$0_), 1)");
     assertTranslatedLines(translation,
-        "void Test_A_1_initWithTest_A_withTest_B_withTest_B_withInt_("
-          + "Test_A_1 *self, Test_A *outer$, Test_B *capture$0, Test_B *x0, jint i) {",
+        "void Test_A_1_initWithTest_A_withTest_C_withTest_B_withInt_("
+            + "Test_A_1 *self, Test_A *outer$, Test_C *capture$0, Test_B *x0, jint i) {",
         "  JreStrongAssign(&self->this$1_, outer$);",
-        "  JreStrongAssign(&self->val$b_, capture$0);",
+        "  JreStrongAssign(&self->val$c_, capture$0);",
         "  Test_B_Inner_initWithTest_B_withInt_(self, nil_chk(x0), i);",
         "}");
   }
@@ -545,5 +551,25 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "void Test_1_initWithId_(Test_1 *self, id t) {",
         "  Test_initWithId_(self, t);",
         "}");
+  }
+
+  public void testAnonymousClassWithDiamondOperator() throws IOException {
+    if (!onJava9OrAbove()) {
+      return;
+    }
+    String translation = translateSourceFile(
+        "public class Test { "
+            + "  public void test() { "
+            + "    Comparable<Runnable> c = new Comparable<>() { "
+            + "      @Override "
+            + "      public int compareTo(Runnable r) { "
+            + "        return 17; "
+            + "      } "
+            + "    }; "
+            + "  } "
+            + "} ",
+        "Test", "Test.m");
+    assertTranslation(translation, "@interface Test_1 : NSObject < JavaLangComparable >");
+    assertTranslation(translation, "- (jint)compareToWithId:(id<JavaLangRunnable>)r;");
   }
 }

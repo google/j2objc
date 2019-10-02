@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,44 +25,16 @@
  */
 package java.lang;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.AccessControlContext;
-import java.security.CodeSource;
-import java.security.Policy;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
-import java.security.cert.Certificate;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Map;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Map;
 import sun.misc.CompoundEnumeration;
-import sun.reflect.Reflection;
-
-/*-[
-#import "java/io/BufferedInputStream.h"
-#import "java/io/FileInputStream.h"
-#import "java/net/NetFactory.h"
-#import "java/util/ArrayList.h"
-#import "java/util/Collections.h"
-]-*/
+import sun.reflect.CallerSensitive;
 
 /**
  * A class loader is an object that is responsible for loading classes. The
@@ -162,7 +134,7 @@ import sun.reflect.Reflection;
  *     }
  * </pre></blockquote>
  *
- * <h4> <a name="name">Binary names</a> </h4>
+ * <h3> <a name="name">Binary names</a> </h3>
  *
  * <p> Any class name provided as a {@link String} parameter to methods in
  * <tt>ClassLoader</tt> must be a binary name as defined by
@@ -207,12 +179,14 @@ public abstract class ClassLoader {
      * Pointer to the allocator used by the runtime to allocate metadata such
      * as ArtFields and ArtMethods.
      */
-    private transient long allocator;
+    // j2objc: unused
+    // private transient long allocator;
 
     /**
      * Pointer to the class table, only used from within the runtime.
      */
-    private transient long classTable;
+    // j2objc: unused
+    // private transient long classTable;
 
     private static Void checkCreateClassLoader() {
         return null;
@@ -272,7 +246,7 @@ public abstract class ClassLoader {
      * #loadClass(String, boolean)} method.  It is invoked by the Java virtual
      * machine to resolve class references.  Invoking this method is equivalent
      * to invoking {@link #loadClass(String, boolean) <tt>loadClass(name,
-     * false)</tt>}.  </p>
+     * false)</tt>}.
      *
      * @param  name
      *         The <a href="#name">binary name</a> of the class
@@ -291,7 +265,7 @@ public abstract class ClassLoader {
      * default implementation of this method searches for classes in the
      * following order:
      *
-     * <p><ol>
+     * <ol>
      *
      *   <li><p> Invoke {@link #findLoadedClass(String)} to check if the class
      *   has already been loaded.  </p></li>
@@ -324,7 +298,8 @@ public abstract class ClassLoader {
      * @throws  ClassNotFoundException
      *          If the class could not be found
      */
-    // Android-removed : Remove references to getClassLoadingLock
+    // Android-removed: Remove references to getClassLoadingLock
+    //                   Remove perf counters.
     //
     // <p> Unless overridden, this method synchronizes on the result of
     // {@link #getClassLoadingLock <tt>getClassLoadingLock</tt>} method
@@ -333,9 +308,8 @@ public abstract class ClassLoader {
         throws ClassNotFoundException
     {
             // First, check if the class has already been loaded
-            Class c = findLoadedClass(name);
+            Class<?> c = findLoadedClass(name);
             if (c == null) {
-                long t0 = System.nanoTime();
                 try {
                     if (parent != null) {
                         c = parent.loadClass(name, false);
@@ -350,10 +324,7 @@ public abstract class ClassLoader {
                 if (c == null) {
                     // If still not found, then invoke findClass in order
                     // to find the class.
-                    long t1 = System.nanoTime();
                     c = findClass(name);
-
-                    // this is the defining class loader; record the stats
                 }
             }
             return c;
@@ -366,7 +337,7 @@ public abstract class ClassLoader {
      * follow the delegation model for loading classes, and will be invoked by
      * the {@link #loadClass <tt>loadClass</tt>} method after checking the
      * parent class loader for the requested class.  The default implementation
-     * throws a <tt>ClassNotFoundException</tt>.  </p>
+     * throws a <tt>ClassNotFoundException</tt>.
      *
      * @param  name
      *         The <a href="#name">binary name</a> of the class
@@ -586,16 +557,16 @@ public abstract class ClassLoader {
      * <i>bBuffer</i><tt>,</tt> <i>pd</i><tt>)</tt> yields exactly the same
      * result as the statements
      *
-     * <blockquote><tt>
+     *<p> <tt>
      * ...<br>
-     * byte[] temp = new byte[</tt><i>bBuffer</i><tt>.{@link
+     * byte[] temp = new byte[bBuffer.{@link
      * java.nio.ByteBuffer#remaining remaining}()];<br>
-     *     </tt><i>bBuffer</i><tt>.{@link java.nio.ByteBuffer#get(byte[])
+     *     bBuffer.{@link java.nio.ByteBuffer#get(byte[])
      * get}(temp);<br>
      *     return {@link #defineClass(String, byte[], int, int, ProtectionDomain)
-     * </tt><i>cl</i><tt>.defineClass}(</tt><i>name</i><tt>, temp, 0,
-     * temp.length, </tt><i>pd</i><tt>);<br>
-     * </tt></blockquote>
+     * cl.defineClass}(name, temp, 0,
+     * temp.length, pd);<br>
+     * </tt></p>
      *
      * @param  name
      *         The expected <a href="#name">binary name</a>. of the class, or
@@ -643,7 +614,6 @@ public abstract class ClassLoader {
      * already been linked, then this method simply returns. Otherwise, the
      * class is linked as described in the "Execution" chapter of
      * <cite>The Java&trade; Language Specification</cite>.
-     * </p>
      *
      * @param  c
      *         The class to link
@@ -688,7 +658,7 @@ public abstract class ClassLoader {
      * Returns a class loaded by the bootstrap class loader;
      * or return null if not found.
      */
-    private Class findBootstrapClassOrNull(String name)
+    private Class<?> findBootstrapClassOrNull(String name)
     {
         return null;
     }
@@ -697,7 +667,7 @@ public abstract class ClassLoader {
      * Returns the class with the given <a href="#name">binary name</a> if this
      * loader has been recorded by the Java virtual machine as an initiating
      * loader of a class with that <a href="#name">binary name</a>.  Otherwise
-     * <tt>null</tt> is returned.  </p>
+     * <tt>null</tt> is returned.
      *
      * @param  name
      *         The <a href="#name">binary name</a> of the class
@@ -717,7 +687,7 @@ public abstract class ClassLoader {
 
     /**
      * Sets the signers of a class.  This should be invoked after defining a
-     * class.  </p>
+     * class.
      *
      * @param  c
      *         The <tt>Class</tt> object
@@ -745,6 +715,10 @@ public abstract class ClassLoader {
      * resource; if the parent is <tt>null</tt> the path of the class loader
      * built-in to the virtual machine is searched.  That failing, this method
      * will invoke {@link #findResource(String)} to find the resource.  </p>
+     *
+     * @apiNote When overriding this method it is recommended that an
+     * implementation ensures that any delegation is consistent with the {@link
+     * #getResources(java.lang.String) getResources(String)} method.
      *
      * @param  name
      *         The resource name
@@ -779,6 +753,13 @@ public abstract class ClassLoader {
      * <p> The search order is described in the documentation for {@link
      * #getResource(String)}.  </p>
      *
+     * @apiNote When overriding this method it is recommended that an
+     * implementation ensures that any delegation is consistent with the {@link
+     * #getResource(java.lang.String) getResource(String)} method. This should
+     * ensure that the first element returned by the Enumeration's
+     * {@code nextElement} method is the same resource that the
+     * {@code getResource(String)} method would return.
+     *
      * @param  name
      *         The resource name
      *
@@ -795,7 +776,8 @@ public abstract class ClassLoader {
      * @since  1.2
      */
     public Enumeration<URL> getResources(String name) throws IOException {
-        Enumeration[] tmp = new Enumeration[2];
+        @SuppressWarnings("unchecked")
+        Enumeration<URL>[] tmp = (Enumeration<URL>[]) new Enumeration<?>[2];
         if (parent != null) {
             tmp[0] = parent.getResources(name);
         } else {
@@ -808,7 +790,7 @@ public abstract class ClassLoader {
 
     /**
      * Finds the resource with the given name. Class loader implementations
-     * should override this method to specify where to find resources.  </p>
+     * should override this method to specify where to find resources.
      *
      * @param  name
      *         The resource name
@@ -826,7 +808,7 @@ public abstract class ClassLoader {
      * Returns an enumeration of {@link java.net.URL <tt>URL</tt>} objects
      * representing all the resources with the given name. Class loader
      * implementations should override this method to specify where to load
-     * resources from.  </p>
+     * resources from.
      *
      * @param  name
      *         The resource name
@@ -844,20 +826,23 @@ public abstract class ClassLoader {
     }
 
     /**
-     * Registers the caller as parallel capable.</p>
+     * Registers the caller as parallel capable.
      * The registration succeeds if and only if all of the following
-     * conditions are met: <br>
-     * 1. no instance of the caller has been created</p>
-     * 2. all of the super classes (except class Object) of the caller are
-     * registered as parallel capable</p>
-     * Note that once a class loader is registered as parallel capable, there
-     * is no way to change it back. </p>
+     * conditions are met:
+     * <ol>
+     * <li> no instance of the caller has been created</li>
+     * <li> all of the super classes (except class Object) of the caller are
+     * registered as parallel capable</li>
+     * </ol>
+     * <p>Note that once a class loader is registered as parallel capable, there
+     * is no way to change it back.</p>
      *
      * @return  true if the caller is successfully registered as
      *          parallel capable and false if otherwise.
      *
      * @since   1.7
      */
+    @CallerSensitive
     protected static boolean registerAsParallelCapable() {
         return true;
     }
@@ -865,7 +850,7 @@ public abstract class ClassLoader {
     /**
      * Find a resource of the specified name from the search path used to load
      * classes.  This method locates the resource through the system class
-     * loader (see {@link #getSystemClassLoader()}).  </p>
+     * loader (see {@link #getSystemClassLoader()}).
      *
      * @param  name
      *         The resource name
@@ -957,7 +942,7 @@ public abstract class ClassLoader {
     /**
      * Open for reading, a resource of the specified name from the search path
      * used to load classes.  This method locates the resource through the
-     * system class loader (see {@link #getSystemClassLoader()}).  </p>
+     * system class loader (see {@link #getSystemClassLoader()}).
      *
      * @param  name
      *         The resource name
@@ -1004,6 +989,7 @@ public abstract class ClassLoader {
      *
      * @since  1.2
      */
+    @CallerSensitive
     public final ClassLoader getParent() {
         return parent;
     }
@@ -1063,6 +1049,7 @@ public abstract class ClassLoader {
      *
      * @revised  1.4
      */
+    @CallerSensitive
     public static ClassLoader getSystemClassLoader() {
         return SystemClassLoader.loader;
     }
@@ -1074,7 +1061,7 @@ public abstract class ClassLoader {
      * class loaders to define the packages for their classes. Packages must
      * be created before the class is defined, and package names must be
      * unique within a class loader and cannot be redefined or changed once
-     * created.  </p>
+     * created.
      *
      * @param  name
      *         The package name
@@ -1131,7 +1118,7 @@ public abstract class ClassLoader {
 
     /**
      * Returns a <tt>Package</tt> that has been defined by this class loader
-     * or any of its ancestors.  </p>
+     * or any of its ancestors.
      *
      * @param  name
      *         The package name
@@ -1151,7 +1138,7 @@ public abstract class ClassLoader {
 
     /**
      * Returns all of the <tt>Packages</tt> defined by this class loader and
-     * its ancestors.  </p>
+     * its ancestors.
      *
      * @return  The array of <tt>Package</tt> objects defined by this
      *          <tt>ClassLoader</tt>
@@ -1163,7 +1150,6 @@ public abstract class ClassLoader {
         synchronized (packages) {
             map = new HashMap<>(packages);
         }
-        Package[] pkgs;
         return map.values().toArray(new Package[map.size()]);
     }
 
@@ -1175,7 +1161,7 @@ public abstract class ClassLoader {
      * method to locate the native libraries that belong to classes loaded with
      * this class loader. If this method returns <tt>null</tt>, the VM
      * searches the library along the path specified as the
-     * "<tt>java.library.path</tt>" property.  </p>
+     * "<tt>java.library.path</tt>" property.
      *
      * @param  libname
      *         The library name
@@ -1197,7 +1183,7 @@ public abstract class ClassLoader {
      * in the future will have assertions enabled or disabled by default.
      * This setting may be overridden on a per-package or per-class basis by
      * invoking {@link #setPackageAssertionStatus(String, boolean)} or {@link
-     * #setClassAssertionStatus(String, boolean)}.  </p>
+     * #setClassAssertionStatus(String, boolean)}.
      *
      * @param  enabled
      *         <tt>true</tt> if classes loaded by this class loader will
@@ -1281,7 +1267,6 @@ public abstract class ClassLoader {
      * status settings associated with the class loader.  This method is
      * provided so that class loaders can be made to ignore any command line or
      * persistent assertion status settings and "start with a clean slate."
-     * </p>
      *
      * @since  1.4
      */
@@ -1305,56 +1290,24 @@ class SystemClassLoader extends ClassLoader {
   }
 
   @Override
+<<<<<<< HEAD
   protected native Class<?> findClass(String name) throws ClassNotFoundException /*-[
     (void)nil_chk(name);
     return [IOSClass forName:name initialize:YES classLoader:self];
   ]-*/;
+=======
+  protected native Class<?> findClass(String name) throws ClassNotFoundException;
+>>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 
   @Override
-  protected native URL findResource(String name) /*-[
-    if (!name) {
-      return nil;
-    }
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-    return nativeURL ? JavaNetNetFactory_newURLWithNSString_([nativeURL description]) : nil;
-  ]-*/;
+  protected native URL findResource(String name);
 
   @Override
-  protected native Enumeration<URL> findResources(String name) throws IOException /*-[
-    if (!name) {
-      return [super findResourcesWithNSString:name];
-    }
-    JavaUtilArrayList *urls = AUTORELEASE([[JavaUtilArrayList alloc] init]);
-    for (NSBundle *bundle in [NSBundle allBundles]) {
-      NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-      if (nativeURL) {
-        [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
-      }
-    }
-    for (NSBundle *bundle in [NSBundle allFrameworks]) {
-      NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-      if (nativeURL) {
-        [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
-      }
-    }
-    return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
-  ]-*/;
+  protected native Enumeration<URL> findResources(String name) throws IOException;
 
   // Gets the resource stream without needing to construct a URL object, which is in libjre_net.
   @Override
-  public native InputStream getResourceAsStream(String name) /*-[
-    if (!name) {
-      return nil;
-    }
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *path = [bundle pathForResource:name ofType:nil];
-    if (!path) {
-      return nil;
-    }
-    return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
-        create_JavaIoFileInputStream_initWithNSString_(path));
-  ]-*/;
+  public native InputStream getResourceAsStream(String name);
 
   @Override
   protected synchronized Class<?> loadClass(String name, boolean resolve)

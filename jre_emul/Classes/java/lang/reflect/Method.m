@@ -162,9 +162,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
       class_addMethod(cls, sel, method_getImplementation(method), method_getTypeEncoding(method));
     }
   }
-
     [invocation setSelector:sel];
-
     return invocation;
 }
 

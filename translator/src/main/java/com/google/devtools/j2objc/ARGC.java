@@ -21,20 +21,22 @@
 
 package com.google.devtools.j2objc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
+import javax.tools.StandardLocation;
 
 //import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -53,14 +55,28 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
+//import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
 //import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.IMetadataResolver;
+import com.strobel.assembler.metadata.ITypeLoader;
+import com.strobel.assembler.metadata.JarTypeLoader;
+import com.strobel.assembler.metadata.MetadataParser;
+import com.strobel.assembler.metadata.MetadataSystem;
+import com.strobel.assembler.metadata.TypeDefinition;
+import com.strobel.assembler.metadata.TypeReference;
+import com.strobel.decompiler.DecompilationOptions;
+import com.strobel.decompiler.DecompilerSettings;
+import com.strobel.decompiler.PlainTextOutput;
 
 public class ARGC {
 	public static boolean compatiable_2_0_2 = false;
@@ -229,6 +245,7 @@ public class ARGC {
 		
 		private String root;
 		private Options options;
+		private JarTypeLoader currTypeLoader;
 
 		public SourceList(Options options) {
 			this.options = options;
@@ -237,38 +254,142 @@ public class ARGC {
 		public boolean add(String filename) {
 			File f = new File(filename);
 			if (f.isDirectory()) {
-				options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
-				root = f.getAbsolutePath() + '/';
-				this.addFolder(f);
+			    	try {
+						this.addFolderTree(f);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+			}
+			else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
+			    try {
+			        ZipFile zfile = new ZipFile(f);
+			        try {
+			          Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+			          File tempDir = FileUtil.createTempDir("J2ObjCTempDir");
+//			          String tempDirPath = tempDir.getAbsolutePath();
+////			          options.fileUtil().addTempDir(tempDirPath);
+			          options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
+//
+			          while (enumerator.hasMoreElements()) {
+			            ZipEntry entry = enumerator.nextElement();
+			            String internalPath = entry.getName();
+			            if (internalPath.endsWith(".java")
+			                || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
+			              // Extract JAR file to a temporary directory
+			              File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+//			              InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);
+//			              if (combinedUnit != null) {
+//			                inputs.add(new ProcessingContext(newFile, combinedUnit));
+//			              } else {
+//			                addExtractedJarSource(newFile, filename, internalPath);
+//			              }
+			            }
+			          }
+			          this.currTypeLoader = new JarTypeLoader(new JarFile(f));
+			          this.addFolderTree(tempDir);
+			        } finally {
+			          zfile.close();  // Also closes input stream.
+			        }
+			      } catch (ZipException e) { // Also catches JarExceptions
+			        e.printStackTrace();
+			        ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
+			      } catch (IOException e) {
+			        ErrorUtil.error(e.getMessage());
+			      }
+				
 			}
 			else {
-				this.addSource(filename);
+				super.add(filename);
 			}
 			return true;
 		}
 		
-		void addSource(String filename) {
-			super.add(filename);
-		}
-
-		private void addSource(File f) {
+		private void add(File f) throws IOException {
 			if (f.isDirectory()) {
 				addFolder(f);
 			}
 			else if (f.getName().endsWith(".java")) {
 				String filepath = f.getAbsolutePath();
 				String filename = filepath.substring(root.length());
-				this.addSource(filename);
+				super.add(filename);
 			}
+			else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
+				String filepath = f.getAbsolutePath();
+				String source = doSaveClassDecompiled(f);
+				filepath = filepath.substring(0, filepath.length() - 5) + "java";
+				PrintStream out = new PrintStream(new FileOutputStream(filepath));
+				out.println(source);
+				out.close();
+				String filename = filepath.substring(root.length());
+				super.add(filename);
+			}
+			
+			
 		}
 	
-		private void addFolder(File f) {
+		  private TypeReference lookupType(String path) {
+			    MetadataSystem metadataSystem = new MetadataSystem(currTypeLoader);
+			    /* Hack to get around classes whose descriptors clash with primitive types. */
+			    if (path.length() == 1) {
+			      MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+			      return metadataSystem.resolve(parser.parseTypeDescriptor(path));
+			    }
+			    return metadataSystem.lookupType(path);
+			  }
+		
+		private String doSaveClassDecompiled(File inFile) {
+			//			      List<File> classPath = new ArrayList<>();
+			//			      classPath.add(new File(rootPath));
+			//			      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);				  
+
+			String filepath = inFile.getAbsolutePath();
+			String classsig = filepath.substring(root.length(), filepath.length() - 6);
+
+			if (classsig.endsWith("VersionHelper12")) {
+				int a = 3;
+				a ++;
+			}
+			TypeReference typeRef = lookupType(classsig); 
+			TypeDefinition resolvedType = null;
+			if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
+				throw new RuntimeException("Unable to resolve type.");
+			}
+			DecompilerSettings settings = DecompilerSettings.javaDefaults();
+			settings.setExcludeNestedTypes(true);
+			settings.setShowSyntheticMembers(true);
+			StringWriter stringwriter = new StringWriter();
+			DecompilationOptions decompilationOptions;
+			decompilationOptions = new DecompilationOptions();
+			decompilationOptions.setSettings(settings);
+			decompilationOptions.setFullDecompilation(false);
+			PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
+			plainTextOutput.setUnicodeOutputEnabled(
+					decompilationOptions.getSettings().isUnicodeOutputEnabled());
+			settings.getLanguage().decompileType(resolvedType, plainTextOutput,
+					decompilationOptions);
+			String decompiledSource = stringwriter.toString();
+			System.out.println(decompiledSource);
+			return decompiledSource;
+			//		            if (decompiledSource.contains(textField.getText().toLowerCase())) {
+			//		                addClassName(entry.getName());
+			//		            }
+
+
+		}
+		
+		private void addFolder(File f) throws IOException {
 			File files[] = f.listFiles();
 			for (File f2 : files) {
-				addSource(f2);
+				add(f2);
 			}
 		}
 	
+		private void addFolderTree(File f) throws IOException {
+			options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+			root = f.getAbsolutePath() + '/';
+			this.addFolder(f);
+		}
+		
 	    
 
 		public class Oz_InputFile implements InputFile {

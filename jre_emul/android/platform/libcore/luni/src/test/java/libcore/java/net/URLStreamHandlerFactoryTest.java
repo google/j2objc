@@ -19,6 +19,7 @@ package libcore.java.net;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLImpl;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import junit.framework.TestCase;
@@ -30,7 +31,8 @@ public final class URLStreamHandlerFactoryTest extends TestCase {
     private boolean isCreateURLStreamHandlerCalled;
 
     public void setUp() throws IllegalAccessException {
-        for (Field field : URL.class.getDeclaredFields()) {
+        // j2objc: use URLImpl instead of URL.
+        for (Field field : URLImpl.class.getDeclaredFields()) {
             if (URLStreamHandlerFactory.class.equals(field.getType())) {
                 assertNull("URL declares multiple URLStreamHandlerFactory fields", factoryField);
                 factoryField = field;

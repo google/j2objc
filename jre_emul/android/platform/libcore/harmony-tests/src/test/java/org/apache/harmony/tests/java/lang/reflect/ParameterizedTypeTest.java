@@ -32,6 +32,11 @@ public class ParameterizedTypeTest extends GenericReflectionTestsBase {
         Class<? extends B> clazz = B.class;
         Type genericSuperclass = clazz.getGenericSuperclass();
         assertInstanceOf(ParameterizedType.class, genericSuperclass);
+
+        String aName = A.class.getName();
+        assertEquals(aName + "<java.lang.String>", genericSuperclass.toString());
+        assertEquals(aName + "<java.lang.String>", genericSuperclass.getTypeName());
+
         ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
         assertEquals(ParameterizedTypeTest.class, parameterizedType.getOwnerType());
         assertEquals(A.class, parameterizedType.getRawType());
@@ -48,6 +53,11 @@ public class ParameterizedTypeTest extends GenericReflectionTestsBase {
         Class<? extends D> clazz = D.class;
         Type genericSuperclass = clazz.getGenericSuperclass();
         assertInstanceOf(ParameterizedType.class, genericSuperclass);
+
+        String cName = C.class.getName();
+        assertEquals(cName + "<T>", genericSuperclass.toString());
+        assertEquals(cName + "<T>", genericSuperclass.getTypeName());
+
         ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
         assertEquals(ParameterizedTypeTest.class, parameterizedType.getOwnerType());
         assertEquals(C.class, parameterizedType.getRawType());

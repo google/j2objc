@@ -556,7 +556,7 @@ public class SimpleTimeZone extends TimeZone {
                 }
             }
             BaseCalendar cal = date >= GregorianCalendar.DEFAULT_GREGORIAN_CUTOVER ?
-                GcalHolder.INSTANCE : (BaseCalendar) CalendarSystem.forName("julian");
+                gcal : (BaseCalendar) CalendarSystem.forName("julian");
             BaseCalendar.Date cdate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.NO_TIMEZONE);
             // Get the year in local time
             cal.getCalendarDate(date + rawOffset, cdate);
@@ -632,7 +632,7 @@ public class SimpleTimeZone extends TimeZone {
         int m = month + 1;
 
         // First, calculate time as a Gregorian date.
-        BaseCalendar cal = GcalHolder.INSTANCE;
+        BaseCalendar cal = gcal;
         BaseCalendar.Date cdate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.NO_TIMEZONE);
         cdate.setDate(y, m, day);
         long time = cal.getTime(cdate); // normalize cdate
@@ -1196,9 +1196,7 @@ public class SimpleTimeZone extends TimeZone {
      */
     private int dstSavings;
 
-    static class GcalHolder {
-        static final Gregorian INSTANCE = CalendarSystem.getGregorianCalendar();
-    }
+    private static final Gregorian gcal = CalendarSystem.getGregorianCalendar();
 
     /**
      * Cache values representing a single period of daylight saving

@@ -106,7 +106,6 @@ import java.io.IOException;
  * @see SelectableChannel
  * @see Selector
  */
-
 public abstract class SelectionKey {
 
     /**

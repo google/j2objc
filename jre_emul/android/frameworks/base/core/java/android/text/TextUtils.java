@@ -822,6 +822,7 @@ public class TextUtils {
 
         return tb;
     }
+    */
 
     /**
      * Replace instances of "^1", "^2", etc. in the
@@ -1406,8 +1407,9 @@ public class TextUtils {
      */
     public static boolean isGraphic(CharSequence str) {
         final int len = str.length();
-        for (int i=0; i<len; i++) {
-            int gc = Character.getType(str.charAt(i));
+        for (int cp, i=0; i<len; i+=Character.charCount(cp)) {
+            cp = Character.codePointAt(str, i);
+            int gc = Character.getType(cp);
             if (gc != Character.CONTROL
                     && gc != Character.FORMAT
                     && gc != Character.SURROGATE

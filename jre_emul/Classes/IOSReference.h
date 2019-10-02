@@ -31,8 +31,8 @@
 @interface IOSReference : NSObject
 
 // Methods should only be called by java.lang.ref.Reference.
-+ (id)getReferent:(JavaLangRefReference *)reference;
 + (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)obj;
++ (id)getReferent:(JavaLangRefReference *)reference;
 + (void)clearReferent:(JavaLangRefReference *)reference;
 
 // Test-only method to fake a low-memory condition.

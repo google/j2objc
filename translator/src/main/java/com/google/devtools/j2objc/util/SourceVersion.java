@@ -14,12 +14,22 @@
 
 package com.google.devtools.j2objc.util;
 
+import java.lang.reflect.Method;
+
 /**
  * Supported Java versions, used by the -source and -target flags.
  */
 public enum SourceVersion {
 
-  JAVA_9(9, "1.9"), JAVA_8(8, "1.8"), JAVA_7(7, "1.7"), JAVA_6(6, "1.6"), JAVA_5(5, "1.5");
+  JAVA_11(11, "11"),
+  JAVA_10(10, "10"),
+  JAVA_9(9, "9"),
+  JAVA_8(8, "1.8"),
+  JAVA_7(7, "1.7"),
+  JAVA_6(6, "1.6"),
+  JAVA_5(5, "1.5");
+
+  private static SourceVersion maxSupportedVersion = JAVA_11;
 
   private final int version;
   private final String flag;
@@ -56,34 +66,29 @@ public enum SourceVersion {
     throw new IllegalArgumentException("Unsupported version: " + majorVersion);
   }
 
-  public static boolean java7Minimum(SourceVersion sourceVersion) {
-    return sourceVersion.version >= 7;
+  public static SourceVersion getMaxSupportedVersion() {
+    return maxSupportedVersion;
   }
 
-  public static boolean java8Minimum(SourceVersion sourceVersion) {
-    return sourceVersion.version >= 8;
-  }
-
-  public static boolean java9Minimum(SourceVersion sourceVersion) {
-    return sourceVersion.version >= 9;
+  public static void setMaxSupportedVersion(SourceVersion sourceVersion) {
+    maxSupportedVersion = sourceVersion;
   }
 
   /**
    * Returns the source version value associated with the runtime currently running.
    */
   public static SourceVersion defaultVersion() {
-    // TODO(tball): uncomment and remove workaround when Java 9 is supported. b/67757486
-//    try {
-//      Method versionMethod = Runtime.class.getMethod("version");
-//      Object version = versionMethod.invoke(null);
-//      int majorVersion = (int) version.getClass().getMethod("major").invoke(version);
-//      return SourceVersion.valueOf(majorVersion);
-//    } catch (Exception e) {
-//      return SourceVersion.parse(System.getProperty("java.specification.version"));
-//    }
-    // Workaround: make Java 8 the maximum version.
-    SourceVersion sysver = SourceVersion.parse(System.getProperty("java.specification.version"));
-    return java9Minimum(sysver) ? JAVA_8 : sysver;
+    SourceVersion sourceVersion;
+    try {
+      Method versionMethod = Runtime.class.getMethod("version");
+      Object version = versionMethod.invoke(null);
+      int majorVersion = (int) version.getClass().getMethod("major").invoke(version);
+      sourceVersion = SourceVersion.valueOf(majorVersion);
+    } catch (Exception e) {
+      sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
+    }
+    return sourceVersion.version > maxSupportedVersion.version ? maxSupportedVersion
+        : sourceVersion;
   }
 
   @Override

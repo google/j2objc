@@ -50,7 +50,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
     /* instance variable for SO_TIMEOUT */
     int timeout;   // timeout in millisec
     // traffic class
-    private int trafficClass;
+    int trafficClass;
 
     private boolean shut_rd = false;
     private boolean shut_wr = false;

@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
@@ -50,8 +51,6 @@ import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
-import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -95,7 +94,6 @@ public class ClassFileConverter {
   public static CompilationUnit convertClassFile(
       Options options, JavacEnvironment env, InputFile file) {
     try {
-      env.saveParameterNames();
       ClassFileConverter converter = new ClassFileConverter(
           env, new TranslationEnvironment(options, env), file);
       converter.setClassPath();
@@ -120,8 +118,11 @@ public class ClassFileConverter {
    */
   private void setClassPath() throws IOException {
     String fullPath = file.getAbsolutePath();
-    String relativePath = classFile.getFullName().replace('.',  '/') + ".class";
-    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(relativePath));
+    // { ARGC ++
+    int pos = fullPath.lastIndexOf(classFile.getRelativePath());
+    if (pos < 0) pos = fullPath.length();
+    // }
+    String rootPath = fullPath.substring(0, pos);
     List<File> classPath = new ArrayList<>();
     classPath.add(new File(rootPath));
     parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
@@ -139,9 +140,29 @@ public class ClassFileConverter {
     String mainTypeName = typeElement.getSimpleName().toString();
     CompilationUnit compUnit = new CompilationUnit(translationEnv, mainTypeName);
     compUnit.setPackage((PackageDeclaration) convert(pkgElement, compUnit));
-    compUnit.addType((AbstractTypeDeclaration) convert(typeElement, compUnit));
+    AbstractTypeDeclaration typeDecl = (AbstractTypeDeclaration) convert(typeElement, compUnit);
+    convertClassInitializer(typeDecl);
+    compUnit.addType(typeDecl);
     return compUnit;
   }
+
+  /**
+   * The clinit method isn't converted into a member element by javac,
+   * so extract it separately from the classfile.
+   */
+  private void convertClassInitializer(AbstractTypeDeclaration typeDecl) {
+    EntityDeclaration decl = classFile.getMethod("<clinit>", "()V");
+    if (decl == null) {
+      return;  // Class doesn't have a static initializer.
+    }
+    MethodTranslator translator = new MethodTranslator(
+        parserEnv, translationEnv, null, typeDecl, null);
+    Block block = (Block) decl.acceptVisitor(translator, null);
+    for (Statement stmt : block.getStatements()) {
+      typeDecl.addClassInitStatement(stmt.copy());
+    }
+
+ }
 
   @SuppressWarnings("fallthrough")
   private TreeNode convert(Element element, TreeNode parent) {
@@ -156,7 +177,8 @@ public class ClassFileConverter {
         break;
       case CONSTRUCTOR:
       case METHOD:
-        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
+        node = convertMethodDeclaration(
+            (ExecutableElement) element, (AbstractTypeDeclaration) parent);
         break;
       case ENUM:
         node = convertEnumDeclaration((TypeElement) element);
@@ -174,7 +196,8 @@ public class ClassFileConverter {
         node = convertParameter((VariableElement) element);
         break;
       case STATIC_INIT:
-        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
+        // Converted separately in convertClassInitializer().
+        node = null;
         break;
       default:
         throw new AssertionError("Unsupported element kind: " + element.getKind());
@@ -182,17 +205,18 @@ public class ClassFileConverter {
     return node;
   }
 
-  private Name convertName(Symbol symbol) {
-    if (symbol.owner == null || symbol.owner.name.isEmpty()) {
-      return new SimpleName(symbol);
+  static Name convertName(Element element) {
+    Element parent = element.getEnclosingElement();
+    if (parent == null || parent.getSimpleName().toString().isEmpty()) {
+      return new SimpleName(element);
     }
-    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner));
+    return new QualifiedName(element, element.asType(), convertName(parent));
   }
 
   private TreeNode convertPackage(PackageElement element) {
     return new PackageDeclaration()
         .setPackageElement(element)
-        .setName(convertName((PackageSymbol) element));
+        .setName(translationEnv.elementUtil().getPackageName(element));
   }
 
   private BodyDeclaration convertBodyDeclaration(BodyDeclaration newNode, Element element) {
@@ -224,7 +248,9 @@ public class ClassFileConverter {
       BodyDeclaration bodyDecl = elem.getKind() == ElementKind.METHOD
           ? convertAnnotationTypeMemberDeclaration((ExecutableElement) elem)
           : (BodyDeclaration) convert(elem, annotTypeDecl);
-      annotTypeDecl.addBodyDeclaration(bodyDecl);
+      if (bodyDecl != null) {
+        annotTypeDecl.addBodyDeclaration(bodyDecl);
+      }
     }
     removeInterfaceModifiers(annotTypeDecl);
     return annotTypeDecl;
@@ -280,7 +306,13 @@ public class ClassFileConverter {
     TypeDeclaration typeDecl = new TypeDeclaration(element);
     convertBodyDeclaration(typeDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem, typeDecl));
+      // Ignore inner types, as they are defined by other classfiles.
+      if (!elem.getKind().isClass() && !elem.getKind().isInterface()) {
+        BodyDeclaration decl = (BodyDeclaration) convert(elem, typeDecl);
+        if (decl != null) {
+          typeDecl.addBodyDeclaration(decl);
+        }
+      }
     }
     if (typeDecl.isInterface()) {
       removeInterfaceModifiers(typeDecl);
@@ -292,7 +324,8 @@ public class ClassFileConverter {
     return translationEnv.typeUtil().getMethodDescriptor((ExecutableType) exec.asType());
   }
 
-  private TreeNode convertMethodDeclaration(ExecutableElement element, TypeDeclaration node) {
+  private TreeNode convertMethodDeclaration(ExecutableElement element,
+      AbstractTypeDeclaration node) {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
     convertBodyDeclaration(methodDecl, element);
     HashMap<String, VariableElement> localVariableTable = new HashMap<>();
@@ -353,7 +386,8 @@ public class ClassFileConverter {
   private boolean isEnumSynthetic(Element e, TypeMirror enumType) {
     if (e.getKind() == ElementKind.STATIC_INIT) {
       return true;
-    } else if (e.getKind() == ElementKind.METHOD) {
+    }
+    if (e.getKind() == ElementKind.METHOD) {
       ExecutableElement method = (ExecutableElement) e;
       String enumSig = translationEnv.typeUtil().getSignatureName(enumType);
       String valueOfDesc = "(Ljava/lang/String;)" + enumSig;
@@ -371,11 +405,13 @@ public class ClassFileConverter {
     EnumDeclaration enumDecl = new EnumDeclaration(element);
     convertBodyDeclaration(enumDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      TreeNode encElem = convert(elem, enumDecl);
-      if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
-        enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
-      } else if (!isEnumSynthetic(elem, element.asType())) {
-        enumDecl.addBodyDeclaration((BodyDeclaration) encElem);
+      if (!isEnumSynthetic(elem, element.asType())) {
+        TreeNode encElem = convert(elem, enumDecl);
+        if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
+          enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
+        } else {
+          enumDecl.addBodyDeclaration((BodyDeclaration) encElem);
+        }
       }
     }
     enumDecl.removeModifiers(Modifier.FINAL);
@@ -385,7 +421,6 @@ public class ClassFileConverter {
   private TreeNode convertEnumConstantDeclaration(VariableElement element) {
     EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
     convertBodyDeclaration(enumConstDecl, element);
-    /* TODO(user): set ExecutablePair */
     return enumConstDecl;
   }
 }

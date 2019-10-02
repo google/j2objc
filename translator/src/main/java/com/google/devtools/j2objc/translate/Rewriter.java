@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -44,6 +42,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
@@ -58,9 +57,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.annotations.NoRefCounting;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.element.ExecutableElement;
@@ -238,60 +235,14 @@ public class Rewriter extends UnitTreeVisitor {
     return true;
   }
 
-  private ListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
-      List<VariableDeclarationFragment> fragments) {
-    // Removes extra dimensions on variable declaration fragments and creates extra field
-    // declaration nodes if necessary.
-    // eg. "int i1, i2[], i3[][];" becomes "int i1; int[] i2; int[][] i3".
-    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations = null;
-    int masterDimensions = -1;
-    Iterator<VariableDeclarationFragment> iter = fragments.iterator();
-    while (iter.hasNext()) {
-      VariableDeclarationFragment frag = iter.next();
-      int dimensions = frag.getExtraDimensions();
-      if (masterDimensions == -1) {
-        masterDimensions = dimensions;
-      } else if (dimensions != masterDimensions) {
-        if (newDeclarations == null) {
-          newDeclarations = LinkedListMultimap.create();
-        }
-        VariableDeclarationFragment newFrag = new VariableDeclarationFragment(
-            frag.getVariableElement(), TreeUtil.remove(frag.getInitializer()));
-        newDeclarations.put(dimensions, newFrag);
-        iter.remove();
-      } else {
-        frag.setExtraDimensions(0);
-      }
-    }
-    return newDeclarations;
-  }
-
   /**
-   * Verify, update property attributes. Accessor methods are not checked since a
-   * property annotation may apply to separate variables in a field declaration, so
-   * each variable needs to be checked separately during generation.
+   * Make sure attempt isn't made to specify an accessor method for fields with multiple fragments,
+   * since each variable needs unique accessors.
    */
   @Override
   public void endVisit(PropertyAnnotation node) {
     FieldDeclaration field = (FieldDeclaration) node.getParent();
     TypeMirror fieldType = field.getTypeMirror();
-    VariableDeclarationFragment firstVarNode = field.getFragment(0);
-    if (typeUtil.isString(fieldType)) {
-      node.addAttribute("copy");
-    } else if (!options.useGC() && ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), NoRefCounting.class)) {
-      if (node.hasAttribute("strong")) {
-        ErrorUtil.error(field, "NoRefCounting field annotation conflicts with strong Property attribute");
-        return;
-      }
-      node.addAttribute("weak");
-    }
-
-    node.removeAttribute("readwrite");
-    node.removeAttribute("strong");
-    node.removeAttribute("atomic");
-
-    // Make sure attempt isn't made to specify an accessor method for fields with multiple
-    // fragments, since each variable needs unique accessors.
     String getter = node.getGetter();
     String setter = node.getSetter();
     if (field.getFragments().size() > 1) {
@@ -343,8 +294,7 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(PackageDeclaration node) {
-    String pkgName = node.getName().toString();
-    if (options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName)) {
+    if (elementUtil.areParametersNonnullByDefault(node.getPackageElement(), options)) {
       unit.setHasNullabilityAnnotations();
     }
   }
@@ -354,7 +304,7 @@ public class Rewriter extends UnitTreeVisitor {
     // This visit rewrites try-with-resources constructs into regular try statements according to
     // JLS 14.20.3. The rewriting is done in a visit instead of endVisit because the mutations may
     // result in more try-with-resources constructs that need to be rewritten recursively.
-    List<VariableDeclarationExpression> resources = node.getResources();
+    List<TreeNode> resources = node.getResources();
     if (resources.isEmpty()) {
       return true;
     }
@@ -374,10 +324,19 @@ public class Rewriter extends UnitTreeVisitor {
     VariableElement primaryException = GeneratedVariableElement.newLocalVar(
         "__primaryException" + resources.size(), throwableType, null);
 
-    List<VariableDeclarationFragment> resourceFrags = resources.remove(0).getFragments();
-    assert resourceFrags.size() == 1;
-    VariableDeclarationFragment resourceFrag = resourceFrags.get(0);
-    VariableElement resourceVar = resourceFrag.getVariableElement();
+    TreeNode resource = resources.remove(0);
+    VariableElement resourceVar = null;
+    VariableDeclarationFragment resourceFrag = null;
+    if (resource.getKind() == Kind.VARIABLE_DECLARATION_EXPRESSION) {
+      List<VariableDeclarationFragment> resourceFrags =
+          ((VariableDeclarationExpression) resource).getFragments();
+      assert resourceFrags.size() == 1;
+      resourceFrag = resourceFrags.get(0);
+      resourceVar = resourceFrag.getVariableElement();
+    } else {
+      resourceVar = TreeUtil.getVariableElement((Expression) resource);
+    }
+    assert resourceVar != null;
 
     DeclaredType closeableType =
         typeUtil.findSupertype(resourceVar.asType(), "java.lang.AutoCloseable");
@@ -386,9 +345,10 @@ public class Rewriter extends UnitTreeVisitor {
         typeUtil.findMethod(throwableType, "addSuppressed", "java.lang.Throwable");
 
     Block block = new Block();
-    block.addStatement(new VariableDeclarationStatement(
-        resourceVar, TreeUtil.remove(resourceFrag.getInitializer())));
-
+    if (resourceFrag != null) {
+      block.addStatement(new VariableDeclarationStatement(
+          resourceVar, TreeUtil.remove(resourceFrag.getInitializer())));
+    }
     block.addStatement(new VariableDeclarationStatement(
         primaryException, new NullLiteral(typeUtil.getNull())));
 

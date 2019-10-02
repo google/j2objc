@@ -321,10 +321,6 @@ public class Functionizer extends UnitTreeVisitor {
     } else if (captureInfo.needsOuterParam(type)) {
       args.add(new ThisExpression(ElementUtil.getDeclaringClass(type).asType()));
     }
-    Expression superOuterArg = node.getSuperOuterArg();
-    if (superOuterArg != null) {
-      args.add(TreeUtil.remove(superOuterArg));
-    }
     TreeUtil.moveList(node.getCaptureArgs(), args);
     TreeUtil.moveList(node.getArguments(), args);
     node.replaceWith(invocation);
@@ -342,9 +338,10 @@ public class Functionizer extends UnitTreeVisitor {
     boolean isConstructor = ElementUtil.isConstructor(element);
     boolean isInstanceMethod = !ElementUtil.isStatic(element) && !isConstructor;
     boolean isDefaultMethod = ElementUtil.isDefault(element);
+    boolean isPrivate = ElementUtil.isPrivate(element);
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     if (!isInstanceMethod || isDefaultMethod || Modifier.isNative(node.getModifiers())
-        || ElementUtil.isPrivate(element) || functionizableMethods.contains(element)) {
+        || isPrivate || functionizableMethods.contains(element)) {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
       boolean isEnumConstructor = isConstructor && ElementUtil.isEnum(declaringClass);
       if (isConstructor) {
@@ -359,13 +356,15 @@ public class Functionizer extends UnitTreeVisitor {
         // Enums with ARC need the retaining constructor.
         declarationList.add(makeAllocatingConstructor(node, false));
       }
-      if (isDefaultMethod) {
+      if (isDefaultMethod || (isPrivate && ElementUtil.isInterface(declaringClass))) {
         // For default methods keep only the declaration. Implementing classes will add a shim.
+        // Private interface methods do not need an implementation because functionized default
+        // methods only use functionized private methods.
         node.setBody(null);
         node.addModifiers(Modifier.ABSTRACT);
       } else if (isInstanceMethod) {
         // We can remove private instance methods if reflection is stripped.
-        if (translationUtil.needsReflection(declaringClass) || !ElementUtil.isPrivate(element)) {
+        if (translationUtil.needsReflection(declaringClass) || !isPrivate) {
           setFunctionCaller(node, element);
         } else {
           node.remove();
@@ -380,10 +379,15 @@ public class Functionizer extends UnitTreeVisitor {
           // Take out of the header, only needed for reflection.
           node.setHasDeclaration(false);
         }
+      } else if (ElementUtil.isEnum(declaringClass)
+          && ElementUtil.getName(element).equals("values")) {
+        // Keep enum values method because it is used via native reflection in java.lang.Enum.
+        setFunctionCaller(node, element);
       } else {
         // Static methods and constructors, no reflection.
-        if (options.emitWrapperMethods() && !ElementUtil.isPrivateInnerType(declaringClass)
-            && !ElementUtil.isPrivate(element)) {
+        if (options.emitWrapperMethods()
+            && !ElementUtil.isPrivateInnerType(declaringClass)
+            && !isPrivate) {
           setFunctionCaller(node, element);
         } else {
           node.remove();
@@ -437,7 +441,7 @@ public class Functionizer extends UnitTreeVisitor {
 
     function.setBody(TreeUtil.remove(method.getBody()));
 
-    if (ElementUtil.isStatic(elem)) {
+    if (ElementUtil.isStatic(elem) || ElementUtil.isDefault(elem)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = UnicodeUtils.format("%s_initialize", nameTable.getFullName(declaringClass));
       TypeMirror voidType = typeUtil.getVoid();

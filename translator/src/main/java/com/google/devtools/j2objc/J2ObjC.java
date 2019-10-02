@@ -165,14 +165,14 @@ public class J2ObjC {
    * @param args command-line arguments: flags and source file names
    */
   public static void main(String[] args) {
-	  
+	if (true) {  
 	  for (int i = 0; i < args.length; i ++) {
 		  System.out.print(args[i]);
 		  System.out.print(" ");
 	  }
 	  System.out.println(new File(".").getAbsolutePath());
 	  System.out.println("===================================================");
-	  
+	}
     if (args.length == 0) {
       Options.help(true);
     }

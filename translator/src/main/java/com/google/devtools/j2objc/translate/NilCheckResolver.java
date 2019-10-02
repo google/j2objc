@@ -56,7 +56,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionElement;
@@ -68,6 +67,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -470,11 +470,6 @@ public class NilCheckResolver extends UnitTreeVisitor {
       outerTarget.accept(this);
       addNilCheck(outerTarget);
     }
-    Expression superOuterArg = node.getSuperOuterArg();
-    if (superOuterArg != null) {
-      superOuterArg.accept(this);
-      addNilCheck(superOuterArg);
-    }
     for (Expression arg : node.getArguments()) {
       arg.accept(this);
     }
@@ -734,7 +729,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
   @Override
   public boolean visit(TryStatement node) {
     pushTryScope();
-    for (VariableDeclarationExpression resource : node.getResources()) {
+    for (TreeNode resource : node.getResources()) {
       resource.accept(this);
     }
     node.getBody().accept(this);
@@ -818,7 +813,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
   // added nil_chk's.
   @Override
   public void endVisit(FunctionInvocation node) {
-    if (node.getFunctionElement() == NIL_CHK_ELEM) {
+    if (Objects.equals(node.getFunctionElement(), NIL_CHK_ELEM)) {
       VariableElement var = TreeUtil.getVariableElement(node.getArgument(0));
       if (var != null) {
         addSafeVar(var);

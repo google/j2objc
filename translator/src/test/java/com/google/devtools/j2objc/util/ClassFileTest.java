@@ -17,10 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
-<<<<<<< HEAD
-=======
 import com.google.devtools.j2objc.file.RegularInputFile;
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 import java.io.IOException;
 
 /**
@@ -30,11 +27,8 @@ import java.io.IOException;
  */
 public class ClassFileTest extends GenerationTest {
 
-<<<<<<< HEAD
-=======
   static class Inner {}
 
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
   public void testJarFileLoading() throws IOException {
     String jarFilePath = getResourceAsFile("packageInfoLookupTest.jar");
     InputFile input = new JarredInputFile(jarFilePath,
@@ -43,8 +37,6 @@ public class ClassFileTest extends GenerationTest {
     assertNotNull(cf);
     assertEquals("com.google.test.packageInfoLookupTest.package-info", cf.getFullName());
   }
-<<<<<<< HEAD
-=======
 
   public void testGetFullNameInnerClass() throws IOException {
     // TODO(b/124111611)
@@ -74,5 +66,4 @@ public class ClassFileTest extends GenerationTest {
     assertNotNull(cf);
     return cf;
   }
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 }

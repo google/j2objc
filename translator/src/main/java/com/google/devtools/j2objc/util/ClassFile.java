@@ -14,6 +14,12 @@
 
 package com.google.devtools.j2objc.util;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.IMetadataResolver;
@@ -25,8 +31,8 @@ import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
+import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.EntityType;
-import com.strobel.decompiler.languages.Languages;
 import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
@@ -36,16 +42,13 @@ import com.strobel.decompiler.languages.java.ast.FieldDeclaration;
 import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.strobel.decompiler.languages.java.ast.TypeDeclaration;
-import java.io.IOException;
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 
 /**
  * JVM class file model, which uses a Procyon TypeDefinition as a delegate.
  */
 public class ClassFile {
-  private final CompilationUnit unit;
   private final TypeDeclaration type;
+  private final TypeReference typeRef;
 
   public static ClassFile create(InputFile file) throws IOException {
     ITypeLoader loader;
@@ -61,39 +64,68 @@ public class ClassFile {
     } else {
       loader = new InputTypeLoader();
     }
-    MetadataSystem metadataSystem = new MetadataSystem(loader);
-    CompilationUnit unit = decompileClassFile(path, metadataSystem);
+    TypeReference typeRef = lookupType(path, loader);
+    CompilationUnit unit = decompileClassFile(typeRef);
 
-    return new ClassFile(unit);
+    return new ClassFile(unit, typeRef);
   }
 
-  private static CompilationUnit decompileClassFile(String path, MetadataSystem metadataSystem) {
-    TypeReference typeRef;
+  private static TypeReference lookupType(String path, ITypeLoader loader) {
+    MetadataSystem metadataSystem = new MetadataSystem(loader);
     /* Hack to get around classes whose descriptors clash with primitive types. */
     if (path.length() == 1) {
       MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
-      typeRef = metadataSystem.resolve(parser.parseTypeDescriptor(path));
-    } else {
-      typeRef = metadataSystem.lookupType(path);
+      return metadataSystem.resolve(parser.parseTypeDescriptor(path));
     }
-    TypeDefinition typeDef = typeRef.resolve();
-
-    /* TODO(tball): Support deobfuscation?
-     * DeobfuscationUtilities.processType(typeDef);
-     */
-
-    DecompilationOptions options = new DecompilationOptions();
-    DecompilerSettings settings = DecompilerSettings.javaDefaults();
-    settings.setShowSyntheticMembers(true);
-    options.setSettings(settings);
-    options.setFullDecompilation(true);
-    return Languages.java().decompileTypeToAst(typeDef, options);
+    return metadataSystem.lookupType(path);
   }
 
-  private ClassFile(CompilationUnit unit) {
-    this.unit = unit;
-    assert unit.getTypes().size() == 1;
-    this.type = unit.getTypes().firstOrNullObject();
+  private static CompilationUnit decompileClassFile(TypeReference typeRef) {
+	  if (true) { /*ARGC*/
+          TypeDefinition resolvedType = null;
+          if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
+              throw new RuntimeException("Unable to resolve type.");
+          }
+			DecompilerSettings settings = DecompilerSettings.javaDefaults();
+		    settings.setShowSyntheticMembers(true);
+            StringWriter stringwriter = new StringWriter();
+            DecompilationOptions decompilationOptions;
+            decompilationOptions = new DecompilationOptions();
+            decompilationOptions.setSettings(settings);
+            decompilationOptions.setFullDecompilation(true);
+            PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
+            plainTextOutput.setUnicodeOutputEnabled(
+                    decompilationOptions.getSettings().isUnicodeOutputEnabled());
+            settings.getLanguage().decompileType(resolvedType, plainTextOutput,
+                    decompilationOptions);
+            String decompiledSource = stringwriter.toString();
+            System.out.println(decompiledSource);
+//            if (decompiledSource.contains(textField.getText().toLowerCase())) {
+//                addClassName(entry.getName());
+//            }
+		  
+	  }
+
+	  if (!Options.useARC()) {
+//    TypeDefinition typeDef = typeRef.resolve();
+//    DeobfuscationUtilities.processType(typeDef);
+//    DecompilationOptions options = new DecompilationOptions();
+//    DecompilerSettings settings = DecompilerSettings.javaDefaults();
+//    settings.setShowSyntheticMembers(true);
+//    options.setSettings(settings);
+//    options.setFullDecompilation(true);
+//    return Languages.java().decompileTypeToAst(typeDef, options);
+	  }
+	  return null;
+  }
+
+  private ClassFile(CompilationUnit unit, TypeReference typeRef) {
+    this.typeRef = typeRef;
+	  if (!Options.useARC()) {
+//    assert unit.getTypes().size() == 1;
+//    this.type = unit.getTypes().firstOrNullObject();
+	  }
+	  this.type = null;
   }
 
   /**
@@ -107,9 +139,34 @@ public class ClassFile {
    * Returns the fully-qualified name of the type defined by this class file.
    */
   public String getFullName() {
-    String pkgName = unit.getPackage().getName();
-    String typeName = type.getName();
-    return pkgName.isEmpty() ? typeName : pkgName + "." + typeName;
+    return typeRef.getFullName();
+  }
+
+  /**
+   * Returns the relative classfile path.
+   */
+  public String getRelativePath() {
+    StringBuilder sb = new StringBuilder();
+    String pkg = typeRef.getPackageName().replace('.', '/');
+    if (pkg.length() > 0) {
+      sb.append(pkg);
+      sb.append('/');
+    }
+    appendDeclaringTypes(typeRef, '$', sb);
+    sb.append(typeRef.getSimpleName());
+    sb.append(".class");
+    return sb.toString();
+  }
+
+  // Recurse depth-first so order of declaring types is correct.
+  private static void appendDeclaringTypes(TypeReference typeRef, char innerClassDelimiter,
+      StringBuilder sb) {
+    TypeReference declaringType = typeRef.getDeclaringType();
+    if (declaringType != null) {
+      appendDeclaringTypes(declaringType, innerClassDelimiter, sb);
+      sb.append(declaringType.getSimpleName());
+      sb.append(innerClassDelimiter);
+    }
   }
 
   /**

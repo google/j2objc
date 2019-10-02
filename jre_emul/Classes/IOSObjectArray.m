@@ -27,7 +27,6 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/NegativeArraySizeException.h"
 
-
 // Defined in IOSArray.m
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);

@@ -18,6 +18,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
@@ -27,11 +29,14 @@ import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,8 +55,10 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.tools.JavaFileObject;
 
 /**
  * Utility methods for working with elements.
@@ -77,10 +84,11 @@ public final class ElementUtil {
 
   private static final String LAZY_INIT = "com.google.errorprone.annotations.concurrent.LazyInit";
 
+  private static final Pattern NULLABLE_PATTERN = Pattern.compile("Nullable.*");
+  private static final Pattern NONNULL_PATTERN = Pattern.compile("No[nt][Nn]ull.*");
+
   private final Elements javacElements;
   private final Map<Element, TypeMirror> elementTypeMap = new HashMap<>();
-
-  private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
   public ElementUtil(Elements javacElements) {
     this.javacElements = javacElements;
@@ -95,6 +103,10 @@ public final class ElementUtil {
 
   public static String getQualifiedName(TypeElement element) {
     return element.getQualifiedName().toString();
+  }
+
+  public static boolean isNamed(Element element, String name) {
+    return element.getSimpleName().contentEquals(name);
   }
 
   public static boolean isStatic(Element element) {
@@ -364,7 +376,7 @@ public final class ElementUtil {
   }
 
   public static boolean isWeakReference(VariableElement var) {
-    return hasNamedAnnotation(var, "NoRefCounting")
+    return hasNamedAnnotation(var, "Weak")
         || hasWeakPropertyAttribute(var)
         || (var instanceof GeneratedVariableElement && ((GeneratedVariableElement) var).isWeak());
   }
@@ -471,9 +483,38 @@ public final class ElementUtil {
         method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
   }
 
+  /** Locate method which matches either Java or Objective C getter name patterns. */
+  public static ExecutableElement findGetterMethod(
+      String propertyName, TypeMirror propertyType, TypeElement declaringClass, boolean isStatic) {
+    // Try Objective-C getter naming convention.
+    ExecutableElement getter = ElementUtil.findMethod(declaringClass, propertyName);
+    if (getter == null) {
+      // Try Java getter naming conventions.
+      String prefix = TypeUtil.isBoolean(propertyType) ? "is" : "get";
+      getter = ElementUtil.findMethod(declaringClass, prefix + NameTable.capitalize(propertyName));
+    }
+    return getter != null && isStatic == isStatic(getter) ? getter : null;
+  }
+
+  /** Locate method which matches the Java/Objective C setter name pattern. */
+  public static ExecutableElement findSetterMethod(
+      String propertyName, TypeMirror type, TypeElement declaringClass, boolean isStatic) {
+    ExecutableElement setter = ElementUtil.findMethod(
+        declaringClass,
+        "set" + NameTable.capitalize(propertyName),
+        TypeUtil.getQualifiedName(type));
+    return setter != null && isStatic == isStatic(setter) ? setter : null;
+  }
+
+  public static ExecutableElement findConstructor(TypeElement type, String... paramTypes) {
+    return Iterables.getFirst(Iterables.filter(
+        getConstructors(type),
+        method -> paramsMatch(method, paramTypes)), null);
+  }
+
   public static VariableElement findField(TypeElement type, String name) {
     return Iterables.getFirst(Iterables.filter(
-        filterEnclosedElements(type, VariableElement.class, ElementKind.FIELD), 
+        filterEnclosedElements(type, VariableElement.class, ElementKind.FIELD),
         field -> getName(field).equals(name)), null);
   }
 
@@ -493,6 +534,33 @@ public final class ElementUtil {
     return (PackageElement) e;
   }
 
+  public com.google.devtools.j2objc.ast.Name getPackageName(PackageElement element) {
+    PackageElement parent = getParentPackage(element);
+    if (parent == null) {
+      return new SimpleName(element);
+    }
+    return new QualifiedName(element, element.asType(), getPackageName(parent));
+  }
+
+  public PackageElement getParentPackage(PackageElement element) {
+    String name = element.getQualifiedName().toString();
+    if (name.isEmpty() || !name.contains(".")) {
+      return null;
+    }
+    name = name.substring(0, name.lastIndexOf('.'));
+    // Try the Java 9+ API where the module needs to be specified to find the package.
+    try {
+      Method getModuleOf = Elements.class.getMethod("getModuleOf", Element.class);
+      Object module = getModuleOf.invoke(javacElements, element);
+      Method getPackageElement = Elements.class
+          .getMethod("getPackageElement", getModuleOf.getReturnType(), CharSequence.class);
+      return (PackageElement) getPackageElement.invoke(javacElements, module, name);
+    } catch (ReflectiveOperationException e) {
+      // Default behavior: Java 8.
+      return javacElements.getPackageElement(name);
+    }
+  }
+
   public String getBinaryName(TypeElement e) {
     if (e instanceof GeneratedTypeElement) {
       TypeElement declaringClass = getDeclaringClass(e);
@@ -505,9 +573,18 @@ public final class ElementUtil {
     return javacElements.getBinaryName(e).toString();
   }
 
-  Map<? extends ExecutableElement, ? extends AnnotationValue>
-      getElementValuesWithDefaults(AnnotationMirror a) {
-    return javacElements.getElementValuesWithDefaults(a);
+  Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
+      AnnotationMirror annotation) {
+    DeclaredType type = annotation.getAnnotationType();
+    Map<ExecutableElement, AnnotationValue> map = new LinkedHashMap<>(
+        annotation.getElementValues());
+    for (ExecutableElement method : getMethods((TypeElement) type.asElement())) {
+      AnnotationValue defaultValue = method.getDefaultValue();
+      if (defaultValue != null && !map.containsKey(method)) {
+        map.put(method, defaultValue);
+      }
+    }
+    return map;
   }
 
   public static Set<Modifier> getVisibilityModifiers(Element e) {
@@ -558,20 +635,31 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(Element e) {
-    if (e.getKind() != ElementKind.ANNOTATION_TYPE) {
-      return false;
-    }
-    for (AnnotationMirror ann : e.getAnnotationMirrors()) {
+    return isAnnotationType(e) && hasRetentionPolicy(e, "RUNTIME");
+  }
+
+  public static boolean isGeneratedAnnotation(AnnotationMirror mirror) {
+    return isGeneratedAnnotation(mirror.getAnnotationType().asElement());
+  }
+
+  public static boolean isGeneratedAnnotation(Element e) {
+    // Use a negative check, since CLASS retention is the default.
+    return isAnnotationType(e) && !hasRetentionPolicy(e, "SOURCE");
+  }
+
+  private static boolean hasRetentionPolicy(Element e, String policy) {
+    for (AnnotationMirror ann : getAllAnnotations(e)) {
       String annotationName = ann.getAnnotationType().asElement().getSimpleName().toString();
       if (annotationName.equals("Retention")) {
         for (AnnotationValue value : ann.getElementValues().values()) {
           // Retention's value is a RetentionPolicy enum constant.
           VariableElement v = (VariableElement) value.getValue();
-          return v.getSimpleName().toString().equals("RUNTIME");
+          return v.getSimpleName().contentEquals(policy);
         }
       }
     }
     return false;
+
   }
 
   public static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
@@ -586,8 +674,18 @@ public final class ElementUtil {
    * Less strict version of the above where we don't care about the annotation's package.
    */
   public static boolean hasNamedAnnotation(AnnotatedConstruct ac, String name) {
-    for (AnnotationMirror annotation : ac.getAnnotationMirrors()) {
+    for (AnnotationMirror annotation : getAllAnnotations(ac)) {
       if (getName(annotation.getAnnotationType().asElement()).equals(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Similar to the above but matches against a pattern. */
+  public static boolean hasNamedAnnotation(AnnotatedConstruct ac, Pattern pattern) {
+    for (AnnotationMirror annotation : getAllAnnotations(ac)) {
+      if (pattern.matcher(getName(annotation.getAnnotationType().asElement())).matches()) {
         return true;
       }
     }
@@ -599,12 +697,16 @@ public final class ElementUtil {
   }
 
   public static AnnotationMirror getQualifiedNamedAnnotation(Element element, String name) {
-    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+    for (AnnotationMirror annotation : getAllAnnotations(element)) {
       if (getQualifiedName((TypeElement) annotation.getAnnotationType().asElement()).equals(name)) {
         return annotation;
       }
     }
     return null;
+  }
+
+  private static Iterable<? extends AnnotationMirror> getAllAnnotations(AnnotatedConstruct ac) {
+    return Iterables.concat(ac.getAnnotationMirrors(), ExternalAnnotations.get(ac));
   }
 
   /**
@@ -613,7 +715,7 @@ public final class ElementUtil {
    * Java frameworks.
    */
   public static boolean hasNullableAnnotation(Element element) {
-    return hasNamedAnnotation(element, "Nullable");
+    return hasNullabilityAnnotation(element, NULLABLE_PATTERN);
   }
 
   /**
@@ -622,13 +724,28 @@ public final class ElementUtil {
    * frameworks, with varying but similar names.
    */
   public static boolean hasNonnullAnnotation(Element element) {
-    Pattern p = Pattern.compile("No[nt][Nn]ull");
-    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
-      if (p.matcher(annotation.getAnnotationType().asElement().getSimpleName()).matches()) {
-        return true;
-      }
+    return hasNullabilityAnnotation(element, NONNULL_PATTERN);
+  }
+
+  private static boolean hasNullabilityAnnotation(Element element, Pattern pattern) {
+    // Ignore nullability annotation on primitive types.
+    if (isMethod(element)
+        && ((ExecutableElement) element).getReturnType().getKind().isPrimitive()) {
+      return false;
     }
-    return false;
+    if (isVariable(element) && element.asType().getKind().isPrimitive()) {
+      return false;
+    }
+    // The two if statements cover type annotations.
+    if (isMethod(element)
+        && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {
+      return true;
+    }
+    if (isVariable(element) && hasNamedAnnotation(element.asType(), pattern)) {
+      return true;
+    }
+    // This covers declaration annotations.
+    return hasNamedAnnotation(element, pattern);
   }
 
   public static Object getAnnotationValue(AnnotationMirror annotation, String name) {
@@ -653,11 +770,14 @@ public final class ElementUtil {
     return members;
   }
 
-  public boolean areParametersNonnullByDefault(TypeElement typeElement, Options options) {
-    if (ElementUtil.hasAnnotation(typeElement, ParametersAreNonnullByDefault.class)) {
+  public boolean areParametersNonnullByDefault(Element element, Options options) {
+    if (ElementUtil.hasAnnotation(element, ParametersAreNonnullByDefault.class)) {
       return true;
     }
-    PackageElement pkg = getPackage(typeElement);
+    PackageElement pkg = getPackage(element);
+    if (ElementUtil.hasAnnotation(pkg, ParametersAreNonnullByDefault.class)) {
+      return true;
+    }
     String pkgName = pkg.getQualifiedName().toString();
     return options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
   }
@@ -709,8 +829,24 @@ public final class ElementUtil {
    */
   public static boolean isNonnull(Element element, boolean parametersNonnullByDefault) {
     return hasNonnullAnnotation(element)
+        || isConstructor(element)  // Java constructors are always non-null.
         || (isParameter(element)
             && parametersNonnullByDefault
             && !((VariableElement) element).asType().getKind().isPrimitive());
+  }
+
+  /**
+   * Returns the source file name for a type element. Returns null if the element
+   * isn't a javac ClassSymbol, or if it is defined by a classfile which was compiled
+   * without a source attribute.
+   */
+  public static String getSourceFile(TypeElement type) {
+    if (type instanceof ClassSymbol) {
+      JavaFileObject srcFile = ((ClassSymbol) type).sourcefile;
+      if (srcFile != null) {
+        return srcFile.getName();
+      }
+    }
+    return null;
   }
 }

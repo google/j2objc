@@ -160,12 +160,13 @@ class HeapIntBuffer extends IntBuffer {
     }
 
     public IntBuffer put(IntBuffer src) {
+        if (src == this) {
+            throw new IllegalArgumentException();
+        }
         if (isReadOnly) {
             throw new ReadOnlyBufferException();
         }
         if (src instanceof HeapIntBuffer) {
-            if (src == this)
-                throw new IllegalArgumentException();
             HeapIntBuffer sb = (HeapIntBuffer) src;
             int n = sb.remaining();
             if (n > remaining())

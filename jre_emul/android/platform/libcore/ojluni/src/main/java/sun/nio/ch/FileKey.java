@@ -33,8 +33,8 @@ import java.io.IOException;
  */
 public class FileKey {
 
-    long st_dev;    // ID of device
-    long st_ino;    // Inode number
+    /* J2ObjC removed. private */ long st_dev;    // ID of device
+    /* J2ObjC removed. private */ long st_ino;    // Inode number
 
     private FileKey() { }
 

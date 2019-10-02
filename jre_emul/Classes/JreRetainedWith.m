@@ -40,8 +40,6 @@ static id RetainedWithRetain(id self, SEL _cmd) {
   }
 }
 
-
-
 static void RetainedWithRelease(id self, SEL _cmd) {
   @synchronized (self) {
     if ([self retainCount] == 2) {

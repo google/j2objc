@@ -31,8 +31,7 @@ import dalvik.system.SocketTagger;
 import java.io.*;
 import java.net.SocketException;
 
-class FileDispatcherImpl extends FileDispatcher
-{
+class FileDispatcherImpl extends FileDispatcher {
 
     FileDispatcherImpl(boolean append) {
         /* append is ignored */
@@ -129,6 +128,14 @@ class FileDispatcherImpl extends FileDispatcher
         // file descriptor not required for mapping operations; okay
         // to return invalid file descriptor.
         return new FileDescriptor();
+    }
+
+    boolean canTransferToDirectly(java.nio.channels.SelectableChannel sc) {
+        return true;
+    }
+
+    boolean transferToDirectlyNeedsPositionLock() {
+        return false;
     }
 
     // -- Native methods --

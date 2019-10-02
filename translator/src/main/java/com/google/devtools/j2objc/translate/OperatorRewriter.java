@@ -14,20 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.lang.model.element.Element;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
@@ -63,6 +49,19 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.RetainedLocalRef;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites certain operators, such as object assignment, into appropriate
@@ -231,7 +230,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
       return;
     }
     FunctionElement element =
-        new FunctionElement("JreRetainedLocalValue222", TypeUtil.ID_TYPE, null);
+        new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
     FunctionInvocation invocation = new FunctionInvocation(element, expr.getTypeMirror());
     expr.replaceWith(invocation);
     invocation.addArgument(expr);
@@ -316,7 +315,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     return null;
   }
 
-  private boolean isStaticVar(VariableElement var) {
+  private boolean /*ARGC*/isStaticVar(VariableElement var) {
 	return ElementUtil.isStatic(var);
 }
 

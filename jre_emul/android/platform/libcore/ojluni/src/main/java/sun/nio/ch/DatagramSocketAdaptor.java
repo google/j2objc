@@ -381,8 +381,9 @@ public class DatagramSocketAdaptor
     * DatagramSocket constructor so that no native resources are allocated in
     * super class.
     */
-   private static final DatagramSocketImpl dummyDatagramSocket
-       = new DatagramSocketImpl()
+   private static final DatagramSocketImpl dummyDatagramSocket = new DummyDatagramSocket();
+
+   private static final class DummyDatagramSocket extends DatagramSocketImpl
    {
        protected void create() throws SocketException {}
 

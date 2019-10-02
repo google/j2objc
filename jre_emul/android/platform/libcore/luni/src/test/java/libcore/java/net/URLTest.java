@@ -195,12 +195,12 @@ public final class URLTest extends TestCase {
         assertEquals(null, url.getRef());
     }
 
+    // This behavior of URLs with invalid user info changed due to bug http://b/33351987 after
+    // Android security level 1 April 2017.
     public void testAtSignInUserInfo() throws Exception {
-        try {
-            new URL("http://user@userhost.com:password@host");
-            fail();
-        } catch (MalformedURLException expected) {
-        }
+        URL url = new URL("http://user@userhost.com:password@host");
+        assertNull(url.getUserInfo());
+        assertTrue(url.getHost().isEmpty());
     }
 
     public void testUserNoPassword() throws Exception {
@@ -757,5 +757,35 @@ public final class URLTest extends TestCase {
         assertEquals("/some/path", new URL("http://foobar.com/some/path?").getFile());
         assertEquals("/some/path", new URL("http://foobar.com/some/path#").getFile());
         assertEquals("/some/path", new URL("http://foobar.com/some/path?#").getFile());
+    }
+
+    // http://b/31858037
+    public void testFragmentWithSlash() throws Exception {
+        final String host = "example.com";
+        final String fragment = "@not-a-host-name/a";
+        URL url = new URL(String.format("http://%s#%s", host, fragment));
+        assertNull(url.getUserInfo());
+        assertEquals(host, url.getAuthority());
+        assertEquals(host, url.getHost());
+        assertEquals(fragment, url.getRef());
+    }
+
+    // http://b/31858037
+    public void testFragmentWithQuery() throws Exception {
+        final String host = "example.com";
+        final String fragment = "@not-a-host-name?a";
+        URL url = new URL(String.format("http://%s#%s", host, fragment));
+        assertNull(url.getUserInfo());
+        assertEquals(host, url.getAuthority());
+        assertEquals(host, url.getHost());
+        assertEquals(fragment, url.getRef());
+    }
+
+    // http://b/33351987
+    public void testMultipleUserField() throws Exception {
+        final String host = "http://multiple@users@url.com";
+        URL url = new URL(host);
+        assertNull(url.getUserInfo());
+        assertTrue(url.getHost().isEmpty());
     }
 }

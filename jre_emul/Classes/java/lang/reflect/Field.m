@@ -130,12 +130,6 @@ static void ReadRawValue(
               *rawValue = field->metadata_->constantValue;
           }
       }
-//      
-//      int err;
-//      AGRG_getARGCField(object, field->ivar_, &err);
-//      if (err) {
-//          *rawValue = field->metadata_->constantValue;
-//      }
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
     @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
@@ -202,8 +196,6 @@ static void SetWithRawValue(
           }
           // else: It's a final instance field, return without any side effects.
       }
-      //AGRG_setARGCField(object, field->ivar_, rawValue->asId);
-      
   }
 }
 

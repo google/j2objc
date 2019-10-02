@@ -19,9 +19,8 @@
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/text/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/support/src/test/java"/>
 	<classpathentry kind="src" path="Classes"/>
-	<classpathentry kind="src" path="misc-tests"/>
 	<classpathentry kind="src" path="stub_classes"/>
-	<classpathentry kind="src" path="Tests"/>
+	<classpathentry kind="src" path="misc_tests"/>
 	<classpathentry kind="src" path="android/platform/external/mockwebserver/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/test/java"/>
@@ -37,8 +36,9 @@
 	<classpathentry kind="lib" path="build_result/jre_emul.jar" sourcepath="build_result/jre_emul-src.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="../dist/lib/j2objc_junit.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/junit-dataprovider-1.10.4.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/hamcrest-core-1.3.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/annotations"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

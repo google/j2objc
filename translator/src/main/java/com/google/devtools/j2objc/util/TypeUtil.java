@@ -30,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -47,6 +48,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 /**
@@ -70,6 +72,8 @@ public final class TypeUtil {
       GeneratedTypeElement.newIosClass("IOSClass", NS_OBJECT, "IOSClass.h");
   public static final TypeElement NS_COPYING =
       GeneratedTypeElement.newIosInterface("NSCopying", "");
+  public static final TypeElement NS_FASTENUMERATION =
+      GeneratedTypeElement.newIosInterface("NSFastEnumeration", "");
   public static final TypeElement IOS_OBJECT_ARRAY =
       GeneratedTypeElement.newIosClass("IOSObjectArray", NS_OBJECT, "IOSObjectArray.h");
   public static final TypeMirror NATIVE_CHAR_PTR = new NativeType("char *");
@@ -88,32 +92,32 @@ public final class TypeUtil {
     PRIMITIVE_IOS_ARRAYS = map;
   }
 
-  private final ParserEnvironment env;
+  private final Elements javacElements;
   private final Types javacTypes;
   private final ElementUtil elementUtil;
 
   // Commonly accessed types.
-  public final TypeElement javaObject;
-  public final TypeElement javaString;
-  public final TypeElement javaClass;
-  public final TypeElement javaNumber;
-  public final TypeElement javaThrowable;
+  /*ARGC** private*/public final TypeElement javaObject;
+  /*ARGC** private*/public final TypeElement javaString;
+  /*ARGC** private*/public final TypeElement javaClass;
+  /*ARGC** private*/public final TypeElement javaNumber;
+  /*ARGC** private*/public final TypeElement javaThrowable;
 
   private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
 
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
-    this.env = env;
+    this.javacElements = env.elementUtilities();
     this.javacTypes = env.typeUtilities();
     this.elementUtil = elementUtil;
 
-    javaObject = (TypeElement) env.resolve("java.lang.Object");
-    javaString = (TypeElement) env.resolve("java.lang.String");
-    javaClass = (TypeElement) env.resolve("java.lang.Class");
-    javaNumber = (TypeElement) env.resolve("java.lang.Number");
-    javaThrowable = (TypeElement) env.resolve("java.lang.Throwable");
-    TypeElement javaCloneable = (TypeElement) env.resolve("java.lang.Cloneable");
+    javaObject = javacElements.getTypeElement("java.lang.Object");
+    javaString = javacElements.getTypeElement("java.lang.String");
+    javaClass = javacElements.getTypeElement("java.lang.Class");
+    javaNumber = javacElements.getTypeElement("java.lang.Number");
+    javaThrowable = javacElements.getTypeElement("java.lang.Throwable");
+    TypeElement javaCloneable = javacElements.getTypeElement("java.lang.Cloneable");
 
     ImmutableMap.Builder<TypeElement, TypeElement> typeMapBuilder =
         ImmutableMap.<TypeElement, TypeElement>builder()
@@ -123,10 +127,16 @@ public final class TypeUtil {
         .put(javaNumber, NS_NUMBER)
         .put(javaCloneable, NS_COPYING);
 
-    Element javaNSException = env.resolve("java.lang.NSException");
-    // Could be null if the user is not using jre_emul.jar as the boot path.
-    if (javaNSException != null) {
-      typeMapBuilder.put((TypeElement) javaNSException, NS_EXCEPTION);
+    TypeElement typeNSException = javacElements.getTypeElement("com.google.j2objc.NSException");
+    TypeElement typeNSFastEnumeration =
+        javacElements.getTypeElement("com.google.j2objc.NSFastEnumeration");
+
+    // Types could be null if the user is not using jre_emul.jar as the boot path.
+    if (typeNSException != null) {
+      typeMapBuilder.put(typeNSException, NS_EXCEPTION);
+    }
+    if (typeNSFastEnumeration != null) {
+      typeMapBuilder.put(typeNSFastEnumeration, NS_FASTENUMERATION);
     }
 
     javaToObjcTypeMap = typeMapBuilder.build();
@@ -137,12 +147,11 @@ public final class TypeUtil {
   }
 
   public TypeElement resolveJavaType(String qualifiedName) {
-    return (TypeElement) env.resolve(qualifiedName);
+    return javacElements.getTypeElement(qualifiedName);
   }
 
   public static boolean isDeclaredType(TypeMirror t) {
-	  TypeKind k = t.getKind();
-    return k == TypeKind.DECLARED;
+    return t.getKind() == TypeKind.DECLARED;
   }
 
   public static ElementKind getDeclaredTypeKind(TypeMirror t) {
@@ -202,7 +211,15 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
-    return isDeclaredType(t) ? (TypeElement) ((DeclaredType) t).asElement() : null;
+    if (isDeclaredType(t)) {
+      return (TypeElement) ((DeclaredType) t).asElement();
+    }
+    // Return the left-most component of an intersection type, for compatibility with JDK 10 and
+    // earlier.
+    if (isIntersection(t)) {
+      return asTypeElement(((IntersectionType) t).getBounds().iterator().next());
+    }
+    return null;
   }
 
   public static boolean isJavaObject(TypeMirror t) {
@@ -296,13 +313,30 @@ public final class TypeUtil {
   }
 
   public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
+    if (isGeneratedType(t1) || isGeneratedType(t2)) {
+      // TODO(user): implement as part of converting Elements to their generated versions.
+      return false;
+    }
     return javacTypes.isAssignable(t1, t2);
   }
 
   public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
+    if (isGeneratedType(t1) || isGeneratedType(t2)) {
+      // TODO(user): implement as part of converting Elements to their generated versions.
+      return false;
+    }
     return javacTypes.isSubtype(t1, t2);
   }
 
+  @SuppressWarnings("TypeEquals")
+  public boolean isSameType(TypeMirror t1, TypeMirror t2) {
+    if (isGeneratedType(t1) || isGeneratedType(t2)) {
+      return t1.equals(t2);
+    }
+    return javacTypes.isSameType(t1, t2);
+  }
+
+  @SuppressWarnings("TypeEquals")
   public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
     if (isGeneratedType(m1) || isGeneratedType(m2)) {
       return m1.equals(m2);
@@ -639,6 +673,22 @@ public final class TypeUtil {
     return javacTypes.getNullType();
   }
 
+  public TypeMirror resolvePrimitiveType(String signature) {
+    switch (signature) {
+      case "B": return getByte();
+      case "C": return getChar();
+      case "D": return getDouble();
+      case "F": return getFloat();
+      case "I": return getInt();
+      case "J": return getLong();
+      case "S": return getShort();
+      case "V": return getVoid();
+      case "Z": return getBoolean();
+      default:
+        return null;
+    }
+  }
+
   public PrimitiveType unboxedType(TypeMirror t) {
     if (isGeneratedType(t)) {
       return null;
@@ -662,6 +712,7 @@ public final class TypeUtil {
     return isReferenceType(t) && getObjcUpperBounds(t).isEmpty();
   }
 
+  @SuppressWarnings("TypeEquals")
   public boolean isObjcAssignable(TypeMirror t1, TypeMirror t2) {
     if (!isReferenceType(t1) || !isReferenceType(t2)) {
       if (t1 instanceof PointerType && t2 instanceof PointerType) {
@@ -714,7 +765,8 @@ public final class TypeUtil {
 
   public List<? extends TypeMirror> getUpperBounds(TypeMirror t) {
     if (t == null) {
-      return Collections.singletonList(env.resolve("java.lang.Object").asType());
+      return Collections.singletonList(
+          javacElements.getTypeElement("java.lang.Object").asType());
     }
     switch (t.getKind()) {
       case INTERSECTION:
@@ -773,6 +825,7 @@ public final class TypeUtil {
       case INT:
       case LONG:
       case SHORT:
+      case TYPEVAR:
       case VOID:
         return getName(t);
       default:
@@ -912,4 +965,8 @@ public final class TypeUtil {
     return GeneratedTypeElement.newIosClass(name, NS_OBJECT, "IOSPrimitiveArray.h");
   }
 
+  public static boolean isStubType(String typeName) {
+    // Currently only NSException and NSFastEnumeration have com.google.j2objc stubs.
+    return typeName.startsWith("com.google.j2objc.NS");
+  }
 }

@@ -23,17 +23,13 @@ import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
-import com.google.devtools.j2objc.util.TypeUtil;
-import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Preprocesses each input file in the batch.
+ * Preprocesses each Java file in the batch.
  */
 public class InputFilePreprocessor {
 
@@ -49,29 +45,29 @@ public class InputFilePreprocessor {
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
-    // argc { 
-	String target = options.getDebugSourceFile();
-	if (target != null) {
-	  for (ProcessingContext input : inputs) {
-	  	String s = input.getOriginalSourcePath();
-	  	if (s.endsWith(target)) {
-	  		processInput(input);
-	  		break;
-	  	}
-	    }
-	  return;
+    if (options.useGC()) { 
+    	String target = options.getDebugSourceFile();
+    	if (target != null) {
+    		for (ProcessingContext input : inputs) {
+    			String s = input.getOriginalSourcePath();
+    			if (s.endsWith(target)) {
+    				processInput(input);
+    				break;
+    			}
+    		}
+    		return;
+    	}
 	}
-	// } argc
     for (ProcessingContext input : inputs) {
-      processInput(input);
+      if (input.getFile().getUnitName().endsWith(".java")) {
+        processInput(input);
+      }
     }
   }
 
   private void processInput(ProcessingContext input) {
     try {
-      if (input.getFile().getUnitName().endsWith("package-info.java")) {
-        processPackageInfoSource(input);
-      } else {
+      if (!input.getFile().getUnitName().endsWith("package-info.java")) {
         processRegularSource(input);
       }
     } catch (IOException e) {
@@ -105,7 +101,6 @@ public class InputFilePreprocessor {
       // The parser found and reported one or more errors.
       return;
     }
-    
     String qualifiedName = parseResult.mainTypeName();
     if (shouldMapHeaders) {
       options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
@@ -116,37 +111,9 @@ public class InputFilePreprocessor {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, options.fileUtil().getCharset());
+      Files.asCharSink(strippedFile, options.fileUtil().getCharset())
+          .write(parseResult.getSource());
       input.setFile(new RegularInputFile(strippedFile.getPath(), relativePath));
-    }
-  }
-
-  private void processPackageInfoSource(ProcessingContext input) throws IOException {
-    InputFile file = input.getFile();
-    String source = options.fileUtil().readFile(file);
-    CompilationUnit compilationUnit =
-        parser.parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
-    if (compilationUnit != null) {
-      extractPackagePrefix(file, compilationUnit);
-    }
-  }
-
-  private void extractPackagePrefix(InputFile file, CompilationUnit unit) {
-    // We should only reach here if it's a package-info.java file.
-    assert file.getUnitName().endsWith("package-info.java");
-    List<Annotation> annotations = (List<Annotation>) unit.getPackage().getAnnotations();
-    for (Annotation annotation : annotations) {
-      // getFullyQualifiedName() might not actually return a fully qualified name.
-      String name = annotation.getTypeName().getFullyQualifiedName();
-      if (name.endsWith("ObjectiveCName")) {
-        // Per Eclipse docs, binding resolution can be a resource hog.
-        if (TypeUtil.getQualifiedName(annotation.getAnnotationMirror().getAnnotationType()).equals(
-            ObjectiveCName.class.getCanonicalName())) {
-          String key = unit.getPackage().getName().getFullyQualifiedName();
-          String val = (String) ((SingleMemberAnnotation) annotation).getValue().getConstantValue();
-          options.getPackagePrefixes().addPrefix(key, val);
-        }
-      }
     }
   }
 }

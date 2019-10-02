@@ -31,23 +31,19 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
-import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -63,8 +59,26 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
+  private final GeneratedSourceMappings generatedSourceMappings;
+
   protected TypeDeclarationGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder, node);
+    generatedSourceMappings = new GeneratedSourceMappings();
+  }
+
+  protected TypeDeclarationGenerator(
+      SourceBuilder builder,
+      AbstractTypeDeclaration node,
+      GeneratedSourceMappings generatedSourceMappings) {
+    super(builder, node);
+    this.generatedSourceMappings = generatedSourceMappings;
+  }
+
+  public static void generate(
+      SourceBuilder builder,
+      AbstractTypeDeclaration node,
+      GeneratedSourceMappings generatedSourceMappings) {
+    new TypeDeclarationGenerator(builder, node, generatedSourceMappings).generate();
   }
 
   public static void generate(SourceBuilder builder, AbstractTypeDeclaration node) {
@@ -95,6 +109,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (printNativeEnum() && ARGC.inPureObjCMode()) {
     	return;
     };
+    if (typeNode.isDeadClass()) {
+      printStaticFieldDeclarations();
+      return;
+    }
+    printNativeEnum();
 
     printTypeDocumentation();
     if (typeElement.getKind().isInterface()) {
@@ -112,8 +131,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     } else {
       newline();
     }
-    printProperties();
     if (!typeElement.getKind().isInterface()) {
+      printProperties();
       printStaticAccessors();
     }
     printInnerDeclarations();
@@ -135,10 +154,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printUnprefixedAlias();
   }
 
-  /* argc 
-  private void printNativeEnum() {
-   */
-  // argc change void -> boolean
+  // argc changed return type: void -> boolean
   private boolean printNativeEnum() {
     if (!(typeNode instanceof EnumDeclaration)) {
       return false;
@@ -231,10 +247,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         VariableElement var = fragment.getVariableElement();
+        TypeMirror type = var.asType();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = nameTable.getObjCType(var.asType());
-        printf("\n+ (%s)%s;\n", objcType, accessorName);
-        if (!ElementUtil.isFinal(var)) {
+        String objcType = nameTable.getObjCType(type);
+        TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
+        String baseName = nameTable.getVariableBaseName(var);
+        ExecutableElement getter =
+            ElementUtil.findGetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
+        if (getter == null) {
+          printf("\n+ (%s)%s;\n", objcType, accessorName);
+        }
+        ExecutableElement setter =
+            ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
+        if (setter == null && !ElementUtil.isFinal(var)) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
       }
@@ -307,97 +332,22 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println("}");
   }
 
-  /**
-   * Locate method which matches either Java or Objective C getter name patterns.
-   */
-  public static ExecutableElement findGetterMethod(
-      String propertyName, TypeMirror propertyType, TypeElement declaringClass) {
-    // Try Objective-C getter naming convention.
-    ExecutableElement getter = ElementUtil.findMethod(declaringClass, propertyName);
-    if (getter == null) {
-      // Try Java getter naming conventions.
-      String prefix = TypeUtil.isBoolean(propertyType) ? "is" : "get";
-      getter = ElementUtil.findMethod(declaringClass, prefix + NameTable.capitalize(propertyName));
-    }
-    return getter;
-  }
-
-  /**
-   * Locate method which matches the Java/Objective C setter name pattern.
-   */
-  public static ExecutableElement findSetterMethod(
-      String propertyName, TypeElement declaringClass) {
-    return ElementUtil.findMethod(declaringClass, "set" + NameTable.capitalize(propertyName));
-  }
-
   protected void printProperties() {
     Iterable<VariableDeclarationFragment> fields = getAllFields();
     for (VariableDeclarationFragment fragment : fields) {
-      FieldDeclaration fieldDecl = (FieldDeclaration) fragment.getParent();
-      VariableElement varElement = fragment.getVariableElement();
-      PropertyAnnotation property = (PropertyAnnotation)
-          TreeUtil.getAnnotation(Property.class, fieldDecl.getAnnotations());
-      if (property != null) {
-        print("@property ");
-        TypeMirror varType = varElement.asType();
-        String propertyName = nameTable.getVariableBaseName(varElement);
+      PropertyGenerator.generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
+          .ifPresent(this::println);
+    }
 
-        // Add default getter/setter here, as each fragment needs its own attributes
-        // to support its unique accessors.
-        Set<String> attributes = property.getPropertyAttributes();
-        TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-        if (property.getGetter() == null) {
-          ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
-          if (getter != null) {
-            attributes.add("getter=" + NameTable.getMethodName(getter));
-            if (!ElementUtil.isSynchronized(getter)) {
-              attributes.add("nonatomic");
-            }
-          }
+    if (options.classProperties() && typeNode instanceof EnumDeclaration) {
+      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+        String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
+        print("\n@property (readonly, class");
+        if (options.nullability()) {
+          print(", nonnull");
         }
-        if (property.getSetter() == null) {
-          ExecutableElement setter = findSetterMethod(propertyName, declaringClass);
-          if (setter != null) {
-            attributes.add("setter=" + NameTable.getMethodName(setter));
-            if (!ElementUtil.isSynchronized(setter)) {
-              attributes.add("nonatomic");
-            }
-          }
-        }
-
-        if (ElementUtil.isStatic(varElement)) {
-          attributes.add("class");
-        } else if (attributes.contains("class")) {
-          ErrorUtil.error(fragment, "Only static fields can be translated to class properties");
-        }
-        if (attributes.contains("class") && !options.staticAccessorMethods()) {
-          // Class property accessors must be present, as they are not synthesized by runtime.
-          ErrorUtil.error(fragment, "Class properties require either a --swift-friendly or"
-              + " --static-accessor-methods flag");
-        }
-
-        if (options.nullability() && !varElement.asType().getKind().isPrimitive()) {
-          if (ElementUtil.hasNullableAnnotation(varElement)) {
-            attributes.add("nullable");
-          } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
-            attributes.add("nonnull");
-          } else if (!attributes.contains("null_unspecified")) {
-            attributes.add("null_resettable");
-          }
-        }
-
-        if (!attributes.isEmpty()) {
-          print('(');
-          print(PropertyAnnotation.toAttributeString(attributes));
-          print(") ");
-        }
-
-        String objcType = nameTable.getObjCType(varType);
-        print(objcType);
-        if (!objcType.endsWith("*")) {
-          print(' ');
-        }
-        println(propertyName + ";");
+        // TODO(user): use nameTable.getSwiftName() when it is implemented.
+        printf(") %s *%s NS_SWIFT_NAME(%s);", typeName, accessorName, accessorName);
       }
     }
   }
@@ -407,12 +357,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : %s", typeName, getSuperTypeName());
-    if (ElementUtil.isRuntimeAnnotation(typeElement)) {
+    printf("\n@interface %s : %s", typeName, /*ARGC*/getSuperTypeName());
+    if (ElementUtil.isGeneratedAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
     }
     printInstanceVariables();
+    printProperties();
     printStaticInterfaceMethods();
     printStaticAccessors();
     println("\n@end");
@@ -495,7 +446,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   protected void printStaticFieldDeclarations() {
     for (VariableDeclarationFragment fragment : getStaticFields()) {
-      printStaticFieldFullDeclaration(fragment);
+      if (typeNode.isDeadClass()) {
+        printDeadClassConstant(fragment);
+      } else {
+        printStaticFieldFullDeclaration(fragment);
+      }
     }
   }
 
@@ -554,6 +509,22 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 	if (!ARGC.inPureObjCMode()) {
       printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
+    }
+  }
+
+  // Overridden in TypePrivateDeclarationGenerator
+  protected void printDeadClassConstant(VariableDeclarationFragment fragment) {
+    VariableElement var = fragment.getVariableElement();
+    Object value = var.getConstantValue();
+    assert value != null;
+    String declType = getDeclarationType(var);
+    declType += (declType.endsWith("*") ? "" : " ");
+    String name = nameTable.getVariableShortName(var);
+    if (ElementUtil.isPrimitiveConstant(var)) {
+      printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
+    } else {
+      println("FOUNDATION_EXPORT "
+          + UnicodeUtils.format("%s%s_%s", declType, typeName, name) + ";");
     }
   }
 
@@ -651,7 +622,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
-    print(getMethodSignature(m));
+
+    String methodSignature = getMethodSignature(m);
+
+    // In order to properly map the method name from the entire signature, we must isolate it from
+    // associated type and parameter declarations.  The method name is guaranteed to be between the
+    // first closing parenthesis and first colon (for methods with arguments), or the entirety of
+    // the declaration after the first closing parenthesis (for methods with no arguments).
+    int identifierStartIndex = methodSignature.indexOf(')') + 1;
+    int identifierEndIndex =
+        methodSignature.contains(":") ? methodSignature.indexOf(':') : methodSignature.length();
+    generatedSourceMappings.addMethodMapping(
+        m /* methodDeclaration */,
+        getBuilder().length() + identifierStartIndex /* targetBegin */,
+        identifierEndIndex - identifierStartIndex /* length */);
+
+    print(methodSignature);
+
     String methodName = nameTable.getMethodSelector(methodElement);
     if (!m.isConstructor() && NameTable.needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.
@@ -786,6 +773,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printDeclarations(methods);
       printDeclarations(declarations);
     }
+  }
+
+  /**
+   * Returns an Objective-C nullability attribute string if there is a matching JSR305 annotation,
+   * or an empty string.
+   */
+  @Override
+  protected String nullability(Element element) {
+    if (options.nullability()) {
+      if (ElementUtil.hasNullableAnnotation(element)) {
+        return " __nullable";
+      }
+      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
+        return " __nonnull";
+      }
+    }
+    return "";
   }
 
   /**

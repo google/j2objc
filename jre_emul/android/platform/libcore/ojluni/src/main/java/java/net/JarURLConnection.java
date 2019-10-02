@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -45,18 +45,14 @@ import sun.net.www.ParseUtil;
  *
  * <p>for example:
  *
- * <p><code>
- * jar:http://www.foo.com/bar/baz.jar!/COM/foo/Quux.class<br>
- * </code>
+ * <p>{@code jar:http://www.foo.com/bar/baz.jar!/COM/foo/Quux.class}
  *
  * <p>Jar URLs should be used to refer to a JAR file or entries in
  * a JAR file. The example above is a JAR URL which refers to a JAR
  * entry. If the entry name is omitted, the URL refers to the whole
  * JAR file:
  *
- * <code>
- * jar:http://www.foo.com/bar/baz.jar!/
- * </code>
+ * {@code jar:http://www.foo.com/bar/baz.jar!/}
  *
  * <p>Users should cast the generic URLConnection to a
  * JarURLConnection when they know that the URL they created is a JAR
@@ -76,19 +72,19 @@ import sun.net.www.ParseUtil;
  * <dl>
  *
  * <dt>A Jar entry
- * <dd><code>jar:http://www.foo.com/bar/baz.jar!/COM/foo/Quux.class</code>
+ * <dd>{@code jar:http://www.foo.com/bar/baz.jar!/COM/foo/Quux.class}
  *
  * <dt>A Jar file
- * <dd><code>jar:http://www.foo.com/bar/baz.jar!/</code>
+ * <dd>{@code jar:http://www.foo.com/bar/baz.jar!/}
  *
  * <dt>A Jar directory
- * <dd><code>jar:http://www.foo.com/bar/baz.jar!/COM/foo/</code>
+ * <dd>{@code jar:http://www.foo.com/bar/baz.jar!/COM/foo/}
  *
  * </dl>
  *
- * <p><code>!/</code> is refered to as the <em>separator</em>.
+ * <p>{@code !/} is referred to as the <em>separator</em>.
  *
- * <p>When constructing a JAR url via <code>new URL(context, spec)</code>,
+ * <p>When constructing a JAR url via {@code new URL(context, spec)},
  * the following rules apply:
  *
  * <ul>
@@ -227,7 +223,7 @@ public abstract class JarURLConnection extends URLConnection {
      * for this connection.
      *
      * @exception IOException if getting the JAR file for this
-     * connection causes an IOException to be trown.
+     * connection causes an IOException to be thrown.
      *
      * @see #getJarFile
      */
@@ -244,7 +240,7 @@ public abstract class JarURLConnection extends URLConnection {
      * the JAR URL for this connection points to a JAR file.
      *
      * @exception IOException if getting the JAR file for this
-     * connection causes an IOException to be trown.
+     * connection causes an IOException to be thrown.
      *
      * @see #getJarFile
      * @see #getJarEntry
@@ -294,7 +290,7 @@ public abstract class JarURLConnection extends URLConnection {
      * can only be called once
      * the connection has been completely verified by reading
      * from the input stream until the end of the stream has been
-     * reached. Otherwise, this method will return <code>null</code>
+     * reached. Otherwise, this method will return {@code null}
      *
      * @return the Certificate object for this connection if the URL
      * for it points to a JAR file entry, null otherwise.

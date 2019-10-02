@@ -160,12 +160,13 @@ class HeapShortBuffer extends ShortBuffer {
     }
 
     public ShortBuffer put(ShortBuffer src) {
+        if (src == this) {
+            throw new IllegalArgumentException();
+        }
         if (isReadOnly) {
             throw new ReadOnlyBufferException();
         }
         if (src instanceof HeapShortBuffer) {
-            if (src == this)
-                throw new IllegalArgumentException();
             HeapShortBuffer sb = (HeapShortBuffer)src;
             int n = sb.remaining();
             if (n > remaining())

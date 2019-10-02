@@ -82,9 +82,9 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     JavaSecurityKeyPair *keyPair =
         AUTORELEASE([[JavaSecurityKeyPair alloc] initWithJavaSecurityPublicKey:publicKey
                                                     withJavaSecurityPrivateKey:privateKey]);
+
     RELEASE_(publicKey);
     RELEASE_(privateKey);
-
     return keyPair;
   ]-*/;
 

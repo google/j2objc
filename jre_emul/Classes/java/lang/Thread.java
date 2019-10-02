@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sun.nio.ch.Interruptible;
 
 /*-[
@@ -412,11 +414,11 @@ public class Thread implements Runnable {
       throw new IllegalThreadStateException("This thread was already started!");
     }
     threadGroup.add(this);
+    state = STATE_RUNNABLE;
     start0();
     if (priority != NORM_PRIORITY) {
       nativeSetPriority(priority);
     }
-    state = STATE_RUNNABLE;
   }
 
   private native void start0() /*-[
@@ -1070,8 +1072,9 @@ public class Thread implements Runnable {
   private static class SystemUncaughtExceptionHandler implements UncaughtExceptionHandler {
     @Override
     public synchronized void uncaughtException(Thread t, Throwable e) {
-      System.err.print("Exception in thread \"" + t.getName() + "\" ");
-      e.printStackTrace(System.err);
+      // Log the exception using the root logger (""), so it isn't accidentally filtered.
+      Logger.getLogger("").log(
+          Level.SEVERE, "Uncaught exception in thread \"" + t.getName() + "\"", e);
     }
   }
 

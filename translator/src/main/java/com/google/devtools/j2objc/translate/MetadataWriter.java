@@ -330,7 +330,7 @@ public class MetadataWriter extends UnitTreeVisitor {
     }
 
     private String addressOfIdx(String name) {
-      return getPointerIdx(name != null ? "(void *)&" + name : null);
+      return getPointerIdx(name != null ? /*ARGC*/"(void *)&" + name : null);
     }
 
     // Same as addressOfIdx, but adds a (void *) cast to satisfy c++ compilers.

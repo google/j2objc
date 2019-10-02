@@ -26,6 +26,18 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.IMetadataResolver;
+import com.strobel.assembler.metadata.ITypeLoader;
+import com.strobel.assembler.metadata.JarTypeLoader;
+import com.strobel.assembler.metadata.MetadataParser;
+import com.strobel.assembler.metadata.MetadataSystem;
+import com.strobel.assembler.metadata.TypeDefinition;
+import com.strobel.assembler.metadata.TypeReference;
+import com.strobel.decompiler.DecompilationOptions;
+import com.strobel.decompiler.DecompilerSettings;
+import com.strobel.decompiler.PlainTextOutput;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.SourcePositions;
@@ -34,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +54,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.processing.Processor;
@@ -101,12 +115,71 @@ public class JavacParser extends Parser {
         assert options.translateClassfiles();
         JavacEnvironment parserEnv =
             createEnvironment(Collections.emptyList(), Collections.emptyList(), false);
-        return ClassFileConverter.convertClassFile(options, parserEnv, file);
+        if (true) {
+        	return parseDecompiledClass(parserEnv, file);
+        }
+        else {
+        	return ClassFileConverter.convertClassFile(options, parserEnv, file);
+        }
       }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
       return null;
     }
+  }
+  
+  
+  private static TypeReference lookupType(String path, ITypeLoader loader) {
+	  MetadataSystem metadataSystem = new MetadataSystem(loader);
+	  /* Hack to get around classes whose descriptors clash with primitive types. */
+	  if (path.length() == 1) {
+		  MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+		  return metadataSystem.resolve(parser.parseTypeDescriptor(path));
+	  }
+	  return metadataSystem.lookupType(path);
+  }
+  
+  private CompilationUnit parseDecompiledClass(JavacEnvironment parserEnv, InputFile file) throws IOException { /*ARGC ++*/
+      String fullPath = file.getAbsolutePath();
+      // { ARGC ++
+      int pos = fullPath.lastIndexOf(file.getUnitName());
+      if (pos < 0) pos = fullPath.length();
+      // }
+      String rootPath = fullPath.substring(0, pos);
+//      List<File> classPath = new ArrayList<>();
+//      classPath.add(new File(rootPath));
+//      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
+      
+      String path = file.getUnitName().substring(0, file.getUnitName().length() - 6);
+      ITypeLoader loader;
+      loader = new JarTypeLoader(new JarFile(rootPath));
+	      //loader = new InputTypeLoader();
+	    TypeReference typeRef = lookupType(path, loader);
+	  
+        TypeDefinition resolvedType = null;
+        if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
+            throw new RuntimeException("Unable to resolve type.");
+        }
+			DecompilerSettings settings = DecompilerSettings.javaDefaults();
+		    settings.setShowSyntheticMembers(true);
+          StringWriter stringwriter = new StringWriter();
+          DecompilationOptions decompilationOptions;
+          decompilationOptions = new DecompilationOptions();
+          decompilationOptions.setSettings(settings);
+          decompilationOptions.setFullDecompilation(true);
+          PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
+          plainTextOutput.setUnicodeOutputEnabled(
+                  decompilationOptions.getSettings().isUnicodeOutputEnabled());
+          settings.getLanguage().decompileType(resolvedType, plainTextOutput,
+                  decompilationOptions);
+          String decompiledSource = stringwriter.toString();
+          System.out.println(decompiledSource);
+//          if (decompiledSource.contains(textField.getText().toLowerCase())) {
+//              addClassName(entry.getName());
+//          }
+          return parse(null, file.getUnitName(), decompiledSource);
+		  
+	  
   }
 
   @Override

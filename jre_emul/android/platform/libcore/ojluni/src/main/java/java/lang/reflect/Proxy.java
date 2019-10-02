@@ -32,9 +32,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.List;
 import java.util.WeakHashMap;
 import sun.reflect.CallerSensitive;
 
@@ -46,6 +46,37 @@ import sun.reflect.CallerSensitive;
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
+
+// ProxyMethod is used to represent Object's equals(), hashCode() and toString()
+// methods as proxied methods with the same name as the original.
+@interface ProxyMethod : JavaLangReflectMethod {
+  NSString *originalName_;
+}
+
+- (instancetype)initWithMethod:(JavaLangReflectMethod *)method
+                  originalName:(NSString *)originalName;
+@end
+
+@implementation ProxyMethod
+- (instancetype)initWithMethod:(JavaLangReflectMethod *)method
+                  originalName:(NSString *)originalName {
+  if ((self = [super initWithDeclaringClass:method->class_
+                                   metadata:method->metadata_])) {
+    originalName_ = RETAIN_(originalName);
+  }
+  return self;
+}
+
+// Returns original method name.
+- (NSString *)getName {
+  return originalName_;
+}
+
+- (void)dealloc {
+  RELEASE_(originalName_);
+  [super dealloc];
+}
+@end
 ]-*/
 
 /**
@@ -806,103 +837,59 @@ public class Proxy implements java.io.Serializable {
         return ((Proxy) proxy).h;
     }
 
-    private static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
-      @Override
-      protected Boolean initialValue() {
-        return Boolean.FALSE;
-      }
-    };
-
-    private transient ThreadLocalBoolean toStringForwarded = new ThreadLocalBoolean();
-
-    private boolean toStringForwarded() {
-      return toStringForwarded.get();
-    }
-
-    private void setToStringForwarded(boolean value) {
-      toStringForwarded.set(value);
-    }
-
+    // These Object methods are overridden to avoid Objective C runtime optimization
+    // that skips calling respondsToSelector: below.
     @Override
     public native String toString() /*-[
-      if ([self toStringForwarded]) {
-        [self setToStringForwardedWithBoolean:false];
-        return [super description];
-      }
-      SEL sel = @selector(description);
-      NSMethodSignature *signature =
-          [NSMethodSignature methodSignatureForSelector:sel];
+      SEL sel = @selector(proxy_toString);
+      NSMethodSignature *signature = [self methodSignatureForSelector:sel];
       NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
       invocation.target = self;
-      invocation.selector = sel;
-      [self setToStringForwardedWithBoolean:true];
+      invocation.selector = @selector(proxy_toString);
       [self forwardInvocation:invocation];
-      [self setToStringForwardedWithBoolean:false];
       NSString *s;
       [invocation getReturnValue:&s];
       return s;
     ]-*/;
 
-    private transient ThreadLocalBoolean hashCodeForwarded = new ThreadLocalBoolean();
-
-    private boolean hashCodeForwarded() {
-      return hashCodeForwarded.get();
-    }
-
-    private void setHashCodeForwarded(boolean value) {
-      hashCodeForwarded.set(value);
+    String proxy_toString() {
+      return "JavaLangReflectProxy@" + Integer.toHexString(proxy_hashCode());
     }
 
     @Override
     public native int hashCode() /*-[
-      if ([self hashCodeForwarded]) {
-        [self setHashCodeForwardedWithBoolean:false];
-        return [super hash];
-      }
-      SEL sel = @selector(hash);
-      NSMethodSignature *signature =
-          [NSMethodSignature methodSignatureForSelector:sel];
+      SEL sel = @selector(proxy_hashCode);
+      NSMethodSignature *signature = [self methodSignatureForSelector:sel];
       NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
       invocation.target = self;
       invocation.selector = sel;
-      [self setHashCodeForwardedWithBoolean:true];
       [self forwardInvocation:invocation];
-      [self setHashCodeForwardedWithBoolean:false];
       jint hash;
       [invocation getReturnValue:&hash];
       return hash;
     ]-*/;
 
-    private transient ThreadLocalBoolean equalsForwarded = new ThreadLocalBoolean();
-
-    private boolean equalsForwarded() {
-      return equalsForwarded.get();
-    }
-
-    private void setEqualsForwarded(boolean value) {
-      equalsForwarded.set(value);
-    }
+    native int proxy_hashCode() /*-[
+      return (jint)self;
+    ]-*/;
 
     @Override
     public native boolean equals(Object obj) /*-[
-      if ([self equalsForwarded]) {
-        [self setEqualsForwardedWithBoolean:false];
-        return [super isEqual:obj];
-      }
-      SEL sel = @selector(isEqual:);
-      NSMethodSignature *signature =
-          [NSMethodSignature methodSignatureForSelector:sel];
+      SEL sel = @selector(proxy_equalsWithId:);
+      NSMethodSignature *signature = [self methodSignatureForSelector:sel];
       NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
       invocation.target = self;
       invocation.selector = sel;
       [invocation setArgument:&obj atIndex:2];  // 2 is first parameter.
-      [self setEqualsForwardedWithBoolean:true];
       [self forwardInvocation:invocation];
-      [self setEqualsForwardedWithBoolean:false];
       jboolean result;
       [invocation getReturnValue:&result];
       return result;
     ]-*/;
+
+    boolean proxy_equals(Object obj) {
+      return this == obj;
+    }
 
     private static native Class<?> generateProxy(String name, Class<?>[] interfaces,
         ClassLoader loader) throws IllegalArgumentException /*-[
@@ -926,14 +913,24 @@ public class Proxy implements java.io.Serializable {
 
     /*-[
     static JavaLangReflectMethod *FindMethod(id self, SEL sel) {
+      const char *selName = sel_getName(sel);
       for (IOSClass *cls in [[self java_getClass] getInterfacesInternal]) {
         JavaLangReflectMethod *result = JreMethodForSelectorInherited(cls, sel);
         if (result) {
           return result;
         }
       }
-      // Skip all Proxy defined methods, but check for Object methods.
-      return JreMethodForSelector(NSObject_class_(), sel);
+      // Skip all Proxy defined methods, except for the default Object methods
+      // which all have a "proxy_" prefix.
+      if (strncmp(selName, "proxy_", 6) == 0) {
+        JavaLangReflectMethod *method = JreMethodForSelector(JavaLangReflectProxy_class_(), sel);
+        if (method) {
+          NSString *originalName = strcmp(selName, "proxy_equalsWithId:") == 0
+              ? @"equals" : [NSString stringWithUTF8String:(selName + 6)];
+          return [[ProxyMethod alloc] initWithMethod:method originalName:originalName];
+        }
+      }
+      return nil;
     }
     ]-*/
 

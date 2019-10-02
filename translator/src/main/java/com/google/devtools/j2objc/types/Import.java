@@ -41,35 +41,27 @@ public class Import implements Comparable<Import> {
   private final String importFileName;
   private final String javaQualifiedName;
   private final boolean isInterface;
-  // argc add
-  private final boolean isNativeEnum;
+  private final boolean /*ARGC*/isNativeEnum; 
 
-  /** argc
-  private Import(TypeElement type, NameTable nameTable, Options options) {
-  /*/
-  private Import(TypeElement type, NameTable nameTable, TranslationEnvironment env) {
+  private Import(TypeElement type, NameTable nameTable, /*ARGC** Options options*/TranslationEnvironment env) {
   //*/
     this.typeName = nameTable.getFullName(type);
-  // argc {
-    String s = env.elementUtil().getType(type).toString();
-    if (s.startsWith("com.wise.airwise.Html")) {
+    if (true/*ARGC*/) {
+    	String s = env.elementUtil().getType(type).toString();
+    	if (s.startsWith("com.wise.airwise.Html")) {
     		int a = 3;
     		a ++;
-    }
-    	
-    this.isNativeEnum = (env.elementUtil().isEnum(type) || env.elementUtil().isEnumConstant(type)) && ARGC.isPureObjC(env.elementUtil().getType(type));
-  // } argc 
+    	}
+
+    	this.isNativeEnum = (env.elementUtil().isEnum(type) || env.elementUtil().isEnumConstant(type)) && ARGC.isPureObjC(env.elementUtil().getType(type));
+    } 
     TypeElement mainType = type;
     while (!ElementUtil.isTopLevel(mainType)) {
-      mainType = ElementUtil.getDeclaringClass(mainType);
+    	mainType = ElementUtil.getDeclaringClass(mainType);
     }
-  /** argc
-    this.importFileName = options.getHeaderMap().get(mainType);
-  /*/
     this.importFileName = env.options().getHeaderMap().get(mainType);
-  //*/
     this.javaQualifiedName =
-        ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
+    		ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
     this.isInterface = type.getKind().isInterface();
   }
 
@@ -98,7 +90,7 @@ public class Import implements Comparable<Import> {
     return isInterface;
   }
 
-  // argc
+  // ARGC
   public boolean isNativeEnum() {
 	  return isNativeEnum;
   }
@@ -142,11 +134,7 @@ public class Import implements Comparable<Import> {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
     for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
-      /* argc
-      Import newImport = new Import(objcClass, env.nameTable(), env.options());
-      /*/
-      Import newImport = new Import(objcClass, env.nameTable(), env);
-      //*/
+      Import newImport = new Import(objcClass, env.nameTable(), env/*ARGC*/);
       // An empty header indicates a Foundation type that doesn't require an import or forward
       // declaration.
       if (!newImport.getImportFileName().isEmpty()) {

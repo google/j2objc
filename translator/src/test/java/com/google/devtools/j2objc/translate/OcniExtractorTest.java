@@ -15,9 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
-
 import java.io.IOException;
 
 /**

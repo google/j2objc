@@ -131,7 +131,11 @@ typedef union jvalue {
     jlong    j;
     jfloat   f;
     jdouble  d;
+#if __has_feature(objc_arc)
     __unsafe_unretained jobject  l;
+#else
+    jobject  l;
+#endif
 } jvalue;
 
 #if defined(__OBJC__)

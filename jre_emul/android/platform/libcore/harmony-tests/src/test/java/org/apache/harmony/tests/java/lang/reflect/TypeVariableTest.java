@@ -35,6 +35,8 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         TypeVariable<Class> typeVariable = typeParameters[0];
         assertEquals(clazz, typeVariable.getGenericDeclaration());
         assertEquals("T", typeVariable.getName());
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
         Type[] bounds = typeVariable.getBounds();
         assertLenghtOne(bounds);
         assertEquals(Object.class, bounds[0]);
@@ -51,6 +53,8 @@ public class TypeVariableTest extends GenericReflectionTestsBase {
         TypeVariable<Method> typeVariable = typeParameters[0];
         assertEquals(method, typeVariable.getGenericDeclaration());
         assertEquals("T", typeVariable.getName());
+        assertEquals("T", typeVariable.toString());
+        assertEquals("T", typeVariable.getTypeName());
         Type[] bounds = typeVariable.getBounds();
         assertLenghtOne(bounds);
         assertEquals(Object.class, bounds[0]);

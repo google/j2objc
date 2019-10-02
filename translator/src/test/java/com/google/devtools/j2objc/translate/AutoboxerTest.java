@@ -443,6 +443,83 @@ public class AutoboxerTest extends GenerationTest {
         "JreAssert(i == 0, JavaLangInteger_valueOfWithInt_(i));");
   }
 
+  public void testCharacterWrapperCastToPrimitive() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "char test1(Character toChar) { return (char) toChar; } "
+                + "int test2(Character toInt) { return (int) toInt; } "
+                + "long test3(Character toLong) { return (long) toLong; } "
+                + "float test4(Character toFlt) { return (float) toFlt; } "
+                + "double test5(Character toDbl) { return (double) toDbl; } }",
+            "Test",
+            "Test.m");
+
+    assertTranslation(translation, "return [((JavaLangCharacter *) nil_chk(toChar)) charValue];");
+    assertTranslation(
+        translation, "return (jint) [((JavaLangCharacter *) nil_chk(toInt)) charValue];");
+    assertTranslation(
+        translation, "return (jlong) [((JavaLangCharacter *) nil_chk(toLong)) charValue];");
+    assertTranslation(
+        translation, "return (jfloat) [((JavaLangCharacter *) nil_chk(toFlt)) charValue];");
+    assertTranslation(
+        translation, "return (jdouble) [((JavaLangCharacter *) nil_chk(toDbl)) charValue];");
+  }
+
+  public void testCharacterUnboxingAutoReboxing() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "void test() { "
+                + "Character toChar = 'A', toInt = 'A', toLong = 'A', toFlt = 'A', toDbl = 'A'; "
+                + "Object[] arr = "
+                + "{(char) toChar, (int) toInt, (long) toLong, (float) toFlt, (double) toDbl}; } }",
+            "Test",
+            "Test.m");
+
+    assertTranslation(
+        translation,
+        "IOSObjectArray *arr = [IOSObjectArray arrayWithObjects:(id[]){ "
+            + "JavaLangCharacter_valueOfWithChar_([toChar charValue]), "
+            + "JavaLangInteger_valueOfWithInt_((jint) [toInt charValue]), "
+            + "JavaLangLong_valueOfWithLong_((jlong) [toLong charValue]), "
+            + "JavaLangFloat_valueOfWithFloat_((jfloat) [toFlt charValue]),"
+            + " JavaLangDouble_valueOfWithDouble_((jdouble) [toDbl charValue]) }"
+            + " count:5 type:NSObject_class_()];");
+  }
+
+  public void testCharacterWrapperWithParamOverloading() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "void f(char i) {} void f(int i) {} void f(long l) {} "
+                + "void f(float f) {} void f(double d) {} "
+                + "void test1(Character toChar1) { f(toChar1); } "
+                + "void test2(Character toChar2) { f((char) toChar2); } "
+                + "void test3(Character toInt) { f((int) toInt); } "
+                + "void test4(Character toLong) { f((long) toLong); } "
+                + "void test5(Character toFlt) { f((float) toFlt); } "
+                + "void test6(Character toDbl) { f((double) toDbl); } }",
+            "Test",
+            "Test.m");
+
+    assertTranslation(
+        translation, "[self fWithChar:[((JavaLangCharacter *) nil_chk(toChar1)) charValue]]");
+    assertTranslation(
+        translation, "[self fWithChar:[((JavaLangCharacter *) nil_chk(toChar2)) charValue]];");
+    assertTranslation(
+        translation, "[self fWithInt:(jint) [((JavaLangCharacter *) nil_chk(toInt)) charValue]];");
+    assertTranslation(
+        translation,
+        "[self fWithLong:(jlong) [((JavaLangCharacter *) nil_chk(toLong)) charValue]];");
+    assertTranslation(
+        translation,
+        "[self fWithFloat:(jfloat) [((JavaLangCharacter *) nil_chk(toFlt)) charValue]];");
+    assertTranslation(
+        translation,
+        "[self fWithDouble:(jdouble) [((JavaLangCharacter *) nil_chk(toDbl)) charValue]];");
+  }
+
   public void testNonWrapperObjectTypeCastToPrimitive() throws IOException {
     String translation = translateSourceFile(
         "class Test { int test(Object o) { return (int) o; } "
@@ -496,5 +573,17 @@ public class AutoboxerTest extends GenerationTest {
         + "  Integer tmp_int = new Integer(100); "
         + "  long tmp_long = (long)tmp_int; }}", "Test", "Test.m");
     assertTranslation(translation, "jlong tmp_long = [tmp_int longLongValue];");
+  }
+
+  // https://github.com/google/j2objc/issues/1031
+  public void testWrapperClassArrayInitializer() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "private static Integer SIZE = 32; "
+        + "public byte[] test() { "
+        + "  return new byte[SIZE]; }}", "Test", "Test.m");
+    assertTranslation(translation,
+        "return [IOSByteArray arrayWithLength:"
+        + "[((JavaLangInteger *) nil_chk(Test_SIZE)) intValue]];");
   }
 }

@@ -42,6 +42,11 @@ ARCH_BUILD_MACOSX_DIR = $(ARCH_BUILD_DIR)/macosx
 ARCH_LIB_MACOSX_DIR = $(ARCH_LIB_DIR)/macosx
 DIST_LIB_MACOSX_DIR = $(DIST_LIB_DIR)/macosx
 
+# Watchos library dirs.
+ARCH_BUILD_WATCH_DIR = $(ARCH_BUILD_DIR)/watchos
+ARCH_LIB_WATCH_DIR = $(ARCH_LIB_DIR)/watchos
+DIST_LIB_WATCH_DIR = $(DIST_LIB_DIR)/watchos
+
 # Appletv library dirs.
 ARCH_BUILD_TV_DIR = $(ARCH_BUILD_DIR)/appletvos
 ARCH_LIB_TV_DIR = $(ARCH_LIB_DIR)/appletvos
@@ -59,7 +64,9 @@ TVOS_AVAILABLE = \
   then echo "YES"; else echo "NO"; fi)
 
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64
+# 32bit iPhone archs are no longer built by default. To build a release
+# with them, define J2OBJC_ARCHS with "iphone" and "simulator" included.
+J2OBJC_ARCHS = macosx iphone64 watchv7k watch64 watchsimulator simulator64
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
 endif
@@ -116,14 +123,31 @@ endif
 
 TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
-# Use Java 8 by default.
-# TODO(tball): remove when Java 9 is supported.
+ifndef JAVA_HOME
 JAVA_HOME = $(shell /usr/libexec/java_home -v 1.8)
-JAVA = $(JAVA_HOME)/jre/bin/java
-ifdef J2OBJC_JAVAC
-JAVAC = $(J2OBJC_JAVAC)
-else
+endif
+JAVA = $(JAVA_HOME)/bin/java
 JAVAC = $(JAVA_HOME)/bin/javac
+ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
+# Flag used to include tools.jar. This jar was removed in JDK 9.
+JAVA_8 = 1
+else ifneq (,$(findstring build 10, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 10
+else ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 11
+else
+$(error JDK not supported. Please set JAVA_HOME to JDK 1.8 or 11.)
+endif
+
+TRANSLATOR_BUILD_FLAGS = \
+  -Xlint:unchecked -encoding UTF-8 -nowarn
+ifndef JAVA_8
+TRANSLATOR_BUILD_FLAGS += \
+  --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
 endif
 
 comma=,

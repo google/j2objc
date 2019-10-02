@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 package java.net;
 
 /**
- * Choose a network inteface to be the default for
+ * Choose a network interface to be the default for
  * outgoing IPv6 traffic that does not specify a scope_id (and which needs one).
  *
  * Platforms that do not require a default interface may return null

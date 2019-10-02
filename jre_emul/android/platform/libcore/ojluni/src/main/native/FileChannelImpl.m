@@ -22,7 +22,6 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-#pragma clang optimize off
 
 #include "jni.h"
 #include "jni_util.h"
@@ -32,7 +31,8 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "sun_nio_ch_FileChannelImpl.h"
+#include "sun_nio_ch_FileChannelImpl.h"  // Native code defs.
+#include "sun/nio/ch/FileChannelImpl.h"  // Objective C def.
 #include "nio.h"
 #include "nio_util.h"
 #include <dlfcn.h>
@@ -47,15 +47,10 @@
 #define lseek64 lseek
 #define mmap64 mmap
 
-static jfieldID chan_fd;        /* jobject 'fd' in sun.io.FileChannelImpl */
-
 JNIEXPORT jlong JNICALL
 Java_sun_nio_ch_FileChannelImpl_initIDs(JNIEnv *env, jclass clazz)
 {
-    jlong pageSize = sysconf(_SC_PAGESIZE);
-    chan_fd = (*env)->GetFieldID(env, clazz, "fd", "Ljava/io/FileDescriptor;");
-    (void)RETAIN_((id)chan_fd);
-    return pageSize;
+    return sysconf(_SC_PAGESIZE);
 }
 
 static jlong
@@ -75,7 +70,7 @@ Java_sun_nio_ch_FileChannelImpl_map0(JNIEnv *env, jobject this,
                                      jint prot, jlong off, jlong len)
 {
     void *mapAddress = 0;
-    jobject fdo = (*env)->GetObjectField(env, this, chan_fd);
+    jobject fdo = ((SunNioChFileChannelImpl *)this)->fd_;
     jint fd = fdval(env, fdo);
     int protections = 0;
     int flags = 0;

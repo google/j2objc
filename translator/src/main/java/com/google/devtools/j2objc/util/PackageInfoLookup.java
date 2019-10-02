@@ -110,12 +110,12 @@ public class PackageInfoLookup {
     try {
       String typeName = packageName + ".package-info";
       // First look on the sourcepath.
-      InputFile sourceFile = fileUtil.findOnSourcePath(typeName);
+      InputFile sourceFile = fileUtil.findTypeOnSourcePath(typeName);
       if (sourceFile != null) {
         return parseDataFromSourceFile(sourceFile);
       }
       // Then look on the classpath.
-      InputFile classFile = fileUtil.findOnClassPath(typeName);
+      InputFile classFile = fileUtil.findTypeOnClassPath(typeName);
       if (classFile != null) {
         return parseDataFromClassFile(classFile);
       }

@@ -139,15 +139,35 @@ static jsize GetArrayLength(JNIEnv *env, jarray array) {
   return ((IOSArray *)array)->size_;
 }
 
+static void *GetDirectBufferAddress(JNIEnv *env, jobject buf) {
+  (void)nil_chk(buf);
+  return (void *) ((JavaNioBuffer *) buf)->address_;
+}
+
+static jlong GetDirectBufferCapacity(JNIEnv *env, jobject buf) {
+  (void)nil_chk(buf);
+  return (jlong) ((JavaNioBuffer *) buf)->capacity_;
+}
+
+#define GET_ARRAY_BUFFER_ELEMENTS(ARRAY, IS_COPY) \
+  (void)nil_chk(ARRAY); \
+  if (IS_COPY) { \
+    *IS_COPY = false; \
+  } \
+  return ARRAY->buffer_;
+
 static jboolean *GetBooleanArrayElements(JNIEnv *env, jbooleanArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jbyte *GetByteArrayElements(JNIEnv *env, jbyteArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, jboolean *isCopy) {
+   !!!ZZZZ v 2.5 ->   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
+   // 아래 두 함수도 용도 확인.
+
   return GetPrimitiveArrayCritical(env, array, isCopy);
 }
 
@@ -161,20 +181,24 @@ static jlong GetDirectBufferCapacity(JNIEnv *env, jobject buf) {
   return (jlong) ((JavaNioBuffer *) buf)->capacity_;
 }
 
+static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, jboolean *isCopy) {
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
+}
+
 static jdouble *GetDoubleArrayElements(JNIEnv *env, jdoubleArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jfloat *GetFloatArrayElements(JNIEnv *env, jfloatArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jint *GetIntArrayElements(JNIEnv *env, jintArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jlong *GetLongArrayElements(JNIEnv *env, jlongArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jobject GetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize index) {
@@ -191,12 +215,12 @@ static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, jboolean *isCo
   if (isCopy) {
     *isCopy = false;
   }
-  // All primitive array types have buffer_ at same offset.
+  // Offset for long and double array buffers may be different due to pointer alignment.
+  if ([array isKindOfClass:[IOSLongArray class]] || [array isKindOfClass:[IOSDoubleArray class]]) {
+    return (void *) ((IOSLongArray *)array)->buffer_;
+  }
+  // All other primitive array types have buffer_ at same offset.
   return (void *) ((IOSByteArray *) array)->buffer_;
-}
-
-static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, jboolean *isCopy) {
-  return GetPrimitiveArrayCritical(env, array, isCopy);
 }
 
 static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {

@@ -32,7 +32,7 @@ public class TranslationProcessorTest extends GenerationTest {
 
     addSourceFile("class Test { }", "Test.java");
 
-    GenerationBatch batch = new GenerationBatch(options, parser);
+    GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
@@ -54,7 +54,7 @@ public class TranslationProcessorTest extends GenerationTest {
     addSourceFile("class Foo { void foo1() {} }", "Foo.java");
     addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
 
-    GenerationBatch batch = new GenerationBatch(options, parser);
+    GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);

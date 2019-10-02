@@ -25,6 +25,9 @@
  */
 
 package java.lang;
+
+import com.google.j2objc.NSException;
+
 import  java.io.*;
 import  java.util.*;
 
@@ -965,8 +968,9 @@ public class Throwable extends NSException implements Serializable {
             // empty stack traces.
             stackTrace = new StackTraceElement[0];
         }
-        if (this.cause == this) {
-            this.cause = UNSET_CAUSE;
+
+        if (cause == this) {
+          cause = UNSET_CAUSE;
         }
     }
 

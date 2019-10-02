@@ -27,6 +27,7 @@
 #endif
 
 @class IOSClass;
+@protocol JavaLangIterable;
 
 #ifndef __has_feature
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
@@ -45,7 +46,7 @@
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 #  define AUTORELEASE(x) x
-#  define RELEASE_(x) 
+#  define RELEASE_(x) x
 #  define RETAIN_(x) x
 #  define RETAIN_AND_AUTORELEASE(x) x
 #  define DEALLOC_(x)
@@ -142,6 +143,9 @@ NSString *JreStrcat(const char *types, ...);
 jboolean JreAnnotationEquals(id a1, id a2);
 jint JreAnnotationHashCode(id a);
 
+NSUInteger JreDefaultFastEnumeration(
+    id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf);
+
 CF_EXTERN_C_END
 
 /*!
@@ -157,7 +161,7 @@ CF_EXTERN_C_END
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
 #endif
 
-
+#if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
     AUTORELEASE(value);
@@ -168,6 +172,7 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
 __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
   return AUTORELEASE(RETAIN_(value));
 }
+#endif
 
 /*!
  * Utility macro for passing an argument that contains a comma.
@@ -224,7 +229,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_STATIC_INIT(CLASS) \
   FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized; \
   __attribute__((always_inline)) inline void CLASS##_initialize() { \
-    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
+    if (!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE)) { \
       [CLASS class]; \
     } \
   }
@@ -318,7 +323,7 @@ return JreStrongAssignAndConsume(&instance->FIELD, value); \
  * @define J2OBJC_ETERNAL_SINGLETON
  */
 #ifdef J2OBJC_USE_GC
-#define J2OBJC_ETERNAL_SINGLETON
+#define J2OBJC_ETERNAL_SINGLETON error!! NO Singlton surpported in ARC.
 #else
 #define J2OBJC_ETERNAL_SINGLETON \
   - (id)retain { return self; } \

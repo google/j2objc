@@ -242,8 +242,7 @@ public class FileUtil {
     }
   }
 
-  public static File createTempDir(String dirname) {
-	  try {
+  public static File createTempDir(String dirname) throws IOException {
 		  File tmpDirectory = File.createTempFile(dirname, ".tmp");
 		  tmpDirectory.delete();
 		  if (!tmpDirectory.mkdir()) {
@@ -252,10 +251,6 @@ public class FileUtil {
 		  tmpDirectory.deleteOnExit();
 		  return tmpDirectory;
 	  }
-	  catch (Exception e) {
-		  throw new RuntimeException(e);
-	  }
-  }
 
   /**
    * Recursively delete specified directory.

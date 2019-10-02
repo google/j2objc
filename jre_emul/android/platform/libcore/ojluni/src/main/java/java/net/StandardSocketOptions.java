@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -257,7 +257,7 @@ public final class StandardSocketOptions {
      * represents the outgoing interface for multicast datagrams sent by the
      * datagram-oriented socket. For {@link StandardProtocolFamily#INET6 IPv6}
      * sockets then it is system dependent whether setting this option also
-     * sets the outgoing interface for multlicast datagrams sent to IPv4
+     * sets the outgoing interface for multicast datagrams sent to IPv4
      * addresses.
      *
      * <p> The initial/default value of this socket option may be {@code null}
@@ -267,6 +267,7 @@ public final class StandardSocketOptions {
      * the socket option can be queried or changed prior to binding the socket
      * is system dependent.
      *
+     * @see java.nio.channels.MulticastChannel
      * @see MulticastSocket#setInterface
      */
     public static final SocketOption<NetworkInterface> IP_MULTICAST_IF =
@@ -276,8 +277,8 @@ public final class StandardSocketOptions {
      * The <em>time-to-live</em> for Internet Protocol (IP) multicast datagrams.
      *
      * <p> The value of this socket option is an {@code Integer} in the range
-     * <tt>0&nbsp;<=&nbsp;value&nbsp;<=&nbsp;255</tt>. It is used to control
-     * the scope of multicast datagrams sent by the datagram-oriented socket.
+     * {@code 0 <= value <= 255}. It is used to control the scope of multicast
+     * datagrams sent by the datagram-oriented socket.
      * In the case of an {@link StandardProtocolFamily#INET IPv4} socket
      * the option is the time-to-live (TTL) on multicast datagrams sent by the
      * socket. Datagrams with a TTL of zero are not transmitted on the network
@@ -293,6 +294,7 @@ public final class StandardSocketOptions {
      * the socket is bound. Whether the socket option can be queried or changed
      * prior to binding the socket is system dependent.
      *
+     * @see java.nio.channels.MulticastChannel
      * @see MulticastSocket#setTimeToLive
      */
     public static final SocketOption<Integer> IP_MULTICAST_TTL =
@@ -317,6 +319,7 @@ public final class StandardSocketOptions {
      * bound. Whether the socket option can be queried or changed prior to
      * binding the socket is system dependent.
      *
+     * @see java.nio.channels.MulticastChannel
      *  @see MulticastSocket#setLoopbackMode
      */
     public static final SocketOption<Boolean> IP_MULTICAST_LOOP =

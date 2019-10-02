@@ -97,6 +97,8 @@ package java.lang;
     implements java.io.Serializable, CharSequence
 {
 
+    ZZZZ v.25 delegate 사용 효율성 검토.
+
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     static final long serialVersionUID = 3388685877147921107L;
 

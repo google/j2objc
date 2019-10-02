@@ -37,7 +37,7 @@ class ByteBufferAsShortBuffer extends ShortBuffer {       // package-private
                             int mark, int pos, int lim, int cap,
                             int off, ByteOrder order) {
         super(mark, pos, lim, cap);
-        this.bb = bb;
+        this.bb = bb.duplicate();
         this.isReadOnly = bb.isReadOnly;
         // There are only two possibilities for the type of ByteBuffer "bb", viz, DirectByteBuffer and
         // HeapByteBuffer. We only have to initialize the field when bb is an instance of
@@ -49,6 +49,7 @@ class ByteBufferAsShortBuffer extends ShortBuffer {       // package-private
         if (bb instanceof DirectByteBuffer) {
             this.address = bb.address + off;
         }
+        this.bb.order(order);
         this.order = order;
         offset = off;
     }

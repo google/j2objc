@@ -94,15 +94,9 @@ clean:
 $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(CLASS_DIR) java_deps_dist annotations_dist translator
 	@echo building cycle_finder jar
-<<<<<<< HEAD
-	@$(JAVAC) -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR) \
-	    -classpath $(JAR_DEPS_PATH) -encoding UTF-8 \
-	    -d $(CLASS_DIR) -source 1.8 -target 1.8 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
-=======
 	@$(JAVAC) -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR) \
 	    -classpath $(JAR_DEPS_PATH) -d $(CLASS_DIR) \
 	    $(TRANSLATOR_BUILD_FLAGS) $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .

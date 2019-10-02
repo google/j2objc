@@ -159,12 +159,13 @@ class HeapFloatBuffer extends FloatBuffer {
     }
 
     public FloatBuffer put(FloatBuffer src) {
+        if (src == this) {
+            throw new IllegalArgumentException();
+        }
         if (isReadOnly) {
             throw new ReadOnlyBufferException();
         }
         if (src instanceof HeapFloatBuffer) {
-            if (src == this)
-                throw new IllegalArgumentException();
             HeapFloatBuffer sb = (HeapFloatBuffer) src;
             int n = sb.remaining();
             if (n > remaining())

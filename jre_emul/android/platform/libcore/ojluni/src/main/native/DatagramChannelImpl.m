@@ -56,21 +56,21 @@ Java_sun_nio_ch_DatagramChannelImpl_initIDs(JNIEnv *env, jclass clazz)
 {
     clazz = (*env)->FindClass(env, "java/net/InetSocketAddress");
     isa_class = (*env)->NewGlobalRef(env, clazz);
-    (void)RETAIN_(isa_class);
+    [(id)isa_class retain];
     isa_ctorID = (*env)->GetMethodID(env, clazz, "<init>",
                                      "(Ljava/net/InetAddress;I)V");
-    (void)RETAIN_(isa_ctorID);
+    [(id)isa_ctorID retain];
     clazz = (*env)->FindClass(env, "sun/nio/ch/DatagramChannelImpl");
     dci_senderID = (*env)->GetFieldID(env, clazz, "sender",
                                       "Ljava/net/SocketAddress;");
-    (void)RETAIN_(dci_senderID);
+    [(id)dci_senderID retain];
     dci_senderAddrID = (*env)->GetFieldID(env, clazz,
                                           "cachedSenderInetAddress",
                                           "Ljava/net/InetAddress;");
-    (void)RETAIN_(dci_senderAddrID);
+    [(id)dci_senderAddrID retain];
     dci_senderPortID = (*env)->GetFieldID(env, clazz,
                                           "cachedSenderPort", "I");
-    (void)RETAIN_(dci_senderPortID);
+    [(id)dci_senderPortID retain];
 }
 
 JNIEXPORT void JNICALL

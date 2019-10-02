@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305-3.0.0.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/tools.jar"/>
 	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.core.jobs-3.6.1.v20141014-1248.jar"/>
 	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.jdt.compiler.apt-1.1.0.v20140509-1235.jar"/>
@@ -15,7 +14,8 @@
 	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.text-3.5.101.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations-2.0.5"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc-2.0.5/java_deps/build_result/procyon-compilertools-0.5.32.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc-2.0.5/java_deps/build_result/procyon-core-0.5.32.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc-2.0.5/java_deps/build_result/guava-25.1-jre.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc-2.0.5/java_deps/build_result/scenelib.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/procyon decompiler"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

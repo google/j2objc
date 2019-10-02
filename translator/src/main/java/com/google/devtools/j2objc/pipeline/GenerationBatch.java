@@ -57,9 +57,14 @@ public class GenerationBatch {
 
   private final List<ProcessingContext> inputs = Lists.newArrayList();
 
+  private GenerationUnit globalCombinedUnit = null;
+  
   public GenerationBatch(Options options, Parser parser) {
 	this.argc_parser = parser;
     this.options = options;
+    if (options.globalCombinedOutput() != null) {
+      globalCombinedUnit = options.globalCombinedOutput().globalGenerationUnit();
+    }
   }
 
   public List<ProcessingContext> getInputs() {
@@ -89,11 +94,8 @@ public class GenerationBatch {
       inputFile = new RegularInputFile(filename, filename);
 
       if (!inputFile.exists()) {
-        // Convert to a qualified name and search on the sourcepath.
-        String qualifiedName =
-            filename.substring(0, filename.length() - 5).replace(File.separatorChar, '.');
-        inputFile = options.fileUtil().findOnSourcePath(qualifiedName);
-
+        // Check source path for regular file.
+        inputFile = options.fileUtil().findFileOnSourcePath(filename);
         if (inputFile == null) {
           ErrorUtil.error("No such file: " + filename);
           return;
@@ -112,6 +114,7 @@ public class GenerationBatch {
     if (f.exists() && f.isFile()) {
       return f;
     }
+    
     // Checking the sourcepath is helpful for our unit tests where the source
     // jars aren't relative to the current working directory.
     for (String path : options.fileUtil().getSourcePathEntries()) {
@@ -148,7 +151,9 @@ public class GenerationBatch {
     }
 
     GenerationUnit combinedUnit = null;
-    if (options.getHeaderMap().combineSourceJars()) {
+    if (globalCombinedUnit != null) {
+      combinedUnit = globalCombinedUnit;
+    } else if (options.getHeaderMap().combineSourceJars()) {
       combinedUnit = GenerationUnit.newCombinedJarUnit(filename, options);
     }
     try {
@@ -163,7 +168,8 @@ public class GenerationBatch {
         while (enumerator.hasMoreElements()) {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
-          if (internalPath.endsWith(".java")) {
+          if (internalPath.endsWith(".java")
+              || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
             // Extract JAR file to a temporary directory
             File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
             InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);
@@ -294,9 +300,13 @@ public class GenerationBatch {
    */
   @VisibleForTesting
   public void addSource(InputFile file) {
-		if (argc_parser != null) {
-			//Oz.processAutoMethodMapRegister(oz_parser, file, options);
-		}
-    inputs.add(ProcessingContext.fromFile(file, options));
+	  if (argc_parser != null) {
+		  //Oz.processAutoMethodMapRegister(oz_parser, file, options);
+	  }
+	  if (globalCombinedUnit != null) {
+		  inputs.add(new ProcessingContext(file, globalCombinedUnit));
+	  } else {
+		  inputs.add(ProcessingContext.fromFile(file, options));
+	  }
   }
 }

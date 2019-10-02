@@ -119,6 +119,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
+      CFTypeRef publicKeyRef = nil;
       NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -128,7 +129,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
       publicKeyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
       publicKeyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPublic;
       publicKeyQuery[(id) kSecReturnData] = (id) kCFBooleanTrue;
-      CFTypeRef publicKeyRef = nil;
       OSStatus status =
           SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, &publicKeyRef);
       RELEASE_(publicKeyQuery);
@@ -274,6 +274,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
+      CFTypeRef privateKeyRef = nil;
       NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -282,7 +283,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
       [privateKeyQuery setObject:privateTag forKey:(id)kSecAttrApplicationTag];
       [privateKeyQuery setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
       [privateKeyQuery setObject:[NSNumber numberWithBool:true] forKey:(id)kSecReturnData];
-      CFTypeRef privateKeyRef = nil;
       OSStatus result =
           SecItemCopyMatching((CFDictionaryRef)privateKeyQuery, &privateKeyRef);
       RELEASE_(privateKeyQuery);
@@ -340,6 +340,9 @@ public abstract class IosRSAKey implements RSAKey, Key {
       }
 
       // Store key in keychain.
+      // Set kSecAttrAccessible to Always, since this fails when the app launches before the phone
+      // is unlocked (b/72042384).
+      keyQuery[(id)kSecAttrAccessible] = (id)kSecAttrAccessibleAlways;
       keyQuery[(id)kSecAttrCanDecrypt] = (id)kCFBooleanTrue;
       keyQuery[(id)kSecAttrCanDerive] = (id)kCFBooleanTrue;
       keyQuery[(id)kSecAttrCanEncrypt] = (id)kCFBooleanTrue;
