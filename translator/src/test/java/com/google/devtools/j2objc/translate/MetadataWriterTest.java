@@ -223,6 +223,28 @@ public class MetadataWriterTest extends GenerationTest {
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
+  public void testRepeatedAnnotation() throws IOException {
+    addSourceFile("import java.lang.annotation.*; "
+        + "  @Repeatable(Container.class) "
+        + "  @Retention(RetentionPolicy.RUNTIME) "
+        + "  public @interface Repeated { int value(); }",
+        "Repeated.java");
+    addSourceFile("import java.lang.annotation.*; "
+            + "  @Retention(RetentionPolicy.RUNTIME) "
+            + "  public @interface Container { Repeated[] value(); }",
+        "Container.java");
+    String translation = translateSourceFile("@Repeated(83) @Repeated(14) class Test {}", "Test",
+        "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ "
+            + "create_Container([IOSObjectArray arrayWithObjects:(id[]){ "
+            + "create_Repeated(83), create_Repeated(14) } "
+            + "count:2 type:Repeated_class_()]) } "
+            + "count:1 type:JavaLangAnnotationAnnotation_class_()];",
+        "}");
+  }
+
   // Verify that a class with an annotation with a reserved name property is
   // created in the __annotations support method with that reserved name in the
   // constructor.

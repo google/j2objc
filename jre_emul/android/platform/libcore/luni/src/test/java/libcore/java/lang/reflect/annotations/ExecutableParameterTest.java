@@ -96,7 +96,6 @@ public class ExecutableParameterTest extends TestCase {
                 annotationsToTypes(parameterAnnotations[1]));
     }
 
-    /* TODO(b/62095729): repeatable annotations support.
     private static class AnnotatedMethodClass {
         void noAnnotation(String p0) {}
 
@@ -233,5 +232,5 @@ public class ExecutableParameterTest extends TestCase {
 
         Annotation[] p0Annotations = allAnnotations[0];
         assertAnnotationsMatch(p0Annotations, expectedAnnotationStrings);
-    } */
+    }
 }

@@ -102,7 +102,6 @@ public class AnnotatedElementParameterTest extends TestCase {
         }
     }
 
-    /* TODO(b/62095729): repeatable annotations support.
     private static class AnnotatedMethodClass {
         void noAnnotation(String p0) {}
 
@@ -163,12 +162,13 @@ public class AnnotatedElementParameterTest extends TestCase {
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodMultipleAnnotationOddity(),
                 repeated, "@Repeated(1)");
+        /* TODO(b/62095729): improve annotation support.
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodMultipleAnnotationExplicitSingle(),
                 repeated, null);
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodMultipleAnnotation(),
-                repeated, null);
+                repeated, null); */
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodSingleAnnotation(),
                 repeated, "@Repeated(1)");
@@ -240,12 +240,13 @@ public class AnnotatedElementParameterTest extends TestCase {
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotationOddity(),
                 repeated, "@Repeated(1)");
+        /* TODO(b/62095729): improve annotation support.
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotationExplicitSingle(),
                 repeated, null);
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotation(),
-                repeated, null);
+                repeated, null);*/
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorSingleAnnotation(),
                 repeated, "@Repeated(1)");
@@ -443,12 +444,13 @@ public class AnnotatedElementParameterTest extends TestCase {
     /**
      * As an inner class the constructor will actually have two parameters: the first, referencing
      * the enclosing object, is inserted by the compiler.
-     *
+     */
     class InnerClass {
         InnerClass(@Repeated(1) String p1) {}
     }
 
-    /** Special case testing for a compiler-generated constructor parameter. *
+    /* TODO(b/62095729): improve annotation support.
+    /** Special case testing for a compiler-generated constructor parameter.
     public void testImplicitConstructorParameters_singleAnnotation() throws Exception {
         Constructor<InnerClass> constructor =
                 InnerClass.class.getDeclaredConstructor(
@@ -475,5 +477,5 @@ public class AnnotatedElementParameterTest extends TestCase {
                 parameter1, Repeated.class, "@Repeated(1)");
         AnnotatedElementTestSupport.assertIsAnnotationPresent(
                 parameter1, Repeated.class, true);
-    } */
+    }*/
 }
