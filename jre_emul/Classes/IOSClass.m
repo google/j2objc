@@ -878,8 +878,19 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
-  return LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+  IOSObjectArray *annotations = LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
       self, annotationClass);
+  if (annotations->size_ > 0) {
+    return annotations;
+  }
+
+  if ([annotationClass getDeclaredAnnotationWithIOSClass:JavaLangAnnotationInherited_class_()]) {
+    IOSClass *superClass = [self getSuperclass];
+    if (superClass) {
+      return [superClass getAnnotationsByTypeWithIOSClass:annotationClass];
+    }
+  }
+  return annotations;
 }
 
 - (IOSObjectArray *)getDeclaredAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {

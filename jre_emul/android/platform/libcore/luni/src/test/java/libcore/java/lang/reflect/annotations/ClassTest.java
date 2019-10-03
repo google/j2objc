@@ -220,9 +220,8 @@ public class ClassTest extends TestCase {
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 MultipleAnnotationOddity.class, repeated,
                 new String[] { "@Repeated(1)", "@Repeated(2)", "@Repeated(3)" });
-        // TODO(b/62095729): improve annotation support.
-        //AnnotatedElementTestSupport.assertGetAnnotationsByType(
-        //        InheritedNoNewAnnotation.class, repeated, new String[] { "@Repeated(1)" });
+        AnnotatedElementTestSupport.assertGetAnnotationsByType(
+                InheritedNoNewAnnotation.class, repeated, new String[] { "@Repeated(1)" });
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 InheritedSingleWithNewSingleAnnotation.class, repeated,
                 new String[] { "@Repeated(2)" });
@@ -257,10 +256,9 @@ public class ClassTest extends TestCase {
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 InheritedSingleWithNewMultipleAnnotations.class, container,
                 new String[] { "@Container({@Repeated(2), @Repeated(3)})" });
-        // TODO(b/62095729): improve annotation support.
-        //AnnotatedElementTestSupport.assertGetAnnotationsByType(
-        //        InheritedMultipleWithNewSingleAnnotation.class, container,
-        //        new String[] { "@Container({@Repeated(1), @Repeated(2)})" });
+        AnnotatedElementTestSupport.assertGetAnnotationsByType(
+                InheritedMultipleWithNewSingleAnnotation.class, container,
+                new String[] { "@Container({@Repeated(1), @Repeated(2)})" });
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 InheritedMultipleWithNewMultipleAnnotations.class, container,
                 new String[] { "@Container({@Repeated(2), @Repeated(3)})" });
