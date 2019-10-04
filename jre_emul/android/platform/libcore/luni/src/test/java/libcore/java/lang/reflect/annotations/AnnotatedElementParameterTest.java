@@ -162,13 +162,12 @@ public class AnnotatedElementParameterTest extends TestCase {
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodMultipleAnnotationOddity(),
                 repeated, "@Repeated(1)");
-        /* TODO(b/62095729): improve annotation support.
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodMultipleAnnotationExplicitSingle(),
                 repeated, null);
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodMultipleAnnotation(),
-                repeated, null); */
+                repeated, null);
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodSingleAnnotation(),
                 repeated, "@Repeated(1)");
@@ -240,13 +239,12 @@ public class AnnotatedElementParameterTest extends TestCase {
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotationOddity(),
                 repeated, "@Repeated(1)");
-        /* TODO(b/62095729): improve annotation support.
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotationExplicitSingle(),
                 repeated, null);
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotation(),
-                repeated, null);*/
+                repeated, null);
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorSingleAnnotation(),
                 repeated, "@Repeated(1)");
