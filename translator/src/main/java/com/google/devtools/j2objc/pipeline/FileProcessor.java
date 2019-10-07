@@ -67,7 +67,7 @@ abstract class FileProcessor {
     }
     processBatch();
     processBuildClosureDependencies();
-    if (!options.useGC()/*??*/) processOutputs(outputs);
+    processOutputs(outputs);
   }
 
   private void processBuildClosureDependencies() {
@@ -110,7 +110,12 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-    return file.getAbsolutePath().endsWith(".java");
+	  if (options.useGC()) {
+		  return file.getUnitName().endsWith(".java");
+	  }
+	  else {
+		  return file.getAbsolutePath().endsWith(".java");
+	  }
   }
 
   private void processBatch() {
@@ -161,7 +166,7 @@ abstract class FileProcessor {
       ARGC.startSourceFileGeneration(file);
       processConvertedTree(input, unit);
       ARGC.endSourceFileGeneration();
-      if (!options.useGC()/*??*/) outputs.add(input);
+      outputs.add(input);
     } catch (Throwable t) {
       // Report any uncaught exceptions.
       ErrorUtil.fatalError(t, input.getOriginalSourcePath());

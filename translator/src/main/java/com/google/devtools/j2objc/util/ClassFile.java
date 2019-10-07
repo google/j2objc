@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.EntityType;
+import com.strobel.decompiler.languages.Languages;
+import com.strobel.decompiler.languages.java.JavaLanguage;
 import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
@@ -81,51 +84,34 @@ public class ClassFile {
   }
 
   private static CompilationUnit decompileClassFile(TypeReference typeRef) {
-	  if (true) { /*ARGC*/
-          TypeDefinition resolvedType = null;
-          if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
-              throw new RuntimeException("Unable to resolve type.");
-          }
-			DecompilerSettings settings = DecompilerSettings.javaDefaults();
-		    settings.setShowSyntheticMembers(true);
-            StringWriter stringwriter = new StringWriter();
-            DecompilationOptions decompilationOptions;
-            decompilationOptions = new DecompilationOptions();
-            decompilationOptions.setSettings(settings);
-            decompilationOptions.setFullDecompilation(true);
-            PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
-            plainTextOutput.setUnicodeOutputEnabled(
-                    decompilationOptions.getSettings().isUnicodeOutputEnabled());
-            settings.getLanguage().decompileType(resolvedType, plainTextOutput,
-                    decompilationOptions);
-            String decompiledSource = stringwriter.toString();
-            System.out.println(decompiledSource);
-//            if (decompiledSource.contains(textField.getText().toLowerCase())) {
-//                addClassName(entry.getName());
-//            }
-		  
-	  }
-
-	  if (!Options.useARC()) {
-//    TypeDefinition typeDef = typeRef.resolve();
-//    DeobfuscationUtilities.processType(typeDef);
-//    DecompilationOptions options = new DecompilationOptions();
-//    DecompilerSettings settings = DecompilerSettings.javaDefaults();
-//    settings.setShowSyntheticMembers(true);
-//    options.setSettings(settings);
-//    options.setFullDecompilation(true);
-//    return Languages.java().decompileTypeToAst(typeDef, options);
-	  }
-	  return null;
+    TypeDefinition typeDef = typeRef.resolve();
+    //ARGC -- (DeobfuscationUtilities class not found) 
+    // DeobfuscationUtilities.processType(typeDef);
+    DecompilationOptions options = new DecompilationOptions();
+    DecompilerSettings settings = DecompilerSettings.javaDefaults();
+    settings.setShowSyntheticMembers(true);
+    options.setSettings(settings);
+    options.setFullDecompilation(true);
+    JavaLanguage lang = (JavaLanguage)Languages.java();
+    return lang.decompileTypeToAst(typeDef, options);
   }
 
   private ClassFile(CompilationUnit unit, TypeReference typeRef) {
     this.typeRef = typeRef;
-	  if (!Options.useARC()) {
-//    assert unit.getTypes().size() == 1;
-//    this.type = unit.getTypes().firstOrNullObject();
+	  if (true) { // ARGC
+		  Iterator<TypeDeclaration> it = unit.getTypes().iterator();
+		  if (it.hasNext()) {
+		    this.type = it.next();
+		  }
+		  else {
+			  it = unit.getTypes().iterator();
+			  throw new RuntimeException("something wrong!");
+		  }
 	  }
-	  this.type = null;
+	  else {
+//	    assert unit.getTypes().size() == 1;
+//	    this.type = unit.getTypes().firstOrNullObject();
+	  }
   }
 
   /**

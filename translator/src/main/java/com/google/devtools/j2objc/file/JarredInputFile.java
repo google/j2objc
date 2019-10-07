@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -30,7 +31,10 @@ import java.util.zip.ZipEntry;
 public class JarredInputFile implements InputFile {
   private final String jarPath;
   private final String internalPath;
+private JarFile jarFile;
 
+  private static HashMap<String, JarFile> ozJarCache = new HashMap<>();
+  
   /**
    * Create a new JarredSourceFile. The file's unit name will be the same as
    * the given internal path.
@@ -41,19 +45,27 @@ public class JarredInputFile implements InputFile {
     assert !jarPath.endsWith(".java");
     this.jarPath = jarPath;
     this.internalPath = internalPath;
-  }
-
-  @Override
-  public boolean exists() throws IOException {
-    try (JarFile jarFile = new JarFile(jarPath)) {
-      ZipEntry entry = jarFile.getEntry(internalPath);
-      return entry != null;
+    this.jarFile = ozJarCache.get(jarPath);
+    if (jarFile == null) {
+    	try {
+			this.jarFile = new JarFile(jarPath);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+    	ozJarCache.put(jarPath, jarFile);
     }
   }
 
   @Override
+  public boolean exists() throws IOException {
+    // ARGC-- try (JarFile jarFile = new JarFile(jarPath)) {
+    	return jarFile.getEntry(internalPath) != null;
+    	// ARGC--}
+  }
+
+  @Override
   public InputStream getInputStream() throws IOException {
-    final JarFile jarFile = new JarFile(jarPath);
+	// ARGC-- final JarFile jarFile = new JarFile(jarPath);
     ZipEntry entry = jarFile.getEntry(internalPath);
     final InputStream entryStream = jarFile.getInputStream(entry);
     return new InputStream() {
@@ -76,7 +88,7 @@ public class JarredInputFile implements InputFile {
       @Override
       public void close() throws IOException {
         entryStream.close();
-        jarFile.close();
+        // ARGC--jarFile.close();
       }
     };
   }

@@ -311,7 +311,7 @@ public class Options {
 
   private class ArgProcessor {
 
-    private List<String> sourceFiles = new ARGC.SourceList(Options.this);
+    private ARGC.SourceList sourceFiles = new ARGC.SourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -557,7 +557,7 @@ public class Options {
         // TODO(tball): document entry classes when build is updated to Bazel.
         entryClasses.add(arg);
       } else {
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(arg, false));
+        //fileUtil.getSourcePathEntries().addAll(getPathArgument(arg, false));
     	  
         sourceFiles.add(arg);
       }

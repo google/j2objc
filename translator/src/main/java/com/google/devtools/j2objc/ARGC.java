@@ -385,6 +385,8 @@ public class ARGC {
 		}
 	
 		private void addFolderTree(File f) throws IOException {
+	        options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
+			
 			options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
 			root = f.getAbsolutePath() + '/';
 			this.addFolder(f);

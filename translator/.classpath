@@ -16,6 +16,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations-2.0.5"/>
 	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc-2.0.5/java_deps/build_result/guava-25.1-jre.jar"/>
 	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc-2.0.5/java_deps/build_result/scenelib.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/procyon decompiler"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/procyon decompiler"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>
