@@ -128,6 +128,7 @@ public class MetadataWriterTest extends GenerationTest {
     String translation = translateSourceFile(
         " class A {"
         + "class B {"
+        + "  B(@Deprecated double x, String y, boolean b) {}"
         + "  class InnerInner{}}"
         + "static class C {"
         + "  Runnable test() {"
@@ -136,10 +137,28 @@ public class MetadataWriterTest extends GenerationTest {
         + "@interface E {}"
         + "}"
         , "A", "A.m");
-    assertTranslation(translation, "static const void *ptrTable[] = { \"LA_B;LA_C;LA_D;LA_E;\" };");
-    assertTranslation(translation,
+    assertTranslatedLines(translation,
+        "static const void *ptrTable[] = { \"LA_B;LA_C;LA_D;LA_E;\" };",
         "static const J2ObjcClassInfo _A = { \"A\", NULL, ptrTable, methods, NULL, 7, 0x0, 1, 0, "
-        + "-1, 0, -1, -1, -1 };");
+            + "-1, 0, -1, -1, -1 };");
+    // B's constructor receives the enclosing object as the first parameter: "LA;DLNSString;Z"
+    assertTranslatedLines(translation,
+        "static const void *ptrTable[] = { \"LA;DLNSString;Z\", (void *)&A_B__Annotations$0, "
+            + "\"LA;\", \"LA_B_InnerInner;\" };",
+        "static const J2ObjcClassInfo _A_B = { \"B\", NULL, ptrTable, methods, NULL, 7, 0x0, "
+            + "1, 0, 2, 3, -1, -1, -1 };");
+    // Note that there are 4 parameter-annotation entries in B's constructor because it includes
+    // an entry for the implicit parameter (enclosing class).
+    assertTranslatedLines(translation,
+        "IOSObjectArray *A_B__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ "
+            + "[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()], "
+            + "[IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } count:1 "
+            + "type:JavaLangAnnotationAnnotation_class_()], "
+            + "[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()], "
+            + "[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()] } "
+            + "count:4 type:IOSClass_arrayType(JavaLangAnnotationAnnotation_class_(), 1)];",
+        "}");
   }
 
   public void testEnclosingMethodAndConstructor() throws IOException {

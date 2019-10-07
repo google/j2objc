@@ -255,9 +255,17 @@ public class MetadataWriter extends UnitTreeVisitor {
 
       int modifiers = getMethodModifiers(method) & ElementUtil.ACC_FLAG_MASK;
       String returnTypeStr = isConstructor ? null : getTypeName(method.getReturnType());
+      List<VariableElement> params = new ArrayList<>();
+      if (isConstructor) {
+        Iterables.addAll(params, unit.getEnv().captureInfo().getImplicitPrefixParams(type));
+      }
+      params.addAll(method.getParameters());
+      if (isConstructor) {
+        Iterables.addAll(params, unit.getEnv().captureInfo().getImplicitPostfixParams(type));
+      }
       return UnicodeUtils.format("    { NULL, %s, 0x%x, %s, %s, %s, %s, %s, %s },\n",
           cStr(returnTypeStr), modifiers, cStrIdx(methodName),
-          cStrIdx(getTypeList(ElementUtil.asTypes(method.getParameters()))),
+          cStrIdx(getTypeList(ElementUtil.asTypes(params))),
           cStrIdx(getTypeList(method.getThrownTypes())),
           cStrIdx(signatureGenerator.createMethodTypeSignature(method)),
           funcPtrIdx(annotationsFunc), funcPtrIdx(paramAnnotationsFunc));
@@ -387,9 +395,20 @@ public class MetadataWriter extends UnitTreeVisitor {
       }
 
       List<Expression> subArrays = new ArrayList<>();
+      boolean isConstructor = ElementUtil.isConstructor(method.getExecutableElement());
+      if (isConstructor) {
+        for (VariableElement unused : unit.getEnv().captureInfo().getImplicitPrefixParams(type)) {
+          subArrays.add(createAnnotations(new ArrayList<>()));
+        }
+      }
       for (SingleVariableDeclaration param : params) {
         subArrays.add(createAnnotations(
             TreeUtil.getRuntimeAnnotationsList(param.getAnnotations())));
+      }
+      if (isConstructor) {
+        for (VariableElement unused : unit.getEnv().captureInfo().getImplicitPostfixParams(type)) {
+          subArrays.add(createAnnotations(new ArrayList<>()));
+        }
       }
 
       return addAnnotationsFunction(

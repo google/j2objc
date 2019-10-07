@@ -447,8 +447,7 @@ public class AnnotatedElementParameterTest extends TestCase {
         InnerClass(@Repeated(1) String p1) {}
     }
 
-    /* TODO(b/62095729): improve annotation support.
-    /** Special case testing for a compiler-generated constructor parameter.
+    /** Special case testing for a compiler-generated constructor parameter. */
     public void testImplicitConstructorParameters_singleAnnotation() throws Exception {
         Constructor<InnerClass> constructor =
                 InnerClass.class.getDeclaredConstructor(
@@ -475,5 +474,5 @@ public class AnnotatedElementParameterTest extends TestCase {
                 parameter1, Repeated.class, "@Repeated(1)");
         AnnotatedElementTestSupport.assertIsAnnotationPresent(
                 parameter1, Repeated.class, true);
-    }*/
+    }
 }
