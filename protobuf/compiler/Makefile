@@ -10,8 +10,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SUFFIXES:
-
 J2OBJC_ROOT = ../..
 
 include $(J2OBJC_ROOT)/make/common.mk

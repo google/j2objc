@@ -10,7 +10,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.SUFFIXES:
 .PHONY: default clean
 
 include environment.mk

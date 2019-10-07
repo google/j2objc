@@ -17,7 +17,6 @@
 #
 # Author: Tom Ball
 
-SUFFIXES:
 .PHONY: translator dist test
 
 default: dist

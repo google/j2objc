@@ -16,8 +16,6 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
-
 default: test
 
 include environment.mk

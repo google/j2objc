@@ -14,8 +14,6 @@
 #
 # Author: Keith Stanger
 
-SUFFIXES:
-
 .SECONDARY:
 
 J2OBJC_ROOT = ..

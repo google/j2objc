@@ -12,8 +12,6 @@
 
 # Builds Android's Apache Xalan library.
 
-SUFFIXES:
-
 default: dist
 
 include environment.mk

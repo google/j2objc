@@ -1,5 +1,3 @@
-SUFFIXES:
-
 J2OBJC_ROOT = ../..
 include $(J2OBJC_ROOT)/make/common.mk
 include $(J2OBJC_ROOT)/make/j2objc_deps.mk

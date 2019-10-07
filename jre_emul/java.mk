@@ -16,7 +16,6 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
 .PHONY: clean
 
 include environment.mk

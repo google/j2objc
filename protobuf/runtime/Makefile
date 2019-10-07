@@ -14,8 +14,6 @@
 #
 # Author: Keith Stanger
 
-SUFFIXES:
-
 J2OBJC_ROOT = ../..
 
 include $(J2OBJC_ROOT)/make/common.mk
