@@ -46,7 +46,7 @@
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 #  define AUTORELEASE(x) x
-#  define RELEASE_(x) x
+#  define RELEASE_(x) (void)x
 #  define RETAIN_(x) x
 #  define RETAIN_AND_AUTORELEASE(x) x
 #  define DEALLOC_(x)
@@ -323,7 +323,7 @@ return JreStrongAssignAndConsume(&instance->FIELD, value); \
  * @define J2OBJC_ETERNAL_SINGLETON
  */
 #ifdef J2OBJC_USE_GC
-#define J2OBJC_ETERNAL_SINGLETON error!! NO Singlton surpported in ARC.
+#define J2OBJC_ETERNAL_SINGLETON // error!! NO Singlton surpported in ARC.
 #else
 #define J2OBJC_ETERNAL_SINGLETON \
   - (id)retain { return self; } \

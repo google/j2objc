@@ -1290,14 +1290,20 @@ class SystemClassLoader extends ClassLoader {
   }
 
   @Override
-<<<<<<< HEAD
-  protected native Class<?> findClass(String name) throws ClassNotFoundException /*-[
+  protected native Class<?> findClass(String name) throws ClassNotFoundException;
+  /****-[ 2.0.5 legacy imple
     (void)nil_chk(name);
     return [IOSClass forName:name initialize:YES classLoader:self];
   ]-*/;
-=======
-  protected native Class<?> findClass(String name) throws ClassNotFoundException;
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
+
+  @Override
+  public Package getPackage(String name) {
+      Package pkg = super.getPackage(name);
+      if (pkg == null) {
+          pkg = definePackage(name, null, null, null, null, null, null, null);
+      }
+      return pkg;
+  }
 
   @Override
   protected native URL findResource(String name);

@@ -150,10 +150,6 @@ public abstract class Reference<T> {
       clear();
     }
 
-    ZZZZ v 2.5 -> {
-        this.referent = referent;
-      [IOSReference initReferent:self];
-    }
     private native void initReferent(Object referent) /*-[
       [IOSReference initReferent:self withReferent:referent];
     ]-*/;

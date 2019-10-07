@@ -106,14 +106,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void generateInitialDeclaration() {
-    if (printNativeEnum() && ARGC.inPureObjCMode()) {
-    	return;
-    };
     if (typeNode.isDeadClass()) {
       printStaticFieldDeclarations();
       return;
     }
-    printNativeEnum();
+    if (printNativeEnum() && ARGC.inPureObjCMode()) {
+    	return;
+    };
 
     printTypeDocumentation();
     if (typeElement.getKind().isInterface()) {

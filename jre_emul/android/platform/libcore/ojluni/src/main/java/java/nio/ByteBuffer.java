@@ -533,21 +533,12 @@ public abstract class ByteBuffer
         if (!isAccessible()) {
             throw new IllegalStateException("buffer is inaccessible");
         }
-<<<<<<< HEAD
-        if (isReadOnly) {
-            throw new ReadOnlyBufferException();
-        }
-        if (src == this) {
-            throw new IllegalArgumentException();
-        }
-=======
         if (src == this) {
             throw new IllegalArgumentException();
         }
         if (isReadOnly) {
             throw new ReadOnlyBufferException();
         }
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
         int n = src.remaining();
         if (n > remaining()) {
             throw new BufferOverflowException();
@@ -564,22 +555,14 @@ public abstract class ByteBuffer
             // isDirect() doesn't imply !hasArray(), ByteBuffer.allocateDirect allocated buffer will
             // have a backing, non-gc-movable byte array. JNI allocated direct byte buffers WILL NOT
             // have a backing array.
-<<<<<<< HEAD
-            final Object srcObject = src.isDirect() ? src : src.array();
-=======
             final Object srcObject = src.isDirect() ? src : src.hb;
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
             int srcOffset = src.position();
             if (!src.isDirect()) {
                 srcOffset += src.offset;
             }
 
             final ByteBuffer dst = this;
-<<<<<<< HEAD
-            final Object dstObject = dst.isDirect() ? dst : dst.array();
-=======
             final Object dstObject = dst.isDirect() ? dst : dst.hb;
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
             int dstOffset = dst.position();
             if (!dst.isDirect()) {
                 dstOffset += dst.offset;

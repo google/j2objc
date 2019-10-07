@@ -1840,24 +1840,6 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 }
             }
         }
-<<<<<<< HEAD
-
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          NSUInteger objCount =
-              [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
-          for (__unsafe_unretained id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
-            *e = ((JavaUtilHashMap_HashMapEntry *) *e)->key_;
-          }
-          return objCount;
-        }
-
-        RETAINED_WITH_CHILD(this$0_)
-        ]-*/
-=======
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
     }
 
     /* ------------------------------------------------------------ */
@@ -1914,18 +1896,6 @@ public class HashMap<K,V> extends AbstractMap<K,V>
             }
         }
 
-<<<<<<< HEAD
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          NSUInteger objCount =
-              [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
-          for (__unsafe_unretained id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
-            *e = ((JavaUtilHashMap_HashMapEntry *) *e)->value_;
-          }
-          return objCount;
-=======
         /**
          * Finds the node starting at root p with the given hash and key.
          * The kc argument caches comparableClassFor(key) upon first use
@@ -1956,7 +1926,6 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                     p = pl;
             } while (p != null);
             return null;
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
         }
 
         /**
@@ -2489,11 +2458,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         return 0;
       }
       NSUInteger position = state->extra[0];
-<<<<<<< HEAD
-      __unsafe_unretained JavaUtilHashMap_HashMapEntry *entry = (__bridge __unsafe_unretained JavaUtilHashMap_HashMapEntry *)(void*) state->extra[1];
-=======
-      JavaUtilHashMap_Node *entry = (JavaUtilHashMap_Node *) state->extra[1];
->>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
+      __unsafe_unretained JavaUtilHashMap_Node *entry = (__bridge __unsafe_unretained JavaUtilHashMap_Node *)(void*) state->extra[1];
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;
       while (objCount < len) {

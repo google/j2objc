@@ -213,11 +213,6 @@ CF_EXTERN_C_END
     return JreVolatileStrongAssign(value, \
         TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
   } \
-  __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Array##CNAME(JreArrayRef ref) { \
-    (void)nil_chk(*ref.pValue); \
-    return IOSObjectArray_SetRef( \
-        ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
-  } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##CNAME( \
       __unsafe_unretained TYPE **value) { \
     (void)nil_chk(*value); \
@@ -246,13 +241,6 @@ CF_EXTERN_C_END
     JreVolatileStrongAssign(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
     return original; \
   } \
-  __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Array##CNAME(JreArrayRef ref) { \
-    (void)nil_chk(*ref.pValue); \
-    TYPE *original = *ref.pValue; \
-    IOSObjectArray_SetRef( \
-        ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
-    return original; \
-  }
 
 /*!
  * Defines increment and decrement operators on boxed types. The translator will
