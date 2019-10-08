@@ -269,9 +269,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected String getDeclarationType(VariableElement var) {
     TypeMirror type = var.asType();
     if (ElementUtil.isVolatile(var)) {
-      if (/*ARGC*/ElementUtil.isWeakReference(var)) {
-    	return "void *";
-      }
+//      if (/*ARGC*/ElementUtil.isWeakReference(var)) {
+//    	return "void *";
+//      }
       return "volatile_" + NameTable.getPrimitiveObjCType(type);
     } else {
       return nameTable.getObjCType(type);

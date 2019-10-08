@@ -808,7 +808,6 @@ public class LinkedHashMap<K,V>
         state->mutationsPtr = (unsigned long *) &modCount_;
         entry = head_;
       } else {
-        ZZZZ  HashMap 고 연관성 검토.
         entry = (__bridge __unsafe_unretained JavaUtilLinkedHashMap_LinkedHashMapEntry *)(void*)state->extra[0];
       }
       state->itemsPtr = stackbuf;

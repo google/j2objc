@@ -139,7 +139,7 @@ jboolean Java_sun_misc_Unsafe_compareAndSwapObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject expectedValue, jobject newValue) {
   uintptr_t ptr = PTR(obj, offset);
   CHECK_ADDR(id, ptr)
-  return JreCompareAndSwapVolatileStrongId((volatile_id *)ptr, expectedValue, newValue);
+  return JreCompareAndSwapVolatileStrongId((volatile_id *)(void *)ptr, expectedValue, newValue);
 }
 
 
@@ -627,11 +627,7 @@ void Java_sun_misc_Unsafe_putLongVolatile(
  * Signature: (Ljava/lang/Object;J)Ljava/lang/Object;
  */
 jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, jlong offset) {
-   !!! ARGC 연동 확인 -> 2.5 = GET_OBJECT_IMPL()
-
-    uintptr_t ptr = PTR(obj, offset);
-    CHECK_ADDR(id, ptr)
-    return *(__unsafe_unretained jobject *)(void*)ptr;
+  GET_OBJECT_IMPL()
 }
 
 /*
@@ -639,11 +635,8 @@ jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, j
  * Signature: (Ljava/lang/Object;J)Ljava/lang/Object;
  */
 jobject Java_sun_misc_Unsafe_getObjectVolatile(
-  !!! ARGC 연동 확인 -> 2.5 = GET_OBJECT_IMPL()
     JNIEnv *env, jobject self, jobject obj, jlong offset) {
-    uintptr_t ptr = PTR(obj, offset);
-    CHECK_ADDR(id, ptr)
-    return JreLoadVolatileId((volatile_id *)(void*)ptr);
+  GET_OBJECT_IMPL()
 }
 
 /*

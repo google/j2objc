@@ -161,18 +161,20 @@ CF_EXTERN_C_END
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
 #endif
 
-#if !__has_feature(objc_arc)
+// #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
     AUTORELEASE(value);
     JreGenericFieldAssign(pIvar, value);
     return value;
 }
+// #endif
 
+// #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
   return AUTORELEASE(RETAIN_(value));
 }
-#endif
+// #endif
 
 /*!
  * Utility macro for passing an argument that contains a comma.

@@ -206,18 +206,20 @@ id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __at
 #endif
 }
 
-#ifndef J2OBJC_USE_GC
 
 id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   // Index is checked when accessing the JreArrayRef.
   IOSObjectArray_checkValue(ref.arr, value);
-  if (ref.arr->isRetained_) {
-    return JreAutoreleasedAssign(ref.pValue, [value retain]);
+#ifndef J2OBJC_USE_GC
+    if (array->isRetained_) {
+#endif
+    return JreAutoreleasedAssign(ref.pValue, RETAIN_(value));
+#ifndef J2OBJC_USE_GC
   } else {
     return *ref.pValue = value;
   }
-}
 #endif
+}
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
   return IOSObjectArray_Set(self, index, value);

@@ -1484,8 +1484,8 @@ J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
   if ((self = [super init])) {
-    key_ = [key retain];
-    value_ = [value retain];
+    key_ = RETAIN_(key);
+    value_ = RETAIN_(value);
   }
   return self;
 }
@@ -1498,11 +1498,13 @@ J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
   return value_;
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
   [key_ release];
   [value_ release];
   [super dealloc];
 }
+#endif
 
 @end
 

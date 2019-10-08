@@ -17,6 +17,10 @@
 
 package com.google.j2objc.util;
 
+/*-[
+#pragma clang diagnostic ignored "-Wunused-value"
+]-*/
+
 /**
  * Defines a table of ISO 4217 codes and their numbers, to support
  * Currency.getNumericCode(). This class should be removed when
@@ -213,7 +217,7 @@ public final class CurrencyNumericCodesImpl implements CurrencyNumericCodes {
           @"ZMW": @967,
           @"ZWL": @932
       };
-      [iso4217 retain];
+      RETAIN_(iso4217);
     });
     NSNumber *number = iso4217[currencyCode];
     return number ? [number intValue] : 0;

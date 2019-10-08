@@ -89,7 +89,7 @@ static void ProcessRawStack(RawStack *rawStack, NSMutableArray *frames, jboolean
     if (!applyFilter || !ShouldFilterStackElement(element)) {
       [frames addObject:element];
     }
-    [element release];
+    RELEASE_(element);
   }
 }
 
@@ -120,5 +120,5 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   //   . otherwise, it's "class-name".
   NSString *clsName = [[self java_getClass] getName];
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
-  [self initWithName:[[self class] description] reason:reason userInfo:nil];
+  (void)[self initWithName:[[self class] description] reason:reason userInfo:nil];
 }

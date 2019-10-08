@@ -26,9 +26,7 @@ id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...);
 id JreStrAppendStrong(__strong id *lhs, const char *types, ...);
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...);
 id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...);
-#ifndef J2OBJC_USE_GC
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...);
-#endif
 CF_EXTERN_C_END
 
 /*!

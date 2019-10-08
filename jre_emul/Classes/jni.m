@@ -127,9 +127,6 @@ NSString *JNIFormatMethodSignature(JNIMethodSignature sig) {
   return result;
 }
 
-
-static void *GetPrimitiveArrayCritical(JNIEnv *, jarray, jboolean *);
-
 static jclass FindClass(JNIEnv *env, const char *name) {
   return IOSClass_forName(name);
 }
@@ -165,20 +162,7 @@ static jbyte *GetByteArrayElements(JNIEnv *env, jbyteArray array, jboolean *isCo
 }
 
 static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, jboolean *isCopy) {
-   !!!ZZZZ v 2.5 ->   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
-   // 아래 두 함수도 용도 확인.
-
-  return GetPrimitiveArrayCritical(env, array, isCopy);
-}
-
-static void *GetDirectBufferAddress(JNIEnv *env, jobject buf) {
-  (void)nil_chk(buf);
-  return (void *) ((JavaNioBuffer *) buf)->address_;
-}
-
-static jlong GetDirectBufferCapacity(JNIEnv *env, jobject buf) {
-  (void)nil_chk(buf);
-  return (jlong) ((JavaNioBuffer *) buf)->capacity_;
+  GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
 static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, jboolean *isCopy) {

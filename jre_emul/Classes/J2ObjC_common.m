@@ -402,7 +402,6 @@ id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...) {
   return JreVolatileStrongAssign(lhs, result);
 }
 
-#ifndef J2OBJC_USE_GC
 
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
   va_list va;
@@ -411,7 +410,7 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
   va_end(va);
   return IOSObjectArray_SetRef(lhs, result);
 }
-#endif
+
 
 FOUNDATION_EXPORT void JreRelease(id obj) {
   RELEASE_(obj);

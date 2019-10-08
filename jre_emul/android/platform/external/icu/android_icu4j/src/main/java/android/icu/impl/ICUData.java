@@ -29,7 +29,7 @@ import android.icu.util.VersionInfo;
 #pragma GCC diagnostic ignored "-Wreceiver-forward-class"
 @class ICUData;
 void unused() {
-  Class unused = [ICUData class];
+  Class unused = [AndroidIcuImplICUData class];
 }
 #pragma clang diagnostic pop
 ]-*/
