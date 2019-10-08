@@ -125,10 +125,14 @@ public class MetadataWriterTest extends GenerationTest {
   }
 
   public void testInnerClassesMetadata() throws IOException {
+    addSourceFile("import java.lang.annotation.*; "
+        + "  @Retention(RetentionPolicy.RUNTIME) "
+        + "  public @interface AnAnnotation {}",
+        "AnAnnotation.java");
     String translation = translateSourceFile(
         " class A {"
         + "class B {"
-        + "  B(@Deprecated double x, String y, boolean b) {}"
+        + "  B(@AnAnnotation double x, String y, boolean b) {}"
         + "  class InnerInner{}}"
         + "static class C {"
         + "  Runnable test() {"
@@ -153,7 +157,7 @@ public class MetadataWriterTest extends GenerationTest {
         "IOSObjectArray *A_B__Annotations$0() {",
         "return [IOSObjectArray arrayWithObjects:(id[]){ "
             + "[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()], "
-            + "[IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } count:1 "
+            + "[IOSObjectArray arrayWithObjects:(id[]){ create_AnAnnotation() } count:1 "
             + "type:JavaLangAnnotationAnnotation_class_()], "
             + "[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()], "
             + "[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()] } "
