@@ -242,6 +242,7 @@ TEST_SOURCES := \
     com/google/j2objc/EnvironmentUtil.java \
     com/google/j2objc/FieldTest.java \
     com/google/j2objc/IterableTest.java \
+    com/google/j2objc/LibraryNotLinkedErrorTest.java \
     com/google/j2objc/LinkedBlockingQueueTest.java \
     com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
