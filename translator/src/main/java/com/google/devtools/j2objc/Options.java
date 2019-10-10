@@ -86,7 +86,7 @@ public class Options {
   private String lintArgument = null;
   private boolean reportJavadocWarnings = false;
   private boolean translateBootclasspath = false;
-  private boolean translateClassfiles = false;
+  private boolean translateClassfiles = true;
   private String annotationsJar = null;
   private /*ARGC++*/List<String> bootcps;
   private CombinedOutput globalCombinedOutput = null;
@@ -557,8 +557,6 @@ public class Options {
         // TODO(tball): document entry classes when build is updated to Bazel.
         entryClasses.add(arg);
       } else {
-        //fileUtil.getSourcePathEntries().addAll(getPathArgument(arg, false));
-    	  
         sourceFiles.add(arg);
       }
     }
