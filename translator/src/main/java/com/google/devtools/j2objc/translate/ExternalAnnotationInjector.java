@@ -102,7 +102,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     if (!annotatedElementStack.peekLast().isPresent()) {
-      return false;
+      return true;
     }
     AClass annotatedParent = (AClass) annotatedElementStack.peekLast().get();
     ExecutableElement executable = node.getExecutableElement();
@@ -116,7 +116,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       recordAnnotations(node.getExecutableElement(), annotations);
       injectAnnotationsToNode(node, annotations);
     }
-    return false;
+    return true;
   }
 
   @Override

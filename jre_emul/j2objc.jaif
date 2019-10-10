@@ -66,6 +66,7 @@ package java.io:
 class FileDescriptor: @ReflectionSupport(FULL)
 
 package java.lang:
+class Package$1PackageInfoProxy: @ReflectionSupport(FULL)
 class Thread: @ReflectionSupport(FULL)
 
 package java.math:

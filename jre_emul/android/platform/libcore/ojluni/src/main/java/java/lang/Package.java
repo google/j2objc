@@ -26,7 +26,6 @@
 
 package java.lang;
 
-import com.google.j2objc.annotations.ReflectionSupport;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -317,7 +316,7 @@ public class Package implements java.lang.reflect.AnnotatedElement {
                 packageInfo = Class.forName(pkgName + ".package-info", false, loader);
             } catch (ClassNotFoundException ex) {
                 // store a proxy for the package info that has no annotations
-                @ReflectionSupport(ReflectionSupport.Level.FULL) class PackageInfoProxy {}
+                class PackageInfoProxy {}
                 packageInfo = PackageInfoProxy.class;
             }
         }

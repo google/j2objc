@@ -277,7 +277,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     assertNotInTranslation(translation, "__metadata");
   }
 
-  private void setupObjectiveCNameAnnotations() throws IOException {
+  private void setupObjectiveCNameAnnotations(String additionalAnnotations) throws IOException {
     options.addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
             + "annotation @ObjectiveCName: @java.lang.annotation.Retention(value=CLASS) "
@@ -285,11 +285,12 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  String value "
             + "package p: "
             + "class Test: "
-            + "  method testMethod()V: @ObjectiveCName(value=\"ignoreMethod\")");
+            + "  method testMethod()V: @ObjectiveCName(value=\"ignoreMethod\") "
+            + additionalAnnotations);
   }
 
   public void testInjectObjectiveCName_method() throws IOException {
-    setupObjectiveCNameAnnotations();
+    setupObjectiveCNameAnnotations("");
     String source = "package p; public class Test { public void testMethod() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
     // The selector is renamed.
@@ -299,7 +300,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
   }
 
   public void testInjectObjectiveCName_junit3Method() throws IOException {
-    setupObjectiveCNameAnnotations();
+    setupObjectiveCNameAnnotations("");
     String source = "package p; "
         + "public class Test extends junit.framework.TestCase { public void testMethod() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
@@ -308,6 +309,15 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     // The original name is not in the metadata. This allows to hide renamed methods from the
     // JUnit runner.
     assertNotInTranslation(translation, "\"testMethod\"");
+  }
+
+  public void testInjectObjectiveCName_localClass() throws IOException {
+    setupObjectiveCNameAnnotations("class Test$1Local: @ObjectiveCName(\"RenamedClass\")");
+    String source = "package p; "
+        + "public class Test { public void testMethod() { class Local {} } }";
+    String translation = translateSourceFile(source, "p.Test", "p/Test.m");
+    assertTranslation(translation, "@implementation RenamedClass");
+    assertNotInTranslation(translation, "@implementation PTest_1Local");
   }
 
   public void testWeakOuter() throws IOException {
