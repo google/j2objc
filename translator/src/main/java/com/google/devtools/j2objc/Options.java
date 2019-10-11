@@ -1009,11 +1009,6 @@ public class Options {
     externalAnnotations.addExternalAnnotationFile(file);
   }
 
-  @VisibleForTesting
-  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
-    externalAnnotations.addExternalAnnotationFileContents(fileContents);
-  }
-
   // Unreleased experimental project.
   public boolean translateClassfiles() {
     return translateClassfiles;

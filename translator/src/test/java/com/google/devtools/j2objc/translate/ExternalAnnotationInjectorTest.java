@@ -33,11 +33,15 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
           + "  method qux()Ljava/lang/String;:"
           + "    return: @p.Nullable";
 
+  private void addExternalAnnotationFileContents(String content) throws IOException {
+    options.addExternalAnnotationFile(addSourceFile(content, "annotations.jaif"));
+  }
+
   // In order to test different paths, the non-null version is a type annotation and the nullable
   // version is a declaration annotation.
   private void setupNullabilityAnnotations(String externalAnnotations) throws IOException {
     options.setNullability(true);
-    options.addExternalAnnotationFileContents(
+    addExternalAnnotationFileContents(
         "package p: "
             + "annotation @NonNull: @java.lang.annotation.Target(value={TYPE_USE}) "
             + "annotation @Nullable: "
@@ -155,7 +159,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "annotation @AnAnnotation: "
             + "class Test: "
             + "  method <init>()V: @p.AnAnnotation";
-    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    addExternalAnnotationFileContents(externalNullabilityAnnotations);
     addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     String source = "package p; public class Test { public Test() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
@@ -175,7 +179,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "class Test: "
             + "  method foo(Ljava/lang/Thread;)V: @p.AnAnnotation";
     addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
-    options.addExternalAnnotationFileContents(externalNullabilityAnnotations);
+    addExternalAnnotationFileContents(externalNullabilityAnnotations);
     String source =
         "package p;"
             + "public class Test { "
@@ -193,7 +197,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "annotation @AnAnnotation: "
             + "class Test: "
             + "  method foo()V: @p.AnAnnotation";
-    options.addExternalAnnotationFileContents(externalAnnotations);
+    addExternalAnnotationFileContents(externalAnnotations);
     addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     String source =
         "package p;"
@@ -216,7 +220,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         REFLECTION_SUPPORT_ANNOTATION
             + "package p: "
             + "class Test: @ReflectionSupport(FULL) ";
-    options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
+    addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
     options.setStripReflection(true);
     String source = "package p; public class Test {}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
@@ -228,7 +232,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         REFLECTION_SUPPORT_ANNOTATION
             + "package p: "
             + "class Test: @ReflectionSupport(NATIVE_ONLY) ";
-    options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
+    addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
     options.setStripReflection(false);
     String source = "package p; public class Test {}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
@@ -243,7 +247,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "package p: "
             + "class Test: "
             + "  method test()V: @Ignore";
-    options.addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
+    addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
     String source = "package p; public class Test { public void test() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
     assertTranslation(translation, "#include \"org/junit/Ignore.h\"");
@@ -256,7 +260,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         + "  public void test(String s) {} "
         + "}", "p/Test.java");
     addSourceFile("package p;", "p/package-info.java");
-    options.addExternalAnnotationFileContents("package com.google.j2objc.annotations: "
+    addExternalAnnotationFileContents("package com.google.j2objc.annotations: "
         + "annotation @ObjectiveCName: "
         + "  String value "
         + "annotation @ReflectionSupport: "
@@ -278,7 +282,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
   }
 
   private void setupObjectiveCNameAnnotations(String additionalAnnotations) throws IOException {
-    options.addExternalAnnotationFileContents(
+    addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
             + "annotation @ObjectiveCName: @java.lang.annotation.Retention(value=CLASS) "
             + "  @java.lang.annotation.Target(value={TYPE,METHOD,CONSTRUCTOR,PACKAGE}) "
@@ -331,7 +335,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         + "    int bar() { return i; } "
         + "  } "
         + "}";
-    options.addExternalAnnotationFileContents(
+    addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
             + "annotation @WeakOuter: "
             + "package p: "
@@ -350,7 +354,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         + "    t = otherT;"
         + "  }"
         + "}";
-    options.addExternalAnnotationFileContents(
+    addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
             + "annotation @Weak: "
             + "package p: "
@@ -368,7 +372,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         + "  private Object o; "
         + "  public void setO(Object o) { this.o = o; } "
         + "}";
-    options.addExternalAnnotationFileContents(
+    addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
             + "annotation @RetainedWith: "
             + "package p: "
@@ -385,7 +389,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         + "public class A { "
         + "  public void test() {} "
         + "}";
-    options.addExternalAnnotationFileContents(
+    addExternalAnnotationFileContents(
         "package com.google.j2objc.annotations: "
             + "annotation @AutoreleasePool: "
             + "package p: "
