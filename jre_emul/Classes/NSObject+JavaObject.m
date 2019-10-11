@@ -39,7 +39,6 @@ void ARGC_genericRetain(id obj);
 
 #endif
 
-id ARGC_cloneInstance(id);
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
 
@@ -48,9 +47,6 @@ id ARGC_cloneInstance(id);
     @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
   }
 
-#if 0 //def J2OBJC_USE_GC
-    id clone = ARGC_cloneInstance(self);//[super copyWithZone:NULL];
-#else
   // Use the Java getClass method because it returns the class we want in case
   // self's class hass been swizzled by a WeakReference or RetainedWith field.
   Class cls = [self java_getClass].objcClass;
@@ -86,7 +82,7 @@ id ARGC_cloneInstance(id);
     free(ivars);
     cls = class_getSuperclass(cls);
   }
-#endif
+
   // Releases any @Weak fields that shouldn't have been retained.
   [clone __javaClone:self];
   return clone;

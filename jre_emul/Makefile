@@ -82,7 +82,7 @@ ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE) $(ARGC_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE) $(ARGC_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_io,$(IO_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_util,$(UTIL_OBJS_RELATIVE))

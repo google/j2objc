@@ -3953,6 +3953,8 @@
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
+		7846132423504FF900E80EE4 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARGC.h; path = Classes/ARGC/ARGC.h; sourceTree = SOURCE_ROOT; };
+		7846132523504FF900E80EE4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ARGC.mm; path = Classes/ARGC/ARGC.mm; sourceTree = SOURCE_ROOT; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
 		DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = org/apache/harmony/tests/java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
 		DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
@@ -4409,8 +4411,6 @@
 				06F2904C18972CE800676F1D /* AnnotationFormatError.m */,
 				06F2904D18972CE800676F1D /* AnnotationTypeMismatchException.h */,
 				06F2904E18972CE800676F1D /* AnnotationTypeMismatchException.m */,
-				062C39571FD61312009B232F /* AnnotationUtils.h */,
-				062C39581FD61312009B232F /* AnnotationUtils.m */,
 				06721B2F1559CC0300645E1B /* Appendable.h */,
 				06F2903218972CCF00676F1D /* Appendable.m */,
 				0671E50021BDCF80002E0681 /* ApplicationProxy.h */,
@@ -7424,8 +7424,8 @@
 		78794D2D1FF5D9FF000F391F /* ARGC */ = {
 			isa = PBXGroup;
 			children = (
-				78794D2F1FF5DA34000F391F /* ARGC.h */,
-				78794D2E1FF5DA34000F391F /* ARGC.mm */,
+				7846132423504FF900E80EE4 /* ARGC.h */,
+				7846132523504FF900E80EE4 /* ARGC.mm */,
 			);
 			path = ARGC;
 			sourceTree = "<group>";

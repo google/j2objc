@@ -166,8 +166,8 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
   CLASS *self = [CLASS alloc]; \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
-#define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
-  return new_##CLASS##_##NAME(__VA_ARGS__);
+//#define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
+//  return new_##CLASS##_##NAME(__VA_ARGS__);
 #else
 #define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
   CLASS *self = [CLASS alloc]; \
@@ -181,11 +181,12 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
     } \
   } \
   return self;
+#endif // ARGC ++
 #define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
-  CLASS *self = [[CLASS alloc] autorelease]; \
+  CLASS *self = AUTORELEASE([CLASS alloc]); \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
-#endif
+// ARGC-- #endif
 
 #define J2OBJC_IGNORE_DESIGNATED_BEGIN \
   _Pragma("clang diagnostic push") \

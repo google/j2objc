@@ -175,16 +175,17 @@ endif
 # Settings for classes that need to always compile without ARC.
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 
-OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0
+ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
+ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
+
+OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0 $(ARGC_CPP_FLAGS)
 
 # Require C11 compilation to support Java volatile translation.
-OBJCFLAGS += -std=c11
+#ARGC-- OBJCFLAGS += -std=c11
 
-#ARGC
-export CLANG_ENABLE_OBJC_ARC = YES
+
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
-OBJCFLAGS += -fobjc-arc
-# $(error The jre_emul build no longer supports an ARC build)
+#ARGC-- $(error The jre_emul build no longer supports an ARC build)
 endif
 
 # Specify bitcode flag if clang version 7 or greater. This is necessary to support

@@ -64,7 +64,6 @@ static const int SLOT_INDEX_SHIFT = (32+4);
 static const int64_t SLOT_INDEX_MASK = (uint64_t)-1 << SLOT_INDEX_SHIFT;
 
 extern "C" {
-    id ARGC_cloneInstance(id);
     void clearReclaimingReference(__unsafe_unretained id referent);
     void JreFinalize(id self);
 };
@@ -318,6 +317,7 @@ public:
     Method _no_java_finalize;
     
     ARGC() {
+        this->_inGC = false;
         RefContext::change_generation();
         JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
         JavaUtilHashMap_KeySet_CLASS = objc_lookUpClass("JavaUtilHashMap_KeySet");
@@ -604,7 +604,7 @@ private:
         }
     }
     
-    ScanOffsetArray* registerScanOffsets(Class clazz);
+    void registerScanOffsets(Class clazz);
     
     size_t argcObjectSize;
     std::atomic_int _cntRef;
@@ -622,7 +622,7 @@ private:
     NSObject* scanLock;
     Class obj_array_class;
     
-    BOOL _inGC = FALSE;
+    BOOL _inGC;
 public:
     static int mayHaveGarbage;
 };
@@ -658,11 +658,6 @@ static int64_t gc_interval = 0;
     return obj;
 }
 
-
-- (id)copy
-{
-    return ARGC_cloneInstance(self);
-}
 
 - (BOOL) isReachable:(BOOL)isStrong
 {
@@ -756,68 +751,76 @@ static int64_t gc_interval = 0;
 @end
 
 
-ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
+void ARGC::registerScanOffsets(Class clazz) {
     scan_offset_t _offset_buf[4096];
     id _test_obj_buf[4096];
-    ScanOffsetArray* res;
-    
+    ScanOffsetArray* res = objc_getAssociatedObject(clazz, &_instance);
+    if (res != NULL) {
+        return;
+    }
+
     @synchronized (_scanOffsetCache) {
-        ScanOffsetArray* res = objc_getAssociatedObject(clazz, &_instance);
+        res = objc_getAssociatedObject(clazz, &_instance);
         if (res != NULL) {
-            return res;
+            return;
         }
-        
-        int cntARGC = 0;
-        id clone = NSAllocateObject(clazz, 0, NULL);
-        int cntObjField = 0;
-        BOOL referentSkipped = false;
-        Method method = class_getInstanceMethod(clazz, @selector(java_finalize));
-        assert(method != NULL);
-        if (method != _no_java_finalize) {
-            _finalizeClasses[clazz] = clazz;
-        }
-        
-        for (Class cls = clazz; cls && cls != [NSObject class]; ) {
-            unsigned int ivarCount;
-            Ivar *ivars = class_copyIvarList(cls, &ivarCount);
-            for (unsigned int i = 0; i < ivarCount; i++) {
-                Ivar ivar = ivars[i];
-                const char *ivarType = ivar_getTypeEncoding(ivar);
-                if (*ivarType == '@') {
-                    if (cls == JavaLangRefReference_class) {
-                        //NSLog(@"Refernce.%s field check", ivar_getName(ivar));
-                        //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
-                        //continue;
-                    }
-                    ptrdiff_t offset = ivar_getOffset(ivar);
-                    _offset_buf[cntObjField] = offset / sizeof(ObjP);
-                    id obj = [[[NSObject alloc] retain] retain];
-                    __unsafe_unretained id* pField = (__unsafe_unretained id *)((char *)clone + offset);
-                    _test_obj_buf[cntObjField] = *pField = obj;
-                    cntObjField ++;
-                }
-            }
-            free(ivars);
-            cls = class_getSuperclass(cls);
-        }
-        
-        NSDeallocateObject(clone);
-        for (int i = 0; i < cntObjField; i ++) {
-            scan_offset_t offset = _offset_buf[i];
-            id field = _test_obj_buf[i];
-            NSUInteger cntRef = NSExtraRefCount(field);
-            if (cntRef > 1) {
-                _offset_buf[cntARGC++] = offset;
-            }
-        }
+        objc_setAssociatedObject(clazz, &_instance, _scanOffsetCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
     
-        _offset_buf[cntARGC++] = 0;
-        int memsize = cntARGC * sizeof(scan_offset_t);
-        ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
-        memcpy(offsetArray->offsets, _offset_buf, memsize);
+    int cntARGC = 0;
+    id clone = NSAllocateObject(clazz, 0, NULL);
+    int cntObjField = 0;
+    BOOL referentSkipped = false;
+    Method method = class_getInstanceMethod(clazz, @selector(java_finalize));
+    assert(method != NULL);
+    if (method != _no_java_finalize) {
+        _finalizeClasses[clazz] = clazz;
+    }
+    
+    for (Class cls = clazz; cls && cls != [NSObject class]; ) {
+        unsigned int ivarCount;
+        Ivar *ivars = class_copyIvarList(cls, &ivarCount);
+        for (unsigned int i = 0; i < ivarCount; i++) {
+            Ivar ivar = ivars[i];
+            const char *ivarType = ivar_getTypeEncoding(ivar);
+            if (*ivarType == '@') {
+                if (cls == JavaLangRefReference_class) {
+                    //NSLog(@"Refernce.%s field check", ivar_getName(ivar));
+                    //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
+                    //continue;
+                }
+                ptrdiff_t offset = ivar_getOffset(ivar);
+                _offset_buf[cntObjField] = offset / sizeof(ObjP);
+                id obj = [[[NSObject alloc] retain] retain];
+                __unsafe_unretained id* pField = (__unsafe_unretained id *)((char *)clone + offset);
+                _test_obj_buf[cntObjField] = *pField = obj;
+                cntObjField ++;
+            }
+        }
+        free(ivars);
+        cls = class_getSuperclass(cls);
+    }
+    
+    NSDeallocateObject(clone);
+    for (int i = 0; i < cntObjField; i ++) {
+        scan_offset_t offset = _offset_buf[i];
+        id field = _test_obj_buf[i];
+        NSUInteger cntRef = NSExtraRefCount(field);
+        if (cntRef > 1) {
+            /**
+             Dealloc 과정에서 ARC-decreement 가 발생하지 않은 것은 ARGC-Field 이다.
+             */
+            _offset_buf[cntARGC++] = offset;
+        }
+    }
+
+    _offset_buf[cntARGC++] = 0;
+    int memsize = cntARGC * sizeof(scan_offset_t);
+    ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
+    memcpy(offsetArray->offsets, _offset_buf, memsize);
+    @synchronized (_scanOffsetCache) {
         objc_setAssociatedObject(clazz, &_instance, offsetArray, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return res;
 }
 
 
@@ -1240,8 +1243,6 @@ extern "C" {
         }
     }
     
-    id ARGC_cloneInstance(id);
-    
     id JreLoadVolatileId(volatile_id *pVar);
     id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
     id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
@@ -1282,7 +1283,7 @@ extern "C" {
     }
     
     int ARGC_retainCount(id obj) {
-        return NSExtraRefCount(obj);
+        return (int)NSExtraRefCount(obj);
     }
     
     __attribute__((always_inline)) id ARGC_globalLock(id obj) {
@@ -1385,40 +1386,11 @@ extern "C" {
         }
     }
     
-    id ARGC_cloneInstance(id obj) {
-        id clone = NSCopyObject(obj, 0, NULL);
-
-        if (ARGC::isJavaObject(obj)) {
-            ARGC::_instance.initGCInfo(obj);
-        }
-        
-        Class cls = [obj class];
-        while (cls && cls != [NSObject class]) {
-            unsigned int ivarCount;
-            Ivar *ivars = class_copyIvarList(cls, &ivarCount);
-            for (unsigned int i = 0; i < ivarCount; i++) {
-                Ivar ivar = ivars[i];
-                const char *ivarType = ivar_getTypeEncoding(ivar);
-                if (*ivarType == '@') {
-                    ptrdiff_t offset = ivar_getOffset(ivar);
-                    __unsafe_unretained id field = *(__unsafe_unretained id *)((char *)clone + offset);
-                    if (field != NULL) ARGC_genericRetain(field);
-                }
-            }
-            free(ivars);
-            cls = class_getSuperclass(cls);
-        }
-        
-        return clone;
-    }
-    
     void ARGC_deallocClass(IOSClass* cls) {
         NSLog(@"dealloc class %@", cls);
         int a = 3;
     }
     
-    NSUInteger JreDefaultFastEnumeration(__unsafe_unretained id obj, NSFastEnumerationState *state,
-                                         __unsafe_unretained id *stackbuf, NSUInteger len);
 }
 
 id JreLoadVolatileId(volatile_id *pVar) {
@@ -1489,32 +1461,6 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
     *pDst = obj;
 }
 
-NSUInteger JreDefaultFastEnumeration(__unsafe_unretained id obj, NSFastEnumerationState *state,
-                                     __unsafe_unretained id *stackbuf, NSUInteger len) {
-    SEL hasNextSel = @selector(hasNext);
-    SEL nextSel = @selector(next);
-    id iter = (__bridge id) (void *) state->extra[0];
-    if (!iter) {
-        static unsigned long no_mutation = 1;
-        state->mutationsPtr = &no_mutation;
-        // The for/in loop could break early so we have no guarantee of being able
-        // to release the iterator. As long as the current autorelease pool is not
-        // cleared within the loop, this should be fine.
-        iter = nil_chk([obj iterator]);
-        state->extra[0] = (unsigned long) iter;
-        state->extra[1] = (unsigned long) [iter methodForSelector:hasNextSel];
-        state->extra[2] = (unsigned long) [iter methodForSelector:nextSel];
-    }
-    bool (*hasNextImpl)(id, SEL) = (bool (*)(id, SEL)) state->extra[1];
-    id (*nextImpl)(id, SEL) = (id (*)(id, SEL)) state->extra[2];
-    NSUInteger objCount = 0;
-    state->itemsPtr = stackbuf;
-    while (hasNextImpl(iter, hasNextSel) && objCount < len) {
-        *stackbuf++ = nextImpl(iter, nextSel);
-        objCount++;
-    }
-    return objCount;
-}
 
 void start_GC() {
     dispatch_async(dispatch_get_main_queue(), ^ {
