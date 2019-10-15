@@ -37,13 +37,7 @@ public class EnumRewriterTest extends GenerationTest {
         "Test_initWithId_withNSString_withInt_(e, @\"foo\", @\"A\", 0);");
   }
 
-  public void testNoDefaultToNsEnumConversion() throws Exception {
-    String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
-    assertNotInTranslation(translation, "toNSEnum");
-  }
-
   public void testToNsEnumConversion() throws Exception {
-    options.setSwiftFriendly(true);
     String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (Test_Enum)toNSEnum {",
@@ -52,8 +46,6 @@ public class EnumRewriterTest extends GenerationTest {
   }
 
   public void testEmptyEnum() throws Exception {
-    // Add --swift-friendly to test that toNSEnum is not generated.
-    options.setSwiftFriendly(true);
     String header = translateSourceFile("enum Test {}", "Test", "Test.h");
     assertNotInTranslation(header, "Test_Enum");
     String source = getTranslatedFile("Test.m");
