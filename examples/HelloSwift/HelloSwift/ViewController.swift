@@ -35,6 +35,21 @@ class ViewController: UIViewController {
     textView.text = text
   }
 
+  // It fails to build if the JRE was not build with nullability annotations.
+  func testNonNullReturnTypes() {
+    let b = JavaLangBoolean.valueOf(with: "x")
+    let _: JavaLangBoolean = b
+
+    let f = JavaLangFloat.valueOf(with: 3.14)
+    let _: JavaLangFloat = f
+
+    let h = JavaLangLong.toHexString(withLong: 100)
+    let _: String = h
+
+    let it = JavaUtilArrayList().iterator()
+    let _: JavaUtilIterator = it
+  }
+
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
