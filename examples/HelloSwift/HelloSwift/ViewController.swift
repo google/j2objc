@@ -48,6 +48,15 @@ class ViewController: UIViewController {
 
     let it = JavaUtilArrayList().iterator()
     let _: JavaUtilIterator = it
+
+    let t = JavaUtilCalendar.getInstance().getTime()
+    let _: JavaUtilDate = t
+
+    let e = JavaUtilVector().elements()
+    let _: JavaUtilEnumeration = e
+
+    let r = JavaUtilRegexPattern.compile(with: ".*")
+    let _: JavaUtilRegexPattern = r
   }
 
   override func didReceiveMemoryWarning() {
