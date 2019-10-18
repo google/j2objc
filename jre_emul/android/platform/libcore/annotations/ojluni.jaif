@@ -3603,6 +3603,74 @@ class Array:
             type: @libcore.util.NonNull
 
 package java.lang.reflect:
+class Constructor:
+
+    method <init>()V:
+        return:
+
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getModifiers()I:
+        return:
+
+    method getTypeParameters()[Ljava/lang/reflect/TypeVariable;:
+        return:
+
+    method getParameterTypes()[Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getParameterCount()I:
+        return:
+
+    method getGenericParameterTypes()[Ljava/lang/reflect/Type;:
+        return:
+
+    method getExceptionTypes()[Ljava/lang/Class;:
+        return:
+
+    method getGenericExceptionTypes()[Ljava/lang/reflect/Type;:
+        return:
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method newInstance([Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+    method isVarArgs()Z:
+        return:
+
+    method isSynthetic()Z:
+        return:
+
+    method getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:
+
+    method getParameterAnnotations()[[Ljava/lang/annotation/Annotation;:
+        return:
+
+package java.lang.reflect:
 class Executable:
 
     method <init>()V:
@@ -3861,6 +3929,100 @@ class Member:
         return:
 
 package java.lang.reflect:
+class Method:
+
+    method <init>()V:
+        return:
+
+    method getDeclaringClass()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+
+    method getName()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getModifiers()I:
+        return:
+
+    method getTypeParameters()[Ljava/lang/reflect/TypeVariable;:
+        return:
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getReturnType()Ljava/lang/Class;:
+        return: @libcore.util.NonNull
+
+    method getGenericReturnType()Ljava/lang/reflect/Type;:
+        return: @libcore.util.NonNull
+
+    method getParameterTypes()[Ljava/lang/Class;:
+        return:
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getParameterCount()I:
+        return:
+
+    method getGenericParameterTypes()[Ljava/lang/reflect/Type;:
+        return:
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getExceptionTypes()[Ljava/lang/Class;:
+        return:
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getGenericExceptionTypes()[Ljava/lang/reflect/Type;:
+        return:
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method toGenericString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.Nullable
+        parameter #1:
+            type: @libcore.util.Nullable
+                inner-type 0, 0: @libcore.util.Nullable
+
+    method isBridge()Z:
+        return:
+
+    method isVarArgs()Z:
+        return:
+
+    method isSynthetic()Z:
+        return:
+
+    method isDefault()Z:
+        return:
+
+    method getDefaultValue()Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+
+    method getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getDeclaredAnnotations()[Ljava/lang/annotation/Annotation;:
+        return:
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method getParameterAnnotations()[[Ljava/lang/annotation/Annotation;:
+        return:
+            inner-type 0, 0,0, 0: @libcore.util.NonNull
+
+package java.lang.reflect:
 class Parameter:
 
     method <init>(Ljava/lang/String;ILjava/lang/reflect/Executable;I)V:
@@ -4095,6 +4257,352 @@ class MessageDigest:
 
     method clone()Ljava/lang/Object;:
         return: @libcore.util.NonNull
+
+package java.text:
+class DateFormat:
+
+    field AM_PM_FIELD:
+
+    field DATE_FIELD:
+
+    field DAY_OF_WEEK_FIELD:
+
+    field DAY_OF_WEEK_IN_MONTH_FIELD:
+
+    field DAY_OF_YEAR_FIELD:
+
+    field DEFAULT:
+
+    field ERA_FIELD:
+
+    field FULL:
+
+    field HOUR0_FIELD:
+
+    field HOUR1_FIELD:
+
+    field HOUR_OF_DAY0_FIELD:
+
+    field HOUR_OF_DAY1_FIELD:
+
+    field LONG:
+
+    field MEDIUM:
+
+    field MILLISECOND_FIELD:
+
+    field MINUTE_FIELD:
+
+    field MONTH_FIELD:
+
+    field SECOND_FIELD:
+
+    field SHORT:
+
+    field TIMEZONE_FIELD:
+
+    field WEEK_OF_MONTH_FIELD:
+
+    field WEEK_OF_YEAR_FIELD:
+
+    field YEAR_FIELD:
+
+    field calendar:
+        type: @libcore.util.NonNull
+
+    field numberFormat:
+        type: @libcore.util.NonNull
+
+    method <init>()V:
+        return:
+
+    method format(Ljava/lang/Object;Ljava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+
+    method format(Ljava/util/Date;Ljava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+
+    method format(Ljava/util/Date;)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method parse(Ljava/lang/String;)Ljava/util/Date;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method parse(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/util/Date;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method parseObject(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method getTimeInstance()Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getTimeInstance(I)Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getTimeInstance(ILjava/util/Locale;)Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method getDateInstance()Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getDateInstance(I)Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getDateInstance(ILjava/util/Locale;)Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method getDateTimeInstance()Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getDateTimeInstance(II)Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getDateTimeInstance(IILjava/util/Locale;)Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+
+    method getInstance()Ljava/text/DateFormat;:
+        return: @libcore.util.NonNull
+
+    method getAvailableLocales()[Ljava/util/Locale;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method setCalendar(Ljava/util/Calendar;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getCalendar()Ljava/util/Calendar;:
+        return: @libcore.util.NonNull
+
+    method setNumberFormat(Ljava/text/NumberFormat;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getNumberFormat()Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+
+    method setTimeZone(Ljava/util/TimeZone;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getTimeZone()Ljava/util/TimeZone;:
+        return: @libcore.util.NonNull
+
+    method setLenient(Z)V:
+        return:
+
+    method isLenient()Z:
+        return:
+
+    method hashCode()I:
+        return:
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method clone()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+package java.text:
+class NumberFormat:
+
+    field FRACTION_FIELD:
+
+    field INTEGER_FIELD:
+
+    method <init>()V:
+        return:
+
+    method format(Ljava/lang/Object;Ljava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+
+    method parseObject(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method format(D)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method format(J)Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method format(DLjava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;:
+        return: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+
+    method format(JLjava/lang/StringBuffer;Ljava/text/FieldPosition;)Ljava/lang/StringBuffer;:
+        return: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+        parameter #2:
+            type: @libcore.util.NonNull
+
+    method parse(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/lang/Number;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+    method parse(Ljava/lang/String;)Ljava/lang/Number;:
+        return: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method isParseIntegerOnly()Z:
+        return:
+
+    method setParseIntegerOnly(Z)V:
+        return:
+
+    method getInstance()Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+
+    method getInstance(Ljava/util/Locale;)Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getNumberInstance()Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+
+    method getNumberInstance(Ljava/util/Locale;)Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getIntegerInstance()Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+
+    method getIntegerInstance(Ljava/util/Locale;)Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getCurrencyInstance()Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+
+    method getCurrencyInstance(Ljava/util/Locale;)Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getPercentInstance()Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+
+    method getPercentInstance(Ljava/util/Locale;)Ljava/text/NumberFormat;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getAvailableLocales()[Ljava/util/Locale;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method hashCode()I:
+        return:
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method clone()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+    method isGroupingUsed()Z:
+        return:
+
+    method setGroupingUsed(Z)V:
+        return:
+
+    method getMaximumIntegerDigits()I:
+        return:
+
+    method setMaximumIntegerDigits(I)V:
+        return:
+
+    method getMinimumIntegerDigits()I:
+        return:
+
+    method setMinimumIntegerDigits(I)V:
+        return:
+
+    method getMaximumFractionDigits()I:
+        return:
+
+    method setMaximumFractionDigits(I)V:
+        return:
+
+    method getMinimumFractionDigits()I:
+        return:
+
+    method setMinimumFractionDigits(I)V:
+        return:
+
+    method getCurrency()Ljava/util/Currency;:
+        return: @libcore.util.Nullable
+
+    method setCurrency(Ljava/util/Currency;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getRoundingMode()Ljava/math/RoundingMode;:
+        return: @libcore.util.NonNull
+
+    method setRoundingMode(Ljava/math/RoundingMode;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
 
 package java.util:
 class AbstractCollection:

@@ -57,6 +57,9 @@ class ViewController: UIViewController {
 
     let r = JavaUtilRegexPattern.compile(with: ".*")
     let _: JavaUtilRegexPattern = r
+
+    let nf = JavaTextNumberFormat.getInstance().format(with: 2.71828)
+    let _: String = nf
   }
 
   override func didReceiveMemoryWarning() {
