@@ -1,0 +1,11 @@
+{
+  "workspaceRoot" : "../../../../../..",
+  "projectName" : "HelloSwift",
+  "configDefaults" : {
+    "optionSet" : {
+    }
+  },
+  "packages" : [
+    "third_party/java_src/j2objc/examples/HelloSwift",
+  ]
+}
