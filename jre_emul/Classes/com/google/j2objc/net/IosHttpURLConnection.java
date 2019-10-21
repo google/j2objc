@@ -776,7 +776,13 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
    completionHandler:(void (^)(NSURLRequest *))completionHandler {
     if (self->instanceFollowRedirects_
         && [response.URL.scheme isEqualToString:request.URL.scheme]) {
-      completionHandler(request);
+      // Workaround for iOS bug (https://forums.developer.apple.com/thread/43818).
+      NSMutableURLRequest *nextRequest = [request mutableCopy];
+      NSString *responseCookies = [response.allHeaderFields objectForKey:@"Set-Cookie"];
+      if (responseCookies) {
+        [nextRequest setValue:responseCookies forHTTPHeaderField:@"Cookie"];
+      }
+      completionHandler(nextRequest);
     } else {
       completionHandler(nil);
     }
