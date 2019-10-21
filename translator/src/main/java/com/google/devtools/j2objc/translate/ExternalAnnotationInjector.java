@@ -125,7 +125,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       return false;
     }
     AClass annotatedParent = (AClass) annotatedElementStack.peekLast().get();
-    VariableElement element = node.getFragment(0).getVariableElement();
+    VariableElement element = node.getFragment().getVariableElement();
     AField annotatedField = annotatedParent.fields.get(ElementUtil.getName(element));
     if (annotatedField != null) {
       recordAnnotations(element, annotatedField.tlAnnotationsHere);

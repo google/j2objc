@@ -59,7 +59,7 @@ public final class SerializationStripper extends UnitTreeVisitor {
   /** Removes serialVersionUID field. */
   @Override
   public boolean visit(FieldDeclaration node) {
-    if (isSerializationField(node.getFragment(0).getVariableElement())) {
+    if (isSerializationField(node.getFragment().getVariableElement())) {
       node.remove();
     }
     return false;

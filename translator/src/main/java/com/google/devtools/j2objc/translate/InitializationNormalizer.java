@@ -139,10 +139,9 @@ public class InitializationNormalizer extends UnitTreeVisitor {
      * add them to the appropriate list of initialization statements.
      */
     private void addFieldInitializer(FieldDeclaration field) {
-      for (VariableDeclarationFragment frag : field.getFragments()) {
-        if (frag.getInitializer() != null) {
-          handleFieldInitializer(frag);
-        }
+      VariableDeclarationFragment frag = field.getFragment();
+      if (frag.getInitializer() != null) {
+        handleFieldInitializer(frag);
       }
     }
 

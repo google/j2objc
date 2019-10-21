@@ -282,11 +282,10 @@ public class MetadataWriter extends UnitTreeVisitor {
       for (FieldDeclaration decl : TreeUtil.getFieldDeclarations(typeNode)) {
         // Fields that share a declaration can share an annotations function.
         String annotationsFunc = createAnnotationsFunction(decl);
-        for (VariableDeclarationFragment f : decl.getFragments()) {
-          String metadata = generateFieldMetadata(f.getVariableElement(), annotationsFunc);
-          if (metadata != null) {
-            fieldMetadata.add(metadata);
-          }
+        VariableDeclarationFragment f = decl.getFragment();
+        String metadata = generateFieldMetadata(f.getVariableElement(), annotationsFunc);
+        if (metadata != null) {
+          fieldMetadata.add(metadata);
         }
       }
       if (fieldMetadata.size() > 0) {

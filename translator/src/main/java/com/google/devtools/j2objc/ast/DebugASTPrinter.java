@@ -432,13 +432,7 @@ public class DebugASTPrinter extends TreeVisitor {
     printModifiers(node.getModifiers());
     sb.print(node.getTypeMirror().toString());
     sb.print(' ');
-    for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
-        it.hasNext(); ) {
-      it.next().accept(this);
-      if (it.hasNext()) {
-        sb.print(", ");
-      }
-    }
+    node.getFragment().accept(this);
     sb.println(';');
     return false;
   }

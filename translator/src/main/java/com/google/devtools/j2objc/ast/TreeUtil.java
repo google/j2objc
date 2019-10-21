@@ -180,16 +180,10 @@ public class TreeUtil {
       public Iterator<VariableDeclarationFragment> iterator() {
         final Iterator<FieldDeclaration> fieldIter = fieldDecls.iterator();
         return new AbstractIterator<VariableDeclarationFragment>() {
-          private Iterator<VariableDeclarationFragment> fragIter;
           @Override protected VariableDeclarationFragment computeNext() {
-            do {
-              if (fragIter != null && fragIter.hasNext()) {
-                return fragIter.next();
-              }
-              if (fieldIter.hasNext()) {
-                fragIter = fieldIter.next().getFragments().iterator();
-              }
-            } while (fieldIter.hasNext() || (fragIter != null && fragIter.hasNext()));
+            while (fieldIter.hasNext()) {
+              return fieldIter.next().getFragment();
+            }
             return endOfData();
           }
         };
