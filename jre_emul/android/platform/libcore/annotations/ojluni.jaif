@@ -750,6 +750,718 @@ class CharSequence:
         return: @libcore.util.NonNull
 
 package java.lang:
+class Character$Subset:
+
+    method <init>(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+package java.lang:
+class Character$UnicodeBlock:
+
+    field AEGEAN_NUMBERS:
+
+    field ALCHEMICAL_SYMBOLS:
+
+    field ALPHABETIC_PRESENTATION_FORMS:
+
+    field ANCIENT_GREEK_MUSICAL_NOTATION:
+
+    field ANCIENT_GREEK_NUMBERS:
+
+    field ANCIENT_SYMBOLS:
+
+    field ARABIC:
+
+    field ARABIC_EXTENDED_A:
+
+    field ARABIC_MATHEMATICAL_ALPHABETIC_SYMBOLS:
+
+    field ARABIC_PRESENTATION_FORMS_A:
+
+    field ARABIC_PRESENTATION_FORMS_B:
+
+    field ARABIC_SUPPLEMENT:
+
+    field ARMENIAN:
+
+    field ARROWS:
+
+    field AVESTAN:
+
+    field BALINESE:
+
+    field BAMUM:
+
+    field BAMUM_SUPPLEMENT:
+
+    field BASIC_LATIN:
+
+    field BATAK:
+
+    field BENGALI:
+
+    field BLOCK_ELEMENTS:
+
+    field BOPOMOFO:
+
+    field BOPOMOFO_EXTENDED:
+
+    field BOX_DRAWING:
+
+    field BRAHMI:
+
+    field BRAILLE_PATTERNS:
+
+    field BUGINESE:
+
+    field BUHID:
+
+    field BYZANTINE_MUSICAL_SYMBOLS:
+
+    field CARIAN:
+
+    field CHAKMA:
+
+    field CHAM:
+
+    field CHEROKEE:
+
+    field CJK_COMPATIBILITY:
+
+    field CJK_COMPATIBILITY_FORMS:
+
+    field CJK_COMPATIBILITY_IDEOGRAPHS:
+
+    field CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT:
+
+    field CJK_RADICALS_SUPPLEMENT:
+
+    field CJK_STROKES:
+
+    field CJK_SYMBOLS_AND_PUNCTUATION:
+
+    field CJK_UNIFIED_IDEOGRAPHS:
+
+    field CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A:
+
+    field CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B:
+
+    field CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C:
+
+    field CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D:
+
+    field COMBINING_DIACRITICAL_MARKS:
+
+    field COMBINING_DIACRITICAL_MARKS_SUPPLEMENT:
+
+    field COMBINING_HALF_MARKS:
+
+    field COMBINING_MARKS_FOR_SYMBOLS:
+
+    field COMMON_INDIC_NUMBER_FORMS:
+
+    field CONTROL_PICTURES:
+
+    field COPTIC:
+
+    field COUNTING_ROD_NUMERALS:
+
+    field CUNEIFORM:
+
+    field CUNEIFORM_NUMBERS_AND_PUNCTUATION:
+
+    field CURRENCY_SYMBOLS:
+
+    field CYPRIOT_SYLLABARY:
+
+    field CYRILLIC:
+
+    field CYRILLIC_EXTENDED_A:
+
+    field CYRILLIC_EXTENDED_B:
+
+    field CYRILLIC_SUPPLEMENTARY:
+
+    field DESERET:
+
+    field DEVANAGARI:
+
+    field DEVANAGARI_EXTENDED:
+
+    field DINGBATS:
+
+    field DOMINO_TILES:
+
+    field EGYPTIAN_HIEROGLYPHS:
+
+    field EMOTICONS:
+
+    field ENCLOSED_ALPHANUMERICS:
+
+    field ENCLOSED_ALPHANUMERIC_SUPPLEMENT:
+
+    field ENCLOSED_CJK_LETTERS_AND_MONTHS:
+
+    field ENCLOSED_IDEOGRAPHIC_SUPPLEMENT:
+
+    field ETHIOPIC:
+
+    field ETHIOPIC_EXTENDED:
+
+    field ETHIOPIC_EXTENDED_A:
+
+    field ETHIOPIC_SUPPLEMENT:
+
+    field GENERAL_PUNCTUATION:
+
+    field GEOMETRIC_SHAPES:
+
+    field GEORGIAN:
+
+    field GEORGIAN_SUPPLEMENT:
+
+    field GLAGOLITIC:
+
+    field GOTHIC:
+
+    field GREEK:
+
+    field GREEK_EXTENDED:
+
+    field GUJARATI:
+
+    field GURMUKHI:
+
+    field HALFWIDTH_AND_FULLWIDTH_FORMS:
+
+    field HANGUL_COMPATIBILITY_JAMO:
+
+    field HANGUL_JAMO:
+
+    field HANGUL_JAMO_EXTENDED_A:
+
+    field HANGUL_JAMO_EXTENDED_B:
+
+    field HANGUL_SYLLABLES:
+
+    field HANUNOO:
+
+    field HEBREW:
+
+    field HIGH_PRIVATE_USE_SURROGATES:
+
+    field HIGH_SURROGATES:
+
+    field HIRAGANA:
+
+    field IDEOGRAPHIC_DESCRIPTION_CHARACTERS:
+
+    field IMPERIAL_ARAMAIC:
+
+    field INSCRIPTIONAL_PAHLAVI:
+
+    field INSCRIPTIONAL_PARTHIAN:
+
+    field IPA_EXTENSIONS:
+
+    field JAVANESE:
+
+    field KAITHI:
+
+    field KANA_SUPPLEMENT:
+
+    field KANBUN:
+
+    field KANGXI_RADICALS:
+
+    field KANNADA:
+
+    field KATAKANA:
+
+    field KATAKANA_PHONETIC_EXTENSIONS:
+
+    field KAYAH_LI:
+
+    field KHAROSHTHI:
+
+    field KHMER:
+
+    field KHMER_SYMBOLS:
+
+    field LAO:
+
+    field LATIN_1_SUPPLEMENT:
+
+    field LATIN_EXTENDED_A:
+
+    field LATIN_EXTENDED_ADDITIONAL:
+
+    field LATIN_EXTENDED_B:
+
+    field LATIN_EXTENDED_C:
+
+    field LATIN_EXTENDED_D:
+
+    field LEPCHA:
+
+    field LETTERLIKE_SYMBOLS:
+
+    field LIMBU:
+
+    field LINEAR_B_IDEOGRAMS:
+
+    field LINEAR_B_SYLLABARY:
+
+    field LISU:
+
+    field LOW_SURROGATES:
+
+    field LYCIAN:
+
+    field LYDIAN:
+
+    field MAHJONG_TILES:
+
+    field MALAYALAM:
+
+    field MANDAIC:
+
+    field MATHEMATICAL_ALPHANUMERIC_SYMBOLS:
+
+    field MATHEMATICAL_OPERATORS:
+
+    field MEETEI_MAYEK:
+
+    field MEETEI_MAYEK_EXTENSIONS:
+
+    field MEROITIC_CURSIVE:
+
+    field MEROITIC_HIEROGLYPHS:
+
+    field MIAO:
+
+    field MISCELLANEOUS_MATHEMATICAL_SYMBOLS_A:
+
+    field MISCELLANEOUS_MATHEMATICAL_SYMBOLS_B:
+
+    field MISCELLANEOUS_SYMBOLS:
+
+    field MISCELLANEOUS_SYMBOLS_AND_ARROWS:
+
+    field MISCELLANEOUS_SYMBOLS_AND_PICTOGRAPHS:
+
+    field MISCELLANEOUS_TECHNICAL:
+
+    field MODIFIER_TONE_LETTERS:
+
+    field MONGOLIAN:
+
+    field MUSICAL_SYMBOLS:
+
+    field MYANMAR:
+
+    field MYANMAR_EXTENDED_A:
+
+    field NEW_TAI_LUE:
+
+    field NKO:
+
+    field NUMBER_FORMS:
+
+    field OGHAM:
+
+    field OLD_ITALIC:
+
+    field OLD_PERSIAN:
+
+    field OLD_SOUTH_ARABIAN:
+
+    field OLD_TURKIC:
+
+    field OL_CHIKI:
+
+    field OPTICAL_CHARACTER_RECOGNITION:
+
+    field ORIYA:
+
+    field OSMANYA:
+
+    field PHAGS_PA:
+
+    field PHAISTOS_DISC:
+
+    field PHOENICIAN:
+
+    field PHONETIC_EXTENSIONS:
+
+    field PHONETIC_EXTENSIONS_SUPPLEMENT:
+
+    field PLAYING_CARDS:
+
+    field PRIVATE_USE_AREA:
+
+    field REJANG:
+
+    field RUMI_NUMERAL_SYMBOLS:
+
+    field RUNIC:
+
+    field SAMARITAN:
+
+    field SAURASHTRA:
+
+    field SHARADA:
+
+    field SHAVIAN:
+
+    field SINHALA:
+
+    field SMALL_FORM_VARIANTS:
+
+    field SORA_SOMPENG:
+
+    field SPACING_MODIFIER_LETTERS:
+
+    field SPECIALS:
+
+    field SUNDANESE:
+
+    field SUNDANESE_SUPPLEMENT:
+
+    field SUPERSCRIPTS_AND_SUBSCRIPTS:
+
+    field SUPPLEMENTAL_ARROWS_A:
+
+    field SUPPLEMENTAL_ARROWS_B:
+
+    field SUPPLEMENTAL_MATHEMATICAL_OPERATORS:
+
+    field SUPPLEMENTAL_PUNCTUATION:
+
+    field SUPPLEMENTARY_PRIVATE_USE_AREA_A:
+
+    field SUPPLEMENTARY_PRIVATE_USE_AREA_B:
+
+    field SURROGATES_AREA: 
+
+    field SYLOTI_NAGRI:
+
+    field SYRIAC:
+
+    field TAGALOG:
+
+    field TAGBANWA:
+
+    field TAGS:
+
+    field TAI_LE:
+
+    field TAI_THAM:
+
+    field TAI_VIET:
+
+    field TAI_XUAN_JING_SYMBOLS:
+
+    field TAKRI:
+
+    field TAMIL:
+
+    field TELUGU:
+
+    field THAANA:
+
+    field THAI:
+
+    field TIBETAN:
+
+    field TIFINAGH:
+
+    field TRANSPORT_AND_MAP_SYMBOLS:
+
+    field UGARITIC:
+
+    field UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS:
+
+    field UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS_EXTENDED:
+
+    field VAI:
+
+    field VARIATION_SELECTORS:
+
+    field VARIATION_SELECTORS_SUPPLEMENT:
+
+    field VEDIC_EXTENSIONS:
+
+    field VERTICAL_FORMS:
+
+    field YIJING_HEXAGRAM_SYMBOLS:
+
+    field YI_RADICALS:
+
+    field YI_SYLLABLES:
+
+    method <init>(Ljava/lang/String;)V:
+        return:
+
+    method of(C)Ljava/lang/Character$UnicodeBlock;:
+        return: @libcore.util.Nullable
+
+    method of(I)Ljava/lang/Character$UnicodeBlock;:
+        return: @libcore.util.Nullable
+
+    method forName(Ljava/lang/String;)Ljava/lang/Character$UnicodeBlock;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <clinit>()V:
+        return:
+
+package java.lang:
+class Character$UnicodeScript:
+
+    field COMMON:
+
+    field LATIN:
+
+    field GREEK:
+
+    field CYRILLIC:
+
+    field ARMENIAN:
+
+    field HEBREW:
+
+    field ARABIC:
+
+    field SYRIAC:
+
+    field THAANA:
+
+    field DEVANAGARI:
+
+    field BENGALI:
+
+    field GURMUKHI:
+
+    field GUJARATI:
+
+    field ORIYA:
+
+    field TAMIL:
+
+    field TELUGU:
+
+    field KANNADA:
+
+    field MALAYALAM:
+
+    field SINHALA:
+
+    field THAI:
+
+    field LAO:
+
+    field TIBETAN:
+
+    field MYANMAR:
+
+    field GEORGIAN:
+
+    field HANGUL:
+
+    field ETHIOPIC:
+
+    field CHEROKEE:
+
+    field CANADIAN_ABORIGINAL:
+
+    field OGHAM:
+
+    field RUNIC:
+
+    field KHMER:
+
+    field MONGOLIAN:
+
+    field HIRAGANA:
+
+    field KATAKANA:
+
+    field BOPOMOFO:
+
+    field HAN:
+
+    field YI:
+
+    field OLD_ITALIC:
+
+    field GOTHIC:
+
+    field DESERET:
+
+    field INHERITED:
+
+    field TAGALOG:
+
+    field HANUNOO:
+
+    field BUHID:
+
+    field TAGBANWA:
+
+    field LIMBU:
+
+    field TAI_LE:
+
+    field LINEAR_B:
+
+    field UGARITIC:
+
+    field SHAVIAN:
+
+    field OSMANYA:
+
+    field CYPRIOT:
+
+    field BRAILLE:
+
+    field BUGINESE:
+
+    field COPTIC:
+
+    field NEW_TAI_LUE:
+
+    field GLAGOLITIC:
+
+    field TIFINAGH:
+
+    field SYLOTI_NAGRI:
+
+    field OLD_PERSIAN:
+
+    field KHAROSHTHI:
+
+    field BALINESE:
+
+    field CUNEIFORM:
+
+    field PHOENICIAN:
+
+    field PHAGS_PA:
+
+    field NKO:
+
+    field SUNDANESE:
+
+    field BATAK:
+
+    field LEPCHA:
+
+    field OL_CHIKI:
+
+    field VAI:
+
+    field SAURASHTRA:
+
+    field KAYAH_LI:
+
+    field REJANG:
+
+    field LYCIAN:
+
+    field CARIAN:
+
+    field LYDIAN:
+
+    field CHAM:
+
+    field TAI_THAM:
+
+    field TAI_VIET:
+
+    field AVESTAN:
+
+    field EGYPTIAN_HIEROGLYPHS:
+
+    field SAMARITAN:
+
+    field MANDAIC:
+
+    field LISU:
+
+    field BAMUM:
+
+    field JAVANESE:
+
+    field MEETEI_MAYEK:
+
+    field IMPERIAL_ARAMAIC:
+
+    field OLD_SOUTH_ARABIAN:
+
+    field INSCRIPTIONAL_PARTHIAN:
+
+    field INSCRIPTIONAL_PAHLAVI:
+
+    field OLD_TURKIC:
+
+    field BRAHMI:
+
+    field KAITHI:
+
+    field MEROITIC_HIEROGLYPHS:
+
+    field MEROITIC_CURSIVE:
+
+    field SORA_SOMPENG:
+
+    field CHAKMA:
+
+    field SHARADA:
+
+    field TAKRI:
+
+    field MIAO:
+
+    field UNKNOWN:
+
+    field $VALUES:
+
+    method values()[Ljava/lang/Character$UnicodeScript;:
+        return:
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Character$UnicodeScript;:
+        return:
+
+    method <init>(Ljava/lang/String;I)V:
+        return:
+
+    method of(I)Ljava/lang/Character$UnicodeScript;:
+        return: @libcore.util.NonNull
+
+    method forName(Ljava/lang/String;)Ljava/lang/Character$UnicodeScript;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <clinit>()V:
+        return:
+
+package java.lang:
 class Character:
 
     field BYTES:
@@ -3093,6 +3805,45 @@ class System:
         return:
 
 package java.lang:
+class Thread$State:
+
+    field NEW:
+
+    field RUNNABLE:
+
+    field BLOCKED:
+
+    field WAITING:
+
+    field TIMED_WAITING:
+
+    field TERMINATED:
+
+    field $VALUES:
+
+    method values()[Ljava/lang/Thread$State;:
+        return:
+
+    method valueOf(Ljava/lang/String;)Ljava/lang/Thread$State;:
+        return:
+
+    method <init>(Ljava/lang/String;I)V:
+        return:
+
+    method <clinit>()V:
+        return:
+
+package java.lang:
+class Thread$UncaughtExceptionHandler: 
+
+    method uncaughtException(Ljava/lang/Thread;Ljava/lang/Throwable;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+
+package java.lang:
 class Thread:
 
     field MAX_PRIORITY:
@@ -4259,6 +5010,80 @@ class MessageDigest:
         return: @libcore.util.NonNull
 
 package java.text:
+class DateFormat$Field:
+
+    field AM_PM:
+        type: @libcore.util.NonNull
+
+    field DAY_OF_MONTH:
+        type: @libcore.util.NonNull
+
+    field DAY_OF_WEEK:
+        type: @libcore.util.NonNull
+
+    field DAY_OF_WEEK_IN_MONTH:
+        type: @libcore.util.NonNull
+
+    field DAY_OF_YEAR:
+        type: @libcore.util.NonNull
+
+    field ERA:
+        type: @libcore.util.NonNull
+
+    field HOUR0:
+        type: @libcore.util.NonNull
+
+    field HOUR1:
+        type: @libcore.util.NonNull
+
+    field HOUR_OF_DAY0:
+        type: @libcore.util.NonNull
+
+    field HOUR_OF_DAY1:
+        type: @libcore.util.NonNull
+
+    field MILLISECOND:
+        type: @libcore.util.NonNull
+
+    field MINUTE:
+        type: @libcore.util.NonNull
+
+    field MONTH:
+        type: @libcore.util.NonNull
+
+    field SECOND:
+        type: @libcore.util.NonNull
+
+    field TIME_ZONE:
+        type: @libcore.util.NonNull
+
+    field WEEK_OF_MONTH:
+        type: @libcore.util.NonNull
+
+    field WEEK_OF_YEAR:
+        type: @libcore.util.NonNull
+
+    field YEAR:
+        type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;I)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method ofCalendarField(I)Ljava/text/DateFormat$Field;:
+        return: @libcore.util.NonNull
+
+    method getCalendarField()I:
+        return:
+
+    method readResolve()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+    method <clinit>()V:
+        return:
+
+package java.text:
 class DateFormat:
 
     field AM_PM_FIELD:
@@ -4438,6 +5263,53 @@ class DateFormat:
 
     method clone()Ljava/lang/Object;:
         return: @libcore.util.NonNull
+
+package java.text:
+class NumberFormat$Field:
+
+    field CURRENCY:
+        type: @libcore.util.NonNull
+
+    field DECIMAL_SEPARATOR:
+        type: @libcore.util.NonNull
+
+    field EXPONENT:
+        type: @libcore.util.NonNull
+
+    field EXPONENT_SIGN:
+        type: @libcore.util.NonNull
+
+    field EXPONENT_SYMBOL:
+        type: @libcore.util.NonNull
+
+    field FRACTION:
+        type: @libcore.util.NonNull
+
+    field GROUPING_SEPARATOR:
+        type: @libcore.util.NonNull
+
+    field INTEGER:
+        type: @libcore.util.NonNull
+
+    field PERCENT:
+        type: @libcore.util.NonNull
+
+    field PERMILLE:
+        type: @libcore.util.NonNull
+
+    field SIGN:
+        type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method readResolve()Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+
+    method <clinit>()V:
+        return:
 
 package java.text:
 class NumberFormat:
@@ -4745,6 +5617,84 @@ class AbstractList:
 
     method removeRange(II)V:
         return:
+
+package java.util:
+class AbstractMap$SimpleEntry:
+
+    method <init>(Ljava/lang/Object;Ljava/lang/Object;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method <init>(Ljava/util/Map$Entry;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method getKey()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method getValue()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method setValue(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+package java.util:
+class AbstractMap$SimpleImmutableEntry:
+
+    method <init>(Ljava/lang/Object;Ljava/lang/Object;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+        parameter #1:
+            type: @libcore.util.NullFromTypeParam
+
+    method <init>(Ljava/util/Map$Entry;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+                inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
+
+    method getKey()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method getValue()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method setValue(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
 
 package java.util:
 class AbstractMap:
@@ -6067,6 +7017,64 @@ class Arrays:
         return: @libcore.util.NonNull
         parameter #0:
             type: @libcore.util.NonNull
+
+package java.util:
+class Calendar$Builder:
+
+    method <init>()V:
+        return:
+
+    method setInstant(J)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setInstant(Ljava/util/Date;)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method set(II)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setFields([I)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method setDate(III)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setTimeOfDay(III)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setTimeOfDay(IIII)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setWeekDate(III)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setTimeZone(Ljava/util/TimeZone;)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method setLenient(Z)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method setCalendarType(Ljava/lang/String;)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method setLocale(Ljava/util/Locale;)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method setWeekDefinition(II)Ljava/util/Calendar$Builder;:
+        return: @libcore.util.NonNull
+
+    method build()Ljava/util/Calendar;:
+        return: @libcore.util.NonNull
 
 package java.util:
 class Calendar:
@@ -7629,6 +8637,179 @@ class List:
             inner-type 3, 0: @libcore.util.NullFromTypeParam
 
 package java.util:
+class Locale$Builder:
+
+    method <init>()V:
+        return:
+
+    method setLocale(Ljava/util/Locale;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method setLanguageTag(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method setLanguage(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method setScript(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method setRegion(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method setVariant(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method setExtension(CLjava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method setUnicodeLocaleKeyword(Ljava/lang/String;Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method addUnicodeLocaleAttribute(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method removeUnicodeLocaleAttribute(Ljava/lang/String;)Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method clear()Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+
+    method clearExtensions()Ljava/util/Locale$Builder;:
+        return: @libcore.util.NonNull
+
+    method build()Ljava/util/Locale;:
+        return: @libcore.util.NonNull
+
+package java.util:
+class Locale$Category:
+
+    field DISPLAY:
+
+    field FORMAT:
+
+    field $VALUES:
+
+    method values()[Ljava/util/Locale$Category;:
+        return:
+
+    method valueOf(Ljava/lang/String;)Ljava/util/Locale$Category;:
+        return:
+
+    method <init>(Ljava/lang/String;I)V:
+        return:
+
+    method <clinit>()V:
+        return:
+
+package java.util:
+class Locale$FilteringMode:
+
+    field AUTOSELECT_FILTERING:
+
+    field EXTENDED_FILTERING:
+
+    field IGNORE_EXTENDED_RANGES:
+
+    field MAP_EXTENDED_RANGES:
+
+    field REJECT_EXTENDED_RANGES:
+
+    field $VALUES:
+
+    method values()[Ljava/util/Locale$FilteringMode;:
+        return:
+
+    method valueOf(Ljava/lang/String;)Ljava/util/Locale$FilteringMode;:
+        return:
+
+    method <init>(Ljava/lang/String;I)V:
+        return:
+
+    method <clinit>()V:
+        return:
+
+package java.util:
+class Locale$LanguageRange:
+
+    field MAX_WEIGHT:
+
+    field MIN_WEIGHT:
+
+    method <init>(Ljava/lang/String;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method <init>(Ljava/lang/String;D)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method getRange()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getWeight()D:
+        return:
+
+    method parse(Ljava/lang/String;)Ljava/util/List;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method parse(Ljava/lang/String;Ljava/util/Map;)Ljava/util/List;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0: @libcore.util.NonNull
+                inner-type 3, 1: @libcore.util.NonNull
+                inner-type 3, 1,3, 0: @libcore.util.NonNull
+
+    method mapEquivalents(Ljava/util/List;Ljava/util/Map;)Ljava/util/List;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.NonNull
+                inner-type 3, 0: @libcore.util.NonNull
+                inner-type 3, 1: @libcore.util.NonNull
+                inner-type 3, 1,3, 0: @libcore.util.NonNull
+
+    method hashCode()I:
+        return:
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+package java.util:
 class Locale:
 
     field CANADA:
@@ -7924,6 +9105,58 @@ class Locale:
 
     method <clinit>()V:
         return:
+
+package java.util:
+class Map$Entry:
+
+    method getKey()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method getValue()Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+
+    method setValue(Ljava/lang/Object;)Ljava/lang/Object;:
+        return: @libcore.util.NullFromTypeParam
+        parameter #0:
+            type: @libcore.util.NullFromTypeParam
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method hashCode()I:
+        return:
+
+    method comparingByKey()Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 1: @libcore.util.Nullable
+
+    method comparingByValue()Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.Nullable
+            inner-type 3, 0,3, 1: @libcore.util.NonNull
+
+    method comparingByKey(Ljava/util/Comparator;)Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.NullFromTypeParam
+            inner-type 3, 0,3, 1: @libcore.util.Nullable
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
+
+    method comparingByValue(Ljava/util/Comparator;)Ljava/util/Comparator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 0,3, 0: @libcore.util.Nullable
+            inner-type 3, 0,3, 1: @libcore.util.NullFromTypeParam
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
 
 package java.util:
 class Map:
@@ -9028,6 +10261,103 @@ class WeakHashMap:
                 inner-type 3, 0,2, 0: @libcore.util.NullFromTypeParam
                 inner-type 3, 1,2, 0: @libcore.util.NullFromTypeParam
                 inner-type 3, 2,2, 0: @libcore.util.NullFromTypeParam
+
+package java.util.concurrent:
+class ConcurrentHashMap$KeySetView:
+
+    method <init>(Ljava/util/concurrent/ConcurrentHashMap;Ljava/lang/Object;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+        parameter #1:
+            type: @libcore.util.Nullable
+
+    method getMappedValue()Ljava/lang/Object;:
+        return: @libcore.util.Nullable
+
+    method contains(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method remove(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method iterator()Ljava/util/Iterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+
+    method add(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method addAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NonNull
+
+    method hashCode()I:
+        return:
+
+    method equals(Ljava/lang/Object;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.Nullable
+
+    method spliterator()Ljava/util/Spliterator;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+
+    method forEach(Ljava/util/function/Consumer;)V:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+                inner-type 3, 0,2, 0: @libcore.util.NonNull
+
+    method removeAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method size()I:
+        return:
+
+    method containsAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method clear()V:
+        return:
+
+    method isEmpty()Z:
+        return:
+
+    method toArray()[Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+            inner-type 0, 0: @libcore.util.NonNull
+
+    method toArray([Ljava/lang/Object;)[Ljava/lang/Object;:
+        return: @libcore.util.NonNull
+        parameter #0:
+            type: @libcore.util.NonNull
+
+    method toString()Ljava/lang/String;:
+        return: @libcore.util.NonNull
+
+    method getMap()Ljava/util/concurrent/ConcurrentHashMap;:
+        return: @libcore.util.NonNull
+            inner-type 3, 0: @libcore.util.NonNull
+            inner-type 3, 1: @libcore.util.NonNull
+
+    method retainAll(Ljava/util/Collection;)Z:
+        return:
+        parameter #0:
+            type: @libcore.util.NonNull
 
 package java.util.concurrent:
 class ConcurrentHashMap:

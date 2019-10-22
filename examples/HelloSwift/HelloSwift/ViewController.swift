@@ -52,6 +52,9 @@ class ViewController: UIViewController {
     let t = JavaUtilCalendar.getInstance().getTime()
     let _: JavaUtilDate = t
 
+    let c = JavaUtilCalendar_Builder().setDateWith(2019, with: 10, with: 18).build()
+    let _: JavaUtilCalendar = c
+
     let e = JavaUtilVector().elements()
     let _: JavaUtilEnumeration = e
 
