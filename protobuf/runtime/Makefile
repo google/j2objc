@@ -22,6 +22,7 @@ include $(J2OBJC_ROOT)/java_deps/jars.mk
 
 SRCS = \
   com/google/protobuf/AbstractMessage.m \
+  com/google/protobuf/AbstractMessageLite.m \
   com/google/protobuf/ByteString.m \
   com/google/protobuf/CodedInputStream.mm \
   com/google/protobuf/CodedOutputStream.mm \
@@ -42,6 +43,7 @@ SRCS = \
 # of the ProtobufRuntime framework.
 STATIC_FRAMEWORK_PUBLIC_HEADERS = \
   com/google/protobuf/AbstractMessage.h \
+  com/google/protobuf/AbstractMessageLite.h \
   com/google/protobuf/ByteString.h \
   com/google/protobuf/Descriptors.h \
   com/google/protobuf/Extension.h \

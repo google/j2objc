@@ -28,32 +28,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Created by Keith Stanger on Apr. 3, 2017.
-//
-//  Hand written counterpart for com.google.protobuf.AbstractMessage.
+//  Hand written counterpart for com.google.protobuf.AbstractMessageLite.
 
-#ifndef __ComGoogleProtobufAbstractMessage_H__
-#define __ComGoogleProtobufAbstractMessage_H__
+#ifndef __ComGoogleProtobufAbstractMessageLite_H__
+#define __ComGoogleProtobufAbstractMessageLite_H__
 
-#include "J2ObjC_header.h"
+#include "JreEmulation.h"
 
-#include "com/google/protobuf/AbstractMessageLite.h"
-#include "com/google/protobuf/Message.h"
+#include "com/google/protobuf/MessageLite.h"
+#include "com/google/protobuf/MessageLiteOrBuilder.h"
 
-@interface ComGoogleProtobufAbstractMessage :
-    ComGoogleProtobufAbstractMessageLite<ComGoogleProtobufMessage>
+@interface ComGoogleProtobufAbstractMessageLite :
+    NSObject<ComGoogleProtobufMessageLite, ComGoogleProtobufMessageLiteOrBuilder>
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessageLite)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessageLite)
 
-@interface ComGoogleProtobufAbstractMessage_Builder :
-    ComGoogleProtobufAbstractMessageLite_Builder<ComGoogleProtobufMessage_Builder>
+@interface ComGoogleProtobufAbstractMessageLite_Builder :
+    NSObject<ComGoogleProtobufMessageLite_Builder, ComGoogleProtobufMessageLiteOrBuilder>
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage_Builder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessageLite_Builder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage_Builder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessageLite_Builder)
 
-#endif // __ComGoogleProtobufAbstractMessage_H__
+#endif // __ComGoogleProtobufAbstractMessageLite_H__

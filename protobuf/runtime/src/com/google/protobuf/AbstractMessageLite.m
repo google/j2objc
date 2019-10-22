@@ -28,32 +28,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Created by Keith Stanger on Apr. 3, 2017.
-//
-//  Hand written counterpart for com.google.protobuf.AbstractMessage.
-
-#ifndef __ComGoogleProtobufAbstractMessage_H__
-#define __ComGoogleProtobufAbstractMessage_H__
-
-#include "J2ObjC_header.h"
+//  Hand written counterpart for com.google.protobuf.AbstractMessageLite.
 
 #include "com/google/protobuf/AbstractMessageLite.h"
-#include "com/google/protobuf/Message.h"
 
-@interface ComGoogleProtobufAbstractMessage :
-    ComGoogleProtobufAbstractMessageLite<ComGoogleProtobufMessage>
+// AbstractMessageLite is an abstract class so not all the methods in the
+// MessageLite protocol are implemented here.
+#pragma GCC diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wprotocol"
+
+@implementation ComGoogleProtobufAbstractMessageLite
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufAbstractMessageLite)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage)
-
-@interface ComGoogleProtobufAbstractMessage_Builder :
-    ComGoogleProtobufAbstractMessageLite_Builder<ComGoogleProtobufMessage_Builder>
+@implementation ComGoogleProtobufAbstractMessageLite_Builder
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage_Builder)
-
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage_Builder)
-
-#endif // __ComGoogleProtobufAbstractMessage_H__
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufAbstractMessageLite_Builder)
