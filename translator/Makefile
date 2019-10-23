@@ -350,10 +350,17 @@ dist: $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
+COMMON_TEST_FLAGS = \
+  -classpath $(TEST_CLASSPATH):$(TEST_BOOT_CLASSPATH) \
+  -Xss4m -XX:+UseParallelGC \
+  -ea junit.textui.TestRunner
+
 test: compile-tests copy-test-resources
-	$(JAVA) -classpath $(TEST_CLASSPATH):$(TEST_BOOT_CLASSPATH) \
-	    -Xss4m -XX:+UseParallelGC \
-	    -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
+	$(JAVA) $(COMMON_TEST_FLAGS) com.google.devtools.j2objc.SmallTests
+
+regression-test: compile-tests copy-test-resources
+	$(JAVA) -Dj2objcc.path=$(ARCH_BIN_DIR)/j2objcc $(COMMON_TEST_FLAGS) \
+	    com.google.devtools.j2objc.regression.LambdaExpressionsTest
 
 compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
