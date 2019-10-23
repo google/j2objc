@@ -755,6 +755,7 @@
 		06F093B82304A53300BF7E3D /* ASCCharsetDecoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093AC2304A53300BF7E3D /* ASCCharsetDecoderTest.m */; };
 		06F093BB2305141D00BF7E3D /* UTFCharsetEncoderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093B92305141D00BF7E3D /* UTFCharsetEncoderTest.m */; };
 		06F093C22305E4C600BF7E3D /* CharsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F093C12305E4C600BF7E3D /* CharsetTest.m */; };
+		06FA82CE2360B10D00193F9F /* LibraryNotLinkedErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FA82CD2360B10D00193F9F /* LibraryNotLinkedErrorTest.m */; };
 		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
 		6A4BAAF7200C7C8300BF59E4 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A4BAAF5200C7C5600BF59E4 /* LocaleTest.m */; };
 		6A5D0294219CCFD6004F1BA7 /* IosSecureRandomImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5D0293219CCF01004F1BA7 /* IosSecureRandomImplTest.m */; };
@@ -4038,6 +4039,7 @@
 		06F2917918972E8200676F1D /* Unsafe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Unsafe.h; path = build_result/Classes/sun/misc/Unsafe.h; sourceTree = "<group>"; };
 		06F2917A18972E8200676F1D /* Unsafe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Unsafe.m; path = build_result/Classes/sun/misc/Unsafe.m; sourceTree = "<group>"; };
 		06F6ECFE18AAABD500875541 /* Portability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portability.h; sourceTree = "<group>"; };
+		06FA82CD2360B10D00193F9F /* LibraryNotLinkedErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LibraryNotLinkedErrorTest.m; path = com/google/j2objc/LibraryNotLinkedErrorTest.m; sourceTree = "<group>"; };
 		06FACA1118AD34B8008501DD /* BufferUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferUtils.h; sourceTree = "<group>"; };
 		2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionaryMap.h; sourceTree = "<group>"; };
 		2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMap.m; sourceTree = "<group>"; };
@@ -6694,6 +6696,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				06FA82CD2360B10D00193F9F /* LibraryNotLinkedErrorTest.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
@@ -8327,6 +8330,7 @@
 				0620297C1D512F41001EE455 /* Support_MapTest2.m in Sources */,
 				FAAB054422F39CBA002A32D0 /* HexEncodingTest.m in Sources */,
 				062026F31D512D17001EE455 /* SmallTests.m in Sources */,
+				06FA82CE2360B10D00193F9F /* LibraryNotLinkedErrorTest.m in Sources */,
 				063A62DD1F67267C001DC971 /* MockReader.m in Sources */,
 				062026341D512CA1001EE455 /* OldFileWriterTest.m in Sources */,
 				062B4F131ED76B8D00D4E7D8 /* OldErrorManagerTest.m in Sources */,
