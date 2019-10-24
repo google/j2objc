@@ -3472,13 +3472,13 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   				"  public static void main(String[] args) {\n" +
   				"    IF factory=java.util.function.IntFunction[][][]::new;\n" +
   				"    Object o = factory.apply(10);\n" +
-  				"    System.out.println(o.getClass());\n" +
+  				// "    System.out.println(o.getClass());\n" +
   				"    java.util.function.IntFunction[][][] sa = (java.util.function.IntFunction[][][]) o;\n" +
   				"    System.out.println(sa.length);\n" +
   				"  }\n" +
   				"}\n"
   			},
-  			"class [[[Ljava.util.function.IntFunction;\n" + 
+  			// "class [[[Ljava.util.function.IntFunction;\n" +
   			"10");
   }
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=429112,  [1.8][compiler] Exception when compiling Serializable array constructor reference
@@ -3493,13 +3493,13 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   				"  public static void main(String[] args) {\n" +
   				"    IF factory=java.util.function.IntFunction[]::new;\n" +
   				"    Object o = factory.apply(10);\n" +
-  				"    System.out.println(o.getClass());\n" +
+  				// "    System.out.println(o.getClass());\n" +
   				"    java.util.function.IntFunction[] sa = (java.util.function.IntFunction[]) o;\n" +
   				"    System.out.println(sa.length);\n" +
   				"  }\n" +
   				"}\n"
   			},
-  			"class [Ljava.util.function.IntFunction;\n" + 
+  			// "class [Ljava.util.function.IntFunction;\n" +
   			"10");
   }
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=429112,  [1.8][compiler] Exception when compiling Serializable array constructor reference
