@@ -44,6 +44,7 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.UnionType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -448,8 +449,25 @@ public final class TypeUtil {
       return getIosArray(((ArrayType) t).getComponentType());
     } else if (isDeclaredType(t)) {
       return getObjcClass((TypeElement) ((DeclaredType) t).asElement());
+    } else if (t.getKind() == TypeKind.UNION) {
+      TypeMirror lub = leastUpperBound(((UnionType)t).getAlternatives());
+      return getObjcClass(asTypeElement(lub));
     }
     return null;
+  }
+
+  private TypeMirror leastUpperBound(List<? extends TypeMirror> types) {
+    List<TypeMirror> superTypes = new ArrayList<>();
+    superTypes.add(types.get(0));
+    while (!superTypes.isEmpty()) {
+      TypeMirror lub = superTypes.remove(0);
+      if (types.stream().allMatch(t -> isAssignable(t, lub))) {
+        // At some point we'll get here because Object is the root of the class hierarchy.
+        return lub;
+      }
+      superTypes.addAll(directSupertypes(lub));
+    }
+    throw new AssertionError("Unreachable path.");
   }
 
   public TypeElement getObjcClass(TypeElement element) {

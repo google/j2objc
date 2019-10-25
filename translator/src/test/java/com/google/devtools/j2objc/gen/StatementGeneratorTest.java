@@ -1359,6 +1359,25 @@ public class StatementGeneratorTest extends GenerationTest {
         "@catch (JavaLangException *e) {\n    @throw e;\n  }");
   }
 
+  public void testLambdaCapturesMultiCatchExceptionParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.function.Supplier; "
+            + "public class Test { "
+            + "  public void test() { "
+            + "    try { "
+            + "      \"\".charAt(10); "
+            + "    } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e) { "
+            + "      Supplier<String> s = () -> e.getMessage(); "
+            + "      System.out.println(s.get()); "
+            + "    } "
+            + "  } "
+            + "} ",
+        "Test", "Test.m");
+    // Note that the type of the captured parameter is the least upper bound of
+    // (Array | String) IndexOutOfBoundsException.
+    assertTranslation(translation, "JavaLangIndexOutOfBoundsException *capture$0");
+  }
+
   public void testDifferentTypesInConditionalExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { String test(Runnable r) { return \"foo\" + (r != null ? r : \"bar\"); } }",

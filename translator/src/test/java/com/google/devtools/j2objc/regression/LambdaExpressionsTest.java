@@ -333,7 +333,6 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   				"Argv[0] = Hello! \n" + 
   				"Argv[1] = World!");
   }
-  /* TODO(b/27552662): J2ObjC failure.
   public void test015() {
   	this.runConformTest(
   			new String[] {
@@ -355,7 +354,7 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   					"}\n"
   				},
   				"null");
-  }*/
+  }
   public void test016() {
   	this.runConformTest(
   			new String[] {
