@@ -162,7 +162,7 @@ public abstract class AbstractRegressionTest extends GenerationTest {
     if (ErrorUtil.errorCount() > 0) {
       regressionFail(methodName, ls, res, Joiner.on(' ').join(ErrorUtil.getErrorMessages()));
     }
-    if (res == null || res.isEmpty()) {
+    if (J2OBJCC_LOCATION.isEmpty() || res == null || res.isEmpty()) {
       return;
     }
     List<String> mFileArgs = getImplementationFileList(fileArgs);
