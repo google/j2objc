@@ -365,11 +365,7 @@ public final class TypeUtil {
       // so prefer the JDT behavior here.
       return Collections.emptyList();
     }
-    List<? extends TypeMirror> result = new ArrayList<>(javacTypes.directSupertypes(t));
-    if (TypeUtil.isInterface(t)) {
-      result.remove(javaObject.asType());
-    }
-    return result;
+    return javacTypes.directSupertypes(t);
   }
 
   public TypeMirror erasure(TypeMirror t) {

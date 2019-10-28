@@ -493,7 +493,6 @@ public class NameTable {
     if (currentType == null) {
       return null;
     }
-    // TODO(tball): simplify to ElementUtil.getSuperclass() when javac update is complete.
     TypeElement superclass = currentType.getKind().isInterface()
         ? typeUtil.getJavaObject() : ElementUtil.getSuperclass(currentType);
     ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
