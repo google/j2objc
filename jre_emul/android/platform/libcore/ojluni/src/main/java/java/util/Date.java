@@ -125,7 +125,9 @@ import sun.util.calendar.Gregorian;
  * @see     java.util.Calendar
  * @see     java.util.TimeZone
  * @since   JDK1.0
+ * @deprecated see <a href="http://go/date-deprecation">go/date-deprecation</a>
  */
+@Deprecated
 public class Date
     implements java.io.Serializable, Cloneable, Comparable<Date>
 {
