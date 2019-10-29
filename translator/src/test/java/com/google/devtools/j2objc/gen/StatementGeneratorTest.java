@@ -349,6 +349,19 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "RELEASE_(i_);");
   }
 
+  public void testStaticFinalFieldAccessWithParenthesizedExpression() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { "
+            + "  private static final int t = 7; "
+            + "  static int test() { "
+            + "    Object o = new Test(); "
+            + "    return ((Test)o).t; "
+            + "  } "
+            + "}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return Test_t;");
+  }
+
   public void testInnerInnerClassFieldAccess() throws IOException {
     String translation = translateSourceFile(
         "public class Test { static class One {} static class Two extends Test { "

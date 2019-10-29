@@ -2366,8 +2366,7 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   		"");
   }
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=426411, [1.8][compiler] NoSuchMethodError at runtime due to emission order of casts in intersection casts 
-  /* TODO(b/27552662): J2ObjC failure.
-	public void test426411e() throws Exception {
+  public void test426411e() throws Exception {
   	this.runConformTest(
   		new String[] {
   				"X.java",
@@ -2403,7 +2402,7 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   				"}\n",
   		},
   		"99");
-  }*/
+  }
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=426086, [1.8] LambdaConversionException when method reference to an inherited method is invoked from sub class 
   public void test426086() throws Exception {
   	this.runConformTest(
