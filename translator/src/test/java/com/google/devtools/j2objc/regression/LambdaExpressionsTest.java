@@ -618,8 +618,7 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   				"X.foo(1234,4321)\n" + 
   				"5555");
   }
-  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=406589, [1.8][compiler][codegen] super call misdispatched 
-  /* TODO(b/27552662): J2ObjC failure.
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=406589, [1.8][compiler][codegen] super call misdispatched
 	public void test027() {
   	this.runConformTest(
   			new String[] {
@@ -658,7 +657,7 @@ public class LambdaExpressionsTest extends AbstractRegressionTest {
   				"I.foo(1234,4321)\n" + 
   				"5555\n" + 
   				"Exception");
-  }*/
+  }
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=406584, Bug 406584 - [1.8][compiler][codegen] ClassFormatError: Invalid method signature 
   public void test028() {
   	this.runConformTest(

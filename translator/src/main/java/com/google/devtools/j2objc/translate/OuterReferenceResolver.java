@@ -433,7 +433,15 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     }
   }
 
-  private Name getSuperInvocationPath(Name qualifier) {
+  private Name getSuperPath(Name qualifier, ExecutableElement executableElement) {
+    if (ElementUtil.isDefault(executableElement)) {
+      // Default methods can be invoked with super. In this
+      // case the qualifier is not an enclosing class, but the interface that
+      // implements the default method. Since the default method is an instance
+      // method it captures self.
+      qualifier = null;
+    }
+
     if (qualifier != null) {
       return getOuterPath((TypeElement) qualifier.getElement());
     } else {
@@ -447,18 +455,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    if (ElementUtil.isDefault(node.getExecutableElement())) {
-      // Default methods can be invoked with a SuperMethodInvocation. In this
-      // case the qualifier is not an enclosing class, but the interface that
-      // implements the default method. Since the default method is an instance
-      // method it captures self.
-      Scope currentScope = peekScope();
-      if (ElementUtil.isLambda(currentScope.type)) {
-        node.setReceiver(getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
-      }
-    } else {
-      node.setReceiver(getSuperInvocationPath(node.getQualifier()));
-    }
+    node.setReceiver(getSuperPath(node.getQualifier(), node.getExecutableElement()));
     node.setQualifier(null);
   }
 
@@ -466,7 +463,8 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
   public void endVisit(SuperMethodReference node) {
     TypeElement lambdaType = node.getTypeElement();
     pushType(lambdaType);
-    node.setReceiver(getSuperInvocationPath(TreeUtil.remove(node.getQualifier())));
+    Name qualifier = TreeUtil.remove(node.getQualifier());
+    node.setReceiver(getSuperPath(qualifier, node.getExecutableElement()));
     popType();
     endVisitFunctionalExpression(node);
   }
