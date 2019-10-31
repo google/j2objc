@@ -701,9 +701,10 @@ public class Thread implements Runnable {
           return;
       }
 
-      synchronized (nativeThread) {
+      Object lock = currentThread().nativeThread;
+      synchronized (lock) {
           while (isAlive()) {
-              nativeThread.wait(POLL_INTERVAL);
+              lock.wait(POLL_INTERVAL);
           }
       }
   }
@@ -752,7 +753,8 @@ public class Thread implements Runnable {
           return;
       }
 
-      synchronized (nativeThread) {
+      Object lock = currentThread().nativeThread;
+      synchronized (lock) {
           if (!isAlive()) {
               return;
           }
@@ -764,9 +766,9 @@ public class Thread implements Runnable {
           long start = System.nanoTime();
           while (true) {
               if (millis > POLL_INTERVAL) {
-                nativeThread.wait(POLL_INTERVAL);
+                lock.wait(POLL_INTERVAL);
               } else {
-                nativeThread.wait(millis, nanos);
+                lock.wait(millis, nanos);
               }
               if (!isAlive()) {
                   break;
