@@ -604,7 +604,7 @@ CHECKER_QUAL_SOURCES = \
     org/checkerframework/framework/qual/DefaultFor.java \
     org/checkerframework/framework/qual/DefaultInUncheckedCodeFor.java \
     org/checkerframework/framework/qual/DefaultQualifierInHierarchy.java \
-    org/checkerframework/framework/qual/ImplicitFor.java \
+    org/checkerframework/framework/qual/DefaultQualifiers.java \
     org/checkerframework/framework/qual/InheritedAnnotation.java \
     org/checkerframework/framework/qual/LiteralKind.java \
     org/checkerframework/framework/qual/MonotonicQualifier.java \
@@ -625,7 +625,7 @@ CHECKER_QUAL_SOURCES_ORIGINAL_PATH = \
     framework/src/org/checkerframework/framework/qual/DefaultFor.java \
     framework/src/org/checkerframework/framework/qual/DefaultInUncheckedCodeFor.java \
     framework/src/org/checkerframework/framework/qual/DefaultQualifierInHierarchy.java \
-    framework/src/org/checkerframework/framework/qual/ImplicitFor.java \
+    framework/src/org/checkerframework/framework/qual/DefaultQualifiers.java \
     framework/src/org/checkerframework/framework/qual/InheritedAnnotation.java \
     framework/src/org/checkerframework/framework/qual/LiteralKind.java \
     framework/src/org/checkerframework/framework/qual/MonotonicQualifier.java \
