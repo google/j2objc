@@ -175,10 +175,7 @@ endif
 # Settings for classes that need to always compile without ARC.
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 
-ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
-ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
-
-OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0 $(ARGC_CPP_FLAGS)
+OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0 
 
 # Require C11 compilation to support Java volatile translation.
 #ARGC-- OBJCFLAGS += -std=c11

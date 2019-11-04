@@ -81,6 +81,9 @@ arch_flags = $(strip \
 fat_lib_dependencies:
 	@:
 
+ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
+ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
+
 # Generates compile rule.
 # Args:
 #   1: output directory

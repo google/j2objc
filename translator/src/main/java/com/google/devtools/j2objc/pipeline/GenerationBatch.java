@@ -59,7 +59,7 @@ public class GenerationBatch {
 
   private GenerationUnit globalCombinedUnit = null;
   
-  public GenerationBatch(Options options, Parser parser) {
+  public GenerationBatch(Options options, /*ARGC++*/Parser parser) {
 	this.argc_parser = parser;
     this.options = options;
     if (options.globalCombinedOutput() != null) {

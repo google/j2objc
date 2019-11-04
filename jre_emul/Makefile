@@ -54,7 +54,7 @@ FAT_LIB_SOURCE_DIRS = $(NATIVE_SOURCE_DIRS) $(GEN_OBJC_DIR)
 # OBJCPP_BUILD is an optional environment variable for Objective-C++ build experiments.
 # J2ObjC and app releases should not be built with this flag, nor is its use supported.
 ifeq ($(OBJCPP_BUILD), YES)
-FAT_LIB_COMPILE = $(CLANG) $(OBJCPPFLAGS) -I$(GEN_OBJC_DIR)
+FAT_LIB_COMPILE = $(CLANG) $(OBJCPPFLAGS) $(ARGC_CPP_FLAGS) -I$(GEN_OBJC_DIR)
 # TODO(tball): add support for Obj-C++ precompiled header.
 else
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(GEN_OBJC_DIR)
