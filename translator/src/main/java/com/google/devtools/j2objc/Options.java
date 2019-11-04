@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.util.PackagePrefixes;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
@@ -341,11 +342,12 @@ public class Options {
       } else if (arg.startsWith("@")) {
         processArgsFile(arg.substring(1));
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
-        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
+        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true, true));
       } else if (arg.equals("-sourcepath")) {
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
+        fileUtil.getSourcePathEntries()
+            .addAll(getPathArgument(getArgValue(args, arg), false, false));
       } else if (arg.equals("-processorpath")) {
-        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
+        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true, false));
       } else if (arg.equals("-d")) {
         fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--mapping")) {
@@ -657,7 +659,8 @@ public class Options {
     System.exit(0);
   }
 
-  private List<String> getPathArgument(String argument, boolean expandAarFiles) {
+  private List<String> getPathArgument(String argument, boolean expandAarFiles,
+      boolean expandWildcard) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       if (entry.startsWith("~/")) {
@@ -666,6 +669,17 @@ public class Options {
         entry = System.getProperty("user.home") + entry.substring(1);
       }
       File f = new File(entry);
+      if (f.getName().equals("*") && expandWildcard) {
+        File parent = f.getParentFile() == null ? new File(".") : f.getParentFile();
+        FileFilter jarFilter = file -> file.getName().endsWith(".jar");
+        File[] files = parent.listFiles(jarFilter);
+        if (files != null) {
+          for (File jar : files) {
+            entries.add(jar.toString());
+          }
+        }
+        continue;
+      }
       if (entry.endsWith(".aar") && expandAarFiles) {
         // Extract classes.jar from Android library AAR file.
         f = fileUtil().extractClassesJarFromAarFile(f);
@@ -776,7 +790,7 @@ public class Options {
   }
 
   public List<String> getBootClasspath() {
-    return getPathArgument(bootclasspath, false);
+    return getPathArgument(bootclasspath, false, false);
   }
 
   public Mappings getMappings() {
