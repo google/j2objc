@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -214,6 +215,14 @@ public class NameTableTest extends GenerationTest {
     translation = translateSourceFile(
         "class Test { A test() { return new A(\"foo\", 5); } }", "Test", "Test.m");
     assertTranslation(translation, "return create_A_init_offset_(@\"foo\", 5);");
+  }
+
+  public void testRenamePackagePrivateClassConstructor() throws IOException {
+    Options.setRenamePackagePrivateClassConstructors(true);
+    String translation = translateSourceFile("package foo.bar; class Test { Test(int unused) {} }",
+        "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslation(translation, "initPackagePrivateWithInt_");
+    Options.setRenamePackagePrivateClassConstructors(false);
   }
 
   public void testSuperMethodNotNamedWarning() throws IOException {

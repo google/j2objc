@@ -343,7 +343,15 @@ public class NameTable {
 
   private static String getMethodName(ExecutableElement method) {
     if (ElementUtil.isConstructor(method)) {
-      return "init";
+      TypeElement clazz = ElementUtil.getDeclaringClass(method);
+      boolean needsPackagePrivateSuffix = ElementUtil.isTopLevel(clazz)
+          && ElementUtil.getVisibilityModifiers(clazz).isEmpty()
+          && !ElementUtil.isEnum(clazz)
+          // Do not apply this change to classes in the default package
+          // because it affects/breaks several translator tests.
+          && !ElementUtil.getPackage(clazz).isUnnamed()
+          && Options.renamePackagePrivateClassConstructors();
+      return needsPackagePrivateSuffix ? "initPackagePrivate" : "init";
     }
     String name = ElementUtil.getName(method);
     if (isReservedName(name)) {
