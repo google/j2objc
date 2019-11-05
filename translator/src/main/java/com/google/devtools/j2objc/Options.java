@@ -386,7 +386,6 @@ public class Options {
           /*/
     	  argc_noPackageDeirectories = true;
     	  //*/
-
       } else if (arg.equals("--preserve-full-paths")) {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
       } else if (arg.equals("-XcombineJars")) {
