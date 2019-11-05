@@ -54,13 +54,14 @@ $(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 # Postprocessing: update procyon to not depend on URLClassPath.
 $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	mvn -q generate-resources dependency:sources
-	@curl -s -o $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
-	  http://central.maven.org/maven2/org/bitbucket/mstrobel/procyon-compilertools/0.5.33/$(NEW_PROCYON_COMPILERTOOLS_JAR)
-	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
-	  com/strobel/assembler/metadata/ClasspathTypeLoader.class
-	@cd $(BUILD_DIR) && jar uf $(PROCYON_COMPILERTOOLS_JAR) com/strobel/assembler/metadata/ClasspathTypeLoader.class
-	@rm -rf $(BUILD_DIR)/com
-	@rm $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR)
+#ARGC --
+#	@curl -s -o $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
+#	  http://central.maven.org/maven2/org/bitbucket/mstrobel/procyon-compilertools/0.5.33/$(NEW_PROCYON_COMPILERTOOLS_JAR)
+#	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
+#	  com/strobel/assembler/metadata/ClasspathTypeLoader.class
+#	@cd $(BUILD_DIR) && jar uf $(PROCYON_COMPILERTOOLS_JAR) com/strobel/assembler/metadata/ClasspathTypeLoader.class
+#	@rm -rf $(BUILD_DIR)/com
+#	@rm $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR)
 	@touch $@
 
 $(BUILD_DIR)/$(JUNIT_JAR): $(BUILD_DIR)/$(JUNIT_ROOT_JAR)
