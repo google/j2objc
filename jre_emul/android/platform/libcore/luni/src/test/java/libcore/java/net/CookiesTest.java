@@ -21,6 +21,7 @@ import java.net.CookieStore;
 import java.net.InMemoryCookieStore;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,8 @@ public class CookiesTest extends AbstractCookiesTest {
     // http://b/26456024
     public void testCookiesWithLeadingPeriod() throws Exception {
         CookieManager cm = new CookieManager(createCookieStore(), null);
-        Map<String, List<String>> responseHeaders = new HashMap<>();
-        List<String> list = new ArrayList<String>();
-        list.add("coulomb_sess=81c112d7dabac869ffa821aa8f672df2");
-        responseHeaders.put("Set-Cookie", list);
+        Map<String, List<String>> responseHeaders = Collections.singletonMap("Set-Cookie",
+                Collections.singletonList("foo=bar"));
 
         URI uri = new URI("http://chargepoint.com");
         cm.put(uri, responseHeaders);
@@ -46,8 +45,7 @@ public class CookiesTest extends AbstractCookiesTest {
                 new URI("https://webservices.chargepoint.com/backend.php/mobileapi/"),
                 responseHeaders);
 
-        assertEquals(1, cookies.size());
         List<String> cookieList = cookies.values().iterator().next();
-        assertEquals("coulomb_sess=81c112d7dabac869ffa821aa8f672df2", cookieList.get(0));
+        assertEquals(Collections.singletonList("foo=bar"), cookieList);
     }
 }
