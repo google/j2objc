@@ -158,7 +158,7 @@ public class ARGC {
 					}
 				}
 			}
-			
+
 			sb.append(':');
 			for (int i = 1; i < cntParam; i++) {
 				String n = node.getParameter(i).getVariableElement().getSimpleName().toString();
@@ -234,15 +234,15 @@ public class ARGC {
 		map.put("jfloat", "float");
 		map.put("jdouble", "double");
 	}
-	
+
 	public static String getObjCType(String res) {
 		return map.get(res);
 	}
 
-	
-	
+
+
 	public static class SourceList extends ArrayList<String> {
-		
+
 		private String root;
 		private Options options;
 		private JarTypeLoader currTypeLoader;
@@ -253,57 +253,53 @@ public class ARGC {
 
 		public boolean add(String filename) {
 			File f = new File(filename);
+			if (!f.exists()) {
+				ErrorUtil.warning("Invalid source: " + filename);
+				return false;
+			}
 			if (f.isDirectory()) {
-			    	try {
-						this.addFolderTree(f);
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
+				try {
+					this.addFolderTree(f);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 			else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
-			    try {
-			        ZipFile zfile = new ZipFile(f);
-			        try {
-			          Enumeration<? extends ZipEntry> enumerator = zfile.entries();
-			          File tempDir = FileUtil.createTempDir("J2ObjCTempDir");
-//			          String tempDirPath = tempDir.getAbsolutePath();
-////			          options.fileUtil().addTempDir(tempDirPath);
-			          options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
-//
-			          while (enumerator.hasMoreElements()) {
-			            ZipEntry entry = enumerator.nextElement();
-			            String internalPath = entry.getName();
-			            if (internalPath.endsWith(".java")
-			                || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
-			              // Extract JAR file to a temporary directory
-			              File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
-//			              InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);
-//			              if (combinedUnit != null) {
-//			                inputs.add(new ProcessingContext(newFile, combinedUnit));
-//			              } else {
-//			                addExtractedJarSource(newFile, filename, internalPath);
-//			              }
-			            }
-			          }
-			          this.currTypeLoader = new JarTypeLoader(new JarFile(f));
-			          this.addFolderTree(tempDir);
-			        } finally {
-			          zfile.close();  // Also closes input stream.
-			        }
-			      } catch (ZipException e) { // Also catches JarExceptions
-			        e.printStackTrace();
-			        ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
-			      } catch (IOException e) {
-			        ErrorUtil.error(e.getMessage());
-			      }
-				
+				try {
+					ZipFile zfile = new ZipFile(f);
+					try {
+						Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+						File tempDir = FileUtil.createTempDir("J2ObjCTempDir");
+						options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
+						this.currTypeLoader = new JarTypeLoader(new JarFile(f));
+						this.metadataSystem = new MetadataSystem(currTypeLoader);
+						while (enumerator.hasMoreElements()) {
+							ZipEntry entry = enumerator.nextElement();
+							String internalPath = entry.getName();
+							if (internalPath.endsWith(".java")
+									|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
+								// Extract JAR file to a temporary directory
+								File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+							}
+						}
+						this.addFolderTree(tempDir);
+					} finally {
+						zfile.close();  // Also closes input stream.
+					}
+				} catch (ZipException e) { // Also catches JarExceptions
+					e.printStackTrace();
+					ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
+				} catch (IOException e) {
+					ErrorUtil.error(e.getMessage());
+				}
+
 			}
 			else {
 				super.add(filename);
 			}
 			return true;
 		}
-		
+
 		private void add(File f) throws IOException {
 			if (f.isDirectory()) {
 				addFolder(f);
@@ -316,27 +312,30 @@ public class ARGC {
 			else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
 				String filepath = f.getAbsolutePath();
 				String source = doSaveClassDecompiled(f);
+				if (source == null) return;
+
 				filepath = filepath.substring(0, filepath.length() - 5) + "java";
+				System.out.println("discompiled: " + filepath);
 				PrintStream out = new PrintStream(new FileOutputStream(filepath));
 				out.println(source);
 				out.close();
 				String filename = filepath.substring(root.length());
 				super.add(filename);
 			}
-			
-			
+
+
 		}
-	
-		  private TypeReference lookupType(String path) {
-			    MetadataSystem metadataSystem = new MetadataSystem(currTypeLoader);
-			    /* Hack to get around classes whose descriptors clash with primitive types. */
-			    if (path.length() == 1) {
-			      MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
-			      return metadataSystem.resolve(parser.parseTypeDescriptor(path));
-			    }
-			    return metadataSystem.lookupType(path);
-			  }
-		
+
+		MetadataSystem metadataSystem;
+		private TypeReference lookupType(String path) {
+			/* Hack to get around classes whose descriptors clash with primitive types. */
+			if (path.length() == 1) {
+				MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+				return metadataSystem.resolve(parser.parseTypeDescriptor(path));
+			}
+			return metadataSystem.lookupType(path);
+		}
+
 		private String doSaveClassDecompiled(File inFile) {
 			//			      List<File> classPath = new ArrayList<>();
 			//			      classPath.add(new File(rootPath));
@@ -345,17 +344,20 @@ public class ARGC {
 			String filepath = inFile.getAbsolutePath();
 			String classsig = filepath.substring(root.length(), filepath.length() - 6);
 
-			if (classsig.endsWith("VersionHelper12")) {
+			if (classsig.endsWith("JFlexLexer")) {//$ZzFlexStreamInfo")) {
 				int a = 3;
 				a ++;
 			}
 			TypeReference typeRef = lookupType(classsig); 
+			if (typeRef.getDeclaringType() != null) {
+				return null;
+			}
 			TypeDefinition resolvedType = null;
 			if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
 				throw new RuntimeException("Unable to resolve type.");
 			}
 			DecompilerSettings settings = DecompilerSettings.javaDefaults();
-			settings.setExcludeNestedTypes(true);
+			settings.setForceExplicitImports(true);
 			settings.setShowSyntheticMembers(true);
 			StringWriter stringwriter = new StringWriter();
 			DecompilationOptions decompilationOptions;
@@ -368,7 +370,7 @@ public class ARGC {
 			settings.getLanguage().decompileType(resolvedType, plainTextOutput,
 					decompilationOptions);
 			String decompiledSource = stringwriter.toString();
-			System.out.println(decompiledSource);
+			//System.out.println(decompiledSource);
 			return decompiledSource;
 			//		            if (decompiledSource.contains(textField.getText().toLowerCase())) {
 			//		                addClassName(entry.getName());
@@ -376,93 +378,93 @@ public class ARGC {
 
 
 		}
-		
+
 		private void addFolder(File f) throws IOException {
 			File files[] = f.listFiles();
 			for (File f2 : files) {
 				add(f2);
 			}
 		}
-	
+
 		private void addFolderTree(File f) throws IOException {
-	        options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
-			
+			options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
+
 			options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
 			root = f.getAbsolutePath() + '/';
 			this.addFolder(f);
 		}
-		
-	    
+
+
 
 		public class Oz_InputFile implements InputFile {
 			private final String path, fsPath, unitPath;
-	
+
 			public Oz_InputFile(String fsPath, String path0) {
 				this.fsPath = fsPath;
 				this.path = path0.replace('\\', '/');
 				this.unitPath = path.substring(fsPath.length() + 1);
 			}
-	
+
 			@Override
 			public boolean exists() {
 				return new File(path).exists();
 			}
-	
+
 			@Override
 			public InputStream getInputStream() throws IOException {
 				return new FileInputStream(new File(path));
 			}
-	
+
 			@Override
 			public Reader openReader(Charset charset) throws IOException {
 				return new InputStreamReader(getInputStream(), charset);
 			}
-	
+
 			public String getPath() {
 				return path;
 			}
-	
+
 			public String getContainingPath() {
 				return fsPath;
 			}
-	
+
 			@Override
 			public String getUnitName() {
 				return unitPath;
 			}
-	
+
 			@Override
 			public String getBasename() {
 				return unitPath.substring(unitPath.lastIndexOf('/') + 1);
 			}
-	
+
 			@Override
 			public long lastModified() {
 				return new File(path).lastModified();
 			}
-	
+
 			@Override
 			public String toString() {
 				return getPath();
 			}
-	
+
 			@Override
 			public String getAbsolutePath() {
 				return path;
 			}
-	
+
 			@Override
 			public String getOriginalLocation() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-	
+
 		}
 
 	}
 
 	public static class Preprocessor  {
-		
+
 		private String root;
 		private com.google.devtools.j2objc.util.Parser parser;
 		private Options options;
@@ -472,14 +474,14 @@ public class ARGC {
 			this.parser = parser;
 			this.options = options;
 		}
-		
+
 		private void addFolder(File f) {
 			File files[] = f.listFiles();
 			for (File f2 : files) {
 				addSource(f2);
 			}
 		}
-		
+
 		private void addSource(File f) {
 			String filepath = f.getAbsolutePath();
 			String filename = filepath.substring(root.length());
@@ -500,9 +502,9 @@ public class ARGC {
 				}
 			}
 		}
-	
+
 		public void preprocess(List<String> srcArgs) {
-	  		for (String filename : srcArgs) {
+			for (String filename : srcArgs) {
 				File f = new File(filename);
 				if (f.isDirectory()) {
 					root = f.getAbsolutePath() + '/';
@@ -514,7 +516,7 @@ public class ARGC {
 					inPureObjC = 1;
 					addSource(f);
 				}
-	  		}
+			}
 		}
 	}
 

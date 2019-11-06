@@ -134,7 +134,7 @@ public class GenerationBatch {
   private void processJarFile(String filename) {
     File f = findJarFile(filename);
     if (f == null) {
-      ErrorUtil.error("No such file:" + filename);
+      ErrorUtil.warning("No such jar file: " + filename);
       return;
     }
 

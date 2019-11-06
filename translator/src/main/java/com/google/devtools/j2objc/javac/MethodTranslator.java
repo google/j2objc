@@ -896,4 +896,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     throw new AssertionError("Method not yet implemented");
   }
 
+	@Override
+	public TreeNode visitLocalTypeDeclarationStatement(LocalTypeDeclarationStatement arg0, Void arg1) {
+	    throw new AssertionError("Method not yet implemented");
+	}
+
 }
