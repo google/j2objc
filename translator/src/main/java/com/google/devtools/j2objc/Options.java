@@ -1049,7 +1049,7 @@ public class Options {
 
   // TODO(b/36097300): remove experimental flag once the change is rolled out or promote to
   //  supported flag if rolling out the change is too disruptive.
-  private static boolean renamePackagePrivateClassConstructors = false;
+  private static boolean renamePackagePrivateClassConstructors = true;
 
   public static boolean renamePackagePrivateClassConstructors() {
     return renamePackagePrivateClassConstructors;
