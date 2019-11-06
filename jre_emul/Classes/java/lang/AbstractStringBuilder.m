@@ -75,13 +75,13 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
   sb->count_ = 0;
 }
 
-- (instancetype)init {
-  JavaLangAbstractStringBuilder_init(self);
+- (instancetype)initPackagePrivate {
+  JavaLangAbstractStringBuilder_initPackagePrivate(self);
   return self;
 }
 
-- (instancetype)initWithInt:(jint)capacity {
-  JavaLangAbstractStringBuilder_initWithInt_(self, capacity);
+- (instancetype)initPackagePrivateWithInt:(jint)capacity {
+  JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(self, capacity);
   return self;
 }
 
@@ -90,11 +90,11 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
   return self;
 }
 
-void JavaLangAbstractStringBuilder_init(JavaLangAbstractStringBuilder *self) {
+void JavaLangAbstractStringBuilder_initPackagePrivate(JavaLangAbstractStringBuilder *self) {
   NewBuffer(&self->delegate_, INITIAL_CAPACITY);
 }
 
-void JavaLangAbstractStringBuilder_initWithInt_(
+void JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(
     JavaLangAbstractStringBuilder *self, jint capacity) {
   if (capacity < 0) {
     @throw [[[JavaLangNegativeArraySizeException alloc] initWithNSString:
@@ -750,8 +750,8 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  methods[0].selector = @selector(init);
-  methods[1].selector = @selector(initWithInt:);
+  methods[0].selector = @selector(initPackagePrivate);
+  methods[1].selector = @selector(initPackagePrivateWithInt:);
   methods[2].selector = @selector(java_length);
   methods[3].selector = @selector(capacity);
   methods[4].selector = @selector(ensureCapacityWithInt:);
