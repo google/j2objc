@@ -30,7 +30,7 @@ annotations_dist:
 	@$(MAKE) -C $(J2OBJC_ROOT)/annotations dist
 
 procyon_dist:
-	@$(MAKE) -C $(J2OBJC_ROOT)/procyon dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/procyon-clone dist
 
 java_deps_dist:
 	@$(MAKE) -C $(J2OBJC_ROOT)/java_deps dist
