@@ -67,6 +67,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    // ARGC does not need Field Adjustment.
+    if (options.useGC()) return;
+
     TypeElement type = node.getTypeElement();
     VariableElement originalVar =
         GeneratedVariableElement.newParameter("original", type.asType(), null);
@@ -109,9 +112,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
       boolean isWeak = ElementUtil.isWeakReference(var);
       boolean isVolatile = ElementUtil.isVolatile(var);
       if (isVolatile) {
-    	  if (!options.useGC()) {
-    		  adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
-    	  }
+    	adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
       } else if (isWeak) {
         adjustments.add(createReleaseStatement(var));
       }
