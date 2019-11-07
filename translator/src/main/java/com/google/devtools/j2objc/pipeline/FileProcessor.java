@@ -110,12 +110,12 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-	  if (options.useGC()) {
-		  return file.getUnitName().endsWith(".java");
-	  }
-	  else {
+//	  if (options.useGC()) {
+//		  return file.getUnitName().endsWith(".java");
+//	  }
+//	  else {
 		  return file.getAbsolutePath().endsWith(".java");
-	  }
+//	  }
   }
 
   private void processBatch() {

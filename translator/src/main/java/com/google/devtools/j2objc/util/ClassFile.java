@@ -14,15 +14,9 @@
 
 package com.google.devtools.j2objc.util;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
-
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.DeobfuscationUtilities;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.assembler.metadata.JarTypeLoader;
@@ -32,10 +26,8 @@ import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.EntityType;
 import com.strobel.decompiler.languages.Languages;
-import com.strobel.decompiler.languages.java.JavaLanguage;
 import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
@@ -45,6 +37,9 @@ import com.strobel.decompiler.languages.java.ast.FieldDeclaration;
 import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.strobel.decompiler.languages.java.ast.TypeDeclaration;
+import java.io.IOException;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * JVM class file model, which uses a Procyon TypeDefinition as a delegate.
@@ -83,36 +78,21 @@ public class ClassFile {
     return metadataSystem.lookupType(path);
   }
 
-  
   private static CompilationUnit decompileClassFile(TypeReference typeRef) {
     TypeDefinition typeDef = typeRef.resolve();
-    //ARGC -- (DeobfuscationUtilities class not found) 
-    // DeobfuscationUtilities.processType(typeDef);
+    DeobfuscationUtilities.processType(typeDef);
     DecompilationOptions options = new DecompilationOptions();
     DecompilerSettings settings = DecompilerSettings.javaDefaults();
     settings.setShowSyntheticMembers(true);
     options.setSettings(settings);
     options.setFullDecompilation(true);
-    JavaLanguage lang = (JavaLanguage)Languages.java();
-    return lang.decompileTypeToAst(typeDef, options);
+    return Languages.java().decompileTypeToAst(typeDef, options);
   }
 
   private ClassFile(CompilationUnit unit, TypeReference typeRef) {
     this.typeRef = typeRef;
-	  if (true) { // ARGC
-		  Iterator<TypeDeclaration> it = unit.getTypes().iterator();
-		  if (it.hasNext()) {
-		    this.type = it.next();
-		  }
-		  else {
-			  it = unit.getTypes().iterator();
-			  throw new RuntimeException("something wrong!");
-		  }
-	  }
-	  else {
-//	    assert unit.getTypes().size() == 1;
-//	    this.type = unit.getTypes().firstOrNullObject();
-	  }
+    assert unit.getTypes().size() == 1;
+    this.type = unit.getTypes().firstOrNullObject();
   }
 
   /**
