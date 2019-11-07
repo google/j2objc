@@ -81,8 +81,9 @@ arch_flags = $(strip \
 fat_lib_dependencies:
 	@:
 
-ARGC_C_FLAGS = -g -std=c11 -fobjc-arc -fobjc-arc-exceptions
-ARGC_CPP_FLAGS = -g -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
+
+ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
+ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
 
 # Generates compile rule.
 # Args:
@@ -95,6 +96,7 @@ define compile_rule
 $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
+	@echo @$(3) $(ARGC_C_FLAGS) $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
 	@$(3) $(ARGC_C_FLAGS) $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
 
 $(1)/%.o: $(2)/%.mm  | fat_lib_dependencies

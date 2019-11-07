@@ -34,7 +34,7 @@ $(BUILD_JAR) :
 	cp build/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar build/dist
 
 $(DIST_JAR): $(BUILD_JAR)
-	cp build/dist/*.jar $(JAVA_DEPS_JAR_DIR)
+	cp build/dist/*.jar $(JAVA_DEPS_JAR_DIR)/
 
 dist: $(DIST_JAR)
 	@:
