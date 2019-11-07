@@ -786,6 +786,8 @@
 		6A5D0D6F219CCBB200709765 /* TestCharLiteralParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5D0D5B219CCBB200709765 /* TestCharLiteralParser.m */; };
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
+		783B492A237400E500C0AF0A /* IntegerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 783B49262374008D00C0AF0A /* IntegerTest.m */; };
+		783B492B237400F800C0AF0A /* LongTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 783B49292374008E00C0AF0A /* LongTest.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
 		FA1DD7A82154124E00D0B800 /* SSLSocketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */; };
@@ -3953,6 +3955,10 @@
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
+		783B49262374008D00C0AF0A /* IntegerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntegerTest.m; path = libcore/java/lang/IntegerTest.m; sourceTree = "<group>"; };
+		783B49272374008E00C0AF0A /* IntegerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntegerTest.h; path = libcore/java/lang/IntegerTest.h; sourceTree = "<group>"; };
+		783B49282374008E00C0AF0A /* LongTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LongTest.h; path = libcore/java/lang/LongTest.h; sourceTree = "<group>"; };
+		783B49292374008E00C0AF0A /* LongTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongTest.m; path = libcore/java/lang/LongTest.m; sourceTree = "<group>"; };
 		7846132423504FF900E80EE4 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARGC.h; path = Classes/ARGC/ARGC.h; sourceTree = SOURCE_ROOT; };
 		7846132523504FF900E80EE4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ARGC.mm; path = Classes/ARGC/ARGC.mm; sourceTree = SOURCE_ROOT; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
@@ -6467,6 +6473,10 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				783B49272374008E00C0AF0A /* IntegerTest.h */,
+				783B49262374008D00C0AF0A /* IntegerTest.m */,
+				783B49282374008E00C0AF0A /* LongTest.h */,
+				783B49292374008E00C0AF0A /* LongTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
 				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */,
@@ -8000,6 +8010,7 @@
 				069C244E1E9EF11600CE6BAF /* DateFormatSymbolsTest.m in Sources */,
 				062028A81D512E78001EE455 /* DoubleTest.m in Sources */,
 				FA1DD7BD215418F300D0B800 /* TestCertUtils.m in Sources */,
+				783B492B237400F800C0AF0A /* LongTest.m in Sources */,
 				0612B8F31F4373740069EF58 /* ConcurrencyTests.m in Sources */,
 				062026461D512CA1001EE455 /* OldRandomAccessFileTest.m in Sources */,
 				0620263C1D512CA1001EE455 /* OldLineNumberReaderTest.m in Sources */,
@@ -8486,6 +8497,7 @@
 				0620294C1D512F25001EE455 /* RSAPrivateKeySpecTest.m in Sources */,
 				062B4F2C1ED76C1200D4E7D8 /* OldManifestTest.m in Sources */,
 				069C23F61E9EEECA00CE6BAF /* ParsePositionTest.m in Sources */,
+				783B492A237400E500C0AF0A /* IntegerTest.m in Sources */,
 				062025C01D512C8E001EE455 /* PosixTest.m in Sources */,
 				062026BB1D512D08001EE455 /* OldCharset_AbstractTest.m in Sources */,
 				0612B92B1F4374A30069EF58 /* PropertyResourceBundleTest.m in Sources */,

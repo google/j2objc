@@ -27,3 +27,12 @@ build_result-debug.zip
 j2objc-argc-2.0.2.r3.zip
 j2objc-argc-2.0.2.r4.zip
 translator copy
+procyon-clone/.gradle
+procyon-clone/.hg
+procyon-clone/.settings
+procyon-clone/build
+procyon-clone/Procyon.Reflection/.settings
+procyon-clone/Procyon.Expressions/.settings
+procyon-clone/Procyon.Decompiler/.settings
+procyon-clone/Procyon.Core/.settings
+procyon-clone/Procyon.CompilerTools/.settings
