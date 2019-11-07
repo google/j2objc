@@ -1,0 +1,206 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+
+archivesBaseName = 'procyon'
+
+ext.getProcyonVersion = { ->
+    final def fallbackVersion = "1.0-SNAPSHOT"
+    final def versionFilePath = rootDir.canonicalPath + "/Procyon.Core/src/main/java/com/strobel/Procyon.java"
+    final def versionFile = new File(versionFilePath)
+
+    if (versionFile.exists()) {
+        try {
+            final String fileContents = new File(versionFilePath).getText('UTF-8')
+            final def matcher = fileContents =~ /VERSION\s*=\s*"([^"]+)"/
+
+            if (matcher.find()) {
+                return matcher.group(1).trim()
+            }
+        }
+        catch (final Throwable ignored) {
+        }
+    }
+
+    logger.warn("wARNING: Could not resolve version from source; falling back to '$fallbackVersion'.")
+
+    return fallbackVersion
+}
+
+final def procyonVersion = getProcyonVersion()
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+
+    buildDir = rootDir.canonicalPath + "/build/" + rootProject.relativePath(projectDir.canonicalPath)
+
+    version procyonVersion
+
+    group 'org.bitbucket.mstrobel'
+    sourceCompatibility = 1.7    // JDK version
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile 'junit:junit:4.11'
+    }
+}
+
+//
+// The root project is empty and doesn't need any tasks.
+//
+rootProject.tasks.each { it.enabled = false }
+rootProject.uploadArchives.enabled = false
+
+subprojects {
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    archivesBaseName = "procyon-${(it.name as String).split('\\.')[1].toLowerCase()}"
+
+    jar {
+        metaInf {
+            from 'License.txt'
+            from 'README.md'
+        }
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from 'build/docs/javadoc'
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    tasks.withType(Test) {
+        testLogging {
+            // set options for log level LIFECYCLE
+            events TestLogEvent.FAILED,
+                   TestLogEvent.PASSED,
+                   TestLogEvent.SKIPPED
+            exceptionFormat TestExceptionFormat.FULL
+            showExceptions true
+            showCauses true
+            showStackTraces true
+
+            // set options for log level DEBUG and INFO
+            debug.with {
+                events TestLogEvent.STARTED,
+                       TestLogEvent.FAILED,
+                       TestLogEvent.PASSED,
+                       TestLogEvent.SKIPPED,
+                       TestLogEvent.STANDARD_ERROR,
+                       TestLogEvent.STANDARD_OUT
+                exceptionFormat TestExceptionFormat.FULL
+            }
+
+            info.events = debug.events
+            info.exceptionFormat = debug.exceptionFormat
+
+            afterSuite { desc, result ->
+                if (!desc.parent) { // will match the outermost suite
+                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                    def startItem = '|  ', endItem = '  |'
+                    def repeatLength = startItem.length() + output.length() + endItem.length() - 2
+                    logger.lifecycle('\n' + '+' + ('-' * repeatLength) + '+' + '\n' + startItem + output + endItem + '\n' + '+' + ('-' * repeatLength) + '+')
+                }
+            }
+        }
+    }
+
+    if (project.name != "Procyon.Decompiler") {
+        javadoc {
+            options.encoding = 'UTF-8'
+        }
+
+        artifacts {
+            archives jar
+            archives javadocJar
+            archives sourcesJar
+        }
+
+        //signing {
+        //    sign configurations.archives
+        //}
+
+        uploadArchives {
+            repositories.mavenDeployer {
+                beforeDeployment { MavenDeployment deployment ->
+                    //signing.signPom(deployment)
+                }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                    authentication(userName: project.properties.get("sonatypeUsername"), password: project.properties.get("sonatypePassword"))
+                }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                    authentication(userName: project.properties.get("sonatypeUsername"), password: project.properties.get("sonatypePassword"))
+                }
+
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'Procyon'
+                        url 'https://bitbucket.org/mstrobel/procyon'
+
+                        scm {
+                            url 'https://bitbucket.org/mstrobel/procyon'
+                            connection 'scm:hg:https://hg@bitbucket.org/mstrobel/procyon'
+                            developerConnection 'scm:hg:https://mstrobel@bitbucket.org/mstrobel/procyon'
+                        }
+
+                        issueManagement {
+                            system 'jira'
+                            url 'https://bitbucket.org/mstrobel/procyon/issues'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'mstrobel'
+                                name 'Mike Strobel'
+                                roles {
+                                    role 'owner'
+                                    role 'packager'
+                                    role 'developer'
+                                }
+                            }
+                        }
+
+                        dependencies {
+                            dependency {
+                                groupId 'junit'
+                                artifactId 'junit'
+                                version '4.11'
+                                scope 'test'
+//                                optional = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

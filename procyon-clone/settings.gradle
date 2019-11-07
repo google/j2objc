@@ -1,0 +1,1 @@
+include "Procyon.Core", "Procyon.Reflection", "Procyon.Expressions", "Procyon.CompilerTools", "Procyon.Decompiler"

@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':Procyon.Core')
+    compile project(':Procyon.Reflection')
+}
+
+/*
+about the surefire plugin..
+
+http://forums.gradle.org/gradle/topics/does_anyone_know_how_to_configure_maven_surefire_plugin_with_gradle_for_unit_tests?page=1
+*/

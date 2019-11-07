@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
+    }
+}
+
+jar.enabled = false
+uploadArchives.enabled = false
+
+apply plugin: 'eu.appsatori.fatjar'
+
+fatJar {
+//    from rootProject.allprojects.collect({ it.sourceSets.main.allSource })
+
+    manifest {
+        attributes 'Title': archivesBaseName, 'Manifest-Version': '1.0', 'Version': version, 'Main-Class' : 'com.strobel.decompiler.DecompilerDriver'
+    }
+}
+
+dependencies {
+    compile 'com.beust:jcommander:1.30'
+    compile project(':Procyon.Core')
+    compile project(':Procyon.CompilerTools')
+}

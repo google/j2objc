@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':Procyon.Core')
+}
+
+/*
+see Expressions build.gradle file for surefire plugin
+*/

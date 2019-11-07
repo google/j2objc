@@ -1,0 +1,16 @@
+# This is a sample build configuration for Java (Gradle).
+# Check our guides at https://confluence.atlassian.com/x/zd-5Mw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: openjdk:8
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - gradle
+        script: # Modify the commands below to build your repository.
+          # You must commit the Gradle wrapper to your repository
+          # https://docs.gradle.org/current/userguide/gradle_wrapper.html
+          - bash ./gradlew build

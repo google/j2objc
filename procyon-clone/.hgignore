@@ -1,0 +1,20 @@
+syntax: glob
+Procyon.CompilerTools/build/
+Procyon.Core/build/
+Procyon.Decompiler/build/
+Procyon.Expressions/build/
+Procyon.Reflection/build/
+out/
+.idea/
+.gradle/
+*.iml
+build/
+cache.txt
+gradlew.bat
+gradle/wrapper/gradle-wrapper.properties
+gradle/wrapper/gradle-wrapper.jar
+gradlew
+.settings
+Procyon.Core/bin
+Procyon.Expressions/bin
+Procyon.Reflection/bin
