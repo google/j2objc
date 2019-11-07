@@ -26,7 +26,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
 class JavacEnvironment implements ParserEnvironment {
-
   private final JavacTask task;
   private final StandardJavaFileManager fileManager;
   private final DiagnosticCollector<JavaFileObject> diagnostics;
