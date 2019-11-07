@@ -402,7 +402,6 @@ id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...) {
   return JreVolatileStrongAssign(lhs, result);
 }
 
-
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
   va_list va;
   va_start(va, types);
@@ -411,11 +410,9 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
   return IOSObjectArray_SetRef(lhs, result);
 }
 
-
 FOUNDATION_EXPORT void JreRelease(id obj) {
   RELEASE_(obj);
 }
-
 
 FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal) {
   const J2ObjcClassInfo *metadata = [enumClass getMetadata];
@@ -431,7 +428,9 @@ NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id *stackbuf) {
   SEL hasNextSel = sel_registerName("hasNext");
   SEL nextSel = sel_registerName("next");
-  __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
+  /** 아래와 같이 선언 시 GC 오류 발생
+   __unsafe_unretained id iter = */
+  id iter = (ARCBRIDGE id) (void *) state->extra[0];
   if (!iter) {
     static unsigned long no_mutation = 1;
     state->mutationsPtr = &no_mutation;
