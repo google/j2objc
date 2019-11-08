@@ -20,6 +20,11 @@
 #import "ARGC.h"
 #import "objc/runtime.h"
 #import "../IOSClass.h"
+#import "../IOSReference.h"
+#include "java/lang/ref/Reference.h"
+#include "java/lang/ref/SoftReference.h"
+#include "java/lang/ref/WeakReference.h"
+#include "java/lang/ref/ReferenceQueue.h"
 #import <atomic>
 
 #define GC_DEBUG 1
@@ -39,6 +44,7 @@ FOUNDATION_EXPORT int GC_LOG_RC = 0;
 FOUNDATION_EXPORT int GC_LOG_ROOTS = 0;
 FOUNDATION_EXPORT int GC_LOG_ALIVE = 0;
 FOUNDATION_EXPORT int GC_LOG_ALLOC = 0;
+FOUNDATION_EXPORT int GC_LOG_WEAK_SOFT_REF = 1;
 FOUNDATION_EXPORT void* GC_TRACE_REF = (void*)-1;
 FOUNDATION_EXPORT void* GC_TRACE_CLASS = (void*)-1;
 #define GC_TRACE(obj, flag) (GC_DEBUG && (obj == GC_TRACE_REF || (flag) || [obj class] == GC_TRACE_CLASS))
@@ -53,18 +59,20 @@ static const BOOL ENABLE_PENDING_RELEASE = false;
 static const int _1M = 1024*1024;
 static const int REFS_IN_BUCKET = _1M / sizeof(ObjP);
 
-static const int64_t REF_COUNT_MASK     = 0xfffFFFF;
-static const int64_t REF_COUNT_GAURD    = 0x2000LL * 0x10000;
-static const int64_t FINALIZED_FLAG     = 0x4000LL * 0x10000;
-static const int64_t WEAK_REACHABLE_MARK   = 0x08000LL * 0x10000;
-static const int64_t STRONG_REACHABLE_MASK = 0x70000LL * 0x10000;
-static const int64_t PENDING_RELEASE_FLAG = 0x80000LL * 0x10000;
-static const int64_t REACHABLE_MASK     = WEAK_REACHABLE_MARK | STRONG_REACHABLE_MASK;
+static const int64_t REF_COUNT_MASK         = 0x00fffFFFF;
+static const int64_t REF_COUNT_GAURD        = 0x01000LL * 0x10000;
+static const int64_t REF_REFERENT_FLAG      = 0x02000LL * 0x10000;
+static const int64_t FINALIZED_FLAG         = 0x04000LL * 0x10000;
+static const int64_t WEAK_REACHABLE_FLAG    = 0x08000LL * 0x10000;
+static const int64_t STRONG_REACHABLE_MASK  = 0x70000LL * 0x10000;
+static const int64_t PENDING_RELEASE_FLAG   = 0x80000LL * 0x10000;
+static const int64_t REACHABLE_MASK     = WEAK_REACHABLE_FLAG | STRONG_REACHABLE_MASK;
 static const int SLOT_INDEX_SHIFT = (32+4);
 static const int64_t SLOT_INDEX_MASK = (uint64_t)-1 << SLOT_INDEX_SHIFT;
 
+
 extern "C" {
-    void clearReclaimingReference(__unsafe_unretained id referent);
+    //void clearReclaimingReference(__unsafe_unretained id referent);
     void JreFinalize(id self);
 };
 
@@ -79,7 +87,7 @@ public:
          즉, 정상적인 경우, 객체가 해제될 상태에서 객체가 살아 남아 있는 상태가
          GC가 동작되어야 할 상황이다.
          */
-        uint64_t v = SLOT_INDEX_MASK | REF_COUNT_GAURD | reachable_mark | 1;
+        uint64_t v = SLOT_INDEX_MASK | REF_COUNT_GAURD | strong_reachable_generation_bit | 1;
         if (isFinalized) {
             v |= FINALIZED_FLAG;
         }
@@ -142,20 +150,11 @@ public:
     }
 
     BOOL isPendingRelease() {
-        return __isPendingRelease(_gc_context);
+        return (_gc_context & PENDING_RELEASE_FLAG) != 0;
     }
     
     BOOL markUntouchable() {
-        while (true) {
-            int64_t v = _gc_context;
-            if ((v & REACHABLE_MASK) == 0) {
-                return false;
-            }
-            int64_t new_v = (v & ~REACHABLE_MASK);
-            if (_gc_context.compare_exchange_strong(v, new_v)) {
-                return true;
-            }
-        }
+        return this->clearFlags(REACHABLE_MASK);
     }
     
     BOOL isFinalized() {
@@ -163,20 +162,11 @@ public:
     }
     
     void clearFinalized() {
-        _gc_context &= ~FINALIZED_FLAG;
+        this->clearFlags(FINALIZED_FLAG);
     }
 
     BOOL markFinalized() {
-        while (true) {
-            int64_t v = _gc_context;
-            if (v & FINALIZED_FLAG) {
-                return false;
-            }
-            int64_t new_v = (v | FINALIZED_FLAG);
-            if (_gc_context.compare_exchange_strong(v, new_v)) {
-                return true;
-            }
-        }
+        return this->markFlags(FINALIZED_FLAG);
     }
     
     BOOL markReachable(BOOL isStrong) {
@@ -189,24 +179,13 @@ public:
             if (__isReachable(v)) {
                 return false;
             }
-            int64_t new_v = (v & ~REACHABLE_MASK) | WEAK_REACHABLE_MARK;
+            int64_t new_v = (v & ~REACHABLE_MASK) | WEAK_REACHABLE_FLAG;
             if (_gc_context.compare_exchange_strong(v, new_v)) {
                 return true;
             }
         }
     }
 
-    BOOL markUnreachable() {
-        while (true) {
-            int64_t v = _gc_context;
-            int64_t new_v = (v & ~REACHABLE_MASK) | WEAK_REACHABLE_MARK;
-            if (_gc_context.compare_exchange_strong(v, new_v)) {
-                return true;
-            }
-        }
-    }
-    
-    
     BOOL markStrongReachable() {
         if (GC_DEBUG && this->isUntouchable()) {
             NSLog(@"mark on untouchable");
@@ -217,7 +196,7 @@ public:
             if (__isStrongReachable(v)) {
                 return false;
             }
-            int64_t new_v = (v & ~REACHABLE_MASK) | reachable_mark;
+            int64_t new_v = (v & ~REACHABLE_MASK) | strong_reachable_generation_bit;
             if (_gc_context.compare_exchange_strong(v, new_v)) {
                 return true;
             }
@@ -225,44 +204,73 @@ public:
     }
     
     BOOL markPendingRelease() {
+        return this->markFlags(PENDING_RELEASE_FLAG);
+    }
+
+    BOOL isReferent() {
+        return (_gc_context & REF_REFERENT_FLAG) != 0;
+    }
+
+    BOOL markReferent() {
+        return this->markFlags(REF_REFERENT_FLAG);
+    }
+
+    BOOL clearReferent() {
+        return this->clearFlags(REF_REFERENT_FLAG);
+    }
+
+private:
+    BOOL markFlags(int64_t flag) {
         while (true) {
             int64_t v = _gc_context;
-            if (__isPendingRelease(v)) {
+            if ((v & flag) != 0) {
                 return false;
             }
-            int64_t new_v = v | PENDING_RELEASE_FLAG;
+            int64_t new_v = v | flag;
             if (_gc_context.compare_exchange_strong(v, new_v)) {
                 return true;
             }
         }
     }
 
-    static void change_generation() {
-        reachable_mark = (reachable_mark << 1) & STRONG_REACHABLE_MASK;
-        if (reachable_mark == 0) {
-            reachable_mark = ((STRONG_REACHABLE_MASK << 1) ^ STRONG_REACHABLE_MASK) & STRONG_REACHABLE_MASK;
+    BOOL clearFlags(int64_t flag) {
+        while (true) {
+            int64_t v = _gc_context;
+            if ((v & flag) == 0) {
+                return false;
+            }
+            int64_t new_v = v & ~flag;
+            if (_gc_context.compare_exchange_strong(v, new_v)) {
+                return true;
+            }
         }
     }
-    
+
 private:
+
     static BOOL __isReachable(int64_t v) {
-        return (v & (WEAK_REACHABLE_MARK | reachable_mark)) != 0;
+        return (v & (WEAK_REACHABLE_FLAG | strong_reachable_generation_bit)) != 0;
     }
     
     static BOOL __isStrongReachable(int64_t v) {
-        return (v & reachable_mark) != 0;
+        return (v & strong_reachable_generation_bit) != 0;
     }
 
-    static BOOL __isPendingRelease(int64_t v) {
-        return (v & PENDING_RELEASE_FLAG) != 0;
-    }
-    
 
     std::atomic<int64_t> _gc_context;
-    static volatile int64_t reachable_mark;
+    static volatile int64_t strong_reachable_generation_bit;
+
+public:
+    static void change_generation() {
+        strong_reachable_generation_bit = (strong_reachable_generation_bit << 1) & STRONG_REACHABLE_MASK;
+        if (strong_reachable_generation_bit == 0) {
+            strong_reachable_generation_bit = ((STRONG_REACHABLE_MASK << 1) ^ STRONG_REACHABLE_MASK) & STRONG_REACHABLE_MASK;
+        }
+    }
+    
 };
 
-volatile int64_t RefContext::reachable_mark = 0;
+volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 
 
 
@@ -309,21 +317,27 @@ static const int SCANNING = 1;
 static const int FINALIZING = 2;
 static const int FINISHED = 0;
 static Class JavaUtilHashMap_KeySet_CLASS = 0;
+static NSPointerArray* g_softRefs;
+static NSPointerArray* g_weakRefs;
 
 class ARGC {
 public:
     static ARGC _instance;
     static std::atomic_int gc_state;//GC_IN_SCANNING;
-    Method _no_java_finalize;
     
+    Method _no_java_finalize;
+
     ARGC() {
         this->_inGC = false;
+        g_softRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
+        g_weakRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
+
         RefContext::change_generation();
         JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
         JavaUtilHashMap_KeySet_CLASS = objc_lookUpClass("JavaUtilHashMap_KeySet");
         GC_TRACE_CLASS = objc_lookUpClass("JavaUtilConcurrentLocksAbstractQueuedSynchronizer");
         obj_array_class = [IOSObjectArray class];
-        deallocInstance = dealloc_now;
+        deallocMethod = dealloc_now;
         _no_java_finalize = class_getInstanceMethod([NSObject class], @selector(java_finalize));
 
         _scanOffsetCache = [[NSMutableDictionary alloc] init];
@@ -340,7 +354,9 @@ public:
     
     void doGC();
 
+    void doClearReferences(NSPointerArray* refList);
     
+
     static void touchInstance(ObjP obj) {
         if (GC_DEBUG && obj == GC_TRACE_REF) {
             int a = 3;
@@ -426,7 +442,7 @@ public:
     
     typedef void (*ARGCVisitor)(ObjP obj);
     
-    std::atomic<ARGCVisitor> deallocInstance;
+    std::atomic<ARGCVisitor> deallocMethod;
     
     static void retainReferenceCount(id obj) {
         retainReferenceCountEx(obj);
@@ -578,7 +594,7 @@ private:
     void addPhantom(ObjP dead, BOOL isThreadSafe) {
         ARGCPhantom* obj = (ARGCPhantom*)dead;
 
-        clearReclaimingReference(dead);
+        //clearReclaimingReference(dead);
 
         if (GC_TRACE(obj, GC_LOG_ALLOC)) {
             NSLog(@"dealloc-addPhantom: %p %@", obj, [obj class]);
@@ -673,7 +689,7 @@ static int64_t gc_interval = 0;
 #pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
 - (void)dealloc
 {
-    ARGC::ARGCVisitor fn = ARGC::_instance.deallocInstance;
+    ARGC::ARGCVisitor fn = ARGC::_instance.deallocMethod;
     fn(self);
 }
 
@@ -706,7 +722,7 @@ static int64_t gc_interval = 0;
     }
     return false;
 }
- 
+
 - (oneway void)release
 {
     if (ARGC::markPendingRelease(self)) {
@@ -1011,6 +1027,34 @@ void ARGC::markArrayItems(id obj, BOOL isStrong) {
     _instance._cntMarkingThread --;
 }
 
+void ARGC::doClearReferences(NSPointerArray* refList) {
+    @synchronized (refList) {
+        NSUInteger cntOrg = refList.count;
+        int cntRef = (int)cntOrg;
+        for (int idx = cntRef; idx > 0; ) {
+            JavaLangRefReference* reference = (JavaLangRefReference*)[refList pointerAtIndex:--idx];
+            ObjP referent = (ObjP)[refList pointerAtIndex:--idx];
+            if (!referent->_gc_info.isReachable()) {
+                reference->referent_ = NULL;
+                if (referent->_gc_info.clearReferent()) {
+                    releaseReferenceCountEx(referent);
+                    //NSDecrementExtraRefCountWasZero(referent);
+                }
+                [reference enqueue];
+            }
+            else if (reference->_gc_info.isStrongReachable()) {
+                continue;
+            }
+            [refList replacePointerAtIndex:idx+1 withPointer:[refList pointerAtIndex:--cntRef]];
+            [refList replacePointerAtIndex:idx+0 withPointer:[refList pointerAtIndex:--cntRef]];
+        }
+        refList.count = cntRef;
+
+    }
+
+}
+
+
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
@@ -1024,8 +1068,8 @@ void ARGC::doGC() {
         SLEEP_WHILE (_cntMarkingThread > 0);
         gc_state = SCANNING;
         RefContext::change_generation();
-        //deallocInstance.exchange(dealloc_in_scan);
-        deallocInstance.exchange(dealloc_in_collecting);
+        //deallocMethod.exchange(dealloc_in_scan);
+        deallocMethod.exchange(dealloc_in_collecting);
         SLEEP_WHILE (_cntDellocThread > 0);
         
         int idxSlot = 0;
@@ -1055,7 +1099,7 @@ void ARGC::doGC() {
             }
         }
         
-        deallocInstance.exchange(dealloc_in_collecting);
+        deallocMethod.exchange(dealloc_in_collecting);
 
         int cntScan = idxSlot;
         usleep(100);
@@ -1074,6 +1118,8 @@ void ARGC::doGC() {
             [roots removeAllObjects];
         }
 
+        doClearReferences(g_weakRefs);
+
         @autoreleasepool {
             for (idxSlot = 0; idxSlot < cntScan; idxSlot ++, pScan++) {
                 if ((idxSlot % REFS_IN_BUCKET) == 0) {
@@ -1082,20 +1128,14 @@ void ARGC::doGC() {
                 obj = *pScan;
                 if (obj != NULL && !obj->_gc_info.isReachable()) {
                     assert(getExternalRefCount(obj) <= 0 || obj->_gc_info.isPendingRelease());
-                    /*
-                     referent 가 삭제될 때, 참조하는 Reference를 enque 시키게 되는데,
-                     해당 Reference가 Unreachable 상태인 경우,
-                     associatedObject 인 IOSReference dealloc 처리과정에서,
-                     StrongReachable 상태로 잠시 바뀌며, 다시 부활(?)하는 문제가 발생한다.
-                     부활 과정에서 이미 Unreachble 로 삭제된 다른 객체를 참조할 수 있다.
-                     */
-                    markRootInstance(obj, false);
                     if (obj->_gc_info.markFinalized()) {
+                        markRootInstance(obj, false);
                         JreFinalize(obj);
                     }
                 }
             }
         }
+
         
         int cntAlive = 0;
         int cntAlivedGenerarion = 0;
@@ -1146,13 +1186,6 @@ void ARGC::doGC() {
                     }
                 }
                 assert(getExternalRefCount(obj) <= 0 || obj->_gc_info.isPendingRelease());
-                /*
-                 referent 가 삭제될 때, 참조하는 Reference를 enque 시키게 되는데,
-                 해당 Reference가 Unreachable 상태인 경우, 
-                 associatedObject 인 IOSReference dealloc 처리과정에서,
-                 StrongReachable 상태로 잠시 바뀌며, 다시 부활(?)하는 문제가 발생한다.
-                 부활 과정에서 이미 Unreachble 로 삭제된 다른 객체를 참조할 수 있다.
-                 */
                 @autoreleasepool {
                     [obj dealloc];
                 }
@@ -1175,7 +1208,7 @@ void ARGC::doGC() {
             ARGC::checkRefCount(obj, @"alive in gc");
         }
         
-        deallocInstance.exchange(dealloc_now);
+        deallocMethod.exchange(dealloc_now);
         for (int idxSlot = 0; true; idxSlot++) {
             if (idxSlot >= _cntPhantom) {
                 @synchronized (tableLock) {
@@ -1514,3 +1547,83 @@ void start_GC() {
 @end
 
 
+
+
+@interface IOSReference() {
+}
+@end
+
+@implementation IOSReference
+
++ (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)referent
+{
+    if (referent == nil) return;
+
+    NSPointerArray* array_;
+    NSString* tag;
+    if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
+        array_ = g_softRefs;
+        tag = @"SoftRef";
+    }
+    else {
+        array_ = g_weakRefs;
+        tag = @"WeakRef";
+    }
+    @synchronized (array_) {
+        reference->referent_ = referent;
+        // do not call [referent retain]
+        if (((ObjP)referent)->_gc_info.markReferent()) {
+            NSIncrementExtraRefCount(referent);
+        }
+        [array_ addPointer:referent];
+        [array_ addPointer:reference];
+    }
+    ARGC::checkRefCount(referent, tag, GC_LOG_WEAK_SOFT_REF);
+}
++ (id)getReferent:(JavaLangRefReference *)reference
+{
+    return reference->referent_;
+}
+
++ (void)clearReferent:(JavaLangRefReference *)reference
+{
+    id referent = reference->referent_;
+    if (referent == NULL) return;
+    
+    NSPointerArray* array_;
+    NSString* tag;
+    if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
+        array_ = g_softRefs;
+        tag = @"SoftRef";
+    }
+    else {
+        array_ = g_weakRefs;
+        tag = @"WeakRef";
+    }
+    @synchronized (array_) {
+        reference->referent_ = NULL;
+        [referent release];
+
+        for (NSUInteger idx = [array_ count]; idx-=2 >= 0; ) {
+            if ([array_ pointerAtIndex:idx] == referent) {
+                [array_ removePointerAtIndex:idx+1];
+                [array_ removePointerAtIndex:idx+0];
+                break;
+            }
+        }
+    }
+
+    ARGC::checkRefCount(referent, tag, GC_LOG_WEAK_SOFT_REF);
+}
+
++ (void)handleMemoryWarning:(NSNotification *)notification {
+    @autoreleasepool {
+        @synchronized (self) {
+            //[g_softRefs removeAllObjects];
+        };
+    }
+    ARGC_collectGarbage();
+}
+
+
+@end

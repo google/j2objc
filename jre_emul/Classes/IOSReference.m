@@ -37,7 +37,7 @@
 #define SUPPORTS_SOFT_REFERENCES 1
 #endif
 
-#if __has_feature(objc_arc)
+#if !__has_feature(objc_arc)
 
 
 //////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ void ARGC_strongRetain(id);
 //////////////////////////////////////////////////////////////////////
 
 
-#else
+//#else
 
 // This class implements a variation on the design described in
 // Mike Ash's "Zeroing Weak References in Objective-C" blog entry.
