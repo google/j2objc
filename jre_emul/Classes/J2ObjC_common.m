@@ -428,8 +428,10 @@ NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id *stackbuf) {
   SEL hasNextSel = sel_registerName("hasNext");
   SEL nextSel = sel_registerName("next");
-  /** 아래와 같이 선언 시 GC 오류 발생
-   __unsafe_unretained id iter = */
+  /**
+   Do not declare iter as a __unsafe_unretained.
+   It may cause a bad access error after assigned by [obj iterator];
+  */
   id iter = (ARCBRIDGE id) (void *) state->extra[0];
   if (!iter) {
     static unsigned long no_mutation = 1;
