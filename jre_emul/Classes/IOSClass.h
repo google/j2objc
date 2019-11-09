@@ -45,7 +45,7 @@
  * instances: those representing real classes and interfaces, those
  * representing primitive types, and those representing array classes.
  */
-@interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
+@interface IOSClass : JavaLangObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
 }

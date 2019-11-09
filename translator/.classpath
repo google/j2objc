@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/intiiliJ-decompiler/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC+ARGC annotations"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305-3.0.0.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/tools.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.core.jobs-3.6.1.v20141014-1248.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.jdt.compiler.apt-1.1.0.v20140509-1235.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.jdt.core-3.10.0.v20140604-1726.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.osgi-3.10.2.v20150203-1939.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.text-3.5.101.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC+ARGC annotations"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/procyon-clone/build/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar" sourcepath="/Users/zeedh/work/procyon-clone/build/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/procyon-clone/build/Procyon.Core/libs/procyon-core-0.5.36.jar" sourcepath="/Users/zeedh/work/procyon-clone/build/Procyon.Core/libs/procyon-core-0.5.36-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+argc/java_deps/build_result/procyon-compilertools-0.5.36.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+argc/java_deps/build_result/procyon-core-0.5.36.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

@@ -80,12 +80,8 @@ class RefContext {
 public:
     void initialize(BOOL isFinalized) {
         /**
-         objc 는 refCount 가 0보다 작아질 때, 객체를 릴리즈한다.
-         즉, refCount가 0인 상태도 객체가 살아있는 상태이다.
-         externalRefCount가 항상 0보다 크거나 같은 상태를 유지하기 위하여
-         초기값을 1로 설정한다. (stack/register 참조 상태). externalRefCount 가 0이 될 때,
-         즉, 정상적인 경우, 객체가 해제될 상태에서 객체가 살아 남아 있는 상태가
-         GC가 동작되어야 할 상황이다.
+         objc 의 refCount 의 초기값은 0이며, 0보다 작아질 때 객체를 릴리즈한다.
+         rootDepth의 초기값은 1이며, 1보다 작아지면  stack/static 참조가 없는 상태를 의미한다.
          */
         uint64_t v = SLOT_INDEX_MASK | REF_COUNT_GAURD | strong_reachable_generation_bit | 1;
         if (isFinalized) {

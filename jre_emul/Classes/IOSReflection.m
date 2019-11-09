@@ -39,7 +39,12 @@ const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   // Can't use respondsToSelector here because that will search superclasses.
   Method metadataMethod = cls ? JreFindClassMethod(cls, @selector(__metadata)) : NULL;
   if (metadataMethod) {
-    const J2ObjcClassInfo *metadata = (__bridge const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
+#if OBJC_OLD_DISPATCH_PROTOTYPES
+      const J2ObjcClassInfo *metadata = (__bridge const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
+#else
+      const J2ObjcClassInfo* (*_invoke)(id, Method) = (void*)method_invoke;
+      const J2ObjcClassInfo *metadata = _invoke(cls, metadataMethod);
+#endif
     // We don't use any Java based assert or throwables here because this function is called during
     // IOSClass construction under mutual exclusion so causing any other IOSClass to be initialized
     // would result in deadlock.
