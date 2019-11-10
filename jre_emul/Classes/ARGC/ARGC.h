@@ -58,10 +58,10 @@ extern "C" {
 typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj, int depth);
     
 /* replace filed with newValue and returns old value. */
-void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained ARGCObject* newValue);
+id ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
 
 /* replace filed with newValue and returns old value. */
-void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
+id ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
 
 /* execute garbage collection now. */
 void ARGC_collectGarbage();

@@ -30,6 +30,12 @@
 #import "org/junit/runner/JUnitCore.h"
 #import "AllJreTests.h"
 
+@interface TestThread : JavaLangThread
+- (void) run;
+@end
+
+
+
 @interface JRELogPaneViewController ()
 
 @property (nonatomic, strong) NSString *testName;
@@ -85,6 +91,9 @@ JRELogPaneViewController* controller ;
 
 void runAllJreTests() {
   // Execute test runner on new dispatch queue.
+    TestThread* thread = [[TestThread alloc]init];
+    [thread start];
+    /*
   dispatch_queue_t backgroundQueue =
       dispatch_queue_create("JUnit Test Runner", DISPATCH_QUEUE_CONCURRENT);
   dispatch_async(backgroundQueue, ^{
@@ -102,6 +111,7 @@ void runAllJreTests() {
       NSLog(@"Test done");
     controller.testThread = nil;
   });
+     */
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -138,4 +148,26 @@ void runAllJreTests() {
   });
 }
 
+@end
+
+@interface TestThread()
+@end
+
+
+@implementation TestThread
+- (void) run {
+    controller.testThread = [JavaLangThread currentThread];
+    IOSObjectArray *testClasses =
+        [IOSObjectArray arrayWithObjects:(id[]) { controller.className }
+                                   count:1
+                                    type:NSString_class_()];
+    OrgJunitRunnerJUnitCore *testRunner = [[OrgJunitRunnerJUnitCore alloc] init];
+    [testRunner
+         addListenerWithOrgJunitRunnerNotificationRunListener:[[JRETestRunListener alloc] init]];
+    id<OrgJunitInternalJUnitSystem> junitSystem =
+        AUTORELEASE([[OrgJunitInternalRealSystem alloc] init]);
+    [testRunner runMainWithOrgJunitInternalJUnitSystem:junitSystem withNSStringArray:testClasses];
+      NSLog(@"Test done");
+    controller.testThread = nil;
+}
 @end

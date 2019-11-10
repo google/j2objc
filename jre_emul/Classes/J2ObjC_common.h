@@ -94,28 +94,13 @@ __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *
 
 #define JreNativeFieldAssign            JreStrongAssign
 #define JreNativeFieldAssignAndConsume  JreStrongAssignAndConsume
-
-__attribute__((always_inline)) inline id JreObjectFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
-    ARGC_assignARGCObject(pIvar, value);
-    return value;
-}
-
-__attribute__((always_inline)) inline id JreObjectFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
-    ARGC_assignARGCObject(pIvar, value);
-    return value;
-}
-
-__attribute__((always_inline)) inline id JreGenericFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
-    ARGC_assignGenericObject(pIvar, value);
-    return value;
-}
-
-__attribute__((always_inline)) inline id JreGenericFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
-    ARGC_assignGenericObject(pIvar, value);
-    return value;
-}
+#define JreObjectFieldAssign            ARGC_assignARGCObject
+#define JreObjectFieldAssignAndConsume  ARGC_assignARGCObject
+#define JreGenericFieldAssign           ARGC_assignGenericObject
+#define JreGenericFieldAssignAndConsume ARGC_assignGenericObject
 
 #else
+
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 #endif

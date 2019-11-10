@@ -642,6 +642,7 @@ public:
 
 ARGC ARGC::_instance;
 int ARGC::mayHaveGarbage = 0;
+static int assocKey;
 std::atomic_int ARGC::gc_state;
 static scan_offset_t _emptyFields[1] = { 0 };
 static int64_t gc_interval = 0;
@@ -739,10 +740,11 @@ static int64_t gc_interval = 0;
 
 - (instancetype)autorelease
 {
+    [super autorelease];
     if (GC_TRACE(self, 0)) {
         ARGC::checkRefCount(self, @"autorelease");
     }
-    return [super autorelease];
+    return self;
 }
 
 - (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth
@@ -837,15 +839,15 @@ void ARGC::registerScanOffsets(Class clazz) {
 
 
 
-void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, ObjP newValue) {
+id ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
     if (*pField == newValue) {
-        return;
+        return newValue;
     }
     
     std::atomic<ObjP>* field = (std::atomic<ObjP>*)pField;
     ObjP oldValue = field->exchange(newValue);
     if (oldValue == newValue) {
-        return;
+        return newValue;
     }
     if (newValue != NULL) {
         assert(ARGC::isJavaObject(newValue));
@@ -856,15 +858,19 @@ void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, ObjP newValue) {
         assert(ARGC::isJavaObject(oldValue));
         ARGC::releaseReferenceCountAndPublish(oldValue);
     }
+    return newValue;
 }
 
-void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, id newValue) {
+id ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
     if (*pField == newValue) {
-        return;
+        return newValue;
     }
     
     std::atomic<id>* field = (std::atomic<id>*)pField;
     id oldValue = field->exchange(newValue);
+    if (oldValue == newValue) {
+        return newValue;
+    }
     if (newValue != NULL) {
         if (ARGC::isJavaObject(newValue)) {
             ARGC::touchInstance(newValue);
@@ -887,7 +893,7 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, id newValue) {
             [oldValue release];
         }
     }
-    return;
+    return newValue;
 }
 
 
@@ -1024,25 +1030,35 @@ void ARGC::markArrayItems(id obj, BOOL isStrong) {
 }
 
 void ARGC::doClearReferences(NSPointerArray* refList) {
-    @synchronized (refList) {
+    @synchronized ([IOSReference class]) {
         NSUInteger cntOrg = refList.count;
         int cntRef = (int)cntOrg;
         for (int idx = cntRef; idx > 0; ) {
-            JavaLangRefReference* reference = (JavaLangRefReference*)[refList pointerAtIndex:--idx];
-            ObjP referent = (ObjP)[refList pointerAtIndex:--idx];
-            if (!referent->_gc_info.isReachable()) {
-                reference->referent_ = NULL;
-                if (referent->_gc_info.clearReferent()) {
-                    releaseReferenceCountEx(referent);
-                    //NSDecrementExtraRefCountWasZero(referent);
+            id obj = (id)[refList pointerAtIndex:--idx];
+            NSPointerArray* rm = objc_getAssociatedObject(obj, &assocKey);
+
+            if (isJavaObject(obj)) {
+                if (((ObjP)obj)->_gc_info.isReachable()) continue;
+                NSDecrementExtraRefCountWasZero(obj);
+            }
+            else {
+                if (NSExtraRefCount(obj) > 0) continue;
+                [obj release];
+            }
+
+            //objc_setAssociatedObject(obj, &assocKey, NULL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            for (int j = (int)rm.count; --j >= 0; ) {
+                JavaLangRefReference* reference = (JavaLangRefReference*)[rm pointerAtIndex:j];
+                if (reference != NULL) {
+                    reference->referent_ = NULL;
+                    [reference enqueue];
+                    NSDecrementExtraRefCountWasZero(reference);
                 }
-                [reference enqueue];
             }
-            else if (reference->_gc_info.isStrongReachable()) {
-                continue;
+            if (idx < --cntRef) {
+                void* last = [refList pointerAtIndex:cntRef];
+                [refList replacePointerAtIndex:idx withPointer:last];
             }
-            [refList replacePointerAtIndex:idx+1 withPointer:[refList pointerAtIndex:--cntRef]];
-            [refList replacePointerAtIndex:idx+0 withPointer:[refList pointerAtIndex:--cntRef]];
         }
         refList.count = cntRef;
 
@@ -1124,8 +1140,8 @@ void ARGC::doGC() {
                 obj = *pScan;
                 if (obj != NULL && !obj->_gc_info.isReachable()) {
                     assert(getExternalRefCount(obj) <= 0 || obj->_gc_info.isPendingRelease());
+                    markRootInstance(obj, false);
                     if (obj->_gc_info.markFinalized()) {
-                        markRootInstance(obj, false);
                         JreFinalize(obj);
                     }
                 }
@@ -1360,10 +1376,10 @@ extern "C" {
     }
 
     id ARGC_strongRetainAutorelease(id obj) {
-        if (obj) {
-            [obj retain];
-            [obj autorelease];
-        }
+//        if (obj) {
+//            [obj retain];
+//            [obj autorelease];
+//        }
         return obj;
     }
     
@@ -1482,6 +1498,7 @@ void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {
     *pDst = obj;
 }
 
+
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
     std::atomic<id>* pDst = (std::atomic<id>*)pVar;
     std::atomic<id>* pSrc = (std::atomic<id>*)pOther;
@@ -1551,9 +1568,9 @@ void start_GC() {
 
 @implementation IOSReference
 
-+ (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)referent
++ (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)obj
 {
-    if (referent == nil) return;
+    if (obj == nil) return;
 
     NSPointerArray* array_;
     NSString* tag;
@@ -1565,16 +1582,20 @@ void start_GC() {
         array_ = g_weakRefs;
         tag = @"WeakRef";
     }
-    @synchronized (array_) {
-        reference->referent_ = referent;
-        // do not call [referent retain]
-        if (((ObjP)referent)->_gc_info.markReferent()) {
-            NSIncrementExtraRefCount(referent);
+    @synchronized (self) {
+        reference->referent_ = obj;
+        NSPointerArray* rm = objc_getAssociatedObject(obj, &assocKey);
+        if (rm == NULL) {
+            rm = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
+            objc_setAssociatedObject(obj, &assocKey, rm, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            NSIncrementExtraRefCount(obj);
+            [array_ addPointer:obj];
         }
-        [array_ addPointer:referent];
-        [array_ addPointer:reference];
+        //DBGLog(@"Add ref: %p: %p %@", rm, obj, [obj class]);
+        [rm addPointer:(void*)reference];
+        NSIncrementExtraRefCount(reference);
     }
-    ARGC::checkRefCount(referent, tag, GC_LOG_WEAK_SOFT_REF);
+    ARGC::checkRefCount(obj, tag, GC_LOG_WEAK_SOFT_REF);
 }
 + (id)getReferent:(JavaLangRefReference *)reference
 {
@@ -1583,33 +1604,24 @@ void start_GC() {
 
 + (void)clearReferent:(JavaLangRefReference *)reference
 {
-    id referent = reference->referent_;
-    if (referent == NULL) return;
+    id obj = reference->referent_;
+    if (obj == NULL) return;
     
-    NSPointerArray* array_;
-    NSString* tag;
-    if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
-        array_ = g_softRefs;
-        tag = @"SoftRef";
-    }
-    else {
-        array_ = g_weakRefs;
-        tag = @"WeakRef";
-    }
-    @synchronized (array_) {
+    @synchronized (self) {
         reference->referent_ = NULL;
-        [referent release];
+        NSPointerArray* rm = objc_getAssociatedObject(obj, &assocKey);
+        if (rm == NULL) return;
 
-        for (NSUInteger idx = [array_ count]; idx-=2 >= 0; ) {
-            if ([array_ pointerAtIndex:idx] == referent) {
-                [array_ removePointerAtIndex:idx+1];
-                [array_ removePointerAtIndex:idx+0];
+        for (NSUInteger idx = rm.count; --idx >= 0; ) {
+            if ([rm pointerAtIndex:idx] == reference) {
+                [rm removePointerAtIndex:idx];
+                NSDecrementExtraRefCountWasZero(reference);
                 break;
             }
         }
     }
 
-    ARGC::checkRefCount(referent, tag, GC_LOG_WEAK_SOFT_REF);
+    ARGC::checkRefCount(obj, @"ClearRef", GC_LOG_WEAK_SOFT_REF);
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
