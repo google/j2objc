@@ -15,31 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.BooleanLiteral;
-import com.google.devtools.j2objc.ast.CStringLiteral;
-import com.google.devtools.j2objc.ast.CharacterLiteral;
-import com.google.devtools.j2objc.ast.CommaExpression;
-import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FieldAccess;
-import com.google.devtools.j2objc.ast.FunctionInvocation;
-import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.PrefixExpression;
-import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
-import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.StringLiteral;
-import com.google.devtools.j2objc.ast.SuperFieldAccess;
-import com.google.devtools.j2objc.ast.SynchronizedStatement;
-import com.google.devtools.j2objc.ast.ThisExpression;
-import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.PointerType;
@@ -304,10 +280,15 @@ public class OperatorRewriter extends UnitTreeVisitor {
     if (funcName != null) {
 	      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
 	      if (retainedRhs != null) {
-	    	  if (!options.useGC()) {
+	    	  if (options.useReferenceCounting()) {
 	    		  funcName += "AndConsume";
 	    	  }
 	        node.setRightHandSide(retainedRhs);
+	      }
+	      if (options.useGC()) {
+		      if (!(node.getParent() instanceof ExpressionStatement)) {
+		    	  funcName += "AndGet";
+		      }
 	      }
 	      return funcName;
     }

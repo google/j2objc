@@ -837,17 +837,34 @@ void ARGC::registerScanOffsets(Class clazz) {
     }
 }
 
-
-
-id ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
+void ARGC_assignStrongObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
     if (*pField == newValue) {
-        return newValue;
+        return;
     }
     
     std::atomic<ObjP>* field = (std::atomic<ObjP>*)pField;
     ObjP oldValue = field->exchange(newValue);
     if (oldValue == newValue) {
-        return newValue;
+        return;
+    }
+    if (newValue != NULL) {
+        [newValue retain];
+    }
+    if (oldValue != NULL) {
+        [oldValue release];
+    }
+    return;
+}
+
+void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
+    if (*pField == newValue) {
+        return;
+    }
+    
+    std::atomic<ObjP>* field = (std::atomic<ObjP>*)pField;
+    ObjP oldValue = field->exchange(newValue);
+    if (oldValue == newValue) {
+        return;
     }
     if (newValue != NULL) {
         assert(ARGC::isJavaObject(newValue));
@@ -858,18 +875,18 @@ id ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newVa
         assert(ARGC::isJavaObject(oldValue));
         ARGC::releaseReferenceCountAndPublish(oldValue);
     }
-    return newValue;
+    return;
 }
 
-id ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
+void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
     if (*pField == newValue) {
-        return newValue;
+        return;
     }
     
     std::atomic<id>* field = (std::atomic<id>*)pField;
     id oldValue = field->exchange(newValue);
     if (oldValue == newValue) {
-        return newValue;
+        return;
     }
     if (newValue != NULL) {
         if (ARGC::isJavaObject(newValue)) {
@@ -893,7 +910,7 @@ id ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id ne
             [oldValue release];
         }
     }
-    return newValue;
+    return;
 }
 
 

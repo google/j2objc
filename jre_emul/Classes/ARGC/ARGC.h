@@ -57,11 +57,14 @@ extern "C" {
 
 typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj, int depth);
     
-/* replace filed with newValue and returns old value. */
-id ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
+/* replace field with newValue that extends ARGCObject. */
+void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
 
-/* replace filed with newValue and returns old value. */
-id ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
+/* replace field with newValue that maybe extends ARGCObject. */
+void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
+
+/* replace field with newValue that is static or not extends ARGCObject. */
+void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValue);
 
 /* execute garbage collection now. */
 void ARGC_collectGarbage();

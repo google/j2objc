@@ -80,7 +80,7 @@ CF_EXTERN_C_END
 #define J2OBJC_STATIC_FIELD_PRIMITIVE_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return CLASS##FIELD = value; \
+    return (CLASS##FIELD = value); \
   }
 #define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
@@ -92,23 +92,26 @@ CF_EXTERN_C_END
 #define J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return CLASS##FIELD = value; \
+    return (CLASS##FIELD = value); \
   }
 #else
 #define J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return JreStrongAssign(&CLASS##FIELD, value); \
+    JreStrongAssign(&CLASS##FIELD, value); \
+    return value; \
   } \
   __attribute__((always_inline)) inline TYPE CLASS##_setAndConsume##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return JreStrongAssignAndConsume(&CLASS##FIELD, value); \
+    JreStrongAssignAndConsume(&CLASS##FIELD, value); \
+    return value; \
   }
 #endif
 #define J2OBJC_STATIC_FIELD_OBJ_VOLATILE_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return JreVolatileStrongAssign(&CLASS##FIELD, value); \
+    JreVolatileStrongAssign(&CLASS##FIELD, value); \
+    return value; \
   }
 
 /*!
@@ -196,7 +199,9 @@ CF_EXTERN_C_END
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Strong##CNAME( \
       __strong TYPE **value) { \
     (void)nil_chk(*value); \
-    return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1)); \
+    TYPE* v = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1); \
+    JreStrongAssign(value, v); \
+    return v; \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Volatile##CNAME( \
       volatile_id *value) { \
@@ -291,8 +296,9 @@ CF_EXTERN_C_END
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignStrong##CNAME( \
       __strong BOXED_TYPE **lhs, RTYPE rhs) { \
     (void)nil_chk(*lhs); \
-    return JreStrongAssign(lhs, \
-        BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs)))); \
+    BOXED_TYPE* v = BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs))); \
+    JreStrongAssign(lhs, v); \
+    return v; \
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignVolatile##CNAME( \
       volatile_id *lhs, RTYPE rhs) { \

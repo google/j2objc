@@ -82,22 +82,33 @@ void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((
 @interface JavaLangObject : ARGCObject
 @end
 
-__attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
-    *pIvar = value;
+#define JreStrongAssign                 ARGC_assignStrongObject
+#define JreStrongAssignAndConsume       ARGC_assignStrongObject
+__attribute__((always_inline)) inline id JreStrongAssignAndGet(__strong id *pIvar, id value) {
+    JreStrongAssign(pIvar, value);
     return value;
 }
 
-__attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *pIvar, id value) {
-    *pIvar = value;
+#define JreNativeFieldAssign              ARGC_assignStrongObject
+#define JreNativeFieldAssignAndConsume    ARGC_assignStrongObject
+__attribute__((always_inline)) inline id JreNativeFieldAssignAndGet(__strong id *pIvar, id value) {
+    JreNativeFieldAssign(pIvar, value);
     return value;
 }
 
-#define JreNativeFieldAssign            JreStrongAssign
-#define JreNativeFieldAssignAndConsume  JreStrongAssignAndConsume
 #define JreObjectFieldAssign            ARGC_assignARGCObject
 #define JreObjectFieldAssignAndConsume  ARGC_assignARGCObject
+__attribute__((always_inline)) inline id JreObjectFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) {
+    JreObjectFieldAssign(pIvar, value);
+    return value;
+}
+
 #define JreGenericFieldAssign           ARGC_assignGenericObject
 #define JreGenericFieldAssignAndConsume ARGC_assignGenericObject
+__attribute__((always_inline)) inline id JreGenericFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) {
+    JreGenericFieldAssign(pIvar, value);
+    return value;
+}
 
 #else
 
@@ -274,32 +285,32 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 
 #ifdef J2OBJC_USE_GC
 #define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \
-__attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-return Jre##REF##FieldAssign(&instance->FIELD, value); \
+__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+ Jre##REF##FieldAssign(&instance->FIELD, value); \
 }\
-__attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
+__attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
 CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-return Jre##REF##FieldAssignAndConsume(&instance->FIELD, value); \
+ Jre##REF##FieldAssignAndConsume(&instance->FIELD, value); \
 }
 #elif __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return instance->FIELD = value; \
+  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+     instance->FIELD = value; \
   }
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-__attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-return JreStrongAssign(&instance->FIELD, value); \
+__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+ JreStrongAssign(&instance->FIELD, value); \
 }\
-__attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
+__attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
 CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-return JreStrongAssignAndConsume(&instance->FIELD, value); \
+ JreStrongAssignAndConsume(&instance->FIELD, value); \
 }
 #endif
 
 #define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreVolatileStrongAssign(&instance->FIELD, value); \
+  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+     JreVolatileStrongAssign(&instance->FIELD, value); \
   }
 
 /*!
