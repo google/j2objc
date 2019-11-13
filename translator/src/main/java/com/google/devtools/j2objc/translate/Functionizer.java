@@ -530,7 +530,7 @@ public class Functionizer extends UnitTreeVisitor {
   private void addDisallowedConstructors(TypeDeclaration node) {
     TypeElement typeElement = node.getTypeElement();
     TypeElement superClass = ElementUtil.getSuperclass(typeElement);
-    if (ElementUtil.isPrivateInnerType(typeElement) || ElementUtil.isAbstract(typeElement)
+    if (ElementUtil.isPrivateInnerType(typeElement)
         || superClass == null
         // If we're not emitting constructors we don't need to disallow anything unless our
         // superclass is NSObject.
