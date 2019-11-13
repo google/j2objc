@@ -35,6 +35,12 @@
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/Extension.h"
 
+// copybara:strip_begin
+#import "com/google/protobuf/GeneratedExtensionRegistryLoader.h"
+// copybara:strip_end
+
+#include "J2ObjC_source.h"
+
 typedef std::pair<const CGPDescriptor *, jint> ExtensionRegistryKey;
 typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMap;
 
@@ -47,6 +53,9 @@ typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMa
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufExtensionRegistryLite)
 
 static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
+// copybara:strip_begin
+static volatile_id ComGoogleProtobufExtensionRegistryLite_generatedRegistry;
+// copybara:strip_end
 
 @implementation ComGoogleProtobufExtensionRegistryLite
 
@@ -54,11 +63,22 @@ static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
   return CGPExtensionRegistryLite_EMPTY_;
 }
 
+// copybara:strip_begin
++ (CGPExtensionRegistryLite *)getGeneratedRegistry {
+  return ComGoogleProtobufExtensionRegistryLite_getGeneratedRegistry();
+}
+// copybara:strip_end
+
 - (void)addWithComGoogleProtobufExtensionLite:(CGPExtensionLite *)extension {
   CGPExtensionRegistryAdd(self, extension);
 }
 
 - (ComGoogleProtobufExtensionRegistryLite *)getUnmodifiable {
+  return self;
+}
+
+- (instancetype)initWithBoolean:(jboolean)empty {
+  ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
   return self;
 }
 
@@ -81,20 +101,39 @@ CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistr
   return CGPExtensionRegistryLite_EMPTY_;
 }
 
+// copybara:strip_begin
+CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_loadGeneratedRegistry() {
+  ComGoogleProtobufExtensionRegistryLite_initialize();
+  return ComGoogleProtobufGeneratedExtensionRegistryLoader_load__WithIOSClass_(
+      ComGoogleProtobufExtensionRegistryLite_class_());
+}
+
+CGPExtensionRegistryLite *
+    ComGoogleProtobufExtensionRegistryLite_getGeneratedRegistry() {
+  ComGoogleProtobufExtensionRegistryLite_initialize();
+  CGPExtensionRegistryLite *result =
+      JreLoadVolatileId(&ComGoogleProtobufExtensionRegistryLite_generatedRegistry);
+  if (result != nil) {
+    return result;
+  }
+  @synchronized(ComGoogleProtobufExtensionRegistryLite_class_()) {
+    result = JreRetainedLocalValue(
+        JreLoadVolatileId(&ComGoogleProtobufExtensionRegistryLite_generatedRegistry));
+    if (result != nil) {
+      return JreRetainedLocalValue(result);
+    }
+    result =
+        JreRetainedLocalValue(ComGoogleProtobufExtensionRegistryLite_loadGeneratedRegistry());
+    JreVolatileStrongAssign(&ComGoogleProtobufExtensionRegistryLite_generatedRegistry, result);
+    return JreRetainedLocalValue(result);
+  }
+}
+// copybara:strip_end
+
 void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLite *extension) {
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   CGPDescriptor *containingType = field->containingType_;
   registry->map_[ExtensionRegistryKey(containingType, CGPFieldGetNumber(field))] = field;
-}
-
-CGPFieldDescriptor *CGPExtensionRegistryFind(
-    CGPExtensionRegistryLite *registry, CGPDescriptor *descriptor, jint fieldNumber) {
-  ExtensionRegistryMap *map = &registry->map_;
-  ExtensionRegistryMap::iterator it = map->find(ExtensionRegistryKey(descriptor, fieldNumber));
-  if (it != map->end()) {
-    return it->second;
-  }
-  return nil;
 }
 
 void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
@@ -107,6 +146,16 @@ new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(jboolean empty) {
   ComGoogleProtobufExtensionRegistryLite *self = [ComGoogleProtobufExtensionRegistryLite alloc];
   ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
   return [self autorelease];
+}
+
+CGPFieldDescriptor *CGPExtensionRegistryFind(
+    CGPExtensionRegistryLite *registry, CGPDescriptor *descriptor, jint fieldNumber) {
+  ExtensionRegistryMap *map = &registry->map_;
+  ExtensionRegistryMap::iterator it = map->find(ExtensionRegistryKey(descriptor, fieldNumber));
+  if (it != map->end()) {
+    return it->second;
+  }
+  return nil;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufExtensionRegistryLite)

@@ -78,4 +78,4 @@ ComGoogleProtobufExtensionRegistryLite *new_ComGoogleProtobufExtensionRegistryLi
 
 CF_EXTERN_C_END
 
-#endif // __ComGoogleProtobufExtensionRegistryLite_H__
+#endif  // __ComGoogleProtobufExtensionRegistryLite_H__
