@@ -82,7 +82,7 @@ fat_lib_dependencies:
 	@:
 
 
-ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
+ARGC_C_FLAGS = -std=gnu11 -fobjc-arc -fobjc-arc-exceptions
 ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
 
 # Generates compile rule.
@@ -116,7 +116,7 @@ define compile_pch_rule
 $(1): $(2) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(3) $(ARGC_C_FLAGS) -std=c11 -x objective-c-header $(4) -MD -c $$< -o $$@
+	@$(3) $(ARGC_C_FLAGS) -std=gnu11 -x objective-c-header $(4) -MD -c $$< -o $$@
 endef
 
 # Generates analyze rule.

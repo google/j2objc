@@ -28,16 +28,18 @@ CLASSES_DIR = bin
 
 $(BUILD_JAR) : 
 	@echo Building procyon
-	gradle jar
-	mkdir -p build/dist
-	cp build/Procyon.core/libs/procyon-core-0.5.36.jar build/dist
-	cp build/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar build/dist
+	@gradle jar
+	@mkdir -p build/dist
+	@cp build/Procyon.core/libs/procyon-core-0.5.36.jar build/dist
+	@cp build/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar build/dist
 
 $(DIST_JAR): $(BUILD_JAR)
-	cp build/dist/*.jar $(JAVA_DEPS_JAR_DIR)/
+	@cp -f build/dist/*.jar $(JAVA_DEPS_JAR_DIR)/
 
 dist: $(DIST_JAR)
 	@:
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_JAR)
+
+:
