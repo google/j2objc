@@ -327,6 +327,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     String returnType = nameTable.getObjCType(function.getReturnType().getTypeMirror());
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
+    boolean hasObjectParam = false;//returnType.endsWith("*");
+    int cntParam = 0;
     if ((options.useGC() || isPrototype) && function.getParameters().isEmpty()) {
       if (!options.useGC()) sb.append("void");
     } else {
@@ -334,17 +336,54 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
         String paramType = nameTable.getObjCType(var.asType());
-        paramType += (paramType.endsWith("*") ? "" : " ");
+        // ARGC ** {{
+        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+        hasObjectParam |= isObject;
+        cntParam ++;
+        paramType += " ";
         sb.append(paramType + nameTable.getVariableShortName(var));
+        if (!isPrototype && isObject && function.getParameter(var).isMutable()) {
+        	sb.append("_0");
+        }
+        // }}
         if (iter.hasNext()) {
           sb.append(", ");
         }
       }
     }
-    sb.append(')');
+    sb.append(")");
+     // ARGC ++
+    if (cntParam > 0) {
+    	/**
+    	 * clang 버그로 인해 cntParam 이 1 이상인 경우에만 J2OBJC_METHOD_ATTR 적용 가능. 
+    	 */
+    	sb.append(" J2OBJC_METHOD_ATTR");
+    }
     return sb.toString();
   }
 
+   // ARGC ++
+  protected String getMutableParameters(FunctionDeclaration function) {
+	  StringBuilder sb = null;
+	  for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
+			  iter.hasNext(); ) {
+		  SingleVariableDeclaration var = iter.next();
+		  if (var.isMutable()) {
+			  String paramType = nameTable.getObjCType(var.getVariableElement().asType());
+		        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+			  if (isObject) {
+				  if (sb == null) {
+					  sb = new StringBuilder();
+				  }
+				  String name = nameTable.getVariableShortName(var.getVariableElement());
+				  sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
+				    .append(name).append("_0;").append('\n');
+			  }
+		  }
+	  }
+	  return sb == null ? "" : sb.toString();
+  }
+  
   protected String generateExpression(Expression expr) {
     return StatementGenerator.generate(expr, getBuilder().getCurrentLine());
   }

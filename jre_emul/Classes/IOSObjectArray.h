@@ -121,7 +121,7 @@
  * @return the element at index.
  */
 __attribute__((always_inline)) inline id IOSObjectArray_Get(
-    __unsafe_unretained IOSObjectArray *array, jint index) {
+    __unsafe_unretained IOSObjectArray *array, jint index)  J2OBJC_METHOD_ATTR {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -132,7 +132,7 @@ __attribute__((always_inline)) inline id IOSObjectArray_Get(
  * if index is out of range
  * @return the replacement object.
  */
-FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index, id value);
+FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index, id value) J2OBJC_METHOD_ATTR;
 
 /**
  * Sets element at a specified index, same as IOSObjectArray_Set(), but this function
@@ -142,7 +142,7 @@ FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index,
  * @return the replacement object.
  */
 FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(
-    IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value);
+    IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value) J2OBJC_METHOD_ATTR;
 
 // Internal only. Provides a pointer to an element with the array itself.
 // Used for translating certain compound expressions.
@@ -153,10 +153,10 @@ typedef struct JreArrayRef {
 
 // Internal only functions.
 __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
-    __unsafe_unretained IOSObjectArray *array, jint index) {
+    __unsafe_unretained IOSObjectArray *array, jint index)  J2OBJC_METHOD_ATTR {
   IOSArray_checkIndex(array->size_, index);
   return (JreArrayRef){ .arr = array, .pValue = &array->buffer_[index] };
 }
 
-FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
+FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value) J2OBJC_METHOD_ATTR;
 #endif // IOSObjectArray_H

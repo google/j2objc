@@ -31,7 +31,7 @@
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
 
-id JreThrowNullPointerException() {
+id JreThrowNullPointerException(id p) {
   @throw create_JavaLangNullPointerException_init(); // NOLINT
 }
 
@@ -232,7 +232,8 @@ static NSUInteger CountObjectArgs(const char *types) {
   return numObjs;
 }
 
-id ARGC_strongRetainAutorelease(id obj);
+void ARGC_strongRetain(id obj);
+void ARGC_release(id obj);
 
 // Computes the capacity for the buffer.
 static jint ComputeCapacity(const char *types, va_list va, __unsafe_unretained NSString **objDescriptions) {
@@ -280,7 +281,8 @@ static jint ComputeCapacity(const char *types, va_list va, __unsafe_unretained N
         {
           NSString *description = [va_arg(va, id) description];
           if (description) {
-            *(objDescriptions++) = ARGC_strongRetainAutorelease(description);
+              *(objDescriptions++) = description;
+              ARGC_strongRetain(description);
             capacity += CFStringGetLength((CFStringRef)description);
           } else {
             *(objDescriptions++) = nil;
@@ -323,7 +325,9 @@ static void AppendArgs(
         break;
       case '@':
         va_arg(va, id);
-        JreStringBuilder_appendString(sb, *(objDescriptions++));
+        NSString* description= *(objDescriptions++);
+        JreStringBuilder_appendString(sb, description);
+        ARGC_release(description);
         break;
     }
     types++;

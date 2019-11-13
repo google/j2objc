@@ -25,10 +25,9 @@
 #define __ARGC_H__
 
 #import <Foundation/Foundation.h>
+#import "J2ObjC_types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+CF_EXTERN_C_BEGIN
 
 @interface ARGCObject : NSObject
 @end
@@ -55,16 +54,16 @@ extern "C" {
     
 #define ARGC_FIELD_REF __unsafe_unretained
 
-typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj, int depth);
+typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj, int depth) J2OBJC_METHOD_ATTR;
     
 /* replace field with newValue that extends ARGCObject. */
-void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
+void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
 
 /* replace field with newValue that maybe extends ARGCObject. */
-void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue);
+void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
 
 /* replace field with newValue that is static or not extends ARGCObject. */
-void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValue);
+void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
 
 /* execute garbage collection now. */
 void ARGC_collectGarbage();
@@ -77,17 +76,15 @@ void ARGC_setGarbageCollectionInterval(int time_in_ms);
 void ARGC_requestGC();
 
 /* wake garbage collection thread. */
-id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED;
+id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
-id ARGC_globalLock(__unsafe_unretained id obj) NS_RETURNS_RETAINED;
-id ARGC_globalUnlock(__unsafe_unretained id obj) NS_RETURNS_RETAINED;
+id ARGC_globalLock(__unsafe_unretained id obj) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
+id ARGC_globalUnlock(__unsafe_unretained id obj) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 #define ARGC_FIELD(type, name)
 #define ARGC_PROXY_FIELD(type, name)
 #define ARGC_SYNTHESIZE(type, name)
 #define ARGC_PROXY_SYNTHESIZE(type, name)
-    
-#ifdef __cplusplus
-};
-#endif
+
+CF_EXTERN_C_END
 
 #endif // __ARGC_H__

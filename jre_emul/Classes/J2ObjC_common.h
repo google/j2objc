@@ -16,6 +16,7 @@
 #define _J2OBJC_COMMON_H_
 
 #pragma clang system_header
+#pragma clang diagnostic ignored "-Wignored-attributes"
 
 #import <Foundation/Foundation.h>
 
@@ -74,9 +75,9 @@
 
 CF_EXTERN_C_BEGIN
 
-id JreThrowNullPointerException() __attribute__((noreturn));
-void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
-void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
+id JreThrowNullPointerException(id p) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
+void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
+void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 
 #ifdef J2OBJC_USE_GC
 @interface JavaLangObject : ARGCObject
@@ -84,28 +85,28 @@ void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((
 
 #define JreStrongAssign                 ARGC_assignStrongObject
 #define JreStrongAssignAndConsume       ARGC_assignStrongObject
-__attribute__((always_inline)) inline id JreStrongAssignAndGet(__strong id *pIvar, id value) {
+__attribute__((always_inline)) inline id JreStrongAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
     JreStrongAssign(pIvar, value);
     return value;
 }
 
 #define JreNativeFieldAssign              ARGC_assignStrongObject
 #define JreNativeFieldAssignAndConsume    ARGC_assignStrongObject
-__attribute__((always_inline)) inline id JreNativeFieldAssignAndGet(__strong id *pIvar, id value) {
+__attribute__((always_inline)) inline id JreNativeFieldAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
     JreNativeFieldAssign(pIvar, value);
     return value;
 }
 
 #define JreObjectFieldAssign            ARGC_assignARGCObject
 #define JreObjectFieldAssignAndConsume  ARGC_assignARGCObject
-__attribute__((always_inline)) inline id JreObjectFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) {
+__attribute__((always_inline)) inline id JreObjectFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) J2OBJC_METHOD_ATTR {
     JreObjectFieldAssign(pIvar, value);
     return value;
 }
 
 #define JreGenericFieldAssign           ARGC_assignGenericObject
 #define JreGenericFieldAssignAndConsume ARGC_assignGenericObject
-__attribute__((always_inline)) inline id JreGenericFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) {
+__attribute__((always_inline)) inline id JreGenericFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) J2OBJC_METHOD_ATTR {
     JreGenericFieldAssign(pIvar, value);
     return value;
 }
@@ -154,12 +155,12 @@ CF_EXTERN_C_END
 #ifdef J2OBJC_DISABLE_NIL_CHECKS
 #define nil_chk(p) p
 #else
-#define nil_chk(p) (p ?: JreThrowNullPointerException())
+#define nil_chk(p) (p ?: JreThrowNullPointerException(nil))
 #endif
 
 // #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
-    ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
+    ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) J2OBJC_METHOD_ATTR {
     AUTORELEASE(value);
     JreGenericFieldAssign(pIvar, value);
     return value;
@@ -167,7 +168,7 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
 // #endif
 
 // #if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
+__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) J2OBJC_METHOD_ATTR {
   return AUTORELEASE(RETAIN_(value));
 }
 // #endif
@@ -178,11 +179,11 @@ __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
 #define J2OBJC_ARG(...) __VA_ARGS__
 
 #define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE) \
-  __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) { \
+  __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) J2OBJC_METHOD_ATTR { \
     return __c11_atomic_load(pVar, __ATOMIC_SEQ_CST); \
   } \
   __attribute__((always_inline)) inline TYPE JreAssignVolatile##NAME( \
-      volatile_##TYPE *pVar, TYPE value) { \
+      volatile_##TYPE *pVar, TYPE value) J2OBJC_METHOD_ATTR { \
     __c11_atomic_store(pVar, value, __ATOMIC_SEQ_CST); \
     return value; \
   }
@@ -285,31 +286,31 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 
 #ifdef J2OBJC_USE_GC
 #define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \
-__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
  Jre##REF##FieldAssign(&instance->FIELD, value); \
 }\
 __attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
-CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
+CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
  Jre##REF##FieldAssignAndConsume(&instance->FIELD, value); \
 }
 #elif __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
      instance->FIELD = value; \
   }
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
  JreStrongAssign(&instance->FIELD, value); \
 }\
 __attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
-CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
+CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
  JreStrongAssignAndConsume(&instance->FIELD, value); \
 }
 #endif
 
 #define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
      JreVolatileStrongAssign(&instance->FIELD, value); \
   }
 

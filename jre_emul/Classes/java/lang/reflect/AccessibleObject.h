@@ -45,10 +45,10 @@
 
 CF_EXTERN_C_BEGIN
 
-void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self);
+void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self) J2OBJC_METHOD_ATTR;
 
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
-    IOSObjectArray *objects, jboolean b);
+    IOSObjectArray *objects, jboolean b) J2OBJC_METHOD_ATTR;
 
 CF_EXTERN_C_END
 

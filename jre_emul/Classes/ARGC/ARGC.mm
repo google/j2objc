@@ -1362,6 +1362,10 @@ extern "C" {
         [obj retain];
     }
 
+    void ARGC_release(id obj) {
+        [obj release];
+    }
+
     void ARGC_autorelease(id obj) {
         [obj autorelease];
     }
@@ -1393,10 +1397,10 @@ extern "C" {
     }
 
     id ARGC_strongRetainAutorelease(id obj) {
-//        if (obj) {
-//            [obj retain];
-//            [obj autorelease];
-//        }
+        if (obj) {
+            [obj retain];
+            [obj autorelease];
+        }
         return obj;
     }
     

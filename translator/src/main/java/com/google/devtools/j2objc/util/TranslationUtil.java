@@ -340,6 +340,11 @@ public final class TranslationUtil {
     }
     return invocation;
   }
+  
+  // ARGC ++
+  public TypeMirror getVoidType() {
+	  return typeUtil.getVoid();
+  }
 
   public Expression createAnnotationValue(TypeMirror type, AnnotationValue aValue) {
     Object value = aValue.getValue();

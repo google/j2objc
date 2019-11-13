@@ -49,41 +49,41 @@ __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptr
 }
 
 // J2ObjcClassInfo accessor functions.
-NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
-NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata);
-NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
+NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) J2OBJC_METHOD_ATTR;
+NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) J2OBJC_METHOD_ATTR;
+NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) J2OBJC_METHOD_ATTR;
 
 // Field and method lookup functions.
-const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName);
+const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName) J2OBJC_METHOD_ATTR;
 // Find a field declared in the given class
 JavaLangReflectField *FindDeclaredField(
-    IOSClass *iosClass, NSString *name, jboolean publicOnly);
+    IOSClass *iosClass, NSString *name, jboolean publicOnly) J2OBJC_METHOD_ATTR;
 // Find a field declared in the given class or its hierarchy
 JavaLangReflectField *FindField(
-    IOSClass *iosClass, NSString *name, jboolean publicOnly);
+    IOSClass *iosClass, NSString *name, jboolean publicOnly) J2OBJC_METHOD_ATTR;
 // Find a method or constructor declared in the given class.
 JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
-    IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes);
+    IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes) J2OBJC_METHOD_ATTR;
 JavaLangReflectConstructor *JreConstructorWithParamTypes(
-    IOSClass *iosClass, IOSObjectArray *paramTypes);
-JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, SEL selector);
-JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, SEL selector);
+    IOSClass *iosClass, IOSObjectArray *paramTypes) J2OBJC_METHOD_ATTR;
+JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, SEL selector) J2OBJC_METHOD_ATTR;
+JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, SEL selector) J2OBJC_METHOD_ATTR;
 // Find a method in the given class or its hierarchy.
 JavaLangReflectMethod *JreMethodWithNameAndParamTypesInherited(
-    IOSClass *iosClass, NSString *name, IOSObjectArray *types);
-JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, SEL selector);
+    IOSClass *iosClass, NSString *name, IOSObjectArray *types) J2OBJC_METHOD_ATTR;
+JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, SEL selector) J2OBJC_METHOD_ATTR;
 
 // J2ObjcMethodInfo accessor functions.
-NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
+NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable) J2OBJC_METHOD_ATTR;
 
 __attribute__((always_inline)) inline const char *JreMethodJavaName(
-    const J2ObjcMethodInfo *metadata, const void **ptrTable) {
+    const J2ObjcMethodInfo *metadata, const void **ptrTable)  J2OBJC_METHOD_ATTR {
   const char *javaName = JrePtrAtIndex(ptrTable, metadata->javaNameIdx);
   return javaName ? javaName : sel_getName(metadata->selector);
 }
 
 // metadata must not be NULL.
-__attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
+__attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) J2OBJC_METHOD_ATTR {
   return metadata->selector;
 }
 

@@ -175,320 +175,320 @@ typedef const struct JNIInvokeInterface* JavaVM;
  * Table of interface function pointers for JNIEnv.
  */
 struct JNINativeInterface {
-  jint          (*GetVersion)(JNIEnv *);
+  jint          (*GetVersion)(JNIEnv *) J2OBJC_METHOD_ATTR;
 
-  jclass        (*FindClass)(JNIEnv*, const char*);
-  jclass        (*GetSuperclass)(JNIEnv*, jclass);
-  jboolean      (*IsAssignableFrom)(JNIEnv*, jclass, jclass);
-  jint          (*Throw)(JNIEnv*, jthrowable);
-  jint          (*ThrowNew)(JNIEnv *, jclass, const char *);
-  void          (*ExceptionClear)(JNIEnv *);
+  jclass        (*FindClass)(JNIEnv*, const char*) J2OBJC_METHOD_ATTR;
+  jclass        (*GetSuperclass)(JNIEnv*, jclass) J2OBJC_METHOD_ATTR;
+  jboolean      (*IsAssignableFrom)(JNIEnv*, jclass, jclass) J2OBJC_METHOD_ATTR;
+  jint          (*Throw)(JNIEnv*, jthrowable) J2OBJC_METHOD_ATTR;
+  jint          (*ThrowNew)(JNIEnv *, jclass, const char *) J2OBJC_METHOD_ATTR;
+  void          (*ExceptionClear)(JNIEnv *) J2OBJC_METHOD_ATTR;
 
-  jobject       (*NewGlobalRef)(JNIEnv*, jobject);
-  jobject       (*NewLocalRef)(JNIEnv*, jobject);
-  void          (*DeleteGlobalRef)(JNIEnv*, jobject);
-  void          (*DeleteLocalRef)(JNIEnv*, jobject);
-  jboolean      (*IsSameObject)(JNIEnv*, jobject, jobject);
-  jclass        (*GetObjectClass)(JNIEnv*, jobject);
-  jboolean      (*IsInstanceOf)(JNIEnv*, jobject, jclass);
+  jobject       (*NewGlobalRef)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
+  jobject       (*NewLocalRef)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
+  void          (*DeleteGlobalRef)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
+  void          (*DeleteLocalRef)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
+  jboolean      (*IsSameObject)(JNIEnv*, jobject, jobject) J2OBJC_METHOD_ATTR;
+  jclass        (*GetObjectClass)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
+  jboolean      (*IsInstanceOf)(JNIEnv*, jobject, jclass) J2OBJC_METHOD_ATTR;
 
-  jstring       (*NewString)(JNIEnv*, const jchar*, jsize);
-  jsize         (*GetStringLength)(JNIEnv*, jstring);
-  const jchar*  (*GetStringChars)(JNIEnv*, jstring, jboolean*);
-  void          (*ReleaseStringChars)(JNIEnv*, jstring, const jchar*);
-  jstring       (*NewStringUTF)(JNIEnv*, const char*);
-  jsize         (*GetStringUTFLength)(JNIEnv*, jstring);
-  const char*   (*GetStringUTFChars)(JNIEnv*, jstring, jboolean*);
-  void          (*ReleaseStringUTFChars)(JNIEnv*, jstring, const char*);
+  jstring       (*NewString)(JNIEnv*, const jchar*, jsize) J2OBJC_METHOD_ATTR;
+  jsize         (*GetStringLength)(JNIEnv*, jstring) J2OBJC_METHOD_ATTR;
+  const jchar*  (*GetStringChars)(JNIEnv*, jstring, jboolean*) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseStringChars)(JNIEnv*, jstring, const jchar*) J2OBJC_METHOD_ATTR;
+  jstring       (*NewStringUTF)(JNIEnv*, const char*) J2OBJC_METHOD_ATTR;
+  jsize         (*GetStringUTFLength)(JNIEnv*, jstring) J2OBJC_METHOD_ATTR;
+  const char*   (*GetStringUTFChars)(JNIEnv*, jstring, jboolean*) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseStringUTFChars)(JNIEnv*, jstring, const char*) J2OBJC_METHOD_ATTR;
 
-  jsize         (*GetArrayLength)(JNIEnv*, jarray);
-  jobjectArray  (*NewObjectArray)(JNIEnv*, jsize, jclass, jobject);
-  jobject       (*GetObjectArrayElement)(JNIEnv*, jobjectArray, jsize);
-  void          (*SetObjectArrayElement)(JNIEnv*, jobjectArray, jsize, jobject);
+  jsize         (*GetArrayLength)(JNIEnv*, jarray) J2OBJC_METHOD_ATTR;
+  jobjectArray  (*NewObjectArray)(JNIEnv*, jsize, jclass, jobject) J2OBJC_METHOD_ATTR;
+  jobject       (*GetObjectArrayElement)(JNIEnv*, jobjectArray, jsize) J2OBJC_METHOD_ATTR;
+  void          (*SetObjectArrayElement)(JNIEnv*, jobjectArray, jsize, jobject) J2OBJC_METHOD_ATTR;
 
-  jbooleanArray (*NewBooleanArray)(JNIEnv*, jsize);
-  jbyteArray    (*NewByteArray)(JNIEnv*, jsize);
-  jcharArray    (*NewCharArray)(JNIEnv*, jsize);
-  jshortArray   (*NewShortArray)(JNIEnv*, jsize);
-  jintArray     (*NewIntArray)(JNIEnv*, jsize);
-  jlongArray    (*NewLongArray)(JNIEnv*, jsize);
-  jfloatArray   (*NewFloatArray)(JNIEnv*, jsize);
-  jdoubleArray  (*NewDoubleArray)(JNIEnv*, jsize);
+  jbooleanArray (*NewBooleanArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jbyteArray    (*NewByteArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jcharArray    (*NewCharArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jshortArray   (*NewShortArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jintArray     (*NewIntArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jlongArray    (*NewLongArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jfloatArray   (*NewFloatArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
+  jdoubleArray  (*NewDoubleArray)(JNIEnv*, jsize) J2OBJC_METHOD_ATTR;
 
-  jboolean*     (*GetBooleanArrayElements)(JNIEnv*, jbooleanArray, jboolean*);
-  jbyte*        (*GetByteArrayElements)(JNIEnv*, jbyteArray, jboolean*);
-  jchar*        (*GetCharArrayElements)(JNIEnv*, jcharArray, jboolean*);
-  jshort*       (*GetShortArrayElements)(JNIEnv*, jshortArray, jboolean*);
-  jint*         (*GetIntArrayElements)(JNIEnv*, jintArray, jboolean*);
-  jlong*        (*GetLongArrayElements)(JNIEnv*, jlongArray, jboolean*);
-  jfloat*       (*GetFloatArrayElements)(JNIEnv*, jfloatArray, jboolean*);
-  jdouble*      (*GetDoubleArrayElements)(JNIEnv*, jdoubleArray, jboolean*);
+  jboolean*     (*GetBooleanArrayElements)(JNIEnv*, jbooleanArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jbyte*        (*GetByteArrayElements)(JNIEnv*, jbyteArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jchar*        (*GetCharArrayElements)(JNIEnv*, jcharArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jshort*       (*GetShortArrayElements)(JNIEnv*, jshortArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jint*         (*GetIntArrayElements)(JNIEnv*, jintArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jlong*        (*GetLongArrayElements)(JNIEnv*, jlongArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jfloat*       (*GetFloatArrayElements)(JNIEnv*, jfloatArray, jboolean*) J2OBJC_METHOD_ATTR;
+  jdouble*      (*GetDoubleArrayElements)(JNIEnv*, jdoubleArray, jboolean*) J2OBJC_METHOD_ATTR;
 
-  void          (*ReleaseBooleanArrayElements)(JNIEnv*, jbooleanArray, jboolean*, jint);
-  void          (*ReleaseByteArrayElements)(JNIEnv*, jbyteArray, jbyte*, jint);
-  void          (*ReleaseCharArrayElements)(JNIEnv*, jcharArray, jchar*, jint);
-  void          (*ReleaseShortArrayElements)(JNIEnv*, jshortArray, jshort*, jint);
-  void          (*ReleaseIntArrayElements)(JNIEnv*, jintArray, jint*, jint);
-  void          (*ReleaseLongArrayElements)(JNIEnv*, jlongArray, jlong*, jint);
-  void          (*ReleaseFloatArrayElements)(JNIEnv*, jfloatArray, jfloat*, jint);
-  void          (*ReleaseDoubleArrayElements)(JNIEnv*, jdoubleArray, jdouble*, jint);
+  void          (*ReleaseBooleanArrayElements)(JNIEnv*, jbooleanArray, jboolean*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseByteArrayElements)(JNIEnv*, jbyteArray, jbyte*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseCharArrayElements)(JNIEnv*, jcharArray, jchar*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseShortArrayElements)(JNIEnv*, jshortArray, jshort*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseIntArrayElements)(JNIEnv*, jintArray, jint*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseLongArrayElements)(JNIEnv*, jlongArray, jlong*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseFloatArrayElements)(JNIEnv*, jfloatArray, jfloat*, jint) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseDoubleArrayElements)(JNIEnv*, jdoubleArray, jdouble*, jint) J2OBJC_METHOD_ATTR;
 
-  void          (*GetBooleanArrayRegion)(JNIEnv*, jbooleanArray, jsize, jsize, jboolean*);
-  void          (*GetByteArrayRegion)(JNIEnv*, jbyteArray, jsize, jsize, jbyte*);
-  void          (*GetCharArrayRegion)(JNIEnv*, jcharArray, jsize, jsize, jchar*);
-  void          (*GetShortArrayRegion)(JNIEnv*, jshortArray, jsize, jsize, jshort*);
-  void          (*GetIntArrayRegion)(JNIEnv*, jintArray, jsize, jsize, jint*);
-  void          (*GetLongArrayRegion)(JNIEnv*, jlongArray, jsize, jsize, jlong*);
-  void          (*GetFloatArrayRegion)(JNIEnv*, jfloatArray, jsize, jsize, jfloat*);
-  void          (*GetDoubleArrayRegion)(JNIEnv*, jdoubleArray, jsize, jsize, jdouble*);
+  void          (*GetBooleanArrayRegion)(JNIEnv*, jbooleanArray, jsize, jsize, jboolean*) J2OBJC_METHOD_ATTR;
+  void          (*GetByteArrayRegion)(JNIEnv*, jbyteArray, jsize, jsize, jbyte*) J2OBJC_METHOD_ATTR;
+  void          (*GetCharArrayRegion)(JNIEnv*, jcharArray, jsize, jsize, jchar*) J2OBJC_METHOD_ATTR;
+  void          (*GetShortArrayRegion)(JNIEnv*, jshortArray, jsize, jsize, jshort*) J2OBJC_METHOD_ATTR;
+  void          (*GetIntArrayRegion)(JNIEnv*, jintArray, jsize, jsize, jint*) J2OBJC_METHOD_ATTR;
+  void          (*GetLongArrayRegion)(JNIEnv*, jlongArray, jsize, jsize, jlong*) J2OBJC_METHOD_ATTR;
+  void          (*GetFloatArrayRegion)(JNIEnv*, jfloatArray, jsize, jsize, jfloat*) J2OBJC_METHOD_ATTR;
+  void          (*GetDoubleArrayRegion)(JNIEnv*, jdoubleArray, jsize, jsize, jdouble*) J2OBJC_METHOD_ATTR;
 
-  void          (*SetBooleanArrayRegion)(JNIEnv*, jbooleanArray, jsize, jsize, const jboolean*);
-  void          (*SetByteArrayRegion)(JNIEnv*, jbyteArray, jsize, jsize, const jbyte*);
-  void          (*SetCharArrayRegion)(JNIEnv*, jcharArray, jsize, jsize, const jchar*);
-  void          (*SetShortArrayRegion)(JNIEnv*, jshortArray, jsize, jsize, const jshort*);
-  void          (*SetIntArrayRegion)(JNIEnv*, jintArray, jsize, jsize, const jint*);
-  void          (*SetLongArrayRegion)(JNIEnv*, jlongArray, jsize, jsize, const jlong*);
-  void          (*SetFloatArrayRegion)(JNIEnv*, jfloatArray, jsize, jsize, const jfloat*);
-  void          (*SetDoubleArrayRegion)(JNIEnv*, jdoubleArray, jsize, jsize, const jdouble*);
+  void          (*SetBooleanArrayRegion)(JNIEnv*, jbooleanArray, jsize, jsize, const jboolean*) J2OBJC_METHOD_ATTR;
+  void          (*SetByteArrayRegion)(JNIEnv*, jbyteArray, jsize, jsize, const jbyte*) J2OBJC_METHOD_ATTR;
+  void          (*SetCharArrayRegion)(JNIEnv*, jcharArray, jsize, jsize, const jchar*) J2OBJC_METHOD_ATTR;
+  void          (*SetShortArrayRegion)(JNIEnv*, jshortArray, jsize, jsize, const jshort*) J2OBJC_METHOD_ATTR;
+  void          (*SetIntArrayRegion)(JNIEnv*, jintArray, jsize, jsize, const jint*) J2OBJC_METHOD_ATTR;
+  void          (*SetLongArrayRegion)(JNIEnv*, jlongArray, jsize, jsize, const jlong*) J2OBJC_METHOD_ATTR;
+  void          (*SetFloatArrayRegion)(JNIEnv*, jfloatArray, jsize, jsize, const jfloat*) J2OBJC_METHOD_ATTR;
+  void          (*SetDoubleArrayRegion)(JNIEnv*, jdoubleArray, jsize, jsize, const jdouble*) J2OBJC_METHOD_ATTR;
 
-  void          (*GetStringRegion)(JNIEnv*, jstring, jsize, jsize, jchar*);
-  void          (*GetStringUTFRegion)(JNIEnv*, jstring, jsize, jsize, char*);
-  void*         (*GetPrimitiveArrayCritical)(JNIEnv*, jarray, jboolean*);
-  void          (*ReleasePrimitiveArrayCritical)(JNIEnv*, jarray, void*, jint);
-  const jchar*  (*GetStringCritical)(JNIEnv*, jstring, jboolean*);
-  void          (*ReleaseStringCritical)(JNIEnv*, jstring, const jchar*);
+  void          (*GetStringRegion)(JNIEnv*, jstring, jsize, jsize, jchar*) J2OBJC_METHOD_ATTR;
+  void          (*GetStringUTFRegion)(JNIEnv*, jstring, jsize, jsize, char*) J2OBJC_METHOD_ATTR;
+  void*         (*GetPrimitiveArrayCritical)(JNIEnv*, jarray, jboolean*) J2OBJC_METHOD_ATTR;
+  void          (*ReleasePrimitiveArrayCritical)(JNIEnv*, jarray, void*, jint) J2OBJC_METHOD_ATTR;
+  const jchar*  (*GetStringCritical)(JNIEnv*, jstring, jboolean*) J2OBJC_METHOD_ATTR;
+  void          (*ReleaseStringCritical)(JNIEnv*, jstring, const jchar*) J2OBJC_METHOD_ATTR;
 
-  jobject       (*NewDirectByteBuffer)(JNIEnv*, void*, jlong);
-  void*         (*GetDirectBufferAddress)(JNIEnv*, jobject);
-  jlong         (*GetDirectBufferCapacity)(JNIEnv*, jobject);
+  jobject       (*NewDirectByteBuffer)(JNIEnv*, void*, jlong) J2OBJC_METHOD_ATTR;
+  void*         (*GetDirectBufferAddress)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
+  jlong         (*GetDirectBufferCapacity)(JNIEnv*, jobject) J2OBJC_METHOD_ATTR;
 
-  jfieldID      (*GetFieldID)(JNIEnv*, jclass, const char*, const char*);
-  jfieldID      (*GetStaticFieldID)(JNIEnv*, jclass, const char*, const char*);
-  jmethodID     (*GetMethodID)(JNIEnv*, jclass, const char*, const char*);
-  jmethodID     (*GetStaticMethodID)(JNIEnv*, jclass, const char*, const char*);
+  jfieldID      (*GetFieldID)(JNIEnv*, jclass, const char*, const char*) J2OBJC_METHOD_ATTR;
+  jfieldID      (*GetStaticFieldID)(JNIEnv*, jclass, const char*, const char*) J2OBJC_METHOD_ATTR;
+  jmethodID     (*GetMethodID)(JNIEnv*, jclass, const char*, const char*) J2OBJC_METHOD_ATTR;
+  jmethodID     (*GetStaticMethodID)(JNIEnv*, jclass, const char*, const char*) J2OBJC_METHOD_ATTR;
 
-  jobject       (*AllocObject)(JNIEnv*, jclass);
-  jobject       (*NewObject)(JNIEnv*, jclass, jmethodID, ...);
-  jobject       (*NewObjectV)(JNIEnv*, jclass, jmethodID, va_list);
-  jobject       (*NewObjectA)(JNIEnv*, jclass, jmethodID, const jvalue*);
+  jobject       (*AllocObject)(JNIEnv*, jclass) J2OBJC_METHOD_ATTR;
+  jobject       (*NewObject)(JNIEnv*, jclass, jmethodID, ...) J2OBJC_METHOD_ATTR;
+  jobject       (*NewObjectV)(JNIEnv*, jclass, jmethodID, va_list) J2OBJC_METHOD_ATTR;
+  jobject       (*NewObjectA)(JNIEnv*, jclass, jmethodID, const jvalue*) J2OBJC_METHOD_ATTR;
 
   jobject (*CallObjectMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jobject (*CallObjectMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jobject (*CallObjectMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args) J2OBJC_METHOD_ATTR;
 
   jboolean (*CallBooleanMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jboolean (*CallBooleanMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jboolean (*CallBooleanMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args) J2OBJC_METHOD_ATTR;
 
   jbyte (*CallByteMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jbyte (*CallByteMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jbyte (*CallByteMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jchar (*CallCharMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jchar (*CallCharMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jchar (*CallCharMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jshort (*CallShortMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jshort (*CallShortMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jshort (*CallShortMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jint (*CallIntMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jint (*CallIntMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jint (*CallIntMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jlong (*CallLongMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jlong (*CallLongMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jlong (*CallLongMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jfloat (*CallFloatMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jfloat (*CallFloatMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jfloat (*CallFloatMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jdouble (*CallDoubleMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jdouble (*CallDoubleMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jdouble (*CallDoubleMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   void (*CallVoidMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    (JNIEnv *env, jobject obj, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   void (*CallVoidMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   void (*CallVoidMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args);
+    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args) J2OBJC_METHOD_ATTR;
 
   jobject (*GetObjectField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jboolean (*GetBooleanField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jbyte (*GetByteField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jchar (*GetCharField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jshort (*GetShortField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jint (*GetIntField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jlong (*GetLongField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jfloat (*GetFloatField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jdouble (*GetDoubleField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+    (JNIEnv *env, jobject obj, jfieldID fieldID) J2OBJC_METHOD_ATTR;
 
   void (*SetObjectField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jobject val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jobject val) J2OBJC_METHOD_ATTR;
   void (*SetBooleanField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jboolean val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jboolean val) J2OBJC_METHOD_ATTR;
   void (*SetByteField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jbyte val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jbyte val) J2OBJC_METHOD_ATTR;
   void (*SetCharField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jchar val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jchar val) J2OBJC_METHOD_ATTR;
   void (*SetShortField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jshort val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jshort val) J2OBJC_METHOD_ATTR;
   void (*SetIntField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jint val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jint val) J2OBJC_METHOD_ATTR;
   void (*SetLongField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jlong val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jlong val) J2OBJC_METHOD_ATTR;
   void (*SetFloatField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jfloat val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jfloat val) J2OBJC_METHOD_ATTR;
   void (*SetDoubleField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jdouble val);
+    (JNIEnv *env, jobject obj, jfieldID fieldID, jdouble val) J2OBJC_METHOD_ATTR;
 
   jobject (*CallStaticObjectMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jobject (*CallStaticObjectMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jobject (*CallStaticObjectMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jboolean (*CallStaticBooleanMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jboolean (*CallStaticBooleanMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jboolean (*CallStaticBooleanMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jbyte (*CallStaticByteMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jbyte (*CallStaticByteMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jbyte (*CallStaticByteMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jchar (*CallStaticCharMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jchar (*CallStaticCharMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jchar (*CallStaticCharMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jshort (*CallStaticShortMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jshort (*CallStaticShortMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jshort (*CallStaticShortMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jint (*CallStaticIntMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jint (*CallStaticIntMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jint (*CallStaticIntMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jlong (*CallStaticLongMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jlong (*CallStaticLongMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jlong (*CallStaticLongMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jfloat (*CallStaticFloatMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jfloat (*CallStaticFloatMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jfloat (*CallStaticFloatMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   jdouble (*CallStaticDoubleMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   jdouble (*CallStaticDoubleMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   jdouble (*CallStaticDoubleMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) J2OBJC_METHOD_ATTR;
 
   void (*CallStaticVoidMethod)
-    (JNIEnv *env, jclass cls, jmethodID methodID, ...);
+    (JNIEnv *env, jclass cls, jmethodID methodID, ...) J2OBJC_METHOD_ATTR;
   void (*CallStaticVoidMethodV)
-    (JNIEnv *env, jclass cls, jmethodID methodID, va_list args);
+    (JNIEnv *env, jclass cls, jmethodID methodID, va_list args) J2OBJC_METHOD_ATTR;
   void (*CallStaticVoidMethodA)
-    (JNIEnv *env, jclass cls, jmethodID methodID, const jvalue * args);
+    (JNIEnv *env, jclass cls, jmethodID methodID, const jvalue * args) J2OBJC_METHOD_ATTR;
 
   jobject (*GetStaticObjectField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jboolean (*GetStaticBooleanField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jbyte (*GetStaticByteField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jchar (*GetStaticCharField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jshort (*GetStaticShortField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jint (*GetStaticIntField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jlong (*GetStaticLongField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jfloat (*GetStaticFloatField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
   jdouble (*GetStaticDoubleField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID) J2OBJC_METHOD_ATTR;
 
   void (*SetStaticObjectField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jobject value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jobject value) J2OBJC_METHOD_ATTR;
   void (*SetStaticBooleanField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jboolean value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jboolean value) J2OBJC_METHOD_ATTR;
   void (*SetStaticByteField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jbyte value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jbyte value) J2OBJC_METHOD_ATTR;
   void (*SetStaticCharField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jchar value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jchar value) J2OBJC_METHOD_ATTR;
   void (*SetStaticShortField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jshort value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jshort value) J2OBJC_METHOD_ATTR;
   void (*SetStaticIntField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jint value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jint value) J2OBJC_METHOD_ATTR;
   void (*SetStaticLongField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jlong value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jlong value) J2OBJC_METHOD_ATTR;
   void (*SetStaticFloatField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jfloat value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jfloat value) J2OBJC_METHOD_ATTR;
   void (*SetStaticDoubleField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jdouble value);
+    (JNIEnv *env, jclass clazz, jfieldID fieldID, jdouble value) J2OBJC_METHOD_ATTR;
 
-  jint          (*GetJavaVM)(JNIEnv*, JavaVM**);
+  jint          (*GetJavaVM)(JNIEnv*, JavaVM**) J2OBJC_METHOD_ATTR;
 };
 
 /*

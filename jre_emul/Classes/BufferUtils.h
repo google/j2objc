@@ -25,7 +25,7 @@
 #import "IOSPrimitiveArray.h"
 #import "java/nio/Buffer.h"
 
-static inline char *BytesRW(id object) {
+static inline char *BytesRW(id object) J2OBJC_METHOD_ATTR {
   (void)nil_chk(object);
   Class cls = object_getClass(object);
   if (cls == [IOSByteArray class]) {

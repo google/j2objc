@@ -50,6 +50,6 @@
  * Create an empty multi-dimensional array of a specified type.
  */
 extern id IOSArray_NewArrayWithDimensions(
-    Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
+    Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type) J2OBJC_METHOD_ATTR;
 
 #endif // IOSArray_Package_Private_H

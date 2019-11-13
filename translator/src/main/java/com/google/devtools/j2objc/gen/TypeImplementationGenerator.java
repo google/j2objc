@@ -305,7 +305,16 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncLineNumbers(function);  // avoid doc-comment
     if (Modifier.isNative(function.getModifiers())) {
       printJniFunctionAndWrapper(function);
-    } else {
+    } else if (options.useGC()) {
+      String functionBody = generateStatement(function.getBody());
+      String sig = getFunctionSignature(function, false);
+      String mutableParams = getMutableParameters(function);
+      if (mutableParams.length() > 0) {
+    	  functionBody = "{\n" + mutableParams + "\n@autoreleasepool " + functionBody + "}";
+      }
+      print(sig + ' ' + reindent(functionBody));
+    }
+    else {
       String functionBody = generateStatement(function.getBody());
       println(getFunctionSignature(function, false) + " " + reindent(functionBody));
     }

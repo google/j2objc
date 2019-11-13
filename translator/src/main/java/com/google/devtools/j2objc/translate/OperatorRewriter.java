@@ -25,6 +25,9 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.RetainedLocalRef;
+import com.sun.tools.javac.code.Symbol;
+
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -50,6 +54,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   private final LinkedList<Set<VariableElement>> retainedLocalCandidateStack = new LinkedList<>();
   private Set<VariableElement> retainedLocalCandidates = new HashSet<>();
   private boolean isSynchronizedMethod = false;
+private FunctionDeclaration argc_currentMethod;
 
   public OperatorRewriter(CompilationUnit unit) {
     super(unit);
@@ -108,6 +113,22 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
+  @Override // ARGC ++
+  public boolean visit(FunctionDeclaration node) {
+		if (options.useGC()) {
+			  assert this.argc_currentMethod == null;
+			  this.argc_currentMethod = node;
+		}
+	  return true;
+  }
+
+  @Override // ARGC ++
+  public void endVisit(FunctionDeclaration node) {
+	  if (options.useGC()) {
+	    this.argc_currentMethod = null;
+	  }
+  }
+  
   @Override
   public boolean visit(MethodDeclaration node) {
     isSynchronizedMethod = Modifier.isSynchronized(node.getModifiers());
@@ -122,6 +143,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
+	if (options.useGC()) {
+	  this.argc_currentMethod = null;
+	}
     retainedLocalCandidateStack.clear();
     retainedLocalCandidates.clear();
     isSynchronizedMethod = false;
@@ -333,6 +357,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
+    	if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+    		//Name arg = (Name) node.getLeftHandSide();
+    		SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+    		arg.markMutable();
+    	}
       return;
     }
     TypeMirror type = node.getTypeMirror();
@@ -340,7 +369,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
-    FunctionInvocation invocation = new FunctionInvocation(element, type);
+    FunctionInvocation invocation = new FunctionInvocation(element, 
+    		funcName.endsWith("AndGet") || funcName.startsWith("JreVolatile") ? type : this.translationUtil.getVoidType());
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {
       element.addParameters(idType);
@@ -511,6 +541,15 @@ public class OperatorRewriter extends UnitTreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
+
+    if (options.useGC()) {
+      VariableElement var = TreeUtil.getVariableElement(lhs);
+	    if (var != null && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+		    SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+		    arg.markMutable();
+	    }
+    }
+    
     String funcName = "JreStrAppend" + translationUtil.getOperatorFunctionModifier(lhs);
     FunctionElement element = new FunctionElement(funcName, TypeUtil.ID_TYPE, null)
         .addParameters(TypeUtil.ID_PTR_TYPE, TypeUtil.NATIVE_CHAR_PTR)

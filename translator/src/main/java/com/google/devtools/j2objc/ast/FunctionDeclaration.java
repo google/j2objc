@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc.ast;
 
 import java.util.List;
+
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -111,4 +113,14 @@ public class FunctionDeclaration extends BodyDeclaration {
     parameters.add(param);
     return this;
   }
+
+  // ARGC ++
+	  public SingleVariableDeclaration getParameter(VariableElement name) {
+		  for (SingleVariableDeclaration arg : parameters) {
+			  if (arg.getVariableElement() == name) {
+				  return arg;
+			  }
+		  }
+		  return null;
+	  }
 }
