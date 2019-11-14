@@ -306,16 +306,19 @@ public class X509Certificate2Test extends junit.framework.TestCase {
 
         try {
             l.clear();
+            fail();
         } catch (UnsupportedOperationException expected) {
         }
 
         try {
             l.add("Test");
+            fail();
         } catch (UnsupportedOperationException expected) {
         }
 
         try {
             l.remove(0);
+            fail();
         } catch (UnsupportedOperationException expected) {
         }
     }
