@@ -29,23 +29,23 @@
 // Begin synchronizing on 'obj'.  
 // Allocates recursive pthread_mutex associated with 'obj' if needed.
 // Returns OBJC_SYNC_SUCCESS once lock is acquired.  
-OBJC_EXPORT  int objc_sync_enter(id obj);
+OBJC_EXPORT  int objc_sync_enter(id obj) J2OBJC_METHOD_ATTR;
 
 // End synchronizing on 'obj'. 
 // Returns OBJC_SYNC_SUCCESS or OBJC_SYNC_NOT_OWNING_THREAD_ERROR
-OBJC_EXPORT  int objc_sync_exit(id obj);
+OBJC_EXPORT  int objc_sync_exit(id obj) J2OBJC_METHOD_ATTR;
 
 // Temporarily release lock on 'obj' and wait for another thread to notify on 'obj'
 // Return OBJC_SYNC_SUCCESS, OBJC_SYNC_NOT_OWNING_THREAD_ERROR, OBJC_SYNC_TIMED_OUT
-OBJC_EXPORT  int objc_sync_wait(id obj, long long milliSecondsMaxWait);
+OBJC_EXPORT  int objc_sync_wait(id obj, long long milliSecondsMaxWait) J2OBJC_METHOD_ATTR;
 
 // Wake up another thread waiting on 'obj'
 // Return OBJC_SYNC_SUCCESS, OBJC_SYNC_NOT_OWNING_THREAD_ERROR
-OBJC_EXPORT  int objc_sync_notify(id obj);
+OBJC_EXPORT  int objc_sync_notify(id obj) J2OBJC_METHOD_ATTR;
 
 // Wake up all threads waiting on 'obj'
 // Return OBJC_SYNC_SUCCESS, OBJC_SYNC_NOT_OWNING_THREAD_ERROR
-OBJC_EXPORT  int objc_sync_notifyAll(id obj);
+OBJC_EXPORT  int objc_sync_notifyAll(id obj) J2OBJC_METHOD_ATTR;
 
 enum {
 	OBJC_SYNC_SUCCESS                 = 0,
@@ -55,6 +55,6 @@ enum {
 };
 
 // Returns true if an object has a pthread_mutux allocated for it on this thread.
-BOOL j2objc_sync_holds_lock(id obj);
+BOOL j2objc_sync_holds_lock(id obj) J2OBJC_METHOD_ATTR;
 
 #endif // __OBJC_SNYC_H_

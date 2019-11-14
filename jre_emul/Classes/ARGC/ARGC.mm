@@ -59,9 +59,8 @@ static const BOOL ENABLE_PENDING_RELEASE = false;
 static const int _1M = 1024*1024;
 static const int REFS_IN_BUCKET = _1M / sizeof(ObjP);
 
-static const int64_t REF_COUNT_MASK         = 0x00fffFFFF;
-static const int64_t REF_COUNT_GAURD        = 0x01000LL * 0x10000;
-static const int64_t REF_REFERENT_FLAG      = 0x02000LL * 0x10000;
+static const int64_t BIND_COUNT_MASK        = 0x00fffFFFF;
+static const int64_t PHANTOM_FLAG           = 0x02000LL * 0x10000;
 static const int64_t FINALIZED_FLAG         = 0x04000LL * 0x10000;
 static const int64_t WEAK_REACHABLE_FLAG    = 0x08000LL * 0x10000;
 static const int64_t STRONG_REACHABLE_MASK  = 0x70000LL * 0x10000;
@@ -81,16 +80,14 @@ public:
     void initialize(BOOL isFinalized) {
         /**
          objc 의 refCount 의 초기값은 0이며, 0보다 작아질 때 객체를 릴리즈한다.
-         rootDepth의 초기값은 1이며, 1보다 작아지면  stack/static 참조가 없는 상태를 의미한다.
+         bindCount의 초기값은 1이며, stack/static 참조가 없을 때 0이 된다.
          */
-        uint64_t v = SLOT_INDEX_MASK | REF_COUNT_GAURD | strong_reachable_generation_bit | 1;
+        uint64_t v = SLOT_INDEX_MASK | strong_reachable_generation_bit | 1;
         if (isFinalized) {
             v |= FINALIZED_FLAG;
         }
         _gc_context = v;
     }
-    
-    // RefSlot Management;
     
     int32_t slotIndex() {
         return _gc_context >> SLOT_INDEX_SHIFT;
@@ -119,16 +116,22 @@ public:
     }
     
 
-    int32_t refCount() {
-        return _gc_context & REF_COUNT_MASK;
+    int32_t bindCount() {
+        return _gc_context & BIND_COUNT_MASK;
     }
     
-    void incRefCount() {
+    void bind() {
         _gc_context ++;
+        if (GC_DEBUG) {
+            assert((_gc_context & BIND_COUNT_MASK)  < BIND_COUNT_MASK);
+        }
     }
     
-    int32_t decRefCount() {
-        int32_t cnt = (--_gc_context) & REF_COUNT_MASK;
+    int32_t unbind() {
+        int32_t cnt = (--_gc_context) & BIND_COUNT_MASK;
+        if (GC_DEBUG) {
+            assert(cnt < BIND_COUNT_MASK);
+        }
         return cnt;
     }
     
@@ -145,6 +148,10 @@ public:
         return (_gc_context & REACHABLE_MASK) == 0;
     }
 
+    BOOL markPendingRelease() {
+        return this->markFlags(PENDING_RELEASE_FLAG);
+    }
+
     BOOL isPendingRelease() {
         return (_gc_context & PENDING_RELEASE_FLAG) != 0;
     }
@@ -157,14 +164,22 @@ public:
         return (_gc_context & FINALIZED_FLAG) != 0;
     }
     
-    void clearFinalized() {
-        this->clearFlags(FINALIZED_FLAG);
-    }
+//    void clearFinalized() {
+//        this->clearFlags(FINALIZED_FLAG);
+//    }
 
     BOOL markFinalized() {
         return this->markFlags(FINALIZED_FLAG);
     }
     
+    BOOL markPhantom() {
+        return this->markFlags(PHANTOM_FLAG);
+    }
+
+    BOOL isPhantom() {
+        return (_gc_context & PHANTOM_FLAG) != 0;
+    }
+
     BOOL markReachable(BOOL isStrong) {
         return isStrong ? markStrongReachable() : markWeakReachable();
     }
@@ -175,11 +190,15 @@ public:
             if (__isReachable(v)) {
                 return false;
             }
-            int64_t new_v = (v & ~REACHABLE_MASK) | WEAK_REACHABLE_FLAG;
+            int64_t new_v = v | WEAK_REACHABLE_FLAG;
             if (_gc_context.compare_exchange_strong(v, new_v)) {
                 return true;
             }
         }
+    }
+    
+    void clearWeakReachable() {
+        this->clearFlags(WEAK_REACHABLE_FLAG);
     }
 
     BOOL markStrongReachable() {
@@ -199,21 +218,7 @@ public:
         }
     }
     
-    BOOL markPendingRelease() {
-        return this->markFlags(PENDING_RELEASE_FLAG);
-    }
 
-    BOOL isReferent() {
-        return (_gc_context & REF_REFERENT_FLAG) != 0;
-    }
-
-    BOOL markReferent() {
-        return this->markFlags(REF_REFERENT_FLAG);
-    }
-
-    BOOL clearReferent() {
-        return this->clearFlags(REF_REFERENT_FLAG);
-    }
 
 private:
     BOOL markFlags(int64_t flag) {
@@ -275,6 +280,7 @@ volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 @public
     RefContext _gc_info;
 }
+- (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth;
 @end
 
 @interface ARGCPhantom : NSObject
@@ -318,9 +324,12 @@ static NSPointerArray* g_weakRefs;
 
 class ARGC {
 public:
+    typedef void (*ARGCVisitor)(ObjP obj);
+    
     static ARGC _instance;
     static std::atomic_int gc_state;//GC_IN_SCANNING;
-    
+    std::atomic<ARGCVisitor> deallocMethod;
+
     Method _no_java_finalize;
 
     ARGC() {
@@ -353,26 +362,24 @@ public:
     void doClearReferences(NSPointerArray* refList);
     
 
-    static void touchInstance(ObjP obj) {
-        if (GC_DEBUG && obj == GC_TRACE_REF) {
-            int a = 3;
-            a ++;
-        }
-        if (!obj->_gc_info.isStrongReachable()) {
-                markRootInstance(obj, true);
-
-        }
-    }
-
     static void markRootInstance(ObjP obj, BOOL isStrong);
     
     static void markArrayItems(id array, BOOL isStrong);
     
     static void scanInstances(id* pItem, int cntItem, ObjP* scanBuff, ObjP* pBuffEnd, BOOL isStrong);
     
+    static void touchInstance(ObjP obj) {
+        if (!obj->_gc_info.isStrongReachable()) {
+            markRootInstance(obj, true);
+        }
+    }
+    
+    static BOOL isPhantom(ObjP obj) {
+        return obj->_gc_info.isPhantom();
+    }
 
-    static int32_t getExternalRefCount(ObjP obj) {
-        return obj->_gc_info.refCount();
+    static BOOL isRootReachable(ObjP obj) {
+        return obj->_gc_info.bindCount() > 0;
     }
     
     static BOOL markPendingRelease(ObjP obj) {
@@ -382,27 +389,32 @@ public:
         return obj->_gc_info.markPendingRelease();
     }
 
-    
-    static BOOL releaseExternalReference(ObjP obj) {
-        int cnt = obj->_gc_info.decRefCount();
-        if (cnt == REF_COUNT_MASK) {
-            /**
-             App 또는 Thread 종료 시? AutoReleasePool 을 정리하면서, WeakReference 등의 외부 참조 개수가 0 이하로 줄어드는 문제 발생한다.
-             이유를 알 수 없다.
-             */
-            NSLog(@"over release %p %d(%d) %@", obj, (int)NSExtraRefCount(obj), obj->_gc_info.refCount(), [obj class]);
-            obj->_gc_info.incRefCount();
-            //GC_TRACE_REF = obj;
-            return false;
+    static void bindObject(ObjP obj) {
+        if (!obj->_gc_info.isPhantom()) {
+            obj->_gc_info.bind();
+            touchInstance(obj);
+            ARGC::increaseReferenceCount(obj, @"retain");
         }
-        return true;
+        else {
+            ARGC::increaseReferenceCount(obj, @"retain-phatom");
+        }
     }
     
-    static void retainExternalReference(ObjP obj) {
-        obj->_gc_info.incRefCount();
-        if (!obj->_gc_info.isReachable()) {
-            touchInstance(obj);
+    static void unbindObject(ObjP obj) {
+        if (obj->_gc_info.isPhantom()) {
+            NSLog(@"release-phantom: %p %@", obj, [obj class]);
+            NSDecrementExtraRefCountWasZero(obj);
+            return;
         }
+
+        int cnt = obj->_gc_info.unbind();
+        
+        if (ARGC::decreaseReferenceCount(obj, @"release")) {
+            if (!ARGC::isRootReachable(obj)) {
+                ARGC::mayHaveGarbage = 2;
+            }
+        }
+        return;
     }
     
     static BOOL inGC() {
@@ -426,7 +438,7 @@ public:
         registerScanOffsets(cls);
         initGCInfo(obj);
         _cntAllocated ++;
-        // refCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
+        // bindCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
         addStrongRef(obj);
         return obj;
     }
@@ -436,55 +448,58 @@ public:
     }
     
     
-    typedef void (*ARGCVisitor)(ObjP obj);
-    
-    std::atomic<ARGCVisitor> deallocMethod;
-    
-    static void retainReferenceCount(id obj) {
-        retainReferenceCountEx(obj);
-        checkRefCount(obj, @"retain ----");
+    static void increaseReferenceCount(id obj, NSString* tag) {
+        NSIncrementExtraRefCount(obj);
+        checkRefCount(obj, tag);
     }
 
-    static void retainReferenceCountEx(ARGCObject* obj) {
-        NSIncrementExtraRefCount(obj);
-    }
-    
-    static void releaseReferenceCount(id obj) {
+    static void decreaseGenericReferenceCount(id obj) {
         if (isJavaObject(obj)) {
-            releaseReferenceCountEx((ObjP)obj);
-            return;
+            if (GC_TRACE(obj, 0)) {
+                decreaseReferenceCount((ObjP)obj, @"--.fld");
+            }
+            else {
+                decreaseReferenceCount((ObjP)obj, @"--.fld");
+            }
         }
-        [obj release];
+        else {
+            if (GC_TRACE(obj, 0)) {
+                NSLog(@"--natv %p #%d %@", obj, (int)NSExtraRefCount(obj), [obj class]);
+            }
+            [obj release];
+        }
     }
     
-    static BOOL releaseReferenceCountEx(ObjP obj) {
+    static BOOL decreaseReferenceCount(ObjP obj, NSString* tag) {
         if (!NSDecrementExtraRefCountWasZero(obj)) {
-            // Do not use NSExtraRefCount() to determine to dealloc.
+            checkRefCount(obj, tag);
             return true;
         }
 
+        if (GC_TRACE(obj, 0)) {
+            NSLog(@"--zero %p -1(%d) %@", obj, obj->_gc_info.bindCount(), [obj class]);
+        }
         if (ENABLE_DELAY_FINALIZE && !obj->_gc_info.isFinalized()) {
             // dealloc in next GC cycle.
             return false;
         }
-        if (_instance.unregisterRef(obj)) {
-            if (gc_state >= SCANNING && !obj->_gc_info.isReachable()) {
-                /* do not dealloc sub-references. */
-                markRootInstance(obj, false);
-            }
+        if (gc_state != SCANNING) {
+//            if (gc_state == SCANNING && !obj->_gc_info.isReachable()) {
+//                /* do not dealloc sub-references. */
+//                markRootInstance(obj, false);
+//            }
             [obj dealloc];
         }
         return false;
     }
     
-    static void releaseReferenceCountAndPublish(ObjP obj) {
+    static void decreaseReferenceCountAndPublish(ObjP obj) {
         if (USE_AUTORELEASE_OLD) {
-            ARGC::retainExternalReference(obj);
+            ARGC::bindObject(obj);
             [obj autorelease];
         }
         else {
-            checkRefCount(obj, @"release ***", -1);
-            if (releaseReferenceCountEx(obj)) {
+            if (decreaseReferenceCount(obj, @"--&pub")) {
                 touchInstance(obj);
                 // 다음 gc 를 위해서.
                 mayHaveGarbage = 2;
@@ -500,14 +515,16 @@ public:
         return scanOffsets->offsets;
     }
     
-    static void checkRefCount(ObjP obj, NSString* tag, int delta = 0) {
+    static void checkRefCount(ObjP obj, NSString* tag) {
         if (GC_TRACE(obj, GC_LOG_RC)) {
-            NSLog(@"%@ %p %d(%d) %@", tag, obj, (int)NSExtraRefCount(obj) + delta, obj->_gc_info.refCount(), [obj class]);
-            if ((int)NSExtraRefCount(obj) < (int)obj->_gc_info.refCount() - 1) {
+            int bindCount = obj->_gc_info.bindCount();
+            int refCount = (int)NSExtraRefCount(obj)+1;
+            NSLog(@"%@ %p #%d+%d %@", tag, obj, bindCount, refCount-bindCount, [obj class]);
+            if ((int)NSExtraRefCount(obj) < (int)obj->_gc_info.bindCount() - 1) {
                 // 멀티쓰레드환경이라 두 값의 비교가 정확하지 않다. 관련 정보를 적는다.
                 int MAX_THREAD_COUNT = 32;
-                NSLog(@"Maybe error %@ %p %d(%d) %@", tag, obj, (int)NSExtraRefCount(obj), obj->_gc_info.refCount(), [obj class]);
-                //assert((int)NSExtraRefCount(obj) >= (int)obj->_gc_info.refCount() - MAX_THREAD_COUNT);
+                NSLog(@"Maybe error %@ %p %d(%d) %@", tag, obj, (int)NSExtraRefCount(obj), obj->_gc_info.bindCount(), [obj class]);
+                //assert((int)NSExtraRefCount(obj) >= (int)obj->_gc_info.bindCount() - MAX_THREAD_COUNT);
             };
         }
     }
@@ -587,17 +604,27 @@ private:
         mayHaveGarbage = 2;
     }
     
-    void addPhantom(ObjP dead, BOOL isThreadSafe) {
-        ARGCPhantom* obj = (ARGCPhantom*)dead;
-
-        //clearReclaimingReference(dead);
-
-        if (GC_TRACE(obj, GC_LOG_ALLOC)) {
-            NSLog(@"dealloc-addPhantom: %p %@", obj, [obj class]);
+    void addPhantom(ObjP obj, BOOL isThreadSafe) {
+        if (obj->_gc_info.markFinalized()) {
+            JreFinalize(obj);
+            if (obj->_gc_info.isStrongReachable()) {
+                return;
+            }
+        }
+        if (!obj->_gc_info.markPhantom()) {
+            return;
         }
 
-        if (isThreadSafe && NSExtraRefCount(dead) <= 0) {
-            reclaimInstance(dead);
+        [obj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCount inDepth: 0];
+        _instance.unregisterRef(obj);
+
+        if (GC_TRACE(obj, GC_LOG_ALLOC)) {
+            NSLog(@"addPhantom: %p %@ %@", obj, [obj class], isThreadSafe ? @"delete-now" : @"delete-later");
+        }
+
+        if (isThreadSafe) {
+            assert(NSExtraRefCount(obj) == 0);
+            reclaimInstance(obj);
         }
         else {
             @synchronized (tableLock) {
@@ -611,7 +638,7 @@ private:
                         row = _phantomeTable[idxBucket] = newBucket();
                     }
                 }
-                row[idxRef] = dead;
+                row[idxRef] = obj;
             }
         }
     }
@@ -682,6 +709,11 @@ static int64_t gc_interval = 0;
     ARGC::markRootInstance(self, isStrong);
 }
 
+- (ObjP) toARGCObject
+{
+    return ARGC::isPhantom(self) ? NULL : self;
+}
+
 
 #pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
 - (void)dealloc
@@ -692,50 +724,41 @@ static int64_t gc_interval = 0;
 
 - (instancetype)retain
 {
-    //ARGC::clearPendingRelease(self);
-    ARGC::retainExternalReference(self);
-    ARGC::retainReferenceCountEx(self);
-    ARGC::checkRefCount(self, @"retain  Ext");
+    ARGC::bindObject(self);
     return self;
 }
 
-
-- (BOOL)retainWeakReference
-{
-    if ([super retainWeakReference]) {
-        // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
-        if (self->_gc_info.isStrongReachable()) {
-            self->_gc_info.incRefCount();
-        }
-        else if (ARGC::gc_state == SCANNING) {
-            ARGC::retainExternalReference(self);
-        }
-        else {
-            //NSLog(@"retainWeakReference on unreachable %p", self);
-            return false;
-        }
-        //NSLog(@"retainWeakReference on %p", self);
-        return true;
-    }
-    return false;
-}
+//
+//- (BOOL)retainWeakReference
+//{
+//    if ([super retainWeakReference]) {
+//        // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
+//        if (self->_gc_info.isStrongReachable()) {
+//            self->_gc_info.bind();
+//        }
+//        else if (ARGC::gc_state == SCANNING) {
+//            ARGC::bindObject(self);
+//        }
+//        else {
+//            //NSLog(@"retainWeakReference on unreachable %p", self);
+//            return false;
+//        }
+//        //NSLog(@"retainWeakReference on %p", self);
+//        return true;
+//    }
+//    return false;
+//}
 
 - (oneway void)release
 {
-    if (ARGC::markPendingRelease(self)) {
-        if (GC_TRACE(self, 0)) {
-            ARGC::checkRefCount(self, @"autorelease on markPendingRelease");
-        }
-        [super autorelease];
-        return;
-    }
-    ARGC::releaseExternalReference(self);
-    ARGC::checkRefCount(self, @"release Ext", -1);
-    if (ARGC::releaseReferenceCountEx(self)) {
-        if (ARGC::getExternalRefCount(self) == 0) {
-            ARGC::mayHaveGarbage = 2;
-        }
-    }
+//    if (ARGC::markPendingRelease(self)) {
+//        if (GC_TRACE(self, 0)) {
+//            ARGC::checkRefCount(self, @"autorelease on markPendingRelease");
+//        }
+//        [super autorelease];
+//        return;
+//    }
+    ARGC::unbindObject(self);
 }
 
 - (instancetype)autorelease
@@ -755,9 +778,10 @@ static int64_t gc_interval = 0;
         if (offset == 0) {
             break;
         }
-        id field = *((id *)self + offset);
-        if (field) {
-            visitor(field, depth);
+        id ref = *((id *)self + offset);
+        ObjP obj = [ref toARGCObject];
+        if (obj != NULL) {
+            visitor(obj, depth);
         }
     }
 }
@@ -868,12 +892,12 @@ void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id new
     }
     if (newValue != NULL) {
         assert(ARGC::isJavaObject(newValue));
-        ARGC::retainReferenceCount(newValue);
+        ARGC::increaseReferenceCount(newValue, @"++argc");
         ARGC::touchInstance(newValue);
     }
     if (oldValue != NULL) {
         assert(ARGC::isJavaObject(oldValue));
-        ARGC::releaseReferenceCountAndPublish(oldValue);
+        ARGC::decreaseReferenceCountAndPublish(oldValue);
     }
     return;
 }
@@ -891,7 +915,7 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id 
     if (newValue != NULL) {
         if (ARGC::isJavaObject(newValue)) {
             ARGC::touchInstance(newValue);
-            ARGC::retainReferenceCount(newValue);
+            ARGC::increaseReferenceCount(newValue, @"++genr");
         }
         else {
             [newValue retain];
@@ -901,7 +925,7 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id 
     
     if (oldValue != NULL) {
         if (ARGC::isJavaObject(oldValue)) {
-            ARGC::releaseReferenceCountAndPublish(oldValue);
+            ARGC::decreaseReferenceCountAndPublish(oldValue);
         }
         else if (USE_AUTORELEASE_OLD) {
             [oldValue autorelease];
@@ -923,11 +947,7 @@ void ARGC::dealloc_in_collecting(ObjP obj) {
     if (GC_TRACE(obj, GC_LOG_ALLOC)) {
         NSLog(@"dealloc-in-collecting: %p %@", obj, [obj class]);
     }
-    if (obj->_gc_info.markFinalized()) {
-        JreFinalize(obj);
-    }
     
-    [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
     _instance.addPhantom(obj, false);
 }
 
@@ -935,7 +955,7 @@ void ARGC::dealloc_in_scan(ObjP obj) {
     /*
      Do nothing
     if (ARGC::_instance.unregisterRef(obj)) {
-        [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount];
+        [obj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCount];
         _instance.addPhantom(obj, false);
     }
     else {
@@ -947,10 +967,6 @@ void ARGC::dealloc_in_scan(ObjP obj) {
 
 void ARGC::dealloc_now(ObjP obj) {
     _instance._cntDellocThread ++;
-    if (obj->_gc_info.markFinalized()) {
-        JreFinalize(obj);
-    }
-    [obj forEachObjectField:(ARGCObjectFieldVisitor)releaseReferenceCount inDepth: 0];
     _instance.addPhantom(obj, true);
     _instance._cntDellocThread --;
 }
@@ -1012,7 +1028,6 @@ void ARGC::markRootInstance(ObjP obj, BOOL isStrong) {
     _instance._cntMarkingThread ++;
     //assert(gc_state >= SCANNING);
     if (obj->_gc_info.markReachable(isStrong)) {
-        ARGC::checkRefCount(obj, @"mark__ Root");
         
         const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
         ObjP scanBuff[OBJ_STACK_SIZ];
@@ -1111,8 +1126,10 @@ void ARGC::doGC() {
             }
             if ((obj = *pScan) != NULL) {
                 int idx = obj->_gc_info.slotIndex();
+                obj->_gc_info.clearWeakReachable();
                 assert(idx == idxSlot);
-                if (getExternalRefCount(obj) > 0) {
+                if (isRootReachable(obj)) {
+                    ARGC::checkRefCount(obj, @"##root");
                     markRootInstance(obj, true);
                     if (GC_DEBUG) {
                         cntRoot ++;
@@ -1147,17 +1164,15 @@ void ARGC::doGC() {
             [roots removeAllObjects];
         }
 
-        doClearReferences(g_weakRefs);
-
         @autoreleasepool {
             for (idxSlot = 0; idxSlot < cntScan; idxSlot ++, pScan++) {
                 if ((idxSlot % REFS_IN_BUCKET) == 0) {
                     pScan = getRefSlot(idxSlot);
                 }
                 obj = *pScan;
-                if (obj != NULL && !obj->_gc_info.isReachable()) {
-                    assert(getExternalRefCount(obj) <= 0 || obj->_gc_info.isPendingRelease());
-                    markRootInstance(obj, false);
+                if (obj != NULL && !obj->_gc_info.isStrongReachable()) {
+                    assert(!isRootReachable(obj) || obj->_gc_info.isPendingRelease());
+                    //markRootInstance(obj, false);
                     if (obj->_gc_info.markFinalized()) {
                         JreFinalize(obj);
                     }
@@ -1165,7 +1180,9 @@ void ARGC::doGC() {
             }
         }
 
-        
+        doClearReferences(g_weakRefs);
+
+
         int cntAlive = 0;
         int cntAlivedGenerarion = 0;
         RefSlot* pAlive = _table[0];
@@ -1214,10 +1231,11 @@ void ARGC::doGC() {
                         continue;
                     }
                 }
-                assert(getExternalRefCount(obj) <= 0 || obj->_gc_info.isPendingRelease());
-                @autoreleasepool {
-                    [obj dealloc];
-                }
+                assert(!isRootReachable(obj) || obj->_gc_info.isPendingRelease());
+                addPhantom(obj, false);
+//                @autoreleasepool {
+//                    [obj dealloc];
+//                }
                 continue;
             }
             
@@ -1238,19 +1256,25 @@ void ARGC::doGC() {
         }
         
         deallocMethod.exchange(dealloc_now);
+        int alivePhantom = 0;
         for (int idxSlot = 0; true; idxSlot++) {
             if (idxSlot >= _cntPhantom) {
                 @synchronized (tableLock) {
                     assert(idxSlot <= _cntPhantom);
                     if (idxSlot == _cntPhantom) {
-                        _cntPhantom = 0;
+                        _cntPhantom = alivePhantom;
                     }
                     break;
                 }
             }
             RefSlot* pSlot = getPhantomSlot(idxSlot);
             obj = *pSlot;
-            reclaimInstance(obj);
+            if (obj->_gc_info.isReachable()) {
+                *getPhantomSlot(alivePhantom++) = obj;
+            }
+            else {
+                reclaimInstance(obj);
+            }
         }
 
         if (GC_DEBUG) {
@@ -1337,13 +1361,6 @@ extern "C" {
     }
     
     
-    void ARGC_retainExternalWeakRef(id obj) {
-        if (ARGC::isJavaObject(obj)) {
-            ARGC::retainExternalReference(obj);
-            ARGC::checkRefCount(obj, @"retainWeak ");
-        }
-    }
-    
     int ARGC_retainCount(id obj) {
         return (int)NSExtraRefCount(obj);
     }
@@ -1373,7 +1390,7 @@ extern "C" {
     void printRefCount(id obj) {
         if (ARGC::isJavaObject(obj)) {
             NSLog(@"%p %d(%d) %@", obj, (int)NSExtraRefCount(obj),
-              ((ARGCObject*)obj)->_gc_info.refCount(), [obj class]);
+              ((ARGCObject*)obj)->_gc_info.bindCount(), [obj class]);
         }
         else {
             NSLog(@"%p %d(?) %@", obj, (int)NSExtraRefCount(obj), [obj class]);
@@ -1389,7 +1406,7 @@ extern "C" {
     void ARGC_genericRetain(id obj) {
         if (ARGC::isJavaObject(obj)) {
             ARGC::touchInstance(obj);
-            ARGC::retainReferenceCount(obj);
+            ARGC::increaseReferenceCount(obj, @"++genericRetain");
         }
         else {
             [obj retain];
@@ -1406,7 +1423,7 @@ extern "C" {
     
     void ARGC_genericRelease(id oldRef) {
         if (ARGC::isJavaObject(oldRef)) {
-            ARGC::releaseReferenceCountAndPublish(oldRef);
+            ARGC::decreaseReferenceCountAndPublish(oldRef);
         }
         else {
             [oldRef release];
@@ -1546,6 +1563,11 @@ void start_GC() {
     // do nothing
 }
 
+- (ObjP) toARGCObject
+{
+    return NULL;
+}
+
 - (BOOL) isReachable:(BOOL)isStrong
 {
     return true;
@@ -1571,6 +1593,11 @@ void start_GC() {
         }
     }
     
+}
+
+- (ObjP) toARGCObject
+{
+    return ARGC::isPhantom(self) ? NULL : self;
 }
 
 - (void) markARGCFields:(BOOL)isStrong
@@ -1609,14 +1636,13 @@ void start_GC() {
         if (rm == NULL) {
             rm = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
             objc_setAssociatedObject(obj, &assocKey, rm, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            NSIncrementExtraRefCount(obj);
+            ARGC::increaseReferenceCount(obj, tag);
             [array_ addPointer:obj];
         }
         //DBGLog(@"Add ref: %p: %p %@", rm, obj, [obj class]);
         [rm addPointer:(void*)reference];
-        NSIncrementExtraRefCount(reference);
+        ARGC::increaseReferenceCount(reference, @"refrnc");
     }
-    ARGC::checkRefCount(obj, tag, GC_LOG_WEAK_SOFT_REF);
 }
 + (id)getReferent:(JavaLangRefReference *)reference
 {
@@ -1642,7 +1668,7 @@ void start_GC() {
         }
     }
 
-    ARGC::checkRefCount(obj, @"ClearRef", GC_LOG_WEAK_SOFT_REF);
+    ARGC::checkRefCount(obj, @"ClearRef");
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {

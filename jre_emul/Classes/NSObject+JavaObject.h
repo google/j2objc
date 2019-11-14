@@ -54,7 +54,7 @@
 
 #ifdef J2OBJC_USE_GC
 
-__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
+__attribute__((always_inline)) inline void NSObject_init(NSObject *self) J2OBJC_METHOD_ATTR {
 #pragma unused(self)
 }
 __attribute__((always_inline)) NS_RETURNS_RETAINED inline JavaLangObject *new_NSObject_init() {
@@ -68,7 +68,7 @@ __attribute__((always_inline)) inline JavaLangObject *create_NSObject_init() {
 
 #define JavaLangObject     NSObject
 
-__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
+__attribute__((always_inline)) inline void NSObject_init(NSObject *self) J2OBJC_METHOD_ATTR {
 #pragma unused(self)
 }
 __attribute__((always_inline)) NS_RETURNS_RETAINED inline NSObject *new_NSObject_init() {
