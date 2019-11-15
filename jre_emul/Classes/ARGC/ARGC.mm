@@ -166,8 +166,9 @@ public:
 
     static void unbindRoot(JObj_p jobj) {
         if (jobj->_rc.isPhantom()) {
-            if (GC_TRACE(jobj, 0))
-            NSLog(@"release-phantom: %p %@", jobj, getARGCClass(jobj));
+            if (GC_TRACE(jobj, 0)) {
+                NSLog(@"release-phantom: %p %@", jobj, getARGCClass(jobj));
+            }
             NSDecrementExtraRefCountWasZero(jobj);
             return;
         }
