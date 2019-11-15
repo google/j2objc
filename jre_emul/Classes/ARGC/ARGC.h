@@ -54,8 +54,6 @@ CF_EXTERN_C_BEGIN
     
 #define ARGC_FIELD_REF __unsafe_unretained
 
-typedef void (*ARGCObjectFieldVisitor)(ARGC_FIELD_REF id obj, int depth) J2OBJC_METHOD_ATTR;
-    
 /* replace field with newValue that extends ARGCObject. */
 void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
 

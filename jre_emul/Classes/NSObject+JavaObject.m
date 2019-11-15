@@ -34,7 +34,6 @@
 #import "objc-sync.h"
 
 #ifdef J2OBJC_USE_GC
-void ARGC_initARGCObject(id clone);
 void ARGC_genericRetain(id obj);
 
 #endif
