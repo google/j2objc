@@ -55,8 +55,10 @@ FOUNDATION_EXPORT int GC_TRACE_RELEASE = 0;
 
 FOUNDATION_EXPORT void* GC_TRACE_REF = (void*)-1;
 FOUNDATION_EXPORT void* GC_TRACE_CLASS = (void*)-1;
+
 #define GC_TRACE(jobj, flag) (GC_DEBUG && (GC_LOG_ALL || jobj == GC_TRACE_REF || (flag) || getARGCClass(jobj) == GC_TRACE_CLASS))
 
+static NSString* SKIP_LOG = NULL;
 static const BOOL ENABLE_PENDING_RELEASE = false;
 static const int _1M = 1024*1024;
 static const int REFS_IN_BUCKET = _1M / sizeof(void*);
@@ -149,15 +151,14 @@ public:
         _cntAllocated ++;
         // bindCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
         addStrongRef(oid);
-        mayHaveGarbage = 2;
         return oid;
     }
     
-    static void bindRoot(JObj_p jobj) {
+    static void bindRoot(JObj_p jobj, NSString* tag) {
         if (!jobj->_rc.isPhantom()) {
             jobj->_rc.bind();
             ARGC::touchInstance(jobj);
-            ARGC::increaseReferenceCount(jobj, @"retain");
+            ARGC::increaseReferenceCount(jobj, tag);
         }
         else {
             ARGC::increaseReferenceCount(jobj, @"retain-phatom");
@@ -166,37 +167,38 @@ public:
 
     static void unbindRoot(JObj_p jobj) {
         if (jobj->_rc.isPhantom()) {
-            if (GC_TRACE(jobj, 0)) {
-                NSLog(@"release-phantom: %p %@", jobj, getARGCClass(jobj));
-            }
-            NSDecrementExtraRefCountWasZero(jobj);
+            decreaseRefCount(jobj, @"-phntm");
             return;
         }
 
         jobj->_rc.unbind();
         
-        if (ARGC::decreaseReferenceCount(jobj, @"release")) {
+        if (ARGC::decreaseRefCountOrDealloc(jobj, @"release")) {
             if (!jobj->_rc.isRootReachable()) {
-                ARGC::mayHaveGarbage = 2;
+                ARGC::mayHaveGarbage = 1;
             }
         }
         return;
     }
 
+    static void increaseReferenceCount(id oid, NSString* tag) {
+        NSIncrementExtraRefCount(oid);
+        //checkRefCount(jobj, tag);
+    }
 
     static void increaseReferenceCount(JObj_p jobj, NSString* tag) {
         NSIncrementExtraRefCount(jobj);
         checkRefCount(jobj, tag);
     }
 
-    static void decreaseGenericReferenceCount(__unsafe_unretained id oid) {
+    static void decreaseGenericReferenceCountOrDealloc(__unsafe_unretained id oid) {
         JObj_p jobj = [oid toJObject];
         if (jobj != NULL) {
             if (GC_TRACE(jobj, 0)) {
-                decreaseReferenceCount(jobj, @"--.fld");
+                decreaseRefCountOrDealloc(jobj, @"--.fld");
             }
             else {
-                decreaseReferenceCount(jobj, @"--.fld");
+                decreaseRefCountOrDealloc(jobj, @"--.fld");
             }
         }
         else {
@@ -206,8 +208,8 @@ public:
             [oid release];
         }
     }
-    
-    static BOOL decreaseReferenceCount(JObj_p jobj, NSString* tag) {
+
+    static BOOL decreaseRefCount(JObj_p jobj, NSString* tag) {
         if (!NSDecrementExtraRefCountWasZero(jobj)) {
             checkRefCount(jobj, tag);
             return true;
@@ -215,6 +217,13 @@ public:
 
         if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
             NSLog(@"--zero %p -1(%d) %@", jobj, jobj->_rc.bindCount(), getARGCClass(jobj));
+        }
+        return false;
+    }
+    
+    static BOOL decreaseRefCountOrDealloc(JObj_p jobj, NSString* tag) {
+        if (decreaseRefCount(jobj, tag)) {
+            return true;
         }
 
         if (gc_state != SCANNING) {
@@ -227,11 +236,9 @@ public:
         return false;
     }
     
-    static void decreaseReferenceCountAndPublish(JObj_p jobj) {
-        if (decreaseReferenceCount(jobj, @"--&pub")) {
+    static void decreaseRefCountAndPublish(JObj_p jobj) {
+        if (decreaseRefCountOrDealloc(jobj, @"--&pub")) {
             touchInstance(jobj);
-            // 다음 gc 를 위해서.
-            mayHaveGarbage = 2;
         }
     }
     
@@ -244,7 +251,7 @@ public:
     }
     
     static void checkRefCount(JObj_p jobj, NSString* tag) {
-        if (GC_TRACE(jobj, GC_LOG_RC)) {
+        if (tag != SKIP_LOG && GC_TRACE(jobj, GC_LOG_RC)) {
             int bindCount = jobj->_rc.bindCount();
             int refCount = (int)NSExtraRefCount(jobj)+1;
             NSLog(@"%@ %p #%d+%d %@", tag, jobj, bindCount, refCount-bindCount, getARGCClass(jobj));
@@ -327,7 +334,6 @@ private:
         }
         NSDeallocateObject(jobj);
         _cntDeallocated ++;
-        mayHaveGarbage = 2;
     }
     
     void addPhantom(JObj_p jobj, BOOL isThreadSafe) {
@@ -341,7 +347,7 @@ private:
             return;
         }
 
-        [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCount inDepth: 0];
+        [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc inDepth: 0];
         _instance.unregisterRef(jobj);
 
         if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
@@ -424,14 +430,30 @@ static int64_t gc_interval = 0;
     return _id;
 }
 
-
 - (JObj_p) toJObject {
     return _rc.isPhantom() ? NULL : self;
 }
 
 - (instancetype)retain {
-    ARGC::bindRoot(self);
+    ARGC::bindRoot(self, @"retain");
     return self;
+}
+
+- (BOOL)retainWeakReference {
+    if ([super retainWeakReference]) {
+        // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
+        if (self->_rc.isStrongReachable()) {
+            self->_rc.bind();
+        }
+        else if (ARGC::gc_state == SCANNING) {
+            ARGC::bindRoot(self, SKIP_LOG);
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 - (oneway void)release {
@@ -456,6 +478,12 @@ static int64_t gc_interval = 0;
 #endif
 }
 
+#pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
+- (void)dealloc {
+    ARGC::ARGCVisitor fn = ARGC::_instance.deallocMethod;
+    fn(self);
+}
+
 #if GC_DEBUG
 - (instancetype)autorelease {
     if (GC_TRACE(self, 0)) {
@@ -470,33 +498,6 @@ static int64_t gc_interval = 0;
 }
 #endif
 
-#pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
-- (void)dealloc {
-    ARGC::ARGCVisitor fn = ARGC::_instance.deallocMethod;
-    fn(self);
-}
-
-
-//
-//- (BOOL)retainWeakReference
-//{
-//    if ([super retainWeakReference]) {
-//        // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
-//        if (self->_rc.isStrongReachable()) {
-//            self->_rc.bind();
-//        }
-//        else if (ARGC::gc_state == SCANNING) {
-//            ARGC::bindObject(self);
-//        }
-//        else {
-//            //NSLog(@"retainWeakReference on unreachable %p", self);
-//            return false;
-//        }
-//        //NSLog(@"retainWeakReference on %p", self);
-//        return true;
-//    }
-//    return false;
-//}
 
 - (void) forEachObjectField: (ARGCObjectFieldVisitor) visitor inDepth:(int) depth
 {
@@ -630,7 +631,7 @@ void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id new
     }
     if (oldValue != NULL) {
         JObj_p jobj = oldValue;
-        ARGC::decreaseReferenceCountAndPublish(jobj);
+        ARGC::decreaseRefCountAndPublish(jobj);
     }
     return;
 }
@@ -668,7 +669,7 @@ void ARGC::dealloc_in_scan(JObj_p jobj) {
     /*
      Do nothing
     if (ARGC::_instance.unregisterRef(jobj)) {
-        [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCount];
+        [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc];
         _instance.addPhantom(jobj, false);
     }
     else {
@@ -784,16 +785,16 @@ void ARGC::doClearReferences(NSPointerArray* refList) {
             JObj_p jobj = [oid toJObject];
             if (jobj != NULL) {
                 if (jobj->_rc.isReachable()) continue;
-                NSDecrementExtraRefCountWasZero(oid);
+                decreaseRefCount(jobj, @"-c_rf1");
             }
             else {
                 if (NSExtraRefCount(oid) > 0) continue;
+                [oid release];
                 if (GC_DEBUG && GC_LOG_ALLOC) {
                     if ([oid toJObject] == NULL) {
-                        NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
+                        NSLog(@"-c_rf2 %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
                     }
                 }
-                [oid release];
             }
 
             //objc_setAssociatedObject(oid, &assocKey, NULL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -802,7 +803,7 @@ void ARGC::doClearReferences(NSPointerArray* refList) {
                 if (reference != NULL) {
                     reference->referent_ = NULL;
                     [reference enqueue];
-                    NSDecrementExtraRefCountWasZero(reference);
+                    decreaseRefCount(reference, @"-c_rfc");
                 }
             }
             if (idx < --cntRef) {
@@ -1155,7 +1156,7 @@ extern "C" {
 
         JObj_p jobj = [oid toJObject];
         if (jobj != NULL) {
-            ARGC::decreaseReferenceCountAndPublish(jobj);
+            ARGC::decreaseRefCountAndPublish(jobj);
         }
         else {
             if (GC_DEBUG && GC_LOG_ALLOC) {
@@ -1364,12 +1365,12 @@ void start_GC() {
         if (rm == NULL) {
             rm = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
             objc_setAssociatedObject(oid, &assocKey, rm, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            NSIncrementExtraRefCount(oid);
+            ARGC::increaseReferenceCount(oid, @"+ireft");
             [array_ addPointer:oid];
         }
         //DBGLog(@"Add ref: %p: %p %@", rm, oid, getARGCClass(jobj));
         [rm addPointer:(void*)reference];
-        NSIncrementExtraRefCount(reference);
+        ARGC::increaseReferenceCount(reference, @"+irefc");
     }
 }
 + (id)getReferent:(JavaLangRefReference *)reference
@@ -1390,7 +1391,7 @@ void start_GC() {
         for (NSUInteger idx = rm.count; --idx >= 0; ) {
             if ([rm pointerAtIndex:idx] == reference) {
                 [rm removePointerAtIndex:idx];
-                NSDecrementExtraRefCountWasZero(reference);
+                ARGC::decreaseRefCount(reference, @"-clrRf");
                 break;
             }
         }
