@@ -95,9 +95,6 @@ static IOSClass *GetErasedFieldType(JavaLangReflectField *field) {
   return JreClassForString(field->metadata_->type);
 }
 
-BOOL AGRG_getARGCField(id object, Ivar ivar_, J2ObjcRawValue *rawValue);
-void AGRG_setARGCField(id object, Ivar ivar_, id value);
-
 
 static void ReadRawValue(
     J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *toType) {

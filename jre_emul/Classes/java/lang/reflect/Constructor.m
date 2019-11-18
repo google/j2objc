@@ -39,9 +39,6 @@
                                                             metadata:metadata]);
 }
 
-void ARGC_strongRetain(id obj);
-void ARGC_autorelease(id obj);
-
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
   SEL selector = self->metadata_->selector;
   Class cls = self->class_.objcClass;
@@ -63,9 +60,9 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
       [invocation getReturnValue:&newInstance];
     } else {
         // Is NSInvocation has ARC bug?? If Exception throws in invocation, newInstance is so early deallocated. 
-        ARGC_strongRetain(newInstance = [cls alloc]);
+        newInstance = [cls alloc];
       [invocation invokeWithTarget:newInstance];
-        ARGC_autorelease(newInstance);
+        AUTORELEASE(newInstance);
     }
   }
   @catch (JavaLangThrowable *e) {

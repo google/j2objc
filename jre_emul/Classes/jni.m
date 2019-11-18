@@ -87,8 +87,6 @@ static IOSClass *JNIParseTypeSignature(const char *sig, const char **next) {
   return result;
 }
 
-id ARGC_strongRetainAutorelease(id obj);
-
 JNIMethodSignature JNIParseMethodSignature(const char *sig) {
   JNIMethodSignature result;
   result.returnType = nil;
@@ -103,12 +101,12 @@ JNIMethodSignature JNIParseMethodSignature(const char *sig) {
     id paramType = JNIParseTypeSignature(p, &p);
     [paramTypes addObject:paramType];
   }
-  result.paramTypes = ARGC_strongRetainAutorelease([IOSObjectArray arrayWithLength:paramTypes.count type:IOSClass_class_()]);
+  result.paramTypes = [IOSObjectArray arrayWithLength:paramTypes.count type:IOSClass_class_()];
   for (NSUInteger i = 0; i < paramTypes.count; i++) {
     [result.paramTypes replaceObjectAtIndex:i withObject:paramTypes[i]];
   }
   p++;
-  result.returnType = ARGC_strongRetainAutorelease(JNIParseTypeSignature(p, &p));
+  result.returnType = JNIParseTypeSignature(p, &p);
   return result;
 }
 
@@ -270,11 +268,8 @@ static jboolean IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
   return [(IOSClass *) clazz isInstance:obj];
 }
 
-void ARGC_strongRetain(id obj);
-void ARGC_autorelease(id obj);
-
 static jobject NewGlobalRef(JNIEnv *env, jobject obj) {
-  ARGC_strongRetain(obj);
+  RETAIN_(obj);
     return obj;
 }
 
@@ -283,7 +278,7 @@ static jobject NewLocalRef(JNIEnv *env, jobject obj) {
 }
 
 static void DeleteGlobalRef(JNIEnv *env, jobject globalRef) {
-  (void)ARGC_autorelease(globalRef);
+  (void)AUTORELEASE(globalRef);
 }
 
 static void DeleteLocalRef(JNIEnv *env, jobject localRef) {

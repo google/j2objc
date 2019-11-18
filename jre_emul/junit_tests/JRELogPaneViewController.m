@@ -137,9 +137,10 @@ void runAllJreTests() {
   NSData *databuffer = [self.logPane.text dataUsingEncoding: NSUTF8StringEncoding];
   [filemgr createFileAtPath: dataFile contents: databuffer attributes:nil];
 
+    NSLog(@"Log saved: %@", dataFile);
   UIAlertController *alert =
       [UIAlertController alertControllerWithTitle:nil
-                                          message:@"Log saved"
+                                          message:dataFile
                                    preferredStyle:UIAlertControllerStyleAlert];
   [self presentViewController:alert animated:YES completion:nil];
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),
