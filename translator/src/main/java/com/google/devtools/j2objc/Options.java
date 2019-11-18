@@ -506,8 +506,6 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
-      } else if (arg.equals("-Xrename-package-private-class-constructors")) {
-        renamePackagePrivateClassConstructors = true;
       } else if (arg.equals("-external-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
@@ -1045,17 +1043,5 @@ public class Options {
 
   public List<String> getPlatformModuleSystemOptions() {
     return platformModuleSystemOptions;
-  }
-
-  // TODO(b/36097300): remove experimental flag once the change is rolled out or promote to
-  //  supported flag if rolling out the change is too disruptive.
-  private static boolean renamePackagePrivateClassConstructors = true;
-
-  public static boolean renamePackagePrivateClassConstructors() {
-    return renamePackagePrivateClassConstructors;
-  }
-
-  public static void setRenamePackagePrivateClassConstructors(boolean b) {
-    renamePackagePrivateClassConstructors = b;
   }
 }

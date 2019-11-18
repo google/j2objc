@@ -349,8 +349,7 @@ public class NameTable {
           && !ElementUtil.isEnum(clazz)
           // Do not apply this change to classes in the default package
           // because it affects/breaks several translator tests.
-          && !ElementUtil.getPackage(clazz).isUnnamed()
-          && Options.renamePackagePrivateClassConstructors();
+          && !ElementUtil.getPackage(clazz).isUnnamed();
       return needsPackagePrivateSuffix ? "initPackagePrivate" : "init";
     }
     String name = ElementUtil.getName(method);
