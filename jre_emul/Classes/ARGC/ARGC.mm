@@ -25,6 +25,7 @@
 #include "java/lang/ref/SoftReference.h"
 #include "java/lang/ref/WeakReference.h"
 #include "java/lang/ref/ReferenceQueue.h"
+#include "java/lang/OutOfMemoryError.h"
 #include "java/io/PrintStream.h"
 #include "java/lang/StringBuilder.h"
 #include "java/io/ByteArrayOutputStream.h"
@@ -79,6 +80,10 @@ static Class JavaUtilHashMap_KeySet_CLASS = 0;
 static NSPointerArray* g_softRefs;
 static NSPointerArray* g_weakRefs;
 
+static void OutOfMemory() {
+  @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
+}
+
 class ARGC {
 public:
     typedef void (*ARGCVisitor)(JObj_p jobj);
@@ -116,7 +121,7 @@ public:
     
     void doGC();
 
-    void doClearReferences(NSPointerArray* refList);
+    void doClearReferences(NSPointerArray* refList, BOOL markSoftRef);
     
     static void markReachableInstance(JObj_p jobj, BOOL isStrong);
 
@@ -143,6 +148,14 @@ public:
         }
         
         ARGCObject* oid = NSAllocateObject(cls, extraBytes, zone);
+        for (int cntLoop = 1; oid == NULL; cntLoop++) {
+            _clearSoftReference = 1;
+            doGC();
+            oid = NSAllocateObject(cls, extraBytes, zone);
+            if (cntLoop > 2) {
+                OutOfMemory();
+            }
+        }
         if (GC_TRACE(oid, (GC_LOG_ALLOC || GC_LOG_RC))) {
             NSLog(@"alloc %p %@", oid, cls);
         }
@@ -378,6 +391,7 @@ private:
     void registerScanOffsets(Class clazz);
     
     size_t argcObjectSize;
+    std::atomic_int _clearSoftReference;
     std::atomic_int _cntRef;
     std::atomic_int _cntPhantom;
     std::atomic_int _cntAllocated;
@@ -775,29 +789,38 @@ void ARGC::markArrayItems(id oid, BOOL isStrong) {
     _instance._cntMarkingThread --;
 }
 
-void ARGC::doClearReferences(NSPointerArray* refList) {
+void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
     @synchronized ([IOSReference class]) {
         NSUInteger cntOrg = refList.count;
         int cntRef = (int)cntOrg;
-        for (int idx = cntRef; idx > 0; ) {
+        loop: for (int idx = cntRef; idx > 0; ) {
             id oid = (id)[refList pointerAtIndex:--idx];
-            NSPointerArray* rm = objc_getAssociatedObject(oid, &assocKey);
             JObj_p jobj = [oid toJObject];
+
             if (jobj != NULL) {
                 if (jobj->_rc.isReachable()) continue;
-                decreaseRefCount(jobj, @"-c_rf1");
             }
             else {
                 if (NSExtraRefCount(oid) > 0) continue;
-                [oid release];
-                if (GC_DEBUG && GC_LOG_ALLOC) {
-                    if ([oid toJObject] == NULL) {
-                        NSLog(@"-c_rf2 %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
-                    }
-                }
             }
 
-            //objc_setAssociatedObject(oid, &assocKey, NULL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            NSPointerArray* rm = objc_getAssociatedObject(oid, &assocKey);
+            if (markSoftRef) {
+                int j = (int)rm.count;
+                for (; --j >= 0; ) {
+                    JavaLangRefReference* reference = (JavaLangRefReference*)[rm pointerAtIndex:j];
+                    if (reference->_rc.isReachable()) {
+                        if (jobj != NULL) {
+                            markRootInstance(jobj, true);
+                        }
+                        break;
+                    }
+                }
+                if (j >= 0) {
+                    continue;
+                }
+            }
+            
             for (int j = (int)rm.count; --j >= 0; ) {
                 JavaLangRefReference* reference = (JavaLangRefReference*)[rm pointerAtIndex:j];
                 if (reference != NULL) {
@@ -806,6 +829,19 @@ void ARGC::doClearReferences(NSPointerArray* refList) {
                     decreaseRefCount(reference, @"-c_rfc");
                 }
             }
+            
+            if (jobj != NULL) {
+                decreaseRefCount(jobj, @"-c_rf1");
+            }
+            else {
+                [oid release];
+                if (GC_DEBUG && GC_LOG_ALLOC) {
+                    if ([oid toJObject] == NULL) {
+                        NSLog(@"-c_rf2 %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
+                    }
+                }
+            }
+
             if (idx < --cntRef) {
                 void* last = [refList pointerAtIndex:cntRef];
                 [refList replacePointerAtIndex:idx withPointer:last];
@@ -821,8 +857,10 @@ void ARGC::doClearReferences(NSPointerArray* refList) {
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
-    if (_cntRef == 0 || mayHaveGarbage <= 0) {
-        return;
+    if (!_clearSoftReference) {
+        if (_cntRef == 0 || mayHaveGarbage <= 0) {
+            return;
+        }
     }
     mayHaveGarbage --;
     NSMutableDictionary<Class, Counter*>* roots =
@@ -899,8 +937,8 @@ void ARGC::doGC() {
             }
         }
 
-        doClearReferences(g_weakRefs);
-
+        doClearReferences(g_weakRefs, false);
+        doClearReferences(g_softRefs, !_clearSoftReference);
 
         int cntAlive = 0;
         int cntAlivedGenerarion = 0;
@@ -1168,138 +1206,12 @@ extern "C" {
         }
     }
     
-    uintptr_t* ARGC_toVolatileIdPtr(ARGC_FIELD_REF id* ptr) {
-        return (uintptr_t*)ptr;
-    }
-    
     id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) {
         return ARGC::_instance.allocateInstance(cls, extraBytes, zone);
     }
     
     
-    id AGRG_getARGCField(id oid, Ivar ivar_, int* err) {
-        *err = 0;
-        if (ivar_) {;
-            id res = *(id*)((char *)oid + ivar_getOffset(ivar_));
-            return res;
-        } else {
-            // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
-            SEL getter = NSSelectorFromString([NSString stringWithFormat:@"__%s", ivar_getName(ivar_)]);
-            if (getter && [oid respondsToSelector:getter]) {
-                return [oid performSelector:getter];
-            }
-        }
-        *err = 1;
-        return nil;
-    }
-    
-    void AGRG_setARGCField(id oid, Ivar ivar_, id value) {
-        
-        if (ivar_) {
-            ARGC_assignGenericObject((ARGC_FIELD_REF id *)((char *)oid + ivar_getOffset(ivar_)), value);
-        } else {
-            // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
-            SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%s:", ivar_getName(ivar_)]);
-            if (setter && [oid respondsToSelector:setter]) {
-                [oid performSelector:setter withObject:value];
-            }
-            // else: It's a final instance field, return without any side effects.
-        }
-    }
-    
-    void ARGC_deallocClass(IOSClass* cls) {
-        NSLog(@"dealloc class %@", cls);
-    }
-    
 }
-
-id JreLoadVolatileId(volatile_id *pVar) {
-    id oid = *(std::atomic<id>*)pVar;
-    if (oid != NULL) {
-        [oid retain];
-        [oid autorelease];
-    };
-    return oid;
-}
-
-id JreAssignVolatileId(volatile_id *pVar, id value) {
-    *(std::atomic<id>*)pVar = value;
-    return value;
-}
-
-void JreReleaseVolatile(volatile_id *pVar) {
-    ARGC_genericRelease(*pVar);
-}
-
-id JreVolatileNativeAssign(volatile_id *pVar, id newValue) {
-    std::atomic<id>* field = (std::atomic<id>*)pVar;
-    [newValue retain];
-    id oldValue = field->exchange(newValue);
-    if (GC_DEBUG && GC_LOG_ALLOC) {
-        if ([oldValue toJObject] == NULL) {
-            NSLog(@"--nstr %p #%d %@", oldValue, (int)NSExtraRefCount(oldValue), [oldValue class]);
-        }
-    }
-    [oldValue autorelease];
-    return newValue;
-}
-
-id JreVolatileStrongAssign(volatile_id *pVar, id newValue) {
-    ARGC_assignGenericObject((id*)pVar, newValue);
-    return newValue;
-}
-
-bool JreCompareAndSwapVolatileStrongId(volatile_id *ptr, id expected, id newValue) {
-    std::atomic<id>* field = (std::atomic<id>*)ptr;
-    bool res =  field->compare_exchange_strong(expected, newValue);
-    if (res) {
-        if (newValue) ARGC_genericRetain(newValue);
-        if (expected) ARGC_genericRelease(expected);
-    }
-    return res;
-}
-
-id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
-    std::atomic<id>* field = (std::atomic<id>*)pVar;
-    if (newValue) {
-        [newValue retain];
-    }
-    id oldValue = field->exchange(newValue);
-    if (oldValue) {
-        if (GC_DEBUG && GC_LOG_ALLOC) {
-            if ([oldValue toJObject] == NULL) {
-                NSLog(@"--nstr %p #%d %@", oldValue, (int)NSExtraRefCount(oldValue), [oldValue class]);
-            }
-        }
-        [oldValue autorelease];
-    }
-    return oldValue;
-}
-
-void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {
-    std::atomic<id>* pDst = (std::atomic<id>*)pVar;
-    std::atomic<id>* pSrc = (std::atomic<id>*)pOther;
-    id oid  = *pSrc;
-    *pDst = oid;
-}
-
-
-void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
-    std::atomic<id>* pDst = (std::atomic<id>*)pVar;
-    std::atomic<id>* pSrc = (std::atomic<id>*)pOther;
-    id oid  = *pSrc;
-    [oid retain];
-    *pDst = oid;
-}
-
-
-void start_GC() {
-    dispatch_async(dispatch_get_main_queue(), ^ {
-        ARGC::_instance.doGC();
-    });
-}
-
-
 
 
 @implementation NSObject(ARGCObject)
