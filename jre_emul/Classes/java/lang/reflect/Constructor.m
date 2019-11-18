@@ -60,9 +60,9 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
       [invocation getReturnValue:&newInstance];
     } else {
         // Is NSInvocation has ARC bug?? If Exception throws in invocation, newInstance is so early deallocated. 
-        newInstance = [cls alloc];
+        newInstance = RETAIN_([cls alloc]);
       [invocation invokeWithTarget:newInstance];
-        AUTORELEASE(newInstance);
+        (void)AUTORELEASE(newInstance);
     }
   }
   @catch (JavaLangThrowable *e) {

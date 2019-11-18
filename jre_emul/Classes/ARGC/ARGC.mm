@@ -1210,7 +1210,7 @@ extern "C" {
         return ARGC::_instance.allocateInstance(cls, extraBytes, zone);
     }
     
-    
+#include "Volatiles.mm"
 }
 
 

@@ -269,8 +269,7 @@ static jboolean IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
 }
 
 static jobject NewGlobalRef(JNIEnv *env, jobject obj) {
-  RETAIN_(obj);
-    return obj;
+  return RETAIN_(obj);
 }
 
 static jobject NewLocalRef(JNIEnv *env, jobject obj) {
