@@ -138,7 +138,7 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 #if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
-static void ThrowArrayStoreException(IOSObjectArray *array, id value) {
+static void ThrowArrayStoreException(IOSObjectArray *array, id value) J2OBJC_METHOD_ATTR {
   NSString *msg = [NSString stringWithFormat:
       @"attempt to add object of type %@ to array with type %@",
       [[value java_getClass] getName], [array->elementType_ getName]];
@@ -147,7 +147,7 @@ static void ThrowArrayStoreException(IOSObjectArray *array, id value) {
 #endif
 
 static inline id IOSObjectArray_checkValue(
-    __unsafe_unretained IOSObjectArray *array, __unsafe_unretained id value) {
+    __unsafe_unretained IOSObjectArray *array, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
 #if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
   if (value && ![array->elementType_ isInstance:value]) {
     ThrowArrayStoreException(array, value);
@@ -157,7 +157,7 @@ static inline id IOSObjectArray_checkValue(
 }
 
 // Same as above, but releases the value before throwing an exception.
-static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id value) {
+static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id value) J2OBJC_METHOD_ATTR {
 #if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
   if (value && ![array->elementType_ isInstance:value]) {
     ThrowArrayStoreException(array, AUTORELEASE(value));
@@ -167,7 +167,7 @@ static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id v
 
 // Same as IOSArray_checkIndex, but releases the value before throwing an
 // exception.
-static inline void IOSObjectArray_checkIndexRetainedValue(jint size, jint index, id value) {
+static inline void IOSObjectArray_checkIndexRetainedValue(jint size, jint index, id value) J2OBJC_METHOD_ATTR {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (index < 0 || index >= size) {
     (void)AUTORELEASE(value);
@@ -177,7 +177,7 @@ static inline void IOSObjectArray_checkIndexRetainedValue(jint size, jint index,
 }
 
 id IOSObjectArray_Set(
-    __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
+    __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
 #ifndef J2OBJC_USE_GC
@@ -192,7 +192,7 @@ id IOSObjectArray_Set(
 }
 
 
-id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value) {
+id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value) J2OBJC_METHOD_ATTR {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
 #ifndef J2OBJC_USE_GC
@@ -207,7 +207,7 @@ id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __at
 }
 
 
-id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
+id IOSObjectArray_SetRef(JreArrayRef ref, id value) J2OBJC_METHOD_ATTR {
   // Index is checked when accessing the JreArrayRef.
   IOSObjectArray_checkValue(ref.arr, value);
 #ifndef J2OBJC_USE_GC
