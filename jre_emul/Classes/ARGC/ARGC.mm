@@ -239,21 +239,21 @@ public:
             return true;
         }
 
-        if (gc_state != SCANNING) {
+//        if (gc_state != SCANNING) {
             [jobj dealloc];
-        }
-        else if (FALSE && !jobj->_rc.isReachable()) {
-            /* do not dealloc sub-references. */
-            markRootInstance(jobj, false);
-        }
+//        }
+//        else if (FALSE && !jobj->_rc.isReachable()) {
+//            /* do not dealloc sub-references. */
+//            markRootInstance(jobj, false);
+//        }
         return false;
     }
     
-    static void decreaseRefCountAndPublish(JObj_p jobj) {
-        if (decreaseRefCountOrDealloc(jobj, @"--&pub")) {
-            touchInstance(jobj);
-        }
-    }
+//    static void decreaseRefCountAndPublish(JObj_p jobj) {
+//        if (decreaseRefCountOrDealloc(jobj, @"--&pub")) {
+//            touchInstance(jobj);
+//        }
+//    }
     
     static const scan_offset_t* getScanOffsets(Class clazz) {
         ScanOffsetArray* scanOffsets = objc_getAssociatedObject(clazz, &_instance);
@@ -645,7 +645,7 @@ void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id new
     }
     if (oldValue != NULL) {
         JObj_p jobj = oldValue;
-        ARGC::decreaseRefCountAndPublish(jobj);
+        ARGC::decreaseRefCountOrDealloc(jobj, @"--argc");
     }
     return;
 }
@@ -1168,12 +1168,11 @@ extern "C" {
         }
     }
     
-    id ARGC_strongRetainAutorelease(id oid) {
+    void ARGC_strongRetainAutorelease(id oid) {
         if (oid) {
             [oid retain];
             [oid autorelease];
         }
-        return oid;
     }
     
     void ARGC_genericRetain(id oid) {
@@ -1194,7 +1193,7 @@ extern "C" {
 
         JObj_p jobj = [oid toJObject];
         if (jobj != NULL) {
-            ARGC::decreaseRefCountAndPublish(jobj);
+            ARGC::decreaseRefCountOrDealloc(jobj, @"--genr");
         }
         else {
             if (GC_DEBUG && GC_LOG_ALLOC) {

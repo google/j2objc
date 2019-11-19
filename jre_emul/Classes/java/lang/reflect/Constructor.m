@@ -39,6 +39,9 @@
                                                             metadata:metadata]);
 }
 
+void ARGC_strongRetain(id oid);
+void ARGC_release(id oid);
+
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
   SEL selector = self->metadata_->selector;
   Class cls = self->class_.objcClass;
@@ -59,10 +62,11 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
       [invocation invokeWithTarget:cls];
       [invocation getReturnValue:&newInstance];
     } else {
-        // Is NSInvocation has ARC bug?? If Exception throws in invocation, newInstance is so early deallocated. 
-        newInstance = RETAIN_([cls alloc]);
+      // Is NSInvocation has ARC bug?? If Exception throws in invocation, newInstance is so early deallocated.
+      newInstance = [cls alloc];
+      ARGC_strongRetain(newInstance);
       [invocation invokeWithTarget:newInstance];
-        (void)AUTORELEASE(newInstance);
+      ARGC_release(newInstance);
     }
   }
   @catch (JavaLangThrowable *e) {
