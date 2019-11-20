@@ -667,12 +667,14 @@ public class Thread implements Runnable {
    * @see Thread#interrupt
    * @see Thread#isInterrupted
    */
-  public static boolean interrupted() {
-    Thread currentThread = currentThread();
-    boolean result = currentThread.interrupted;
-    currentThread.interrupted = false;
-    return result;
-  }
+  public static native boolean interrupted() /*-[
+    JavaLangThread *currentThread = JavaLangThread_currentThread();
+    @synchronized(currentThread->nativeThread_) {
+      jboolean result = currentThread->interrupted_;
+      currentThread->interrupted_ = false;
+      return result;
+    }
+  ]-*/;
 
   /**
    * Returns a <code>boolean</code> indicating whether the receiver has a
