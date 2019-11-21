@@ -17,6 +17,8 @@
 
 package org.apache.harmony.tests.java.util;
 
+import static com.google.j2objc.util.NativeTimeZoneTest.isNativeTimeZone;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -457,8 +459,9 @@ public class DateTest extends junit.framework.TestCase {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT-5"));
         try {
             Date d1 = new Date(0);
+            String tzShortFormat = isNativeTimeZone("GMT-5") ? "GMT-5" : "GMT-05:00";
             assertTrue("Returned incorrect string: " + d1, d1.toString()
-                    .equals("Wed Dec 31 19:00:00 GMT-05:00 1969"));
+                    .equals("Wed Dec 31 19:00:00 " + tzShortFormat + " 1969"));
         } finally {
             TimeZone.setDefault(tz);
         }

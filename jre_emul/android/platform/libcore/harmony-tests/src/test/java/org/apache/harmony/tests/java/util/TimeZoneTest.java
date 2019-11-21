@@ -17,6 +17,8 @@
 
 package org.apache.harmony.tests.java.util;
 
+import static com.google.j2objc.util.NativeTimeZoneTest.isNativeTimeZone;
+
 import tests.support.Support_TimeZone;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -143,7 +145,8 @@ public class TimeZoneTest extends junit.framework.TestCase {
         assertEquals("Must return proper GMT formatted string for GMT+8:30 (eg. GMT+08:20).",
                 "GMT+08:30", TimeZone.getTimeZone("GMT+8:30").getID());*/
         assertEquals("Must return proper GMT formatted string for GMT+3 (eg. GMT+08:20).",
-                "GMT+03:00", TimeZone.getTimeZone("GMT+3").getID());
+                isNativeTimeZone("GMT+3") ? "GMT+0300" : "GMT+03:00",
+                TimeZone.getTimeZone("GMT+3").getID());
         /* j2objc: NSTimeZone can actually parse this format.
         assertEquals("Must return proper GMT formatted string for GMT+3:02 (eg. GMT+08:20).",
                 "GMT+03:02", TimeZone.getTimeZone("GMT+3:02").getID());*/
