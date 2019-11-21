@@ -42,6 +42,8 @@
     NSObject<ComGoogleProtobufMessageLite, ComGoogleProtobufMessageLiteOrBuilder>
 @end
 
+void ComGoogleProtobufAbstractMessageLite_init(ComGoogleProtobufAbstractMessageLite *self);
+
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessageLite)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessageLite)

@@ -37,12 +37,7 @@
 @implementation ComGoogleProtobufExtensionLite
 
 - (instancetype)initWithFieldData:(CGPFieldData *)data {
-  if (self = [super init]) {
-    Class msgClass = objc_getClass(data->containingType);
-    NSCAssert(msgClass != nil, @"Containing message type not found.");
-    CGPDescriptor *containingType = [msgClass performSelector:@selector(getDescriptor)];
-    fieldDescriptor_ = [[CGPFieldDescriptor alloc] initWithData:data containingType:containingType];
-  }
+  ComGoogleProtobufExtensionLite_initWithFieldData_(self, data);
   return self;
 }
 
@@ -60,5 +55,14 @@
 J2OBJC_ETERNAL_SINGLETON
 
 @end
+
+void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self, CGPFieldData *data) {
+  NSObject_init(self);
+  Class msgClass = objc_getClass(data->containingType);
+  NSCAssert(msgClass != nil, @"Containing message type not found.");
+  CGPDescriptor *containingType = [msgClass performSelector:@selector(getDescriptor)];
+  self->fieldDescriptor_ =
+      [[CGPFieldDescriptor alloc] initWithData:data containingType:containingType];
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufExtensionLite)

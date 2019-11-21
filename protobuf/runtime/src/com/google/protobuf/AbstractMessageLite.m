@@ -40,6 +40,10 @@
 @implementation ComGoogleProtobufAbstractMessageLite
 @end
 
+void ComGoogleProtobufAbstractMessageLite_init(ComGoogleProtobufAbstractMessageLite *self) {
+  NSObject_init(self);
+}
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufAbstractMessageLite)
 
 @implementation ComGoogleProtobufAbstractMessageLite_Builder
