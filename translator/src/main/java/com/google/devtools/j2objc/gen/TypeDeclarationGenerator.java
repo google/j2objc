@@ -302,7 +302,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
         if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
-        	print("ARGC_FIELD_REF ");
+        	if (ElementUtil.isWeakReference(varElement)) {
+        		print("ARGC_WEAK_REF ");
+        	}
+        	else {
+        		print("ARGC_FIELD_REF ");
+        	}
         }
         else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
           // We must add this even without -use-arc because the header may be

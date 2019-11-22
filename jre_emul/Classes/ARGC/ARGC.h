@@ -53,6 +53,7 @@ CF_EXTERN_C_BEGIN
 
     
 #define ARGC_FIELD_REF __unsafe_unretained
+#define ARGC_WEAK_REF __weak
 
 /* replace field with newValue that extends ARGCObject. */
 void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
@@ -62,6 +63,8 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id 
 
 /* replace field with newValue that is static or not extends ARGCObject. */
 void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
+
+#define ARGC_assignWeakObject(pField, id) (*pField = id);
 
 /* execute garbage collection now. */
 void ARGC_collectGarbage();

@@ -286,7 +286,10 @@ private FunctionDeclaration argc_currentMethod;
     }
 
     String funcName = null;
-    if (isStrong  && !isPrimitive) {
+    if (!isStrong) {
+		funcName = "JreWeakAssign";
+    }
+    else if (!isPrimitive) {
     	if (options.useGC()) {
     		if (ElementUtil.isStatic(var)) {
     			funcName = "JreStrongAssign";

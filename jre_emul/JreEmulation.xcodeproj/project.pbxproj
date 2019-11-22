@@ -7451,7 +7451,7 @@
 /* Begin PBXLegacyTarget section */
 		067219231559BF3600645E1B /* j2objc build */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-c \"export PATH=$PATH:/usr/local/bin:/opt/local/bin; export DEBUGGING_SYMBOLS=YES; export DEBUG=YES; export J2OBJC_ARCHS=\"simulator64 iphone64\"; if [ x$ACTION == xclean ]; then make clean; else make -j8 dist; fi\"";
+			buildArgumentsString = "-c \"export PATH=$PATH:/usr/local/bin:/opt/local/bin; export DEBUGGING_SYMBOLS=YES; export DEBUG=YES; export J2OBJC_ARCHS=\\\"simulator64 iphone64\\\"; if [ x$ACTION == xclean ]; then make clean; else make -j8 dist; fi\"";
 			buildConfigurationList = 067219241559BF3600645E1B /* Build configuration list for PBXLegacyTarget "j2objc build" */;
 			buildPhases = (
 			);

@@ -123,17 +123,17 @@ public:
 
     void doClearReferences(NSPointerArray* refList, BOOL markSoftRef);
     
-    static void markReachableInstance(JObj_p jobj, BOOL isStrong);
+    static void markReachableSubInstances(JObj_p jobj);
 
-    static void markRootInstance(JObj_p jobj, BOOL isStrong);
+    static void markRootInstance(JObj_p jobj);
     
-    static void markArrayItems(id array, BOOL isStrong);
+    static void markArrayItems(id array);
     
-    static void scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuffEnd, BOOL isStrong);
+    static void scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuffEnd);
     
     static void touchInstance(JObj_p jobj) {
         if (!jobj->_rc.isStrongReachable()) {
-            markRootInstance(jobj, true);
+            markRootInstance(jobj);
         }
     }
     
@@ -249,11 +249,13 @@ public:
         return false;
     }
     
-//    static void decreaseRefCountAndPublish(JObj_p jobj) {
-//        if (decreaseRefCountOrDealloc(jobj, @"--&pub")) {
-//            touchInstance(jobj);
-//        }
-//    }
+    static BOOL markStrongReachable(JObj_p jobj) {
+        BOOL res = jobj->_rc.markStrongReachable();
+        if (res && GC_TRACE(jobj, 0)) {
+            NSLog(@"Mark Reachable %p", jobj);
+        }
+        return res;
+    }
     
     static const scan_offset_t* getScanOffsets(Class clazz) {
         ScanOffsetArray* scanOffsets = objc_getAssociatedObject(clazz, &_instance);
@@ -565,16 +567,16 @@ void ARGC::registerScanOffsets(Class clazz) {
             Ivar ivar = ivars[i];
             const char *ivarType = ivar_getTypeEncoding(ivar);
             if (*ivarType == '@') {
-                if (cls == JavaLangRefReference_class) {
-                    //NSLog(@"Refernce.%s field check", ivar_getName(ivar));
-                    //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
-                    //continue;
-                }
                 ptrdiff_t offset = ivar_getOffset(ivar);
                 _offset_buf[cntObjField] = offset / sizeof(JObj_p);
                 id oid = [[[NSObject alloc] retain] retain];
                 __unsafe_unretained id* pField = (__unsafe_unretained id *)((char *)clone + offset);
                 _test_obj_buf[cntObjField] = *pField = oid;
+                if (GC_DEBUG && cls == JavaLangRefReference_class) {
+                    NSLog(@"Refernce[%d].%s field check", (int)(offset / sizeof(JObj_p)), ivar_getName(ivar));
+                    //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
+                    //continue;
+                }
                 cntObjField ++;
             }
         }
@@ -699,14 +701,15 @@ void ARGC::dealloc_now(JObj_p jobj) {
     _instance._cntDellocThread --;
 }
 
-void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuffEnd, BOOL isStrong)
+void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuffEnd)
 {
     
     JObj_p* pScanBuff = scanBuff;
+    JObj_p debug_parent;
     for (int i = cntItem; --i >= 0; pItem++) {
         id oid = *pItem;
         JObj_p jobj = [oid toJObject];
-        if (jobj == NULL || !jobj->_rc.markReachable(isStrong)) {
+        if (jobj == NULL || !markStrongReachable(jobj)) {
             continue;
         }
 
@@ -719,10 +722,10 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
                 
                 IOSObjectArray* array = (IOSObjectArray*)jobj;
                 if (pScanBuff >= pBuffEnd) {
-                    markArrayItems(array, isStrong);
+                    markArrayItems(array);
                 }
                 else {
-                    scanInstances(array->buffer_, array->size_, pScanBuff, pBuffEnd, isStrong);
+                    scanInstances(array->buffer_, array->size_, pScanBuff, pBuffEnd);
                 }
             }
             else {
@@ -730,10 +733,11 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
                 if (scanOffsets == NULL) {
                     continue;
                 }
+                debug_parent = jobj;
                 for (scan_offset_t offset; (offset = *scanOffsets++) != 0; ) {
                     id oid = *((id*)jobj + offset);
                     JObj_p subObj = [oid toJObject];
-                    if (subObj == NULL || !subObj->_rc.markReachable(isStrong))
+                    if (subObj == NULL || !markStrongReachable(subObj))
                         continue;
                     
                     if (pScanBuff < pBuffEnd) {
@@ -741,7 +745,7 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
                     }
                     else {
                         ARGC::checkRefCount(subObj, @"mark__ scan");
-                        ARGC::markReachableInstance(subObj, isStrong);
+                        ARGC::markReachableSubInstances(subObj);
                     }
                 }
             }
@@ -749,7 +753,7 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
     }
 }
 
-void ARGC::markReachableInstance(JObj_p jobj, BOOL isStrong) {
+void ARGC::markReachableSubInstances(JObj_p jobj) {
     const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
     JObj_p scanBuff[OBJ_STACK_SIZ];
     JObj_p* pBuffEnd = scanBuff + OBJ_STACK_SIZ;
@@ -757,7 +761,7 @@ void ARGC::markReachableInstance(JObj_p jobj, BOOL isStrong) {
     Class cls = getARGCClass(jobj);
     if (cls == _instance.obj_array_class) {
         IOSObjectArray* array = (IOSObjectArray*)jobj;
-        scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd, isStrong);
+        scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd);
     }
     else {
         const scan_offset_t* scanOffsets = ARGC::getScanOffsets(cls);
@@ -765,27 +769,27 @@ void ARGC::markReachableInstance(JObj_p jobj, BOOL isStrong) {
         scan_offset_t offset;
         while ((offset = *scanOffsets++) != 0) {
             id* field = ((id *)jobj + offset);
-            scanInstances(field, 1, scanBuff, pBuffEnd, isStrong);
+            scanInstances(field, 1, scanBuff, pBuffEnd);
         }
     }
 }
     
-void ARGC::markRootInstance(JObj_p jobj, BOOL isStrong) {
+void ARGC::markRootInstance(JObj_p jobj) {
     _instance._cntMarkingThread ++;
     //assert(gc_state >= SCANNING);
-    if (jobj->_rc.markReachable(isStrong)) {
-        markReachableInstance(jobj, isStrong);
+    if (markStrongReachable(jobj)) {
+        markReachableSubInstances(jobj);
     }
     _instance._cntMarkingThread --;
 }
 
-void ARGC::markArrayItems(id oid, BOOL isStrong) {
+void ARGC::markArrayItems(id oid) {
     _instance._cntMarkingThread ++;
     IOSObjectArray* array = (IOSObjectArray*)oid;
     const int OBJ_STACK_SIZ = SCAN_BUFF_SIZE;
     JObj_p scanBuff[OBJ_STACK_SIZ];
     JObj_p* pBuffEnd = scanBuff + OBJ_STACK_SIZ;
-    scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd, isStrong);
+    scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd);
     _instance._cntMarkingThread --;
 }
 
@@ -811,7 +815,7 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
                     JavaLangRefReference* reference = (JavaLangRefReference*)[rm pointerAtIndex:j];
                     if (reference->_rc.isReachable()) {
                         if (jobj != NULL) {
-                            markRootInstance(jobj, true);
+                            markRootInstance(jobj);
                         }
                         break;
                     }
@@ -887,7 +891,7 @@ void ARGC::doGC() {
                 assert(idx == idxSlot);
                 if (jobj->_rc.isRootReachable()) {
                     ARGC::checkRefCount(jobj, @"##root");
-                    markRootInstance(jobj, true);
+                    markRootInstance(jobj);
                     if (GC_DEBUG) {
                         cntRoot ++;
                         if (GC_DEBUG && GC_LOG_ROOTS > 0) {
@@ -1286,12 +1290,12 @@ extern "C" {
 }
 + (id)getReferent:(JavaLangRefReference *)reference
 {
-    return reference->referent_;
+    return (id)reference->referent_;
 }
 
 + (void)clearReferent:(JavaLangRefReference *)reference
 {
-    id oid = reference->referent_;
+    id oid = (id)reference->referent_;
     if (oid == NULL) return;
     
     @synchronized (self) {
