@@ -90,13 +90,6 @@ __attribute__((always_inline)) inline id JreStrongAssignAndGet(__strong id *pIva
     return value;
 }
 
-#define JreWeakAssign                 ARGC_assignWeakObject
-#define JreWeakAssignAndConsume       ARGC_assignWeakObject
-__attribute__((always_inline)) inline id JreWeakAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
-    JreWeakAssign(pIvar, value);
-    return value;
-}
-
 #define JreNativeFieldAssign              ARGC_assignStrongObject
 #define JreNativeFieldAssignAndConsume    ARGC_assignStrongObject
 __attribute__((always_inline)) inline id JreNativeFieldAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {

@@ -36,3 +36,9 @@ procyon-clone/Procyon.Expressions/.settings
 procyon-clone/Procyon.Decompiler/.settings
 procyon-clone/Procyon.Core/.settings
 procyon-clone/Procyon.CompilerTools/.settings
+jre_emul/misc_tests/bin
+procyon-clone/Procyon.CompilerTools/bin
+procyon-clone/Procyon.Core/bin
+procyon-clone/Procyon.Decompiler/bin
+procyon-clone/Procyon.Expressions/bin
+procyon-clone/Procyon.Reflection/bin

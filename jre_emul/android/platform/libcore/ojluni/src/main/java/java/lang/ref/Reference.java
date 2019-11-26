@@ -27,6 +27,7 @@
 package java.lang.ref;
 
 import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.ObjectiveCType;
 
 /*-[
 #import "IOSReference.h"
@@ -45,6 +46,7 @@ import com.google.j2objc.annotations.Weak;
 public abstract class Reference<T> {
 
     @Weak
+    @ObjectiveCType("void *")
     volatile T referent;         /* Treated specially by GC */
     @Weak
     final ReferenceQueue<? super T> queue;

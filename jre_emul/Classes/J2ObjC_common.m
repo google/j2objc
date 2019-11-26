@@ -51,7 +51,7 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);  // NOLINT
 }
 
-void JreFinalize(id self) {
+void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
     [self java_finalize];
   } @catch (JavaLangThrowable *e) {

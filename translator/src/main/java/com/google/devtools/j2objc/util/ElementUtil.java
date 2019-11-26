@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.google.j2objc.annotations.ObjectiveCType;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
@@ -381,6 +382,16 @@ public final class ElementUtil {
         || (var instanceof GeneratedVariableElement && ((GeneratedVariableElement) var).isWeak());
   }
 
+  // ARGC ++
+  public static String getObjectiveCType(VariableElement var) {
+	    for (AnnotationMirror annotation : getAllAnnotations(var)) {
+	        if (getName(annotation.getAnnotationType().asElement()).equals("ObjectiveCType")) {
+	            return (String) ElementUtil.getAnnotationValue(annotation, "value");
+	        }
+	      }
+	    return null;
+	  }
+  
   public boolean isWeakOuterType(TypeElement type) {
 	  if (Options.useGC()) {
 		  return false;

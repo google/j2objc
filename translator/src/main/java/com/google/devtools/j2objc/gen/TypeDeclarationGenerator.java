@@ -301,20 +301,29 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
-        	if (ElementUtil.isWeakReference(varElement)) {
-        		print("ARGC_WEAK_REF ");
-        	}
-        	else {
-        		print("ARGC_FIELD_REF ");
-        	}
-        }
-        else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
-          // We must add this even without -use-arc because the header may be
-          // included by a file compiled with ARC.
-          print("__unsafe_unretained ");
-        }
-        String objcType = getDeclarationType(varElement);
+        
+      	String objcType = ElementUtil.getObjectiveCType(varElement);
+      	if (objcType == null) {
+            objcType = getDeclarationType(varElement);
+            if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+            	if (ElementUtil.isWeakReference(varElement)) {
+            		print("ARGC_WEAK_REF ");
+            	}
+            	else {
+            		print("ARGC_FIELD_REF ");
+            	}
+            }
+            else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
+              // We must add this even without -use-arc because the header may be
+              // included by a file compiled with ARC.
+              print("__unsafe_unretained ");
+            }
+      	}
+      	else {
+      		int a = 3;
+      		a++;
+      	}
+        
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.

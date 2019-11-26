@@ -393,7 +393,6 @@ private:
     void registerScanOffsets(Class clazz);
     
     size_t argcObjectSize;
-    std::atomic_int _clearSoftReference;
     std::atomic_int _cntRef;
     std::atomic_int _cntPhantom;
     std::atomic_int _cntAllocated;
@@ -411,6 +410,7 @@ private:
     
     BOOL _inGC;
 public:
+    static std::atomic_int _clearSoftReference;
     static int mayHaveGarbage;
 };
 
@@ -419,6 +419,7 @@ ARGC ARGC::_instance;
 int ARGC::mayHaveGarbage = 0;
 static int assocKey;
 std::atomic_int ARGC::gc_state;
+std::atomic_int ARGC::_clearSoftReference;
 static scan_offset_t _emptyFields[1] = { 0 };
 static int64_t gc_interval = 0;
 
@@ -861,10 +862,12 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
-    if (!_clearSoftReference) {
-        if (_cntRef == 0 || mayHaveGarbage <= 0) {
-            return;
-        }
+    BOOL doClearSoftReference = _clearSoftReference;
+    if (doClearSoftReference) {
+        _clearSoftReference = 0;
+    }
+    else if (_cntRef == 0 || mayHaveGarbage <= 0) {
+        return;
     }
     mayHaveGarbage --;
     NSMutableDictionary<Class, Counter*>* roots =
@@ -942,7 +945,7 @@ void ARGC::doGC() {
         }
 
         doClearReferences(g_weakRefs, false);
-        doClearReferences(g_softRefs, !_clearSoftReference);
+        doClearReferences(g_softRefs, !doClearSoftReference);
 
         int cntAlive = 0;
         int cntAlivedGenerarion = 0;
@@ -1316,11 +1319,7 @@ extern "C" {
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
-    @autoreleasepool {
-        @synchronized (self) {
-            //[g_softRefs removeAllObjects];
-        };
-    }
+    ARGC::_clearSoftReference = 1;
     ARGC_collectGarbage();
 }
 

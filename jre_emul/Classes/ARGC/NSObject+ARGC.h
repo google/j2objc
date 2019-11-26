@@ -17,7 +17,7 @@ typedef std::atomic<JObj_p> RefSlot;
 typedef void (*ARGCObjectFieldVisitor)(__unsafe_unretained id, int depth) J2OBJC_METHOD_ATTR;
 
 extern "C" {
-    void JreFinalize(id self);
+    void JreFinalize(id self) J2OBJC_METHOD_ATTR;
     void ARGC_genericRetain(id oid);
     void ARGC_genericRelease(id oid);
 };

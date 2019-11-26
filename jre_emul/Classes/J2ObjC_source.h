@@ -69,9 +69,9 @@ FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);
 FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
-FOUNDATION_EXPORT void JreFinalize(id self);
+FOUNDATION_EXPORT void JreFinalize(id self) J2OBJC_METHOD_ATTR;
 
-__attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) {
+__attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) J2OBJC_METHOD_ATTR {
 #ifndef J2OBJC_USE_GC
   // Use [self java_getClass].objcClass instead of [self class] in case the object
   // has it's class swizzled.

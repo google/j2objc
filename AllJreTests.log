@@ -330,7 +330,7 @@ junit.framework.AssertionFailedError: Test 6: File pointer incorrectly moved.
 	at 0x000000010f1c9ab6 org.junit.runner.JUnitCore.runMain() + 2678
 	at 0x000000010f1c8fbe org.junit.runner.JUnitCore.runMain() + 78
 	at 0x000000010f10e7d0 TestThread.run() + 656
-9) test_setCurrency(libcore.java.text.NumberFormatTest)
+9) test_setCurrency(libcore.java.text.NumberFormatTest) //// Testcase Bug ??? PC 에서도 Fail 발생.
 junit.framework.AssertionFailedError: expected:<0> but was:<2>
 	at 0x000000010fad814e java.lang.Throwable.nativeFillInStackTrace() + 46
 	at 0x000000010fa8a1b8 java.lang.Error.<init>() + 40
@@ -373,7 +373,7 @@ junit.framework.AssertionFailedError: expected:<0> but was:<2>
 	at 0x000000010f1c9ab6 org.junit.runner.JUnitCore.runMain() + 2678
 	at 0x000000010f1c8fbe org.junit.runner.JUnitCore.runMain() + 78
 	at 0x000000010f10e7d0 TestThread.run() + 656
-10) test_currencyWithPatternDigits(libcore.java.text.NumberFormatTest)
+10) test_currencyWithPatternDigits(libcore.java.text.NumberFormatTest)  //// Testcase Bug ??? PC 에서도 Fail 발생.
 junit.framework.AssertionFailedError
 	at 0x000000010fad814e java.lang.Throwable.nativeFillInStackTrace() + 46
 	at 0x000000010fa8a0e5 java.lang.Error.<init>() + 21
