@@ -86,7 +86,7 @@ public class Options {
   private String lintArgument = null;
   private boolean reportJavadocWarnings = false;
   private boolean translateBootclasspath = false;
-  private boolean translateClassfiles = true;
+  private boolean translateClassfiles = false;
   private String annotationsJar = null;
   private /*ARGC++*/List<String> bootcps;
   private CombinedOutput globalCombinedOutput = null;
@@ -284,7 +284,8 @@ public class Options {
   }
 
   public boolean isVerbose() {
-    return Logger.getLogger("com.google.devtools.j2objc").getLevel().equals(Level.FINEST);
+    Logger log = Logger.getLogger("com.google.devtools.j2objc");
+    return log != null && log.getLevel().equals(Level.FINEST);
   }
 
   /**
@@ -305,7 +306,8 @@ public class Options {
     ArgProcessor processor = new ArgProcessor();
     processor.processArgs(args);
     postProcessArgs();
-
+    processor.sourceFiles.preprocess();
+    
     return processor.sourceFiles;
   }
 
@@ -346,7 +348,10 @@ public class Options {
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
+        //fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
+        sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
+      } else if (arg.equals("-excludes")) {
+        ARGC.addExcludeRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-d")) {
@@ -552,7 +557,7 @@ public class Options {
           args.next();
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
-      } else if (NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
+      } else if (!useGC() && NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
         // TODO(tball): document entry classes when build is updated to Bazel.
         entryClasses.add(arg);
       } else {
@@ -805,7 +810,9 @@ public class Options {
   public List<String> getBootClasspath() {
 	  if (this.bootcps == null) {
 		  bootcps = getPathArgument(bootclasspath, false);
-		  System.out.println(bootcps);
+		  if (isVerbose()) {
+		    System.out.println("bootclasspath = " + bootcps);
+		  }
 	  }
 	  return this.bootcps;
   }

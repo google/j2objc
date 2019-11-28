@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
@@ -767,6 +768,9 @@ public class TreeConverter {
   }
 
   private TreeNode copyConstantValue(Tree node, Expression newNode) {
+	  if (node == null || ((JCTree) node).type == null) {
+    		ARGC.trap();
+	  }
     Object value = ((JCTree) node).type.constValue();
     if (value instanceof Integer) {
       switch (((JCTree) node).type.baseType().getKind()) {
@@ -1062,8 +1066,25 @@ public class TreeConverter {
     ExpressionTree method = node.getMethodSelect();
     TreePath methodPath = getTreePath(path, method);
     String methodName = getMemberName(method);
-    ExecutableType type = (ExecutableType) getTypeMirror(methodPath);
-    ExecutableElement element = (ExecutableElement) getElement(methodPath);
+    ExecutableType type = null;
+    ExecutableElement element = null;
+
+    try {
+        element = (ExecutableElement) getElement(methodPath);
+        if (Options.useGC() && element == null) throw new RuntimeException();
+    	type = (ExecutableType) getTypeMirror(methodPath);
+    }
+    catch (Exception e) {
+        MethodInvocation newNode = new MethodInvocation();
+        TypeMirror vargarsType = ((JCMethodInvocation) node).varargsElement;
+        newNode
+            .setExecutablePair(new ExecutablePair(env.throwNotImportedStatic))
+            .setVarargsType(vargarsType)
+            //.setExpression(enclosingExpression)
+            .setTypeMirror(env.notImportedException.asType());//.notImportedException.asType());
+        return newNode;//_throw;
+    }
+    
     ExpressionTree target =
         method.getKind() == Kind.MEMBER_SELECT ? ((MemberSelectTree) method).getExpression() : null;
 
@@ -1153,6 +1174,9 @@ public class TreeConverter {
     ClassInstanceCreation newNode = new ClassInstanceCreation();
     Expression enclosingExpression = (Expression) convert(node.getEnclosingExpression(), path);
     ExecutableElement executable = (ExecutableElement) getElement(path);
+    if (Options.useGC() && executable == null) {
+    	executable = env.createNotImportedMethod;
+    }
     TypeMirror vargarsType = ((JCNewClass) node).varargsElement;
     // Case where the first parameter of the constructor of an inner class is the outer class (e.g.
     // new Outer().new Inner(...). Move the enclosing expression (e.g. new Outer()) as the first
@@ -1167,7 +1191,7 @@ public class TreeConverter {
       newNode.addArgument((Expression) convert(arg, path));
     }
     return newNode
-        .setExecutablePair(new ExecutablePair(executable))
+    	.setExecutablePair(new ExecutablePair(executable))
         .setVarargsType(vargarsType)
         .setExpression(enclosingExpression)
         .setType(convertType(getTypeMirror(getTreePath(path, node.getIdentifier()))))

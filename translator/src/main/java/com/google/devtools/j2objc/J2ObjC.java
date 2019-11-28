@@ -92,7 +92,7 @@ public class J2ObjC {
     Parser parser = null;
     try {
         parser = createParser(options);
-      //* argc { check pure-objc file list.
+      /* argc { check pure-objc file list.
       List<String> srcArgs = options.fileUtil().getSourcePathEntries();
       ARGC.Preprocessor list = new ARGC.Preprocessor(parser, options);
       list.preprocess(srcArgs);
@@ -135,7 +135,7 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      if (ErrorUtil.errorCount() > 0) {
+      if (ErrorUtil.errorCount() > 0 && !ARGC.hasExcludeRule()) {
         return;
       }
       translationProcessor.postProcess();

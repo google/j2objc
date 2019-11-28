@@ -155,6 +155,14 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
     warning(formatMessage(node, message));
   }
 
+  public static void warning(Throwable error, String message) {
+    StringWriter msg = new StringWriter();
+    PrintWriter writer = new PrintWriter(msg);
+    writer.println(String.format("internal error translating \"%s\"", message));
+    error.printStackTrace();//.printStackTrace(writer);
+    writer.flush();
+  }
+  
   /**
    * Report that an internal error happened when translating a specific source.
    */

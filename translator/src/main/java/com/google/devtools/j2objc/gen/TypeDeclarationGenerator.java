@@ -319,10 +319,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
               print("__unsafe_unretained ");
             }
       	}
-      	else {
-      		int a = 3;
-      		a++;
-      	}
         
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {

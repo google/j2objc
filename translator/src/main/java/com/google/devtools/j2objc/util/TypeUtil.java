@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
@@ -851,6 +852,9 @@ public final class TypeUtil {
       case VOID:
         return getBinaryName(t);
       default:
+    	if (Options.useGC() && ARGC.hasExcludeRule()) {
+    		return "Lorg/ninefolders/NotImportedClassException;";
+    	}
         throw new AssertionError("Cannot resolve signature name for type: " + t);
     }
   }
@@ -870,6 +874,9 @@ public final class TypeUtil {
       case SHORT: return "S";
       case VOID: return "V";
       default:
+    	if (Options.useGC() && ARGC.hasExcludeRule()) {
+    		return "I";
+    	}
         throw new AssertionError("Cannot resolve binary name for type: " + t);
     }
   }

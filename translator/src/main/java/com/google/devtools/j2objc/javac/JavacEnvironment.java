@@ -17,7 +17,14 @@ package com.google.devtools.j2objc.javac;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.Trees;
+
+import java.util.List;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -32,6 +39,12 @@ class JavacEnvironment implements ParserEnvironment {
   private final Elements elements;
   private final Types types;
   private final Trees trees;
+  // ARGC ++ {{
+  public final TypeElement notImportedException;
+  public final ExecutableElement throwNotImportedStatic;
+  public final ExecutableElement throwNotImportedInstance;
+  public final ExecutableElement createNotImportedMethod;
+  // }}
 
   JavacEnvironment(JavacTask task, StandardJavaFileManager fileManager,
       DiagnosticCollector<JavaFileObject> diagnostics) {
@@ -41,6 +54,29 @@ class JavacEnvironment implements ParserEnvironment {
     elements = task.getElements();
     types = task.getTypes();
     trees = Trees.instance(task);
+    notImportedException = elements.getTypeElement("org.ninefolders.NotImportedClassException");
+    List<? extends Element> list = elements.getAllMembers(notImportedException);
+    ExecutableElement throw_ = null, throw_instance = null;
+    ExecutableElement init_ = null;
+    for (Element e : list) {
+    	if (e.getKind() == ElementKind.METHOD) {
+    		String s = e.getSimpleName().toString();
+    		if (s.equals("throwNotImported")) {
+        		ExecutableElement m = (ExecutableElement)e;
+	    		throw_ = (ExecutableElement)e;
+	    		break;
+        	}
+    	}
+    	else if (e.getKind() == ElementKind.CONSTRUCTOR) {
+    		ExecutableElement m = (ExecutableElement)e;
+    		if (m.isVarArgs()) {
+    			init_ = m;
+    		}
+    	}
+    }
+    throwNotImportedStatic = throw_;
+    throwNotImportedInstance = throw_instance;    
+    createNotImportedMethod = init_;
   }
 
   public PackageElement defaultPackage() {

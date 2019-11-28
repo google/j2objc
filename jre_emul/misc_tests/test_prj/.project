@@ -20,5 +20,10 @@
 			<type>2</type>
 			<location>/Users/zeedh/work/j2objc+argc/jre_emul/android/platform/libcore/luni/src/test/java</location>
 		</link>
+		<link>
+			<name>libcore-harmony-src-test</name>
+			<type>2</type>
+			<location>/Users/zeedh/work/j2objc+argc/jre_emul/android/platform/libcore/harmony-tests/src/test/java</location>
+		</link>
 	</linkedResources>
 </projectDescription>

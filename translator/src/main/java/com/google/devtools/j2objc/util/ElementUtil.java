@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -452,6 +453,9 @@ public final class ElementUtil {
   }
 
   public static Iterable<ExecutableElement> getMethods(TypeElement e) {
+	  if (e == null) {
+    		ARGC.trap();
+	  }
     return filterEnclosedElements(e, ExecutableElement.class, ElementKind.METHOD);
   }
 

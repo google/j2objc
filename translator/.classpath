@@ -12,7 +12,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305-3.0.0.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/tools.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/tools.jar" sourcepath="/Users/zeedh/work/openjdk8-langtools/src/share/classes"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
 	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+argc/java_deps/build_result/procyon-compilertools-0.5.36.jar"/>

@@ -82,7 +82,7 @@ public class ARGC {
 	public static boolean compatiable_2_0_2 = false;
 	private static boolean isPureObjCGenerationMode;
 	private static ArrayList<String> pureObjCMap = new ArrayList<String>();
-
+	private static ArrayList<String> excludes = new ArrayList<String>();
 
 	public static boolean inPureObjCMode() {
 		return isPureObjCGenerationMode;
@@ -103,10 +103,13 @@ public class ARGC {
 		if (!isPureObjC(file.getUnitName())) {
 			return;
 		}
-
+		System.out.println("====<<" + file.getUnitName() + "======");
 		CompilationUnit unit = parser.parse(file);
 		new NoWithSuffixMethodRegister(unit).run();
+		System.out.println("======" + file.getUnitName() + ">>====");
 	}
+	
+	
 
 	static public class NoWithSuffixMethodRegister extends UnitTreeVisitor {
 
@@ -116,8 +119,10 @@ public class ARGC {
 
 		public NoWithSuffixMethodRegister(CompilationUnit unit) {
 			super(unit);
-			this.typeUtil = unit.getEnv().typeUtil();
-			map = options.getMappings().getMethodMappings();
+			this.typeUtil = unit.getEnv()
+					.typeUtil();
+			map = options.getMappings()
+					.getMethodMappings();
 		}
 
 		@Override
@@ -246,17 +251,34 @@ public class ARGC {
 		private String root;
 		private Options options;
 		private JarTypeLoader currTypeLoader;
+		private ArrayList<InputFile> pureObjCFiles = new ArrayList<>();
 
 		public SourceList(Options options) {
 			this.options = options;
 		}
 
 		public boolean add(String filename) {
+			
 			File f = new File(filename);
 			if (!f.exists()) {
-				ErrorUtil.warning("Invalid source: " + filename);
-				return false;
+				if (filename.endsWith(".java")) {
+					try {
+						InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
+						if (inp != null) {
+							String absPath = inp.getAbsolutePath();
+							root = absPath.substring(0, absPath.length() - filename.length());
+							f = new File(absPath);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if (!f.exists()) {
+					ErrorUtil.warning("Invalid source: " + filename);
+					return false;
+				}
 			}
+			
 			if (f.isDirectory()) {
 				try {
 					this.addFolderTree(f);
@@ -292,14 +314,30 @@ public class ARGC {
 				} catch (IOException e) {
 					ErrorUtil.error(e.getMessage());
 				}
-
 			}
 			else {
-				super.add(filename);
+				this.registerSource(filename);
 			}
 			return true;
 		}
 
+		private boolean registerSource(String filename) {
+			for (String s : excludes) {
+				if (filename.startsWith(s)) {
+					System.out.println("excluded : " + filename);
+					return false;
+				}
+			}
+			
+			super.add(filename);
+			
+			if (isPureObjC(filename)) {
+				pureObjCFiles.add(new RegularInputFile(root + filename, filename));
+			}
+			
+			return true;
+		}
+		
 		private void add(File f) throws IOException {
 			if (f.isDirectory()) {
 				addFolder(f);
@@ -307,7 +345,7 @@ public class ARGC {
 			else if (f.getName().endsWith(".java")) {
 				String filepath = f.getAbsolutePath();
 				String filename = filepath.substring(root.length());
-				super.add(filename);
+				registerSource(filename);
 			}
 			else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
 				String filepath = f.getAbsolutePath();
@@ -315,12 +353,16 @@ public class ARGC {
 				if (source == null) return;
 
 				filepath = filepath.substring(0, filepath.length() - 5) + "java";
-				System.out.println("discompiled: " + filepath);
+				if (options.isVerbose()) {
+					System.out.println("discompiled: " + filepath);
+				}
 				PrintStream out = new PrintStream(new FileOutputStream(filepath));
-				out.println(source);
+				if (options.isVerbose()) {
+					out.println(source);
+				}
 				out.close();
 				String filename = filepath.substring(root.length());
-				super.add(filename);
+				registerSource(filename);
 			}
 
 
@@ -387,7 +429,9 @@ public class ARGC {
 		}
 
 		private void addFolderTree(File f) throws IOException {
-			options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
+			if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
+				options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
+			}
 
 			options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
 			root = f.getAbsolutePath() + '/';
@@ -461,63 +505,77 @@ public class ARGC {
 
 		}
 
+
+		public void preprocessSourcePaths(List<String> sourcePathEntries) {
+			for (String filename : sourcePathEntries) {
+				this.add(filename);
+			}
+			super.clear();
+		}
+
+		public void preprocess() {
+			Parser parser = J2ObjC.createParser(options);
+			for (InputFile rif : pureObjCFiles) {
+				CompilationUnit unit = parser.parse(rif);
+				new NoWithSuffixMethodRegister(unit).run();
+			}
+		}
+
+//
+//		private com.google.devtools.j2objc.util.Parser parser;
+//		int inPureObjC; 
+//
+//		private void preprocessFolder(File f) {
+//			File files[] = f.listFiles();
+//			for (File f2 : files) {
+//				addSource(f2);
+//			}
+//		}
+//
+//		private void addSource(File f) {
+//			String filepath = f.getAbsolutePath();
+//			String filename = filepath.substring(root.length());
+//			if (f.isDirectory()) {
+//				boolean isPureObjFolder = isPureObjFolder(filename);
+//				if (isPureObjFolder) {
+//					inPureObjC ++;
+//					preprocessFolder(f);
+//					inPureObjC --;
+//				}
+//				else {
+//					preprocessFolder(f);
+//				}
+//			}
+//			else if (f.getName().endsWith(".java")) {
+//				if (root == null || inPureObjC > 0) {
+//					ARGC.processAutoMethodMapRegister(parser, new RegularInputFile(filepath, filename), options);
+//				}
+//			}
+//		}
+
+
 	}
 
-	public static class Preprocessor  {
-
-		private String root;
-		private com.google.devtools.j2objc.util.Parser parser;
-		private Options options;
-		int inPureObjC; 
-
-		public Preprocessor(com.google.devtools.j2objc.util.Parser parser, Options options) {
-			this.parser = parser;
-			this.options = options;
+	public static void addExcludeRule(String pathArgument) {
+		String[] paths = pathArgument.split(":");
+		for (String path : paths) {
+			excludes.add(path.trim());		
 		}
+	}
 
-		private void addFolder(File f) {
-			File files[] = f.listFiles();
-			for (File f2 : files) {
-				addSource(f2);
-			}
-		}
+	public static boolean hasExcludeRule() {
+		return excludes.size() > 0;
+	}
 
-		private void addSource(File f) {
-			String filepath = f.getAbsolutePath();
-			String filename = filepath.substring(root.length());
-			if (f.isDirectory()) {
-				boolean isPureObjFolder = isPureObjFolder(filename);
-				if (isPureObjFolder) {
-					inPureObjC ++;
-					addFolder(f);
-					inPureObjC --;
-				}
-				else {
-					addFolder(f);
-				}
-			}
-			else if (f.getName().endsWith(".java")) {
-				if (root == null || inPureObjC > 0) {
-					ARGC.processAutoMethodMapRegister(parser, new RegularInputFile(filepath, filename), options);
-				}
-			}
-		}
+	public static List<String> resolveSources(ArrayList<String> sourceFiles) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		public void preprocess(List<String> srcArgs) {
-			for (String filename : srcArgs) {
-				File f = new File(filename);
-				if (f.isDirectory()) {
-					root = f.getAbsolutePath() + '/';
-					inPureObjC = 0;
-					this.addFolder(f);
-				}
-				else {
-					root = "";
-					inPureObjC = 1;
-					addSource(f);
-				}
-			}
-		}
+	public static int trap() {
+		int a = 3;
+		a ++;
+		return a;
 	}
 
 }
