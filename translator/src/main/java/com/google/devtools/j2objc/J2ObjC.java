@@ -91,25 +91,15 @@ public class J2ObjC {
     File strippedSourcesDir = null;
     Parser parser = null;
     try {
-        parser = createParser(options);
-      /* argc { check pure-objc file list.
-      List<String> srcArgs = options.fileUtil().getSourcePathEntries();
-      ARGC.Preprocessor list = new ARGC.Preprocessor(parser, options);
-      list.preprocess(srcArgs);
-      list.preprocess(fileArgs);
-      //*/
-
       List<ProcessingContext> inputs = Lists.newArrayList();
-      GenerationBatch batch = new GenerationBatch(options, parser);
+      GenerationBatch batch = new GenerationBatch(options);
       batch.processFileArgs(fileArgs);
       inputs.addAll(batch.getInputs());
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
-      /** argc
       parser = createParser(options);
-      //*/
       Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);
       List<ProcessingContext> generatedInputs = processingResult.getGeneratedSources();
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.

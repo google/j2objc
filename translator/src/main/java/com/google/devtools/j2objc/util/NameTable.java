@@ -247,10 +247,15 @@ public class NameTable {
     String shortName = getVariableShortName(var);
     if (ElementUtil.isGlobalVar(var)) {
       String className = getFullName(ElementUtil.getDeclaringClass(var));
-      if (ElementUtil.isEnumConstant(var) && !ARGC.isPureObjC(elementUtil.getType(var))) {
-        // Enums are declared in an array, so we use a macro to shorten the
-        // array access expression.
-        return "JreEnum(" + className + ", " + shortName + ")";
+      if (ElementUtil.isEnumConstant(var)) {
+    	  if (ARGC.isPureObjC(elementUtil.getType(var))) {
+    		  className = getNativeEnumName(className);
+    	  }
+    	  else {
+	        // Enums are declared in an array, so we use a macro to shorten the
+	        // array access expression.
+	        return "JreEnum(" + className + ", " + shortName + ")";
+    	  }
       }
       return className + '_' + shortName;
     }
@@ -605,7 +610,7 @@ public class NameTable {
     }
     if (classType != null) {
     	if ((ElementUtil.isEnum(classType) || ElementUtil.isEnumConstant(classType)) && ARGC.isPureObjC(elementUtil.getType(classType))) {
-    		return getFullName(classType);
+    		return NameTable.getNativeEnumName(getFullName(classType));
     	}
 //    	else if (Oz.inPureObjCMode()) {
 //    		TypeMirror tm = elementUtil.getType(classType);
@@ -621,9 +626,6 @@ public class NameTable {
   }
 
   public static String getNativeEnumName(String typeName) {
-	if (ARGC.inPureObjCMode()) {
-	  return typeName;
-	}
     return typeName + "_Enum";
   }
 

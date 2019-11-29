@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -295,8 +296,13 @@ public class CastResolver extends UnitTreeVisitor {
     Iterator<Expression> argIter = args.iterator();
     Iterator<? extends TypeMirror> paramTypeIter = paramTypes.iterator();
     // Implicit assert that size(paramTypes) >= size(args). Don't cast vararg arguments.
+    try {
     while (paramTypeIter.hasNext()) {
       maybeAddCast(argIter.next(), paramTypeIter.next(), false);
+    }
+    }
+    catch (Exception e) {
+    	ARGC.trap();
     }
   }
 

@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -81,7 +82,7 @@ import com.strobel.decompiler.PlainTextOutput;
 public class ARGC {
 	public static boolean compatiable_2_0_2 = false;
 	private static boolean isPureObjCGenerationMode;
-	private static ArrayList<String> pureObjCMap = new ArrayList<String>();
+	private static HashMap<String, PureObjCPackage> pureObjCMap = new HashMap<>();
 	private static ArrayList<String> excludes = new ArrayList<String>();
 
 	public static boolean inPureObjCMode() {
@@ -92,114 +93,18 @@ public class ARGC {
 		isPureObjCGenerationMode = false;
 	}
 
-	public static void addPureObjC(String arg) {
-		arg = arg.replace('.', '/');
-		if (pureObjCMap.indexOf(arg) < 0) {
-			pureObjCMap.add(arg);
-		}
+	public static void addPureObjC(String srcAndPackagePair) {
+		int p = srcAndPackagePair.lastIndexOf('/') + 1;
+		String root = srcAndPackagePair.substring(0, p);
+		String package_ = srcAndPackagePair.substring(p).replace('.', '/');
+		pureObjCMap.put(package_, new PureObjCPackage(root, package_));
 	}
 
-	public static void processAutoMethodMapRegister(Parser parser, InputFile file, Options options) {
-		if (!isPureObjC(file.getUnitName())) {
-			return;
+	public static void startSourceFileGeneration(String unitName) {
+		isPureObjCGenerationMode = isPureObjC(unitName);
+		if (isPureObjCGenerationMode) {
+			trap();
 		}
-		System.out.println("====<<" + file.getUnitName() + "======");
-		CompilationUnit unit = parser.parse(file);
-		new NoWithSuffixMethodRegister(unit).run();
-		System.out.println("======" + file.getUnitName() + ">>====");
-	}
-	
-	
-
-	static public class NoWithSuffixMethodRegister extends UnitTreeVisitor {
-
-		StringBuilder sb = new StringBuilder();
-		private Map<String, String> map;
-		private TypeUtil typeUtil;
-
-		public NoWithSuffixMethodRegister(CompilationUnit unit) {
-			super(unit);
-			this.typeUtil = unit.getEnv()
-					.typeUtil();
-			map = options.getMappings()
-					.getMethodMappings();
-		}
-
-		@Override
-		public void endVisit(MethodDeclaration node) {
-			ExecutableElement methodElement = node.getExecutableElement();
-			if (!ElementUtil.isPublic(methodElement)) {
-				return;
-			}
-			if (node.getParameters().size() == 0) {
-				return;
-			}
-
-			String key = Mappings.getMethodKey(node.getExecutableElement(), typeUtil);
-			int cntParam = node.getParameters().size();
-
-			sb.setLength(0);
-			sb.append(methodElement.getSimpleName().toString());
-			if (cntParam > 1) {
-				SingleVariableDeclaration first_p = node.getParameter(0);
-				Type type = first_p.getType();
-				if (type.isPrimitiveType()) {
-					boolean all_type_matched = true;
-					for (int i = 1; i < cntParam; i++) {
-						SingleVariableDeclaration p = node.getParameter(i);
-						if (p.getType().equals(first_p)) {
-							all_type_matched = false;
-							break;
-						}
-					}
-					if (all_type_matched) {
-						if (node.isConstructor()) {
-							sb.setLength(0);
-							sb.append("init");
-						}
-						sb.append('_');
-						String n = first_p.getVariableElement().getSimpleName().toString();
-						sb.append(n);
-					}
-				}
-			}
-
-			sb.append(':');
-			for (int i = 1; i < cntParam; i++) {
-				String n = node.getParameter(i).getVariableElement().getSimpleName().toString();
-				sb.append(n);
-				sb.append(':');
-			}
-			map.put(key, sb.toString());
-		}
-
-		@Override
-		public void endVisit(TypeDeclaration node) {
-			visitType(node);
-		}
-
-		@Override
-		public void endVisit(EnumDeclaration node) {
-			visitType(node);
-		}
-
-		@Override
-		public void endVisit(AnnotationTypeDeclaration node) {
-			visitType(node);
-		}
-
-		private void visitType(AbstractTypeDeclaration node) {
-			addReturnTypeNarrowingDeclarations(node);
-		}
-
-		// Adds declarations for any methods where the known return type is more
-		// specific than what is already declared in inherited types.
-		private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
-		}
-	}
-
-	public static void startSourceFileGeneration(InputFile file) {
-		isPureObjCGenerationMode = isPureObjC(file.getUnitName());
 	}
 
 	private static boolean isPureObjC(String path) {
@@ -212,7 +117,7 @@ public class ARGC {
 	}
 
 	private static boolean isPureObjFolder(String path) {
-		for (String s : pureObjCMap) {
+		for (String s : pureObjCMap.keySet()) {
 			if (path.startsWith(s)) {
 				return true;
 			}
@@ -226,6 +131,12 @@ public class ARGC {
 		return res;
 	}
 
+	public static void processPureObjC(Parser parser) {
+		for (Entry<String, PureObjCPackage> e : pureObjCMap.entrySet()) {
+			PureObjCPackage objc = e.getValue();
+			objc.preprocess(parser);
+		}
+	}
 
 	static HashMap<String, String> map = new HashMap<String, String>();
 	static {
@@ -433,7 +344,7 @@ public class ARGC {
 				options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
 			}
 
-			options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+			//options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
 			root = f.getAbsolutePath() + '/';
 			this.addFolder(f);
 		}
@@ -514,45 +425,12 @@ public class ARGC {
 		}
 
 		public void preprocess() {
-			Parser parser = J2ObjC.createParser(options);
-			for (InputFile rif : pureObjCFiles) {
-				CompilationUnit unit = parser.parse(rif);
-				new NoWithSuffixMethodRegister(unit).run();
-			}
+//			Parser parser = J2ObjC.createParser(options);
+//			for (InputFile rif : pureObjCFiles) {
+//				CompilationUnit unit = parser.parse(rif);
+//				new NoWithSuffixMethodRegister(unit).run();
+//			}
 		}
-
-//
-//		private com.google.devtools.j2objc.util.Parser parser;
-//		int inPureObjC; 
-//
-//		private void preprocessFolder(File f) {
-//			File files[] = f.listFiles();
-//			for (File f2 : files) {
-//				addSource(f2);
-//			}
-//		}
-//
-//		private void addSource(File f) {
-//			String filepath = f.getAbsolutePath();
-//			String filename = filepath.substring(root.length());
-//			if (f.isDirectory()) {
-//				boolean isPureObjFolder = isPureObjFolder(filename);
-//				if (isPureObjFolder) {
-//					inPureObjC ++;
-//					preprocessFolder(f);
-//					inPureObjC --;
-//				}
-//				else {
-//					preprocessFolder(f);
-//				}
-//			}
-//			else if (f.getName().endsWith(".java")) {
-//				if (root == null || inPureObjC > 0) {
-//					ARGC.processAutoMethodMapRegister(parser, new RegularInputFile(filepath, filename), options);
-//				}
-//			}
-//		}
-
 
 	}
 
@@ -578,5 +456,127 @@ public class ARGC {
 		return a;
 	}
 
+	private static class PureObjCPackage {
+
+		final String root;
+		final String package_;
+		private Parser parser;
+
+		public PureObjCPackage(String root, String package_) {
+			this.root = root;
+			this.package_ = package_;
+		}
+
+		public void preprocess(Parser parser) {
+			this.parser = parser;
+			
+			File f = new File(root, package_);
+			add(f);
+		}
+
+		private void add(File f) {
+			if (f.isDirectory()) {
+				File files[] = f.listFiles();
+				for (File f2 : files) {
+					add(f2);
+				}
+			}
+			else {
+				String path = f.getAbsolutePath();
+				if (path.endsWith(".java")) {
+					RegularInputFile inp = new RegularInputFile(path, path.substring(root.length()));				
+				    CompilationUnit compilationUnit = parser.parse(inp);
+				    new NoWithSuffixMethodRegister(compilationUnit).run();
+				}
+			}
+		}
+	}
+	
+	static public class NoWithSuffixMethodRegister extends UnitTreeVisitor {
+
+		StringBuilder sb = new StringBuilder();
+		private Map<String, String> map;
+		private TypeUtil typeUtil;
+
+		public NoWithSuffixMethodRegister(CompilationUnit unit) {
+			super(unit);
+			this.typeUtil = unit.getEnv()
+					.typeUtil();
+			map = options.getMappings()
+					.getMethodMappings();
+		}
+
+		@Override
+		public void endVisit(MethodDeclaration node) {
+			ExecutableElement methodElement = node.getExecutableElement();
+			if (!ElementUtil.isPublic(methodElement)) {
+				return;
+			}
+			if (node.getParameters().size() == 0) {
+				return;
+			}
+
+			String key = Mappings.getMethodKey(node.getExecutableElement(), typeUtil);
+			int cntParam = node.getParameters().size();
+
+			sb.setLength(0);
+			sb.append(methodElement.getSimpleName().toString());
+			if (cntParam > 1) {
+				SingleVariableDeclaration first_p = node.getParameter(0);
+				Type type = first_p.getType();
+				if (type.isPrimitiveType()) {
+					boolean all_type_matched = true;
+					for (int i = 1; i < cntParam; i++) {
+						SingleVariableDeclaration p = node.getParameter(i);
+						if (p.getType().equals(first_p)) {
+							all_type_matched = false;
+							break;
+						}
+					}
+					if (all_type_matched) {
+						if (node.isConstructor()) {
+							sb.setLength(0);
+							sb.append("init");
+						}
+						sb.append('_');
+						String n = first_p.getVariableElement().getSimpleName().toString();
+						sb.append(n);
+					}
+				}
+			}
+
+			sb.append(':');
+			for (int i = 1; i < cntParam; i++) {
+				String n = node.getParameter(i).getVariableElement().getSimpleName().toString();
+				sb.append(n);
+				sb.append(':');
+			}
+			map.put(key, sb.toString());
+		}
+
+		@Override
+		public void endVisit(TypeDeclaration node) {
+			visitType(node);
+		}
+
+		@Override
+		public void endVisit(EnumDeclaration node) {
+			visitType(node);
+		}
+
+		@Override
+		public void endVisit(AnnotationTypeDeclaration node) {
+			visitType(node);
+		}
+
+		private void visitType(AbstractTypeDeclaration node) {
+			addReturnTypeNarrowingDeclarations(node);
+		}
+
+		// Adds declarations for any methods where the known return type is more
+		// specific than what is already declared in inherited types.
+		private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
+		}
+	}
 }
 

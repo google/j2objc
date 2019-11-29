@@ -48,7 +48,6 @@ public class Import implements Comparable<Import> {
     this.typeName = nameTable.getFullName(type);
     if (true/*ARGC*/) {
     	String s = env.elementUtil().getType(type).toString();
-
     	this.isNativeEnum = (env.elementUtil().isEnum(type) || env.elementUtil().isEnumConstant(type)) && ARGC.isPureObjC(env.elementUtil().getType(type));
     } 
     TypeElement mainType = type;

@@ -53,14 +53,12 @@ public class GenerationBatch {
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
   private static final String J2OBJC_TEMP_DIR_PREFIX = "J2ObjCTempDir";
   private final Options options;
-  private Parser argc_parser;
 
   private final List<ProcessingContext> inputs = Lists.newArrayList();
 
   private GenerationUnit globalCombinedUnit = null;
   
-  public GenerationBatch(Options options, /*ARGC++*/Parser parser) {
-	this.argc_parser = parser;
+  public GenerationBatch(Options options){
     this.options = options;
     if (options.globalCombinedOutput() != null) {
       globalCombinedUnit = options.globalCombinedOutput().globalGenerationUnit();
@@ -114,7 +112,6 @@ public class GenerationBatch {
     if (f.exists() && f.isFile()) {
       return f;
     }
-    
     // Checking the sourcepath is helpful for our unit tests where the source
     // jars aren't relative to the current working directory.
     for (String path : options.fileUtil().getSourcePathEntries()) {
@@ -191,104 +188,6 @@ public class GenerationBatch {
     }
   }
 
-  	public void oz_registerNativeFiles(List<String> srcArgs) {
-  		for (String filename : srcArgs) {
-			File dir = new File(filename);
-			if (dir.isDirectory()) {
-				options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
-				List<InputFile> inputFiles = Lists.newArrayList();
-				oz_getJavaFiles(inputFiles, dir, dir.getAbsolutePath().replace('\\', '/'));
-				return;
-			}
-  		}
-  	}
-  	
-	private void oz_getJavaFiles(List<InputFile> inputFiles, File f, String pathPrefix) {
-		File files[] = f.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			f = files[i];
-			if (!f.isDirectory() && f.getName().endsWith(".java")) {
-				InputFile rf = new Oz_InputFile(pathPrefix, f.getAbsolutePath());
-				inputFiles.add(rf);
-
-				this.addSource(rf);
-			}
-		}
-		for (int i = 0; i < files.length; i++) {
-			f = files[i];
-			if (f.isDirectory()) {
-				oz_getJavaFiles(inputFiles, f, pathPrefix);
-			}
-		}
-	}
-
-	public class Oz_InputFile implements InputFile {
-		private final String path, fsPath, unitPath;
-
-		public Oz_InputFile(String fsPath, String path0) {
-			this.fsPath = fsPath;
-			this.path = path0.replace('\\', '/');
-			this.unitPath = path.substring(fsPath.length() + 1);
-			// System.out.println(this.fsPath + "!" + unitPath);
-		}
-
-		@Override
-		public boolean exists() {
-			return new File(path).exists();
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			return new FileInputStream(new File(path));
-		}
-
-		@Override
-		public Reader openReader(Charset charset) throws IOException {
-			return new InputStreamReader(getInputStream(), charset);
-		}
-
-		public String getPath() {
-			return path;
-		}
-
-		public String getContainingPath() {
-			return fsPath;
-		}
-
-		@Override
-		public String getUnitName() {
-			return unitPath;
-		}
-
-		@Override
-		public String getBasename() {
-			return unitPath.substring(unitPath.lastIndexOf('/') + 1);
-		}
-
-		@Override
-		public long lastModified() {
-			return new File(path).lastModified();
-		}
-
-		@Override
-		public String toString() {
-			return getPath();
-		}
-
-		@Override
-		public String getAbsolutePath() {
-			return path;
-		}
-
-		@Override
-		public String getOriginalLocation() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-	}
-
-
   private void addExtractedJarSource(InputFile file, String jarFileName, String internalPath) {
     String sourceName = "jar:file:" + jarFileName + "!" + internalPath;
     inputs.add(ProcessingContext.fromExtractedJarEntry(file, sourceName, options));
@@ -300,9 +199,6 @@ public class GenerationBatch {
    */
   @VisibleForTesting
   public void addSource(InputFile file) {
-	  if (argc_parser != null) {
-		  //Oz.processAutoMethodMapRegister(oz_parser, file, options);
-	  }
 	  if (globalCombinedUnit != null) {
 		  inputs.add(new ProcessingContext(file, globalCombinedUnit));
 	  } else {

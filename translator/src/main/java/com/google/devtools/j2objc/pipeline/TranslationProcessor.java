@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
@@ -323,6 +324,8 @@ public class TranslationProcessor extends FileProcessor {
   public static void generateObjectiveCSource(GenerationUnit unit) {
     assert unit.getOutputPath() != null;
     assert unit.isFullyParsed();
+    ARGC.startSourceFileGeneration(unit.getOutputPath());
+    
     TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName(), unit.options().timingLevel());
     logger.fine("Generating " + unit.getOutputPath());
     logger.finest("writing source file(s) to "
@@ -347,6 +350,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.pop();
     ticker.tick("Source generation");
     ticker.printResults(System.out);
+    ARGC.endSourceFileGeneration();
   }
 
   @Override

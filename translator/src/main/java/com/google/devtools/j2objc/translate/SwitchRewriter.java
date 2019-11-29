@@ -85,9 +85,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     TypeMirror type = var.asType();
     if (TypeUtil.isEnum(type)) {
     	String enumName = nameTable.getFullName(TypeUtil.asTypeElement(type));
-    	if (!ARGC.isPureObjC(type)) {
-    		enumName = NameTable.getNativeEnumName(enumName);
-    	}
+    	enumName = NameTable.getNativeEnumName(enumName);
       String enumValue = enumName + "_"
           + nameTable.getVariableBaseName(var);
       node.setExpression(new NativeExpression(enumValue, typeUtil.getInt()));

@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,6 +63,7 @@ abstract class FileProcessor {
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
+	ARGC.processPureObjC(parser);
     for (ProcessingContext input : inputs) {
       processInput(input);
     }
@@ -110,12 +112,7 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-//	  if (options.useGC()) {
-//		  return file.getUnitName().endsWith(".java");
-//	  }
-//	  else {
 		  return file.getAbsolutePath().endsWith(".java");
-//	  }
   }
 
   private void processBatch() {
@@ -162,8 +159,9 @@ abstract class FileProcessor {
     if (closureQueue != null) {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
+    
     try {
-      ARGC.startSourceFileGeneration(file);
+      ARGC.startSourceFileGeneration(file.getUnitName());
       processConvertedTree(input, unit);
       ARGC.endSourceFileGeneration();
       outputs.add(input);
