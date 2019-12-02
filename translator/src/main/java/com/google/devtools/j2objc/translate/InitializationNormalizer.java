@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -191,12 +192,15 @@ public class InitializationNormalizer extends UnitTreeVisitor {
    */
   private List<Statement> getInitLocation(MethodDeclaration node) {
     List<Statement> stmts = node.getBody().getStatements();
-    if (!stmts.isEmpty() && stmts.get(0) instanceof SuperConstructorInvocation) {
-      return stmts.subList(0, 1);
+    if (!stmts.isEmpty()) {
+    	Statement stmt0 = stmts.get(0);
+    	if (stmt0 instanceof SuperConstructorInvocation) {
+    		return stmts.subList(0, 1);
+    	}
     }
     // java.lang.Object supertype is null. All other types should have a super() call.
     assert TypeUtil.isNone(
-        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass())
+        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass()) || ARGC.hasExcludeRule()
         : "Constructor didn't have a super() call.";
     return stmts.subList(0, 0);
   }

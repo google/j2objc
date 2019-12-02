@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
@@ -33,16 +34,9 @@ import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.AnnotatedConstruct;
@@ -215,8 +209,17 @@ public final class ElementUtil {
   }
 
   public static List<TypeElement> getInterfaces(TypeElement element) {
-    return Lists.newArrayList(Iterables.transform(
+    ArrayList<TypeElement> list = Lists.newArrayList(Iterables.transform(
         element.getInterfaces(), i -> TypeUtil.asTypeElement(i)));
+    
+    if (ARGC.hasExcludeRule()) {
+	    list.removeIf(new Predicate<TypeElement>() {
+			public boolean test(TypeElement t) {
+				return t == null;
+			}
+	    });
+    }
+    return list;
   }
 
   public static boolean isPrimitiveConstant(VariableElement element) {
@@ -306,6 +309,9 @@ public final class ElementUtil {
   }
 
   public static boolean isPackageInfo(TypeElement type) {
+	  if (type == null || type.getSimpleName() == null) {
+		  ARGC.trap();
+	  }
     return type.getSimpleName().toString().equals(NameTable.PACKAGE_INFO_CLASS_NAME);
   }
 
@@ -448,14 +454,15 @@ public final class ElementUtil {
   public static <T extends Element> Iterable<T> filterEnclosedElements(
       Element elem, Class<T> resultClass, ElementKind... kinds) {
     List<ElementKind> kindsList = Arrays.asList(kinds);
+    if (elem == null) {
+    	elem = JavacEnvironment.notImportedException;
+    	ARGC.trap();
+    }
     return Iterables.transform(Iterables.filter(
         elem.getEnclosedElements(), e -> kindsList.contains(e.getKind())), resultClass::cast);
   }
 
   public static Iterable<ExecutableElement> getMethods(TypeElement e) {
-	  if (e == null) {
-    		ARGC.trap();
-	  }
     return filterEnclosedElements(e, ExecutableElement.class, ElementKind.METHOD);
   }
 
@@ -646,6 +653,9 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
+	  if (mirror == null && ARGC.hasExcludeRule()) {
+		  return false;
+	  }
     return isRuntimeAnnotation(mirror.getAnnotationType().asElement());
   }
 

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
@@ -102,7 +103,10 @@ public final class TranslationUtil {
 
     List<TypeElement> result = new ArrayList<>();
     for (TypeMirror typeMirror : astInterfaces) {
-      result.add(TypeUtil.asTypeElement(typeMirror));
+    	TypeElement type = TypeUtil.asTypeElement(typeMirror);
+      if (type != null || !ARGC.hasExcludeRule()) {
+        result.add(type);
+      }
     }
     return result;
   }

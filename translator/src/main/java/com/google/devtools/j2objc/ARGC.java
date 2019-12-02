@@ -233,11 +233,8 @@ public class ARGC {
 		}
 
 		private boolean registerSource(String filename) {
-			for (String s : excludes) {
-				if (filename.startsWith(s)) {
-					System.out.println("excluded : " + filename);
-					return false;
-				}
+			if (isExcluded(filename)) {
+				return false;
 			}
 			
 			super.add(filename);
@@ -439,6 +436,15 @@ public class ARGC {
 		for (String path : paths) {
 			excludes.add(path.trim());		
 		}
+	}
+
+	public static boolean isExcluded(String filename) {
+		for (String s : excludes) {
+			if (filename.startsWith(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static boolean hasExcludeRule() {

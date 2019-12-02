@@ -32,7 +32,7 @@ import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
-class JavacEnvironment implements ParserEnvironment {
+public class JavacEnvironment implements ParserEnvironment {
   private final JavacTask task;
   private final StandardJavaFileManager fileManager;
   private final DiagnosticCollector<JavaFileObject> diagnostics;
@@ -40,7 +40,8 @@ class JavacEnvironment implements ParserEnvironment {
   private final Types types;
   private final Trees trees;
   // ARGC ++ {{
-  public final TypeElement notImportedException;
+  public static TypeElement notImportedException;
+  public static TypeElement javaLangObject;
   public final ExecutableElement throwNotImportedStatic;
   public final ExecutableElement throwNotImportedInstance;
   public final ExecutableElement createNotImportedMethod;
@@ -54,6 +55,7 @@ class JavacEnvironment implements ParserEnvironment {
     elements = task.getElements();
     types = task.getTypes();
     trees = Trees.instance(task);
+    javaLangObject = elements.getTypeElement("java.lang.Object");
     notImportedException = elements.getTypeElement("org.ninefolders.NotImportedClassException");
     List<? extends Element> list = elements.getAllMembers(notImportedException);
     ExecutableElement throw_ = null, throw_instance = null;

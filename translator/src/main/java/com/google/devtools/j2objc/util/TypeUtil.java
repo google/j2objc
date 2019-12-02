@@ -52,6 +52,8 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import org.ninefolders.NotImportedClassException;
+
 /**
  * Utility methods for working with TypeMirrors.
  *
@@ -808,6 +810,9 @@ public final class TypeUtil {
       case VOID:
         return "void";
       default:
+    	if (ARGC.hasExcludeRule()) {
+    		return NotImportedClassException.class.getSimpleName();
+    	}
         throw new AssertionError("Cannot resolve name for type: " + t);
     }
   }

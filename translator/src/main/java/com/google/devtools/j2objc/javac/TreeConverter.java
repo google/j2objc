@@ -769,7 +769,7 @@ public class TreeConverter {
 
   private TreeNode copyConstantValue(Tree node, Expression newNode) {
 	  if (node == null || ((JCTree) node).type == null) {
-    		ARGC.trap();
+    		return newNode;
 	  }
     Object value = ((JCTree) node).type.constValue();
     if (value instanceof Integer) {
@@ -1071,15 +1071,15 @@ public class TreeConverter {
 
     try {
         element = (ExecutableElement) getElement(methodPath);
-        if (Options.useGC() && element == null) throw new RuntimeException();
     	type = (ExecutableType) getTypeMirror(methodPath);
+        if (Options.useGC() && (element == null || type == null)) throw new RuntimeException();
     }
     catch (Exception e) {
         MethodInvocation newNode = new MethodInvocation();
         TypeMirror vargarsType = ((JCMethodInvocation) node).varargsElement;
         newNode
             .setExecutablePair(new ExecutablePair(env.throwNotImportedStatic))
-            .setVarargsType(vargarsType)
+            .setVarargsType(env.javaLangObject.asType())
             //.setExpression(enclosingExpression)
             .setTypeMirror(env.notImportedException.asType());//.notImportedException.asType());
         return newNode;//_throw;
@@ -1174,18 +1174,22 @@ public class TreeConverter {
     ClassInstanceCreation newNode = new ClassInstanceCreation();
     Expression enclosingExpression = (Expression) convert(node.getEnclosingExpression(), path);
     ExecutableElement executable = (ExecutableElement) getElement(path);
+    TypeMirror vargarsType;
     if (Options.useGC() && executable == null) {
     	executable = env.createNotImportedMethod;
+    	vargarsType = env.javaLangObject.asType();
     }
-    TypeMirror vargarsType = ((JCNewClass) node).varargsElement;
+    else {
+    	vargarsType = ((JCNewClass) node).varargsElement;
     // Case where the first parameter of the constructor of an inner class is the outer class (e.g.
     // new Outer().new Inner(...). Move the enclosing expression (e.g. new Outer()) as the first
     // argument. A varargs parameter could unintentionally trigger this condition because it could
     // map to zero arguments.
-    if (executable.getParameters().size() - node.getArguments().size() == 1
-        && vargarsType == null) {
-      newNode.addArgument(enclosingExpression);
-      enclosingExpression = null;
+	    if (executable.getParameters().size() - node.getArguments().size() == 1
+	        && vargarsType == null) {
+	      newNode.addArgument(enclosingExpression);
+	      enclosingExpression = null;
+	    }
     }
     for (ExpressionTree arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg, path));
@@ -1572,7 +1576,11 @@ public class TreeConverter {
   }
 
   private TypeMirror getTypeMirror(TreePath path) {
-    return trees.getTypeMirror(path);
+	    TypeMirror type = trees.getTypeMirror(path);
+	    if (type == null && ARGC.hasExcludeRule()) {
+	    	return env.notImportedException.asType();
+	    }
+	    return type;
   }
 
   private static TreePath getTreePath(TreePath path, Tree tree) {

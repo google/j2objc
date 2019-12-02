@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
@@ -49,6 +50,7 @@ import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.reflect.Modifier;
@@ -188,6 +190,10 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
+	  if (ARGC.hasExcludeRule() && node.getExecutableType() == null) {
+		  addImports(JavacEnvironment.notImportedException.asType());
+		  return true;
+	  }
     addImports(node.getExecutableType().getReturnType());
     Expression receiver = node.getExpression();
     if (receiver != null) {
