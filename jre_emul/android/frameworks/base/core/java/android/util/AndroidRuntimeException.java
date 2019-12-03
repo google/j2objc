@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 The Android Open Source Project
+ * Copyright (C) 2006 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package android.text;
+package android.util;
 
 /**
- * This interface should be added to a span object that should not be copied
- * into a new Spanned when performing a slice or copy operation on the original
- * Spanned it was placed in.
+ * Base class for all unchecked exceptions thrown by the Android frameworks.
  */
-public interface NoCopySpan {
-    /**
-     * Convenience equivalent for when you would just want a new Object() for
-     * a span but want it to be no-copy.  Use this instead.
-     */
-    public class Concrete implements NoCopySpan {
+public class AndroidRuntimeException extends RuntimeException {
+    public AndroidRuntimeException() {
     }
-}
+
+    public AndroidRuntimeException(String name) {
+        super(name);
+    }
+
+    public AndroidRuntimeException(String name, Throwable cause) {
+        super(name, cause);
+    }
+
+    public AndroidRuntimeException(Exception cause) {
+        super(cause);
+    }
+};
+

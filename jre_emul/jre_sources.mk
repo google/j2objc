@@ -1431,7 +1431,9 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/TrustManagerFactorySpi.java \
   javax/net/ssl/X509ExtendedTrustManager.java \
   javax/net/ssl/X509KeyManager.java \
-  javax/net/ssl/X509TrustManager.java
+  javax/net/ssl/X509TrustManager.java \
+  javax/net/ssl/X509ExtendedKeyManager.java \
+  javax/net/ssl/X509ExtendedTrustManager.java
 
 JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsHandler.java \
@@ -2088,7 +2090,19 @@ ANDROID_PUBLIC_SOURCES = \
   org/json/JSONException.java \
   org/json/JSONObject.java \
   org/json/JSONStringer.java \
-  org/json/JSONTokener.java
+  org/json/JSONTokener.java \
+  android/annotation/NonNull.java \
+  android/annotation/Nullable.java \
+  android/os/BadParcelableException.java \
+  android/os/BaseBundle.java \
+  android/os/Bundle.java \
+  android/os/Parcel.java \
+  android/os/Parcelable.java \
+  android/util/AndroidRuntimeException.java \
+  android/util/MathUtils.java \
+  android/util/Size.java \
+  android/util/SizeF.java \
+  android/util/Slog.java 
 
 ANDROID_PRIVATE_SOURCES = \
   android/util/ContainerHelpers.java \

@@ -206,6 +206,12 @@ public class LruCache<K, V> {
                     break;
                 }
 
+// for J2SE Build Env;
+//                if (map.isEmpty()) {
+//                    break;
+//                }
+//                Map.Entry<K, V> toEvict = map.entrySet().iterator().next();
+// for Android {{
                 Map.Entry<K, V> toEvict = map.eldest();
                 if (toEvict == null) {
                     break;
