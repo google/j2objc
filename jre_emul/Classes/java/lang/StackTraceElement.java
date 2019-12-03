@@ -108,6 +108,18 @@ public class StackTraceElement implements Serializable {
     return sb.toString();
   }
 
+    // ARGC++
+    /** 
+     * Returns true if the method containing the execution point
+     * represented by this stack trace element is a native method.
+     *
+     * @return {@code true} if the method containing the execution point
+     *         represented by this stack trace element is a native method.
+     */
+    public boolean isNativeMethod() {
+        return lineNumber == -2;
+    }
+
   /**
    * Returns true if the specified object is another
    * {@code StackTraceElement} instance representing the same execution
