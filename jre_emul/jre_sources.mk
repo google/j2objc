@@ -1446,7 +1446,8 @@ ANDROID_PUBLIC_SOURCES_OTHER = \
   javax/security/auth/Subject.java \
   javax/security/auth/AuthPermission.java \
   javax/security/auth/SubjectDomainCombiner.java \
-  javax/security/auth/PrivateCredentialPermission.java
+  javax/security/auth/PrivateCredentialPermission.java \
+  org/ninefolders/NotImportedClassException.java
 
 ANDROID_PRIVATE_SOURCES_OTHER = \
 
