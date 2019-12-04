@@ -111,9 +111,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     Set<String> includeFiles = Sets.newTreeSet();
     Set<Import> forwardDeclarations = Sets.newHashSet();
 
-    if (!ARGC.inPureObjCMode()) {
-      includeFiles.add("J2ObjC_header.h");
-    }
+    includeFiles.add("J2ObjC_header.h");
 
     for (GeneratedType type : getOrderedTypes()) {
       String name = type.getTypeName();

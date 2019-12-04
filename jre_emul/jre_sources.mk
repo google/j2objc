@@ -1429,11 +1429,26 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/TrustManager.java \
   javax/net/ssl/TrustManagerFactory.java \
   javax/net/ssl/TrustManagerFactorySpi.java \
-  javax/net/ssl/X509ExtendedTrustManager.java \
   javax/net/ssl/X509KeyManager.java \
   javax/net/ssl/X509TrustManager.java \
+
+ANDROID_PUBLIC_SOURCES_OTHER = \
+  org/ietf/jgss/ChannelBinding.java \
+  org/ietf/jgss/GSSContext.java \
+  org/ietf/jgss/GSSCredential.java \
+  org/ietf/jgss/GSSException.java \
+  org/ietf/jgss/GSSManager.java \
+  org/ietf/jgss/GSSName.java \
+  org/ietf/jgss/MessageProp.java \
+  org/ietf/jgss/Oid.java \
   javax/net/ssl/X509ExtendedKeyManager.java \
-  javax/net/ssl/X509ExtendedTrustManager.java
+  javax/net/ssl/X509ExtendedTrustManager.java \
+  javax/security/auth/Subject.java \
+  javax/security/auth/AuthPermission.java \
+  javax/security/auth/SubjectDomainCombiner.java \
+  javax/security/auth/PrivateCredentialPermission.java
+
+ANDROID_PRIVATE_SOURCES_OTHER = \
 
 JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsHandler.java \
@@ -2130,7 +2145,8 @@ JAVA_SOURCES_SQL = $(JAVA_PUBLIC_SOURCES_SQL) $(JAVA_PRIVATE_SOURCES_SQL)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
 JAVA_SOURCES_TIME = $(JAVA_PUBLIC_SOURCES_TIME) $(JAVA_PRIVATE_SOURCES_TIME)
 JAVA_SOURCES_ICU = $(JAVA_PUBLIC_SOURCES_ICU) $(JAVA_PRIVATE_SOURCES_ICU)
-JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
+JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES) \
+    $(ANDROID_PUBLIC_SOURCES_OTHER) $(ANDROID_PRIVATE_SOURCES_OTHER) 
 
 # These annotations have a SOURCE retention, and so should not be part of the runtime.
 # They need to be included in the jre_emul.jar, however.
@@ -2230,10 +2246,11 @@ JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_TIME) \
   $(JAVA_PRIVATE_SOURCES_ICU) \
   $(JAVA_PRIVATE_SOURCES_OTHER) \
-  $(ANDROID_PRIVATE_SOURCES)
+  $(ANDROID_PRIVATE_SOURCES) \
+  $(ANDROID_PRIVATE_SOURCES_OTHER)
 
 JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
-  $(JAVA_PUBLIC_SOURCES_XMLPULL)
+  $(JAVA_PUBLIC_SOURCES_XMLPULL)  $(ANDROID_PUBLIC_SOURCES_OTHER)
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \

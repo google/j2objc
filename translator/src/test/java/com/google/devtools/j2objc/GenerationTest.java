@@ -633,7 +633,7 @@ public class GenerationTest extends TestCase {
   }
 
   protected void preprocessFiles(String... fileNames) {
-    GenerationBatch batch = new GenerationBatch(options, parser);
+    GenerationBatch batch = new GenerationBatch(options);
     for (String fileName : fileNames) {
       batch.addSource(new RegularInputFile(
           tempDir.getPath() + File.separatorChar + fileName, fileName));
