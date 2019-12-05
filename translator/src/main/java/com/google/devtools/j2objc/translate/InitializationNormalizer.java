@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeKind;
 
 /**
  * Modifies initializers to be more iOS like.  Static initializers are
@@ -198,9 +199,15 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     		return stmts.subList(0, 1);
     	}
     }
+
+    TypeElement typeElem = ElementUtil.getDeclaringClass(node.getExecutableElement());
+    if (typeElem.getSuperclass().getKind() == TypeKind.ERROR) {
+    	TypeUtil.resolveUnreachableClass(typeElem.getSuperclass());
+        return stmts.subList(0, 0);
+    }
+
     // java.lang.Object supertype is null. All other types should have a super() call.
-    assert TypeUtil.isNone(
-        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass()) || ARGC.hasExcludeRule()
+    assert TypeUtil.isNone(typeElem.getSuperclass())
         : "Constructor didn't have a super() call.";
     return stmts.subList(0, 0);
   }

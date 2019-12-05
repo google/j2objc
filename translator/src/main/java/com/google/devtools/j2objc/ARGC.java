@@ -439,6 +439,7 @@ public class ARGC {
 	}
 
 	public static boolean isExcluded(String filename) {
+		filename = filename.replace('.', '/');
 		for (String s : excludes) {
 			if (filename.startsWith(s)) {
 				return true;
@@ -447,8 +448,8 @@ public class ARGC {
 		return false;
 	}
 
-	public static boolean hasExcludeRule() {
-		return excludes.size() > 0;
+	public static boolean hasExcludeRule(boolean enable) {
+		return enable && excludes.size() > 0;
 	}
 
 	public static List<String> resolveSources(ArrayList<String> sourceFiles) {

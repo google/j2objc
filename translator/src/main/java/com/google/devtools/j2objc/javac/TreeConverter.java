@@ -117,55 +117,10 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
-import com.sun.source.tree.AnnotationTree;
-import com.sun.source.tree.ArrayAccessTree;
-import com.sun.source.tree.ArrayTypeTree;
-import com.sun.source.tree.AssertTree;
-import com.sun.source.tree.AssignmentTree;
-import com.sun.source.tree.BinaryTree;
-import com.sun.source.tree.BlockTree;
-import com.sun.source.tree.BreakTree;
-import com.sun.source.tree.CaseTree;
-import com.sun.source.tree.CatchTree;
-import com.sun.source.tree.ClassTree;
-import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.CompoundAssignmentTree;
-import com.sun.source.tree.ConditionalExpressionTree;
-import com.sun.source.tree.ContinueTree;
-import com.sun.source.tree.DoWhileLoopTree;
-import com.sun.source.tree.EnhancedForLoopTree;
-import com.sun.source.tree.ExpressionStatementTree;
-import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.ForLoopTree;
-import com.sun.source.tree.IdentifierTree;
-import com.sun.source.tree.IfTree;
-import com.sun.source.tree.InstanceOfTree;
-import com.sun.source.tree.LabeledStatementTree;
-import com.sun.source.tree.LambdaExpressionTree;
-import com.sun.source.tree.LiteralTree;
-import com.sun.source.tree.MemberReferenceTree;
-import com.sun.source.tree.MemberSelectTree;
-import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.MethodTree;
-import com.sun.source.tree.ModifiersTree;
-import com.sun.source.tree.NewArrayTree;
-import com.sun.source.tree.NewClassTree;
-import com.sun.source.tree.ParameterizedTypeTree;
-import com.sun.source.tree.ParenthesizedTree;
-import com.sun.source.tree.PrimitiveTypeTree;
-import com.sun.source.tree.ReturnTree;
-import com.sun.source.tree.StatementTree;
-import com.sun.source.tree.SwitchTree;
-import com.sun.source.tree.SynchronizedTree;
-import com.sun.source.tree.ThrowTree;
-import com.sun.source.tree.Tree;
+import com.sun.source.tree.*;
 import com.sun.source.tree.Tree.Kind;
-import com.sun.source.tree.TryTree;
-import com.sun.source.tree.TypeCastTree;
-import com.sun.source.tree.UnaryTree;
-import com.sun.source.tree.VariableTree;
-import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
@@ -175,20 +130,11 @@ import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
-import com.sun.tools.javac.tree.JCTree.JCExpression;
-import com.sun.tools.javac.tree.JCTree.JCFunctionalExpression;
-import com.sun.tools.javac.tree.JCTree.JCMemberReference;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
-import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
-import com.sun.tools.javac.tree.JCTree.JCModifiers;
-import com.sun.tools.javac.tree.JCTree.JCNewClass;
-import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import com.sun.tools.javac.tree.JCTree.Tag;
+import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -223,14 +169,27 @@ public class TreeConverter {
       converter.newUnit = new CompilationUnit(translationEnv, sourceFilePath, mainTypeName, source);
       TreePath path = new TreePath(javacUnit);
       converter.newUnit.setPackage(converter.convertPackage(path));
+      HashMap<String, String> unreachableClases = converter.newUnit.resolveUnreachableImportedClasses(javacUnit);
+      TypeUtil.setUnreachableClasses(unreachableClases);
+      if (unreachableClases.size() > 0) {
+    	  ErrorUtil.addSkip(sourceFile.getName().toString());
+      }
+      
       for (Tree type : javacUnit.getTypeDecls()) {
         if (type.getKind() == Kind.IMPORT) {
           continue;
         }
+        
+        TypeElement element = (TypeElement) converter.getElement(getTreePath(path, type));
+        TypeElement superType = ElementUtil.getSuperclass(element);
+        TypeUtil.setIgnoreAllUnreachableTypeError(superType == JavacEnvironment.notImportedException);
+
         TreeNode newNode = converter.convert(type, path);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
           converter.newUnit.addType((AbstractTypeDeclaration) newNode);
         }
+
+        TypeUtil.setIgnoreAllUnreachableTypeError(false); 
       }
       addOcniComments(converter.newUnit, options.jsniWarnings());
 
@@ -256,6 +215,7 @@ public class TreeConverter {
     if (node == null) {
       return null;
     }
+    
     TreeNode newNode = convertInner(node, parent).setPosition(getPosition(node));
     if (newNode instanceof Expression) {
       copyConstantValue(node, (Expression) newNode);
@@ -445,6 +405,11 @@ public class TreeConverter {
     List<? extends ExpressionTree> args = node.getArguments();
     String annotationName = node.getAnnotationType().toString();
     AnnotationMirror annotationMirror = ((JCAnnotation) node).attribute;
+	if (TypeUtil.isUnreachbleAnnotationClass(annotationMirror, annotationName)) {
+    	LineComment newNode = new LineComment();
+    	return newNode;
+    }
+    
     boolean isPropertyAnnotation =
         annotationName.equals(Property.class.getSimpleName())
             || annotationName.equals(Property.class.getName());
@@ -493,7 +458,10 @@ public class TreeConverter {
     List<Annotation> annotations = new ArrayList<>();
     TreePath path = getTreePath(parent, modifiers);
     for (AnnotationTree annotation : modifiers.getAnnotations()) {
-      annotations.add((Annotation) convert(annotation, path));
+    	TreeNode anno = convert(annotation, path);
+    	if (anno instanceof Annotation) {
+    		annotations.add((Annotation)anno);
+    	}
     }
     return annotations;
   }
@@ -671,7 +639,17 @@ public class TreeConverter {
     }
 
     TypeDeclaration newNode = convertClassDeclarationHelper(node, parent);
-
+    
+    TypeMirror superType = newNode.getSuperclassTypeMirror();
+//    if (superType.getKind() == TypeKind.ERROR) {
+//    	TypeElement elem = getUnreachableType(superType.toString());
+//    }
+//    for (TypeMirror mirror : newNode.getSuperInterfaceTypeMirrors()) {
+//        if (mirror.getKind() == TypeKind.ERROR) {
+//        	TypeElement elem = getUnreachableType(mirror.toString());
+//        }
+//    }
+    
     newNode.setInterface(
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
     if (ElementUtil.isAnonymous(element)) {
@@ -768,7 +746,8 @@ public class TreeConverter {
   }
 
   private TreeNode copyConstantValue(Tree node, Expression newNode) {
-	  if (node == null || ((JCTree) node).type == null) {
+	  if (((JCTree) node).type == null) {
+		  TypeUtil.resolveUnreachableClass(((JCTree.JCIdent) node).sym.type);
     		return newNode;
 	  }
     Object value = ((JCTree) node).type.constValue();
@@ -928,6 +907,13 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
     Element element = getElement(path);
     TypeMirror typeMirror = getTypeMirror(path);
+    
+    if (typeMirror == null) {
+    	Tree leaf = path.getLeaf();
+	    JCIdent ident = (JCTree.JCIdent)leaf;
+	    typeMirror = ident.sym.type;
+    }
+    
     String text = element.toString();
     if (text.equals("this")) {
       return new ThisExpression().setTypeMirror(typeMirror);
@@ -1066,25 +1052,27 @@ public class TreeConverter {
     ExpressionTree method = node.getMethodSelect();
     TreePath methodPath = getTreePath(path, method);
     String methodName = getMemberName(method);
-    ExecutableType type = null;
+    ExecutableType type = null; 
     ExecutableElement element = null;
-
     try {
-        element = (ExecutableElement) getElement(methodPath);
     	type = (ExecutableType) getTypeMirror(methodPath);
-        if (Options.useGC() && (element == null || type == null)) throw new RuntimeException();
+    	element = (ExecutableElement) getElement(methodPath);
     }
-    catch (Exception e) {
+    catch (RuntimeException e) {
+    	if (!ARGC.hasExcludeRule(true)) {
+    		throw e;
+    	}
+    }
+
+    if (ARGC.hasExcludeRule(true) && (element == null || type == null))  {
         MethodInvocation newNode = new MethodInvocation();
-        TypeMirror vargarsType = ((JCMethodInvocation) node).varargsElement;
         newNode
             .setExecutablePair(new ExecutablePair(env.throwNotImportedStatic))
             .setVarargsType(env.javaLangObject.asType())
-            //.setExpression(enclosingExpression)
             .setTypeMirror(env.notImportedException.asType());//.notImportedException.asType());
         return newNode;//_throw;
     }
-    
+
     ExpressionTree target =
         method.getKind() == Kind.MEMBER_SELECT ? ((MemberSelectTree) method).getExpression() : null;
 
@@ -1272,6 +1260,10 @@ public class TreeConverter {
   }
 
   private TreeNode convertSwitch(SwitchTree node, TreePath parent) {
+	  if (TypeUtil.asTypeElement(((JCTree.JCSwitch)node).selector.type) == JavacEnvironment.notImportedException) {
+		  EmptyStatement newNode = new EmptyStatement();
+		  return newNode;
+	  }
     TreePath path = getTreePath(parent, node);
     SwitchStatement newNode =
         new SwitchStatement().setExpression(convertWithoutParens(node.getExpression(), path));
@@ -1577,12 +1569,28 @@ public class TreeConverter {
 
   private TypeMirror getTypeMirror(TreePath path) {
 	    TypeMirror type = trees.getTypeMirror(path);
-	    if (type == null && ARGC.hasExcludeRule()) {
-	    	return env.notImportedException.asType();
+	    if (type == null) {
+	    	Tree leaf = path.getLeaf();
+	    	if (leaf instanceof JCTree.JCIdent) {
+	    		String id = leaf.toString();
+	    		if (id.equals("super")/* || id.equals("this")*/) {
+	    			JCIdent ident = (JCTree.JCIdent)leaf;
+	    			if (ident.sym != null) {
+	    				type = ident.sym.type;
+	    			}
+	    		}
+	    	}
+	    	if (type == null) {
+		    	return null;
+	    	}
+	    }
+	    if (type.getKind() == TypeKind.ERROR) {
+	    	type = TypeUtil.resolveUnreachableClass(type).asType();
 	    }
 	    return type;
   }
 
+  
   private static TreePath getTreePath(TreePath path, Tree tree) {
     return new TreePath(path, tree);
   }

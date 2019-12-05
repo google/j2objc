@@ -19,6 +19,9 @@ import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import com.google.devtools.j2objc.javac.JavacEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
+
 /**
  * Node type for a class or interface declaration.
  */
@@ -88,6 +91,9 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
+	  TypeMirror superT = this.getSuperclassTypeMirror();
+	  TypeElement elem = TypeUtil.asTypeElement(superT);
+	  TypeUtil.setIgnoreAllUnreachableTypeError(elem == JavacEnvironment.notImportedException);
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);

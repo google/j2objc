@@ -18,20 +18,25 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import com.sun.tools.javac.code.Type;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -214,6 +219,9 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
+	if (t.getKind() == TypeKind.ERROR) {
+	  return resolveUnreachableClass(t);
+	}
     if (isDeclaredType(t)) {
       return (TypeElement) ((DeclaredType) t).asElement();
     }
@@ -810,9 +818,10 @@ public final class TypeUtil {
       case VOID:
         return "void";
       default:
-    	if (ARGC.hasExcludeRule()) {
-    		return NotImportedClassException.class.getSimpleName();
-    	}
+    	  TypeElement type = resolveUnreachableClass(t);
+    	  if (type != null) {
+    		  return ElementUtil.getName(type);
+    	  }
         throw new AssertionError("Cannot resolve name for type: " + t);
     }
   }
@@ -857,10 +866,9 @@ public final class TypeUtil {
       case VOID:
         return getBinaryName(t);
       default:
-    	if (Options.useGC() && ARGC.hasExcludeRule()) {
-    		return "Lorg/ninefolders/NotImportedClassException;";
-    	}
-        throw new AssertionError("Cannot resolve signature name for type: " + t);
+        TypeElement type = TypeUtil.resolveUnreachableClass(t);
+        String sig = "L" + elementUtil.getBinaryName(type).replace('.', '/') + ";";
+    	return sig;  
     }
   }
 
@@ -879,9 +887,6 @@ public final class TypeUtil {
       case SHORT: return "S";
       case VOID: return "V";
       default:
-    	if (Options.useGC() && ARGC.hasExcludeRule()) {
-    		return "I";
-    	}
         throw new AssertionError("Cannot resolve binary name for type: " + t);
     }
   }
@@ -980,5 +985,59 @@ public final class TypeUtil {
   public static boolean isStubType(String typeName) {
     // Currently only NSException and NSFastEnumeration have com.google.j2objc stubs.
     return typeName.startsWith("com.google.j2objc.NS");
+  }
+  
+  private static HashMap<String, String> _unreachableImportedClasses;
+  private static boolean _ignoreAllUnreachableTypeError;
+
+  public static TypeElement resolveUnreachableClass(TypeMirror type) {
+	  assert type.getKind() == TypeKind.ERROR;
+	  
+	  String t$ = type.toString();
+	  if (t$.charAt(0) == '<') {
+		  return (TypeElement) ((DeclaredType) type).asElement();
+	  }
+	  TypeElement typeElem = resolveUnreachableClass(t$);
+	  return typeElem;
+  }
+
+  public static TypeElement resolveUnreachableClass(String simpleName) {
+	  if (_ignoreAllUnreachableTypeError) {
+		  return JavacEnvironment.notImportedException;		  
+	  }
+	  if (_unreachableImportedClasses != null) {
+		  int p = simpleName.indexOf('<');
+		  if (p > 0) {
+			  simpleName = simpleName.substring(0, p);
+		  }
+		  p = simpleName.indexOf('.');
+		  if (p > 0) {
+			  simpleName = simpleName.substring(0, p);
+		  }
+		  if (_unreachableImportedClasses.containsKey(simpleName)) {
+			  return JavacEnvironment.notImportedException;
+		  }
+	  }	  
+	  throw new AssertionError("Cannot resolve signature name for type: " + simpleName);
+  }
+
+  public static boolean isUnreachbleAnnotationClass(AnnotationMirror annotationMirror, String annotationName) {
+	  if (annotationMirror == null) {
+		  resolveUnreachableClass(annotationName);
+		  return true;
+	  }
+	  if (annotationMirror.getAnnotationType() == null || annotationMirror.getAnnotationType().getKind() == TypeKind.ERROR) {
+		  TypeUtil.resolveUnreachableClass(annotationMirror.getAnnotationType());
+		  return true;
+	  }
+	  return false;
+  }
+
+  public static void setIgnoreAllUnreachableTypeError(boolean ignoreError) {
+	  _ignoreAllUnreachableTypeError = ignoreError;
+  }
+
+  public static void setUnreachableClasses(HashMap<String, String> unreachableClassess) {
+	  _unreachableImportedClasses = unreachableClassess;
   }
 }

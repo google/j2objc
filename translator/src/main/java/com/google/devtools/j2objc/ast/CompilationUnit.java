@@ -16,8 +16,18 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.ImportTree;
+
+import java.util.HashMap;
 import java.util.List;
+
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Tree node for a Java compilation unit.
@@ -29,6 +39,7 @@ public class CompilationUnit extends TreeNode {
   private final String mainTypeName;
   private final String source;
   private final int[] newlines;
+  
   private boolean hasIncompleteProtocol = false;
   private boolean hasIncompleteImplementation = false;
   private boolean hasNullabilityAnnotations = false;
@@ -39,6 +50,7 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(NativeDeclaration.class, this);
   private final ChildList<AbstractTypeDeclaration> types =
       ChildList.create(AbstractTypeDeclaration.class, this);
+  private HashMap<String, String> unreachableImports;
 
   public CompilationUnit(TranslationEnvironment env, String mainTypeName) {
     this(env, "", mainTypeName, "");
@@ -51,7 +63,7 @@ public class CompilationUnit extends TreeNode {
     this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
     this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
     this.source = Preconditions.checkNotNull(source);
-    newlines = findNewlines(source);
+    this.newlines = findNewlines(source);
   }
 
   public CompilationUnit(CompilationUnit other) {
@@ -216,4 +228,23 @@ public class CompilationUnit extends TreeNode {
     types.add(index, type);
     return this;
   }
+
+  public HashMap<String, String> getUnreachableImportedClasses() {
+	  return this.unreachableImports;
+  }
+  
+  public HashMap<String, String> resolveUnreachableImportedClasses(CompilationUnitTree unit) {
+	  HashMap<String, String> map = new HashMap<>();
+	  for (ImportTree tree : unit.getImports()) {
+		  String fullname = tree.getQualifiedIdentifier().toString();
+		  if (ARGC.isExcluded(fullname)) {
+			  String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
+			  map.put(simpleName, fullname);
+		  }
+	  }
+	  this.unreachableImports = map;
+	  return map;
+  }
+  
+
 }

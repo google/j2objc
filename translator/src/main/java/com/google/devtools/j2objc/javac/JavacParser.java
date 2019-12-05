@@ -269,21 +269,20 @@ public class JavacParser extends Parser {
         units.add(unit);
       }
       env.task().analyze();
-      // ARGC-- processDiagnostics(env.diagnostics());
 
+      int processedDiagnosticsCount = 0;
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
               .convertCompilationUnit(options, env, ast);
-          // ARGC-- processDiagnostics(env.diagnostics());
+
           if (unit != null) {
-        	  String srcPath = unit.getSourceFilePath();
         	  handler.handleParsedUnit(unit.getSourceFilePath(), unit);
           }
         }
       }
-      // ARGC++ 
       processDiagnostics(env.diagnostics());
+      
     } catch (Exception e) {
     	ErrorUtil.warning(e, "javac file manager error");
     }

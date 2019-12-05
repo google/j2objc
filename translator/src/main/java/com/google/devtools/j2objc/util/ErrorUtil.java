@@ -22,6 +22,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -107,7 +109,18 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
     return fullMessage;
   }
 
+  private static HashSet<String> skipDiagnostics = new HashSet<>();
+  
+  public static void addSkip(String s) {
+	  skipDiagnostics.add(s);
+  }
+  
   public static void parserDiagnostic(Diagnostic<? extends JavaFileObject> diagnostic) {
+	  JavaFileObject source = diagnostic.getSource();
+	  String filePath = source.getName().toString();
+	  if (skipDiagnostics.contains(filePath)) {
+		return;
+	  }
     Kind kind = diagnostic.getKind();
     if (kind == Kind.ERROR) {
       errorMessages.add(diagnostic.getMessage(null));

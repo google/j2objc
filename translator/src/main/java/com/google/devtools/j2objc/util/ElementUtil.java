@@ -212,7 +212,7 @@ public final class ElementUtil {
     ArrayList<TypeElement> list = Lists.newArrayList(Iterables.transform(
         element.getInterfaces(), i -> TypeUtil.asTypeElement(i)));
     
-    if (ARGC.hasExcludeRule()) {
+    if (ARGC.hasExcludeRule(false)) {
 	    list.removeIf(new Predicate<TypeElement>() {
 			public boolean test(TypeElement t) {
 				return t == null;
@@ -653,7 +653,7 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
-	  if (mirror == null && ARGC.hasExcludeRule()) {
+	  if (mirror == null && ARGC.hasExcludeRule(false)) {
 		  return false;
 	  }
     return isRuntimeAnnotation(mirror.getAnnotationType().asElement());

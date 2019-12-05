@@ -104,7 +104,7 @@ public final class TranslationUtil {
     List<TypeElement> result = new ArrayList<>();
     for (TypeMirror typeMirror : astInterfaces) {
     	TypeElement type = TypeUtil.asTypeElement(typeMirror);
-      if (type != null || !ARGC.hasExcludeRule()) {
+      if (type != null || !ARGC.hasExcludeRule(false)) {
         result.add(type);
       }
     }

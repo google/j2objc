@@ -125,7 +125,7 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      if (ErrorUtil.errorCount() > 0 && !ARGC.hasExcludeRule()) {
+      if (ErrorUtil.errorCount() > 0 && !ARGC.hasExcludeRule(false)) {
         return;
       }
       translationProcessor.postProcess();

@@ -56,6 +56,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -434,6 +435,8 @@ public class MetadataWriter extends UnitTreeVisitor {
       return getTypeName(TypeUtil.asTypeElement(type));
     } else if (TypeUtil.isArray(type)) {
       return "[" + getTypeName(((ArrayType) type).getComponentType());
+    } else if (type.getKind() == TypeKind.ERROR) {
+      return getTypeName(TypeUtil.resolveUnreachableClass(type).asType());
     } else {
       return TypeUtil.getBinaryName(type);
     }

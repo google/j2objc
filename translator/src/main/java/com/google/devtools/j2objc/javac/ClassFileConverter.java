@@ -48,6 +48,7 @@ import com.google.devtools.j2objc.util.ClassFile;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
@@ -297,6 +298,7 @@ public class ClassFileConverter {
     List<Annotation> annotations = new ArrayList<>();
     /* TODO(user): inheritance; consider Elements.getAllAnnotationMirrors() */
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+    	if (TypeUtil.isUnreachbleAnnotationClass(annotationMirror, "@")) continue;
       annotations.add(convertAnnotation(annotationMirror));
     }
     return annotations;

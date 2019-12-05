@@ -23,6 +23,8 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.TypeUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -162,7 +164,9 @@ abstract class FileProcessor {
     
     try {
       ARGC.startSourceFileGeneration(file.getUnitName());
+      TypeUtil.setUnreachableClasses(unit.getUnreachableImportedClasses());
       processConvertedTree(input, unit);
+      TypeUtil.setUnreachableClasses(null);
       ARGC.endSourceFileGeneration();
       outputs.add(input);
     } catch (Throwable t) {

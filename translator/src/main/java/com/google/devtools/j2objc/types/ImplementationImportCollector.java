@@ -190,7 +190,8 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-	  if (ARGC.hasExcludeRule() && node.getExecutableType() == null) {
+	  if (node.getExecutableType() == null) {
+		  ARGC.trap();
 		  addImports(JavacEnvironment.notImportedException.asType());
 		  return true;
 	  }
