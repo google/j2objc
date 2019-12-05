@@ -56,8 +56,10 @@ struct CGPFieldData;
 
 typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
 
+CF_EXTERN_C_BEGIN
 void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,
                                                       struct CGPFieldData *data);
+CF_EXTERN_C_END
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionLite)
 

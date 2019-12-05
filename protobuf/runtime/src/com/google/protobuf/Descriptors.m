@@ -222,6 +222,10 @@ static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPF
   return [[messageClass_ java_getClass] getSimpleName];
 }
 
+- (NSString *)getFullName {
+  return [self getName];
+}
+
 - (id<JavaUtilList>)getFields {
   return [JavaUtilArrays asListWithNSObjectArray:fields_];
 }

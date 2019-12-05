@@ -44,6 +44,8 @@ typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMa
 }
 @end
 
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistryLite)
+
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufExtensionRegistryLite)
 
 static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
@@ -96,3 +98,17 @@ CGPFieldDescriptor *CGPExtensionRegistryFind(
   }
   return nil;
 }
+
+void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
+    ComGoogleProtobufExtensionRegistryLite *self, jboolean empty) {
+  NSObject_init(self);
+}
+
+ComGoogleProtobufExtensionRegistryLite *
+new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(jboolean empty) {
+  ComGoogleProtobufExtensionRegistryLite *self = [ComGoogleProtobufExtensionRegistryLite alloc];
+  ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
+  return [self autorelease];
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufExtensionRegistryLite)

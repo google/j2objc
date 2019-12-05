@@ -36,7 +36,7 @@
 
 @implementation ComGoogleProtobufExtensionLite
 
-- (instancetype)initWithFieldData:(CGPFieldData *)data {
+- (instancetype)initWithFieldData:(struct CGPFieldData *)data {
   ComGoogleProtobufExtensionLite_initWithFieldData_(self, data);
   return self;
 }
@@ -56,7 +56,8 @@ J2OBJC_ETERNAL_SINGLETON
 
 @end
 
-void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self, CGPFieldData *data) {
+void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,
+                                                       struct CGPFieldData *data) {
   NSObject_init(self);
   Class msgClass = objc_getClass(data->containingType);
   NSCAssert(msgClass != nil, @"Containing message type not found.");
