@@ -8,8 +8,11 @@ public class UnreachableError extends RuntimeException {
 		throw this;
 	}
 	
-	@ObjectiveCType("void *")
-	public static Object throwUnreachableError(Object... objects) {
+	public static Object throwUnreachableObjectError(Object... objects) {
+		throw new UnreachableError();
+	}
+
+	public static byte throwUnreachablePrimitiveError(Object... objects) {
 		throw new UnreachableError();
 	}
 }

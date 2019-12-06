@@ -1447,8 +1447,22 @@ ANDROID_PUBLIC_SOURCES_OTHER = \
   javax/security/auth/AuthPermission.java \
   javax/security/auth/SubjectDomainCombiner.java \
   javax/security/auth/PrivateCredentialPermission.java \
-  org/ninefolders/NotImportedClassException.java
-
+  javax/sql/CommonDataSource.java	\
+  javax/sql/PooledConnection.java	\
+  javax/sql/RowSetMetaData.java \
+  javax/sql/ConnectionEvent.java \
+  javax/sql/RowSet.java	\
+  javax/sql/RowSetReader.java \
+  javax/sql/ConnectionEventListener.java \
+  javax/sql/RowSetEvent.java \
+  javax/sql/RowSetWriter.java \
+  javax/sql/ConnectionPoolDataSource.java	\
+  javax/sql/RowSetInternal.java	\
+  javax/sql/StatementEvent.java \
+  javax/sql/DataSource.java	\
+  javax/sql/RowSetListener.java	\
+  javax/sql/StatementEventListener.java 
+  
 ANDROID_PRIVATE_SOURCES_OTHER = \
 
 JAVA_PRIVATE_SOURCES_SSL = \
@@ -2177,6 +2191,7 @@ EMULATED_JAVA_SOURCES = \
 # All non-generated headers that should be made public.
 PUBLIC_NATIVE_HEADERS = \
   ARGC/ARGC.h \
+  org/slowstream/j2objc/UnreachableError.h \
   IOSArray.h \
   IOSClass.h \
   IOSMetadata.h \

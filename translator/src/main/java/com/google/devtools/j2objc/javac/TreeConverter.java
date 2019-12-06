@@ -1055,10 +1055,18 @@ public class TreeConverter {
 
     if (ARGC.hasExcludeRule(true) && (element == null || type == null))  {
         MethodInvocation newNode = new MethodInvocation();
-        newNode
-            .setExecutablePair(new ExecutablePair(env.throwUnreachableError))
+        if (type != null && type.getKind().isPrimitive()) {
+        	newNode
+            .setExecutablePair(new ExecutablePair(env.throwUnreachablePrimitiveError))
             .setVarargsType(env.javaLangObject.asType())
-            .setTypeMirror(env.unreachbleError.asType());//.notImportedException.asType());
+            .setTypeMirror(type);//.notImportedException.asType());
+        }
+        else {
+        	newNode
+            .setExecutablePair(new ExecutablePair(env.throwUnreachableObjectError))
+            .setVarargsType(env.javaLangObject.asType())
+            .setTypeMirror(type != null ? type : env.javaLangObject.asType());//.notImportedException.asType());
+        }
         return newNode;//_throw;
     }
 

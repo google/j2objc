@@ -44,7 +44,8 @@ public class JavacEnvironment implements ParserEnvironment {
   // ARGC ++ {{
   public static TypeElement unreachbleError;
   public static TypeElement javaLangObject;
-  public final ExecutableElement throwUnreachableError;
+  public final ExecutableElement throwUnreachablePrimitiveError;
+  public final ExecutableElement throwUnreachableObjectError;
   public final ExecutableElement createUnreachableError;
   // }}
 
@@ -59,14 +60,19 @@ public class JavacEnvironment implements ParserEnvironment {
     javaLangObject = elements.getTypeElement("java.lang.Object");
     unreachbleError = elements.getTypeElement(UnreachableError.class.getCanonicalName());
     List<? extends Element> list = elements.getAllMembers(unreachbleError);
-    ExecutableElement throw_ = null, throw_instance = null;
+    ExecutableElement throw_primitive = null, throw_object = null;
     ExecutableElement init_ = null;
     for (Element e : list) {
     	if (e.getKind() == ElementKind.METHOD) {
     		String s = e.getSimpleName().toString();
-    		if (s.equals("throwUnreachableError")) {
+    		if (s.equals("throwUnreachablePrimitiveError")) {
         		ExecutableElement m = (ExecutableElement)e;
-	    		throw_ = (ExecutableElement)e;
+        		throw_primitive = (ExecutableElement)e;
+	    		break;
+        	}
+    		if (s.equals("throwUnreachableObjectError")) {
+        		ExecutableElement m = (ExecutableElement)e;
+        		throw_object = (ExecutableElement)e;
 	    		break;
         	}
     	}
@@ -77,7 +83,8 @@ public class JavacEnvironment implements ParserEnvironment {
     		}
     	}
     }
-    throwUnreachableError = throw_;
+    throwUnreachableObjectError = throw_object;
+    throwUnreachablePrimitiveError = throw_primitive;
     createUnreachableError = init_;
   }
 

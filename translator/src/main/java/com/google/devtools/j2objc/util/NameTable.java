@@ -610,7 +610,7 @@ public class NameTable {
   private String constructObjcTypeFromBounds(TypeMirror type) {
 	if (type.getKind() == TypeKind.ERROR) {
 	   TypeUtil.resolveUnreachableClass(type);
-	   return "/*" + type + "*/ void *";
+	   return "/*" + type + "*/ id";
 	}
     /* ARGC** String*/TypeElement classType = null;
     List<String> interfaces = new ArrayList<>();

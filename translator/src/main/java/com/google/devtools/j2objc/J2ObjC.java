@@ -131,6 +131,7 @@ public class J2ObjC {
       translationProcessor.postProcess();
 
       options.getHeaderMap().printMappings();
+      System.out.println("done - " + inputs.size() + " files are translated.");
     } finally {
       if (parser != null) {
         try {

@@ -48,6 +48,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -422,7 +423,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         assert !ElementUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
         return false;
       }
-      return !var.asType().getKind().isPrimitive() && !ElementUtil.isSynthetic(var)
+      TypeKind kind = var.asType().getKind();
+      return !kind.isPrimitive() && kind != TypeKind.ERROR && !ElementUtil.isSynthetic(var)
           && !ElementUtil.isWeakReference(var);
     }
   };

@@ -52,6 +52,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
@@ -133,6 +134,9 @@ public final class ElementUtil {
   }
 
   public static boolean isVolatile(VariableElement element) {
+	if (element.asType().getKind() == TypeKind.ERROR) {
+		return false;
+	}
     return hasModifier(element, Modifier.VOLATILE)
         // Upgrade reference type fields marked with error prone's LazyInit because this indicates
         // an intentional racy init.
