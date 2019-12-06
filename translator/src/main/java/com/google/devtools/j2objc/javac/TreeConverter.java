@@ -180,10 +180,6 @@ public class TreeConverter {
           continue;
         }
         
-        TypeElement element = (TypeElement) converter.getElement(getTreePath(path, type));
-        TypeElement superType = ElementUtil.getSuperclass(element);
-        TypeUtil.setIgnoreAllUnreachableTypeError(superType == JavacEnvironment.unreachbleError);
-
         TreeNode newNode = converter.convert(type, path);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
           converter.newUnit.addType((AbstractTypeDeclaration) newNode);
@@ -638,17 +634,10 @@ public class TreeConverter {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
     }
 
+    TypeElement superType = ElementUtil.getSuperclass(element);
+    TypeUtil.setIgnoreAllUnreachableTypeError(superType == JavacEnvironment.unreachbleError);
+
     TypeDeclaration newNode = convertClassDeclarationHelper(node, parent);
-    
-    TypeMirror superType = newNode.getSuperclassTypeMirror();
-//    if (superType.getKind() == TypeKind.ERROR) {
-//    	TypeElement elem = getUnreachableType(superType.toString());
-//    }
-//    for (TypeMirror mirror : newNode.getSuperInterfaceTypeMirrors()) {
-//        if (mirror.getKind() == TypeKind.ERROR) {
-//        	TypeElement elem = getUnreachableType(mirror.toString());
-//        }
-//    }
     
     newNode.setInterface(
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
