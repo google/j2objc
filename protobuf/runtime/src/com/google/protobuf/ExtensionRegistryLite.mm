@@ -44,8 +44,6 @@ typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMa
 }
 @end
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistryLite)
-
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufExtensionRegistryLite)
 
 static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;

@@ -55,6 +55,8 @@ typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
 
 J2OBJC_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
 
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistryLite)
+
 CF_EXTERN_C_BEGIN
 
 ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance();
