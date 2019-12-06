@@ -1351,9 +1351,11 @@ public class CompatibilityTest extends ProtobufTest {
 
   public void testDescriptorGetName() throws Exception {
     Descriptor descriptor = TypicalData.Builder.getDescriptor();
-    // Java returns TypicalData.
-    // The transpiled code returns ProtosTypicalData because it does not have
-    // reflection metadata (i.e. defaults to NSStringFromClass).
     assertTrue(descriptor.getName().endsWith("TypicalData"));
+  }
+
+  public void testDescriptorGetFullName() throws Exception {
+    Descriptor descriptor = TypicalData.Builder.getDescriptor();
+    assertTrue(descriptor.getFullName().endsWith("protos.TypicalData"));
   }
 }

@@ -320,6 +320,18 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "classname", ClassName(descriptor_));
 
   printer->Print("\n"
+      "// Minimal metadata for runtime access to Java class name.\n"
+      "+ (const J2ObjcClassInfo *)__metadata {\n"
+      "  static const J2ObjcClassInfo _$classname$ = { \"$simplename$\", "
+          "\"$packagename$\", NULL, NULL, NULL, 7, 0x1, 0, 0, -1, -1, -1, "
+          "-1, -1 };\n"
+      "  return &_$classname$;\n"
+      "}\n",
+      "classname", ClassName(descriptor_),
+      "simplename", descriptor_->name(),
+      "packagename", FileJavaPackage(descriptor_->file()));
+
+  printer->Print("\n"
       "+ (void)initialize {\n"
       "  if (self == [$classname$ class]) {\n",
       "classname", ClassName(descriptor_));
