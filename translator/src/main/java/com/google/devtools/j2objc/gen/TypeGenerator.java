@@ -280,7 +280,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     StringBuilder sb = new StringBuilder();
     ExecutableElement element = m.getExecutableElement();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
-    String returnType = nameTable.getObjCType(element.getReturnType());
+    String returnType = ElementUtil.getObjectiveCType(element);
+  	if (returnType == null) {
+  		returnType = nameTable.getObjCType(element.getReturnType());
+  	}
     String selector = nameTable.getMethodSelector(element);
     if (m.isConstructor()) {
       returnType = "instancetype";
@@ -305,7 +308,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         VariableElement var = params.get(i).getVariableElement();
-        String typeName = nameTable.getObjCType(var.asType());
+        String typeName = nameTable.getObjCParameterType(var);
         sb.append(
             UnicodeUtils.format(
                 "%s:(%s%s)%s",
@@ -321,7 +324,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
     StringBuilder sb = new StringBuilder();
-    String returnType = nameTable.getObjCType(function.getReturnType().getTypeMirror());
+    String returnType = function.getObjCReturnType(nameTable);
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
     boolean hasObjectParam = false;//returnType.endsWith("*");
@@ -332,7 +335,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
-        String paramType = nameTable.getObjCType(var.asType());
+        String paramType = nameTable.getObjCParameterType(var);
         // ARGC ** {{
         boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
         hasObjectParam |= isObject;

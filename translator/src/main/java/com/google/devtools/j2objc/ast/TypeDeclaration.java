@@ -93,7 +93,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   protected void acceptInner(TreeVisitor visitor) {
 	  TypeMirror superT = this.getSuperclassTypeMirror();
 	  TypeElement elem = TypeUtil.asTypeElement(superT);
-	  TypeUtil.setIgnoreAllUnreachableTypeError(elem == JavacEnvironment.notImportedException);
+	  TypeUtil.setIgnoreAllUnreachableTypeError(elem == JavacEnvironment.unreachbleError);
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);

@@ -192,7 +192,7 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
   public boolean visit(MethodInvocation node) {
 	  if (node.getExecutableType() == null) {
 		  ARGC.trap();
-		  addImports(JavacEnvironment.notImportedException.asType());
+		  addImports(JavacEnvironment.unreachbleError.asType());
 		  return true;
 	  }
     addImports(node.getExecutableType().getReturnType());

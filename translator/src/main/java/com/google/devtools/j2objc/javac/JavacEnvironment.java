@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.j2objc.UnreachableError;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.Trees;
 
@@ -40,11 +41,10 @@ public class JavacEnvironment implements ParserEnvironment {
   private final Types types;
   private final Trees trees;
   // ARGC ++ {{
-  public static TypeElement notImportedException;
+  public static TypeElement unreachbleError;
   public static TypeElement javaLangObject;
-  public final ExecutableElement throwNotImportedStatic;
-  public final ExecutableElement throwNotImportedInstance;
-  public final ExecutableElement createNotImportedMethod;
+  public final ExecutableElement throwUnreachableError;
+  public final ExecutableElement createUnreachableError;
   // }}
 
   JavacEnvironment(JavacTask task, StandardJavaFileManager fileManager,
@@ -56,14 +56,14 @@ public class JavacEnvironment implements ParserEnvironment {
     types = task.getTypes();
     trees = Trees.instance(task);
     javaLangObject = elements.getTypeElement("java.lang.Object");
-    notImportedException = elements.getTypeElement("org.ninefolders.NotImportedClassException");
-    List<? extends Element> list = elements.getAllMembers(notImportedException);
+    unreachbleError = elements.getTypeElement(UnreachableError.class.getCanonicalName());
+    List<? extends Element> list = elements.getAllMembers(unreachbleError);
     ExecutableElement throw_ = null, throw_instance = null;
     ExecutableElement init_ = null;
     for (Element e : list) {
     	if (e.getKind() == ElementKind.METHOD) {
     		String s = e.getSimpleName().toString();
-    		if (s.equals("throwNotImported")) {
+    		if (s.equals("throwUnreachableError")) {
         		ExecutableElement m = (ExecutableElement)e;
 	    		throw_ = (ExecutableElement)e;
 	    		break;
@@ -76,9 +76,8 @@ public class JavacEnvironment implements ParserEnvironment {
     		}
     	}
     }
-    throwNotImportedStatic = throw_;
-    throwNotImportedInstance = throw_instance;    
-    createNotImportedMethod = init_;
+    throwUnreachableError = throw_;
+    createUnreachableError = init_;
   }
 
   public PackageElement defaultPackage() {

@@ -182,7 +182,7 @@ public class TreeConverter {
         
         TypeElement element = (TypeElement) converter.getElement(getTreePath(path, type));
         TypeElement superType = ElementUtil.getSuperclass(element);
-        TypeUtil.setIgnoreAllUnreachableTypeError(superType == JavacEnvironment.notImportedException);
+        TypeUtil.setIgnoreAllUnreachableTypeError(superType == JavacEnvironment.unreachbleError);
 
         TreeNode newNode = converter.convert(type, path);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
@@ -1067,9 +1067,9 @@ public class TreeConverter {
     if (ARGC.hasExcludeRule(true) && (element == null || type == null))  {
         MethodInvocation newNode = new MethodInvocation();
         newNode
-            .setExecutablePair(new ExecutablePair(env.throwNotImportedStatic))
+            .setExecutablePair(new ExecutablePair(env.throwUnreachableError))
             .setVarargsType(env.javaLangObject.asType())
-            .setTypeMirror(env.notImportedException.asType());//.notImportedException.asType());
+            .setTypeMirror(env.unreachbleError.asType());//.notImportedException.asType());
         return newNode;//_throw;
     }
 
@@ -1164,7 +1164,7 @@ public class TreeConverter {
     ExecutableElement executable = (ExecutableElement) getElement(path);
     TypeMirror vargarsType;
     if (Options.useGC() && executable == null) {
-    	executable = env.createNotImportedMethod;
+    	executable = env.createUnreachableError;
     	vargarsType = env.javaLangObject.asType();
     }
     else {
@@ -1260,7 +1260,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertSwitch(SwitchTree node, TreePath parent) {
-	  if (TypeUtil.asTypeElement(((JCTree.JCSwitch)node).selector.type) == JavacEnvironment.notImportedException) {
+	  if (TypeUtil.asTypeElement(((JCTree.JCSwitch)node).selector.type) == JavacEnvironment.unreachbleError) {
 		  EmptyStatement newNode = new EmptyStatement();
 		  return newNode;
 	  }

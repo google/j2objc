@@ -16,8 +16,12 @@ package com.google.devtools.j2objc.ast;
 
 import java.util.List;
 
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.NameTable;
 
 /**
  * Node type for a function declaration.
@@ -31,6 +35,7 @@ public class FunctionDeclaration extends BodyDeclaration {
       ChildList.create(SingleVariableDeclaration.class, this);
   private final ChildLink<Block> body = ChildLink.create(Block.class, this);
   private String jniSignature = null;
+private String objCReturnType;
 
   public FunctionDeclaration(FunctionDeclaration other) {
     super(other);
@@ -40,6 +45,7 @@ public class FunctionDeclaration extends BodyDeclaration {
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
     jniSignature = other.jniSignature;
+    objCReturnType = other.objCReturnType;
   }
 
   public FunctionDeclaration(String name, TypeMirror returnType) {
@@ -91,6 +97,19 @@ public class FunctionDeclaration extends BodyDeclaration {
   public void setJniSignature(String s) {
     this.jniSignature = s;
   }
+  
+  public void resolveObjCReturnType(ExecutableElement elem) {
+	  this.objCReturnType = ElementUtil.getObjectiveCType(elem);
+  }
+  
+  public String getObjCReturnType(NameTable nameTable) {
+	  String returnType = objCReturnType;
+	  if (returnType == null) {
+	  		returnType = nameTable.getObjCType(this.getReturnType().getTypeMirror());
+	  }
+	  return returnType;
+  }
+  
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {

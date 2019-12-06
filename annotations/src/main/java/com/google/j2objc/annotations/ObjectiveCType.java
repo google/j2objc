@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * &#64;ObjectiveCName("void *")
  * public Object lock;</pre>
  */
-@Target({FIELD, LOCAL_VARIABLE, PARAMETER})
+@Target({FIELD, LOCAL_VARIABLE, PARAMETER, METHOD})
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectiveCType {
 

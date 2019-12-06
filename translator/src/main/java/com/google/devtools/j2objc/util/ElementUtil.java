@@ -390,7 +390,7 @@ public final class ElementUtil {
   }
 
   // ARGC ++
-  public static String getObjectiveCType(VariableElement var) {
+  public static String getObjectiveCType(Element var) {
 	    for (AnnotationMirror annotation : getAllAnnotations(var)) {
 	        if (getName(annotation.getAnnotationType().asElement()).equals("ObjectiveCType")) {
 	            return (String) ElementUtil.getAnnotationValue(annotation, "value");
@@ -455,7 +455,7 @@ public final class ElementUtil {
       Element elem, Class<T> resultClass, ElementKind... kinds) {
     List<ElementKind> kindsList = Arrays.asList(kinds);
     if (elem == null) {
-    	elem = JavacEnvironment.notImportedException;
+    	elem = JavacEnvironment.unreachbleError;
     	ARGC.trap();
     }
     return Iterables.transform(Iterables.filter(

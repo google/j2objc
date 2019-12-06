@@ -44,11 +44,13 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -548,6 +550,14 @@ public class NameTable {
     return getObjcTypeInner(type, null);
   }
 
+  public String getObjCParameterType(VariableElement var) {
+	String objcType = ElementUtil.getObjectiveCType(var);
+	if (objcType == null) {
+		objcType = getObjcTypeInner(var.asType(), null);
+	}
+	return objcType;
+  }
+  
   public String getObjCType(VariableElement var) {
     return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var));
   }
@@ -598,6 +608,10 @@ public class NameTable {
   }
 
   private String constructObjcTypeFromBounds(TypeMirror type) {
+	if (type.getKind() == TypeKind.ERROR) {
+	   TypeUtil.resolveUnreachableClass(type);
+	   return "/*" + type + "*/ void *";
+	}
     /* ARGC** String*/TypeElement classType = null;
     List<String> interfaces = new ArrayList<>();
     for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
