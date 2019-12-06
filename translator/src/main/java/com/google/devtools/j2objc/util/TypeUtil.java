@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
-import com.google.j2objc.UnreachableError;
 import com.sun.tools.javac.code.Type;
 
 import java.util.ArrayList;
@@ -57,6 +56,8 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+
+import org.slowstream.j2objc.UnreachableError;
 
 /**
  * Utility methods for working with TypeMirrors.

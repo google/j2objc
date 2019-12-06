@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.util.ParserEnvironment;
-import com.google.j2objc.UnreachableError;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.Trees;
 
@@ -32,6 +31,8 @@ import javax.lang.model.util.Types;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+
+import org.slowstream.j2objc.UnreachableError;
 
 public class JavacEnvironment implements ParserEnvironment {
   private final JavacTask task;

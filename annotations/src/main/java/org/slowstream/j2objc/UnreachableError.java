@@ -1,4 +1,4 @@
-package com.google.j2objc;
+package org.slowstream.j2objc;
 
 import com.google.j2objc.annotations.ObjectiveCType;
 
