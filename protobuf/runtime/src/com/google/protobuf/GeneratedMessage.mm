@@ -42,6 +42,7 @@
 #include "com/google/protobuf/ByteString.h"
 #include "com/google/protobuf/CodedInputStream.h"
 #include "com/google/protobuf/Descriptors_PackagePrivate.h"
+#include "com/google/protobuf/ExtensionRegistry.h"
 #include "com/google/protobuf/ExtensionRegistryLite.h"
 #include "com/google/protobuf/Internal.h"
 #include "com/google/protobuf/InvalidProtocolBufferException.h"
@@ -1698,6 +1699,15 @@ static BOOL ParseUnknownField(
   if (registry != nil && extensionMap != NULL) {
     uint32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
     CGPFieldDescriptor *field = CGPExtensionRegistryFind(registry, descriptor, fieldNumber);
+    if (!field && [registry isKindOfClass:[ComGoogleProtobufExtensionRegistry class]]) {
+      ComGoogleProtobufExtensionRegistry_ExtensionInfo *extension =
+          [(ComGoogleProtobufExtensionRegistry *)registry
+              findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:descriptor
+                                                                       withInt:fieldNumber];
+      if (extension) {
+        field = extension->descriptor_;
+      }
+    }
     if (field != nil && field->tag_ == tag) {
       return MergeExtensionFromStream(stream, field, registry, extensionMap);
     }
