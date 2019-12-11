@@ -36,6 +36,8 @@
 #include "com/google/protobuf/GeneratedMessage_PackagePrivate.h"
 
 #include <map>
+#include <string>
+#include <vector>
 
 #include "com/google/protobuf/ByteString.h"
 #include "com/google/protobuf/CodedInputStream.h"
@@ -2561,7 +2563,7 @@ static void WriteRepeatedField(id msg, CGPFieldDescriptor *field, CGPCodedOutput
         id *buffer = (id *)data->buffer;
         CGPEnumDescriptor *enumType = field->valueType_;
         if (CGPFieldIsPacked(field)) {
-          jint intValues[arrayLen];
+          std::vector<jint> intValues(arrayLen);
           int arraySize = 0;
           for (uint32_t i = 0; i < arrayLen; i++) {
             intValues[i] = CGPEnumGetIntValue(enumType, buffer[i]);
@@ -2782,7 +2784,8 @@ static NSString *BytesToString(CGPByteString *byteString) {
 }
 
 static void ExtensionFieldToString(
-    id value, CGPFieldDescriptor *field, NSMutableString *builder, char *padding, int indent) {
+    id value, CGPFieldDescriptor *field, NSMutableString *builder, const char *padding,
+    int indent) {
   const char *fieldName = field->data_->name;
 
   switch (CGPFieldGetType(field)) {
@@ -2821,7 +2824,7 @@ static void ExtensionFieldToString(
 }
 
 void ValueToString(
-    CGPValue value, CGPFieldDescriptor *field, NSMutableString *builder, char *padding,
+    CGPValue value, CGPFieldDescriptor *field, NSMutableString *builder, const char *padding,
     int indent) {
   const char *fieldName = field->data_->name;
   switch (CGPFieldGetType(field)) {
@@ -2871,7 +2874,7 @@ void ValueToString(
 }
 
 static void MapFieldToString(
-    id msg, CGPFieldDescriptor *field, NSMutableString *builder, char *padding, int indent) {
+    id msg, CGPFieldDescriptor *field, NSMutableString *builder, const char *padding, int indent) {
   size_t offset = CGPFieldGetOffset(field, object_getClass(msg));
   CGPMapFieldData *data = MAP_FIELD_PTR(msg, offset)->data;
   if (data == NULL) {
@@ -2879,9 +2882,7 @@ static void MapFieldToString(
   }
 
   int paddingSize = (indent + 1) * 2;
-  char innerPadding[paddingSize + 1];
-  memset(&innerPadding, ' ', paddingSize);
-  innerPadding[paddingSize] = 0;
+  std::string innerPadding(paddingSize, ' ');
 
   const char *fieldName = field->data_->name;
   CGPFieldDescriptor *keyField = CGPFieldMapKey(field);
@@ -2890,15 +2891,15 @@ static void MapFieldToString(
   CGPMapFieldEntry *entry = data->header.next;
   while (entry != &data->header) {
     [builder appendFormat:@"%s%s: {\n", padding, fieldName];
-    ValueToString(entry->key, keyField, builder, innerPadding, indent + 1);
-    ValueToString(entry->value, valueField, builder, innerPadding, indent + 1);
+    ValueToString(entry->key, keyField, builder, innerPadding.c_str(), indent + 1);
+    ValueToString(entry->value, valueField, builder, innerPadding.c_str(), indent + 1);
     [builder appendFormat:@"%s}\n", padding];
     entry = entry->next;
   }
 }
 
 static void FieldToString(
-    id msg, CGPFieldDescriptor *field, NSMutableString *builder, char *padding, int indent) {
+    id msg, CGPFieldDescriptor *field, NSMutableString *builder, const char *padding, int indent) {
   Class msgCls = object_getClass(msg);
   size_t offset = CGPFieldGetOffset(field, msgCls);
   BOOL repeated = CGPFieldIsRepeated(field);
@@ -2975,18 +2976,16 @@ static void FieldToString(
 static void MessageToString(
     id msg, CGPDescriptor *descriptor, NSMutableString *builder, int indent) {
   int paddingSize = indent * 2;
-  char padding[paddingSize + 1];
-  memset(&padding, ' ', paddingSize);
-  padding[paddingSize] = 0;
+  std::string padding(paddingSize, ' ');
 
   NSUInteger fieldsCount = descriptor->fields_->size_;
   CGPFieldDescriptor **fieldsBuf = descriptor->fields_->buffer_;
   for (NSUInteger i = 0; i < fieldsCount; i++) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     if (CGPFieldIsMap(field)) {
-      MapFieldToString(msg, field, builder, padding, indent);
+      MapFieldToString(msg, field, builder, padding.c_str(), indent);
     } else {
-      FieldToString(msg, field, builder, padding, indent);
+      FieldToString(msg, field, builder, padding.c_str(), indent);
     }
   }
   CGPExtensionMap *extensionMap = MessageExtensionMap(msg, descriptor);
@@ -2996,10 +2995,10 @@ static void MessageToString(
       if (CGPFieldIsRepeated(field)) {
         id<JavaUtilList> list = it->second.get();
         for (id elem in list) {
-          ExtensionFieldToString(elem, field, builder, padding, indent);
+          ExtensionFieldToString(elem, field, builder, padding.c_str(), indent);
         }
       } else {
-        ExtensionFieldToString(it->second.get(), field, builder, padding, indent);
+        ExtensionFieldToString(it->second.get(), field, builder, padding.c_str(), indent);
       }
     }
   }
