@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -323,7 +324,11 @@ public class SignatureGenerator {
         }
         break;
       default:
-        throw new AssertionError("Unexpected type kind: " + type.getKind());
+    	  if (Options.useGC()) {
+    		  sb.append(typeUtil.getSignatureName(type));
+    	  }
+    	  else 
+    		  throw new AssertionError("Unexpected type kind: " + type.getKind());
     }
   }
 

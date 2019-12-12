@@ -16,8 +16,8 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -100,12 +100,12 @@ public final class TypeUtil {
     PRIMITIVE_IOS_ARRAYS = map;
   }
 
-  private final Elements javacElements;
-  private final Types javacTypes;
-  private final ElementUtil elementUtil;
+  private static Elements javacElements;
+  private static Types javacTypes;
+  private static ElementUtil elementUtil;
 
   // Commonly accessed types.
-  /*ARGC** private*/public final TypeElement javaObject;
+  /*ARGC** private*/public static TypeElement javaObject;
   /*ARGC** private*/public final TypeElement javaString;
   /*ARGC** private*/public final TypeElement javaClass;
   /*ARGC** private*/public final TypeElement javaNumber;
@@ -413,7 +413,7 @@ public final class TypeUtil {
     return isAssignable(trueType, falseType) ? falseType : trueType;
   }
 
-  public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
+  public static List<? extends TypeMirror> directSupertypes(TypeMirror t) {
     if (isGeneratedType(t)) {
       if (t instanceof GeneratedTypeElement.Mirror) {
         GeneratedTypeElement element = (GeneratedTypeElement)
@@ -458,7 +458,7 @@ public final class TypeUtil {
     }
   }
 
-  boolean isGeneratedType(TypeMirror type) {
+  static boolean isGeneratedType(TypeMirror type) {
     return type instanceof AbstractTypeMirror;
   }
 
@@ -548,7 +548,7 @@ public final class TypeUtil {
     return null;
   }
 
-  public LinkedHashSet<DeclaredType> getObjcOrderedInheritedTypes(TypeMirror type) {
+  public static LinkedHashSet<DeclaredType> getObjcOrderedInheritedTypes(TypeMirror type) {
     LinkedHashSet<DeclaredType> inheritedTypes = new LinkedHashSet<>();
     visitTypeHierarchyObjcOrder(type, visitType -> {
       inheritedTypes.add(visitType);
@@ -591,7 +591,7 @@ public final class TypeUtil {
    * the type signature of a method. Uses a depth-first traversal, visiting interfaces before
    * classes.
    */
-  public boolean visitTypeHierarchyObjcOrder(TypeMirror type, TypeVisitor visitor) {
+  public static boolean visitTypeHierarchyObjcOrder(TypeMirror type, TypeVisitor visitor) {
     boolean result = true;
     if (type == null) {
       return result;

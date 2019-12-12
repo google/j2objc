@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="../java_deps/build_result/tools.jar" sourcepath="/Users/zeedh/work/openjdk8-langtools/src/share/classes"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar" sourcepath="/Base/libs/hd3/guava-25.1-android-sources.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+argc/java_deps/build_result/procyon-compilertools-0.5.36.jar"/>
-	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+argc/java_deps/build_result/procyon-core-0.5.36.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+gc/java_deps/build_result/procyon-compilertools-0.5.36.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc+gc/java_deps/build_result/procyon-core-0.5.36.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

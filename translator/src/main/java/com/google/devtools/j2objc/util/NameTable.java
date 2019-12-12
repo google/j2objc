@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -236,8 +237,15 @@ public class NameTable {
    */
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
-    if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
+    if (!Options.useGC() && var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
       return baseName + '_';
+    }
+    else if (var.getKind() == ElementKind.FIELD) {
+    	/* ARGC **
+    	 * static 변수명과 inner class 이름이 서로 겹치는 문제를 해결하기 위하여
+    	 * 모든 변수와 상수에 '_'를 추가야 한다.
+    	 */
+        // return baseName + '_';
     }
     return baseName;
   }
@@ -686,7 +694,8 @@ public class NameTable {
     }
 
     // Use camel-cased package+class name.
-    return getPrefix(ElementUtil.getPackage(element)) + getTypeSubName(element);
+    String name = getPrefix(ElementUtil.getPackage(element)) + getTypeSubName(element);
+    return name;
   }
 
   private String getTypeSubName(TypeElement element) {

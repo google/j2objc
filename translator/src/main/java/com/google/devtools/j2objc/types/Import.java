@@ -18,7 +18,7 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;

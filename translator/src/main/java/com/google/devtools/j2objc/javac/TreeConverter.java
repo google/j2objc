@@ -15,8 +15,8 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.ARGC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -1581,6 +1581,10 @@ public class TreeConverter {
 		    	return null;
 	    	}
 	    }
+		  if (type.toString().endsWith("DnsSrvRecord")) {
+			  ARGC.trap();
+		  }
+	    
 	    if (type.getKind() == TypeKind.ERROR) {
 	    	type = TypeUtil.resolveUnreachableClass(type).asType();
 	    }

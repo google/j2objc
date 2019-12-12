@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.TranslationEnvironment;

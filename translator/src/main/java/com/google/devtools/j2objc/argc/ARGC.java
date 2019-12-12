@@ -19,7 +19,7 @@
 //  https://github.com/zeedh/j2objc.git
 //
 
-package com.google.devtools.j2objc;
+package com.google.devtools.j2objc.argc;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,8 +37,12 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
+
+import com.google.devtools.j2objc.Options;
 
 //import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -172,17 +177,16 @@ public class ARGC {
 			
 			File f = new File(filename);
 			if (!f.exists()) {
-				if (filename.endsWith(".java")) {
-					try {
-						InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
-						if (inp != null) {
-							String absPath = inp.getAbsolutePath();
-							root = absPath.substring(0, absPath.length() - filename.length());
-							f = new File(absPath);
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
+				try {
+					InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
+					if (inp != null) {
+						String absPath = inp.getAbsolutePath();
+						root = absPath.substring(0, absPath.length() - filename.length());
+						addRootPath(root);
+						f = new File(absPath);
 					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 				if (!f.exists()) {
 					ErrorUtil.warning("Invalid source: " + filename);
@@ -212,6 +216,10 @@ public class ARGC {
 							if (internalPath.endsWith(".java")
 									|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
 								// Extract JAR file to a temporary directory
+								if (isExcluded(internalPath)) {
+									System.out.println(internalPath + " excluded");
+									continue;
+								}
 								File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
 							}
 						}
@@ -343,6 +351,7 @@ public class ARGC {
 
 			//options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
 			root = f.getAbsolutePath() + '/';
+			addRootPath(root);
 			this.addFolder(f);
 		}
 
@@ -439,7 +448,7 @@ public class ARGC {
 	}
 
 	public static boolean isExcluded(String filename) {
-		filename = filename.replace('.', '/');
+		filename = filename.replace('.', '/') + '/';
 		for (String s : excludes) {
 			if (filename.startsWith(s)) {
 				return true;
@@ -583,6 +592,50 @@ public class ARGC {
 		// Adds declarations for any methods where the known return type is more
 		// specific than what is already declared in inherited types.
 		private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
+		}
+	}
+
+	static HashMap<String, CompilationUnit> units = new HashMap<>();
+	static HashSet<String> rootPaths = new HashSet<>();
+
+	private static void addRootPath(String root) {
+		rootPaths.add(root);
+	}
+
+	public static HashMap<String, String> preprocessUnit(CompilationUnit unit, HashMap<String, String> processed) {
+		HashMap<String, String> urMap = unit.getUnreachableImportedClasses();
+		if (processed.containsKey(unit.getSourceFilePath())) {
+			return urMap;
+		}
+		processed.put(unit.getSourceFilePath(), unit.getSourceFilePath());
+		for (AbstractTypeDeclaration _t : unit.getTypes()) {
+			TypeElement type = _t.getTypeElement();
+	        for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
+	            String name = inheritedType.toString();
+	            int idx = name.indexOf('<');
+	            if (idx > 0) {
+	            	name = name.substring(0, idx);
+	            }
+	    		CompilationUnit superUnit = units.get(name);
+	    		if (superUnit != null) {
+	    			urMap.putAll(preprocessUnit(superUnit, processed));
+	    		}
+	    		else {
+	    			ARGC.trap();
+	    		}
+	        }
+		}
+		return urMap;
+	}
+	
+	public static void registerUnit(CompilationUnit unit) {
+		if (unit.getSourceFilePath().endsWith("DateOrTimePropertyScribe.java")) {
+			ARGC.trap();
+		}
+		for (AbstractTypeDeclaration _t : unit.getTypes()) {
+			TypeElement type = _t.getTypeElement();
+			String name = type.getQualifiedName().toString();
+	    	units.put(name, unit);
 		}
 	}
 }

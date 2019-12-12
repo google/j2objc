@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -141,7 +142,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 		if (Options.useGC() && imp.isNativeEnum()) {
 			forwardStmts.add("typedef NS_ENUM(NSUInteger, " + NameTable.getNativeEnumName(imp.getTypeName()) + ");");
 		}
-		else {
+		else if (!ARGC.isExcluded(imp.getImportFileName())){
 			forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
 		}
     }

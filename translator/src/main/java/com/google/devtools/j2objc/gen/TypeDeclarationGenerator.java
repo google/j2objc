@@ -20,7 +20,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -205,6 +206,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     List<String> names = Lists.newArrayList();
     for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
+    	if (intrface == JavacEnvironment.unreachbleError) {
+    		continue;
+    	}
       names.add(nameTable.getFullName(intrface));
     }
     if (ElementUtil.getQualifiedName(typeElement).equals("java.lang.Enum")) {

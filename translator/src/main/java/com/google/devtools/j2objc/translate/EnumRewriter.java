@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CastExpression;

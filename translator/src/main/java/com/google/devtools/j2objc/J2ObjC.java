@@ -19,6 +19,7 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;

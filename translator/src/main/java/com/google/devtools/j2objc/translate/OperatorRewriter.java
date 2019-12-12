@@ -369,8 +369,11 @@ private FunctionDeclaration argc_currentMethod;
     TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
+    
     FunctionInvocation invocation = new FunctionInvocation(element, 
-    		funcName.endsWith("AndGet") || funcName.startsWith("JreVolatile") ? type : this.translationUtil.getVoidType());
+    		(funcName.endsWith("AndGet") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
+    				 ? type : this.translationUtil.getVoidType());
+    
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {
       element.addParameters(idType);

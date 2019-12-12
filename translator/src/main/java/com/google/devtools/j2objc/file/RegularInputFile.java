@@ -21,6 +21,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
+import com.google.devtools.j2objc.argc.ARGC;
+
 /**
  * A single file in the filesystem.
  *
@@ -37,6 +39,10 @@ public class RegularInputFile implements InputFile {
   public RegularInputFile(String fsPath, String unitPath) {
     this.absolutePath = fsPath;
     this.unitPath = unitPath;
+    
+    if (ARGC.isExcluded(unitPath)) {
+    	throw new RuntimeException("exclude " + unitPath);
+    }
   }
 
   @Override

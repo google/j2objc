@@ -15,6 +15,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
@@ -188,6 +189,10 @@ public class FileUtil {
   private static InputFile findFileOnPaths(
       String sourceFileName, List<String> paths) throws IOException {
     // Zip/jar files always use forward slashes.
+  	if (ARGC.isExcluded(sourceFileName)) {
+		return null;
+	}
+	  
     String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
     for (String pathEntry : paths) {
       File f = new File(pathEntry);

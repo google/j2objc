@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;

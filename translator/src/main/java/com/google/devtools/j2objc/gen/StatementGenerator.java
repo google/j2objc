@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.CharMatcher;
 import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -583,7 +584,16 @@ public class StatementGenerator extends UnitTreeVisitor {
       }
     }
     if (ElementUtil.isTypeElement(element)) {
-      buffer.append(nameTable.getFullName((TypeElement) element));
+        buffer.append(nameTable.getFullName((TypeElement) element));
+//    	if (element.asType().getKind() == TypeKind.ERROR) {
+//    		TypeUtil.resolveUnreachableClass(element.asType());
+//    		String s = nameTable.getObjCType(JavacEnvironment.unreachbleError.asType());
+//    		s = s.substring(0, s.length() - 2) + "_throwUnreachableObjectErrorWithNSObjectArray_(NULL)"; 
+//    		buffer.append(s);    		
+//    	}
+//    	else {
+//    		buffer.append(nameTable.getFullName((TypeElement) element));
+//    	}
       return false;
     }
     Name qualifier = node.getQualifier();

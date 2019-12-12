@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -257,6 +257,7 @@ public class CastResolver extends UnitTreeVisitor {
         for (ExecutableElement currentMethod : ElementUtil.getMethods(inheritedElem)) {
           ExecutableType currentMethodType = typeUtil.asMemberOf(inheritedType, currentMethod);
           if (typeUtil.isSubsignature(methodType, currentMethodType)
+        	  && method.getSimpleName().equals(currentMethod.getSimpleName()) // ARGC ++
               && nameTable.getMethodSelector(currentMethod).equals(selector)) {
             TypeMirror newReturnType = typeUtil.erasure(currentMethodType.getReturnType());
             if (returnType == null || typeUtil.isSubtype(newReturnType, returnType)) {

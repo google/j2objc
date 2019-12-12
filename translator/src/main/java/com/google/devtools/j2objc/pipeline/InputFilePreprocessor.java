@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;

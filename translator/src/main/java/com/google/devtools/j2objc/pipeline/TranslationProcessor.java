@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.devtools.j2objc.ARGC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
