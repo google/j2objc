@@ -312,7 +312,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       if (mutableParams.length() > 0) {
     	  functionBody = "{\n" + mutableParams + "\n@autoreleasepool " + functionBody + "}";
       }
-      print(sig + ' ' + reindent(functionBody));
+      println(sig + ' ' + reindent(functionBody));
     }
     else {
       String functionBody = generateStatement(function.getBody());

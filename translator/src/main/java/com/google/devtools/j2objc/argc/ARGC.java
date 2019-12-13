@@ -205,24 +205,7 @@ public class ARGC {
 				try {
 					ZipFile zfile = new ZipFile(f);
 					try {
-						Enumeration<? extends ZipEntry> enumerator = zfile.entries();
-						File tempDir = FileUtil.createTempDir("J2ObjCTempDir");
-						options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
-						this.currTypeLoader = new JarTypeLoader(new JarFile(f));
-						this.metadataSystem = new MetadataSystem(currTypeLoader);
-						while (enumerator.hasMoreElements()) {
-							ZipEntry entry = enumerator.nextElement();
-							String internalPath = entry.getName();
-							if (internalPath.endsWith(".java")
-									|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
-								// Extract JAR file to a temporary directory
-								if (isExcluded(internalPath)) {
-									System.out.println(internalPath + " excluded");
-									continue;
-								}
-								File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
-							}
-						}
+						File tempDir = extractSources(zfile, f);
 						this.addFolderTree(tempDir);
 					} finally {
 						zfile.close();  // Also closes input stream.
@@ -238,6 +221,30 @@ public class ARGC {
 				this.registerSource(filename);
 			}
 			return true;
+		}
+		
+		private File extractSources(ZipFile zfile, File f) throws IOException {
+			Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+			File tempDir = FileUtil.createTempDir("J2ObjCTempDir");
+			options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
+			this.currTypeLoader = new JarTypeLoader(new JarFile(f));
+			this.metadataSystem = new MetadataSystem(currTypeLoader);
+			while (enumerator.hasMoreElements()) {
+				ZipEntry entry = enumerator.nextElement();
+				String internalPath = entry.getName();
+				if (internalPath.endsWith(".java")
+						|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
+					// Extract JAR file to a temporary directory
+					if (isExcluded(internalPath)) {
+						if (options.isVerbose()) {
+							System.out.println(internalPath + " excluded");
+						}
+						continue;
+					}
+					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+				}
+			}
+			return tempDir;
 		}
 
 		private boolean registerSource(String filename) {
@@ -619,9 +626,6 @@ public class ARGC {
 	    		CompilationUnit superUnit = units.get(name);
 	    		if (superUnit != null) {
 	    			urMap.putAll(preprocessUnit(superUnit, processed));
-	    		}
-	    		else {
-	    			ARGC.trap();
 	    		}
 	        }
 		}

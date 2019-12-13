@@ -237,15 +237,17 @@ public class NameTable {
    */
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
-    if (!Options.useGC() && var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
-      return baseName + '_';
-    }
-    else if (var.getKind() == ElementKind.FIELD) {
+    if (Options.useGC() && var.getKind() == ElementKind.FIELD) {
     	/* ARGC **
     	 * static 변수명과 inner class 이름이 서로 겹치는 문제를 해결하기 위하여
     	 * 모든 변수와 상수에 '_'를 추가야 한다.
     	 */
         // return baseName + '_';
+    }
+    if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
+      return baseName + '_';
+    }
+    else if (var.getKind() == ElementKind.FIELD) {
     }
     return baseName;
   }
@@ -684,7 +686,8 @@ public class NameTable {
 
     TypeElement outerClass = ElementUtil.getDeclaringClass(element);
     if (outerClass != null) {
-      return getFullName(outerClass) + '_' + getTypeSubName(element);
+        String name = getFullName(outerClass) + '_' + getTypeSubName(element);
+        return name;
     }
 
     // Use mapping file entry, if it exists.

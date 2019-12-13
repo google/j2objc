@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
@@ -584,16 +585,14 @@ public class StatementGenerator extends UnitTreeVisitor {
       }
     }
     if (ElementUtil.isTypeElement(element)) {
+    	boolean isUnreachable = element.asType().getKind() == TypeKind.ERROR;
+    	if (isUnreachable) {
+    		buffer.append("0/* UnreachableError: ");
+    	}
         buffer.append(nameTable.getFullName((TypeElement) element));
-//    	if (element.asType().getKind() == TypeKind.ERROR) {
-//    		TypeUtil.resolveUnreachableClass(element.asType());
-//    		String s = nameTable.getObjCType(JavacEnvironment.unreachbleError.asType());
-//    		s = s.substring(0, s.length() - 2) + "_throwUnreachableObjectErrorWithNSObjectArray_(NULL)"; 
-//    		buffer.append(s);    		
-//    	}
-//    	else {
-//    		buffer.append(nameTable.getFullName((TypeElement) element));
-//    	}
+    	if (isUnreachable) {
+    		buffer.append("*/");
+    	}
       return false;
     }
     Name qualifier = node.getQualifier();

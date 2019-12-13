@@ -38,13 +38,15 @@ public class QualifiedName extends Name {
 
   public QualifiedName(Element element, TypeMirror type, Name qualifier) {
     super(element);
-	if (element.asType().getKind() == TypeKind.ERROR) {
-		ARGC.trap();
-	}    
     this.qualifier.set(qualifier);
     name.set(new SimpleName(element, type));
   }
 
+  public QualifiedName setElement(Element newElement) {
+	  super.setElement(newElement);
+	    return this;
+  }
+  
   @Override
   public Kind getKind() {
     return Kind.QUALIFIED_NAME;
