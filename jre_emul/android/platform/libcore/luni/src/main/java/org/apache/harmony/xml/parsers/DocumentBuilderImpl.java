@@ -26,7 +26,7 @@ import org.apache.harmony.xml.dom.DOMImplementationImpl;
 import org.apache.harmony.xml.dom.DocumentImpl;
 import org.apache.harmony.xml.dom.DocumentTypeImpl;
 import org.apache.harmony.xml.dom.TextImpl;
-import org.kxml2.io.KXmlParser;
+import android.org.kxml2.io.KXmlParser;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;

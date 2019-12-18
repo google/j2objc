@@ -1640,8 +1640,8 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/apache/harmony/xml/parsers/DocumentBuilderImpl.java \
   org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
   org/apache/harmony/xml/parsers/SAXParserImpl.java \
-  org/kxml2/io/KXmlParser.java \
-  org/kxml2/io/KXmlSerializer.java
+  android/org/kxml2/io/KXmlParser.java \
+  android/org/kxml2/io/KXmlSerializer.java
 
 NATIVE_JRE_SOURCES_ZIP = \
   io_util.m \
