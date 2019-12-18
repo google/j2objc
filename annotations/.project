@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>rtgc</name>
+			<type>2</type>
+			<location>/Users/zeedh/Documents/rtgc/src</location>
+		</link>
+	</linkedResources>
 </projectDescription>

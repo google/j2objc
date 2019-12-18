@@ -349,9 +349,8 @@ public class Options {
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
-        //fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
         sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
-      } else if (arg.equals("-excludes")) {
+      } else if (arg.equals("--not-include")) {
         ARGC.addExcludeRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
