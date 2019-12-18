@@ -15,10 +15,10 @@
 # or classes from non-public packages (like libcore.*).
 
 NATIVE_ARGC_SOURCES = \
-  ARGC/ARGC.mm
-
+  ARGC/ARGC.mm \
 
 NATIVE_JRE_SOURCES_CORE = \
+  ARGC/UnreachableError.m \
   AnnotationUtils.m \
   Bits.m \
   DebugUtils.m \
