@@ -62,7 +62,7 @@ NATIVE_JRE_SOURCES_CORE = \
   java_lang_Thread.m \
   java_util_regex_Matcher.m \
   java_util_regex_Pattern.m \
-  jni.m \
+  jni.mm \
   jni_util.m \
   jvm.m \
   libcore_icu_ICU.m \

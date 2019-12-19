@@ -2592,7 +2592,7 @@
 		068677E9166C345F005A5AD7 /* Pattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pattern.m; path = build_result/Classes/java/util/regex/Pattern.m; sourceTree = "<group>"; };
 		06898A7617BAF8C400D7B114 /* IOSReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSReference.h; sourceTree = "<group>"; };
 		06898A7817BAFAB400D7B114 /* IOSReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReference.m; sourceTree = "<group>"; };
-		0692DF5E1AE8560300C14F19 /* jni.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jni.m; sourceTree = "<group>"; };
+		0692DF5E1AE8560300C14F19 /* jni.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = jni.mm; sourceTree = "<group>"; };
 		069371F61A327DDB008ACC7F /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64.h; path = build_result/Classes/android/util/Base64.h; sourceTree = "<group>"; };
 		069371F71A327DDB008ACC7F /* Base64.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64.m; path = build_result/Classes/android/util/Base64.m; sourceTree = "<group>"; };
 		069371F81A327DDB008ACC7F /* Base64DataException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64DataException.h; path = build_result/Classes/android/util/Base64DataException.h; sourceTree = "<group>"; };
@@ -4315,7 +4315,7 @@
 				062C394E1FD612AA009B232F /* JavaThrowable.h */,
 				062C39531FD612AB009B232F /* JavaThrowable.m */,
 				062272AA1816DB0B009BB2A2 /* jni.h */,
-				0692DF5E1AE8560300C14F19 /* jni.m */,
+				0692DF5E1AE8560300C14F19 /* jni.mm */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
 				062C39541FD612AC009B232F /* JreRetainedWith.h */,
 				062C39521FD612AB009B232F /* JreRetainedWith.m */,

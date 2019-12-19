@@ -254,17 +254,23 @@ public class ARGC {
 		}
 
 		public boolean add(String filename) {
-			
+			this.root = "";
 			File f = new File(filename);
 			if (!f.exists()) {
 				if (filename.charAt(0) == '@') {
 					File lstf = new File(filename.substring(1));
 					ArrayList<String> files = processListFile(lstf);
 					if (files != null) {
+						if (lstf.getName().charAt(0) == '.') {
+							lstf = new File("j2objc compatible mode - PWD");
+						}
 						String dir = lstf.getAbsolutePath();
-						dir = dir.substring(0, dir.lastIndexOf('/')) + '/';
+						dir = dir.substring(0, dir.lastIndexOf('/') + 1);
 						for (String s : files) {
-							this.add(dir + s);
+							if (!s.startsWith(dir)) {
+								s = dir + s;
+							}
+							this.add(s);
 						}
 						return true;
 					}
@@ -282,7 +288,9 @@ public class ARGC {
 					e.printStackTrace();
 				}
 				if (!f.exists()) {
-					ErrorUtil.warning("Invalid source: " + filename);
+					ErrorUtil.warning("Invalid source--: " + filename);
+					new RuntimeException("---").printStackTrace();
+					System.exit(-1);
 					return false;
 				}
 			}
@@ -302,6 +310,7 @@ public class ARGC {
 				this.addFolderTree(tempDir);
 			}
 			else {
+				this.root = "";
 				this.registerSource(filename);
 			}
 			return true;

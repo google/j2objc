@@ -42,6 +42,7 @@
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];
   nameString = [nameString stringByReplacingOccurrencesOfString:@"/" withString:@"."];
+    [nameString retain];
   return [IOSClass forName:nameString];
 }
 
