@@ -1,7 +1,5 @@
 package org.slowstream.j2objc;
 
-import com.google.j2objc.annotations.ObjectiveCType;
-
 public class UnreachableError extends RuntimeException {
 	
 	public UnreachableError(Object... objects) {
@@ -16,3 +14,5 @@ public class UnreachableError extends RuntimeException {
 		throw new UnreachableError();
 	}
 }
+
+

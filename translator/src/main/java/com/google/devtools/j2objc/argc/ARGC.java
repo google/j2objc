@@ -160,14 +160,94 @@ public class ARGC {
 		return map.get(res);
 	}
 
+	public static ArrayList<String> processListFile(File lstf) {
+		if (!lstf.exists()) return null;
+		
+		ArrayList<String> list = new ArrayList<>();
+		try {
+			InputStreamReader in = new InputStreamReader(new FileInputStream(lstf));
+			StringBuilder sb = new StringBuilder();
+			for (int ch; (ch = in.read()) >=0; ) {
+				if (ch == '\n' && sb.length() > 0) {
+					if (sb.charAt(0) != '#') {
+						list.add(trimPath(sb));
+					}
+					sb.setLength(0);
+				}
+				else if (sb.length() > 0 || ch > ' ') {
+					sb.append((char)ch);
+				}
+			}
+			in.close();
+			if (sb.length() > 0 && sb.charAt(0) != '#') {
+				list.add(trimPath(sb));
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return list;
+	}
+	
+	private static String trimPath(StringBuilder sb) {
+		while (sb.charAt(sb.length() - 1) <= ' ') {
+			sb.setLength(sb.length() - 1);
+		}
+		while (sb.charAt(sb.length() - 1) == '*') {
+			sb.setLength(sb.length() - 1);
+		}
+		while (sb.charAt(sb.length() - 1) <= ' ') {
+			sb.setLength(sb.length() - 1);
+		}
+		return sb.toString();
+	}
 
+	public static File extractSources(File f, Options options) {
+		ZipFile zfile = null;
+		try {
+			zfile = new ZipFile(f);
+			Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+			File tempDir = FileUtil.createTempDir(f.getName());
+			while (enumerator.hasMoreElements()) {
+				ZipEntry entry = enumerator.nextElement();
+				String internalPath = entry.getName();
+				if (internalPath.endsWith(".java")
+						|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
+					// Extract JAR file to a temporary directory
+					if (isExcluded(internalPath)) {
+						if (options.isVerbose()) {
+							System.out.println(internalPath + " excluded");
+						}
+						continue;
+					}
+					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+				}
+			}
+			return tempDir;
+		} catch (ZipException e) { // Also catches JarExceptions
+			e.printStackTrace();
+			ErrorUtil.error("Error reading file " + f.getAbsolutePath() + " as a zip or jar file.");
+		} catch (IOException e) {
+			ErrorUtil.error(e.getMessage());
+		} finally {
+			if (zfile != null) { 
+				try {
+					zfile.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
 
-	public static class SourceList extends ArrayList<String> {
+	public static class SourceList extends ArrayList<InputFile> {
 
 		private String root;
 		private Options options;
 		private JarTypeLoader currTypeLoader;
 		private ArrayList<InputFile> pureObjCFiles = new ArrayList<>();
+		private HashSet<String> pathSet = new HashSet<>();
+		private File jarFile;
 
 		public SourceList(Options options) {
 			this.options = options;
@@ -177,6 +257,19 @@ public class ARGC {
 			
 			File f = new File(filename);
 			if (!f.exists()) {
+				if (filename.charAt(0) == '@') {
+					File lstf = new File(filename.substring(1));
+					ArrayList<String> files = processListFile(lstf);
+					if (files != null) {
+						String dir = lstf.getAbsolutePath();
+						dir = dir.substring(0, dir.lastIndexOf('/')) + '/';
+						for (String s : files) {
+							this.add(dir + s);
+						}
+						return true;
+					}
+				}
+				
 				try {
 					InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
 					if (inp != null) {
@@ -194,28 +287,19 @@ public class ARGC {
 				}
 			}
 			
+			if (!pathSet.add(f.getAbsolutePath())) {
+				return false;
+			}
 			if (f.isDirectory()) {
-				try {
-					this.addFolderTree(f);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				this.addFolderTree(f);
 			}
 			else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
-				try {
-					ZipFile zfile = new ZipFile(f);
-					try {
-						File tempDir = extractSources(zfile, f);
-						this.addFolderTree(tempDir);
-					} finally {
-						zfile.close();  // Also closes input stream.
-					}
-				} catch (ZipException e) { // Also catches JarExceptions
-					e.printStackTrace();
-					ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
-				} catch (IOException e) {
-					ErrorUtil.error(e.getMessage());
-				}
+				this.pathSet.add(f.getAbsolutePath());
+				File tempDir = extractSources(f, options);
+				options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
+				this.metadataSystem = null;
+				this.jarFile = f; 
+				this.addFolderTree(tempDir);
 			}
 			else {
 				this.registerSource(filename);
@@ -223,45 +307,36 @@ public class ARGC {
 			return true;
 		}
 		
-		private File extractSources(ZipFile zfile, File f) throws IOException {
-			Enumeration<? extends ZipEntry> enumerator = zfile.entries();
-			File tempDir = FileUtil.createTempDir("J2ObjCTempDir");
-			options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
-			this.currTypeLoader = new JarTypeLoader(new JarFile(f));
-			this.metadataSystem = new MetadataSystem(currTypeLoader);
-			while (enumerator.hasMoreElements()) {
-				ZipEntry entry = enumerator.nextElement();
-				String internalPath = entry.getName();
-				if (internalPath.endsWith(".java")
-						|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
-					// Extract JAR file to a temporary directory
-					if (isExcluded(internalPath)) {
-						if (options.isVerbose()) {
-							System.out.println(internalPath + " excluded");
-						}
-						continue;
-					}
-					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
-				}
-			}
-			return tempDir;
-		}
+
 
 		private boolean registerSource(String filename) {
 			if (isExcluded(filename)) {
 				return false;
 			}
 			
-			super.add(filename);
+			InputFile f = InputFile.getInputFile(filename);
+			
+			if (filename.contains("SQLiteJDBCLoader")) {
+				ARGC.trap();
+			}
+			if (f != null) {
+				System.out.println("Wraning! source replaced");
+				System.out.println("  -- " + root + filename);
+				System.out.println("  ++ " + f.getAbsolutePath());
+				return false;
+			}
+			
+			f = new RegularInputFile(root + filename, filename);
+			super.add(f);
 			
 			if (isPureObjC(filename)) {
-				pureObjCFiles.add(new RegularInputFile(root + filename, filename));
+				pureObjCFiles.add(f);
 			}
 			
 			return true;
 		}
 		
-		private void add(File f) throws IOException {
+		private void add(File f)  {
 			if (f.isDirectory()) {
 				addFolder(f);
 			}
@@ -278,12 +353,14 @@ public class ARGC {
 				filepath = filepath.substring(0, filepath.length() - 5) + "java";
 				if (options.isVerbose()) {
 					System.out.println("discompiled: " + filepath);
+					try {
+						PrintStream out = new PrintStream(new FileOutputStream(filepath));
+						out.println(source);
+						out.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
-				PrintStream out = new PrintStream(new FileOutputStream(filepath));
-				if (options.isVerbose()) {
-					out.println(source);
-				}
-				out.close();
 				String filename = filepath.substring(root.length());
 				registerSource(filename);
 			}
@@ -294,6 +371,15 @@ public class ARGC {
 		MetadataSystem metadataSystem;
 		private TypeReference lookupType(String path) {
 			/* Hack to get around classes whose descriptors clash with primitive types. */
+			if (metadataSystem == null) {
+				try {
+					this.currTypeLoader = new JarTypeLoader(new JarFile(jarFile));
+					this.metadataSystem = new MetadataSystem(currTypeLoader);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			if (path.length() == 1) {
 				MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
 				return metadataSystem.resolve(parser.parseTypeDescriptor(path));
@@ -344,14 +430,14 @@ public class ARGC {
 
 		}
 
-		private void addFolder(File f) throws IOException {
+		private void addFolder(File f)  {
 			File files[] = f.listFiles();
 			for (File f2 : files) {
 				add(f2);
 			}
 		}
 
-		private void addFolderTree(File f) throws IOException {
+		private void addFolderTree(File f) {
 			if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
 				options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
 			}
@@ -362,95 +448,20 @@ public class ARGC {
 			this.addFolder(f);
 		}
 
-
-
-		public class Oz_InputFile implements InputFile {
-			private final String path, fsPath, unitPath;
-
-			public Oz_InputFile(String fsPath, String path0) {
-				this.fsPath = fsPath;
-				this.path = path0.replace('\\', '/');
-				this.unitPath = path.substring(fsPath.length() + 1);
-			}
-
-			@Override
-			public boolean exists() {
-				return new File(path).exists();
-			}
-
-			@Override
-			public InputStream getInputStream() throws IOException {
-				return new FileInputStream(new File(path));
-			}
-
-			@Override
-			public Reader openReader(Charset charset) throws IOException {
-				return new InputStreamReader(getInputStream(), charset);
-			}
-
-			public String getPath() {
-				return path;
-			}
-
-			public String getContainingPath() {
-				return fsPath;
-			}
-
-			@Override
-			public String getUnitName() {
-				return unitPath;
-			}
-
-			@Override
-			public String getBasename() {
-				return unitPath.substring(unitPath.lastIndexOf('/') + 1);
-			}
-
-			@Override
-			public long lastModified() {
-				return new File(path).lastModified();
-			}
-
-			@Override
-			public String toString() {
-				return getPath();
-			}
-
-			@Override
-			public String getAbsolutePath() {
-				return path;
-			}
-
-			@Override
-			public String getOriginalLocation() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-		}
-
-
-		public void preprocessSourcePaths(List<String> sourcePathEntries) {
-			for (String filename : sourcePathEntries) {
-				this.add(filename);
-			}
-			super.clear();
-		}
-
-		public void preprocess() {
-//			Parser parser = J2ObjC.createParser(options);
-//			for (InputFile rif : pureObjCFiles) {
-//				CompilationUnit unit = parser.parse(rif);
-//				new NoWithSuffixMethodRegister(unit).run();
-//			}
-		}
-
 	}
 
-	public static void addExcludeRule(String pathArgument) {
-		String[] paths = pathArgument.split(":");
-		for (String path : paths) {
-			excludes.add(path.trim());		
+	public static void addExcludeRule(String filepath) {
+		if (filepath.charAt(0) != '@') {
+			excludes.add(filepath);
+		}
+		else {
+			File lstf = new File(filepath.substring(1));
+			ArrayList<String> files = processListFile(lstf);
+			if (files != null) {
+				for (String s : files) {
+					excludes.add(s);
+				}
+			}
 		}
 	}
 

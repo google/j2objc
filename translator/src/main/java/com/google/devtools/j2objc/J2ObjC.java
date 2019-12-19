@@ -20,6 +20,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
 import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
@@ -87,7 +88,7 @@ public class J2ObjC {
    * Runs the entire J2ObjC pipeline.
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
-  public static void run(List<String> fileArgs, Options options) {
+  public static void run(List<InputFile> fileArgs, Options options) {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
     Parser parser = null;
@@ -101,7 +102,7 @@ public class J2ObjC {
       }
 
       parser = createParser(options);
-      Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);
+      Parser.ProcessingResult processingResult = parser.processAnnotations(inputs);
       List<ProcessingContext> generatedInputs = processingResult.getGeneratedSources();
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.
       preProcessorTempDir = processingResult.getSourceOutputDirectory();
@@ -170,7 +171,7 @@ public class J2ObjC {
     }
     long startTime = System.currentTimeMillis();
 
-    List<String> files = null;
+    List<InputFile> files = null;
     Options options = new Options();
 
     try {

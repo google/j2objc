@@ -193,6 +193,10 @@ public class FileUtil {
 		return null;
 	}
 	  
+  	InputFile inf = InputFile.getInputFile(sourceFileName);
+  	if (inf != null) {
+  		return inf;
+  	}
     String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
     for (String pathEntry : paths) {
       File f = new File(pathEntry);

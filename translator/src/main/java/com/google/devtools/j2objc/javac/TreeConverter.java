@@ -170,7 +170,7 @@ public class TreeConverter {
       TreePath path = new TreePath(javacUnit);
       converter.newUnit.setPackage(converter.convertPackage(path));
       HashMap<String, String> unreachableClases = converter.newUnit.resolveUnreachableImportedClasses(javacUnit);
-      TypeUtil.setUnreachableClasses(unreachableClases);
+      TypeUtil.setUnreachableClasses(converter.newUnit);
       if (unreachableClases.size() > 0) {
     	  ErrorUtil.addSkip(sourceFile.getName().toString());
       }
@@ -1581,7 +1581,7 @@ public class TreeConverter {
 		    	return null;
 	    	}
 	    }
-		  if (type.toString().endsWith("DnsSrvRecord")) {
+		  if (type.toString().endsWith("HCardElement")) {
 			  ARGC.trap();
 		  }
 	    

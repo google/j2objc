@@ -43,6 +43,9 @@ public class RegularInputFile implements InputFile {
     if (ARGC.isExcluded(unitPath)) {
     	throw new RuntimeException("exclude " + unitPath);
     }
+    if (this.exists()) {
+    	InputFile.add(this);
+    }
   }
 
   @Override

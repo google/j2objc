@@ -54,10 +54,13 @@ private JarFile jarFile;
 		}
     	ozJarCache.put(jarPath, jarFile);
     }
+    if (this.exists()) {
+    	InputFile.add(this);
+    }
   }
 
   @Override
-  public boolean exists() throws IOException {
+  public boolean exists() {
     // ARGC-- try (JarFile jarFile = new JarFile(jarPath)) {
     	return jarFile.getEntry(internalPath) != null;
     	// ARGC--}

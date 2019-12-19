@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
@@ -295,7 +296,7 @@ public class Options {
    * detected, the appropriate status method is invoked and the app terminates.
    * @throws IOException
    */
-  public List<String> load(String[] args) throws IOException {
+  public List<InputFile> load(String[] args) throws IOException {
     setLogLevel(Level.WARNING);
 
     mappings.addJreMappings();
@@ -307,7 +308,6 @@ public class Options {
     ArgProcessor processor = new ArgProcessor();
     processor.processArgs(args);
     postProcessArgs();
-    processor.sourceFiles.preprocess();
     
     return processor.sourceFiles;
   }
@@ -323,15 +323,15 @@ public class Options {
       }
     }
 
-    private void processArgsFile(String filename) throws IOException {
-      if (filename.isEmpty()) {
-        usage("no @ file specified");
-      }
-      File f = new File(filename);
-      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
-      // Simple split on any whitespace, quoted values aren't supported.
-      processArgs(fileArgs.split("\\s+"));
-    }
+//    private void processArgsFile(String filename) throws IOException {
+//      if (filename.isEmpty()) {
+//        usage("no @ file specified");
+//      }
+//      File f = new File(filename);
+//      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
+//      // Simple split on any whitespace, quoted values aren't supported.
+//      processArgs(fileArgs.split("\\s+"));
+//    }
 
     private String getArgValue(Iterator<String> args, String arg) {
       if (!args.hasNext()) {
@@ -344,12 +344,13 @@ public class Options {
       String arg = args.next().trim();
       if (arg.isEmpty()) {
         return;
-      } else if (arg.startsWith("@")) {
-        processArgsFile(arg.substring(1));
+//      } else if (arg.startsWith("@")) {
+//        processArgsFile(arg.substring(1));
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
-        sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
+        //sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
       } else if (arg.equals("--not-include")) {
         ARGC.addExcludeRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
@@ -681,6 +682,19 @@ public class Options {
     System.exit(0);
   }
 
+  
+  private void addPath(List<String> pathList, String path, boolean expandJarFile) {
+	  File f = new File(path);
+	  if (expandJarFile && !f.isDirectory()) {
+		  f = ARGC.extractSources(f, this);
+		  if (f == null) {
+			  return;
+		  }
+		  path = f.getAbsolutePath();
+	  }
+	  pathList.add(path);
+  }
+  
   private List<String> getPathArgument(String argument, boolean expandAarFiles) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
@@ -690,16 +704,34 @@ public class Options {
         // first if in the middle of a path string.
         entry = System.getProperty("user.home") + entry.substring(1);
       }
-      File f = new File(entry);
-      if (entry.endsWith(".aar") && expandAarFiles) {
-        // Extract classes.jar from Android library AAR file.
-        f = fileUtil().extractClassesJarFromAarFile(f);
-      }
-      if (f.exists()) {
-        entries.add(f.toString());
+      if (true || this.useGC()) {
+          if (entry.charAt(0) == '@') {
+        	  File f = new File(entry.substring(1));
+        	  ArrayList<String> list = ARGC.processListFile(f);
+        	  if (list != null) {
+        		  String dir = f.getAbsolutePath();
+        		  dir = dir.substring(0, dir.lastIndexOf('/') + 1);
+        		  for (String s : list) {
+                	  addPath(entries, dir + s, !expandAarFiles);
+        		  }
+        	  }
+          }
+          else {
+        	  addPath(entries, entry, !expandAarFiles);
+          }
       }
       else {
-    	  System.err.println("invalid path: " + entry);
+	      File f = new File(entry);
+	      if (entry.endsWith(".aar") && expandAarFiles) {
+	        // Extract classes.jar from Android library AAR file.
+	        f = fileUtil().extractClassesJarFromAarFile(f);
+	      }
+	      if (f.exists()) {
+	        entries.add(f.toString());
+	      }
+	      else {
+	    	  System.err.println("invalid path: " + entry);
+	      }
       }
     }
     return entries;
@@ -809,7 +841,7 @@ public class Options {
 
   public List<String> getBootClasspath() {
 	  if (this.bootcps == null) {
-		  bootcps = getPathArgument(bootclasspath, false);
+		  bootcps = getPathArgument(bootclasspath, true);
 		  if (isVerbose()) {
 		    System.out.println("bootclasspath = " + bootcps);
 		  }

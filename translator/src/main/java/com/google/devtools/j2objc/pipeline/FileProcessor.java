@@ -167,7 +167,7 @@ abstract class FileProcessor {
     
     try {
       ARGC.startSourceFileGeneration(file.getUnitName());
-      TypeUtil.setUnreachableClasses(unit.getUnreachableImportedClasses());
+      TypeUtil.setUnreachableClasses(unit);
       processConvertedTree(input, unit);
       TypeUtil.setUnreachableClasses(null);
       ARGC.endSourceFileGeneration();

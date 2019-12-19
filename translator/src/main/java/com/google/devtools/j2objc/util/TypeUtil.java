@@ -18,6 +18,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -989,6 +990,7 @@ public final class TypeUtil {
   
   private static HashMap<String, String> _unreachableImportedClasses;
   private static boolean _ignoreAllUnreachableTypeError;
+private static String _currentPackage;
 
   public static TypeElement resolveUnreachableClass(TypeMirror type) {
 	  assert type.getKind() == TypeKind.ERROR;
@@ -1001,11 +1003,13 @@ public final class TypeUtil {
 	  return typeElem;
   }
 
-  public static TypeElement resolveUnreachableClass(String simpleName) {
+  public static TypeElement resolveUnreachableClass(String typeName) {
 	  if (_ignoreAllUnreachableTypeError) {
 		  return JavacEnvironment.unreachbleError;		  
 	  }
+	  
 	  if (_unreachableImportedClasses != null) {
+		  String simpleName = typeName;
 		  int p = simpleName.indexOf('<');
 		  if (p > 0) {
 			  simpleName = simpleName.substring(0, p);
@@ -1017,8 +1021,11 @@ public final class TypeUtil {
 		  if (_unreachableImportedClasses.containsKey(simpleName)) {
 			  return JavacEnvironment.unreachbleError;
 		  }
+		  if (ARGC.isExcluded(_currentPackage + simpleName)) {
+			  return JavacEnvironment.unreachbleError;
+		  }
 	  }	  
-	  throw new AssertionError("Cannot resolve signature name for type: " + simpleName);
+	  throw new AssertionError("Cannot resolve signature name for type: " + typeName);
   }
 
   public static boolean isUnreachbleAnnotationClass(AnnotationMirror annotationMirror, String annotationName) {
@@ -1037,7 +1044,14 @@ public final class TypeUtil {
 	  _ignoreAllUnreachableTypeError = ignoreError;
   }
 
-  public static void setUnreachableClasses(HashMap<String, String> unreachableClassess) {
-	  _unreachableImportedClasses = unreachableClassess;
+  public static void setUnreachableClasses(CompilationUnit unit) {
+	  if (unit == null) {
+		  _unreachableImportedClasses = null;
+		  _currentPackage = null;
+	  }
+	  else {
+		  _unreachableImportedClasses = unit.getUnreachableImportedClasses();
+		  _currentPackage = unit.getPackage().getName().toString().replace('.', '/') + '/';
+	  }
   }
 }

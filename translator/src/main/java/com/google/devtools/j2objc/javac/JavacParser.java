@@ -298,7 +298,7 @@ public class JavacParser extends Parser {
 			ARGC.preprocessUnit(unit, new HashMap<>());
 		}
 		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
-			TypeUtil.setUnreachableClasses(unit.getUnreachableImportedClasses());
+			TypeUtil.setUnreachableClasses(unit);
 			TypeUtil.setIgnoreAllUnreachableTypeError(false);
         	handler.handleParsedUnit(unit.getSourceFilePath(), unit);
         }
@@ -389,8 +389,7 @@ public class JavacParser extends Parser {
 
 
   @Override
-  public ProcessingResult processAnnotations(Iterable<String> fileArgs,
-      List<ProcessingContext> inputs) {
+  public ProcessingResult processAnnotations(List<ProcessingContext> inputs) {
     final List<ProcessingContext> generatedInputs = Lists.newArrayList();
     PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
     loader.addPaths(options.getProcessorPathEntries());
