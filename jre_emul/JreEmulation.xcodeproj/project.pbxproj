@@ -3962,6 +3962,7 @@
 		783B49292374008E00C0AF0A /* LongTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongTest.m; path = libcore/java/lang/LongTest.m; sourceTree = "<group>"; };
 		7846132423504FF900E80EE4 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARGC.h; path = Classes/ARGC/ARGC.h; sourceTree = SOURCE_ROOT; };
 		7846132523504FF900E80EE4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ARGC.mm; path = Classes/ARGC/ARGC.mm; sourceTree = SOURCE_ROOT; };
+		7850D3CE23ABB246003B1A1B /* jni_md.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni_md.h; sourceTree = "<group>"; };
 		787C8D51237EDFD0003B8EF1 /* NSObject+ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+ARGC.h"; path = "Classes/ARGC/NSObject+ARGC.h"; sourceTree = SOURCE_ROOT; };
 		7881CB692382D783005204FF /* Volatiles.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Volatiles.mm; path = Classes/ARGC/Volatiles.mm; sourceTree = SOURCE_ROOT; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
@@ -4315,6 +4316,7 @@
 				062C394E1FD612AA009B232F /* JavaThrowable.h */,
 				062C39531FD612AB009B232F /* JavaThrowable.m */,
 				062272AA1816DB0B009BB2A2 /* jni.h */,
+				7850D3CE23ABB246003B1A1B /* jni_md.h */,
 				0692DF5E1AE8560300C14F19 /* jni.mm */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
 				062C39541FD612AC009B232F /* JreRetainedWith.h */,
