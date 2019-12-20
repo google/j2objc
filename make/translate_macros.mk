@@ -86,3 +86,16 @@ endef
 #   5: Translation arguments.
 emit_translate_rule = \
   $(eval $(call translate_rule,$(1),$(2),$(3),$(4),$(5)))$(TRANSLATE_TARGET)
+
+define translate_src_jar_rule
+$(TRANSLATE_JAR_TARGET): $(subst $$,$$$$,$(3)) $(TRANSLATE_EXE) $4 translate_force \
+    | translate_dependencies
+	@mkdir -p $(2)
+	  echo $(TRANSLATE_CMD) -d $(2) $(5) $(4);
+	  $(TRANSLATE_CMD) -d $(2) $(5) $(4);
+
+translate_jar: $(TRANSLATE_JAR_TARGET)
+endef
+
+translate_src_jar = \
+  $(eval $(call translate_src_jar_rule,$(1),$(2),$(3),$(4),$(5)))$(TRANSLATE_TARGET)

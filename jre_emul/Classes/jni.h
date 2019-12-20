@@ -138,11 +138,17 @@ typedef union jvalue {
     #endif
 } jvalue;
 
+#if defined(__OBJC__)
+typedef __unsafe_unretained id jfieldID;
+
+typedef __unsafe_unretained id jmethodID;
+#else
 struct _jfieldID;
 typedef struct _jfieldID *jfieldID;
 
 struct _jmethodID;
 typedef struct _jmethodID *jmethodID;
+#endif
 
 /* Return values from jobjectRefType */
 typedef enum _jobjectType {
@@ -193,28 +199,28 @@ typedef struct {
 
 /* Forward declaration for JNIEnv */
 struct _JNIEnv;
-typedef const struct JNINativeInterface_* C_JNIEnv;
+typedef const struct JNINativeInterface *C_JNIEnv;
 extern C_JNIEnv J2ObjC_JNIEnv;
 
 #ifdef __cplusplus
 typedef _JNIEnv JNIEnv;
 #else
-typedef const struct JNINativeInterface_ *JNIEnv;
+typedef const struct JNINativeInterface *JNIEnv;
 #endif
 
 /* Forward declaration for JavaVM */
 struct _JavaVM;
-typedef const struct JNIInvokeInterface_* C_JavaVM;
+typedef const struct JNIInvokeInterface *C_JavaVM;
 extern C_JavaVM J2ObjC_JavaVM;
 
 
 #ifdef __cplusplus
 typedef _JavaVM JavaVM;
 #else
-typedef const struct JNIInvokeInterface_ *JavaVM;
+typedef const struct JNIInvokeInterface *JavaVM;
 #endif
 
-struct JNINativeInterface_ {
+struct JNINativeInterface {
     void *reserved0;
     void *reserved1;
     void *reserved2;
@@ -783,7 +789,7 @@ struct JNINativeInterface_ {
  */
 
 struct _JNIEnv {
-    const struct JNINativeInterface_ *functions;
+    const struct JNINativeInterface *functions;
 #ifdef __cplusplus
 
     jint GetVersion() {
@@ -1890,7 +1896,7 @@ typedef struct JavaVMAttachArgs {
 
 /* End VM-specific. */
 
-struct JNIInvokeInterface_ {
+struct JNIInvokeInterface {
     void *reserved0;
     void *reserved1;
     void *reserved2;
@@ -1907,7 +1913,7 @@ struct JNIInvokeInterface_ {
 };
 
 struct _JavaVM {
-    const struct JNIInvokeInterface_ *functions;
+    const struct JNIInvokeInterface *functions;
 #ifdef __cplusplus
 
     jint DestroyJavaVM() {

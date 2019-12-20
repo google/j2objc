@@ -2217,7 +2217,8 @@ PUBLIC_NATIVE_HEADERS = \
   java/lang/reflect/Executable.h \
   java/lang/reflect/Field.h \
   java/lang/reflect/Method.h \
-  jni.h
+  jni.h \
+  jni_md.h \
 
 # They are only needed while translating files in the corresponding packages,
 # but they do not need to be translated.

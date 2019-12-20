@@ -42,7 +42,6 @@
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];
   nameString = [nameString stringByReplacingOccurrencesOfString:@"/" withString:@"."];
-    [nameString retain];
   return [IOSClass forName:nameString];
 }
 
@@ -70,7 +69,7 @@ static IOSClass *JNIParseTypeSignature(const char *sig, const char **next) {
       if (end) {
         const char *begin = sig + 1;
         size_t length = end - begin;
-        char *buffer = malloc(length + 1);
+        char *buffer = (char *)malloc(length + 1);
         strncpy(buffer, begin, length);
         buffer[length] = 0;
         result = IOSClass_forName(buffer);
@@ -258,7 +257,7 @@ static jclass GetSuperclass(JNIEnv *env, jclass clazz) {
 }
 
 static jint GetVersion(JNIEnv *env) {
-  return JNI_VERSION_1_6;
+  return JNI_VERSION_1_4;
 }
 
 static jboolean IsAssignableFrom(JNIEnv *env, jclass clazz1, jclass clazz2) {
@@ -495,7 +494,7 @@ static jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz, const char *name, 
   if (NUM_ARGS <= _max_stack_args) {           \
     JARGS = _stack_args;                       \
   } else {                                     \
-    JARGS = malloc(NUM_ARGS * sizeof(jvalue)); \
+    JARGS = (jvalue*)malloc(NUM_ARGS * sizeof(jvalue)); \
     _free_jargs = true;                        \
   }
 
@@ -807,89 +806,37 @@ void SetStaticDoubleField(JNIEnv *env, jclass clazz, jfieldID fieldID, jdouble v
 static jint GetJavaVM(JNIEnv *env, JavaVM **vm);
 
 static struct JNINativeInterface JNI_JNIEnvTable = {
+    NULL, NULL, NULL, NULL,
   &GetVersion,
+  NULL,//&DefineClass,
   &FindClass,
+  NULL,//&FromReflectedMethod,
+  NULL,//&FromReflectedField,
+  NULL,//&ToReflectedMethod,
   &GetSuperclass,
   &IsAssignableFrom,
+  NULL,//&ToReflectedField,
   &Throw,
   &ThrowNew,
+  NULL,//&ExceptionOccurred,
+  NULL,//&ExceptionDescribe,
   &ExceptionClear,
+  NULL,//&FatalError,
+  NULL,//&PushLocalFrame,
+  NULL,//&PopLocalFrame,
   &NewGlobalRef,
-  &NewLocalRef,
   &DeleteGlobalRef,
   &DeleteLocalRef,
   &IsSameObject,
-  &GetObjectClass,
-  &IsInstanceOf,
-  &NewString,
-  &GetStringLength,
-  &GetStringChars,
-  &ReleaseStringChars,
-  &NewStringUTF,
-  &GetStringUTFLength,
-  &GetStringUTFChars,
-  &ReleaseStringUTFChars,
-  &GetArrayLength,
-  &NewObjectArray,
-  &GetObjectArrayElement,
-  &SetObjectArrayElement,
-  &NewBooleanArray,
-  &NewByteArray,
-  &NewCharArray,
-  &NewShortArray,
-  &NewIntArray,
-  &NewLongArray,
-  &NewFloatArray,
-  &NewDoubleArray,
-  &GetBooleanArrayElements,
-  &GetByteArrayElements,
-  &GetCharArrayElements,
-  &GetShortArrayElements,
-  &GetIntArrayElements,
-  GetLongArrayElements,
-  &GetFloatArrayElements,
-  &GetDoubleArrayElements,
-  &ReleaseBooleanArrayElements,
-  &ReleaseByteArrayElements,
-  &ReleaseCharArrayElements,
-  &ReleaseShortArrayElements,
-  &ReleaseIntArrayElements,
-  &ReleaseLongArrayElements,
-  &ReleaseFloatArrayElements,
-  &ReleaseDoubleArrayElements,
-  &GetBooleanArrayRegion,
-  &GetByteArrayRegion,
-  &GetCharArrayRegion,
-  &GetShortArrayRegion,
-  &GetIntArrayRegion,
-  &GetLongArrayRegion,
-  &GetFloatArrayRegion,
-  &GetDoubleArrayRegion,
-  &SetBooleanArrayRegion,
-  &SetByteArrayRegion,
-  &SetCharArrayRegion,
-  &SetShortArrayRegion,
-  &SetIntArrayRegion,
-  &SetLongArrayRegion,
-  &SetFloatArrayRegion,
-  &SetDoubleArrayRegion,
-  &GetStringRegion,
-  &GetStringUTFRegion,
-  &GetPrimitiveArrayCritical,
-  &ReleasePrimitiveArrayCritical,
-  &GetStringCritical,
-  &ReleaseStringCritical,
-  &NewDirectByteBuffer,
-  &GetDirectBufferAddress,
-  &GetDirectBufferCapacity,
-  &GetFieldID,
-  &GetStaticFieldID,
-  &GetMethodID,
-  &GetStaticMethodID,
+  &NewLocalRef,
+  NULL,//&EnsureLocalCapacity,
   &AllocObject,
   &NewObject,
   &NewObjectV,
   &NewObjectA,
+  &GetObjectClass,
+  &IsInstanceOf,
+  &GetMethodID,
   &CallObjectMethod,
   &CallObjectMethodV,
   &CallObjectMethodA,
@@ -920,6 +867,50 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &CallVoidMethod,
   &CallVoidMethodV,
   &CallVoidMethodA,
+
+  NULL,//&CallNonvirtualObjectMethod,
+  NULL,//&CallNonvirtualObjectMethodV,
+  NULL,//&CallNonvirtualObjectMethodA,
+
+  NULL,//&CallNonvirtualBooleanMethod,
+  NULL,//&CallNonvirtualBooleanMethodV,
+  NULL,//&CallNonvirtualBooleanMethodA,
+
+  NULL,//&CallNonvirtualByteMethod,
+  NULL,//&CallNonvirtualByteMethodV,
+  NULL,//&CallNonvirtualByteMethodA,
+
+  NULL,//&CallNonvirtualCharMethod,
+  NULL,//&CallNonvirtualCharMethodV,
+  NULL,//&CallNonvirtualCharMethodA,
+
+  NULL,//&CallNonvirtualShortMethod,
+  NULL,//&CallNonvirtualShortMethodV,
+  NULL,//&CallNonvirtualShortMethodA,
+
+  NULL,//&CallNonvirtualIntMethod,
+  NULL,//&CallNonvirtualIntMethodV,
+  NULL,//&CallNonvirtualIntMethodA,
+
+  NULL,//&CallNonvirtualLongMethod,
+  NULL,//&CallNonvirtualLongMethodV,
+  NULL,//&CallNonvirtualLongMethodA,
+
+  NULL,//&CallNonvirtualFloatMethod,
+  NULL,//&CallNonvirtualFloatMethodV,
+  NULL,//&CallNonvirtualFloatMethodA,
+
+
+  NULL,//&CallNonvirtualDoubleMethod,
+  NULL,//&CallNonvirtualDoubleMethodV,
+  NULL,//&CallNonvirtualDoubleMethodA,
+
+  NULL,//&CallNonvirtualVoidMethod,
+  NULL,//&CallNonvirtualVoidMethodV,
+  NULL,//&CallNonvirtualVoidMethodA,
+
+  &GetFieldID,
+
   &GetObjectField,
   &GetBooleanField,
   &GetByteField,
@@ -929,6 +920,7 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &GetLongField,
   &GetFloatField,
   &GetDoubleField,
+
   &SetObjectField,
   &SetBooleanField,
   &SetByteField,
@@ -938,36 +930,50 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &SetLongField,
   &SetFloatField,
   &SetDoubleField,
+
+  &GetStaticMethodID,
+
   &CallStaticObjectMethod,
   &CallStaticObjectMethodV,
   &CallStaticObjectMethodA,
+
   &CallStaticBooleanMethod,
   &CallStaticBooleanMethodV,
   &CallStaticBooleanMethodA,
+
   &CallStaticByteMethod,
   &CallStaticByteMethodV,
   &CallStaticByteMethodA,
+
   &CallStaticCharMethod,
   &CallStaticCharMethodV,
   &CallStaticCharMethodA,
+
   &CallStaticShortMethod,
   &CallStaticShortMethodV,
   &CallStaticShortMethodA,
+
   &CallStaticIntMethod,
   &CallStaticIntMethodV,
   &CallStaticIntMethodA,
+
   &CallStaticLongMethod,
   &CallStaticLongMethodV,
   &CallStaticLongMethodA,
+
   &CallStaticFloatMethod,
   &CallStaticFloatMethodV,
   &CallStaticFloatMethodA,
+
   &CallStaticDoubleMethod,
   &CallStaticDoubleMethodV,
   &CallStaticDoubleMethodA,
+
   &CallStaticVoidMethod,
   &CallStaticVoidMethodV,
   &CallStaticVoidMethodA,
+
+  &GetStaticFieldID,
   &GetStaticObjectField,
   &GetStaticBooleanField,
   &GetStaticByteField,
@@ -977,6 +983,7 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &GetStaticLongField,
   &GetStaticFloatField,
   &GetStaticDoubleField,
+
   &SetStaticObjectField,
   &SetStaticBooleanField,
   &SetStaticByteField,
@@ -986,7 +993,102 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &SetStaticLongField,
   &SetStaticFloatField,
   &SetStaticDoubleField,
+
+  &NewString,
+  &GetStringLength,
+  &GetStringChars,
+  &ReleaseStringChars,
+
+  &NewStringUTF,
+  &GetStringUTFLength,
+  &GetStringUTFChars,
+  &ReleaseStringUTFChars,
+
+
+  &GetArrayLength,
+
+  &NewObjectArray,
+  &GetObjectArrayElement,
+  &SetObjectArrayElement,
+
+  &NewBooleanArray,
+  &NewByteArray,
+  &NewCharArray,
+  &NewShortArray,
+  &NewIntArray,
+  &NewLongArray,
+  &NewFloatArray,
+  &NewDoubleArray,
+
+  &GetBooleanArrayElements,
+  &GetByteArrayElements,
+  &GetCharArrayElements,
+  &GetShortArrayElements,
+  &GetIntArrayElements,
+  &GetLongArrayElements,
+  &GetFloatArrayElements,
+  &GetDoubleArrayElements,
+
+  &ReleaseBooleanArrayElements,
+  &ReleaseByteArrayElements,
+  &ReleaseCharArrayElements,
+  &ReleaseShortArrayElements,
+  &ReleaseIntArrayElements,
+  &ReleaseLongArrayElements,
+  &ReleaseFloatArrayElements,
+  &ReleaseDoubleArrayElements,
+
+  &GetBooleanArrayRegion,
+  &GetByteArrayRegion,
+  &GetCharArrayRegion,
+  &GetShortArrayRegion,
+  &GetIntArrayRegion,
+  &GetLongArrayRegion,
+  &GetFloatArrayRegion,
+  &GetDoubleArrayRegion,
+
+  &SetBooleanArrayRegion,
+  &SetByteArrayRegion,
+  &SetCharArrayRegion,
+  &SetShortArrayRegion,
+  &SetIntArrayRegion,
+  &SetLongArrayRegion,
+  &SetFloatArrayRegion,
+  &SetDoubleArrayRegion,
+
+  NULL,//&RegisterNatives,
+  NULL,//&UnregisterNatives,
+
+  NULL,//&MonitorEnter,
+  NULL,//&MonitorExit,
+
   &GetJavaVM,
+
+  &GetStringRegion,
+  &GetStringUTFRegion,
+
+  &GetPrimitiveArrayCritical,
+  &ReleasePrimitiveArrayCritical,
+
+  &GetStringCritical,
+  &ReleaseStringCritical,
+
+  NULL,//&NewWeakGlobalRef,
+  NULL,//&DeleteWeakGlobalRef,
+ 
+  NULL,//&ExceptionCheck,
+ 
+  &NewDirectByteBuffer,
+
+  &GetDirectBufferAddress,
+
+  &GetDirectBufferCapacity,
+
+
+  /* New JNI 1.6 Features */
+
+  NULL,//&GetObjectRefType,
+
 };
 
 C_JNIEnv J2ObjC_JNIEnv = &JNI_JNIEnvTable;
@@ -1007,6 +1109,9 @@ static jint DetachCurrentThread(JavaVM *vm) {
 }
 
 static jint GetEnv(JavaVM *vm, void **penv, jint version) {
+#ifdef J2OBJC_USE_GC
+  *penv = (void*)J2ObjC_JNIEnv;
+#else
   static JNIEnv *env_ = NULL;
   if (!env_) {
     env_ = (JNIEnv *) malloc(sizeof(JNIEnv));
@@ -1014,6 +1119,7 @@ static jint GetEnv(JavaVM *vm, void **penv, jint version) {
   }
   JNIEnv **result = (JNIEnv **) penv;
   *result = env_;
+#endif
   return JNI_OK;
 }
 
@@ -1023,6 +1129,7 @@ static jint AttachCurrentThreadAsDaemon(JavaVM *vm, void **penv, void *args) {
 }
 
 static struct JNIInvokeInterface JNI_JavaVMTable = {
+  NULL, NULL, NULL,
   &DestroyJavaVM,
   &AttachCurrentThread,
   &DetachCurrentThread,
@@ -1033,11 +1140,16 @@ static struct JNIInvokeInterface JNI_JavaVMTable = {
 C_JavaVM J2ObjC_JavaVM = &JNI_JavaVMTable;
 
 static jint GetJavaVM(JNIEnv *env, JavaVM **vm) {
+#ifdef J2OBJC_USE_GC
+  *vm = (JavaVM*)(void*)J2ObjC_JavaVM;
+#else
   static JavaVM *jvm_ = NULL;
   if (!jvm_) {
     jvm_ = (JavaVM *) malloc(sizeof(JavaVM));
     *jvm_ = J2ObjC_JavaVM;
   }
   *vm = jvm_;
+#endif
   return JNI_OK;
 }
+

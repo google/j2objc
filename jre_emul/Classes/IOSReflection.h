@@ -78,7 +78,7 @@ NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **
 
 __attribute__((always_inline)) inline const char *JreMethodJavaName(
     const J2ObjcMethodInfo *metadata, const void **ptrTable)  J2OBJC_METHOD_ATTR {
-  const char *javaName = JrePtrAtIndex(ptrTable, metadata->javaNameIdx);
+  const char *javaName = (const char *)JrePtrAtIndex(ptrTable, metadata->javaNameIdx);
   return javaName ? javaName : sel_getName(metadata->selector);
 }
 
