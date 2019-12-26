@@ -1365,6 +1365,9 @@ public class TreeConverter {
   private TreeNode convertVariableDeclaration(VariableTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     VariableElement element = (VariableElement) getElement(path);
+    if (element == null) {
+    	ARGC.trap();
+    }
     if (element.getKind() == ElementKind.FIELD) {
       FieldDeclaration newNode =
           new FieldDeclaration(element, (Expression) convert(node.getInitializer(), path));

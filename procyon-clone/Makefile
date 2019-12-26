@@ -21,20 +21,18 @@ J2OBJC_ROOT = ..
 include ../make/common.mk
 include ../java_deps/jars.mk
 
-BUILD_JAR = $(PROCYON_JARS:%=build/dist/%)
+BUILD_JAR = $(BUILD_DIR)/Procyon.core/libs/procyon-core-0.5.36.jar $(BUILD_DIR)/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar
 DIST_JAR = $(PROCYON_JARS:%=$(JAVA_DEPS_JAR_DIR)/%)
 
 CLASSES_DIR = bin
 
 $(BUILD_JAR) : 
-	@echo Building procyon
-	@gradle jar
-	@mkdir -p build/dist
-	@cp build/Procyon.core/libs/procyon-core-0.5.36.jar build/dist
-	@cp build/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar build/dist
+	@echo Building procyon 
+	@gradle --quiet jar 
 
 $(DIST_JAR): $(BUILD_JAR)
-	@cp -f build/dist/*.jar $(JAVA_DEPS_JAR_DIR)/
+	@cp -f $(BUILD_DIR)/Procyon.core/libs/procyon-core-0.5.36.jar $(JAVA_DEPS_JAR_DIR)/
+	@cp -f $(BUILD_DIR)/Procyon.CompilerTools/libs/procyon-compilertools-0.5.36.jar $(JAVA_DEPS_JAR_DIR)/
 
 dist: $(DIST_JAR)
 	@:

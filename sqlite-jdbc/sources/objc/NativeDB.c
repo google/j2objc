@@ -776,11 +776,14 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
 
 // WRAPPERS for sqlite_* functions //////////////////////////////////
 
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_shared_1cache(
         JNIEnv *env, jobject this, jboolean enable)
 {
     return sqlite3_enable_shared_cache(enable ? 1 : 0);
 }
+#pragma clang diagnostic pop
 
 
 JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_enable_1load_1extension(
@@ -789,7 +792,6 @@ JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_enable_1load_1extension(
     sqlite3 *db = gethandle(env, this);
     if (!db)
     {
-        throwex_db_closed(env);
         return SQLITE_MISUSE;
     }
 
@@ -996,14 +998,14 @@ JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_errmsg_1utf8(JNIEnv *
     
     str = (const char*) sqlite3_errmsg(db);
     if (!str) return NULL;
-    return utf8BytesToJavaByteArray(env, str, strlen(str));
+    return utf8BytesToJavaByteArray(env, str, (int)strlen(str));
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_libversion_1utf8(
         JNIEnv *env, jobject this)
 {
     const char* version = sqlite3_libversion();
-    return utf8BytesToJavaByteArray(env, version, strlen(version));
+    return utf8BytesToJavaByteArray(env, version, (int)strlen(version));
 }
 
 JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_changes(
@@ -1129,7 +1131,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_column_1decltype_1utf
 
     str = (const char*) sqlite3_column_decltype(toref(stmt), col);
     if (!str) return NULL;
-    return utf8BytesToJavaByteArray(env, str, strlen(str));
+    return utf8BytesToJavaByteArray(env, str, (int)strlen(str));
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_column_1table_1name_1utf8(
@@ -1145,7 +1147,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_column_1table_1name_1
 
     str = sqlite3_column_table_name(toref(stmt), col);
     if (!str) return NULL;
-    return utf8BytesToJavaByteArray(env, str, strlen(str));
+    return utf8BytesToJavaByteArray(env, str, (int)strlen(str));
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_column_1name_1utf8(
@@ -1162,7 +1164,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_column_1name_1utf8(
     str = sqlite3_column_name(toref(stmt), col);
     if (!str) return NULL;
 
-    return utf8BytesToJavaByteArray(env, str, strlen(str));
+    return utf8BytesToJavaByteArray(env, str, (int)strlen(str));
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_sqlite_core_NativeDB_column_1text_1utf8(
@@ -1521,6 +1523,9 @@ JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_value_1type(
     return sqlite3_value_type(tovalue(env, func, arg));
 }
 
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunguarded-availability-new"
+int is_iOS_13x_available();
 
 JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_create_1function_1utf8(
         JNIEnv *env, jobject this, jbyteArray name, jobject func, jint nArgs, jint flags)
@@ -1549,7 +1554,7 @@ JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_create_1function_1utf8(
     utf8JavaByteArrayToUtf8Bytes(env, name, &name_bytes, NULL);
     if (!name_bytes) { throwex_outofmemory(env); return 0; }
 
-    if (isAgg) {
+    if (isAgg && is_iOS_13x_available()) {
         ret = sqlite3_create_window_function(
                 gethandle(env, this),
                 name_bytes,            // function name
@@ -1579,6 +1584,7 @@ JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_create_1function_1utf8(
 
     return ret;
 }
+#pragma clang diagnostic pop
 
 JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_destroy_1function_1utf8(
         JNIEnv *env, jobject this, jbyteArray name, jint nArgs)

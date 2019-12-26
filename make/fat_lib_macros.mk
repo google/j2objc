@@ -93,16 +93,19 @@ ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
 #   4: precompiled header file, or empty
 #   5: other compiler flags
 define compile_rule
+$(1)/%.o: $(2)/%.c $(4:%=$(1)/%.pch) | fat_lib_dependencies
+	@mkdir -p $$(@D)
+	@echo compiling '$$<'
+	@$(3) -std=gnu11  $(4:%=-include $(1)/%) $(5) -c '$$<' -o '$$@'
+
 $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@echo @$(3) $(ARGC_C_FLAGS) $(4:%=-include $(1)/%) $(5) -c '$$<' -o '$$@'
 	@$(3) $(ARGC_C_FLAGS) $(4:%=-include $(1)/%) $(5) -c '$$<' -o '$$@'
 
 $(1)/%.o: $(2)/%.mm  | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@echo @$(3) -x objective-c++ $(ARGC_CPP_FLAGS) $(4:%=-include $(1)/%) $(5) -c '$$<' -o '$$@'
 	@$(3) -x objective-c++ $(ARGC_CPP_FLAGS) $(5) -c '$$<' -o '$$@'
 endef
 

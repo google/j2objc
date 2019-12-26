@@ -61,6 +61,9 @@ junit_manifest:
 jsr305_dist: translator_dist jre_emul_dist java_deps_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/jsr305 dist
 
+sqlitejdbc_dist: translator_dist jre_emul_dist java_deps_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/sqlite-jdbc dist
+
 javax_inject_dist: translator_dist jre_emul_dist java_deps_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/inject/javax_inject dist
 

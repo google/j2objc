@@ -37,7 +37,7 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'maven'
 
-    buildDir = rootDir.canonicalPath + "/build/" + rootProject.relativePath(projectDir.canonicalPath)
+    buildDir = rootDir.canonicalPath + "/build_result/" + rootProject.relativePath(projectDir.canonicalPath)
 
     version procyonVersion
 
@@ -74,7 +74,7 @@ subprojects {
 
     task javadocJar(type: Jar, dependsOn: javadoc) {
         classifier = 'javadoc'
-        from 'build/docs/javadoc'
+        from 'build_result/docs/javadoc'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {

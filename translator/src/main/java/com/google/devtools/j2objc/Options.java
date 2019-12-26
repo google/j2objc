@@ -699,6 +699,9 @@ public class Options {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       entry = entry.trim();
+	  if (entry.length() == 0) {
+		  continue;
+	  }
       if (entry.startsWith("~/")) {
         // Expand bash/csh tildes, which don't get expanded by the shell
         // first if in the middle of a path string.
