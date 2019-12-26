@@ -36,10 +36,14 @@ TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES)
 TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR)
 include ../make/translate.mk
 
-ARCH_HEADERS = $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=$(ARCH_INCLUDE_DIR)/%)
+$(ARCH_INCLUDE_DIR)/sqlite-jdbc/NativeDB_jni.impl.c : sources/objc/NativeDB_jni.impl.c
+	@mkdir -p $(ARCH_INCLUDE_DIR)/sqlite-jdbc/
+	@cp -f sources/objc/NativeDB_jni.impl.c $(ARCH_INCLUDE_DIR)/sqlite-jdbc/
+
+ARCH_HEADERS = $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=$(ARCH_INCLUDE_DIR)/%) $(ARCH_INCLUDE_DIR)/sqlite-jdbc/NativeDB_jni.impl.c
 
 FAT_LIB_NAME = sqlitejdbc
-FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%) objc/NativeDB.c objc/NativeDB_helper.m
+FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%) objc/NativeDB_jni.impl.c objc/NativeDB_helper.m
 FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR) sources
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../make/fat_lib.mk
