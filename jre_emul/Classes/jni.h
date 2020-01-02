@@ -139,9 +139,9 @@ typedef union jvalue {
 } jvalue;
 
 #if defined(__OBJC__)
-typedef __unsafe_unretained id jfieldID;
+typedef id jfieldID;
 
-typedef __unsafe_unretained id jmethodID;
+typedef id jmethodID;
 #else
 struct _jfieldID;
 typedef struct _jfieldID *jfieldID;
