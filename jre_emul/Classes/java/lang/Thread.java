@@ -17,6 +17,8 @@
 
 package java.lang;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.ObjectiveCType;
 import com.google.j2objc.annotations.Weak;
 
 import java.util.ArrayList;
@@ -38,6 +40,9 @@ import sun.nio.ch.Interruptible;
 @interface NativeThread : NSObject {
  @public
   pthread_t t;
+  id currentException;
+  int jniDepth;
+  const struct JNINativeInterface* jniFuncTable;
 }
 @end
 @implementation NativeThread
@@ -196,6 +201,8 @@ public class Thread implements Runnable {
   }
 
   private static native Object newNativeThread() /*-[
+    NativeThread* nativeThread = [[NativeThread alloc] init];
+    nativeThread->jniFuncTable = J2ObjC_JNIEnv;
     return AUTORELEASE([[NativeThread alloc] init]);
   ]-*/;
 
@@ -1149,4 +1156,11 @@ public class Thread implements Runnable {
   public final void resume() {
     throw new UnsupportedOperationException();
   }
+
+/*-[
+JNIEnv* JavaLangThread_getJNIEnv_(JavaLangThread* self) {
+  return (JNIEnv*)(void*)&((NativeThread*)self->nativeThread_)->jniFuncTable;
 }
+]-*/
+}
+
