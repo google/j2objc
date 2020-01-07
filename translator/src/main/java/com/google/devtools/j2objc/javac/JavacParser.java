@@ -198,7 +198,7 @@ public class JavacParser extends Parser {
       JavacTask task = parserEnv.task();
       CompilationUnitTree unit = task.parse().iterator().next();
       task.analyze();
-      processDiagnostics(parserEnv.diagnostics());
+      processDiagnostics(null, parserEnv.diagnostics());
       return TreeConverter.convertCompilationUnit(options, parserEnv, unit);
     } catch (IOException e) {
       ErrorUtil.fatalError(e, path);
@@ -279,7 +279,6 @@ public class JavacParser extends Parser {
       }
       env.task().analyze();
 
-      int processedDiagnosticsCount = 0;
       ArrayList<com.google.devtools.j2objc.ast.CompilationUnit> compileUnits = new ArrayList<>();
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
@@ -303,7 +302,7 @@ public class JavacParser extends Parser {
         	handler.handleParsedUnit(unit.getSourceFilePath(), unit);
         }
       }
-      processDiagnostics(env.diagnostics());
+      processDiagnostics(paths, env.diagnostics());
       
     } catch (Exception e) {
     	ErrorUtil.warning(e, "javac file manager error");
@@ -365,9 +364,9 @@ public class JavacParser extends Parser {
     return new JavacEnvironment(task, fileManager, diagnostics);
   }
 
-  private void processDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
+  private void processDiagnostics(Collection<String> compileUnits, DiagnosticCollector<JavaFileObject> diagnostics) {
     for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-      ErrorUtil.parserDiagnostic(diagnostic);
+      ErrorUtil.parserDiagnostic(compileUnits, diagnostic);
     }
   }
 
@@ -378,7 +377,7 @@ public class JavacParser extends Parser {
       JavacEnvironment parserEnv = createEnvironment(path, source);
       JavacTask task = parserEnv.task();
       CompilationUnitTree unit = task.parse().iterator().next();
-      processDiagnostics(parserEnv.diagnostics());
+      processDiagnostics(null, parserEnv.diagnostics());
       return new JavacParseResult(
           file, source, unit, parserEnv.treeUtilities().getSourcePositions());
     } catch (IOException e) {
@@ -403,7 +402,7 @@ public class JavacParser extends Parser {
         JavacEnvironment env = createEnvironment(inputFiles, null, true);
         env.task().parse();
         env.task().analyze();
-        processDiagnostics(env.diagnostics());
+        processDiagnostics(null, env.diagnostics());
         // The source output directory is created and set in createEnvironment().
         File sourceOutputDirectory =
             env.fileManager().getLocation(StandardLocation.SOURCE_OUTPUT).iterator().next();
