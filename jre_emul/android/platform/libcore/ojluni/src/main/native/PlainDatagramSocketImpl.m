@@ -989,6 +989,10 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_datagramSocketCreat
                         strerror(errno));
         return;
     }
+
+    // Disable SIGPIPE signals, as JRE reports socket errors using exceptions.
+    int set = 1;
+    setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 #endif /* __APPLE__ */
 
      setsockopt(fd, SOL_SOCKET, SO_BROADCAST, (char*) &t, sizeof(int));
