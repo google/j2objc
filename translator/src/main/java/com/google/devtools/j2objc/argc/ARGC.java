@@ -288,8 +288,8 @@ public class ARGC {
 					e.printStackTrace();
 				}
 				if (!f.exists()) {
-					ErrorUtil.warning("Invalid source--: " + filename);
-					new RuntimeException("---").printStackTrace();
+					ErrorUtil.warning("Invalid source: " + filename);
+					//new RuntimeException("---").printStackTrace();
 					System.exit(-1);
 					return false;
 				}

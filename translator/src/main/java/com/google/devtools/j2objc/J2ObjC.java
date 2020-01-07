@@ -88,7 +88,15 @@ public class J2ObjC {
    * Runs the entire J2ObjC pipeline.
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
-  public static void run(List<InputFile> fileArgs, Options options) {
+  public static void run(List<String> fileArgs, Options options) {
+	  ARGC.SourceList sourceFiles = new ARGC.SourceList(options);
+	  for (String s : fileArgs) {
+		  sourceFiles.add(s);
+	  }
+	  runEx(sourceFiles, options);
+  }
+
+  public static void runEx(List<InputFile> fileArgs, Options options) {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
     Parser parser = null;
@@ -188,7 +196,7 @@ public class J2ObjC {
 		  options.setMemoryManagementOption(Options.MemoryManagementOption.GC);
 	  }
 
-    run(files, options);
+    runEx(files, options);
 
     TimingLevel timingLevel = options.timingLevel();
     if (timingLevel == TimingLevel.TOTAL || timingLevel == TimingLevel.ALL) {

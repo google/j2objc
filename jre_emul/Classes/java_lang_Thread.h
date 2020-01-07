@@ -16,6 +16,7 @@
 #define java_lang_Thread_H
 
 #import <pthread.h>
+#import "jni.h"
 
 @class JavaLangThread;
 

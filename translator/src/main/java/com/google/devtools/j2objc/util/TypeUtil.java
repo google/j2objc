@@ -1000,10 +1000,13 @@ private static String _currentPackage;
 		  return (TypeElement) ((DeclaredType) type).asElement();
 	  }
 	  TypeElement typeElem = resolveUnreachableClass(t$);
+	  if (typeElem == null) {
+		  throw new AssertionError("Cannot resolve signature name for type: " + t$);
+	  }
 	  return typeElem;
   }
 
-  public static TypeElement resolveUnreachableClass(String typeName) {
+  private static TypeElement resolveUnreachableClass(String typeName) {
 	  if (_ignoreAllUnreachableTypeError) {
 		  return JavacEnvironment.unreachbleError;		  
 	  }
@@ -1024,18 +1027,16 @@ private static String _currentPackage;
 		  if (ARGC.isExcluded(_currentPackage + simpleName)) {
 			  return JavacEnvironment.unreachbleError;
 		  }
-	  }	  
-	  throw new AssertionError("Cannot resolve signature name for type: " + typeName);
+	  }	 
+	  return null;
   }
 
   public static boolean isUnreachbleAnnotationClass(AnnotationMirror annotationMirror, String annotationName) {
 	  if (annotationMirror == null) {
-		  resolveUnreachableClass(annotationName);
-		  return true;
+		  return null != resolveUnreachableClass(annotationName);
 	  }
 	  if (annotationMirror.getAnnotationType() == null || annotationMirror.getAnnotationType().getKind() == TypeKind.ERROR) {
-		  TypeUtil.resolveUnreachableClass(annotationMirror.getAnnotationType());
-		  return true;
+		  return null != resolveUnreachableClass(annotationMirror.getAnnotationType());
 	  }
 	  return false;
   }
