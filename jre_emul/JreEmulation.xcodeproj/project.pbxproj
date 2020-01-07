@@ -8731,7 +8731,11 @@
 				);
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_MISSING_PARENTHESES = NO;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"$(J2OBJC_HOME)/include",
+					Classes,
+				);
+				J2OBJC_HOME = ../dist;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -8754,7 +8758,11 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "U_DISABLE_RENAMING=1";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_MISSING_PARENTHESES = NO;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"$(J2OBJC_HOME)/include",
+					Classes,
+				);
+				J2OBJC_HOME = ../dist;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

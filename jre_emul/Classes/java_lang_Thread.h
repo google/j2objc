@@ -27,6 +27,17 @@ pthread_once_t java_thread_key_init_once;
 void initJavaThreadKeyOnce();
 JavaLangThread *getCurrentJavaThreadOrNull();
 
+#if defined(__OBJC__)
+@interface NativeThread : NSObject {
+ @public
+  pthread_t t;
+  id currentException;
+  int jniDepth;
+  JNIEnv* jniEnv;
+}
+@end
+#endif
+
 CF_EXTERN_C_END
 
 #endif  // java_lang_Thread_H

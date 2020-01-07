@@ -30,6 +30,7 @@
 #include "java/lang/ClassNotFoundException.h"
 #include "java/lang/InstantiationException.h"
 #include "java/lang/Throwable.h"
+#include "java/lang/VirtualMachineError.h"
 #include "java/lang/reflect/Constructor.h"
 #include "java/lang/reflect/Field.h"
 #include "java/lang/reflect/Method.h"
@@ -37,11 +38,16 @@
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
 #include "java/lang/Thread.h"
+
 #include "java_lang_Thread.h"
+#include "objc-sync.h"
 
 #define null_chk(p) (void)nil_chk((__bridge __unsafe_unretained id)p)
 
-JNIEnv* JavaLangThread_getJNIEnv_(JavaLangThread* self);
+static void FatalError(JNIEnv *env, const char *msg0);
+
+@implementation NativeThread
+@end
 
 
 static IOSClass *IOSClass_forName(const char *name) {
@@ -460,9 +466,6 @@ static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   return 0;
 }
 
-static void ExceptionClear(JNIEnv *env) {
-  // no-op
-}
 
 static jfieldID GetFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
   IOSClass *iosClass = (IOSClass *) clazz;
@@ -538,31 +541,58 @@ static void ToArgsArray(IOSObjectArray *paramTypes, jvalue *jargs, va_list args)
   }
 }
 
+static NativeThread* currentNativeThead() {
+  JavaLangThread * javaThread = getCurrentJavaThreadOrNull();
+  FatalError(NULL, "Native thread detached");
+  return (NativeThread*)javaThread->nativeThread_;
+}
+
 static jobject AllocObject(JNIEnv *env, jclass clazz) {
-  (void)nil_chk(clazz);
-  jint modifiers = [clazz getModifiers];
-  if ((modifiers & (JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_INTERFACE)) > 0
-      || [clazz isArray] || [clazz isEnum]) {
-    @throw create_JavaLangInstantiationException_initWithNSString_([clazz getName]);
+  @try {
+    (void)nil_chk(clazz);
+    jint modifiers = [clazz getModifiers];
+    if ((modifiers & (JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_INTERFACE)) > 0
+        || [clazz isArray] || [clazz isEnum]) {
+      @throw create_JavaLangInstantiationException_initWithNSString_([clazz getName]);
+    }
+    return AUTORELEASE([clazz.objcClass alloc]);
   }
-  return AUTORELEASE([clazz.objcClass alloc]);
+  @catch (JavaLangThrowable* ex) {
+    NativeThread* nativeThread = currentNativeThead();
+    nativeThread->currentException = ex;
+    return NULL;
+  }
 }
 
 static jobject NewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
-  return (jobject) [(JavaLangReflectConstructor *)methodID
+  @try {
+    return (jobject) [(JavaLangReflectConstructor *)methodID
       jniNewInstance:(const J2ObjcRawValue *)args];
+  }
+  @catch (JavaLangThrowable* ex) {
+    NativeThread* nativeThread = currentNativeThead();
+    nativeThread->currentException = ex;
+    return NULL;
+  }
 }
 
 static jobject NewObjectV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) {
-  IOSObjectArray *paramTypes = [(JavaLangReflectConstructor *)methodID getParameterTypesInternal];
-  size_t numArgs = paramTypes->size_;
+  @try {
+    IOSObjectArray *paramTypes = [(JavaLangReflectConstructor *)methodID getParameterTypesInternal];
+    size_t numArgs = paramTypes->size_;
 
-  ALLOC_JARGS(jargs, numArgs);
-  ToArgsArray(paramTypes, jargs, args);
-  jobject result = NewObjectA(env, clazz, methodID, jargs);
-  DEALLOC_JARGS(jargs);
+    ALLOC_JARGS(jargs, numArgs);
+    ToArgsArray(paramTypes, jargs, args);
+    jobject result = NewObjectA(env, clazz, methodID, jargs);
+    DEALLOC_JARGS(jargs);
 
-  return result;
+    return result;
+  }
+  @catch (JavaLangThrowable* ex) {
+    NativeThread* nativeThread = currentNativeThead();
+    nativeThread->currentException = ex;
+    return NULL;
+  }
 }
 
 static jobject NewObject(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
@@ -570,18 +600,30 @@ static jobject NewObject(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
 }
 
 static void CallMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args, jvalue *result) {
-  [(JavaLangReflectMethod *)methodID
+  @try {
+    [(JavaLangReflectMethod *)methodID
       jniInvokeWithId:obj args:(const J2ObjcRawValue *)args result:(J2ObjcRawValue *)result];
+  }
+  @catch (JavaLangThrowable* ex) {
+    NativeThread* nativeThread = currentNativeThead();
+    nativeThread->currentException = ex;
+  }
 }
 
 static void CallMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args, jvalue *result) {
-  IOSObjectArray *paramTypes = [(JavaLangReflectMethod *)methodID getParameterTypesInternal];
-  size_t numArgs = paramTypes->size_;
+  @try {
+    IOSObjectArray *paramTypes = [(JavaLangReflectMethod *)methodID getParameterTypesInternal];
+    size_t numArgs = paramTypes->size_;
 
-  ALLOC_JARGS(jargs, numArgs);
-  ToArgsArray(paramTypes, jargs, args);
-  CallMethodA(env, obj, methodID, jargs, result);
-  DEALLOC_JARGS(jargs);
+    ALLOC_JARGS(jargs, numArgs);
+    ToArgsArray(paramTypes, jargs, args);
+    CallMethodA(env, obj, methodID, jargs, result);
+    DEALLOC_JARGS(jargs);
+  }
+  @catch (JavaLangThrowable* ex) {
+    NativeThread* nativeThread = currentNativeThead();
+    nativeThread->currentException = ex;
+  }
 }
 
 #define DEFINE_CALL_METHOD_VARIANTS(RESULT_NAME, RESULT_TYPE, RESULT_CODE) \
@@ -849,15 +891,30 @@ static jobject PopLocalFrame(JNIEnv *env, jobject result) { return result; }
 static jint EnsureLocalCapacity(JNIEnv *env, jint capacity) { return JNI_OK; }
 
 static jthrowable ExceptionOccurred(JNIEnv *env) {
-    _NotImplemented();
-    return NULL;
+  NativeThread* nativeThread = currentNativeThead();
+  return nativeThread->currentException;
 }
 
 static void ExceptionDescribe(JNIEnv *env) {
-    _NotImplemented();
+  jthrowable ex = ExceptionOccurred(env);
+  if (ex != NULL) {
+    [(JavaLangThrowable*)ex printStackTrace];
+  }
 }
-static void FatalError(JNIEnv *env, const char *msg) {
-    _NotImplemented();
+
+static void ExceptionClear(JNIEnv *env) {
+  NativeThread* nativeThread = currentNativeThead();
+  nativeThread->currentException = NULL;
+}
+
+static void FatalError(JNIEnv *env, const char *msg0) {
+  if (msg0 == NULL) {
+    @throw AUTORELEASE([[JavaLangVirtualMachineError alloc] init]);
+  }
+  else {
+    NSString* msg = [NSString stringWithUTF8String:msg0];
+    @throw AUTORELEASE([[JavaLangVirtualMachineError alloc] initWithNSString:msg]);
+  }
 }
 
 
@@ -873,13 +930,13 @@ static jint UnregisterNatives(JNIEnv *env, jclass clazz) {
 }
 
 static jint MonitorEnter(JNIEnv *env, jobject obj) {
-    _NotImplemented();
-    return JNI_OK;
+  objc_sync_enter(obj);
+  return JNI_OK;
 }
 
 static jint MonitorExit(JNIEnv *env, jobject obj) {
-    _NotImplemented();
-    return JNI_OK;
+  objc_sync_exit(obj);
+  return JNI_OK;
 }
 
 static jweak NewWeakGlobalRef(JNIEnv *env, jobject obj) {
@@ -891,8 +948,8 @@ static void DeleteWeakGlobalRef(JNIEnv *env, jweak obj) {
 }
 
 static jboolean ExceptionCheck(JNIEnv *env) {
-    _NotImplemented();
-    return JNI_FALSE;
+    NativeThread* nativeThread = currentNativeThead();
+    return nativeThread->currentException != NULL;
 }
 
 
@@ -1192,6 +1249,10 @@ struct JNIEnvExt {
 
 static jint GetEnv(JavaVM *vm, void **penv, jint version);
 
+static jint DestroyJavaVM(JavaVM *vm) {
+  return JNI_OK;
+}
+
 static bool __attachCurrentThread(void **penv, const JavaVMAttachArgs* args, bool isDaemon)  { return false; }
 
 /*
@@ -1236,15 +1297,24 @@ static jint AttachCurrentThread(JavaVM *vm, void **penv, void *args) {
   return __attachCurrentThread(penv, (const JavaVMAttachArgs*)args, false);
 }
 
-static jint DestroyJavaVM(JavaVM *vm) {
-  return JNI_OK;
-}
-
 static jint AttachCurrentThreadAsDaemon(JavaVM *vm, void **penv, void *args) {
   return __attachCurrentThread(penv, (const JavaVMAttachArgs*)args, true);
 }
 
 static jint DetachCurrentThread(JavaVM *vm) {
+  JavaLangThread * javaThread = getCurrentJavaThreadOrNull();
+  if (javaThread == NULL) {
+      return JNI_ERR;
+  }
+  NativeThread* nativeThread = (NativeThread*)javaThread->nativeThread_;
+  nativeThread->jniEnv = NULL;
+  JavaLangThrowable* exception = nativeThread->currentException;
+  if (exception != NULL) {
+    id<JavaLangThread_UncaughtExceptionHandler> ueh = [javaThread getUncaughtExceptionHandler];
+    if (ueh != nil) {
+      [ueh uncaughtExceptionWithJavaLangThread:javaThread withJavaLangThrowable:exception];
+    }
+  }
   return JNI_OK;
 }
 
@@ -1259,7 +1329,7 @@ static jint GetEnv(JavaVM *vm, void **penv, jint version) {
         *penv = NULL;
     }
     else {
-        *penv = JavaLangThread_getJNIEnv_(javaThread);
+        *penv = ((NativeThread*)javaThread->nativeThread_)->jniEnv;
     }
     return (*penv != NULL) ? JNI_OK : JNI_EDETACHED;
     

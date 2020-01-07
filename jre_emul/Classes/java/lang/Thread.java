@@ -36,18 +36,6 @@ import sun.nio.ch.Interruptible;
 #import <pthread.h>
 ]-*/
 
-/*-[
-@interface NativeThread : NSObject {
- @public
-  pthread_t t;
-  id currentException;
-  int jniDepth;
-  const struct JNINativeInterface* jniFuncTable;
-}
-@end
-@implementation NativeThread
-@end
-]-*/
 
 /**
  * Simplified iOS version of java.lang.Thread, based on Apache Harmony source
@@ -62,7 +50,7 @@ public class Thread implements Runnable {
   private static final int NANOS_PER_MILLI = 1000000;
 
   /** Android source declares this as the native VMThread class. */
-  private final Object nativeThread;
+  final Object nativeThread;
   private Runnable target;
   private final long threadId;
   private String name;
@@ -202,7 +190,7 @@ public class Thread implements Runnable {
 
   private static native Object newNativeThread() /*-[
     NativeThread* nativeThread = [[NativeThread alloc] init];
-    nativeThread->jniFuncTable = J2ObjC_JNIEnv;
+    nativeThread->jniEnv = &J2ObjC_JNIEnv;
     return AUTORELEASE([[NativeThread alloc] init]);
   ]-*/;
 
@@ -1157,10 +1145,6 @@ public class Thread implements Runnable {
     throw new UnsupportedOperationException();
   }
 
-/*-[
-JNIEnv* JavaLangThread_getJNIEnv_(JavaLangThread* self) {
-  return (JNIEnv*)(void*)&((NativeThread*)self->nativeThread_)->jniFuncTable;
-}
-]-*/
+
 }
 
