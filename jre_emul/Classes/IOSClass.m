@@ -77,8 +77,16 @@ J2OBJC_INITIALIZED_DEFN(IOSClass)
 
 #define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
 
+#define FAST_OBJECT_LOOKUP_INIT(pLookUp, create_func) \
+FastPointerLookupInit(pLookUp, (void*(*)(void*))create_func)
+
+
 // Package to prefix mappings, initialized in FindRenamedPackagePrefix().
 static JavaUtilArrayList *prefixMapping;
+
+static FastPointerLookup_t classLookup;
+static FastPointerLookup_t protocolLookup;
+static FastPointerLookup_t arrayLookup;
 
 @interface PackagePrefixEntry : NSObject {
   NSString *key_;
@@ -1182,7 +1190,7 @@ static jboolean IsStringType(Class cls) {
 
 void ARGC_strongRetain(id obj);
 
-static IOSClass* ClassLookup(Class cls) {
+static IOSClass* CreateClassLookup(Class cls) {
   //Class cls = (Class)clsPtr;
   if (IsStringType(cls)) {
     // NSString is implemented by several subclasses.
@@ -1197,12 +1205,6 @@ static IOSClass* ClassLookup(Class cls) {
     ARGC_strongRetain(result);
   return result;
 }
-
-
-#define FAST_OBJECT_LOOKUP_INIT(create_func) \
-{ PTHREAD_MUTEX_INITIALIZER, (void*(*)(void*))create_func, 0, NULL }
-
-static FastPointerLookup_t classLookup = FAST_OBJECT_LOOKUP_INIT(&ClassLookup);
 
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
@@ -1221,21 +1223,17 @@ IOSClass *IOSClass_NewProxyClass(Class cls) {
   return result;
 }
 
-static IOSProtocolClass *ProtocolLookup(Protocol *protocol) {
+static IOSProtocolClass *CreateProtocolLookup(Protocol *protocol) {
   return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
 }
-
-static FastPointerLookup_t protocolLookup = FAST_OBJECT_LOOKUP_INIT(&ProtocolLookup);
 
 IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
   return (IOSClass *)FastObjectLookup(&protocolLookup, protocol);
 }
 
-static IOSArrayClass *ArrayLookup(IOSClass *componentType) {
+static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
   return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
 }
-
-static FastPointerLookup_t arrayLookup = FAST_OBJECT_LOOKUP_INIT(&ArrayLookup);
 
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
   return (IOSClass *)FastObjectLookup(&arrayLookup, componentType);
@@ -1251,6 +1249,11 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 
 + (void)initialize {
   if (self == [IOSClass class]) {
+    
+    FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
+    FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
+    FAST_OBJECT_LOOKUP_INIT(&protocolLookup, &CreateProtocolLookup);
+
     IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
     IOSClass_charClass = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
     IOSClass_doubleClass = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];

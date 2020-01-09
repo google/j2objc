@@ -34,8 +34,7 @@ typedef struct FastPointerLookup_t {
  *   Execution of this function is synchronized and it will only be called once
  *   for each key.
  */
-#define FAST_POINTER_LOOKUP_INIT(create_func) \
-  { PTHREAD_MUTEX_INITIALIZER, create_func, 0, NULL }
+int FastPointerLookupInit(FastPointerLookup_t* pLookup, void*(*create_func)(void*));
 
 // Looks up the value for a key.
 void *FastPointerLookup(FastPointerLookup_t *lookup, void *key);

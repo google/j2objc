@@ -3965,6 +3965,8 @@
 		7850D3CE23ABB246003B1A1B /* jni_md.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni_md.h; sourceTree = "<group>"; };
 		787C8D51237EDFD0003B8EF1 /* NSObject+ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+ARGC.h"; path = "Classes/ARGC/NSObject+ARGC.h"; sourceTree = SOURCE_ROOT; };
 		7881CB692382D783005204FF /* Volatiles.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Volatiles.mm; path = Classes/ARGC/Volatiles.mm; sourceTree = SOURCE_ROOT; };
+		78A35F1523C5D92C0024004C /* UnreachableError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnreachableError.m; path = Classes/ARGC/UnreachableError.m; sourceTree = SOURCE_ROOT; };
+		78A35F1623C5D9430024004C /* UnreachableError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnreachableError.h; path = Classes/org/slowcoders/j2objc/UnreachableError.h; sourceTree = SOURCE_ROOT; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
 		DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = org/apache/harmony/tests/java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
 		DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
@@ -7444,6 +7446,8 @@
 				7846132523504FF900E80EE4 /* ARGC.mm */,
 				781C3D41237E3EB60003B12B /* RefContext.h */,
 				7881CB692382D783005204FF /* Volatiles.mm */,
+				78A35F1623C5D9430024004C /* UnreachableError.h */,
+				78A35F1523C5D92C0024004C /* UnreachableError.m */,
 			);
 			path = ARGC;
 			sourceTree = "<group>";

@@ -74,7 +74,8 @@ static void *CreateSubclass(void *clsPtr) {
   return subclass;
 }
 
-static FastPointerLookup_t subclassLookup = FAST_POINTER_LOOKUP_INIT(&CreateSubclass);
+static FastPointerLookup_t subclassLookup;
+static int subclassLookup_d = FastPointerLookupInit(&subclassLookup, &CreateSubclass);
 
 // Swizzle the class of the child and make necessary associations.
 static void ApplyRetainedWithSubclass(id parent, id child) {

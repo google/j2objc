@@ -209,3 +209,18 @@ bool FastPointerLookupAddMapping(FastPointerLookup_t *lookup, void *key, void *v
   pthread_mutex_unlock(&lookup->mutex);
   return result;
 }
+
+int FastPointerLookupInit(FastPointerLookup_t* pLookup, void*(*create_func)(void*)) {
+  pthread_mutexattr_t attr;
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+  pthread_mutex_init(&pLookup->mutex, &attr);
+  pLookup->create_func = create_func;
+  pLookup->readers = 0;
+  pLookup->store = NULL;
+
+  pthread_mutexattr_destroy(&attr);
+  return 0;
+}
+

@@ -2191,7 +2191,7 @@ EMULATED_JAVA_SOURCES = \
 # All non-generated headers that should be made public.
 PUBLIC_NATIVE_HEADERS = \
   ARGC/ARGC.h \
-  org/slowstream/j2objc/UnreachableError.h \
+  org/slowcoders/j2objc/UnreachableError.h \
   IOSArray.h \
   IOSClass.h \
   IOSMetadata.h \

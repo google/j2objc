@@ -34,7 +34,6 @@
 #include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
 
-
 #if !GC_DEBUG
 #pragma GCC optimize ("O2")
 #pragma clang optimize on
@@ -68,9 +67,29 @@ static const int USE_AUTORELEASE_OLD = 0;
 
 volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 
-Class getARGCClass(JObj_p jobj) {
-    return [jobj class];
+static Class g_ARGCClass;
+static Class getARGCClass(id jobj) {
+  /*
+   NSObject 상속 객체에 대해서만 사용 가능.
+   그 외의 경우엔 메모리 억세스 오류 발생.
+   */
+  Class c = ((Class*)jobj)[0];
+  return c;//[jobj class];
 }
+
+static JObj_p toARGCObject(id oid) {
+  if (oid == NULL) return NULL;
+  //return [oid toJObject];
+  //object_getClass(oid);
+  if ([oid isKindOfClass:g_ARGCClass]) {
+    JObj_p jobj = (JObj_p)oid;
+    if (!jobj->_rc.isPhantom()) {
+      return jobj;
+    }
+  }
+  return NULL;
+}
+
 //##############################################################
 
 static const int SCANNING = 1;
@@ -79,6 +98,7 @@ static const int FINISHED = 0;
 static Class JavaUtilHashMap_KeySet_CLASS = 0;
 static NSPointerArray* g_softRefs;
 static NSPointerArray* g_weakRefs;
+static scan_offset_t _emptyFields[1] = { 0 };
 
 static void OutOfMemory() {
   @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
@@ -103,6 +123,7 @@ public:
         JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
         JavaUtilHashMap_KeySet_CLASS = objc_lookUpClass("JavaUtilHashMap_KeySet");
         GC_TRACE_CLASS = (Class*)objc_lookUpClass("JavaUtilConcurrentLocksAbstractQueuedSynchronizer");
+        g_ARGCClass = [ARGCObject class];
         obj_array_class = [IOSObjectArray class];
         deallocMethod = dealloc_now;
         _no_java_finalize = class_getInstanceMethod([NSObject class], @selector(java_finalize));
@@ -205,7 +226,7 @@ public:
     }
 
     static void decreaseGenericReferenceCountOrDealloc(__unsafe_unretained id oid) {
-        JObj_p jobj = [oid toJObject];
+        JObj_p jobj = toARGCObject(oid);
         if (jobj != NULL) {
             if (GC_TRACE(jobj, 0)) {
                 decreaseRefCountOrDealloc(jobj, @"--.fld");
@@ -415,15 +436,6 @@ public:
 };
 
 
-ARGC ARGC::_instance;
-int ARGC::mayHaveGarbage = 0;
-static int assocKey;
-std::atomic_int ARGC::gc_state;
-std::atomic_int ARGC::_clearSoftReference;
-static scan_offset_t _emptyFields[1] = { 0 };
-static int64_t gc_interval = 0;
-
-
 @implementation ARGCObject
 
 + (const scan_offset_t*) scanOffsets
@@ -507,7 +519,7 @@ static int64_t gc_interval = 0;
         ARGC::checkRefCount(self, @"autorelease");
     }
     if (GC_DEBUG && GC_LOG_ALLOC) {
-        if ([self toJObject] == NULL) {
+        if (toARGCObject(self) == NULL) {
             NSLog(@"--nstr %p #%d %@", self, (int)NSExtraRefCount(self), [self class]);
         }
     }
@@ -526,7 +538,7 @@ static int64_t gc_interval = 0;
             break;
         }
         id ref = *((id *)jobj + offset);
-        JObj_p fv = [ref toJObject];
+        JObj_p fv = toARGCObject(ref);
         if (fv != NULL) {
             visitor(fv, depth);
         }
@@ -534,6 +546,14 @@ static int64_t gc_interval = 0;
 }
 
 @end
+
+ARGC ARGC::_instance;
+int ARGC::mayHaveGarbage = 0;
+static int assocKey;
+std::atomic_int ARGC::gc_state;
+std::atomic_int ARGC::_clearSoftReference;
+static int64_t gc_interval = 0;
+
 
 
 void ARGC::registerScanOffsets(Class clazz) {
@@ -622,7 +642,7 @@ void ARGC_assignStrongObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id n
     }
     if (oldValue != NULL) {
         if (GC_DEBUG && GC_LOG_ALLOC) {
-            if ([oldValue toJObject] == NULL) {
+            if (toARGCObject(oldValue) == NULL) {
                 NSLog(@"--nstr %p #%d %@", oldValue, (int)NSExtraRefCount(oldValue), [oldValue class]);
             }
         }
@@ -709,7 +729,7 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
     JObj_p debug_parent;
     for (int i = cntItem; --i >= 0; pItem++) {
         id oid = *pItem;
-        JObj_p jobj = [oid toJObject];
+        JObj_p jobj = toARGCObject(oid);
         if (jobj == NULL || !markStrongReachable(jobj)) {
             continue;
         }
@@ -737,7 +757,7 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
                 debug_parent = jobj;
                 for (scan_offset_t offset; (offset = *scanOffsets++) != 0; ) {
                     id oid = *((id*)jobj + offset);
-                    JObj_p subObj = [oid toJObject];
+                    JObj_p subObj = toARGCObject(oid);
                     if (subObj == NULL || !markStrongReachable(subObj))
                         continue;
                     
@@ -800,7 +820,7 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
         int cntRef = (int)cntOrg;
         loop: for (int idx = cntRef; idx > 0; ) {
             id oid = (id)[refList pointerAtIndex:--idx];
-            JObj_p jobj = [oid toJObject];
+            JObj_p jobj = toARGCObject(oid);
 
             if (jobj != NULL) {
                 if (jobj->_rc.isReachable()) continue;
@@ -841,7 +861,7 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
             else {
                 [oid release];
                 if (GC_DEBUG && GC_LOG_ALLOC) {
-                    if ([oid toJObject] == NULL) {
+                    if (toARGCObject(oid) == NULL) {
                         NSLog(@"-c_rf2 %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
                     }
                 }
@@ -1134,7 +1154,7 @@ extern "C" {
     
     id ARGC_globalUnlock(id oid) {
         if (GC_DEBUG && GC_LOG_ALLOC) {
-            if ([oid toJObject] == NULL) {
+            if (toARGCObject(oid) == NULL) {
                 NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
             }
         }
@@ -1148,7 +1168,7 @@ extern "C" {
 
     void ARGC_release(id oid) {
         if (GC_DEBUG && GC_LOG_ALLOC) {
-            if ([oid toJObject] == NULL) {
+            if (toARGCObject(oid) == NULL) {
                 NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
             }
         }
@@ -1157,7 +1177,7 @@ extern "C" {
 
     void ARGC_autorelease(id oid) {
         if (GC_DEBUG && GC_LOG_ALLOC) {
-            if ([oid toJObject] == NULL) {
+            if (toARGCObject(oid) == NULL) {
                 NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
             }
         }
@@ -1165,7 +1185,7 @@ extern "C" {
     }
     
     void printRefCount(id oid) {
-        JObj_p jobj = [oid toJObject];
+        JObj_p jobj = toARGCObject(oid);
         if (jobj != NULL) {
             NSLog(@"%p %d(%d) %@", jobj, (int)NSExtraRefCount(oid),
               jobj->_rc.bindCount(), [oid class]);
@@ -1185,7 +1205,7 @@ extern "C" {
     void ARGC_genericRetain(id oid) {
         if (oid == NULL) return;
 
-        JObj_p jobj = [oid toJObject];
+        JObj_p jobj = toARGCObject(oid);
         if (jobj != NULL) {
             ARGC::touchInstance(jobj);
             ARGC::increaseReferenceCount(jobj, @"++genr");
@@ -1198,13 +1218,13 @@ extern "C" {
     void ARGC_genericRelease(id oid) {
         if (oid == NULL) return;
 
-        JObj_p jobj = [oid toJObject];
+        JObj_p jobj = toARGCObject(oid);
         if (jobj != NULL) {
             ARGC::decreaseRefCountOrDealloc(jobj, @"--genr");
         }
         else {
             if (GC_DEBUG && GC_LOG_ALLOC) {
-                if ([oid toJObject] == NULL) {
+                if (toARGCObject(oid) == NULL) {
                     NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
                 }
             }
