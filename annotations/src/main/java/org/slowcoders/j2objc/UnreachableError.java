@@ -1,4 +1,6 @@
-package org.slowstream.j2objc;
+package org.slowcoders.j2objc;
+
+import org.slowcoders.j2objc.UnreachableError;
 
 public class UnreachableError extends RuntimeException {
 	

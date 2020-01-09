@@ -329,7 +329,7 @@ public class ARGC {
 				ARGC.trap();
 			}
 			if (f != null) {
-				System.out.println("Wraning! source replaced");
+				System.out.println("Warning! Source is replaced.");
 				System.out.println("  -- " + root + filename);
 				System.out.println("  ++ " + f.getAbsolutePath());
 				return false;

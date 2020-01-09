@@ -32,7 +32,7 @@ import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
-import org.slowstream.j2objc.UnreachableError;
+import org.slowcoders.j2objc.UnreachableError;
 
 public class JavacEnvironment implements ParserEnvironment {
   private final JavacTask task;

@@ -58,7 +58,7 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import org.slowstream.j2objc.UnreachableError;
+import org.slowcoders.j2objc.UnreachableError;
 
 /**
  * Utility methods for working with TypeMirrors.
