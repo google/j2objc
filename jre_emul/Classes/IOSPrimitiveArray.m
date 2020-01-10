@@ -30,7 +30,7 @@
     if (length < 0) { \
       @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]); \
     } \
-    size_t buf_size = length * sizeof(C_TYPE); \
+    size_t buf_size = length * sizeof(C_TYPE) + 2; \
     IOS##U_NAME##Array *array = ARGC_allocateObject( \
         [IOS##U_NAME##Array class], buf_size, nil); \
     memset(array->buffer_, 0, buf_size); \

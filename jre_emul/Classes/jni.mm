@@ -46,6 +46,26 @@
 
 static void FatalError(JNIEnv *env, const char *msg0);
 
+#define SUPPORT_JNI_SO 0
+#if SUPPORT_JNI_SO
+  #define JNI_CALL_START()  @try {
+
+  #define JNI_CALL_VOID_END()    } @catch (JavaLangThrowable* ex) { \
+    NativeThread* nativeThread = currentNativeThead(); \
+    nativeThread->currentException = ex; \
+  }
+
+  #define JNI_CALL_END()    } @catch (JavaLangThrowable* ex) { \
+    NativeThread* nativeThread = currentNativeThead(); \
+    nativeThread->currentException = ex; \
+    return NULL; \
+  }
+#else
+  #define JNI_CALL_START()
+  #define JNI_CALL_VOID_END()
+  #define JNI_CALL_END()
+#endif
+
 @implementation NativeThread
 @end
 
@@ -548,7 +568,7 @@ static NativeThread* currentNativeThead() {
 }
 
 static jobject AllocObject(JNIEnv *env, jclass clazz) {
-  @try {
+  JNI_CALL_START()
     (void)nil_chk(clazz);
     jint modifiers = [clazz getModifiers];
     if ((modifiers & (JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_INTERFACE)) > 0
@@ -556,28 +576,18 @@ static jobject AllocObject(JNIEnv *env, jclass clazz) {
       @throw create_JavaLangInstantiationException_initWithNSString_([clazz getName]);
     }
     return AUTORELEASE([clazz.objcClass alloc]);
-  }
-  @catch (JavaLangThrowable* ex) {
-    NativeThread* nativeThread = currentNativeThead();
-    nativeThread->currentException = ex;
-    return NULL;
-  }
+  JNI_CALL_END()
 }
 
 static jobject NewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
-  @try {
+  JNI_CALL_START()
     return (jobject) [(JavaLangReflectConstructor *)methodID
       jniNewInstance:(const J2ObjcRawValue *)args];
-  }
-  @catch (JavaLangThrowable* ex) {
-    NativeThread* nativeThread = currentNativeThead();
-    nativeThread->currentException = ex;
-    return NULL;
-  }
+  JNI_CALL_END()
 }
 
 static jobject NewObjectV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) {
-  @try {
+  JNI_CALL_START()
     IOSObjectArray *paramTypes = [(JavaLangReflectConstructor *)methodID getParameterTypesInternal];
     size_t numArgs = paramTypes->size_;
 
@@ -587,12 +597,7 @@ static jobject NewObjectV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list
     DEALLOC_JARGS(jargs);
 
     return result;
-  }
-  @catch (JavaLangThrowable* ex) {
-    NativeThread* nativeThread = currentNativeThead();
-    nativeThread->currentException = ex;
-    return NULL;
-  }
+  JNI_CALL_END()
 }
 
 static jobject NewObject(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
@@ -600,30 +605,26 @@ static jobject NewObject(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
 }
 
 static void CallMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args, jvalue *result) {
-  @try {
+  JNI_CALL_START()
     [(JavaLangReflectMethod *)methodID
       jniInvokeWithId:obj args:(const J2ObjcRawValue *)args result:(J2ObjcRawValue *)result];
-  }
-  @catch (JavaLangThrowable* ex) {
-    NativeThread* nativeThread = currentNativeThead();
-    nativeThread->currentException = ex;
-  }
+  JNI_CALL_VOID_END()
 }
 
 static void CallMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args, jvalue *result) {
-  @try {
+  JNI_CALL_START()
     IOSObjectArray *paramTypes = [(JavaLangReflectMethod *)methodID getParameterTypesInternal];
-    size_t numArgs = paramTypes->size_;
-
-    ALLOC_JARGS(jargs, numArgs);
-    ToArgsArray(paramTypes, jargs, args);
-    CallMethodA(env, obj, methodID, jargs, result);
-    DEALLOC_JARGS(jargs);
-  }
-  @catch (JavaLangThrowable* ex) {
-    NativeThread* nativeThread = currentNativeThead();
-    nativeThread->currentException = ex;
-  }
+    if (paramTypes != NULL) {
+      size_t numArgs = paramTypes->size_;
+      ALLOC_JARGS(jargs, numArgs);
+      ToArgsArray(paramTypes, jargs, args);
+      CallMethodA(env, obj, methodID, jargs, result);
+      DEALLOC_JARGS(jargs);
+    }
+    else {
+      CallMethodA(env, obj, methodID, NULL, result);
+    }
+  JNI_CALL_VOID_END()
 }
 
 #define DEFINE_CALL_METHOD_VARIANTS(RESULT_NAME, RESULT_TYPE, RESULT_CODE) \
@@ -857,13 +858,13 @@ static void _NotImplemented() {
     [NSException raise:@"NSException" format:@"Not implemented JNI Method"];
 }
 
-static void _NotSupported() {
-    [NSException raise:@"NSException" format:@"Not supported JNI Method"];
+static void _NotSupported(NSString* msg) {
+    [NSException raise:@"NSException" format:@"%@", msg];
 }
 
 static jclass DefineClass(JNIEnv *env, const char *name, jobject loader,
                           const jbyte *buf, jsize bufLen) {
-    _NotSupported();
+    _NotSupported(@"DefineClass is not supported");
     // current env 의 current-Exception 에 SecurityException 을 설정하고, NULL return;
     return NULL;
 }
@@ -891,6 +892,9 @@ static jobject PopLocalFrame(JNIEnv *env, jobject result) { return result; }
 static jint EnsureLocalCapacity(JNIEnv *env, jint capacity) { return JNI_OK; }
 
 static jthrowable ExceptionOccurred(JNIEnv *env) {
+#if !SUPPORT_JNI_SO
+  _NotSupported(@"ExceptionOccurred is not supported. Check SUPPORT_JNI_SO");
+#endif
   NativeThread* nativeThread = currentNativeThead();
   return nativeThread->currentException;
 }
@@ -948,8 +952,11 @@ static void DeleteWeakGlobalRef(JNIEnv *env, jweak obj) {
 }
 
 static jboolean ExceptionCheck(JNIEnv *env) {
-    NativeThread* nativeThread = currentNativeThead();
-    return nativeThread->currentException != NULL;
+#if SUPPORT_JNI_SO
+  _NotSupported(@"ExceptionCheck is not supported. Check SUPPORT_JNI_SO");
+#endif
+  NativeThread* nativeThread = currentNativeThead();
+  return nativeThread->currentException != NULL;
 }
 
 

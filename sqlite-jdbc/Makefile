@@ -20,7 +20,7 @@
 include environment.mk
 
 SOURCEPATH = sources
-SQLITEJDBC_SRC_JAR = sources/sqlite-jdbc-3.27.2.1-sources.jar
+SQLITEJDBC_SRC_JAR = sources/sqlite-jdbc-3.27.2.1-j2objc-sources.zip
 JAVA_SOURCES = $(shell jar -tf $(SQLITEJDBC_SRC_JAR) | grep "\.java" | awk '{print}' ORS=' ')
 
 EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
@@ -43,7 +43,7 @@ $(ARCH_INCLUDE_DIR)/sqlite-jdbc/NativeDB_jni.impl.c : sources/objc/NativeDB_jni.
 ARCH_HEADERS = $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=$(ARCH_INCLUDE_DIR)/%) $(ARCH_INCLUDE_DIR)/sqlite-jdbc/NativeDB_jni.impl.c
 
 FAT_LIB_NAME = sqlitejdbc
-FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%) objc/NativeDB_jni.impl.c objc/NativeDB_helper.m
+FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%) objc/NativeDB_helper.m
 FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR) sources
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../make/fat_lib.mk

@@ -59,7 +59,7 @@
 
 @end
 
-jobject Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
+id Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
   return AUTORELEASE([[RawStack alloc] init]);
 }
 
@@ -94,7 +94,7 @@ static void ProcessRawStack(RawStack *rawStack, NSMutableArray *frames, jboolean
 }
 
 jarray Java_java_lang_Throwable_nativeGetStackTrace(
-    JNIEnv *_env_, jclass _cls_, jobject stackState) {
+    JNIEnv *_env_, jclass _cls_, id stackState) {
   RawStack *rawStack = stackState;
   NSMutableArray *frames = [NSMutableArray array];
   if (rawStack) {

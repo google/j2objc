@@ -52,7 +52,7 @@ extern "C" {
 @class IOSDoubleArray;
 @class IOSClass;
 
-typedef id               jobject;
+typedef __unsafe_unretained id jobject;
 typedef IOSClass*        jclass;
 typedef jobject          jthrowable;
 typedef NSString*        jstring;
@@ -131,11 +131,7 @@ typedef union jvalue {
     jlong    j;
     jfloat   f;
     jdouble  d;
-    #if __has_feature(objc_arc)
-        __unsafe_unretained jobject  l;
-    #else
-        jobject  l;
-    #endif
+    jobject  l;
 } jvalue;
 
 #if defined(__OBJC__)
