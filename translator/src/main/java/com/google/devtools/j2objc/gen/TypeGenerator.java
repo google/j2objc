@@ -253,6 +253,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean needsCompanionClass() {
+	  if (options.useGC()) {
+		  // !!super class 에 대한 Static initialize 가 항상 필요. 
+		  return true;
+	  }
     return needsPublicCompanionClass()
         || !Iterables.isEmpty(Iterables.filter(typeNode.getBodyDeclarations(), HAS_INNER_IMPL));
   }

@@ -294,7 +294,7 @@ public class JavacParser extends Parser {
           }
         }
 		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
-			ARGC.preprocessUnit(unit, new HashMap<>());
+			ARGC.preprocessUnit(unit);
 		}
 		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
 			TypeUtil.setUnreachableClasses(unit);

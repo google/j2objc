@@ -205,7 +205,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class for which the initialized flag is defined.
  */
 #define J2OBJC_INITIALIZED_DEFN(CLASS) \
-  _Atomic(jboolean) CLASS##__initialized = false;
+   static _Atomic(jboolean) CLASS##__initialized;
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
@@ -226,12 +226,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized; \
-  __attribute__((always_inline)) inline void CLASS##_initialize() { \
-    if (!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE)) { \
-      [CLASS class]; \
-    } \
-  }
+  FOUNDATION_EXPORT void CLASS##_initialize();
 
 /*!
  * Defines an empty init function for a class that has no initialization code.
@@ -240,7 +235,10 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
-  __attribute__((always_inline)) inline void CLASS##_initialize() {}
+  FOUNDATION_EXPORT void CLASS##_initialize();
+
+
+  //__attribute__((always_inline)) inline void CLASS##_initialize() {}
 
 /*!
  * Declares the type literal accessor for a type. This macro should be added to
@@ -252,6 +250,14 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
   FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
 
+#define J2OBJC_CLAS_INITIALIZE_SOURCE(CLASS) \
+  static _Atomic(jboolean) CLASS##__initialized = false; \
+  void CLASS##_initialize() { \
+    if (!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE)) { \
+      [CLASS class]; \
+    } \
+  }
+
 /*!
  * Defines the type literal accessor for a class or enum type. This macro should
  * be added to the implementation of each generated Java type.
@@ -260,11 +266,11 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The name of the type to define the accessor for.
  */
 #define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
+  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    TYPE##_initialize(); \
-    dispatch_once(&token, ^{ cls = IOSClass_fromClass([TYPE class]); }); \
+    dispatch_once(&token, ^{ cls = IOSClass_fromClass(NSClassFromString(@#TYPE)); }); \
     return cls; \
   }
 
@@ -276,10 +282,10 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The name of the type to define the accessor for.
  */
 #define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
+  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    TYPE##_initialize(); \
     dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
     return cls; \
   }

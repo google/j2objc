@@ -17,19 +17,11 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
-import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
-import com.google.devtools.j2objc.ast.FunctionDeclaration;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.NativeDeclaration;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.ast.*;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
@@ -104,10 +96,11 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     syncFilename(getSourceFilePath());
 
-    printInitFlagDefinition();
+    //printInitFlagDefinition();
     printStaticVars();
     printEnumValuesArray();
 
+    printTypeLiteralImplementation();
     if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
@@ -120,14 +113,14 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
 
     printOuterDeclarations();
-    printTypeLiteralImplementation();
+    //printTypeLiteralImplementation();
     printNameMapping();
   }
 
   private void printInitFlagDefinition() {
-    if (hasInitializeMethod()) {
+    //if (hasInitializeMethod()) {
       printf("\nJ2OBJC_INITIALIZED_DEFN(%s)\n", typeName);
-    }
+    //}
   }
 
   private static final Predicate<VariableDeclarationFragment> PROPERTIES =
@@ -253,7 +246,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printTypeLiteralImplementation() {
-    if (needsTypeLiteral()) {
+    if (options.useGC() || needsTypeLiteral()) {
       newline();
       printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
           isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
@@ -386,11 +379,22 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printInitializeMethod() {
     List<Statement> initStatements = typeNode.getClassInitStatements();
-    if (initStatements.isEmpty()) {
+    List<TypeElement> interfaces = TranslationUtil.getInterfaceTypes(typeNode);
+    if (initStatements.isEmpty() && interfaces.isEmpty()) {
       return;
     }
     StringBuilder sb = new StringBuilder();
     sb.append("{\nif (self == [" + typeName + " class]) {\n");
+    
+    // super interfaces 초기화.
+    for (TypeElement intrface : interfaces) {
+    	if (intrface == JavacEnvironment.unreachbleError
+    	||  intrface.getQualifiedName().toString().startsWith("com.google.j2objc.")) {
+    		continue;
+    	}
+      	sb.append(nameTable.getFullName(intrface) + "_initialize();\n");
+    }
+    
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));
     }

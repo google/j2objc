@@ -143,7 +143,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printOuterDeclarations();
       return;
     }
-    printCompanionClassDeclaration();
+    if (!options.useGC()) printCompanionClassDeclaration();
     printStaticInitFunction();
     printEnumConstants();
     printFieldSetters();
@@ -200,7 +200,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
   }
 
-  private List<String> getInterfaceNames() {
+  protected List<String> getInterfaceNames() {
     if (ElementUtil.isAnnotationType(typeElement)) {
       return Lists.newArrayList("JavaLangAnnotationAnnotation");
     }
@@ -367,7 +367,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-    if (!typeElement.getKind().isInterface() || !needsCompanionClass()
+	if (options.useGC()) {
+		if (!typeElement.getKind().isInterface()) {
+			return;
+		}
+	}
+	else if (!typeElement.getKind().isInterface() || !needsCompanionClass()
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
@@ -391,11 +396,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 		printf("__attribute__((always_inline))  inline void %s_initialize() {}\n", typeName);
 		return;
 	}
-    if (hasInitializeMethod()) {
-      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
-    } else {
-      printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
-    }
+	if (options.useGC()) {
+		printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+	}
+	else {
+	    if (!typeElement.getKind().isInterface()) {
+	    	/**
+	    	 * 상위 Class 가 InitializeMethod를 가진 경우에 반드시 처리.
+	    	 */
+	      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+	    } else {
+	      printf("\nJ2OBJC_INTERFACE_STATIC_INIT(%s)\n", typeName);
+	    }
+	}
   }
 
   private void printEnumConstants() {

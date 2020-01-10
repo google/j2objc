@@ -30,6 +30,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
   protected final ChildList<Statement> classInitStatements =
       ChildList.create(Statement.class, this);
   private boolean isDeadClass;
+private boolean hasSuperTypeInitClasses;
 
   AbstractTypeDeclaration() {}
 
@@ -112,4 +113,10 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     isDeadClass = b;
     return this;
   }
+
+	public void setHasSuperTypeInitClasses(boolean b) {
+		this.hasSuperTypeInitClasses = b;
+		
+	}
+  
 }

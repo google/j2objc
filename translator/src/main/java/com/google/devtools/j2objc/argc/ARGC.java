@@ -623,13 +623,43 @@ public class ARGC {
 	}
 
 	static HashMap<String, CompilationUnit> units = new HashMap<>();
+	static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
 	static HashSet<String> rootPaths = new HashSet<>();
 
 	private static void addRootPath(String root) {
 		rootPaths.add(root);
 	}
 
-	public static HashMap<String, String> preprocessUnit(CompilationUnit unit, HashMap<String, String> processed) {
+	public static void preprocessUnit(CompilationUnit unit) {
+		for (AbstractTypeDeclaration type : unit.getTypes()) {
+			types.put(type.getName().toString(), type);
+			if (type.getClassInitStatements().isEmpty()) {
+				
+			}
+		}
+		preprocessUnit2(unit, new HashMap<>());
+//		for (AbstractTypeDeclaration _t : unit.getTypes()) {
+//		}
+	}
+
+//	private static boolean resolveStaticInitializer(AbstractTypeDeclaration _t) {
+//		TypeElement type = _t.getTypeElement();
+//		boolean hasStaticInitializer = false;
+//        for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
+//            String name = inheritedType.toString();
+//            int idx = name.indexOf('<');
+//            if (idx > 0) {
+//            	name = name.substring(0, idx);
+//            }
+//    		AbstractTypeDeclaration superType = types.get(name);
+//    		if (superType != null) {
+//    			hasStaticInitializer |= resolveStaticInitializer(superType);
+//    		}
+//			hasStaticInitializer |= types.get(superType);
+//        }
+//	}
+	
+	private static HashMap<String, String> preprocessUnit2(CompilationUnit unit, HashMap<String, String> processed) {
 		HashMap<String, String> urMap = unit.getUnreachableImportedClasses();
 		if (processed.containsKey(unit.getSourceFilePath())) {
 			return urMap;
@@ -645,7 +675,7 @@ public class ARGC {
 	            }
 	    		CompilationUnit superUnit = units.get(name);
 	    		if (superUnit != null) {
-	    			urMap.putAll(preprocessUnit(superUnit, processed));
+	    			urMap.putAll(preprocessUnit2(superUnit, processed));
 	    		}
 	        }
 		}
