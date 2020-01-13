@@ -2178,6 +2178,78 @@ PUBLIC_NATIVE_HEADERS = \
   java/lang/reflect/Method.h \
   jni.h
 
+JRE_PUBLIC_PACKAGES = \
+  java.awt.font \
+  java.beans \
+  java.io \
+  java.lang \
+  java.lang.annotation \
+  java.lang.ref \
+  java.lang.reflect \
+  java.math \
+  java.net \
+  java.nio \
+  java.nio.channels \
+  java.nio.channels.spi \
+  java.nio.charset \
+  java.nio.charset.spi \
+  java.security \
+  java.security.cert \
+  java.security.interfaces \
+  java.security.spec \
+  java.sql \
+  java.text \
+  java.time \
+  java.time.chrono \
+  java.time.format \
+  java.time.temporal \
+  java.time.zone \
+  java.util \
+  java.util.concurrent \
+  java.util.concurrent.atomic \
+  java.util.concurrent.locks \
+  java.util.function \
+  java.util.jar \
+  java.util.logging \
+  java.util.regex \
+  java.util.zip \
+  javax.annotation \
+  javax.crypto \
+  javax.crypto.interfaces \
+  javax.crypto.spec \
+  javax.lang.model.element \
+  javax.lang.model.type \
+  javax.net \
+  javax.net.ssl \
+  javax.security.auth \
+  javax.security.auth.callback \
+  javax.security.auth.x500 \
+  javax.security.cert \
+  javax.xml \
+  javax.xml.datatype \
+  javax.xml.namespace \
+  javax.xml.parsers \
+  javax.xml.transform \
+  javax.xml.transform.dom \
+  javax.xml.transform.sax \
+  javax.xml.transform.stream \
+  javax.xml.validation \
+  javax.xml.xpath \
+  org.w3c.dom \
+  org.w3c.dom.ls \
+  org.xml.sax \
+  org.xml.sax.ext \
+  org.xml.sax.helpers
+
+ANDROID_PUBLIC_PACKAGES = \
+  android.os \
+  android.text \
+  android.text.util \
+  android.util \
+  org.json \
+  org.xmlpull.v1 \
+  org.xmlpull.v1.sax2
+
 # They are only needed while translating files in the corresponding packages,
 # but they do not need to be translated.
 ANNOTATED_PACKAGE_INFO = \
