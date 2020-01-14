@@ -83,13 +83,11 @@ __attribute__((always_inline)) inline NSObject *create_NSObject_init() {
 
 
 J2OBJC_EMPTY_STATIC_INIT(NSObject)
+J2OBJC_EMPTY_STATIC_INIT(NSException)
+J2OBJC_EMPTY_STATIC_INIT(JavaLangObject)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSObject)
 
 
-
-// Empty class to force category to be loaded.
-@interface JreObjectCategoryDummy : NSObject
-@end
 
 #endif // _NSObject_JavaObject_H_

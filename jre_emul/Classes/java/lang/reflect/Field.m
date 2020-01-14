@@ -396,6 +396,11 @@ static void SetWithRawValue(
   return [[declaringClass_ getName] hash] ^ [[self getName] hash];
 }
 
++ (void) __clinit__ {
+  JavaLangReflectAccessibleObject_initialize();
+  JavaLangReflectMember_initialize();
+}
+
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -469,8 +474,13 @@ static void SetWithRawValue(
     "setLong", "LNSObject;J", "setShort", "LNSObject;S", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
-    "Field", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 29, 0, -1, -1, -1, -1, -1 };
+    "Field", "java.lang.reflect", JavaLangReflectField_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 29, 0, -1, -1, -1, -1, -1 };
   return &_JavaLangReflectField;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [JavaLangReflectField __metadata]);
 }
 
 @end

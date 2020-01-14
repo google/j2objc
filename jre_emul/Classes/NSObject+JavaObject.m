@@ -213,18 +213,17 @@ static void doWait(id obj, long long timeout) {
     "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LJavaLangThrowable;", "notify",
     "notifyAll", "wait", "J", "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {
-    "Object", "java.lang", ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
+    "Object", "java.lang", empty_static_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
   return &_NSObject;
 }
+
 
 // Unimplemented private methods for java.lang.ref.Reference. The methods'
 // implementations are set when swizzling the Reference's referent class.
 - (void)_java_lang_ref_original_dealloc {}
 - (void)_java_lang_ref_original_release {}
 
-@end
-
-@implementation JreObjectCategoryDummy
 @end
 
 #ifdef J2OBJC_USE_GC
@@ -234,14 +233,18 @@ static void doWait(id obj, long long timeout) {
     return NSObject_class_();
 }
 
++ (void)initialize {
+  ARGC_bindMetaData([NSObject class], [NSObject __metadata]);
+}
 @end
-J2OBJC_EMPTY_STATIC_INIT(JavaLangObject)
+
 J2OBJC_TYPE_LITERAL_HEADER(JavaLangObject)
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangObject)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(JavaLangObject)
 
 #endif
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(NSObject)
 
 J2OBJC_NAME_MAPPING(NSObject, "java.lang.Object", "NSObject")
+

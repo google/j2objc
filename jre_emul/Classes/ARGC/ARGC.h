@@ -26,6 +26,7 @@
 
 #import <Foundation/Foundation.h>
 #import "J2ObjC_types.h"
+#import "IOSMetadata.h"
 
 CF_EXTERN_C_BEGIN
 
@@ -50,7 +51,6 @@ CF_EXTERN_C_BEGIN
 - (void) OS_NORETURN throwInvalidIndexExceptionWithIndex:(NSInteger) index withLength: (NSInteger)length;
 
 @end
-
     
 #define ARGC_FIELD_REF __unsafe_unretained
 #define ARGC_WEAK_REF __unsafe_unretained
@@ -63,6 +63,9 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id 
 
 /* replace field with newValue that is static or not extends ARGCObject. */
 void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
+
+/* execute garbage collection now. */
+void ARGC_bindMetaData(id cls, const J2ObjcClassInfo *metaData);
 
 /* execute garbage collection now. */
 void ARGC_collectGarbage();

@@ -87,7 +87,7 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectField)
+J2OBJC_STATIC_INIT(JavaLangReflectField)
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectField)
 

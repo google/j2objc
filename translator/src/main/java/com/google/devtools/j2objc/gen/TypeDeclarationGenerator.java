@@ -143,7 +143,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printOuterDeclarations();
       return;
     }
-    if (!options.useGC()) printCompanionClassDeclaration();
+    printCompanionClassDeclaration();
     printStaticInitFunction();
     printEnumConstants();
     printFieldSetters();
@@ -192,13 +192,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  private String getSuperTypeName() {
-    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
-    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
-      return nameTable.getFullName(supertype);
-    }
-    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
-  }
+//  protected String getSuperTypeName() {
+//    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
+//    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
+//      return nameTable.getFullName(supertype);
+//    }
+//    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
+//  }
 
   protected List<String> getInterfaceNames() {
     if (ElementUtil.isAnnotationType(typeElement)) {
@@ -367,12 +367,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-	if (options.useGC()) {
-		if (!typeElement.getKind().isInterface()) {
-			return;
-		}
-	}
-	else if (!typeElement.getKind().isInterface() || !needsCompanionClass()
+	if (!typeElement.getKind().isInterface() || !needsCompanionClass()
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
@@ -393,11 +388,16 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 		if (hasInitializeMethod()) {
 			System.err.println("Pure Objective-C class can not have CLASS_initialie\n");
 		} 
-		printf("__attribute__((always_inline))  inline void %s_initialize() {}\n", typeName);
+		printf("FOUNDATION_EXPORT void %s_initialize(void);\n", typeName);
 		return;
 	}
 	if (options.useGC()) {
-		printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+		if (super.needsTypeLiteral()) {
+			printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+		}
+		else {
+			printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
+		}
 	}
 	else {
 	    if (!typeElement.getKind().isInterface()) {

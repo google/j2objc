@@ -119,6 +119,8 @@ static IOSClass *IOSClass_objectClass;
 
 static IOSObjectArray *IOSClass_emptyClassArray;
 
+void empty_static_initialize() {}
+
 - (Class)objcClass {
   return nil;
 }
@@ -678,7 +680,8 @@ IOSClass *IOSClass_forName_(NSString *className) {
     }
   }
   if (iosClass) {
-    [iosClass.objcClass class];  // Force initialization.
+    iosClass->metadata_->initialize();
+    // [iosClass.objcClass class];  // Force initialization.
     return iosClass;
   }
   @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
@@ -1247,9 +1250,16 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   return result;
 }
 
++ (void)__clinit__ {
+  // do nothing.
+}
+
 + (void)initialize {
   if (self == [IOSClass class]) {
-    
+    // JavaLangObject class 로딩.
+    [JavaLangObject class];
+    ARGC_bindMetaData(self, [IOSClass __metadata]);
+
     FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
     FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
     FAST_OBJECT_LOOKUP_INIT(&protocolLookup, &CreateProtocolLookup);
@@ -1269,9 +1279,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     IOSClass_emptyClassArray = [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
 
     // Load and initialize JRE categories, using their dummy classes.
-    [JreObjectCategoryDummy class];
-    [JreStringCategoryDummy class];
-    [JreNumberCategoryDummy class];
+    NSString_initialize();
     [NSCopying class];
 
     // Verify that these categories successfully loaded.
@@ -1456,7 +1464,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 49, -1 };
+    "Class", "java.lang", IOSClass_initialize,
+    ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 49, -1 };
   return &_IOSClass;
 }
 
@@ -1472,6 +1481,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
 }
 #pragma clang diagnostic pop
+
 
 @end
 

@@ -136,6 +136,11 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   return [s description];
 }
 
++ (void) __clinit__ {
+  JavaLangReflectExecutable_initialize();
+}
+
+
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -184,9 +189,14 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
+    "Constructor", "java.lang.reflect", JavaLangReflectConstructor_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
   };
   return &_JavaLangReflectConstructor;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [JavaLangReflectConstructor __metadata]);
 }
 
 @end

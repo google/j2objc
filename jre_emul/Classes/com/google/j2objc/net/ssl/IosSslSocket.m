@@ -187,10 +187,9 @@ static NSDictionary *protocolMapping;
 
 @implementation ComGoogleJ2objcNetSslIosSslSocket
 
-+ (void)initialize {
-  if (self != [ComGoogleJ2objcNetSslIosSslSocket class]) {
-    return;
-  }
++ (void) __clinit__ {
+  JavaxNetSslSSLSocket_initialize();
+
   NSMutableDictionary *temp = AUTORELEASE([[NSMutableDictionary alloc] init]);
   NSString *key;
   key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_DEFAULT() description];

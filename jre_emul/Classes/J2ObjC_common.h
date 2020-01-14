@@ -226,7 +226,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT void CLASS##_initialize();
+  FOUNDATION_EXPORT void CLASS##_initialize(void);
 
 /*!
  * Defines an empty init function for a class that has no initialization code.
@@ -235,10 +235,9 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT void CLASS##_initialize();
+  __attribute__((always_inline)) inline void CLASS##_initialize(void) {}
 
-
-  //__attribute__((always_inline)) inline void CLASS##_initialize() {}
+FOUNDATION_EXPORT void empty_static_initialize(void);
 
 /*!
  * Declares the type literal accessor for a type. This macro should be added to
@@ -253,8 +252,12 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_CLAS_INITIALIZE_SOURCE(CLASS) \
   static _Atomic(jboolean) CLASS##__initialized = false; \
   void CLASS##_initialize() { \
-    if (!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE)) { \
-      [CLASS class]; \
+    if (!CLASS##__initialized) { \
+      jboolean compare = false; \
+      if (__c11_atomic_compare_exchange_strong(&CLASS##__initialized, &compare, true, \
+          __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) { \
+        [CLASS __clinit__]; \
+      } \
     } \
   }
 
@@ -265,14 +268,17 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @define J2OBJC_CLASS_TYPE_LITERAL_SOURCE
  * @param TYPE The name of the type to define the accessor for.
  */
-#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
-  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
+#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(TYPE) \
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    dispatch_once(&token, ^{ cls = IOSClass_fromClass(NSClassFromString(@#TYPE)); }); \
+    dispatch_once(&token, ^{ cls = IOSClass_fromClass([TYPE class]); }); \
     return cls; \
   }
+
+#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
+  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
+  J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(TYPE)
 
 /*!
  * Defines the type literal accessor for a interface or annotation type. This
@@ -281,14 +287,17 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE
  * @param TYPE The name of the type to define the accessor for.
  */
-#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
-  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
+#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE_EX(TYPE) \
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
     dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
     return cls; \
   }
+
+#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
+  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
+  J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE_EX(TYPE)
 
 #ifdef J2OBJC_USE_GC
 #define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \
@@ -335,5 +344,6 @@ CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
   - (oneway void)release {} \
   - (id)autorelease { return self; }
 #endif
+
 
 #endif // _J2OBJC_COMMON_H_

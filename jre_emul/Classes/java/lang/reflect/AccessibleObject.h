@@ -52,7 +52,7 @@ void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleO
 
 CF_EXTERN_C_END
 
-J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectAccessibleObject)
+J2OBJC_STATIC_INIT(JavaLangReflectAccessibleObject)
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectAccessibleObject)
 

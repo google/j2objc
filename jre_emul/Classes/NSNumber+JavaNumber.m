@@ -51,16 +51,18 @@
   };
   static const void *ptrTable[] = { "byteValue", "longValue" };
   static const J2ObjcClassInfo _NSNumber = {
-    "Number", "java.lang", ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
+    "Number", "java.lang", empty_static_initialize,
+    ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
   return &_NSNumber;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [NSNumber __metadata]);
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSNumber)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(NSNumber)
 
 J2OBJC_NAME_MAPPING(NSNumber, "java.lang.Number", "NSNumber")
 
-// Empty class to force category to be loaded.
-@implementation JreNumberCategoryDummy
-@end

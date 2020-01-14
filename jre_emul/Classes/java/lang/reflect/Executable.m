@@ -286,6 +286,13 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 #endif
 
++ (void) __clinit__ {
+  JavaLangReflectAccessibleObject_initialize();
+  JavaLangReflectMember_initialize();
+  JavaLangReflectGenericDeclaration_initialize();
+}
+
+
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -338,7 +345,8 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "getAnnotationsByType",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;" };
   static const J2ObjcClassInfo _JavaLangReflectExecutable = {
-    "Executable", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
+    "Executable", "java.lang.reflect", JavaLangReflectExecutable_initialize,
+    ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
   };
   return &_JavaLangReflectExecutable;
 }
@@ -369,7 +377,14 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
                      typeParameters:parser->formalTypeParameters_]);
 }
 
++ (void)initialize {
+  ARGC_bindMetaData(self, [JavaLangReflectExecutable __metadata]);
+}
+
+
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectExecutable)
 
 @implementation GenericInfo
 

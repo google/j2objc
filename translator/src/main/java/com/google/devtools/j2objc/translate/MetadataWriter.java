@@ -137,6 +137,11 @@ public class MetadataWriter extends UnitTreeVisitor {
       this.stmts = stmts;
     }
 
+    protected boolean needsTypeLiteral() {
+        return !(ElementUtil.isPackageInfo(type) || ElementUtil.isAnonymous(type)
+                 || ElementUtil.isLambda(type));
+      }
+    
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
       int methodMetadataCount = generateMethodsMetadata();
@@ -144,10 +149,11 @@ public class MetadataWriter extends UnitTreeVisitor {
       String annotationsFunc = createAnnotationsFunction(typeNode);
       String metadata = UnicodeUtils.format(
           "static const J2ObjcClassInfo _%s = { "
-          + "%s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
+          + "%s, %s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
           fullName,
           cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type)),
           cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type)))),
+          needsTypeLiteral() ? (fullName + "_initialize") : "empty_static_initialize",
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
           METADATA_VERSION,

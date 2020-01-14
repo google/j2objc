@@ -32,7 +32,9 @@
 @implementation IOSProtocolClass
 
 static Class GetBackingClass(Protocol *protocol) {
-  return objc_lookUpClass(protocol_getName(protocol));
+  const char * n1 = protocol_getName(protocol);
+  Class c1 = objc_lookUpClass(n1);
+  return c1;
 }
 
 @synthesize objcProtocol = protocol_;

@@ -1083,11 +1083,17 @@ jint javaStringHashCode(NSString *string) {
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
+    "String", "java.lang", NSString_initialize,
+    ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
   return &_NSString;
 }
 
++ (void)initialize {
+  ARGC_bindMetaData(self, [NSString __metadata]);
+}
+
 @end
+
 
 NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(
     id<JavaLangCharSequence> delimiter, IOSObjectArray *elements) {
@@ -1188,9 +1194,14 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
     "compare", "LNSString;LNSString;", "LNSString;",
     "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    "CaseInsensitiveComparator", "java.lang", ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
+    "CaseInsensitiveComparator", "java.lang", empty_static_initialize,
+    ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
     -1 };
   return &_NSString_CaseInsensitiveComparator;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [NSString_CaseInsensitiveComparator __metadata]);
 }
 
 @end
@@ -1199,6 +1210,10 @@ J2OBJC_INITIALIZED_DEFN(NSString)
 
 id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
 IOSObjectArray *NSString_serialPersistentFields;
+
+// Empty class to force category to be loaded.
+@interface JreStringCategoryDummy : JavaLangObject
+@end
 
 @implementation JreStringCategoryDummy
 
@@ -1214,6 +1229,18 @@ IOSObjectArray *NSString_serialPersistentFields;
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSString)
+static _Atomic(jboolean) NSString__initialized;
+void NSString_initialize() {
+  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
+    [JreStringCategoryDummy class];
+  }
+}
+
+IOSClass *NSString_class_() { \
+  static IOSClass *cls; \
+  static dispatch_once_t token; \
+  dispatch_once(&token, ^{ cls = IOSClass_fromClass([NSString class]); }); \
+  return cls; \
+}
 
 J2OBJC_NAME_MAPPING(NSString, "java.lang.String", "NSString")

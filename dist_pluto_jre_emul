@@ -1,1 +1,2 @@
 cp dist/lib/libjre_emul.a ~/9Folders/pluto-ios/Libraries/J2ObjC/dist/lib
+cp dist/lib/j2objc.jar    ~/9Folders/pluto-ios/Libraries/J2ObjC/dist/lib

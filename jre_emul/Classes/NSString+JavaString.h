@@ -326,17 +326,8 @@ NSString_java_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(
 FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
     id<JavaLangCharSequence> delimiter, id<JavaLangIterable> elements) J2OBJC_METHOD_ATTR;
 
-// Empty class to force category to be loaded.
-@interface JreStringCategoryDummy : JavaLangObject
-@end
-
 // Use the category dummy to initialize static variables for the String class.
-FOUNDATION_EXPORT _Atomic(jboolean) NSString__initialized;
-__attribute__((always_inline)) inline void NSString_initialize() {
-  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
-    [JreStringCategoryDummy class];
-  }
-}
+J2OBJC_STATIC_INIT(NSString)
 
 inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER(void);
 /*! INTERNAL ONLY - Use accessor function from above. */

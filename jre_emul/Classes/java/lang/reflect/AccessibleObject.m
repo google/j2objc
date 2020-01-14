@@ -110,6 +110,10 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   return JavaLangReflectAnnotatedElement_getDeclaredAnnotationsByTypeWithIOSClass_(self, arg0);
 }
 
++ (void) __clinit__ {
+  JavaLangReflectAnnotatedElement_initialize();
+}
+
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -137,9 +141,14 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",
     "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    "AccessibleObject", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1,
+    "AccessibleObject", "java.lang.reflect", JavaLangReflectAccessibleObject_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1,
     -1 };
   return &_JavaLangReflectAccessibleObject;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [JavaLangReflectAccessibleObject __metadata]);
 }
 
 @end

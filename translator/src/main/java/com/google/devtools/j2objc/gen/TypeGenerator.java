@@ -18,6 +18,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -33,6 +34,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
@@ -86,6 +88,14 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return true;
   }
 
+  protected String getSuperTypeName() {
+    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
+    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
+      return nameTable.getFullName(supertype);
+    }
+    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
+  }
+  
   private List<BodyDeclaration> filterDeclarations(Iterable<BodyDeclaration> declarations) {
     List<BodyDeclaration> filteredDecls = Lists.newArrayList();
     for (BodyDeclaration decl : declarations) {
@@ -246,17 +256,13 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (typeNode.hasPrivateDeclaration()) {
       return false;
     }
-    return hasInitializeMethod()
+    return (!Options.useGC() && hasInitializeMethod())
         || hasStaticAccessorMethods()
         || ElementUtil.isGeneratedAnnotation(typeElement)
         || hasStaticMethods();
   }
 
   protected boolean needsCompanionClass() {
-	  if (options.useGC()) {
-		  // !!super class 에 대한 Static initialize 가 항상 필요. 
-		  return true;
-	  }
     return needsPublicCompanionClass()
         || !Iterables.isEmpty(Iterables.filter(typeNode.getBodyDeclarations(), HAS_INNER_IMPL));
   }

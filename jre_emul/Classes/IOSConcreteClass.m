@@ -39,10 +39,13 @@
 
 @synthesize objcClass = class_;
 
+void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData);
+
 - (instancetype)initWithClass:(Class)cls
                      metadata:(const J2ObjcClassInfo *)metadata {
   if ((self = [super initWithMetadata:metadata])) {
     class_ = cls;
+    ARGC_bindMetaData(cls, metadata);
   }
   return self;
 }
@@ -79,7 +82,7 @@
       ) {
     return NSObject_class_();
   }
-  Class superclass = [class_ superclass];
+  Class superclass = class_getSuperclass(class_);
   if (superclass != nil) {
     return IOSClass_fromClass(superclass);
   }

@@ -722,6 +722,11 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     DEALLOC_(super);
 }
 
++ (void) __clinit__ {
+  JavaLangAppendable_initialize();
+  JavaLangCharSequence_initialize();
+}
+
 // Suppress undeclared-selector warnings to avoid creating method bodies
 // for all the abstract methods which are implemented in subclasses.
 #pragma clang diagnostic push
@@ -785,11 +790,18 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     "substring", "subSequence", "indexOf", "LNSString;", "LNSString;I", "lastIndexOf", "toString"
   };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
-    "AbstractStringBuilder", "java.lang", ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1,
+    "AbstractStringBuilder", "java.lang", JavaLangAbstractStringBuilder_initialize,
+    ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1,
     -1 };
   return &_JavaLangAbstractStringBuilder;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [JavaLangAbstractStringBuilder __metadata]);
 }
 
 #pragma clang diagnostic pop
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangAbstractStringBuilder)

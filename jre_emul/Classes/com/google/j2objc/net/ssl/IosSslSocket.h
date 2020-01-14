@@ -24,7 +24,7 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleJ2objcNetSslIosSslSocket)
+J2OBJC_STATIC_INIT(ComGoogleJ2objcNetSslIosSslSocket)
 
 // public IosSslSocket()
 FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_init(

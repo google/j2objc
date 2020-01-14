@@ -93,6 +93,8 @@ typedef JavaLangAbstractStringBuilder JreStringBuilder;
 
 @end
 
+J2OBJC_STATIC_INIT(JavaLangAbstractStringBuilder)
+
 CF_EXTERN_C_BEGIN
 
 void JavaLangAbstractStringBuilder_init(JavaLangAbstractStringBuilder *self);

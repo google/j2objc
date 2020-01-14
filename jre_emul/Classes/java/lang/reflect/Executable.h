@@ -94,4 +94,6 @@
 
 @end
 
+J2OBJC_STATIC_INIT(JavaLangReflectExecutable)
+
 #endif // _JavaLangReflectExecutable_H_

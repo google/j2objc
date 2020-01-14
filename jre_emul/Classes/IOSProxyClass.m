@@ -26,12 +26,14 @@
 
 @implementation IOSProxyClass
 
+
 - (instancetype)initWithClass:(Class)cls {
   static const void *ptrTable[] = { "LJavaLangReflectInvocationHandler;" } ;
   static J2ObjcMethodInfo proxyMethods[] = {{NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 }};
   proxyMethods[0].selector = @selector(initWithJavaLangReflectInvocationHandler:);
   static const J2ObjcClassInfo proxyClassMetadata = {
-    NULL, NULL, ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
+    NULL, NULL, empty_static_initialize,
+    ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
   };
   return [self initWithClass:cls metadata:&proxyClassMetadata];
 }

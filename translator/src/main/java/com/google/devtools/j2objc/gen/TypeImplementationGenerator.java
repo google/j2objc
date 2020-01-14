@@ -100,7 +100,6 @@ public class TypeImplementationGenerator extends TypeGenerator {
     printStaticVars();
     printEnumValuesArray();
 
-    printTypeLiteralImplementation();
     if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
@@ -113,7 +112,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
 
     printOuterDeclarations();
-    //printTypeLiteralImplementation();
+    printTypeLiteralImplementation();
     printNameMapping();
   }
 
@@ -246,7 +245,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printTypeLiteralImplementation() {
-    if (options.useGC() || needsTypeLiteral()) {
+    if (needsTypeLiteral()) {
       newline();
       printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
           isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
@@ -380,11 +379,14 @@ public class TypeImplementationGenerator extends TypeGenerator {
   private void printInitializeMethod() {
     List<Statement> initStatements = typeNode.getClassInitStatements();
     List<TypeElement> interfaces = TranslationUtil.getInterfaceTypes(typeNode);
-    if (initStatements.isEmpty() && interfaces.isEmpty()) {
-      return;
-    }
+//    if (initStatements.isEmpty() && interfaces.isEmpty()) {
+//      return;
+//    }
     StringBuilder sb = new StringBuilder();
-    sb.append("{\nif (self == [" + typeName + " class]) {\n");
+    sb.append("{\n");
+    
+    String superType = super.getSuperTypeName();
+    sb.append(super.getSuperTypeName() + "_initialize();\n");
     
     // super interfaces 초기화.
     for (TypeElement intrface : interfaces) {
@@ -398,9 +400,18 @@ public class TypeImplementationGenerator extends TypeGenerator {
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));
     }
-    sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
-    sb.append("}\n}");
-    print("\n+ (void)initialize " + reindent(sb.toString()) + "\n");
+    //sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
+    sb.append("}");
+    print("\n+ (void)__clinit__ " + reindent(sb.toString()) + "\n");
+    
+    if (env.translationUtil().needsReflection(typeElement)) {
+    	print("\n+ (void)initialize {\n");
+    	print("  if (self == [" + typeName + " class]) {\n");
+    	print("    ARGC_bindMetaData(self, [" + typeName + " __metadata]);\n");
+    	print("  }\n");
+    	print("}\n");
+    }
+    //print("\n+ (void)" + typeName + "_clinit(Class self) {\n" + reindent(sb.toString()) + "\n}\n");
   }
 
   protected String generateStatement(Statement stmt) {

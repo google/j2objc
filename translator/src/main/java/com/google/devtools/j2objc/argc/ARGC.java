@@ -637,7 +637,7 @@ public class ARGC {
 				
 			}
 		}
-		preprocessUnit2(unit, new HashMap<>());
+		preprocessUnreachableImportedClasses(unit, new HashMap<>());
 //		for (AbstractTypeDeclaration _t : unit.getTypes()) {
 //		}
 	}
@@ -659,7 +659,7 @@ public class ARGC {
 //        }
 //	}
 	
-	private static HashMap<String, String> preprocessUnit2(CompilationUnit unit, HashMap<String, String> processed) {
+	private static HashMap<String, String> preprocessUnreachableImportedClasses(CompilationUnit unit, HashMap<String, String> processed) {
 		HashMap<String, String> urMap = unit.getUnreachableImportedClasses();
 		if (processed.containsKey(unit.getSourceFilePath())) {
 			return urMap;
@@ -675,7 +675,7 @@ public class ARGC {
 	            }
 	    		CompilationUnit superUnit = units.get(name);
 	    		if (superUnit != null) {
-	    			urMap.putAll(preprocessUnit2(superUnit, processed));
+	    			urMap.putAll(preprocessUnreachableImportedClasses(superUnit, processed));
 	    		}
 	        }
 		}

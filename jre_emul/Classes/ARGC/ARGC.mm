@@ -33,6 +33,7 @@
 #include "RefContext.h"
 #include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
+#include "IOSMetadata.h"
 
 #if !GC_DEBUG
 #pragma GCC optimize ("O2")
@@ -435,6 +436,17 @@ public:
     static int mayHaveGarbage;
 };
 
+ARGC ARGC::_instance;
+int ARGC::mayHaveGarbage = 0;
+static int refAssocKey;
+static int iosclassAssocKey;
+std::atomic_int ARGC::gc_state;
+std::atomic_int ARGC::_clearSoftReference;
+static int64_t gc_interval = 0;
+
+void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData) {
+    objc_setAssociatedObject(cls, &iosclassAssocKey, (id)metaData, OBJC_ASSOCIATION_ASSIGN);
+}
 
 @implementation ARGCObject
 
@@ -445,6 +457,11 @@ public:
 
 + (instancetype)alloc
 {
+    const J2ObjcClassInfo* metadata_ = (const J2ObjcClassInfo*)
+        objc_getAssociatedObject(self, &iosclassAssocKey);
+    if (metadata_ != NULL) {
+      metadata_->initialize();
+    }
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
 }
@@ -546,14 +563,6 @@ public:
 }
 
 @end
-
-ARGC ARGC::_instance;
-int ARGC::mayHaveGarbage = 0;
-static int assocKey;
-std::atomic_int ARGC::gc_state;
-std::atomic_int ARGC::_clearSoftReference;
-static int64_t gc_interval = 0;
-
 
 
 void ARGC::registerScanOffsets(Class clazz) {
@@ -829,7 +838,7 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
                 if (NSExtraRefCount(oid) > 0) continue;
             }
 
-            NSPointerArray* rm = objc_getAssociatedObject(oid, &assocKey);
+            NSPointerArray* rm = objc_getAssociatedObject(oid, &refAssocKey);
             if (markSoftRef) {
                 int j = (int)rm.count;
                 for (; --j >= 0; ) {
@@ -1299,10 +1308,10 @@ extern "C" {
     }
     @synchronized (self) {
         reference->referent_ = oid;
-        NSPointerArray* rm = objc_getAssociatedObject(oid, &assocKey);
+        NSPointerArray* rm = objc_getAssociatedObject(oid, &refAssocKey);
         if (rm == NULL) {
             rm = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
-            objc_setAssociatedObject(oid, &assocKey, rm, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            objc_setAssociatedObject(oid, &refAssocKey, rm, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             ARGC::increaseReferenceCount(oid, @"+ireft");
             [array_ addPointer:oid];
         }
@@ -1323,7 +1332,7 @@ extern "C" {
     
     @synchronized (self) {
         reference->referent_ = NULL;
-        NSPointerArray* rm = objc_getAssociatedObject(oid, &assocKey);
+        NSPointerArray* rm = objc_getAssociatedObject(oid, &refAssocKey);
         if (rm == NULL) return;
 
         for (NSUInteger idx = rm.count; --idx >= 0; ) {

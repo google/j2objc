@@ -61,7 +61,10 @@ static void throwex_db_closed(JNIEnv *env)
 
 static IOSByteArray* getEmptyBLOB()
 {
-  static IOSByteArray* empty_blob = [IOSByteArray arrayWithLength:0];
+  static IOSByteArray* empty_blob = NULL;
+  if (empty_blob == NULL) {
+    empty_blob = [IOSByteArray arrayWithLength:0];
+  }
   return empty_blob;
 }
 
@@ -196,7 +199,7 @@ void xStep(sqlite3_context *context, int args, sqlite3_value** value)
   if (!*func) {
     // clone the Function.Aggregate instance and store a pointer
     // in SQLite's aggregate_context (clean up in xFinal)
-    UDFData* udf = (struct UDFData*)sqlite3_user_data(context);
+    struct UDFData* udf = (struct UDFData*)sqlite3_user_data(context);
     
     *func = [(Aggregate*)udf->func java_clone];
     (void)RETAIN_(*func);
@@ -966,7 +969,7 @@ JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_value_1type(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunguarded-availability-new"
-int is_iOS_13x_available();
+int is_iOS_13x_available(void);
 
 JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_create_1function_1utf8(
                                                                             JNIEnv *env, jobject self, jbyteArray name, jobject func, jint nArgs, jint flags)
@@ -974,14 +977,14 @@ JNIEXPORT jint JNICALL Java_org_sqlite_core_NativeDB_create_1function_1utf8(
   jint ret = 0;
   char *name_bytes;
   
-  struct UDFData *udf = (UDFData*)malloc(sizeof(struct UDFData));
+  struct UDFData *udf = (struct UDFData*)malloc(sizeof(struct UDFData));
   
   if (!udf) { throwex_outofmemory(env); return 0; }
   
   udf->func = RETAIN_(func);
   
   // add new function def to linked list
-  udf->next = (UDFData*)((NativeDB*)self)->udfdatalist_;
+  udf->next = (struct UDFData*)((NativeDB*)self)->udfdatalist_;
   ((NativeDB*)self)->udfdatalist_ = fromref(udf);
   
   name_bytes = utf8JavaByteArrayToUtf8Bytes(env, name, NULL);
@@ -1045,7 +1048,7 @@ JNIEXPORT void JNICALL Java_org_sqlite_core_NativeDB_free_1functions(
   struct UDFData *udf, *udfpass;
   NativeDB* self = (NativeDB*)self0;
   
-  udf = (UDFData*)toref(self->udfdatalist_);
+  udf = (struct UDFData*)toref(self->udfdatalist_);
   self->udfdatalist_ = 0;
   
   while (udf) {
@@ -1085,7 +1088,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_sqlite_core_NativeDB_column_1metadata(
   dbstmt = to_dbstmt(stmt);
   
   colCount = sqlite3_column_count(dbstmt);
-  array = [IOSObjectArray arrayWithLength:colCount type:[IOSBooleanArray class]];
+  array = [IOSObjectArray arrayWithLength:colCount type:IOSClass_arrayOf([IOSClass booleanClass])];
   
   for (i = 0; i < colCount; i++) {
     // load passed column name and table name

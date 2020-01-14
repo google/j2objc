@@ -25,12 +25,17 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcClassInfo _NSCopying = {
-    "Cloneable", "java.lang", NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
+    "Cloneable", "java.lang", empty_static_initialize,
+    NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
   return &_NSCopying;
+}
+
++ (void)initialize {
+  ARGC_bindMetaData(self, [NSCopying __metadata]);
 }
 
 @end
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(NSCopying)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE_EX(NSCopying)
 
 J2OBJC_NAME_MAPPING(NSCopying, "java.lang.Cloneable", "NSCopying")
