@@ -112,6 +112,10 @@ public final class Currency implements Serializable {
 
             String currencyCode = ICU.getCurrencyCode(locale);
             if (currencyCode == null) {
+                // Don't cache -- this is rarely necessary since most countries have currencies.
+                if (Arrays.asList(Locale.getISOCountries()).contains(locale.getCountry())) {
+                    return null;
+                }
                 throw new IllegalArgumentException("Unsupported ISO 3166 country: " + locale);
             } else if (currencyCode.equals("XXX")) {
                 return null;
