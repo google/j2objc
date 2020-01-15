@@ -39,19 +39,12 @@
 
 @synthesize objcClass = class_;
 
-void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData);
-
 - (instancetype)initWithClass:(Class)cls
                      metadata:(const J2ObjcClassInfo *)metadata {
   if ((self = [super initWithMetadata:metadata])) {
     class_ = cls;
-    ARGC_bindMetaData(cls, metadata);
   }
   return self;
-}
-
-- (instancetype)initWithClass:(Class)cls {
-  return [self initWithClass:cls metadata:JreFindMetadata(cls)];
 }
 
 - (id)newInstance {
@@ -61,7 +54,7 @@ void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData);
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
   }
   // Check if reflection is available.
-  if ([self getMetadata]) {
+  if (self->metadata_) {
     // Get the nullary constructor.
     JavaLangReflectConstructor *constructor = JreConstructorWithParamTypes(self, nil);
     if (!constructor) {
@@ -94,12 +87,12 @@ void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData);
 }
 
 - (NSString *)getName {
-  NSString *name = JreClassQualifiedName([self getMetadata]);
+  NSString *name = JreClassQualifiedName(self->metadata_);
   return name ? name : NSStringFromClass(class_);
 }
 
 - (NSString *)getSimpleName {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = self->metadata_;
   return metadata ? JreClassTypeName(metadata) : NSStringFromClass(class_);
 }
 
@@ -118,7 +111,7 @@ void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData);
 }
 
 - (jboolean)isEnum {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = self->metadata_;
   if (metadata) {
     return (metadata->modifiers & JavaLangReflectModifier_ENUM) > 0 &&
         [self getSuperclass] == JavaLangEnum_class_();
@@ -128,7 +121,7 @@ void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData);
 }
 
 - (jboolean)isAnonymousClass {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = self->metadata_;
   if (metadata) {
     return (metadata->modifiers & 0x8000) > 0;
   }

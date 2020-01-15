@@ -104,7 +104,8 @@ public class MetadataWriter extends UnitTreeVisitor {
     }
 
     ExecutableElement metadataElement =
-        GeneratedExecutableElement.newMethodWithSelector("__metadata", CLASS_INFO_TYPE, type)
+        GeneratedExecutableElement.newMethodWithSelector(/*"__metadata"*/"initialize", 
+        		TypeUtil.javaVoid, type)
         .addModifiers(Modifier.STATIC, Modifier.PRIVATE);
     MethodDeclaration metadataDecl = new MethodDeclaration(metadataElement);
     metadataDecl.setHasDeclaration(false);
@@ -144,9 +145,12 @@ public class MetadataWriter extends UnitTreeVisitor {
     
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
+      stmts.add(new NativeStatement("if (self != " + fullName + ".class) return; \n"));
+      
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
       String annotationsFunc = createAnnotationsFunction(typeNode);
+      int modifiers = getTypeModifiers(type);
       String metadata = UnicodeUtils.format(
           "static const J2ObjcClassInfo _%s = { "
           + "%s, %s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
@@ -157,7 +161,7 @@ public class MetadataWriter extends UnitTreeVisitor {
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
           METADATA_VERSION,
-          getTypeModifiers(type),
+          modifiers ,
           methodMetadataCount,
           fieldMetadataCount,
           cStrIdx(getTypeName(ElementUtil.getDeclaringClass(type))),
@@ -169,7 +173,15 @@ public class MetadataWriter extends UnitTreeVisitor {
       // values.
       metadata = UnicodeUtils.format(metadata, getPtrTableEntry());
       stmts.add(new NativeStatement(metadata));
-      stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
+      String _type;
+      if ((modifiers & java.lang.reflect.Modifier.INTERFACE) != 0) {
+    	  _type = "ARGC_bindIOSProtocol(@protocol(" + fullName + ")";
+      }
+      else {
+    	  _type = "ARGC_bindIOSClass(" + fullName + ".class"; 
+      }
+      stmts.add(new NativeStatement(_type + ", " + "&_" + fullName + ");"));
+      //stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
     }
 
     private String getPtrTableEntry() {

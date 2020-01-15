@@ -36,6 +36,7 @@
 const J2ObjcClassInfo JreEmptyClassInfo = {
     NULL, NULL, empty_static_initialize, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
 
+#ifndef J2OBJC_USE_GC
 const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   // Can't use respondsToSelector here because that will search superclasses.
   Method metadataMethod = cls ? JreFindClassMethod(cls, @selector(__metadata)) : NULL;
@@ -55,6 +56,7 @@ const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   }
   return NULL;
 }
+#endif
 
 // Parses the next IOSClass from the delimited string, advancing the c-string pointer past the
 // parsed type.
@@ -278,7 +280,7 @@ static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
   }
   const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
   if (enclosingClass) {
-    NSMutableString *qName = BuildQualifiedName([JreClassForString(enclosingClass) getMetadata]);
+    NSMutableString *qName = BuildQualifiedName(JreClassForString(enclosingClass)->metadata_);
     if (!qName) {
       return nil;
     }

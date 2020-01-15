@@ -178,7 +178,7 @@ static void doWait(id obj, long long timeout) {
 - (void)__javaClone:(id)original {
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)__clinit__ {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x11, 0, -1, -1, 1, -1, -1 },
@@ -215,7 +215,8 @@ static void doWait(id obj, long long timeout) {
   static const J2ObjcClassInfo _NSObject = {
     "Object", "java.lang", empty_static_initialize,
     ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
-  return &_NSObject;
+
+  ARGC_bindIOSClass(NSObject.class, &_NSObject);
 }
 
 
@@ -226,23 +227,6 @@ static void doWait(id obj, long long timeout) {
 
 @end
 
-#ifdef J2OBJC_USE_GC
-
-@implementation JavaLangObject
-- (IOSClass *)getSuperclass {
-    return NSObject_class_();
-}
-
-+ (void)initialize {
-  ARGC_bindMetaData([NSObject class], [NSObject __metadata]);
-}
-@end
-
-J2OBJC_TYPE_LITERAL_HEADER(JavaLangObject)
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(JavaLangObject)
-
-#endif
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(NSObject)
 

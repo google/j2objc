@@ -22,6 +22,7 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "IOSReflection.h"
 #import "NSString+JavaString.h"
 #import "java/io/PrintStream.h"
 #import "java/lang/System.h"
@@ -171,4 +172,5 @@ void runAllJreTests() {
       NSLog(@"Test done");
     controller.testThread = nil;
 }
+
 @end

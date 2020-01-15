@@ -19,8 +19,6 @@
 
 #import "ARGC.h"
 #import "objc/runtime.h"
-#import "../IOSClass.h"
-#import "../IOSReference.h"
 #include "java/lang/ref/Reference.h"
 #include "java/lang/ref/SoftReference.h"
 #include "java/lang/ref/WeakReference.h"
@@ -30,10 +28,18 @@
 #include "java/lang/StringBuilder.h"
 #include "java/io/ByteArrayOutputStream.h"
 #include "java/lang/Exception.h"
+#include "java/lang/reflect/Modifier.h"
+
 #include "RefContext.h"
 #include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
+#include "IOSReflection.h"
 #include "IOSMetadata.h"
+#include "IOSClass.h"
+#include "IOSReference.h"
+#include "IOSConcreteClass.h"
+#include "IOSProtocolClass.h"
+#include "NSString+JavaString.h"
 
 #if !GC_DEBUG
 #pragma GCC optimize ("O2")
@@ -66,9 +72,24 @@ static const int REFS_IN_BUCKET = _1M / sizeof(void*);
 static const int USE_AUTORELEASE_OLD = 0;
 
 
-volatile int64_t RefContext::strong_reachable_generation_bit = 0;
-
 static Class g_ARGCClass;
+static Class g_stringClass;
+static Class g_objectArrayClass;
+static Class g_referenceClass;
+static IOSClass* g_javaStringClass;
+static NSPointerArray* g_softRefs;
+static NSPointerArray* g_weakRefs;
+
+static const int SCANNING = 1;
+static const int FINALIZING = 2;
+static const int FINISHED = 0;
+static scan_offset_t _emptyFields[1] = { 0 };
+
+static int refAssocKey;
+static int iosClassAssocKey;
+//static int metadataAssocKey;
+static int64_t gc_interval = 0;
+
 static Class getARGCClass(id jobj) {
   /*
    NSObject 상속 객체에 대해서만 사용 가능.
@@ -93,13 +114,6 @@ static JObj_p toARGCObject(id oid) {
 
 //##############################################################
 
-static const int SCANNING = 1;
-static const int FINALIZING = 2;
-static const int FINISHED = 0;
-static Class JavaUtilHashMap_KeySet_CLASS = 0;
-static NSPointerArray* g_softRefs;
-static NSPointerArray* g_weakRefs;
-static scan_offset_t _emptyFields[1] = { 0 };
 
 static void OutOfMemory() {
   @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
@@ -115,27 +129,7 @@ public:
 
     Method _no_java_finalize;
 
-    ARGC() {
-        this->_inGC = false;
-        g_softRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
-        g_weakRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
-
-        RefContext::change_generation();
-        JavaLangRefReference_class = objc_lookUpClass("JavaLangRefReference");
-        JavaUtilHashMap_KeySet_CLASS = objc_lookUpClass("JavaUtilHashMap_KeySet");
-        GC_TRACE_CLASS = (Class*)objc_lookUpClass("JavaUtilConcurrentLocksAbstractQueuedSynchronizer");
-        g_ARGCClass = [ARGCObject class];
-        obj_array_class = [IOSObjectArray class];
-        deallocMethod = dealloc_now;
-        _no_java_finalize = class_getInstanceMethod([NSObject class], @selector(java_finalize));
-
-        _scanOffsetCache = [[NSMutableDictionary alloc] init];
-        _finalizeClasses = [[NSMutableDictionary alloc] init];
-        tableLock = [[NSObject alloc]init];
-        scanLock = [[NSObject alloc]init];
-        argcObjectSize = class_getInstanceSize([ARGCObject class]) + sizeof(void*);
-        ARGC_setGarbageCollectionInterval(1000);
-    }
+    ARGC();
     
     int size() {
         return _cntRef;
@@ -425,10 +419,8 @@ private:
     RefSlot* _phantomeTable[1024];
     NSMutableDictionary* _scanOffsetCache;
     NSMutableDictionary* _finalizeClasses;
-    Class JavaLangRefReference_class;
     NSObject* tableLock;
     NSObject* scanLock;
-    Class obj_array_class;
     
     BOOL _inGC;
 public:
@@ -438,14 +430,57 @@ public:
 
 ARGC ARGC::_instance;
 int ARGC::mayHaveGarbage = 0;
-static int refAssocKey;
-static int iosclassAssocKey;
 std::atomic_int ARGC::gc_state;
 std::atomic_int ARGC::_clearSoftReference;
-static int64_t gc_interval = 0;
+volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 
-void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData) {
-    objc_setAssociatedObject(cls, &iosclassAssocKey, (id)metaData, OBJC_ASSOCIATION_ASSIGN);
+void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
+  assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
+  objc_setAssociatedObject(key, &iosClassAssocKey, javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  return (IOSClass*)objc_getAssociatedObject(key, &iosClassAssocKey);
+}
+
+
+void ARGC_bindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData) J2OBJC_METHOD_ATTR {
+  assert(ARGC_getIOSClass(nativeClass) == NULL);
+  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:metaData];
+  ARGC_bindJavaClass(nativeClass, javaClass);
+}
+
+void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData) J2OBJC_METHOD_ATTR {
+  assert(ARGC_getIOSClass(protocol) == NULL);
+  IOSClass *javaClass = [[IOSProtocolClass alloc] initWithProtocol:protocol metadata:metaData];
+  ARGC_bindJavaClass(protocol, javaClass);
+}
+
+
+//void ARGC_bindIOSClass(id nativeClass, IOSClass* javaClass) J2OBJC_METHOD_ATTR {
+//  assert(javaClass->metadata_ == ARGC_getMetaData(nativeClass));
+//  assert(ARGC_getIOSClass(nativeClass) == NULL);
+//  objc_setAssociatedObject(nativeClass, &iosClassAssocKey, (id)javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//}
+
+IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  IOSClass *javaClass = ARGC_getIOSClass(nativeClass);
+  if (javaClass == NULL) {
+    if ([nativeClass isKindOfClass:g_stringClass]) {
+      ARGC_bindJavaClass(nativeClass, g_javaStringClass);
+      javaClass = g_javaStringClass;
+    }
+  }
+  return javaClass;
+}
+
+IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  IOSClass *javaClass = ARGC_getIOSClass(protocol);
+  if (javaClass == NULL) {
+    [NSClassFromString(NSStringFromProtocol(protocol)) class];
+    javaClass = ARGC_getIOSClass(protocol);
+  }
+  return javaClass;
 }
 
 @implementation ARGCObject
@@ -455,12 +490,28 @@ void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData) {
     return _emptyFields;
 }
 
++ (void)load
+{
+    IOSClass* iosClass = ARGC_getIOSClass(self);
+    NSLog(@"load: %@, %@", self, iosClass);
+}
+
++ (void)initialize
+{
+    IOSClass* iosClass = ARGC_getIOSClass(self);
+    NSLog(@"initialize: %@, %@", self, iosClass);
+}
+
 + (instancetype)alloc
 {
-    const J2ObjcClassInfo* metadata_ = (const J2ObjcClassInfo*)
-        objc_getAssociatedObject(self, &iosclassAssocKey);
-    if (metadata_ != NULL) {
-      metadata_->initialize();
+    IOSClass* iosClass = ARGC_getIOSClass(self);
+    if (iosClass != NULL) {
+      iosClass->metadata_->initialize();
+    }
+    else {
+      //ARGC_bindIOSClass(self, &JreEmptyClassInfo
+      NSLog(@"non ARGCObject alloc: %@", self);
+
     }
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
@@ -564,6 +615,31 @@ void ARGC_bindMetaData(Class cls, const J2ObjcClassInfo *metaData) {
 
 @end
 
+ARGC::ARGC() {
+    this->_inGC = false;
+    g_softRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
+    g_weakRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
+
+    RefContext::change_generation();
+    g_referenceClass = objc_lookUpClass("JavaLangRefReference");
+    g_ARGCClass = ARGCObject.class;
+    g_stringClass = NSString.class;
+    g_objectArrayClass = IOSObjectArray.class;
+    deallocMethod = dealloc_now;
+    _no_java_finalize = class_getInstanceMethod(NSObject.class, @selector(java_finalize));
+
+    _scanOffsetCache = [[NSMutableDictionary alloc] init];
+    _finalizeClasses = [[NSMutableDictionary alloc] init];
+    tableLock = [[NSObject alloc]init];
+    scanLock = [[NSObject alloc]init];
+    argcObjectSize = class_getInstanceSize(ARGCObject.class) + sizeof(void*);
+    ARGC_setGarbageCollectionInterval(1000);
+  
+    // initialize IOSClass;
+    (void)IOSClass.class;
+    g_javaStringClass = NSString_class_();
+    ARGC_bindJavaClass(ARGCObject.class, ARGC_getIOSClass(NSObject.class));
+}
 
 void ARGC::registerScanOffsets(Class clazz) {
     scan_offset_t _offset_buf[4096];
@@ -602,7 +678,7 @@ void ARGC::registerScanOffsets(Class clazz) {
                 id oid = [[[NSObject alloc] retain] retain];
                 __unsafe_unretained id* pField = (__unsafe_unretained id *)((char *)clone + offset);
                 _test_obj_buf[cntObjField] = *pField = oid;
-                if (GC_DEBUG && cls == JavaLangRefReference_class) {
+                if (GC_DEBUG && cls == g_referenceClass) {
                     NSLog(@"Refernce[%d].%s field check", (int)(offset / sizeof(JObj_p)), ivar_getName(ivar));
                     //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
                     //continue;
@@ -747,7 +823,7 @@ void ARGC::scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuff
         while (pScanBuff > scanBuff) {
             jobj = *--pScanBuff;
             Class cls = getARGCClass(jobj);
-            if (cls == _instance.obj_array_class) {
+            if (cls == g_objectArrayClass) {
                 ARGC::checkRefCount(jobj, @"mark__ scan");
                 
                 IOSObjectArray* array = (IOSObjectArray*)jobj;
@@ -789,7 +865,7 @@ void ARGC::markReachableSubInstances(JObj_p jobj) {
     JObj_p* pBuffEnd = scanBuff + OBJ_STACK_SIZ;
     
     Class cls = getARGCClass(jobj);
-    if (cls == _instance.obj_array_class) {
+    if (cls == g_objectArrayClass) {
         IOSObjectArray* array = (IOSObjectArray*)jobj;
         scanInstances(array->buffer_, array->size_, scanBuff, pBuffEnd);
     }

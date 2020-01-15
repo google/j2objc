@@ -19,6 +19,7 @@
 #import "JRELogOutputStream.h"
 #import "JRELogPaneView.h"
 #import "java/util/Arrays.h"
+#import "IOSReflection.h"
 
 @interface JRELogOutputStream () {
   JRELogPaneView *logPane_;
@@ -53,6 +54,10 @@
   dispatch_async(dispatch_get_main_queue(), ^{
     [logPane_ printString:str];
   });
+}
+
++ (void) initialize {
+  ARGC_bindIOSClass(JRELogOutputStream.class, &JreEmptyClassInfo);
 }
 
 @end

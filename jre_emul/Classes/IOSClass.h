@@ -48,6 +48,8 @@
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
+@public
+  const J2ObjcClassInfo *metadata_;
 }
 
 @property (readonly) Class objcClass;
@@ -199,7 +201,6 @@
 - (JavaLangReflectMethod *)getMethodWithSelector:(const char *)selector;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
-- (const J2ObjcClassInfo *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
 - (void)appendMetadataName:(NSMutableString *)str;
@@ -245,7 +246,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 
 CF_EXTERN_C_END
 
-J2OBJC_STATIC_INIT(IOSClass)
+J2OBJC_EMPTY_STATIC_INIT(IOSClass)
 
 J2OBJC_TYPE_LITERAL_HEADER(IOSClass)
 

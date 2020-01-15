@@ -264,7 +264,9 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   JavaLangReflectExecutable_initialize();
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)initialize {
+  if (self != JavaLangReflectMethod.class) return;
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -321,11 +323,8 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
     "Method", "java.lang.reflect", JavaLangReflectMethod_initialize,
     ptrTable, methods, NULL, 7, 0x1, 21, 0, -1, -1, -1, -1, -1 };
-  return &_JavaLangReflectMethod;
-}
 
-+ (void)initialize {
-  ARGC_bindMetaData(self, [JavaLangReflectMethod __metadata]);
+  ARGC_bindIOSClass(JavaLangReflectMethod.class, &_JavaLangReflectMethod);
 }
 
 @end

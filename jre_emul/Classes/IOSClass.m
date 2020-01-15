@@ -68,10 +68,6 @@
 
 #define IOSClass_serialVersionUID 3206093459760846163LL
 
-@interface IOSClass () {
-  const J2ObjcClassInfo *metadata_;
-}
-@end
 
 J2OBJC_INITIALIZED_DEFN(IOSClass)
 
@@ -167,6 +163,7 @@ void empty_static_initialize() {}
 
 - (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata {
   if ((self = [super init])) {
+    assert(metadata != NULL);
     metadata_ = metadata;
   }
   return self;
@@ -1177,6 +1174,7 @@ OS_INLINE bool FastObjectLookupAddMapping(FastPointerLookup_t *lookup, __unsafe_
   return IOSClass_class_();
 }
 
+#ifndef J2OBJC_USE_GC
 static jboolean IsStringType(Class cls) {
   // We can't trigger class initialization because that might recursively enter
   // FetchClass and result in deadlock within the FastPointerLookup. Therefore,
@@ -1190,11 +1188,15 @@ static jboolean IsStringType(Class cls) {
   }
   return false;
 }
+#endif
 
 void ARGC_strongRetain(id obj);
 
 static IOSClass* CreateClassLookup(Class cls) {
   //Class cls = (Class)clsPtr;
+#ifdef J2OBJC_USE_GC
+  return NULL;
+#else
   if (IsStringType(cls)) {
     // NSString is implemented by several subclasses.
     // Thread safety is guaranteed by the FastPointerLookup that calls this.
@@ -1207,16 +1209,26 @@ static IOSClass* CreateClassLookup(Class cls) {
   IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
     ARGC_strongRetain(result);
   return result;
+#endif
 }
 
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
   // lookup because +initialize makes calls into IOSClass_fromClass().
+#ifdef J2OBJC_USE_GC
+  IOSClass * ios_cls = ARGC_getIOSConcreteClass(cls);
+  assert (ios_cls != NULL);
+  return ios_cls;
+#else
   IOSClass_initialize();
   return (IOSClass *)FastObjectLookup(&classLookup, cls);
+#endif
 }
 
 IOSClass *IOSClass_NewProxyClass(Class cls) {
+#ifdef J2OBJC_USE_GC
+  return NULL;
+#else
   IOSClass *result = [[IOSProxyClass alloc] initWithClass:cls];
   if (!FastObjectLookupAddMapping(&classLookup, cls, result)) {
     // This function should only be called by java.lang.reflect.Proxy
@@ -1224,14 +1236,25 @@ IOSClass *IOSClass_NewProxyClass(Class cls) {
     @throw create_JavaLangAssertionError_init();
   }
   return result;
+#endif
 }
 
 static IOSProtocolClass *CreateProtocolLookup(Protocol *protocol) {
+#ifdef J2OBJC_USE_GC
+  return NULL;
+#else
   return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
+#endif
 }
 
 IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
+#ifdef J2OBJC_USE_GC
+  IOSClass * ios_cls = ARGC_getIOSProtocolClass(protocol);
+  assert (ios_cls != NULL);
+  return ios_cls;
+#else
   return (IOSClass *)FastObjectLookup(&protocolLookup, protocol);
+#endif
 }
 
 static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
@@ -1254,54 +1277,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   // do nothing.
 }
 
-+ (void)initialize {
-  if (self == [IOSClass class]) {
-    // JavaLangObject class 로딩.
-    [JavaLangObject class];
-    ARGC_bindMetaData(self, [IOSClass __metadata]);
-
-    FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
-    FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
-    FAST_OBJECT_LOOKUP_INIT(&protocolLookup, &CreateProtocolLookup);
-
-    IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
-    IOSClass_charClass = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
-    IOSClass_doubleClass = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
-    IOSClass_floatClass = [[IOSPrimitiveClass alloc] initWithName:@"float" type:@"F"];
-    IOSClass_intClass = [[IOSPrimitiveClass alloc] initWithName:@"int" type:@"I"];
-    IOSClass_longClass = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
-    IOSClass_shortClass = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
-    IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
-    IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
-
-    IOSClass_objectClass = IOSClass_fromClass([NSObject class]);
-
-    IOSClass_emptyClassArray = [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
-
-    // Load and initialize JRE categories, using their dummy classes.
-    NSString_initialize();
-    [NSCopying class];
-
-    // Verify that these categories successfully loaded.
-    if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
-        [[NSString class] instanceMethodSignatureForSelector:@selector(java_trim)] == NULL ||
-        ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
-      [NSException raise:@"J2ObjCLinkError"
-                  format:@"Your project is not configured to load categories from the JRE "
-                          "emulation library. Try adding the -force_load linker flag."];
-    }
-
-#ifdef J2OBJC_USE_GC
-      FastObjectLookupAddMapping(&classLookup, [JavaLangObject class], NSObject_class_());
-      FastObjectLookupAddMapping(&classLookup, [ARGCObject class], NSObject_class_());
-#endif
-
-    J2OBJC_SET_INITIALIZED(IOSClass)
-  }
-}
-
 // Generated by running the translator over the java.lang.Class stub file.
-+ (const J2ObjcClassInfo *)__metadata {
+static const J2ObjcClassInfo * IOSClass__metadata() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x9, 0, 1, 2, 3, -1, -1 },
@@ -1464,10 +1441,55 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", IOSClass_initialize,
+    "Class", "java.lang", empty_static_initialize,
     ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 49, -1 };
   return &_IOSClass;
 }
+
++ (void)initialize {
+  if (self != IOSClass.class) return;
+  
+  // JavaLangObject class 로딩.
+  [(id)NSObject.class __clinit__];
+  ARGC_bindIOSClass(IOSClass.class, IOSClass__metadata());
+
+  FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
+  FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
+  FAST_OBJECT_LOOKUP_INIT(&protocolLookup, &CreateProtocolLookup);
+
+  IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
+  IOSClass_charClass = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
+  IOSClass_doubleClass = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
+  IOSClass_floatClass = [[IOSPrimitiveClass alloc] initWithName:@"float" type:@"F"];
+  IOSClass_intClass = [[IOSPrimitiveClass alloc] initWithName:@"int" type:@"I"];
+  IOSClass_longClass = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
+  IOSClass_shortClass = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
+  IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
+  IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
+
+  IOSClass_objectClass = IOSClass_fromClass(NSObject.class);
+
+  IOSClass_emptyClassArray = [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
+
+  // Load and initialize JRE categories, using their dummy classes.
+  [(id)NSNumber.class __clinit__];
+  [(id)NSString.class __clinit__];
+  [(id)NSCopying.class __clinit__];
+
+  // Verify that these categories successfully loaded.
+  if ([NSObject.class instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
+      [NSString.class instanceMethodSignatureForSelector:@selector(java_trim)] == NULL ||
+      ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
+    [NSException raise:@"J2ObjCLinkError"
+                format:@"Your project is not configured to load categories from the JRE "
+                        "emulation library. Try adding the -force_load linker flag."];
+  }
+
+#ifdef J2OBJC_USE_GC
+  FastObjectLookupAddMapping(&classLookup, [ARGCObject class], NSObject_class_());
+#endif
+}
+
 
 +(instancetype)alloc {
     return [super alloc];
@@ -1485,7 +1507,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(IOSClass)
 
 J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
 

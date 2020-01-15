@@ -141,7 +141,9 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
 }
 
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)initialize {
+  if (self != JavaLangReflectConstructor.class) return;
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -192,11 +194,8 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     "Constructor", "java.lang.reflect", JavaLangReflectConstructor_initialize,
     ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
   };
-  return &_JavaLangReflectConstructor;
-}
 
-+ (void)initialize {
-  ARGC_bindMetaData(self, [JavaLangReflectConstructor __metadata]);
+  ARGC_bindIOSClass(JavaLangReflectConstructor.class, &_JavaLangReflectConstructor);
 }
 
 @end

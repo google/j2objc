@@ -327,7 +327,7 @@ FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaL
     id<JavaLangCharSequence> delimiter, id<JavaLangIterable> elements) J2OBJC_METHOD_ATTR;
 
 // Use the category dummy to initialize static variables for the String class.
-J2OBJC_STATIC_INIT(NSString)
+J2OBJC_EMPTY_STATIC_INIT(NSString)
 
 inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER(void);
 /*! INTERNAL ONLY - Use accessor function from above. */

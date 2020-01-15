@@ -404,13 +404,13 @@ public class TypeImplementationGenerator extends TypeGenerator {
     sb.append("}");
     print("\n+ (void)__clinit__ " + reindent(sb.toString()) + "\n");
     
-    if (env.translationUtil().needsReflection(typeElement)) {
-    	print("\n+ (void)initialize {\n");
-    	print("  if (self == [" + typeName + " class]) {\n");
-    	print("    ARGC_bindMetaData(self, [" + typeName + " __metadata]);\n");
-    	print("  }\n");
-    	print("}\n");
-    }
+//    if (env.translationUtil().needsReflection(typeElement)) {
+//    	print("\n+ (void)initialize {\n");
+//    	print("  if (self == [" + typeName + " class]) {\n");
+//    	print("    ARGC_bindMetaData(self, [" + typeName + " __metadata]);\n");
+//    	print("  }\n");
+//    	print("}\n");
+//    }
     //print("\n+ (void)" + typeName + "_clinit(Class self) {\n" + reindent(sb.toString()) + "\n}\n");
   }
 

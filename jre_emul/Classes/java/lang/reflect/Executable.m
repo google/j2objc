@@ -293,7 +293,9 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)initialize {
+  if (self != JavaLangReflectExecutable.class) return;
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x401, -1, -1, -1, 0, -1, -1 },
@@ -348,7 +350,8 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
     "Executable", "java.lang.reflect", JavaLangReflectExecutable_initialize,
     ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
   };
-  return &_JavaLangReflectExecutable;
+
+  ARGC_bindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable);
 }
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
@@ -375,10 +378,6 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
                          parameters:parser->parameterTypes_
                          returnType:parser->returnType_
                      typeParameters:parser->formalTypeParameters_]);
-}
-
-+ (void)initialize {
-  ARGC_bindMetaData(self, [JavaLangReflectExecutable __metadata]);
 }
 
 

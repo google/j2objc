@@ -25,7 +25,7 @@
 
 @implementation NSNumber (JavaNumber)
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)__clinit__ {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "B", 0x1, 0, -1, -1, -1, -1, -1 },
@@ -53,11 +53,8 @@
   static const J2ObjcClassInfo _NSNumber = {
     "Number", "java.lang", empty_static_initialize,
     ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
-  return &_NSNumber;
-}
 
-+ (void)initialize {
-  ARGC_bindMetaData(self, [NSNumber __metadata]);
+  ARGC_bindIOSClass(NSNumber.class, &_NSNumber);
 }
 
 @end

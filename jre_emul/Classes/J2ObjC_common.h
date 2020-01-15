@@ -80,8 +80,7 @@ void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn)) J2OBJ
 void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 
 #ifdef J2OBJC_USE_GC
-@interface JavaLangObject : ARGCObject
-@end
+#define JavaLangObject ARGCObject
 
 #define JreStrongAssign                 ARGC_assignStrongObject
 #define JreStrongAssignAndConsume       ARGC_assignStrongObject
@@ -291,7 +290,7 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
+    dispatch_once(&token, ^{ cls = IOSClass_fromProtocol((id)@protocol(TYPE)); }); \
     return cls; \
   }
 

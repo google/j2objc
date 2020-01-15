@@ -172,4 +172,7 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
   return nil;
 }
 
+//+ (void)initailize {
+//  ARGC_bindConcrete
+//}
 @end

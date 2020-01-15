@@ -104,6 +104,7 @@ public final class TypeUtil {
   private static Elements javacElements;
   private static Types javacTypes;
   private static ElementUtil elementUtil;
+  public static NoType javaVoid;
 
   // Commonly accessed types.
   /*ARGC** private*/public static TypeElement javaObject;
@@ -127,6 +128,11 @@ public final class TypeUtil {
     javaNumber = javacElements.getTypeElement("java.lang.Number");
     javaThrowable = javacElements.getTypeElement("java.lang.Throwable");
     TypeElement javaCloneable = javacElements.getTypeElement("java.lang.Cloneable");
+    javaVoid = javacTypes.getNoType(TypeKind.VOID);
+    if (javaVoid == null) {
+    	System.err.println("no void");
+    	System.exit(-1);
+    }
 
     ImmutableMap.Builder<TypeElement, TypeElement> typeMapBuilder =
         ImmutableMap.<TypeElement, TypeElement>builder()

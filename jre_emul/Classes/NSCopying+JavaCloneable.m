@@ -23,15 +23,12 @@
 
 @implementation NSCopying
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)__clinit__ {
   static const J2ObjcClassInfo _NSCopying = {
     "Cloneable", "java.lang", empty_static_initialize,
     NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
-  return &_NSCopying;
-}
-
-+ (void)initialize {
-  ARGC_bindMetaData(self, [NSCopying __metadata]);
+  
+  ARGC_bindIOSProtocol(@protocol(NSCopying), &_NSCopying);
 }
 
 @end

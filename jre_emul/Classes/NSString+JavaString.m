@@ -57,6 +57,8 @@
 
 #define NSString_serialVersionUID -6849794470754667710LL
 
+static void NSString_CaseInsensitiveComparator_initialize();
+
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {
@@ -891,7 +893,7 @@ jint javaStringHashCode(NSString *string) {
   return JavaLangCharSequence_codePoints(self);
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)__clinit__ {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 },
@@ -1083,13 +1085,12 @@ jint javaStringHashCode(NSString *string) {
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", NSString_initialize,
+    "String", "java.lang", empty_static_initialize,
     ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
-  return &_NSString;
-}
-
-+ (void)initialize {
-  ARGC_bindMetaData(self, [NSString __metadata]);
+  
+  ARGC_bindIOSClass(NSString.class, &_NSString);
+  
+  NSString_CaseInsensitiveComparator_initialize();
 }
 
 @end
@@ -1175,7 +1176,7 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
   return JavaUtilComparator_thenComparingLongWithJavaUtilFunctionToLongFunction_(self, arg0);
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)__clinit__ {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 0, 1, -1, -1, -1, -1 },
@@ -1197,44 +1198,53 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
     "CaseInsensitiveComparator", "java.lang", empty_static_initialize,
     ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
     -1 };
-  return &_NSString_CaseInsensitiveComparator;
-}
-
-+ (void)initialize {
-  ARGC_bindMetaData(self, [NSString_CaseInsensitiveComparator __metadata]);
+  
+  ARGC_bindIOSClass(NSString_CaseInsensitiveComparator.class, &_NSString_CaseInsensitiveComparator);
 }
 
 @end
 
-J2OBJC_INITIALIZED_DEFN(NSString)
+//J2OBJC_INITIALIZED_DEFN(NSString)
 
 id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
 IOSObjectArray *NSString_serialPersistentFields;
 
-// Empty class to force category to be loaded.
-@interface JreStringCategoryDummy : JavaLangObject
-@end
+void NSString_CaseInsensitiveComparator_initialize() {
+  [NSString_CaseInsensitiveComparator __clinit__];
 
-@implementation JreStringCategoryDummy
-
-+ (void)initialize {
-  if (self == [JreStringCategoryDummy class]) {
-    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
-        [[NSString_CaseInsensitiveComparator alloc] init]);
-    JreStrongAssignAndConsume(&NSString_serialPersistentFields,
-        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
-    J2OBJC_SET_INITIALIZED(NSString)
-  }
+  JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
+    [[NSString_CaseInsensitiveComparator alloc] init]);
+  JreStrongAssignAndConsume(&NSString_serialPersistentFields,
+    [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
 }
 
-@end
+//// Empty class to force category to be loaded.
+//@interface JreStringCategoryDummy : JavaLangObject
+//@end
+//
+//@implementation JreStringCategoryDummy
+//
+//+ (void)initialize {
+//  if (self == [JreStringCategoryDummy class]) {
+//    ARGC_bindMetaData(self, [NSString __metadata]);
+//    ARGC_bindMetaData(self, [NSString_CaseInsensitiveComparator __metadata]);
+//
+//    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
+//        [[NSString_CaseInsensitiveComparator alloc] init]);
+//    JreStrongAssignAndConsume(&NSString_serialPersistentFields,
+//        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
+//    J2OBJC_SET_INITIALIZED(NSString)
+//  }
+//}
+//
+//@end
 
-static _Atomic(jboolean) NSString__initialized;
-void NSString_initialize() {
-  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
-    [JreStringCategoryDummy class];
-  }
-}
+//static _Atomic(jboolean) NSString__initialized;
+//void NSString_initialize() {
+//  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
+//    [JreStringCategoryDummy class];
+//  }
+//}
 
 IOSClass *NSString_class_() { \
   static IOSClass *cls; \

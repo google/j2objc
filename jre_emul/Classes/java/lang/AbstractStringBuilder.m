@@ -732,7 +732,9 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)initialize {
+  if (self != JavaLangAbstractStringBuilder.class) return;
+  
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x0, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x0, -1, 0, -1, -1, -1, -1 },
@@ -791,13 +793,9 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
     "AbstractStringBuilder", "java.lang", JavaLangAbstractStringBuilder_initialize,
-    ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1,
-    -1 };
-  return &_JavaLangAbstractStringBuilder;
-}
+    ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1, -1 };
 
-+ (void)initialize {
-  ARGC_bindMetaData(self, [JavaLangAbstractStringBuilder __metadata]);
+  ARGC_bindIOSClass(JavaLangAbstractStringBuilder.class, &_JavaLangAbstractStringBuilder);
 }
 
 #pragma clang diagnostic pop

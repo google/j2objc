@@ -114,7 +114,9 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   JavaLangReflectAnnotatedElement_initialize();
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void)initialize {
+  if (self != JavaLangReflectAccessibleObject.class) return;
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -142,13 +144,9 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
     "AccessibleObject", "java.lang.reflect", JavaLangReflectAccessibleObject_initialize,
-    ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1,
-    -1 };
-  return &_JavaLangReflectAccessibleObject;
-}
+    ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1, -1 };
 
-+ (void)initialize {
-  ARGC_bindMetaData(self, [JavaLangReflectAccessibleObject __metadata]);
+  ARGC_bindIOSClass(JavaLangReflectAccessibleObject.class, &_JavaLangReflectAccessibleObject);
 }
 
 @end

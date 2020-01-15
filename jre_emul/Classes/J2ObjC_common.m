@@ -419,7 +419,7 @@ FOUNDATION_EXPORT void JreRelease(id obj) {
 }
 
 FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal) {
-  const J2ObjcClassInfo *metadata = [enumClass getMetadata];
+  const J2ObjcClassInfo *metadata = enumClass->metadata_;
   if (metadata) {
     return [NSString stringWithUTF8String:metadata->fields[ordinal].name];
   } else {
