@@ -142,7 +142,15 @@ public final class NativeTimeZone extends TimeZone {
    */
   private NativeTimeZone(Object nativeTimeZone, String name, int rawOffset, int dstSavings,
                  boolean useDaylightTime) {
-    setID(name);
+    if (name.startsWith("GMT-")) {
+      int offsetMillis = rawOffset;
+      if (useDaylightTime) {
+        offsetMillis += dstSavings;
+      }
+      setID(createGmtOffsetString(true, true, offsetMillis));
+    } else {
+      setID(name);
+    }
     this.nativeTimeZone = nativeTimeZone;
     this.rawOffset = rawOffset;
     this.dstSavings = dstSavings;
