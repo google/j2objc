@@ -249,9 +249,11 @@ public class NumberFormatTest extends junit.framework.TestCase {
       // Allow either full-width (0xFFE5) or regular width yen sign (0xA5).
       assertTrue(result.equals("￥50") || result.equals("¥50"));
 
-      // Armenian Dram 2 fractional digits.
+      // Armenian Dram 0 fractional digits.
       nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
-      assertEquals("50,00\u00a0֏", nf.format(50.00));
+      result = nf.format(50.00);
+      // Allow different versions of the ICU CLDR.
+      assertTrue(result.equals("֏\u00a050") || result.equals("50\u00a0֏"));
 
       // Swiss Francs 2 fractional digits.
       nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
