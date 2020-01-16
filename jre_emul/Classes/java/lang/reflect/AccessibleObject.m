@@ -110,12 +110,12 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   return JavaLangReflectAnnotatedElement_getDeclaredAnnotationsByTypeWithIOSClass_(self, arg0);
 }
 
-+ (void) __clinit__ {
+static void JavaLangReflectAccessibleObject__clinit__() {
   JavaLangReflectAnnotatedElement_initialize();
 }
 
 + (void)initialize {
-  if (self != JavaLangReflectAccessibleObject.class) return;
+  assert (self == JavaLangReflectAccessibleObject.class);
 
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -158,4 +158,5 @@ void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleO
   }
 }
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectAccessibleObject)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectAccessibleObject)

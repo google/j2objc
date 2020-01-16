@@ -132,7 +132,7 @@ public class CastResolver extends UnitTreeVisitor {
   private FunctionInvocation createCastCheck(TypeMirror type, Expression expr) {
     type = typeUtil.erasure(type);
     TypeMirror idType = TypeUtil.ID_TYPE;
-    if (TypeUtil.isInterface(type) || isObjectArray(type)) {
+    if (TypeUtil.isPureInterface(type) || isObjectArray(type)) {
       // Interfaces and object arrays require an isInstance call.
       FunctionElement element = new FunctionElement("cast_check", idType, null)
           .addParameters(idType, TypeUtil.IOS_CLASS.asType());

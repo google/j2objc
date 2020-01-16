@@ -117,7 +117,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     };
 
     printTypeDocumentation();
-    if (typeElement.getKind().isInterface()) {
+    if (super.isInterfaceType()) {
     	boolean argc_patch = true;
     	if (argc_patch) {
     		printf("@class IOSClass;\n\n");
@@ -127,12 +127,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printf("@interface %s : %s", typeName, getSuperTypeName());
     }
     printImplementedProtocols();
-    if (!typeElement.getKind().isInterface()) {
+    if (!super.isInterfaceType()) {
       printInstanceVariables();
     } else {
       newline();
     }
-    if (!typeElement.getKind().isInterface()) {
+    if (!super.isInterfaceType()) {
       printProperties();
       printStaticAccessors();
     }
@@ -221,6 +221,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printImplementedProtocols() {
+	if (TypeUtil.isAnnotation(this.typeElement.asType())) {
+		return;
+	}
     List<String> interfaces = getInterfaceNames();
     if (!interfaces.isEmpty()) {
       print(" < ");
@@ -367,7 +370,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-	if (!typeElement.getKind().isInterface() || !needsCompanionClass()
+	if (!super.isInterfaceType() || !needsCompanionClass()
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
@@ -392,7 +395,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 		return;
 	}
 	if (options.useGC()) {
-		if (super.needsTypeLiteral()) {
+		if (super.needsClassInit()) {
 			printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
 		}
 		else {
@@ -400,7 +403,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 		}
 	}
 	else {
-	    if (!typeElement.getKind().isInterface()) {
+	    if (!super.isInterfaceType()) {
 	    	/**
 	    	 * 상위 Class 가 InitializeMethod를 가진 경우에 반드시 처리.
 	    	 */
@@ -560,7 +563,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (needsTypeLiteral()) {
       newline();
 	  if (ARGC.inPureObjCMode()) {
-		if (typeElement.getKind().isInterface()) {
+		if (super.isInterfaceType()) {
 		  printf("FOUNDATION_EXPORT IOSClass *%s_class_();\n", typeName);
 		}
 	  }
@@ -619,7 +622,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String unprefixedName =
           NameTable.camelCaseQualifiedName(ElementUtil.getQualifiedName(typeElement));
       if (!unprefixedName.equals(typeName)) {
-        if (typeElement.getKind().isInterface()) {
+        if (super.isInterfaceType()) {
           // Protocols can't be used in typedefs.
           printf("\n#define %s %s\n", unprefixedName, typeName);
         } else {
@@ -639,7 +642,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     ExecutableElement methodElement = m.getExecutableElement();
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
 
-    if (typeElement.getKind().isInterface()) {
+    if (super.isInterfaceType()) {
       // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
       // in @protocol) or must both be true (i.e. this prints a static method decl in the
       // companion class' @interface).

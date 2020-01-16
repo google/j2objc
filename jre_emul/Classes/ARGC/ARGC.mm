@@ -436,6 +436,7 @@ volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 
 void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
   assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
+  NSIncrementExtraRefCount(javaClass);
   objc_setAssociatedObject(key, &iosClassAssocKey, javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -471,7 +472,7 @@ IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC
       javaClass = g_javaStringClass;
     }
   }
-  return javaClass;
+  return RETAIN_(javaClass);
 }
 
 IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
@@ -480,7 +481,7 @@ IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJ
     [NSClassFromString(NSStringFromProtocol(protocol)) class];
     javaClass = ARGC_getIOSClass(protocol);
   }
-  return javaClass;
+  return RETAIN_(javaClass);
 }
 
 @implementation ARGCObject

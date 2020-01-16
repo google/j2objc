@@ -316,7 +316,7 @@ public class ClassFileConverter {
         }
       }
     }
-    if (typeDecl.isInterface()) {
+    if (TypeUtil.isInterface(element.asType())) {
       removeInterfaceModifiers(typeDecl);
     }
     return typeDecl;

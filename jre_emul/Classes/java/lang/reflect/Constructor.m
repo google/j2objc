@@ -136,13 +136,13 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   return [s description];
 }
 
-+ (void) __clinit__ {
+static void JavaLangReflectConstructor__clinit__() {
   JavaLangReflectExecutable_initialize();
 }
 
 
 + (void)initialize {
-  if (self != JavaLangReflectConstructor.class) return;
+  assert (self == JavaLangReflectConstructor.class);
 
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -200,4 +200,5 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectConstructor)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectConstructor)

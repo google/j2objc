@@ -722,7 +722,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     DEALLOC_(super);
 }
 
-+ (void) __clinit__ {
+static void JavaLangAbstractStringBuilder__clinit__() {
   JavaLangAppendable_initialize();
   JavaLangCharSequence_initialize();
 }
@@ -733,7 +733,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 
 + (void)initialize {
-  if (self != JavaLangAbstractStringBuilder.class) return;
+  assert (self == JavaLangAbstractStringBuilder.class);
   
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x0, -1, -1, -1, -1, -1, -1 },
@@ -802,4 +802,5 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangAbstractStringBuilder)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangAbstractStringBuilder)

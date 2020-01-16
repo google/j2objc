@@ -100,7 +100,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     printStaticVars();
     printEnumValuesArray();
 
-    if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
+    if (!super.isInterfaceType() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
@@ -245,10 +245,15 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printTypeLiteralImplementation() {
-    if (needsTypeLiteral()) {
+    if (needsTypeLiteral() || needsClassInit()) {
       newline();
-      printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
-          isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+      if (needsClassInit()) {
+    	 printf("J2OBJC_CLASS_INITIALIZE_SOURCE(%s)\n", typeName);
+      }
+      if (needsTypeLiteral()) {
+     	 printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
+     	   isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+      }
     }
   }
 
@@ -379,22 +384,27 @@ public class TypeImplementationGenerator extends TypeGenerator {
   private void printInitializeMethod() {
     List<Statement> initStatements = typeNode.getClassInitStatements();
     List<TypeElement> interfaces = TranslationUtil.getInterfaceTypes(typeNode);
+    if (!super.needsClassInit()) {
+    	return;
+    }
 //    if (initStatements.isEmpty() && interfaces.isEmpty()) {
 //      return;
 //    }
     StringBuilder sb = new StringBuilder();
     sb.append("{\n");
     
-    String superType = super.getSuperTypeName();
-    sb.append(super.getSuperTypeName() + "_initialize();\n");
-    
-    // super interfaces 초기화.
-    for (TypeElement intrface : interfaces) {
-    	if (intrface == JavacEnvironment.unreachbleError
-    	||  intrface.getQualifiedName().toString().startsWith("com.google.j2objc.")) {
-    		continue;
-    	}
-      	sb.append(nameTable.getFullName(intrface) + "_initialize();\n");
+    if (!TypeUtil.isAnnotation(this.typeElement.asType())) {
+	    String superType = super.getSuperTypeName();
+	    sb.append(super.getSuperTypeName() + "_initialize();\n");
+	    
+	    // super interfaces 초기화.
+	    for (TypeElement intrface : interfaces) {
+	    	if (intrface == JavacEnvironment.unreachbleError
+	    	||  intrface.getQualifiedName().toString().startsWith("com.google.j2objc.")) {
+	    		continue;
+	    	}
+	      	sb.append(nameTable.getFullName(intrface) + "_initialize();\n");
+	    }
     }
     
     for (Statement statement : initStatements) {
@@ -402,7 +412,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     //sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
     sb.append("}");
-    print("\n+ (void)__clinit__ " + reindent(sb.toString()) + "\n");
+    print("\nstatic void " + typeName + "__clinit__() " + reindent(sb.toString()) + "\n");
     
 //    if (env.translationUtil().needsReflection(typeElement)) {
 //    	print("\n+ (void)initialize {\n");

@@ -396,13 +396,13 @@ static void SetWithRawValue(
   return [[declaringClass_ getName] hash] ^ [[self getName] hash];
 }
 
-+ (void) __clinit__ {
+static void JavaLangReflectField__clinit__() {
   JavaLangReflectAccessibleObject_initialize();
   JavaLangReflectMember_initialize();
 }
 
 + (void)initialize {
-  if (self != JavaLangReflectField.class) return;
+  assert (self == JavaLangReflectField.class);
 
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -484,4 +484,5 @@ static void SetWithRawValue(
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectField)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectField)

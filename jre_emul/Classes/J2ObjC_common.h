@@ -248,14 +248,14 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
 #define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
   FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
 
-#define J2OBJC_CLAS_INITIALIZE_SOURCE(CLASS) \
+#define J2OBJC_CLASS_INITIALIZE_SOURCE(CLASS) \
   static _Atomic(jboolean) CLASS##__initialized = false; \
   void CLASS##_initialize() { \
     if (!CLASS##__initialized) { \
       jboolean compare = false; \
       if (__c11_atomic_compare_exchange_strong(&CLASS##__initialized, &compare, true, \
           __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) { \
-        [CLASS __clinit__]; \
+        CLASS##__clinit__(); \
       } \
     } \
   }
@@ -267,7 +267,7 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
  * @define J2OBJC_CLASS_TYPE_LITERAL_SOURCE
  * @param TYPE The name of the type to define the accessor for.
  */
-#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(TYPE) \
+#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
@@ -275,9 +275,6 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
     return cls; \
   }
 
-#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
-  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
-  J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(TYPE)
 
 /*!
  * Defines the type literal accessor for a interface or annotation type. This
@@ -286,7 +283,7 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
  * @define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE
  * @param TYPE The name of the type to define the accessor for.
  */
-#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE_EX(TYPE) \
+#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
@@ -294,9 +291,6 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
     return cls; \
   }
 
-#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
-  J2OBJC_CLAS_INITIALIZE_SOURCE(TYPE) \
-  J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE_EX(TYPE)
 
 #ifdef J2OBJC_USE_GC
 #define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \

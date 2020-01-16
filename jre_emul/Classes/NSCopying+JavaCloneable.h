@@ -22,9 +22,6 @@
 
 #include "J2ObjC_common.h"
 
-@interface NSCopying : NSObject
-@end
-
 J2OBJC_EMPTY_STATIC_INIT(NSCopying)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSCopying)

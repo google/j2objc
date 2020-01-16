@@ -21,9 +21,7 @@
 
 #include "J2ObjC_source.h"
 
-@implementation NSCopying
-
-+ (void)__clinit__ {
+void NSCopying__init_class__() {
   static const J2ObjcClassInfo _NSCopying = {
     "Cloneable", "java.lang", empty_static_initialize,
     NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
@@ -31,8 +29,6 @@
   ARGC_bindIOSProtocol(@protocol(NSCopying), &_NSCopying);
 }
 
-@end
-
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE_EX(NSCopying)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(NSCopying)
 
 J2OBJC_NAME_MAPPING(NSCopying, "java.lang.Cloneable", "NSCopying")

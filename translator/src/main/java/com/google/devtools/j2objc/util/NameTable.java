@@ -625,7 +625,7 @@ public class NameTable {
     /* ARGC** String*/TypeElement classType = null;
     List<String> interfaces = new ArrayList<>();
     for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
-      if (bound.getKind().isInterface()) {
+      if (TypeUtil.isPureInterface(bound)) {
         interfaces.add(getFullName(bound));
       } else {
         assert classType == null : "Cannot have multiple class bounds";

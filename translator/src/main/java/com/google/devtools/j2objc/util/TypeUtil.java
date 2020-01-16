@@ -183,6 +183,14 @@ public final class TypeUtil {
     return kind != null ? kind.isInterface() : false;
   }
 
+  public static boolean isPureInterface(TypeElement t) {
+	  return isPureInterface(t.asType());
+  }
+  
+  public static boolean isPureInterface(TypeMirror t) {
+    return isInterface(t) && !isAnnotation(t);
+  }
+
   public static boolean isEnum(TypeMirror t) {
     return getDeclaredTypeKind(t) == ElementKind.ENUM;
   }
@@ -242,7 +250,7 @@ public final class TypeUtil {
 
   public static boolean isJavaObject(TypeMirror t) {
     TypeElement typeElement = asTypeElement(t);
-    return typeElement != null && !isInterface(t) && isNone(typeElement.getSuperclass());
+    return typeElement != null && !isPureInterface(t) && isNone(typeElement.getSuperclass());
   }
 
   public boolean isARGCFieldEx(TypeElement owner, TypeMirror t) {
@@ -265,7 +273,7 @@ public final class TypeUtil {
   }
   
   public String getArgcFieldType(TypeMirror t) {
-	if (TypeUtil.isInterface(t)) {
+	if (TypeUtil.isPureInterface(t)) {
 	  return "Generic";
 	}
 	if (ARGC.isPureObjC(t)) {
@@ -437,7 +445,7 @@ public final class TypeUtil {
       return Collections.emptyList();
     }
     List<? extends TypeMirror> result = new ArrayList<>(javacTypes.directSupertypes(t));
-    if (TypeUtil.isInterface(t)) {
+    if (TypeUtil.isPureInterface(t)) {
       result.remove(javaObject.asType());
     }
     return result;

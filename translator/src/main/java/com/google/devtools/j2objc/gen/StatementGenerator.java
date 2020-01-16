@@ -444,7 +444,7 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(InstanceofExpression node) {
     TypeElement type = TypeUtil.asTypeElement(node.getRightOperand().getTypeMirror());
-    if (type != null && type.getKind().isInterface()) {
+    if (type != null && TypeUtil.isPureInterface(type.asType())) {
       // Our version of "isInstance" is faster than "conformsToProtocol".
       buffer.append(UnicodeUtils.format("[%s_class_() isInstance:", nameTable.getFullName(type)));
       node.getLeftOperand().accept(this);

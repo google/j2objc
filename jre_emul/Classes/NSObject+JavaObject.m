@@ -178,7 +178,7 @@ static void doWait(id obj, long long timeout) {
 - (void)__javaClone:(id)original {
 }
 
-+ (void)__clinit__ {
+void NSObject__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x11, 0, -1, -1, 1, -1, -1 },
@@ -228,7 +228,7 @@ static void doWait(id obj, long long timeout) {
 @end
 
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(NSObject)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)
 
 J2OBJC_NAME_MAPPING(NSObject, "java.lang.Object", "NSObject")
 

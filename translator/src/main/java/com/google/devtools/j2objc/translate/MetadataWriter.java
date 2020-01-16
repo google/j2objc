@@ -45,6 +45,7 @@ import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.ArrayList;
@@ -138,14 +139,14 @@ public class MetadataWriter extends UnitTreeVisitor {
       this.stmts = stmts;
     }
 
-    protected boolean needsTypeLiteral() {
-        return !(ElementUtil.isPackageInfo(type) || ElementUtil.isAnonymous(type)
-                 || ElementUtil.isLambda(type));
+    protected boolean needsClassInit() {
+        return !ElementUtil.isAnnotationType(type) && !ElementUtil.isPackageInfo(type)
+        		&&  ElementUtil.getSuperclass(type) != TypeUtil.NS_OBJECT;
       }
     
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
-      stmts.add(new NativeStatement("if (self != " + fullName + ".class) return; \n"));
+      stmts.add(new NativeStatement("assert (self == " + fullName + ".class); \n"));
       
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
@@ -157,7 +158,7 @@ public class MetadataWriter extends UnitTreeVisitor {
           fullName,
           cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type)),
           cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type)))),
-          needsTypeLiteral() ? (fullName + "_initialize") : "empty_static_initialize",
+          needsClassInit() ? (fullName + "_initialize") : "empty_static_initialize",
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
           METADATA_VERSION,
@@ -174,11 +175,11 @@ public class MetadataWriter extends UnitTreeVisitor {
       metadata = UnicodeUtils.format(metadata, getPtrTableEntry());
       stmts.add(new NativeStatement(metadata));
       String _type;
-      if ((modifiers & java.lang.reflect.Modifier.INTERFACE) != 0) {
+      if (TypeUtil.isPureInterface(type.asType())) {
     	  _type = "ARGC_bindIOSProtocol(@protocol(" + fullName + ")";
       }
       else {
-    	  _type = "ARGC_bindIOSClass(" + fullName + ".class"; 
+    	  _type = "ARGC_bindIOSClass(self"; 
       }
       stmts.add(new NativeStatement(_type + ", " + "&_" + fullName + ");"));
       //stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));

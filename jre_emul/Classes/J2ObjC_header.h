@@ -19,6 +19,7 @@
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
 #import "NSObject+JavaObject.h"
+#import "java/lang/annotation/Annotation.h"
 
 CF_EXTERN_C_BEGIN
 
@@ -28,6 +29,11 @@ id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...) J2OBJC_METHOD_
 id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...) J2OBJC_METHOD_ATTR;
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) J2OBJC_METHOD_ATTR;
 CF_EXTERN_C_END
+
+@interface J2ObjC_Annotation : JavaLangObject < JavaLangAnnotationAnnotation >
+- (IOSClass *)annotationType;
+@end
+
 
 /*!
  * Defines the getter for a static variable. For class "Foo" and field "bar_"

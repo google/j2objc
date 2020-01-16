@@ -40,7 +40,7 @@ public class Import implements Comparable<Import> {
   private final String typeName;
   private final String importFileName;
   private final String javaQualifiedName;
-  private final boolean isInterface;
+  private final boolean isPureInterface;
   private final boolean /*ARGC*/isNativeEnum; 
 
   private Import(TypeElement type, NameTable nameTable, /*ARGC** Options options*/TranslationEnvironment env) {
@@ -57,7 +57,7 @@ public class Import implements Comparable<Import> {
     this.importFileName = env.options().getHeaderMap().get(mainType);
     this.javaQualifiedName =
     		ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
-    this.isInterface = type.getKind().isInterface();
+    this.isPureInterface = TypeUtil.isPureInterface(type.asType());
   }
 
   /**
@@ -81,8 +81,8 @@ public class Import implements Comparable<Import> {
     return javaQualifiedName;
   }
 
-  public boolean isInterface() {
-    return isInterface;
+  public boolean isPureInterface() {
+    return isPureInterface;
   }
 
   // ARGC

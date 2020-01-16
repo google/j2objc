@@ -25,7 +25,7 @@
 
 @implementation NSNumber (JavaNumber)
 
-+ (void)__clinit__ {
+void NSNumber__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "B", 0x1, 0, -1, -1, -1, -1, -1 },
@@ -59,7 +59,7 @@
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE_EX(NSNumber)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSNumber)
 
 J2OBJC_NAME_MAPPING(NSNumber, "java.lang.Number", "NSNumber")
 

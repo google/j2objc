@@ -71,7 +71,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     Map<ExecutableElement, VariableElement> fieldElements = createMemberFields(node, members);
     addMemberProperties(node, members, fieldElements);
     addDefaultAccessors(node, members);
-    bodyDecls.add(createAnnotationTypeMethod(type));
+    //bodyDecls.add(createAnnotationTypeMethod(type));
     bodyDecls.add(createDescriptionMethod(type, members, fieldElements));
     addConstructor(node, fieldElements);
     addEqualsMethod(node);

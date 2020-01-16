@@ -286,7 +286,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 #endif
 
-+ (void) __clinit__ {
+static void JavaLangReflectExecutable__clinit__() {
   JavaLangReflectAccessibleObject_initialize();
   JavaLangReflectMember_initialize();
   JavaLangReflectGenericDeclaration_initialize();
@@ -294,7 +294,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 
 
 + (void)initialize {
-  if (self != JavaLangReflectExecutable.class) return;
+  assert (self == JavaLangReflectExecutable.class);
 
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -383,6 +383,7 @@ GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) 
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectExecutable)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectExecutable)
 
 @implementation GenericInfo

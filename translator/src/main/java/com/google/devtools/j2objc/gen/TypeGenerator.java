@@ -89,6 +89,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected String getSuperTypeName() {
+	if (TypeUtil.isAnnotation(this.typeElement.asType())) {
+		return "J2ObjC_Annotation";
+	}
     TypeElement supertype = TranslationUtil.getSuperType(typeNode);
     if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
       return nameTable.getFullName(supertype);
@@ -190,7 +193,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean isInterfaceType() {
-    return typeElement.getKind().isInterface();
+    return TypeUtil.isPureInterface(typeElement);
   }
 
   protected Iterable<VariableDeclarationFragment> getInstanceFields() {
@@ -276,6 +279,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
              || ElementUtil.isLambda(typeElement));
   }
 
+  protected boolean needsClassInit() {
+    return !ElementUtil.isAnnotationType(typeElement) && !ElementUtil.isPackageInfo(typeElement)
+    		&&  TranslationUtil.getSuperType(typeNode) != TypeUtil.NS_OBJECT;
+
+  }
+  
   protected String getDeclarationType(VariableElement var) {
     TypeMirror type = var.asType();
     if (ElementUtil.isVolatile(var)) {

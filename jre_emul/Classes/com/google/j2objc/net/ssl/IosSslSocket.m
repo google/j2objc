@@ -187,7 +187,7 @@ static NSDictionary *protocolMapping;
 
 @implementation ComGoogleJ2objcNetSslIosSslSocket
 
-+ (void) __clinit__ {
+static void ComGoogleJ2objcNetSslIosSslSocket__clinit__() {
   JavaxNetSslSSLSocket_initialize();
 
   NSMutableDictionary *temp = AUTORELEASE([[NSMutableDictionary alloc] init]);
@@ -782,4 +782,5 @@ create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_with
                      socket, host, port, autoClose)
 }
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)

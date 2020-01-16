@@ -57,7 +57,7 @@
 
 #define NSString_serialVersionUID -6849794470754667710LL
 
-static void NSString_CaseInsensitiveComparator_initialize();
+static void NSString_CaseInsensitiveComparator__clinit__();
 
 @implementation NSString (JavaString)
 
@@ -893,7 +893,7 @@ jint javaStringHashCode(NSString *string) {
   return JavaLangCharSequence_codePoints(self);
 }
 
-+ (void)__clinit__ {
+void NSString__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 },
@@ -1090,7 +1090,7 @@ jint javaStringHashCode(NSString *string) {
   
   ARGC_bindIOSClass(NSString.class, &_NSString);
   
-  NSString_CaseInsensitiveComparator_initialize();
+  NSString_CaseInsensitiveComparator__clinit__();
 }
 
 @end
@@ -1176,7 +1176,7 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
   return JavaUtilComparator_thenComparingLongWithJavaUtilFunctionToLongFunction_(self, arg0);
 }
 
-+ (void)__clinit__ {
+static void NSString_CaseInsensitiveComparator__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 0, 1, -1, -1, -1, -1 },
@@ -1209,8 +1209,8 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
 IOSObjectArray *NSString_serialPersistentFields;
 
-void NSString_CaseInsensitiveComparator_initialize() {
-  [NSString_CaseInsensitiveComparator __clinit__];
+void NSString_CaseInsensitiveComparator__clinit__() {
+  NSString_CaseInsensitiveComparator__init_class__();
 
   JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
     [[NSString_CaseInsensitiveComparator alloc] init]);

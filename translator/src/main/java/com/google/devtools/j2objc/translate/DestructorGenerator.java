@@ -75,7 +75,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    if (!node.isInterface()) {
+    if (!node.isPureInterface()) {
       addDeallocMethod(node);
     }
   }

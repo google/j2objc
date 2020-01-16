@@ -226,7 +226,7 @@ public class SignatureGenerator {
   private void genClassSignature(TypeElement type, StringBuilder sb) {
     genOptFormalTypeParameters(type.getTypeParameters(), sb);
     // JDT returns null for an interface's superclass, but signatures expect Object.
-    if (type.getKind().isInterface()) {
+    if (TypeUtil.isPureInterface(type)) {
       sb.append(JAVA_OBJECT_SIGNATURE);
     } else {
       genTypeSignature(type.getSuperclass(), sb);
@@ -263,7 +263,7 @@ public class SignatureGenerator {
     if (bounds.isEmpty()) {
       sb.append(':').append(JAVA_OBJECT_SIGNATURE);
     } else {
-      if (TypeUtil.isInterface(bounds.get(0))) {
+      if (TypeUtil.isPureInterface(bounds.get(0))) {
         sb.append(':');
       }
       for (TypeMirror bound : bounds) {

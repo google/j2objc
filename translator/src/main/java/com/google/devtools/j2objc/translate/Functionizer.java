@@ -518,7 +518,7 @@ public class Functionizer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    if (!node.isInterface() && options.disallowInheritedConstructors()) {
+    if (!node.isPureInterface() && options.disallowInheritedConstructors()) {
       addDisallowedConstructors(node);
     }
   }

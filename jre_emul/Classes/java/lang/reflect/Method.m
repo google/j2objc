@@ -260,7 +260,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   return [[class_ getName] hash] ^ [[self getName] hash];
 }
 
-+ (void) __clinit__ {
+static void JavaLangReflectMethod__clinit__() {
   JavaLangReflectExecutable_initialize();
 }
 
@@ -329,4 +329,5 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectMethod)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectMethod)
