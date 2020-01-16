@@ -146,7 +146,7 @@ public class MetadataWriter extends UnitTreeVisitor {
     
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
-      stmts.add(new NativeStatement("assert (self == " + fullName + ".class); \n"));
+      stmts.add(new NativeStatement("if (self != " + fullName + ".class) return;\n"));
       
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();

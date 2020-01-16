@@ -163,7 +163,6 @@ void empty_static_initialize() {}
 
 - (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata {
   if ((self = [super init])) {
-    assert(metadata != NULL);
     metadata_ = metadata;
   }
   return self;
@@ -1217,7 +1216,6 @@ IOSClass *IOSClass_fromClass(Class cls) {
   // lookup because +initialize makes calls into IOSClass_fromClass().
 #ifdef J2OBJC_USE_GC
   IOSClass * ios_cls = ARGC_getIOSConcreteClass(cls);
-  assert (ios_cls != NULL);
   return ios_cls;
 #else
   IOSClass_initialize();

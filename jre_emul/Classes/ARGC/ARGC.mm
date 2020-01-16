@@ -471,6 +471,10 @@ IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC
       ARGC_bindJavaClass(nativeClass, g_javaStringClass);
       javaClass = g_javaStringClass;
     }
+    else {
+      javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:NULL];
+      ARGC_bindJavaClass(nativeClass, javaClass);
+    }
   }
   return RETAIN_(javaClass);
 }
@@ -508,11 +512,6 @@ IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJ
     IOSClass* iosClass = ARGC_getIOSClass(self);
     if (iosClass != NULL) {
       iosClass->metadata_->initialize();
-    }
-    else {
-      //ARGC_bindIOSClass(self, &JreEmptyClassInfo
-      NSLog(@"non ARGCObject alloc: %@", self);
-
     }
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
@@ -679,11 +678,6 @@ void ARGC::registerScanOffsets(Class clazz) {
                 id oid = [[[NSObject alloc] retain] retain];
                 __unsafe_unretained id* pField = (__unsafe_unretained id *)((char *)clone + offset);
                 _test_obj_buf[cntObjField] = *pField = oid;
-                if (GC_DEBUG && cls == g_referenceClass) {
-                    NSLog(@"Refernce[%d].%s field check", (int)(offset / sizeof(JObj_p)), ivar_getName(ivar));
-                    //referent 가 volatile_id(uint_ptr)롤 처리되어 검사 불필요.;
-                    //continue;
-                }
                 cntObjField ++;
             }
         }
