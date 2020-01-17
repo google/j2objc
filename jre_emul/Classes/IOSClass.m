@@ -84,6 +84,11 @@ static FastPointerLookup_t classLookup;
 static FastPointerLookup_t protocolLookup;
 static FastPointerLookup_t arrayLookup;
 
+@interface IOSClass() {
+  _Atomic(IOSArrayClass*) arrayType_;
+}
+@end
+
 @interface PackagePrefixEntry : NSObject {
   NSString *key_;
   NSString *value_;
@@ -116,6 +121,14 @@ static IOSClass *IOSClass_objectClass;
 static IOSObjectArray *IOSClass_emptyClassArray;
 
 void empty_static_initialize() {}
+
+- (NSString *)getName {
+  return name_;
+}
+
+- (NSString *)getSimpleName {
+  return typeName_;
+}
 
 - (Class)objcClass {
   return nil;
@@ -161,9 +174,29 @@ void empty_static_initialize() {}
   return IOSClass_voidClass;
 }
 
-- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata {
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
+                         package:(NSString *)packageName
+                        typeName:(NSString *)typeName {
   if ((self = [super init])) {
     metadata_ = metadata;
+    *((NSString**)&typeName_) = typeName;
+    if (packageName == NULL || packageName.length == 0) {
+      *((NSString**)&name_) = typeName;
+    }
+    else {
+      *((NSString**)&name_) = [NSString stringWithFormat:@"%@.%@", packageName, typeName];
+    }
+  }
+  return self;
+}
+
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
+                            name:(NSString *)name
+                      simpleName:(NSString *)simpleName {
+  if ((self = [super init])) {
+    metadata_ = metadata;
+    *((NSString**)&typeName_) = simpleName;
+    *((NSString**)&name_) = name;
   }
   return self;
 }
@@ -235,16 +268,8 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
   return false;
 }
 
-- (NSString *)getName {
-  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
-}
-
-- (NSString *)getSimpleName {
-  return [self getName];
-}
-
 - (NSString *)getCanonicalName {
-  return [[self getName] stringByReplacingOccurrencesOfString:@"$" withString:@"."];
+  return [name_ stringByReplacingOccurrencesOfString:@"$" withString:@"."];
 }
 
 - (NSString *)objcName {
@@ -398,7 +423,7 @@ static NSString *Capitalize(NSString *s) {
 
 - (NSString *)description {
   // matches java.lang.Class.toString() output
-  return [NSString stringWithFormat:@"class %@", [self getName]];
+  return [NSString stringWithFormat:@"class %@", self->name_];
 }
 
 - (NSString *)toGenericString {
@@ -427,7 +452,7 @@ static NSString *Capitalize(NSString *s) {
       }
     }
     [sb appendWithChar:' '];
-    [sb appendWithNSString:[self getName]];
+    [sb appendWithNSString:self->name_];
     IOSObjectArray *typeparms = [self getTypeParameters];
     if (((IOSObjectArray *) nil_chk(typeparms))->size_ > 0) {
       jboolean first = true;
@@ -446,8 +471,7 @@ static NSString *Capitalize(NSString *s) {
 }
 
 - (NSString *)binaryName {
-  NSString *name = [self getName];
-  return [NSString stringWithFormat:@"L%@;", name];
+  return [NSString stringWithFormat:@"L%@;", name_];
 }
 
 static NSString *CamelCasePackage(NSString *package) {
@@ -703,7 +727,7 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
   if (__builtin_expect(object && ![self isInstance:object], 0)) {
     @throw create_JavaLangClassCastException_initWithNSString_(
         [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
-            [[object java_getClass] getName], [self getName]]);
+            [object java_getClass]->name_, self->name_]);
   }
   return object;
 }
@@ -903,8 +927,10 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (id)getPackage {
-  NSString *packageName = JreClassPackageName(metadata_);
-  if (packageName) {
+  NSUInteger name_len = name_.length;
+  NSUInteger type_len = typeName_.length;
+  if (name_len > type_len) {
+    NSString *packageName =  [name_ substringToIndex: name_len - type_len - 1];
     return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:packageName
                                                     withNSString:nil
                                                     withNSString:nil
@@ -1144,22 +1170,22 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return ![type isPrimitive];
 }
 
-
-OS_INLINE id FastObjectLookup(FastPointerLookup_t *lookup, __unsafe_unretained id key) {
-    J2ObjcRawValue v;
-    v.asId = key;
-    v.asPointer = FastPointerLookup(lookup, v.asPointer);
-    ARGC_strongRetain(v.asId);
-    return v.asId;
-}
-
-OS_INLINE bool FastObjectLookupAddMapping(FastPointerLookup_t *lookup, __unsafe_unretained id key, __unsafe_unretained id value) {
-    J2ObjcRawValue k, v;
-    k.asId = key;
-    v.asId = value;
-    ARGC_strongRetain(value);
-    return FastPointerLookupAddMapping(lookup, k.asPointer, v.asPointer);
-}
+//
+//OS_INLINE id FastObjectLookup(FastPointerLookup_t *lookup, __unsafe_unretained id key) {
+//    J2ObjcRawValue v;
+//    v.asId = key;
+//    v.asPointer = FastPointerLookup(lookup, v.asPointer);
+//    ARGC_strongRetain(v.asId);
+//    return v.asId;
+//}
+//
+//OS_INLINE bool FastObjectLookupAddMapping(FastPointerLookup_t *lookup, __unsafe_unretained id key, __unsafe_unretained id value) {
+//    J2ObjcRawValue k, v;
+//    k.asId = key;
+//    v.asId = value;
+//    ARGC_strongRetain(value);
+//    return FastPointerLookupAddMapping(lookup, k.asPointer, v.asPointer);
+//}
 
 
 
@@ -1266,15 +1292,20 @@ static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
 }
 
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
-  return (IOSClass *)FastObjectLookup(&arrayLookup, componentType);
+  IOSArrayClass* array = componentType->arrayType_;
+  if (array == NULL) {
+    IOSArrayClass* array2 = [[IOSArrayClass alloc]initWithComponentType:componentType];
+    __c11_atomic_compare_exchange_strong(&componentType->arrayType_, &array, array2,
+                                         __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+  }
+  return array;
 }
 
 IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
-  IOSClass *result = (IOSClass *)FastObjectLookup(&arrayLookup, componentType);
   while (--dimensions > 0) {
-    result = (IOSClass *)FastObjectLookup(&arrayLookup, result);
+    componentType = IOSClass_arrayOf(componentType);
   }
-  return result;
+  return componentType;
 }
 
 // Generated by running the translator over the java.lang.Class stub file.
@@ -1441,7 +1472,7 @@ static const J2ObjcClassInfo * IOSClass__metadata() {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", empty_static_initialize,
+    empty_static_initialize,
     ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 49, -1 };
   return &_IOSClass;
 }
@@ -1456,7 +1487,7 @@ void NSCopying__init_class__(void);
   
   // JavaLangObject class 로딩.
   NSObject__init_class__();
-  ARGC_bindIOSClass(IOSClass.class, IOSClass__metadata());
+  ARGC_bindIOSClass(IOSClass.class, IOSClass__metadata(), @"java.lang", @"Class");
 
   FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
   FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
@@ -1491,7 +1522,7 @@ void NSCopying__init_class__(void);
   }
 
 #ifdef J2OBJC_USE_GC
-  FastObjectLookupAddMapping(&classLookup, [ARGCObject class], NSObject_class_());
+  //FastObjectLookupAddMapping(&classLookup, [ARGCObject class], NSObject_class_());
 #endif
 }
 
@@ -1504,7 +1535,7 @@ void NSCopying__init_class__(void);
 #pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
 - (void)dealloc {
   @throw create_JavaLangAssertionError_initWithId_(
-      [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
+      [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", self->name_]);
   // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
 }
 #pragma clang diagnostic pop

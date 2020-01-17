@@ -321,10 +321,10 @@ static void JavaLangReflectMethod__clinit__() {
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;",
     "()[Ljava/lang/reflect/TypeVariable<Ljava/lang/reflect/Method;>;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
-    "Method", "java.lang.reflect", JavaLangReflectMethod_initialize,
+    JavaLangReflectMethod_initialize,
     ptrTable, methods, NULL, 7, 0x1, 21, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangReflectMethod.class, &_JavaLangReflectMethod);
+  ARGC_bindIOSClass(JavaLangReflectMethod.class, &_JavaLangReflectMethod, @"java.lang.reflect", @"Method");
 }
 
 @end

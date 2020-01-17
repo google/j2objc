@@ -25,7 +25,9 @@
 @interface IOSProtocolClass : IOSClass
 
 - (instancetype)initWithProtocol:(Protocol *)protocol
-                        metadata:(const J2ObjcClassInfo *)metadata;
+                        metadata:(const J2ObjcClassInfo *)metadata
+                          package:(NSString *)packageName
+                         typeName:(NSString *)typeName;
 
 @end
 

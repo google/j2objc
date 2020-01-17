@@ -476,10 +476,10 @@ static void JavaLangReflectField__clinit__() {
     "setLong", "LNSObject;J", "setShort", "LNSObject;S", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
-    "Field", "java.lang.reflect", JavaLangReflectField_initialize,
+    JavaLangReflectField_initialize,
     ptrTable, methods, NULL, 7, 0x1, 29, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangReflectField.class, &_JavaLangReflectField);
+  ARGC_bindIOSClass(JavaLangReflectField.class, &_JavaLangReflectField, @"java.lang.reflect", @"Field");
 }
 
 @end

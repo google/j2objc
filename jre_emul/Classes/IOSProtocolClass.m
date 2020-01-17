@@ -39,8 +39,11 @@ static Class GetBackingClass(Protocol *protocol) {
 
 @synthesize objcProtocol = protocol_;
 
-- (instancetype)initWithProtocol:(Protocol *)protocol metadata:(const J2ObjcClassInfo *)metadata {
-  if ((self = [super initWithMetadata:metadata])) {
+- (instancetype)initWithProtocol:(Protocol *)protocol
+                        metadata:(const J2ObjcClassInfo *)metadata
+                         package:(NSString *)packageName
+                        typeName:(NSString *)typeName {
+  if ((self = [super initWithMetadata:metadata package:packageName typeName:typeName])) {
     protocol_ = RETAIN_(protocol);
   }
   return self;
@@ -69,16 +72,6 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 
 - (NSString *)description {
   return [NSString stringWithFormat:@"interface %@", [self getName]];
-}
-
-- (NSString *)getName {
-  NSString *name = JreClassQualifiedName(self->metadata_);
-  return name ? name : NSStringFromProtocol(protocol_);
-}
-
-- (NSString *)getSimpleName {
-  const J2ObjcClassInfo *metadata = self->metadata_;
-  return metadata ? JreClassTypeName(metadata) : NSStringFromProtocol(protocol_);
 }
 
 - (NSString *)objcName {

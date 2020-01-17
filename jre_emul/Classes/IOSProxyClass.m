@@ -32,18 +32,11 @@
   static J2ObjcMethodInfo proxyMethods[] = {{NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 }};
   proxyMethods[0].selector = @selector(initWithJavaLangReflectInvocationHandler:);
   static const J2ObjcClassInfo proxyClassMetadata = {
-    NULL, NULL, empty_static_initialize,
+    empty_static_initialize,
     ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
   };
-  return [self initWithClass:cls metadata:&proxyClassMetadata];
-}
-
-- (NSString *)getName {
-  return NSStringFromClass(class_);
-}
-
-- (NSString *)getSimpleName {
-  return NSStringFromClass(class_);
+  NSString* name = NSStringFromClass(cls);
+  return [self initWithClass:cls metadata:&proxyClassMetadata package:NULL typeName:name];
 }
 
 - (IOSObjectArray *)getDeclaredFields {

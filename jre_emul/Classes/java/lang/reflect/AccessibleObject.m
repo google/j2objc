@@ -143,10 +143,10 @@ static void JavaLangReflectAccessibleObject__clinit__() {
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",
     "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    "AccessibleObject", "java.lang.reflect", JavaLangReflectAccessibleObject_initialize,
+    JavaLangReflectAccessibleObject_initialize,
     ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangReflectAccessibleObject.class, &_JavaLangReflectAccessibleObject);
+  ARGC_bindIOSClass(JavaLangReflectAccessibleObject.class, &_JavaLangReflectAccessibleObject, @"java.lang.reflect", @"AccessibleObject");
 }
 
 @end

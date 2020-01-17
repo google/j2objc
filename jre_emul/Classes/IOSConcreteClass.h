@@ -28,7 +28,9 @@
 }
 
 - (instancetype)initWithClass:(Class)cls
-                     metadata:(const J2ObjcClassInfo *)metadata;
+                     metadata:(const J2ObjcClassInfo *)metadata
+                       package:(NSString *)packageName
+                      typeName:(NSString *)typeName;
 
 @end
 

@@ -146,18 +146,16 @@ public class MetadataWriter extends UnitTreeVisitor {
     
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
-      stmts.add(new NativeStatement("if (self != " + fullName + ".class) return;\n"));
       
-      int methodMetadataCount = generateMethodsMetadata();
+      StringBuilder sbMethodData = new StringBuilder();
+      int methodMetadataCount = generateMethodsMetadata(sbMethodData);
       int fieldMetadataCount = generateFieldsMetadata();
       String annotationsFunc = createAnnotationsFunction(typeNode);
       int modifiers = getTypeModifiers(type);
       String metadata = UnicodeUtils.format(
           "static const J2ObjcClassInfo _%s = { "
-          + "%s, %s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
+          + "%s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
           fullName,
-          cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type)),
-          cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type)))),
           needsClassInit() ? (fullName + "_initialize") : "empty_static_initialize",
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
@@ -174,14 +172,34 @@ public class MetadataWriter extends UnitTreeVisitor {
       // values.
       metadata = UnicodeUtils.format(metadata, getPtrTableEntry());
       stmts.add(new NativeStatement(metadata));
-      String _type;
-      if (TypeUtil.isPureInterface(type.asType())) {
-    	  _type = "ARGC_bindIOSProtocol(@protocol(" + fullName + ")";
+
+      boolean isPureInterface = TypeUtil.isPureInterface(type.asType());
+      StringBuilder code = new StringBuilder();
+      String typeName = cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type));
+      typeName = "@" + typeName;
+      String packageName = cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type))));
+      if (!packageName.equals("NULL")) {
+    	  packageName = "@" + packageName;
+      }
+      code.append("\nNSString *typeName = ").append(typeName).append(";\n");
+      code.append("NSString *packageName = ").append(packageName).append(";\n");
+      if (!isPureInterface) {
+    	  code.append("if (self != " + fullName + ".class) {\n");
+          code.append("typeName = NSStringFromClass(self);\n");
+          code.append("packageName = NULL;\n");
+	      code.append("} else {\n");
+      }
+      code.append(sbMethodData);
+      if (!isPureInterface) {
+	      code.append("};\n");
+    	  code.append("ARGC_bindIOSClass(self, &_" + fullName
+    			  + ", packageName, typeName);\n");
       }
       else {
-    	  _type = "ARGC_bindIOSClass(self"; 
+    	  code.append("\nARGC_bindIOSProtocol(@protocol(" + fullName + "), &_" + fullName
+    			  + ", packageName, typeName);\n");
       }
-      stmts.add(new NativeStatement(_type + ", " + "&_" + fullName + ");"));
+      stmts.add(new NativeStatement(code.toString()));
       //stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
     }
 
@@ -204,7 +222,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       return "ptrTable";
     }
 
-    private int generateMethodsMetadata() {
+    private int generateMethodsMetadata(StringBuilder sb) {
       List<String> methodMetadata = new ArrayList<>();
       List<String> selectorMetadata = new ArrayList<>();
       int methodCount = 0;
@@ -240,21 +258,21 @@ public class MetadataWriter extends UnitTreeVisitor {
         }
       }
       if (methodMetadata.size() > 0) {
-        StringBuilder sb = new StringBuilder("static J2ObjcMethodInfo methods[] = {\n");
+        sb.append("static J2ObjcMethodInfo methods[] = {\n");
         for (String metadata : methodMetadata) {
           sb.append(metadata);
         }
         sb.append("  };");
         stmts.add(new NativeStatement(sb.toString()));
-        stmts.add(new NativeStatement("#pragma clang diagnostic push"));
-        stmts.add(new NativeStatement(
-            "#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\""));
-        stmts.add(new NativeStatement(
-            "#pragma clang diagnostic ignored \"-Wundeclared-selector\""));
+        sb.setLength(0);
+        
+        sb.append("#pragma clang diagnostic push\n");
+        sb.append("#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\"\n");
+        sb.append("#pragma clang diagnostic ignored \"-Wundeclared-selector\"\n");
         for (String selector : selectorMetadata) {
-          stmts.add(new NativeStatement(selector));
+        	sb.append(selector).append("\n");
         }
-        stmts.add(new NativeStatement("#pragma clang diagnostic pop"));
+        sb.append("#pragma clang diagnostic pop\n");
       }
       return methodMetadata.size();
     }

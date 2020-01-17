@@ -49,13 +49,21 @@
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
 @public
+  NSString * const name_;
+  NSString * const typeName_;
   const J2ObjcClassInfo *metadata_;
 }
 
 @property (readonly) Class objcClass;
 @property (readonly) Protocol *objcProtocol;
 
-- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata;
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
+                         package:(NSString *)packageName
+                        typeName:(NSString *)typeName;
+
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
+                            name:(NSString *)name
+                      simpleName:(NSString *)simpleName;
 
 // IOSClass Getters.
 + (IOSClass *)classForIosName:(NSString *)iosName;

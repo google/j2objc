@@ -40,8 +40,10 @@
 @synthesize objcClass = class_;
 
 - (instancetype)initWithClass:(Class)cls
-                     metadata:(const J2ObjcClassInfo *)metadata {
-  if ((self = [super initWithMetadata:metadata])) {
+                     metadata:(const J2ObjcClassInfo *)metadata
+                      package:(NSString *)packageName
+                     typeName:(NSString *)typeName {
+  if ((self = [super initWithMetadata:metadata package:packageName typeName:typeName])) {
     class_ = cls;
   }
   return self;
@@ -84,16 +86,6 @@
 
 - (jboolean)isInstance:(id)object {
   return [object isKindOfClass:class_];
-}
-
-- (NSString *)getName {
-  NSString *name = JreClassQualifiedName(self->metadata_);
-  return name ? name : NSStringFromClass(class_);
-}
-
-- (NSString *)getSimpleName {
-  const J2ObjcClassInfo *metadata = self->metadata_;
-  return metadata ? JreClassTypeName(metadata) : NSStringFromClass(class_);
 }
 
 - (NSString *)objcName {

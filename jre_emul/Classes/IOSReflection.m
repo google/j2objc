@@ -34,7 +34,7 @@
 
 
 const J2ObjcClassInfo JreEmptyClassInfo = {
-    NULL, NULL, empty_static_initialize, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
+    empty_static_initialize, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
 
 #ifndef J2OBJC_USE_GC
 const J2ObjcClassInfo *JreFindMetadata(Class cls) {
@@ -170,6 +170,7 @@ const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const c
   return NULL;
 }
 
+#ifndef J2OBJC_USE_GC
 NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) {
   return metadata ? [NSString stringWithUTF8String:metadata->typeName] : nil;
 }
@@ -178,6 +179,35 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
   return metadata && metadata->packageName
       ? [NSString stringWithUTF8String:metadata->packageName] : nil;
 }
+NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
+  return BuildQualifiedName(metadata);
+}
+
+static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
+  if (!metadata) {
+    return nil;
+  }
+  const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
+  if (enclosingClass) {
+    NSMutableString *qName = BuildQualifiedName(JreClassForString(enclosingClass)->metadata_);
+    if (!qName) {
+      return nil;
+    }
+    [qName appendString:@"$"];
+    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
+    return qName;
+  } else if (metadata->packageName) {
+    NSMutableString *qName = [NSMutableString stringWithUTF8String:metadata->packageName];
+    [qName appendString:@"."];
+    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
+    return qName;
+  } else {
+    return [NSMutableString stringWithUTF8String:metadata->typeName];
+  }
+}
+
+
+#endif
 
 static bool NullableCStrEquals(const char *a, const char *b) {
   return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);
@@ -272,33 +302,6 @@ JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, SEL sel
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
   const char *genericSig = metadata ? JrePtrAtIndex(ptrTable, metadata->genericSignatureIdx) : NULL;
   return genericSig ? [NSString stringWithUTF8String:genericSig] : nil;
-}
-
-static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
-  if (!metadata) {
-    return nil;
-  }
-  const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
-  if (enclosingClass) {
-    NSMutableString *qName = BuildQualifiedName(JreClassForString(enclosingClass)->metadata_);
-    if (!qName) {
-      return nil;
-    }
-    [qName appendString:@"$"];
-    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
-    return qName;
-  } else if (metadata->packageName) {
-    NSMutableString *qName = [NSMutableString stringWithUTF8String:metadata->packageName];
-    [qName appendString:@"."];
-    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
-    return qName;
-  } else {
-    return [NSMutableString stringWithUTF8String:metadata->typeName];
-  }
-}
-
-NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
-  return BuildQualifiedName(metadata);
 }
 
 JavaLangReflectField *FindDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {

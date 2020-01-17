@@ -48,10 +48,10 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
     // even when this array has a strong reference.
     (void)AUTORELEASE(array);
   }
+  array->isRetained_ = retained;
 #endif
   array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
-  array->isRetained_ = retained;
   return array;
 }
 
@@ -77,7 +77,6 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 
 @implementation IOSObjectArray
 
-@synthesize elementType = elementType_;
 
 + (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
   return IOSObjectArray_CreateArray((jint)length, type, true);

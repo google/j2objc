@@ -347,11 +347,11 @@ static void JavaLangReflectExecutable__clinit__() {
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "getAnnotationsByType",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;" };
   static const J2ObjcClassInfo _JavaLangReflectExecutable = {
-    "Executable", "java.lang.reflect", JavaLangReflectExecutable_initialize,
+    JavaLangReflectExecutable_initialize,
     ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
   };
 
-  ARGC_bindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable);
+  ARGC_bindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable, @"java.lang.reflect", @"Executable");
 }
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.

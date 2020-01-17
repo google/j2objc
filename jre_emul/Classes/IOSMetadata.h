@@ -72,8 +72,6 @@ typedef struct J2ObjcFieldInfo {
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjcClassInfo {
-  const char *typeName;
-  const char *packageName;
   void (*initialize)();
   const void **ptrTable;
   const J2ObjcMethodInfo *methods;

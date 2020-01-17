@@ -34,7 +34,10 @@
 @implementation IOSArrayClass
 
 - (instancetype)initWithComponentType:(IOSClass *)type {
-  if ((self = [super initWithMetadata:&JreEmptyClassInfo])) {
+  NSString * name = [NSString stringWithFormat:@"[%@", [type binaryName]];
+  NSString * simpleName = [type->typeName_ stringByAppendingString:@"[]"];
+  
+  if ((self = [super initWithMetadata:&JreEmptyClassInfo name:name simpleName:name])) {
     componentType_ = RETAIN_(type);
   }
   return self;
@@ -61,16 +64,8 @@
   return [cls isArray] && [componentType_ isAssignableFrom:[cls getComponentType]];
 }
 
-- (NSString *)getName {
-  return [self binaryName];
-}
-
-- (NSString *)getSimpleName {
-  return [[[self getComponentType] getSimpleName] stringByAppendingString:@"[]"];
-}
-
 - (NSString *)binaryName {
-  return [NSString stringWithFormat:@"[%@", [componentType_ binaryName]];
+  return name_;
 }
 
 - (NSString *)objcName {

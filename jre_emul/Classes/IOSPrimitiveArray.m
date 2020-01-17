@@ -21,11 +21,13 @@
 #import "IOSClass.h"
 #import "java/lang/NegativeArraySizeException.h"
 
+void ARGC_bindJavaClass(id key, IOSClass* javaClass);
+
 /*!
  * Implements the common constructors for the primitive array types.
  * @define PRIMITIVE_ARRAY_CTOR_IMPL
  */
-#define PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
+#define PRIMITIVE_ARRAY_CTOR_IMPL(L_NAME, U_NAME, C_TYPE) \
   static IOS##U_NAME##Array *IOS##U_NAME##Array_NewArray(jint length) { \
     if (length < 0) { \
       @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]); \
@@ -35,6 +37,7 @@
         [IOS##U_NAME##Array class], buf_size, nil); \
     memset(array->buffer_, 0, buf_size); \
     array->size_ = length; \
+    array->elementType_ = [IOSClass L_NAME##Class]; \
     return array; \
   } \
   \
@@ -64,10 +67,14 @@
   + (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths { \
     return AUTORELEASE(IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil)); \
   } \
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths \
+  + (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths \
     __attribute__((objc_method_family(none), ns_returns_retained)) { \
     return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil); \
-  }
+  } \
+  + (void)initailize { \
+    ARGC_bindJavaClass(self, IOSClass_arrayOf([IOSClass L_NAME##Class])); \
+  } \
+
 
 /*!
  * Implements the common accessor methods for the primitive array types.
@@ -97,10 +104,6 @@
   \
   - (void *)buffer { \
     return buffer_; \
-  } \
-  \
-  - (IOSClass *)elementType { \
-    return [IOSClass L_NAME##Class]; \
   } \
   \
   + (IOSClass *)iosClass { \
@@ -136,7 +139,7 @@
  * @param C_TYPE Objective-C type for the primitive type, (e.g. "jchar")
  */
 #define PRIMITIVE_ARRAY_IMPLEMENTATION(L_NAME, U_NAME, C_TYPE) \
-  PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
+  PRIMITIVE_ARRAY_CTOR_IMPL(L_NAME, U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_ACCESSORS_IMPL(L_NAME, U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_RANGE_COPY_IMPL(U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_COPY_IMPL(U_NAME)

@@ -191,11 +191,11 @@ static void JavaLangReflectConstructor__clinit__() {
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    "Constructor", "java.lang.reflect", JavaLangReflectConstructor_initialize,
+    JavaLangReflectConstructor_initialize,
     ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
   };
 
-  ARGC_bindIOSClass(JavaLangReflectConstructor.class, &_JavaLangReflectConstructor);
+  ARGC_bindIOSClass(JavaLangReflectConstructor.class, &_JavaLangReflectConstructor, @"java.lang.reflect", @"Constructor");
 }
 
 @end

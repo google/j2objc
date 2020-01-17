@@ -51,10 +51,10 @@ void NSNumber__init_class__() {
   };
   static const void *ptrTable[] = { "byteValue", "longValue" };
   static const J2ObjcClassInfo _NSNumber = {
-    "Number", "java.lang", empty_static_initialize,
+    empty_static_initialize,
     ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(NSNumber.class, &_NSNumber);
+  ARGC_bindIOSClass(NSNumber.class, &_NSNumber, @"java.lang", @"Number");
 }
 
 @end

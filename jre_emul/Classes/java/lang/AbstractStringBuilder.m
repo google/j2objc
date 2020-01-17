@@ -792,10 +792,10 @@ static void JavaLangAbstractStringBuilder__clinit__() {
     "substring", "subSequence", "indexOf", "LNSString;", "LNSString;I", "lastIndexOf", "toString"
   };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
-    "AbstractStringBuilder", "java.lang", JavaLangAbstractStringBuilder_initialize,
+    JavaLangAbstractStringBuilder_initialize,
     ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangAbstractStringBuilder.class, &_JavaLangAbstractStringBuilder);
+  ARGC_bindIOSClass(JavaLangAbstractStringBuilder.class, &_JavaLangAbstractStringBuilder, @"java.lang", @"AbstractStringBuilder");
 }
 
 #pragma clang diagnostic pop

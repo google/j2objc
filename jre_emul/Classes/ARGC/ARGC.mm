@@ -79,6 +79,7 @@ static Class g_referenceClass;
 static IOSClass* g_javaStringClass;
 static NSPointerArray* g_softRefs;
 static NSPointerArray* g_weakRefs;
+static const J2ObjcClassInfo *g_javaLangObjectMetadata;
 
 static const int SCANNING = 1;
 static const int FINALIZING = 2;
@@ -434,6 +435,7 @@ std::atomic_int ARGC::gc_state;
 std::atomic_int ARGC::_clearSoftReference;
 volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 
+extern "C" {
 void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
   assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
   NSIncrementExtraRefCount(javaClass);
@@ -443,17 +445,17 @@ void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
 IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
   return (IOSClass*)objc_getAssociatedObject(key, &iosClassAssocKey);
 }
+}
 
-
-void ARGC_bindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData) J2OBJC_METHOD_ATTR {
+void ARGC_bindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData, NSString* packageName, NSString* typeName) J2OBJC_METHOD_ATTR {
   assert(ARGC_getIOSClass(nativeClass) == NULL);
-  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:metaData];
+  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:metaData package:packageName typeName:typeName];
   ARGC_bindJavaClass(nativeClass, javaClass);
 }
 
-void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData) J2OBJC_METHOD_ATTR {
+void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* packageName, NSString* typeName) J2OBJC_METHOD_ATTR {
   assert(ARGC_getIOSClass(protocol) == NULL);
-  IOSClass *javaClass = [[IOSProtocolClass alloc] initWithProtocol:protocol metadata:metaData];
+  IOSClass *javaClass = [[IOSProtocolClass alloc] initWithProtocol:protocol metadata:metaData package:packageName typeName:typeName];
   ARGC_bindJavaClass(protocol, javaClass);
 }
 
@@ -472,7 +474,10 @@ IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC
       javaClass = g_javaStringClass;
     }
     else {
-      javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:NULL];
+      IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass
+                                                           metadata:g_javaLangObjectMetadata
+                                                            package:NULL
+                                                           typeName:NSStringFromClass(nativeClass)];
       ARGC_bindJavaClass(nativeClass, javaClass);
     }
   }
@@ -495,16 +500,12 @@ IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJ
     return _emptyFields;
 }
 
-+ (void)load
-{
-    IOSClass* iosClass = ARGC_getIOSClass(self);
-    NSLog(@"load: %@, %@", self, iosClass);
-}
 
 + (void)initialize
 {
-    IOSClass* iosClass = ARGC_getIOSClass(self);
-    NSLog(@"initialize: %@, %@", self, iosClass);
+  if (self != ARGCObject.class) {
+    ARGC_getIOSConcreteClass(self);
+  }
 }
 
 + (instancetype)alloc
@@ -621,10 +622,8 @@ ARGC::ARGC() {
     g_weakRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
 
     RefContext::change_generation();
-    g_referenceClass = objc_lookUpClass("JavaLangRefReference");
-    g_ARGCClass = ARGCObject.class;
-    g_stringClass = NSString.class;
-    g_objectArrayClass = IOSObjectArray.class;
+
+  
     deallocMethod = dealloc_now;
     _no_java_finalize = class_getInstanceMethod(NSObject.class, @selector(java_finalize));
 
@@ -632,12 +631,19 @@ ARGC::ARGC() {
     _finalizeClasses = [[NSMutableDictionary alloc] init];
     tableLock = [[NSObject alloc]init];
     scanLock = [[NSObject alloc]init];
-    argcObjectSize = class_getInstanceSize(ARGCObject.class) + sizeof(void*);
+  
+    g_ARGCClass = ARGCObject.class;
+    argcObjectSize = class_getInstanceSize(g_ARGCClass) + sizeof(void*);
     ARGC_setGarbageCollectionInterval(1000);
   
-    // initialize IOSClass;
+    // initialize J2ObjC;
     (void)IOSClass.class;
+    g_javaLangObjectMetadata = NSObject_class_()->metadata_;
     g_javaStringClass = NSString_class_();
+    g_referenceClass = JavaLangRefReference.class;
+    g_stringClass = NSString.class;
+    g_objectArrayClass = IOSObjectArray.class;
+    // initialize IOSClass;
     ARGC_bindJavaClass(ARGCObject.class, ARGC_getIOSClass(NSObject.class));
 }
 

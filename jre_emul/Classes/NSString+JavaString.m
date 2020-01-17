@@ -1085,10 +1085,10 @@ void NSString__init_class__() {
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", empty_static_initialize,
+    empty_static_initialize,
     ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
   
-  ARGC_bindIOSClass(NSString.class, &_NSString);
+  ARGC_bindIOSClass(NSString.class, &_NSString, @"java.lang", @"String");
   
   NSString_CaseInsensitiveComparator__clinit__();
 }
@@ -1195,11 +1195,11 @@ static void NSString_CaseInsensitiveComparator__init_class__() {
     "compare", "LNSString;LNSString;", "LNSString;",
     "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    "CaseInsensitiveComparator", "java.lang", empty_static_initialize,
+    empty_static_initialize,
     ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
     -1 };
   
-  ARGC_bindIOSClass(NSString_CaseInsensitiveComparator.class, &_NSString_CaseInsensitiveComparator);
+  ARGC_bindIOSClass(NSString_CaseInsensitiveComparator.class, &_NSString_CaseInsensitiveComparator, @"java.lang", @"CaseInsensitiveComparator");
 }
 
 @end

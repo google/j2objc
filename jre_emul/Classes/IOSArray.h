@@ -34,6 +34,12 @@
    * performance reasons. DO NOT MODIFY.
    */
   jint size_;
+
+  /**
+   * The type of elements in this array.
+   * This field is read-only, visible only for performance reasons. DO NOT MODIFY!
+   */
+  IOSClass *elementType_;
 }
 
 /** Returns the size of this array. */

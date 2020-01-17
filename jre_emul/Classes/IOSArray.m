@@ -133,17 +133,11 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
 }
 
 - (IOSClass *)java_getClass {
-  return IOSClass_arrayOf([self elementType]);
+  return IOSClass_arrayOf(self->elementType_);
 }
 
 - (IOSClass *)elementType {
-#if __has_feature(objc_arc)
-  @throw [[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"];
-#else
-  @throw [[[JavaLangAssertionError alloc]
-           initWithId:@"abstract method not overridden"] autorelease];
-#endif
-  return nil;
+  return self->elementType_;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -172,7 +166,9 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
   return nil;
 }
 
-//+ (void)initailize {
-//  ARGC_bindConcrete
-//}
++ (void)initialize {
+  // do nothing. class resolved after creation.
+}
+
+
 @end

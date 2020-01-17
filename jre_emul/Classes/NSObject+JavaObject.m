@@ -213,10 +213,10 @@ void NSObject__init_class__() {
     "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LJavaLangThrowable;", "notify",
     "notifyAll", "wait", "J", "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {
-    "Object", "java.lang", empty_static_initialize,
+    empty_static_initialize,
     ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(NSObject.class, &_NSObject);
+  ARGC_bindIOSClass(NSObject.class, &_NSObject, @"java.lang", @"Object");
 }
 
 

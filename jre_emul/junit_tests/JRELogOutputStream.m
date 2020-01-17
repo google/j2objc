@@ -56,8 +56,4 @@
   });
 }
 
-+ (void) initialize {
-  ARGC_bindIOSClass(JRELogOutputStream.class, &JreEmptyClassInfo);
-}
-
 @end
