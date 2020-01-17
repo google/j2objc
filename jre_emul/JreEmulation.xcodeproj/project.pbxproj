@@ -1610,6 +1610,38 @@
 		062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestsTableViewController.m; sourceTree = "<group>"; };
 		062463D81A005995006D52C9 /* JRELogPaneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPaneViewController.h; sourceTree = "<group>"; };
 		062463D91A005995006D52C9 /* JRELogPaneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPaneViewController.m; sourceTree = "<group>"; };
+		0628B42523D10F83008ADB82 /* PollArrayWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PollArrayWrapper.m; path = android/platform/libcore/ojluni/src/main/native/PollArrayWrapper.m; sourceTree = SOURCE_ROOT; };
+		0628B42623D10F83008ADB82 /* SocketInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketInputStream.m; path = android/platform/libcore/ojluni/src/main/native/SocketInputStream.m; sourceTree = SOURCE_ROOT; };
+		0628B42723D10F83008ADB82 /* NativeThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeThread.m; path = android/platform/libcore/ojluni/src/main/native/NativeThread.m; sourceTree = SOURCE_ROOT; };
+		0628B42823D10F84008ADB82 /* DatagramDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramDispatcher.m; path = android/platform/libcore/ojluni/src/main/native/DatagramDispatcher.m; sourceTree = SOURCE_ROOT; };
+		0628B42923D10F84008ADB82 /* Inet6AddressImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Inet6AddressImpl.m; path = android/platform/libcore/ojluni/src/main/native/Inet6AddressImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B42A23D10F84008ADB82 /* SocketOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketOutputStream.m; path = android/platform/libcore/ojluni/src/main/native/SocketOutputStream.m; sourceTree = SOURCE_ROOT; };
+		0628B42B23D10F84008ADB82 /* zip_util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = zip_util.m; path = android/platform/libcore/ojluni/src/main/native/zip_util.m; sourceTree = SOURCE_ROOT; };
+		0628B42C23D10F84008ADB82 /* java_lang_Long.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_lang_Long.m; path = android/platform/libcore/ojluni/src/main/native/java_lang_Long.m; sourceTree = SOURCE_ROOT; };
+		0628B42D23D10F84008ADB82 /* PlainSocketImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlainSocketImpl.m; path = android/platform/libcore/ojluni/src/main/native/PlainSocketImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B42E23D10F84008ADB82 /* SocketChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketChannelImpl.m; path = android/platform/libcore/ojluni/src/main/native/SocketChannelImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B42F23D10F84008ADB82 /* Bits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bits.m; path = android/platform/libcore/ojluni/src/main/native/Bits.m; sourceTree = SOURCE_ROOT; };
+		0628B43023D10F85008ADB82 /* java_util_zip_Deflater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_util_zip_Deflater.m; path = android/platform/libcore/ojluni/src/main/native/java_util_zip_Deflater.m; sourceTree = SOURCE_ROOT; };
+		0628B43123D10F85008ADB82 /* ServerSocketChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerSocketChannelImpl.m; path = android/platform/libcore/ojluni/src/main/native/ServerSocketChannelImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B43223D10F85008ADB82 /* io_util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = io_util.m; path = android/platform/libcore/ojluni/src/main/native/io_util.m; sourceTree = SOURCE_ROOT; };
+		0628B43323D10F85008ADB82 /* NetworkInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkInterface.m; path = android/platform/libcore/ojluni/src/main/native/NetworkInterface.m; sourceTree = SOURCE_ROOT; };
+		0628B43423D10F85008ADB82 /* DatagramPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramPacket.m; path = android/platform/libcore/ojluni/src/main/native/DatagramPacket.m; sourceTree = SOURCE_ROOT; };
+		0628B43523D10F85008ADB82 /* MappedByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MappedByteBuffer.m; path = android/platform/libcore/ojluni/src/main/native/MappedByteBuffer.m; sourceTree = SOURCE_ROOT; };
+		0628B43623D10F85008ADB82 /* java_lang_Integer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_lang_Integer.m; path = android/platform/libcore/ojluni/src/main/native/java_lang_Integer.m; sourceTree = SOURCE_ROOT; };
+		0628B43723D10F86008ADB82 /* PlainDatagramSocketImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlainDatagramSocketImpl.m; path = android/platform/libcore/ojluni/src/main/native/PlainDatagramSocketImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B43823D10F86008ADB82 /* java_util_zip_ZipFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_util_zip_ZipFile.m; path = android/platform/libcore/ojluni/src/main/native/java_util_zip_ZipFile.m; sourceTree = SOURCE_ROOT; };
+		0628B43923D10F86008ADB82 /* net_util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = net_util.m; path = android/platform/libcore/ojluni/src/main/native/net_util.m; sourceTree = SOURCE_ROOT; };
+		0628B43A23D10F86008ADB82 /* Inet4AddressImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Inet4AddressImpl.m; path = android/platform/libcore/ojluni/src/main/native/Inet4AddressImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B43B23D10F86008ADB82 /* FileKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileKey.m; path = android/platform/libcore/ojluni/src/main/native/FileKey.m; sourceTree = SOURCE_ROOT; };
+		0628B43C23D10F86008ADB82 /* DatagramChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramChannelImpl.m; path = android/platform/libcore/ojluni/src/main/native/DatagramChannelImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B43D23D10F8A008ADB82 /* FileChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileChannelImpl.m; path = android/platform/libcore/ojluni/src/main/native/FileChannelImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B43E23D10F8A008ADB82 /* Net.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Net.m; path = android/platform/libcore/ojluni/src/main/native/Net.m; sourceTree = SOURCE_ROOT; };
+		0628B43F23D10F8A008ADB82 /* java_util_zip_Inflater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_util_zip_Inflater.m; path = android/platform/libcore/ojluni/src/main/native/java_util_zip_Inflater.m; sourceTree = SOURCE_ROOT; };
+		0628B44023D10F8A008ADB82 /* InheritedChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InheritedChannel.m; path = android/platform/libcore/ojluni/src/main/native/InheritedChannel.m; sourceTree = SOURCE_ROOT; };
+		0628B44123D10F8A008ADB82 /* FileDescriptor_md.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileDescriptor_md.m; path = android/platform/libcore/ojluni/src/main/native/FileDescriptor_md.m; sourceTree = SOURCE_ROOT; };
+		0628B44223D10F8A008ADB82 /* net_util_md.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = net_util_md.m; path = android/platform/libcore/ojluni/src/main/native/net_util_md.m; sourceTree = SOURCE_ROOT; };
+		0628B44323D10F8B008ADB82 /* FileDispatcherImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileDispatcherImpl.m; path = android/platform/libcore/ojluni/src/main/native/FileDispatcherImpl.m; sourceTree = SOURCE_ROOT; };
+		0628B44423D10F8B008ADB82 /* IOUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOUtil.m; path = android/platform/libcore/ojluni/src/main/native/IOUtil.m; sourceTree = SOURCE_ROOT; };
 		062B4F091ED76B8D00D4E7D8 /* OldErrorManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldErrorManagerTest.m; path = libcore/java/util/logging/OldErrorManagerTest.m; sourceTree = "<group>"; };
 		062B4F0A1ED76B8D00D4E7D8 /* OldFileHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldFileHandlerTest.m; path = libcore/java/util/logging/OldFileHandlerTest.m; sourceTree = "<group>"; };
 		062B4F0B1ED76B8D00D4E7D8 /* OldFormatterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldFormatterTest.m; path = libcore/java/util/logging/OldFormatterTest.m; sourceTree = "<group>"; };
@@ -2846,6 +2878,11 @@
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
 		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
 		06BED66A18EDE33F004EA17D /* J2ObjC_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_common.h; sourceTree = "<group>"; };
+		06C07B0423CD3C91008B27E9 /* libcore_icu_ICU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = libcore_icu_ICU.m; path = android/platform/libcore/luni/src/objc/native/libcore_icu_ICU.m; sourceTree = SOURCE_ROOT; };
+		06C07B0623CD3D36008B27E9 /* java_lang_Math.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_lang_Math.m; path = android/platform/libcore/luni/src/main/native/java_lang_Math.m; sourceTree = SOURCE_ROOT; };
+		06C07B0723CD3D36008B27E9 /* java_lang_Character.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_lang_Character.m; path = android/platform/libcore/luni/src/main/native/java_lang_Character.m; sourceTree = SOURCE_ROOT; };
+		06C07B0823CD3D36008B27E9 /* java_lang_StrictMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = java_lang_StrictMath.m; path = android/platform/libcore/luni/src/main/native/java_lang_StrictMath.m; sourceTree = SOURCE_ROOT; };
+		06C07B0923CD3D37008B27E9 /* libcore_io_Memory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = libcore_io_Memory.m; path = android/platform/libcore/luni/src/main/native/libcore_io_Memory.m; sourceTree = SOURCE_ROOT; };
 		06C143751F46135100CABE9A /* AlreadyConnectedExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlreadyConnectedExceptionTest.m; path = org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.m; sourceTree = "<group>"; };
 		06C143761F46135100CABE9A /* AsynchronousCloseExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsynchronousCloseExceptionTest.m; path = org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.m; sourceTree = "<group>"; };
 		06C143771F46135100CABE9A /* CancelledKeyExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CancelledKeyExceptionTest.m; path = org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.m; sourceTree = "<group>"; };
@@ -4470,9 +4507,13 @@
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
 				062C395B1FD72526009B232F /* AnnotationUtils.m */,
+				0628B42F23D10F84008ADB82 /* Bits.m */,
 				06FACA1118AD34B8008501DD /* BufferUtils.h */,
 				067228EF158FB002005318BD /* Constructor.h */,
 				06721BA01559DE3800645E1B /* Constructor.m */,
+				0628B43C23D10F86008ADB82 /* DatagramChannelImpl.m */,
+				0628B42823D10F84008ADB82 /* DatagramDispatcher.m */,
+				0628B43423D10F85008ADB82 /* DatagramPacket.m */,
 				0674EA5918C681F60027D484 /* DebugUtils.h */,
 				0674EA5818C681E50027D484 /* DebugUtils.m */,
 				067228F0158FB002005318BD /* Executable.h */,
@@ -4481,6 +4522,14 @@
 				064914321AC47ED000E98733 /* FastPointerLookup.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
 				067228E5158FAEBC005318BD /* Field.m */,
+				0628B43D23D10F8A008ADB82 /* FileChannelImpl.m */,
+				0628B44123D10F8A008ADB82 /* FileDescriptor_md.m */,
+				0628B44323D10F8B008ADB82 /* FileDispatcherImpl.m */,
+				0628B43B23D10F86008ADB82 /* FileKey.m */,
+				0628B43A23D10F86008ADB82 /* Inet4AddressImpl.m */,
+				0628B42923D10F84008ADB82 /* Inet6AddressImpl.m */,
+				0628B44023D10F8A008ADB82 /* InheritedChannel.m */,
+				0628B43223D10F85008ADB82 /* io_util.m */,
 				062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
@@ -4515,11 +4564,20 @@
 				064914331AC47ED000E98733 /* J2ObjC_source.h */,
 				0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
+				06C07B0723CD3D36008B27E9 /* java_lang_Character.m */,
+				0628B44423D10F8B008ADB82 /* IOUtil.m */,
+				0628B43623D10F85008ADB82 /* java_lang_Integer.m */,
+				0628B42C23D10F84008ADB82 /* java_lang_Long.m */,
+				06C07B0623CD3D36008B27E9 /* java_lang_Math.m */,
+				06C07B0823CD3D36008B27E9 /* java_lang_StrictMath.m */,
 				06E2068921EFE125001C06D2 /* java_lang_SystemClassLoader.m */,
 				062C394C1FD612AA009B232F /* java_lang_Thread.h */,
 				062C39511FD612AB009B232F /* java_lang_Thread.m */,
 				069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */,
 				069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */,
+				0628B43023D10F85008ADB82 /* java_util_zip_Deflater.m */,
+				0628B43F23D10F8A008ADB82 /* java_util_zip_Inflater.m */,
+				0628B43823D10F86008ADB82 /* java_util_zip_ZipFile.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
 				062C394E1FD612AA009B232F /* JavaThrowable.h */,
 				062C39531FD612AB009B232F /* JavaThrowable.m */,
@@ -4529,8 +4587,16 @@
 				062C39541FD612AC009B232F /* JreRetainedWith.h */,
 				062C39521FD612AB009B232F /* JreRetainedWith.m */,
 				062C39501FD612AB009B232F /* jvm.m */,
+				06C07B0423CD3C91008B27E9 /* libcore_icu_ICU.m */,
+				06C07B0923CD3D37008B27E9 /* libcore_io_Memory.m */,
+				0628B43523D10F85008ADB82 /* MappedByteBuffer.m */,
 				067228F1158FB002005318BD /* Method.h */,
 				06721BA21559DE3800645E1B /* Method.m */,
+				0628B42723D10F83008ADB82 /* NativeThread.m */,
+				0628B44223D10F8A008ADB82 /* net_util_md.m */,
+				0628B43923D10F86008ADB82 /* net_util.m */,
+				0628B43E23D10F8A008ADB82 /* Net.m */,
+				0628B43323D10F85008ADB82 /* NetworkInterface.m */,
 				064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */,
 				064914351AC47ED000E98733 /* NSCopying+JavaCloneable.m */,
 				2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */,
@@ -4547,9 +4613,17 @@
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
 				066B71F617B94DC100A4CBBD /* objc-sync.h */,
 				066B71F717B94DC100A4CBBD /* objc-sync.m */,
+				0628B43723D10F86008ADB82 /* PlainDatagramSocketImpl.m */,
+				0628B42D23D10F84008ADB82 /* PlainSocketImpl.m */,
+				0628B42523D10F83008ADB82 /* PollArrayWrapper.m */,
 				06F6ECFE18AAABD500875541 /* Portability.h */,
+				0628B43123D10F85008ADB82 /* ServerSocketChannelImpl.m */,
+				0628B42E23D10F84008ADB82 /* SocketChannelImpl.m */,
+				0628B42623D10F83008ADB82 /* SocketInputStream.m */,
+				0628B42A23D10F84008ADB82 /* SocketOutputStream.m */,
 				0671E4BE21BDCDEA002E0681 /* sun_misc_Unsafe.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
+				0628B42B23D10F84008ADB82 /* zip_util.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
