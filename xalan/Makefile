@@ -41,6 +41,9 @@ PUBLIC_JAVA_SOURCES = \
     $(shell cd $(SRC_DIR) && find org -name *.java | xargs egrep -l "^(public|protected) ")
 
 STATIC_FRAMEWORK_RESOURCE_FILES = \
+	META-INF/services/javax.xml.transform.TransformerFactory \
+	META-INF/services/javax.xml.xpath.XPathFactory \
+	META-INF/services/org.apache.xml.dtm.DTMManager \
 	org/apache/xalan/res/XSLTInfo.properties \
 	org/apache/xml/serializer/Encodings.properties \
 	org/apache/xml/serializer/HTMLEntities.properties \
