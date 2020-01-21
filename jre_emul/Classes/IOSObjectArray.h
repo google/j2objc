@@ -51,7 +51,6 @@
   id ARGC_FIELD_REF buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
 }
 
-@property (readonly) IOSClass *elementType;
 
 /** Create an array from a C object array, length, and type. */
 + (instancetype)newArrayWithObjects:(const id *)objects

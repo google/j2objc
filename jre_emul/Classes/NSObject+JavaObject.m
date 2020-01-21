@@ -216,7 +216,7 @@ void NSObject__init_class__() {
     empty_static_initialize,
     ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(NSObject.class, &_NSObject, @"java.lang", @"Object");
+  ARGC_bindIOSClass(NSObject.class, &_NSObject, @"java.lang.Object", 10);
 }
 
 

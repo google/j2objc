@@ -21,6 +21,7 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "IOSReflection.h"
+#import "J2ObjC_source.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassLoader.h"
 #import "java/lang/NoSuchMethodException.h"
@@ -351,7 +352,7 @@ static void JavaLangReflectExecutable__clinit__() {
     ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
   };
 
-  ARGC_bindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable, @"java.lang.reflect", @"Executable");
+  ARGC_bindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable, @"java.lang.reflect.Executable", 18);
 }
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.

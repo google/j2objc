@@ -324,7 +324,7 @@ static void JavaLangReflectMethod__clinit__() {
     JavaLangReflectMethod_initialize,
     ptrTable, methods, NULL, 7, 0x1, 21, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangReflectMethod.class, &_JavaLangReflectMethod, @"java.lang.reflect", @"Method");
+  ARGC_bindIOSClass(JavaLangReflectMethod.class, &_JavaLangReflectMethod, @"java.lang.reflect.Method", 18);
 }
 
 @end

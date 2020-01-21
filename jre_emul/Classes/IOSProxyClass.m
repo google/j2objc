@@ -36,7 +36,7 @@
     ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
   };
   NSString* name = NSStringFromClass(cls);
-  return [self initWithClass:cls metadata:&proxyClassMetadata package:NULL typeName:name];
+  return [self initWithClass:cls metadata:&proxyClassMetadata name:name simpleNamePos:0];
 }
 
 - (IOSObjectArray *)getDeclaredFields {

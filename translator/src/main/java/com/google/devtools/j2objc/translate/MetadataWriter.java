@@ -175,29 +175,38 @@ public class MetadataWriter extends UnitTreeVisitor {
 
       boolean isPureInterface = TypeUtil.isPureInterface(type.asType());
       StringBuilder code = new StringBuilder();
-      String typeName = cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type));
-      typeName = "@" + typeName;
-      String packageName = cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type))));
-      if (!packageName.equals("NULL")) {
-    	  packageName = "@" + packageName;
+      String qName = ElementUtil.getQualifiedName(type);
+      String typeName = ElementUtil.getName(type);
+      
+      
+      String packageName = ElementUtil.getName(ElementUtil.getPackage(type));
+      if (packageName.length() + typeName.length() + 1 < qName.length()) {
+    	  qName = packageName + '.' + qName.substring(packageName.length() + 1).replace('.', '$');
       }
-      code.append("\nNSString *typeName = ").append(typeName).append(";\n");
-      code.append("NSString *packageName = ").append(packageName).append(";\n");
+      
+      int posSimpleName = typeName == null ? 0 : qName.length() - typeName.length();
+      qName = nsStr(qName);      
+      typeName = nsStr(typeName);
+
+      //System.out.println(qName + ", " + typeName);
+      code.append("\nNSString *clsName = ").append(qName).append(";\n");
+      code.append("int posSimpleName = ").append(posSimpleName).append(";\n");
+      //code.append("NSString *packageName = ").append(packageName).append(";\n");
       if (!isPureInterface) {
     	  code.append("if (self != " + fullName + ".class) {\n");
-          code.append("typeName = NSStringFromClass(self);\n");
-          code.append("packageName = NULL;\n");
+          code.append("clsName = NSStringFromClass(self);\n");
+          code.append("posSimpleName = 0;\n");
 	      code.append("} else {\n");
       }
       code.append(sbMethodData);
       if (!isPureInterface) {
 	      code.append("};\n");
     	  code.append("ARGC_bindIOSClass(self, &_" + fullName
-    			  + ", packageName, typeName);\n");
+    			  + ", clsName, posSimpleName);\n");
       }
       else {
     	  code.append("\nARGC_bindIOSProtocol(@protocol(" + fullName + "), &_" + fullName
-    			  + ", packageName, typeName);\n");
+    			  + ", clsName, posSimpleName);\n");
       }
       stmts.add(new NativeStatement(code.toString()));
       //stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
@@ -551,5 +560,9 @@ public class MetadataWriter extends UnitTreeVisitor {
 
   private String cStr(String s) {
     return s == null ? "NULL" : "\"" + s + "\"";
+  }
+
+  private String nsStr(String s) {
+	    return s == null || s.length() == 0 ? "NULL" : "@\"" + s + "\"";
   }
 }

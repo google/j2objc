@@ -67,16 +67,6 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id 
 void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
 
 
-void ARGC_bindIOSClass(Class _class, const J2ObjcClassInfo *metaData, NSString* packageName, NSString* typeName) J2OBJC_METHOD_ATTR;
-
-void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* packageName, NSString* typeName) J2OBJC_METHOD_ATTR;
-
-IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
-
-IOSClass* ARGC_getIOSProtocolClass(Protocol *protocol) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
-
-const J2ObjcClassInfo* ARGC_getMetaData(id nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
-
 /* execute garbage collection now. */
 void ARGC_collectGarbage();
 

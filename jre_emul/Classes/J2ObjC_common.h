@@ -158,8 +158,8 @@ CF_EXTERN_C_END
 #endif
 
 // #if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline id JreAutoreleasedAssign(
-    ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) J2OBJC_METHOD_ATTR {
+__attribute__((always_inline)) inline __unsafe_unretained id JreAutoreleasedAssign(
+    __unsafe_unretained id *pIvar, __unsafe_unretained  id value) J2OBJC_METHOD_ATTR {
     AUTORELEASE(value);
     JreGenericFieldAssign(pIvar, value);
     return value;

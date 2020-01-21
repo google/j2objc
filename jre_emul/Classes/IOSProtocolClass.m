@@ -41,9 +41,9 @@ static Class GetBackingClass(Protocol *protocol) {
 
 - (instancetype)initWithProtocol:(Protocol *)protocol
                         metadata:(const J2ObjcClassInfo *)metadata
-                         package:(NSString *)packageName
-                        typeName:(NSString *)typeName {
-  if ((self = [super initWithMetadata:metadata package:packageName typeName:typeName])) {
+                            name:(NSString *)clsName
+                   simpleNamePos:(int)simpleNamePos {
+  if ((self = [super initWithMetadata:metadata name:clsName simpleNamePos:simpleNamePos])) {
     protocol_ = RETAIN_(protocol);
   }
   return self;

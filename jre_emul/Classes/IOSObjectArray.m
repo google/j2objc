@@ -26,6 +26,7 @@
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/NegativeArraySizeException.h"
+#import "java/lang/reflect/Method.h"
 
 // Defined in IOSArray.m
 extern id IOSArray_NewArrayWithDimensions(
@@ -52,6 +53,7 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
 #endif
   array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
+  
   return array;
 }
 
@@ -263,11 +265,11 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
     releaseEnd = tmp;
   }
   for (jint i = releaseStart; i < releaseEnd; i++) {
-    (void)AUTORELEASE(buffer[i]);
+    (void)ARGC_genericRelease(buffer[i]);
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
   for (jint i = retainStart; i < retainEnd; i++) {
-    (void)RETAIN_(buffer[i]);
+    (void)ARGC_genericRetain(buffer[i]);
   }
 #endif
 }

@@ -479,7 +479,7 @@ static void JavaLangReflectField__clinit__() {
     JavaLangReflectField_initialize,
     ptrTable, methods, NULL, 7, 0x1, 29, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangReflectField.class, &_JavaLangReflectField, @"java.lang.reflect", @"Field");
+  ARGC_bindIOSClass(JavaLangReflectField.class, &_JavaLangReflectField, @"java.lang.reflect.Field", 18);
 }
 
 @end

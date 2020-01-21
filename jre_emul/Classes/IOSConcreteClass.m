@@ -41,9 +41,9 @@
 
 - (instancetype)initWithClass:(Class)cls
                      metadata:(const J2ObjcClassInfo *)metadata
-                      package:(NSString *)packageName
-                     typeName:(NSString *)typeName {
-  if ((self = [super initWithMetadata:metadata package:packageName typeName:typeName])) {
+                               name:(NSString *)clsName
+                      simpleNamePos:(int)simpleNamePos {
+  if ((self = [super initWithMetadata:metadata name:clsName simpleNamePos:simpleNamePos])) {
     class_ = cls;
   }
   return self;

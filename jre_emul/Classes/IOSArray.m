@@ -49,7 +49,7 @@ static id NewArrayWithDimensionsAndComponentTypes(
     
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
-  __unsafe_unretained id subarrays[size];
+  id subarrays[size];
   for (jint i = 0; i < size; i++) {
     subarrays[i] = AUTORELEASE(NewArrayWithDimensionsAndComponentTypes(
         self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1));

@@ -84,6 +84,7 @@ static FastPointerLookup_t classLookup;
 static FastPointerLookup_t protocolLookup;
 static FastPointerLookup_t arrayLookup;
 
+
 @interface IOSClass() {
   _Atomic(IOSArrayClass*) arrayType_;
 }
@@ -101,6 +102,70 @@ static FastPointerLookup_t arrayLookup;
 @interface PackagePrefixLoader : NSObject < JavaUtilProperties_KeyValueLoader >
 - (void)load__WithNSString:(NSString *)key withNSString:(NSString *)value;
 @end
+
+static NSMutableDictionary *mappedNames;
+static Class g_stringClass;
+static IOSClass* g_javaStringClass;
+static const J2ObjcClassInfo *g_javaLangObjectMetadata;
+
+static int iosClassAssocKey;
+
+void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
+  assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
+  [mappedNames setObject:javaClass forKey:javaClass->name_];
+  objc_setAssociatedObject(key, &iosClassAssocKey, javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  return (IOSClass*)objc_getAssociatedObject(key, &iosClassAssocKey);
+}
+
+void ARGC_bindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
+  assert(ARGC_getIOSClass(nativeClass) == NULL);
+  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:metaData name:clsName simpleNamePos:posSimpleName];
+  ARGC_bindJavaClass(nativeClass, javaClass);
+}
+
+void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
+  assert(ARGC_getIOSClass(protocol) == NULL);
+  IOSClass *javaClass = [[IOSProtocolClass alloc] initWithProtocol:protocol metadata:metaData name:clsName simpleNamePos:posSimpleName];
+  ARGC_bindJavaClass(protocol, javaClass);
+}
+
+
+//void ARGC_bindIOSClass(id nativeClass, IOSClass* javaClass) J2OBJC_METHOD_ATTR {
+//  assert(javaClass->metadata_ == ARGC_getMetaData(nativeClass));
+//  assert(ARGC_getIOSClass(nativeClass) == NULL);
+//  objc_setAssociatedObject(nativeClass, &iosClassAssocKey, (id)javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//}
+
+IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  IOSClass *javaClass = ARGC_getIOSClass(nativeClass);
+  if (javaClass == NULL) {
+    if ([nativeClass isKindOfClass:g_stringClass]) {
+      ARGC_bindJavaClass(nativeClass, g_javaStringClass);
+      javaClass = g_javaStringClass;
+    }
+    else {
+      IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass
+                                                           metadata:g_javaLangObjectMetadata
+                                                               name:NSStringFromClass(nativeClass)
+                                                      simpleNamePos:0];
+      ARGC_bindJavaClass(nativeClass, javaClass);
+    }
+  }
+  return RETAIN_(javaClass);
+}
+
+IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  IOSClass *javaClass = ARGC_getIOSClass(protocol);
+  if (javaClass == NULL) {
+    [NSClassFromString(NSStringFromProtocol(protocol)) class];
+    javaClass = ARGC_getIOSClass(protocol);
+  }
+  return RETAIN_(javaClass);
+}
+
 
 @implementation IOSClass
 
@@ -127,7 +192,7 @@ void empty_static_initialize() {}
 }
 
 - (NSString *)getSimpleName {
-  return typeName_;
+  return [name_ java_substring:simpleNamePos_];
 }
 
 - (Class)objcClass {
@@ -175,28 +240,16 @@ void empty_static_initialize() {}
 }
 
 - (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
-                         package:(NSString *)packageName
-                        typeName:(NSString *)typeName {
+                           name:(NSString *)clsName
+                  simpleNamePos:(int)simpleNamePos {
   if ((self = [super init])) {
-    metadata_ = metadata;
-    *((NSString**)&typeName_) = typeName;
-    if (packageName == NULL || packageName.length == 0) {
-      *((NSString**)&name_) = typeName;
-    }
-    else {
-      *((NSString**)&name_) = [NSString stringWithFormat:@"%@.%@", packageName, typeName];
-    }
-  }
-  return self;
-}
+    assert (simpleNamePos_ <= 0 || [name_ charAtWithInt:simpleNamePos_ - 1] == '$'
+            || [name_ charAtWithInt:simpleNamePos_ - 1] == '.'
+            ||  [name_ charAtWithInt:simpleNamePos_ - 1] == '[');
 
-- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
-                            name:(NSString *)name
-                      simpleName:(NSString *)simpleName {
-  if ((self = [super init])) {
-    metadata_ = metadata;
-    *((NSString**)&typeName_) = simpleName;
-    *((NSString**)&name_) = name;
+    self->metadata_ = metadata;
+    *((NSString**)&self->name_) = clsName;
+    self->simpleNamePos_ = simpleNamePos;
   }
   return self;
 }
@@ -269,7 +322,13 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 - (NSString *)getCanonicalName {
-  return [name_ stringByReplacingOccurrencesOfString:@"$" withString:@"."];
+  if (simpleNamePos_ <= 0 || [name_ charAtWithInt:simpleNamePos_ - 1] != '$') {
+    return name_;
+  }
+  NSString* prefix = [name_ java_substring:0 endIndex:simpleNamePos_ - 1];
+  NSString* simpleName = [name_ java_substring:simpleNamePos_];
+  NSString* name = [NSString stringWithFormat:@"%@.%@", prefix, simpleName];
+  return name;
 }
 
 - (NSString *)objcName {
@@ -573,6 +632,7 @@ static NSString *JavaToIosName(NSString *javaName) {
 // and end section symbols) from structures defined by the J2OBJC_NAME_MAPPING macro.
 // This data defines mapping for Java names to the actual iOS names, and so is only
 // necessary when loading classes by name.
+#ifndef J2OBJC_USE_GC
 static NSDictionary *FetchNameMappings() {
   extern J2ObjcNameMapping start_alias_section __asm("section$start$__DATA$__j2objc_aliases");
   extern J2ObjcNameMapping end_alias_section  __asm("section$end$__DATA$__j2objc_aliases");
@@ -584,19 +644,15 @@ static NSDictionary *FetchNameMappings() {
   }
   return mappedNames;
 }
+#endif
 
 static IOSClass *ClassForJavaName(NSString *name) {
-  static NSDictionary *mappedNames;
-  static dispatch_once_t once;
-  dispatch_once(&once, ^{
-    mappedNames = FetchNameMappings();
-  });
-
-  // First check if this is a mapped name.
-  NSString *mappedName = [mappedNames objectForKey:name];
-  if (mappedName) {
-    return ClassForIosName(mappedName);
+  IOSClass* clazz = [mappedNames objectForKey:name];
+  if (clazz != NULL) {
+    return clazz;
   }
+
+/*
   // Then check if any outer class is a mapped name.
   NSUInteger lastDollar = name.length;
   while (true) {
@@ -613,7 +669,7 @@ static IOSClass *ClassForJavaName(NSString *name) {
       return ClassForIosName([mappedName stringByAppendingString:suffix]);
     }
   }
-
+*/
   // Separate package from class names.
   NSUInteger lastDot = [name rangeOfString:@"." options:NSBackwardsSearch].location;
   if (lastDot == NSNotFound) {
@@ -621,22 +677,22 @@ static IOSClass *ClassForJavaName(NSString *name) {
     return ClassForIosName(JavaToIosName(name));
   }
   NSString *package = [name substringToIndex:lastDot];
-  NSString *clazz = JavaToIosName([name substringFromIndex:lastDot + 1]);
+  NSString *className = JavaToIosName([name substringFromIndex:lastDot + 1]);
   // First check if the class can be found with the default camel case package. This avoids the
   // expensive FindRenamedPackagePrefix if possible.
-  IOSClass *cls = ClassForIosName([CamelCasePackage(package) stringByAppendingString:clazz]);
+  IOSClass *cls = ClassForIosName([CamelCasePackage(package) stringByAppendingString:className]);
   if (cls) {
     return cls;
   }
   // Check if the package has a mapped name.
-  mappedName = [mappedNames objectForKey:package];
-  if (mappedName) {
-    return ClassForIosName([mappedName stringByAppendingString:clazz]);
+  clazz = [mappedNames objectForKey:package];
+  if (clazz != NULL) {
+    return clazz;
   }
   // Check if the package has a renamed prefix.
   NSString *renamedPackage = FindRenamedPackagePrefix(package);
   if (renamedPackage) {
-    return ClassForIosName([renamedPackage stringByAppendingString:clazz]);
+    return ClassForIosName([renamedPackage stringByAppendingString:className]);
   }
   return nil;
 }
@@ -927,10 +983,15 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (id)getPackage {
-  NSUInteger name_len = name_.length;
-  NSUInteger type_len = typeName_.length;
-  if (name_len > type_len) {
-    NSString *packageName =  [name_ substringToIndex: name_len - type_len - 1];
+  if (simpleNamePos_ > 0) {
+    int package_len = simpleNamePos_ - 1;
+    if ([name_ charAtWithInt:package_len] == '$') {
+      package_len = [name_ java_lastIndexOf:'.'] - 1;
+      if (package_len <= 0) {
+        return nil;
+      }
+    }
+    NSString *packageName =  [name_ substringToIndex: package_len];
     return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:packageName
                                                     withNSString:nil
                                                     withNSString:nil
@@ -1291,18 +1352,28 @@ static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
   return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
 }
 
+void ARGC_strongRetain(id oid);
+
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
   IOSArrayClass* array = componentType->arrayType_;
   if (array == NULL) {
     IOSArrayClass* array2 = [[IOSArrayClass alloc]initWithComponentType:componentType];
-    __c11_atomic_compare_exchange_strong(&componentType->arrayType_, &array, array2,
-                                         __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+    if (__c11_atomic_compare_exchange_strong(&componentType->arrayType_, &array, array2,
+                                             __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
+      array = array2;
+      ARGC_strongRetain(array);
+    }
+    else {
+      assert(array != NULL);
+      assert(array != array2);
+      array2->metadata_ = (const J2ObjcClassInfo *)-1;
+    }
   }
   return array;
 }
 
 IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
-  while (--dimensions > 0) {
+  while (--dimensions >= 0) {
     componentType = IOSClass_arrayOf(componentType);
   }
   return componentType;
@@ -1485,9 +1556,10 @@ void NSCopying__init_class__(void);
 + (void)initialize {
   if (self != IOSClass.class) return;
   
+  mappedNames = [[NSMutableDictionary alloc] initWithCapacity:1024*8];
   // JavaLangObject class 로딩.
   NSObject__init_class__();
-  ARGC_bindIOSClass(IOSClass.class, IOSClass__metadata(), @"java.lang", @"Class");
+  ARGC_bindIOSClass(IOSClass.class, IOSClass__metadata(), @"java.lang.Class", 10);
 
   FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
   FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
@@ -1512,6 +1584,12 @@ void NSCopying__init_class__(void);
   NSString__init_class__();
   NSCopying__init_class__();
 
+  g_javaLangObjectMetadata = NSObject_class_()->metadata_;
+  g_javaStringClass = NSString_class_();
+  g_stringClass = NSString.class;
+
+  ARGC_bindJavaClass(ARGCObject.class, ARGC_getIOSClass(NSObject.class));
+
   // Verify that these categories successfully loaded.
   if ([NSObject.class instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
       [NSString.class instanceMethodSignatureForSelector:@selector(java_trim)] == NULL ||
@@ -1534,9 +1612,11 @@ void NSCopying__init_class__(void);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wobjc-missing-super-calls"
 - (void)dealloc {
-  @throw create_JavaLangAssertionError_initWithId_(
+  if (self->metadata_ != (void*)-1) {
+    @throw create_JavaLangAssertionError_initWithId_(
       [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", self->name_]);
-  // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
+    // Don't call [super dealloc], since clang will correctly warn that it's unreachable code.
+  }
 }
 #pragma clang diagnostic pop
 

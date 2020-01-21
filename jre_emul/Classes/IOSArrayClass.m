@@ -35,9 +35,8 @@
 
 - (instancetype)initWithComponentType:(IOSClass *)type {
   NSString * name = [NSString stringWithFormat:@"[%@", [type binaryName]];
-  NSString * simpleName = [type->typeName_ stringByAppendingString:@"[]"];
   
-  if ((self = [super initWithMetadata:&JreEmptyClassInfo name:name simpleName:name])) {
+  if ((self = [super initWithMetadata:&JreEmptyClassInfo name:name simpleNamePos:1])) {
     componentType_ = RETAIN_(type);
   }
   return self;
@@ -75,6 +74,11 @@
 - (void)appendMetadataName:(NSMutableString *)str {
   [str appendString:@"["];
   [componentType_ appendMetadataName:str];
+}
+
+- (NSString *)getSimpleName {
+  NSString * simpleName = [[super getSimpleName] stringByAppendingString:@"[]"];
+  return simpleName;
 }
 
 - (NSString *)getCanonicalName {

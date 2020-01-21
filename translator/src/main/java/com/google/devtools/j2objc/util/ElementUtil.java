@@ -102,6 +102,7 @@ public final class ElementUtil {
     return element.getQualifiedName().toString();
   }
 
+  
   public static boolean isNamed(Element element, String name) {
     return element.getSimpleName().contentEquals(name);
   }

@@ -54,7 +54,7 @@ void NSNumber__init_class__() {
     empty_static_initialize,
     ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(NSNumber.class, &_NSNumber, @"java.lang", @"Number");
+  ARGC_bindIOSClass(NSNumber.class, &_NSNumber, @"java.lang.Number", 10);
 }
 
 @end

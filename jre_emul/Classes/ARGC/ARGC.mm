@@ -29,6 +29,7 @@
 #include "java/io/ByteArrayOutputStream.h"
 #include "java/lang/Exception.h"
 #include "java/lang/reflect/Modifier.h"
+#include "java/lang/reflect/Method.h"
 
 #include "RefContext.h"
 #include "NSObject+ARGC.h"
@@ -57,6 +58,7 @@ FOUNDATION_EXPORT int GC_LOG_RC = 0;
 FOUNDATION_EXPORT int GC_LOG_ROOTS = 0;
 FOUNDATION_EXPORT int GC_LOG_ALIVE = 0;
 FOUNDATION_EXPORT int GC_LOG_ALLOC = 0;
+FOUNDATION_EXPORT int GC_LOG_PHANTOM = 0;
 FOUNDATION_EXPORT int GC_LOG_WEAK_SOFT_REF = 1;
 FOUNDATION_EXPORT int GC_TRACE_RELEASE = 0;
 
@@ -73,13 +75,10 @@ static const int USE_AUTORELEASE_OLD = 0;
 
 
 static Class g_ARGCClass;
-static Class g_stringClass;
 static Class g_objectArrayClass;
 static Class g_referenceClass;
-static IOSClass* g_javaStringClass;
 static NSPointerArray* g_softRefs;
 static NSPointerArray* g_weakRefs;
-static const J2ObjcClassInfo *g_javaLangObjectMetadata;
 
 static const int SCANNING = 1;
 static const int FINALIZING = 2;
@@ -87,7 +86,6 @@ static const int FINISHED = 0;
 static scan_offset_t _emptyFields[1] = { 0 };
 
 static int refAssocKey;
-static int iosClassAssocKey;
 //static int metadataAssocKey;
 static int64_t gc_interval = 0;
 
@@ -111,6 +109,25 @@ static JObj_p toARGCObject(id oid) {
     }
   }
   return NULL;
+}
+
+static void GC_dumpTraceWithTag(JObj_p jobj, NSString* tag) {
+  int bindCount = jobj->_rc.bindCount();
+  int refCount = (int)NSExtraRefCount(jobj)+1;
+  NSLog(@"%@ %p #%d+%d %@", tag, jobj, bindCount, refCount-bindCount, getARGCClass(jobj));
+  if ((int)NSExtraRefCount(jobj) < (int)jobj->_rc.bindCount() - 1) {
+      // 멀티쓰레드환경이라 두 값의 비교가 정확하지 않다. 관련 정보를 적는다.
+      NSLog(@"Maybe error %@ %p %d(%d) %@", tag, jobj, (int)NSExtraRefCount(jobj), jobj->_rc.bindCount(), getARGCClass(jobj));
+  };
+}
+
+void GC_dumpTrace(JObj_p jobj) {
+  GC_dumpTraceWithTag(jobj, @"*");
+}
+
+void GC_setTraceRef(JObj_p jobj) {
+  GC_TRACE_REF = jobj;
+  GC_dumpTraceWithTag(jobj, @"*");
 }
 
 //##############################################################
@@ -284,13 +301,7 @@ public:
     
     static void checkRefCount(JObj_p jobj, NSString* tag) {
         if (tag != SKIP_LOG && GC_TRACE(jobj, GC_LOG_RC)) {
-            int bindCount = jobj->_rc.bindCount();
-            int refCount = (int)NSExtraRefCount(jobj)+1;
-            NSLog(@"%@ %p #%d+%d %@", tag, jobj, bindCount, refCount-bindCount, getARGCClass(jobj));
-            if ((int)NSExtraRefCount(jobj) < (int)jobj->_rc.bindCount() - 1) {
-                // 멀티쓰레드환경이라 두 값의 비교가 정확하지 않다. 관련 정보를 적는다.
-                NSLog(@"Maybe error %@ %p %d(%d) %@", tag, jobj, (int)NSExtraRefCount(jobj), jobj->_rc.bindCount(), getARGCClass(jobj));
-            };
+            GC_dumpTraceWithTag(jobj, tag);
         }
     }
     
@@ -379,10 +390,14 @@ private:
             return;
         }
 
+      if (getARGCClass(jobj) == JavaLangReflectMethod.class) {
+        //GC_TRACE_REF = jobj;
+      }
+
         [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc inDepth: 0];
         _instance.unregisterRef(jobj);
 
-        if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
+        if (GC_TRACE(jobj, GC_LOG_ALLOC || GC_LOG_PHANTOM)) {
             NSLog(@"addPhantom: %p %@ %@", jobj, getARGCClass(jobj), isThreadSafe ? @"delete-now" : @"delete-later");
         }
 
@@ -436,62 +451,8 @@ std::atomic_int ARGC::_clearSoftReference;
 volatile int64_t RefContext::strong_reachable_generation_bit = 0;
 
 extern "C" {
-void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
-  assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
-  NSIncrementExtraRefCount(javaClass);
-  objc_setAssociatedObject(key, &iosClassAssocKey, javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
-  return (IOSClass*)objc_getAssociatedObject(key, &iosClassAssocKey);
-}
-}
-
-void ARGC_bindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData, NSString* packageName, NSString* typeName) J2OBJC_METHOD_ATTR {
-  assert(ARGC_getIOSClass(nativeClass) == NULL);
-  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:metaData package:packageName typeName:typeName];
-  ARGC_bindJavaClass(nativeClass, javaClass);
-}
-
-void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* packageName, NSString* typeName) J2OBJC_METHOD_ATTR {
-  assert(ARGC_getIOSClass(protocol) == NULL);
-  IOSClass *javaClass = [[IOSProtocolClass alloc] initWithProtocol:protocol metadata:metaData package:packageName typeName:typeName];
-  ARGC_bindJavaClass(protocol, javaClass);
-}
-
-
-//void ARGC_bindIOSClass(id nativeClass, IOSClass* javaClass) J2OBJC_METHOD_ATTR {
-//  assert(javaClass->metadata_ == ARGC_getMetaData(nativeClass));
-//  assert(ARGC_getIOSClass(nativeClass) == NULL);
-//  objc_setAssociatedObject(nativeClass, &iosClassAssocKey, (id)javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//}
-
-IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
-  IOSClass *javaClass = ARGC_getIOSClass(nativeClass);
-  if (javaClass == NULL) {
-    if ([nativeClass isKindOfClass:g_stringClass]) {
-      ARGC_bindJavaClass(nativeClass, g_javaStringClass);
-      javaClass = g_javaStringClass;
-    }
-    else {
-      IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass
-                                                           metadata:g_javaLangObjectMetadata
-                                                            package:NULL
-                                                           typeName:NSStringFromClass(nativeClass)];
-      ARGC_bindJavaClass(nativeClass, javaClass);
-    }
-  }
-  return RETAIN_(javaClass);
-}
-
-IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
-  IOSClass *javaClass = ARGC_getIOSClass(protocol);
-  if (javaClass == NULL) {
-    [NSClassFromString(NSStringFromProtocol(protocol)) class];
-    javaClass = ARGC_getIOSClass(protocol);
-  }
-  return RETAIN_(javaClass);
-}
+IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
+};
 
 @implementation ARGCObject
 
@@ -504,7 +465,7 @@ IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJ
 + (void)initialize
 {
   if (self != ARGCObject.class) {
-    ARGC_getIOSConcreteClass(self);
+    //ARGC_getIOSConcreteClass(self);
   }
 }
 
@@ -638,13 +599,8 @@ ARGC::ARGC() {
   
     // initialize J2ObjC;
     (void)IOSClass.class;
-    g_javaLangObjectMetadata = NSObject_class_()->metadata_;
-    g_javaStringClass = NSString_class_();
     g_referenceClass = JavaLangRefReference.class;
-    g_stringClass = NSString.class;
     g_objectArrayClass = IOSObjectArray.class;
-    // initialize IOSClass;
-    ARGC_bindJavaClass(ARGCObject.class, ARGC_getIOSClass(NSObject.class));
 }
 
 void ARGC::registerScanOffsets(Class clazz) {

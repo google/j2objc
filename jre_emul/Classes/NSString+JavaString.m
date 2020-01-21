@@ -1088,7 +1088,7 @@ void NSString__init_class__() {
     empty_static_initialize,
     ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
   
-  ARGC_bindIOSClass(NSString.class, &_NSString, @"java.lang", @"String");
+  ARGC_bindIOSClass(NSString.class, &_NSString, @"java.lang.String", 10);
   
   NSString_CaseInsensitiveComparator__clinit__();
 }
@@ -1199,7 +1199,7 @@ static void NSString_CaseInsensitiveComparator__init_class__() {
     ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
     -1 };
   
-  ARGC_bindIOSClass(NSString_CaseInsensitiveComparator.class, &_NSString_CaseInsensitiveComparator, @"java.lang", @"CaseInsensitiveComparator");
+  ARGC_bindIOSClass(NSString_CaseInsensitiveComparator.class, &_NSString_CaseInsensitiveComparator, @"java.lang.String$CaseInsensitiveComparator", 17);
 }
 
 @end

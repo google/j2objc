@@ -72,8 +72,9 @@
 JRELogPaneViewController* controller ;
 - (void)viewDidAppear:(BOOL)animated {
   CGRect textFrame = self.textPane.frame;
-  textFrame.size.height -= 20;
-  self.logPane = [[JRELogPaneView alloc] initWithFrame:self.textPane.frame];
+  textFrame.origin.y += 40;
+  textFrame.size.height -= 40 + 20;
+  self.logPane = [[JRELogPaneView alloc] initWithFrame:textFrame];
   [self.textPane addSubview:self.logPane];
   [self.saveButton setEnabled:NO];
   [self.logPane setDelegate:self];
