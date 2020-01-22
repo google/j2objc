@@ -8,30 +8,23 @@ id JreLoadVolatileId(volatile_id *pVar) {
     return oid;
 }
 
-id JreAssignVolatileId(volatile_id *pVar, id value) {
-    *(std::atomic<id>*)pVar = value;
-    return value;
-}
-
-void JreReleaseVolatile(volatile_id *pVar) {
-    ARGC_genericRelease(*pVar);
-}
-
-id JreVolatileNativeAssign(volatile_id *pVar, id newValue) {
-    std::atomic<id>* field = (std::atomic<id>*)pVar;
-    [newValue retain];
-    id oldValue = field->exchange(newValue);
-    if (GC_DEBUG && GC_LOG_ALLOC) {
-        if ([oldValue toJObject] == NULL) {
-            NSLog(@"--nstr %p #%d %@", oldValue, (int)NSExtraRefCount(oldValue), [oldValue class]);
-        }
-    }
-    [oldValue autorelease];
+id JreAssignVolatileId(volatile_id *pVar, id newValue) {
+    ARGC_assignGenericObject((ARGC_FIELD_REF id*)pVar, newValue);
     return newValue;
 }
 
+void JreReleaseVolatile(volatile_id *pVar) {
+    ARGC_assignGenericObject((ARGC_FIELD_REF id*)pVar, NULL);
+}
+
 id JreVolatileStrongAssign(volatile_id *pVar, id newValue) {
-    ARGC_assignGenericObject((id*)pVar, newValue);
+  ARGC_assignGenericObject((ARGC_FIELD_REF id*)pVar, newValue);
+  return newValue;
+}
+
+
+id JreVolatileNativeAssign(volatile_id *pVar, id newValue) {
+    ARGC_assignStrongObject((ARGC_FIELD_REF id*)pVar, newValue);
     return newValue;
 }
 
@@ -47,10 +40,13 @@ bool JreCompareAndSwapVolatileStrongId(volatile_id *ptr, id expected, id newValu
 
 id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
     std::atomic<id>* field = (std::atomic<id>*)pVar;
+    id oldValue = field->exchange(newValue);
+    if (oldValue == newValue) {
+        return oldValue;
+    }
     if (newValue) {
         [newValue retain];
     }
-    id oldValue = field->exchange(newValue);
     if (oldValue) {
         if (GC_DEBUG && GC_LOG_ALLOC) {
             if ([oldValue toJObject] == NULL) {

@@ -175,23 +175,12 @@ public class MetadataWriter extends UnitTreeVisitor {
 
       boolean isPureInterface = TypeUtil.isPureInterface(type.asType());
       StringBuilder code = new StringBuilder();
-      String qName = ElementUtil.getQualifiedName(type);
+      String qName = elementUtil.getBinaryName(type).replace('/', '.');
       String typeName = ElementUtil.getName(type);
       
-      
-      String packageName = ElementUtil.getName(ElementUtil.getPackage(type));
-      if (packageName.length() + typeName.length() + 1 < qName.length()) {
-    	  qName = packageName + '.' + qName.substring(packageName.length() + 1).replace('.', '$');
-      }
-      
-      int posSimpleName = typeName == null ? 0 : qName.length() - typeName.length();
-      qName = nsStr(qName);      
-      typeName = nsStr(typeName);
-
-      //System.out.println(qName + ", " + typeName);
-      code.append("\nNSString *clsName = ").append(qName).append(";\n");
+      int posSimpleName = qName.length() - typeName.length();
+      code.append("\nNSString *clsName = ").append(nsStr(qName)).append(";\n");
       code.append("int posSimpleName = ").append(posSimpleName).append(";\n");
-      //code.append("NSString *packageName = ").append(packageName).append(";\n");
       if (!isPureInterface) {
     	  code.append("if (self != " + fullName + ".class) {\n");
           code.append("clsName = NSStringFromClass(self);\n");
@@ -212,7 +201,23 @@ public class MetadataWriter extends UnitTreeVisitor {
       //stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
     }
 
-    private String getPtrTableEntry() {
+//    private String getEnclosingJavaClassName(TypeElement type) {
+//        String qName = ElementUtil.getQualifiedName(type);
+//		if (qName == null || qName.length() == 0) {
+//		      String binaryName = elementUtil.getBinaryName(element);
+//		      int innerClassIndex = ElementUtil.isAnonymous(element)
+//		          ? binaryName.length() : binaryName.lastIndexOf(ElementUtil.getName(element));
+//		      while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
+//		        --innerClassIndex;
+//		      }
+//		      return binaryName.substring(innerClassIndex);
+//		  qName = getEnclosingJavaClassName(ElementUtil.getDeclaringClass(type)) + "$" + typeName;
+//		    System.out.println(qName + ", " + typeName);
+//		}
+//		return qName;
+//	}
+
+	private String getPtrTableEntry() {
       if (pointers.isEmpty()) {
         return "NULL";
       }

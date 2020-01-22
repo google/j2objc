@@ -21,6 +21,7 @@
 #import <Foundation/Foundation.h>
 
 #import "J2ObjC_types.h"
+#import "pthread.h"
 
 #define J2OBJC_USE_GC 1
 #ifdef J2OBJC_USE_GC
@@ -197,6 +198,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Float, jfloat)
 J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #undef J2OBJC_VOLATILE_ACCESS_DEFN
 
+#ifndef J2OBJC_USE_GC
 /*!
  * Defines the initialized flag for a class.
  *
@@ -205,6 +207,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  */
 #define J2OBJC_INITIALIZED_DEFN(CLASS) \
    static _Atomic(jboolean) CLASS##__initialized;
+#endif
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
@@ -249,14 +252,15 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
   FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
 
 #define J2OBJC_CLASS_INITIALIZE_SOURCE(CLASS) \
-  static _Atomic(jboolean) CLASS##__initialized = false; \
   void CLASS##_initialize() { \
-    if (!CLASS##__initialized) { \
-      jboolean compare = false; \
-      if (__c11_atomic_compare_exchange_strong(&CLASS##__initialized, &compare, true, \
-          __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) { \
+    static pthread_t init_thread = 0; \
+    static dispatch_once_t token = 0; \
+    if (init_thread != (pthread_t)~0L && init_thread != pthread_self()) { \
+      dispatch_once(&token, ^{ \
+        init_thread = pthread_self(); \
         CLASS##__clinit__(); \
-      } \
+        init_thread = (pthread_t)~0L; \
+      }); \
     } \
   }
 

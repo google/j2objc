@@ -69,7 +69,6 @@
 #define IOSClass_serialVersionUID 3206093459760846163LL
 
 
-J2OBJC_INITIALIZED_DEFN(IOSClass)
 
 #define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
 
@@ -110,9 +109,16 @@ static const J2ObjcClassInfo *g_javaLangObjectMetadata;
 
 static int iosClassAssocKey;
 
+void ARGC_strongRetain(id oid);
+
 void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
   assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
-  [mappedNames setObject:javaClass forKey:javaClass->name_];
+  if (javaClass->name_ == NULL) {
+    ARGC_strongRetain(javaClass);
+  }
+  else {
+    [mappedNames setObject:javaClass forKey:javaClass->name_];
+  }
   objc_setAssociatedObject(key, &iosClassAssocKey, javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -322,6 +328,9 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 - (NSString *)getCanonicalName {
+  if (simpleNamePos_ == name_.length) {
+    return NULL;
+  }
   if (simpleNamePos_ <= 0 || [name_ charAtWithInt:simpleNamePos_ - 1] != '$') {
     return name_;
   }
@@ -684,11 +693,7 @@ static IOSClass *ClassForJavaName(NSString *name) {
   if (cls) {
     return cls;
   }
-  // Check if the package has a mapped name.
-  clazz = [mappedNames objectForKey:package];
-  if (clazz != NULL) {
-    return clazz;
-  }
+
   // Check if the package has a renamed prefix.
   NSString *renamedPackage = FindRenamedPackagePrefix(package);
   if (renamedPackage) {

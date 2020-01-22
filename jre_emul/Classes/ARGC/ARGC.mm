@@ -34,7 +34,7 @@
 #include "RefContext.h"
 #include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
-#include "IOSReflection.h"
+//#include "IOSReflection.h"
 #include "IOSMetadata.h"
 #include "IOSClass.h"
 #include "IOSReference.h"
@@ -1155,6 +1155,7 @@ extern "C" {
         }
     }
     
+
     id JreLoadVolatileId(volatile_id *pVar);
     id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
     id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);

@@ -701,7 +701,7 @@ public class NameTable {
     return name;
   }
 
-  private String getTypeSubName(TypeElement element) {
+  public String getTypeSubName(TypeElement element) {
     if (ElementUtil.isLambda(element)) {
       return ElementUtil.getName(element);
     } else if (ElementUtil.isLocal(element)) {
