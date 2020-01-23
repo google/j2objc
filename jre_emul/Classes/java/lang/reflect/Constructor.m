@@ -195,7 +195,7 @@ static void JavaLangReflectConstructor__clinit__() {
     ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
   };
 
-  ARGC_bindIOSClass(JavaLangReflectConstructor.class, &_JavaLangReflectConstructor, @"java.lang.reflect.Constructor", 18);
+  JreBindIOSClass(JavaLangReflectConstructor.class, &_JavaLangReflectConstructor, @"java.lang.reflect.Constructor", 18);
 }
 
 @end

@@ -56,9 +56,13 @@ __attribute__((always_inline)) inline id cast_check(id __unsafe_unretained p, IO
   return p;
 }
 
-FOUNDATION_EXPORT void ARGC_bindIOSClass(Class _class, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR;
+FOUNDATION_EXPORT void JreBindProxyClass(Class _class) J2OBJC_METHOD_ATTR;
 
-FOUNDATION_EXPORT void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR;
+FOUNDATION_EXPORT void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR;
+
+FOUNDATION_EXPORT void JreBindIOSClass(Class _class, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR;
+
+FOUNDATION_EXPORT void JreBindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR;
 
 
 FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);

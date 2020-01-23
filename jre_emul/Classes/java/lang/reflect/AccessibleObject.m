@@ -146,7 +146,7 @@ static void JavaLangReflectAccessibleObject__clinit__() {
     JavaLangReflectAccessibleObject_initialize,
     ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangReflectAccessibleObject.class, &_JavaLangReflectAccessibleObject, @"java.lang.reflect.AccessibleObject", 18);
+  JreBindIOSClass(JavaLangReflectAccessibleObject.class, &_JavaLangReflectAccessibleObject, @"java.lang.reflect.AccessibleObject", 18);
 }
 
 @end

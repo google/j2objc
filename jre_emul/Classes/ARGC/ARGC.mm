@@ -34,13 +34,13 @@
 #include "RefContext.h"
 #include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
-//#include "IOSReflection.h"
 #include "IOSMetadata.h"
 #include "IOSClass.h"
 #include "IOSReference.h"
 #include "IOSConcreteClass.h"
 #include "IOSProtocolClass.h"
 #include "NSString+JavaString.h"
+#include "J2ObjC_source.h"
 
 #if !GC_DEBUG
 #pragma GCC optimize ("O2")
@@ -465,7 +465,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 + (void)initialize
 {
   if (self != ARGCObject.class) {
-    //ARGC_getIOSConcreteClass(self);
+    JreExtendIOSClass(self);
   }
 }
 
@@ -1187,7 +1187,7 @@ extern "C" {
     
     
     int ARGC_retainCount(id oid) {
-        return (int)NSExtraRefCount(oid);
+        return (int)NSExtraRefCount(oid) + 1;
     }
     
     __attribute__((always_inline)) id ARGC_globalLock(id oid) {

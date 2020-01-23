@@ -352,7 +352,7 @@ static void JavaLangReflectExecutable__clinit__() {
     ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
   };
 
-  ARGC_bindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable, @"java.lang.reflect.Executable", 18);
+  JreBindIOSClass(JavaLangReflectExecutable.class, &_JavaLangReflectExecutable, @"java.lang.reflect.Executable", 18);
 }
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.

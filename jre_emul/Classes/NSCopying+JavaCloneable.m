@@ -26,7 +26,7 @@ void NSCopying__init_class__() {
     empty_static_initialize,
     NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
   
-  ARGC_bindIOSProtocol(@protocol(NSCopying), &_NSCopying, @"java.lang.Cloneable", 10);
+  JreBindIOSProtocol(@protocol(NSCopying), &_NSCopying, @"java.lang.Cloneable", 10);
 }
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(NSCopying)

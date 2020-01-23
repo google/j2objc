@@ -79,10 +79,22 @@ FastPointerLookupInit(pLookUp, (void*(*)(void*))create_func)
 // Package to prefix mappings, initialized in FindRenamedPackagePrefix().
 static JavaUtilArrayList *prefixMapping;
 
-static FastPointerLookup_t classLookup;
-static FastPointerLookup_t protocolLookup;
-static FastPointerLookup_t arrayLookup;
+static const void *ptrTable[] = { "LJavaLangReflectInvocationHandler;" } ;
+static J2ObjcMethodInfo proxyMethods[] = {
+  {NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 }
+  
+};
+static const J2ObjcClassInfo proxyClassMetadata = {
+  empty_static_initialize,
+  ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0,
+  -1, -1, -1, -1, -1
+};
 
+const J2ObjcClassInfo JreEmptyClassInfo = {
+  empty_static_initialize,
+  NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0,
+  -1, -1, -1, -1, -1
+};
 
 @interface IOSClass() {
   _Atomic(IOSArrayClass*) arrayType_;
@@ -126,24 +138,30 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
   return (IOSClass*)objc_getAssociatedObject(key, &iosClassAssocKey);
 }
 
-void ARGC_bindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
+void JreBindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
   assert(ARGC_getIOSClass(nativeClass) == NULL);
   IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:nativeClass metadata:metaData name:clsName simpleNamePos:posSimpleName];
   ARGC_bindJavaClass(nativeClass, javaClass);
 }
 
-void ARGC_bindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
+void JreBindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
   assert(ARGC_getIOSClass(protocol) == NULL);
   IOSClass *javaClass = [[IOSProtocolClass alloc] initWithProtocol:protocol metadata:metaData name:clsName simpleNamePos:posSimpleName];
   ARGC_bindJavaClass(protocol, javaClass);
 }
 
 
-//void ARGC_bindIOSClass(id nativeClass, IOSClass* javaClass) J2OBJC_METHOD_ATTR {
-//  assert(javaClass->metadata_ == ARGC_getMetaData(nativeClass));
-//  assert(ARGC_getIOSClass(nativeClass) == NULL);
-//  objc_setAssociatedObject(nativeClass, &iosClassAssocKey, (id)javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//}
+void JreBindProxyClass(Class _class) J2OBJC_METHOD_ATTR {
+  NSString* name = NSStringFromClass(_class);
+  IOSClass *javaClass = [[IOSProxyClass alloc] initWithClass:_class metadata:&proxyClassMetadata name:name simpleNamePos:(int)name.length];
+  ARGC_bindJavaClass(_class, javaClass);
+}
+
+void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR {
+  NSString* name = NSStringFromClass(_class);
+  JreBindIOSClass(_class, &JreEmptyClassInfo, name, (int)name.length);
+}
+
 
 IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
   IOSClass *javaClass = ARGC_getIOSClass(nativeClass);
@@ -192,6 +210,10 @@ static IOSClass *IOSClass_objectClass;
 static IOSObjectArray *IOSClass_emptyClassArray;
 
 void empty_static_initialize() {}
+
++ (void) load {
+  proxyMethods[0].selector = @selector(initWithJavaLangReflectInvocationHandler:);
+}
 
 - (NSString *)getName {
   return name_;
@@ -991,7 +1013,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
   if (simpleNamePos_ > 0) {
     int package_len = simpleNamePos_ - 1;
     if ([name_ charAtWithInt:package_len] == '$') {
-      package_len = [name_ java_lastIndexOf:'.'] - 1;
+      package_len = [name_ java_lastIndexOf:'.'];
       if (package_len <= 0) {
         return nil;
       }
@@ -1283,25 +1305,25 @@ static jboolean IsStringType(Class cls) {
 
 void ARGC_strongRetain(id obj);
 
-static IOSClass* CreateClassLookup(Class cls) {
-  //Class cls = (Class)clsPtr;
-#ifdef J2OBJC_USE_GC
-  return NULL;
-#else
-  if (IsStringType(cls)) {
-    // NSString is implemented by several subclasses.
-    // Thread safety is guaranteed by the FastPointerLookup that calls this.
-    static IOSClass *stringClass;
-    if (!stringClass) {
-      stringClass = [[IOSConcreteClass alloc] initWithClass:[NSString class]];
-    }
-    return stringClass;
-  }
-  IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
-    ARGC_strongRetain(result);
-  return result;
-#endif
-}
+//static IOSClass* CreateClassLookup(Class cls) {
+//  //Class cls = (Class)clsPtr;
+//#ifdef J2OBJC_USE_GC
+//  return NULL;
+//#else
+//  if (IsStringType(cls)) {
+//    // NSString is implemented by several subclasses.
+//    // Thread safety is guaranteed by the FastPointerLookup that calls this.
+//    static IOSClass *stringClass;
+//    if (!stringClass) {
+//      stringClass = [[IOSConcreteClass alloc] initWithClass:[NSString class]];
+//    }
+//    return stringClass;
+//  }
+//  IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
+//    ARGC_strongRetain(result);
+//  return result;
+//#endif
+//}
 
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
@@ -1322,26 +1344,34 @@ IOSClass* IOSClass_classForIosNameOrNull(NSString* className) {
 }
 
 IOSClass *IOSClass_NewProxyClass(Class cls) {
-#ifdef J2OBJC_USE_GC
-  return NULL;
-#else
-  IOSClass *result = [[IOSProxyClass alloc] initWithClass:cls];
-  if (!FastObjectLookupAddMapping(&classLookup, cls, result)) {
-    // This function should only be called by java.lang.reflect.Proxy
-    // immediately after creating a new proxy class.
-    @throw create_JavaLangAssertionError_init();
+  @synchronized (mappedNames) {
+    IOSClass* clazz = ARGC_getIOSConcreteClass(cls);
+    if (clazz != NULL) {
+      return clazz;
+    }
+    
+    static const void *ptrTable[] = { "LJavaLangReflectInvocationHandler;" } ;
+    static J2ObjcMethodInfo proxyMethods[] = {{NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 }};
+    proxyMethods[0].selector = @selector(initWithJavaLangReflectInvocationHandler:);
+    static const J2ObjcClassInfo proxyClassMetadata = {
+      empty_static_initialize,
+      ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
+    };
+    NSString* name = NSStringFromClass(cls);
+    IOSClass *javaClass = [[IOSProxyClass alloc] initWithClass:cls metadata:&proxyClassMetadata name:name simpleNamePos:(int)name.length];
+    ARGC_bindJavaClass(cls, javaClass);
+    return javaClass;
   }
-  return result;
-#endif
 }
 
-static IOSProtocolClass *CreateProtocolLookup(Protocol *protocol) {
-#ifdef J2OBJC_USE_GC
-  return NULL;
-#else
-  return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
-#endif
-}
+
+//static IOSProtocolClass *CreateProtocolLookup(Protocol *protocol) {
+//#ifdef J2OBJC_USE_GC
+//  return NULL;
+//#else
+//  return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
+//#endif
+//}
 
 IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
 #ifdef J2OBJC_USE_GC
@@ -1353,9 +1383,9 @@ IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
 #endif
 }
 
-static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
-  return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
-}
+//static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
+//  return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
+//}
 
 void ARGC_strongRetain(id oid);
 
@@ -1564,11 +1594,11 @@ void NSCopying__init_class__(void);
   mappedNames = [[NSMutableDictionary alloc] initWithCapacity:1024*8];
   // JavaLangObject class 로딩.
   NSObject__init_class__();
-  ARGC_bindIOSClass(IOSClass.class, IOSClass__metadata(), @"java.lang.Class", 10);
+  JreBindIOSClass(IOSClass.class, IOSClass__metadata(), @"java.lang.Class", 10);
 
-  FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
-  FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
-  FAST_OBJECT_LOOKUP_INIT(&protocolLookup, &CreateProtocolLookup);
+//  FAST_OBJECT_LOOKUP_INIT(&arrayLookup, &CreateArrayLookup);
+//  FAST_OBJECT_LOOKUP_INIT(&classLookup, &CreateClassLookup);
+//  FAST_OBJECT_LOOKUP_INIT(&protocolLookup, &CreateProtocolLookup);
 
   IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
   IOSClass_charClass = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];

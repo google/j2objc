@@ -179,26 +179,27 @@ public class MetadataWriter extends UnitTreeVisitor {
       String typeName = ElementUtil.getName(type);
       
       int posSimpleName = qName.length() - typeName.length();
-      code.append("\nNSString *clsName = ").append(nsStr(qName)).append(";\n");
-      code.append("int posSimpleName = ").append(posSimpleName).append(";\n");
       if (!isPureInterface) {
     	  code.append("if (self != " + fullName + ".class) {\n");
-          code.append("clsName = NSStringFromClass(self);\n");
-          code.append("posSimpleName = 0;\n");
-	      code.append("} else {\n");
+    	  if (qName.equals("java.lang.reflect.Proxy")) {
+    		  code.append("JreBindProxyClass(self);\n");
+    	  }
+    	  else {
+    		  code.append("JreExtendIOSClass(self);\n");
+    	  }
+          code.append("return;\n");
+	      code.append("}\n");
       }
       code.append(sbMethodData);
       if (!isPureInterface) {
-	      code.append("};\n");
-    	  code.append("ARGC_bindIOSClass(self, &_" + fullName
-    			  + ", clsName, posSimpleName);\n");
+    	  code.append("JreBindIOSClass(self, &_" + fullName
+    			  + ", " + nsStr(qName) + ", " + posSimpleName + ");\n");
       }
       else {
-    	  code.append("\nARGC_bindIOSProtocol(@protocol(" + fullName + "), &_" + fullName
-    			  + ", clsName, posSimpleName);\n");
+    	  code.append("\nJreBindIOSProtocol(@protocol(" + fullName + "), &_" + fullName
+    			  + ", " + nsStr(qName) + ", " + posSimpleName + ");\n");
       }
       stmts.add(new NativeStatement(code.toString()));
-      //stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
     }
 
 //    private String getEnclosingJavaClassName(TypeElement type) {

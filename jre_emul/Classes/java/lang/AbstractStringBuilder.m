@@ -795,7 +795,7 @@ static void JavaLangAbstractStringBuilder__clinit__() {
     JavaLangAbstractStringBuilder_initialize,
     ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1, -1 };
 
-  ARGC_bindIOSClass(JavaLangAbstractStringBuilder.class, &_JavaLangAbstractStringBuilder, @"java.lang.AbstractStringBuilder", 10);
+  JreBindIOSClass(JavaLangAbstractStringBuilder.class, &_JavaLangAbstractStringBuilder, @"java.lang.AbstractStringBuilder", 10);
 }
 
 #pragma clang diagnostic pop

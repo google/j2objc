@@ -33,8 +33,6 @@
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 
 
-const J2ObjcClassInfo JreEmptyClassInfo = {
-    empty_static_initialize, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
 
 #ifndef J2OBJC_USE_GC
 const J2ObjcClassInfo *JreFindMetadata(Class cls) {

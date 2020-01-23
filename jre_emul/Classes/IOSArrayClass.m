@@ -54,6 +54,10 @@
   return NSObject_class_();
 }
 
+- (id)getPackage {
+  return NULL;
+}
+
 - (jboolean)isInstance:(id)object {
   IOSClass *objClass = [object java_getClass];
   return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
