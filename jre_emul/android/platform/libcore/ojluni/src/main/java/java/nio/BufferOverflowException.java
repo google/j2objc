@@ -38,14 +38,14 @@ package java.nio;
  */
 
 public class BufferOverflowException
-        extends RuntimeException {
+    extends RuntimeException
+{
 
     private static final long serialVersionUID = -5484897634319144535L;
 
     /**
      * Constructs an instance of this class.
      */
-    public BufferOverflowException() {
-    }
+    public BufferOverflowException() { }
 
 }

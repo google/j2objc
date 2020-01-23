@@ -29,7 +29,8 @@ package java.nio;
 // ## If the sequence is a string, use reflection to share its array
 
 class StringCharBuffer                                  // package-private
-        extends CharBuffer {
+    extends CharBuffer
+{
     CharSequence str;
 
     StringCharBuffer(CharSequence s, int start, int end) { // package-private
@@ -42,11 +43,11 @@ class StringCharBuffer                                  // package-private
 
     public CharBuffer slice() {
         return new StringCharBuffer(str,
-                -1,
-                0,
-                this.remaining(),
-                this.remaining(),
-                offset + this.position());
+                                    -1,
+                                    0,
+                                    this.remaining(),
+                                    this.remaining(),
+                                    offset + this.position());
     }
 
     private StringCharBuffer(CharSequence s,
@@ -61,7 +62,7 @@ class StringCharBuffer                                  // package-private
 
     public CharBuffer duplicate() {
         return new StringCharBuffer(str, markValue(),
-                position(), limit(), capacity(), offset);
+                                    position(), limit(), capacity(), offset);
     }
 
     public CharBuffer asReadOnlyBuffer() {
@@ -106,11 +107,11 @@ class StringCharBuffer                                  // package-private
         try {
             int pos = position();
             return new StringCharBuffer(str,
-                    -1,
-                    pos + checkIndex(start, pos),
-                    pos + checkIndex(end, pos),
-                    capacity(),
-                    offset);
+                                        -1,
+                                        pos + checkIndex(start, pos),
+                                        pos + checkIndex(end, pos),
+                                        capacity(),
+                                        offset);
         } catch (IllegalArgumentException x) {
             throw new IndexOutOfBoundsException();
         }
