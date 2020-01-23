@@ -363,6 +363,7 @@ public class Thread implements Runnable {
   void *start_routine(void *arg) {
     JavaLangThread *thread = (JavaLangThread *)arg;
     pthread_setspecific(java_thread_key, thread);
+    pthread_setname_np([thread->name_ UTF8String]);
     @autoreleasepool {
       @try {
         [thread run];
