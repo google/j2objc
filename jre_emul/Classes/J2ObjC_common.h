@@ -241,6 +241,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 
 FOUNDATION_EXPORT void empty_static_initialize(void);
 
+FOUNDATION_EXPORT void IOSClass_init_class_(pthread_t* initToken, Class cls, void(*clinit)());
 /*!
  * Declares the type literal accessor for a type. This macro should be added to
  * the header of each generated Java type.
@@ -253,14 +254,9 @@ FOUNDATION_EXPORT void empty_static_initialize(void);
 
 #define J2OBJC_CLASS_INITIALIZE_SOURCE(CLASS) \
   void CLASS##_initialize() { \
-    static pthread_t init_thread = 0; \
-    static dispatch_once_t token = 0; \
-    if (init_thread != (pthread_t)~0L && init_thread != pthread_self()) { \
-      dispatch_once(&token, ^{ \
-        init_thread = pthread_self(); \
-        CLASS##__clinit__(); \
-        init_thread = (pthread_t)~0L; \
-      }); \
+    static pthread_t CLASS##_initToken = 0; \
+    if (CLASS##_initToken != (pthread_t)~0L) { \
+      IOSClass_init_class_(&CLASS##_initToken, CLASS.class, CLASS##__clinit__); \
     } \
   }
 

@@ -1305,25 +1305,18 @@ static jboolean IsStringType(Class cls) {
 
 void ARGC_strongRetain(id obj);
 
-//static IOSClass* CreateClassLookup(Class cls) {
-//  //Class cls = (Class)clsPtr;
-//#ifdef J2OBJC_USE_GC
-//  return NULL;
-//#else
-//  if (IsStringType(cls)) {
-//    // NSString is implemented by several subclasses.
-//    // Thread safety is guaranteed by the FastPointerLookup that calls this.
-//    static IOSClass *stringClass;
-//    if (!stringClass) {
-//      stringClass = [[IOSConcreteClass alloc] initWithClass:[NSString class]];
-//    }
-//    return stringClass;
-//  }
-//  IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
-//    ARGC_strongRetain(result);
-//  return result;
-//#endif
-//}
+void IOSClass_init_class_(pthread_t* initToken, Class cls, void(*clinit)()) {
+  pthread_t th = pthread_self();
+  @synchronized (cls) {
+    pthread_t token = *initToken;
+    if (token != th && token != (pthread_t)-1L) {
+      *initToken = th;
+      clinit();
+      *initToken = (pthread_t)-1L;
+    }
+  }
+}
+
 
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
