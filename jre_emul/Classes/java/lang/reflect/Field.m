@@ -105,7 +105,7 @@ static void ReadRawValue(
   }
   if (IsStatic(field)) {
     // init-class
-    [[field getDeclaringClass] class];
+    field->declaringClass_->metadata_->initialize();
     const void *addr = JrePtrAtIndex(field->ptrTable_, field->metadata_->staticRefIdx);
     if (addr) {
       [type __readRawValue:rawValue fromAddress:addr];
