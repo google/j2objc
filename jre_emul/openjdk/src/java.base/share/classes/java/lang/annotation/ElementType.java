@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@ package java.lang.annotation;
 /**
  * The constants of this enumerated type provide a simple classification of the
  * syntactic locations where annotations may appear in a Java program. These
- * constants are used in {@link Target java.lang.annotation.Target}
+ * constants are used in {@link java.lang.annotation.Target Target}
  * meta-annotations to specify where it is legal to write annotations of a
  * given type.
  *
@@ -37,16 +37,16 @@ package java.lang.annotation;
  * <em>type contexts</em> , where annotations apply to types used in
  * declarations and expressions.
  *
- * <p>The constants {@link #ANNOTATION_TYPE} , {@link #CONSTRUCTOR} , {@link
- * #FIELD} , {@link #LOCAL_VARIABLE} , {@link #METHOD} , {@link #PACKAGE} ,
- * {@link #PARAMETER} , {@link #TYPE} , and {@link #TYPE_PARAMETER} correspond
- * to the declaration contexts in JLS 9.6.4.1.
+ * <p>The constants {@link #ANNOTATION_TYPE}, {@link #CONSTRUCTOR}, {@link
+ * #FIELD}, {@link #LOCAL_VARIABLE}, {@link #METHOD}, {@link #PACKAGE}, {@link
+ * #MODULE}, {@link #PARAMETER}, {@link #TYPE}, and {@link #TYPE_PARAMETER}
+ * correspond to the declaration contexts in JLS 9.6.4.1.
  *
  * <p>For example, an annotation whose type is meta-annotated with
  * {@code @Target(ElementType.FIELD)} may only be written as a modifier for a
  * field declaration.
  *
- * <p>The constant {@link #TYPE_USE} corresponds to the 15 type contexts in JLS
+ * <p>The constant {@link #TYPE_USE} corresponds to the type contexts in JLS
  * 4.11, as well as to two declaration contexts: type declarations (including
  * annotation type declarations) and type parameter declarations.
  *
@@ -107,5 +107,12 @@ public enum ElementType {
      *
      * @since 1.8
      */
-    TYPE_USE
+    TYPE_USE,
+
+    /**
+     * Module declaration.
+     *
+     * @since 9
+     */
+    MODULE
 }

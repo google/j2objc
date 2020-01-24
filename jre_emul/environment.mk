@@ -70,7 +70,7 @@ ICU_TEST_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/tests
 ICU_RES_DIR = $(BUILD_DIR)/icu_res
 ICU_EMBEDDED_RES_DIR = $(ICU_RES_DIR)/embedded
 
-OPENJDK_ROOT = openjdk/src/share/classes
+OPENJDK_ROOT = openjdk/src/java.base/share/classes
 
 APPLE_ROOT = apple_apsl
 

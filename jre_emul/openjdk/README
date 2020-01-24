@@ -1,10 +1,10 @@
-Name: OpenJDK
-URL: http://hg.openjdk.java.net/jdk8/jdk8/
-Version: jdk8-b132
+Name: OpenJDK/jdk/jdk11
+URL: http://hg.openjdk.java.net/jdk/jdk11/file/1ddf9a99e4ad/
+Version: 1ddf9a99e4ad
 License: The GNU General Public License (GPL)
 License File: LICENSE
 
 Modifications:
-- Added support for a secondary digit grouping size in DecimalFormat, allowing correct formatting of
-  the Indian number system.
+- Use sun.misc.Unsafe instead of jdk.internal.misc.Unsafe.
+- Commented out HotSpot annotations.
 - Search for "J2ObjC" for inline commends describing local modifications.

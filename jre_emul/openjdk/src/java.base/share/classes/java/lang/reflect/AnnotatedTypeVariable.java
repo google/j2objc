@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,25 +26,36 @@
 package java.lang.reflect;
 
 /**
- * {@code AnnotatedWildcardType} represents the potentially annotated use of a
- * wildcard type argument, whose upper or lower bounds may themselves represent
+ * {@code AnnotatedTypeVariable} represents the potentially annotated use of a
+ * type variable, whose declaration may have bounds which themselves represent
  * annotated uses of types.
  *
  * @since 1.8
  */
-public interface AnnotatedWildcardType extends AnnotatedType {
+public interface AnnotatedTypeVariable extends AnnotatedType {
 
     /**
-     * Returns the potentially annotated lower bounds of this wildcard type.
+     * Returns the potentially annotated bounds of this type variable.
+     * If no bound is explicitly declared, the bound is unannotated
+     * {@code Object}.
      *
-     * @return the potentially annotated lower bounds of this wildcard type
+     * @return the potentially annotated bounds of this type variable
+     * @see TypeVariable#getBounds()
      */
-    AnnotatedType[] getAnnotatedLowerBounds();
+    AnnotatedType[] getAnnotatedBounds();
 
     /**
-     * Returns the potentially annotated upper bounds of this wildcard type.
+     * Returns the potentially annotated type that this type is a member of, if
+     * this type represents a nested type. For example, if this type is
+     * {@code @TA O<T>.I<S>}, return a representation of {@code @TA O<T>}.
      *
-     * @return the potentially annotated upper bounds of this wildcard type
+     * <p>Returns {@code null} for an {@code AnnotatedType} that is an instance
+     *     of {@code AnnotatedTypeVariable}.
+     *
+     * @return {@code null}
+     *
+     * @since 9
      */
-    AnnotatedType[] getAnnotatedUpperBounds();
+    @Override
+    AnnotatedType getAnnotatedOwnerType();
 }

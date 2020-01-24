@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,23 +23,38 @@
  * questions.
  */
 
+package java.lang.reflect;
+
+
 /**
- * Provides classes for performing arbitrary-precision integer
- * arithmetic ({@code BigInteger}) and arbitrary-precision decimal
- * arithmetic ({@code BigDecimal}).  {@code BigInteger} is analogous
- * to the primitive integer types except that it provides arbitrary
- * precision, hence operations on {@code BigInteger}s do not overflow
- * or lose precision.  In addition to standard arithmetic operations,
- * {@code BigInteger} provides modular arithmetic, GCD calculation,
- * primality testing, prime generation, bit manipulation, and a few
- * other miscellaneous operations.
+ * {@code AnnotatedArrayType} represents the potentially annotated use of an
+ * array type, whose component type may itself represent the annotated use of a
+ * type.
  *
- * {@code BigDecimal} provides arbitrary-precision signed decimal
- * numbers suitable for currency calculations and the like.  {@code
- * BigDecimal} gives the user complete control over rounding behavior,
- * allowing the user to choose from a comprehensive set of eight
- * rounding modes.
- *
- * @since JDK1.1
+ * @since 1.8
  */
-package java.math;
+public interface AnnotatedArrayType extends AnnotatedType {
+
+    /**
+     * Returns the potentially annotated generic component type of this array type.
+     *
+     * @return the potentially annotated generic component type of this array type
+     * @see GenericArrayType#getGenericComponentType()
+     */
+    AnnotatedType  getAnnotatedGenericComponentType();
+
+    /**
+     * Returns the potentially annotated type that this type is a member of, if
+     * this type represents a nested type. For example, if this type is
+     * {@code @TA O<T>.I<S>}, return a representation of {@code @TA O<T>}.
+     *
+     * <p>Returns {@code null} for an {@code AnnotatedType} that is an instance
+     *     of {@code AnnotatedArrayType}.
+     *
+     * @return {@code null}
+     *
+     * @since 9
+     */
+    @Override
+    AnnotatedType getAnnotatedOwnerType();
+}
