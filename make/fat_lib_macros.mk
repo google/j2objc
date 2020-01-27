@@ -52,6 +52,12 @@ FAT_LIB_TVSIMULATOR_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -mappletvos-
 FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min=5.0 \
   -isysroot $(SDKROOT)
 
+FAT_LIB_MAC_CATALYST_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch x86_64h -DJ2OBJC_BUILD_ARCH=x86_64h \
+  --target=x86_64-apple-ios13-macabi \
+  -isysroot $(FAT_LIB_MACOSX_SDK_DIR) \
+  -isystem $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/usr/include \
+  -iframework $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/System/Library/Frameworks
+
 # Only iPhone armv7 and arm64 builds need a bitcode marker.
 ifeq ("$(XCODE_7_MINIMUM)", "YES")
 FAT_LIB_IPHONE_FLAGS += -fembed-bitcode
@@ -79,7 +85,8 @@ arch_flags = $(strip \
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),\
   $(patsubst appletvos,$(FAT_LIB_TV_FLAGS),\
-  $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),$(1)))))))))))))
+  $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),\
+  $(patsubst maccatalyst,$(FAT_LIB_MAC_CATALYST_FLAGS),$(1))))))))))))))
 
 fat_lib_dependencies:
 	@:
