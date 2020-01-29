@@ -237,16 +237,16 @@ public final class ElementUtil {
   public static boolean isConstant(VariableElement element) {
     Object constantValue = element.getConstantValue();
     return constantValue != null
-        && (element.asType().getKind().isPrimitive()
-            || (constantValue instanceof String
-                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
+        && (element.asType().getKind().isPrimitive());
+//            || (constantValue instanceof String
+//                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
   }
 
-  public static boolean isStringConstant(VariableElement element) {
-    Object constantValue = element.getConstantValue();
-    return constantValue != null && constantValue instanceof String
-        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
-  }
+//  public static boolean isStringConstant(VariableElement element) {
+//    Object constantValue = element.getConstantValue();
+//    return constantValue != null && constantValue instanceof String
+//        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
+//  }
 
   /**
    * Returns whether this variable will be declared in global scope in ObjC.

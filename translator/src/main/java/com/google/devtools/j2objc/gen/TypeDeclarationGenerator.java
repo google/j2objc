@@ -423,12 +423,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         String varName = nameTable.getVariableBaseName(constant.getVariableElement());
         newline();
         JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
-        if (ARGC.compatiable_2_0_2) {
-        	printf("inline %s *%s_get_%s();\n", typeName, typeName, varName);
-        }
-        else {
-        	printf("inline %s *%s_get_%s(void);\n", typeName, typeName, varName);
-        }
+        printf("inline %s *%s_get_%s(void);\n", typeName, typeName, varName);
         printf("J2OBJC_ENUM_CONSTANT(%s, %s)\n", typeName, varName);
       }
     }
