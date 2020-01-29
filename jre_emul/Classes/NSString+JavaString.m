@@ -76,6 +76,19 @@ static void checkBounds(jint length, jint offset, jint count) {
   }
 }
 
+static NSMutableDictionary* stringPool;
+NSString* JreStringConstant(NSString* str) {
+  NSString* interned = [stringPool objectForKey:str];
+  if (interned == NULL) {
+    interned = str;
+    [stringPool setObject:str forKey:str];
+  }
+  return interned;
+}
+
++ (void) load {
+  stringPool = [[NSMutableDictionary alloc] init];
+}
 // TODO(tball): remove static method wrappers when reflection invocation calls functions directly.
 + (NSString *)java_valueOf:(id<NSObject>)obj {
   return NSString_java_valueOf_((id)obj);
@@ -790,10 +803,9 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 }
 
 - (NSString *)java_intern {
-  // No actual interning is done, since NSString doesn't support it.
-  // Instead, any "string == otherString" expression is changed to
-  // "string.equals(otherString)
-  return self;
+  @synchronized (stringPool) {
+    return JreStringConstant(self);
+  }
 }
 
 - (NSString *)java_concat:string {

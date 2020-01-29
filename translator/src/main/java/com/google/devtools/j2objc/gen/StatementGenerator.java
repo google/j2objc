@@ -676,7 +676,8 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    buffer.append(LiteralGenerator.generateStringLiteral(node.getLiteralValue()));
+	String cs = unit.getStringConstant(node.getLiteralValue());
+    buffer.append(cs);//LiteralGenerator.generateStringLiteral(node.getLiteralValue()));
     return false;
   }
 
