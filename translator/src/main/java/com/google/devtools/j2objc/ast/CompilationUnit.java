@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.ImportTree;
 
@@ -244,6 +245,34 @@ public class CompilationUnit extends TreeNode {
 	  }
 	  this.unreachableImports = map;
 	  return map;
+  }
+
+  static HashMap<String, HashMap<String, Integer>> stringPools = new HashMap<>();
+  
+  public String getStringConstant(String literalValue) {
+	  String sp = this.getSourceFilePath();
+	  HashMap<String, Integer> stringPool = stringPools.get(sp);
+	  if (stringPool == null) {
+		  stringPool = new HashMap<>();
+		  stringPools.put(this.getSourceFilePath(), stringPool);
+	  }
+	  Integer idx = stringPool.get(literalValue);
+	  if (idx == null) {
+		  idx = (stringPool.size() + 1);
+		  stringPool.put(literalValue, idx);
+	  }
+	  
+	  if (!UnicodeUtils.hasValidCppCharacters(literalValue)) {
+		  return "JreString(" + idx + ", __)";
+	  }
+	  else {
+		  return "JreString(" + idx + ", \"" + UnicodeUtils.escapeStringLiteral(literalValue) + "\")";
+	  }
+  }
+
+  public static HashMap<String, Integer> getStringPool(String sourceFileName) {
+	HashMap<String, Integer> stringPool = stringPools.get(sourceFileName);
+	return stringPool;	
   }
   
 
