@@ -109,10 +109,11 @@ public enum ElementType {
      */
     TYPE_USE,
 
-    /**
-     * Module declaration.
-     *
-     * @since 9
-     */
-    MODULE
+// j2objc: defer including MODULE to maintain Java 8 build minimum.
+//    /**
+//     * Module declaration.
+//     *
+//     * @since 9
+//     */
+//    MODULE
 }
