@@ -1004,13 +1004,14 @@ public final class TypeUtil {
   
   private static HashMap<String, String> _unreachableImportedClasses;
   private static boolean _ignoreAllUnreachableTypeError;
-private static String _currentPackage;
+  private static String _currentPackage;
 
   public static TypeElement resolveUnreachableClass(TypeMirror type) {
 	  assert type.getKind() == TypeKind.ERROR;
 	  
 	  String t$ = type.toString();
 	  if (t$.charAt(0) == '<') {
+		  _unreachableImportedClasses.put(t$, t$);
 		  return (TypeElement) ((DeclaredType) type).asElement();
 	  }
 	  TypeElement typeElem = resolveUnreachableClass(t$);
@@ -1020,25 +1021,34 @@ private static String _currentPackage;
 	  return typeElem;
   }
 
-  private static TypeElement resolveUnreachableClass(String typeName) {
+  public static TypeElement resolveUnreachableClass(String typeName) {
 	  if (_ignoreAllUnreachableTypeError) {
 		  return JavacEnvironment.unreachbleError;		  
 	  }
-	  
+
 	  if (_unreachableImportedClasses != null) {
 		  String simpleName = typeName;
 		  int p = simpleName.indexOf('<');
 		  if (p > 0) {
 			  simpleName = simpleName.substring(0, p);
 		  }
+
+		  // Inner-class 처리.
 		  p = simpleName.indexOf('.');
 		  if (p > 0) {
+			  if (ARGC.isExcludedClass(simpleName)) {
+				  _unreachableImportedClasses.put(simpleName, simpleName);
+				  return JavacEnvironment.unreachbleError;
+			  }
+			  
 			  simpleName = simpleName.substring(0, p);
 		  }
 		  if (_unreachableImportedClasses.containsKey(simpleName)) {
 			  return JavacEnvironment.unreachbleError;
 		  }
-		  if (ARGC.isExcluded(_currentPackage + simpleName)) {
+		  String fullName = _currentPackage + simpleName;
+		  if (ARGC.isExcludedClass(fullName)) {
+			  _unreachableImportedClasses.put(simpleName, fullName);
 			  return JavacEnvironment.unreachbleError;
 		  }
 	  }	 

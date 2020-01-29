@@ -142,7 +142,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 		if (Options.useGC() && imp.isNativeEnum()) {
 			forwardStmts.add("typedef NS_ENUM(NSUInteger, " + NameTable.getNativeEnumName(imp.getTypeName()) + ");");
 		}
-		else if (!ARGC.isExcluded(imp.getImportFileName())){
+		else if (!ARGC.isExcludedClass(imp.getImportFileName())){
 			forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isPureInterface()));
 		}
     }

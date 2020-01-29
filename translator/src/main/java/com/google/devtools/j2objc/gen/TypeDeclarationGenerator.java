@@ -512,21 +512,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       newline();
       FieldDeclaration decl = (FieldDeclaration) fragment.getParent();
       JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
-      if (ARGC.compatiable_2_0_2) {
-    	printf("inline %s%s_get_%s();\n", objcTypePadded, typeName, name);
-      }
-      else {
-        printf("inline %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
-      }
+      printf("inline %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
       if (!isFinal) {
         printf("inline %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
         if (isPrimitive && !isVolatile) {
-    	  if (ARGC.compatiable_2_0_2) {
-    	        printf("inline %s *%s_getRef_%s();\n", objcType, typeName, name);
-    	  }
-    	  else {
-    	        printf("inline %s *%s_getRef_%s(void);\n", objcType, typeName, name);
-    	  }
+    	   printf("inline %s *%s_getRef_%s(void);\n", objcType, typeName, name);
         }
       }
 	}
@@ -536,7 +526,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
     } else {
       printStaticFieldDeclaration(
-          fragment, UnicodeUtils.format("%s%s_%s", declType, typeName, name));
+          fragment, UnicodeUtils.format("%s%s_%s/**/", declType, typeName, name));
     }
 	if (!ARGC.inPureObjCMode()) {
       printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);

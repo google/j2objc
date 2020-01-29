@@ -157,7 +157,7 @@ abstract class FileProcessor {
   private void processCompiledSource(ProcessingContext input,
       com.google.devtools.j2objc.ast.CompilationUnit unit) {
     InputFile file = input.getFile();
-    if (ARGC.isExcluded(file.getUnitName())) {
+    if (ARGC.isExcludedClass(file.getUnitName())) {
     	throw new RuntimeException("exclude " + file.getUnitName());
     }
     

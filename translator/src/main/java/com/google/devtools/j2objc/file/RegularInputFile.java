@@ -40,7 +40,7 @@ public class RegularInputFile implements InputFile {
     this.absolutePath = fsPath;
     this.unitPath = unitPath;
     
-    if (ARGC.isExcluded(unitPath)) {
+    if (ARGC.isExcludedClass(unitPath)) {
     	throw new RuntimeException("exclude " + unitPath);
     }
     if (this.exists()) {

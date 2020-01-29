@@ -27,6 +27,7 @@ import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -158,6 +159,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   };
 
   private void printStaticVars() {
+	  
     Iterable<VariableDeclarationFragment> fields =
         Iterables.filter(getStaticFields(), NEEDS_DEFINITION);
     if (Iterables.isEmpty(fields)) {

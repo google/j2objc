@@ -119,14 +119,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         seenTypes.add(name);
       }
       for (Import imp : type.getHeaderIncludes()) {
-        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcluded(imp.getImportFileName())) {
+        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
           includeFiles.add(imp.getImportFileName());
         }
       }
       for (Import imp : type.getHeaderForwardDeclarations()) {
         // Filter out any declarations that are resolved by an include.
         if (!seenTypes.contains(imp.getTypeName())
-        		 && !ARGC.isExcluded(imp.getImportFileName())
+        		 && !ARGC.isExcludedClass(imp.getImportFileName())
             && !includeFiles.contains(imp.getImportFileName())) {
           forwardDeclarations.add(imp);
         }

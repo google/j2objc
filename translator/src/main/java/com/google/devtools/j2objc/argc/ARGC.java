@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -57,7 +56,6 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
@@ -73,22 +71,16 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.strobel.assembler.InputTypeLoader;
-import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.ITypeLoader;
-import com.strobel.assembler.metadata.JarTypeLoader;
-import com.strobel.assembler.metadata.MetadataParser;
-import com.strobel.assembler.metadata.MetadataSystem;
-import com.strobel.assembler.metadata.TypeDefinition;
-import com.strobel.assembler.metadata.TypeReference;
-import com.strobel.decompiler.DecompilationOptions;
-import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.PlainTextOutput;
 
 public class ARGC {
 	public static boolean compatiable_2_0_2 = false;
 	private static boolean isPureObjCGenerationMode;
 	private static HashMap<String, PureObjCPackage> pureObjCMap = new HashMap<>();
-	private static ArrayList<String> excludes = new ArrayList<String>();
+	private static ArrayList<String> excludeClasses = new ArrayList<String>();
+	private static ArrayList<String> excludePackages = new ArrayList<String>();
+	static HashMap<String, CompilationUnit> units = new HashMap<>();
+	static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
 
 	public static boolean inPureObjCMode() {
 		return isPureObjCGenerationMode;
@@ -112,7 +104,7 @@ public class ARGC {
 		}
 	}
 
-	private static boolean isPureObjC(String path) {
+	static boolean isPureObjC(String path) {
 		int p = path.lastIndexOf('/');
 		if (p < 0) {
 			return false;
@@ -213,7 +205,7 @@ public class ARGC {
 				if (internalPath.endsWith(".java")
 						|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
 					// Extract JAR file to a temporary directory
-					if (isExcluded(internalPath)) {
+					if (isExcludedClass(internalPath)) {
 						if (options.isVerbose()) {
 							System.out.println(internalPath + " excluded");
 						}
@@ -240,243 +232,47 @@ public class ARGC {
 		return null;
 	}
 
-	public static class SourceList extends ArrayList<InputFile> {
-
-		private String root;
-		private Options options;
-		private JarTypeLoader currTypeLoader;
-		private ArrayList<InputFile> pureObjCFiles = new ArrayList<>();
-		private HashSet<String> pathSet = new HashSet<>();
-		private File jarFile;
-
-		public SourceList(Options options) {
-			this.options = options;
-		}
-
-		public boolean add(String filename) {
-			this.root = "";
-			File f = new File(filename);
-			if (!f.exists()) {
-				if (filename.charAt(0) == '@') {
-					File lstf = new File(filename.substring(1));
-					ArrayList<String> files = processListFile(lstf);
-					if (files != null) {
-						if (lstf.getName().charAt(0) == '.') {
-							lstf = new File("j2objc compatible mode - PWD");
-						}
-						String dir = lstf.getAbsolutePath();
-						dir = dir.substring(0, dir.lastIndexOf('/') + 1);
-						for (String s : files) {
-							if (!s.startsWith(dir)) {
-								s = dir + s;
-							}
-							this.add(s);
-						}
-						return true;
-					}
-				}
-				
-				try {
-					InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
-					if (inp != null) {
-						String absPath = inp.getAbsolutePath();
-						root = absPath.substring(0, absPath.length() - filename.length());
-						addRootPath(root);
-						f = new File(absPath);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (!f.exists()) {
-					ErrorUtil.warning("Invalid source: " + filename);
-					//new RuntimeException("---").printStackTrace();
-					System.exit(-1);
-					return false;
-				}
-			}
-			
-			if (!pathSet.add(f.getAbsolutePath())) {
-				return false;
-			}
-			if (f.isDirectory()) {
-				this.addFolderTree(f);
-			}
-			else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
-				this.pathSet.add(f.getAbsolutePath());
-				File tempDir = extractSources(f, options);
-				options.fileUtil().appendSourcePath(tempDir.getAbsolutePath());
-				this.metadataSystem = null;
-				this.jarFile = f; 
-				this.addFolderTree(tempDir);
+	public static void addExcludeRule(String classpath) {
+		if (classpath.charAt(0) != '@') {
+			if ('.' == classpath.charAt(classpath.length() - 1)) {
+				excludePackages.add(classpath);
 			}
 			else {
-				this.root = "";
-				this.registerSource(filename);
+				excludeClasses.add(classpath);
 			}
-			return true;
-		}
-		
-
-
-		private boolean registerSource(String filename) {
-			if (isExcluded(filename)) {
-				return false;
-			}
-			
-			InputFile f = InputFile.getInputFile(filename);
-			
-			if (filename.contains("SQLiteJDBCLoader")) {
-				ARGC.trap();
-			}
-			if (f != null) {
-				System.out.println("Warning! Source is replaced.");
-				System.out.println("  -- " + root + filename);
-				System.out.println("  ++ " + f.getAbsolutePath());
-				return false;
-			}
-			
-			f = new RegularInputFile(root + filename, filename);
-			super.add(f);
-			
-			if (isPureObjC(filename)) {
-				pureObjCFiles.add(f);
-			}
-			
-			return true;
-		}
-		
-		private void add(File f)  {
-			if (f.isDirectory()) {
-				addFolder(f);
-			}
-			else if (f.getName().endsWith(".java")) {
-				String filepath = f.getAbsolutePath();
-				String filename = filepath.substring(root.length());
-				registerSource(filename);
-			}
-			else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
-				String filepath = f.getAbsolutePath();
-				String source = doSaveClassDecompiled(f);
-				if (source == null) return;
-
-				filepath = filepath.substring(0, filepath.length() - 5) + "java";
-				if (options.isVerbose()) {
-					System.out.println("discompiled: " + filepath);
-					try {
-						PrintStream out = new PrintStream(new FileOutputStream(filepath));
-						out.println(source);
-						out.close();
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
-				String filename = filepath.substring(root.length());
-				registerSource(filename);
-			}
-
-
-		}
-
-		MetadataSystem metadataSystem;
-		private TypeReference lookupType(String path) {
-			/* Hack to get around classes whose descriptors clash with primitive types. */
-			if (metadataSystem == null) {
-				try {
-					this.currTypeLoader = new JarTypeLoader(new JarFile(jarFile));
-					this.metadataSystem = new MetadataSystem(currTypeLoader);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if (path.length() == 1) {
-				MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
-				return metadataSystem.resolve(parser.parseTypeDescriptor(path));
-			}
-			return metadataSystem.lookupType(path);
-		}
-
-		private String doSaveClassDecompiled(File inFile) {
-			//			      List<File> classPath = new ArrayList<>();
-			//			      classPath.add(new File(rootPath));
-			//			      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);				  
-
-			String filepath = inFile.getAbsolutePath();
-			String classsig = filepath.substring(root.length(), filepath.length() - 6);
-
-			if (classsig.endsWith("JFlexLexer")) {//$ZzFlexStreamInfo")) {
-				int a = 3;
-				a ++;
-			}
-			TypeReference typeRef = lookupType(classsig); 
-			if (typeRef.getDeclaringType() != null) {
-				return null;
-			}
-			TypeDefinition resolvedType = null;
-			if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
-				throw new RuntimeException("Unable to resolve type.");
-			}
-			DecompilerSettings settings = DecompilerSettings.javaDefaults();
-			settings.setForceExplicitImports(true);
-			settings.setShowSyntheticMembers(true);
-			StringWriter stringwriter = new StringWriter();
-			DecompilationOptions decompilationOptions;
-			decompilationOptions = new DecompilationOptions();
-			decompilationOptions.setSettings(settings);
-			decompilationOptions.setFullDecompilation(false);
-			PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
-			plainTextOutput.setUnicodeOutputEnabled(
-					decompilationOptions.getSettings().isUnicodeOutputEnabled());
-			settings.getLanguage().decompileType(resolvedType, plainTextOutput,
-					decompilationOptions);
-			String decompiledSource = stringwriter.toString();
-			//System.out.println(decompiledSource);
-			return decompiledSource;
-			//		            if (decompiledSource.contains(textField.getText().toLowerCase())) {
-			//		                addClassName(entry.getName());
-			//		            }
-
-
-		}
-
-		private void addFolder(File f)  {
-			File files[] = f.listFiles();
-			for (File f2 : files) {
-				add(f2);
-			}
-		}
-
-		private void addFolderTree(File f) {
-			if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
-				options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
-			}
-
-			//options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
-			root = f.getAbsolutePath() + '/';
-			addRootPath(root);
-			this.addFolder(f);
-		}
-
-	}
-
-	public static void addExcludeRule(String filepath) {
-		if (filepath.charAt(0) != '@') {
-			excludes.add(filepath);
 		}
 		else {
-			File lstf = new File(filepath.substring(1));
+			File lstf = new File(classpath.substring(1));
 			ArrayList<String> files = processListFile(lstf);
 			if (files != null) {
 				for (String s : files) {
-					excludes.add(s);
+					addExcludeRule(s);
 				}
 			}
 		}
 	}
 
-	public static boolean isExcluded(String filename) {
-		filename = filename.replace('.', '/') + '/';
-		for (String s : excludes) {
+	public static boolean isExcludedPackage(String _package) {
+		_package = _package.replace('/', '.') + '.';
+		for (String s : excludePackages) {
+			if (_package.equals(s)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isExcludedClass(String filename) {
+		filename = filename.replace('/', '.');
+		if (filename.endsWith(".java")) {
+			filename = filename.substring(0, filename.length() - 5);
+		}
+		for (String s : excludeClasses) {
+			if (filename.equals(s)) {
+				return true;
+			}
+		}
+		for (String s : excludePackages) {
 			if (filename.startsWith(s)) {
 				return true;
 			}
@@ -484,8 +280,8 @@ public class ARGC {
 		return false;
 	}
 
-	public static boolean hasExcludeRule(boolean enable) {
-		return enable && excludes.size() > 0;
+	public static boolean hasExcludeRule() {
+		return excludeClasses.size() > 0;
 	}
 
 	public static List<String> resolveSources(ArrayList<String> sourceFiles) {
@@ -525,7 +321,7 @@ public class ARGC {
 				}
 			}
 			else {
-				String path = f.getAbsolutePath();
+				String path = ARGC.getCanonicalPath(f);
 				if (path.endsWith(".java")) {
 					RegularInputFile inp = new RegularInputFile(path, path.substring(root.length()));				
 				    CompilationUnit compilationUnit = parser.parse(inp);
@@ -622,14 +418,6 @@ public class ARGC {
 		}
 	}
 
-	static HashMap<String, CompilationUnit> units = new HashMap<>();
-	static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
-	static HashSet<String> rootPaths = new HashSet<>();
-
-	private static void addRootPath(String root) {
-		rootPaths.add(root);
-	}
-
 	public static void preprocessUnit(CompilationUnit unit) {
 		for (AbstractTypeDeclaration type : unit.getTypes()) {
 			types.put(type.getName().toString(), type);
@@ -690,6 +478,14 @@ public class ARGC {
 			TypeElement type = _t.getTypeElement();
 			String name = type.getQualifiedName().toString();
 	    	units.put(name, unit);
+		}
+	}
+
+	public static String getCanonicalPath(File f) {
+		try {
+			return f.getCanonicalPath();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

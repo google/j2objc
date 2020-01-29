@@ -31,7 +31,7 @@ public class FileManagerProxy implements StandardJavaFileManager {
 	@Override
 	public Iterable<JavaFileObject> list(Location location, String packageName, Set<Kind> kinds, boolean recurse)
 			throws IOException {
-		if (ARGC.isExcluded(packageName)) {
+		if (ARGC.isExcludedPackage(packageName)) {
 			return new ArrayList<>();
 		}
 		return fileManager.list(location, packageName, kinds, recurse);

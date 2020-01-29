@@ -105,7 +105,7 @@ public class InputFilePreprocessor {
     if (shouldMapHeaders) {
       options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
     }
-    if (doIncompatibleStripping) {
+    if (false && doIncompatibleStripping) {
       parseResult.stripIncompatibleSource();
       File strippedDir = getCreatedStrippedSourcesDir();
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";

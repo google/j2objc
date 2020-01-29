@@ -1048,12 +1048,12 @@ public class TreeConverter {
     	element = (ExecutableElement) getElement(methodPath);
     }
     catch (RuntimeException e) {
-    	if (!ARGC.hasExcludeRule(true)) {
+    	if (!ARGC.hasExcludeRule()) {
     		throw e;
     	}
     }
 
-    if (ARGC.hasExcludeRule(true) && (element == null || type == null))  {
+    if (ARGC.hasExcludeRule() && (element == null || type == null))  {
         MethodInvocation newNode = new MethodInvocation();
         if (type != null && type.getKind().isPrimitive()) {
         	newNode
@@ -1160,9 +1160,17 @@ public class TreeConverter {
     Expression enclosingExpression = (Expression) convert(node.getEnclosingExpression(), path);
     ExecutableElement executable = (ExecutableElement) getElement(path);
     TypeMirror vargarsType;
+    TypeDeclaration anonymousClassDeclaration;
     if (Options.useGC() && executable == null) {
+    	JCTree.JCNewClass tree = (JCNewClass) node;
+    	String s = tree.clazz.toString();
+    	TypeElement type = TypeUtil.resolveUnreachableClass(s);
+  	  	if (type == null) {
+		  throw new AssertionError("Cannot resolve signature name for type: " + s);
+  	  	}
     	executable = env.createUnreachableError;
     	vargarsType = env.javaLangObject.asType();
+    	anonymousClassDeclaration = null;
     }
     else {
     	vargarsType = ((JCNewClass) node).varargsElement;
@@ -1175,6 +1183,7 @@ public class TreeConverter {
 	      newNode.addArgument(enclosingExpression);
 	      enclosingExpression = null;
 	    }
+	    anonymousClassDeclaration = (TypeDeclaration) convert(node.getClassBody(), path);
     }
     for (ExpressionTree arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg, path));
@@ -1184,7 +1193,7 @@ public class TreeConverter {
         .setVarargsType(vargarsType)
         .setExpression(enclosingExpression)
         .setType(convertType(getTypeMirror(getTreePath(path, node.getIdentifier()))))
-        .setAnonymousClassDeclaration((TypeDeclaration) convert(node.getClassBody(), path));
+        .setAnonymousClassDeclaration(anonymousClassDeclaration);
   }
 
   private TreeNode convertNumberLiteral(LiteralTree node, TreePath parent) {

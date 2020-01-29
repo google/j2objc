@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.argc.TranslateSourceList;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -309,12 +310,12 @@ public class Options {
     processor.processArgs(args);
     postProcessArgs();
     
-    return processor.sourceFiles;
+    return processor.sourceFiles.getInputFiles();
   }
 
   private class ArgProcessor {
 
-    private ARGC.SourceList sourceFiles = new ARGC.SourceList(Options.this);
+    private TranslateSourceList sourceFiles = new TranslateSourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -562,7 +563,7 @@ public class Options {
         // TODO(tball): document entry classes when build is updated to Bazel.
         entryClasses.add(arg);
       } else {
-        sourceFiles.add(arg);
+        sourceFiles.addSource(arg);
       }
     }
   }
@@ -690,8 +691,9 @@ public class Options {
 		  if (f == null) {
 			  return;
 		  }
-		  path = f.getAbsolutePath();
 	  }
+	  path = ARGC.getCanonicalPath(f);
+	  TranslateSourceList.addRootPath(path);
 	  pathList.add(path);
   }
   

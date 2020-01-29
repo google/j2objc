@@ -282,9 +282,6 @@ public class JavacParser extends Parser {
       ArrayList<com.google.devtools.j2objc.ast.CompilationUnit> compileUnits = new ArrayList<>();
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
-        	for (Tree typeDecl : ast.getTypeDecls()) {
-        		
-        	}
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
               .convertCompilationUnit(options, env, ast);
 
@@ -300,6 +297,9 @@ public class JavacParser extends Parser {
 			TypeUtil.setUnreachableClasses(unit);
 			TypeUtil.setIgnoreAllUnreachableTypeError(false);
         	handler.handleParsedUnit(unit.getSourceFilePath(), unit);
+        	if (!unit.getUnreachableImportedClasses().isEmpty()) {
+        		ErrorUtil.addSkip(unit.getSourceFilePath());
+        	}
         }
       }
       processDiagnostics(paths, env.diagnostics());

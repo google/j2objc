@@ -93,7 +93,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     Set<Import> includes = type.getHeaderIncludes();
     List<Import> localImports = Lists.newArrayList();
     for (Import imp : includes) {
-      if (isLocalType(imp.getTypeName()) && !ARGC.isExcluded(imp.getImportFileName())) {
+      if (isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
         localImports.add(imp);
       }
     }
@@ -134,7 +134,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     for (Import imp : type.getHeaderIncludes()) {
       // Verify this import isn't declared in this source file.
-      if (isLocalType(imp.getTypeName()) || ARGC.isExcluded(imp.getImportFileName())) {
+      if (isLocalType(imp.getTypeName()) || ARGC.isExcludedClass(imp.getImportFileName())) {
         continue;
       }
       newline();

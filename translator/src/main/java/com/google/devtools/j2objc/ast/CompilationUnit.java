@@ -238,7 +238,7 @@ public class CompilationUnit extends TreeNode {
 	  HashMap<String, String> map = new HashMap<>();
 	  for (ImportTree tree : unit.getImports()) {
 		  String fullname = tree.getQualifiedIdentifier().toString();
-		  if (ARGC.isExcluded(fullname)) {
+		  if (ARGC.isExcludedClass(fullname)) {
 			  String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
 			  map.put(simpleName, fullname);
 		  }
