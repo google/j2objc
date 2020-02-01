@@ -181,7 +181,12 @@ dist: jre_emul_jars_dist libs_dist $(DIST_DIR)/j2objcc licenses
 
 jars_dist: jre_emul_jars_dist
 
-libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
+libs_dist: archs_list libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
+
+# Log which archs will be built (phony because archs_list isn't a file).
+.PHONY: archs_list
+archs_list:
+	@$(info building jre_emul archs: ${J2OBJC_ARCHS})
 
 $(ARCH_LIB_DIR)/%.a: $(ARCH_BUILD_DIR)/%.a
 	@mkdir -p $(@D)

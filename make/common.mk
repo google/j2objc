@@ -72,11 +72,12 @@ else
 # with them, define J2OBJC_ARCHS with "iphone" and "simulator" included.
 J2OBJC_ARCHS = macosx iphone64 iphone64e watchv7k watch64 watchsimulator \
     simulator64 maccatalyst
-endif
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
 endif
 endif
+endif
+export J2OBJC_ARCHS
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
 XCRUN := $(shell if test -f /usr/bin/xcrun; then echo xcrun; else echo ""; fi)
