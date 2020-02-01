@@ -82,8 +82,8 @@ static JavaUtilArrayList *prefixMapping;
 static const void *ptrTable[] = { "LJavaLangReflectInvocationHandler;" } ;
 static J2ObjcMethodInfo proxyMethods[] = {
   {NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 }
-  
 };
+
 static const J2ObjcClassInfo proxyClassMetadata = {
   empty_static_initialize,
   ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0,
@@ -95,6 +95,7 @@ const J2ObjcClassInfo JreEmptyClassInfo = {
   NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0,
   -1, -1, -1, -1, -1
 };
+
 
 @interface IOSClass() {
   _Atomic(IOSArrayClass*) arrayType_;
@@ -158,8 +159,12 @@ void JreBindProxyClass(Class _class) J2OBJC_METHOD_ATTR {
 }
 
 void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR {
-  NSString* name = NSStringFromClass(_class);
-  JreBindIOSClass(_class, &JreEmptyClassInfo, name, (int)name.length);
+  NSString* clsName = NSStringFromClass(_class);
+  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:_class metadata:&JreEmptyClassInfo name:clsName simpleNamePos:(int)clsName.length];
+  ARGC_bindJavaClass(_class, javaClass);
+  // super.__clinit__() 를 호출한다.
+  IOSClass *superClass = [javaClass getSuperclass];
+  superClass->metadata_->initialize();
 }
 
 
@@ -1699,3 +1704,4 @@ J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
   return ARGC_getIOSConcreteClass(self.class);
 }
 @end
+

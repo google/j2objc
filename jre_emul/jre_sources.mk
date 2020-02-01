@@ -1443,6 +1443,7 @@ ANDROID_PUBLIC_SOURCES_OTHER = \
   org/ietf/jgss/Oid.java \
   javax/net/ssl/X509ExtendedKeyManager.java \
   javax/net/ssl/X509ExtendedTrustManager.java \
+  javax/net/ssl/CertPathTrustManagerParameters.java \
   javax/security/auth/Subject.java \
   javax/security/auth/AuthPermission.java \
   javax/security/auth/SubjectDomainCombiner.java \

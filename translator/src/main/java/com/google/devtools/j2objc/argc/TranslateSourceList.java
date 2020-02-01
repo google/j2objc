@@ -163,20 +163,19 @@ public class TranslateSourceList {
 			registerSource(f);
 		}
 		else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
-			String filepath = f.getAbsolutePath();
+			String filepath = ARGC.getCanonicalPath(f);
 			String source = doSaveClassDecompiled(f);
 			if (source == null) return;
 
 			filepath = filepath.substring(0, filepath.length() - 5) + "java";
-			if (options.isVerbose()) {
-				System.out.println("discompiled: " + filepath);
-				try {
-					PrintStream out = new PrintStream(new FileOutputStream(filepath));
-					out.println(source);
-					out.close();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+			System.out.println("discompiled: " + filepath);
+			System.out.println(source);
+			try {
+				PrintStream out = new PrintStream(new FileOutputStream(filepath));
+				out.println(source);
+				out.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
 			registerSource(new File(filepath));
 		}
@@ -208,7 +207,7 @@ public class TranslateSourceList {
 		//			      classPath.add(new File(rootPath));
 		//			      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);				  
 
-		String filepath = inFile.getAbsolutePath();
+		String filepath = ARGC.getCanonicalPath(inFile);
 		String classsig = filepath.substring(root.length(), filepath.length() - 6);
 
 		if (classsig.endsWith("JFlexLexer")) {//$ZzFlexStreamInfo")) {

@@ -239,6 +239,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
   __attribute__((always_inline)) inline void CLASS##_initialize(void) {}
 
+
 FOUNDATION_EXPORT NSString* JreStringConstant(NSString* str);
 
 #define JreString(idx, text)  _string_##idx
@@ -342,5 +343,24 @@ CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
   - (id)autorelease { return self; }
 #endif
 
+/*
+ * iOS Application must implement j2objc_getSystemResourceBundle()
+ * for Java Systen Resource Budnle.
+ * Sample)
+ * NSBundle* j2objc_getSystemResourceBundle() {
+ *   static NSBundle *j2objc_bundle = NULL;
+ *   if (j2objc_bundle == NULL) {
+ *     NSURL* url = [[NSBundle mainBundle] URLForResource:@"j2objc_resources" withExtension:@"bundle"];
+ *     if (url != NULL) {
+ *       j2objc_bundle = [NSBundle bundleWithURL:url];
+ *     }
+ *     if (j2objc_bundle == NULL) {
+ *       j2objc_bundle = [NSBundle mainBundle];
+ *     }
+ *   }
+ *   return j2objc_bundle;
+ * }
+ */
+FOUNDATION_EXPORT NSBundle* j2objc_getSystemResourceBundle();
 
 #endif // _J2OBJC_COMMON_H_

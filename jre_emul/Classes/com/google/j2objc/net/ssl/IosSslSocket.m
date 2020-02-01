@@ -205,6 +205,11 @@ static void ComGoogleJ2objcNetSslIosSslSocket__clinit__() {
   protocolMapping = [[NSDictionary alloc] initWithDictionary:temp];
 }
 
++ (void)initialize {
+  [super initialize];
+  ComGoogleJ2objcNetSslIosSslSocket_initialize();
+}
+
 - (JavaIoInputStream *)plainInputStream {
   return [super getInputStream];
 }

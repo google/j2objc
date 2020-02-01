@@ -80,7 +80,7 @@ JNIEXPORT jobject Java_java_lang_SystemClassLoader_findResource(
   if (!name) {
     return nil;
   }
-  NSBundle *bundle = [NSBundle mainBundle];
+  NSBundle *bundle = j2objc_getSystemResourceBundle();
   NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
   if (nativeURL) {
     return create_JavaNetURL_initWithNSString_([nativeURL description]);
@@ -119,13 +119,15 @@ JNIEXPORT jobject Java_java_lang_SystemClassLoader_getResourceAsStream(
   if (!name) {
     return nil;
   }
-  NSBundle *bundle = [NSBundle mainBundle];
+  
+  NSBundle *bundle = j2objc_getSystemResourceBundle();
   NSString *path = [bundle pathForResource:name ofType:nil];
   if (path) {
     return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
         create_JavaIoFileInputStream_initWithNSString_(path));
   }
 
+  
   // No iOS resource available, check for linked resource.
   IOSByteArray *data = GetLinkedResource(name);
   return data ? create_JavaIoByteArrayInputStream_initWithByteArray_(data) : nil;
