@@ -32,12 +32,6 @@ SUPPORT_SOURCES = \
     com/google/j2objc/mappedpkg/TestClass.java \
     com/google/j2objc/mappedpkg/package-info.java \
     com/google/j2objc/package-info.java \
-    com/google/mockwebserver/Dispatcher.java \
-    com/google/mockwebserver/MockResponse.java \
-    com/google/mockwebserver/MockWebServer.java \
-    com/google/mockwebserver/QueueDispatcher.java \
-    com/google/mockwebserver/RecordedRequest.java \
-    com/google/mockwebserver/SocketPolicy.java \
     com/test/Hello.java \
     dalvik/system/CloseGuardMonitor.java \
     foo/Fourth.java \
@@ -214,6 +208,14 @@ SUPPORT_SOURCES = \
     tests/targets/security/KeyStoreTest.java \
     tests/targets/security/cert/CertificateFactoryTestX509.java \
     tests/util/SerializationTester.java \
+
+MOCKWEBSERVER_SOURCES = \
+    com/google/mockwebserver/Dispatcher.java \
+    com/google/mockwebserver/MockResponse.java \
+    com/google/mockwebserver/MockWebServer.java \
+    com/google/mockwebserver/QueueDispatcher.java \
+    com/google/mockwebserver/RecordedRequest.java \
+    com/google/mockwebserver/SocketPolicy.java \
 
 NATIVE_SOURCES = dalvik_system_JniTest.cpp
 

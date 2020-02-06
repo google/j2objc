@@ -37,6 +37,8 @@ ALL_TESTS_CLASS = AllJreTests
 ALL_TESTS_SOURCE = $(RELATIVE_TESTS_DIR)/AllJreTests.java
 
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o) $(NATIVE_SOURCES:%.cpp=$(TESTS_DIR)/%.o)
+MOCKWEBSERVER_OBJS = \
+    $(MOCKWEBSERVER_SOURCES:%.java=$(TESTS_DIR)/%.o) $(NATIVE_SOURCES:%.cpp=$(TESTS_DIR)/%.o)
 TEST_OBJS = \
     $(ALL_TEST_SOURCES:%.java=$(TESTS_DIR)/%.o) \
     $(ALL_SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o) \
@@ -80,7 +82,12 @@ endif
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TRANSLATE_ARGS += -external-annotation-file lite/ignore_tests.jaif
 endif
-TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
+TRANSLATE_SOURCES = \
+    $(SUPPORT_SOURCES) \
+    $(MOCKWEBSERVER_SOURCES) \
+    $(TEST_SOURCES) \
+    $(SUITE_SOURCES) \
+    $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
@@ -88,7 +95,7 @@ TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
 TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   jre_emul_tests,\
   $(TESTS_DIR),\
-  $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
+  $(SUPPORT_SOURCES) $(MOCKWEBSERVER_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
   $(TRANSLATE_ARGS))
 
@@ -249,9 +256,9 @@ run-xctests: test
 	    'platform=iOS Simulator,name=iPhone 7 Plus' test
 	@killall 'Simulator'
 
-$(SUPPORT_LIB): $(SUPPORT_OBJS)
+$(SUPPORT_LIB): $(SUPPORT_OBJS) $(MOCKWEBSERVER_OBJS)
 	@echo libtool -o $(SUPPORT_LIB)
-	@xcrun libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
+	@xcrun libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS) $(MOCKWEBSERVER_OBJS)
 
 clean:
 	@rm -rf $(TESTS_DIR)
