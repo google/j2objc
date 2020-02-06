@@ -34,6 +34,11 @@
 #import "libcore/reflect/GenericSignatureParser.h"
 #import "libcore/reflect/Types.h"
 
+@interface JavaLangReflectMethod() {
+  NSString*  internedName_;
+}
+@end
+
 @implementation JavaLangReflectMethod
 
 + (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
@@ -48,7 +53,12 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
 
 // Returns method name.
 - (NSString *)getName {
-  return [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
+  NSString* name = self->internedName_;
+  if (name == NULL) {
+    name = [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
+    self->internedName_ = [name java_intern];
+  }
+  return name;
 }
 
 - (int)getModifiers {

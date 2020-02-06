@@ -90,12 +90,14 @@ static int refAssocKey;
 static int64_t gc_interval = 0;
 
 static Class getARGCClass(id jobj) {
-  /*
-   NSObject 상속 객체에 대해서만 사용 가능.
-   그 외의 경우엔 메모리 억세스 오류 발생.
-   */
-  Class c = ((Class*)jobj)[0];
-  return c;//[jobj class];
+//  /*
+//   NSObject 상속 객체에 대해서만 사용 가능.
+//   그 외의 경우엔 메모리 억세스 오류 발생.
+//   */
+//  Class c = (Class)(((NSUInteger*)jobj)[0] & ~7);
+//
+//  assert(c == [jobj class]);
+  return [jobj class];
 }
 
 static JObj_p toARGCObject(id oid) {
@@ -448,7 +450,7 @@ ARGC ARGC::_instance;
 int ARGC::mayHaveGarbage = 0;
 std::atomic_int ARGC::gc_state;
 std::atomic_int ARGC::_clearSoftReference;
-volatile int64_t RefContext::strong_reachable_generation_bit = 0;
+volatile int64_t RefContext::strong_reachable_generation_bit = ((STRONG_REACHABLE_MASK << 1) ^ STRONG_REACHABLE_MASK) & STRONG_REACHABLE_MASK;
 
 extern "C" {
 IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;

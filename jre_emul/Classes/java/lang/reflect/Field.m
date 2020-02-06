@@ -37,6 +37,11 @@
 #import "objc/message.h"
 #import "objc/runtime.h"
 
+@interface JavaLangReflectField() {
+  NSString*  internedName_;
+}
+@end
+
 @implementation JavaLangReflectField
 
 - (instancetype)initWithIvar:(Ivar)ivar
@@ -60,17 +65,23 @@
 }
 
 - (NSString *)getName {
+  NSString* name = self->internedName_;
+  if (name != NULL) {
+    return name;
+  }
   const char *javaName = JrePtrAtIndex(ptrTable_, metadata_->javaNameIdx);
   if (javaName) {
-    return [NSString stringWithUTF8String:javaName];
+    name = [NSString stringWithUTF8String:javaName];
   } else if (IsStatic(self)) {
-    return [NSString stringWithUTF8String:metadata_->name];
+    name = [NSString stringWithUTF8String:metadata_->name];
   } else {
     // Remove the trailing "_" from instance fields.
-    return AUTORELEASE([[NSString alloc] initWithBytes:metadata_->name
+    name = AUTORELEASE([[NSString alloc] initWithBytes:metadata_->name
                                      length:strlen(metadata_->name) - 1
                                    encoding:NSUTF8StringEncoding]);
   }
+  self->internedName_ = [name java_intern];
+  return name;
 }
 
 - (NSString *)description {
@@ -260,9 +271,9 @@ static void SetWithRawValue(
   // class "virtual" field.
   jboolean needsRetain = ![fieldType isPrimitive] && (ivar_ || IsStatic(self));
 #ifdef J2OBJC_USE_GC
-    if (needsRetain) {
-        AUTORELEASE([self getWithId:object]);
-    }
+//    if (needsRetain) {
+//        AUTORELEASE([self getWithId:object]);
+//    }
 #endif
   J2ObjcRawValue rawValue;
   if (![fieldType __unboxValue:value toRawValue:&rawValue]) {
