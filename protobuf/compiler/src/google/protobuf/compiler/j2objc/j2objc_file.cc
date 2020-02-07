@@ -348,7 +348,7 @@ string FileGenerator::GetFileName(string suffix) {
   } else {
     return output_dir_ + classname_ + suffix;
   }
-};
+}
 
 void FileGenerator::Generate(GeneratorContext* context,
                              std::vector<string>* file_list) {
@@ -476,7 +476,8 @@ bool FileGenerator::GenerateMultipleFiles() {
   return file_->options().java_multiple_files() && !IsGenerateFileDirMapping();
 }
 
-void PrintProperty(io::Printer* printer, const string& key, const string& value) {
+void PrintProperty(io::Printer* printer, const string& key,
+                   const string& value) {
   printer->Print("$key$=$value$\n", "key", key, "value", value);
 }
 
