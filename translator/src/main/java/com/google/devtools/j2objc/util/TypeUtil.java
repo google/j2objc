@@ -272,13 +272,18 @@ public final class TypeUtil {
 	return getArgcFieldType(t);
   }
   
-  public String getArgcFieldType(TypeMirror t) {
+  private String getArgcFieldType(TypeMirror t) {
 	if (TypeUtil.isPureInterface(t)) {
 	  return "Generic";
+	}
+    if (Options.isIOSTest() && ARGC.isTestClass(t)) {
+  	  // IOSTest class 는 ARGCObject 를 상속하지 않는다.
+      return "Native";
 	}
 	if (ARGC.isPureObjC(t)) {
 	  return "Native";
 	}
+	
 	TypeElement e = asTypeElement(t);
 	if (e == null) {
 	  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);

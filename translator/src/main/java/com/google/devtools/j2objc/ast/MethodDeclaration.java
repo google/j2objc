@@ -168,4 +168,20 @@ public class MethodDeclaration extends BodyDeclaration {
     super.validateInner();
     Preconditions.checkNotNull(executableElement);
   }
+
+  public boolean isTestMethod() {
+	if (this.name == null) return false;
+	String n = this.name.toString();
+	return n.startsWith("test");
+  }
+
+  public boolean isTestClassSetup() {
+	for (Annotation a : this.annotations) {
+		String type = a.toString();//.getTypeName().toString();
+		if ("@BeforeClass".equals(type)) {
+			return true;
+		}
+	}
+	return false;
+  }
 }

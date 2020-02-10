@@ -44,6 +44,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileHeader() {
 	if (!ARGC.inPureObjCMode()) {
 	    println("#include \"J2ObjC_header.h\"");
+	    if (options.isIOSTest()) {
+	    	println("#include \"IOSTest.h\"");
+	    }
 	    newline();
 	    printf("#pragma push_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
 	    printf("#ifdef RESTRICT_%s\n", varPrefix);

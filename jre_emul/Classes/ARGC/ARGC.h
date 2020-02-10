@@ -35,14 +35,7 @@ CF_EXTERN_C_BEGIN
 @interface ARGCObject : NSObject
 @end
 
-    
-@interface ARGCProxy : ARGCObject {
-@public
-    id obj;
-}
-@end
-    
-    
+        
 @interface ARGCArray : NSObject <NSCopying> {
 @public
     const NSInteger length_;

@@ -24,6 +24,9 @@
 #import "IOSObjectArray.h"
 #import "J2ObjC_source.h"
 #import "java/lang/StackTraceElement.h"
+#import "java/io/PrintWriter.h"
+#import "java/io/StringWriter.h"
+#import "java/lang/Throwable.h"
 #import "jni.h"
 
 #import <execinfo.h>
@@ -122,3 +125,12 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
   (void)[self initWithName:[[self class] description] reason:reason userInfo:nil];
 }
+
+FOUNDATION_EXPORT NSString* JreGetStackTraceText(JavaLangThrowable* ex) {
+  JavaIoStringWriter* wr = new_JavaIoStringWriter_init();
+  JavaIoPrintWriter* pw = new_JavaIoPrintWriter_initWithJavaIoWriter_(wr);
+  [ex printStackTraceWithJavaIoPrintWriter:pw];
+  NSString* text = [wr description];
+  return text;
+}
+

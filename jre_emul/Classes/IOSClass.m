@@ -729,6 +729,7 @@ static IOSClass *ClassForJavaName(NSString *name) {
   return nil;
 }
 
+
 static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
   switch (c) {
     case 'B': return IOSClass_byteClass;
@@ -1320,6 +1321,12 @@ void IOSClass_init_class_(pthread_t* initToken, Class cls, void(*clinit)()) {
       *initToken = (pthread_t)-1L;
     }
   }
+}
+
+
+FOUNDATION_EXPORT void JreInitTestClass(Class testClass) {
+  IOSClass* cls = IOSClass_fromClass(testClass);
+  cls->metadata_->initialize();
 }
 
 

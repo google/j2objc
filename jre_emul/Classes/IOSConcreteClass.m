@@ -79,7 +79,11 @@
   }
   Class superclass = class_getSuperclass(class_);
   if (superclass != nil) {
-    return IOSClass_fromClass(superclass);
+    IOSClass* c = IOSClass_fromClass(superclass);
+    if (c == NULL) {
+      c = NSObject_class_();
+    }
+    return c;
   }
   return nil;
 }

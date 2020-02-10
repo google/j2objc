@@ -785,6 +785,7 @@
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 		783B492A237400E500C0AF0A /* IntegerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 783B49262374008D00C0AF0A /* IntegerTest.m */; };
 		783B492B237400F800C0AF0A /* LongTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 783B49292374008E00C0AF0A /* LongTest.m */; };
+		7849AF1C23F120030016F03F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7849AF1B23F120030016F03F /* XCTest.framework */; };
 		78BB695223D6AD3800D21E5D /* OldLogManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BB695123D6AD3800D21E5D /* OldLogManagerTest.m */; };
 		78BB695423D6AD7900D21E5D /* RetainedWithTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BB695323D6AD7900D21E5D /* RetainedWithTest.m */; };
 		78BB695623D6ADA100D21E5D /* OldAndroidStreamTokenizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BB695523D6ADA100D21E5D /* OldAndroidStreamTokenizerTest.m */; };
@@ -1844,12 +1845,14 @@
 		6A77143A1E3957B10038F773 /* LocaleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleTest.m; path = org/apache/harmony/tests/java/util/LocaleTest.m; sourceTree = "<group>"; };
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		781C3D41237E3EB60003B12B /* RefContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RefContext.h; path = Classes/ARGC/RefContext.h; sourceTree = SOURCE_ROOT; };
+		781D863F23F117940090038E /* IOSTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSTest.h; sourceTree = "<group>"; };
 		783B49262374008D00C0AF0A /* IntegerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntegerTest.m; path = libcore/java/lang/IntegerTest.m; sourceTree = "<group>"; };
 		783B49272374008E00C0AF0A /* IntegerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntegerTest.h; path = libcore/java/lang/IntegerTest.h; sourceTree = "<group>"; };
 		783B49282374008E00C0AF0A /* LongTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LongTest.h; path = libcore/java/lang/LongTest.h; sourceTree = "<group>"; };
 		783B49292374008E00C0AF0A /* LongTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LongTest.m; path = libcore/java/lang/LongTest.m; sourceTree = "<group>"; };
 		7846132423504FF900E80EE4 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARGC.h; path = Classes/ARGC/ARGC.h; sourceTree = SOURCE_ROOT; };
 		7846132523504FF900E80EE4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ARGC.mm; path = Classes/ARGC/ARGC.mm; sourceTree = SOURCE_ROOT; };
+		7849AF1B23F120030016F03F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		7850D3CE23ABB246003B1A1B /* jni_md.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni_md.h; sourceTree = "<group>"; };
 		787C8D51237EDFD0003B8EF1 /* NSObject+ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+ARGC.h"; path = "Classes/ARGC/NSObject+ARGC.h"; sourceTree = SOURCE_ROOT; };
 		7881CB692382D783005204FF /* Volatiles.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Volatiles.mm; path = Classes/ARGC/Volatiles.mm; sourceTree = SOURCE_ROOT; };
@@ -5963,6 +5966,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7849AF1C23F120030016F03F /* XCTest.framework in Frameworks */,
 				069C24381E9EEFFF00CE6BAF /* libiconv.tbd in Frameworks */,
 				069C24371E9EEFF500CE6BAF /* libicucore.tbd in Frameworks */,
 				069C24361E9EEFD800CE6BAF /* libz.tbd in Frameworks */,
@@ -6038,6 +6042,7 @@
 		06619387155848D70004DAFE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7849AF1B23F120030016F03F /* XCTest.framework */,
 				066899691E9EE12900DDD10B /* libiconv.tbd */,
 				066899671E9EE12000DDD10B /* libz.tbd */,
 				0620F4F91BB60C3900626242 /* libicucore.tbd */,
@@ -6075,6 +6080,7 @@
 				067228E5158FAEBC005318BD /* Field.m */,
 				062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
+				781D863F23F117940090038E /* IOSTest.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
 				06619399155849BB0004DAFE /* IOSArrayClass.m */,

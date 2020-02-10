@@ -292,7 +292,20 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     syncLineNumbers(m);  // avoid doc-comment
     print(getMethodSignature(m) + " ");
-    print(reindent(generateStatement(m.getBody())) + "\n");
+    String body = generateStatement(m.getBody());
+    if (options.isIOSTest()) {
+    	if (m.isTestMethod()) {
+    		body = "{\nXCTEST_BEGIN()\n" + body + "XCTEST_END()\n}";
+    	}
+    	else if (m.isTestClassSetup()) {
+    	      String clazz = nameTable.getFullName(typeNode.getTypeElement());
+    		
+    	    List<Statement> initStatements = typeNode.getClassInitStatements();
+    	    String name = m.getName().toString();
+    	    initStatements.add(new NativeStatement("[" + clazz + " " + name + "];"));
+    	}
+    }
+    print(reindent(body) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
     }

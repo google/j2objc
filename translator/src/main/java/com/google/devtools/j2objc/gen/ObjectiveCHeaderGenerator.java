@@ -35,7 +35,7 @@ import java.util.Set;
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
-  private final Options options;
+  protected final Options options;
 
   // The prefix to use for preprocessor variable names. Derived from the path of
   // the generated file. For example if "my/pkg/Foo.h" is being generated the
@@ -112,6 +112,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     Set<Import> forwardDeclarations = Sets.newHashSet();
 
     includeFiles.add("J2ObjC_header.h");
+    if (options.isIOSTest()) {
+        includeFiles.add("IOSTest.h");
+    }
 
     for (GeneratedType type : getOrderedTypes()) {
       String name = type.getTypeName();

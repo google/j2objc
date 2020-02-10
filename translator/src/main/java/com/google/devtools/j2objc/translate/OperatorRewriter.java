@@ -281,10 +281,6 @@ private FunctionDeclaration argc_currentMethod;
     
     Element enc = var.getEnclosingElement();
 
-    if (typeUtil.getArgcFieldTypeEx(enc, type) == "Native") {
-    	return null;
-    }
-
     String funcName = null;
     if (!isPrimitive) {
     	if (options.useGC()) {
@@ -292,7 +288,7 @@ private FunctionDeclaration argc_currentMethod;
     			funcName = "JreStrongAssign";
     		}
     		else {
-    			String fType = typeUtil.getArgcFieldType(type);
+    			String fType = typeUtil.getArgcFieldTypeEx(enc, type);
     			funcName = "Jre" + fType + "FieldAssign";
     		}
     	}

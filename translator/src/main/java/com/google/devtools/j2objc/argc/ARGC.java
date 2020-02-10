@@ -44,18 +44,8 @@ import javax.tools.StandardLocation;
 import com.google.devtools.j2objc.Options;
 
 //import org.eclipse.jdt.core.dom.ITypeBinding;
-
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.CatchClause;
-import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.Type;
-import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.ast.*;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
@@ -418,14 +408,23 @@ public class ARGC {
 		}
 	}
 
+	private static HashMap<TypeMirror, TypeMirror> testClasses = new HashMap<>(); 
+	
+	public static boolean isTestClass(TypeMirror type) {
+		return testClasses.containsKey(type);
+	}
+	
 	public static void preprocessUnit(CompilationUnit unit) {
 		for (AbstractTypeDeclaration type : unit.getTypes()) {
 			types.put(type.getName().toString(), type);
-			if (type.getClassInitStatements().isEmpty()) {
-				
+			if (Options.isIOSTest()) {
+				TypeMirror t = type.getTypeElement().asType();
+				testClasses.put(t, t); 
 			}
 		}
 		preprocessUnreachableImportedClasses(unit, new HashMap<>());
+		
+		
 //		for (AbstractTypeDeclaration _t : unit.getTypes()) {
 //		}
 	}
@@ -454,6 +453,13 @@ public class ARGC {
 		}
 		processed.put(unit.getSourceFilePath(), unit.getSourceFilePath());
 		for (AbstractTypeDeclaration _t : unit.getTypes()) {
+			if (Options.isIOSTest()) {
+				for (BodyDeclaration body : _t.getBodyDeclarations()) {
+					if (body instanceof MethodDeclaration) {
+						((MethodDeclaration)body).isTestMethod();
+					}
+				}
+			}
 			TypeElement type = _t.getTypeElement();
 	        for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
 	            String name = inheritedType.toString();
@@ -487,6 +493,16 @@ public class ARGC {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void setTestFiles(ArrayList<InputFile> inputFiles) {
+		HashMap<String, String> testFiles = new HashMap<String, String>(); 
+		for (InputFile if_ : inputFiles) {
+			String fname = if_.getUnitName();
+			testFiles.put(fname, fname);
+			System.out.println(fname);
+		}
+		
 	}
 }
 

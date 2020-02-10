@@ -96,6 +96,7 @@ public class Options {
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
+  private static boolean iostest = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -310,6 +311,9 @@ public class Options {
     processor.processArgs(args);
     postProcessArgs();
     
+    if (this.isIOSTest()) {
+    	ARGC.setTestFiles(processor.sourceFiles.getInputFiles());
+    }
     return processor.sourceFiles.getInputFiles();
   }
 
@@ -520,6 +524,8 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
+      } else if (arg.equals("-Xios-test")) {
+        iostest = true;
       } else if (arg.equals("-external-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
@@ -1060,6 +1066,10 @@ public class Options {
     return emitSourceHeaders;
   }
 
+  public static boolean isIOSTest() {
+    return iostest;
+  }
+  
   @VisibleForTesting
   public void setEmitSourceHeaders(boolean b) {
     emitSourceHeaders = b;

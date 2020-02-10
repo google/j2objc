@@ -144,7 +144,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     String funcName = null;
     if (isRetainedWith) {
       funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
-    } else if (isVolatile && (!options.useGC() || typeUtil.getArgcFieldType(node.getTypeElement().asType()) == "Native")) {
+    } else if (isVolatile && (!options.useGC() || typeUtil.getArgcFieldTypeEx(node.getTypeElement(), var.asType()) == "Native")) {
         funcName = "JreReleaseVolatile";
     } else if (options.useReferenceCounting()) {
       funcName = "RELEASE_";

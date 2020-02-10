@@ -2195,6 +2195,7 @@ PUBLIC_NATIVE_HEADERS = \
   org/slowcoders/j2objc/UnreachableError.h \
   IOSArray.h \
   IOSClass.h \
+  IOSTest.h \
   IOSMetadata.h \
   IOSObjectArray.h \
   IOSPrimitiveArray.h \
