@@ -17,6 +17,7 @@
 
 #pragma clang system_header
 
+#import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 
 #import "J2ObjC_types.h"
