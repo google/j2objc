@@ -253,7 +253,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
       nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
       result = nf.format(50.00);
       // Allow different versions of the ICU CLDR.
-      assertTrue(result.equals("֏\u00a050") || result.equals("50\u00a0֏"));
+      assertTrue(result.equals("֏\u00a050")
+          || result.equals("50\u00a0֏")  // iOS 12
+          || result.equals("50,00 ֏"));  // macOS 10.15
 
       // Swiss Francs 2 fractional digits.
       nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
