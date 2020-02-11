@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ public final class Channels {
     /**
      * Write all remaining bytes in buffer to the given channel.
      *
-     * @throws  IllegalBlockingException
+     * @throws  IllegalBlockingModeException
      *          If the channel is selectable and configured non-blocking.
      */
     private static void writeFully(WritableByteChannel ch, ByteBuffer bb)
@@ -181,6 +181,155 @@ public final class Channels {
 
             };
     }
+
+    /**
+     * Constructs a stream that reads bytes from the given channel.
+     *
+     * <p> The stream will not be buffered, and it will not support the {@link
+     * InputStream#mark mark} or {@link InputStream#reset reset} methods.  The
+     * stream will be safe for access by multiple concurrent threads.  Closing
+     * the stream will in turn cause the channel to be closed.  </p>
+     *
+     * @param  ch
+     *         The channel from which bytes will be read
+     *
+     * @return  A new input stream
+     *
+     * @since 1.7
+     */
+    public static InputStream newInputStream(final AsynchronousByteChannel ch) {
+        checkNotNull(ch, "ch");
+        return new InputStream() {
+
+            private ByteBuffer bb = null;
+            private byte[] bs = null;           // Invoker's previous array
+            private byte[] b1 = null;
+
+            @Override
+            public synchronized int read() throws IOException {
+                if (b1 == null)
+                    b1 = new byte[1];
+                int n = this.read(b1);
+                if (n == 1)
+                    return b1[0] & 0xff;
+                return -1;
+            }
+
+            @Override
+            public synchronized int read(byte[] bs, int off, int len)
+                throws IOException
+            {
+                if ((off < 0) || (off > bs.length) || (len < 0) ||
+                    ((off + len) > bs.length) || ((off + len) < 0)) {
+                    throw new IndexOutOfBoundsException();
+                } else if (len == 0)
+                    return 0;
+
+                ByteBuffer bb = ((this.bs == bs)
+                                 ? this.bb
+                                 : ByteBuffer.wrap(bs));
+                bb.position(off);
+                bb.limit(Math.min(off + len, bb.capacity()));
+                this.bb = bb;
+                this.bs = bs;
+
+                boolean interrupted = false;
+                try {
+                    for (;;) {
+                        try {
+                            return ch.read(bb).get();
+                        } catch (ExecutionException ee) {
+                            throw new IOException(ee.getCause());
+                        } catch (InterruptedException ie) {
+                            interrupted = true;
+                        }
+                    }
+                } finally {
+                    if (interrupted)
+                        Thread.currentThread().interrupt();
+                }
+            }
+
+            @Override
+            public void close() throws IOException {
+                ch.close();
+            }
+        };
+    }
+
+    /**
+     * Constructs a stream that writes bytes to the given channel.
+     *
+     * <p> The stream will not be buffered. The stream will be safe for access
+     * by multiple concurrent threads.  Closing the stream will in turn cause
+     * the channel to be closed.  </p>
+     *
+     * @param  ch
+     *         The channel to which bytes will be written
+     *
+     * @return  A new output stream
+     *
+     * @since 1.7
+     */
+    public static OutputStream newOutputStream(final AsynchronousByteChannel ch) {
+        checkNotNull(ch, "ch");
+        return new OutputStream() {
+
+            private ByteBuffer bb = null;
+            private byte[] bs = null;   // Invoker's previous array
+            private byte[] b1 = null;
+
+            @Override
+            public synchronized void write(int b) throws IOException {
+               if (b1 == null)
+                    b1 = new byte[1];
+                b1[0] = (byte)b;
+                this.write(b1);
+            }
+
+            @Override
+            public synchronized void write(byte[] bs, int off, int len)
+                throws IOException
+            {
+                if ((off < 0) || (off > bs.length) || (len < 0) ||
+                    ((off + len) > bs.length) || ((off + len) < 0)) {
+                    throw new IndexOutOfBoundsException();
+                } else if (len == 0) {
+                    return;
+                }
+                ByteBuffer bb = ((this.bs == bs)
+                                 ? this.bb
+                                 : ByteBuffer.wrap(bs));
+                bb.limit(Math.min(off + len, bb.capacity()));
+                bb.position(off);
+                this.bb = bb;
+                this.bs = bs;
+
+                boolean interrupted = false;
+                try {
+                    while (bb.remaining() > 0) {
+                        try {
+                            ch.write(bb).get();
+                        } catch (ExecutionException ee) {
+                            throw new IOException(ee.getCause());
+                        } catch (InterruptedException ie) {
+                            interrupted = true;
+                        }
+                    }
+                } finally {
+                    if (interrupted)
+                        Thread.currentThread().interrupt();
+                }
+            }
+
+            @Override
+            public void close() throws IOException {
+                ch.close();
+            }
+        };
+    }
+
+
     // -- Channels from streams --
 
     /**

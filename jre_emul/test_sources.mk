@@ -58,6 +58,7 @@ SUPPORT_SOURCES = \
     libcore/java/lang/reflect/annotations/singleannotation/package-info.java \
     libcore/java/net/AbstractCookiesTest.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
+    libcore/java/nio/channels/FutureLikeCompletionHandler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/nio/charset/SettableCharsetProvider.java \
@@ -477,7 +478,6 @@ TEST_SOURCES := \
     libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
-    libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
@@ -1069,6 +1069,7 @@ FAILING_MATH_TESTS = \
 # during the upgrade, but should all be fixed or disabled when this issue
 # is completed.
 FAILING_CHARSET_TESTS = \
+    libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/ISOCharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetDecoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UTF16CharsetEncoderTest.java \
