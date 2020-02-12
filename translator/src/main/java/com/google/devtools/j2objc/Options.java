@@ -311,9 +311,6 @@ public class Options {
     processor.processArgs(args);
     postProcessArgs();
     
-    if (this.isIOSTest()) {
-    	ARGC.setTestFiles(processor.sourceFiles.getInputFiles());
-    }
     return processor.sourceFiles.getInputFiles();
   }
 

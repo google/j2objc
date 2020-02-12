@@ -417,10 +417,6 @@ public class ARGC {
 	public static void preprocessUnit(CompilationUnit unit) {
 		for (AbstractTypeDeclaration type : unit.getTypes()) {
 			types.put(type.getName().toString(), type);
-			if (Options.isIOSTest()) {
-				TypeMirror t = type.getTypeElement().asType();
-				testClasses.put(t, t); 
-			}
 		}
 		preprocessUnreachableImportedClasses(unit, new HashMap<>());
 		
@@ -451,16 +447,29 @@ public class ARGC {
 		if (processed.containsKey(unit.getSourceFilePath())) {
 			return urMap;
 		}
-		processed.put(unit.getSourceFilePath(), unit.getSourceFilePath());
+		String src_f = unit.getSourceFilePath();
+		processed.put(src_f, src_f);
 		for (AbstractTypeDeclaration _t : unit.getTypes()) {
+			TypeElement type = _t.getTypeElement();
 			if (Options.isIOSTest()) {
-				for (BodyDeclaration body : _t.getBodyDeclarations()) {
-					if (body instanceof MethodDeclaration) {
-						((MethodDeclaration)body).isTestMethod();
+				boolean isTestClass = false;
+				try {
+					for (BodyDeclaration body : _t.getBodyDeclarations()) {
+						if (body instanceof MethodDeclaration) {
+							isTestClass |= ((MethodDeclaration)body).checkTestMethod();
+						}
 					}
+					if (isTestClass) {
+						testClasses.put(type.asType(), type.asType()); 
+					}
+				} catch (InvalidClassException e) {
+					System.err.println("Testcase conversion error: " + src_f + 
+							"\nTest method name must start with 'test'." +
+							"\nThe name of method annotated by @Before must be 'setUp'" +
+							"\nThe name of method annotated by @After must be 'tearDown'");
 				}
 			}
-			TypeElement type = _t.getTypeElement();
+			
 	        for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
 	            String name = inheritedType.toString();
 	            int idx = name.indexOf('<');
@@ -495,14 +504,5 @@ public class ARGC {
 		}
 	}
 
-	public static void setTestFiles(ArrayList<InputFile> inputFiles) {
-		HashMap<String, String> testFiles = new HashMap<String, String>(); 
-		for (InputFile if_ : inputFiles) {
-			String fname = if_.getUnitName();
-			testFiles.put(fname, fname);
-			System.out.println(fname);
-		}
-		
-	}
 }
 
