@@ -124,8 +124,13 @@ static int iosClassAssocKey;
 
 void ARGC_strongRetain(id oid);
 
+IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
+  IOSClass* jcls = objc_getAssociatedObject(key, &iosClassAssocKey);
+  return jcls;
+}
+
 void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
-  assert(objc_getAssociatedObject(key, &iosClassAssocKey) == NULL);
+  assert(ARGC_getIOSClass(key) == NULL);
   if (javaClass->name_ == NULL) {
     ARGC_strongRetain(javaClass);
   }
@@ -133,10 +138,6 @@ void ARGC_bindJavaClass(id key, IOSClass* javaClass) {
     [mappedNames setObject:javaClass forKey:javaClass->name_];
   }
   objc_setAssociatedObject(key, &iosClassAssocKey, javaClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
-  return (IOSClass*)objc_getAssociatedObject(key, &iosClassAssocKey);
 }
 
 void JreBindIOSClass(Class nativeClass, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR {
@@ -159,8 +160,9 @@ void JreBindProxyClass(Class _class) J2OBJC_METHOD_ATTR {
 }
 
 void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR {
-  NSString* clsName = NSStringFromClass(_class);
-  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:_class metadata:&JreEmptyClassInfo name:clsName simpleNamePos:(int)clsName.length];
+  NSString* name = NSStringFromClass(_class);
+  //IOSClass *javaClass = [[IOSProxyClass alloc] initWithClass:_class metadata:&proxyClassMetadata name:name simpleNamePos:(int)name.length];
+  IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:_class metadata:&JreEmptyClassInfo name:name simpleNamePos:(int)name.length];
   ARGC_bindJavaClass(_class, javaClass);
   // super.__clinit__() 를 호출한다.
   IOSClass *superClass = [javaClass getSuperclass];
@@ -170,6 +172,11 @@ void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR {
 
 IOSClass* ARGC_getIOSConcreteClass(Class nativeClass) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
   IOSClass *javaClass = ARGC_getIOSClass(nativeClass);
+  if (javaClass == NULL) {
+    // class maybe not initialized.
+    [nativeClass class];
+    javaClass = ARGC_getIOSClass(nativeClass);
+  }
   if (javaClass == NULL) {
     if ([nativeClass isKindOfClass:g_stringClass]) {
       ARGC_bindJavaClass(nativeClass, g_javaStringClass);
@@ -778,6 +785,15 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 IOSClass *IOSClass_forName_(NSString *className) {
+  return IOSClass_forName_initialize_classLoader_(className, true, NULL);
+}
+
++ (IOSClass *)forName:(NSString *)className {
+  return IOSClass_forName_(className);
+}
+
+IOSClass *IOSClass_forName_initialize_classLoader_(
+    NSString *className, jboolean load, JavaLangClassLoader *loader) {
   IOSClass_initialize();
   (void)nil_chk(className);
   IOSClass *iosClass = nil;
@@ -788,22 +804,13 @@ IOSClass *IOSClass_forName_(NSString *className) {
       iosClass = ClassForJavaName(className);
     }
   }
-  if (iosClass) {
-    iosClass->metadata_->initialize();
-    // [iosClass.objcClass class];  // Force initialization.
-    return iosClass;
+  if (!iosClass) {
+    @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
   }
-  @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
-}
-
-+ (IOSClass *)forName:(NSString *)className {
-  return IOSClass_forName_(className);
-}
-
-IOSClass *IOSClass_forName_initialize_classLoader_(
-    NSString *className, jboolean load, JavaLangClassLoader *loader) {
-  IOSClass_initialize();
-  return IOSClass_forName_(className);
+  if (load) {
+    iosClass->metadata_->initialize();
+  }
+  return iosClass;
 }
 
 + (IOSClass *)forName:(NSString *)className
@@ -1012,7 +1019,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (NSString *)getTypeName {
-  return JavaLangReflectType_getTypeName(self);
+  return [self getName];
 }
 
 - (id)getPackage {

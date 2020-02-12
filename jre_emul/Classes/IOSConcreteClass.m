@@ -56,7 +56,7 @@
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
   }
   // Check if reflection is available.
-  if (self->metadata_) {
+  if (self->metadata_ && self->metadata_->methods) {
     // Get the nullary constructor.
     JavaLangReflectConstructor *constructor = JreConstructorWithParamTypes(self, nil);
     if (!constructor) {

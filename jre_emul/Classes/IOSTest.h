@@ -29,11 +29,6 @@
 
 __attribute__((always_inline)) inline void IOSTest_initialize(void) { }
 FOUNDATION_EXPORT void JreInitTestClass(Class testClass);
-FOUNDATION_EXPORT NSString* JreGetStackTraceText(JavaLangThrowable* exception);
-
-#define XCTEST_BEGIN()  @try {
-
-#define XCTEST_END()    } @catch (JavaLangThrowable* ex) { XCTFail(@"%@", JreGetStackTraceText(ex)); }
 
 /**
  Copy following source into a source file of your Test build environment.
