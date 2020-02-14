@@ -233,12 +233,7 @@ public:
 
       jobj->_rc.unbind();
       
-      if (ARGC::decreaseRefCountOrDealloc(jobj, @"release")) {
-          if (!jobj->_rc.isRootReachable()) {
-              ARGC::mayHaveGarbage = 1;
-          }
-      }
-      return;
+      ARGC::decreaseRefCountOrDealloc(jobj, @"release");
   }
 
   static void increaseReferenceCount(id oid, NSString* tag) {
@@ -456,11 +451,9 @@ public:
   static NSObject* gcTrigger;
   static std::atomic_int gcTriggered;
   static std::atomic_int _clearSoftReference;
-  static int mayHaveGarbage;
 };
 
 ARGC ARGC::_instance;
-int ARGC::mayHaveGarbage = 0;
 NSObject* ARGC::gcTrigger = NULL;
 std::atomic_int ARGC::gc_state;
 std::atomic_int ARGC::gcTriggered;
@@ -974,8 +967,9 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
+  if (allocCountInGeneration < 1) return;
+  
   allocCountInGeneration = 0;
-  mayHaveGarbage --;
   NSMutableDictionary<Class, Counter*>* roots =
       (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
 
