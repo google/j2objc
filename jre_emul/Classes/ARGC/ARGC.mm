@@ -198,7 +198,6 @@ public:
     allocCountInGeneration ++;
     if (_cntRef > _1M && cntGCLoop == 0 && allocCountInGeneration > GC_TRIGGER_SIZE && !gcTriggered) {
       gcTriggered = TRUE;
-      NSLog(@"gcTriggered");
       @synchronized (gcTrigger) {
         [gcTrigger java_notifyAll];
       }
