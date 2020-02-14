@@ -43,6 +43,19 @@ FOUNDATION_EXPORT void JreInitTestClass(Class testClass);
   return [self init];
 }
 
+- (instancetype)initWithInvocation:(nullable NSInvocation *)invocation {
+ JreInitTestClass([self class]);
+ [OrgSlowcodersPalPAL_getAsyncExecutor() setTestThreadAsMainThread];
+
+ self = [super initWithInvocation:invocation];
+ return [self init];
+}
+
+- (void) _recordFailure:(id)fail {
+ NSString* error = [fail description];
+ [super recordFailureWithDescription:error inFile:[[self class] description] atLine:0 expected:true];
+}
+
 @end
 #endif
  */
