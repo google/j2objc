@@ -72,7 +72,7 @@ static const BOOL ENABLE_PENDING_RELEASE = false;
 static const int _1M = 1024*1024;
 static const int REFS_IN_BUCKET = _1M / sizeof(void*);
 static const int USE_AUTORELEASE_OLD = 0;
-
+static const int GC_TRIGGER_SIZE = _1M / 100;
 
 static Class g_ARGCClass;
 static Class g_objectArrayClass;
@@ -87,7 +87,7 @@ static scan_offset_t _emptyFields[1] = { 0 };
 
 static int refAssocKey;
 //static int metadataAssocKey;
-static int64_t gc_interval = 0;
+static int64_t gc_interval = 1000;
 
 static Class getARGCClass(id jobj) {
 //  /*
@@ -141,314 +141,330 @@ static void OutOfMemory() {
 
 class ARGC {
 public:
-    typedef void (*ARGCVisitor)(JObj_p jobj);
-    
-    static ARGC _instance;
-    static std::atomic_int gc_state;//GC_IN_SCANNING;
-    std::atomic<ARGCVisitor> deallocMethod;
+  typedef void (*ARGCVisitor)(JObj_p jobj);
+  
+  static ARGC _instance;
+  static std::atomic_int gc_state;//GC_IN_SCANNING;
+  std::atomic<ARGCVisitor> deallocMethod;
 
-    Method _no_java_finalize;
+  Method _no_java_finalize;
 
-    ARGC();
-    
-    int size() {
-        return _cntRef;
+  ARGC();
+  
+  int size() {
+      return _cntRef;
+  }
+  
+  void doGC();
+
+  void doClearReferences(NSPointerArray* refList, BOOL markSoftRef);
+  
+  static void markReachableSubInstances(JObj_p jobj);
+
+  static void markRootInstance(JObj_p jobj);
+  
+  static void markArrayItems(id array);
+  
+  static void scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuffEnd);
+  
+  static void touchInstance(JObj_p jobj) {
+      if (!jobj->_rc.isStrongReachable()) {
+          markRootInstance(jobj);
+      }
+  }
+  
+  static BOOL inGC() {
+      return _instance._inGC;
+  }
+  
+  id allocateInstance(Class cls, NSUInteger extraBytes, NSZone* zone) {
+    size_t instanceSize = class_getInstanceSize(cls);
+    if (instanceSize < argcObjectSize) {
+        extraBytes = argcObjectSize - instanceSize;
     }
     
-    void doGC();
-
-    void doClearReferences(NSPointerArray* refList, BOOL markSoftRef);
-    
-    static void markReachableSubInstances(JObj_p jobj);
-
-    static void markRootInstance(JObj_p jobj);
-    
-    static void markArrayItems(id array);
-    
-    static void scanInstances(id* pItem, int cntItem, JObj_p* scanBuff, JObj_p* pBuffEnd);
-    
-    static void touchInstance(JObj_p jobj) {
-        if (!jobj->_rc.isStrongReachable()) {
-            markRootInstance(jobj);
-        }
+    ARGCObject* oid = NSAllocateObject(cls, extraBytes, zone);
+    int cntGCLoop = 0;
+    while (oid == NULL) {
+      cntGCLoop ++;
+      _clearSoftReference = 1;
+      ARGC_collectGarbage();
+      oid = NSAllocateObject(cls, extraBytes, zone);
+      if (cntGCLoop > 2) {
+          OutOfMemory();
+      }
     }
     
-    static BOOL inGC() {
-        return _instance._inGC;
-    }
-    
-    id allocateInstance(Class cls, NSUInteger extraBytes, NSZone* zone) {
-        size_t instanceSize = class_getInstanceSize(cls);
-        if (instanceSize < argcObjectSize) {
-            extraBytes = argcObjectSize - instanceSize;
-        }
-        
-        ARGCObject* oid = NSAllocateObject(cls, extraBytes, zone);
-        for (int cntLoop = 1; oid == NULL; cntLoop++) {
-            _clearSoftReference = 1;
-            doGC();
-            oid = NSAllocateObject(cls, extraBytes, zone);
-            if (cntLoop > 2) {
-                OutOfMemory();
-            }
-        }
-        if (GC_TRACE(oid, (GC_LOG_ALLOC || GC_LOG_RC))) {
-            NSLog(@"alloc %p %@", oid, cls);
-        }
-        registerScanOffsets(cls);
-        oid->_rc.initialize(_finalizeClasses[cls] == NULL);
-        _cntAllocated ++;
-        // bindCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
-        addStrongRef(oid);
-        return oid;
-    }
-    
-    static void bindRoot(JObj_p jobj, NSString* tag) {
-        if (!jobj->_rc.isPhantom()) {
-            jobj->_rc.bind();
-            ARGC::touchInstance(jobj);
-            ARGC::increaseReferenceCount(jobj, tag);
-        }
-        else {
-            ARGC::increaseReferenceCount(jobj, @"retain-phatom");
-        }
+    allocCountInGeneration ++;
+    if (_cntRef > _1M && cntGCLoop == 0 && allocCountInGeneration > GC_TRIGGER_SIZE && !gcTriggered) {
+      gcTriggered = TRUE;
+      NSLog(@"gcTriggered");
+      @synchronized (gcTrigger) {
+        [gcTrigger java_notifyAll];
+      }
     }
 
-    static void unbindRoot(JObj_p jobj) {
-        if (jobj->_rc.isPhantom()) {
-            decreaseRefCount(jobj, @"-phntm");
-            return;
-        }
-
-        jobj->_rc.unbind();
-        
-        if (ARGC::decreaseRefCountOrDealloc(jobj, @"release")) {
-            if (!jobj->_rc.isRootReachable()) {
-                ARGC::mayHaveGarbage = 1;
-            }
-        }
-        return;
+    if (GC_TRACE(oid, (GC_LOG_ALLOC || GC_LOG_RC))) {
+        NSLog(@"alloc %p %@", oid, cls);
     }
+    registerScanOffsets(cls);
+    oid->_rc.initialize(_finalizeClasses[cls] == NULL);
+    _cntAllocated ++;
+    // bindCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
+    addStrongRef(oid);
+    return oid;
+  }
+  
+  static void bindRoot(JObj_p jobj, NSString* tag) {
+      if (!jobj->_rc.isPhantom()) {
+          jobj->_rc.bind();
+          ARGC::touchInstance(jobj);
+          ARGC::increaseReferenceCount(jobj, tag);
+      }
+      else {
+          ARGC::increaseReferenceCount(jobj, @"retain-phatom");
+      }
+  }
 
-    static void increaseReferenceCount(id oid, NSString* tag) {
-        NSIncrementExtraRefCount(oid);
-        //checkRefCount(jobj, tag);
-    }
+  static void unbindRoot(JObj_p jobj) {
+      if (jobj->_rc.isPhantom()) {
+          decreaseRefCount(jobj, @"-phntm");
+          return;
+      }
 
-    static void increaseReferenceCount(JObj_p jobj, NSString* tag) {
-        NSIncrementExtraRefCount(jobj);
-        checkRefCount(jobj, tag);
-    }
+      jobj->_rc.unbind();
+      
+      if (ARGC::decreaseRefCountOrDealloc(jobj, @"release")) {
+          if (!jobj->_rc.isRootReachable()) {
+              ARGC::mayHaveGarbage = 1;
+          }
+      }
+      return;
+  }
 
-    static void decreaseGenericReferenceCountOrDealloc(__unsafe_unretained id oid) {
-        JObj_p jobj = toARGCObject(oid);
-        if (jobj != NULL) {
-            if (GC_TRACE(jobj, 0)) {
-                decreaseRefCountOrDealloc(jobj, @"--.fld");
-            }
-            else {
-                decreaseRefCountOrDealloc(jobj, @"--.fld");
-            }
-        }
-        else {
-            if (GC_DEBUG && GC_LOG_ALLOC) {
-                NSLog(@"--natv %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
-            }
-            [oid release];
-        }
-    }
+  static void increaseReferenceCount(id oid, NSString* tag) {
+      NSIncrementExtraRefCount(oid);
+      //checkRefCount(jobj, tag);
+  }
 
-    static BOOL decreaseRefCount(JObj_p jobj, NSString* tag) {
-        if (!NSDecrementExtraRefCountWasZero(jobj)) {
-            checkRefCount(jobj, tag);
-            return true;
-        }
+  static void increaseReferenceCount(JObj_p jobj, NSString* tag) {
+      NSIncrementExtraRefCount(jobj);
+      checkRefCount(jobj, tag);
+  }
 
-        if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
-            NSLog(@"--zero %p -1(%d) %@", jobj, jobj->_rc.bindCount(), getARGCClass(jobj));
-        }
-        return false;
-    }
-    
-    static BOOL decreaseRefCountOrDealloc(JObj_p jobj, NSString* tag) {
-        if (decreaseRefCount(jobj, tag)) {
-            return true;
-        }
+  static void decreaseGenericReferenceCountOrDealloc(__unsafe_unretained id oid) {
+      JObj_p jobj = toARGCObject(oid);
+      if (jobj != NULL) {
+          if (GC_TRACE(jobj, 0)) {
+              decreaseRefCountOrDealloc(jobj, @"--.fld");
+          }
+          else {
+              decreaseRefCountOrDealloc(jobj, @"--.fld");
+          }
+      }
+      else {
+          if (GC_DEBUG && GC_LOG_ALLOC) {
+              NSLog(@"--natv %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
+          }
+          [oid release];
+      }
+  }
+
+  static BOOL decreaseRefCount(JObj_p jobj, NSString* tag) {
+      if (!NSDecrementExtraRefCountWasZero(jobj)) {
+          checkRefCount(jobj, tag);
+          return true;
+      }
+
+      if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
+          NSLog(@"--zero %p -1(%d) %@", jobj, jobj->_rc.bindCount(), getARGCClass(jobj));
+      }
+      return false;
+  }
+  
+  static BOOL decreaseRefCountOrDealloc(JObj_p jobj, NSString* tag) {
+      if (decreaseRefCount(jobj, tag)) {
+          return true;
+      }
 
 //        if (gc_state != SCANNING) {
-            [jobj dealloc];
+          [jobj dealloc];
 //        }
 //        else if (FALSE && !jobj->_rc.isReachable()) {
 //            /* do not dealloc sub-references. */
 //            markRootInstance(jobj, false);
 //        }
-        return false;
-    }
-    
-    static BOOL markStrongReachable(JObj_p jobj) {
-        BOOL res = jobj->_rc.markStrongReachable();
-        if (res && GC_TRACE(jobj, 0)) {
-            NSLog(@"Mark Reachable %p", jobj);
-        }
-        return res;
-    }
-    
-    static const scan_offset_t* getScanOffsets(Class clazz) {
-        ScanOffsetArray* scanOffsets = objc_getAssociatedObject(clazz, &_instance);
-        if (scanOffsets == NULL) {
-            return NULL;
-        }
-        return scanOffsets->offsets;
-    }
-    
-    static void checkRefCount(JObj_p jobj, NSString* tag) {
-        if (tag != SKIP_LOG && GC_TRACE(jobj, GC_LOG_RC)) {
-            GC_dumpTraceWithTag(jobj, tag);
-        }
-    }
-    
+      return false;
+  }
+  
+  static BOOL markStrongReachable(JObj_p jobj) {
+      BOOL res = jobj->_rc.markStrongReachable();
+      if (res && GC_TRACE(jobj, 0)) {
+          NSLog(@"Mark Reachable %p", jobj);
+      }
+      return res;
+  }
+  
+  static const scan_offset_t* getScanOffsets(Class clazz) {
+      ScanOffsetArray* scanOffsets = objc_getAssociatedObject(clazz, &_instance);
+      if (scanOffsets == NULL) {
+          return NULL;
+      }
+      return scanOffsets->offsets;
+  }
+  
+  static void checkRefCount(JObj_p jobj, NSString* tag) {
+      if (tag != SKIP_LOG && GC_TRACE(jobj, GC_LOG_RC)) {
+          GC_dumpTraceWithTag(jobj, tag);
+      }
+  }
+  
 private:
-    static void dealloc_in_collecting(JObj_p jobj);
+  static void dealloc_in_collecting(JObj_p jobj);
 
-    static void dealloc_in_scan(JObj_p jobj);
-    
-    static void dealloc_now(JObj_p jobj);
-    
-    RefSlot* newBucket() {
-        RefSlot* pMem = (RefSlot*)malloc(_1M);
-        memset(pMem, 0, _1M);
-        return pMem;
-    }
-    
-    void checkSlotIndex(int idxSlot, std::atomic_int* pCount) {
-        if (GC_DEBUG) {
-            if (idxSlot > *pCount) {
-                @synchronized (tableLock) {
-                    assert(idxSlot <= *pCount);
-                }
-            }
-        }
-    }
-    
-    BOOL unregisterRef(JObj_p jobj) {
-        int idxSlot = jobj->_rc.slotIndex();
-        RefSlot* pSlot = getRefSlot(idxSlot, false);
-        if (pSlot->compare_exchange_strong(jobj, NULL)) {
-            return true;
-        }
-        return false;
-    }
-    
-    RefSlot* getRefSlot(int index, BOOL checkIndex=true) {
-        if (checkIndex) checkSlotIndex(index, &_cntRef);
-        int idxBucket = index / REFS_IN_BUCKET;
-        int idxRef = index % REFS_IN_BUCKET;
-        return _table[idxBucket] + idxRef;
-    }
-    
-    RefSlot* getPhantomSlot(int index) {
-        checkSlotIndex(index, &_cntPhantom);
-        int idxBucket = index / REFS_IN_BUCKET;
-        int idxRef = index % REFS_IN_BUCKET;
-        return _phantomeTable[idxBucket] + idxRef;
-    }
-    
-    void addStrongRef(JObj_p jobj) {
-        @synchronized (tableLock) {
-            int index = _cntRef;
-            jobj->_rc.setSlotIndex(index);
-            
-            int idxBucket = index / REFS_IN_BUCKET;
-            int idxRef = index % REFS_IN_BUCKET;
-            RefSlot* row = _table[idxBucket];
-            if (row == NULL) {
-                row = _table[idxBucket];
-                if (row == NULL) {
-                    row = _table[idxBucket] = newBucket();
-                }
-            }
-            row[idxRef] = jobj;
-            // 반드시 jobj 추가후 _cntRef 증가.
-            _cntRef ++;
-        }
-    }
-    
-    void reclaimInstance(JObj_p jobj) {
-        if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
-            NSLog(@"dealloc: %p %@", jobj, getARGCClass(jobj));
-        }
-        NSDeallocateObject(jobj);
-        _cntDeallocated ++;
-    }
-    
-    void addPhantom(JObj_p jobj, BOOL isThreadSafe) {
-        if (jobj->_rc.markFinalized()) {
-            JreFinalize(jobj);
-            if (jobj->_rc.isStrongReachable()) {
-                return;
-            }
-        }
-        if (!jobj->_rc.markPhantom()) {
-            return;
-        }
-
-      if (getARGCClass(jobj) == JavaLangReflectMethod.class) {
-        //GC_TRACE_REF = jobj;
+  static void dealloc_in_scan(JObj_p jobj);
+  
+  static void dealloc_now(JObj_p jobj);
+  
+  RefSlot* newBucket() {
+      RefSlot* pMem = (RefSlot*)malloc(_1M);
+      memset(pMem, 0, _1M);
+      return pMem;
+  }
+  
+  void checkSlotIndex(int idxSlot, std::atomic_int* pCount) {
+      if (GC_DEBUG) {
+          if (idxSlot > *pCount) {
+              @synchronized (tableLock) {
+                  assert(idxSlot <= *pCount);
+              }
+          }
+      }
+  }
+  
+  BOOL unregisterRef(JObj_p jobj) {
+      int idxSlot = jobj->_rc.slotIndex();
+      RefSlot* pSlot = getRefSlot(idxSlot, false);
+      if (pSlot->compare_exchange_strong(jobj, NULL)) {
+          return true;
+      }
+      return false;
+  }
+  
+  RefSlot* getRefSlot(int index, BOOL checkIndex=true) {
+      if (checkIndex) checkSlotIndex(index, &_cntRef);
+      int idxBucket = index / REFS_IN_BUCKET;
+      int idxRef = index % REFS_IN_BUCKET;
+      return _table[idxBucket] + idxRef;
+  }
+  
+  RefSlot* getPhantomSlot(int index) {
+      checkSlotIndex(index, &_cntPhantom);
+      int idxBucket = index / REFS_IN_BUCKET;
+      int idxRef = index % REFS_IN_BUCKET;
+      return _phantomeTable[idxBucket] + idxRef;
+  }
+  
+  void addStrongRef(JObj_p jobj) {
+      @synchronized (tableLock) {
+          int index = _cntRef;
+          jobj->_rc.setSlotIndex(index);
+          
+          int idxBucket = index / REFS_IN_BUCKET;
+          int idxRef = index % REFS_IN_BUCKET;
+          RefSlot* row = _table[idxBucket];
+          if (row == NULL) {
+              row = _table[idxBucket];
+              if (row == NULL) {
+                  row = _table[idxBucket] = newBucket();
+              }
+          }
+          row[idxRef] = jobj;
+          // 반드시 jobj 추가후 _cntRef 증가.
+          _cntRef ++;
+      }
+  }
+  
+  void reclaimInstance(JObj_p jobj) {
+      if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
+          NSLog(@"dealloc: %p %@", jobj, getARGCClass(jobj));
+      }
+      NSDeallocateObject(jobj);
+      _cntDeallocated ++;
+  }
+  
+  void addPhantom(JObj_p jobj, BOOL isThreadSafe) {
+      if (jobj->_rc.markFinalized()) {
+          JreFinalize(jobj);
+          if (jobj->_rc.isStrongReachable()) {
+              return;
+          }
+      }
+      if (!jobj->_rc.markPhantom()) {
+          return;
       }
 
-        [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc inDepth: 0];
-        _instance.unregisterRef(jobj);
-
-        if (GC_TRACE(jobj, GC_LOG_ALLOC || GC_LOG_PHANTOM)) {
-            NSLog(@"addPhantom: %p %@ %@", jobj, getARGCClass(jobj), isThreadSafe ? @"delete-now" : @"delete-later");
-        }
-
-        if (isThreadSafe) {
-            assert(NSExtraRefCount(jobj) == 0);
-            reclaimInstance(jobj);
-        }
-        else {
-            @synchronized (tableLock) {
-                int index = _cntPhantom ++;
-                int idxBucket = index / REFS_IN_BUCKET;
-                int idxRef = index % REFS_IN_BUCKET;
-                RefSlot* row = _phantomeTable[idxBucket];
-                if (row == NULL) {
-                    row = _phantomeTable[idxBucket];
-                    if (row == NULL) {
-                        row = _phantomeTable[idxBucket] = newBucket();
-                    }
-                }
-                row[idxRef] = jobj;
-            }
-        }
+    if (allocCountInGeneration > 0) {
+      allocCountInGeneration --;
     }
-    
-    void registerScanOffsets(Class clazz);
-    
-    size_t argcObjectSize;
-    std::atomic_int _cntRef;
-    std::atomic_int _cntPhantom;
-    std::atomic_int _cntAllocated;
-    std::atomic_int _cntDeallocated;
-    std::atomic_int _cntMarkingThread;
-    std::atomic_int _cntDellocThread;
-    RefSlot* _table[1024];
-    RefSlot* _phantomeTable[1024];
-    NSMutableDictionary* _scanOffsetCache;
-    NSMutableDictionary* _finalizeClasses;
-    NSObject* tableLock;
-    NSObject* scanLock;
-    
-    BOOL _inGC;
+      [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc inDepth: 0];
+      _instance.unregisterRef(jobj);
+
+      if (GC_TRACE(jobj, GC_LOG_ALLOC || GC_LOG_PHANTOM)) {
+          NSLog(@"addPhantom: %p %@ %@", jobj, getARGCClass(jobj), isThreadSafe ? @"delete-now" : @"delete-later");
+      }
+
+      if (isThreadSafe) {
+          assert(NSExtraRefCount(jobj) == 0);
+          reclaimInstance(jobj);
+      }
+      else {
+          @synchronized (tableLock) {
+              int index = _cntPhantom ++;
+              int idxBucket = index / REFS_IN_BUCKET;
+              int idxRef = index % REFS_IN_BUCKET;
+              RefSlot* row = _phantomeTable[idxBucket];
+              if (row == NULL) {
+                  row = _phantomeTable[idxBucket];
+                  if (row == NULL) {
+                      row = _phantomeTable[idxBucket] = newBucket();
+                  }
+              }
+              row[idxRef] = jobj;
+          }
+      }
+  }
+  
+  void registerScanOffsets(Class clazz);
+  
+  size_t argcObjectSize;
+  std::atomic_int _cntRef;
+  std::atomic_int _cntPhantom;
+  std::atomic_int _cntAllocated;
+  std::atomic_int _cntDeallocated;
+  std::atomic_int _cntMarkingThread;
+  std::atomic_int _cntDellocThread;
+  RefSlot* _table[1024];
+  RefSlot* _phantomeTable[1024];
+  NSMutableDictionary* _scanOffsetCache;
+  NSMutableDictionary* _finalizeClasses;
+  NSObject* tableLock;
+  NSObject* scanLock;
+  size_t allocCountInGeneration;
+  
+  BOOL _inGC;
 public:
-    static std::atomic_int _clearSoftReference;
-    static int mayHaveGarbage;
+  static NSObject* gcTrigger;
+  static std::atomic_int gcTriggered;
+  static std::atomic_int _clearSoftReference;
+  static int mayHaveGarbage;
 };
 
 ARGC ARGC::_instance;
 int ARGC::mayHaveGarbage = 0;
+NSObject* ARGC::gcTrigger = NULL;
 std::atomic_int ARGC::gc_state;
+std::atomic_int ARGC::gcTriggered;
 std::atomic_int ARGC::_clearSoftReference;
 volatile int64_t RefContext::strong_reachable_generation_bit = ((STRONG_REACHABLE_MASK << 1) ^ STRONG_REACHABLE_MASK) & STRONG_REACHABLE_MASK;
 
@@ -580,7 +596,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 @end
 
 ARGC::ARGC() {
-    this->_inGC = false;
+  this->_inGC = false;
     g_softRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
     g_weakRefs = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory];
 
@@ -594,16 +610,53 @@ ARGC::ARGC() {
     _finalizeClasses = [[NSMutableDictionary alloc] init];
     tableLock = [[NSObject alloc]init];
     scanLock = [[NSObject alloc]init];
+    gcTrigger = [[NSObject alloc]init];
   
     g_ARGCClass = ARGCObject.class;
     argcObjectSize = class_getInstanceSize(g_ARGCClass) + sizeof(void*);
-    ARGC_setGarbageCollectionInterval(1000);
   
     // initialize J2ObjC;
     (void)IOSClass.class;
     g_referenceClass = JavaLangRefReference.class;
     g_objectArrayClass = IOSObjectArray.class;
+
+  dispatch_queue_t q = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0);
+  dispatch_async(q, ^ {
+    while (true) {
+      @synchronized (gcTrigger) {
+        if (!gcTriggered) {
+          [gcTrigger java_waitWithLong:gc_interval];
+        }
+        gcTriggered = FALSE;
+      }
+      ARGC::doGC();
+      @synchronized (gcTrigger) {
+        [gcTrigger java_notifyAll];
+      }
+    }
+  });
 }
+
+void ARGC_collectGarbage() {
+  ARGC::_instance.gcTriggered = TRUE;
+  @synchronized (ARGC::gcTrigger) {
+    if (ARGC::gcTriggered) {
+      [ARGC::gcTrigger java_notifyAll];
+      [ARGC::gcTrigger java_wait];
+    }
+  }
+}
+
+void ARGC_setGarbageCollectionInterval(int t) {
+  int64_t prev_interval = gc_interval;
+  if (GC_DEBUG) {
+    t /= 10;
+    assert(t > 200);
+  }
+  gc_interval = t;
+}
+
+
 
 void ARGC::registerScanOffsets(Class clazz) {
     scan_offset_t _offset_buf[4096];
@@ -733,10 +786,6 @@ void ARGC_assignGenericObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id 
 }
 
 
-
-void ARGC_collectGarbage() {
-    ARGC::_instance.doGC();
-}
 
 void ARGC::dealloc_in_collecting(JObj_p jobj) {
     if (GC_TRACE(jobj, GC_LOG_ALLOC)) {
@@ -926,237 +975,206 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
-    BOOL doClearSoftReference = _clearSoftReference;
-    if (doClearSoftReference) {
-        _clearSoftReference = 0;
-    }
-    else if (_cntRef == 0 || mayHaveGarbage <= 0) {
-        return;
-    }
-    mayHaveGarbage --;
-    NSMutableDictionary<Class, Counter*>* roots =
-        (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
-    @synchronized (scanLock) {
-        SLEEP_WHILE (_cntMarkingThread > 0);
-        gc_state = SCANNING;
-        RefContext::change_generation();
-        //deallocMethod.exchange(dealloc_in_scan);
-        deallocMethod.exchange(dealloc_in_collecting);
-        SLEEP_WHILE (_cntDellocThread > 0);
-        
-        int idxSlot = 0;
-        int cntRoot = 0;
-        RefSlot* pScan = getRefSlot(0);
-        JObj_p jobj;
-        for (; idxSlot < _cntRef; idxSlot ++, pScan++) {
-            if ((idxSlot % REFS_IN_BUCKET) == 0) {
-                pScan = getRefSlot(idxSlot);
-            }
-            if ((jobj = *pScan) != NULL) {
-                int idx = jobj->_rc.slotIndex();
-                jobj->_rc.clearWeakReachable();
-                assert(idx == idxSlot);
-                if (jobj->_rc.isRootReachable()) {
-                    ARGC::checkRefCount(jobj, @"##root");
-                    markRootInstance(jobj);
-                    if (GC_DEBUG) {
-                        cntRoot ++;
-                        if (GC_DEBUG && GC_LOG_ROOTS > 0) {
-                            Counter* v = roots[getARGCClass(jobj)];
-                            if (v == NULL) {
-                                roots[getARGCClass(jobj)] = v = [Counter new];
-                            }
-                            v->count ++;
+  allocCountInGeneration = 0;
+  mayHaveGarbage --;
+  NSMutableDictionary<Class, Counter*>* roots =
+      (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
+
+  BOOL doClearSoftReference = _clearSoftReference;
+  if (doClearSoftReference) {
+      _clearSoftReference = 0;
+  }
+
+  @synchronized (scanLock) {
+    SLEEP_WHILE (_cntMarkingThread > 0);
+    gc_state = SCANNING;
+    RefContext::change_generation();
+    //deallocMethod.exchange(dealloc_in_scan);
+    deallocMethod.exchange(dealloc_in_collecting);
+    SLEEP_WHILE (_cntDellocThread > 0);
+    
+    int idxSlot = 0;
+    int cntRoot = 0;
+    RefSlot* pScan = getRefSlot(0);
+    JObj_p jobj;
+    for (; idxSlot < _cntRef; idxSlot ++, pScan++) {
+        if ((idxSlot % REFS_IN_BUCKET) == 0) {
+            pScan = getRefSlot(idxSlot);
+        }
+        if ((jobj = *pScan) != NULL) {
+            int idx = jobj->_rc.slotIndex();
+            jobj->_rc.clearWeakReachable();
+            assert(idx == idxSlot);
+            if (jobj->_rc.isRootReachable()) {
+                ARGC::checkRefCount(jobj, @"##root");
+                markRootInstance(jobj);
+                if (GC_DEBUG) {
+                    cntRoot ++;
+                    if (GC_DEBUG && GC_LOG_ROOTS > 0) {
+                        Counter* v = roots[getARGCClass(jobj)];
+                        if (v == NULL) {
+                            roots[getARGCClass(jobj)] = v = [Counter new];
                         }
+                        v->count ++;
                     }
                 }
             }
-        }
-        
-        deallocMethod.exchange(dealloc_in_collecting);
-
-        int cntScan = idxSlot;
-        usleep(100);
-        gc_state = FINALIZING;
-        usleep(100);
-
-        SLEEP_WHILE (_cntMarkingThread > 0);
-        
-        if (GC_DEBUG && GC_LOG_ROOTS > 0) {
-            for (Class c in roots) {
-                int cnt = roots[c]->count;
-                if (cnt >= GC_LOG_ROOTS) {
-                    NSLog(@"root %d %@", cnt, c);
-                }
-            }
-            [roots removeAllObjects];
-        }
-
-        @autoreleasepool {
-            for (idxSlot = 0; idxSlot < cntScan; idxSlot ++, pScan++) {
-                if ((idxSlot % REFS_IN_BUCKET) == 0) {
-                    pScan = getRefSlot(idxSlot);
-                }
-                jobj = *pScan;
-                if (jobj != NULL && !jobj->_rc.isStrongReachable()) {
-                    assert(!jobj->_rc.isRootReachable() || jobj->_rc.isPendingRelease());
-                    //markRootInstance(jobj, false);
-                    if (jobj->_rc.markFinalized()) {
-                        JreFinalize(jobj);
-                    }
-                }
-            }
-        }
-
-        doClearReferences(g_weakRefs, false);
-        doClearReferences(g_softRefs, !doClearSoftReference);
-
-        int cntAlive = 0;
-        int cntAlivedGenerarion = 0;
-        RefSlot* pAlive = _table[0];
-        for (idxSlot = 0; true; idxSlot ++, pScan++) {
-            if (GC_DEBUG && idxSlot == cntScan) {
-                cntAlivedGenerarion = cntAlive;
-            }
-            
-            if (idxSlot >= _cntRef) {
-                @synchronized (tableLock) {
-                    assert(idxSlot <= _cntRef);
-                    if (idxSlot == _cntRef) {
-                        _cntRef = cntAlive;
-                        break;
-                    }
-                }
-            }
-            if ((idxSlot % REFS_IN_BUCKET) == 0) {
-                pScan = getRefSlot(idxSlot);
-            }
-            
-            if (idxSlot == cntAlive) {
-                jobj = *pScan;
-            }
-            else {
-                jobj = pScan->exchange(NULL);
-            }
-            
-            if (jobj == NULL) {
-                continue;
-            }
-            
-            if (GC_DEBUG && roots != NULL) {
-                Counter* v = roots[getARGCClass(jobj)];
-                if (v == NULL) {
-                    roots[getARGCClass(jobj)] = v = [Counter new];
-                }
-                v->count ++;
-            }
-            /*
-             주의. 현재 jobj 가 다른 쓰레드에 의해 삭제될 수 있다.
-             */
-            if (!jobj->_rc.isStrongReachable()) {
-                if (idxSlot == cntAlive) {
-                    if (!pScan->compare_exchange_strong(jobj, NULL)) {
-                        continue;
-                    }
-                }
-                assert(!jobj->_rc.isRootReachable() || jobj->_rc.isPendingRelease());
-                addPhantom(jobj, false);
-//                @autoreleasepool {
-//                    [jobj dealloc];
-//                }
-                continue;
-            }
-            
-            if ((cntAlive % REFS_IN_BUCKET) == 0) {
-                pAlive = getRefSlot(cntAlive);
-            }
-            if (idxSlot != cntAlive) {
-                assert(*pAlive == NULL);
-                *pAlive = jobj;
-                jobj->_rc.setSlotIndex(cntAlive);
-            }
-            else {
-                assert(*pAlive == jobj || *pAlive == NULL);
-            }
-            pAlive ++;
-            cntAlive ++;
-            ARGC::checkRefCount(jobj, @"alive in gc");
-        }
-        
-        deallocMethod.exchange(dealloc_now);
-        int alivePhantom = 0;
-        for (int idxSlot = 0; true; idxSlot++) {
-            if (idxSlot >= _cntPhantom) {
-                @synchronized (tableLock) {
-                    assert(idxSlot <= _cntPhantom);
-                    if (idxSlot == _cntPhantom) {
-                        _cntPhantom = alivePhantom;
-                    }
-                    break;
-                }
-            }
-            RefSlot* pSlot = getPhantomSlot(idxSlot);
-            jobj = *pSlot;
-            if (jobj->_rc.isReachable()) {
-                *getPhantomSlot(alivePhantom++) = jobj;
-            }
-            else {
-                reclaimInstance(jobj);
-            }
-        }
-
-        if (GC_DEBUG) {
-            if (GC_DEBUG && GC_LOG_ALIVE > 0) {
-                for (Class c in roots) {
-                    int cnt = roots[c]->count;
-                    if (cnt >= GC_LOG_ALIVE) {
-                        NSLog(@"alive %d %@", cnt, c);
-                    }
-                }
-                [roots release];
-            }
-            
-            NSLog(@"scan: %d root: %d alive:%d/%d", cntScan, cntRoot, cntAlivedGenerarion, cntAlive);
-        }
-        else if (GC_LOG_LOOP) {
-            NSLog(@"scan: %d", cntScan);
         }
     }
     
+    deallocMethod.exchange(dealloc_in_collecting);
 
+    int cntScan = idxSlot;
+    usleep(100);
+    gc_state = FINALIZING;
+    usleep(100);
+
+    SLEEP_WHILE (_cntMarkingThread > 0);
+    
+    if (GC_DEBUG && GC_LOG_ROOTS > 0) {
+        for (Class c in roots) {
+            int cnt = roots[c]->count;
+            if (cnt >= GC_LOG_ROOTS) {
+                NSLog(@"root %d %@", cnt, c);
+            }
+        }
+        [roots removeAllObjects];
+    }
+
+    @autoreleasepool {
+        for (idxSlot = 0; idxSlot < cntScan; idxSlot ++, pScan++) {
+            if ((idxSlot % REFS_IN_BUCKET) == 0) {
+                pScan = getRefSlot(idxSlot);
+            }
+            jobj = *pScan;
+            if (jobj != NULL && !jobj->_rc.isStrongReachable()) {
+                assert(!jobj->_rc.isRootReachable() || jobj->_rc.isPendingRelease());
+                //markRootInstance(jobj, false);
+                if (jobj->_rc.markFinalized()) {
+                    JreFinalize(jobj);
+                }
+            }
+        }
+    }
+
+    doClearReferences(g_weakRefs, false);
+    doClearReferences(g_softRefs, !doClearSoftReference);
+
+    int cntAlive = 0;
+    int cntAlivedGenerarion = 0;
+    RefSlot* pAlive = _table[0];
+    for (idxSlot = 0; true; idxSlot ++, pScan++) {
+        if (GC_DEBUG && idxSlot == cntScan) {
+            cntAlivedGenerarion = cntAlive;
+        }
+        
+        if (idxSlot >= _cntRef) {
+            @synchronized (tableLock) {
+                assert(idxSlot <= _cntRef);
+                if (idxSlot == _cntRef) {
+                    _cntRef = cntAlive;
+                    break;
+                }
+            }
+        }
+        if ((idxSlot % REFS_IN_BUCKET) == 0) {
+            pScan = getRefSlot(idxSlot);
+        }
+        
+        if (idxSlot == cntAlive) {
+            jobj = *pScan;
+        }
+        else {
+            jobj = pScan->exchange(NULL);
+        }
+        
+        if (jobj == NULL) {
+            continue;
+        }
+        
+        if (GC_DEBUG && roots != NULL) {
+            Counter* v = roots[getARGCClass(jobj)];
+            if (v == NULL) {
+                roots[getARGCClass(jobj)] = v = [Counter new];
+            }
+            v->count ++;
+        }
+        /*
+         주의. 현재 jobj 가 다른 쓰레드에 의해 삭제될 수 있다.
+         */
+        if (!jobj->_rc.isStrongReachable()) {
+            if (idxSlot == cntAlive) {
+                if (!pScan->compare_exchange_strong(jobj, NULL)) {
+                    continue;
+                }
+            }
+            assert(!jobj->_rc.isRootReachable() || jobj->_rc.isPendingRelease());
+            addPhantom(jobj, false);
+//                @autoreleasepool {
+//                    [jobj dealloc];
+//                }
+            continue;
+        }
+        
+        if ((cntAlive % REFS_IN_BUCKET) == 0) {
+            pAlive = getRefSlot(cntAlive);
+        }
+        if (idxSlot != cntAlive) {
+            assert(*pAlive == NULL);
+            *pAlive = jobj;
+            jobj->_rc.setSlotIndex(cntAlive);
+        }
+        else {
+            assert(*pAlive == jobj || *pAlive == NULL);
+        }
+        pAlive ++;
+        cntAlive ++;
+        ARGC::checkRefCount(jobj, @"alive in gc");
+    }
+    
+    deallocMethod.exchange(dealloc_now);
+    int alivePhantom = 0;
+    for (int idxSlot = 0; true; idxSlot++) {
+        if (idxSlot >= _cntPhantom) {
+            @synchronized (tableLock) {
+                assert(idxSlot <= _cntPhantom);
+                if (idxSlot == _cntPhantom) {
+                    _cntPhantom = alivePhantom;
+                }
+                break;
+            }
+        }
+        RefSlot* pSlot = getPhantomSlot(idxSlot);
+        jobj = *pSlot;
+        if (jobj->_rc.isReachable()) {
+            *getPhantomSlot(alivePhantom++) = jobj;
+        }
+        else {
+            reclaimInstance(jobj);
+        }
+    }
+
+    if (GC_DEBUG) {
+        if (GC_DEBUG && GC_LOG_ALIVE > 0) {
+            for (Class c in roots) {
+                int cnt = roots[c]->count;
+                if (cnt >= GC_LOG_ALIVE) {
+                    NSLog(@"alive %d %@", cnt, c);
+                }
+            }
+            [roots release];
+        }
+        
+        NSLog(@"scan: %d root: %d alive:%d/%d", cntScan, cntRoot, cntAlivedGenerarion, cntAlive);
+    }
+    else if (GC_LOG_LOOP) {
+        NSLog(@"scan: %d", cntScan);
+    }
+  }
 }
 
 
 extern "C" {
-    void ARGC_loopGC() {
-        void (^SCAN)() = ^{
-            if (ARGC::mayHaveGarbage > 0) {
-                ARGC::_instance.doGC();
-            }
-            ARGC_loopGC();
-        };
-        
-        if (gc_interval > 0) {
-            dispatch_time_t next_t = dispatch_time(DISPATCH_TIME_NOW, gc_interval * NSEC_PER_SEC / 1000);
-            dispatch_after(next_t, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), SCAN);
-        }
-    }
-
-    void ARGC_executeGC(int t) {  // deprecated.
-        ARGC_setGarbageCollectionInterval(t);
-    }
-    void ARGC_setGarbageCollectionInterval(int t) {
-        int64_t prev_interval = gc_interval;
-        if (GC_DEBUG) {
-            t /= 10;
-        }
-        gc_interval = t;
-        if (prev_interval <= 0) {
-            ARGC_loopGC();
-            
-        }
-    }
-    
 
     id JreLoadVolatileId(volatile_id *pVar);
     id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
