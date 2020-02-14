@@ -34,3 +34,11 @@
 }
 
 @end
+
+NSBundle* j2objc_getSystemResourceBundle() {
+  static NSBundle *j2objc_bundle = NULL;
+  if (j2objc_bundle == NULL) {
+    j2objc_bundle = [NSBundle mainBundle];
+  }
+  return j2objc_bundle;
+}
