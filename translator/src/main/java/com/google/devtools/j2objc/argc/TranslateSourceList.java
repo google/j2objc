@@ -1,6 +1,9 @@
 package com.google.devtools.j2objc.argc;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,10 +13,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.jar.JarFile;
 
+import org.omg.CORBA.portable.InputStream;
+import org.omg.CORBA_2_3.portable.OutputStream;
+
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.assembler.metadata.MetadataParser;
@@ -33,6 +40,7 @@ public class TranslateSourceList {
 	private HashSet<String> pathSet = new HashSet<>();
 	private File jarFile;
 	private ArrayList<InputFile> inputFiles = new ArrayList<>();
+	private boolean addSourceList = false;
 	static HashSet<String> rootPaths = new HashSet<>();
 
 
@@ -49,6 +57,7 @@ public class TranslateSourceList {
 
 
 	public boolean addSource(String filename) {
+		this.addSourceList = true;
 		this.root = "";
 		File f = new File(filename);
 		if (f.exists()) {
@@ -107,7 +116,7 @@ public class TranslateSourceList {
 		}
 		else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
 			this.pathSet.add(ARGC.getCanonicalPath(f));
-			File tempDir = ARGC.extractSources(f, options);
+			File tempDir = ARGC.extractSources(f, options, true);
 			options.fileUtil().appendSourcePath(ARGC.getCanonicalPath(tempDir));
 			this.metadataSystem = null;
 			this.jarFile = f; 
@@ -179,7 +188,30 @@ public class TranslateSourceList {
 			}
 			registerSource(new File(filepath));
 		}
-
+		else if (this.addSourceList) {
+			File dir = options.fileUtil().getResourceDirectory();
+			if (dir != null) {
+				String filename = ARGC.getCanonicalPath(f);
+				if (filename.indexOf("/.") >= 0) {
+					return;
+				}
+				filename = filename.substring(root.length());
+				File of = new File(dir.getAbsolutePath() + "/" + filename + "sss");
+				of.getParentFile().mkdirs();
+				try {
+					BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(of));
+					BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+					for (int c; (c = in.read()) >= 0; ) {
+						out.write(c);
+					}
+					out.flush();
+					out.close();
+					in.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
 
 	}
 

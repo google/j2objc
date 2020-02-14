@@ -183,7 +183,7 @@ public class ARGC {
 		return sb.toString();
 	}
 
-	public static File extractSources(File f, Options options) {
+	public static File extractSources(File f, Options options, boolean extractResources) {
 		ZipFile zfile = null;
 		try {
 			zfile = new ZipFile(f);
@@ -203,12 +203,16 @@ public class ARGC {
 					}
 					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
 				}
+				else if (!entry.isDirectory() && extractResources && internalPath.indexOf("/.") < 0) {
+					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+				}
 			}
 			return tempDir;
 		} catch (ZipException e) { // Also catches JarExceptions
 			e.printStackTrace();
 			ErrorUtil.error("Error reading file " + f.getAbsolutePath() + " as a zip or jar file.");
 		} catch (IOException e) {
+			e.printStackTrace();
 			ErrorUtil.error(e.getMessage());
 		} finally {
 			if (zfile != null) { 

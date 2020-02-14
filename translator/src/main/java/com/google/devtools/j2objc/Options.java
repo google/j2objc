@@ -359,6 +359,8 @@ public class Options {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-d")) {
         fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
+      } else if (arg.equals("--resource-dir")) {
+          fileUtil.setResourceDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--mapping")) {
         mappings.addMappingsFiles(getArgValue(args, arg).split(","));
       } else if (arg.equals("--header-mapping")) {
@@ -690,7 +692,7 @@ public class Options {
   private void addPath(List<String> pathList, String path, boolean expandJarFile) {
 	  File f = new File(path);
 	  if (expandJarFile && !f.isDirectory()) {
-		  f = ARGC.extractSources(f, this);
+		  f = ARGC.extractSources(f, this, false);
 		  if (f == null) {
 			  return;
 		  }
