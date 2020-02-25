@@ -186,6 +186,15 @@ $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a: $(BUILD_DIR)/objs-macosx/lib$(1).a
 	install -m 0644 $$< $$@
 endef
 
+# Generate the rule for the maccatalyst library
+# Args:
+#   1. Library name.
+define mac_catalyst_lib_rule
+$(ARCH_BUILD_MAC_CATALYST_DIR)/lib$(1).a: $(BUILD_DIR)/objs-maccatalyst/lib$(1).a
+	@mkdir -p $$(@D)
+	install -m 0644 $$< $$@
+endef
+
 # Generate the rule for the watchos library
 # Args:
 #   1. Library name.
@@ -230,10 +239,11 @@ emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
 else
 # Targets specific to a command-line build
 
-FAT_LIB_IOS_ARCHS = $(filter-out macosx appletv% watch%,$(J2OBJC_ARCHS))
+FAT_LIB_IOS_ARCHS = $(filter-out macosx maccatalyst appletv% watch%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_ARCH = $(filter macosx,$(J2OBJC_ARCHS))
 FAT_LIB_WATCH_ARCHS = $(filter watch%,$(J2OBJC_ARCHS))
 FAT_LIB_TV_ARCHS = $(filter appletv%,$(J2OBJC_ARCHS))
+FAT_LIB_MAC_CATALYST_ARCH = $(filter maccatalyst,$(J2OBJC_ARCHS))
 
 emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch),$(1),$(2)))) \
@@ -244,6 +254,8 @@ emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
     $(eval $(call watch_lib_rule,$(1),$(FAT_LIB_WATCH_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_WATCH_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_MAC_ARCH),$(eval $(call mac_lib_rule,$(1))) $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_MAC_CATALYST_ARCH),\
+    $(eval $(call mac_catalyst_lib_rule,$(1))) $(ARCH_BUILD_MAC_CATALYST_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_TV_ARCHS),\
     $(eval $(call tv_lib_rule,$(1),$(FAT_LIB_TV_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_TV_DIR)/lib$(1).a,) \
