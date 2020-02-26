@@ -619,8 +619,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/StreamShape.java \
   java/util/stream/StreamSpliterators.java \
   java/util/stream/TerminalOp.java \
-  jdk/internal/math/DoubleConsts.java \
-  jdk/internal/math/FloatConsts.java \
   jdk/internal/module/SystemModulesMap.java \
   libcore/api/CorePlatformApi.java \
   libcore/api/Hide.java \
