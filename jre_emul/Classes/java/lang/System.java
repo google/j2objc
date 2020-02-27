@@ -194,6 +194,11 @@ public class System {
       [JavaLangSystem_props setPropertyWithNSString:@"java.vm.vendor" withNSString:@"J2ObjC"];
       [JavaLangSystem_props setPropertyWithNSString:@"java.vm.version" withNSString:@"0"];
 
+      // OpenJDK defines sun.arch.data.model as the architecture's pointer size.
+      NSString *pointerSize = sizeof(id) == 4 ? @"32" : sizeof(id) == 8 ? @"64" : @"unknown";
+      [JavaLangSystem_props setPropertyWithNSString:@"sun.arch.data.model"
+                                       withNSString:pointerSize];
+
       // Get os.arch from J2OBJC_BUILD_ARCH defined in fat_lib.mk.
       #define J2OBJC_BUILD_ARCH_STRINGIFY(x) #x
       #define J2OBJC_BUILD_ARCH_CSTR(x) J2OBJC_BUILD_ARCH_STRINGIFY(x)
