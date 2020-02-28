@@ -37,6 +37,17 @@ import java.io.FileDescriptor;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/*-[
+#include "jni.h"
+#include "jni_util.h"
+#include "jvm.h"
+#include "jlong.h"
+
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+]-*/
+
 /*
  * struct kevent {           // 32-bit    64-bit
  *     uintptr_t ident;      //   4         8
@@ -87,11 +98,14 @@ class KQueueArrayWrapper {
     private int incomingInterruptFD;
 
     static {
-        IOUtil.load();
+        // j2objc: removed unnecessary system library load.
+        // IOUtil.load();
         initStructSizes();
-        String datamodel = java.security.AccessController.doPrivileged(
-            new sun.security.action.GetPropertyAction("sun.arch.data.model")
-        );
+        // j2objc: simplified.
+        // String datamodel = java.security.AccessController.doPrivileged(
+        //     new sun.security.action.GetPropertyAction("sun.arch.data.model")
+        // );
+        String datamodel = System.getProperty("sun.arch.data.model");
         is64bit = datamodel.equals("64");
     }
 
@@ -207,11 +221,80 @@ class KQueueArrayWrapper {
         interrupt(outgoingInterruptFD);
     }
 
-    private native int init();
-    private static native void initStructSizes();
+    // J2ObjC: inlined and simplified JNI code from KQueueArrayWrapper.c.
+    /*-[
+      // Safe because j2objc's JNIEnv is a static constant.
+      static JNIEnv* env = &J2ObjC_JNIEnv;
+    ]-*/
 
-    private native void register0(int kq, int fd, int read, int write);
+    private native int init() /*-[
+      int kq = kqueue();
+      if (kq < 0) {
+        JNU_ThrowIOExceptionWithLastError(env, "KQueueArrayWrapper: kqueue() failed");
+      }
+      return kq;
+    ]-*/;
+
+    private static native void initStructSizes() /*-[
+      // Update static variables with system constant values and struct sizes.
+      SunNioChKQueueArrayWrapper_set_EVFILT_READ(EVFILT_READ);
+      SunNioChKQueueArrayWrapper_set_EVFILT_WRITE(EVFILT_WRITE);
+      SunNioChKQueueArrayWrapper_set_SIZEOF_KEVENT((jshort) sizeof(struct kevent));
+      SunNioChKQueueArrayWrapper_set_FD_OFFSET((jshort) offsetof(struct kevent, ident));
+      SunNioChKQueueArrayWrapper_set_FILTER_OFFSET((jshort) offsetof(struct kevent, filter));
+    ]-*/;
+
+    private native void register0(int kq, int fd, int read, int write) /*-[
+      struct kevent changes[2];
+      struct kevent errors[2];
+      struct timespec dontBlock = {0, 0};
+
+      // if (r) then { register for read } else { unregister for read }
+      // if (w) then { register for write } else { unregister for write }
+      // Ignore errors - they're probably complaints about deleting non-
+      //   added filters - but provide an error array anyway because
+      //   kqueue behaves erratically if some of its registrations fail.
+      EV_SET(&changes[0], fd, EVFILT_READ,  read ? EV_ADD : EV_DELETE, 0, 0, 0);
+      EV_SET(&changes[1], fd, EVFILT_WRITE, write ? EV_ADD : EV_DELETE, 0, 0, 0);
+      kevent(kq, changes, 2, errors, 2, &dontBlock);
+    ]-*/;
+
     private native int kevent0(int kq, long keventAddress, int keventCount,
-                               long timeout);
-    private static native void interrupt(int fd);
+                               long timeout) /*-[
+      struct kevent *kevs = (struct kevent *)jlong_to_ptr(keventAddress);
+      struct timespec ts;
+      struct timespec *tsp;
+      int result;
+
+      // Java timeout is in milliseconds. Convert to struct timespec.
+      // Java timeout == -1 : wait forever : timespec timeout of NULL
+      // Java timeout == 0  : return immediately : timespec timeout of zero
+      if (timeout >= 0) {
+        ts.tv_sec = timeout / 1000;
+        ts.tv_nsec = (timeout % 1000) * 1000000; //nanosec = 1 million millisec
+        tsp = &ts;
+      } else {
+        tsp = NULL;
+      }
+
+      result = kevent(kq, NULL, 0, kevs, keventCount, tsp);
+
+      if (result < 0) {
+        if (errno == EINTR) {
+          // ignore EINTR, pretend nothing was selected
+          result = 0;
+        } else {
+          JNU_ThrowIOExceptionWithLastError(env, "KQueueArrayWrapper: kqueue failed");
+        }
+      }
+
+      return result;
+    ]-*/;
+
+    private static native void interrupt(int fd) /*-[
+      char c = 1;
+      if (1 != write(fd, &c, 1)) {
+        JNU_ThrowIOExceptionWithLastError(env, "KQueueArrayWrapper: interrupt failed");
+      }
+    ]-*/;
 }

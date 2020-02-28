@@ -920,6 +920,7 @@ JAVA_PRIVATE_SOURCES_CONCURRENT =
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/ChannelFactoryImpl.java \
+  java/nio/channels/AcceptPendingException.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
   java/nio/channels/AsynchronousByteChannel.java \
@@ -983,6 +984,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/DatagramChannelImpl.java \
   sun/nio/ch/DatagramDispatcher.java \
@@ -1000,12 +1002,16 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/IOStatus.java \
   sun/nio/ch/IOUtil.java \
   sun/nio/ch/IOVecWrapper.java \
+  sun/nio/ch/KQueueArrayWrapper.java \
+  sun/nio/ch/KQueueSelectorImpl.java \
+  sun/nio/ch/KQueueSelectorProvider.java \
   sun/nio/ch/NativeDispatcher.java \
   sun/nio/ch/NativeObject.java \
   sun/nio/ch/NativeThread.java \
   sun/nio/ch/NativeThreadSet.java \
   sun/nio/ch/Net.java \
   sun/nio/ch/OptionKey.java \
+  sun/nio/ch/PendingFuture.java \
   sun/nio/ch/PipeImpl.java \
   sun/nio/ch/PollArrayWrapper.java \
   sun/nio/ch/PollSelectorImpl.java \
