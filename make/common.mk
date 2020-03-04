@@ -100,6 +100,14 @@ LIBTOOL = libtool
 LIPO = lipo
 endif
 
+# The following test returns true on Linux or with GNU tools installed,
+# otherwise false on macOS which uses the BSD version.
+ifeq ($(shell mktemp --version >/dev/null 2>&1 && echo GNU || echo BSD), GNU)
+MKTEMP_CMD = mktemp -d --tmpdir $(MKTEMP_DIR).XXXXXX
+else
+MKTEMP_CMD = mktemp -d -t $(MKTEMP_DIR)
+endif
+
 ifndef CONFIGURATION_BUILD_DIR
 # Determine this makefile's path.
 SYSROOT_SCRIPT := $(J2OBJC_ROOT)/scripts/sysroot_path.sh
