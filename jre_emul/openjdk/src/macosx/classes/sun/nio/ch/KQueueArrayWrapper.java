@@ -270,8 +270,8 @@ class KQueueArrayWrapper {
       // Java timeout == -1 : wait forever : timespec timeout of NULL
       // Java timeout == 0  : return immediately : timespec timeout of zero
       if (timeout >= 0) {
-        ts.tv_sec = timeout / 1000;
-        ts.tv_nsec = (timeout % 1000) * 1000000; //nanosec = 1 million millisec
+        ts.tv_sec = timeout / 1000L;
+        ts.tv_nsec = (timeout % 1000L) * 1000000; //nanosec = 1 million millisec
         tsp = &ts;
       } else {
         tsp = NULL;
