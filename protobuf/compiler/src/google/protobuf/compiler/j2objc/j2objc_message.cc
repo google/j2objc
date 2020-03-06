@@ -72,13 +72,22 @@ MessageGenerator::~MessageGenerator() {
 
 void MessageGenerator::CollectForwardDeclarations(
     std::set<string>* declarations) const {
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) + ")");
   declarations->insert("@class " + ClassName(descriptor_) + "_Builder");
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) + "_Builder)");
   declarations->insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
         .CollectForwardDeclarations(declarations);
   }
+
+  // for (int i = 0; i < descriptor_->enum_type_count(); i++) {
+  //   EnumGenerator(descriptor_->enum_type(i))
+  //       .CollectForwardDeclarations(declarations);
+  // }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
     if (IsMapEntry(descriptor_->nested_type(i))) continue;

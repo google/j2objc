@@ -133,11 +133,14 @@ namespace {
       declarations->insert("@class ComGoogleProtobufByteString");
     } else if (type == JAVATYPE_ENUM) {
       declarations->insert("@class " + ClassName(descriptor->enum_type()));
+      declarations->insert("J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor->enum_type()) + ")");
     } else if (type == JAVATYPE_MESSAGE) {
       string classname = ClassName(descriptor->message_type());
       declarations->insert("@class " + classname);
+      declarations->insert("J2OBJC_CLASS_DECLARATION(" + classname + ")");
       if (includeBuilder) {
         declarations->insert("@class " + classname + "_Builder");
+        declarations->insert("J2OBJC_CLASS_DECLARATION(" + classname + "_Builder)");
       }
     }
   }
@@ -172,7 +175,7 @@ void GenerateObjcClass(
     return;  // Other types remain NULL.
   }
   printer->Print(
-      "$field_arr$[$idx$].objcType = [$classname$ class];\n",
+      "$field_arr$[$idx$].objcType = J2OBJC_CLASS_REFERENCE($classname$);\n",
       "field_arr", arr_name,
       "idx", SimpleItoa(idx),
       "classname", classname);

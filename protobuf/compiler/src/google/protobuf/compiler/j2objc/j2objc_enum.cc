@@ -224,6 +224,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
+      "J2OBJC_CLASS_DECLARATION($classname$)\n"
+      "\n"
       "IOSObjectArray *$classname$_values(void) {\n"
       "  $classname$_initialize();"
       "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
