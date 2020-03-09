@@ -109,16 +109,16 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) const {
           "$field_type$,\n"
       "  .defaultValue.value$default_value_type$ = $default_value$,\n"
       "  .hasBitIndex = 0,\n"
-      "  .offset = 0,\n"
-      "  .objcType = NULL,\n"
+      "  .offset = 0,\n");
+  GenerateClassReference(printer);
+  printer->Print(vars,
       "  .containingType = \"$containing_type_name$\",\n"
       "  .optionsData = $options_data$,\n"
       "},\n");
 }
 
-void ExtensionGenerator::GenerateNonStaticFieldData(
-      io::Printer *printer, const string& arr_name, uint32_t idx) const {
-  GenerateObjcClass(printer, descriptor_, arr_name, idx);
+void ExtensionGenerator::GenerateClassReference(io::Printer *printer) const {
+  GenerateObjcClassRef(printer, descriptor_);
 }
 
 void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) const {

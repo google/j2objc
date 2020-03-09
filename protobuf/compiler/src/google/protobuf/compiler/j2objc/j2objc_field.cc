@@ -133,11 +133,14 @@ namespace {
       declarations->insert("@class ComGoogleProtobufByteString");
     } else if (type == JAVATYPE_ENUM) {
       declarations->insert("@class " + ClassName(descriptor->enum_type()));
+      declarations->insert("J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor->enum_type()) + ")");
     } else if (type == JAVATYPE_MESSAGE) {
       string classname = ClassName(descriptor->message_type());
       declarations->insert("@class " + classname);
+      declarations->insert("J2OBJC_CLASS_DECLARATION(" + classname + ")");
       if (includeBuilder) {
         declarations->insert("@class " + classname + "_Builder");
+        declarations->insert("J2OBJC_CLASS_DECLARATION(" + classname + "_Builder)");
       }
     }
   }
@@ -159,23 +162,20 @@ void CollectSourceImportsForField(
   }
 }
 
-void GenerateObjcClass(
-    io::Printer *printer, const FieldDescriptor *descriptor,
-    const string& arr_name, uint32_t idx) {
+void GenerateObjcClassRef(
+    io::Printer *printer, const FieldDescriptor *descriptor) {
   JavaType type = GetJavaType(descriptor);
-  string classname;
+  string classref;
   if (type == JAVATYPE_ENUM) {
-    classname = ClassName(descriptor->enum_type());
+    classref =
+        "J2OBJC_CLASS_REFERENCE(" + ClassName(descriptor->enum_type()) + ")";
   } else if (type == JAVATYPE_MESSAGE) {
-    classname = ClassName(descriptor->message_type());
+    classref =
+        "J2OBJC_CLASS_REFERENCE(" + ClassName(descriptor->message_type()) + ")";
   } else {
-    return;  // Other types remain NULL.
+    classref = "NULL";
   }
-  printer->Print(
-      "$field_arr$[$idx$].objcType = [$classname$ class];\n",
-      "field_arr", arr_name,
-      "idx", SimpleItoa(idx),
-      "classname", classname);
+  printer->Print("  .objcType = $classref$,\n", "classref", classref);
 }
 
 FieldGenerator::FieldGenerator(const FieldDescriptor *descriptor)
@@ -212,10 +212,6 @@ void FieldGenerator::GenerateFieldHeader(io::Printer *printer) const {
 void FieldGenerator::GenerateMapEntryFieldData(io::Printer *printer) const {
 }
 
-void FieldGenerator::GenerateMapEntryNonStaticFieldData(
-    io::Printer *printer, const string& arr_name) const {
-}
-
 void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
   printer->Print(variables_,
       "{\n"
@@ -242,12 +238,7 @@ void FieldGenerator::GenerateFieldDataOffset(io::Printer *printer) const {
 }
 
 void FieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
-  printer->Print("  .objcType = NULL,\n");
-}
-
-void FieldGenerator::GenerateNonStaticFieldData(
-    io::Printer *printer, const string &arr_name, uint32_t idx) const {
-  GenerateObjcClass(printer, descriptor_, arr_name, idx);
+  GenerateObjcClassRef(printer, descriptor_);
 }
 
 SingleFieldGenerator::SingleFieldGenerator(
@@ -410,20 +401,9 @@ void MapFieldGenerator::GenerateMapEntryFieldData(io::Printer *printer) const {
   MapEntryFieldGenerator(value_field_).GenerateFieldData(printer);
 }
 
-void MapFieldGenerator::GenerateMapEntryNonStaticFieldData(
-    io::Printer *printer, const string& arr_name) const {
-  GenerateObjcClass(printer, key_field_, arr_name, entry_fields_idx_);
-  GenerateObjcClass(printer, value_field_, arr_name, entry_fields_idx_ + 1);
-}
-
 void MapFieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
   printer->Print(variables_,
       "  .mapEntryFields = &mapEntryFields[$map_entry_fields_idx$],\n");
-}
-
-void MapFieldGenerator::GenerateNonStaticFieldData(
-    io::Printer *printer, const string& arr_name, uint32_t idx) const {
-  // Generate nothing.
 }
 
 void MapEntryFieldGenerator::GenerateFieldDataOffset(io::Printer *printer)

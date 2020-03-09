@@ -50,9 +50,8 @@ namespace j2objc {
 // Expose for use by ExtensionGenerator.
 void CollectSourceImportsForField(
     std::set<string>* imports, const FieldDescriptor *descriptor);
-void GenerateObjcClass(
-    io::Printer *printer, const FieldDescriptor *descriptor,
-    const string& arr_name, uint32_t idx);
+void GenerateObjcClassRef(
+    io::Printer *printer, const FieldDescriptor *descriptor);
 
 class FieldGenerator {
  public:
@@ -67,10 +66,6 @@ class FieldGenerator {
   virtual void GenerateDeclaration(io::Printer *printer) const = 0;
   virtual void GenerateMapEntryFieldData(io::Printer *printer) const;
   virtual void GenerateFieldData(io::Printer *printer) const;
-  virtual void GenerateMapEntryNonStaticFieldData(
-      io::Printer *printer, const string& arr_name) const;
-  virtual void GenerateNonStaticFieldData(
-      io::Printer *printer, const string& arr_name, uint32_t idx) const;
 
   virtual void CollectForwardDeclarations(std::set<string>* declarations) const;
   virtual void CollectMessageOrBuilderForwardDeclarations(
@@ -139,10 +134,6 @@ class MapFieldGenerator : public FieldGenerator {
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
   virtual void GenerateDeclaration(io::Printer* printer) const;
   virtual void GenerateMapEntryFieldData(io::Printer *printer) const;
-  virtual void GenerateMapEntryNonStaticFieldData(
-      io::Printer *printer, const string& arr_name) const;
-  virtual void GenerateNonStaticFieldData(
-      io::Printer *printer, const string& arr_name, uint32_t idx) const;
 
   virtual void CollectForwardDeclarations(std::set<string>* declarations) const;
   virtual void CollectMessageOrBuilderForwardDeclarations(

@@ -70,6 +70,9 @@ void EnumGenerator::CollectSourceImports(std::set<string>* imports) const {
 
 void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Print(
+    "\nJ2OBJC_CLASS_DECLARATION($classname$);\n",
+    "classname", ClassName(descriptor_));
+  printer->Print(
     "\ntypedef NS_ENUM(NSUInteger, $classname$) {\n",
     "classname", CEnumName(descriptor_));
   printer->Indent();

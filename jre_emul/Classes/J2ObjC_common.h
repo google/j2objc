@@ -271,4 +271,29 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
   - (oneway void)release {} \
   - (id)autorelease { return self; }
 
+/*!
+ A type to represent an Objective C class.
+ This is actually an `objc_class` but the runtime headers will not allow us to
+ reference `objc_class`, so we have defined our own.
+
+ Adapted from:
+ https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBRuntimeTypes.h
+*/
+typedef struct J2ObjCClass_t J2ObjCClass_t;
+
+/*!
+ Macros for generating a Class from a class name. These are used wherever a
+ static Objective C class reference is needed for a generated class. Unlike
+ "[classname class]", this macro doesn't trigger class initialization, avoiding
+ the chance of Objective C initialization deadlocks.
+
+ Adapted from:
+ https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
+ */
+#define J2OBJC_CLASS_SYMBOL(name) OBJC_CLASS_$_##name
+#define J2OBJC_CLASS_REFERENCE(name) \
+    ((__bridge Class)&(J2OBJC_CLASS_SYMBOL(name)))
+#define J2OBJC_CLASS_DECLARATION(name) \
+    extern const J2ObjCClass_t J2OBJC_CLASS_SYMBOL(name)
+
 #endif // _J2OBJC_COMMON_H_

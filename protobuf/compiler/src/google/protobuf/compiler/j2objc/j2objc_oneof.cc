@@ -90,6 +90,8 @@ OneofGenerator::~OneofGenerator() {
 void OneofGenerator::CollectMessageOrBuilderForwardDeclarations(
     std::set<string>* declarations) const {
   declarations->insert("@class " + CaseClassName(descriptor_));
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + CaseClassName(descriptor_) + ")");
 }
 
 void OneofGenerator::CollectHeaderImports(std::set<string>* imports) const {

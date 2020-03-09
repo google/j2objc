@@ -66,7 +66,9 @@ void PrintSourcePreamble(io::Printer *printer) {
       "#pragma GCC diagnostic ignored \"-Wprotocol\"\n"
       "#pragma clang diagnostic ignored \"-Wprotocol\"\n"
       "#pragma GCC diagnostic ignored \"-Wincomplete-implementation\"\n"
-      "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n");
+      "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n"
+      "#pragma clang diagnostic ignored "
+      "\"-Wdollar-in-identifier-extension\"\n");
 }
 
 void PrintImports(const std::set<string>* imports, io::Printer *printer) {
@@ -290,10 +292,6 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
     }
     printer.Outdent();
     printer.Print("};\n");
-    for (int i = 0; i < file_->extension_count(); i++) {
-      ExtensionGenerator(file_->extension(i))
-          .GenerateNonStaticFieldData(&printer, "extensionFields", i);
-    }
     for (int i = 0; i < file_->extension_count(); i++) {
       ExtensionGenerator(file_->extension(i))
           .GenerateSourceInitializer(&printer);

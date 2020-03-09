@@ -54,8 +54,7 @@ class ExtensionGenerator {
   void GenerateMembersHeader(io::Printer* printer) const;
   void GenerateSourceDefinition(io::Printer* printer) const;
   void GenerateFieldData(io::Printer* printer) const;
-  void GenerateNonStaticFieldData(
-      io::Printer *printer, const string& arr_name, uint32_t idx) const;
+  void GenerateClassReference(io::Printer *printer) const;
   void GenerateSourceInitializer(io::Printer* printer) const;
   void GenerateRegistrationCode(io::Printer* printer) const;
 

@@ -72,7 +72,11 @@ MessageGenerator::~MessageGenerator() {
 
 void MessageGenerator::CollectForwardDeclarations(
     std::set<string>* declarations) const {
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) + ")");
   declarations->insert("@class " + ClassName(descriptor_) + "_Builder");
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) + "_Builder)");
   declarations->insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -355,10 +359,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     }
     printer->Outdent();
     printer->Print("};\n");
-    for (int i = 0; i < descriptor_->field_count(); i++) {
-      field_generators_.get(descriptor_->field(i))
-          .GenerateMapEntryNonStaticFieldData(printer, "mapEntryFields");
-    }
   }
   printer->Print("static CGPFieldData fields[] = {\n");
   printer->Indent();
@@ -367,10 +367,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Outdent();
   printer->Print("};\n");
-  for (int i = 0; i < descriptor_->field_count(); i++) {
-    field_generators_.get(descriptor_->field(i))
-        .GenerateNonStaticFieldData(printer, "fields", i);
-  }
   if (descriptor_->oneof_decl_count() > 0) {
     printer->Print("static CGPOneofData oneofs[] = {\n");
     printer->Indent();
@@ -396,10 +392,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     }
     printer->Outdent();
     printer->Print("};\n");
-    for (int i = 0; i < descriptor_->extension_count(); i++) {
-      ExtensionGenerator(descriptor_->extension(i))
-          .GenerateNonStaticFieldData(printer, "extensionFields", i);
-    }
     for (int i = 0; i < descriptor_->extension_count(); i++) {
       ExtensionGenerator(descriptor_->extension(i))
           .GenerateSourceInitializer(printer);
