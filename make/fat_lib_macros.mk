@@ -52,7 +52,7 @@ FAT_LIB_TVSIMULATOR_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -mappletvos-
 FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min=5.0 \
   -isysroot $(SDKROOT)
 
-FAT_LIB_MAC_CATALYST_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch x86_64h -DJ2OBJC_BUILD_ARCH=x86_64h \
+FAT_LIB_MAC_CATALYST_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 \
   --target=x86_64-apple-ios13-macabi \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR) \
   -isystem $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/usr/include \
