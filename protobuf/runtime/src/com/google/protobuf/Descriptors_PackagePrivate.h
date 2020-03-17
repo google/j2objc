@@ -83,6 +83,7 @@ typedef struct CGPFieldData {
     Class objcType;
     struct CGPFieldData *mapEntryFields;
   };
+  const void **descriptorRef;
   const char *containingType;
   const char *optionsData;
 } CGPFieldData;

@@ -335,9 +335,14 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
           descriptor->valueType_ = NewMapEntryDescriptor(data->mapEntryFields);
           break;
         }
-        Class msgClass = data->objcType;
-        NSCAssert(msgClass != nil, @"Field data is missing objc message type.");
-        CGPDescriptor *msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
+        CGPDescriptor *msgDescriptor =
+            data->descriptorRef ? (__bridge id)*(data->descriptorRef) : nil;
+        if (msgDescriptor == nil) {
+          // The descriptorRef wasn't specified, so use its accessor.
+          Class msgClass = data->objcType;
+          msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
+        }
+        NSCAssert(msgDescriptor != nil, @"Field data is missing descriptor reference.");
         data->defaultValue.valueId = msgDescriptor->defaultInstance_;
         descriptor->valueType_ = msgDescriptor;
         break;
@@ -400,6 +405,13 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
     @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
         @"This field is not of message type."] autorelease];
   }
+  if (!valueType_) {
+    @synchronized(self) {
+      if (!valueType_) {
+        CGPFieldFixDefaultValue(self);
+      }
+    }
+  }
   return valueType_;
 }
 
@@ -407,6 +419,13 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
   if (!CGPJavaTypeIsEnum(CGPFieldGetJavaType(self))) {
     @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
         @"This field is not of enum type."] autorelease];
+  }
+  if (!valueType_) {
+    @synchronized(self) {
+      if (!valueType_) {
+        CGPFieldFixDefaultValue(self);
+      }
+    }
   }
   return valueType_;
 }
