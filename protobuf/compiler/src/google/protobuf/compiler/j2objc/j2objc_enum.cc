@@ -64,7 +64,7 @@ EnumGenerator::EnumGenerator(const EnumDescriptor* descriptor)
 EnumGenerator::~EnumGenerator() {
 }
 
-void EnumGenerator::CollectSourceImports(std::set<string>* imports) const {
+void EnumGenerator::CollectSourceImports(std::set<std::string>* imports) const {
   imports->insert("java/lang/IllegalArgumentException.h");
 }
 
@@ -160,7 +160,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
   // Count characters and only add line breaks when the line exceeds the max.
   int row_chars = kMaxRowChars + 1;
   for (int i = 0; i < canonical_values_.size(); i++) {
-    string name = canonical_values_[i]->name();
+    std::string name = canonical_values_[i]->name();
     size_t added_chars = name.length() + 5;
     if (row_chars + added_chars > kMaxRowChars) {
       printer->Print("\n     ");
@@ -174,7 +174,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "    static jint int_values[] = {");
   row_chars = kMaxRowChars + 1;
   for (int i = 0; i < canonical_values_.size(); i++) {
-    string value = SimpleItoa(canonical_values_[i]->number());
+    std::string value = SimpleItoa(canonical_values_[i]->number());
     size_t added_chars = value.length() + 2;
     if (row_chars + added_chars > kMaxRowChars) {
       printer->Print("\n     ");
