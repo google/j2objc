@@ -405,13 +405,6 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
     @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
         @"This field is not of message type."] autorelease];
   }
-  if (!valueType_) {
-    @synchronized(self) {
-      if (!valueType_) {
-        CGPFieldFixDefaultValue(self);
-      }
-    }
-  }
   return valueType_;
 }
 
@@ -419,13 +412,6 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
   if (!CGPJavaTypeIsEnum(CGPFieldGetJavaType(self))) {
     @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
         @"This field is not of enum type."] autorelease];
-  }
-  if (!valueType_) {
-    @synchronized(self) {
-      if (!valueType_) {
-        CGPFieldFixDefaultValue(self);
-      }
-    }
   }
   return valueType_;
 }
