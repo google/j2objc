@@ -482,6 +482,8 @@ public class Options {
         staticAccessorMethods = true;
       } else if (arg.equals("--class-properties")) {
         setClassProperties(true);
+      } else if (arg.equals("--no-class-properties")) {
+        setClassProperties(false);
       } else if (arg.equals("--swift-friendly")) {
         setSwiftFriendly(true);
       } else if (arg.equals("-processor")) {
@@ -490,6 +492,8 @@ public class Options {
         disallowInheritedConstructors = false;
       } else if (arg.equals("--nullability")) {
         nullability = true;
+      } else if (arg.equals("--no-nullability")) {
+        nullability = false;
       } else if (arg.equals("-Xdefault-nonnull")) {
         defaultNonnull = true;
       } else if (arg.startsWith("-Xlint")) {
