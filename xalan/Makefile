@@ -62,6 +62,8 @@ fat_lib_dependencies: jre_emul_dist
 JAR = $(BUILD_DIR)/j2objc_xalan.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_xalan.jar
 
+MKTEMP_DIR = j2objc-xalan
+
 XALAN_LICENSE = NOTICE
 XALAN_LICENSE_DIST = $(DIST_LICENSE_DIR)/apache_xalan_license.txt
 
@@ -81,7 +83,7 @@ java: $(DIST_JAR)
 
 $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_xalan.jar"
-	@stage_dir=`mktemp -d -t j2objc-xalan`; \
+	@stage_dir=`${MKTEMP_CMD}`; \
 	$(JAVAC) -sourcepath $(SOURCEPATH) -encoding UTF-8 \
 	    -cp $(DIST_JAR_DIR)/j2objc_annotations.jar -d $$stage_dir \
 	    -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \
