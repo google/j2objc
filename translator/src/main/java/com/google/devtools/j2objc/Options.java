@@ -76,11 +76,11 @@ public class Options {
   private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
-  private boolean staticAccessorMethods = false;
-  private boolean classProperties = false;
+  private boolean staticAccessorMethods = true;
+  private boolean classProperties = true;
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
-  private boolean nullability = false;
+  private boolean nullability = true;
   private boolean defaultNonnull = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;

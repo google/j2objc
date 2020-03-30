@@ -119,9 +119,9 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     options.setStaticAccessorMethods(true);
     String source = "enum Test { ONE, TWO, EOF }";  // EOF is a reserved name.
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "+ (Test *)ONE;");
-    assertTranslation(translation, "+ (Test *)TWO;");
-    assertTranslation(translation, "+ (Test *)EOF_;");
+    assertTranslation(translation, "+ (Test * __nonnull)ONE;");
+    assertTranslation(translation, "+ (Test * __nonnull)TWO;");
+    assertTranslation(translation, "+ (Test * __nonnull)EOF_;");
   }
 
   // Verify that class properties for enum constants are generated on request.

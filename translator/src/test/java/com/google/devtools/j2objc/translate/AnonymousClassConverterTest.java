@@ -391,7 +391,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "  } "
         + "  void bar(Object o) { A a = new A(o) { void foo() { } }; } }",
         "Test", "Test.h");
-    assertTranslation(translation, "- (instancetype)initWithId:");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithId:");
   }
 
   public void testEnumWithParametersAndInnerClasses() throws IOException {

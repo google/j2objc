@@ -235,7 +235,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(header, "#ifndef UnitFoo_H");
     assertTranslation(header, "#define UnitFoo_H");
     assertTranslation(header, "@interface UnitTest");
-    assertTranslation(header, "- (instancetype)init;");
+    assertTranslation(header, "- (instancetype __nonnull)init;");
     assertTranslation(header, "- (void)Dummy;");
     assertTranslation(header, "J2OBJC_EMPTY_STATIC_INIT(UnitTest)");
     assertTranslation(header, "J2OBJC_TYPE_LITERAL_HEADER(UnitTest)");
@@ -468,7 +468,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertNotInTranslation(translation, "Example *this");
-    assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithExample:(Example *)outer$;");
   }
 
   public void testInnerClassDeclarationWithOuterReference() throws IOException {
@@ -476,7 +476,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public class Example { int i; class Inner { void test() { int j = i; } } }",
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
-    assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithExample:(Example *)outer$;");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "Example *this$0_;");
   }
@@ -709,11 +709,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       throws IOException {
     String sourceContent = "class Test {}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
-
-    assertNotInTranslation(translation, "#pragma clang diagnostic push");
     assertNotInTranslation(translation,
         "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
-    assertNotInTranslation(translation, "#pragma clang diagnostic pop");
   }
 
   public void testInnerAnnotationGeneration() throws IOException {
@@ -798,7 +795,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "#pragma mark Public",
         "",
-        "- (instancetype)initWithInt:(jint)i;",
+        "- (instancetype __nonnull)initWithInt:(jint)i;",
         "",
         "#pragma mark Protected",
         "",
@@ -808,7 +805,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "",
         "#pragma mark Package-Private",
         "",
-        "- (instancetype)init;",
+        "- (instancetype __nonnull)init;",
         "",
         "- (void)yak;");
     assertNotInTranslation(translation, "zebra");  // No zebra() since it's private.
@@ -838,8 +835,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   public void testDefaultConstructorDisallowed() throws IOException {
     options.setDisallowInheritedConstructors(true);
     String translation = translateSourceFile("class Test { Test(int i) {} }", "Test", "Test.h");
-    assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithInt:(jint)i;");
+    assertTranslation(translation, "- (instancetype __nonnull)init NS_UNAVAILABLE;");
   }
 
   // Verify that inherited constructors are disallowed. Exception has four constructors,
@@ -848,15 +845,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     options.setDisallowInheritedConstructors(true);
     String translation = translateSourceFile(
         "class Test extends Exception { Test(String s) { super(s); } }", "Test", "Test.h");
-    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
-    assertTranslation(translation,
-        "- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)arg0 NS_UNAVAILABLE;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithNSString:(NSString *)s;");
+    assertTranslation(translation, "- (instancetype __nonnull)init NS_UNAVAILABLE;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithJavaLangThrowable:"
+        + "(JavaLangThrowable *)arg0 NS_UNAVAILABLE;");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithNSString:(NSString *)arg0",
+        "- (instancetype __nonnull)initWithNSString:(NSString *)arg0",
         "withJavaLangThrowable:(JavaLangThrowable *)arg1 NS_UNAVAILABLE;");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithNSString:(NSString *)arg0",
+        "- (instancetype __nonnull)initWithNSString:(NSString *)arg0",
         "withJavaLangThrowable:(JavaLangThrowable *)arg1",
         "withBoolean:(jboolean)arg2",
         "withBoolean:(jboolean)arg3 NS_UNAVAILABLE;");

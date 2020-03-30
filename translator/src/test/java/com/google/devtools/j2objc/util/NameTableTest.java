@@ -201,7 +201,7 @@ public class NameTableTest extends GenerationTest {
         + "A(String s, int n) {}}", "A.java");
     String translation = translateSourceFile("A", "A.h");
     assertTranslatedLines(translation,
-        "- (instancetype)init:(NSString *)s",
+        "- (instancetype __nonnull)init:(NSString *)s",
         "offset:(jint)n;");
     assertNotInTranslation(translation, "testWithNSString");
     translation = getTranslatedFile("A.m");

@@ -526,18 +526,19 @@ public class FunctionizerTest extends GenerationTest {
     addSourceFile(
         "class Test { public Test() {} public static void foo() {} private static void bar() {} }",
         "Test.java");
-    String initSig = "- (instancetype)init";
-    String initDisallowedSig = "- (instancetype)init NS_UNAVAILABLE";
+    String initDeclSig = "- (instancetype __nonnull)init";
+    String initDisallowedDeclSig = "- (instancetype __nonnull)init NS_UNAVAILABLE";
+    String initImplSig = "- (instancetype)init";
     String fooSig = "+ (void)foo";
     String barSig = "+ (void)bar";
 
     // No reflection or wrapper stripping.
     String header = translateSourceFile("Test", "Test.h");
     String source = getTranslatedFile("Test.m");
-    assertTranslation(header, initSig);
+    assertTranslation(header, initDeclSig);
     assertTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertTranslation(source, initSig);
+    assertTranslation(source, initImplSig);
     assertTranslation(source, fooSig);
     assertTranslation(source, barSig);
 
@@ -545,10 +546,10 @@ public class FunctionizerTest extends GenerationTest {
     options.setStripReflection(true);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertTranslation(header, initSig);
+    assertTranslation(header, initDeclSig);
     assertTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertTranslation(source, initSig);
+    assertTranslation(source, initImplSig);
     assertTranslation(source, fooSig);
     assertNotInTranslation(source, barSig);
 
@@ -557,10 +558,10 @@ public class FunctionizerTest extends GenerationTest {
     options.setEmitWrapperMethods(false);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertTranslation(header, initDisallowedSig);
+    assertTranslation(header, initDisallowedDeclSig);
     assertNotInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertTranslation(source, initSig);
+    assertTranslation(source, initImplSig);
     assertTranslation(source, fooSig);
     assertTranslation(source, barSig);
 
@@ -568,10 +569,10 @@ public class FunctionizerTest extends GenerationTest {
     options.setStripReflection(true);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertTranslation(header, initDisallowedSig);
+    assertTranslation(header, initDisallowedDeclSig);
     assertNotInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertNotInTranslation(source, initSig);
+    assertNotInTranslation(source, initImplSig);
     assertNotInTranslation(source, fooSig);
     assertNotInTranslation(source, barSig);
   }
@@ -580,14 +581,14 @@ public class FunctionizerTest extends GenerationTest {
     options.setDisallowInheritedConstructors(true);
     options.setEmitWrapperMethods(false);
     String translation = translateSourceFile("class A {}", "A", "A.h");
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertTranslation(translation, "- (instancetype __nonnull)init NS_UNAVAILABLE;");
   }
 
   public void testDisallowedConstructorInAbstractClass() throws IOException {
     String translation = translateSourceFile(
         "public abstract class A { public A(String unused) {} }", "A", "A.h");
     // init is inherited from NSObject.
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertTranslation(translation, "- (instancetype __nonnull)init NS_UNAVAILABLE;");
   }
 
   // Even when the private method contains a super invocation, it must be functionized. (b/63163887)

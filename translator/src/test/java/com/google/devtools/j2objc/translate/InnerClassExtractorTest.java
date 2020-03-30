@@ -47,7 +47,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   public void testSimpleInnerClass() throws IOException {
     String source = "public class A { class B { int test() { return o.hashCode(); }} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "[nil_chk(this$0_->o_) hash]");
@@ -78,8 +78,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "public class A { class B { "
         + "class C {int test() { return o.hashCode(); }}} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
-    assertTranslation(translation, "- (instancetype)initWithA_B:(A_B *)outer$;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithA:(A *)outer$;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithA_B:(A_B *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "A_B *this$0_;");
@@ -109,7 +109,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  Object o;"
         + "}";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
+    assertTranslation(translation, "- (instancetype __nonnull)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (instancetype)initWithA_B:(A_B *)outer$",
