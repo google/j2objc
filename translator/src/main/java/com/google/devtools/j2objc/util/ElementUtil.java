@@ -56,6 +56,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
@@ -725,10 +726,12 @@ public final class ElementUtil {
   }
 
   private static boolean hasNullabilityAnnotation(Element element, Pattern pattern) {
-    // Ignore nullability annotation on primitive types.
-    if (isMethod(element)
-        && ((ExecutableElement) element).getReturnType().getKind().isPrimitive()) {
-      return false;
+    // Ignore nullability annotation on primitive or void return types.
+    if (isMethod(element)) {
+      TypeKind kind = ((ExecutableElement) element).getReturnType().getKind();
+      if (kind.isPrimitive() || kind == TypeKind.VOID) {
+        return false;
+      }
     }
     if (isVariable(element) && element.asType().getKind().isPrimitive()) {
       return false;
