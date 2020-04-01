@@ -534,9 +534,9 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 @implementation WrapperSocket
 
 - (void)dealloc {
-  [super dealloc];
   [underlyingSocket release];
   [hostname release];
+  [super dealloc];
 }
 
 #pragma mark ComGoogleJ2objcNetSslIosSslSocket methods
