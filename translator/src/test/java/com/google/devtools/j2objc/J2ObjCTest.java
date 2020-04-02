@@ -298,6 +298,13 @@ public class J2ObjCTest extends GenerationTest {
     assertWarningCount(1);
   }
 
+  // Test for error if jar doesn't contain a Java source file.
+  public void testJarNoJava() throws Exception {
+    String processorJarPath = getResourceAsFile("annotations/Processor.jar");
+    J2ObjC.run(Collections.singletonList(processorJarPath), options);
+    assertErrorCount(1);
+  }
+
   public void testSourcePathTypesIncludedInGlobalCombinedOutput() throws Exception {
     options.setGlobalCombinedOutput("combined_file");
     jarPath = getResourceAsFile("util/example.jar");

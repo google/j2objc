@@ -139,6 +139,7 @@ public class GenerationBatch {
     try {
       ZipFile zfile = new ZipFile(f);
       try {
+        boolean containsJavaFile = false;
         Enumeration<? extends ZipEntry> enumerator = zfile.entries();
         File tempDir = FileUtil.createTempDir(J2OBJC_TEMP_DIR_PREFIX);
         String tempDirPath = tempDir.getAbsolutePath();
@@ -158,7 +159,11 @@ public class GenerationBatch {
             } else {
               addExtractedJarSource(newFile, filename, internalPath);
             }
+            containsJavaFile = true;
           }
+        }
+        if (!options.translateClassfiles() && !containsJavaFile) {
+          ErrorUtil.error(filename + " does not contain any Java source files.");
         }
       } finally {
         zfile.close();  // Also closes input stream.
