@@ -118,7 +118,7 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
-  [oldValue release];
+  [oldValue autorelease];
   return value;
 }
 
