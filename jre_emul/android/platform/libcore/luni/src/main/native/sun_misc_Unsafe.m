@@ -56,9 +56,19 @@ static void unalignedPointer(void *ptr) {
 #define GET_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
+  return *((id *)ptr);
+
+#define GET_OBJECT_VOLATILE_IMPL() \
+  uintptr_t ptr = PTR(obj, offset); \
+  CHECK_ADDR(id, ptr) \
   return JreLoadVolatileId((volatile_id *)ptr);
 
 #define PUT_OBJECT_IMPL() \
+  uintptr_t ptr = PTR(obj, offset); \
+  CHECK_ADDR(id, ptr) \
+  JreStrongAssign((id *)ptr, newValue);
+
+#define PUT_OBJECT_VOLATILE_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
   JreVolatileStrongAssign((volatile_id *)ptr, newValue);
@@ -634,7 +644,7 @@ jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, j
  */
 jobject Java_sun_misc_Unsafe_getObjectVolatile(
     JNIEnv *env, jobject self, jobject obj, jlong offset) {
-  GET_OBJECT_IMPL()
+  GET_OBJECT_VOLATILE_IMPL()
 }
 
 /*
@@ -652,7 +662,7 @@ void Java_sun_misc_Unsafe_putObject(
  */
 void Java_sun_misc_Unsafe_putOrderedObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+  PUT_OBJECT_VOLATILE_IMPL()
 }
 
 
@@ -662,7 +672,7 @@ void Java_sun_misc_Unsafe_putOrderedObject(
  */
 void Java_sun_misc_Unsafe_putObjectVolatile(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+  PUT_OBJECT_VOLATILE_IMPL()
 }
 
 
