@@ -118,7 +118,7 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
-  [oldValue autorelease];
+  [oldValue release];
   return value;
 }
 
@@ -143,8 +143,7 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
   id oldValue = *(id *)pVar;
   *(id *)pVar = newValue;
   VOLATILE_UNLOCK(lock);
-  [oldValue autorelease];
-  return oldValue;
+  return [oldValue autorelease];
 }
 
 void JreReleaseVolatile(volatile_id *pVar) {
@@ -196,7 +195,7 @@ id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value) {
   VOLATILE_UNLOCK(lock);
   if (oldValue) {
     JreRetainedWithHandlePreviousValue(parent, oldValue);
-    [oldValue autorelease];
+    [oldValue release];
   }
   return value;
 }
