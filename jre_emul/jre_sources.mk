@@ -2145,6 +2145,7 @@ SOURCE_RETENTION_ANNOTATIONS = \
   java/lang/Override.java \
   java/lang/SuppressWarnings.java \
   java/lang/annotation/Native.java \
+  javax/annotation/processing/Generated.java \
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
 # but need to include the .java file in jre_emul.jar.
