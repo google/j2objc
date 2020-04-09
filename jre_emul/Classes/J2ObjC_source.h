@@ -118,7 +118,7 @@ typedef struct J2ObjcResourceDefinition {
  * exceed 16 characters.
  */
 #define J2OBJC_RESOURCE(BUF, LEN, HASH) \
-  static J2ObjcResourceDefinition BUF##_resource __attribute__((used,\
+  static J2ObjcResourceDefinition BUF##_resource __attribute__((used, no_sanitize("address"), \
   section("__DATA,__j2objcresource"))) = { QUOTE(BUF), BUF, LEN, HASH };
 
 FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size);
