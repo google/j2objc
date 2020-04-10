@@ -21,8 +21,8 @@
 
 CF_EXTERN_C_BEGIN
 
-pthread_key_t java_thread_key;
-pthread_once_t java_thread_key_init_once;
+extern pthread_key_t java_thread_key;
+extern pthread_once_t java_thread_key_init_once;
 
 void initJavaThreadKeyOnce();
 JavaLangThread *getCurrentJavaThreadOrNull();
