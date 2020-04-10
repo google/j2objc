@@ -630,11 +630,8 @@ class Bits {                            // package-private
     static boolean unaligned() {
         if (unalignedKnown)
             return unaligned;
-        /*
         String arch = AccessController.doPrivileged(
                 new sun.security.action.GetPropertyAction("os.arch"));
-        */
-        String arch = System.getProperty("os.arch");
         unaligned = arch.equals("i386") || arch.equals("x86")
             || arch.equals("amd64") || arch.equals("x86_64");
         unalignedKnown = true;

@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sun.security.provider.certpath.OCSPResponse.*;
+import sun.security.action.GetIntegerAction;
 import sun.security.util.Debug;
 import sun.security.util.ObjectIdentifier;
 import sun.security.x509.AccessDescription;
@@ -84,9 +85,8 @@ public final class OCSP {
      * value is negative, set the timeout length to the default.
      */
     private static int initializeTimeout() {
-//        Integer tmp = java.security.AccessController.doPrivileged(
-//                new GetIntegerAction("com.sun.security.ocsp.timeout"));
-        Integer tmp = Integer.getInteger("com.sun.security.ocsp.timeout");
+        Integer tmp = java.security.AccessController.doPrivileged(
+                new GetIntegerAction("com.sun.security.ocsp.timeout"));
         if (tmp == null || tmp < 0) {
             return DEFAULT_CONNECT_TIMEOUT;
         }

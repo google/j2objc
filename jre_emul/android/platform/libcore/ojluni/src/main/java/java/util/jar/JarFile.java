@@ -37,9 +37,7 @@ import java.security.cert.Certificate;
 import java.security.AccessController;
 import java.security.CodeSource;
 import sun.misc.IOUtils;
-/* J2ObjC removed.
 import sun.security.action.GetPropertyAction;
-*/
 import sun.security.util.ManifestEntryVerifier;
 /* ----- BEGIN android -----
 import sun.misc.SharedSecrets;
@@ -530,11 +528,8 @@ class JarFile extends ZipFile {
         // these jars is changed to include such an attribute this code
         // must be changed.
         if (javaHome == null) {
-            /* J2ObjC modified.
             javaHome = AccessController.doPrivileged(
                 new GetPropertyAction("java.home"));
-            */
-            javaHome = System.getProperty("java.home");
         }
         if (jarNames == null) {
             String[] names = new String[10];

@@ -45,7 +45,7 @@ import java.util.WeakHashMap;
 import java.security.AccessController;
 
 import dalvik.system.CloseGuard;
-//import sun.security.action.GetPropertyAction;
+import sun.security.action.GetPropertyAction;
 
 import static java.util.zip.ZipConstants64.*;
 

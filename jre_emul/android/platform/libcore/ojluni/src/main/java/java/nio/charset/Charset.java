@@ -30,6 +30,7 @@ import com.google.j2objc.nio.charset.IOSCharset;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.security.AccessController;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import sun.nio.cs.ThreadLocalCoders;
-
+import sun.security.action.GetPropertyAction;
 
 // Android-changed: Docs to say UTF-8 is always the platform default charset.
 /**
@@ -268,20 +269,19 @@ public abstract class Charset
 
     /* -- Static methods -- */
 
-    /* j2objc: removed
     private static volatile String bugLevel = null;
 
     static boolean atBugLevel(String bl) {              // package-private
         String level = bugLevel;
         if (level == null) {
-            if (!sun.misc.VM.isBooted())
-                return false;
+            // j2objc removed (it doesn't have a VM).
+            // if (!sun.misc.VM.isBooted())
+            //     return false;
             bugLevel = level = AccessController.doPrivileged(
                 new GetPropertyAction("sun.nio.cs.bugLevel", ""));
         }
         return level.equals(bl);
     }
-    */
 
     /**
      * Checks that the given string is a legal charset name. </p>

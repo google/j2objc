@@ -60,7 +60,7 @@ endif
 
 SDK_PATH = $(shell xcrun --show-sdk-path)
 TEST_JOCC := $(J2OBJCC) -g $(WARNINGS) -isysroot $(SDK_PATH)
-LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support
+LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support -fsanitize=address
 COMPILE_FLAGS := $(INCLUDE_ARGS) -c -Wno-objc-redundant-literal-use -Wno-format -Werror \
   -Wno-parentheses
 

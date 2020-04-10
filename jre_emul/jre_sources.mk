@@ -686,6 +686,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/misc/ReflectUtil.java \
+  sun/security/action/GetBooleanAction.java \
+  sun/security/action/GetIntegerAction.java \
+  sun/security/action/GetPropertyAction.java \
   sun/util/ResourceBundleEnumeration.java \
   sun/util/calendar/AbstractCalendar.java \
   sun/util/calendar/BaseCalendar.java \

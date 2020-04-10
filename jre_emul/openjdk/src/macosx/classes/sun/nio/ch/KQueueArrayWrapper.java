@@ -101,11 +101,9 @@ class KQueueArrayWrapper {
         // j2objc: removed unnecessary system library load.
         // IOUtil.load();
         initStructSizes();
-        // j2objc: simplified.
-        // String datamodel = java.security.AccessController.doPrivileged(
-        //     new sun.security.action.GetPropertyAction("sun.arch.data.model")
-        // );
-        String datamodel = System.getProperty("sun.arch.data.model");
+         String datamodel = java.security.AccessController.doPrivileged(
+             new sun.security.action.GetPropertyAction("sun.arch.data.model")
+         );
         is64bit = datamodel.equals("64");
     }
 

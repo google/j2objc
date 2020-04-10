@@ -34,7 +34,7 @@ import java.security.AccessController;
 import java.text.Normalizer;
 import java.util.*;
 
-//import sun.security.action.GetBooleanAction;
+import sun.security.action.GetBooleanAction;
 import sun.security.util.*;
 import sun.security.pkcs.PKCS9Attribute;
 
@@ -65,9 +65,9 @@ public class AVA implements DerEncoder {
     // See CR 6391482: if enabled this flag preserves the old but incorrect
     // PrintableString encoding for DomainComponent. It may need to be set to
     // avoid breaking preexisting certificates generated with sun.security APIs.
-    private static final boolean PRESERVE_OLD_DC_ENCODING = false;
-//        AccessController.doPrivileged(new GetBooleanAction
-//            ("com.sun.security.preserveOldDCEncoding"));
+    private static final boolean PRESERVE_OLD_DC_ENCODING =
+        AccessController.doPrivileged(new GetBooleanAction
+            ("com.sun.security.preserveOldDCEncoding"));
 
     /**
      * DEFAULT format allows both RFC1779 and RFC2253 syntax and

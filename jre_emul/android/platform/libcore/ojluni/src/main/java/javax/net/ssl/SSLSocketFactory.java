@@ -31,8 +31,9 @@ import java.net.*;
 import javax.net.SocketFactory;
 import java.io.IOException;
 import java.security.*;
+import java.util.Locale;
 
-//import sun.security.action.GetPropertyAction;
+import sun.security.action.GetPropertyAction;
 
 /**
  * <code>SSLSocketFactory</code>s create <code>SSLSocket</code>s.
@@ -47,20 +48,19 @@ public abstract class SSLSocketFactory extends SocketFactory
 
     private static int lastVersion = -1;
 
-    /* J2ObjC modified. */
-    static final boolean DEBUG = false;
-//
-//    static {
-//        String s = java.security.AccessController.doPrivileged(
-//            new GetPropertyAction("javax.net.debug", "")).toLowerCase(
-//                                                            Locale.ENGLISH);
-//        DEBUG = s.contains("all") || s.contains("ssl");
-//    }
+    static final boolean DEBUG;
+
+    static {
+        String s = java.security.AccessController.doPrivileged(
+            new GetPropertyAction("javax.net.debug", "")).toLowerCase(
+                                                            Locale.ENGLISH);
+        DEBUG = s.contains("all") || s.contains("ssl");
+    }
 
     private static void log(String msg) {
-//        if (DEBUG) {
-//            System.out.println(msg);
-//        }
+       if (DEBUG) {
+           System.out.println(msg);
+       }
     }
 
     /**
