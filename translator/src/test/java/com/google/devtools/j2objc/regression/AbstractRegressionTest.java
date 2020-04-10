@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
@@ -105,7 +106,7 @@ public abstract class AbstractRegressionTest extends GenerationTest {
           new BufferedReader(new InputStreamReader(process.getInputStream(), UTF_8));
       BufferedReader stdError =
           new BufferedReader(new InputStreamReader(process.getErrorStream(), UTF_8));
-      StringJoiner sj = new StringJoiner(LINE_SEPARATOR.toString());
+      StringJoiner sj = new StringJoiner(LINE_SEPARATOR.value());
       stdInput.lines().iterator().forEachRemaining(sj::add);
       stdError.lines().iterator().forEachRemaining(sj::add);
       process.waitFor();
@@ -170,8 +171,8 @@ public abstract class AbstractRegressionTest extends GenerationTest {
       return;
     }
     String executable = tempDir.getPath() + "/regressiontesting";
-    List<String> command = Arrays.asList(
-        J2OBJCC_LOCATION, "-g", "-I", tempDir.getPath(), "-ObjC", "-o", executable);
+    List<String> command = new ArrayList<>(Arrays.asList(
+        J2OBJCC_LOCATION, "-g", "-I", tempDir.getPath(), "-ObjC", "-o", executable));
     command.addAll(getImplementationFileList(fileArgs));
     String compileOutput = runCommand(command);
     if (compileOutput.contains("error: ")) {
