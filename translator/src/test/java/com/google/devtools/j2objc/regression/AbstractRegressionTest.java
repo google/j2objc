@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc.regression;
 
+import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
@@ -25,7 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Basic framework for working with Eclipse regression tests. Eclipse has built a very large set of
@@ -92,32 +97,31 @@ public abstract class AbstractRegressionTest extends GenerationTest {
     return NameTable.camelCasePath(path.substring(0, path.lastIndexOf('.')));
   }
 
-  private static String runCommand(String command) {
-    Runtime rt = Runtime.getRuntime();
-    Process process;
+  private static String runCommand(List<String> command) {
     try {
-      process = rt.exec(command);
-      BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-      StringBuilder buffer = new StringBuilder();
-      int c;
-      while ((c = stdInput.read()) != -1) {
-        buffer.append((char) c);
-      }
-      while ((c = stdError.read()) != -1) {
-        buffer.append((char) c);
-      }
+      Process process = new ProcessBuilder(command).start();
+
+      BufferedReader stdInput =
+          new BufferedReader(new InputStreamReader(process.getInputStream(), UTF_8));
+      BufferedReader stdError =
+          new BufferedReader(new InputStreamReader(process.getErrorStream(), UTF_8));
+      StringJoiner sj = new StringJoiner(LINE_SEPARATOR.toString());
+      stdInput.lines().iterator().forEachRemaining(sj::add);
+      stdError.lines().iterator().forEachRemaining(sj::add);
+      process.waitFor();
+      process.destroy();
+
       stdInput.close();
       stdError.close();
-      return buffer.toString();
-    } catch (IOException e) {
+      return sj.toString();
+    } catch (IOException | InterruptedException e) {
       return null;
     }
   }
 
   private static void regressionFail(String methodName, String[] ls, String res, String output) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append('\n' + methodName);
+    buffer.append('\n').append(methodName);
     buffer.append("\nExpected:\n");
     buffer.append(res);
     buffer.append("\nReturned:\n");
@@ -135,7 +139,7 @@ public abstract class AbstractRegressionTest extends GenerationTest {
       buffer.append('\n');
     }
     System.out.println("FAIL");
-    System.out.println(buffer.toString());
+    System.out.println(buffer);
     fail(buffer.toString());
   }
 
@@ -165,15 +169,15 @@ public abstract class AbstractRegressionTest extends GenerationTest {
     if (J2OBJCC_LOCATION.isEmpty() || res == null || res.isEmpty()) {
       return;
     }
-    List<String> mFileArgs = getImplementationFileList(fileArgs);
-    String executable = tempDir + "/regressiontesting ";
-    String command = J2OBJCC_LOCATION + " -g -I" + tempDir + " -ObjC -o " + executable
-        + Joiner.on(' ').join(mFileArgs);
+    String executable = tempDir.getPath() + "/regressiontesting";
+    List<String> command = Arrays.asList(
+        J2OBJCC_LOCATION, "-g", "-I", tempDir.getPath(), "-ObjC", "-o", executable);
+    command.addAll(getImplementationFileList(fileArgs));
     String compileOutput = runCommand(command);
     if (compileOutput.contains("error: ")) {
       regressionFail(methodName, ls, res, compileOutput);
     }
-    checkMatch(methodName, ls, res, runCommand(executable + className(ls[0])));
-    runCommand("rm " + executable);
+    checkMatch(methodName, ls, res, runCommand(Arrays.asList(executable, className(ls[0]))));
+    runCommand(Arrays.asList("rm", executable));
   }
 }
