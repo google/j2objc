@@ -50,7 +50,7 @@ class ExtensionGenerator {
   explicit ExtensionGenerator(const FieldDescriptor* descriptor);
   ~ExtensionGenerator();
 
-  void CollectSourceImports(std::set<string>* imports) const;
+  void CollectSourceImports(std::set<std::string>* imports) const;
   void GenerateMembersHeader(io::Printer* printer) const;
   void GenerateSourceDefinition(io::Printer* printer) const;
   void GenerateFieldData(io::Printer* printer) const;

@@ -43,14 +43,14 @@ namespace compiler {
 namespace j2objc {
 
 namespace {
-  string ContainingClassName(const FieldDescriptor *descriptor) {
-    const Descriptor *scope = descriptor->extension_scope();
-    if (scope != NULL) {
-      return ClassName(scope);
-    } else {
-      return ClassName(descriptor->file());
-    }
+std::string ContainingClassName(const FieldDescriptor* descriptor) {
+  const Descriptor* scope = descriptor->extension_scope();
+  if (scope != NULL) {
+    return ClassName(scope);
+  } else {
+    return ClassName(descriptor->file());
   }
+}
 }  // namespace
 
 ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
@@ -60,7 +60,8 @@ ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
 ExtensionGenerator::~ExtensionGenerator() {
 }
 
-void ExtensionGenerator::CollectSourceImports(std::set<string>* imports) const {
+void ExtensionGenerator::CollectSourceImports(
+    std::set<std::string>* imports) const {
   imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
   // Imports needed for metadata of enum and message types.
   CollectSourceImportsForField(imports, descriptor_);
@@ -89,7 +90,7 @@ void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) const {
 }
 
 void ExtensionGenerator::GenerateFieldData(io::Printer* printer) const {
-  std::map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["field_name"] = descriptor_->name();
   vars["capitalized_name"] = UnderscoresToCapitalizedCamelCase(descriptor_);
   vars["field_number"] = SimpleItoa(descriptor_->number());
