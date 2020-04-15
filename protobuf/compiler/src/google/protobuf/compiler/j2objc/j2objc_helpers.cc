@@ -334,7 +334,7 @@ std::string EnumValueName(const EnumValueDescriptor *descriptor) {
 
 std::string FieldConstantName(const FieldDescriptor *field) {
   std::string name = field->name() + "_FIELD_NUMBER";
-  UpperString(&name);
+  absl::AsciiStrToUpper(&name);
   return name;
 }
 
