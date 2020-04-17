@@ -40,7 +40,7 @@ include $(J2OBJC_ROOT)/make/fat_lib.mk
 PUBLIC_JAVA_SOURCES = \
     $(shell cd $(SRC_DIR) && find org -name *.java | xargs egrep -l "^(public|protected) ")
 
-STATIC_FRAMEWORK_RESOURCE_FILES = \
+FRAMEWORK_RESOURCE_FILES = \
 	META-INF/services/javax.xml.transform.TransformerFactory \
 	META-INF/services/javax.xml.xpath.XPathFactory \
 	META-INF/services/org.apache.xml.dtm.DTMManager \
@@ -53,9 +53,9 @@ STATIC_FRAMEWORK_RESOURCE_FILES = \
 	org/apache/xml/serializer/output_xml.properties \
 	org/apache/xml/serializer/XMLEntities.properties
 
-STATIC_FRAMEWORK_NAME = Xalan
-STATIC_FRAMEWORK_PUBLIC_HEADERS = $(PUBLIC_JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.h)
-include $(J2OBJC_ROOT)/make/static_framework.mk
+FRAMEWORK_NAME = Xalan
+FRAMEWORK_PUBLIC_HEADERS = $(PUBLIC_JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.h)
+include $(J2OBJC_ROOT)/make/framework.mk
 
 fat_lib_dependencies: jre_emul_dist
 
@@ -77,7 +77,7 @@ test: $(FAT_LIBS)
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(ARCH_INCLUDE_DIR)/com/google/common $(DIST_JAR)
 	@rm -rf $(XALAN_LICENSE_DIST)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 
 java: $(DIST_JAR)
 

@@ -10,29 +10,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Provides rules for creating a static library framework.
+# Provides rules for creating a static library framework using XCFramework.
 #
 # The including makefile must define these variables:
-#   STATIC_FRAMEWORK_NAME
+#   FRAMEWORK_NAME
 #
 # The including makefile may define these variables:
-#   STATIC_FRAMEWORK_RESOURCE_FILES
-#   STATIC_FRAMEWORK_HEADERS         (defaults to TRANSLATE_HEADERS)
-#   STATIC_FRAMEWORK_PUBLIC_HEADERS  (defaults to STATIC_FRAMEWORK_HEADERS)
+#   FRAMEWORK_RESOURCE_FILES
+#   FRAMEWORK_HEADERS         (defaults to TRANSLATE_HEADERS)
+#   FRAMEWORK_PUBLIC_HEADERS  (defaults to FRAMEWORK_HEADERS)
 #   STATIC_LIBRARY_NAME              (defaults to FAT_LIB_NAME)
 #   STATIC_HEADERS_DIR               (defaults to GEN_OBJC_DIR)
 #
 # This file defines the following to be used by the including file:
-#   STATIC_FRAMEWORK_DIR
-#   STATIC_FRAMEWORK_RESOURCES_DIR
+#   FRAMEWORK_DIR
+#   FRAMEWORK_RESOURCES_DIR
 #
 # Author: Tom Ball
 
-ifndef STATIC_FRAMEWORK_HEADERS
+ifndef FRAMEWORK_HEADERS
 ifndef TRANSLATE_HEADERS
-$(error STATIC_FRAMEWORK_HEADERS not defined)
+$(error FRAMEWORK_HEADERS not defined)
 else
-STATIC_FRAMEWORK_HEADERS = $(TRANSLATE_HEADERS)
+FRAMEWORK_HEADERS = $(TRANSLATE_HEADERS)
 endif
 endif
 
@@ -52,17 +52,17 @@ STATIC_HEADERS_DIR = $(GEN_OBJC_DIR)
 endif
 endif
 
-ifndef STATIC_FRAMEWORK_PUBLIC_HEADERS
-STATIC_FRAMEWORK_PUBLIC_HEADERS = $(STATIC_FRAMEWORK_HEADERS)
+ifndef FRAMEWORK_PUBLIC_HEADERS
+FRAMEWORK_PUBLIC_HEADERS = $(FRAMEWORK_HEADERS)
 endif
 
-STATIC_FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME).framework
+FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(FRAMEWORK_NAME).xcframework
 STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
-FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
+FRAMEWORK_HEADER = $(BUILD_DIR)/$(FRAMEWORK_NAME).h
 MODULE_MAP = $(BUILD_DIR)/module.modulemap
 
-STATIC_FRAMEWORK_RESOURCES_DIR = $(STATIC_FRAMEWORK_DIR)/Versions/A/Resources
-RESOURCE_FILES = $(STATIC_FRAMEWORK_RESOURCE_FILES:%=$(STATIC_FRAMEWORK_RESOURCES_DIR)/%)
+FRAMEWORK_RESOURCES_DIR = $(FRAMEWORK_DIR)/Versions/A/Resources
+RESOURCE_FILES = $(FRAMEWORK_RESOURCE_FILES:%=$(FRAMEWORK_RESOURCES_DIR)/%)
 
 # These are warnings that are suppressed for J2ObjC headers and generated code.
 #
@@ -88,32 +88,31 @@ DISALLOWED_WARNINGS = \
   -Wno-super-class-method-mismatch
 
 # Check that headers compile with most compiler flags.
-VERIFY_FLAGS := -I$(STATIC_FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
+VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
   -Werror -Weverything $(DISALLOWED_WARNINGS)
 
-framework: dist $(STATIC_FRAMEWORK_DIR) resources
+framework: dist $(FRAMEWORK_DIR) resources
 	@:
 
-$(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
-	@echo building $(STATIC_FRAMEWORK_NAME) framework
-	@mkdir -p $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
-	@/bin/ln -sfh A $(STATIC_FRAMEWORK_DIR)/Versions/Current
-	@/bin/ln -sfh Versions/Current/Headers $(STATIC_FRAMEWORK_DIR)/Headers
-	@/bin/ln -sfh Versions/Current/$(STATIC_FRAMEWORK_NAME) \
-	    $(STATIC_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME)
-	@tar cf - -C $(STATIC_HEADERS_DIR) $(STATIC_FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
-	    | tar xfp - -C $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
-	@cp $(STATIC_LIBRARY) $(STATIC_FRAMEWORK_DIR)/Versions/A/$(STATIC_FRAMEWORK_NAME)
-	@install -m 0644 $(FRAMEWORK_HEADER) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
-	@install -m 0644 $(MODULE_MAP) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers/
+$(FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
+	@echo building $(FRAMEWORK_NAME) framework
+	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
+			$(BUILD_DIR)/objs-*/lib$(STATIC_LIBRARY_NAME).a;
+	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
+	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
+	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
+	@tar cf - -C $(STATIC_HEADERS_DIR) $(FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
+	    | tar xfp - -C $(FRAMEWORK_DIR)/Versions/A/Headers
+	@install -m 0644 $(FRAMEWORK_HEADER) $(FRAMEWORK_DIR)/Versions/A/Headers
+	@install -m 0644 $(MODULE_MAP) $(FRAMEWORK_DIR)/Versions/A/Headers/
 	@touch $@
 
 # Creates a framework "master" header file that includes all the framework's header files.
 # This header is then test-compiled with all allowed warnings to verify it can be included
 # by other projects.
 $(FRAMEWORK_HEADER):
-	@echo "//\n// $(STATIC_FRAMEWORK_NAME).h\n//\n" > $@
-	@for f in $(STATIC_FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
+	@echo "//\n// $(FRAMEWORK_NAME).h\n//\n" > $@
+	@for f in $(FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
 	    echo '#include <'$${f}'>'; done >> $@
 
 test_warnings: $(FRAMEWORK_HEADER)
@@ -127,8 +126,8 @@ test_warnings: $(FRAMEWORK_HEADER)
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
 
 $(MODULE_MAP):
-	@echo "module" $(STATIC_FRAMEWORK_NAME) "{" > $(MODULE_MAP)
-	@echo "  umbrella header" '"'$(STATIC_FRAMEWORK_NAME).h'"' >> $(MODULE_MAP)
+	@echo "module" $(FRAMEWORK_NAME) "{" > $(MODULE_MAP)
+	@echo "  umbrella header" '"'$(FRAMEWORK_NAME).h'"' >> $(MODULE_MAP)
 	@echo >> $(MODULE_MAP)
 	@echo "  export *" >> $(MODULE_MAP)
 	@echo "  module * { export * }" >> $(MODULE_MAP)
@@ -137,10 +136,10 @@ $(MODULE_MAP):
 resources: $(RESOURCE_FILES)
 	@:
 
-$(STATIC_FRAMEWORK_RESOURCES_DIR):
-	@mkdir -p $(STATIC_FRAMEWORK_RESOURCES_DIR)
-	@/bin/ln -sfh Versions/Current/Resources $(STATIC_FRAMEWORK_DIR)/Resources
+$(FRAMEWORK_RESOURCES_DIR):
+	@mkdir -p $(FRAMEWORK_RESOURCES_DIR)
+	@/bin/ln -sfh Versions/Current/Resources $(FRAMEWORK_DIR)/Resources
 
-$(STATIC_FRAMEWORK_RESOURCES_DIR)/%: % | $(STATIC_FRAMEWORK_RESOURCES_DIR)
+$(FRAMEWORK_RESOURCES_DIR)/%: % | $(FRAMEWORK_RESOURCES_DIR)
 	@mkdir -p $$(dirname $@)
 	@install -m 0644 $< $@

@@ -36,8 +36,8 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
 include $(J2OBJC_ROOT)/make/fat_lib.mk
 
-STATIC_FRAMEWORK_NAME = $(GUAVA_STATIC_FRAMEWORK_NAME)
-include $(J2OBJC_ROOT)/make/static_framework.mk
+FRAMEWORK_NAME = $(GUAVA_FRAMEWORK_NAME)
+include $(J2OBJC_ROOT)/make/framework.mk
 
 fat_lib_dependencies: jre_emul_dist jsr305_dist
 
@@ -51,7 +51,7 @@ dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(DIST_HEADERS)
 
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(DIST_GUAVA_INCLUDE_DIR) $(DIST_JAR)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 
 java: $(DIST_JAR)
 
