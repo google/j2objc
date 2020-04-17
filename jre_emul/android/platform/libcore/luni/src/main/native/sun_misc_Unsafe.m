@@ -210,7 +210,7 @@ jint Java_sun_misc_Unsafe_pageSize(JNIEnv *env, jobject self) {
  */
 void Java_sun_misc_Unsafe_setMemory(
     JNIEnv *env, jobject self, jlong address, jlong bytes, jbyte value) {
-  memset((void*)address, value, bytes);
+  memset((void*)address, value, (size_t)bytes);
 }
 
 
