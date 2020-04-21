@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061162E1244E31CD002D5893 /* JRE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061162E0244E31CD002D5893 /* JRE.xcframework */; };
 		FA8AEA8D210F718A00FDC9ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */; };
 		FA8AEA8F210F718A00FDC9ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8AEA8E210F718A00FDC9ED /* ViewController.swift */; };
 		FA8AEA92210F718A00FDC9ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA8AEA90210F718A00FDC9ED /* Main.storyboard */; };
@@ -21,6 +22,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.java;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}.h",
@@ -41,6 +44,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		061162DF244E29C6002D5893 /* config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
+		061162E0244E31CD002D5893 /* JRE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = JRE.xcframework; path = ../../dist/frameworks/JRE.xcframework; sourceTree = "<group>"; };
 		FA8AEA89210F718A00FDC9ED /* HelloSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FA8AEA8E210F718A00FDC9ED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -59,6 +64,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8AEB10210FB4BE00FDC9ED /* libHelloSwiftJava.a in Frameworks */,
+				061162E1244E31CD002D5893 /* JRE.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +81,7 @@
 		FA8AEA80210F718A00FDC9ED = {
 			isa = PBXGroup;
 			children = (
+				061162DF244E29C6002D5893 /* config.xcconfig */,
 				FA8AEA8B210F718A00FDC9ED /* HelloSwift */,
 				FA8AEB00210FB05000FDC9ED /* HelloSwiftJava */,
 				FA8AEA8A210F718A00FDC9ED /* Products */,
@@ -116,6 +123,7 @@
 		FA8AEB0F210FB4BE00FDC9ED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				061162E0244E31CD002D5893 /* JRE.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

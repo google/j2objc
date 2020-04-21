@@ -1,0 +1,11 @@
+//
+//  config.xcconfig
+//  Hello
+//
+
+// Change this path if this project is separate from a j2objc source repository.
+J2OBJC_DIST = ../../dist;
+
+HEADER_SEARCH_PATHS = "${J2OBJC_DIST}/include";
+FRAMEWORK_SEARCH_PATHS = "${J2OBJC_DIST}/frameworks";
+OTHER_LDFLAGS = "-liconv";

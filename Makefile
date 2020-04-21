@@ -117,7 +117,10 @@ copy_examples:
 	@cp -r examples $(DIST_DIR)
 
 install_examples: copy_examples
-	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/config.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcodeproj/project.pbxproj
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/HelloSwift/config.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/HelloSwift/HelloSwift.xcodeproj/project.pbxproj
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/protobuf/Makefile
 	@sed -i '' 's/\<path to local j2objc distribution\>/..\/../' \
 	  $(DIST_DIR)/examples/Contacts/WORKSPACE

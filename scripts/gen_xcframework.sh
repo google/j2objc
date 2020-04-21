@@ -27,6 +27,9 @@ fi
 readonly FRAMEWORK_DIR=$1
 shift
 
+# xcodebuild won't override any existing framework files.
+rm -rf ${FRAMEWORK_DIR}/*
+
 CMD="xcodebuild -create-xcframework -output "${FRAMEWORK_DIR}
 
 while test ${#} -gt 0
