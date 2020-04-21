@@ -35,7 +35,7 @@
 				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.m",
 				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.h",
 			);
-			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST not correctly defined in Hello.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" --quiet -g -d ${DERIVED_FILES_DIR} -use-arc ${INPUT_FILE_PATH};\n";
+			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST not correctly defined in config.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" --quiet -g -d ${DERIVED_FILES_DIR} -use-arc ${INPUT_FILE_PATH};\n";
 		};
 		06CCF1401C77E42800CDF952 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -69,6 +69,8 @@
 		06B9901D1EA6BDF000581403 /* HelloJ2ObjC.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = HelloJ2ObjC.entitlements; sourceTree = "<group>"; };
 		06CCF1441C77E42800CDF952 /* Hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerNoJ2ObjC.m; sourceTree = "<group>"; };
+		06FCF74A244F6AC500E81301 /* HelloJ2ObjC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HelloJ2ObjC.entitlements; sourceTree = "<group>"; };
+		06FCF74B244F6ACC00E81301 /* Hello.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Hello.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 		069A97981C6A86AD00A00560 = {
 			isa = PBXGroup;
 			children = (
+				06FCF74A244F6AC500E81301 /* HelloJ2ObjC.entitlements */,
 				069A97D41C6A897900A00560 /* config.xcconfig */,
 				069A97A31C6A86AD00A00560 /* Hello */,
 				069A97A21C6A86AD00A00560 /* Products */,
@@ -112,6 +115,7 @@
 		069A97A31C6A86AD00A00560 /* Hello */ = {
 			isa = PBXGroup;
 			children = (
+				06FCF74B244F6ACC00E81301 /* Hello.entitlements */,
 				069A97A71C6A86AD00A00560 /* AppDelegate.h */,
 				069A97A81C6A86AD00A00560 /* AppDelegate.m */,
 				069A97AA1C6A86AD00A00560 /* ViewController.h */,
@@ -377,6 +381,9 @@
 			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HelloJ2ObjC.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -384,6 +391,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
 		};
@@ -392,6 +400,9 @@
 			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HelloJ2ObjC.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -399,6 +410,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
 		};
@@ -407,6 +419,9 @@
 			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Hello/Hello.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -414,6 +429,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
 		};
@@ -422,6 +438,9 @@
 			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Hello/Hello.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -429,6 +448,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
 		};
