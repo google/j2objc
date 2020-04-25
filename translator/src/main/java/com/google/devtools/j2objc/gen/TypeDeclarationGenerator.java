@@ -240,7 +240,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Prints the list of static variable and/or enum constant accessor methods.
    */
   protected void printStaticAccessors() {
-    if (options.staticAccessorMethods()) {
+    if (options.staticAccessorMethods() && !options.classProperties()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         VariableElement var = fragment.getVariableElement();
         TypeMirror type = var.asType();
