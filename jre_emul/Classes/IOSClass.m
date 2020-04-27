@@ -499,6 +499,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
         PackagePrefixLoader *loader = [[PackagePrefixLoader alloc] init];
         [JavaUtilProperties loadLineReaderWithJavaUtilProperties_LineReader:lr
                                       withJavaUtilProperties_KeyValueLoader:loader];
+        [loader release];
       }
     });
   }

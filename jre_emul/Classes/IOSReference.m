@@ -340,6 +340,7 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
       for (int i = 0; i < phantomRefsCtx.num; i++) {
         [phantomRefsCtx.refs[i] enqueue];
       }
+      CFRelease(setCopy);
     }
   });
 }
