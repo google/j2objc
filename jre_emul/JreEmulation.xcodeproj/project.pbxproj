@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		06023F051FBA5D9D003BF0A8 /* Hello.m in Sources */ = {isa = PBXBuildFile; fileRef = 06023F041FBA5D9D003BF0A8 /* Hello.m */; };
+		060483372460F68400EAA86E /* NSDictionaryMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 060483362460F68300EAA86E /* NSDictionaryMapTest.m */; };
 		0612B8EE1F4373740069EF58 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */; };
 		0612B8EF1F4373740069EF58 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B8C01F4373730069EF58 /* AbstractQueueTest.m */; };
 		0612B8F01F4373740069EF58 /* ArrayBlockingQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B8C11F4373730069EF58 /* ArrayBlockingQueueTest.m */; };
@@ -1113,6 +1114,7 @@
 		0600EB2222F4B6D80065498B /* CodingErrorActionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CodingErrorActionTest.m; path = org/apache/harmony/tests/java/nio/charset/CodingErrorActionTest.m; sourceTree = "<group>"; };
 		0600EB2322F4B76E0065498B /* SettableCharsetProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettableCharsetProvider.m; path = libcore/java/nio/charset/SettableCharsetProvider.m; sourceTree = "<group>"; };
 		06023F041FBA5D9D003BF0A8 /* Hello.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Hello.m; path = com/test/Hello.m; sourceTree = "<group>"; };
+		060483362460F68300EAA86E /* NSDictionaryMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMapTest.m; sourceTree = "<group>"; };
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
 		0612B8BF1F4373730069EF58 /* AbstractExecutorServiceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractExecutorServiceTest.m; path = jsr166/AbstractExecutorServiceTest.m; sourceTree = "<group>"; };
 		0612B8C01F4373730069EF58 /* AbstractQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractQueueTest.m; path = jsr166/AbstractQueueTest.m; sourceTree = "<group>"; };
@@ -6784,6 +6786,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				060483362460F68300EAA86E /* NSDictionaryMapTest.m */,
 				06318C1E243E8D1100BF119E /* SelectorProviderTest.m */,
 				06318C19243E8CDD00BF119E /* AcceptPendingExceptionTest.m */,
 				06318C17243E8CDD00BF119E /* FutureLikeCompletionHandler.m */,
@@ -8739,6 +8742,7 @@
 				0612B8F81F4373740069EF58 /* ConcurrentSkipListSubSetTest.m in Sources */,
 				062028711D512E3E001EE455 /* KeyFactorySpiTest.m in Sources */,
 				FA5C0CC021BFFE6B000B6275 /* NoSuchMethodExceptionTest.m in Sources */,
+				060483372460F68400EAA86E /* NSDictionaryMapTest.m in Sources */,
 				062026311D512CA1001EE455 /* OldFileInputStreamTest.m in Sources */,
 				FA5C0C9821BFFE6B000B6275 /* ObjectTest.m in Sources */,
 				062B4F151ED76B8D00D4E7D8 /* OldFormatterTest.m in Sources */,

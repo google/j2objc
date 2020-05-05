@@ -225,6 +225,7 @@ TEST_SOURCES := \
     LocaleTest.java \
     MaxFloatingPointTest.java \
     NoPackageTest.java \
+    NSDictionaryMapTest.java \
     PackagePrefixesTest.java \
     SerializationTest.java \
     UTF16EncodingTest.java \

@@ -10,6 +10,7 @@
 #import "java/util/Iterator.h"
 #import "java/util/LinkedHashSet.h"
 #import "java/util/LinkedList.h"
+#import "java/util/function/BiConsumer.h"
 
 @interface NSDictionaryMap_Entry : NSObject<JavaUtilMap_Entry> {
 @private
@@ -182,5 +183,17 @@
 
   return list;
 }
+
+- (void)forEachWithJavaUtilFunctionBiConsumer:(id<JavaUtilFunctionBiConsumer>)action {
+  (void)nil_chk(action);
+  if (dictionary_.count > 0) {
+    NSEnumerator *enumerator = [dictionary_ keyEnumerator];
+    id key;
+    while ((key = [enumerator nextObject])) {
+      [action acceptWithId:key withId:[dictionary_ objectForKey:key]];
+    }
+  }
+}
+
 
 @end
