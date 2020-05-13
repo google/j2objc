@@ -166,7 +166,7 @@ EXC_MASK_CORPSE_NOTIFY EXC_MASK_ALL FIRST_EXCEPTION EXC_SOFT_SIGNAL EXC_MACF_MIN
 EXC_MACF_MAX
 
 # Definitions from time.h
-daylight getdate_err tzname
+daylight getdate_err timezone tzname
 
 # Definitions from types.h
 S_IRGRP S_IROTH S_IRUSR S_IRWXG S_IRWXO S_IRWXU S_IWGRP S_IWOTH
