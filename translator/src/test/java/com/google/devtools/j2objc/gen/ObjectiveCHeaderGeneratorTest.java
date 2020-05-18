@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.File;
 import java.io.IOException;
@@ -892,5 +893,40 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     assertTranslation(kytheMetadata, "kythe0");
     assertTranslation(kytheMetadata, "{\"type\":\"anchor_anchor\"");
+  }
+
+  //  Verifies that the error test and message lines are generated for ARC when
+  //  using ARC as Memory Management Option
+  public void testErrorTestAndMessageLinesGeneratedWithARC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String translation =
+            translateSourceFile("class A {" + "public A(int i) {}" + "A() {} }", "A", "A.h");
+
+    assertTranslation(translation, "#if !__has_feature(objc_arc)\n" +
+            "#error \"A must be compiled with ARC (-fobjc-arc)\"\n" +
+            "#endif");
+  }
+
+  //  Verifies that the error test and message lines are generated for Reference Counting
+  //  when using Reference Counting as Memory Management Option
+  public void testErrorTestAndMessageLinesGeneratedWithReferenceCounting() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    String translation =
+            translateSourceFile("class A {" + "public A(int i) {}" + "A() {} }", "A", "A.h");
+
+    assertTranslation(translation, "#if __has_feature(objc_arc)\n" +
+            "#error \"A should not be compiled with ARC (-fobjc-arc)\"\n" +
+            "#endif");
+  }
+
+  //  Verifies that the error test and message lines are generated for Reference Counting
+  //  when no Memory Management Option is set
+  public void testErrorTestAndMessageLinesGeneratedDefaultMemoryManagement() throws IOException {
+    String translation =
+            translateSourceFile("class A {" + "public A(int i) {}" + "A() {} }", "A", "A.h");
+
+    assertTranslation(translation, "#if __has_feature(objc_arc)\n" +
+            "#error \"A should not be compiled with ARC (-fobjc-arc)\"\n" +
+            "#endif");
   }
 }
