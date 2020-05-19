@@ -70,8 +70,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       generateKythePragma();
     }
 
-    generateMemoryManagement();
-
     for (GeneratedType generatedType : getOrderedTypes()) {
       printTypeDeclaration(generatedType);
     }
@@ -225,20 +223,5 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("/* This file contains Kythe metadata.");
     print(wrappedMetadata.toString());
     println("*/");
-  }
-
-  private void generateMemoryManagement() {
-    Options.MemoryManagementOption memoryManagementOption = getGenerationUnit().options().getMemoryManagementOption();
-    String filename = getGenerationUnit().getOutputPath();
-
-    if (memoryManagementOption == Options.MemoryManagementOption.ARC) {
-      println("#if !__has_feature(objc_arc)");
-      println(String.format("#error \"%s must be compiled with ARC (-fobjc-arc)\"", filename));
-    } else {
-      println("#if __has_feature(objc_arc)");
-      println(String.format("#error \"%s should not be compiled with ARC (-fobjc-arc)\"", filename));
-    }
-
-    println("#endif");
   }
 }

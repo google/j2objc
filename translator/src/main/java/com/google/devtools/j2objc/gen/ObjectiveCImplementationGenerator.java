@@ -30,92 +30,108 @@ import java.util.Set;
  */
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
 
-  private final Options options;
+    private final Options options;
 
-  /**
-   * Generate an Objective-C implementation file for each type declared in a
-   * specified compilation unit.
-   */
-  public static void generate(GenerationUnit unit) {
-    new ObjectiveCImplementationGenerator(unit).generate();
-  }
-
-  private ObjectiveCImplementationGenerator(GenerationUnit unit) {
-    super(unit, unit.options().emitLineDirectives());
-    options = unit.options();
-  }
-
-  @Override
-  protected String getSuffix() {
-    return options.getLanguage().suffix();
-  }
-
-  public void generate() {
-    print(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
-    printImports();
-    printIgnoreIncompletePragmas();
-    pushIgnoreDeprecatedDeclarationsPragma();
-    for (GeneratedType generatedType : getOrderedTypes()) {
-      print(generatedType.getPrivateDeclarationCode());
+    /**
+     * Generate an Objective-C implementation file for each type declared in a
+     * specified compilation unit.
+     */
+    public static void generate(GenerationUnit unit) {
+        new ObjectiveCImplementationGenerator(unit).generate();
     }
-    for (GeneratedType generatedType : getOrderedTypes()) {
-      print(generatedType.getImplementationCode());
-    }
-    popIgnoreDeprecatedDeclarationsPragma();
-    save(getOutputPath(), options.fileUtil().getOutputDirectory());
-  }
 
-  private void printIgnoreIncompletePragmas() {
-    GenerationUnit unit = getGenerationUnit();
-    if (unit.hasIncompleteProtocol() || unit.hasIncompleteImplementation()) {
-      newline();
+    private ObjectiveCImplementationGenerator(GenerationUnit unit) {
+        super(unit, unit.options().emitLineDirectives());
+        options = unit.options();
     }
-    if (unit.hasIncompleteProtocol()) {
-      println("#pragma clang diagnostic ignored \"-Wprotocol\"");
-    }
-    if (unit.hasIncompleteImplementation()) {
-      println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
-    }
-  }
 
-  private void printImports() {
-    Set<String> includeFiles = Sets.newTreeSet();
-    includeFiles.add("J2ObjC_source.h");
-    includeFiles.add(getGenerationUnit().getOutputPath() + ".h");
-    for (GeneratedType generatedType : getOrderedTypes()) {
-      for (Import imp : generatedType.getImplementationIncludes()) {
-        if (!isLocalType(imp.getTypeName())) {
-          includeFiles.add(imp.getImportFileName());
+    @Override
+    protected String getSuffix() {
+        return options.getLanguage().suffix();
+    }
+
+    public void generate() {
+        print(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
+        printImports();
+        printMemoryManagement();
+        printIgnoreIncompletePragmas();
+        pushIgnoreDeprecatedDeclarationsPragma();
+        for (GeneratedType generatedType : getOrderedTypes()) {
+            print(generatedType.getPrivateDeclarationCode());
         }
-      }
-    }
-
-    newline();
-    for (String header : includeFiles) {
-      printf("#include \"%s\"\n", header);
-    }
-
-    for (String code : getGenerationUnit().getNativeImplementationBlocks()) {
-      print(code);
-    }
-
-    Set<String> seenTypes = Sets.newHashSet();
-    Set<Import> forwardDecls = Sets.newHashSet();
-    for (GeneratedType generatedType : getOrderedTypes()) {
-      String name = generatedType.getTypeName();
-      seenTypes.add(name);
-      for (Import imp : generatedType.getImplementationForwardDeclarations()) {
-        String typeName = imp.getTypeName();
-        GeneratedType localType = getLocalType(typeName);
-        // For local types, only forward declare private types that haven't been seen yet.
-        // For non-local types, only forward declare types that haven't been imported.
-        if (localType != null ? (localType.isPrivate() && !seenTypes.contains(typeName))
-            : !includeFiles.contains(imp.getImportFileName())) {
-          forwardDecls.add(imp);
+        for (GeneratedType generatedType : getOrderedTypes()) {
+            print(generatedType.getImplementationCode());
         }
-      }
+        popIgnoreDeprecatedDeclarationsPragma();
+        save(getOutputPath(), options.fileUtil().getOutputDirectory());
     }
 
-    printForwardDeclarations(forwardDecls);
-  }
+    private void printIgnoreIncompletePragmas() {
+        GenerationUnit unit = getGenerationUnit();
+        if (unit.hasIncompleteProtocol() || unit.hasIncompleteImplementation()) {
+            newline();
+        }
+        if (unit.hasIncompleteProtocol()) {
+            println("#pragma clang diagnostic ignored \"-Wprotocol\"");
+        }
+        if (unit.hasIncompleteImplementation()) {
+            println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
+        }
+    }
+
+    private void printMemoryManagement() {
+        Options.MemoryManagementOption memoryManagementOption = options.getMemoryManagementOption();
+        String filename = getGenerationUnit().getOutputPath();
+
+        if (memoryManagementOption == Options.MemoryManagementOption.ARC) {
+            println("#if !__has_feature(objc_arc)");
+            println(String.format("#error \"%s must be compiled with ARC (-fobjc-arc)\"", filename));
+        } else {
+            println("#if __has_feature(objc_arc)");
+            println(String.format("#error \"%s must not be compiled with ARC (-fobjc-arc)\"", filename));
+        }
+
+        println("#endif");
+    }
+
+    private void printImports() {
+        Set<String> includeFiles = Sets.newTreeSet();
+        includeFiles.add("J2ObjC_source.h");
+        includeFiles.add(getGenerationUnit().getOutputPath() + ".h");
+        for (GeneratedType generatedType : getOrderedTypes()) {
+            for (Import imp : generatedType.getImplementationIncludes()) {
+                if (!isLocalType(imp.getTypeName())) {
+                    includeFiles.add(imp.getImportFileName());
+                }
+            }
+        }
+
+        newline();
+        for (String header : includeFiles) {
+            printf("#include \"%s\"\n", header);
+        }
+
+        for (String code : getGenerationUnit().getNativeImplementationBlocks()) {
+            print(code);
+        }
+
+        Set<String> seenTypes = Sets.newHashSet();
+        Set<Import> forwardDecls = Sets.newHashSet();
+        for (GeneratedType generatedType : getOrderedTypes()) {
+            String name = generatedType.getTypeName();
+            seenTypes.add(name);
+            for (Import imp : generatedType.getImplementationForwardDeclarations()) {
+                String typeName = imp.getTypeName();
+                GeneratedType localType = getLocalType(typeName);
+                // For local types, only forward declare private types that haven't been seen yet.
+                // For non-local types, only forward declare types that haven't been imported.
+                if (localType != null ? (localType.isPrivate() && !seenTypes.contains(typeName))
+                        : !includeFiles.contains(imp.getImportFileName())) {
+                    forwardDecls.add(imp);
+                }
+            }
+        }
+
+        printForwardDeclarations(forwardDecls);
+    }
 }
