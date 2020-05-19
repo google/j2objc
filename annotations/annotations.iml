@@ -14,7 +14,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build_result" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="j2objc_annotations.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/build_result/j2objc_annotations.jar!/" />

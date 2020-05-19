@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/util/TestFormatter.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/TestLocalDate.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/TestInstant.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestDateTimeTextProvider.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestStringLiteralParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestZoneOffsetParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestNumberPrinter.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestNonIsoFormatter.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/TestLocalDateTime.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestTextParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/temporal/TestDateTimeValueRange.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/luni/src/test/java/libcore/java/nio/charset/StandardCharsetsEncoderTest.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestDateTimeParsing.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestZoneOffsetPrinter.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestZoneTextPrinterParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestFractionPrinterParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestNumberParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestCharLiteralParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestReducedPrinter.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/temporal/TestDateTimeBuilderCombinations.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/temporal/TestChronoUnit.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/TestOffsetDateTime.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/temporal/TestIsoWeekFields.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestTextPrinter.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestReducedParser.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/format/TestDateTimeFormatterBuilder.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/luni/src/test/java/libcore/java/nio/channels/ChannelsTest.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/Tests.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestUmmAlQuraChronology.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestExampleCode.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestIsoChronoImpl.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestChronologyPerf.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestJapaneseChronology.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestThaiBuddhistChronoImpl.java" />
+      <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/chrono/TestJapaneseChronoImpl.java" />
+    </excludeFromCompile>
+  </component>
+</project>

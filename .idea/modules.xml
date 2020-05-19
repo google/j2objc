@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/annotations/annotations.iml" filepath="$PROJECT_DIR$/annotations/annotations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jre_emul/jre_emul.iml" filepath="$PROJECT_DIR$/jre_emul/jre_emul.iml" />
+      <module fileurl="file://$PROJECT_DIR$/translator/translator.iml" filepath="$PROJECT_DIR$/translator/translator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tree_shaker/tree_shaker.iml" filepath="$PROJECT_DIR$/tree_shaker/tree_shaker.iml" />
+    </modules>
+  </component>
+</project>
