@@ -53,6 +53,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   public void generate() {
     print(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
     printImports();
+    printMemoryManagement();
     printIgnoreIncompletePragmas();
     pushIgnoreDeprecatedDeclarationsPragma();
     for (GeneratedType generatedType : getOrderedTypes()) {
@@ -117,5 +118,21 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
 
     printForwardDeclarations(forwardDecls);
+    newline();
+  }
+
+  private void printMemoryManagement() {
+    Options.MemoryManagementOption memoryManagementOption = options.getMemoryManagementOption();
+    String filename = getGenerationUnit().getOutputPath();
+
+    if (memoryManagementOption == Options.MemoryManagementOption.ARC) {
+      println("#if !__has_feature(objc_arc)");
+      println(String.format("#error \"%s must be compiled with ARC (-fobjc-arc)\"", filename));
+    } else {
+      println("#if __has_feature(objc_arc)");
+      println(String.format("#error \"%s must not be compiled with ARC (-fobjc-arc)\"", filename));
+    }
+
+    println("#endif");
   }
 }
