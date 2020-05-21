@@ -596,6 +596,7 @@ TEST_SOURCES := \
     libcore/org/json/SelfUseTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/IncompleteAnnotationExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/RetentionPolicyTest.java \
