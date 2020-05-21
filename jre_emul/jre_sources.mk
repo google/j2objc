@@ -1153,6 +1153,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/X509CRLSelector.java \
   java/security/cert/X509Extension.java \
   java/security/interfaces/DSAKey.java \
+  java/security/interfaces/DSAKeyPairGenerator.java \
   java/security/interfaces/DSAParams.java \
   java/security/interfaces/DSAPrivateKey.java \
   java/security/interfaces/DSAPublicKey.java \
