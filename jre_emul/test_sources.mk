@@ -596,6 +596,7 @@ TEST_SOURCES := \
     libcore/org/json/SelfUseTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/IncompleteAnnotationExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/RetentionPolicyTest.java \
@@ -1095,6 +1096,7 @@ TESTS_USE_REFLECTION = \
     libcore/java/lang/CharacterTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
     libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
+    org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
