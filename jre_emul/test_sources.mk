@@ -999,6 +999,7 @@ TEST_SOURCES := \
     test/java/time/zone/TestFixedZoneRules.java \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/security/cert/X509Certificate2Test.java \
+    tests/security/interfaces/DSAParamsTest.java \
     tests/security/interfaces/RSAKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
     tests/security/interfaces/RSAPublicKeyTest.java \
