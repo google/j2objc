@@ -98,10 +98,15 @@ int main( int argc, const char *argv[] ) {
       return 1;
     }
 
+    // Directly invoke the method's IMP, to avoid a "performSelector may cause a
+    // leak because its selector is unknown" warning when built with ARC.
+    IMP mainImp = [clazz.objcClass methodForSelector:mainSelector];
+    void (*mainFunc)(id, SEL, IOSObjectArray *) = (void *)mainImp;
+
     // Invoke main() with remaining command-line arguments.
     @try {
       IOSObjectArray *mainArgs = JreEmulationMainArguments(argc - 1, &argv[1]);
-      [clazz.objcClass performSelector:mainSelector withObject:mainArgs];
+      mainFunc(clazz.objcClass, mainSelector, mainArgs);
     }
     @catch (JavaLangThrowable *e) {
       handleUncaughtException(e);
