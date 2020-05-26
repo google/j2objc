@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -45,6 +45,8 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Map;
 import java.util.HashMap;
 
+// Android-removed: List of classes for use with attribute keys; Android doesn't have those.
+// Android-removed: "Summary of attributes" section. Android doesn't have the referenced classes.
 /**
  * The <code>TextAttribute</code> class defines attribute keys and
  * attribute values used for text rendering.
@@ -62,7 +64,7 @@ import java.util.HashMap;
  *   <LI>a description of the effect.
  * </UL>
  * <p>
- * <H4>Values</H4>
+ * <H3>Values</H3>
  * <UL>
  *   <LI>The values of attributes must always be immutable.
  *   <LI>Where value limitations are given, any value outside of that
@@ -90,178 +92,12 @@ import java.util.HashMap;
  *
  * </UL>
  *
- * @see java.text.AttributedCharacterIterator
  */
-
-// Android-removed: Removed Summary of Attributes.
-/* <h4>Summary of attributes</h4>
- * <p>
- * <font size="-1">
- * <table align="center" border="0" cellspacing="0" cellpadding="2" width="%95"
- *     summary="Key, value type, principal constants, and default value
- *     behavior of all TextAttributes">
- * <tr bgcolor="#ccccff">
- * <th valign="TOP" align="CENTER">Key</th>
- * <th valign="TOP" align="CENTER">Value Type</th>
- * <th valign="TOP" align="CENTER">Principal Constants</th>
- * <th valign="TOP" align="CENTER">Default Value</th>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #FAMILY}</td>
- * <td valign="TOP">String</td>
- * <td valign="TOP">See Font {@link java.awt.Font#DIALOG DIALOG},
-{@link java.awt.Font#DIALOG_INPUT DIALOG_INPUT},<br> {@link java.awt.Font#SERIF SERIF},
-{@link java.awt.Font#SANS_SERIF SANS_SERIF}, and {@link java.awt.Font#MONOSPACED MONOSPACED}.
-</td>
- * <td valign="TOP">"Default" (use platform default)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #WEIGHT}</td>
- * <td valign="TOP">Number</td>
- * <td valign="TOP">WEIGHT_REGULAR, WEIGHT_BOLD</td>
- * <td valign="TOP">WEIGHT_REGULAR</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #WIDTH}</td>
- * <td valign="TOP">Number</td>
- * <td valign="TOP">WIDTH_CONDENSED, WIDTH_REGULAR,<br>WIDTH_EXTENDED</td>
- * <td valign="TOP">WIDTH_REGULAR</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #POSTURE}</td>
- * <td valign="TOP">Number</td>
- * <td valign="TOP">POSTURE_REGULAR, POSTURE_OBLIQUE</td>
- * <td valign="TOP">POSTURE_REGULAR</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #SIZE}</td>
- * <td valign="TOP">Number</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">12.0</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #TRANSFORM}</td>
- * <td valign="TOP">{@link TransformAttribute}</td>
- * <td valign="TOP">See TransformAttribute {@link TransformAttribute#IDENTITY IDENTITY}</td>
- * <td valign="TOP">TransformAttribute.IDENTITY</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #SUPERSCRIPT}</td>
- * <td valign="TOP">Integer</td>
- * <td valign="TOP">SUPERSCRIPT_SUPER, SUPERSCRIPT_SUB</td>
- * <td valign="TOP">0 (use the standard glyphs and metrics)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #FONT}</td>
- * <td valign="TOP">{@link java.awt.Font}</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">null (do not override font resolution)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #CHAR_REPLACEMENT}</td>
- * <td valign="TOP">{@link GraphicAttribute}</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">null (draw text using font glyphs)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #FOREGROUND}</td>
- * <td valign="TOP">{@link java.awt.Paint}</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">null (use current graphics paint)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #BACKGROUND}</td>
- * <td valign="TOP">{@link java.awt.Paint}</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">null (do not render background)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #UNDERLINE}</td>
- * <td valign="TOP">Integer</td>
- * <td valign="TOP">UNDERLINE_ON</td>
- * <td valign="TOP">-1 (do not render underline)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #STRIKETHROUGH}</td>
- * <td valign="TOP">Boolean</td>
- * <td valign="TOP">STRIKETHROUGH_ON</td>
- * <td valign="TOP">false (do not render strikethrough)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #RUN_DIRECTION}</td>
- * <td valign="TOP">Boolean</td>
- * <td valign="TOP">RUN_DIRECTION_LTR<br>RUN_DIRECTION_RTL</td>
- * <td valign="TOP">null (use {@link java.text.Bidi} standard default)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #BIDI_EMBEDDING}</td>
- * <td valign="TOP">Integer</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">0 (use base line direction)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #JUSTIFICATION}</td>
- * <td valign="TOP">Number</td>
- * <td valign="TOP">JUSTIFICATION_FULL</td>
- * <td valign="TOP">JUSTIFICATION_FULL</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #INPUT_METHOD_HIGHLIGHT}</td>
- * <td valign="TOP">{@link java.awt.im.InputMethodHighlight},<br>{@link java.text.Annotation}</td>
- * <td valign="TOP">(see class)</td>
- * <td valign="TOP">null (do not apply input highlighting)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #INPUT_METHOD_UNDERLINE}</td>
- * <td valign="TOP">Integer</td>
- * <td valign="TOP">UNDERLINE_LOW_ONE_PIXEL,<br>UNDERLINE_LOW_TWO_PIXEL</td>
- * <td valign="TOP">-1 (do not render underline)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #SWAP_COLORS}</td>
- * <td valign="TOP">Boolean</td>
- * <td valign="TOP">SWAP_COLORS_ON</td>
- * <td valign="TOP">false (do not swap colors)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #NUMERIC_SHAPING}</td>
- * <td valign="TOP">{@link java.awt.font.NumericShaper}</td>
- * <td valign="TOP">none</td>
- * <td valign="TOP">null (do not shape digits)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #KERNING}</td>
- * <td valign="TOP">Integer</td>
- * <td valign="TOP">KERNING_ON</td>
- * <td valign="TOP">0 (do not request kerning)</td>
- * </tr>
- * <tr bgcolor="#eeeeff">
- * <td valign="TOP">{@link #LIGATURES}</td>
- * <td valign="TOP">Integer</td>
- * <td valign="TOP">LIGATURES_ON</td>
- * <td valign="TOP">0 (do not form optional ligatures)</td>
- * </tr>
- * <tr>
- * <td valign="TOP">{@link #TRACKING}</td>
- * <td valign="TOP">Number</td>
- * <td valign="TOP">TRACKING_LOOSE, TRACKING_TIGHT</td>
- * <td valign="TOP">0 (do not add tracking)</td>
- * </tr>
- * </table>
- * </font>
- *
- * @see java.awt.Font
- * @see java.awt.font.TextLayout
- */
-// Android-removed
-//
-// {@link java.awt.Font Font},
-// {@link java.awt.font.TextLayout TextLayout},
-// {@link java.text.AttributedCharacterIterator AttributedCharacterIterator},
 public final class TextAttribute extends Attribute {
 
     // table of all instances in this class, used by readResolve
-    private static final Map instanceMap = new HashMap(29);
+    private static final Map<String, TextAttribute>
+            instanceMap = new HashMap<String, TextAttribute>(29);
 
     /**
      * Constructs a <code>TextAttribute</code> with the specified name.
@@ -284,7 +120,7 @@ public final class TextAttribute extends Attribute {
                 "subclass didn't correctly implement readResolve");
         }
 
-        TextAttribute instance = (TextAttribute) instanceMap.get(getName());
+        TextAttribute instance = instanceMap.get(getName());
         if (instance != null) {
             return instance;
         } else {
@@ -302,6 +138,7 @@ public final class TextAttribute extends Attribute {
     // For use with Font.
     //
 
+    // Android-removed: Don't link to java.awt.Font class, it doesn't exist on Android.
     /**
      * Attribute key for the font name.  Values are instances of
      * <b><code>String</code></b>.  The default value is
@@ -324,13 +161,6 @@ public final class TextAttribute extends Attribute {
      * The "Bold" in the name is part of the face name, not a separate
      * request that the font's weight be bold.</p>
      */
-    // Android-removed links to font names.
-    //
-    // {@link java.awt.Font#DIALOG DIALOG},
-    // {@link java.awt.Font#DIALOG_INPUT DIALOG_INPUT},
-    // {@link java.awt.Font#SANS_SERIF SANS_SERIF},
-    // {@link java.awt.Font#SERIF SERIF}, and
-    // {@link java.awt.Font#MONOSPACED MONOSPACED}.
     public static final TextAttribute FAMILY =
         new TextAttribute("family");
 
@@ -490,6 +320,7 @@ public final class TextAttribute extends Attribute {
     public static final Float WIDTH_EXTENDED =
         Float.valueOf(1.5f);
 
+    // Android-removed: Don't link to java.awt.Font class, it doesn't exist on Android.
     /**
      * Attribute key for the posture of a font.  Values are instances
      * of <b><code>Number</code></b>. The default value is
@@ -510,8 +341,6 @@ public final class TextAttribute extends Attribute {
      * <code>Font.getItalicAngle</code>.
      *
      */
-    // Android-removed.
-    // @see java.awt.Font#getItalicAngle()
     public static final TextAttribute POSTURE =
         new TextAttribute("posture");
 
@@ -548,6 +377,8 @@ public final class TextAttribute extends Attribute {
     public static final TextAttribute SIZE =
         new TextAttribute("size");
 
+    // Android-removed: References to classes that don't exist on Android.
+    // These classes were AffineTransform, Font, and TransformAttribute.
     /**
      * Attribute key for the transform of a font.  Values are
      * instances of <b><code>TransformAttribute</code></b>.  The
@@ -566,23 +397,6 @@ public final class TextAttribute extends Attribute {
      * with a rotated TRANSFORM and an unrotated TRANSFORM will measure as
      * having the same ascent, descent, and advance.</p>
      */
-     // Android-removed
-     //
-     // <p>This corresponds to the transform passed to
-     // <code>Font.deriveFont(AffineTransform)</code>.  Since that
-     // transform is mutable and <code>TextAttribute</code> values must
-     // not be, the <code>TransformAttribute</code> wrapper class is
-     // used.
-     //
-     // <p>The <code>TransformAttribute</code> class defines the
-     // constant {@link TransformAttribute#IDENTITY IDENTITY}.
-     // @see TransformAttribute
-     // @see java.awt.geom.AffineTransform
-     //
-     // <p>In styled text, the baselines for each such run are aligned
-     // one after the other to potentially create a non-linear baseline
-     // for the entire run of text. For more information, see {@link
-     // TextLayout#getLayoutPath}.</p>
      public static final TextAttribute TRANSFORM =
         new TextAttribute("transform");
 
@@ -621,6 +435,7 @@ public final class TextAttribute extends Attribute {
     public static final Integer SUPERSCRIPT_SUB =
         Integer.valueOf(-1);
 
+    // Android-removed: Don't link to java.awt.Font class, it doesn't exist on Android.
     /**
      * Attribute key used to provide the font to use to render text.
      *
@@ -673,20 +488,11 @@ public final class TextAttribute extends Attribute {
      * <code>Font</code> but can be overridden by other values in the
      * <code>Map</code>.
      */
-    // Android-removed
-    // Values are instances of {@link java.awt.Font}.
-    //
-    // <p><em>Note:</em><code>Font's</code> <code>Map</code>-based
-    // constructor and <code>deriveFont</code> methods do not process
-    // the <code>FONT</code> attribute, as these are used to create
-    // new <code>Font</code> objects.  Instead, {@link
-    // java.awt.Font#getFont(Map) Font.getFont(Map)} should be used to
-    // handle the <code>FONT</code> attribute.
-    //
-    // @see java.awt.Font
     public static final TextAttribute FONT =
         new TextAttribute("font");
 
+    // Android-changed: Removed @see tag (target does not exist on Android):
+    // @see GraphicAttribute
     /**
      * Attribute key for a user-defined glyph to display in lieu
      * of the font's standard glyph for a character.  Values are
@@ -705,8 +511,6 @@ public final class TextAttribute extends Attribute {
      *
      * <p>The GraphicAttribute determines the logical and visual
      * bounds of the text; the actual Font values are ignored.
-     *
-     * @see GraphicAttribute
      */
     public static final TextAttribute CHAR_REPLACEMENT =
         new TextAttribute("char_replacement");
@@ -715,6 +519,8 @@ public final class TextAttribute extends Attribute {
     // Adornments added to text.
     //
 
+    // Android-changed: Removed @see tag (target does not exist on Android):
+    // @see java.awt.Paint
     /**
      * Attribute key for the paint used to render the text.  Values are
      * instances of <b><code>Paint</code></b>.  The default value is
@@ -725,12 +531,13 @@ public final class TextAttribute extends Attribute {
      * <code>Paint</code> regardless of the <code>Paint</code> value
      * set on the <code>Graphics</code> (but see {@link #SWAP_COLORS}).
      *
-     * @see java.awt.Paint
      * @see #SWAP_COLORS
      */
     public static final TextAttribute FOREGROUND =
         new TextAttribute("foreground");
 
+    // Android-changed: Removed @see tag (target does not exist on Android):
+    // @see java.awt.Paint
     /**
      * Attribute key for the paint used to render the background of
      * the text.  Values are instances of <b><code>Paint</code></b>.
@@ -744,7 +551,6 @@ public final class TextAttribute extends Attribute {
      * <p>The visual bounds of the text is extended to include the
      * logical bounds, if necessary.  The outline is not affected.
      *
-     * @see java.awt.Paint
      * @see #SWAP_COLORS
      */
     public static final TextAttribute BACKGROUND =
@@ -857,6 +663,8 @@ public final class TextAttribute extends Attribute {
     public static final TextAttribute BIDI_EMBEDDING =
         new TextAttribute("bidi_embedding");
 
+    // Android-changed: Removed @see tag (target does not exist on Android):
+    // @see TextLayout#getJustifiedLayout
     /**
      * Attribute key for the justification of a paragraph.  Values are
      * instances of <b><code>Number</code></b>.  The default value is
@@ -875,8 +683,6 @@ public final class TextAttribute extends Attribute {
      *
      * <p><em>Note:</em> This should have the same value for all the
      * text in a paragraph, otherwise the behavior is undetermined.
-     *
-     * @see TextLayout#getJustifiedLayout
      */
     public static final TextAttribute JUSTIFICATION =
         new TextAttribute("justification");
@@ -900,6 +706,7 @@ public final class TextAttribute extends Attribute {
     // For use by input method.
     //
 
+    // Android-removed: References to java.awt.im.InputMethodHighlight (doesn't exist on Android).
     /**
      * Attribute key for input method highlight styles.
      *
@@ -909,24 +716,6 @@ public final class TextAttribute extends Attribute {
      *
      * @see java.text.Annotation
      */
-    // Android-removed
-    //
-    // <p>Values are instances of {@link
-    // java.awt.im.InputMethodHighlight} or {@link
-    // java.text.Annotation}.
-    // 
-    // <p>If adjacent runs of text with the same
-    // <code>InputMethodHighlight</code> need to be rendered
-    // separately, the <code>InputMethodHighlights</code> should be
-    // wrapped in <code>Annotation</code> instances.
-    //
-    // <p>Input method highlights are used while text is being
-    // composed by an input method. Text editing components should
-    // retain them even if they generally only deal with unstyled
-    // text, and make them available to the drawing routines.
-    //
-    // @see java.awt.Font
-    // @see java.awt.im.InputMethodHighlight
     public static final TextAttribute INPUT_METHOD_HIGHLIGHT =
         new TextAttribute("input method highlight");
 
