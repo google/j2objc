@@ -235,14 +235,14 @@ public class TimeZoneTest extends junit.framework.TestCase {
         int rawOffset = tz.getRawOffset();
         assertEquals(-8 * 60 * 60 * 1000, rawOffset);
         List<String> ids = Arrays.asList(TimeZone.getAvailableIDs(rawOffset));
-
+        
         // Obviously, for all time zones, the time zone whose raw offset we started with
         // should be one of the available ids for that offset.
         assertTrue(ids.toString(), ids.contains("America/Los_Angeles"));
 
         // Any one of these might legitimately change its raw offset, though that's
         // fairly unlikely, and the chances of more than one changing are very slim.
-        assertTrue(ids.toString(), ids.contains("America/Dawson"));
+        assertTrue(ids.toString(), ids.contains("America/Santa_Isabel"));
         assertTrue(ids.toString(), ids.contains("America/Tijuana"));
         assertTrue(ids.toString(), ids.contains("America/Vancouver"));
         // j2objc: NSTimeZone does not list Canada/* as known time zone names.
