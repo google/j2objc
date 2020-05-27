@@ -2256,6 +2256,7 @@ JRE_PUBLIC_PACKAGES = \
   javax.xml.xpath \
   org.w3c.dom \
   org.w3c.dom.ls \
+  org.w3c.dom.traversal \
   org.xml.sax \
   org.xml.sax.ext \
   org.xml.sax.helpers
