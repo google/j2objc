@@ -20,15 +20,11 @@ Usage:
       [-link_class <name>] <files>
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 import argparse
 import functools
 import os
 import subprocess
 import sys
-import six
 
 # Used by argparse to build help string.
 USAGE_STRING = """
@@ -64,8 +60,8 @@ def ProcessResourceFile(resource_path, output_file):
         Java resource.
       output_file: the file that is updated with the embedded data.
   """
-  array_name = six.ensure_str(resource_path).replace("/", "_").replace(
-      ".", "_").replace("-", "_")
+  array_name = resource_path.replace("/", "_").replace(".", "_").replace(
+      "-", "_")
   if array_name[0] != "_":
     array_name = "_" + array_name
   array_name_hash = "0x{:02x}".format(hash(array_name) & (2**32 - 1))

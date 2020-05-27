@@ -18,12 +18,8 @@ Usage:
   $ gen_module_info.py --name <module_name> -root <path> -output <path>
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 import argparse
 import os
-import six
 
 # Used by argparse to build help string.
 USAGE_STRING = """
@@ -56,11 +52,11 @@ def Main():
   module_info.write("module {} {{\n".format(args.name))
   for subdir, _, files in os.walk(root):
     if any(
-        six.ensure_str(f).endswith(".class")
+        f.endswith(".class")
         for f in files
-        if not six.ensure_str(f).endswith("package-info.class")):
+        if not f.endswith("package-info.class")):
       package = subdir[len(root) + 1:]  # "+ 1" to remove the "/"
-      package = six.ensure_str(package).replace("/", ".")
+      package = package.replace("/", ".")
       module_info.write("  exports {};\n".format(package))
   module_info.write("}\n")
   module_info.close()
