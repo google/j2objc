@@ -5,6 +5,8 @@
 
 package org.xml.sax;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 /**
  * Encapsulate a general SAX error or warning.
  *
@@ -144,6 +146,7 @@ public class SAXException extends Exception {
     /**
      * @serial The embedded exception if tunnelling, or null.
      */
+    @UnsupportedAppUsage
     private Exception exception;
 
 }
