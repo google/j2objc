@@ -8,6 +8,8 @@ package org.xml.sax.ext;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 
 /**
  * SAX2 extension helper for holding additional Entity information,
@@ -26,7 +28,9 @@ import org.xml.sax.helpers.LocatorImpl;
  */
 public class Locator2Impl extends LocatorImpl implements Locator2
 {
+    @UnsupportedAppUsage
     private String    encoding;
+    @UnsupportedAppUsage
     private String    version;
 
 

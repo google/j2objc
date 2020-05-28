@@ -7,12 +7,15 @@
 
 package org.xml.sax.helpers;
 
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import android.compat.annotation.UnsupportedAppUsage;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -126,9 +129,12 @@ final public class XMLReaderFactory
             in = loader.getResourceAsStream (service);
 
         if (in != null) {
-            reader = new BufferedReader (new InputStreamReader (in, StandardCharsets.UTF_8));
-            className = reader.readLine ();
-            in.close ();
+            try {
+                reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                className = reader.readLine();
+            } finally {
+                in.close(); // may throw IOException
+            }
         }
         } catch (Exception e) {
         }
@@ -182,6 +188,7 @@ final public class XMLReaderFactory
     return loadClass (NewInstance.getClassLoader (), className);
     }
 
+    @UnsupportedAppUsage
     private static XMLReader loadClass (ClassLoader loader, String className)
     throws SAXException
     {
