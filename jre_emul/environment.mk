@@ -69,6 +69,7 @@ ICU_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/java
 ICU_TEST_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/tests
 ICU_RES_DIR = $(BUILD_DIR)/icu_res
 ICU_EMBEDDED_RES_DIR = $(ICU_RES_DIR)/embedded
+ANDROID_PLATFORM_COMPAT_ROOT = $(ANDROID_BASE)/tools/platform-compat/java
 
 OPENJDK_SHARE_ROOT = openjdk/src/share/classes
 OPENJDK_MACOSX_ROOT = openjdk/src/macosx/classes
@@ -118,7 +119,7 @@ JRE_SRC_ROOTS = \
     $(ANDROID_CORE_ROOT) $(ANDROID_JSON_ROOT) \
     $(JRE_BEANS_ROOT) $(J2OBJC_LUNI_ROOT) $(ANDROID_OPENJDK_ROOT) \
     $(OKIO_ROOT) $(LAMBDA_DIR) $(OPENJDK_SHARE_ROOT) $(OPENJDK_MACOSX_ROOT) \
-    $(STUBS_DIR) $(ICU_ROOT)
+    $(STUBS_DIR) $(ICU_ROOT) $(ANDROID_PLATFORM_COMPAT_ROOT)
 JRE_SRC = $(subst $(eval) ,:,$(JRE_SRC_ROOTS))
 TEST_SRC_ROOTS = \
     $(MISC_TEST_ROOT) $(ANDROID_TEST_SUPPORT_ROOT) \
