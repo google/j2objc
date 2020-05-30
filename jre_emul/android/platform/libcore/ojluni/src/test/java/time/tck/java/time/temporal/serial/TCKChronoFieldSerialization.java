@@ -88,22 +88,26 @@ import static java.time.temporal.ChronoField.ERA;
 import java.io.IOException;
 import java.time.temporal.ChronoField;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test serialization of ChronoField.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKChronoFieldSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
     // List of Fields
     //-----------------------------------------------------------------------
-    @DataProvider(name="fieldBased")
-    Object[][] data_fieldBased() {
+    @DataProvider
+    public static Object[][] data_fieldBased() {
         return new Object[][] {
                 {DAY_OF_WEEK},
                 {ALIGNED_DAY_OF_WEEK_IN_MONTH},
@@ -137,7 +141,8 @@ public class TCKChronoFieldSerialization extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider = "fieldBased")
+    @Test
+    @UseDataProvider("data_fieldBased")
     public void test_fieldSerializable(ChronoField field) throws IOException, ClassNotFoundException {
         assertSerializableSame(field);
     }

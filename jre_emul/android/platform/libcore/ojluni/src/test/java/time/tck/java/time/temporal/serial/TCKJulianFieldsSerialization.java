@@ -63,20 +63,24 @@ import java.io.IOException;
 import java.time.temporal.JulianFields;
 import java.time.temporal.TemporalField;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test serialization of JulianFields
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKJulianFieldsSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="julian_fields")
-    Object[][] julian_samples() {
+    @DataProvider
+    public static Object[][] julian_samples() {
         return new Object[][] {
             {JulianFields.JULIAN_DAY},
             {JulianFields.MODIFIED_JULIAN_DAY},
@@ -86,7 +90,8 @@ public class TCKJulianFieldsSerialization extends AbstractTCKTest {
 
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="julian_fields")
+    @Test
+    @UseDataProvider("julian_samples")
     public void test_serializable(TemporalField field) throws IOException, ClassNotFoundException {
         assertSerializable(field);
     }
