@@ -56,13 +56,16 @@
  */
 package tck.java.time.temporal.serial;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 import java.io.IOException;
@@ -75,19 +78,21 @@ import java.util.Arrays;
 /**
  * Test serialization of WeekFields.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKWeekFieldsSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_serializable_singleton(DayOfWeek firstDayOfWeek, int minDays) throws IOException, ClassNotFoundException {
         WeekFields weekDef = WeekFields.of(firstDayOfWeek, minDays);
         assertSerializableSame(weekDef);  // spec state singleton
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="weekFields")
-    Object[][] data_weekFields() {
+    @DataProvider
+    public static Object[][] data_weekFields() {
         Object[][] objects = new Object[49][];
         int i = 0;
         for (DayOfWeek firstDayOfWeek : DayOfWeek.values()) {
@@ -112,7 +117,7 @@ public class TCKWeekFieldsSerialization extends AbstractTCKTest {
         System.arraycopy(good1, 0, val, 105, good1.length);
         try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(val))) {
             Object o = in.readObject();
-            assertEquals(o, WeekFields.of(DayOfWeek.MONDAY, 5), "Should be MONDAY, min = 5");
+            assertEquals("Should be MONDAY, min = 5", o, WeekFields.of(DayOfWeek.MONDAY, 5));
         } catch (Exception ioe) {
             fail("Unexpected exception " + ioe);
         }

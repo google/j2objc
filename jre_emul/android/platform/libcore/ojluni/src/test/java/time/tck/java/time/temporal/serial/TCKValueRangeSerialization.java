@@ -59,8 +59,8 @@
  */
 package tck.java.time.temporal.serial;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -71,14 +71,14 @@ import java.io.ObjectOutputStream;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test serialization of ValueRange.
  */
-@Test
+
 public class TCKValueRangeSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
@@ -118,7 +118,7 @@ public class TCKValueRangeSerialization extends AbstractTCKTest {
             oos.writeObject(range);
 
             byte[] actual = baos.toByteArray();
-            assertEquals(actual, expected, "Serialized bytes incorrect");
+            assertEquals("Serialized bytes incorrect", actual, expected);
         }
     }
 

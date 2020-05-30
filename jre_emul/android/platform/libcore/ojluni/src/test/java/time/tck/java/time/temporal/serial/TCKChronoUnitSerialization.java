@@ -76,22 +76,26 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKChronoUnitSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
     // ChronoUnits
     //-----------------------------------------------------------------------
-    @DataProvider(name="chronoUnit")
-    Object[][] data_chronoUnit() {
+    @DataProvider
+    public static Object[][] data_chronoUnit() {
         return new Object[][] {
                 {FOREVER},
                 {ERAS},
@@ -114,7 +118,8 @@ public class TCKChronoUnitSerialization extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider = "chronoUnit")
+    @Test
+    @UseDataProvider("data_chronoUnit")
     public void test_unitType(ChronoUnit unit) throws IOException, ClassNotFoundException {
         assertSerializableSame(unit);
     }

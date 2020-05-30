@@ -959,6 +959,11 @@ TEST_SOURCES := \
     tck/java/time/temporal/TCKJulianFields.java \
     tck/java/time/temporal/TCKTemporalAdjusters.java \
     tck/java/time/temporal/TCKWeekFields.java \
+    tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
+    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
+    tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
+    tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
+    tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
     test/java/time/TestClock_Fixed.java \
     test/java/time/TestClock_Offset.java \
     test/java/time/TestClock_System.java \
