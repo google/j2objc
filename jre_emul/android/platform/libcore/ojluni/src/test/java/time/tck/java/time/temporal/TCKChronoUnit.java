@@ -72,9 +72,9 @@ import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -83,20 +83,24 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKChronoUnit {
 
     //-----------------------------------------------------------------------
     // isDateBased(), isTimeBased() and isDurationEstimated()
     //-----------------------------------------------------------------------
-    @DataProvider(name="chronoUnit")
-    Object[][] data_chronoUnit() {
+    @DataProvider
+    public static Object[][] data_chronoUnit() {
         return new Object[][] {
                 {FOREVER, false, false, true},
                 {ERAS, true, false, true},
@@ -119,7 +123,8 @@ public class TCKChronoUnit {
         };
     }
 
-    @Test(dataProvider = "chronoUnit")
+    @Test
+    @UseDataProvider("data_chronoUnit")
     public void test_unitType(ChronoUnit unit, boolean isDateBased, boolean isTimeBased, boolean isDurationEstimated) {
         assertEquals(unit.isDateBased(), isDateBased);
         assertEquals(unit.isTimeBased(), isTimeBased);
@@ -129,8 +134,8 @@ public class TCKChronoUnit {
     //-----------------------------------------------------------------------
     // isSupportedBy(), addTo() and between()
     //-----------------------------------------------------------------------
-    @DataProvider(name="unitAndTemporal")
-    Object[][] data_unitAndTemporal() {
+    @DataProvider
+    public static Object[][] data_unitAndTemporal() {
         return new Object[][] {
                 {CENTURIES, LocalDate.of(2000, 1, 10), true, 1, LocalDate.of(2100, 1, 10)},
                 {DECADES, LocalDate.of(2000, 1, 10), true, 1, LocalDate.of(2010, 1, 10)},
@@ -165,7 +170,8 @@ public class TCKChronoUnit {
         };
     }
 
-    @Test(dataProvider = "unitAndTemporal")
+    @Test
+    @UseDataProvider("data_unitAndTemporal")
     public void test_unitAndTemporal(ChronoUnit unit, Temporal base, boolean isSupportedBy, long amount,  Temporal target) {
         assertEquals(unit.isSupportedBy(base), isSupportedBy);
         if (isSupportedBy) {
