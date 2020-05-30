@@ -6,8 +6,6 @@
 
 package org.xml.sax.helpers;
 
-import java.io.IOException;
-import java.util.Locale;
 import org.xml.sax.AttributeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -21,6 +19,11 @@ import org.xml.sax.Parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
+
+import android.compat.annotation.UnsupportedAppUsage;
+
+import java.io.IOException;
+import java.util.Locale;
 
 
 /**
@@ -95,6 +98,7 @@ public class XMLReaderAdapter implements Parser, ContentHandler
      *
      * @param xmlReader The embedded XMLReader.
      */
+    @UnsupportedAppUsage
     private void setup (XMLReader xmlReader)
     {
     if (xmlReader == null) {
@@ -227,6 +231,7 @@ public class XMLReaderAdapter implements Parser, ContentHandler
     /**
      * Set up the XML reader.
      */
+    @UnsupportedAppUsage
     private void setupXMLReader ()
     throws SAXException
     {
@@ -425,8 +430,11 @@ public class XMLReaderAdapter implements Parser, ContentHandler
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
+    @UnsupportedAppUsage
     XMLReader xmlReader;
+    @UnsupportedAppUsage
     DocumentHandler documentHandler;
+    @UnsupportedAppUsage
     AttributesAdapter qAtts;
 
 

@@ -14,6 +14,8 @@ package org.w3c.dom.ls;
 
 import org.w3c.dom.traversal.NodeFilter;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 /**
  *  <code>LSSerializerFilter</code>s provide applications the ability to
  * examine nodes as they are being serialized and decide what nodes should
@@ -60,6 +62,7 @@ public interface LSSerializerFilter extends NodeFilter {
      * <br> The constants used here are defined in [<a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113'>DOM Level 2 Traversal and      Range</a>]
      * .
      */
+    @UnsupportedAppUsage
     public int getWhatToShow();
 
 }

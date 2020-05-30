@@ -7,9 +7,6 @@
 package org.xml.sax.helpers;
 
 import com.google.j2objc.annotations.WeakOuter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import org.xml.sax.AttributeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -25,6 +22,12 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+
+import android.compat.annotation.UnsupportedAppUsage;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 
 /**
@@ -130,6 +133,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
      * @exception java.lang.NullPointerException If the parser parameter
      *            is null.
      */
+    @UnsupportedAppUsage
     private void setup (Parser parser)
     {
     if (parser == null) {
@@ -698,6 +702,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
     /**
      * Initialize the parser before each run.
      */
+    @UnsupportedAppUsage
     private void setupParser ()
     {
     // catch an illegal "nonsense" state.
@@ -735,6 +740,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
      * @exception SAXException The client may throw
      *            an exception if there is an error callback.
      */
+    @UnsupportedAppUsage
     private String [] processName (String qName, boolean isAttribute,
                    boolean useException)
     throws SAXException
@@ -760,6 +766,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
      * @exception SAXException The client may throw
      *            an exception.
      */
+    @UnsupportedAppUsage
     void reportError (String message)
     throws SAXException
     {
@@ -773,6 +780,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
      *
      * @param message The error message.
      */
+    @UnsupportedAppUsage
     private SAXParseException makeException (String message)
     {
     if (locator != null) {
@@ -794,6 +802,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
      * @exception SAXNotSupportedException If a
      *            document is currently being parsed.
      */
+    @UnsupportedAppUsage
     private void checkNotParsing (String type, String name)
     throws SAXNotSupportedException
     {
@@ -811,29 +820,43 @@ public class ParserAdapter implements XMLReader, DocumentHandler
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
+    @UnsupportedAppUsage
     private NamespaceSupport nsSupport;
+    @UnsupportedAppUsage
     private AttributeListAdapter attAdapter;
 
+    @UnsupportedAppUsage
     private boolean parsing = false;
+    @UnsupportedAppUsage
     private String nameParts[] = new String[3];
 
+    @UnsupportedAppUsage
     private Parser parser = null;
 
+    @UnsupportedAppUsage
     private AttributesImpl atts = null;
 
                 // Features
+    @UnsupportedAppUsage
     private boolean namespaces = true;
+    @UnsupportedAppUsage
     private boolean prefixes = false;
+    @UnsupportedAppUsage
     private boolean uris = false;
 
                 // Properties
 
                 // Handlers
+    @UnsupportedAppUsage
     Locator locator;
 
+    @UnsupportedAppUsage
     EntityResolver entityResolver = null;
+    @UnsupportedAppUsage
     DTDHandler dtdHandler = null;
+    @UnsupportedAppUsage
     ContentHandler contentHandler = null;
+    @UnsupportedAppUsage
     ErrorHandler errorHandler = null;
 
 
@@ -861,6 +884,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
     /**
      * Construct a new adapter.
      */
+    @UnsupportedAppUsage
     AttributeListAdapter ()
     {
     }
