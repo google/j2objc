@@ -339,7 +339,7 @@ public class TCKTemporalAdjusters {
     }
 
     @Test
-    @UseDataProvider("dayOfWeekInMonth_positive")
+    @UseDataProvider("data_dayOfWeekInMonth_positive")
     public void test_dayOfWeekInMonth_positive(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int ordinal = 1; ordinal <= 5; ordinal++) {
             for (int day = 1; day <= Month.of(month).length(false); day++) {
@@ -369,7 +369,7 @@ public class TCKTemporalAdjusters {
     }
 
     @Test
-    @UseDataProvider("dayOfWeekInMonth_zero")
+    @UseDataProvider("data_dayOfWeekInMonth_zero")
     public void test_dayOfWeekInMonth_zero(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
@@ -397,7 +397,7 @@ public class TCKTemporalAdjusters {
     }
 
     @Test
-    @UseDataProvider("dayOfWeekInMonth_negative")
+    @UseDataProvider("data_dayOfWeekInMonth_negative")
     public void test_dayOfWeekInMonth_negative(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int ordinal = 0; ordinal < 5; ordinal++) {
             for (int day = 1; day <= Month.of(month).length(false); day++) {
@@ -422,7 +422,7 @@ public class TCKTemporalAdjusters {
     }
 
     @Test
-    @UseDataProvider("dayOfWeekInMonth_positive")
+    @UseDataProvider("data_dayOfWeekInMonth_positive")
     public void test_firstInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
@@ -445,7 +445,7 @@ public class TCKTemporalAdjusters {
     }
 
     @Test
-    @UseDataProvider("dayOfWeekInMonth_negative")
+    @UseDataProvider("data_dayOfWeekInMonth_negative")
     public void test_lastInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
