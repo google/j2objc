@@ -56,9 +56,9 @@
  */
 package tck.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -134,10 +134,10 @@ public abstract class AbstractTCKTest {
             assertEquals(dis.readByte(), ObjectStreamConstants.TC_NULL);  // no superclasses
             if (expectedBytes.length < 256) {
                 assertEquals(dis.readByte(), ObjectStreamConstants.TC_BLOCKDATA);
-                assertEquals(dis.readUnsignedByte(), expectedBytes.length, "blockdata length incorrect");
+                assertEquals("blockdata length incorrect", dis.readUnsignedByte(), expectedBytes.length);
             } else {
                 assertEquals(dis.readByte(), ObjectStreamConstants.TC_BLOCKDATALONG);
-                assertEquals(dis.readInt(), expectedBytes.length, "blockdatalong length incorrect");
+                assertEquals("blockdatalong length incorrect", dis.readInt(), expectedBytes.length);
             }
             byte[] input = new byte[expectedBytes.length];
             dis.readFully(input);
