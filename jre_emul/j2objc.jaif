@@ -110,6 +110,11 @@ class LockSupport: @ReflectionSupport(FULL)
 package java.util.logging:
 class LoggingProxyImpl: @ReflectionSupport(FULL)
 
+package javax.crypto.interfaces:
+class DHPrivateKey: @ReflectionSupport(FULL)
+class DHPublicKey: @ReflectionSupport(FULL)
+class PBEKey: @ReflectionSupport(FULL)
+
 package javax.net.ssl:
 class SSLException: @ReflectionSupport(FULL)
 
