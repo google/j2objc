@@ -64,11 +64,11 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.DateTimeException;
@@ -81,26 +81,32 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test WeekFields.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKWeekFields extends AbstractTCKTest {
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_of_DayOfWeek_int_singleton(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
-        assertEquals(week.getFirstDayOfWeek(), firstDayOfWeek, "Incorrect firstDayOfWeek");
-        assertEquals(week.getMinimalDaysInFirstWeek(), minDays, "Incorrect MinimalDaysInFirstWeek");
+        assertEquals("Incorrect firstDayOfWeek", week.getFirstDayOfWeek(), firstDayOfWeek);
+        assertEquals("Incorrect MinimalDaysInFirstWeek", week.getMinimalDaysInFirstWeek(), minDays);
         assertSame(WeekFields.of(firstDayOfWeek, minDays), week);
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_basics(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
         assertEquals(week.dayOfWeek().isDateBased(), true);
@@ -147,7 +153,8 @@ public class TCKWeekFields extends AbstractTCKTest {
         assertEquals(date.with(WeekFields.of(DayOfWeek.TUESDAY, 1).dayOfWeek(), 1), LocalDate.of(2000, 1, 4));
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_dayOfWeekField(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate day = LocalDate.of(2000, 1, 10);  // Known to be ISO Monday
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -159,7 +166,8 @@ public class TCKWeekFields extends AbstractTCKTest {
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_weekOfMonthField(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate day = LocalDate.of(2012, 12, 31);  // Known to be ISO Monday
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -185,14 +193,15 @@ public class TCKWeekFields extends AbstractTCKTest {
             offset += (actualWOM - 1) * 7;
             LocalDate result = day1.plusDays(offset);
 
-            assertEquals(result, day, "Incorrect dayOfWeek or weekOfMonth: "
+            assertEquals("Incorrect dayOfWeek or weekOfMonth: "
                     + String.format("%s, ISO Dow: %s, offset: %s, actualDOW: %s, actualWOM: %s, expected: %s, result: %s%n",
-                    week, day.getDayOfWeek(), offset, actualDOW, actualWOM, day, result));
+                    week, day.getDayOfWeek(), offset, actualDOW, actualWOM, day, result), result, day);
             day = day.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_weekOfYearField(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate day = LocalDate.of(2012, 12, 31);  // Known to be ISO Monday
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -216,9 +225,9 @@ public class TCKWeekFields extends AbstractTCKTest {
             offset += (actualWOY - 1) * 7;
             LocalDate result = day1.plusDays(offset);
 
-            assertEquals(result, day, "Incorrect dayOfWeek or weekOfYear "
+            assertEquals("Incorrect dayOfWeek or weekOfYear "
                     + String.format("%s, ISO Dow: %s, offset: %s, actualDOW: %s, actualWOM: %s, expected: %s, result: %s%n",
-                    week, day.getDayOfWeek(), offset, actualDOW, actualWOY, day, result));
+                    week, day.getDayOfWeek(), offset, actualDOW, actualWOY, day, result), result, day);
             day = day.plusDays(1);
         }
     }
@@ -230,7 +239,8 @@ public class TCKWeekFields extends AbstractTCKTest {
      * @param firstDayOfWeek the first day of the week
      * @param minDays the minimum number of days in the week
      */
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_weekOfWeekBasedYearField(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate day = LocalDate.of(2012, 12, 31);  // Known to be ISO Monday
         WeekFields weekDef = WeekFields.of(firstDayOfWeek, minDays);
@@ -258,14 +268,15 @@ public class TCKWeekFields extends AbstractTCKTest {
             weekStart += (actualWOWBY - 1) * 7;
             LocalDate result = day1.plusDays(weekStart);
 
-            assertEquals(result, day, "Incorrect dayOfWeek or weekOfYear "
+            assertEquals("Incorrect dayOfWeek or weekOfYear "
                     + String.format("%s, ISO Dow: %s, weekStart: %s, actualDOW: %s, actualWOWBY: %s, YearOfWBY: %d, expected day: %s, result: %s%n",
-                    weekDef, day.getDayOfWeek(), weekStart, actualDOW, actualWOWBY, actualYOWBY, day, result));
+                    weekDef, day.getDayOfWeek(), weekStart, actualDOW, actualWOWBY, actualYOWBY, day, result), result, day);
             day = day.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_fieldRanges(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields weekDef = WeekFields.of(firstDayOfWeek, minDays);
         TemporalField womField = weekDef.weekOfMonth();
@@ -279,24 +290,20 @@ public class TCKWeekFields extends AbstractTCKTest {
             LocalDate first = day.with(DAY_OF_MONTH, 1);
             int firstWOM = first.get(womField);
             ValueRange rangeWOM = day.range(womField);
-            assertEquals(rangeWOM.getMinimum(), firstWOM,
-                    "Range min should be same as WeekOfMonth for first day of month: "
-                    + first + ", " + weekDef);
-            assertEquals(rangeWOM.getMaximum(), lastWOM,
-                    "Range max should be same as WeekOfMonth for last day of month: "
-                    + last + ", " + weekDef);
+            assertEquals("Range min should be same as WeekOfMonth for first day of month: "
+                    + first + ", " + weekDef, rangeWOM.getMinimum(), firstWOM);
+            assertEquals("Range max should be same as WeekOfMonth for last day of month: "
+                    + last + ", " + weekDef, rangeWOM.getMaximum(), lastWOM);
 
             last = day.with(DAY_OF_YEAR, day.lengthOfYear());
             int lastWOY = last.get(woyField);
             first = day.with(DAY_OF_YEAR, 1);
             int firstWOY = first.get(woyField);
             ValueRange rangeWOY = day.range(woyField);
-            assertEquals(rangeWOY.getMinimum(), firstWOY,
-                    "Range min should be same as WeekOfYear for first day of Year: "
-                    + day + ", " + weekDef);
-            assertEquals(rangeWOY.getMaximum(), lastWOY,
-                    "Range max should be same as WeekOfYear for last day of Year: "
-                    + day + ", " + weekDef);
+            assertEquals("Range min should be same as WeekOfYear for first day of Year: "
+                    + day + ", " + weekDef, rangeWOY.getMinimum(), firstWOY);
+            assertEquals("Range max should be same as WeekOfYear for last day of Year: "
+                    + day + ", " + weekDef, rangeWOY.getMaximum(), lastWOY);
 
             day = day.plusDays(1);
         }
@@ -305,7 +312,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // withDayOfWeek()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_withDayOfWeek(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate day = LocalDate.of(2012, 12, 15);  // Safely in the middle of a month
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -317,13 +325,14 @@ public class TCKWeekFields extends AbstractTCKTest {
         int woy = day.get(woyField);
         for (int dow = 1; dow <= 7; dow++) {
             LocalDate result = day.with(dowField, dow);
-            assertEquals(result.get(dowField), dow, String.format("Incorrect new Day of week: %s", result));
-            assertEquals(result.get(womField), wom, "Week of Month should not change");
-            assertEquals(result.get(woyField), woy, "Week of Year should not change");
+            assertEquals(String.format("Incorrect new Day of week: %s", result), result.get(dowField), dow);
+            assertEquals("Week of Month should not change", result.get(womField), wom);
+            assertEquals("Week of Year should not change", result.get(woyField), woy);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_rangeWeekOfWeekBasedYear(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields weekFields = WeekFields.of(firstDayOfWeek, minDays);
         TemporalField dowField = weekFields.dayOfWeek();
@@ -338,10 +347,11 @@ public class TCKWeekFields extends AbstractTCKTest {
         int expectedWeeks = (int)ChronoUnit.DAYS.between(day1, day2) / 7;
 
         ValueRange range = day1.range(wowByField);
-        assertEquals(range.getMaximum(), expectedWeeks, "Range incorrect");
+        assertEquals("Range incorrect", range.getMaximum(), expectedWeeks);
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_withWeekOfWeekBasedYear(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate day = LocalDate.of(2012, 12, 31);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -352,30 +362,31 @@ public class TCKWeekFields extends AbstractTCKTest {
         int dowExpected = (day.get(dowField) - 1) % 7 + 1;
         LocalDate dowDate = day.with(dowField, dowExpected);
         int dowResult = dowDate.get(dowField);
-        assertEquals(dowResult, dowExpected, "Localized DayOfWeek not correct; " + day + " -->" + dowDate);
+        assertEquals("Localized DayOfWeek not correct; " + day + " -->" + dowDate, dowResult, dowExpected);
 
         int weekExpected = day.get(wowbyField) + 1;
         ValueRange range = day.range(wowbyField);
         weekExpected = ((weekExpected - 1) % (int)range.getMaximum()) + 1;
         LocalDate weekDate = day.with(wowbyField, weekExpected);
         int weekResult = weekDate.get(wowbyField);
-        assertEquals(weekResult, weekExpected, "Localized WeekOfWeekBasedYear not correct; " + day + " -->" + weekDate);
+        assertEquals("Localized WeekOfWeekBasedYear not correct; " + day + " -->" + weekDate, weekResult, weekExpected);
 
         int yearExpected = day.get(yowbyField) + 1;
 
         LocalDate yearDate = day.with(yowbyField, yearExpected);
         int yearResult = yearDate.get(yowbyField);
-        assertEquals(yearResult, yearExpected, "Localized WeekBasedYear not correct; " + day  + " --> " + yearDate);
+        assertEquals("Localized WeekBasedYear not correct; " + day  + " --> " + yearDate, yearResult, yearExpected);
 
         range = yearDate.range(wowbyField);
         weekExpected = Math.min(day.get(wowbyField), (int)range.getMaximum());
 
         int weekActual = yearDate.get(wowbyField);
-        assertEquals(weekActual, weekExpected, "Localized WeekOfWeekBasedYear week should not change; " + day + " --> " + yearDate + ", actual: " + weekActual + ", weekExpected: " + weekExpected);
+        assertEquals("Localized WeekOfWeekBasedYear week should not change; " + day + " --> " + yearDate + ", actual: " + weekActual + ", weekExpected: " + weekExpected, weekActual, weekExpected);
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWom(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -390,13 +401,14 @@ public class TCKWeekFields extends AbstractTCKTest {
             String str = date.getYear() + ":" + date.getMonthValue() + ":" +
                     date.get(womField) + ":" + date.get(DAY_OF_WEEK);
             LocalDate parsed = LocalDate.parse(str, f);
-            assertEquals(parsed, date, " ::" + str + "::" + i);
+            assertEquals(" ::" + str + "::" + i, parsed, date);
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWom_lenient(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -413,14 +425,15 @@ public class TCKWeekFields extends AbstractTCKTest {
             for (int j = wom - 10; j < wom + 10; j++) {
                 String str = date.getYear() + ":" + date.getMonthValue() + ":" + j + ":" + dow;
                 LocalDate parsed = LocalDate.parse(str, f);
-                assertEquals(parsed, date.plusWeeks(j - wom), " ::" + str + ": :" + i + "::" + j);
+                assertEquals(" ::" + str + ": :" + i + "::" + j, parsed, date.plusWeeks(j - wom));
             }
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWom_strict(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
         TemporalField womField = week.weekOfMonth();
@@ -442,7 +455,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWomDow(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -458,13 +472,14 @@ public class TCKWeekFields extends AbstractTCKTest {
             String str = date.getYear() + ":" + date.getMonthValue() + ":" +
                     date.get(womField) + ":" + date.get(dowField);
             LocalDate parsed = LocalDate.parse(str, f);
-            assertEquals(parsed, date, " :: " + str + " " + i);
+            assertEquals(" :: " + str + " " + i, parsed, date);
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWomDow_lenient(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -482,7 +497,7 @@ public class TCKWeekFields extends AbstractTCKTest {
             for (int j = wom - 10; j < wom + 10; j++) {
                 String str = date.getYear() + ":" + date.getMonthValue() + ":" + j + ":" + dow;
                 LocalDate parsed = LocalDate.parse(str, f);
-                assertEquals(parsed, date.plusWeeks(j - wom), " ::" + str + ": :" + i + "::" + j);
+                assertEquals(" ::" + str + ": :" + i + "::" + j, parsed, date.plusWeeks(j - wom));
             }
 
             date = date.plusDays(1);
@@ -490,7 +505,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoy(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -504,13 +520,14 @@ public class TCKWeekFields extends AbstractTCKTest {
             String str = date.getYear() + ":" +
                     date.get(woyField) + ":" + date.get(DAY_OF_WEEK);
             LocalDate parsed = LocalDate.parse(str, f);
-            assertEquals(parsed, date, " :: " + str + " " + i);
+            assertEquals(" :: " + str + " " + i, parsed, date);
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoy_lenient(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -526,14 +543,15 @@ public class TCKWeekFields extends AbstractTCKTest {
             for (int j = woy - 60; j < woy + 60; j++) {
                 String str = date.getYear() + ":" + j + ":" + dow;
                 LocalDate parsed = LocalDate.parse(str, f);
-                assertEquals(parsed, date.plusWeeks(j - woy), " ::" + str + ": :" + i + "::" + j);
+                assertEquals(" ::" + str + ": :" + i + "::" + j, parsed, date.plusWeeks(j - woy));
             }
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoy_strict(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
         TemporalField woyField = week.weekOfYear();
@@ -553,7 +571,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoyDow(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -569,13 +588,14 @@ public class TCKWeekFields extends AbstractTCKTest {
             String str = date.getYear() + ":" + date.getMonthValue() + ":" +
                     date.get(woyField) + ":" + date.get(dowField);
             LocalDate parsed = LocalDate.parse(str, f);
-            assertEquals(parsed, date, " :: " + str + " " + i);
+            assertEquals(" :: " + str + " " + i, parsed, date);
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoyDow_lenient(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 15);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -592,7 +612,7 @@ public class TCKWeekFields extends AbstractTCKTest {
             for (int j = woy - 60; j < woy + 60; j++) {
                 String str = date.getYear() + ":" + j + ":" + dow;
                 LocalDate parsed = LocalDate.parse(str, f);
-                assertEquals(parsed, date.plusWeeks(j - woy), " ::" + str + ": :" + i + "::" + j);
+                assertEquals(" ::" + str + ": :" + i + "::" + j, parsed, date.plusWeeks(j - woy));
             }
 
             date = date.plusDays(1);
@@ -600,7 +620,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoWBY(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 31);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -615,13 +636,14 @@ public class TCKWeekFields extends AbstractTCKTest {
             String str = date.get(yowbyField) + ":" + date.get(wowbyField) + ":" +
                     date.get(DAY_OF_WEEK);
             LocalDate parsed = LocalDate.parse(str, f);
-            assertEquals(parsed, date, " :: " + str + " " + i);
+            assertEquals(" :: " + str + " " + i, parsed, date);
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoWBY_lenient(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 31);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -638,14 +660,15 @@ public class TCKWeekFields extends AbstractTCKTest {
             for (int j = wowby - 60; j < wowby + 60; j++) {
                 String str = date.get(yowbyField) + ":" + j + ":" + dow;
                 LocalDate parsed = LocalDate.parse(str, f);
-                assertEquals(parsed, date.plusWeeks(j - wowby), " ::" + str + ": :" + i + "::" + j);
+                assertEquals(" ::" + str + ": :" + i + "::" + j, parsed, date.plusWeeks(j - wowby));
             }
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoWBY_strict(DayOfWeek firstDayOfWeek, int minDays) {
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
         TemporalField wowbyField = week.weekOfWeekBasedYear();
@@ -666,7 +689,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoWBYDow(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 31);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -682,13 +706,14 @@ public class TCKWeekFields extends AbstractTCKTest {
             String str = date.get(yowbyField) + ":" + date.get(wowbyField) + ":" +
                     date.get(dowField);
             LocalDate parsed = LocalDate.parse(str, f);
-            assertEquals(parsed, date, " :: " + str + " " + i);
+            assertEquals(" :: " + str + " " + i, parsed, date);
 
             date = date.plusDays(1);
         }
     }
 
-    @Test(dataProvider="weekFields")
+    @Test
+    @UseDataProvider("data_weekFields")
     public void test_parse_resolve_localizedWoWBYDow_lenient(DayOfWeek firstDayOfWeek, int minDays) {
         LocalDate date = LocalDate.of(2012, 12, 31);
         WeekFields week = WeekFields.of(firstDayOfWeek, minDays);
@@ -706,7 +731,7 @@ public class TCKWeekFields extends AbstractTCKTest {
             for (int j = wowby - 60; j < wowby + 60; j++) {
                 String str = date.get(yowbyField) + ":" + j + ":" + dow;
                 LocalDate parsed = LocalDate.parse(str, f);
-                assertEquals(parsed, date.plusWeeks(j - wowby), " ::" + str + ": :" + i + "::" + j);
+                assertEquals(" ::" + str + ": :" + i + "::" + j, parsed, date.plusWeeks(j - wowby));
             }
 
             date = date.plusDays(1);
@@ -715,8 +740,8 @@ public class TCKWeekFields extends AbstractTCKTest {
 
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="weekFields")
-    Object[][] data_weekFields() {
+    @DataProvider
+    public static Object[][] data_weekFields() {
         Object[][] objects = new Object[49][];
         int i = 0;
         for (DayOfWeek firstDayOfWeek : DayOfWeek.values()) {
@@ -728,8 +753,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="WeekBasedYearData")
-    Object[][] provider_WeekBasedYearData() {
+    @DataProvider
+    public static Object[][] provider_WeekBasedYearData() {
         return new Object[][] {
             {WeekFields.of(DayOfWeek.SUNDAY, 1),  2008, 52, 7, LocalDate.of(2008, 12, 27)},
             {WeekFields.of(DayOfWeek.SUNDAY, 1),  2009,  1, 1, LocalDate.of(2008, 12, 28)},
@@ -743,21 +768,22 @@ public class TCKWeekFields extends AbstractTCKTest {
        };
     }
 
-    @Test(dataProvider="WeekBasedYearData")
+    @Test
+    @UseDataProvider("provider_WeekBasedYearData")
     public void test_weekBasedYears(WeekFields weekDef, int weekBasedYear,
             int weekOfWeekBasedYear, int dayOfWeek, LocalDate date) {
         TemporalField dowField = weekDef.dayOfWeek();
         TemporalField wowbyField = weekDef.weekOfWeekBasedYear();
         TemporalField yowbyField = weekDef.weekBasedYear();
-        assertEquals(date.get(dowField), dayOfWeek, "DayOfWeek mismatch");
-        assertEquals(date.get(wowbyField), weekOfWeekBasedYear, "Week of WeekBasedYear mismatch");
-        assertEquals(date.get(yowbyField), weekBasedYear, "Year of WeekBasedYear mismatch");
+        assertEquals("DayOfWeek mismatch", date.get(dowField), dayOfWeek);
+        assertEquals("Week of WeekBasedYear mismatch", date.get(wowbyField), weekOfWeekBasedYear);
+        assertEquals("Year of WeekBasedYear mismatch", date.get(yowbyField), weekBasedYear);
     }
 
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="IsoWeekData")
-    Object[][] data_week() {
+    @DataProvider
+    public static Object[][] data_week() {
         return new Object[][] {
                 {LocalDate.of(1969, 12, 29), DayOfWeek.MONDAY, 1, 1970},
                 {LocalDate.of(2012, 12, 23), DayOfWeek.SUNDAY, 51, 2012},
@@ -778,7 +804,8 @@ public class TCKWeekFields extends AbstractTCKTest {
     // WEEK_OF_WEEK_BASED_YEAR
     // Validate with the same data used by IsoFields.
     //-----------------------------------------------------------------------
-    @Test(dataProvider="IsoWeekData")
+    @Test
+    @UseDataProvider("data_week")
     public void test_WOWBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         WeekFields weekDef = WeekFields.ISO;
         TemporalField dowField = weekDef.dayOfWeek();

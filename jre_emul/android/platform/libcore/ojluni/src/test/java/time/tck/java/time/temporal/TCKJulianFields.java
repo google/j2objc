@@ -59,7 +59,7 @@
  */
 package tck.java.time.temporal;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -71,14 +71,18 @@ import java.time.temporal.IsoFields;
 import java.time.temporal.JulianFields;
 import java.time.temporal.TemporalField;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test Julian Fields.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKJulianFields extends AbstractTCKTest {
 
     private static final LocalDate JAN01_1970 = LocalDate.of(1970, 1, 1);
@@ -86,8 +90,8 @@ public class TCKJulianFields extends AbstractTCKTest {
     private static final LocalDate NOV12_1945 = LocalDate.of(1945, 11, 12);
     private static final LocalDate JAN01_0001 = LocalDate.of(1, 1, 1);
 
-    @DataProvider(name="samples")
-    Object[][] data_samples() {
+    @DataProvider
+    public static Object[][] data_samples() {
         return new Object[][] {
             {ChronoField.EPOCH_DAY, JAN01_1970, 0L},
             {JulianFields.JULIAN_DAY, JAN01_1970, 2400001L + 40587L},
@@ -124,12 +128,14 @@ public class TCKJulianFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_samples_get(TemporalField field, LocalDate date, long expected) {
         assertEquals(date.getLong(field), expected);
     }
 
-    @Test(dataProvider="samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_samples_set(TemporalField field, LocalDate date, long value) {
         assertEquals(field.adjustInto(LocalDate.MAX, value), date);
         assertEquals(field.adjustInto(LocalDate.MIN, value), date);
@@ -139,7 +145,8 @@ public class TCKJulianFields extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_samples_parse_STRICT(TemporalField field, LocalDate date, long value) {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(field)
                 .toFormatter().withResolverStyle(ResolverStyle.STRICT);
@@ -147,7 +154,8 @@ public class TCKJulianFields extends AbstractTCKTest {
         assertEquals(parsed, date);
     }
 
-    @Test(dataProvider="samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_samples_parse_SMART(TemporalField field, LocalDate date, long value) {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(field)
                 .toFormatter().withResolverStyle(ResolverStyle.SMART);
@@ -155,7 +163,8 @@ public class TCKJulianFields extends AbstractTCKTest {
         assertEquals(parsed, date);
     }
 
-    @Test(dataProvider="samples")
+    @Test
+    @UseDataProvider("data_samples")
     public void test_samples_parse_LENIENT(TemporalField field, LocalDate date, long value) {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(field)
                 .toFormatter().withResolverStyle(ResolverStyle.LENIENT);

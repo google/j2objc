@@ -95,9 +95,9 @@ import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -107,20 +107,24 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.ValueRange;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKChronoField {
 
     //-----------------------------------------------------------------------
     // getBaseUnit() and getRangeUnit()
     //-----------------------------------------------------------------------
-    @DataProvider(name="fieldUnit")
-    Object[][] data_fieldUnit() {
+    @DataProvider
+    public static Object[][] data_fieldUnit() {
         return new Object[][] {
                 {YEAR, YEARS, FOREVER},
                 {MONTH_OF_YEAR, MONTHS, YEARS},
@@ -142,7 +146,8 @@ public class TCKChronoField {
         };
     }
 
-    @Test(dataProvider = "fieldUnit")
+    @Test
+    @UseDataProvider("data_fieldUnit")
     public void test_getBaseUnit(ChronoField field, ChronoUnit baseUnit, ChronoUnit rangeUnit) {
         assertEquals(field.getBaseUnit(), baseUnit);
         assertEquals(field.getRangeUnit(), rangeUnit);
@@ -151,8 +156,8 @@ public class TCKChronoField {
     //-----------------------------------------------------------------------
     // isDateBased() and isTimeBased()
     //-----------------------------------------------------------------------
-    @DataProvider(name="fieldBased")
-    Object[][] data_fieldBased() {
+    @DataProvider
+    public static Object[][] data_fieldBased() {
         return new Object[][] {
                 {DAY_OF_WEEK, true, false},
                 {ALIGNED_DAY_OF_WEEK_IN_MONTH, true, false},
@@ -186,7 +191,8 @@ public class TCKChronoField {
         };
     }
 
-    @Test(dataProvider = "fieldBased")
+    @Test
+    @UseDataProvider("data_fieldBased")
     public void test_isDateBased(ChronoField field, boolean isDateBased, boolean isTimeBased) {
         assertEquals(field.isDateBased(), isDateBased);
         assertEquals(field.isTimeBased(), isTimeBased);
@@ -195,8 +201,8 @@ public class TCKChronoField {
     //-----------------------------------------------------------------------
     // isSupportedBy(TemporalAccessor temporal) and getFrom(TemporalAccessor temporal)
     //-----------------------------------------------------------------------
-    @DataProvider(name="fieldAndAccessor")
-    Object[][] data_fieldAndAccessor() {
+    @DataProvider
+    public static Object[][] data_fieldAndAccessor() {
         return new Object[][] {
                 {YEAR, LocalDate.of(2000, 2, 29), true, 2000},
                 {YEAR, LocalDateTime.of(2000, 2, 29, 5, 4, 3, 200), true, 2000},
@@ -236,7 +242,8 @@ public class TCKChronoField {
         };
     }
 
-    @Test(dataProvider = "fieldAndAccessor")
+    @Test
+    @UseDataProvider("data_fieldAndAccessor")
     public void test_supportedAccessor(ChronoField field, TemporalAccessor accessor, boolean isSupported, long value) {
         assertEquals(field.isSupportedBy(accessor), isSupported);
         if (isSupported) {
