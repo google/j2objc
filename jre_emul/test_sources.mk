@@ -162,6 +162,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassParser.java \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
     org/apache/harmony/xnet/tests/support/mySSLSession.java \
+    tck/java/time/AbstractTCKTest.java \
     test/java/time/AbstractTest.java \
     test/java/time/MockSimplePeriod.java \
     test/java/time/format/AbstractTestPrinterParser.java \
@@ -952,6 +953,17 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    tck/java/time/temporal/TCKChronoField.java \
+    tck/java/time/temporal/TCKChronoUnit.java \
+    tck/java/time/temporal/TCKIsoFields.java \
+    tck/java/time/temporal/TCKJulianFields.java \
+    tck/java/time/temporal/TCKTemporalAdjusters.java \
+    tck/java/time/temporal/TCKWeekFields.java \
+    tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
+    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
+    tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
+    tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
+    tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
     test/java/time/TestClock_Fixed.java \
     test/java/time/TestClock_Offset.java \
     test/java/time/TestClock_System.java \
