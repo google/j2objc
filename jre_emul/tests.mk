@@ -277,7 +277,7 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | $(TRANSLATE_ARTIFACTS)
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/arc/%.m | $(TRANSLATE_ARTIFACTS)
 	@mkdir -p $(@D)
 	@echo j2objcc -c $?
-	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -o $@ $<
+	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -fobjc-arc-exceptions -o $@ $<
 
 $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	xcrun cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \

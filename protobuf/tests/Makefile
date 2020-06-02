@@ -149,15 +149,18 @@ clean:
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
+# This ARC rule needs to be declared first, since it uses a more specific
+# pattern than the following rule.
+$(OBJS_DIR)/arc/%.o: $(GEN_OBJC_DIR)/arc/%.m \
+  | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
+	@mkdir -p $(@D)
+	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) \
+      -fobjc-arc -fobjc-arc-exceptions -o $@ $<
+
 $(OBJS_DIR)/%.o: $(GEN_OBJC_DIR)/%.m \
   | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
 	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -o $@ $<
-
-$(OBJS_DIR)/arc/%.o: $(GEN_OBJC_DIR)/arc/%.m \
-  | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
-	@mkdir -p $(@D)
-	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) -fobjc-arc -o $@ $<
 
 $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	@mkdir -p $(@D)
@@ -167,5 +170,5 @@ $(BIN): $(OBJS) $(LIB_DEPS)
 	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -ljunit -lprotobuf_runtime -o $@ $(OBJS)
 
 $(BIN_ARC): $(OBJS_ARC) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -ljunit -lprotobuf_runtime -fobjc-arc \
-	  -o $@ $(OBJS_ARC)
+	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -ljunit -lprotobuf_runtime \
+       -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
