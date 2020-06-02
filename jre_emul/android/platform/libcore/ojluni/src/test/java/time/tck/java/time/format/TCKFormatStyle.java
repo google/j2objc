@@ -66,15 +66,19 @@ import java.time.format.FormatStyle;
 import java.time.temporal.Temporal;
 import java.util.Locale;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKFormatStyle {
 
     private static final ZoneId ZONEID_PARIS = ZoneId.of("Europe/Paris");
@@ -90,8 +94,8 @@ public class TCKFormatStyle {
         }
     }
 
-    @DataProvider(name="formatStyle")
-    Object[][] data_formatStyle() {
+    @DataProvider
+    public static Object[][] data_formatStyle() {
         return new Object[][] {
                 // Android-changed: date/time patterns changed in new CLDR; adapt to UK locale.
                 {ZonedDateTime.of(LocalDateTime.of(2001, 10, 2, 1, 2, 3), ZONEID_PARIS), FormatStyle.FULL, "Tuesday, 2 October 2001 at 01:02:03 Central European Summer Time Europe/Paris"},
@@ -106,7 +110,8 @@ public class TCKFormatStyle {
         };
     }
 
-    @Test(dataProvider = "formatStyle")
+    @Test
+    @UseDataProvider("data_formatStyle")
     public void test_formatStyle(Temporal temporal, FormatStyle style, String formattedStr) {
         DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
         DateTimeFormatter formatter = builder.appendLocalized(style, style).appendLiteral(" ").appendZoneOrOffsetId().toFormatter();

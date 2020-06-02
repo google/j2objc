@@ -60,7 +60,7 @@
 package tck.java.time.format;
 
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.text.ParsePosition;
 import java.time.LocalDate;
@@ -70,19 +70,23 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import test.java.time.format.AbstractTestPrinterParser;
 
 /**
  * Test TCKLocalizedFieldParser.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="FieldPatterns")
-    Object[][] provider_fieldPatterns() {
+    @DataProvider
+    public static Object[][] provider_fieldPatterns() {
         return new Object[][] {
             {"e",  "6", 0, 1, 6},
             {"W",  "3", 0, 1, 3},
@@ -94,7 +98,8 @@ public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
         };
     }
 
-    @Test(dataProvider="FieldPatterns")
+    @Test
+    @UseDataProvider("provider_fieldPatterns")
     public void test_parse_textField(String pattern, String text, int pos, int expectedPos, long expectedValue) {
         WeekFields weekDef = WeekFields.of(locale);
         TemporalField field = null;
@@ -122,15 +127,15 @@ public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
         if (ppos.getErrorIndex() != -1) {
             assertEquals(ppos.getErrorIndex(), expectedPos);
         } else {
-            assertEquals(ppos.getIndex(), expectedPos, "Incorrect ending parse position");
+            assertEquals("Incorrect ending parse position", ppos.getIndex(), expectedPos);
             long value = parsed.getLong(field);
-            assertEquals(value, expectedValue, "Value incorrect for " + field);
+            assertEquals("Value incorrect for " + field, value, expectedValue);
         }
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="LocalWeekMonthYearPatterns")
-    Object[][] provider_patternLocalDate() {
+    @DataProvider
+    public static Object[][] provider_patternLocalDate() {
         return new Object[][] {
             {"e W M y",  "1 1 1 2012", 0, 10, LocalDate.of(2012, 1, 1)},
             {"e W M y",  "1 2 1 2012", 0, 10, LocalDate.of(2012, 1, 8)},
@@ -145,7 +150,8 @@ public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
         };
     }
 
-   @Test(dataProvider="LocalWeekMonthYearPatterns")
+   @Test
+    @UseDataProvider("provider_patternLocalDate")
     public void test_parse_textLocalDate(String pattern, String text, int pos, int expectedPos, LocalDate expectedValue) {
         ParsePosition ppos = new ParsePosition(pos);
         DateTimeFormatterBuilder b = new DateTimeFormatterBuilder().appendPattern(pattern);
@@ -154,20 +160,20 @@ public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
         if (ppos.getErrorIndex() != -1) {
             assertEquals(ppos.getErrorIndex(), expectedPos);
         } else {
-            assertEquals(ppos.getIndex(), expectedPos, "Incorrect ending parse position");
+            assertEquals("Incorrect ending parse position", ppos.getIndex(), expectedPos);
             assertEquals(parsed.isSupported(YEAR_OF_ERA), true);
             assertEquals(parsed.isSupported(WeekFields.of(locale).dayOfWeek()), true);
             assertEquals(parsed.isSupported(WeekFields.of(locale).weekOfMonth()) ||
                     parsed.isSupported(WeekFields.of(locale).weekOfYear()), true);
             // ensure combination resolves into a date
             LocalDate result = LocalDate.parse(text, dtf);
-            assertEquals(result, expectedValue, "LocalDate incorrect for " + pattern);
+            assertEquals("LocalDate incorrect for " + pattern, result, expectedValue);
         }
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="LocalWeekBasedYearPatterns")
-    Object[][] provider_patternLocalWeekBasedYearDate() {
+    @DataProvider
+    public static Object[][] provider_patternLocalWeekBasedYearDate() {
         return new Object[][] {
             //{"w Y",  "29 2012", 0, 7, LocalDate.of(2012, 7, 20)},  // Default lenient dayOfWeek not supported
             {"e w Y",  "6 29 2012", 0, 9, LocalDate.of(2012, 7, 20)},
@@ -182,7 +188,8 @@ public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
        };
     }
 
-   @Test(dataProvider="LocalWeekBasedYearPatterns")
+   @Test
+    @UseDataProvider("provider_patternLocalWeekBasedYearDate")
     public void test_parse_WeekBasedYear(String pattern, String text, int pos, int expectedPos, LocalDate expectedValue) {
         ParsePosition ppos = new ParsePosition(pos);
         DateTimeFormatterBuilder b = new DateTimeFormatterBuilder().appendPattern(pattern);
@@ -192,13 +199,13 @@ public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
             assertEquals(ppos.getErrorIndex(), expectedPos);
         } else {
             WeekFields weekDef = WeekFields.of(locale);
-            assertEquals(ppos.getIndex(), expectedPos, "Incorrect ending parse position");
+            assertEquals("Incorrect ending parse position", ppos.getIndex(), expectedPos);
             assertEquals(parsed.isSupported(weekDef.dayOfWeek()), pattern.indexOf('e') >= 0);
             assertEquals(parsed.isSupported(weekDef.weekOfWeekBasedYear()), pattern.indexOf('w') >= 0);
             assertEquals(parsed.isSupported(weekDef.weekBasedYear()), pattern.indexOf('Y') >= 0);
             // ensure combination resolves into a date
             LocalDate result = LocalDate.parse(text, dtf);
-            assertEquals(result, expectedValue, "LocalDate incorrect for " + pattern + ", weekDef: " + weekDef);
+            assertEquals("LocalDate incorrect for " + pattern + ", weekDef: " + weekDef, result, expectedValue);
         }
     }
 

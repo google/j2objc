@@ -953,6 +953,22 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    tck/java/time/format/TCKDateTimeFormatter.java \
+    tck/java/time/format/TCKDateTimeFormatterBuilder.java \
+    tck/java/time/format/TCKDateTimeFormatters.java \
+    tck/java/time/format/TCKDateTimeParseResolver.java \
+    tck/java/time/format/TCKDateTimeTextPrinting.java \
+    tck/java/time/format/TCKDecimalStyle.java \
+    tck/java/time/format/TCKFormatStyle.java \
+    tck/java/time/format/TCKInstantPrinterParser.java \
+    tck/java/time/format/TCKLocalizedFieldParser.java \
+    tck/java/time/format/TCKLocalizedFieldPrinter.java \
+    tck/java/time/format/TCKOffsetPrinterParser.java \
+    tck/java/time/format/TCKPadPrinterParser.java \
+    tck/java/time/format/TCKResolverStyle.java \
+    tck/java/time/format/TCKSignStyle.java \
+    tck/java/time/format/TCKTextStyle.java \
+    tck/java/time/format/TCKZoneIdPrinterParser.java \
     tck/java/time/temporal/TCKChronoField.java \
     tck/java/time/temporal/TCKChronoUnit.java \
     tck/java/time/temporal/TCKIsoFields.java \

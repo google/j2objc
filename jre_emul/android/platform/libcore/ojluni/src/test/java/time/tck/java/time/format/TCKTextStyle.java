@@ -59,17 +59,17 @@
  */
 package tck.java.time.format;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.format.TextStyle;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test DecimalStyle.
  */
-@Test
+
 public class TCKTextStyle {
 
     @Test

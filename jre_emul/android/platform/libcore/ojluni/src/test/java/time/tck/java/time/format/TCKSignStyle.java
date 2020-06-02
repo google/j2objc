@@ -64,17 +64,21 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKSignStyle {
 
     //-----------------------------------------------------------------------
@@ -87,8 +91,8 @@ public class TCKSignStyle {
         }
     }
 
-    @DataProvider(name="signStyle")
-    Object[][] data_signStyle() {
+    @DataProvider
+    public static Object[][] data_signStyle() {
         return new Object[][] {
                 {LocalDate.of(0, 10, 2), SignStyle.ALWAYS, null, "+00"},
                 {LocalDate.of(2001, 10, 2), SignStyle.ALWAYS, null, "+2001"},
@@ -115,7 +119,8 @@ public class TCKSignStyle {
         };
     }
 
-    @Test(dataProvider = "signStyle")
+    @Test
+    @UseDataProvider("data_signStyle")
     public void test_signStyle(LocalDate localDate, SignStyle style, Class<?> expectedEx, String expectedStr) {
         DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
         DateTimeFormatter formatter = builder.appendValue(ChronoField.YEAR, 2, 4, style)

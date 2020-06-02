@@ -59,7 +59,7 @@
  */
 package tck.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -70,14 +70,18 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.TextStyle;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test DateTimeFormatterBuilder.appendOffset().
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKOffsetPrinterParser {
 
     private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
@@ -95,14 +99,14 @@ public class TCKOffsetPrinterParser {
 
     private DateTimeFormatterBuilder builder;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         builder = new DateTimeFormatterBuilder();
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="print")
-    Object[][] data_print() {
+    @DataProvider
+    public static Object[][] data_print() {
         return new Object[][] {
                 {"+HH", "Z", DT_2012_06_30_12_30_40, OFFSET_UTC, "Z"},
                 {"+HH", "Z", DT_2012_06_30_12_30_40, OFFSET_P0100, "+01"},
@@ -202,8 +206,8 @@ public class TCKOffsetPrinterParser {
         };
     }
 
-    @DataProvider(name="print_localized")
-    Object[][] data_print_localized() {
+    @DataProvider
+    public static Object[][] data_print_localized() {
         return new Object[][] {
                 {TextStyle.FULL, DT_2012_06_30_12_30_40, OFFSET_UTC, "GMT"},
                 {TextStyle.FULL, DT_2012_06_30_12_30_40, OFFSET_P0100, "GMT+01:00"},
@@ -230,7 +234,8 @@ public class TCKOffsetPrinterParser {
         };
     }
 
-    @Test(dataProvider="print")
+    @Test
+    @UseDataProvider("data_print")
     public void test_print(String offsetPattern, String noOffset, LocalDateTime ldt, ZoneId zone, String expected) {
         ZonedDateTime zdt = ldt.atZone(zone);
         builder.appendOffset(offsetPattern, noOffset);
@@ -239,7 +244,8 @@ public class TCKOffsetPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="print")
+    @Test
+    @UseDataProvider("data_print")
     public void test_print_pattern_X(String offsetPattern, String noOffset, LocalDateTime ldt, ZoneId zone, String expected) {
         String pattern = null;
         if (offsetPattern.equals("+HHmm") && noOffset.equals("Z")) {
@@ -261,7 +267,8 @@ public class TCKOffsetPrinterParser {
         }
     }
 
-    @Test(dataProvider="print")
+    @Test
+    @UseDataProvider("data_print")
     public void test_print_pattern_x(String offsetPattern, String noOffset, LocalDateTime ldt, ZoneId zone, String expected) {
         String pattern = null;
         String zero = null;
@@ -289,7 +296,8 @@ public class TCKOffsetPrinterParser {
         }
     }
 
-    @Test(dataProvider="print")
+    @Test
+    @UseDataProvider("data_print")
     public void test_print_pattern_Z(String offsetPattern, String noOffset, LocalDateTime ldt, ZoneId zone, String expected) {
         String pattern = null;
         if (offsetPattern.equals("+HHMM") && noOffset.equals("Z")) {
@@ -313,7 +321,8 @@ public class TCKOffsetPrinterParser {
         }
     }
 
-    @Test(dataProvider="print_localized")
+    @Test
+    @UseDataProvider("data_print_localized")
     public void test_print_localized(TextStyle style, LocalDateTime ldt, ZoneOffset offset, String expected) {
         OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
         ZonedDateTime zdt = ldt.atZone(offset);
@@ -348,52 +357,52 @@ public class TCKOffsetPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_X6rejected() {
         builder.appendPattern("XXXXXX");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_x6rejected() {
         builder.appendPattern("xxxxxx");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_Z6rejected() {
         builder.appendPattern("ZZZZZZ");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_O2rejected() {
         builder.appendPattern("OO");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_O3rejected() {
         builder.appendPattern("OOO");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_O5rejected() {
         builder.appendPattern("OOOOO");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_localzed_full_standline() {
         builder.appendLocalizedOffset(TextStyle.FULL_STANDALONE);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_localzed_short_standalone() {
         builder.appendLocalizedOffset(TextStyle.SHORT_STANDALONE);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_localzed_narrow() {
         builder.appendLocalizedOffset(TextStyle.NARROW);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_print_pattern_localzed_narrow_standalone() {
         builder.appendLocalizedOffset(TextStyle.NARROW_STANDALONE);
     }

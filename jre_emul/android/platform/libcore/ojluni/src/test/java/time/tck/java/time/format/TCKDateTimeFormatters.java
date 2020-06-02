@@ -70,9 +70,9 @@ import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.text.ParsePosition;
 import java.time.DateTimeException;
@@ -101,22 +101,26 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test DateTimeFormatter.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKDateTimeFormatters {
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_format_nullTemporalAccessor() {
         DateTimeFormatter.ISO_DATE.format((TemporalAccessor) null);
     }
@@ -130,15 +134,15 @@ public class TCKDateTimeFormatters {
         Locale fmtLocale = Locale.getDefault(Locale.Category.FORMAT);
         assertEquals(test.format(LocalDate.of(2012, 6, 30)), "30 " +
                 Month.JUNE.getDisplayName(TextStyle.SHORT, fmtLocale) + " 2012");
-        assertEquals(test.getLocale(), fmtLocale, "Locale.Category.FORMAT");
+        assertEquals("Locale.Category.FORMAT", test.getLocale(), fmtLocale);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_pattern_String_invalid() {
         DateTimeFormatter.ofPattern("p");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_pattern_String_null() {
         DateTimeFormatter.ofPattern(null);
     }
@@ -149,21 +153,21 @@ public class TCKDateTimeFormatters {
     @Test
     public void test_pattern_StringLocale() {
         DateTimeFormatter test = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.UK);
-        assertEquals(test.format(LocalDate.of(2012, 6, 30)), "30 Jun 2012");
+        assertEquals("30 Jun 2012", test.format(LocalDate.of(2012, 6, 30)));
         assertEquals(test.getLocale(), Locale.UK);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_pattern_StringLocale_invalid() {
         DateTimeFormatter.ofPattern("p", Locale.UK);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_pattern_StringLocale_nullPattern() {
         DateTimeFormatter.ofPattern(null, Locale.UK);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_pattern_StringLocale_nullLocale() {
         DateTimeFormatter.ofPattern("yyyy", null);
     }
@@ -202,8 +206,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoLocalDate")
-    Object[][] provider_sample_isoLocalDate() {
+    @DataProvider
+    public static Object[][] provider_sample_isoLocalDate() {
         return new Object[][]{
                 {2008, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, DateTimeException.class},
@@ -222,7 +226,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoLocalDate")
+    @Test
+    @UseDataProvider("provider_sample_isoLocalDate")
     public void test_print_isoLocalDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
@@ -239,7 +244,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoLocalDate")
+    @Test
+    @UseDataProvider("provider_sample_isoLocalDate")
     public void test_parse_isoLocalDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String input, Class<?> invalid) {
@@ -263,7 +269,7 @@ public class TCKDateTimeFormatters {
         assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved("+1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_parse_isoLocalDate_1000000000_failedCreate() {
         LocalDate.parse("+1000000000-08-06");
     }
@@ -281,7 +287,7 @@ public class TCKDateTimeFormatters {
         assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved("-1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_parse_isoLocalDate_M1000000000_failedCreate() {
         LocalDate.parse("-1000000000-08-06");
     }
@@ -296,8 +302,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoOffsetDate")
-    Object[][] provider_sample_isoOffsetDate() {
+    @DataProvider
+    public static Object[][] provider_sample_isoOffsetDate() {
         return new Object[][]{
                 {2008, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, DateTimeException.class},
@@ -316,7 +322,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoOffsetDate")
+    @Test
+    @UseDataProvider("provider_sample_isoOffsetDate")
     public void test_print_isoOffsetDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
@@ -333,7 +340,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoOffsetDate")
+    @Test
+    @UseDataProvider("provider_sample_isoOffsetDate")
     public void test_parse_isoOffsetDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String input, Class<?> invalid) {
@@ -354,8 +362,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoDate")
-    Object[][] provider_sample_isoDate() {
+    @DataProvider
+    public static Object[][] provider_sample_isoDate() {
         return new Object[][]{
                 {2008, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, DateTimeException.class},
@@ -374,7 +382,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoDate")
+    @Test
+    @UseDataProvider("provider_sample_isoDate")
     public void test_print_isoDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
@@ -391,7 +400,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoDate")
+    @Test
+    @UseDataProvider("provider_sample_isoDate")
     public void test_parse_isoDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String input, Class<?> invalid) {
@@ -414,8 +424,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoLocalTime")
-    Object[][] provider_sample_isoLocalTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoLocalTime() {
         return new Object[][]{
                 {11, null, null, null, null, null, null, DateTimeException.class},
                 {null, 5, null, null, null, null, null, DateTimeException.class},
@@ -446,7 +456,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoLocalTime")
+    @Test
+    @UseDataProvider("provider_sample_isoLocalTime")
     public void test_print_isoLocalTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
@@ -463,7 +474,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoLocalTime")
+    @Test
+    @UseDataProvider("provider_sample_isoLocalTime")
     public void test_parse_isoLocalTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
@@ -484,8 +496,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoOffsetTime")
-    Object[][] provider_sample_isoOffsetTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoOffsetTime() {
         return new Object[][]{
                 {11, null, null, null, null, null, null, DateTimeException.class},
                 {null, 5, null, null, null, null, null, DateTimeException.class},
@@ -516,7 +528,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoOffsetTime")
+    @Test
+    @UseDataProvider("provider_sample_isoOffsetTime")
     public void test_print_isoOffsetTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
@@ -533,7 +546,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoOffsetTime")
+    @Test
+    @UseDataProvider("provider_sample_isoOffsetTime")
     public void test_parse_isoOffsetTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
@@ -554,8 +568,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoTime")
-    Object[][] provider_sample_isoTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoTime() {
         return new Object[][]{
                 {11, null, null, null, null, null, null, DateTimeException.class},
                 {null, 5, null, null, null, null, null, DateTimeException.class},
@@ -586,7 +600,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoTime")
+    @Test
+    @UseDataProvider("provider_sample_isoTime")
     public void test_print_isoTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
@@ -603,7 +618,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoTime")
+    @Test
+    @UseDataProvider("provider_sample_isoTime")
     public void test_parse_isoTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
@@ -626,8 +642,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoLocalDateTime")
-    Object[][] provider_sample_isoLocalDateTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoLocalDateTime() {
         return new Object[][]{
                 {2008, null, null, null, null, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, null, null, null, null, DateTimeException.class},
@@ -666,7 +682,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoLocalDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoLocalDateTime")
     public void test_print_isoLocalDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -684,7 +701,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoLocalDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoLocalDateTime")
     public void test_parse_isoLocalDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -705,8 +723,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoOffsetDateTime")
-    Object[][] provider_sample_isoOffsetDateTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoOffsetDateTime() {
         return new Object[][]{
                 {2008, null, null, null, null, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, null, null, null, null, DateTimeException.class},
@@ -745,7 +763,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoOffsetDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoOffsetDateTime")
     public void test_print_isoOffsetDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -763,7 +782,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoOffsetDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoOffsetDateTime")
     public void test_parse_isoOffsetDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -785,8 +805,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoZonedDateTime")
-    Object[][] provider_sample_isoZonedDateTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoZonedDateTime() {
         return new Object[][]{
                 {2008, null, null, null, null, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, null, null, null, null, DateTimeException.class},
@@ -834,7 +854,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoZonedDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoZonedDateTime")
     public void test_print_isoZonedDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -852,7 +873,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoZonedDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoZonedDateTime")
     public void test_parse_isoZonedDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -878,8 +900,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoDateTime")
-    Object[][] provider_sample_isoDateTime() {
+    @DataProvider
+    public static Object[][] provider_sample_isoDateTime() {
         return new Object[][]{
                 {2008, null, null, null, null, null, null, null, null, null, DateTimeException.class},
                 {null, 6, null, null, null, null, null, null, null, null, DateTimeException.class},
@@ -918,7 +940,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoDateTime")
     public void test_print_isoDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -936,7 +959,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoDateTime")
+    @Test
+    @UseDataProvider("provider_sample_isoDateTime")
     public void test_parse_isoDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
@@ -1009,7 +1033,7 @@ public class TCKDateTimeFormatters {
         assertEquals(DateTimeFormatter.ISO_ORDINAL_DATE.format(test), "2008-231");
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_isoOrdinalDate_missingField() {
         TemporalAccessor test = Year.of(2008);
         DateTimeFormatter.ISO_ORDINAL_DATE.format(test);
@@ -1056,7 +1080,7 @@ public class TCKDateTimeFormatters {
         assertEquals(DateTimeFormatter.BASIC_ISO_DATE.format(test), "20080603+0200");
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_basicIsoDate_largeYear() {
         TemporalAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
         DateTimeFormatter.BASIC_ISO_DATE.format(test);
@@ -1068,7 +1092,7 @@ public class TCKDateTimeFormatters {
         assertEquals(DateTimeFormatter.BASIC_ISO_DATE.format(test), "20080603");
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_basicIsoDate_missingField() {
         TemporalAccessor test = YearMonth.of(2008, 6);
         DateTimeFormatter.BASIC_ISO_DATE.format(test);
@@ -1081,7 +1105,7 @@ public class TCKDateTimeFormatters {
         assertEquals(DateTimeFormatter.BASIC_ISO_DATE.parse("20080603", LocalDate::from), expected);
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
     public void test_parse_basicIsoDate_largeYear() {
         try {
             LocalDate expected = LocalDate.of(123456, 6, 3);
@@ -1103,8 +1127,9 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="weekDate")
-    Iterator<Object[]> weekDate() {
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+    @DataProvider
+    public static Iterator<Object[]> weekDate() {
         return new Iterator<Object[]>() {
             private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.of("Europe/Paris"));
             private ZonedDateTime endDate = date.withYear(2005).withMonth(1).withDayOfMonth(2);
@@ -1135,10 +1160,11 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="weekDate")
+    @Test
+    @UseDataProvider("weekDate")
     public void test_print_isoWeekDate(TemporalAccessor test, String expected) {
         assertEquals(DateTimeFormatter.ISO_WEEK_DATE.format(test), expected);
-    }
+    } */
 
     @Test
     public void test_print_isoWeekDate_zoned_largeYear() {
@@ -1152,7 +1178,7 @@ public class TCKDateTimeFormatters {
         assertEquals(DateTimeFormatter.ISO_WEEK_DATE.format(test), "2004-W05-2");
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_isoWeekDate_missingField() {
         TemporalAccessor test = YearMonth.of(2008, 6);
         DateTimeFormatter.ISO_WEEK_DATE.format(test);
@@ -1183,8 +1209,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="sample_isoInstant")
-    Object[][] provider_sample_isoInstant() {
+    @DataProvider
+    public static Object[][] provider_sample_isoInstant() {
         return new Object[][]{
                 {0, 0, "1970-01-01T00:00:00Z", null},
                 {0, null, "1970-01-01T00:00:00Z", null},
@@ -1203,7 +1229,8 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="sample_isoInstant")
+    @Test
+    @UseDataProvider("provider_sample_isoInstant")
     public void test_print_isoInstant(
             long instantSecs, Integer nano, String expected, Class<?> expectedEx) {
         TemporalAccessor test = buildAccessorInstant(instantSecs, nano);
@@ -1219,7 +1246,8 @@ public class TCKDateTimeFormatters {
         }
     }
 
-    @Test(dataProvider="sample_isoInstant")
+    @Test
+    @UseDataProvider("provider_sample_isoInstant")
     public void test_parse_isoInstant(
             long instantSecs, Integer nano, String input, Class<?> invalid) {
         if (input != null) {
@@ -1239,8 +1267,8 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="rfc")
-    Object[][] data_rfc() {
+    @DataProvider
+    public static Object[][] data_rfc() {
         return new Object[][] {
             {LocalDateTime.of(2008, 6, 3, 11, 5, 30), "Z", "Tue, 3 Jun 2008 11:05:30 GMT"},
             {LocalDateTime.of(2008, 6, 30, 11, 5, 30), "Z", "Mon, 30 Jun 2008 11:05:30 GMT"},
@@ -1249,19 +1277,21 @@ public class TCKDateTimeFormatters {
         };
     }
 
-    @Test(dataProvider="rfc")
+    @Test
+    @UseDataProvider("data_rfc")
     public void test_print_rfc1123(LocalDateTime base, String offsetId, String expected) {
         TemporalAccessor test = buildAccessor(base, offsetId, null);
         assertEquals(DateTimeFormatter.RFC_1123_DATE_TIME.format(test), expected);
     }
 
-    @Test(dataProvider="rfc")
+    @Test
+    @UseDataProvider("data_rfc")
     public void test_print_rfc1123_french(LocalDateTime base, String offsetId, String expected) {
         TemporalAccessor test = buildAccessor(base, offsetId, null);
         assertEquals(DateTimeFormatter.RFC_1123_DATE_TIME.withLocale(Locale.FRENCH).format(test), expected);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_print_rfc1123_missingField() {
         TemporalAccessor test = YearMonth.of(2008, 6);
         DateTimeFormatter.RFC_1123_DATE_TIME.format(test);
