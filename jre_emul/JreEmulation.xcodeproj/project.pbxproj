@@ -792,6 +792,21 @@
 		6A5D0D6F219CCBB200709765 /* TestCharLiteralParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A5D0D5B219CCBB200709765 /* TestCharLiteralParser.m */; };
 		6A77143B1E3957D00038F773 /* LocaleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A77143A1E3957B10038F773 /* LocaleTest.m */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
+		7A021F6E2486DFF200956E1A /* PBEKeyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F6B2486DFF100956E1A /* PBEKeyTest.m */; };
+		7A021F6F2486DFF200956E1A /* DHPublicKeyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F6C2486DFF100956E1A /* DHPublicKeyTest.m */; };
+		7A021F702486DFF200956E1A /* DHPrivateKeyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F6D2486DFF100956E1A /* DHPrivateKeyTest.m */; };
+		7A021F772486E1BB00956E1A /* TCKJulianFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F712486E1BA00956E1A /* TCKJulianFields.m */; };
+		7A021F782486E1BB00956E1A /* TCKWeekFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F722486E1BA00956E1A /* TCKWeekFields.m */; };
+		7A021F792486E1BB00956E1A /* TCKChronoField.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F732486E1BA00956E1A /* TCKChronoField.m */; };
+		7A021F7A2486E1BB00956E1A /* TCKTemporalAdjusters.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F742486E1BA00956E1A /* TCKTemporalAdjusters.m */; };
+		7A021F7B2486E1BB00956E1A /* TCKChronoUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F752486E1BA00956E1A /* TCKChronoUnit.m */; };
+		7A021F7C2486E1BB00956E1A /* TCKIsoFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F762486E1BB00956E1A /* TCKIsoFields.m */; };
+		7A021F822486E1D700956E1A /* TCKValueRangeSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F7D2486E1D600956E1A /* TCKValueRangeSerialization.m */; };
+		7A021F832486E1D700956E1A /* TCKWeekFieldsSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F7E2486E1D700956E1A /* TCKWeekFieldsSerialization.m */; };
+		7A021F842486E1D700956E1A /* TCKJulianFieldsSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F7F2486E1D700956E1A /* TCKJulianFieldsSerialization.m */; };
+		7A021F852486E1D700956E1A /* TCKChronoFieldSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F802486E1D700956E1A /* TCKChronoFieldSerialization.m */; };
+		7A021F862486E1D700956E1A /* TCKChronoUnitSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F812486E1D700956E1A /* TCKChronoUnitSerialization.m */; };
+		7A021F882486E2B400956E1A /* AbstractTCKTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F872486E2B400956E1A /* AbstractTCKTest.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
 		FA1DD7A82154124E00D0B800 /* SSLSocketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */; };
@@ -4134,6 +4149,21 @@
 		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
+		7A021F6B2486DFF100956E1A /* PBEKeyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PBEKeyTest.m; path = org/apache/harmony/crypto/tests/javax/crypto/interfaces/PBEKeyTest.m; sourceTree = "<group>"; };
+		7A021F6C2486DFF100956E1A /* DHPublicKeyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHPublicKeyTest.m; path = org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPublicKeyTest.m; sourceTree = "<group>"; };
+		7A021F6D2486DFF100956E1A /* DHPrivateKeyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHPrivateKeyTest.m; path = org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPrivateKeyTest.m; sourceTree = "<group>"; };
+		7A021F712486E1BA00956E1A /* TCKJulianFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKJulianFields.m; path = tck/java/time/temporal/TCKJulianFields.m; sourceTree = "<group>"; };
+		7A021F722486E1BA00956E1A /* TCKWeekFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKWeekFields.m; path = tck/java/time/temporal/TCKWeekFields.m; sourceTree = "<group>"; };
+		7A021F732486E1BA00956E1A /* TCKChronoField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKChronoField.m; path = tck/java/time/temporal/TCKChronoField.m; sourceTree = "<group>"; };
+		7A021F742486E1BA00956E1A /* TCKTemporalAdjusters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKTemporalAdjusters.m; path = tck/java/time/temporal/TCKTemporalAdjusters.m; sourceTree = "<group>"; };
+		7A021F752486E1BA00956E1A /* TCKChronoUnit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKChronoUnit.m; path = tck/java/time/temporal/TCKChronoUnit.m; sourceTree = "<group>"; };
+		7A021F762486E1BB00956E1A /* TCKIsoFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKIsoFields.m; path = tck/java/time/temporal/TCKIsoFields.m; sourceTree = "<group>"; };
+		7A021F7D2486E1D600956E1A /* TCKValueRangeSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKValueRangeSerialization.m; path = tck/java/time/temporal/serial/TCKValueRangeSerialization.m; sourceTree = "<group>"; };
+		7A021F7E2486E1D700956E1A /* TCKWeekFieldsSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKWeekFieldsSerialization.m; path = tck/java/time/temporal/serial/TCKWeekFieldsSerialization.m; sourceTree = "<group>"; };
+		7A021F7F2486E1D700956E1A /* TCKJulianFieldsSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKJulianFieldsSerialization.m; path = tck/java/time/temporal/serial/TCKJulianFieldsSerialization.m; sourceTree = "<group>"; };
+		7A021F802486E1D700956E1A /* TCKChronoFieldSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKChronoFieldSerialization.m; path = tck/java/time/temporal/serial/TCKChronoFieldSerialization.m; sourceTree = "<group>"; };
+		7A021F812486E1D700956E1A /* TCKChronoUnitSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKChronoUnitSerialization.m; path = tck/java/time/temporal/serial/TCKChronoUnitSerialization.m; sourceTree = "<group>"; };
+		7A021F872486E2B400956E1A /* AbstractTCKTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractTCKTest.m; path = tck/java/time/AbstractTCKTest.m; sourceTree = "<group>"; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
 		DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = org/apache/harmony/tests/java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
 		DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
@@ -6790,6 +6820,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7A021F872486E2B400956E1A /* AbstractTCKTest.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
@@ -7002,6 +7033,8 @@
 				069C24141E9EEF7B00CE6BAF /* DeflaterTest.m */,
 				062026D41D512D17001EE455 /* DeflaterTest.m */,
 				0612B8CF1F4373730069EF58 /* DelayQueueTest.m */,
+				7A021F6D2486DFF100956E1A /* DHPrivateKeyTest.m */,
+				7A021F6C2486DFF100956E1A /* DHPublicKeyTest.m */,
 				069FAFDA1FFD8384001A5383 /* DigestExceptionTest.m */,
 				069FAFDB1FFD8384001A5383 /* DigestInputStream2Test.m */,
 				069FAFDE1FFD8384001A5383 /* DigestInputStreamTest.m */,
@@ -7474,6 +7507,7 @@
 				0620284B1D512E21001EE455 /* Pattern2Test.m */,
 				0620284C1D512E21001EE455 /* PatternSyntaxExceptionTest.m */,
 				0620284D1D512E21001EE455 /* PatternTest.m */,
+				7A021F6B2486DFF100956E1A /* PBEKeyTest.m */,
 				062025711D512B77001EE455 /* PhantomReferenceTest.m */,
 				0612B8DD1F4373740069EF58 /* PhaserTest.m */,
 				06318C16243E8CDC00BF119E /* PipeTest.m */,
@@ -7652,6 +7686,17 @@
 				0612B8E41F4373740069EF58 /* SynchronousQueueTest.m */,
 				0612B8E51F4373740069EF58 /* SystemTest.m */,
 				062025761D512B77001EE455 /* SystemTest.m */,
+				7A021F732486E1BA00956E1A /* TCKChronoField.m */,
+				7A021F802486E1D700956E1A /* TCKChronoFieldSerialization.m */,
+				7A021F752486E1BA00956E1A /* TCKChronoUnit.m */,
+				7A021F812486E1D700956E1A /* TCKChronoUnitSerialization.m */,
+				7A021F762486E1BB00956E1A /* TCKIsoFields.m */,
+				7A021F712486E1BA00956E1A /* TCKJulianFields.m */,
+				7A021F7F2486E1D700956E1A /* TCKJulianFieldsSerialization.m */,
+				7A021F742486E1BA00956E1A /* TCKTemporalAdjusters.m */,
+				7A021F7D2486E1D600956E1A /* TCKValueRangeSerialization.m */,
+				7A021F722486E1BA00956E1A /* TCKWeekFields.m */,
+				7A021F7E2486E1D700956E1A /* TCKWeekFieldsSerialization.m */,
 				0620252C1D512B37001EE455 /* TestAnnotation.m */,
 				FA1DD7BC215418F200D0B800 /* TestCertUtils.m */,
 				6A5D0D5B219CCBB200709765 /* TestCharLiteralParser.m */,
@@ -8073,6 +8118,8 @@
 				06C143BB1F46149300CABE9A /* CharBufferTest.m in Sources */,
 				06C143971F46138600CABE9A /* AlreadyConnectedExceptionTest.m in Sources */,
 				06C143981F46138600CABE9A /* AsynchronousCloseExceptionTest.m in Sources */,
+				7A021F702486DFF200956E1A /* DHPrivateKeyTest.m in Sources */,
+				7A021F862486E1D700956E1A /* TCKChronoUnitSerialization.m in Sources */,
 				06C143991F46138600CABE9A /* CancelledKeyExceptionTest.m in Sources */,
 				06C1439A1F46138600CABE9A /* ClosedByInterruptExceptionTest.m in Sources */,
 				06C1439B1F46138600CABE9A /* ClosedChannelExceptionTest.m in Sources */,
@@ -8124,9 +8171,11 @@
 				FA24DE8922EA1272000DEC19 /* RoundingModeTest.m in Sources */,
 				067B13421EEDEABB0013CBAF /* IosRSASignatureTest.m in Sources */,
 				067B13461EEDEABB0013CBAF /* ConcurrentLinkedDequeTest.m in Sources */,
+				7A021F792486E1BB00956E1A /* TCKChronoField.m in Sources */,
 				FA24DE4D22E75B27000DEC19 /* ParsingTest.m in Sources */,
 				067B13491EEDEABB0013CBAF /* LinkedTransferQueueTest.m in Sources */,
 				067B132B1EEDCE720013CBAF /* Atomic8Test.m in Sources */,
+				7A021F772486E1BB00956E1A /* TCKJulianFields.m in Sources */,
 				067B132C1EEDCE720013CBAF /* AtomicBooleanTest.m in Sources */,
 				067B132D1EEDCE720013CBAF /* AtomicIntegerArrayTest.m in Sources */,
 				067B132E1EEDCE720013CBAF /* AtomicIntegerFieldUpdaterTest.m in Sources */,
@@ -8147,6 +8196,7 @@
 				FA5C0C4F21BFFBA5000B6275 /* AbstractSequentialListTest.m in Sources */,
 				FA24DE7222E7628A000DEC19 /* IncompatibleClassChangeErrorTest.m in Sources */,
 				0620262F1D512CA1001EE455 /* OldDataInputStreamTest.m in Sources */,
+				7A021F782486E1BB00956E1A /* TCKWeekFields.m in Sources */,
 				062026A11D512D08001EE455 /* DatagramSocketTest.m in Sources */,
 				062026F51D512D17001EE455 /* ZipEntryTest.m in Sources */,
 				FA6C09CA2187C5AC006C646A /* TestMonthDay.m in Sources */,
@@ -8245,6 +8295,7 @@
 				062026261D512CA1001EE455 /* OldBufferedInputStreamTest.m in Sources */,
 				062028EF1D512EBD001EE455 /* MockResolver.m in Sources */,
 				062026A51D512D08001EE455 /* OldAuthenticatorTest.m in Sources */,
+				7A021F6E2486DFF200956E1A /* PBEKeyTest.m in Sources */,
 				FA24DE4E22E75B27000DEC19 /* SmallTests.m in Sources */,
 				062026631D512CBE001EE455 /* DoubleTest.m in Sources */,
 				0620266E1D512CBE001EE455 /* ReflectionTest.m in Sources */,
@@ -8256,6 +8307,7 @@
 				6A5D0D47219CCB0E00709765 /* TestZoneId.m in Sources */,
 				062027531D512D82001EE455 /* FakeFox02.m in Sources */,
 				062028731D512E3E001EE455 /* KeyPairGeneratorSpiTest.m in Sources */,
+				7A021F842486E1D700956E1A /* TCKJulianFieldsSerialization.m in Sources */,
 				062029AC1D512FFE001EE455 /* Lambdas.m in Sources */,
 				062028801D512E3E001EE455 /* MyAlgorithmParameterGeneratorSpi.m in Sources */,
 				FA24DEA922EA47CB000DEC19 /* CollectionTest.m in Sources */,
@@ -8427,6 +8479,7 @@
 				FA24DE7922E7628A000DEC19 /* InheritableThreadLocalTest.m in Sources */,
 				0620287A1D512E3E001EE455 /* ProviderExceptionTest.m in Sources */,
 				062027581D512D82001EE455 /* FakeFox041.m in Sources */,
+				7A021F822486E1D700956E1A /* TCKValueRangeSerialization.m in Sources */,
 				069C24291E9EEF7B00CE6BAF /* DeflaterInputStreamTest.m in Sources */,
 				062026CB1D512D08001EE455 /* OldAndroidArrayListTest.m in Sources */,
 				FA6C09E721925DE4006C646A /* TimeZoneRuleTest.m in Sources */,
@@ -8531,6 +8584,7 @@
 				FAF1050122F8828300ED7FF6 /* CoderResultTest.m in Sources */,
 				FA5C0C5321BFFBA5000B6275 /* UUIDTest.m in Sources */,
 				062026ED1D512D17001EE455 /* OldAndroidChecksumTest.m in Sources */,
+				7A021F6F2486DFF200956E1A /* DHPublicKeyTest.m in Sources */,
 				062026271D512CA1001EE455 /* OldBufferedOutputStreamTest.m in Sources */,
 				062025821D512B77001EE455 /* PhantomReferenceTest.m in Sources */,
 				FA24DE6C22E7628A000DEC19 /* IllegalAccessErrorTest.m in Sources */,
@@ -8558,6 +8612,7 @@
 				069C23F91E9EEECA00CE6BAF /* Support_Format.m in Sources */,
 				062028CE1D512E89001EE455 /* BigIntegerHashCodeTest.m in Sources */,
 				06E2068C21F10506001C06D2 /* package-info.m in Sources */,
+				7A021F7B2486E1BB00956E1A /* TCKChronoUnit.m in Sources */,
 				FA5C0C9921BFFE6B000B6275 /* StringBuilderTest.m in Sources */,
 				0620264C1D512CA1001EE455 /* OldStringWriterTest.m in Sources */,
 				FA5C0C5521BFFBA5000B6275 /* CollectionsTest.m in Sources */,
@@ -8638,6 +8693,7 @@
 				FA61CFA422F35D8A006F903E /* VectorTest.m in Sources */,
 				0612B8FE1F4373740069EF58 /* DelayQueueTest.m in Sources */,
 				062026121D512CA1001EE455 /* OldAndroidBufferedInputStreamTest.m in Sources */,
+				7A021F832486E1D700956E1A /* TCKWeekFieldsSerialization.m in Sources */,
 				062026321D512CA1001EE455 /* OldFileReaderTest.m in Sources */,
 				0620262C1D512CA1001EE455 /* OldCharArrayReaderTest.m in Sources */,
 				FA5C0C6121BFFBA5000B6275 /* RandomTest.m in Sources */,
@@ -8665,6 +8721,7 @@
 				FA24DE8B22EA1272000DEC19 /* OldBigIntegerTest.m in Sources */,
 				069C23EF1E9EEECA00CE6BAF /* DateFormatSymbolsTest.m in Sources */,
 				0612B9111F4373740069EF58 /* ScheduledExecutorSubclassTest.m in Sources */,
+				7A021F852486E1D700956E1A /* TCKChronoFieldSerialization.m in Sources */,
 				0620274E1D512D82001EE455 /* SampleEvent.m in Sources */,
 				FA5C0C9721BFFE6B000B6275 /* IllegalStateExceptionTest.m in Sources */,
 				062025BE1D512C8E001EE455 /* NativeDecimalFormatTest.m in Sources */,
@@ -8762,6 +8819,7 @@
 				062027821D512D9D001EE455 /* MockPropertyChangeValidListener.m in Sources */,
 				062027791D512D9D001EE455 /* MockFooSub.m in Sources */,
 				062029871D512F41001EE455 /* Support_TestResource_en.m in Sources */,
+				7A021F882486E2B400956E1A /* AbstractTCKTest.m in Sources */,
 				FA5C0CBB21BFFE6B000B6275 /* NumberTest.m in Sources */,
 				069C24341E9EEF7B00CE6BAF /* ZipInputStreamTest.m in Sources */,
 				FA61CFA722F35D8A006F903E /* ArrayListTest.m in Sources */,
@@ -8824,6 +8882,7 @@
 				067FC8251EFAE858001D0627 /* ReentrantReadWriteLockTest.m in Sources */,
 				FA5C0C5021BFFBA5000B6275 /* PriorityQueueTest.m in Sources */,
 				06F093B22304A53300BF7E3D /* GBCharsetEncoderTest.m in Sources */,
+				7A021F7A2486E1BB00956E1A /* TCKTemporalAdjusters.m in Sources */,
 				06023F051FBA5D9D003BF0A8 /* Hello.m in Sources */,
 				069C24431E9EF04900CE6BAF /* CertificateNotYetValidExceptionTest.m in Sources */,
 				0620277D1D512D9D001EE455 /* MockNullSubClass.m in Sources */,
@@ -8943,6 +9002,7 @@
 				062026491D512CA1001EE455 /* OldStreamTokenizerTest.m in Sources */,
 				0612B9441F4381520069EF58 /* ThreadTest.m in Sources */,
 				062029821D512F41001EE455 /* Support_Proxy_SubException.m in Sources */,
+				7A021F7C2486E1BB00956E1A /* TCKIsoFields.m in Sources */,
 				0620261F1D512CA1001EE455 /* OldAndroidPipedStreamTest.m in Sources */,
 				0620297F1D512F41001EE455 /* Support_Proxy_I1.m in Sources */,
 				FA24DE6D22E7628A000DEC19 /* CharacterImplTest.m in Sources */,
