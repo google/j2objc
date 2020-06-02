@@ -492,6 +492,9 @@ TEST_SOURCES := \
     libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/text/SimpleDateFormatTest.java \
+    libcore/java/time/format/DateTimeFormatterBuilderTest.java \
+    libcore/java/time/format/DateTimeFormatterTest.java \
+    libcore/java/time/format/DateTimeParseExceptionTest.java \
     libcore/java/util/AbstractCollectionTest.java \
     libcore/java/util/ArrayListTest.java \
     libcore/java/util/ArraysTest.java \
