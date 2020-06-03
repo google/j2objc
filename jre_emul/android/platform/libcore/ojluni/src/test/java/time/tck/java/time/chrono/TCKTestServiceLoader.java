@@ -58,19 +58,18 @@
  */
 package tck.java.time.chrono;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Tests that a custom Chronology is available via the ServiceLoader.
  * The CopticChronology is configured via META-INF/services/java.time.chrono.Chronology.
  */
-@Test
 public class TCKTestServiceLoader {
 
      @Test
@@ -78,7 +77,7 @@ public class TCKTestServiceLoader {
         Chronology chrono = Chronology.of("Coptic");
         ChronoLocalDate copticDate = chrono.date(1729, 4, 27);
         LocalDate ld = LocalDate.from(copticDate);
-        assertEquals(ld, LocalDate.of(2013, 1, 5), "CopticDate does not match LocalDate");
+        assertEquals("CopticDate does not match LocalDate", ld, LocalDate.of(2013, 1, 5));
     }
 
 }
