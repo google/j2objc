@@ -72,11 +72,13 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Chronology;
-import java.time.chrono.HijrahChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahChronology; */
 import java.time.chrono.IsoChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.MinguoChronology;
-import java.time.chrono.ThaiBuddhistChronology;
+import java.time.chrono.ThaiBuddhistChronology; */
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;

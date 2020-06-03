@@ -959,6 +959,7 @@ TEST_SOURCES := \
     tck/java/time/chrono/TCKChronoLocalDate.java \
     tck/java/time/chrono/TCKChronoLocalDateTime.java \
     tck/java/time/chrono/TCKChronoPeriod.java \
+    tck/java/time/chrono/TCKChronoZonedDateTime.java \
     tck/java/time/chrono/TCKChronology.java \
     tck/java/time/chrono/TCKIsoChronology.java \
     tck/java/time/chrono/TCKIsoEra.java \
