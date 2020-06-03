@@ -91,7 +91,6 @@ import tck.java.time.AbstractTCKTest;
 /**
  * Test WeekFields.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKWeekFields extends AbstractTCKTest {
 

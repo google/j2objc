@@ -81,7 +81,6 @@ import tck.java.time.AbstractTCKTest;
 /**
  * Test Julian Fields.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKJulianFields extends AbstractTCKTest {
 
