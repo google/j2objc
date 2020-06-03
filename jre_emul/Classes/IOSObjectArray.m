@@ -228,6 +228,17 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
   }
 }
 
+static void retainArrayElements(IOSObjectArray *array) {
+  if (!array->isRetained_) {
+    // Set isRetained_ before retaining the elements to avoid infinite loop if two arrays happen to
+    // contain each other.
+    array->isRetained_ = true;
+    for (jint i = 0; i < array->size_; i++) {
+      [array->buffer_[i] retain];
+    }
+  }
+}
+
 - (void)arraycopy:(jint)offset
       destination:(IOSArray *)destination
         dstOffset:(jint)dstOffset
@@ -245,31 +256,23 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
   jboolean skipElementCheck = [dest->elementType_ isAssignableFrom:elementType_];
 #endif
 
+  if (!dest->isRetained_) {
+    // The destination array's contents needs to always be retained, as that array
+    // may outlive this instance.
+    retainArrayElements(dest);
+  }
+
   if (self == dest) {
-    if (dest->isRetained_) {
-      DoRetainedMove(buffer_, offset, dstOffset, length);
-    } else {
-      memmove(buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
-    }
+    DoRetainedMove(buffer_, offset, dstOffset, length);
   } else {
-    if (dest->isRetained_) {
-      if (skipElementCheck) {
-        for (jint i = 0; i < length; i++) {
-          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [buffer_[i + offset] retain]);
-        }
-      } else {
-        for (jint i = 0; i < length; i++) {
-          id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [newElement retain]);
-        }
+    if (skipElementCheck) {
+      for (jint i = 0; i < length; i++) {
+        JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [buffer_[i + offset] retain]);
       }
     } else {
-      if (skipElementCheck) {
-        memcpy(dest->buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
-      } else {
-        for (jint i = 0; i < length; i++) {
-          dest->buffer_[i + dstOffset] = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-        }
+      for (jint i = 0; i < length; i++) {
+        id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
+        JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [newElement retain]);
       }
     }
   }
@@ -288,14 +291,7 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
 }
 
 - (id)retain {
-  if (!isRetained_) {
-    // Set isRetained_ before retaining the elements to avoid infinite loop if two arrays happen to
-    // contain each other.
-    isRetained_ = true;
-    for (jint i = 0; i < size_; i++) {
-      [buffer_[i] retain];
-    }
-  }
+  retainArrayElements(self);
   return [super retain];
 }
 
