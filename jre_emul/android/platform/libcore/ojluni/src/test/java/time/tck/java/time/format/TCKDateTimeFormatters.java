@@ -1157,8 +1157,9 @@ public class TCKDateTimeFormatters {
                 throw new UnsupportedOperationException();
             }
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     @UseDataProvider("weekDate")
     public void test_print_isoWeekDate(TemporalAccessor test, String expected) {

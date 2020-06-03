@@ -935,8 +935,9 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.localDate()), LocalDate.of(1970, 1, 3));
         assertEquals(accessor.query(TemporalQueries.localTime()), null);
         assertEquals(accessor.query(TemporalQueries.chronology()), MinguoChronology.INSTANCE);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_withChronology_parsedChronology_noOverride() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().parseDefaulting(EPOCH_DAY, 2).appendChronologyId().toFormatter();
@@ -944,8 +945,9 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.localDate()), LocalDate.of(1970, 1, 3));
         assertEquals(accessor.query(TemporalQueries.localTime()), null);
         assertEquals(accessor.query(TemporalQueries.chronology()), ThaiBuddhistChronology.INSTANCE);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_withChronology_parsedChronology_override() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().parseDefaulting(EPOCH_DAY, 2).appendChronologyId().toFormatter();
@@ -1027,15 +1029,17 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.localDate()), LocalDate.from(mdt));
         assertEquals(accessor.query(TemporalQueries.localTime()), null);
         assertEquals(accessor.query(TemporalQueries.chronology()), MinguoChronology.INSTANCE);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoLocalDate_noOverrideChrono_wrongChrono() {
         ChronoLocalDate cld = ThaiBuddhistChronology.INSTANCE.dateNow();
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cld)).toFormatter();
         f.parse("1234567890");
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoLocalDate_overrideChrono_wrongChrono() {
         ChronoLocalDate cld = ThaiBuddhistChronology.INSTANCE.dateNow();
@@ -1106,15 +1110,17 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.localTime()), LocalTime.NOON);
         assertEquals(accessor.query(TemporalQueries.chronology()), MinguoChronology.INSTANCE);
         assertEquals(accessor.query(TemporalQueries.zoneId()), EUROPE_PARIS);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoZonedDateTime_noOverrideChrono_wrongChrono() {
         ChronoZonedDateTime<?> cldt = ThaiBuddhistChronology.INSTANCE.dateNow().atTime(LocalTime.NOON).atZone(EUROPE_PARIS);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cldt)).toFormatter();
         f.parse("1234567890");
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoZonedDateTime_overrideChrono_wrongChrono() {
         ChronoZonedDateTime<?> cldt = ThaiBuddhistChronology.INSTANCE.dateNow().atTime(LocalTime.NOON).atZone(EUROPE_PARIS);
