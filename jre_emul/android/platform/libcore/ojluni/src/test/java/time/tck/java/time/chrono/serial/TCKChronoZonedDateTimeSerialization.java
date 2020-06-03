@@ -61,39 +61,47 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.Chronology;
-import java.time.chrono.HijrahChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahChronology; */
 import java.time.chrono.IsoChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.MinguoChronology;
-import java.time.chrono.ThaiBuddhistChronology;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import java.time.chrono.ThaiBuddhistChronology; */
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test assertions that must be true for all built-in chronologies.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKChronoZonedDateTimeSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
     // regular data factory for names and descriptions of available calendars
     //-----------------------------------------------------------------------
-    @DataProvider(name = "calendars")
+    @DataProvider
     Chronology[][] data_of_calendars() {
         return new Chronology[][]{
-                    {HijrahChronology.INSTANCE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                    {HijrahChronology.INSTANCE}, */
                     {IsoChronology.INSTANCE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {JapaneseChronology.INSTANCE},
                     {MinguoChronology.INSTANCE},
-                    {ThaiBuddhistChronology.INSTANCE},
+                    {ThaiBuddhistChronology.INSTANCE}, */
         };
     }
 
     //-----------------------------------------------------------------------
     // Test Serialization of ISO via chrono API
     //-----------------------------------------------------------------------
-    @Test( dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_ChronoZonedDateTimeSerialization(Chronology chrono) throws Exception {
         ZonedDateTime ref = LocalDate.of(2013, 1, 5).atTime(12, 1, 2, 3).atZone(ZoneId.of("GMT+01:23"));
         ChronoZonedDateTime<?> original = chrono.date(ref).atTime(ref.toLocalTime()).atZone(ref.getZone());
