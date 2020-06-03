@@ -971,6 +971,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
+    tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
+    tck/java/time/chrono/serial/TCKEraSerialization.java \
     tck/java/time/format/TCKDateTimeFormatter.java \
     tck/java/time/format/TCKDateTimeFormatterBuilder.java \
     tck/java/time/format/TCKDateTimeFormatters.java \

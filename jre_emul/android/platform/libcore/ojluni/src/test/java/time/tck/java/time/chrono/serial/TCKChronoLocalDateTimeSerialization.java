@@ -86,7 +86,7 @@ public class TCKChronoLocalDateTimeSerialization extends AbstractTCKTest {
     // regular data factory for available calendars
     //-----------------------------------------------------------------------
     @DataProvider
-    Chronology[][] data_of_calendars() {
+    public static Object[][] data_of_calendars() {
         return new Chronology[][]{
                     /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {HijrahChronology.INSTANCE}, */

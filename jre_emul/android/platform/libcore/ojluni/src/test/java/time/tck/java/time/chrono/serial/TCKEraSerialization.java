@@ -102,7 +102,7 @@ public class TCKEraSerialization extends AbstractTCKTest {
     // Regular data factory for the available Eras
     //-----------------------------------------------------------------------
     @DataProvider
-    Era[][] data_of_calendars() {
+    public static Object[][] data_of_calendars() {
         return new Era[][] {
                     /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {HijrahEra.AH}, */
