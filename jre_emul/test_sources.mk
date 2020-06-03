@@ -582,6 +582,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/net/ServerSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
