@@ -60,11 +60,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 
 import java.time.chrono.Chronology;
-import java.time.chrono.HijrahChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahChronology; */
 import java.time.chrono.IsoChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.MinguoChronology;
-import java.time.chrono.ThaiBuddhistChronology;
+import java.time.chrono.ThaiBuddhistChronology; */
 
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
@@ -83,13 +85,16 @@ public class TCKChronologySerialization extends AbstractTCKTest {
     // Regular data factory for available calendars
     //-----------------------------------------------------------------------
     @DataProvider
-    Chronology[][] data_of_calendars() {
+    public static Object[][] data_of_calendars() {
         return new Chronology[][]{
-                    {HijrahChronology.INSTANCE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                    {HijrahChronology.INSTANCE}, */
                     {IsoChronology.INSTANCE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {JapaneseChronology.INSTANCE},
                     {MinguoChronology.INSTANCE},
-                    {ThaiBuddhistChronology.INSTANCE}};
+                    {ThaiBuddhistChronology.INSTANCE} */
+        };
     }
 
     //-----------------------------------------------------------------------
@@ -124,10 +129,11 @@ public class TCKChronologySerialization extends AbstractTCKTest {
     public static Object[][] invalid_serial_classes() {
         return new Object[][]{
             {IsoChronology.class},
+            /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
             {JapaneseChronology.class},
             {MinguoChronology.class},
             {ThaiBuddhistChronology.class},
-            {HijrahChronology.class},
+            {HijrahChronology.class}, */
         };
     }
 
