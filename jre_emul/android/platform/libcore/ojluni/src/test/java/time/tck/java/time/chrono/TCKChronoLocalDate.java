@@ -106,7 +106,7 @@ public class TCKChronoLocalDate {
     // regular data factory for names and descriptions of available calendars
     //-----------------------------------------------------------------------
     @DataProvider
-    Chronology[][] data_of_calendars() {
+    public static Object[][] data_of_calendars() {
         return new Chronology[][]{
                     /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {HijrahChronology.INSTANCE}, */
@@ -123,7 +123,7 @@ public class TCKChronoLocalDate {
     public void test_badWithAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalAdjuster adjuster = new FixedAdjuster(date2);
@@ -147,7 +147,7 @@ public class TCKChronoLocalDate {
     public void test_badPlusAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalAmount adjuster = new FixedAdjuster(date2);
@@ -171,7 +171,7 @@ public class TCKChronoLocalDate {
     public void test_badMinusAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalAmount adjuster = new FixedAdjuster(date2);
@@ -195,7 +195,7 @@ public class TCKChronoLocalDate {
     public void test_badPlusTemporalUnitChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalUnit adjuster = new FixedTemporalUnit(date2);
@@ -220,7 +220,7 @@ public class TCKChronoLocalDate {
     public void test_badMinusTemporalUnitChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalUnit adjuster = new FixedTemporalUnit(date2);
@@ -245,7 +245,7 @@ public class TCKChronoLocalDate {
     public void test_badTemporalFieldChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalField adjuster = new FixedTemporalField(date2);
@@ -287,7 +287,7 @@ public class TCKChronoLocalDate {
         dates.add(date.plus(1, ChronoUnit.YEARS));
 
         // Check these dates against the corresponding dates for every calendar
-        for (Chronology[] clist : data_of_calendars()) {
+        for (Chronology[] clist : (Chronology[][]) data_of_calendars()) {
             List<ChronoLocalDate> otherDates = new ArrayList<>();
             Chronology chrono2 = clist[0];
             for (ChronoLocalDate d : dates) {

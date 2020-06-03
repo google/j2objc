@@ -108,11 +108,13 @@ public class TCKChronology {
     @DataProvider
     public static Object[][] data_of_calendars() {
         return new Object[][] {
-                    {"Hijrah-umalqura", "islamic-umalqura"},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                    {"Hijrah-umalqura", "islamic-umalqura"}, */
                     {"ISO", "iso8601"},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {"Japanese", "japanese"},
                     {"Minguo", "roc"},
-                    {"ThaiBuddhist", "buddhist"},
+                    {"ThaiBuddhist", "buddhist"}, */
                 };
     }
 
@@ -151,6 +153,7 @@ public class TCKChronology {
     //-----------------------------------------------------------------------
     // getDisplayName()
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_of_calendarDisplayNames() {
         // Android-changed: Change expected values to CLDR values here. This test seems to be based
@@ -162,14 +165,15 @@ public class TCKChronology {
                     {"Minguo", "Minguo Calendar"},
                     {"ThaiBuddhist", "Buddhist Calendar"},
                 };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     @UseDataProvider("data_of_calendarDisplayNames")
     public void test_getDisplayName(String chronoId, String calendarDisplayName) {
         Chronology chrono = Chronology.of(chronoId);
         assertEquals(calendarDisplayName, chrono.getDisplayName(TextStyle.FULL, Locale.ENGLISH));
-    }
+    } */
 
     /**
      * Compute the number of days from the Epoch and compute the date from the number of days.
