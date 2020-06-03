@@ -56,8 +56,8 @@
  */
 package tck.java.time.chrono;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -71,11 +71,13 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.Chronology;
-import java.time.chrono.HijrahChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahChronology; */
 import java.time.chrono.IsoChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.MinguoChronology;
-import java.time.chrono.ThaiBuddhistChronology;
+import java.time.chrono.ThaiBuddhistChronology; */
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -87,30 +89,37 @@ import java.time.temporal.ValueRange;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test assertions that must be true for all built-in chronologies.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKChronoLocalDateTime {
 
     //-----------------------------------------------------------------------
     // regular data factory for names and descriptions of available calendars
     //-----------------------------------------------------------------------
-    @DataProvider(name = "calendars")
+    @DataProvider
     Chronology[][] data_of_calendars() {
         return new Chronology[][]{
-                    {HijrahChronology.INSTANCE},
-                    {IsoChronology.INSTANCE},
-                    {JapaneseChronology.INSTANCE},
-                    {MinguoChronology.INSTANCE},
-                    {ThaiBuddhistChronology.INSTANCE}};
+                /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                {HijrahChronology.INSTANCE}, */
+                {IsoChronology.INSTANCE}
+                /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                {JapaneseChronology.INSTANCE},
+                {MinguoChronology.INSTANCE},
+                {ThaiBuddhistChronology.INSTANCE} */
+        };
     }
 
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_badWithAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDateTime<?> cdt = chrono.date(refDate).atTime(LocalTime.NOON);
@@ -129,12 +138,13 @@ public class TCKChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.with(adjuster);
-                assertEquals(result, cdt2, "WithAdjuster failed to replace date");
+                assertEquals("WithAdjuster failed to replace date", result, cdt2);
             }
         }
     }
 
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_badPlusAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDateTime<?> cdt = chrono.date(refDate).atTime(LocalTime.NOON);
@@ -153,12 +163,13 @@ public class TCKChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.plus(adjuster);
-                assertEquals(result, cdt2, "WithAdjuster failed to replace date time");
+                assertEquals("WithAdjuster failed to replace date time", result, cdt2);
             }
         }
     }
 
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_badMinusAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDateTime<?> cdt = chrono.date(refDate).atTime(LocalTime.NOON);
@@ -177,12 +188,13 @@ public class TCKChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.minus(adjuster);
-                assertEquals(result, cdt2, "WithAdjuster failed to replace date");
+                assertEquals("WithAdjuster failed to replace date", result, cdt2);
             }
         }
     }
 
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_badPlusTemporalUnitChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDateTime<?> cdt = chrono.date(refDate).atTime(LocalTime.NOON);
@@ -201,12 +213,13 @@ public class TCKChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.plus(1, adjuster);
-                assertEquals(result, cdt2, "WithAdjuster failed to replace date");
+                assertEquals("WithAdjuster failed to replace date", result, cdt2);
             }
         }
     }
 
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_badMinusTemporalUnitChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDateTime<?> cdt = chrono.date(refDate).atTime(LocalTime.NOON);
@@ -225,12 +238,13 @@ public class TCKChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.minus(1, adjuster);
-                assertEquals(result, cdt2, "WithAdjuster failed to replace date");
+                assertEquals("WithAdjuster failed to replace date", result, cdt2);
             }
         }
     }
 
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_badTemporalFieldChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(2013, 1, 1);
         ChronoLocalDateTime<?> cdt = chrono.date(refDate).atTime(LocalTime.NOON);
@@ -249,7 +263,7 @@ public class TCKChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.with(adjuster, 1);
-                assertEquals(result, cdt2, "TemporalField doWith() failed to replace date");
+                assertEquals("TemporalField doWith() failed to replace date", result, cdt2);
             }
         }
     }
@@ -257,7 +271,8 @@ public class TCKChronoLocalDateTime {
     //-----------------------------------------------------------------------
     // isBefore, isAfter, isEqual
     //-----------------------------------------------------------------------
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_datetime_comparisons(Chronology chrono) {
         List<ChronoLocalDateTime<?>> dates = new ArrayList<>();
 
@@ -297,20 +312,20 @@ public class TCKChronoLocalDateTime {
                     ChronoLocalDateTime<?> b = otherDates.get(j);
                     int cmp = ChronoLocalDateTime.timeLineOrder().compare(a, b);
                     if (i < j) {
-                        assertTrue(cmp < 0, a + " compare " + b);
-                        assertEquals(a.isBefore(b), true, a + " isBefore " + b);
-                        assertEquals(a.isAfter(b), false, a + " isAfter " + b);
-                        assertEquals(a.isEqual(b), false, a + " isEqual " + b);
+                        assertTrue(a + " compare " + b, cmp < 0);
+                        assertEquals(a + " isBefore " + b, a.isBefore(b), true);
+                        assertEquals(a + " isAfter " + b, a.isAfter(b), false);
+                        assertEquals(a + " isEqual " + b, a.isEqual(b), false);
                     } else if (i > j) {
-                        assertTrue(cmp > 0, a + " compare " + b);
-                        assertEquals(a.isBefore(b), false, a + " isBefore " + b);
-                        assertEquals(a.isAfter(b), true, a + " isAfter " + b);
-                        assertEquals(a.isEqual(b), false, a + " isEqual " + b);
+                        assertTrue(a + " compare " + b, cmp > 0);
+                        assertEquals(a + " isBefore " + b, a.isBefore(b), false);
+                        assertEquals(a + " isAfter " + b, a.isAfter(b), true);
+                        assertEquals(a + " isEqual " + b, a.isEqual(b), false);
                     } else {
-                        assertTrue(cmp == 0, a + " compare " + b);
-                        assertEquals(a.isBefore(b), false, a + " isBefore " + b);
-                        assertEquals(a.isAfter(b), false, a + " isAfter " + b);
-                        assertEquals(a.isEqual(b), true, a + " isEqual " + b);
+                        assertTrue(a + " compare " + b, cmp == 0);
+                        assertEquals(a + " isBefore " + b, a.isBefore(b), false);
+                        assertEquals(a + " isAfter " + b, a.isAfter(b), false);
+                        assertEquals(a + " isEqual " + b, a.isEqual(b), true);
                     }
                 }
             }
@@ -318,7 +333,8 @@ public class TCKChronoLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_from_TemporalAccessor(Chronology chrono) {
         LocalDateTime refDateTime = LocalDateTime.of(2013, 1, 1, 12, 30);
         ChronoLocalDateTime<?> dateTime = chrono.localDateTime(refDateTime);
@@ -328,23 +344,24 @@ public class TCKChronoLocalDateTime {
         assertEquals(test2, dateTime);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_from_TemporalAccessor_dateOnly() {
         ChronoLocalDateTime.from(LocalDate.of(2013, 1, 1));
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_from_TemporalAccessor_timeOnly() {
         ChronoLocalDateTime.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         ChronoLocalDateTime.from(null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(dataProvider="calendars")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_getChronology(Chronology chrono) {
         ChronoLocalDateTime<?> test = chrono.localDateTime(LocalDateTime.of(2010, 6, 30, 11, 30));
         assertEquals(test.getChronology(), chrono);
