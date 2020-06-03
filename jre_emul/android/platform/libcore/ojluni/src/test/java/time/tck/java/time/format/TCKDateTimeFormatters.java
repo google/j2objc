@@ -111,7 +111,6 @@ import org.junit.Test;
 /**
  * Test DateTimeFormatter.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKDateTimeFormatters {
 

@@ -79,7 +79,6 @@ import org.junit.Test;
 /**
  * Test padding behavior of formatter.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKPadPrinterParser {
 

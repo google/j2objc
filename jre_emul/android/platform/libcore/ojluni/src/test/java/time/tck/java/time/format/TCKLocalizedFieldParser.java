@@ -80,7 +80,6 @@ import test.java.time.format.AbstractTestPrinterParser;
 /**
  * Test TCKLocalizedFieldParser.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKLocalizedFieldParser extends AbstractTestPrinterParser {
 

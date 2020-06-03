@@ -69,7 +69,6 @@ import org.junit.Test;
 /**
  * Test DecimalStyle.
  */
-
 public class TCKTextStyle {
 
     @Test

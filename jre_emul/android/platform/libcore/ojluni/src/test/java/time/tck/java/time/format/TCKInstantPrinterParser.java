@@ -81,7 +81,6 @@ import org.junit.Test;
 /**
  * Test DateTimeFormatterBuilder.appendInstant().
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKInstantPrinterParser {
 

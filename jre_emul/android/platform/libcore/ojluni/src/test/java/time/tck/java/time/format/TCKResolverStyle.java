@@ -79,7 +79,6 @@ import org.junit.Test;
 /**
  * Test.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKResolverStyle {
 

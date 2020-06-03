@@ -132,7 +132,6 @@ import org.junit.Test;
 /**
  * Test parse resolving.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKDateTimeParseResolver {
     // TODO: tests with weird TenporalField implementations

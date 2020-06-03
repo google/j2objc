@@ -71,7 +71,6 @@ import org.junit.Test;
 /**
  * Test DecimalStyle.
  */
-
 public class TCKDecimalStyle {
 
     @Test
