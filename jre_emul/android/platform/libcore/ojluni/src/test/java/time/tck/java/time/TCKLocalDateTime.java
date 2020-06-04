@@ -261,7 +261,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test(timeOut=30000)  // TODO: remove when time zone loading is faster
+    @Test(timeout=30000)  // TODO: remove when time zone loading is faster
     public void now() {
         LocalDateTime expected = LocalDateTime.now(Clock.systemDefaultZone());
         LocalDateTime test = LocalDateTime.now();
@@ -1906,6 +1906,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         }
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     Iterator<Object[]> plusSeconds_fromZero() {
         return new Iterator<Object[]>() {
@@ -1951,8 +1952,9 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
                 throw new UnsupportedOperationException();
             }
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("plusSeconds_fromZero")
     public void test_plusSeconds_fromZero(int seconds, LocalDate date, int hour, int min, int sec) {
@@ -1963,7 +1965,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(hour, t.getHour());
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
-    }
+    } */
 
     @Test
     public void test_plusSeconds_noChange_oneDay() {
@@ -2008,6 +2010,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         }
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     Iterator<Object[]> plusNanos_fromZero() {
         return new Iterator<Object[]>() {
@@ -2056,8 +2059,9 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
                 throw new UnsupportedOperationException();
             }
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("plusNanos_fromZero")
     public void test_plusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, int sec, int nanos) {
@@ -2069,7 +2073,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
         assertEquals(nanos, t.getNano());
-    }
+    } */
 
     @Test
     public void test_plusNanos_noChange_oneDay() {
@@ -2607,6 +2611,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         }
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     Iterator<Object[]> minusSeconds_fromZero() {
         return new Iterator<Object[]>() {
@@ -2652,8 +2657,9 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
                 throw new UnsupportedOperationException();
             }
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("minusSeconds_fromZero")
     public void test_minusSeconds_fromZero(int seconds, LocalDate date, int hour, int min, int sec) {
@@ -2664,7 +2670,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(hour, t.getHour());
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // minusNanos()
@@ -2710,6 +2716,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         }
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     Iterator<Object[]> minusNanos_fromZero() {
         return new Iterator<Object[]>() {
@@ -2758,8 +2765,9 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
                 throw new UnsupportedOperationException();
             }
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("minusNanos_fromZero")
     public void test_minusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, int sec, int nanos) {
@@ -2771,7 +2779,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
         assertEquals(nanos, t.getNano());
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // until(Temporal, TemporalUnit)
@@ -3155,11 +3163,12 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     Iterator<Object[]> provider_sampleDateTimes() {
         return new Iterator<Object[]>() {
-            public static Object[][] sampleDates = provider_sampleDates();
-            public static Object[][] sampleTimes = provider_sampleTimes();
+            public Object[][] sampleDates = provider_sampleDates();
+            public Object[][] sampleTimes = provider_sampleTimes();
             int datesIndex = 0;
             int timesIndex = 0;
 
@@ -3188,71 +3197,79 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
                 throw new UnsupportedOperationException();
             }
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_true(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s, n);
         assertTrue(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_year_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y + 1, m, d, h, mi, s, n);
         assertFalse(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_month_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m + 1, d, h, mi, s, n);
         assertFalse(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_day_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m, d + 1, h, mi, s, n);
         assertFalse(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_hour_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m, d, h + 1, mi, s, n);
         assertFalse(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_minute_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m, d, h, mi + 1, s, n);
         assertFalse(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_second_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s + 1, n);
         assertFalse(a.equals(b));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_equals_false_nano_differs(int y, int m, int d, int h, int mi, int s, int n) {
         LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s, n + 1);
         assertFalse(a.equals(b));
-    }
+    } */
 
     @Test
     public void test_equals_itself_true() {
@@ -3272,6 +3289,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("sampleDateTimes")
     public void test_hashCode(int y, int m, int d, int h, int mi, int s, int n) {
@@ -3279,7 +3297,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(a.hashCode(), a.hashCode());
         LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s, n);
         assertEquals(a.hashCode(), b.hashCode());
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // toString()
