@@ -979,6 +979,9 @@ TEST_SOURCES := \
     tck/java/time/TCKClock_System.java \
     tck/java/time/TCKClock_Tick.java \
     tck/java/time/TCKDayOfWeek.java \
+    tck/java/time/TCKLocalDate.java \
+    tck/java/time/TCKLocalDateTime.java \
+    tck/java/time/TCKLocalTime.java \
     tck/java/time/TCKMonth.java \
     tck/java/time/TCKMonthDay.java \
     tck/java/time/TCKOffsetDateTime.java \
