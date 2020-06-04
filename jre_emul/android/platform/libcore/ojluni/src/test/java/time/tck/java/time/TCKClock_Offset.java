@@ -59,8 +59,8 @@
  */
 package tck.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -69,12 +69,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test offset clock.
  */
-@Test
 public class TCKClock_Offset extends AbstractTCKTest {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
@@ -97,12 +96,12 @@ public class TCKClock_Offset extends AbstractTCKTest {
         assertSame(test, underlying);  // spec says same
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_offset_ClockDuration_nullClock() {
         Clock.offset(null, Duration.ZERO);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_offset_ClockDuration_nullDuration() {
         Clock.offset(Clock.systemUTC(), null);
     }
@@ -121,7 +120,7 @@ public class TCKClock_Offset extends AbstractTCKTest {
         assertEquals(test, changed);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_withZone_null() {
         Clock.offset(Clock.system(PARIS), OFFSET).withZone(null);
     }

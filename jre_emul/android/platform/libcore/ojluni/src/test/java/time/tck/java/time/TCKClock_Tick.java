@@ -59,8 +59,8 @@
  */
 package tck.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -70,12 +70,11 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test tick clock.
  */
-@Test
 public class TCKClock_Tick extends AbstractTCKTest {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
@@ -119,42 +118,42 @@ public class TCKClock_Tick extends AbstractTCKTest {
         assertSame(test, underlying);  // spec says same
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void test_tick_ClockDuration_maxDuration() {
         Clock.tick(Clock.systemUTC(), Duration.ofSeconds(Long.MAX_VALUE));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_tick_ClockDuration_subMilliNotDivisible_123ns() {
         Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 123));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_tick_ClockDuration_subMilliNotDivisible_999ns() {
         Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 999));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_tick_ClockDuration_subMilliNotDivisible_999_999_999ns() {
         Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 999_999_999));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_tick_ClockDuration_negative1ns() {
         Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, -1));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_tick_ClockDuration_negative1s() {
         Clock.tick(Clock.systemUTC(), Duration.ofSeconds(-1));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_tick_ClockDuration_nullClock() {
         Clock.tick(null, Duration.ZERO);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_tick_ClockDuration_nullDuration() {
         Clock.tick(Clock.systemUTC(), null);
     }
@@ -168,7 +167,7 @@ public class TCKClock_Tick extends AbstractTCKTest {
         assertEquals(test.instant().getNano(), 0);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_tickSeconds_ZoneId_nullZoneId() {
         Clock.tickSeconds(null);
     }
@@ -182,7 +181,7 @@ public class TCKClock_Tick extends AbstractTCKTest {
         assertEquals(instant.getNano(), 0);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_tickMinutes_ZoneId_nullZoneId() {
         Clock.tickMinutes(null);
     }
@@ -201,7 +200,7 @@ public class TCKClock_Tick extends AbstractTCKTest {
         assertEquals(test, changed);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_withZone_null() {
         Clock.tick(Clock.system(PARIS), Duration.ofMillis(500)).withZone(null);
     }
