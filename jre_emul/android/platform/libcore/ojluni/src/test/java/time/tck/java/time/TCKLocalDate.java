@@ -542,9 +542,9 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void factory_parse_validText(int y, int m, int d, String parsable) {
         LocalDate t = LocalDate.parse(parsable);
         assertNotNull(parsable, t);
-        assertEquals(t.getYear(), y, parsable);
-        assertEquals(t.getMonth().getValue(), m, parsable);
-        assertEquals(t.getDayOfMonth(), d, parsable);
+        assertEquals(parsable, t.getYear(), y);
+        assertEquals(parsable, t.getMonth().getValue(), m);
+        assertEquals(parsable, t.getDayOfMonth(), d);
     }
 
     @DataProvider
@@ -2165,19 +2165,19 @@ public class TCKLocalDate extends AbstractDateTimeTest {
                 LocalDate b = localDates[j];
                 if (i < j) {
                     assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
                     assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }
@@ -2190,8 +2190,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test
     public void test_isBefore() {
-        assertTrue(16)), TEST_2007_07_15.isBefore(LocalDate.of(2007, 07);
-        assertFalse(14)), TEST_2007_07_15.isBefore(LocalDate.of(2007, 07);
+        assertTrue(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 16));
+        assertFalse(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 14));
         assertFalse(TEST_2007_07_15.isBefore(TEST_2007_07_15));
     }
 
@@ -2207,8 +2207,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test
     public void test_isAfter() {
-        assertTrue(14)), TEST_2007_07_15.isAfter(LocalDate.of(2007, 07);
-        assertFalse(16)), TEST_2007_07_15.isAfter(LocalDate.of(2007, 07);
+        assertTrue(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 14));
+        assertFalse(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 16));
         assertFalse(TEST_2007_07_15.isAfter(TEST_2007_07_15));
     }
 
@@ -2305,7 +2305,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         assertEquals(str, expected);
     }
 
-    private LocalDate date(int year, int month, int day) {
+    private static LocalDate date(int year, int month, int day) {
         return LocalDate.of(year, month, day);
     }
 

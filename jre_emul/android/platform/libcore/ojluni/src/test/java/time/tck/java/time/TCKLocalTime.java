@@ -534,7 +534,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------s
-    @Test(expected = {NullPointerException.class})
+    @Test(expected=NullPointerException.class)
     public void factory_parse_nullTest() {
         LocalTime.parse((String) null);
     }
@@ -1284,7 +1284,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // truncated(TemporalUnit)
     //-----------------------------------------------------------------------
-    TemporalUnit NINETY_MINS = new TemporalUnit() {
+    static TemporalUnit NINETY_MINS = new TemporalUnit() {
         @Override
         public Duration getDuration() {
             return Duration.ofMinutes(90);
@@ -1319,7 +1319,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         }
     };
 
-    TemporalUnit NINETY_FIVE_MINS = new TemporalUnit() {
+    static TemporalUnit NINETY_FIVE_MINS = new TemporalUnit() {
         @Override
         public Duration getDuration() {
             return Duration.ofMinutes(95);
@@ -2500,19 +2500,19 @@ public class TCKLocalTime extends AbstractDateTimeTest {
                 LocalTime b = localTimes[j];
                 if (i < j) {
                     assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
                     assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }
@@ -2680,7 +2680,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         assertEquals(str, expected);
     }
 
-    private LocalTime time(int hour, int min, int sec, int nano) {
+    private static LocalTime time(int hour, int min, int sec, int nano) {
         return LocalTime.of(hour, min, sec, nano);
     }
 }
