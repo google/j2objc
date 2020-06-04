@@ -56,9 +56,7 @@
  */
 package tck.java.time;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import android.icu.impl.Assert;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -70,7 +68,10 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamConstants;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Formatter;
+
+import static org.junit.Assert.*;
 
 /**
  * Base test class.
@@ -141,7 +142,7 @@ public abstract class AbstractTCKTest {
             }
             byte[] input = new byte[expectedBytes.length];
             dis.readFully(input);
-            assertEquals(input, expectedBytes);
+            assertTrue(Arrays.equals(input, expectedBytes));
             if (matches.length > 0) {
                 for (byte[] match : matches) {
                     boolean matched = false;

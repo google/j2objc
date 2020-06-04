@@ -958,6 +958,7 @@ TEST_SOURCES := \
     sun/misc/UnsafeTest.java \
     tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
+    tck/java/time/chrono/serial/TCKChronologySerialization.java \
     tck/java/time/chrono/serial/TCKEraSerialization.java \
     tck/java/time/temporal/TCKChronoField.java \
     tck/java/time/temporal/TCKChronoUnit.java \

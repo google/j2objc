@@ -111,7 +111,7 @@ public class TCKChronologySerialization extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     @Test()
     @UseDataProvider("data_of_calendars")
-    private void test_serializationBytes(Chronology chrono) throws Exception {
+    public void test_serializationBytes(Chronology chrono) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream dos = new DataOutputStream(baos) ) {
             dos.writeByte(CHRONO_TYPE);
