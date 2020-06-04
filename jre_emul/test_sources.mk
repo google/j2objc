@@ -163,6 +163,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/NoSubclassXMLReader.java \
     org/apache/harmony/xnet/tests/support/mySSLSession.java \
     tck/java/time/AbstractTCKTest.java \
+    tck/java/time/AbstractDateTimeTest.java \
     test/java/time/AbstractTest.java \
     test/java/time/MockSimplePeriod.java \
     test/java/time/format/AbstractTestPrinterParser.java \
@@ -976,6 +977,9 @@ TEST_SOURCES := \
     tck/java/time/TCKClock_Offset.java \
     tck/java/time/TCKClock_System.java \
     tck/java/time/TCKClock_Tick.java \
+    tck/java/time/TCKDayOfWeek.java \
+    tck/java/time/TCKMonth.java \
+    tck/java/time/TCKMonthDay.java \
     tck/java/time/TCKZoneId.java \
     tck/java/time/TestIsoChronology.java \
     tck/java/time/chrono/TCKChronoLocalDate.java \
