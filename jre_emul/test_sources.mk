@@ -164,6 +164,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/xnet/tests/support/mySSLSession.java \
     tck/java/time/AbstractTCKTest.java \
     tck/java/time/AbstractDateTimeTest.java \
+    tck/java/time/MockSimplePeriod.java \
     test/java/time/AbstractTest.java \
     test/java/time/MockSimplePeriod.java \
     test/java/time/format/AbstractTestPrinterParser.java \
