@@ -973,6 +973,7 @@ TEST_SOURCES := \
     sun/misc/UnsafeTest.java \
     tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
+    tck/java/time/chrono/serial/TCKChronologySerialization.java \
     tck/java/time/chrono/serial/TCKEraSerialization.java \
     tck/java/time/format/TCKDateTimeFormatter.java \
     tck/java/time/format/TCKDateTimeFormatterBuilder.java \
