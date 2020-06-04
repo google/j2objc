@@ -161,7 +161,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
 
-    private LocalDateTime TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
+    private static LocalDateTime TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
     private LocalDateTime MAX_DATE_TIME;
     private LocalDateTime MIN_DATE_TIME;
     private Instant MAX_INSTANT;
@@ -241,7 +241,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(LocalDateTime.of(y, m, d, h, mi, s, n), test);
     }
 
-    private LocalDateTime createDateMidnight(int year, int month, int day) {
+    private static LocalDateTime createDateMidnight(int year, int month, int day) {
         return LocalDateTime.of(year, month, day, 0, 0);
     }
 
@@ -3112,19 +3112,19 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
                 LocalDateTime b = localDateTimes[j];
                 if (i < j) {
                     assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
                     assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }
@@ -3303,15 +3303,15 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         assertEquals(str, expected);
     }
 
-    private LocalDateTime dtNoon(int year, int month, int day) {
+    private static LocalDateTime dtNoon(int year, int month, int day) {
         return LocalDateTime.of(year, month, day, 12, 0);
     }
 
-    private LocalDateTime dtEpoch(int hour, int min, int sec, int nano) {
+    private static LocalDateTime dtEpoch(int hour, int min, int sec, int nano) {
         return LocalDateTime.of(1970, 1, 1, hour, min, sec, nano);
     }
 
-    private LocalDateTime dt(int year, int month, int day, int hour, int min, int sec, int nano) {
+    private static LocalDateTime dt(int year, int month, int day, int hour, int min, int sec, int nano) {
         return LocalDateTime.of(year, month, day, hour, min, sec, nano);
     }
 
