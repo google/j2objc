@@ -1237,13 +1237,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.toHours(), expectedHours);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusHours_long_overflowTooBig() {
         Duration t = Duration.ofHours(1);
         t.plusHours(Long.MAX_VALUE/3600);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusHours_long_overflowTooSmall() {
         Duration t = Duration.ofHours(-1);
         t.plusHours(Long.MIN_VALUE/3600);
@@ -1280,13 +1280,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.toMinutes(), expectedMinutes);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusMinutes_long_overflowTooBig() {
         Duration t = Duration.ofMinutes(1);
         t.plusMinutes(Long.MAX_VALUE/60);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusMinutes_long_overflowTooSmall() {
         Duration t = Duration.ofMinutes(-1);
         t.plusMinutes(Long.MIN_VALUE/60);
@@ -1328,13 +1328,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusSeconds_long_overflowTooBig() {
         Duration t = Duration.ofSeconds(1, 0);
         t.plusSeconds(Long.MAX_VALUE);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusSeconds_long_overflowTooSmall() {
         Duration t = Duration.ofSeconds(-1, 0);
         t.plusSeconds(Long.MIN_VALUE);
@@ -1429,7 +1429,7 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), 999999999);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusMillis_long_overflowTooBig() {
         Duration t = Duration.ofSeconds(Long.MAX_VALUE, 999000000);
         t.plusMillis(1);
@@ -1443,7 +1443,7 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), 0);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusMillis_long_overflowTooSmall() {
         Duration t = Duration.ofSeconds(Long.MIN_VALUE, 0);
         t.plusMillis(-1);
@@ -1534,13 +1534,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusNanos_long_overflowTooBig() {
         Duration t = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
         t.plusNanos(1);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void plusNanos_long_overflowTooSmall() {
         Duration t = Duration.ofSeconds(Long.MIN_VALUE, 0);
         t.plusNanos(-1);
@@ -1822,13 +1822,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.toDays(), expectedDays);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusDays_long_overflowTooBig() {
         Duration t = Duration.ofDays(Long.MAX_VALUE/3600/24);
         t.minusDays(-1);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusDays_long_overflowTooSmall() {
         Duration t = Duration.ofDays(Long.MIN_VALUE/3600/24);
         t.minusDays(1);
@@ -1865,13 +1865,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.toHours(), expectedHours);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusHours_long_overflowTooBig() {
         Duration t = Duration.ofHours(Long.MAX_VALUE/3600);
         t.minusHours(-1);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusHours_long_overflowTooSmall() {
         Duration t = Duration.ofHours(Long.MIN_VALUE/3600);
         t.minusHours(1);
@@ -1908,13 +1908,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.toMinutes(), expectedMinutes);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusMinutes_long_overflowTooBig() {
         Duration t = Duration.ofMinutes(Long.MAX_VALUE/60);
         t.minusMinutes(-1);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusMinutes_long_overflowTooSmall() {
         Duration t = Duration.ofMinutes(Long.MIN_VALUE/60);
         t.minusMinutes(1);
@@ -1956,13 +1956,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusSeconds_long_overflowTooBig() {
         Duration t = Duration.ofSeconds(1, 0);
         t.minusSeconds(Long.MIN_VALUE + 1);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusSeconds_long_overflowTooSmall() {
         Duration t = Duration.ofSeconds(-2, 0);
         t.minusSeconds(Long.MAX_VALUE);
@@ -2057,7 +2057,7 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), 999999999);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusMillis_long_overflowTooBig() {
         Duration t = Duration.ofSeconds(Long.MAX_VALUE, 999000000);
         t.minusMillis(-1);
@@ -2071,7 +2071,7 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), 0);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusMillis_long_overflowTooSmall() {
         Duration t = Duration.ofSeconds(Long.MIN_VALUE, 0);
         t.minusMillis(1);
@@ -2162,13 +2162,13 @@ public class TCKDuration extends AbstractTCKTest {
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusNanos_long_overflowTooBig() {
         Duration t = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
         t.minusNanos(-1);
     }
 
-    @Test(expected=ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void minusNanos_long_overflowTooSmall() {
         Duration t = Duration.ofSeconds(Long.MIN_VALUE, 0);
         t.minusNanos(1);
