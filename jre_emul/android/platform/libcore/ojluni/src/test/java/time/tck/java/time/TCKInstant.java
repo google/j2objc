@@ -124,8 +124,8 @@ public class TCKInstant extends AbstractDateTimeTest {
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
 
-    // Android-changed: This was originally non-static and initialized in @Before,
-    // but @Before is run after @DataProvider
+    // Android-changed: This was originally non-static and initialized in @BeforeMethod,
+    // but @BeforeMethod is run after @DataProvider methods are run, so it only worked by accident,
     // since multiple test methods were run and the first one did not require this value.
     private static Instant TEST_12345_123456789;
 
@@ -349,7 +349,7 @@ public class TCKInstant extends AbstractDateTimeTest {
 
 // TODO: should comma be accepted?
 //    @Test()
-    @UseDataProvider("provider_factory_parse")
+//    @UseDataProvider("provider_factory_parse")
 //    public void factory_parse_comma(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
 //        text = text.replace('.', ',');
 //        Instant t = Instant.parse(text);
