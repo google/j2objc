@@ -492,6 +492,17 @@ TEST_SOURCES := \
     libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/text/SimpleDateFormatTest.java \
+    libcore/java/time/DateTimeExceptionTest.java \
+    libcore/java/time/DurationTest.java \
+    libcore/java/time/InstantTest.java \
+    libcore/java/time/LocalDateTest.java \
+    libcore/java/time/OffsetDateTimeTest.java \
+    libcore/java/time/OffsetTimeTest.java \
+    libcore/java/time/PeriodTest.java \
+    libcore/java/time/YearMonthTest.java \
+    libcore/java/time/YearTest.java \
+    libcore/java/time/ZoneOffsetTest.java \
+    libcore/java/time/ZonedDateTimeTest.java \
     libcore/java/time/format/DateTimeFormatterBuilderTest.java \
     libcore/java/time/format/DateTimeFormatterTest.java \
     libcore/java/time/format/DateTimeParseExceptionTest.java \
