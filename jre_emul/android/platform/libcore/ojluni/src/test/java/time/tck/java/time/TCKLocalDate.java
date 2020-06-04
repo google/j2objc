@@ -699,6 +699,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_query() {
         return new Object[][] {
@@ -710,24 +711,27 @@ public class TCKLocalDate extends AbstractDateTimeTest {
                 {TEST_2007_07_15, TemporalQueries.localDate(), TEST_2007_07_15},
                 {TEST_2007_07_15, TemporalQueries.localTime(), null},
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_2007_07_15.query(null);
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // get*()
@@ -2190,8 +2194,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test
     public void test_isBefore() {
-        assertTrue(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 16));
-        assertFalse(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 14));
+        assertTrue(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 16)));
+        assertFalse(TEST_2007_07_15.isBefore(LocalDate.of(2007, 07, 14)));
         assertFalse(TEST_2007_07_15.isBefore(TEST_2007_07_15));
     }
 
@@ -2207,8 +2211,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test
     public void test_isAfter() {
-        assertTrue(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 14));
-        assertFalse(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 16));
+        assertTrue(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 14)));
+        assertFalse(TEST_2007_07_15.isAfter(LocalDate.of(2007, 07, 16)));
         assertFalse(TEST_2007_07_15.isAfter(TEST_2007_07_15));
     }
 
