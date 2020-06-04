@@ -56,7 +56,7 @@
  */
 package tck.java.time;
 
-import android.icu.impl.Assert;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -70,8 +70,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Formatter;
-
-import static org.junit.Assert.*;
 
 /**
  * Base test class.
