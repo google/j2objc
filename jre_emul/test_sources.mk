@@ -984,6 +984,8 @@ TEST_SOURCES := \
     tck/java/time/TCKYear.java \
     tck/java/time/TCKYearMonth.java \
     tck/java/time/TCKZoneId.java \
+    tck/java/time/TCKZoneOffset.java \
+    tck/java/time/TCKZonedDateTime.java \
     tck/java/time/TestIsoChronology.java \
     tck/java/time/chrono/TCKChronoLocalDate.java \
     tck/java/time/chrono/TCKChronoLocalDateTime.java \

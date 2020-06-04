@@ -60,10 +60,10 @@
 package tck.java.time;
 
 import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -87,13 +87,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test ZoneOffset.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKZoneOffset extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
@@ -185,7 +188,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_string_null() {
         ZoneOffset.of((String) null);
     }
@@ -302,12 +305,12 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_tooBig() {
         ZoneOffset.ofHours(19);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_tooSmall() {
         ZoneOffset.ofHours(-19);
     }
@@ -329,12 +332,12 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         doTestOffset(test2, 18, 0, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_tooBig() {
         ZoneOffset.ofHoursMinutes(19, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_tooSmall() {
         ZoneOffset.ofHoursMinutes(-19, 0);
     }
@@ -359,62 +362,62 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         doTestOffset(test2, 18, 0, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusMinutes() {
         ZoneOffset.ofHoursMinutesSeconds(1, -1, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(1, 0, -1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusMinutes() {
         ZoneOffset.ofHoursMinutesSeconds(-1, 1, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(-1, 0, 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_zeroHoursMinusMinutesPlusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(0, -1, 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_zeroHoursPlusMinutesMinusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(0, 1, -1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_minutesTooLarge() {
         ZoneOffset.ofHoursMinutesSeconds(0, 60, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_minutesTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, -60, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_secondsTooLarge() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_hoursTooBig() {
         ZoneOffset.ofHoursMinutesSeconds(19, 0, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_hoursTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(-19, 0, 0);
     }
@@ -427,12 +430,12 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         assertEquals(ZoneOffset.ofTotalSeconds(-18 * 60 * 60), ZoneOffset.ofHours(-18));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_ofTotalSeconds_tooLarge() {
         ZoneOffset.ofTotalSeconds(18 * 60 * 60 + 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_ofTotalSeconds_tooSmall() {
         ZoneOffset.ofTotalSeconds(-18 * 60 * 60 - 1);
     }
@@ -446,12 +449,12 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
                 LocalTime.of(17, 30)), ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_CalendricalObject_invalid_noDerive() {
         ZoneOffset.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
         ZoneOffset.from((TemporalAccessor) null);
     }
@@ -521,8 +524,8 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    @DataProvider(name="query")
-    Object[][] data_query() {
+    @DataProvider
+    public static Object[][] data_query() {
         return new Object[][] {
                 {ZoneOffset.UTC, TemporalQueries.chronology(), null},
                 {ZoneOffset.UTC, TemporalQueries.zoneId(), null},
@@ -534,17 +537,19 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_query_null() {
         ZoneOffset.UTC.query(null);
     }
@@ -615,7 +620,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_adjustInto_dateOnly() {
         ZoneOffset base = ZoneOffset.ofHoursMinutesSeconds(1, 1, 1);
         base.adjustInto((LocalDate.of(1909, 2, 2)));
