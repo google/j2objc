@@ -1105,6 +1105,11 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
+    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
+    tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
+    tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
+    tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
+    tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
 
 TESTS_USE_REFLECTION = \
     com/google/j2objc/ClassTest.java \
