@@ -980,6 +980,8 @@ TEST_SOURCES := \
     tck/java/time/TCKDayOfWeek.java \
     tck/java/time/TCKMonth.java \
     tck/java/time/TCKMonthDay.java \
+    tck/java/time/TCKYear.java \
+    tck/java/time/TCKYearMonth.java \
     tck/java/time/TCKZoneId.java \
     tck/java/time/TestIsoChronology.java \
     tck/java/time/chrono/TCKChronoLocalDate.java \
