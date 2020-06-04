@@ -411,6 +411,7 @@ public class TCKInstant extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_query() {
         return new Object[][] {
@@ -422,19 +423,21 @@ public class TCKInstant extends AbstractDateTimeTest {
                 {TEST_12345_123456789, TemporalQueries.localDate(), null},
                 {TEST_12345_123456789, TemporalQueries.localTime(), null},
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
-    }
+    } */
 
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
