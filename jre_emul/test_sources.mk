@@ -976,6 +976,8 @@ TEST_SOURCES := \
     tck/java/time/TCKClock_Offset.java \
     tck/java/time/TCKClock_System.java \
     tck/java/time/TCKClock_Tick.java \
+    tck/java/time/TCKZoneId.java \
+    tck/java/time/TestIsoChronology.java \
     tck/java/time/chrono/TCKChronoLocalDate.java \
     tck/java/time/chrono/TCKChronoLocalDateTime.java \
     tck/java/time/chrono/TCKChronoPeriod.java \
