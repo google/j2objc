@@ -971,6 +971,11 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    tck/java/time/TCKClock.java \
+    tck/java/time/TCKClock_Fixed.java \
+    tck/java/time/TCKClock_Offset.java \
+    tck/java/time/TCKClock_System.java \
+    tck/java/time/TCKClock_Tick.java \
     tck/java/time/chrono/TCKChronoLocalDate.java \
     tck/java/time/chrono/TCKChronoLocalDateTime.java \
     tck/java/time/chrono/TCKChronoPeriod.java \
