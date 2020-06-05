@@ -59,8 +59,8 @@
  */
 package tck.java.time.format;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -72,17 +72,21 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
 import java.time.temporal.TemporalAccessor;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test DateTimeFormatterBuilder.appendInstant().
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKInstantPrinterParser {
 
-    @DataProvider(name="printGrouped")
-    Object[][] data_printGrouped() {
+    @DataProvider
+    public static Object[][] data_printGrouped() {
         return new Object[][] {
                 {0, 0, "1970-01-01T00:00:00Z"},
 
@@ -107,7 +111,8 @@ public class TCKInstantPrinterParser {
         };
     }
 
-    @Test(dataProvider="printGrouped")
+    @Test
+    @UseDataProvider("data_printGrouped")
     public void test_print_grouped(long instantSecs, int nano, String expected) {
         Instant instant = Instant.ofEpochSecond(instantSecs, nano);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendInstant().toFormatter();
@@ -115,8 +120,8 @@ public class TCKInstantPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="printDigits")
-    Object[][] data_printDigits() {
+    @DataProvider
+    public static Object[][] data_printDigits() {
         return new Object[][] {
                 {-1, 0, 0, "1970-01-01T00:00:00Z"},
                 {0, 0, 0, "1970-01-01T00:00:00Z"},
@@ -185,7 +190,8 @@ public class TCKInstantPrinterParser {
         };
     }
 
-    @Test(dataProvider="printDigits")
+    @Test
+    @UseDataProvider("data_printDigits")
     public void test_print_digits(int fractionalDigits, long instantSecs, int nano, String expected) {
         Instant instant = Instant.ofEpochSecond(instantSecs, nano);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendInstant(fractionalDigits).toFormatter();
@@ -193,8 +199,8 @@ public class TCKInstantPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseDigits")
-    Object[][] data_parse_digits() {
+    @DataProvider
+    public static Object[][] data_parse_digits() {
         return new Object[][] {
                 {0, 0, "1970-01-01T00:00:00Z"},
                 {0, 0, "1970-01-01T00:00:00Z"},
@@ -221,7 +227,8 @@ public class TCKInstantPrinterParser {
         };
     }
 
-    @Test(dataProvider="parseDigits")
+    @Test
+    @UseDataProvider("data_parse_digits")
     public void test_parse_digitsMinusOne(long instantSecs, int nano, String input) {
         Instant expected = Instant.ofEpochSecond(instantSecs, nano);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendInstant(-1).toFormatter();
@@ -230,7 +237,8 @@ public class TCKInstantPrinterParser {
         assertEquals(f.parse(input).query(DateTimeFormatter.parsedLeapSecond()), Boolean.FALSE);
     }
 
-    @Test(dataProvider="parseDigits")
+    @Test
+    @UseDataProvider("data_parse_digits")
     public void test_parse_digitsNine(long instantSecs, int nano, String input) {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendInstant(9).toFormatter();
         if (input.charAt(input.length() - 11) == '.') {
@@ -273,12 +281,12 @@ public class TCKInstantPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendInstant_tooSmall() {
         new DateTimeFormatterBuilder().appendInstant(-2);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendInstant_tooBig() {
         new DateTimeFormatterBuilder().appendInstant(10);
     }

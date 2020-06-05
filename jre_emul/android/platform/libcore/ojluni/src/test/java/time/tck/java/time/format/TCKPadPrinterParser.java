@@ -61,49 +61,53 @@ package tck.java.time.format;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.text.ParsePosition;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test padding behavior of formatter.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKPadPrinterParser {
 
     private DateTimeFormatterBuilder builder;
     private ParsePosition pos;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         builder = new DateTimeFormatterBuilder();
         pos = new ParsePosition(0);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
+    @Test(expected=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() {
         builder.padNext(3, '-').appendLiteral('Z');
         builder.toFormatter().parseUnresolved("--Z", new ParsePosition(-1));
     }
 
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
+    @Test(expected=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() {
         builder.padNext(3, '-').appendLiteral('Z');
         builder.toFormatter().parseUnresolved("--Z", new ParsePosition(4));
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseStrict")
-    Object[][] data_parseStrict() {
+    @DataProvider
+    public static Object[][] data_parseStrict() {
         return new Object[][] {
                 {"222", 3, -1, 222},
                 {"222X", 3, -1, 222},
@@ -126,7 +130,8 @@ public class TCKPadPrinterParser {
         };
     }
 
-    @Test(dataProvider="parseStrict")
+    @Test
+    @UseDataProvider("data_parseStrict")
     public void test_parseStrict(String text, int expectedIndex, int expectedErrorIndex, Number expectedMonth) {
         builder.padNext(3, '#').appendValue(MONTH_OF_YEAR, 1, 3, SignStyle.NORMAL);
         TemporalAccessor parsed = builder.toFormatter().parseUnresolved(text, pos);
@@ -141,8 +146,8 @@ public class TCKPadPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseLenient")
-    Object[][] data_parseLenient() {
+    @DataProvider
+    public static Object[][] data_parseLenient() {
         return new Object[][] {
                 {"222", 3, -1, 222},
                 {"222X", 3, -1, 222},
@@ -167,7 +172,8 @@ public class TCKPadPrinterParser {
         };
     }
 
-    @Test(dataProvider="parseLenient")
+    @Test
+    @UseDataProvider("data_parseLenient")
     public void test_parseLenient(String text, int expectedIndex, int expectedErrorIndex, Number expectedMonth) {
         builder.parseLenient().padNext(3, '#').appendValue(MONTH_OF_YEAR, 1, 3, SignStyle.NORMAL);
         TemporalAccessor parsed = builder.toFormatter().parseUnresolved(text, pos);

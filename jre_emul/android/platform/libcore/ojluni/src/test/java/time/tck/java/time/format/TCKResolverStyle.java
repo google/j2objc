@@ -66,17 +66,21 @@ import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKResolverStyle {
 
     //-----------------------------------------------------------------------
@@ -89,8 +93,8 @@ public class TCKResolverStyle {
         }
     }
 
-    @DataProvider(name="resolverStyle")
-    Object[][] data_resolverStyle() {
+    @DataProvider
+    public static Object[][] data_resolverStyle() {
         return new Object[][] {
                 {"2000/15/30", ResolverStyle.LENIENT, null, 2001, 3, 30},
                 {"2000/02/30", ResolverStyle.SMART, null, 2000, 2, 29},
@@ -106,7 +110,8 @@ public class TCKResolverStyle {
         };
     }
 
-    @Test(dataProvider = "resolverStyle")
+    @Test
+    @UseDataProvider("data_resolverStyle")
     public void test_resolverStyle(String str, ResolverStyle style, Class<?> expectedEx, int year, int month, int day) {
         DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
         builder.appendValue(ChronoField.YEAR_OF_ERA);

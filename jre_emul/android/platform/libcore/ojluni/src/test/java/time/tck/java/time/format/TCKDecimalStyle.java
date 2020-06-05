@@ -59,26 +59,26 @@
  */
 package tck.java.time.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.format.DecimalStyle;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Set;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test DecimalStyle.
  */
-@Test
+
 public class TCKDecimalStyle {
 
     @Test
     public void test_getAvailableLocales() {
         Set<Locale> locales = DecimalStyle.getAvailableLocales();
-        assertEquals(locales.size() > 0, true, "locales: " + locales);
-        assertEquals(locales.contains(Locale.US), true, "Locale.US not found in available Locales");
+        assertEquals("locales: " + locales, locales.size() > 0, true);
+        assertEquals("Locale.US not found in available Locales", locales.contains(Locale.US), true);
     }
 
     //-----------------------------------------------------------------------

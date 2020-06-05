@@ -91,8 +91,8 @@ import static java.time.temporal.ChronoField.SECOND_OF_DAY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -106,9 +106,10 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.IsoChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.MinguoChronology;
 import java.time.chrono.MinguoDate;
-import java.time.chrono.ThaiBuddhistChronology;
+import java.time.chrono.ThaiBuddhistChronology; */
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -122,13 +123,17 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 import java.util.Map;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test parse resolving.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKDateTimeParseResolver {
     // TODO: tests with weird TenporalField implementations
     // TODO: tests with non-ISO chronologies
@@ -137,8 +142,8 @@ public class TCKDateTimeParseResolver {
     private static final ZoneId EUROPE_PARIS = ZoneId.of("Europe/Paris");
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveOneNoChange")
-    Object[][] data_resolveOneNoChange() {
+    @DataProvider
+    public static Object[][] data_resolveOneNoChange() {
         return new Object[][]{
                 {YEAR, 2012},
                 {MONTH_OF_YEAR, 8},
@@ -148,7 +153,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveOneNoChange")
+    @Test
+    @UseDataProvider("data_resolveOneNoChange")
     public void test_resolveOneNoChange(TemporalField field1, long value1) {
         String str = Long.toString(value1);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(field1).toFormatter();
@@ -161,8 +167,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveTwoNoChange")
-    Object[][] data_resolveTwoNoChange() {
+    @DataProvider
+    public static Object[][] data_resolveTwoNoChange() {
         return new Object[][]{
                 {YEAR, 2012, MONTH_OF_YEAR, 5},
                 {YEAR, 2012, DAY_OF_MONTH, 5},
@@ -185,7 +191,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveTwoNoChange")
+    @Test
+    @UseDataProvider("data_resolveTwoNoChange")
     public void test_resolveTwoNoChange(TemporalField field1, long value1, TemporalField field2, long value2) {
         String str = value1 + " " + value2;
         DateTimeFormatter f = new DateTimeFormatterBuilder()
@@ -202,8 +209,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveThreeNoChange")
-    Object[][] data_resolveThreeNoChange() {
+    @DataProvider
+    public static Object[][] data_resolveThreeNoChange() {
         return new Object[][]{
                 {YEAR, 2012, MONTH_OF_YEAR, 5, DAY_OF_WEEK, 5},
                 {YEAR, 2012, ALIGNED_WEEK_OF_YEAR, 5, DAY_OF_MONTH, 5},
@@ -216,7 +223,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveThreeNoChange")
+    @Test
+    @UseDataProvider("data_resolveThreeNoChange")
     public void test_resolveThreeNoChange(TemporalField field1, long value1, TemporalField field2, long value2, TemporalField field3, long value3) {
         String str = value1 + " " + value2 + " " + value3;
         DateTimeFormatter f = new DateTimeFormatterBuilder()
@@ -238,8 +246,8 @@ public class TCKDateTimeParseResolver {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveOneToField")
-    Object[][] data_resolveOneToField() {
+    @DataProvider
+    public static Object[][] data_resolveOneToField() {
         return new Object[][]{
                 {YEAR_OF_ERA, 2012, YEAR, 2012L, null, null},
                 {PROLEPTIC_MONTH, 2012 * 12L + (3 - 1), YEAR, 2012L, MONTH_OF_YEAR, 3L},
@@ -251,7 +259,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveOneToField")
+    @Test
+    @UseDataProvider("data_resolveOneToField")
     public void test_resolveOneToField(TemporalField field1, long value1,
                                        TemporalField expectedField1, Long expectedValue1,
                                        TemporalField expectedField2, Long expectedValue2) {
@@ -272,14 +281,15 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveOneToDate")
-    Object[][] data_resolveOneToDate() {
+    @DataProvider
+    public static Object[][] data_resolveOneToDate() {
         return new Object[][]{
                 {EPOCH_DAY, 32, LocalDate.of(1970, 2, 2)},
         };
     }
 
-    @Test(dataProvider="resolveOneToDate")
+    @Test
+    @UseDataProvider("data_resolveOneToDate")
     public void test_resolveOneToDate(TemporalField field1, long value1, LocalDate expectedDate) {
         String str = Long.toString(value1);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(field1).toFormatter();
@@ -290,8 +300,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveOneToTime")
-    Object[][] data_resolveOneToTime() {
+    @DataProvider
+    public static Object[][] data_resolveOneToTime() {
         return new Object[][]{
                 {HOUR_OF_DAY, 8, LocalTime.of(8, 0)},
                 {CLOCK_HOUR_OF_DAY, 8, LocalTime.of(8, 0)},
@@ -304,7 +314,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveOneToTime")
+    @Test
+    @UseDataProvider("data_resolveOneToTime")
     public void test_resolveOneToTime(TemporalField field1, long value1, LocalTime expectedTime) {
         String str = Long.toString(value1);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(field1).toFormatter();
@@ -317,8 +328,8 @@ public class TCKDateTimeParseResolver {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveTwoToField")
-    Object[][] data_resolveTwoToField() {
+    @DataProvider
+    public static Object[][] data_resolveTwoToField() {
         return new Object[][]{
                 // cross-check
                 {PROLEPTIC_MONTH, 2012 * 12L + (3 - 1), YEAR, 2012, YEAR, 2012L, MONTH_OF_YEAR, 3L},
@@ -330,7 +341,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveTwoToField")
+    @Test
+    @UseDataProvider("data_resolveTwoToField")
     public void test_resolveTwoToField(TemporalField field1, long value1,
                                        TemporalField field2, long value2,
                                        TemporalField expectedField1, Long expectedValue1,
@@ -354,8 +366,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveTwoToDate")
-    Object[][] data_resolveTwoToDate() {
+    @DataProvider
+    public static Object[][] data_resolveTwoToDate() {
         return new Object[][]{
                 // merge
                 {YEAR, 2012, DAY_OF_YEAR, 32, LocalDate.of(2012, 2, 1)},
@@ -379,7 +391,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveTwoToDate")
+    @Test
+    @UseDataProvider("data_resolveTwoToDate")
     public void test_resolveTwoToDate(TemporalField field1, long value1,
                                       TemporalField field2, long value2,
                                       LocalDate expectedDate) {
@@ -394,8 +407,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveTwoToTime")
-    Object[][] data_resolveTwoToTime() {
+    @DataProvider
+    public static Object[][] data_resolveTwoToTime() {
         return new Object[][]{
                 // merge
                 {HOUR_OF_DAY, 8, MINUTE_OF_HOUR, 6, LocalTime.of(8, 6)},
@@ -466,7 +479,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveTwoToTime")
+    @Test
+    @UseDataProvider("data_resolveTwoToTime")
     public void test_resolveTwoToTime(TemporalField field1, long value1,
                                 TemporalField field2, long value2,
                                 LocalTime expectedTime) {
@@ -481,8 +495,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveThreeToDate")
-    Object[][] data_resolveThreeToDate() {
+    @DataProvider
+    public static Object[][] data_resolveThreeToDate() {
         return new Object[][]{
                 // merge
                 {YEAR, 2012, MONTH_OF_YEAR, 2, DAY_OF_MONTH, 1, LocalDate.of(2012, 2, 1)},
@@ -497,7 +511,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveThreeToDate")
+    @Test
+    @UseDataProvider("data_resolveThreeToDate")
     public void test_resolveThreeToDate(TemporalField field1, long value1,
                                       TemporalField field2, long value2,
                                       TemporalField field3, long value3,
@@ -514,8 +529,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveFourToDate")
-    Object[][] data_resolveFourToDate() {
+    @DataProvider
+    public static Object[][] data_resolveFourToDate() {
         return new Object[][]{
                 // merge
                 {YEAR, 2012, MONTH_OF_YEAR, 2, ALIGNED_WEEK_OF_MONTH, 1, ALIGNED_DAY_OF_WEEK_IN_MONTH, 1, LocalDate.of(2012, 2, 1)},
@@ -528,7 +543,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveFourToDate")
+    @Test
+    @UseDataProvider("data_resolveFourToDate")
     public void test_resolveFourToDate(TemporalField field1, long value1,
                                         TemporalField field2, long value2,
                                         TemporalField field3, long value3,
@@ -547,8 +563,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveFourToTime")
-    Object[][] data_resolveFourToTime() {
+    @DataProvider
+    public static Object[][] data_resolveFourToTime() {
         return new Object[][]{
                 // merge
                 {null, 0, 0, 0, 0, LocalTime.of(0, 0, 0, 0), Period.ZERO},
@@ -597,7 +613,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveFourToTime")
+    @Test
+    @UseDataProvider("data_resolveFourToTime")
     public void test_resolveFourToTime(ResolverStyle style,
                        long hour, long min, long sec, long nano, LocalTime expectedTime, Period excessPeriod) {
         DateTimeFormatter f = new DateTimeFormatterBuilder()
@@ -610,9 +627,9 @@ public class TCKDateTimeParseResolver {
         for (ResolverStyle s : styles) {
             if (expectedTime != null) {
                 TemporalAccessor accessor = f.withResolverStyle(s).parse("");
-                assertEquals(accessor.query(TemporalQueries.localDate()), null, "ResolverStyle: " + s);
-                assertEquals(accessor.query(TemporalQueries.localTime()), expectedTime, "ResolverStyle: " + s);
-                assertEquals(accessor.query(DateTimeFormatter.parsedExcessDays()), excessPeriod, "ResolverStyle: " + s);
+                assertEquals("ResolverStyle: " + s, accessor.query(TemporalQueries.localDate()), null);
+                assertEquals("ResolverStyle: " + s, accessor.query(TemporalQueries.localTime()), expectedTime);
+                assertEquals("ResolverStyle: " + s, accessor.query(DateTimeFormatter.parsedExcessDays()), excessPeriod);
             } else {
                 try {
                     f.withResolverStyle(style).parse("");
@@ -624,7 +641,8 @@ public class TCKDateTimeParseResolver {
         }
     }
 
-    @Test(dataProvider="resolveFourToTime")
+    @Test
+    @UseDataProvider("data_resolveFourToTime")
     public void test_resolveThreeToTime(ResolverStyle style,
                                        long hour, long min, long sec, long nano, LocalTime expectedTime, Period excessPeriod) {
         DateTimeFormatter f = new DateTimeFormatterBuilder()
@@ -636,9 +654,9 @@ public class TCKDateTimeParseResolver {
         for (ResolverStyle s : styles) {
             if (expectedTime != null) {
                 TemporalAccessor accessor = f.withResolverStyle(s).parse("");
-                assertEquals(accessor.query(TemporalQueries.localDate()), null, "ResolverStyle: " + s);
-                assertEquals(accessor.query(TemporalQueries.localTime()), expectedTime.minusNanos(nano), "ResolverStyle: " + s);
-                assertEquals(accessor.query(DateTimeFormatter.parsedExcessDays()), excessPeriod, "ResolverStyle: " + s);
+                assertEquals("ResolverStyle: " + s, accessor.query(TemporalQueries.localDate()), null);
+                assertEquals("ResolverStyle: " + s, accessor.query(TemporalQueries.localTime()), expectedTime.minusNanos(nano));
+                assertEquals("ResolverStyle: " + s, accessor.query(DateTimeFormatter.parsedExcessDays()), excessPeriod);
             } else {
                 try {
                     f.withResolverStyle(style).parse("");
@@ -650,7 +668,8 @@ public class TCKDateTimeParseResolver {
         }
     }
 
-    @Test(dataProvider="resolveFourToTime")
+    @Test
+    @UseDataProvider("data_resolveFourToTime")
     public void test_resolveFourToDateTime(ResolverStyle style,
                        long hour, long min, long sec, long nano, LocalTime expectedTime, Period excessPeriod) {
         DateTimeFormatter f = new DateTimeFormatterBuilder()
@@ -665,16 +684,16 @@ public class TCKDateTimeParseResolver {
             LocalDate expectedDate = LocalDate.of(2012, 6, 30).plus(excessPeriod);
             for (ResolverStyle s : styles) {
                 TemporalAccessor accessor = f.withResolverStyle(s).parse("");
-                assertEquals(accessor.query(TemporalQueries.localDate()), expectedDate, "ResolverStyle: " + s);
-                assertEquals(accessor.query(TemporalQueries.localTime()), expectedTime, "ResolverStyle: " + s);
-                assertEquals(accessor.query(DateTimeFormatter.parsedExcessDays()), Period.ZERO, "ResolverStyle: " + s);
+                assertEquals("ResolverStyle: " + s, accessor.query(TemporalQueries.localDate()), expectedDate);
+                assertEquals("ResolverStyle: " + s, accessor.query(TemporalQueries.localTime()), expectedTime);
+                assertEquals("ResolverStyle: " + s, accessor.query(DateTimeFormatter.parsedExcessDays()), Period.ZERO);
             }
         }
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveSecondOfDay")
-    Object[][] data_resolveSecondOfDay() {
+    @DataProvider
+    public static Object[][] data_resolveSecondOfDay() {
         return new Object[][]{
                 {STRICT, 0, 0, 0},
                 {STRICT, 1, 1, 0},
@@ -696,7 +715,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveSecondOfDay")
+    @Test
+    @UseDataProvider("data_resolveSecondOfDay")
     public void test_resolveSecondOfDay(ResolverStyle style, long value, Integer expectedSecond, int expectedDays) {
         String str = Long.toString(value);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(SECOND_OF_DAY).toFormatter();
@@ -717,8 +737,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveMinuteOfDay")
-    Object[][] data_resolveMinuteOfDay() {
+    @DataProvider
+    public static Object[][] data_resolveMinuteOfDay() {
         return new Object[][]{
                 {STRICT, 0, 0, 0},
                 {STRICT, 1, 1, 0},
@@ -740,7 +760,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveMinuteOfDay")
+    @Test
+    @UseDataProvider("data_resolveMinuteOfDay")
     public void test_resolveMinuteOfDay(ResolverStyle style, long value, Integer expectedMinute, int expectedDays) {
         String str = Long.toString(value);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(MINUTE_OF_DAY).toFormatter();
@@ -761,8 +782,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveClockHourOfDay")
-    Object[][] data_resolveClockHourOfDay() {
+    @DataProvider
+    public static Object[][] data_resolveClockHourOfDay() {
         return new Object[][]{
                 {STRICT, 1, 1, 0},
                 {STRICT, 24, 0, 0},
@@ -784,7 +805,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveClockHourOfDay")
+    @Test
+    @UseDataProvider("data_resolveClockHourOfDay")
     public void test_resolveClockHourOfDay(ResolverStyle style, long value, Integer expectedHour, int expectedDays) {
         String str = Long.toString(value);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(CLOCK_HOUR_OF_DAY).toFormatter();
@@ -805,8 +827,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveClockHourOfAmPm")
-    Object[][] data_resolveClockHourOfAmPm() {
+    @DataProvider
+    public static Object[][] data_resolveClockHourOfAmPm() {
         return new Object[][]{
                 {STRICT, 1, 1},
                 {STRICT, 12, 0},
@@ -828,7 +850,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveClockHourOfAmPm")
+    @Test
+    @UseDataProvider("data_resolveClockHourOfAmPm")
     public void test_resolveClockHourOfAmPm(ResolverStyle style, long value, Integer expectedValue) {
         String str = Long.toString(value);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(CLOCK_HOUR_OF_AMPM).toFormatter();
@@ -851,8 +874,8 @@ public class TCKDateTimeParseResolver {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="resolveAmPm")
-    Object[][] data_resolveAmPm() {
+    @DataProvider
+    public static Object[][] data_resolveAmPm() {
         return new Object[][]{
                 {STRICT, 0, 0},
                 {STRICT, 1, 1},
@@ -871,7 +894,8 @@ public class TCKDateTimeParseResolver {
         };
     }
 
-    @Test(dataProvider="resolveAmPm")
+    @Test
+    @UseDataProvider("data_resolveAmPm")
     public void test_resolveAmPm(ResolverStyle style, long value, Integer expectedValue) {
         String str = Long.toString(value);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(AMPM_OF_DAY).toFormatter();
@@ -903,6 +927,7 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_withChronology_override() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().parseDefaulting(EPOCH_DAY, 2).toFormatter();
@@ -930,7 +955,7 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.localDate()), LocalDate.of(1970, 1, 3));
         assertEquals(accessor.query(TemporalQueries.localTime()), null);
         assertEquals(accessor.query(TemporalQueries.chronology()), ThaiBuddhistChronology.INSTANCE);
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // SPEC: DateTimeFormatter.withZone()
@@ -993,6 +1018,7 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_fieldResolvesToChronoLocalDate_overrideChrono_matches() {
         MinguoDate mdt = MinguoDate.of(100, 6, 30);
@@ -1004,20 +1030,20 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.chronology()), MinguoChronology.INSTANCE);
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoLocalDate_noOverrideChrono_wrongChrono() {
         ChronoLocalDate cld = ThaiBuddhistChronology.INSTANCE.dateNow();
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cld)).toFormatter();
         f.parse("1234567890");
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoLocalDate_overrideChrono_wrongChrono() {
         ChronoLocalDate cld = ThaiBuddhistChronology.INSTANCE.dateNow();
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cld)).toFormatter();
         f = f.withChronology(MinguoChronology.INSTANCE);
         f.parse("1234567890");
-    }
+    } */
 
     //-------------------------------------------------------------------------
     @Test
@@ -1030,6 +1056,7 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
+    /*
     @Test
     public void test_fieldResolvesToChronoLocalDateTime_overrideChrono_matches() {
         MinguoDate mdt = MinguoDate.of(100, 6, 30);
@@ -1041,20 +1068,20 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.chronology()), MinguoChronology.INSTANCE);
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoLocalDateTime_noOverrideChrono_wrongChrono() {
         ChronoLocalDateTime<?> cldt = ThaiBuddhistChronology.INSTANCE.dateNow().atTime(LocalTime.NOON);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cldt)).toFormatter();
         f.parse("1234567890");
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoLocalDateTime_overrideChrono_wrongChrono() {
         ChronoLocalDateTime<?> cldt = ThaiBuddhistChronology.INSTANCE.dateNow().atTime(LocalTime.NOON);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cldt)).toFormatter();
         f = f.withChronology(MinguoChronology.INSTANCE);
         f.parse("1234567890");
-    }
+    } */
 
     //-------------------------------------------------------------------------
     @Test
@@ -1068,6 +1095,7 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.zoneId()), EUROPE_PARIS);
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_fieldResolvesToChronoZonedDateTime_overrideChrono_matches() {
         MinguoDate mdt = MinguoDate.of(100, 6, 30);
@@ -1081,20 +1109,20 @@ public class TCKDateTimeParseResolver {
         assertEquals(accessor.query(TemporalQueries.zoneId()), EUROPE_PARIS);
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoZonedDateTime_noOverrideChrono_wrongChrono() {
         ChronoZonedDateTime<?> cldt = ThaiBuddhistChronology.INSTANCE.dateNow().atTime(LocalTime.NOON).atZone(EUROPE_PARIS);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cldt)).toFormatter();
         f.parse("1234567890");
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoZonedDateTime_overrideChrono_wrongChrono() {
         ChronoZonedDateTime<?> cldt = ThaiBuddhistChronology.INSTANCE.dateNow().atTime(LocalTime.NOON).atZone(EUROPE_PARIS);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(cldt)).toFormatter();
         f = f.withChronology(MinguoChronology.INSTANCE);
         f.parse("1234567890");
-    }
+    } */
 
     @Test
     public void test_fieldResolvesToChronoZonedDateTime_overrideZone_matches() {
@@ -1104,7 +1132,7 @@ public class TCKDateTimeParseResolver {
         assertEquals(f.parse("1234567890", ZonedDateTime::from), zdt);
     }
 
-    @Test(expectedExceptions = DateTimeParseException.class)
+    @Test(expected = DateTimeParseException.class)
     public void test_fieldResolvesToChronoZonedDateTime_overrideZone_wrongZone() {
         ZonedDateTime zdt = ZonedDateTime.of(2010, 6, 30, 12, 30, 0, 0, EUROPE_PARIS);
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendValue(new ResolvingField(zdt)).toFormatter();

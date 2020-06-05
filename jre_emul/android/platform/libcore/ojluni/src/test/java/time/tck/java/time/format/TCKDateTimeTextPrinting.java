@@ -62,7 +62,7 @@ package tck.java.time.format;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -74,26 +74,30 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test text printing.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKDateTimeTextPrinting {
 
     private DateTimeFormatterBuilder builder;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         builder = new DateTimeFormatterBuilder();
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="printText")
-    Object[][] data_text() {
+    @DataProvider
+    public static Object[][] data_text() {
         return new Object[][] {
             {DAY_OF_WEEK, TextStyle.FULL, 1, "Monday"},
             {DAY_OF_WEEK, TextStyle.FULL, 2, "Tuesday"},
@@ -135,7 +139,8 @@ public class TCKDateTimeTextPrinting {
        };
     }
 
-    @Test(dataProvider="printText")
+    @Test
+    @UseDataProvider("data_text")
     public void test_appendText2arg_format(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         DateTimeFormatter f = builder.appendText(field, style).toFormatter(Locale.ENGLISH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
@@ -144,7 +149,8 @@ public class TCKDateTimeTextPrinting {
         assertEquals(text, expected);
     }
 
-    @Test(dataProvider="printText")
+    @Test
+    @UseDataProvider("data_text")
     public void test_appendText1arg_format(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         if (style == TextStyle.FULL) {
             DateTimeFormatter f = builder.appendText(field).toFormatter(Locale.ENGLISH);

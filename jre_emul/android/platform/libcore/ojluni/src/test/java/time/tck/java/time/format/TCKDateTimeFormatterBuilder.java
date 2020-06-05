@@ -65,7 +65,7 @@ import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoField.YEAR;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.text.ParsePosition;
 import java.time.LocalDate;
@@ -81,19 +81,23 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test DateTimeFormatterBuilder.
  */
-@Test
+
+@RunWith(DataProviderRunner.class)
 public class TCKDateTimeFormatterBuilder {
 
     private DateTimeFormatterBuilder builder;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         builder = new DateTimeFormatterBuilder();
     }
@@ -102,7 +106,7 @@ public class TCKDateTimeFormatterBuilder {
     @Test
     public void test_toFormatter_empty() throws Exception {
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.format(LocalDate.of(2012, 6, 30)), "");
+        assertEquals("", f.format(LocalDate.of(2012, 6, 30)));
     }
 
     //-----------------------------------------------------------------------
@@ -129,132 +133,132 @@ public class TCKDateTimeFormatterBuilder {
         assertEquals(f.parse("2012-6-30", LocalDate::from), LocalDate.of(2012, 6, 30));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_parseDefaulting_null() {
         builder.parseDefaulting(null, 1);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValue_1arg_null() throws Exception {
         builder.appendValue(null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValue_2arg_null() throws Exception {
         builder.appendValue(null, 3);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_2arg_widthTooSmall() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_2arg_widthTooBig() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 20);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValue_3arg_nullField() throws Exception {
         builder.appendValue(null, 2, 3, SignStyle.NORMAL);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_3arg_minWidthTooSmall() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 0, 2, SignStyle.NORMAL);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_3arg_minWidthTooBig() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 20, 2, SignStyle.NORMAL);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthTooSmall() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 2, 0, SignStyle.NORMAL);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthTooBig() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 2, 20, SignStyle.NORMAL);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthMinWidth() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 4, 2, SignStyle.NORMAL);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValue_3arg_nullSignStyle() throws Exception {
         builder.appendValue(DAY_OF_MONTH, 2, 3, null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValueReduced_int_nullField() throws Exception {
         builder.appendValueReduced(null, 2, 2, 2000);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_int_minWidthTooSmall() throws Exception {
         builder.appendValueReduced(YEAR, 0, 2, 2000);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_int_minWidthTooBig() throws Exception {
         builder.appendValueReduced(YEAR, 11, 2, 2000);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_int_maxWidthTooSmall() throws Exception {
         builder.appendValueReduced(YEAR, 2, 0, 2000);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_int_maxWidthTooBig() throws Exception {
         builder.appendValueReduced(YEAR, 2, 11, 2000);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_int_maxWidthLessThanMin() throws Exception {
         builder.appendValueReduced(YEAR, 2, 1, 2000);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValueReduced_date_nullField() throws Exception {
         builder.appendValueReduced(null, 2, 2, LocalDate.of(2000, 1, 1));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendValueReduced_date_nullDate() throws Exception {
         builder.appendValueReduced(YEAR, 2, 2, null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_date_minWidthTooSmall() throws Exception {
         builder.appendValueReduced(YEAR, 0, 2, LocalDate.of(2000, 1, 1));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_date_minWidthTooBig() throws Exception {
         builder.appendValueReduced(YEAR, 11, 2, LocalDate.of(2000, 1, 1));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_date_maxWidthTooSmall() throws Exception {
         builder.appendValueReduced(YEAR, 2, 0, LocalDate.of(2000, 1, 1));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_date_maxWidthTooBig() throws Exception {
         builder.appendValueReduced(YEAR, 2, 11, LocalDate.of(2000, 1, 1));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendValueReduced_date_maxWidthLessThanMin() throws Exception {
         builder.appendValueReduced(YEAR, 2, 1, LocalDate.of(2000, 1, 1));
     }
@@ -262,37 +266,37 @@ public class TCKDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendFraction_4arg_nullRule() throws Exception {
         builder.appendFraction(null, 1, 9, false);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendFraction_4arg_invalidRuleNotFixedSet() throws Exception {
         builder.appendFraction(DAY_OF_MONTH, 1, 9, false);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendFraction_4arg_minTooSmall() throws Exception {
         builder.appendFraction(MINUTE_OF_HOUR, -1, 9, false);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendFraction_4arg_minTooBig() throws Exception {
         builder.appendFraction(MINUTE_OF_HOUR, 10, 9, false);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendFraction_4arg_maxTooSmall() throws Exception {
         builder.appendFraction(MINUTE_OF_HOUR, 0, -1, false);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendFraction_4arg_maxTooBig() throws Exception {
         builder.appendFraction(MINUTE_OF_HOUR, 1, 10, false);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_appendFraction_4arg_maxWidthMinWidth() throws Exception {
         builder.appendFraction(MINUTE_OF_HOUR, 9, 3, false);
     }
@@ -300,29 +304,29 @@ public class TCKDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendText_1arg_null() throws Exception {
         builder.appendText(null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendText_2arg_nullRule() throws Exception {
         builder.appendText(null, TextStyle.SHORT);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendText_2arg_nullStyle() throws Exception {
         builder.appendText(MONTH_OF_YEAR, (TextStyle) null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendTextMap_nullRule() throws Exception {
         builder.appendText(null, new HashMap<>());
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendTextMap_nullStyle() throws Exception {
         builder.appendText(MONTH_OF_YEAR, (Map<Long, String>) null);
     }
@@ -330,8 +334,8 @@ public class TCKDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsetPatterns")
-    Object[][] data_offsetPatterns() {
+    @DataProvider
+    public static Object[][] data_offsetPatterns() {
         return new Object[][] {
                 {"+HH", 2, 0, 0, "+02"},
                 {"+HH", -2, 0, 0, "-02"},
@@ -377,7 +381,8 @@ public class TCKDateTimeFormatterBuilder {
         };
     }
 
-    @Test(dataProvider="offsetPatterns")
+    @Test
+    @UseDataProvider("data_offsetPatterns")
     public void test_appendOffset_format(String pattern, int h, int m, int s, String expected) throws Exception {
         builder.appendOffset(pattern, "Z");
         DateTimeFormatter f = builder.toFormatter();
@@ -385,7 +390,8 @@ public class TCKDateTimeFormatterBuilder {
         assertEquals(f.format(offset), expected);
     }
 
-    @Test(dataProvider="offsetPatterns")
+    @Test
+    @UseDataProvider("data_offsetPatterns")
     public void test_appendOffset_parse(String pattern, int h, int m, int s, String expected) throws Exception {
         builder.appendOffset(pattern, "Z");
         DateTimeFormatter f = builder.toFormatter();
@@ -393,8 +399,8 @@ public class TCKDateTimeFormatterBuilder {
         assertEquals(f.format(parsed), expected);
     }
 
-    @DataProvider(name="badOffsetPatterns")
-    Object[][] data_badOffsetPatterns() {
+    @DataProvider
+    public static Object[][] data_badOffsetPatterns() {
         return new Object[][] {
             {"HH"},
             {"HHMM"},
@@ -410,17 +416,18 @@ public class TCKDateTimeFormatterBuilder {
         };
     }
 
-    @Test(dataProvider="badOffsetPatterns", expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
+    @UseDataProvider("data_badOffsetPatterns")
     public void test_appendOffset_badPattern(String pattern) throws Exception {
         builder.appendOffset(pattern, "Z");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendOffset_3arg_nullText() throws Exception {
         builder.appendOffset("+HH:MM", null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendOffset_3arg_nullPattern() throws Exception {
         builder.appendOffset(null, "Z");
     }
@@ -428,7 +435,7 @@ public class TCKDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_appendZoneText_1arg_nullText() throws Exception {
         builder.appendZoneText(null);
     }
@@ -439,10 +446,10 @@ public class TCKDateTimeFormatterBuilder {
     @Test
     public void test_padNext_1arg() {
         builder.appendValue(MONTH_OF_YEAR).appendLiteral(':').padNext(2).appendValue(DAY_OF_MONTH);
-        assertEquals(builder.toFormatter().format(LocalDate.of(2013, 2, 1)), "2: 1");
+        assertEquals("2: 1", builder.toFormatter().format(LocalDate.of(2013, 2, 1)));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_padNext_1arg_invalidWidth() throws Exception {
         builder.padNext(0);
     }
@@ -451,10 +458,10 @@ public class TCKDateTimeFormatterBuilder {
     @Test
     public void test_padNext_2arg_dash() throws Exception {
         builder.appendValue(MONTH_OF_YEAR).appendLiteral(':').padNext(2, '-').appendValue(DAY_OF_MONTH);
-        assertEquals(builder.toFormatter().format(LocalDate.of(2013, 2, 1)), "2:-1");
+        assertEquals("2:-1", builder.toFormatter().format(LocalDate.of(2013, 2, 1)));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_padNext_2arg_invalidWidth() throws Exception {
         builder.padNext(0, '-');
     }
@@ -465,14 +472,14 @@ public class TCKDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR).appendLiteral(':')
                 .padNext(5).optionalStart().appendValue(DAY_OF_MONTH).optionalEnd()
                 .appendLiteral(':').appendValue(YEAR);
-        assertEquals(builder.toFormatter().format(LocalDate.of(2013, 2, 1)), "2:    1:2013");
-        assertEquals(builder.toFormatter().format(YearMonth.of(2013, 2)), "2:     :2013");
+        assertEquals("2:    1:2013", builder.toFormatter().format(LocalDate.of(2013, 2, 1)));
+        assertEquals("2:     :2013", builder.toFormatter().format(YearMonth.of(2013, 2)));
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expected=IllegalStateException.class)
     public void test_optionalEnd_noStart() throws Exception {
         builder.optionalEnd();
     }
@@ -480,8 +487,8 @@ public class TCKDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name="validPatterns")
-    Object[][] dataValid() {
+    @DataProvider
+    public static Object[][] dataValid() {
         return new Object[][] {
             {"'a'"},
             {"''"},
@@ -635,14 +642,15 @@ public class TCKDateTimeFormatterBuilder {
         };
     }
 
-    @Test(dataProvider="validPatterns")
+    @Test
+    @UseDataProvider("dataValid")
     public void test_appendPattern_valid(String input) throws Exception {
         builder.appendPattern(input);  // test is for no error here
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="invalidPatterns")
-    Object[][] dataInvalid() {
+    @DataProvider
+    public static Object[][] dataInvalid() {
         return new Object[][] {
             {"'"},
             {"'hello"},
@@ -704,14 +712,15 @@ public class TCKDateTimeFormatterBuilder {
         };
     }
 
-    @Test(dataProvider="invalidPatterns", expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
+    @UseDataProvider("dataInvalid")
     public void test_appendPattern_invalid(String input) throws Exception {
         builder.appendPattern(input);  // test is for error here
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="patternPrint")
-    Object[][] data_patternPrint() {
+    @DataProvider
+    public static Object[][] data_patternPrint() {
         return new Object[][] {
             {"Q", date(2012, 2, 10), "1"},
             {"QQ", date(2012, 2, 10), "01"},
@@ -721,7 +730,8 @@ public class TCKDateTimeFormatterBuilder {
         };
     }
 
-    @Test(dataProvider="patternPrint")
+    @Test
+    @UseDataProvider("data_patternPrint")
     public void test_appendPattern_patternPrint(String input, Temporal temporal, String expected) throws Exception {
         DateTimeFormatter f = builder.appendPattern(input).toFormatter(Locale.UK);
         String test = f.format(temporal);
