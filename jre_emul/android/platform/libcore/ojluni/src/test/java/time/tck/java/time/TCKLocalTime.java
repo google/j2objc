@@ -145,7 +145,8 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     // Android-changed: This was originally non-static and initialized in @Before,
     // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
-    private static LocalTime TEST_12_30_40_987654321;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static LocalTime TEST_12_30_40_987654321 = LocalTime.of(12, 30, 40, 987654321);
 
     private static final TemporalUnit[] INVALID_UNITS;
     static {
@@ -660,7 +661,6 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: iterator
     @DataProvider
     public static Object[][] data_query() {
         return new Object[][] {
@@ -672,21 +672,19 @@ public class TCKLocalTime extends AbstractDateTimeTest {
                 {TEST_12_30_40_987654321, TemporalQueries.localDate(), null},
                 {TEST_12_30_40_987654321, TemporalQueries.localTime(), TEST_12_30_40_987654321},
         };
-    } */
+    }
 
-    /* J2ObjC removed: iterator
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
-    } */
+    }
 
-    /* J2ObjC removed: iterator
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
-    } */
+    }
 
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
@@ -1638,49 +1636,42 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         }
     }
 
-    /* J2ObjC removed: iterator
     @DataProvider
-    Iterator<Object[]> plusSeconds_fromZero() {
-        return new Iterator<Object[]>() {
-            int delta = 30;
-            int i = -3660;
-            int hour = 22;
-            int min = 59;
-            int sec = 0;
+    public static List<List<Object>> plusSeconds_fromZero() {
+        List<List<Object>> plusSeconds_fromZero = new ArrayList<List<Object>>();
 
-            public boolean hasNext() {
-                return i <= 3660;
-            }
+        int delta = 30;
+        int i = -3660;
+        int hour = 22;
+        int min = 59;
+        int sec = 0;
 
-            public Object[] next() {
-                final Object[] ret = new Object[] {i, hour, min, sec};
-                i += delta;
-                sec += delta;
+        while (i <= 3660) {
+            final List<Object> ret = new ArrayList<Object>(
+                    Arrays.asList(i, hour, min, sec));
+            plusSeconds_fromZero.add(ret);
 
-                if (sec >= 60) {
-                    min++;
-                    sec -= 60;
+            i += delta;
+            sec += delta;
 
-                    if (min == 60) {
-                        hour++;
-                        min = 0;
+            if (sec >= 60) {
+                min++;
+                sec -= 60;
 
-                        if (hour == 24) {
-                            hour = 0;
-                        }
+                if (min == 60) {
+                    hour++;
+                    min = 0;
+
+                    if (hour == 24) {
+                        hour = 0;
                     }
                 }
-
-                return ret;
             }
+        }
 
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    } */
+        return plusSeconds_fromZero;
+    }
 
-    /* J2ObjC removed: iterator
     @Test()
     @UseDataProvider("plusSeconds_fromZero")
     public void test_plusSeconds_fromZero(int seconds, int hour, int min, int sec) {
@@ -1690,7 +1681,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         assertEquals(hour, t.getHour());
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
-    } */
+    }
 
     @Test
     public void test_plusSeconds_noChange_equal() {
@@ -1748,55 +1739,48 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         }
     }
 
-    /* J2ObjC removed: iterator
     @DataProvider
-    Iterator<Object[]> plusNanos_fromZero() {
-        return new Iterator<Object[]>() {
-            long delta = 7500000000L;
-            long i = -3660 * 1000000000L;
-            int hour = 22;
-            int min = 59;
-            int sec = 0;
-            long nanos = 0;
+    public static List<List<Object>> plusNanos_fromZero() {
+        List<List<Object>> plusNanos_fromZero = new ArrayList<List<Object>>();
 
-            public boolean hasNext() {
-                return i <= 3660 * 1000000000L;
-            }
+        long delta = 7500000000L;
+        long i = -3660 * 1000000000L;
+        int hour = 22;
+        int min = 59;
+        int sec = 0;
+        long nanos = 0;
 
-            public Object[] next() {
-                final Object[] ret = new Object[] {i, hour, min, sec, (int)nanos};
-                i += delta;
-                nanos += delta;
+        while (i <= 3660 * 1000000000L) {
+            final List<Object> ret = new ArrayList<Object>(
+                    Arrays.asList(i, hour, min, sec, (int)nanos));
+            plusNanos_fromZero.add(ret);
 
-                if (nanos >= 1000000000L) {
-                    sec += nanos / 1000000000L;
-                    nanos %= 1000000000L;
+            i += delta;
+            nanos += delta;
 
-                    if (sec >= 60) {
-                        min++;
-                        sec %= 60;
+            if (nanos >= 1000000000L) {
+                sec += nanos / 1000000000L;
+                nanos %= 1000000000L;
 
-                        if (min == 60) {
-                            hour++;
-                            min = 0;
+                if (sec >= 60) {
+                    min++;
+                    sec %= 60;
 
-                            if (hour == 24) {
-                                hour = 0;
-                            }
+                    if (min == 60) {
+                        hour++;
+                        min = 0;
+
+                        if (hour == 24) {
+                            hour = 0;
                         }
                     }
                 }
-
-                return ret;
             }
+        }
 
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    } */
+        return plusNanos_fromZero;
+    }
 
-    /* J2ObjC removed: iterator
     @Test()
     @UseDataProvider("plusNanos_fromZero")
     public void test_plusNanos_fromZero(long nanoseconds, int hour, int min, int sec, int nanos) {
@@ -1807,7 +1791,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
         assertEquals(nanos, t.getNano());
-    } */
+    }
 
     @Test
     public void test_plusNanos_noChange_equal() {
@@ -2194,55 +2178,48 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         }
     }
 
-    /* J2ObjC removed: iterator
     @DataProvider
-    Iterator<Object[]> minusNanos_fromZero() {
-        return new Iterator<Object[]>() {
-            long delta = 7500000000L;
-            long i = 3660 * 1000000000L;
-            int hour = 22;
-            int min = 59;
-            int sec = 0;
-            long nanos = 0;
+    public static List<List<Object>> minusNanos_fromZero() {
+        List<List<Object>> minusNanos_fromZero = new ArrayList<List<Object>>();
 
-            public boolean hasNext() {
-                return i >= -3660 * 1000000000L;
-            }
+        long delta = 7500000000L;
+        long i = 3660 * 1000000000L;
+        int hour = 22;
+        int min = 59;
+        int sec = 0;
+        long nanos = 0;
 
-            public Object[] next() {
-                final Object[] ret = new Object[] {i, hour, min, sec, (int)nanos};
-                i -= delta;
-                nanos += delta;
+        while (i >= -3660 * 1000000000L) {
+            final List<Object> ret = new ArrayList<Object>(
+                    Arrays.asList(i, hour, min, sec, (int)nanos));
+            minusNanos_fromZero.add(ret);
 
-                if (nanos >= 1000000000L) {
-                    sec += nanos / 1000000000L;
-                    nanos %= 1000000000L;
+            i -= delta;
+            nanos += delta;
 
-                    if (sec >= 60) {
-                        min++;
-                        sec %= 60;
+            if (nanos >= 1000000000L) {
+                sec += nanos / 1000000000L;
+                nanos %= 1000000000L;
 
-                        if (min == 60) {
-                            hour++;
-                            min = 0;
+                if (sec >= 60) {
+                    min++;
+                    sec %= 60;
 
-                            if (hour == 24) {
-                                hour = 0;
-                            }
+                    if (min == 60) {
+                        hour++;
+                        min = 0;
+
+                        if (hour == 24) {
+                            hour = 0;
                         }
                     }
                 }
-
-                return ret;
             }
+        }
 
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    } */
+        return minusNanos_fromZero;
+    }
 
-    /* J2ObjC removed: iterator
     @Test()
     @UseDataProvider("minusNanos_fromZero")
     public void test_minusNanos_fromZero(long nanoseconds, int hour, int min, int sec, int nanos) {
@@ -2253,7 +2230,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
         assertEquals(nanos, t.getNano());
-    } */
+    }
 
     @Test
     public void test_minusNanos_noChange_equal() {
