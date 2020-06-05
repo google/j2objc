@@ -982,6 +982,7 @@ TEST_SOURCES := \
     tck/java/time/TCKDuration.java \
     tck/java/time/TCKInstant.java \
     tck/java/time/TCKLocalDate.java \
+    tck/java/time/TCKLocalDateTime.java \
     tck/java/time/TCKLocalTime.java \
     tck/java/time/TCKMonth.java \
     tck/java/time/TCKMonthDay.java \
