@@ -163,7 +163,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     // Android-changed: This was originally non-static and initialized in @Before,
     // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
-    private static OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static OffsetDateTime TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
 
     @BeforeClass
     public static void setUp() {
@@ -642,7 +643,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_query() {
         return new Object[][] {
@@ -654,27 +654,24 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
                 {TEST_2008_6_30_11_30_59_000000500, TemporalQueries.localDate(), LocalDate.of(2008, 6, 30)},
                 {TEST_2008_6_30_11_30_59_000000500, TemporalQueries.localTime(), LocalTime.of(11, 30, 59, 500)},
         };
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_2008_6_30_11_30_59_000000500.query(null);
-    } */
+    }
 
     //-----------------------------------------------------------------------
     // adjustInto(Temporal)
@@ -805,7 +802,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(long,TemporalUnit)
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_withFieldLong() {
         return new Object[][] {
@@ -820,14 +816,13 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
                 {TEST_2008_6_30_11_30_59_000000500, OFFSET_SECONDS, -3600,
                         OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_MONE)},
         };
-    }; */
+    };
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_withFieldLong")
     public void test_with_fieldLong(OffsetDateTime base, TemporalField setField, long setValue, OffsetDateTime expected) {
         assertEquals(base.with(setField, setValue), expected);
-    } */
+    }
 
     //-----------------------------------------------------------------------
     // withYear()

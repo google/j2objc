@@ -144,7 +144,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     // Android-changed: These wer originally non-static and initialized in @Before,
     // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
-    private static LocalDate TEST_2007_07_15;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static LocalDate TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
     private static long MAX_VALID_EPOCHDAYS;
     private static long MIN_VALID_EPOCHDAYS;
     private static LocalDate MAX_DATE;
@@ -699,7 +700,6 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_query() {
         return new Object[][] {
@@ -711,27 +711,24 @@ public class TCKLocalDate extends AbstractDateTimeTest {
                 {TEST_2007_07_15, TemporalQueries.localDate(), TEST_2007_07_15},
                 {TEST_2007_07_15, TemporalQueries.localTime(), null},
         };
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_2007_07_15.query(null);
-    } */
+    }
 
     //-----------------------------------------------------------------------
     // get*()

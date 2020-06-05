@@ -110,7 +110,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     // Android-changed: This was originally non-static and initialized in @Before,
     // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
-    private static MonthDay TEST_07_15;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static MonthDay TEST_07_15 = MonthDay.of(7, 15);
 
     @BeforeClass
     public static void setUp() {
@@ -434,7 +435,6 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_query() {
         return new Object[][] {
@@ -446,27 +446,24 @@ public class TCKMonthDay extends AbstractDateTimeTest {
                 {TEST_07_15, TemporalQueries.localDate(), null},
                 {TEST_07_15, TemporalQueries.localTime(), null},
         };
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_07_15.query(null);
-    } */
+    }
 
     //-----------------------------------------------------------------------
     // get*()

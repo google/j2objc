@@ -158,8 +158,9 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     private static final ZoneId ZONE_LONDON = ZoneId.of("Europe/London");
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private LocalDateTime TEST_PARIS_GAP_2008_03_30_02_30;
-    private static LocalDateTime TEST_PARIS_OVERLAP_2008_10_26_02_30;
-    private static LocalDateTime TEST_LOCAL_2008_06_30_11_30_59_500;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static LocalDateTime TEST_PARIS_OVERLAP_2008_10_26_02_30 = LocalDateTime.of(2008, 10, 26, 2, 30);
+    private static LocalDateTime TEST_LOCAL_2008_06_30_11_30_59_500 = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
     private ZonedDateTime TEST_DATE_TIME;
     private ZonedDateTime TEST_DATE_TIME_PARIS;
 
@@ -1309,7 +1310,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(long,TemporalUnit)
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_withFieldLong() {
         return new Object[][] {
@@ -1351,25 +1351,22 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
                 {TEST_PARIS_OVERLAP_2008_10_26_02_30.atZone(ZONE_PARIS).withLaterOffsetAtOverlap(), OFFSET_SECONDS, 7200,
                         dateTime(2008, 10, 26, 2, 30, 0, 0, OFFSET_0200, ZONE_PARIS)},
         };
-    }; */
+    };
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_withFieldLong")
     public void test_with_fieldLong(ZonedDateTime base, TemporalField setField, int setValue, ZonedDateTime expected) {
         assertEquals(base.with(setField, setValue), expected);
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_withFieldLong")
     public void test_with_adjuster_ensureZoneOffsetConsistent(ZonedDateTime base, TemporalField setField, int setValue, ZonedDateTime expected) {
         if (setField == OFFSET_SECONDS) {
             assertEquals(base.with(ZoneOffset.ofTotalSeconds(setValue)), expected);
         }
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test()
     @UseDataProvider("data_withFieldLong")
     public void test_with_adjuster_ensureOffsetDateTimeConsistent(ZonedDateTime base, TemporalField setField, int setValue, ZonedDateTime expected) {
@@ -1377,7 +1374,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             OffsetDateTime odt = base.toOffsetDateTime().with(setField, setValue);
             assertEquals(base.with(odt), expected);
         }
-    } */
+    }
 
     //-----------------------------------------------------------------------
     // withYear()
