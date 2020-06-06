@@ -594,6 +594,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/net/ServerSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
@@ -925,6 +926,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/zip/ZipFileTest.java \
     org/apache/harmony/tests/java/util/zip/ZipInputStreamTest.java \
     org/apache/harmony/tests/java/util/zip/ZipOutputStreamTest.java \
+    org/apache/harmony/tests/javax/net/ServerSocketFactoryTest.java \
+    org/apache/harmony/tests/javax/net/SocketFactoryTest.java \
     org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultHandshakeStatusTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLEngineResultStatusTest.java \
