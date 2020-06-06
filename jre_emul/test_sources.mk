@@ -495,6 +495,7 @@ TEST_SOURCES := \
     libcore/java/time/format/DateTimeFormatterBuilderTest.java \
     libcore/java/time/format/DateTimeFormatterTest.java \
     libcore/java/time/format/DateTimeParseExceptionTest.java \
+    libcore/java/time/temporal/UnsupportedTemporalTypeExceptionTest.java \
     libcore/java/util/AbstractCollectionTest.java \
     libcore/java/util/ArrayListTest.java \
     libcore/java/util/ArraysTest.java \
