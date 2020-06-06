@@ -84,7 +84,6 @@ import org.junit.Test;
 /**
  * Test TemporalAdjusters.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKTemporalAdjusters {
 
