@@ -807,6 +807,40 @@
 		7A021F852486E1D700956E1A /* TCKChronoFieldSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F802486E1D700956E1A /* TCKChronoFieldSerialization.m */; };
 		7A021F862486E1D700956E1A /* TCKChronoUnitSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F812486E1D700956E1A /* TCKChronoUnitSerialization.m */; };
 		7A021F882486E2B400956E1A /* AbstractTCKTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A021F872486E2B400956E1A /* AbstractTCKTest.m */; };
+		7A0F1474248D982C00AFE2BC /* InstantTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1470248D982C00AFE2BC /* InstantTest.m */; };
+		7A0F1475248D982C00AFE2BC /* DurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1471248D982C00AFE2BC /* DurationTest.m */; };
+		7A0F1476248D982C00AFE2BC /* YearMonthTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1472248D982C00AFE2BC /* YearMonthTest.m */; };
+		7A0F1477248D982C00AFE2BC /* DateTimeExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1473248D982C00AFE2BC /* DateTimeExceptionTest.m */; };
+		7A0F147F248D98BE00AFE2BC /* OffsetDateTimeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1478248D98BD00AFE2BC /* OffsetDateTimeTest.m */; };
+		7A0F1480248D98BE00AFE2BC /* PeriodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1479248D98BD00AFE2BC /* PeriodTest.m */; };
+		7A0F1481248D98BE00AFE2BC /* ZoneOffsetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F147A248D98BD00AFE2BC /* ZoneOffsetTest.m */; };
+		7A0F1482248D98BE00AFE2BC /* ZonedDateTimeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F147B248D98BE00AFE2BC /* ZonedDateTimeTest.m */; };
+		7A0F1483248D98BE00AFE2BC /* OffsetTimeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F147C248D98BE00AFE2BC /* OffsetTimeTest.m */; };
+		7A0F1484248D98BE00AFE2BC /* YearTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F147D248D98BE00AFE2BC /* YearTest.m */; };
+		7A0F1485248D98BE00AFE2BC /* LocalDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F147E248D98BE00AFE2BC /* LocalDateTest.m */; };
+		7A0F1489248D990B00AFE2BC /* DateTimeParseExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1486248D990B00AFE2BC /* DateTimeParseExceptionTest.m */; };
+		7A0F148A248D990B00AFE2BC /* DateTimeFormatterBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1487248D990B00AFE2BC /* DateTimeFormatterBuilderTest.m */; };
+		7A0F148B248D990B00AFE2BC /* DateTimeFormatterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1488248D990B00AFE2BC /* DateTimeFormatterTest.m */; };
+		7A0F148D248D993500AFE2BC /* UnsupportedTemporalTypeExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F148C248D993500AFE2BC /* UnsupportedTemporalTypeExceptionTest.m */; };
+		7A0F148F248D995100AFE2BC /* ServerSocketFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F148E248D995100AFE2BC /* ServerSocketFactoryTest.m */; };
+		7A0F1492248D998000AFE2BC /* ServerSocketFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1490248D998000AFE2BC /* ServerSocketFactoryTest.m */; };
+		7A0F1493248D998000AFE2BC /* SocketFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1491248D998000AFE2BC /* SocketFactoryTest.m */; };
+		7A0F149E248D99D000AFE2BC /* TCKDateTimeTextPrinting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1494248D99CD00AFE2BC /* TCKDateTimeTextPrinting.m */; };
+		7A0F149F248D99D000AFE2BC /* TCKInstantPrinterParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1495248D99CD00AFE2BC /* TCKInstantPrinterParser.m */; };
+		7A0F14A0248D99D000AFE2BC /* TCKDateTimeParseResolver.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1496248D99CD00AFE2BC /* TCKDateTimeParseResolver.m */; };
+		7A0F14A1248D99D000AFE2BC /* TCKDecimalStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1497248D99CD00AFE2BC /* TCKDecimalStyle.m */; };
+		7A0F14A2248D99D000AFE2BC /* TCKDateTimeFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1498248D99CD00AFE2BC /* TCKDateTimeFormatters.m */; };
+		7A0F14A3248D99D000AFE2BC /* TCKDateTimeFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F1499248D99CD00AFE2BC /* TCKDateTimeFormatter.m */; };
+		7A0F14A4248D99D000AFE2BC /* TCKLocalizedFieldParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F149A248D99CE00AFE2BC /* TCKLocalizedFieldParser.m */; };
+		7A0F14A5248D99D000AFE2BC /* TCKDateTimeFormatterBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F149B248D99CE00AFE2BC /* TCKDateTimeFormatterBuilder.m */; };
+		7A0F14A6248D99D000AFE2BC /* TCKFormatStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F149C248D99CE00AFE2BC /* TCKFormatStyle.m */; };
+		7A0F14A7248D99D000AFE2BC /* TCKLocalizedFieldPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F149D248D99CE00AFE2BC /* TCKLocalizedFieldPrinter.m */; };
+		7A0F14AE248D9ABC00AFE2BC /* TCKSignStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F14A8248D9ABB00AFE2BC /* TCKSignStyle.m */; };
+		7A0F14AF248D9ABC00AFE2BC /* TCKOffsetPrinterParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F14A9248D9ABB00AFE2BC /* TCKOffsetPrinterParser.m */; };
+		7A0F14B0248D9ABC00AFE2BC /* TCKPadPrinterParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F14AA248D9ABB00AFE2BC /* TCKPadPrinterParser.m */; };
+		7A0F14B1248D9ABC00AFE2BC /* TCKTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F14AB248D9ABB00AFE2BC /* TCKTextStyle.m */; };
+		7A0F14B2248D9ABC00AFE2BC /* TCKZoneIdPrinterParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F14AC248D9ABB00AFE2BC /* TCKZoneIdPrinterParser.m */; };
+		7A0F14B3248D9ABC00AFE2BC /* TCKResolverStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F14AD248D9ABB00AFE2BC /* TCKResolverStyle.m */; };
 		DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */; };
 		DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */; };
 		FA1DD7A82154124E00D0B800 /* SSLSocketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1DD7A62154124E00D0B800 /* SSLSocketTest.m */; };
@@ -4164,6 +4198,40 @@
 		7A021F802486E1D700956E1A /* TCKChronoFieldSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKChronoFieldSerialization.m; path = tck/java/time/temporal/serial/TCKChronoFieldSerialization.m; sourceTree = "<group>"; };
 		7A021F812486E1D700956E1A /* TCKChronoUnitSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKChronoUnitSerialization.m; path = tck/java/time/temporal/serial/TCKChronoUnitSerialization.m; sourceTree = "<group>"; };
 		7A021F872486E2B400956E1A /* AbstractTCKTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractTCKTest.m; path = tck/java/time/AbstractTCKTest.m; sourceTree = "<group>"; };
+		7A0F1470248D982C00AFE2BC /* InstantTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InstantTest.m; path = libcore/java/time/InstantTest.m; sourceTree = "<group>"; };
+		7A0F1471248D982C00AFE2BC /* DurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DurationTest.m; path = libcore/java/time/DurationTest.m; sourceTree = "<group>"; };
+		7A0F1472248D982C00AFE2BC /* YearMonthTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YearMonthTest.m; path = libcore/java/time/YearMonthTest.m; sourceTree = "<group>"; };
+		7A0F1473248D982C00AFE2BC /* DateTimeExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DateTimeExceptionTest.m; path = libcore/java/time/DateTimeExceptionTest.m; sourceTree = "<group>"; };
+		7A0F1478248D98BD00AFE2BC /* OffsetDateTimeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OffsetDateTimeTest.m; path = libcore/java/time/OffsetDateTimeTest.m; sourceTree = "<group>"; };
+		7A0F1479248D98BD00AFE2BC /* PeriodTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeriodTest.m; path = libcore/java/time/PeriodTest.m; sourceTree = "<group>"; };
+		7A0F147A248D98BD00AFE2BC /* ZoneOffsetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZoneOffsetTest.m; path = libcore/java/time/ZoneOffsetTest.m; sourceTree = "<group>"; };
+		7A0F147B248D98BE00AFE2BC /* ZonedDateTimeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZonedDateTimeTest.m; path = libcore/java/time/ZonedDateTimeTest.m; sourceTree = "<group>"; };
+		7A0F147C248D98BE00AFE2BC /* OffsetTimeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OffsetTimeTest.m; path = libcore/java/time/OffsetTimeTest.m; sourceTree = "<group>"; };
+		7A0F147D248D98BE00AFE2BC /* YearTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YearTest.m; path = libcore/java/time/YearTest.m; sourceTree = "<group>"; };
+		7A0F147E248D98BE00AFE2BC /* LocalDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalDateTest.m; path = libcore/java/time/LocalDateTest.m; sourceTree = "<group>"; };
+		7A0F1486248D990B00AFE2BC /* DateTimeParseExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DateTimeParseExceptionTest.m; path = libcore/java/time/format/DateTimeParseExceptionTest.m; sourceTree = "<group>"; };
+		7A0F1487248D990B00AFE2BC /* DateTimeFormatterBuilderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DateTimeFormatterBuilderTest.m; path = libcore/java/time/format/DateTimeFormatterBuilderTest.m; sourceTree = "<group>"; };
+		7A0F1488248D990B00AFE2BC /* DateTimeFormatterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DateTimeFormatterTest.m; path = libcore/java/time/format/DateTimeFormatterTest.m; sourceTree = "<group>"; };
+		7A0F148C248D993500AFE2BC /* UnsupportedTemporalTypeExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnsupportedTemporalTypeExceptionTest.m; path = libcore/java/time/temporal/UnsupportedTemporalTypeExceptionTest.m; sourceTree = "<group>"; };
+		7A0F148E248D995100AFE2BC /* ServerSocketFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerSocketFactoryTest.m; path = libcore/javax/net/ServerSocketFactoryTest.m; sourceTree = "<group>"; };
+		7A0F1490248D998000AFE2BC /* ServerSocketFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerSocketFactoryTest.m; path = org/apache/harmony/tests/javax/net/ServerSocketFactoryTest.m; sourceTree = "<group>"; };
+		7A0F1491248D998000AFE2BC /* SocketFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketFactoryTest.m; path = org/apache/harmony/tests/javax/net/SocketFactoryTest.m; sourceTree = "<group>"; };
+		7A0F1494248D99CD00AFE2BC /* TCKDateTimeTextPrinting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKDateTimeTextPrinting.m; path = tck/java/time/format/TCKDateTimeTextPrinting.m; sourceTree = "<group>"; };
+		7A0F1495248D99CD00AFE2BC /* TCKInstantPrinterParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKInstantPrinterParser.m; path = tck/java/time/format/TCKInstantPrinterParser.m; sourceTree = "<group>"; };
+		7A0F1496248D99CD00AFE2BC /* TCKDateTimeParseResolver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKDateTimeParseResolver.m; path = tck/java/time/format/TCKDateTimeParseResolver.m; sourceTree = "<group>"; };
+		7A0F1497248D99CD00AFE2BC /* TCKDecimalStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKDecimalStyle.m; path = tck/java/time/format/TCKDecimalStyle.m; sourceTree = "<group>"; };
+		7A0F1498248D99CD00AFE2BC /* TCKDateTimeFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKDateTimeFormatters.m; path = tck/java/time/format/TCKDateTimeFormatters.m; sourceTree = "<group>"; };
+		7A0F1499248D99CD00AFE2BC /* TCKDateTimeFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKDateTimeFormatter.m; path = tck/java/time/format/TCKDateTimeFormatter.m; sourceTree = "<group>"; };
+		7A0F149A248D99CE00AFE2BC /* TCKLocalizedFieldParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKLocalizedFieldParser.m; path = tck/java/time/format/TCKLocalizedFieldParser.m; sourceTree = "<group>"; };
+		7A0F149B248D99CE00AFE2BC /* TCKDateTimeFormatterBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKDateTimeFormatterBuilder.m; path = tck/java/time/format/TCKDateTimeFormatterBuilder.m; sourceTree = "<group>"; };
+		7A0F149C248D99CE00AFE2BC /* TCKFormatStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKFormatStyle.m; path = tck/java/time/format/TCKFormatStyle.m; sourceTree = "<group>"; };
+		7A0F149D248D99CE00AFE2BC /* TCKLocalizedFieldPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKLocalizedFieldPrinter.m; path = tck/java/time/format/TCKLocalizedFieldPrinter.m; sourceTree = "<group>"; };
+		7A0F14A8248D9ABB00AFE2BC /* TCKSignStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKSignStyle.m; path = tck/java/time/format/TCKSignStyle.m; sourceTree = "<group>"; };
+		7A0F14A9248D9ABB00AFE2BC /* TCKOffsetPrinterParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKOffsetPrinterParser.m; path = tck/java/time/format/TCKOffsetPrinterParser.m; sourceTree = "<group>"; };
+		7A0F14AA248D9ABB00AFE2BC /* TCKPadPrinterParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKPadPrinterParser.m; path = tck/java/time/format/TCKPadPrinterParser.m; sourceTree = "<group>"; };
+		7A0F14AB248D9ABB00AFE2BC /* TCKTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKTextStyle.m; path = tck/java/time/format/TCKTextStyle.m; sourceTree = "<group>"; };
+		7A0F14AC248D9ABB00AFE2BC /* TCKZoneIdPrinterParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKZoneIdPrinterParser.m; path = tck/java/time/format/TCKZoneIdPrinterParser.m; sourceTree = "<group>"; };
+		7A0F14AD248D9ABB00AFE2BC /* TCKResolverStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCKResolverStyle.m; path = tck/java/time/format/TCKResolverStyle.m; sourceTree = "<group>"; };
 		DE94F8691F69A3B2006C59E4 /* InvocationTargetExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvocationTargetExceptionTest.m; path = org/apache/harmony/tests/java/lang/reflect/InvocationTargetExceptionTest.m; sourceTree = "<group>"; };
 		DE94F86B1F69A3D6006C59E4 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = org/apache/harmony/tests/java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
 		DE9C53841F6ADFAF000E8C71 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = libcore/java/util/concurrent/ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
@@ -6820,7 +6888,6 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				7A021F872486E2B400956E1A /* AbstractTCKTest.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
 				FA5C0C4D21BFFBA5000B6275 /* AbstractCollectionTest.m */,
@@ -6839,6 +6906,7 @@
 				0612B9491F4381AF0069EF58 /* AbstractSelectionKeyTest.m */,
 				0612B94A1F4381AF0069EF58 /* AbstractSelectorTest.m */,
 				FA5C0C3821BFFBA2000B6275 /* AbstractSequentialListTest.m */,
+				7A021F872486E2B400956E1A /* AbstractTCKTest.m */,
 				FA6C09A02187C5A8006C646A /* AbstractTest.m */,
 				FA6C09D821925DE3006C646A /* AbstractTestLog.m */,
 				FA6C09AE2187C5AB006C646A /* AbstractTestPrinterParser.m */,
@@ -7019,6 +7087,10 @@
 				0620253C1D512B37001EE455 /* DateFormatTest.m */,
 				069C240A1E9EEF7B00CE6BAF /* DateTest.m */,
 				069C23FC1E9EEEF700CE6BAF /* DateTest.m */,
+				7A0F1473248D982C00AFE2BC /* DateTimeExceptionTest.m */,
+				7A0F1487248D990B00AFE2BC /* DateTimeFormatterBuilderTest.m */,
+				7A0F1488248D990B00AFE2BC /* DateTimeFormatterTest.m */,
+				7A0F1486248D990B00AFE2BC /* DateTimeParseExceptionTest.m */,
 				069C23E11E9EEECA00CE6BAF /* DecimalFormatSymbolsTest.m */,
 				0620268D1D512D08001EE455 /* DecimalFormatSymbolsTest.m */,
 				069C23E21E9EEECA00CE6BAF /* DecimalFormatTest.m */,
@@ -7051,6 +7123,7 @@
 				062026551D512CBE001EE455 /* DoubleTest.m */,
 				06D61044247DD80F007376E1 /* DSAParamsTest.m */,
 				FA23455422FC9761007FABB9 /* DuplicateFormatFlagsExceptionTest.m */,
+				7A0F1471248D982C00AFE2BC /* DurationTest.m */,
 				062029211D512F25001EE455 /* ECFieldF2mTest.m */,
 				062029221D512F25001EE455 /* ECFieldFpTest.m */,
 				062029231D512F25001EE455 /* ECGenParameterSpecTest.m */,
@@ -7177,6 +7250,7 @@
 				062025C71D512CA1001EE455 /* InputStreamReaderTest.m */,
 				FA24DE6022E76289000DEC19 /* InstantiationErrorTest.m */,
 				FA5C0C9021BFFE6A000B6275 /* InstantiationExceptionTest.m */,
+				7A0F1470248D982C00AFE2BC /* InstantTest.m */,
 				FA24DE8222E764D5000DEC19 /* IntegerTest.m */,
 				FA5C0C7221BFFE65000B6275 /* IntegerTest.m */,
 				FA24DE5A22E76287000DEC19 /* InternalErrorTest.m */,
@@ -7228,6 +7302,7 @@
 				FACA982821CC21EA00B3D2E2 /* ListDefaultMethodTester.m */,
 				0612B9211F4374A30069EF58 /* ListResourceBundleTest.m */,
 				FA61CF9F22F35D89006F903E /* ListTest.m */,
+				7A0F147E248D98BE00AFE2BC /* LocalDateTest.m */,
 				FAAB053A22F39A97002A32D0 /* LocaleDataTest.m */,
 				FAF1051422F8A31600ED7FF6 /* Locales.m */,
 				6A77143A1E3957B10038F773 /* LocaleTest.m */,
@@ -7378,6 +7453,8 @@
 				06F0939E2303C98000BF7E3D /* ObjectTest.m */,
 				FA5C0C6921BFFE63000B6275 /* ObjectTest.m */,
 				0612B9511F438ECB0069EF58 /* ObservableTest.m */,
+				7A0F1478248D98BD00AFE2BC /* OffsetDateTimeTest.m */,
+				7A0F147C248D98BE00AFE2BC /* OffsetTimeTest.m */,
 				0620269A1D512D08001EE455 /* OldAndroidArrayListTest.m */,
 				062025C91D512CA1001EE455 /* OldAndroidBufferedInputStreamTest.m */,
 				062025CA1D512CA1001EE455 /* OldAndroidBufferedOutputStreamTest.m */,
@@ -7508,6 +7585,7 @@
 				0620284C1D512E21001EE455 /* PatternSyntaxExceptionTest.m */,
 				0620284D1D512E21001EE455 /* PatternTest.m */,
 				7A021F6B2486DFF100956E1A /* PBEKeyTest.m */,
+				7A0F1479248D98BD00AFE2BC /* PeriodTest.m */,
 				062025711D512B77001EE455 /* PhantomReferenceTest.m */,
 				0612B8DD1F4373740069EF58 /* PhaserTest.m */,
 				06318C16243E8CDC00BF119E /* PipeTest.m */,
@@ -7584,6 +7662,8 @@
 				FAAB053C22F39A97002A32D0 /* SerializationTester.m */,
 				0620299E1D512F6A001EE455 /* SerializationTester.m */,
 				06C143911F46135100CABE9A /* ServerSocketChannelTest.m */,
+				7A0F148E248D995100AFE2BC /* ServerSocketFactoryTest.m */,
+				7A0F1490248D998000AFE2BC /* ServerSocketFactoryTest.m */,
 				062026761D512D08001EE455 /* ServerSocketTest.m */,
 				0620269C1D512D08001EE455 /* ServiceLoaderTest.m */,
 				0620269D1D512D08001EE455 /* ServiceLoaderTestInterface.m */,
@@ -7607,6 +7687,7 @@
 				062026071D512CA1001EE455 /* SmallTests.m */,
 				FAAB054522F3AB5D002A32D0 /* SneakyThrowTest.m */,
 				06C143931F46135100CABE9A /* SocketChannelTest.m */,
+				7A0F1491248D998000AFE2BC /* SocketFactoryTest.m */,
 				062025341D512B37001EE455 /* SocketPolicy.m */,
 				062026781D512D08001EE455 /* SocketTest.m */,
 				062025721D512B77001EE455 /* SoftReferenceTest.m */,
@@ -7690,13 +7771,29 @@
 				7A021F802486E1D700956E1A /* TCKChronoFieldSerialization.m */,
 				7A021F752486E1BA00956E1A /* TCKChronoUnit.m */,
 				7A021F812486E1D700956E1A /* TCKChronoUnitSerialization.m */,
+				7A0F1499248D99CD00AFE2BC /* TCKDateTimeFormatter.m */,
+				7A0F149B248D99CE00AFE2BC /* TCKDateTimeFormatterBuilder.m */,
+				7A0F1498248D99CD00AFE2BC /* TCKDateTimeFormatters.m */,
+				7A0F1496248D99CD00AFE2BC /* TCKDateTimeParseResolver.m */,
+				7A0F1494248D99CD00AFE2BC /* TCKDateTimeTextPrinting.m */,
+				7A0F1497248D99CD00AFE2BC /* TCKDecimalStyle.m */,
+				7A0F149C248D99CE00AFE2BC /* TCKFormatStyle.m */,
+				7A0F1495248D99CD00AFE2BC /* TCKInstantPrinterParser.m */,
 				7A021F762486E1BB00956E1A /* TCKIsoFields.m */,
 				7A021F712486E1BA00956E1A /* TCKJulianFields.m */,
 				7A021F7F2486E1D700956E1A /* TCKJulianFieldsSerialization.m */,
+				7A0F149A248D99CE00AFE2BC /* TCKLocalizedFieldParser.m */,
+				7A0F149D248D99CE00AFE2BC /* TCKLocalizedFieldPrinter.m */,
+				7A0F14A9248D9ABB00AFE2BC /* TCKOffsetPrinterParser.m */,
+				7A0F14AA248D9ABB00AFE2BC /* TCKPadPrinterParser.m */,
+				7A0F14AD248D9ABB00AFE2BC /* TCKResolverStyle.m */,
+				7A0F14A8248D9ABB00AFE2BC /* TCKSignStyle.m */,
 				7A021F742486E1BA00956E1A /* TCKTemporalAdjusters.m */,
+				7A0F14AB248D9ABB00AFE2BC /* TCKTextStyle.m */,
 				7A021F7D2486E1D600956E1A /* TCKValueRangeSerialization.m */,
 				7A021F722486E1BA00956E1A /* TCKWeekFields.m */,
 				7A021F7E2486E1D700956E1A /* TCKWeekFieldsSerialization.m */,
+				7A0F14AC248D9ABB00AFE2BC /* TCKZoneIdPrinterParser.m */,
 				0620252C1D512B37001EE455 /* TestAnnotation.m */,
 				FA1DD7BC215418F200D0B800 /* TestCertUtils.m */,
 				6A5D0D5B219CCBB200709765 /* TestCharLiteralParser.m */,
@@ -7812,6 +7909,7 @@
 				0600EB0E22F4B6D40065498B /* UnsupportedCharsetExceptionTest.m */,
 				FA24DE7D22E762DE000DEC19 /* UnsupportedClassVersionErrorTest.m */,
 				FA5C0C7121BFFE65000B6275 /* UnsupportedOperationExceptionTest.m */,
+				7A0F148C248D993500AFE2BC /* UnsupportedTemporalTypeExceptionTest.m */,
 				062026791D512D08001EE455 /* URITest.m */,
 				0620267A1D512D08001EE455 /* URLConnectionTest.m */,
 				0620267B1D512D08001EE455 /* UrlEncodingTest.m */,
@@ -7844,6 +7942,8 @@
 				062028FC1D512EDB001EE455 /* XmlPullParserFactoryTest.m */,
 				063A62F21F6726C1001DC971 /* XMLReaderAdapterTest.m */,
 				063A62F31F6726C1001DC971 /* XMLReaderFactoryTest.m */,
+				7A0F1472248D982C00AFE2BC /* YearMonthTest.m */,
+				7A0F147D248D98BE00AFE2BC /* YearTest.m */,
 				062026E01D512D17001EE455 /* Zip64FileTest.m */,
 				069C241A1E9EEF7B00CE6BAF /* ZipEntryTest.m */,
 				062026E11D512D17001EE455 /* ZipEntryTest.m */,
@@ -7854,6 +7954,8 @@
 				062026E31D512D17001EE455 /* ZipInputStreamTest.m */,
 				069C241E1E9EEF7B00CE6BAF /* ZipOutputStreamTest.m */,
 				062026E41D512D17001EE455 /* ZipOutputStreamTest.m */,
+				7A0F147B248D98BE00AFE2BC /* ZonedDateTimeTest.m */,
+				7A0F147A248D98BD00AFE2BC /* ZoneOffsetTest.m */,
 			);
 			name = "Translated Tests";
 			path = build_result/tests;
@@ -8213,6 +8315,7 @@
 				FA24DE8022E762DE000DEC19 /* StackOverflowErrorTest.m in Sources */,
 				062027841D512D9D001EE455 /* MockSuperClass.m in Sources */,
 				0620298B1D512F41001EE455 /* Support_TestResource.m in Sources */,
+				7A0F1489248D990B00AFE2BC /* DateTimeParseExceptionTest.m in Sources */,
 				0612B9191F4373740069EF58 /* TimeUnitTest.m in Sources */,
 				062029891D512F41001EE455 /* Support_TestResource_fr_FR.m in Sources */,
 				062028A21D512E78001EE455 /* SerializationTest.m in Sources */,
@@ -8267,7 +8370,9 @@
 				062026651D512CBE001EE455 /* FloatTest.m in Sources */,
 				069C241F1E9EEF7B00CE6BAF /* InputStreamReaderTest.m in Sources */,
 				062026671D512CBE001EE455 /* ThrowableTest.m in Sources */,
+				7A0F147F248D98BE00AFE2BC /* OffsetDateTimeTest.m in Sources */,
 				FA1DD7B52154186000D0B800 /* StandardNames.m in Sources */,
+				7A0F148B248D990B00AFE2BC /* DateTimeFormatterTest.m in Sources */,
 				062027401D512D82001EE455 /* IntrospectionExceptionTest.m in Sources */,
 				062025471D512B37001EE455 /* AssertTest.m in Sources */,
 				069C23F41E9EEECA00CE6BAF /* MessageFormatTest.m in Sources */,
@@ -8300,6 +8405,7 @@
 				062026631D512CBE001EE455 /* DoubleTest.m in Sources */,
 				0620266E1D512CBE001EE455 /* ReflectionTest.m in Sources */,
 				062028B21D512E78001EE455 /* GenericMethodsTests.m in Sources */,
+				7A0F149E248D99D000AFE2BC /* TCKDateTimeTextPrinting.m in Sources */,
 				FA24DE5922E761AB000DEC19 /* RetentionPolicyTest.m in Sources */,
 				DE94F86A1F69A3B2006C59E4 /* InvocationTargetExceptionTest.m in Sources */,
 				0612B8FF1F4373740069EF58 /* EntryTest.m in Sources */,
@@ -8313,6 +8419,7 @@
 				FA24DEA922EA47CB000DEC19 /* CollectionTest.m in Sources */,
 				062026F21D512D17001EE455 /* OldZipExceptionTest.m in Sources */,
 				062028831D512E3E001EE455 /* MySignature1.m in Sources */,
+				7A0F14B2248D9ABC00AFE2BC /* TCKZoneIdPrinterParser.m in Sources */,
 				062026481D512CA1001EE455 /* OldSequenceInputStreamTest.m in Sources */,
 				063A62E01F67267C001DC971 /* NoInstanceParser.m in Sources */,
 				0612B9001F4373740069EF58 /* ExchangerTest.m in Sources */,
@@ -8321,8 +8428,10 @@
 				0620294B1D512F25001EE455 /* RSAPrivateCrtKeySpecTest.m in Sources */,
 				FA5C0CB021BFFE6B000B6275 /* StringBufferTest.m in Sources */,
 				0620263A1D512CA1001EE455 /* OldInputStreamTest.m in Sources */,
+				7A0F14A5248D99D000AFE2BC /* TCKDateTimeFormatterBuilder.m in Sources */,
 				FA6C09DD21925DE4006C646A /* TimeZoneRegressionTest.m in Sources */,
 				062026A61D512D08001EE455 /* OldPasswordAuthenticationTest.m in Sources */,
+				7A0F148D248D993500AFE2BC /* UnsupportedTemporalTypeExceptionTest.m in Sources */,
 				062026C71D512D08001EE455 /* CurrencyTest.m in Sources */,
 				062028ED1D512EBD001EE455 /* MethodLogger.m in Sources */,
 				062027571D512D82001EE455 /* FakeFox031.m in Sources */,
@@ -8403,6 +8512,7 @@
 				0620254A1D512B37001EE455 /* LinkedListTest.m in Sources */,
 				062029811D512F41001EE455 /* Support_Proxy_ParentException.m in Sources */,
 				6A5D0D66219CCBB200709765 /* TestTextPrinter.m in Sources */,
+				7A0F1474248D982C00AFE2BC /* InstantTest.m in Sources */,
 				0620262B1D512CA1001EE455 /* OldByteArrayOutputStreamTest.m in Sources */,
 				FA24DEB422EA4822000DEC19 /* LongAdderTest.m in Sources */,
 				0612B9401F4374C60069EF58 /* SSLSessionBindingEventTest.m in Sources */,
@@ -8468,13 +8578,17 @@
 				062025AE1D512C8E001EE455 /* NoPackageTest.m in Sources */,
 				FA5C0C6421BFFBA5000B6275 /* AbstractCollectionTest.m in Sources */,
 				062026A91D512D08001EE455 /* SocketTest.m in Sources */,
+				7A0F1492248D998000AFE2BC /* ServerSocketFactoryTest.m in Sources */,
 				0620264A1D512CA1001EE455 /* OldStringBufferInputStreamTest.m in Sources */,
 				0620262E1D512CA1001EE455 /* OldDataInputOutputStreamTest.m in Sources */,
 				FA61CFB322F35D8A006F903E /* PrimitiveIteratorTest.m in Sources */,
 				062027481D512D82001EE455 /* SimpleBeanInfoTest.m in Sources */,
 				062028B01D512E78001EE455 /* FieldTest.m in Sources */,
 				062025AD1D512C8E001EE455 /* MaxFloatingPointTest.m in Sources */,
+				7A0F14A6248D99D000AFE2BC /* TCKFormatStyle.m in Sources */,
 				6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */,
+				7A0F1480248D98BE00AFE2BC /* PeriodTest.m in Sources */,
+				7A0F1483248D98BE00AFE2BC /* OffsetTimeTest.m in Sources */,
 				06318C1D243E8CDD00BF119E /* AcceptPendingExceptionTest.m in Sources */,
 				FA24DE7922E7628A000DEC19 /* InheritableThreadLocalTest.m in Sources */,
 				0620287A1D512E3E001EE455 /* ProviderExceptionTest.m in Sources */,
@@ -8483,6 +8597,7 @@
 				069C24291E9EEF7B00CE6BAF /* DeflaterInputStreamTest.m in Sources */,
 				062026CB1D512D08001EE455 /* OldAndroidArrayListTest.m in Sources */,
 				FA6C09E721925DE4006C646A /* TimeZoneRuleTest.m in Sources */,
+				7A0F148A248D990B00AFE2BC /* DateTimeFormatterBuilderTest.m in Sources */,
 				0612B8EE1F4373740069EF58 /* AbstractExecutorServiceTest.m in Sources */,
 				062029711D512F41001EE455 /* Support_ASimpleOutputStream.m in Sources */,
 				FA6C09B72187C5AB006C646A /* TestChronoLocalDate.m in Sources */,
@@ -8513,10 +8628,12 @@
 				FA24DE6F22E7628A000DEC19 /* EnumConstantNotPresentExceptionTest.m in Sources */,
 				FA1DD7AD215412E400D0B800 /* SSLSocketTest.m in Sources */,
 				062026351D512CA1001EE455 /* OldFilterInputStreamTest.m in Sources */,
+				7A0F1484248D98BE00AFE2BC /* YearTest.m in Sources */,
 				6A5D0D6D219CCBB200709765 /* TestZoneOffsetParser.m in Sources */,
 				06E4E835197F1E4E005DDE69 /* main.m in Sources */,
 				0620293E1D512F25001EE455 /* ECParameterSpecTest.m in Sources */,
 				062026621D512CBE001EE455 /* ClassTest.m in Sources */,
+				7A0F14B1248D9ABC00AFE2BC /* TCKTextStyle.m in Sources */,
 				FA24DEB222EA4822000DEC19 /* LongAccumulatorTest.m in Sources */,
 				0612B8F11F4373740069EF58 /* ArrayDequeTest.m in Sources */,
 				062026191D512CA1001EE455 /* OldAndroidDataInputStreamTest.m in Sources */,
@@ -8536,6 +8653,7 @@
 				FA1DD7BD215418F300D0B800 /* TestCertUtils.m in Sources */,
 				0612B8F31F4373740069EF58 /* ConcurrencyTests.m in Sources */,
 				062026461D512CA1001EE455 /* OldRandomAccessFileTest.m in Sources */,
+				7A0F14A7248D99D000AFE2BC /* TCKLocalizedFieldPrinter.m in Sources */,
 				0620263C1D512CA1001EE455 /* OldLineNumberReaderTest.m in Sources */,
 				062029B21D514671001EE455 /* TextAttributeTest.m in Sources */,
 				FA61CFB522F35D8A006F903E /* ListTest.m in Sources */,
@@ -8582,6 +8700,7 @@
 				FA24DE7E22E762DE000DEC19 /* UnsatisfiedLinkErrorTest.m in Sources */,
 				FA5C0C5C21BFFBA5000B6275 /* AbstractQueueTest.m in Sources */,
 				FAF1050122F8828300ED7FF6 /* CoderResultTest.m in Sources */,
+				7A0F148F248D995100AFE2BC /* ServerSocketFactoryTest.m in Sources */,
 				FA5C0C5321BFFBA5000B6275 /* UUIDTest.m in Sources */,
 				062026ED1D512D17001EE455 /* OldAndroidChecksumTest.m in Sources */,
 				7A021F6F2486DFF200956E1A /* DHPublicKeyTest.m in Sources */,
@@ -8633,6 +8752,7 @@
 				FA5C0C6021BFFBA5000B6275 /* TooManyListenersExceptionTest.m in Sources */,
 				FA5C0C5221BFFBA5000B6275 /* TreeSetTest.m in Sources */,
 				062028EC1D512EBD001EE455 /* SAXParserTestSupport.m in Sources */,
+				7A0F1475248D982C00AFE2BC /* DurationTest.m in Sources */,
 				063A62DA1F67267C001DC971 /* DoNothingXMLReader.m in Sources */,
 				0620260A1D512CA1001EE455 /* CharArrayWriterTest.m in Sources */,
 				062028771D512E3E001EE455 /* MessageDigest2Test.m in Sources */,
@@ -8728,16 +8848,19 @@
 				FA6C09C32187C5AC006C646A /* TestLocalDate.m in Sources */,
 				0612B92A1F4374A30069EF58 /* ListResourceBundleTest.m in Sources */,
 				06F0939F2303C98000BF7E3D /* TestUtil.m in Sources */,
+				7A0F1482248D98BE00AFE2BC /* ZonedDateTimeTest.m in Sources */,
 				062B4F141ED76B8D00D4E7D8 /* OldFileHandlerTest.m in Sources */,
 				062027411D512D82001EE455 /* IntrospectorTest.m in Sources */,
 				062028B51D512E78001EE455 /* MalformedParameterizedTypeExceptionTests.m in Sources */,
 				0612B9141F4373740069EF58 /* SystemTest.m in Sources */,
+				7A0F14A2248D99D000AFE2BC /* TCKDateTimeFormatters.m in Sources */,
 				062026AC1D512D08001EE455 /* UrlEncodingTest.m in Sources */,
 				062029971D512F57001EE455 /* KeyStoreTest.m in Sources */,
 				FA24DE6E22E7628A000DEC19 /* SecurityExceptionTest.m in Sources */,
 				FA5C0CBD21BFFE6B000B6275 /* ClassTest.m in Sources */,
 				FA61CFA522F35D8A006F903E /* OptionalTest.m in Sources */,
 				062028A41D512E78001EE455 /* ObjectStreamConstantsTest.m in Sources */,
+				7A0F1476248D982C00AFE2BC /* YearMonthTest.m in Sources */,
 				062026431D512CA1001EE455 /* OldPipedWriterTest.m in Sources */,
 				062B4F2A1ED76C1200D4E7D8 /* OldJarInputStreamTest.m in Sources */,
 				069C24251E9EEF7B00CE6BAF /* Adler32Test.m in Sources */,
@@ -8762,6 +8885,7 @@
 				062028AA1D512E78001EE455 /* MathTest.m in Sources */,
 				062027521D512D82001EE455 /* FakeFox01BeanInfo.m in Sources */,
 				062B4F191ED76B8D00D4E7D8 /* OldLogRecordTest.m in Sources */,
+				7A0F1485248D98BE00AFE2BC /* LocalDateTest.m in Sources */,
 				06C143BD1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m in Sources */,
 				06E2069721F10566001C06D2 /* package-info.m in Sources */,
 				0612B9081F4373740069EF58 /* JSR166TestCase.m in Sources */,
@@ -8842,6 +8966,7 @@
 				062027871D512D9D001EE455 /* MockHomonymySubject.m in Sources */,
 				062028A31D512E78001EE455 /* ObjectStreamClassTest.m in Sources */,
 				0620298F1D512F41001EE455 /* ThrowingReader.m in Sources */,
+				7A0F14A4248D99D000AFE2BC /* TCKLocalizedFieldParser.m in Sources */,
 				0620256F1D512B37001EE455 /* Second.m in Sources */,
 				062028B91D512E78001EE455 /* TypeVariableTest.m in Sources */,
 				0612B8F51F4373740069EF58 /* ConcurrentSkipListMapTest.m in Sources */,
@@ -8894,6 +9019,7 @@
 				FA5C0C9C21BFFE6B000B6275 /* ByteTest.m in Sources */,
 				FA40676721C07E6100988DFD /* NoAnnotation.m in Sources */,
 				062C395A1FD61354009B232F /* AnnotationUtilsTest.m in Sources */,
+				7A0F1481248D98BE00AFE2BC /* ZoneOffsetTest.m in Sources */,
 				FA6C09CD2187C5AC006C646A /* AbstractTestPrinterParser.m in Sources */,
 				0612B93A1F4374C60069EF58 /* SSLEngineResultTest.m in Sources */,
 				069C24261E9EEF7B00CE6BAF /* CheckedInputStreamTest.m in Sources */,
@@ -8908,6 +9034,7 @@
 				0612B9101F4373740069EF58 /* RecursiveTaskTest.m in Sources */,
 				069C242F1E9EEF7B00CE6BAF /* InflaterOutputStreamTest.m in Sources */,
 				062025681D512B37001EE455 /* DateFormatTest.m in Sources */,
+				7A0F1477248D982C00AFE2BC /* DateTimeExceptionTest.m in Sources */,
 				062B4F291ED76C1200D4E7D8 /* OldJarFileTest.m in Sources */,
 				062024F41D512AA2001EE455 /* AllJreTests.m in Sources */,
 				062026A21D512D08001EE455 /* InetAddressTest.m in Sources */,
@@ -8930,6 +9057,7 @@
 				062026CA1D512D08001EE455 /* ObjectsTest.m in Sources */,
 				062024F51D512AA2001EE455 /* MoreAsserts.m in Sources */,
 				FA61CFAD22F35D8A006F903E /* RandomTest.m in Sources */,
+				7A0F14A3248D99D000AFE2BC /* TCKDateTimeFormatter.m in Sources */,
 				0620264F1D512CA1001EE455 /* SerializationTest.m in Sources */,
 				0620254D1D512B37001EE455 /* MemoryTest.m in Sources */,
 				6A5D0D68219CCBB200709765 /* TestZoneOffsetPrinter.m in Sources */,
@@ -9021,7 +9149,9 @@
 				0620274C1D512D82001EE455 /* OtherBean.m in Sources */,
 				0612B91C1F4373740069EF58 /* TreeSubMapTest.m in Sources */,
 				DE94F86C1F69A3D6006C59E4 /* ProxyTest.m in Sources */,
+				7A0F14A0248D99D000AFE2BC /* TCKDateTimeParseResolver.m in Sources */,
 				0620297B1D512F41001EE455 /* Support_Locale.m in Sources */,
+				7A0F14A1248D99D000AFE2BC /* TCKDecimalStyle.m in Sources */,
 				FA24DE7422E7628A000DEC19 /* Character_UnicodeBlockTest.m in Sources */,
 				062027741D512D9D001EE455 /* MockFoo.m in Sources */,
 				062024F81D512AA2001EE455 /* SpannableTest.m in Sources */,
@@ -9038,7 +9168,9 @@
 				0620298D1D512F41001EE455 /* Support_UnmodifiableCollectionTest.m in Sources */,
 				FA5C0CBA21BFFE6B000B6275 /* IllegalArgumentExceptionTest.m in Sources */,
 				063A62DC1F67267C001DC971 /* MockParser.m in Sources */,
+				7A0F14AF248D9ABC00AFE2BC /* TCKOffsetPrinterParser.m in Sources */,
 				062026B41D512D08001EE455 /* OldDirectShortBufferTest.m in Sources */,
+				7A0F14AE248D9ABC00AFE2BC /* TCKSignStyle.m in Sources */,
 				FA5C0C9621BFFE6B000B6275 /* MockEnum2.m in Sources */,
 				062025841D512B77001EE455 /* WeakReferenceTest.m in Sources */,
 				06DE64D31E3AC4B600DACBF7 /* TimeZoneTest.m in Sources */,
@@ -9075,6 +9207,7 @@
 				6A5D0D64219CCBB200709765 /* TestCharLiteralPrinter.m in Sources */,
 				063A62F71F6726C1001DC971 /* LocatorImplTest.m in Sources */,
 				6A5D0D46219CCB0E00709765 /* TestClock_System.m in Sources */,
+				7A0F14B3248D9ABC00AFE2BC /* TCKResolverStyle.m in Sources */,
 				FA40676621C07E6100988DFD /* ExecutableParameterTest.m in Sources */,
 				062026EC1D512D17001EE455 /* LargeTests.m in Sources */,
 				FAF1050422F8828300ED7FF6 /* IllegalCharsetNameExceptionTest.m in Sources */,
@@ -9103,6 +9236,7 @@
 				069C23F51E9EEECA00CE6BAF /* NumberFormatTest.m in Sources */,
 				0612B9281F4374A30069EF58 /* EventObjectTest.m in Sources */,
 				062028CC1D512E89001EE455 /* BigIntegerConvertTest.m in Sources */,
+				7A0F14B0248D9ABC00AFE2BC /* TCKPadPrinterParser.m in Sources */,
 				062028B71D512E78001EE455 /* ModifierTest.m in Sources */,
 				FA61CFB722F35D8A006F903E /* OptionalDoubleTest.m in Sources */,
 				FA6C09BD2187C5AB006C646A /* TestClock_Fixed.m in Sources */,
@@ -9115,8 +9249,10 @@
 				0612B90B1F4373740069EF58 /* LinkedListTest.m in Sources */,
 				062028B11D512E78001EE455 /* GenericArrayTypeTest.m in Sources */,
 				0612B93E1F4374C60069EF58 /* SSLPeerUnverifiedExceptionTest.m in Sources */,
+				7A0F149F248D99D000AFE2BC /* TCKInstantPrinterParser.m in Sources */,
 				069C23F01E9EEECA00CE6BAF /* DateFormatTest.m in Sources */,
 				062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */,
+				7A0F1493248D998000AFE2BC /* SocketFactoryTest.m in Sources */,
 				062026F41D512D17001EE455 /* Zip64FileTest.m in Sources */,
 				062025571D512B37001EE455 /* StringTest.m in Sources */,
 				062026161D512CA1001EE455 /* OldAndroidByteArrayInputStreamTest.m in Sources */,
