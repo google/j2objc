@@ -1140,6 +1140,10 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
+    tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
+    tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
+    tck/java/time/chrono/serial/TCKChronologySerialization.java \
+    tck/java/time/chrono/serial/TCKEraSerialization.java \
     tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
     tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
