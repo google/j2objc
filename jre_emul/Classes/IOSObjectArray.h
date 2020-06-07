@@ -34,13 +34,6 @@
  * an IOSObjectArray is fixed-size but its elements are mutable.
  */
 @interface IOSObjectArray : IOSArray <NSFastEnumeration> {
- @package
-  /**
-   * Determines whether elements are retained.
-   * This field is read-only, visible only for performance reasons. DO NOT MODIFY!
-   */
-  jboolean isRetained_;
-
  @public
   /**
    * The type of elements in this array.
