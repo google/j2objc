@@ -971,6 +971,13 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    tck/java/time/chrono/TCKChronoLocalDate.java \
+    tck/java/time/chrono/TCKChronoLocalDateTime.java \
+    tck/java/time/chrono/TCKChronoPeriod.java \
+    tck/java/time/chrono/TCKChronoZonedDateTime.java \
+    tck/java/time/chrono/TCKChronology.java \
+    tck/java/time/chrono/TCKIsoChronology.java \
+    tck/java/time/chrono/TCKIsoEra.java \
     tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronologySerialization.java \
@@ -1140,12 +1147,14 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
+    tck/java/time/chrono/TCKChronoPeriod.java \
     tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronologySerialization.java \
     tck/java/time/chrono/serial/TCKEraSerialization.java \
-    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
+    tck/java/time/temporal/TCKChronoFieldSerialization.java \
     tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
+    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \

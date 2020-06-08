@@ -56,8 +56,8 @@
  */
 package tck.java.time.chrono;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -77,20 +77,23 @@ import java.time.temporal.TemporalQuery;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKIsoChronology {
     // Can only work with IsoChronology here
     // others may be in separate module
 
     @Test
     public void factory_from_TemporalAccessor_dateWithChronlogy() {
-        assertEquals(Chronology.from(LocalDate.of(2012, 6, 30)), IsoChronology.INSTANCE);
+        assertEquals(IsoChronology.INSTANCE, Chronology.from(LocalDate.of(2012, 6, 30)));
     }
 
     @Test
@@ -140,7 +143,7 @@ public class TCKIsoChronology {
         }), IsoChronology.INSTANCE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_from_TemporalAccessor_null() {
         Chronology.from(null);
     }
@@ -176,7 +179,7 @@ public class TCKIsoChronology {
         }), LocalDate.of(2012, 6, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_date_TemporalAccessor_null() {
         IsoChronology.INSTANCE.date(null);
     }
@@ -218,7 +221,7 @@ public class TCKIsoChronology {
         }), LocalDateTime.of(2012, 6, 30, 12, 30, 40));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_localDateTime_TemporalAccessor_null() {
         IsoChronology.INSTANCE.localDateTime(null);
     }
@@ -270,15 +273,15 @@ public class TCKIsoChronology {
         }), ZonedDateTime.of(2012, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/London")));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_zonedDateTime_TemporalAccessor_null() {
         IsoChronology.INSTANCE.zonedDateTime(null);
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name = "resolve_yearOfEra")
-    Object[][] data_resolve_yearOfEra() {
+    @DataProvider
+    public static Object[][] data_resolve_yearOfEra() {
         return new Object[][] {
                 // era only
                 {ResolverStyle.STRICT, -1, null, null, null, null},
@@ -342,7 +345,8 @@ public class TCKIsoChronology {
         };
     }
 
-    @Test(dataProvider = "resolve_yearOfEra")
+    @Test()
+    @UseDataProvider("data_resolve_yearOfEra")
     public void test_resolve_yearOfEra(ResolverStyle style, Integer e, Integer yoe, Integer y, ChronoField field, Integer expected) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         if (e != null) {
@@ -371,8 +375,8 @@ public class TCKIsoChronology {
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name = "resolve_ymd")
-    Object[][] data_resolve_ymd() {
+    @DataProvider
+    public static Object[][] data_resolve_ymd() {
         return new Object[][] {
                 {2012, 1, -365, date(2010, 12, 31), false, false},
                 {2012, 1, -364, date(2011, 1, 1), false, false},
@@ -430,7 +434,8 @@ public class TCKIsoChronology {
         };
     }
 
-    @Test(dataProvider = "resolve_ymd")
+    @Test()
+    @UseDataProvider("data_resolve_ymd")
     public void test_resolve_ymd_lenient(int y, int m, int d, LocalDate expected, Object smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -441,7 +446,8 @@ public class TCKIsoChronology {
         assertEquals(fieldValues.size(), 0);
     }
 
-    @Test(dataProvider = "resolve_ymd")
+    @Test()
+    @UseDataProvider("data_resolve_ymd")
     public void test_resolve_ymd_smart(int y, int m, int d, LocalDate expected, Object smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -464,7 +470,8 @@ public class TCKIsoChronology {
         }
     }
 
-    @Test(dataProvider = "resolve_ymd")
+    @Test()
+    @UseDataProvider("data_resolve_ymd")
     public void test_resolve_ymd_strict(int y, int m, int d, LocalDate expected, Object smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -486,8 +493,8 @@ public class TCKIsoChronology {
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name = "resolve_yd")
-    Object[][] data_resolve_yd() {
+    @DataProvider
+    public static Object[][] data_resolve_yd() {
         return new Object[][] {
                 {2012, -365, date(2010, 12, 31), false, false},
                 {2012, -364, date(2011, 1, 1), false, false},
@@ -514,7 +521,8 @@ public class TCKIsoChronology {
         };
     }
 
-    @Test(dataProvider = "resolve_yd")
+    @Test()
+    @UseDataProvider("data_resolve_yd")
     public void test_resolve_yd_lenient(int y, int d, LocalDate expected, boolean smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -524,7 +532,8 @@ public class TCKIsoChronology {
         assertEquals(fieldValues.size(), 0);
     }
 
-    @Test(dataProvider = "resolve_yd")
+    @Test()
+    @UseDataProvider("data_resolve_yd")
     public void test_resolve_yd_smart(int y, int d, LocalDate expected, boolean smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -543,7 +552,8 @@ public class TCKIsoChronology {
         }
     }
 
-    @Test(dataProvider = "resolve_yd")
+    @Test()
+    @UseDataProvider("data_resolve_yd")
     public void test_resolve_yd_strict(int y, int d, LocalDate expected, boolean smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -564,8 +574,8 @@ public class TCKIsoChronology {
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    @DataProvider(name = "resolve_ymaa")
-    Object[][] data_resolve_ymaa() {
+    @DataProvider
+    public static Object[][] data_resolve_ymaa() {
         return new Object[][] {
                 {2012, 1, 1, -365, date(2010, 12, 31), false, false},
                 {2012, 1, 1, -364, date(2011, 1, 1), false, false},
@@ -621,7 +631,8 @@ public class TCKIsoChronology {
         };
     }
 
-    @Test(dataProvider = "resolve_ymaa")
+    @Test()
+    @UseDataProvider("data_resolve_ymaa")
     public void test_resolve_ymaa_lenient(int y, int m, int w, int d, LocalDate expected, boolean smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -633,7 +644,8 @@ public class TCKIsoChronology {
         assertEquals(fieldValues.size(), 0);
     }
 
-    @Test(dataProvider = "resolve_ymaa")
+    @Test()
+    @UseDataProvider("data_resolve_ymaa")
     public void test_resolve_ymaa_smart(int y, int m, int w, int d, LocalDate expected, boolean smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);
@@ -654,7 +666,8 @@ public class TCKIsoChronology {
         }
     }
 
-    @Test(dataProvider = "resolve_ymaa")
+    @Test()
+    @UseDataProvider("data_resolve_ymaa")
     public void test_resolve_ymaa_strict(int y, int m, int w, int d, LocalDate expected, boolean smart, boolean strict) {
         Map<TemporalField, Long> fieldValues = new HashMap<>();
         fieldValues.put(ChronoField.YEAR, (long) y);

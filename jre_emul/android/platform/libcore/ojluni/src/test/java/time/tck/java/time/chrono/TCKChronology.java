@@ -59,10 +59,10 @@
  */
 package tck.java.time.chrono;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -73,79 +73,89 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.HijrahChronology;
-import java.time.chrono.HijrahEra;
+import java.time.chrono.HijrahEra; */
 import java.time.chrono.IsoChronology;
 import java.time.chrono.IsoEra;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.JapaneseEra;
 import java.time.chrono.MinguoChronology;
 import java.time.chrono.MinguoEra;
 import java.time.chrono.ThaiBuddhistChronology;
-import java.time.chrono.ThaiBuddhistEra;
+import java.time.chrono.ThaiBuddhistEra; */
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
 import java.util.Locale;
 import java.util.Set;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test Chronology class.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKChronology {
 
     //-----------------------------------------------------------------------
     // regular data factory for ID and calendarType of available calendars
     //-----------------------------------------------------------------------
-    @DataProvider(name = "calendarNameAndType")
-    Object[][] data_of_calendars() {
+    @DataProvider
+    public static Object[][] data_of_calendars() {
         return new Object[][] {
-                    {"Hijrah-umalqura", "islamic-umalqura"},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                    {"Hijrah-umalqura", "islamic-umalqura"}, */
                     {"ISO", "iso8601"},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {"Japanese", "japanese"},
                     {"Minguo", "roc"},
-                    {"ThaiBuddhist", "buddhist"},
+                    {"ThaiBuddhist", "buddhist"}, */
                 };
     }
 
-    @Test(dataProvider = "calendarNameAndType")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_getters(String chronoId, String calendarSystemType) {
         Chronology chrono = Chronology.of(chronoId);
-        assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
+        assertNotNull("Required calendar not found by ID: " + chronoId, chrono);
         assertEquals(chrono.getId(), chronoId);
         assertEquals(chrono.getCalendarType(), calendarSystemType);
     }
 
-    @Test(dataProvider = "calendarNameAndType")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_required_calendars(String chronoId, String calendarSystemType) {
         Chronology chrono = Chronology.of(chronoId);
-        assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
+        assertNotNull("Required calendar not found by ID: " + chronoId, chrono);
         chrono = Chronology.of(calendarSystemType);
-        assertNotNull(chrono, "Required calendar not found by type: " + chronoId);
+        assertNotNull("Required calendar not found by type: " + chronoId, chrono);
         Set<Chronology> cals = Chronology.getAvailableChronologies();
-        assertTrue(cals.contains(chrono), "Required calendar not found in set of available calendars");
+        assertTrue("Required calendar not found in set of available calendars", cals.contains(chrono));
     }
 
     @Test
     public void test_calendar_list() {
         Set<Chronology> chronos = Chronology.getAvailableChronologies();
-        assertNotNull(chronos, "Required list of calendars must be non-null");
+        assertNotNull("Required list of calendars must be non-null", chronos);
         for (Chronology chrono : chronos) {
             Chronology lookup = Chronology.of(chrono.getId());
-            assertNotNull(lookup, "Required calendar not found: " + chrono);
+            assertNotNull("Required calendar not found: " + chrono, lookup);
         }
-        assertEquals(chronos.size() >= data_of_calendars().length, true, "Chronology.getAvailableChronologies().size = " + chronos.size()
-                + ", expected >= " + data_of_calendars().length);
+        assertEquals("Chronology.getAvailableChronologies().size = " + chronos.size()
+                + ", expected >= " + data_of_calendars().length, chronos.size() >= data_of_calendars().length, true);
     }
 
     //-----------------------------------------------------------------------
     // getDisplayName()
     //-----------------------------------------------------------------------
-    @DataProvider(name = "calendarDisplayName")
-    Object[][] data_of_calendarDisplayNames() {
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+    @DataProvider
+    public static Object[][] data_of_calendarDisplayNames() {
         // Android-changed: Change expected values to CLDR values here. This test seems to be based
         // on an old CLDR version (21) with some "invented" values (specifically Hijrah and ISO).
         return new Object[][] {
@@ -155,29 +165,33 @@ public class TCKChronology {
                     {"Minguo", "Minguo Calendar"},
                     {"ThaiBuddhist", "Buddhist Calendar"},
                 };
-    }
+    } */
 
-    @Test(dataProvider = "calendarDisplayName")
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+    @Test
+    @UseDataProvider("data_of_calendarDisplayNames")
     public void test_getDisplayName(String chronoId, String calendarDisplayName) {
         Chronology chrono = Chronology.of(chronoId);
-        assertEquals(chrono.getDisplayName(TextStyle.FULL, Locale.ENGLISH), calendarDisplayName);
-    }
+        assertEquals(calendarDisplayName, chrono.getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+    } */
 
     /**
      * Compute the number of days from the Epoch and compute the date from the number of days.
      */
-    @Test(dataProvider = "calendarNameAndType")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_epoch(String name, String alias) {
         Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoLocalDate date1 = chrono.dateNow();
         long epoch1 = date1.getLong(ChronoField.EPOCH_DAY);
         ChronoLocalDate date2 = date1.with(ChronoField.EPOCH_DAY, epoch1);
-        assertEquals(date1, date2, "Date from epoch day is not same date: " + date1 + " != " + date2);
+        assertEquals("Date from epoch day is not same date: " + date1 + " != " + date2, date1, date2);
         long epoch2 = date1.getLong(ChronoField.EPOCH_DAY);
-        assertEquals(epoch1, epoch2, "Epoch day not the same: " + epoch1 + " != " + epoch2);
+        assertEquals("Epoch day not the same: " + epoch1 + " != " + epoch2, epoch1, epoch2);
     }
 
-    @Test(dataProvider = "calendarNameAndType")
+    @Test
+    @UseDataProvider("data_of_calendars")
     public void test_dateEpochDay(String name, String alias) {
         Chronology chrono = Chronology.of(name);
         ChronoLocalDate date = chrono.dateNow();
@@ -189,24 +203,28 @@ public class TCKChronology {
     //-----------------------------------------------------------------------
     // locale based lookup
     //-----------------------------------------------------------------------
-    @DataProvider(name = "calendarsystemtype")
-    Object[][] data_CalendarType() {
+    @DataProvider
+    public static Object[][] data_CalendarType() {
         return new Object[][] {
-            {HijrahChronology.INSTANCE, "islamic-umalqura"},
+            /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+            {HijrahChronology.INSTANCE, "islamic-umalqura"}, */
             {IsoChronology.INSTANCE, "iso8601"},
+            /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
             {JapaneseChronology.INSTANCE, "japanese"},
             {MinguoChronology.INSTANCE, "roc"},
-            {ThaiBuddhistChronology.INSTANCE, "buddhist"},
+            {ThaiBuddhistChronology.INSTANCE, "buddhist"}, */
         };
     }
 
-    @Test(dataProvider = "calendarsystemtype")
+    @Test
+    @UseDataProvider("data_CalendarType")
     public void test_getCalendarType(Chronology chrono, String calendarType) {
         String type = calendarType;
         assertEquals(chrono.getCalendarType(), type);
     }
 
-    @Test(dataProvider = "calendarsystemtype")
+    @Test
+    @UseDataProvider("data_CalendarType")
     public void test_lookupLocale(Chronology chrono, String calendarType) {
         Locale.Builder builder = new Locale.Builder().setLanguage("en").setRegion("CA");
         builder.setUnicodeLocaleKeyword("ca", calendarType);
@@ -217,6 +235,7 @@ public class TCKChronology {
     //-----------------------------------------------------------------------
     // dateNow()
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_MinguoChronology_dateNow() {
         ZoneId zoneId_paris = ZoneId.of("Europe/Paris");
@@ -226,7 +245,7 @@ public class TCKChronology {
         assertEquals(chrono.dateNow(), MinguoChronology.INSTANCE.dateNow());
         assertEquals(chrono.dateNow(zoneId_paris), MinguoChronology.INSTANCE.dateNow(zoneId_paris));
         assertEquals(chrono.dateNow(clock), MinguoChronology.INSTANCE.dateNow(clock));
-    }
+    } */
 
     @Test
     public void test_IsoChronology_dateNow() {
@@ -239,6 +258,7 @@ public class TCKChronology {
         assertEquals(chrono.dateNow(clock), IsoChronology.INSTANCE.dateNow(clock));
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_JapaneseChronology_dateNow() {
         ZoneId zoneId_paris = ZoneId.of("Europe/Paris");
@@ -248,8 +268,9 @@ public class TCKChronology {
         assertEquals(chrono.dateNow(), JapaneseChronology.INSTANCE.dateNow());
         assertEquals(chrono.dateNow(zoneId_paris), JapaneseChronology.INSTANCE.dateNow(zoneId_paris));
         assertEquals(chrono.dateNow(clock), JapaneseChronology.INSTANCE.dateNow(clock));
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_ThaiBuddhistChronology_dateNow() {
         ZoneId zoneId_paris = ZoneId.of("Europe/Paris");
@@ -259,28 +280,30 @@ public class TCKChronology {
         assertEquals(chrono.dateNow(), ThaiBuddhistChronology.INSTANCE.dateNow());
         assertEquals(chrono.dateNow(zoneId_paris), ThaiBuddhistChronology.INSTANCE.dateNow(zoneId_paris));
         assertEquals(chrono.dateNow(clock), ThaiBuddhistChronology.INSTANCE.dateNow(clock));
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // dateYearDay() and date()
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_HijrahChronology_dateYearDay() {
         Chronology chrono = Chronology.of("Hijrah");
         ChronoLocalDate date1 = chrono.dateYearDay(HijrahEra.AH, 1434, 178);
         ChronoLocalDate date2 = chrono.date(HijrahEra.AH, 1434, 7, 1);
-        assertEquals(date1, HijrahChronology.INSTANCE.dateYearDay(HijrahEra.AH, 1434, 178));
-        assertEquals(date2, HijrahChronology.INSTANCE.dateYearDay(HijrahEra.AH, 1434, 178));
-    }
+        assertEquals(178), date1, HijrahChronology.INSTANCE.dateYearDay(HijrahEra.AH, 1434);
+        assertEquals(178), date2, HijrahChronology.INSTANCE.dateYearDay(HijrahEra.AH, 1434);
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_MinguoChronology_dateYearDay() {
         Chronology chrono = Chronology.of("Minguo");
         ChronoLocalDate date1 = chrono.dateYearDay(MinguoEra.ROC, 5, 60);
         ChronoLocalDate date2 = chrono.date(MinguoEra.ROC, 5, 2, 29);
-        assertEquals(date1, MinguoChronology.INSTANCE.dateYearDay(MinguoEra.ROC, 5, 60));
-        assertEquals(date2, MinguoChronology.INSTANCE.dateYearDay(MinguoEra.ROC, 5, 60));
-    }
+        assertEquals(60), date1, MinguoChronology.INSTANCE.dateYearDay(MinguoEra.ROC, 5);
+        assertEquals(60), date2, MinguoChronology.INSTANCE.dateYearDay(MinguoEra.ROC, 5);
+    } */
 
     @Test
     public void test_IsoChronology_dateYearDay() {
@@ -291,23 +314,25 @@ public class TCKChronology {
         assertEquals(date2, IsoChronology.INSTANCE.dateYearDay(IsoEra.CE, 5, 60));
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_JapaneseChronology_dateYearDay() {
         Chronology chrono = Chronology.of("Japanese");
         ChronoLocalDate date1 = chrono.dateYearDay(JapaneseEra.HEISEI, 8, 60);
         ChronoLocalDate date2 = chrono.date(JapaneseEra.HEISEI, 8, 2, 29);
-        assertEquals(date1, JapaneseChronology.INSTANCE.dateYearDay(JapaneseEra.HEISEI, 8, 60));
-        assertEquals(date2, JapaneseChronology.INSTANCE.dateYearDay(JapaneseEra.HEISEI, 8, 60));
-    }
+        assertEquals(60), date1, JapaneseChronology.INSTANCE.dateYearDay(JapaneseEra.HEISEI, 8);
+        assertEquals(60), date2, JapaneseChronology.INSTANCE.dateYearDay(JapaneseEra.HEISEI, 8);
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_ThaiBuddhistChronology_dateYearDay() {
         Chronology chrono = Chronology.of("ThaiBuddhist");
         ChronoLocalDate date1 = chrono.dateYearDay(ThaiBuddhistEra.BE, 2459, 60);
         ChronoLocalDate date2 = chrono.date(ThaiBuddhistEra.BE, 2459, 2, 29);
-        assertEquals(date1, ThaiBuddhistChronology.INSTANCE.dateYearDay(ThaiBuddhistEra.BE, 2459, 60));
-        assertEquals(date2, ThaiBuddhistChronology.INSTANCE.dateYearDay(ThaiBuddhistEra.BE, 2459, 60));
-    }
+        assertEquals(60), date1, ThaiBuddhistChronology.INSTANCE.dateYearDay(ThaiBuddhistEra.BE, 2459);
+        assertEquals(60), date2, ThaiBuddhistChronology.INSTANCE.dateYearDay(ThaiBuddhistEra.BE, 2459);
+    } */
 
     /**
      * Test lookup by calendarType of each chronology.
@@ -321,11 +346,11 @@ public class TCKChronology {
             Locale.Builder builder = new Locale.Builder().setLanguage("en").setRegion("CA");
             builder.setUnicodeLocaleKeyword("ca", chrono.getCalendarType());
             Locale locale = builder.build();
-            assertEquals(Chronology.ofLocale(locale), chrono, "Lookup by type");
+            assertEquals("Lookup by type", Chronology.ofLocale(locale), chrono);
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_lookupLocale() {
         Locale.Builder builder = new Locale.Builder().setLanguage("en").setRegion("CA");
         builder.setUnicodeLocaleKeyword("ca", "xxx");
@@ -334,7 +359,7 @@ public class TCKChronology {
         Chronology.ofLocale(locale);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_noChrono() {
         Chronology chrono = Chronology.of("FooFoo");
     }

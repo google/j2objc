@@ -57,8 +57,8 @@
 package tck.java.time.chrono;
 
 import static java.time.temporal.ChronoField.ERA;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.chrono.Era;
 import java.time.chrono.IsoChronology;
@@ -66,24 +66,28 @@ import java.time.chrono.IsoEra;
 import java.time.temporal.ValueRange;
 import java.util.List;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKIsoEra {
 
-    @DataProvider(name = "IsoEras")
-    Object[][] data_of_eras() {
+    @DataProvider
+    public static Object[][] data_of_eras() {
         return new Object[][] {
                     {IsoEra.BCE, "BCE", 0},
                     {IsoEra.CE, "CE", 1},
         };
     }
 
-    @Test(dataProvider="IsoEras")
+    @Test()
+    @UseDataProvider("data_of_eras")
     public void test_valueOf(IsoEra era , String eraName, int eraValue) {
         assertEquals(era.getValue(), eraValue);
         assertEquals(IsoEra.of(eraValue), era);
