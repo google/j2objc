@@ -55,17 +55,6 @@
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
 # endif
 
-#ifdef J2OBJC_DISABLE_ALL_CHECKS
- #define J2OBJC_DISABLE_NIL_CHECKS 1
- #define J2OBJC_DISABLE_CAST_CHECKS 1
- #define J2OBJC_DISABLE_ARRAY_CHECKS 1
-#endif
-
-#ifdef J2OBJC_DISABLE_ARRAY_CHECKS
- #define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
- #define J2OBJC_DISABLE_ARRAY_TYPE_CHECKS 1
-#endif
-
 CF_EXTERN_C_BEGIN
 
 id JreThrowNullPointerException() __attribute__((noreturn));
@@ -107,11 +96,7 @@ CF_EXTERN_C_END
  *
  * @param p The object to check for nil.
  */
-#ifdef J2OBJC_DISABLE_NIL_CHECKS
-#define nil_chk(p) p
-#else
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
-#endif
 
 #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(

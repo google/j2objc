@@ -63,29 +63,19 @@ void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
 void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length);
 CF_EXTERN_C_END
 
-/** Implements the IOSArray |checkIndex| method as a C function. This
- * allows IOSArray index checks to be completely removed via the
- * J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
- */
+/** Implements the IOSArray |checkIndex| method as a C function. */
 __attribute__((always_inline)) inline void IOSArray_checkIndex(jint size, jint index) {
-#if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (__builtin_expect(index < 0 || index >= size, 0)) {
     IOSArray_throwOutOfBoundsWithMsg(size, index);
   }
-#endif
 }
 
-/** Implements the IOSArray |checkRange| method as a C function. This
- * allows IOSArray range checks to be completely removed via the
- * J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
- */
+/** Implements the IOSArray |checkRange| method as a C function. */
 __attribute__((always_inline)) inline void IOSArray_checkRange(
     jint size, jint offset, jint length) {
-#if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (__builtin_expect(length < 0 || offset < 0 || offset + length > size, 0)) {
     IOSArray_throwRangeOutOfBounds(size, offset, length);
   }
-#endif
 }
 
 #endif // IOSARRAY_H

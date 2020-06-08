@@ -36,11 +36,9 @@
 #undef I
 
 __attribute__ ((unused)) static inline id cast_chk(id __unsafe_unretained p, Class clazz) {
-#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
   if (__builtin_expect(p && ![p isKindOfClass:clazz], 0)) {
     JreThrowClassCastException(p, clazz);
   }
-#endif
   return p;
 }
 
@@ -48,11 +46,9 @@ __attribute__ ((unused)) static inline id cast_chk(id __unsafe_unretained p, Cla
 // parameter. This check is necessary for interface and array types and is
 // faster than a conformsToProtocol check for interfaces.
 __attribute__((always_inline)) inline id cast_check(id __unsafe_unretained p, IOSClass *cls) {
-#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
   if (__builtin_expect(p && ![cls isInstance:p], 0)) {
     JreThrowClassCastExceptionWithIOSClass(p, cls);
   }
-#endif
   return p;
 }
 
