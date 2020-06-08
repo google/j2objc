@@ -256,7 +256,8 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
 
 - (void)dealloc {
   for (jint i = 0; i < size_; i++) {
-    RELEASE_(buffer_[i]);
+    RELEASE_(buffer_[i]);   // NO-OP with ARC.
+    buffer_[i] = nil;
   }
 #if ! __has_feature(objc_arc)
   [super dealloc];
