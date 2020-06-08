@@ -430,6 +430,7 @@ public class Thread implements Runnable {
     if (stack >= PTHREAD_STACK_MIN) {
       pthread_attr_setstacksize(&attr, stack);
     }
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
     pthread_create(&nt->t, &attr, &start_routine, [self retain]);
   ]-*/;
 
