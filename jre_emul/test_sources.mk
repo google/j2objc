@@ -971,22 +971,13 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
-    tck/java/time/format/TCKDateTimeFormatter.java \
-    tck/java/time/format/TCKDateTimeFormatterBuilder.java \
-    tck/java/time/format/TCKDateTimeFormatters.java \
-    tck/java/time/format/TCKDateTimeParseResolver.java \
-    tck/java/time/format/TCKDateTimeTextPrinting.java \
-    tck/java/time/format/TCKDecimalStyle.java \
-    tck/java/time/format/TCKFormatStyle.java \
-    tck/java/time/format/TCKInstantPrinterParser.java \
-    tck/java/time/format/TCKLocalizedFieldParser.java \
-    tck/java/time/format/TCKLocalizedFieldPrinter.java \
-    tck/java/time/format/TCKOffsetPrinterParser.java \
-    tck/java/time/format/TCKPadPrinterParser.java \
-    tck/java/time/format/TCKResolverStyle.java \
-    tck/java/time/format/TCKSignStyle.java \
-    tck/java/time/format/TCKTextStyle.java \
-    tck/java/time/format/TCKZoneIdPrinterParser.java \
+    tck/java/time/chrono/TCKChronoLocalDate.java \
+    tck/java/time/chrono/TCKChronoLocalDateTime.java \
+    tck/java/time/chrono/TCKChronoPeriod.java \
+    tck/java/time/chrono/TCKChronoZonedDateTime.java \
+    tck/java/time/chrono/TCKChronology.java \
+    tck/java/time/chrono/TCKIsoChronology.java \
+    tck/java/time/chrono/TCKIsoEra.java \
     tck/java/time/temporal/TCKChronoField.java \
     tck/java/time/temporal/TCKChronoUnit.java \
     tck/java/time/temporal/TCKIsoFields.java \
@@ -1136,8 +1127,10 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
-    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
+    tck/java/time/chrono/TCKChronoPeriod.java \
+    tck/java/time/temporal/TCKChronoFieldSerialization.java \
     tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
+    tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
