@@ -84,7 +84,6 @@ import org.junit.Test;
 /**
  * Test text printing.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKDateTimeTextPrinting {
 

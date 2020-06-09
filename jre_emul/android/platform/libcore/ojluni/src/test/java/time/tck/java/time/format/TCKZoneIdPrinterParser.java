@@ -85,7 +85,6 @@ import org.junit.Test;
 /**
  * Test DateTimeFormatterBuilder.appendZoneId().
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKZoneIdPrinterParser {
 

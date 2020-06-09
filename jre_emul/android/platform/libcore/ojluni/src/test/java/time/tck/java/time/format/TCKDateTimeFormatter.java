@@ -116,7 +116,6 @@ import org.junit.Test;
 /**
  * Test DateTimeFormatter.
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKDateTimeFormatter {
 
@@ -355,8 +354,9 @@ public class TCKDateTimeFormatter {
                 {ThaiBuddhistChronology.INSTANCE, ZONE_PARIS, thaiZdt, "2551:11:+02:00:Europe/Paris:ThaiBuddhist"},
                 {IsoChronology.INSTANCE, ZONE_PARIS, thaiZdt, "2008:11:+02:00:Europe/Paris:ISO"},
         };
-    }
+    } */
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     @UseDataProvider("data_format_withZone_withChronology")
     public void test_format_withZone_withChronology(Chronology overrideChrono, ZoneId overrideZone, TemporalAccessor temporal, String expected) {

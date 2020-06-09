@@ -80,7 +80,6 @@ import org.junit.Test;
 /**
  * Test DateTimeFormatterBuilder.appendOffset().
  */
-
 @RunWith(DataProviderRunner.class)
 public class TCKOffsetPrinterParser {
 
