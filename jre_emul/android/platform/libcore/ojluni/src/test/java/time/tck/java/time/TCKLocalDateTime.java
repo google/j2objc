@@ -3125,7 +3125,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         TEST_2007_07_15_12_30_40_987654321.isAfter(null);
     }
 
-    /* J2ObjC removed: check this after
+    /* J2ObjC removed: https://github.com/google/j2objc/issues/1309
     @Test(expected=ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonLocalDateTime() {
