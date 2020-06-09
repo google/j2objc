@@ -1247,22 +1247,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/security/cert/CertificateExpiredException.java \
   javax/security/cert/CertificateNotYetValidException.java \
   javax/security/cert/CertificateParsingException.java \
-  javax/security/cert/X509Certificate.java \
-  javax/sql/CommonDataSource.java \
-  javax/sql/ConnectionEvent.java \
-  javax/sql/ConnectionEventListener.java \
-  javax/sql/ConnectionPoolDataSource.java \
-  javax/sql/DataSource.java \
-  javax/sql/PooledConnection.java \
-  javax/sql/RowSet.java \
-  javax/sql/RowSetEvent.java \
-  javax/sql/RowSetInternal.java \
-  javax/sql/RowSetListener.java \
-  javax/sql/RowSetMetaData.java \
-  javax/sql/RowSetReader.java \
-  javax/sql/RowSetWriter.java \
-  javax/sql/StatementEvent.java \
-  javax/sql/StatementEventListener.java
+  javax/security/cert/X509Certificate.java
 
 JAVA_PRIVATE_SOURCES_SECURITY = \
   com/google/j2objc/security/IosMD5MessageDigest.java \
@@ -1753,7 +1738,22 @@ JAVA_PUBLIC_SOURCES_SQL = \
   java/sql/Time.java \
   java/sql/Timestamp.java \
   java/sql/Types.java \
-  java/sql/Wrapper.java
+  java/sql/Wrapper.java \
+  javax/sql/CommonDataSource.java \
+  javax/sql/ConnectionEvent.java \
+  javax/sql/ConnectionEventListener.java \
+  javax/sql/ConnectionPoolDataSource.java \
+  javax/sql/DataSource.java \
+  javax/sql/PooledConnection.java \
+  javax/sql/RowSet.java \
+  javax/sql/RowSetEvent.java \
+  javax/sql/RowSetInternal.java \
+  javax/sql/RowSetListener.java \
+  javax/sql/RowSetMetaData.java \
+  javax/sql/RowSetReader.java \
+  javax/sql/RowSetWriter.java \
+  javax/sql/StatementEvent.java \
+  javax/sql/StatementEventListener.java
 
 JAVA_PRIVATE_SOURCES_SQL =
 
