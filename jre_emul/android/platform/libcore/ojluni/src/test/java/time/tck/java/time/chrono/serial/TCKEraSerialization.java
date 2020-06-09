@@ -69,14 +69,19 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Era;
-import java.time.chrono.HijrahEra;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahEra; */
 import java.time.chrono.IsoEra;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseEra;
 import java.time.chrono.MinguoEra;
-import java.time.chrono.ThaiBuddhistEra;
+import java.time.chrono.ThaiBuddhistEra; */
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 import tck.java.time.AbstractTCKTest;
 
@@ -87,7 +92,7 @@ import tck.java.time.AbstractTCKTest;
  * The serialized form of these types are not tested, only that they are
  * serializable.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKEraSerialization extends AbstractTCKTest {
 
     static final int JAPANESE_ERA_TYPE = 5;     // java.time.chrono.Ser.JAPANESE_ERA
@@ -96,20 +101,23 @@ public class TCKEraSerialization extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // Regular data factory for the available Eras
     //-----------------------------------------------------------------------
-    @DataProvider(name = "Eras")
-    Era[][] data_of_calendars() {
+    @DataProvider
+    public static Object[][] data_of_calendars() {
         return new Era[][] {
-                    {HijrahEra.AH},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                    {HijrahEra.AH}, */
                     {IsoEra.BCE},
                     {IsoEra.CE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {MinguoEra.BEFORE_ROC},
                     {MinguoEra.ROC},
                     {ThaiBuddhistEra.BEFORE_BE},
-                    {ThaiBuddhistEra.BE},
+                    {ThaiBuddhistEra.BE}, */
         };
     }
 
-    @Test(dataProvider="Eras")
+    @Test()
+    @UseDataProvider("data_of_calendars")
     public void test_eraSerialization(Era era) throws IOException, ClassNotFoundException {
         assertSerializableSame(era);
     }
@@ -117,6 +125,7 @@ public class TCKEraSerialization extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // Test JapaneseEra serialization produces exact sequence of bytes
     //-----------------------------------------------------------------------
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     private void test_JapaneseErasSerialization() throws Exception {
         for (JapaneseEra era : JapaneseEra.values()) {
@@ -130,6 +139,6 @@ public class TCKEraSerialization extends AbstractTCKTest {
             byte[] bytes = baos.toByteArray();
             assertSerializedBySer(era, bytes);
         }
-    }
+    } */
 
 }

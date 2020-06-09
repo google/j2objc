@@ -56,44 +56,53 @@
  */
 package tck.java.time.chrono.serial;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.Chronology;
-import java.time.chrono.HijrahChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.HijrahChronology; */
 import java.time.chrono.IsoChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.MinguoChronology;
-import java.time.chrono.ThaiBuddhistChronology;
+import java.time.chrono.ThaiBuddhistChronology; */
 
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test serialization of ChronoLocalDateTime for all built-in chronologies.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKChronoLocalDateTimeSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
     // regular data factory for available calendars
     //-----------------------------------------------------------------------
-    @DataProvider(name = "calendars")
-    Chronology[][] data_of_calendars() {
+    @DataProvider
+    public static Object[][] data_of_calendars() {
         return new Chronology[][]{
-                    {HijrahChronology.INSTANCE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+                    {HijrahChronology.INSTANCE}, */
                     {IsoChronology.INSTANCE},
+                    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                     {JapaneseChronology.INSTANCE},
                     {MinguoChronology.INSTANCE},
-                    {ThaiBuddhistChronology.INSTANCE}};
+                    {ThaiBuddhistChronology.INSTANCE} */
+        };
     }
 
     //-----------------------------------------------------------------------
     // Test Serialization of ChronoLocalDateTime
     //-----------------------------------------------------------------------
-    @Test(dataProvider="calendars")
+    @Test()
+    @UseDataProvider("data_of_calendars")
     public void test_ChronoLocalDateTimeSerialization(Chronology chrono) throws Exception {
         LocalDateTime ref = LocalDate.of(2013, 1, 5).atTime(12, 1, 2, 3);
         ChronoLocalDateTime<?> original = chrono.date(ref).atTime(ref.toLocalTime());
