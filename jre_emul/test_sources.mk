@@ -998,6 +998,21 @@ TEST_SOURCES := \
     tck/java/time/format/TCKSignStyle.java \
     tck/java/time/format/TCKTextStyle.java \
     tck/java/time/format/TCKZoneIdPrinterParser.java \
+    tck/java/time/serial/TCKClockSerialization.java \
+    tck/java/time/serial/TCKDurationSerialization.java \
+    tck/java/time/serial/TCKInstantSerialization.java \
+    tck/java/time/serial/TCKLocalDateSerialization.java \
+    tck/java/time/serial/TCKLocalDateTimeSerialization.java \
+    tck/java/time/serial/TCKLocalTimeSerialization.java \
+    tck/java/time/serial/TCKMonthDaySerialization.java \
+    tck/java/time/serial/TCKOffsetDateTimeSerialization.java \
+    tck/java/time/serial/TCKOffsetTimeSerialization.java \
+    tck/java/time/serial/TCKPeriodSerialization.java \
+    tck/java/time/serial/TCKYearMonthSerialization.java \
+    tck/java/time/serial/TCKYearSerialization.java \
+    tck/java/time/serial/TCKZoneIdSerialization.java \
+    tck/java/time/serial/TCKZoneOffsetSerialization.java \
+    tck/java/time/serial/TCKZonedDateTimeSerialization.java \
     tck/java/time/temporal/TCKChronoField.java \
     tck/java/time/temporal/TCKChronoUnit.java \
     tck/java/time/temporal/TCKIsoFields.java \
@@ -1152,6 +1167,21 @@ TESTS_USE_SERIALIZATION = \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronologySerialization.java \
     tck/java/time/chrono/serial/TCKEraSerialization.java \
+    tck/java/time/serial/TCKClockSerialization.java \
+    tck/java/time/serial/TCKDurationSerialization.java \
+    tck/java/time/serial/TCKInstantSerialization.java \
+    tck/java/time/serial/TCKLocalDateSerialization.java \
+    tck/java/time/serial/TCKLocalDateTimeSerialization.java \
+    tck/java/time/serial/TCKLocalTimeSerialization.java \
+    tck/java/time/serial/TCKMonthDaySerialization.java \
+    tck/java/time/serial/TCKOffsetDateTimeSerialization.java \
+    tck/java/time/serial/TCKOffsetTimeSerialization.java \
+    tck/java/time/serial/TCKPeriodSerialization.java \
+    tck/java/time/serial/TCKYearMonthSerialization.java \
+    tck/java/time/serial/TCKYearSerialization.java \
+    tck/java/time/serial/TCKZoneIdSerialization.java \
+    tck/java/time/serial/TCKZoneOffsetSerialization.java \
+    tck/java/time/serial/TCKZonedDateTimeSerialization.java \
     tck/java/time/temporal/TCKChronoFieldSerialization.java \
     tck/java/time/temporal/serial/TCKChronoFieldSerialization.java \
     tck/java/time/temporal/serial/TCKChronoUnitSerialization.java \

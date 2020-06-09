@@ -59,7 +59,7 @@
  */
 package tck.java.time.serial;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 import java.time.Period;
@@ -67,7 +67,6 @@ import java.time.Period;
 /**
  * Test serialization of Period.
  */
-@Test
 public class TCKPeriodSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------

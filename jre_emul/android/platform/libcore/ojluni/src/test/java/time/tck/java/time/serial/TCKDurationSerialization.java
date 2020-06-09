@@ -59,9 +59,9 @@
  */
 package tck.java.time.serial;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 import java.io.ByteArrayOutputStream;
@@ -72,7 +72,6 @@ import java.time.Duration;
 /**
  * Test Duration serialization.
  */
-@Test
 public class TCKDurationSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------

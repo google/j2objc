@@ -59,8 +59,8 @@
  */
 package tck.java.time.serial;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 import java.io.ByteArrayOutputStream;
@@ -70,14 +70,13 @@ import java.time.LocalTime;
 /**
  * Test LocalTime serialization.
  */
-@Test
 public class TCKLocalTimeSerialization extends AbstractTCKTest {
 
 
     private LocalTime TEST_12_30_40_987654321;
 
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         TEST_12_30_40_987654321 = LocalTime.of(12, 30, 40, 987654321);
     }
