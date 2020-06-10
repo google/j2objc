@@ -61,6 +61,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/channels/FutureLikeCompletionHandler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
+    libcore/java/nio/charset/OldCharset_SingleByteAbstractTest.java \
     libcore/java/nio/charset/SettableCharsetProvider.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
@@ -487,6 +488,15 @@ TEST_SOURCES := \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/nio/charset/CharsetTest.java \
     libcore/java/nio/charset/OldCharsetEncoderDecoderBufferTest.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_Big5.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_EUC_KR.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_GB2312.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_ISO_2022_JP.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_UTF_16BE.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_UTF_16LE.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
+    libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
+    libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
