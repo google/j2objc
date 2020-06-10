@@ -485,6 +485,7 @@ TEST_SOURCES := \
     libcore/java/nio/channels/ShutdownChannelGroupExceptionTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
+    libcore/java/nio/charset/CharsetTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
