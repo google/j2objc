@@ -59,8 +59,8 @@
  */
 package tck.java.time.serial;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 import java.io.ByteArrayOutputStream;
@@ -74,7 +74,6 @@ import java.time.ZonedDateTime;
 /**
  * Test serialization of ZonedDateTime.
  */
-@Test
 public class TCKZonedDateTimeSerialization extends AbstractTCKTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
@@ -84,7 +83,7 @@ public class TCKZonedDateTimeSerialization extends AbstractTCKTest {
     private ZonedDateTime TEST_DATE_TIME;
 
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         TEST_LOCAL_2008_06_30_11_30_59_500 = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
         TEST_DATE_TIME = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);

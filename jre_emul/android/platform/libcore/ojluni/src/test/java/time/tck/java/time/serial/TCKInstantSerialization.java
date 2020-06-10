@@ -59,8 +59,8 @@
  */
 package tck.java.time.serial;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 import java.io.ByteArrayOutputStream;
@@ -70,7 +70,6 @@ import java.time.Instant;
 /**
  * Test Instant serialization.
  */
-@Test
 public class TCKInstantSerialization extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
