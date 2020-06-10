@@ -486,6 +486,7 @@ TEST_SOURCES := \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/nio/charset/CharsetTest.java \
+    libcore/java/nio/charset/OldCharsetEncoderDecoderBufferTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
