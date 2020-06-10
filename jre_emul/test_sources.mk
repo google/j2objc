@@ -599,6 +599,7 @@ TEST_SOURCES := \
     libcore/javax/net/ServerSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
+    libcore/javax/sql/OldConnectionEventTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/libcore/icu/ICUTest.java \
     libcore/libcore/icu/LocaleDataTest.java \
