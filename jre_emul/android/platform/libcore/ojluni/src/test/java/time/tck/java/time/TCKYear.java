@@ -68,9 +68,9 @@ import static java.time.temporal.ChronoUnit.DECADES;
 import static java.time.temporal.ChronoUnit.MILLENNIA;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -107,19 +107,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test Year.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKYear extends AbstractDateTimeTest {
 
     private static final Year TEST_2008 = Year.of(2008);
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
@@ -170,7 +173,7 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now(ZoneId)
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void now_ZoneId_nullZoneId() {
         Year.now((ZoneId) null);
     }
@@ -201,7 +204,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(test.getValue(), 2010);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void now_Clock_nullClock() {
         Year.now((Clock) null);
     }
@@ -216,12 +219,12 @@ public class TCKYear extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_tooLow() {
         Year.of(Year.MIN_VALUE - 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_int_tooHigh() {
         Year.of(Year.MAX_VALUE + 1);
     }
@@ -232,12 +235,12 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.from(LocalDate.of(2007, 7, 15)), Year.of(2007));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_from_TemporalAccessor_invalid_noDerive() {
         Year.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         Year.from((TemporalAccessor) null);
     }
@@ -245,8 +248,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @DataProvider(name="goodParseData")
-    Object[][] provider_goodParseData() {
+    @DataProvider
+    public static Object[][] provider_goodParseData() {
         return new Object[][] {
                 {"0000", Year.of(0)},
                 {"9999", Year.of(9999)},
@@ -262,14 +265,15 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="goodParseData")
+    @Test()
+    @UseDataProvider("provider_goodParseData")
     public void factory_parse_success(String text, Year expected) {
         Year year = Year.parse(text);
         assertEquals(year, expected);
     }
 
-    @DataProvider(name="badParseData")
-    Object[][] provider_badParseData() {
+    @DataProvider
+    public static Object[][] provider_badParseData() {
         return new Object[][] {
                 {"", 0},
                 {"-00", 1},
@@ -289,7 +293,8 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="badParseData", expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
+    @UseDataProvider("provider_badParseData")
     public void factory_parse_fail(String text, int pos) {
         try {
             Year.parse(text);
@@ -301,7 +306,7 @@ public class TCKYear extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_nullText() {
         Year.parse(null);
     }
@@ -316,13 +321,13 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(test, Year.of(2010));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         Year.parse((String) null, f);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_formatter_nullFormatter() {
         Year.parse("ANY", null);
     }
@@ -409,8 +414,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    @DataProvider(name="query")
-    Object[][] data_query() {
+    @DataProvider
+    public static Object[][] data_query() {
         return new Object[][] {
                 {TEST_2008, TemporalQueries.chronology(), IsoChronology.INSTANCE},
                 {TEST_2008, TemporalQueries.zoneId(), null},
@@ -422,17 +427,19 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_2008.query(null);
     }
@@ -481,8 +488,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plus(Period)
     //-----------------------------------------------------------------------
-    @DataProvider(name="plusValid")
-    Object[][] data_plusValid() {
+    @DataProvider
+    public static Object[][] data_plusValid() {
         return new Object[][] {
                 {2012, Period.ofYears(0), 2012},
                 {2012, Period.ofYears(1), 2013},
@@ -491,13 +498,14 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="plusValid")
+    @Test()
+    @UseDataProvider("data_plusValid")
     public void test_plusValid(int year, TemporalAmount amount, int expected) {
         assertEquals(Year.of(year).plus(amount), Year.of(expected));
     }
 
-    @DataProvider(name="plusInvalidUnit")
-    Object[][] data_plusInvalidUnit() {
+    @DataProvider
+    public static Object[][] data_plusInvalidUnit() {
         return new Object[][] {
                 {Period.of(0, 1, 0)},
                 {Period.of(0, 0, 1)},
@@ -510,12 +518,13 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="plusInvalidUnit", expectedExceptions=UnsupportedTemporalTypeException.class)
+    @Test(expected=UnsupportedTemporalTypeException.class)
+    @UseDataProvider("data_plusInvalidUnit")
     public void test_plusInvalidUnit(TemporalAmount amount) {
         TEST_2008.plus(amount);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_plus_null() {
         TEST_2008.plus(null);
     }
@@ -549,22 +558,22 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(-40).plusYears(years), Year.of((int) (-40L + years)));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_plusYears_max() {
         Year.of(Year.MAX_VALUE).plusYears(1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_plusYears_maxLots() {
         Year.of(Year.MAX_VALUE).plusYears(1000);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_plusYears_min() {
         Year.of(Year.MIN_VALUE).plusYears(-1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_plusYears_minLots() {
         Year.of(Year.MIN_VALUE).plusYears(-1000);
     }
@@ -572,8 +581,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plus(long, TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="plus_long_TemporalUnit")
-    Object[][] data_plus_long_TemporalUnit() {
+    @DataProvider
+    public static Object[][] data_plus_long_TemporalUnit() {
         return new Object[][] {
             {Year.of(1), 1, ChronoUnit.YEARS, Year.of(2), null},
             {Year.of(1), -12, ChronoUnit.YEARS, Year.of(-11), null},
@@ -596,7 +605,8 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="plus_long_TemporalUnit")
+    @Test()
+    @UseDataProvider("data_plus_long_TemporalUnit")
     public void test_plus_long_TemporalUnit(Year base, long amount, TemporalUnit unit, Year expectedYear, Class<?> expectedEx) {
         if (expectedEx == null) {
             assertEquals(base.plus(amount, unit), expectedYear);
@@ -613,8 +623,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minus(Period)
     //-----------------------------------------------------------------------
-    @DataProvider(name="minusValid")
-    Object[][] data_minusValid() {
+    @DataProvider
+    public static Object[][] data_minusValid() {
         return new Object[][] {
                 {2012, Period.ofYears(0), 2012},
                 {2012, Period.ofYears(1), 2011},
@@ -623,13 +633,14 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="minusValid")
+    @Test()
+    @UseDataProvider("data_minusValid")
     public void test_minusValid(int year, TemporalAmount amount, int expected) {
         assertEquals(Year.of(year).minus(amount), Year.of(expected));
     }
 
-    @DataProvider(name="minusInvalidUnit")
-    Object[][] data_minusInvalidUnit() {
+    @DataProvider
+    public static Object[][] data_minusInvalidUnit() {
         return new Object[][] {
                 {Period.of(0, 1, 0)},
                 {Period.of(0, 0, 1)},
@@ -642,12 +653,13 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="minusInvalidUnit", expectedExceptions=UnsupportedTemporalTypeException.class)
+    @Test(expected=UnsupportedTemporalTypeException.class)
+    @UseDataProvider("data_minusInvalidUnit")
     public void test_minusInvalidUnit(TemporalAmount amount) {
         TEST_2008.minus(amount);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_minus_null() {
         TEST_2008.minus(null);
     }
@@ -681,22 +693,22 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(40).minusYears(years), Year.of((int) (40L - years)));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_minusYears_max() {
         Year.of(Year.MAX_VALUE).minusYears(-1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_minusYears_maxLots() {
         Year.of(Year.MAX_VALUE).minusYears(-1000);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_minusYears_min() {
         Year.of(Year.MIN_VALUE).minusYears(1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_minusYears_minLots() {
         Year.of(Year.MIN_VALUE).minusYears(1000);
     }
@@ -704,8 +716,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minus(long, TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="minus_long_TemporalUnit")
-    Object[][] data_minus_long_TemporalUnit() {
+    @DataProvider
+    public static Object[][] data_minus_long_TemporalUnit() {
         return new Object[][] {
             {Year.of(1), 1, ChronoUnit.YEARS, Year.of(0), null},
             {Year.of(1), -12, ChronoUnit.YEARS, Year.of(13), null},
@@ -728,7 +740,8 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="minus_long_TemporalUnit")
+    @Test()
+    @UseDataProvider("data_minus_long_TemporalUnit")
     public void test_minus_long_TemporalUnit(Year base, long amount, TemporalUnit unit, Year expectedYear, Class<?> expectedEx) {
         if (expectedEx == null) {
             assertEquals(base.minus(amount, unit), expectedYear);
@@ -760,7 +773,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(test.adjustInto(LocalDate.of(2012, 2, 29)), LocalDate.of(2011, 2, 28));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_adjustDate_nullLocalDate() {
         Year test = Year.of(1);
         test.adjustInto((LocalDate) null);
@@ -778,7 +791,7 @@ public class TCKYear extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_with_BadTemporalAdjuster() {
         Year test = Year.of(1);
         test.with(LocalTime.of(18, 1, 2));
@@ -853,8 +866,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // isValidMonthDay(MonthDay)
     //-----------------------------------------------------------------------
-    @DataProvider(name="isValidMonthDay")
-    Object[][] data_isValidMonthDay() {
+    @DataProvider
+    public static Object[][] data_isValidMonthDay() {
         return new Object[][] {
                 {Year.of(2007), MonthDay.of(6, 30), true},
                 {Year.of(2008), MonthDay.of(2, 28), true},
@@ -865,7 +878,8 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="isValidMonthDay")
+    @Test()
+    @UseDataProvider("data_isValidMonthDay")
     public void test_isValidMonthDay(Year year, MonthDay monthDay, boolean expected) {
         assertEquals(year.isValidMonthDay(monthDay), expected);
     }
@@ -873,8 +887,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // until(Temporal, TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="periodUntilUnit")
-    Object[][] data_periodUntilUnit() {
+    @DataProvider
+    public static Object[][] data_periodUntilUnit() {
         return new Object[][] {
                 {Year.of(2000), Year.of(-1), YEARS, -2001},
                 {Year.of(2000), Year.of(0), YEARS, -2000},
@@ -921,19 +935,22 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="periodUntilUnit")
+    @Test()
+    @UseDataProvider("data_periodUntilUnit")
     public void test_until_TemporalUnit(Year year1, Year year2, TemporalUnit unit, long expected) {
         long amount = year1.until(year2, unit);
         assertEquals(amount, expected);
     }
 
-    @Test(dataProvider="periodUntilUnit")
+    @Test()
+    @UseDataProvider("data_periodUntilUnit")
     public void test_until_TemporalUnit_negated(Year year1, Year year2, TemporalUnit unit, long expected) {
         long amount = year2.until(year1, unit);
         assertEquals(amount, -expected);
     }
 
-    @Test(dataProvider="periodUntilUnit")
+    @Test()
+    @UseDataProvider("data_periodUntilUnit")
     public void test_until_TemporalUnit_between(Year year1, Year year2, TemporalUnit unit, long expected) {
         long amount = unit.between(year1, year2);
         assertEquals(amount, expected);
@@ -946,23 +963,23 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(start.until(end, YEARS), 2);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_until_invalidType() {
         Year start = Year.of(2010);
         start.until(LocalTime.of(11, 30), YEARS);
     }
 
-    @Test(expectedExceptions = UnsupportedTemporalTypeException.class)
+    @Test(expected = UnsupportedTemporalTypeException.class)
     public void test_until_TemporalUnit_unsupportedUnit() {
         TEST_2008.until(TEST_2008, MONTHS);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_until_TemporalUnit_nullEnd() {
         TEST_2008.until(null, DAYS);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_until_TemporalUnit_nullUnit() {
         TEST_2008.until(TEST_2008, null);
     }
@@ -977,7 +994,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(t, "2010");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_format_formatter_null() {
         Year.of(2010).format(null);
     }
@@ -991,7 +1008,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(test.atMonth(Month.JUNE), YearMonth.of(2008, 6));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_atMonth_nullMonth() {
         Year test = Year.of(2008);
         test.atMonth((Month) null);
@@ -1006,7 +1023,7 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(test.atMonth(6), YearMonth.of(2008, 6));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_atMonth_int_invalidMonth() {
         Year test = Year.of(2008);
         test.atMonth(13);
@@ -1015,8 +1032,8 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // atMonthDay(MonthDay)
     //-----------------------------------------------------------------------
-    @DataProvider(name="atMonthDay")
-    Object[][] data_atMonthDay() {
+    @DataProvider
+    public static Object[][] data_atMonthDay() {
         return new Object[][] {
                 {Year.of(2008), MonthDay.of(6, 30), LocalDate.of(2008, 6, 30)},
                 {Year.of(2008), MonthDay.of(2, 29), LocalDate.of(2008, 2, 29)},
@@ -1024,12 +1041,13 @@ public class TCKYear extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="atMonthDay")
+    @Test()
+    @UseDataProvider("data_atMonthDay")
     public void test_atMonthDay(Year year, MonthDay monthDay, LocalDate expected) {
         assertEquals(year.atMonthDay(monthDay), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_atMonthDay_nullMonthDay() {
         Year test = Year.of(2008);
         test.atMonthDay((MonthDay) null);
@@ -1048,7 +1066,7 @@ public class TCKYear extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_atDay_notLeapYear_day366() {
         Year test = Year.of(2007);
         test.atDay(366);
@@ -1064,13 +1082,13 @@ public class TCKYear extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_atDay_day0() {
         Year test = Year.of(2007);
         test.atDay(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_atDay_day367() {
         Year test = Year.of(2007);
         test.atDay(367);
@@ -1111,7 +1129,7 @@ public class TCKYear extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_compareTo_nullYear() {
         Year doy = null;
         Year test = Year.of(1);

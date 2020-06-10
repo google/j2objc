@@ -59,8 +59,8 @@
  */
 package tck.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -84,13 +84,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test ZoneId.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKZoneId extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
@@ -128,7 +131,7 @@ public class TCKZoneId extends AbstractTCKTest {
         assertEquals(ids.get("VST"), "Asia/Ho_Chi_Minh");
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expected=UnsupportedOperationException.class)
     public void test_constant_OLD_IDS_POST_2005_immutable() {
         Map<String, String> ids = ZoneId.SHORT_IDS;
         ids.clear();
@@ -175,13 +178,13 @@ public class TCKZoneId extends AbstractTCKTest {
         assertEquals(test.getId(), "Europe/Madrid");
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_of_string_Map_badFormat() {
         Map<String, String> map = new HashMap<>();
         ZoneId.of("Not known", map);
     }
 
-    @Test(expectedExceptions=ZoneRulesException.class)
+    @Test(expected=ZoneRulesException.class)
     public void test_of_string_Map_unknown() {
         Map<String, String> map = new HashMap<>();
         ZoneId.of("Unknown", map);
@@ -190,8 +193,8 @@ public class TCKZoneId extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // regular factory and .normalized()
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsetBasedValid")
-    Object[][] data_offsetBasedValid() {
+    @DataProvider
+    public static Object[][] data_offsetBasedValid() {
         return new Object[][] {
                 {"Z", "Z"},
                 {"+0", "Z"},
@@ -226,7 +229,8 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="offsetBasedValid")
+    @Test()
+    @UseDataProvider("data_offsetBasedValid")
     public void factory_of_String_offsetBasedValid_noPrefix(String input, String id) {
         ZoneId test = ZoneId.of(input);
         assertEquals(test.getId(), id);
@@ -238,8 +242,8 @@ public class TCKZoneId extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsetBasedValidPrefix")
-    Object[][] data_offsetBasedValidPrefix() {
+    @DataProvider
+    public static Object[][] data_offsetBasedValidPrefix() {
         return new Object[][] {
                 {"", "", "Z"},
                 {"+0", "", "Z"},
@@ -274,7 +278,8 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="offsetBasedValidPrefix")
+    @Test()
+    @UseDataProvider("data_offsetBasedValidPrefix")
     public void factory_of_String_offsetBasedValid_prefixUTC(String input, String id, String offsetId) {
         ZoneId test = ZoneId.of("UTC" + input);
         assertEquals(test.getId(), "UTC" + id);
@@ -285,7 +290,8 @@ public class TCKZoneId extends AbstractTCKTest {
         assertEquals(test.getRules().getOffset(Instant.EPOCH), ZoneOffset.of(offsetId));
     }
 
-    @Test(dataProvider="offsetBasedValidPrefix")
+    @Test()
+    @UseDataProvider("data_offsetBasedValidPrefix")
     public void factory_of_String_offsetBasedValid_prefixGMT(String input, String id, String offsetId) {
         ZoneId test = ZoneId.of("GMT" + input);
         assertEquals(test.getId(), "GMT" + id);
@@ -296,7 +302,8 @@ public class TCKZoneId extends AbstractTCKTest {
         assertEquals(test.getRules().getOffset(Instant.EPOCH), ZoneOffset.of(offsetId));
     }
 
-    @Test(dataProvider="offsetBasedValidPrefix")
+    @Test()
+    @UseDataProvider("data_offsetBasedValidPrefix")
     public void factory_of_String_offsetBasedValid_prefixUT(String input, String id, String offsetId) {
         ZoneId test = ZoneId.of("UT" + input);
         assertEquals(test.getId(), "UT" + id);
@@ -322,8 +329,8 @@ public class TCKZoneId extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="prefixValid")
-    Object[][] data_prefixValid() {
+    @DataProvider
+    public static Object[][] data_prefixValid() {
         return new Object[][] {
                 {"GMT", "+01:00"},
                 {"UTC", "+01:00"},
@@ -332,17 +339,18 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="prefixValid")
+    @Test()
+    @UseDataProvider("data_prefixValid")
     public void test_prefixOfOffset(String prefix, String offset) {
         ZoneOffset zoff = ZoneOffset.of(offset);
         ZoneId zoneId = ZoneId.ofOffset(prefix, zoff);
-        assertEquals(zoneId.getId(), prefix + zoff.getId(), "in correct id for : " + prefix + ", zoff: " + zoff);
+        assertEquals("in correct id for : " + prefix + ", zoff: " + zoff, zoneId.getId(), prefix + zoff.getId());
 
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="prefixInvalid")
-    Object[][] data_prefixInvalid() {
+    @DataProvider
+    public static Object[][] data_prefixInvalid() {
         return new Object[][] {
                 {"GM", "+01:00"},
                 {"U", "+01:00"},
@@ -351,26 +359,27 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="prefixInvalid", expectedExceptions=java.lang.IllegalArgumentException.class)
+    @Test(expected=java.lang.IllegalArgumentException.class)
+    @UseDataProvider("data_prefixInvalid")
     public void test_invalidPrefixOfOffset(String prefix, String offset) {
         ZoneOffset zoff = ZoneOffset.of(offset);
         ZoneId zoneId = ZoneId.ofOffset(prefix, zoff);
         fail("should have thrown an exception for prefix: " + prefix);
     }
 
-    @Test(expectedExceptions=java.lang.NullPointerException.class)
+    @Test(expected=java.lang.NullPointerException.class)
     public void test_nullPrefixOfOffset() {
         ZoneId.ofOffset(null, ZoneOffset.ofTotalSeconds(1));
     }
 
-    @Test(expectedExceptions=java.lang.NullPointerException.class)
+    @Test(expected=java.lang.NullPointerException.class)
     public void test_nullOffsetOfOffset() {
         ZoneId.ofOffset("GMT", null);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsetBasedValidOther")
-    Object[][] data_offsetBasedValidOther() {
+    @DataProvider
+    public static Object[][] data_offsetBasedValidOther() {
         return new Object[][] {
                 {"GMT", "Z"},
                 {"GMT0", "Z"},
@@ -393,7 +402,8 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="offsetBasedValidOther")
+    @Test()
+    @UseDataProvider("data_offsetBasedValidOther")
     public void factory_of_String_offsetBasedValidOther(String input, String offsetId) {
         ZoneId test = ZoneId.of(input);
         assertEquals(test.getId(), input);
@@ -402,8 +412,8 @@ public class TCKZoneId extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsetBasedInvalid")
-    Object[][] data_offsetBasedInvalid() {
+    @DataProvider
+    public static Object[][] data_offsetBasedInvalid() {
         return new Object[][] {
                 {"A"}, {"B"}, {"C"}, {"D"}, {"E"}, {"F"}, {"G"}, {"H"}, {"I"}, {"J"}, {"K"}, {"L"}, {"M"},
                 {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"}, {"Z"},
@@ -427,7 +437,8 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="offsetBasedInvalid", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_offsetBasedInvalid")
     public void factory_of_String_offsetBasedInvalid_noPrefix(String id) {
         if (id.equals("Z")) {
             throw new DateTimeException("Fake exception: Z alone is valid, not invalid");
@@ -435,12 +446,14 @@ public class TCKZoneId extends AbstractTCKTest {
         ZoneId.of(id);
     }
 
-    @Test(dataProvider="offsetBasedInvalid", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_offsetBasedInvalid")
     public void factory_of_String_offsetBasedInvalid_prefixUTC(String id) {
         ZoneId.of("UTC" + id);
     }
 
-    @Test(dataProvider="offsetBasedInvalid", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_offsetBasedInvalid")
     public void factory_of_String_offsetBasedInvalid_prefixGMT(String id) {
         if (id.equals("0")) {
             throw new DateTimeException("Fake exception: GMT0 is valid, not invalid");
@@ -448,7 +461,8 @@ public class TCKZoneId extends AbstractTCKTest {
         ZoneId.of("GMT" + id);
     }
 
-    @Test(dataProvider="offsetBasedInvalid", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_offsetBasedInvalid")
     public void factory_of_String_offsetBasedInvalid_prefixUT(String id) {
         if (id.equals("C")) {
             throw new DateTimeException("Fake exception: UT + C = UTC, thus it is valid, not invalid");
@@ -457,8 +471,8 @@ public class TCKZoneId extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="regionBasedInvalid")
-    Object[][] data_regionBasedInvalid() {
+    @DataProvider
+    public static Object[][] data_regionBasedInvalid() {
         // \u00ef is a random unicode character
         return new Object[][] {
                 {""}, {":"}, {"#"},
@@ -473,7 +487,8 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="regionBasedInvalid", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_regionBasedInvalid")
     public void factory_of_String_regionBasedInvalid(String id) {
         ZoneId.of(id);
     }
@@ -488,17 +503,17 @@ public class TCKZoneId extends AbstractTCKTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_of_String_null() {
         ZoneId.of(null);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void factory_of_String_badFormat() {
         ZoneId.of("Unknown rule");
     }
 
-    @Test(expectedExceptions=ZoneRulesException.class)
+    @Test(expected=ZoneRulesException.class)
     public void factory_of_String_unknown() {
         ZoneId.of("Unknown");
     }
@@ -535,12 +550,12 @@ public class TCKZoneId extends AbstractTCKTest {
         assertEquals(ZoneId.from(offset), offset);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void factory_from_TemporalAccessor_invalid_noDerive() {
         ZoneId.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_from_TemporalAccessor_null() {
         ZoneId.from(null);
     }
@@ -578,8 +593,8 @@ public class TCKZoneId extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="toString")
-    Object[][] data_toString() {
+    @DataProvider
+    public static Object[][] data_toString() {
         return new Object[][] {
                 {"Europe/London", "Europe/London"},
                 {"Europe/Paris", "Europe/Paris"},
@@ -591,7 +606,8 @@ public class TCKZoneId extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="toString")
+    @Test()
+    @UseDataProvider("data_toString")
     public void test_toString(String id, String expected) {
         ZoneId test = ZoneId.of(id);
         assertEquals(test.toString(), expected);

@@ -59,8 +59,8 @@
  */
 package tck.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.time.DateTimeException;
 import java.time.temporal.TemporalAccessor;
@@ -68,7 +68,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import test.java.time.temporal.MockFieldNoValue;
 
 /**
@@ -101,7 +101,7 @@ public abstract class AbstractDateTimeTest extends AbstractTCKTest {
     public void basicTest_isSupported_TemporalField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
-                assertEquals(sample.isSupported(field), true, "Failed on " + sample + " " + field);
+                assertEquals("Failed on " + sample + " " + field, sample.isSupported(field), true);
             }
         }
     }
@@ -110,7 +110,7 @@ public abstract class AbstractDateTimeTest extends AbstractTCKTest {
     public void basicTest_isSupported_TemporalField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
-                assertEquals(sample.isSupported(field), false, "Failed on " + sample + " " + field);
+                assertEquals("Failed on " + sample + " " + field, sample.isSupported(field), false);
             }
         }
     }
@@ -118,7 +118,7 @@ public abstract class AbstractDateTimeTest extends AbstractTCKTest {
     @Test()
     public void basicTest_isSupported_TemporalField_null() {
         for (TemporalAccessor sample : samples()) {
-            assertEquals(sample.isSupported(null), false, "Failed on " + sample);
+            assertEquals("Failed on " + sample, sample.isSupported(null), false);
         }
     }
 
@@ -195,7 +195,7 @@ public abstract class AbstractDateTimeTest extends AbstractTCKTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_get_TemporalField_invalidField() {
         for (TemporalAccessor sample : samples()) {
             sample.get(MockFieldNoValue.INSTANCE);
@@ -240,7 +240,7 @@ public abstract class AbstractDateTimeTest extends AbstractTCKTest {
         }
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_getLong_TemporalField_invalidField() {
         for (TemporalAccessor sample : samples()) {
             sample.getLong(MockFieldNoValue.INSTANCE);

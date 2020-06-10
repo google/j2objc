@@ -100,9 +100,9 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -139,15 +139,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 import test.java.time.MockSimplePeriod;
 
 /**
  * Test OffsetDateTime.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKOffsetDateTime extends AbstractDateTimeTest {
 
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
@@ -157,10 +160,11 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_MONE = ZoneOffset.ofHours(-1);
     private static final ZoneOffset OFFSET_MTWO = ZoneOffset.ofHours(-2);
 
-    // Android-changed: This was originally non-static and initialized in @BeforeMethod,
-    // but @BeforeMethod is run after @DataProvider methods are run, so it only worked by accident,
+    // Android-changed: This was originally non-static and initialized in @Before,
+    // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
-    private static OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static OffsetDateTime TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
 
     @BeforeClass
     public static void setUp() {
@@ -319,12 +323,12 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void now_Clock_nullZoneId() {
         OffsetDateTime.now((ZoneId) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void now_Clock_nullClock() {
         OffsetDateTime.now((Clock) null);
     }
@@ -362,19 +366,19 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_of_LocalDateLocalTimeZoneOffset_nullLocalDate() {
         LocalTime time = LocalTime.of(11, 30, 10, 500);
         OffsetDateTime.of((LocalDate) null, time, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_of_LocalDateLocalTimeZoneOffset_nullLocalTime() {
         LocalDate date = LocalDate.of(2008, 6, 30);
         OffsetDateTime.of(date, (LocalTime) null, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_of_LocalDateLocalTimeZoneOffset_nullOffset() {
         LocalDate date = LocalDate.of(2008, 6, 30);
         LocalTime time = LocalTime.of(11, 30, 10, 500);
@@ -389,12 +393,12 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_of_LocalDateTimeZoneOffset_nullProvider() {
         OffsetDateTime.of((LocalDateTime) null, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_of_LocalDateTimeZoneOffset_nullOffset() {
         LocalDateTime dt = LocalDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 10, 500));
         OffsetDateTime.of(dt, (ZoneOffset) null);
@@ -410,12 +414,12 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
                 OffsetDateTime.of(LocalDate.of(2007, 7, 15), LocalTime.of(17, 30), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_CalendricalObject_invalid_noDerive() {
         OffsetDateTime.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_Calendricals_null() {
         OffsetDateTime.from((TemporalAccessor) null);
     }
@@ -423,7 +427,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleToString")
+    @Test()
+    @UseDataProvider("provider_sampleToString")
     public void test_parse(int y, int month, int d, int h, int m, int s, int n, String offsetId, String text) {
         OffsetDateTime t = OffsetDateTime.parse(text);
         assertEquals(t.getYear(), y);
@@ -436,17 +441,17 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(t.getOffset().getId(), offsetId);
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
     public void factory_parse_illegalValue() {
         OffsetDateTime.parse("2008-06-32T11:15+01:00");
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
     public void factory_parse_invalidValue() {
         OffsetDateTime.parse("2008-06-31T11:15+01:00");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_nullText() {
         OffsetDateTime.parse((String) null);
     }
@@ -461,19 +466,19 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2010, 12, 3), LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         OffsetDateTime.parse((String) null, f);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_formatter_nullFormatter() {
         OffsetDateTime.parse("ANY", null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void constructor_nullTime() throws Throwable  {
         Constructor<OffsetDateTime> con = OffsetDateTime.class.getDeclaredConstructor(LocalDateTime.class, ZoneOffset.class);
         con.setAccessible(true);
@@ -484,7 +489,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void constructor_nullOffset() throws Throwable  {
         Constructor<OffsetDateTime> con = OffsetDateTime.class.getDeclaredConstructor(LocalDateTime.class, ZoneOffset.class);
         con.setAccessible(true);
@@ -498,8 +503,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleTimes")
-    Object[][] provider_sampleTimes() {
+    @DataProvider
+    public static Object[][] provider_sampleTimes() {
         return new Object[][] {
             {2008, 6, 30, 11, 30, 20, 500, OFFSET_PONE},
             {2008, 6, 30, 11, 0, 0, 0, OFFSET_PONE},
@@ -508,7 +513,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_get(int y, int o, int d, int h, int m, int s, int n, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);
@@ -637,8 +643,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    @DataProvider(name="query")
-    Object[][] data_query() {
+    @DataProvider
+    public static Object[][] data_query() {
         return new Object[][] {
                 {TEST_2008_6_30_11_30_59_000000500, TemporalQueries.chronology(), IsoChronology.INSTANCE},
                 {TEST_2008_6_30_11_30_59_000000500, TemporalQueries.zoneId(), null},
@@ -650,17 +656,19 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_2008_6_30_11_30_59_000000500.query(null);
     }
@@ -668,8 +676,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // adjustInto(Temporal)
     //-----------------------------------------------------------------------
-    @DataProvider(name="adjustInto")
-    Object[][] data_adjustInto() {
+    @DataProvider
+    public static Object[][] data_adjustInto() {
         return new Object[][]{
                 {OffsetDateTime.of(2012, 3, 4, 23, 5, 0, 0, OFFSET_PONE), OffsetDateTime.of(2012, 3, 4, 1, 1, 1, 100, ZoneOffset.UTC), OffsetDateTime.of(2012, 3, 4, 23, 5, 0, 0, OFFSET_PONE), null},
                 {OffsetDateTime.of(2012, 3, 4, 23, 5, 0, 0, OFFSET_PONE), OffsetDateTime.MAX, OffsetDateTime.of(2012, 3, 4, 23, 5, 0, 0, OFFSET_PONE), null},
@@ -690,7 +698,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="adjustInto")
+    @Test()
+    @UseDataProvider("data_adjustInto")
     public void test_adjustInto(OffsetDateTime test, Temporal temporal, Temporal expected, Class<?> expectedEx) {
         if (expectedEx == null) {
             Temporal result = test.adjustInto(temporal);
@@ -762,12 +771,12 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59, 500), OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_with_adjustment_null() {
         TEST_2008_6_30_11_30_59_000000500.with((TemporalAdjuster) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_withOffsetSameLocal_null() {
         OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         base.withOffsetSameLocal(null);
@@ -784,7 +793,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(test, expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_withOffsetSameInstant_null() {
         OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         base.withOffsetSameInstant(null);
@@ -793,8 +802,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(long,TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name = "withFieldLong")
-    Object[][] data_withFieldLong() {
+    @DataProvider
+    public static Object[][] data_withFieldLong() {
         return new Object[][] {
                 {TEST_2008_6_30_11_30_59_000000500, YEAR, 2009,
                         OffsetDateTime.of(2009, 6, 30, 11, 30, 59, 500, OFFSET_PONE)},
@@ -809,7 +818,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         };
     };
 
-    @Test(dataProvider = "withFieldLong")
+    @Test()
+    @UseDataProvider("data_withFieldLong")
     public void test_with_fieldLong(OffsetDateTime base, TemporalField setField, long setValue, OffsetDateTime expected) {
         assertEquals(base.with(setField, setValue), expected);
     }
@@ -853,12 +863,12 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(t, OffsetDateTime.of(LocalDate.of(2008, 2, 2), LocalTime.of(11, 30, 59, 500), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withDayOfYear_illegal() {
         TEST_2008_6_30_11_30_59_000000500.withDayOfYear(367);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withDayOfYear_invalid() {
         OffsetDateTime.of(LocalDate.of(2007, 2, 2), LocalTime.of(11, 30), OFFSET_PONE).withDayOfYear(366);
     }
@@ -913,7 +923,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(TEST_2008_6_30_11_30_59_000000500.truncatedTo(DAYS), TEST_2008_6_30_11_30_59_000000500.with(LocalTime.MIDNIGHT));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_truncatedTo_null() {
         TEST_2008_6_30_11_30_59_000000500.truncatedTo(null);
     }
@@ -944,7 +954,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(t, TEST_2008_6_30_11_30_59_000000500);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_plus_Duration_null() {
         TEST_2008_6_30_11_30_59_000000500.plus((Duration) null);
     }
@@ -1055,7 +1065,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(t, TEST_2008_6_30_11_30_59_000000500);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_minus_Duration_null() {
         TEST_2008_6_30_11_30_59_000000500.minus((Duration) null);
     }
@@ -1143,8 +1153,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // until(Temporal, TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="periodUntilUnit")
-    Object[][] data_untilUnit() {
+    @DataProvider
+    public static Object[][] data_untilUnit() {
         return new Object[][] {
                 {OffsetDateTime.of(2010, 6, 30, 1, 1, 1, 0, OFFSET_PONE), OffsetDateTime.of(2010, 6, 30, 13, 1, 1, 0, OFFSET_PONE), HALF_DAYS, 1},
                 {OffsetDateTime.of(2010, 6, 30, 1, 1, 1, 0, OFFSET_PONE), OffsetDateTime.of(2010, 6, 30, 2, 1, 1, 0, OFFSET_PONE), HOURS, 1},
@@ -1170,19 +1180,22 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="periodUntilUnit")
+    @Test()
+    @UseDataProvider("data_untilUnit")
     public void test_until_TemporalUnit(OffsetDateTime odt1, OffsetDateTime odt2, TemporalUnit unit, long expected) {
         long amount = odt1.until(odt2, unit);
         assertEquals(amount, expected);
     }
 
-    @Test(dataProvider="periodUntilUnit")
+    @Test()
+    @UseDataProvider("data_untilUnit")
     public void test_until_TemporalUnit_negated(OffsetDateTime odt1, OffsetDateTime odt2, TemporalUnit unit, long expected) {
         long amount = odt2.until(odt1, unit);
         assertEquals(amount, -expected);
     }
 
-    @Test(dataProvider="periodUntilUnit")
+    @Test()
+    @UseDataProvider("data_untilUnit")
     public void test_until_TemporalUnit_between(OffsetDateTime odt1, OffsetDateTime odt2, TemporalUnit unit, long expected) {
         long amount = unit.between(odt1, odt2);
         assertEquals(amount, expected);
@@ -1195,13 +1208,13 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(odt.until(zdt, SECONDS), 3);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_until_invalidType() {
         OffsetDateTime odt = OffsetDateTime.of(2010, 6, 30, 1, 1, 1, 0, OFFSET_PONE);
         odt.until(Instant.ofEpochSecond(12), SECONDS);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_until_invalidTemporalUnit() {
         OffsetDateTime odt1 = OffsetDateTime.of(2010, 6, 30, 1, 1, 1, 0, OFFSET_PONE);
         OffsetDateTime odt2 = OffsetDateTime.of(2010, 6, 30, 2, 1, 1, 0, OFFSET_PONE);
@@ -1218,7 +1231,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(t, "2010 12 3 11 30 0");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_format_formatter_null() {
         OffsetDateTime.of(2010, 12, 3, 11, 30, 0, 0, OFFSET_PONE).format(null);
     }
@@ -1233,7 +1246,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
                 ZonedDateTime.of(2008, 6, 30, 15, 30, 0, 0, ZONE_PARIS));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_atZone_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, 0, 0, OFFSET_PTWO);
         t.atZoneSameInstant((ZoneId) null);
@@ -1272,7 +1285,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_atZoneSimilarLocal_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, 0, 0, OFFSET_PTWO);
         t.atZoneSimilarLocal((ZoneId) null);
@@ -1388,7 +1401,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     public void test_compareTo_bothInstantComparator() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 20, 40, 4, OFFSET_PTWO);
         OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 10, 20, 40, 5, OFFSET_PONE);
-        assertEquals(a.compareTo(b), OffsetDateTime.timeLineOrder().compare(a,b), "for nano != nano, compareTo and timeLineOrder() should be the same");
+        assertEquals("for nano != nano, compareTo and timeLineOrder() should be the same", a.compareTo(b), OffsetDateTime.timeLineOrder().compare(a,b));
     }
 
     @Test
@@ -1422,13 +1435,13 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(b.compareTo(b) == 0, true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_compareTo_null() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         a.compareTo(null);
     }
 
-    @Test(expectedExceptions=ClassCastException.class)
+    @Test(expected=ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonOffsetDateTime() {
        Comparable c = TEST_2008_6_30_11_30_59_000000500;
@@ -1504,19 +1517,19 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_isBefore_null() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         a.isBefore(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_isEqual_null() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         a.isEqual(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_isAfter_null() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         a.isAfter(null);
@@ -1525,48 +1538,55 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_true(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
     }
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_false_year_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y + 1, o, d, h, m, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_false_hour_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         h = (h == 23 ? 22 : h);
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y, o, d, h + 1, m, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_false_minute_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         m = (m == 59 ? 58 : m);
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m + 1, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_false_second_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         s = (s == 59 ? 58 : s);
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s + 1, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_false_nano_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         n = (n == 999999999 ? 999999998 : n);
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s, n + 1, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes")
+    @Test()
+    @UseDataProvider("provider_sampleTimes")
     public void test_equals_false_offset_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PTWO);
@@ -1591,8 +1611,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleToString")
-    Object[][] provider_sampleToString() {
+    @DataProvider
+    public static Object[][] provider_sampleToString() {
         return new Object[][] {
             {2008, 6, 30, 11, 30, 59, 0, "Z", "2008-06-30T11:30:59Z"},
             {2008, 6, 30, 11, 30, 59, 0, "+01:00", "2008-06-30T11:30:59+01:00"},
@@ -1605,7 +1625,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleToString")
+    @Test()
+    @UseDataProvider("provider_sampleToString")
     public void test_toString(int y, int o, int d, int h, int m, int s, int n, String offsetId, String expected) {
         OffsetDateTime t = OffsetDateTime.of(y, o, d, h, m, s, n, ZoneOffset.of(offsetId));
         String str = t.toString();

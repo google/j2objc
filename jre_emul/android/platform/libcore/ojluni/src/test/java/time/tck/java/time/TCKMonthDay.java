@@ -61,9 +61,9 @@ package tck.java.time;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -94,20 +94,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test MonthDay.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKMonthDay extends AbstractDateTimeTest {
 
-    // Android-changed: This was originally non-static and initialized in @BeforeMethod,
-    // but @BeforeMethod is run after @DataProvider methods are run, so it only worked by accident,
+    // Android-changed: This was originally non-static and initialized in @Before,
+    // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
-    private static MonthDay TEST_07_15;
+    // J2ObjC changed: need to initialize as in JUnit4 @DataProvider is run before @BeforeClass
+    private static MonthDay TEST_07_15 = MonthDay.of(7, 15);
 
     @BeforeClass
     public static void setUp() {
@@ -166,7 +170,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now(ZoneId)
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void now_ZoneId_nullZoneId() {
         MonthDay.now((ZoneId) null);
     }
@@ -198,7 +202,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test.getDayOfMonth(), 31);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void now_Clock_nullClock() {
         MonthDay.now((Clock) null);
     }
@@ -209,17 +213,17 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(TEST_07_15, MonthDay.of(Month.JULY, 15));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_intMonth_dayTooLow() {
         MonthDay.of(Month.JANUARY, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_intMonth_dayTooHigh() {
         MonthDay.of(Month.JANUARY, 32);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_intMonth_nullMonth() {
         MonthDay.of(null, 15);
     }
@@ -230,23 +234,23 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         check(TEST_07_15, 7, 15);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_ints_dayTooLow() {
         MonthDay.of(1, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_ints_dayTooHigh() {
         MonthDay.of(1, 32);
     }
 
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_ints_monthTooLow() {
         MonthDay.of(0, 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_ints_monthTooHigh() {
         MonthDay.of(13, 1);
     }
@@ -257,12 +261,12 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(MonthDay.from(LocalDate.of(2007, 7, 15)), TEST_07_15);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_factory_CalendricalObject_invalid_noDerive() {
         MonthDay.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
         MonthDay.from((TemporalAccessor) null);
     }
@@ -270,8 +274,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @DataProvider(name="goodParseData")
-    Object[][] provider_goodParseData() {
+    @DataProvider
+    public static Object[][] provider_goodParseData() {
         return new Object[][] {
                 {"--01-01", MonthDay.of(1, 1)},
                 {"--01-31", MonthDay.of(1, 31)},
@@ -300,15 +304,16 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="goodParseData")
+    @Test()
+    @UseDataProvider("provider_goodParseData")
     public void factory_parse_success(String text, MonthDay expected) {
         MonthDay monthDay = MonthDay.parse(text);
         assertEquals(monthDay, expected);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="badParseData")
-    Object[][] provider_badParseData() {
+    @DataProvider
+    public static Object[][] provider_badParseData() {
         return new Object[][] {
                 {"", 0},
                 {"-00", 0},
@@ -318,7 +323,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="badParseData", expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
+    @UseDataProvider("provider_badParseData")
     public void factory_parse_fail(String text, int pos) {
         try {
             MonthDay.parse(text);
@@ -332,22 +338,22 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
     public void factory_parse_illegalValue_Day() {
         MonthDay.parse("--06-32");
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
     public void factory_parse_invalidValue_Day() {
         MonthDay.parse("--06-31");
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
     public void factory_parse_illegalValue_Month() {
         MonthDay.parse("--13-25");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_nullText() {
         MonthDay.parse(null);
     }
@@ -362,13 +368,13 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test, MonthDay.of(12, 3));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("M d");
         MonthDay.parse((String) null, f);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_formatter_nullFormatter() {
         MonthDay.parse("ANY", null);
     }
@@ -429,8 +435,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
-    @DataProvider(name="query")
-    Object[][] data_query() {
+    @DataProvider
+    public static Object[][] data_query() {
         return new Object[][] {
                 {TEST_07_15, TemporalQueries.chronology(), IsoChronology.INSTANCE},
                 {TEST_07_15, TemporalQueries.zoneId(), null},
@@ -442,17 +448,19 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_query(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(temporal.query(query), expected);
     }
 
-    @Test(dataProvider="query")
+    @Test()
+    @UseDataProvider("data_query")
     public <T> void test_queryFrom(TemporalAccessor temporal, TemporalQuery<T> query, T expected) {
         assertEquals(query.queryFrom(temporal), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_query_null() {
         TEST_07_15.query(null);
     }
@@ -460,8 +468,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // get*()
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleDates")
-    Object[][] provider_sampleDates() {
+    @DataProvider
+    public static Object[][] provider_sampleDates() {
         return new Object[][] {
             {1, 1},
             {1, 31},
@@ -473,7 +481,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleDates")
+    @Test()
+    @UseDataProvider("provider_sampleDates")
     public void test_get(int m, int d) {
         MonthDay a = MonthDay.of(m, d);
         assertEquals(a.getMonth(), Month.of(m));
@@ -505,7 +514,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test.with(Month.JUNE), test);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_with_Month_null() {
         MonthDay.of(6, 30).with((Month) null);
     }
@@ -534,12 +543,12 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test.withMonth(6), test);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withMonth_tooLow() {
         MonthDay.of(6, 30).withMonth(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withMonth_tooHigh() {
         MonthDay.of(6, 30).withMonth(13);
     }
@@ -552,7 +561,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(MonthDay.of(6, 30).withDayOfMonth(1), MonthDay.of(6, 1));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withDayOfMonth_invalid() {
         MonthDay.of(6, 30).withDayOfMonth(31);
     }
@@ -568,12 +577,12 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test.withDayOfMonth(30), test);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withDayOfMonth_tooLow() {
         MonthDay.of(6, 30).withDayOfMonth(0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_withDayOfMonth_tooHigh() {
         MonthDay.of(6, 30).withDayOfMonth(32);
     }
@@ -602,7 +611,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test.adjustInto(date), date);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_adjustDate_null() {
         TEST_07_15.adjustInto((LocalDate) null);
     }
@@ -638,7 +647,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(t, "12 3");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_format_formatter_null() {
         MonthDay.of(12, 3).format(null);
     }
@@ -658,7 +667,7 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         assertEquals(test.atYear(2005), LocalDate.of(2005, 2, 28));
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
     public void test_atYear_int_invalidYear() {
         MonthDay test = MonthDay.of(6, 30);
         test.atYear(Integer.MIN_VALUE);
@@ -685,36 +694,36 @@ public class TCKMonthDay extends AbstractDateTimeTest {
             for (int j = 0; j < localDates.length; j++) {
                 MonthDay b = localDates[j];
                 if (i < j) {
-                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) < 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), true);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else if (i > j) {
-                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                    assertTrue(a + " <=> " + b, a.compareTo(b) > 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), true);
+                    assertEquals(a + " <=> " + b, a.equals(b), false);
                 } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                    assertEquals(a + " <=> " + b, a.compareTo(b), 0);
+                    assertEquals(a + " <=> " + b, a.isBefore(b), false);
+                    assertEquals(a + " <=> " + b, a.isAfter(b), false);
+                    assertEquals(a + " <=> " + b, a.equals(b), true);
                 }
             }
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_compareTo_ObjectNull() {
         TEST_07_15.compareTo(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_isBefore_ObjectNull() {
         TEST_07_15.isBefore(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_isAfter_ObjectNull() {
         TEST_07_15.isAfter(null);
     }
@@ -768,7 +777,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
+    @Test()
+    @UseDataProvider("provider_sampleDates")
     public void test_hashCode(int m, int d) {
         MonthDay a = MonthDay.of(m, d);
         assertEquals(a.hashCode(), a.hashCode());
@@ -792,8 +802,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="sampleToString")
-    Object[][] provider_sampleToString() {
+    @DataProvider
+    public static Object[][] provider_sampleToString() {
         return new Object[][] {
             {7, 5, "--07-05"},
             {12, 31, "--12-31"},
@@ -801,7 +811,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleToString")
+    @Test()
+    @UseDataProvider("provider_sampleToString")
     public void test_toString(int m, int d, String expected) {
         MonthDay test = MonthDay.of(m, d);
         String str = test.toString();

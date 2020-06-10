@@ -62,13 +62,14 @@ package tck.java.time;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.YEARS;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.chrono.ThaiBuddhistChronology;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+import java.time.chrono.ThaiBuddhistChronology; */
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -79,13 +80,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test Period.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKPeriod extends AbstractTCKTest {
 
     //-----------------------------------------------------------------------
@@ -191,7 +195,7 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.from(amount), 23, 0, 45);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
+    @Test(expected = ArithmeticException.class)
     public void factory_from_TemporalAmount_Years_tooBig() {
         TemporalAmount amount = new TemporalAmount() {
             @Override
@@ -214,7 +218,7 @@ public class TCKPeriod extends AbstractTCKTest {
         Period.from(amount);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void factory_from_TemporalAmount_DaysHours() {
         TemporalAmount amount = new TemporalAmount() {
             @Override
@@ -244,17 +248,18 @@ public class TCKPeriod extends AbstractTCKTest {
         Period.from(amount);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+    @Test(expected = DateTimeException.class)
     public void factory_from_TemporalAmount_NonISO() {
         Period.from(ThaiBuddhistChronology.INSTANCE.period(1, 1, 1));
-    }
+    } */
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void factory_from_TemporalAmount_Duration() {
         Period.from(Duration.ZERO);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void factory_from_TemporalAmount_null() {
         Period.from(null);
     }
@@ -262,8 +267,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // parse(String)
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseSuccess")
-    Object[][] data_factory_parseSuccess() {
+    @DataProvider
+    public static Object[][] data_factory_parseSuccess() {
         return new Object[][] {
                 {"P1Y", Period.ofYears(1)},
                 {"P12Y", Period.ofYears(12)},
@@ -335,19 +340,22 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="parseSuccess")
+    @Test()
+    @UseDataProvider("data_factory_parseSuccess")
     public void factory_parse(String text, Period expected) {
         Period p = Period.parse(text);
         assertEquals(p, expected);
     }
 
-    @Test(dataProvider="parseSuccess")
+    @Test()
+    @UseDataProvider("data_factory_parseSuccess")
     public void factory_parse_plus(String text, Period expected) {
         Period p = Period.parse("+" + text);
         assertEquals(p, expected);
     }
 
-    @Test(dataProvider="parseSuccess")
+    @Test()
+    @UseDataProvider("data_factory_parseSuccess")
     public void factory_parse_minus(String text, Period expected) {
         Period p = null;
         try {
@@ -362,14 +370,15 @@ public class TCKPeriod extends AbstractTCKTest {
         assertEquals(p, expected.negated());
     }
 
-    @Test(dataProvider="parseSuccess")
+    @Test()
+    @UseDataProvider("data_factory_parseSuccess")
     public void factory_parse_lowerCase(String text, Period expected) {
         Period p = Period.parse(text.toLowerCase(Locale.ENGLISH));
         assertEquals(p, expected);
     }
 
-    @DataProvider(name="parseFailure")
-    Object[][] data_parseFailure() {
+    @DataProvider
+    public static Object[][] data_parseFailure() {
         return new Object[][] {
                 {""},
                 {"PTD"},
@@ -417,7 +426,8 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="parseFailure", expectedExceptions=DateTimeParseException.class)
+    @Test(expected=DateTimeParseException.class)
+    @UseDataProvider("data_parseFailure")
     public void factory_parseFailures(String text) {
         try {
             Period.parse(text);
@@ -427,7 +437,7 @@ public class TCKPeriod extends AbstractTCKTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_parse_null() {
         Period.parse(null);
     }
@@ -435,8 +445,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // between(LocalDate,LocalDate)
     //-----------------------------------------------------------------------
-    @DataProvider(name="between")
-    Object[][] data_between() {
+    @DataProvider
+    public static Object[][] data_between() {
         return new Object[][] {
                 {2010, 1, 1, 2010, 1, 1, 0, 0, 0},
                 {2010, 1, 1, 2010, 1, 2, 0, 0, 1},
@@ -522,7 +532,8 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="between")
+    @Test()
+    @UseDataProvider("data_between")
     public void factory_between_LocalDate(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
         LocalDate start = LocalDate.of(y1, m1, d1);
         LocalDate end = LocalDate.of(y2, m2, d2);
@@ -531,12 +542,12 @@ public class TCKPeriod extends AbstractTCKTest {
         //assertEquals(start.plus(test), end);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_between_LocalDate_nullFirst() {
         Period.between((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void factory_between_LocalDate_nullSecond() {
         Period.between(LocalDate.of(2010, 1, 1), (LocalDate) null);
     }
@@ -612,8 +623,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // plus(Period)
     //-----------------------------------------------------------------------
-    @DataProvider(name="plus")
-    Object[][] data_plus() {
+    @DataProvider
+    public static Object[][] data_plus() {
         return new Object[][] {
                 {pymd(0, 0, 0), pymd(0, 0, 0), pymd(0, 0, 0)},
                 {pymd(0, 0, 0), pymd(5, 0, 0), pymd(5, 0, 0)},
@@ -630,17 +641,19 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="plus")
+    @Test()
+    @UseDataProvider("data_plus")
     public void test_plus_TemporalAmount(Period base, Period add, Period expected) {
         assertEquals(base.plus(add), expected);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+    @Test(expected = DateTimeException.class)
     public void test_plus_TemporalAmount_nonISO() {
         pymd(4, 5, 6).plus(ThaiBuddhistChronology.INSTANCE.period(1, 0, 0));
-    }
+    } */
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_plus_TemporalAmount_DaysHours() {
         TemporalAmount amount = new TemporalAmount() {
             @Override
@@ -686,13 +699,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.of(1, 2, 3).plus(Period.ofYears(-1)), 0, 2, 3);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_plusYears_overflowTooBig() {
         Period test = Period.ofYears(Integer.MAX_VALUE);
         test.plusYears(1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_plusYears_overflowTooSmall() {
         Period test = Period.ofYears(Integer.MIN_VALUE);
         test.plusYears(-1);
@@ -714,13 +727,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.of(1, 2, 3).plus(Period.ofMonths(-2)), 1, 0, 3);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_plusMonths_overflowTooBig() {
         Period test = Period.ofMonths(Integer.MAX_VALUE);
         test.plusMonths(1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_plusMonths_overflowTooSmall() {
         Period test = Period.ofMonths(Integer.MIN_VALUE);
         test.plusMonths(-1);
@@ -742,13 +755,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.of(1, 2, 3).plus(Period.ofDays(-3)), 1, 2, 0);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_plusDays_overflowTooBig() {
         Period test = Period.ofDays(Integer.MAX_VALUE);
         test.plusDays(1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_plusDays_overflowTooSmall() {
         Period test = Period.ofDays(Integer.MIN_VALUE);
         test.plusDays(-1);
@@ -757,8 +770,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // minus(Period)
     //-----------------------------------------------------------------------
-    @DataProvider(name="minus")
-    Object[][] data_minus() {
+    @DataProvider
+    public static Object[][] data_minus() {
         return new Object[][] {
                 {pymd(0, 0, 0), pymd(0, 0, 0), pymd(0, 0, 0)},
                 {pymd(0, 0, 0), pymd(5, 0, 0), pymd(-5, 0, 0)},
@@ -775,17 +788,19 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="minus")
+    @Test()
+    @UseDataProvider("data_minus")
     public void test_minus_TemporalAmount(Period base, Period subtract, Period expected) {
         assertEquals(base.minus(subtract), expected);
     }
 
-    @Test(expectedExceptions = DateTimeException.class)
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+    @Test(expected = DateTimeException.class)
     public void test_minus_TemporalAmount_nonISO() {
         pymd(4, 5, 6).minus(ThaiBuddhistChronology.INSTANCE.period(1, 0, 0));
-    }
+    } */
 
-    @Test(expectedExceptions = DateTimeException.class)
+    @Test(expected = DateTimeException.class)
     public void test_minus_TemporalAmount_DaysHours() {
         TemporalAmount amount = new TemporalAmount() {
             @Override
@@ -831,13 +846,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.of(1, 2, 3).minus(Period.ofYears(-1)), 2, 2, 3);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_minusYears_overflowTooBig() {
         Period test = Period.ofYears(Integer.MAX_VALUE);
         test.minusYears(-1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_minusYears_overflowTooSmall() {
         Period test = Period.ofYears(Integer.MIN_VALUE);
         test.minusYears(1);
@@ -859,13 +874,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.of(1, 2, 3).minus(Period.ofMonths(-2)), 1, 4, 3);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_minusMonths_overflowTooBig() {
         Period test = Period.ofMonths(Integer.MAX_VALUE);
         test.minusMonths(-1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_minusMonths_overflowTooSmall() {
         Period test = Period.ofMonths(Integer.MIN_VALUE);
         test.minusMonths(1);
@@ -887,13 +902,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.of(1, 2, 3).minus(Period.ofDays(-3)), 1, 2, 6);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_minusDays_overflowTooBig() {
         Period test = Period.ofDays(Integer.MAX_VALUE);
         test.minusDays(-1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_minusDays_overflowTooSmall() {
         Period test = Period.ofDays(Integer.MIN_VALUE);
         test.minusDays(1);
@@ -916,13 +931,13 @@ public class TCKPeriod extends AbstractTCKTest {
         assertPeriod(Period.ZERO.multipliedBy(2), 0, 0, 0);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_multipliedBy_overflowTooBig() {
         Period test = Period.ofYears(Integer.MAX_VALUE / 2 + 1);
         test.multipliedBy(2);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_multipliedBy_overflowTooSmall() {
         Period test = Period.ofYears(Integer.MIN_VALUE / 2 - 1);
         test.multipliedBy(2);
@@ -941,17 +956,17 @@ public class TCKPeriod extends AbstractTCKTest {
                 -Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_negated_overflow_years() {
         Period.ofYears(Integer.MIN_VALUE).negated();
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_negated_overflow_months() {
         Period.ofMonths(Integer.MIN_VALUE).negated();
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_negated_overflow_days() {
         Period.ofDays(Integer.MIN_VALUE).negated();
     }
@@ -959,8 +974,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // normalized()
     //-----------------------------------------------------------------------
-    @DataProvider(name="normalized")
-    Object[][] data_normalized() {
+    @DataProvider
+    public static Object[][] data_normalized() {
         return new Object[][] {
                 {0, 0,  0, 0},
                 {1, 0,  1, 0},
@@ -1002,23 +1017,25 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="normalized")
+    @Test()
+    @UseDataProvider("data_normalized")
     public void test_normalized(int inputYears, int inputMonths, int expectedYears, int expectedMonths) {
         assertPeriod(Period.of(inputYears, inputMonths, 0).normalized(), expectedYears, expectedMonths, 0);
     }
 
-    @Test(dataProvider="normalized")
+    @Test()
+    @UseDataProvider("data_normalized")
     public void test_normalized_daysUnaffected(int inputYears, int inputMonths, int expectedYears, int expectedMonths) {
         assertPeriod(Period.of(inputYears, inputMonths, 5).normalized(), expectedYears, expectedMonths, 5);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_normalized_min() {
         Period base = Period.of(Integer.MIN_VALUE, -12, 0);
         base.normalized();
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expected=ArithmeticException.class)
     public void test_normalized_max() {
         Period base = Period.of(Integer.MAX_VALUE, 12, 0);
         base.normalized();
@@ -1027,8 +1044,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // addTo()
     //-----------------------------------------------------------------------
-    @DataProvider(name="addTo")
-    Object[][] data_addTo() {
+    @DataProvider
+    public static Object[][] data_addTo() {
         return new Object[][] {
                 {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
 
@@ -1056,22 +1073,24 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="addTo")
+    @Test()
+    @UseDataProvider("data_addTo")
     public void test_addTo(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(period.addTo(baseDate), expected);
     }
 
-    @Test(dataProvider="addTo")
+    @Test()
+    @UseDataProvider("data_addTo")
     public void test_addTo_usingLocalDatePlus(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(baseDate.plus(period), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_addTo_nullZero() {
         Period.ZERO.addTo(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_addTo_nullNonZero() {
         Period.ofDays(2).addTo(null);
     }
@@ -1079,8 +1098,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // subtractFrom()
     //-----------------------------------------------------------------------
-    @DataProvider(name="subtractFrom")
-    Object[][] data_subtractFrom() {
+    @DataProvider
+    public static Object[][] data_subtractFrom() {
         return new Object[][] {
                 {pymd(0, 0, 0), date(2012, 6, 30), date(2012, 6, 30)},
 
@@ -1109,22 +1128,24 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="subtractFrom")
+    @Test()
+    @UseDataProvider("data_subtractFrom")
     public void test_subtractFrom(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(period.subtractFrom(baseDate), expected);
     }
 
-    @Test(dataProvider="subtractFrom")
+    @Test()
+    @UseDataProvider("data_subtractFrom")
     public void test_subtractFrom_usingLocalDateMinus(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(baseDate.minus(period), expected);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_subtractFrom_nullZero() {
         Period.ZERO.subtractFrom(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_subtractFrom_nullNonZero() {
         Period.ofDays(2).subtractFrom(null);
     }
@@ -1136,15 +1157,15 @@ public class TCKPeriod extends AbstractTCKTest {
     public void test_Period_getUnits() {
         Period period = Period.of(2012, 1, 1);
         List<TemporalUnit> units = period.getUnits();
-        assertEquals(units.size(), 3, "Period.getUnits should return 3 units");
-        assertEquals(units.get(0), ChronoUnit.YEARS, "Period.getUnits contains ChronoUnit.YEARS");
-        assertEquals(units.get(1), ChronoUnit.MONTHS, "Period.getUnits contains ChronoUnit.MONTHS");
-        assertEquals(units.get(2), ChronoUnit.DAYS, "Period.getUnits contains ChronoUnit.DAYS");
+        assertEquals("Period.getUnits should return 3 units", units.size(), 3);
+        assertEquals("Period.getUnits contains ChronoUnit.YEARS", units.get(0), ChronoUnit.YEARS);
+        assertEquals("Period.getUnits contains ChronoUnit.MONTHS", units.get(1), ChronoUnit.MONTHS);
+        assertEquals("Period.getUnits contains ChronoUnit.DAYS", units.get(2), ChronoUnit.DAYS);
     }
 
 
-    @DataProvider(name="GoodTemporalUnit")
-    Object[][] data_goodTemporalUnit() {
+    @DataProvider
+    public static Object[][] data_goodTemporalUnit() {
         return new Object[][] {
             {2, ChronoUnit.DAYS},
             {2, ChronoUnit.MONTHS},
@@ -1152,15 +1173,16 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="GoodTemporalUnit")
+    @Test()
+    @UseDataProvider("data_goodTemporalUnit")
     public void test_good_getUnit(long amount, TemporalUnit unit) {
         Period period = Period.of(2, 2, 2);
         long actual = period.get(unit);
-        assertEquals(actual, amount, "Value of unit: " + unit);
+        assertEquals("Value of unit: " + unit, actual, amount);
     }
 
-    @DataProvider(name="BadTemporalUnit")
-    Object[][] data_badTemporalUnit() {
+    @DataProvider
+    public static Object[][] data_badTemporalUnit() {
         return new Object[][] {
             {ChronoUnit.MICROS},
             {ChronoUnit.MILLIS},
@@ -1171,7 +1193,8 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="BadTemporalUnit", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_badTemporalUnit")
     public void test_bad_getUnit(TemporalUnit unit) {
         Period period = Period.of(2, 2, 2);
         period.get(unit);
@@ -1228,8 +1251,8 @@ public class TCKPeriod extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="toStringAndParse")
-    Object[][] data_toString() {
+    @DataProvider
+    public static Object[][] data_toString() {
         return new Object[][] {
                 {Period.ZERO, "P0D"},
                 {Period.ofDays(0), "P0D"},
@@ -1242,22 +1265,24 @@ public class TCKPeriod extends AbstractTCKTest {
         };
     }
 
-    @Test(dataProvider="toStringAndParse")
+    @Test()
+    @UseDataProvider("data_toString")
     public void test_toString(Period input, String expected) {
         assertEquals(input.toString(), expected);
     }
 
-    @Test(dataProvider="toStringAndParse")
+    @Test()
+    @UseDataProvider("data_toString")
     public void test_parse(Period test, String expected) {
         assertEquals(Period.parse(expected), test);
     }
 
     //-----------------------------------------------------------------------
     private void assertPeriod(Period test, int y, int m, int d) {
-        assertEquals(test.getYears(), y, "years");
-        assertEquals(test.getMonths(), m, "months");
-        assertEquals(test.getDays(), d, "days");
-        assertEquals(test.toTotalMonths(), y * 12L + m, "totalMonths");
+        assertEquals("years", test.getYears(), y);
+        assertEquals("months", test.getMonths(), m);
+        assertEquals("days", test.getDays(), d);
+        assertEquals("totalMonths", test.toTotalMonths(), y * 12L + m);
     }
 
     private static Period pymd(int y, int m, int d) {

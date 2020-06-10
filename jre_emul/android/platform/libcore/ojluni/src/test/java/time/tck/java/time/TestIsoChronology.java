@@ -64,10 +64,10 @@ import static java.time.chrono.IsoEra.CE;
 import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.YEAR;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -75,21 +75,25 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.chrono.Chronology;
 import java.time.chrono.Era;
+/* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
 import java.time.chrono.HijrahChronology;
-import java.time.chrono.HijrahEra;
+import java.time.chrono.HijrahEra; */
 import java.time.chrono.IsoChronology;
 import java.time.chrono.IsoEra;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestIsoChronology {
 
     //-----------------------------------------------------------------------
@@ -99,9 +103,9 @@ public class TestIsoChronology {
     public void test_chrono_byName() {
         Chronology c = IsoChronology.INSTANCE;
         Chronology test = Chronology.of("ISO");
-        Assert.assertNotNull(test, "The ISO calendar could not be found byName");
-        Assert.assertEquals(test.getId(), "ISO", "ID mismatch");
-        Assert.assertEquals(test.getCalendarType(), "iso8601", "Type mismatch");
+        Assert.assertNotNull("The ISO calendar could not be found byName", test);
+        Assert.assertEquals("ID mismatch", test.getId(), "ISO");
+        Assert.assertEquals("Type mismatch", test.getCalendarType(), "iso8601");
         Assert.assertEquals(test, c);
     }
 
@@ -125,8 +129,8 @@ public class TestIsoChronology {
     //-----------------------------------------------------------------------
     // creation, toLocalDate()
     //-----------------------------------------------------------------------
-    @DataProvider(name="samples")
-    Object[][] data_samples() {
+    @DataProvider
+    public static Object[][] data_samples() {
         return new Object[][] {
             {IsoChronology.INSTANCE.date(1, 7, 8), LocalDate.of(1, 7, 8)},
             {IsoChronology.INSTANCE.date(1, 7, 20), LocalDate.of(1, 7, 20)},
@@ -145,18 +149,20 @@ public class TestIsoChronology {
         };
     }
 
-    @Test(dataProvider="samples")
+    @Test()
+    @UseDataProvider("data_samples")
     public void test_toLocalDate(LocalDate isoDate, LocalDate iso) {
         assertEquals(LocalDate.from(isoDate), iso);
     }
 
-    @Test(dataProvider="samples")
+    @Test()
+    @UseDataProvider("data_samples")
     public void test_fromCalendrical(LocalDate isoDate, LocalDate iso) {
         assertEquals(IsoChronology.INSTANCE.date(iso), isoDate);
     }
 
-    @DataProvider(name="badDates")
-    Object[][] data_badDates() {
+    @DataProvider
+    public static Object[][] data_badDates() {
         return new Object[][] {
             {2012, 0, 0},
 
@@ -175,7 +181,8 @@ public class TestIsoChronology {
         };
     }
 
-    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
+    @Test(expected=DateTimeException.class)
+    @UseDataProvider("data_badDates")
     public void test_badDates(int year, int month, int dom) {
         IsoChronology.INSTANCE.date(year, month, dom);
     }
@@ -196,11 +203,12 @@ public class TestIsoChronology {
         assertEquals(test.get(YEAR_OF_ERA), year);
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Test(expectedExceptions=ClassCastException.class)
+    @Test(expected=ClassCastException.class)
     public void test_date_withEra_withWrongEra() {
         IsoChronology.INSTANCE.date((Era) HijrahEra.AH, 1, 1, 1);
-    }
+    } */
 
     //-----------------------------------------------------------------------
     // with(DateTimeAdjuster)
@@ -255,8 +263,8 @@ public class TestIsoChronology {
     //-----------------------------------------------------------------------
     // isLeapYear()
     //-----------------------------------------------------------------------
-    @DataProvider(name="leapYears")
-    Object[][] leapYearInformation() {
+    @DataProvider
+    public static Object[][] leapYearInformation() {
         return new Object[][] {
                 {2000, true},
                 {1996, true},
@@ -267,7 +275,8 @@ public class TestIsoChronology {
         };
     }
 
-    @Test(dataProvider="leapYears")
+    @Test()
+    @UseDataProvider("leapYearInformation")
     public void test_isLeapYear(int year, boolean isLeapYear) {
         assertEquals(IsoChronology.INSTANCE.isLeapYear(year), isLeapYear);
     }
@@ -283,8 +292,8 @@ public class TestIsoChronology {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="toString")
-    Object[][] data_toString() {
+    @DataProvider
+    public static Object[][] data_toString() {
         return new Object[][] {
             {IsoChronology.INSTANCE.date(1, 1, 1), "0001-01-01"},
             {IsoChronology.INSTANCE.date(1728, 10, 28), "1728-10-28"},
@@ -294,7 +303,8 @@ public class TestIsoChronology {
         };
     }
 
-    @Test(dataProvider="toString")
+    @Test()
+    @UseDataProvider("data_toString")
     public void test_toString(LocalDate isoDate, String expected) {
         assertEquals(isoDate.toString(), expected);
     }
@@ -307,9 +317,10 @@ public class TestIsoChronology {
         assertTrue(IsoChronology.INSTANCE.equals(IsoChronology.INSTANCE));
     }
 
+    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     public void test_equals_false() {
         assertFalse(IsoChronology.INSTANCE.equals(HijrahChronology.INSTANCE));
-    }
+    } */
 
 }

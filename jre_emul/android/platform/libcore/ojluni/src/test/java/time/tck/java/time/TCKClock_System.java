@@ -59,20 +59,19 @@
  */
 package tck.java.time;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test system clock.
  */
-@Test
 public class TCKClock_System extends AbstractTCKTest {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
@@ -125,7 +124,7 @@ public class TCKClock_System extends AbstractTCKTest {
         assertEquals(test.getZone(), PARIS);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_zoneId_nullZoneId() {
         Clock.system(null);
     }
@@ -150,7 +149,7 @@ public class TCKClock_System extends AbstractTCKTest {
         assertEquals(changed.getZone(), PARIS);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_withZone_null() {
         Clock.systemUTC().withZone(null);
     }

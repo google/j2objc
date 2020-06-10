@@ -61,91 +61,73 @@ package tck.java.time;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 import org.junit.Test;
 
 /**
- * Test fixed clock.
+ * Test Clock.
  */
-public class TCKClock_Fixed extends AbstractTCKTest {
+public class TCKClock {
 
-    private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
-    private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
-    private static final Instant INSTANT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2)).toInstant();
-
-    //-------------------------------------------------------------------------
-    public void test_fixed_InstantZoneId() {
-        Clock test = Clock.fixed(INSTANT, PARIS);
-        assertEquals(test.instant(), INSTANT);
-        assertEquals(test.getZone(), PARIS);
-   assertEquals(test.instant().getEpochSecond()*1000, test.millis());
+    static class MockInstantClock extends Clock {
+        final long millis;
+        final ZoneId zone;
+        MockInstantClock(long millis, ZoneId zone) {
+            this.millis = millis;
+            this.zone = zone;
+        }
+        @Override
+        public long millis() {
+            return millis;
+        }
+        @Override
+        public Instant instant() {
+            return Instant.ofEpochMilli(millis());
+        }
+        @Override
+        public ZoneId getZone() {
+            return zone;
+        }
+        @Override
+        public Clock withZone(ZoneId timeZone) {
+            return new MockInstantClock(millis, timeZone);
+        }
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+        @Override
+        public String toString() {
+            return "Mock";
+        }
     }
 
-    @Test(expected = NullPointerException.class)
-    public void test_fixed_InstantZoneId_nullInstant() {
-        Clock.fixed(null, PARIS);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void test_fixed_InstantZoneId_nullZoneId() {
-        Clock.fixed(INSTANT, null);
-    }
-
-    //-------------------------------------------------------------------------
-    public void test_withZone() {
-        Clock test = Clock.fixed(INSTANT, PARIS);
-        Clock changed = test.withZone(MOSCOW);
-        assertEquals(test.getZone(), PARIS);
-        assertEquals(changed.getZone(), MOSCOW);
-    }
-
-    public void test_withZone_equal() {
-        Clock test = Clock.fixed(INSTANT, PARIS);
-        Clock changed = test.withZone(PARIS);
-        assertEquals(changed.getZone(), PARIS);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void test_withZone_null() {
-        Clock.fixed(INSTANT, PARIS).withZone(null);
-    }
+    private static final Instant INSTANT = Instant.ofEpochSecond(1873687, 357000000);
+    private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
+    private static final Clock MOCK_INSTANT = new MockInstantClock(INSTANT.toEpochMilli(), ZONE);
 
     //-----------------------------------------------------------------------
-    public void test_equals() {
-        Clock a = Clock.fixed(INSTANT, ZoneOffset.UTC);
-        Clock b = Clock.fixed(INSTANT, ZoneOffset.UTC);
-        assertEquals(a.equals(a), true);
-        assertEquals(a.equals(b), true);
-        assertEquals(b.equals(a), true);
-        assertEquals(b.equals(b), true);
-
-        Clock c = Clock.fixed(INSTANT, PARIS);
-        assertEquals(a.equals(c), false);
-
-        Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneOffset.UTC);
-        assertEquals(a.equals(d), false);
-
-        assertEquals(a.equals(null), false);
-        assertEquals(a.equals("other type"), false);
-        assertEquals(a.equals(Clock.systemUTC()), false);
+    @Test
+    public void test_mockInstantClock_get() {
+        assertEquals(MOCK_INSTANT.instant(), INSTANT);
+        assertEquals(MOCK_INSTANT.millis(), INSTANT.toEpochMilli());
+        assertEquals(MOCK_INSTANT.getZone(), ZONE);
     }
 
-    public void test_hashCode() {
-        Clock a = Clock.fixed(INSTANT, ZoneOffset.UTC);
-        Clock b = Clock.fixed(INSTANT, ZoneOffset.UTC);
-        assertEquals(a.hashCode(), a.hashCode());
-        assertEquals(a.hashCode(), b.hashCode());
-
-        Clock c = Clock.fixed(INSTANT, PARIS);
-        assertEquals(a.hashCode() == c.hashCode(), false);
-
-        Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneOffset.UTC);
-        assertEquals(a.hashCode() == d.hashCode(), false);
+    @Test
+    public void test_mockInstantClock_withZone() {
+        ZoneId london = ZoneId.of("Europe/London");
+        Clock changed = MOCK_INSTANT.withZone(london);
+        assertEquals(MOCK_INSTANT.instant(), INSTANT);
+        assertEquals(MOCK_INSTANT.millis(), INSTANT.toEpochMilli());
+        assertEquals(changed.getZone(), london);
     }
+
 }
