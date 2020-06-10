@@ -284,6 +284,7 @@ TEST_SOURCES := \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
     java/lang/reflect/MethodTest.java \
+    java/util/HashMapTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \

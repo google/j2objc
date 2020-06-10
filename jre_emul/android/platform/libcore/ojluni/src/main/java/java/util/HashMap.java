@@ -1852,8 +1852,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     static final class TreeNode<K,V> extends LinkedHashMap.LinkedHashMapEntry<K,V> {
         @Weak TreeNode<K,V> parent; // red-black tree links
-        TreeNode<K,V> left;
-        TreeNode<K,V> right;
+        @Weak TreeNode<K,V> left;
+        @Weak TreeNode<K,V> right;
         @Weak TreeNode<K,V> prev;    // needed to unlink next upon deletion
         boolean red;
         TreeNode(int hash, K key, V val, Node<K,V> next) {
