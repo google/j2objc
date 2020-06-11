@@ -96,10 +96,7 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.Before;
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -1126,45 +1123,41 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
-    public static Iterator<Object[]> weekDate() {
-        return new Iterator<Object[]>() {
-            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.of("Europe/Paris"));
-            private ZonedDateTime endDate = date.withYear(2005).withMonth(1).withDayOfMonth(2);
-            private int week = 1;
-            private int day = 1;
+    public static List<List<Object>> weekDate() {
+        List<List<Object>> weekDate = new ArrayList<>();
 
-            public boolean hasNext() {
-                return !date.isAfter(endDate);
-            }
-            public Object[] next() {
-                StringBuilder sb = new StringBuilder("2004-W");
-                if (week < 10) {
-                    sb.append('0');
-                }
-                sb.append(week).append('-').append(day).append(date.getOffset());
-                Object[] ret = new Object[] {date, sb.toString()};
-                date = date.plusDays(1);
-                day += 1;
-                if (day == 8) {
-                    day = 1;
-                    week++;
-                }
-                return ret;
-            }
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    } */
+        ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.of("Europe/Paris"));
+        ZonedDateTime endDate = date.withYear(2005).withMonth(1).withDayOfMonth(2);
+        int week = 1;
+        int day = 1;
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+        while (!date.isAfter(endDate)) {
+            StringBuilder sb = new StringBuilder("2004-W");
+            if (week < 10) {
+                sb.append('0');
+            }
+            sb.append(week).append('-').append(day).append(date.getOffset());
+
+            List<Object> ret = new ArrayList<>(Arrays.asList(date, sb.toString()));
+            weekDate.add(ret);
+
+            date = date.plusDays(1);
+            day += 1;
+            if (day == 8) {
+                day = 1;
+                week++;
+            }
+        }
+
+        return weekDate;
+    }
+
     @Test
     @UseDataProvider("weekDate")
     public void test_print_isoWeekDate(TemporalAccessor test, String expected) {
         assertEquals(DateTimeFormatter.ISO_WEEK_DATE.format(test), expected);
-    } */
+    }
 
     @Test
     public void test_print_isoWeekDate_zoned_largeYear() {
