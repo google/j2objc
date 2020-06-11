@@ -207,6 +207,9 @@ run-beans-tests: link resources $(TEST_BIN)
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore jsr166.ConcurrencyTests
 
+run-crypto-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.crypto.CryptoTests
+
 run-icu-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore android.icu.dev.test.Tests
 

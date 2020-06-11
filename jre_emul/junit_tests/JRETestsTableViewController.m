@@ -49,6 +49,7 @@
     // Test display name          Test class name
     @"All JRE Tests",             @"AllJreTests",
     @"Concurrency Tests",         @"jsr166.ConcurrencyTests",
+    @"Crypto Tests",              @"com.google.j2objc.crypto.CryptoTests",
     @"IosSecurityProvider Tests", @"com.google.j2objc.security.IosSecurityProviderTests",
     @"java.beans Tests",          @"org.apache.harmony.beans.tests.java.beans.AllTests",
     @"java.io Tests",             @"libcore.java.io.SmallTests",

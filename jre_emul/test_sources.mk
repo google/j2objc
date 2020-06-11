@@ -75,6 +75,11 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/SpliteratorTester.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
+    libcore/javax/crypto/MockCipherSpi.java \
+    libcore/javax/crypto/MockKey.java \
+    libcore/javax/crypto/MockKey2.java \
+    libcore/javax/crypto/MockKeyAgreementSpi.java \
+    libcore/javax/crypto/MockMacSpi.java \
     libcore/javax/net/ssl/SSLConfigurationAsserts.java \
     libcore/javax/net/ssl/TestSSLContext.java \
     libcore/javax/net/ssl/TestSSLSocketPair.java \
@@ -609,6 +614,10 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/crypto/CipherOutputStreamTest.java \
+    libcore/javax/crypto/CipherTest.java \
+    libcore/javax/crypto/KeyAgreementTest.java \
+    libcore/javax/crypto/spec/AlgorithmParametersTestPBES2.java \
     libcore/javax/net/ServerSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
@@ -1144,6 +1153,7 @@ SUITE_SOURCES = \
     android/icu/dev/test/Tests.java \
     jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
+    com/google/j2objc/crypto/CryptoTests.java \
     com/google/j2objc/java8/SmallTests.java \
     com/google/j2objc/nio/NioTests.java \
     com/google/j2objc/security/IosSecurityProviderTests.java \
