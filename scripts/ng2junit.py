@@ -134,7 +134,6 @@ def main():
     directory_contents = os.listdir(directory_to_migrate)
     full_paths = [os.path.join(directory_to_migrate, x) for x in directory_contents]
     files = [x for x in full_paths if os.path.isfile(x)]
-    print(files)
     for file_name in files:
         if 'java' not in file_name:
             continue
