@@ -232,6 +232,9 @@ run-net-tests: link resources $(TEST_BIN)
 run-nio-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.nio.NioTests
 
+run-security-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.security.SecurityTests
+
 run-text-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.text.SmallTests libcore.java.text.LargeTests
 

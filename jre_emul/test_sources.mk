@@ -1116,6 +1116,9 @@ TEST_SOURCES := \
     tests/security/interfaces/RSAKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
     tests/security/interfaces/RSAPublicKeyTest.java \
+    tests/security/spec/DSAParameterSpecTest.java \
+    tests/security/spec/DSAPrivateKeySpecTest.java \
+    tests/security/spec/DSAPublicKeySpecTest.java \
     tests/security/spec/ECFieldF2mTest.java \
     tests/security/spec/ECFieldFpTest.java \
     tests/security/spec/ECGenParameterSpecTest.java \
@@ -1124,9 +1127,11 @@ TEST_SOURCES := \
     tests/security/spec/ECPrivateKeySpecTest.java \
     tests/security/spec/ECPublicKeySpecTest.java \
     tests/security/spec/EllipticCurveTest.java \
+    tests/security/spec/EncodedKeySpecTest.java \
     tests/security/spec/InvalidKeySpecExceptionTest.java \
     tests/security/spec/InvalidParameterSpecExceptionTest.java \
     tests/security/spec/MGF1ParameterSpecTest.java \
+    tests/security/spec/PKCS8EncodedKeySpecTest.java \
     tests/security/spec/PSSParameterSpecTest.java \
     tests/security/spec/RSAKeyGenParameterSpecTest.java \
     tests/security/spec/RSAMultiPrimePrivateCrtKeySpecTest.java \
@@ -1134,6 +1139,7 @@ TEST_SOURCES := \
     tests/security/spec/RSAPrivateCrtKeySpecTest.java \
     tests/security/spec/RSAPrivateKeySpecTest.java \
     tests/security/spec/RSAPublicKeySpecTest.java \
+    tests/security/spec/X509EncodedKeySpecTest.java \
     tests/targets/security/MessageDigestTestMD5.java \
     tests/targets/security/MessageDigestTestSHA1.java \
     tests/targets/security/MessageDigestTestSHA256.java \
@@ -1147,6 +1153,7 @@ SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \
     com/google/j2objc/nio/NioTests.java \
     com/google/j2objc/security/IosSecurityProviderTests.java \
+    com/google/j2objc/security/SecurityTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/net/SmallTests.java \
     libcore/java/text/LargeTests.java \

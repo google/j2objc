@@ -111,7 +111,9 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
     public int getCofactor() {
         return h;
     }
-    // BEGIN Android-changed
+    // BEGIN Android-added: Store the curve name as part of the parameters
+    // Knowing the name of the curve sometimes allows implementations to operate
+    // more efficiently.
     private String curveName;
 
     /**
@@ -132,5 +134,5 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
     public String getCurveName() {
         return curveName;
     }
-    // END Android-changed
+    // END Android-added: Store the curve name as part of the parameters
 }
