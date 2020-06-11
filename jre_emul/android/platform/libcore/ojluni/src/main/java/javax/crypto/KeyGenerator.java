@@ -332,7 +332,8 @@ public class KeyGenerator {
             NoSuchProviderException {
         // Android-added: Check for Bouncy Castle deprecation
         /* J2ObjC removed: BouncyCastle not supported
-        Providers.checkBouncyCastleDeprecation(provider, "KeyGenerator", algorithm); */
+        Providers.checkBouncyCastleDeprecation(provider, "KeyGenerator", algorithm);
+         */
         Instance instance = JceSecurity.getInstance("KeyGenerator",
                 KeyGeneratorSpi.class, algorithm, provider);
         return new KeyGenerator((KeyGeneratorSpi)instance.impl,
@@ -373,7 +374,8 @@ public class KeyGenerator {
             Provider provider) throws NoSuchAlgorithmException {
         // Android-added: Check for Bouncy Castle deprecation
         /* J2ObjC removed: BouncyCastle not supported
-        Providers.checkBouncyCastleDeprecation(provider, "KeyGenerator", algorithm); */
+        Providers.checkBouncyCastleDeprecation(provider, "KeyGenerator", algorithm);
+         */
         Instance instance = JceSecurity.getInstance("KeyGenerator",
                 KeyGeneratorSpi.class, algorithm, provider);
         return new KeyGenerator((KeyGeneratorSpi)instance.impl,

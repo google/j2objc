@@ -387,7 +387,8 @@ public class SecretKeyFactory {
             NoSuchProviderException {
         // Android-added: Check for Bouncy Castle deprecation
         /* J2ObjC removed: BouncyCastle not supported
-        Providers.checkBouncyCastleDeprecation(provider, "SecretKeyFactory", algorithm); */
+        Providers.checkBouncyCastleDeprecation(provider, "SecretKeyFactory", algorithm);
+        */
         Instance instance = JceSecurity.getInstance("SecretKeyFactory",
                 SecretKeyFactorySpi.class, algorithm, provider);
         return new SecretKeyFactory((SecretKeyFactorySpi)instance.impl,
@@ -430,7 +431,8 @@ public class SecretKeyFactory {
             Provider provider) throws NoSuchAlgorithmException {
         // Android-added: Check for Bouncy Castle deprecation
         /* J2ObjC removed: BouncyCastle not supported
-        Providers.checkBouncyCastleDeprecation(provider, "SecretKeyFactory", algorithm); */
+        Providers.checkBouncyCastleDeprecation(provider, "SecretKeyFactory", algorithm);
+        */
         Instance instance = JceSecurity.getInstance("SecretKeyFactory",
                 SecretKeyFactorySpi.class, algorithm, provider);
         return new SecretKeyFactory((SecretKeyFactorySpi)instance.impl,

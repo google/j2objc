@@ -254,7 +254,8 @@ public class KeyAgreement {
             NoSuchProviderException {
         // Android-added: Check for Bouncy Castle deprecation
         /* J2ObjC removed: BouncyCastle not supported
-        Providers.checkBouncyCastleDeprecation(provider, "KeyAgreement", algorithm); */
+        Providers.checkBouncyCastleDeprecation(provider, "KeyAgreement", algorithm);
+         */
         Instance instance = JceSecurity.getInstance
                 ("KeyAgreement", KeyAgreementSpi.class, algorithm, provider);
         return new KeyAgreement((KeyAgreementSpi)instance.impl,
@@ -297,7 +298,8 @@ public class KeyAgreement {
             Provider provider) throws NoSuchAlgorithmException {
         // Android-added: Check for Bouncy Castle deprecation
         /* J2ObjC removed: BouncyCastle not supported
-        Providers.checkBouncyCastleDeprecation(provider, "KeyAgreement", algorithm); */
+        Providers.checkBouncyCastleDeprecation(provider, "KeyAgreement", algorithm);
+         */
         Instance instance = JceSecurity.getInstance
                 ("KeyAgreement", KeyAgreementSpi.class, algorithm, provider);
         return new KeyAgreement((KeyAgreementSpi)instance.impl,
