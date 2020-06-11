@@ -59,6 +59,7 @@
     @"Java 8 Tests",              @"com.google.j2objc.java8.SmallTests",
     @"JSON Tests",                @"libcore.org.json.SmallTests",
     @"Reflection Tests",          @"com.google.j2objc.ReflectionTests",
+    @"Security Tests",            @"com.google.j2objc.security.SecurityTests",
   ];
   self.testNames = [NSMutableArray array];
   self.testClasses = [NSMutableDictionary dictionary];

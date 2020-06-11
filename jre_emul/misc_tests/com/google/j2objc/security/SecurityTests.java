@@ -19,13 +19,19 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Returns a suite of all java.security.spec tests.
+ * Returns a suite of all java.security tests.
  */
 public class SecurityTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(TestUtil.getPackageTests("tests.security.spec"));
+        suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.javax.security"));
+        suite.addTest(TestUtil.getPackageTests("org.apache.harmony.security.tests.java.security"));
+        suite.addTest(TestUtil.getPackageTests("tests.targets.security"));
+        suite.addTest(TestUtil.getPackageTests("com.android.org.conscrypt.java.security"));
+        suite.addTest(TestUtil.getPackageTests("tests.java.security"));
+        suite.addTest(TestUtil.getPackageTests("tests.security"));
+        suite.addTest(TestUtil.getPackageTests("libcore.java.security"));
         return suite;
     }
 
