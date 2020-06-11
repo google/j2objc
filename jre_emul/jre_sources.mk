@@ -1194,6 +1194,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/spec/RSAPublicKeySpec.java \
   java/security/spec/X509EncodedKeySpec.java \
   java/util/UUID.java \
+  javax/crypto/AEADBadTagException.java \
   javax/crypto/BadPaddingException.java \
   javax/crypto/Cipher.java \
   javax/crypto/CipherInputStream.java \
