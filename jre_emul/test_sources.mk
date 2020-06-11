@@ -658,6 +658,21 @@ TEST_SOURCES := \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPrivateKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPublicKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/PBEKeyTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DESKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DESedeKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHGenParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHPrivateKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHPublicKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/GCMParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/IvParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/OAEPParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/PBEKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/PBEParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/PSourceTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/RC2ParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/RC5ParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/SecretKeySpecTest.java \
     org/apache/harmony/nio/tests/java/nio/channels/spi/SelectorProviderTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
