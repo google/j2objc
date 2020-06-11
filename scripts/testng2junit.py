@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Migrates all java files in a directory from testng to junit
+"""Migrates all java files in a directory from TestNG (https://testng.org/) to JUnit (https://junit.org/junit4/)
 
-Useful as libcore team is moving to testng and adding tests in that framework
+Used by J2ObjC to translate Android's libcore new TestNG unit tests.
 
 Usage:
-    ng2junit.py directory_to_migrate
+    testng2junit.py <directory_to_migrate>
 """
 
 import regex as re
@@ -60,7 +60,7 @@ def MigrateAnnotations(content):
 
 
 def MigrateDataProviders(content):
-    # testng allows to rename the DataProvider. Make a list of tuples mapping the new name to original name
+    # TestNG allows to rename the DataProvider. Make a list of tuples mapping the new name to original name
     # @DataProvider(name="MillisInstantNoNanos")
     # Object[][] provider_factory_millis_long() {
     data_provider_regex = re.compile(
@@ -84,7 +84,7 @@ def MigrateDataProviders(content):
         content_new = re.sub('public class',
                              '@RunWith(DataProviderRunner.class)\npublic class', content_new)
 
-    # in junit data providers have to be public and static
+    # in JUnit data providers have to be public and static
     object_array_provider_regex = re.compile('Object\[\]\[\] (.*)\(\)')
     content_new = object_array_provider_regex.sub(
         'public static Object[][] \\1()', content_new)
@@ -102,8 +102,8 @@ def MigrateExceptions(content):
 
 
 def MigrateAsserts(content):
-    # testng has an overload for assertEquals that takes parameters obj1, obj2, message
-    # junit also has this overload but takes parameters message, obj1, obj2
+    # TestNG has an overload for assertEquals that takes parameters obj1, obj2, message
+    # JUnit also has this overload but takes parameters message, obj1, obj2
     assert_equals_overload_regex = re.compile(
         'assertEquals\((.*), (.*), (("|String).*)\);')
     content_new = assert_equals_overload_regex.sub(
@@ -119,8 +119,8 @@ def MigrateAsserts(content):
     content_new = multiline_assert_equals_overload_regex.sub(
         'assertEquals(\\3, \\1, \\2);', content_new)
 
-    # testng has overloads for assert(True|False|NotNull|Same) taking two parameters condition, message
-    # junit also has these overloads but takes parameters message, condition
+    # TestNG has overloads for assert(True|False|NotNull|Same) taking two parameters condition, message
+    # JUnit also has these overloads but takes parameters message, condition
     assert_conditional_regex = re.compile(
         'assert(True|False|NotNull|Same)\((.*), (.*)\);')
     content_new = assert_conditional_regex.sub(
@@ -132,10 +132,13 @@ def MigrateAsserts(content):
 def main():
     directory_to_migrate = sys.argv[1]
     directory_contents = os.listdir(directory_to_migrate)
+    if directory_contents is None:
+        print 'usage: testng2junit.py <directory_to_migrate>'
+        sys_exit(1)
     full_paths = [os.path.join(directory_to_migrate, x) for x in directory_contents]
     files = [x for x in full_paths if os.path.isfile(x)]
     for file_name in files:
-        if 'java' not in file_name:
+        if not file_name.endswith('java'):
             continue
         with open(file_name, 'r') as f:
             content = f.read()
