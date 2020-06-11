@@ -38,12 +38,12 @@ public class UTF16CharsetEncoderTest extends CharsetEncoderTest {
 	 */
 	protected void setUp() throws Exception {
 		cs = CS;
-		specifiedReplacement = new byte[] { -3, -1 };
-		surrogate = new byte[] { -1, -2 };
-		unibytes = new byte[] { 32, 0, 98, 0, 117, 0, 102, 0, 102, 0, 101, 0,
-				114, 0 };
-		unibytesWithRep = new byte[] { -3, -1, 32, 0, 98, 0, 117, 0, 102, 0,
-				102, 0, 101, 0, 114, 0 };
+		specifiedReplacement = new byte[] { -1, -3 };
+		surrogate = new byte[] { -2, -1 };
+		unibytes = new byte[] { 0, 32, 0, 98, 0, 117, 0, 102, 0, 102, 0, 101,
+				0, 114 };
+		unibytesWithRep = new byte[] { -1, -3, 0, 32, 0, 98, 0, 117, 0, 102,
+				0, 102, 0, 101, 0, 114 };
 		super.setUp();
 	}
 
@@ -111,18 +111,5 @@ public class UTF16CharsetEncoderTest extends CharsetEncoderTest {
 		// FIXME: Different Here!
 		// return new byte[]{(byte)0xd8, 0x00};
 		return new byte[] { (byte) 0x00, (byte) 0xd8 };
-	}
-
-	void assertByteArray(ByteBuffer out, byte[] expected) {
-		out = out.duplicate();
-		if (out.position() > 0) {
-			out.flip();
-		}
-		try {
-			assertEquals(decoder.decode(out), decoder.decode(ByteBuffer
-					.wrap(expected)));
-		} catch (CharacterCodingException e) {
-			fail(e.toString());
-		}
 	}
 }

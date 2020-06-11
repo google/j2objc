@@ -30,7 +30,9 @@ import com.google.j2objc.nio.charset.IOSCharset;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.spi.CharsetProvider;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,11 +40,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.ServiceLoader;
+import java.util.ServiceConfigurationError;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import sun.misc.ASCIICaseInsensitiveComparator;
 import sun.nio.cs.ThreadLocalCoders;
 import sun.security.action.GetPropertyAction;
+
 
 // Android-changed: Docs to say UTF-8 is always the platform default charset.
 /**
