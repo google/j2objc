@@ -1020,6 +1020,7 @@ TEST_SOURCES := \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronologySerialization.java \
     tck/java/time/chrono/serial/TCKEraSerialization.java \
+    tck/java/time/format/TCKChronoPrinterParser.java \
     tck/java/time/format/TCKDateTimeFormatter.java \
     tck/java/time/format/TCKDateTimeFormatterBuilder.java \
     tck/java/time/format/TCKDateTimeFormatters.java \
