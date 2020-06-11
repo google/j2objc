@@ -119,10 +119,10 @@ def MigrateAsserts(content):
     content_new = multiline_assert_equals_overload_regex.sub(
         'assertEquals(\\3, \\1, \\2);', content_new)
 
-    # testng has overloads for assert(True|False|NotNull) taking two parameters condition, message
+    # testng has overloads for assert(True|False|NotNull|Same) taking two parameters condition, message
     # junit also has these overloads but takes parameters message, condition
     assert_conditional_regex = re.compile(
-        'assert(True|False|NotNull)\((.*), (.*)\);')
+        'assert(True|False|NotNull|Same)\((.*), (.*)\);')
     content_new = assert_conditional_regex.sub(
         'assert\\1(\\3, \\2);', content_new)
 
@@ -130,8 +130,11 @@ def MigrateAsserts(content):
 
 
 def main():
-    cwd = sys.argv[1]
-    files = [x for x in os.listdir(cwd) if os.path.isfile(x)]
+    directory_to_migrate = sys.argv[1]
+    directory_contents = os.listdir(directory_to_migrate)
+    full_paths = [os.path.join(directory_to_migrate, x) for x in directory_contents]
+    files = [x for x in full_paths if os.path.isfile(x)]
+    print(files)
     for file_name in files:
         if 'java' not in file_name:
             continue
