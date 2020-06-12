@@ -65,6 +65,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/SettableCharsetProvider.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
+    libcore/java/security/cert/FakeOidProvider.java \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
     libcore/java/util/ListDefaultMethodTester.java \
@@ -505,6 +506,8 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/security/cert/CRLReasonTest.java \
+    libcore/java/security/cert/X509CRLSelectorTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
