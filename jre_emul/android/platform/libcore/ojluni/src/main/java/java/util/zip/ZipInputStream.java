@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@ import java.io.PushbackInputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.util.zip.ZipConstants64.*;
+import static java.util.zip.ZipUtils.*;
 
 /**
  * This class implements an input stream filter for reading files in the
@@ -96,6 +97,8 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
      */
     public ZipInputStream(InputStream in, Charset charset) {
         super(new PushbackInputStream(in, 512), new Inflater(true), 512);
+        // Android-changed: Unconditionally close external inflaters (b/26462400)
+        // usesDefaultInflater = true;
         if(in == null) {
             throw new NullPointerException("in is null");
         }
@@ -121,10 +124,12 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
         if ((entry = readLOC()) == null) {
             return null;
         }
-        // ----- BEGIN android -----
+        // Android-changed: Return more accurate value from available().
+        // Initialize the remaining field with the number of bytes that can be read from the entry
+        // for both uncompressed and compressed entries so that it can be used to provide a more
+        // accurate return value for available().
         // if (entry.method == STORED) {
         if (entry.method == STORED || entry.method == DEFLATED) {
-        // ----- END android -----
             remaining = entry.size;
         }
         entryEOF = false;
@@ -156,10 +161,14 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
      */
     public int available() throws IOException {
         ensureOpen();
-        // ----- BEGIN android -----
+        // Android-changed: Return more accurate value from available().
+        // Tracks the remaining bytes in order to return a more accurate value for the available
+        // bytes. Given an entry of size N both Android and upstream will return 1 until N bytes
+        // have been read at which point Android will return 0 and upstream will return 1.
+        // Upstream will only return 0 after an attempt to read a byte fails because the EOF has
+        // been reached. See http://b/111439440 for more details.
         // if (entryEOF) {
         if (entryEOF || (entry != null && remaining == 0)) {
-        // ----- END android -----
             return 0;
         } else {
             return 1;
@@ -203,9 +212,10 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
                 entry = null;
             } else {
                 crc.update(b, off, len);
-                // ----- BEGIN android -----
+                // Android-added: Return more accurate value from available().
+                // Update the remaining field so it is an accurate count of the number of bytes
+                // remaining in this stream, after deflation.
                 remaining -= len;
-                // ----- END android -----
             }
             return len;
         case STORED:
@@ -240,7 +250,7 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
      * @return the actual number of bytes skipped
      * @exception ZipException if a ZIP file error has occurred
      * @exception IOException if an I/O error has occurred
-     * @exception IllegalArgumentException if n < 0
+     * @exception IllegalArgumentException if {@code n < 0}
      */
     public long skip(long n) throws IOException {
         if (n < 0) {
@@ -296,9 +306,9 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
         int len = get16(tmpbuf, LOCNAM);
         int blen = b.length;
         if (len > blen) {
-            do
+            do {
                 blen = blen * 2;
-            while (len > blen);
+            } while (len > blen);
             b = new byte[blen];
         }
         readFully(b, 0, len);
@@ -311,13 +321,18 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
             throw new ZipException("encrypted ZIP entry not supported");
         }
         e.method = get16(tmpbuf, LOCHOW);
-        e.time = get32(tmpbuf, LOCTIM);
+        e.xdostime = get32(tmpbuf, LOCTIM);
         if ((flag & 8) == 8) {
-            /* "Data Descriptor" present */
-            if (e.method != DEFLATED) {
-                throw new ZipException(
-                        "only DEFLATED entries can have EXT descriptor");
-            }
+            // Android-Changed: Remove the requirement that only DEFLATED entries
+            // can have data descriptors. This is not required by the ZIP spec and
+            // is inconsistent with the behaviour of ZipFile and versions of Android
+            // prior to Android N.
+            //
+            // /* "Data Descriptor" present */
+            // if (e.method != DEFLATED) {
+            //     throw new ZipException(
+            //             "only DEFLATED entries can have EXT descriptor");
+            // }
         } else {
             e.crc = get32(tmpbuf, LOCCRC);
             e.csize = get32(tmpbuf, LOCSIZ);
@@ -325,32 +340,10 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
         }
         len = get16(tmpbuf, LOCEXT);
         if (len > 0) {
-            byte[] bb = new byte[len];
-            readFully(bb, 0, len);
-            e.setExtra(bb);
-            // extra fields are in "HeaderID(2)DataSize(2)Data... format
-            if (e.csize == ZIP64_MAGICVAL || e.size == ZIP64_MAGICVAL) {
-                int off = 0;
-                while (off + 4 < len) {
-                    int sz = get16(bb, off + 2);
-                    if (get16(bb, off) == ZIP64_EXTID) {
-                        off += 4;
-                        // LOC extra zip64 entry MUST include BOTH original and
-                        // compressed file size fields
-                        if (sz < 16 || (off + sz) > len ) {
-                            // Invalid zip64 extra fields, simply skip. Even it's
-                            // rare, it's possible the entry size happens to be
-                            // the magic value and it "accidnetly" has some bytes
-                            // in extra match the id.
-                            return e;
-                        }
-                        e.size = get64(bb, off);
-                        e.csize = get64(bb, off + 8);
-                        break;
-                    }
-                    off += (sz + 4);
-                }
-            }
+            byte[] extra = new byte[len];
+            readFully(extra, 0, len);
+            e.setExtra0(extra,
+                        e.csize == ZIP64_MAGICVAL || e.size == ZIP64_MAGICVAL);
         }
         return e;
     }
@@ -439,27 +432,4 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
         }
     }
 
-    /*
-     * Fetches unsigned 16-bit value from byte array at specified offset.
-     * The bytes are assumed to be in Intel (little-endian) byte order.
-     */
-    private static final int get16(byte b[], int off) {
-        return (b[off] & 0xff) | ((b[off+1] & 0xff) << 8);
-    }
-
-    /*
-     * Fetches unsigned 32-bit value from byte array at specified offset.
-     * The bytes are assumed to be in Intel (little-endian) byte order.
-     */
-    private static final long get32(byte b[], int off) {
-        return (get16(b, off) | ((long)get16(b, off+2) << 16)) & 0xffffffffL;
-    }
-
-    /*
-     * Fetches signed 64-bit value from byte array at specified offset.
-     * The bytes are assumed to be in Intel (little-endian) byte order.
-     */
-    private static final long get64(byte b[], int off) {
-        return get32(b, off) | (get32(b, off+4) << 32);
-    }
 }

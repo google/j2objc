@@ -1680,6 +1680,7 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   java/util/zip/ZStreamRef.java \
   java/util/zip/ZipCoder.java \
   java/util/zip/ZipConstants64.java \
+  java/util/zip/ZipUtils.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/net/url/JarHandler.java \

@@ -127,6 +127,14 @@ finally:
 }
 
 JNIEXPORT jint JNICALL
+Java_java_util_zip_ZipFile_getFileDescriptor(JNIEnv *env, jclass cls, jlong zfile)
+{
+    jzfile *zip = jlong_to_ptr(zfile);
+    
+    return zip->zfd;
+}
+
+JNIEXPORT jint JNICALL
 Java_java_util_zip_ZipFile_getTotal(JNIEnv *env, jclass cls, jlong zfile)
 {
     jzfile *zip = jlong_to_ptr(zfile);
@@ -297,21 +305,23 @@ Java_java_util_zip_ZipFile_read(JNIEnv *env, jclass cls, jlong zfile,
     jzfile *zip = jlong_to_ptr(zfile);
     char *msg;
 
-#define BUFSIZE 8192
-    /* copy via tmp stack buffer: */
-    jbyte buf[BUFSIZE];
-
-    if (len > BUFSIZE) {
-        len = BUFSIZE;
+    // BEGIN Android-changed: Removed tmp stack buffer.
+    long long length = (long long)(*env)->GetArrayLength(env, bytes);
+    if (off < 0 || len < 0 || off + len > length) {
+        char errmsg[128];
+        snprintf(errmsg, sizeof(errmsg), "len: %d, off: %d are not valid for array sized %lld\n",
+                 len, off, length);
+        JNU_ThrowArrayIndexOutOfBoundsException(env, errmsg);
+        return -1;
     }
 
+    jbyte *buf = (*env)->GetByteArrayElements(env, bytes, NULL);
     ZIP_Lock(zip);
-    len = ZIP_Read(zip, jlong_to_ptr(zentry), pos, buf, len);
+    len = ZIP_Read(zip, jlong_to_ptr(zentry), pos, buf + off, len);
     msg = zip->msg;
     ZIP_Unlock(zip);
-    if (len != -1) {
-        (*env)->SetByteArrayRegion(env, bytes, off, len, buf);
-    }
+    (*env)->ReleaseByteArrayElements(env, bytes, buf, 0);
+
 
     if (len == -1) {
         if (msg != 0) {

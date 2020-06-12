@@ -23,9 +23,14 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
-import junit.framework.TestCase;
+//import libcore.junit.junit3.TestCaseWithRules;
+//import libcore.junit.util.ResourceLeakageDetector;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public final class DeflaterInputStreamTest extends TestCase {
+public final class DeflaterInputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
+//    @Rule
+//    public TestRule guardRule = ResourceLeakageDetector.getRule();
 
     public void testReadByteByByte() throws IOException {
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -50,14 +55,15 @@ public final class DeflaterInputStreamTest extends TestCase {
     }
 
     public byte[] inflate(byte[] bytes) throws IOException {
-        java.io.InputStream in = new InflaterInputStream(new ByteArrayInputStream(bytes));
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int count;
-        while ((count = in.read(buffer)) != -1) {
-            out.write(buffer, 0, count);
+        try (InputStream in = new InflaterInputStream(new ByteArrayInputStream(bytes))) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = in.read(buffer)) != -1) {
+                out.write(buffer, 0, count);
+            }
+            return out.toByteArray();
         }
-        return out.toByteArray();
     }
 
     public void testReadWithBuffer() throws IOException {

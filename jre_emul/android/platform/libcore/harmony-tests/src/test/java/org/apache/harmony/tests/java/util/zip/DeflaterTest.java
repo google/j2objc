@@ -23,11 +23,15 @@ import java.util.zip.Adler32;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-
-import junit.framework.TestCase;
+//import libcore.junit.junit3.TestCaseWithRules;
+//import libcore.junit.util.ResourceLeakageDetector;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public class DeflaterTest extends TestCase {
+public class DeflaterTest extends junit.framework.TestCase /* TestCaseWithRules */ {
+//    @Rule
+//    public TestRule guardRule = ResourceLeakageDetector.getRule();
 
     class MyDeflater extends Deflater {
         MyDeflater() {
@@ -339,6 +343,7 @@ public class DeflaterTest extends TestCase {
             x += defl.deflate(outPutBuf);
         }
         assertEquals(x, defl.getTotalOut());
+        defl.end();
     }
 
     /**
@@ -438,6 +443,7 @@ public class DeflaterTest extends TestCase {
             }
             assertEquals(0, outPutInf[curArray.length]);
         }
+        defl.end();
     }
 
     /**
@@ -539,6 +545,7 @@ public class DeflaterTest extends TestCase {
             } catch (ArrayIndexOutOfBoundsException e) {
             }
         }
+        defl.end();
     }
 
     /**
@@ -629,6 +636,7 @@ public class DeflaterTest extends TestCase {
             } catch (ArrayIndexOutOfBoundsException e) {
             }
         }
+        defl.end();
     }
 
     /**
@@ -673,8 +681,8 @@ public class DeflaterTest extends TestCase {
         }
 
         // testing boundaries
+        Deflater boundDefl = new Deflater();
         try {
-            Deflater boundDefl = new Deflater();
             // Level must be between 0-9
             boundDefl.setLevel(-2);
             fail(
@@ -682,12 +690,12 @@ public class DeflaterTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
         try {
-            Deflater boundDefl = new Deflater();
             boundDefl.setLevel(10);
             fail(
                     "IllegalArgumentException not thrown when setting level to a number > 9.");
         } catch (IllegalArgumentException e) {
         }
+        boundDefl.end();
     }
 
     /**
@@ -742,13 +750,13 @@ public class DeflaterTest extends TestCase {
         }
 
         // Attempting to setStrategy to an invalid value
+        Deflater defl = new Deflater();
         try {
-            Deflater defl = new Deflater();
             defl.setStrategy(-412);
-            fail(
-                    "IllegalArgumentException not thrown when setting strategy to an invalid value.");
+            fail("IllegalArgumentException not thrown when setting strategy to an invalid value.");
         } catch (IllegalArgumentException e) {
         }
+        defl.end();
     }
 
     /**
@@ -775,6 +783,8 @@ public class DeflaterTest extends TestCase {
 
         // creating a Deflater using the DEFAULT_COMPRESSION as the int
         MyDeflater mdefl = new MyDeflater();
+        mdefl.end();
+
         mdefl = new MyDeflater(mdefl.getDefCompression());
         outPutBuf = new byte[500];
         mdefl.setInput(byteArray);
@@ -866,31 +876,31 @@ public class DeflaterTest extends TestCase {
         } catch (DataFormatException e) {
             r = 1;
         }
+        infl.end();
         assertEquals("header option did not correspond", 1, r);
 
         // testing boundaries
+        Deflater boundDefl = new Deflater();
         try {
-            Deflater boundDefl = new Deflater();
             // Level must be between 0-9
             boundDefl.setLevel(-2);
             fail("IllegalArgumentException not thrown when setting level to a number < 0.");
         } catch (IllegalArgumentException e) {
         }
         try {
-            Deflater boundDefl = new Deflater();
             boundDefl.setLevel(10);
             fail("IllegalArgumentException not thrown when setting level to a number > 9.");
         } catch (IllegalArgumentException e) {
         }
-
+        boundDefl.end();
         try {
-            Deflater boundDefl = new Deflater(-2, true);
+            new Deflater(-2, true).end();
             fail("IllegalArgumentException not thrown when passing level to a number < 0.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            Deflater boundDefl = new Deflater(10, true);
+            new Deflater(10, true).end();
             fail("IllegalArgumentException not thrown when passing level to a number > 9.");
         } catch (IllegalArgumentException e) {
         }
@@ -935,19 +945,19 @@ public class DeflaterTest extends TestCase {
         defl.end();
 
         // testing boundaries
+        Deflater boundDefl = new Deflater();
         try {
-            Deflater boundDefl = new Deflater();
             // Level must be between 0-9
             boundDefl.setLevel(-2);
             fail("IllegalArgumentException not thrown when setting level to a number < 0.");
         } catch (IllegalArgumentException e) {
         }
         try {
-            Deflater boundDefl = new Deflater();
             boundDefl.setLevel(10);
             fail("IllegalArgumentException not thrown when setting level to a number > 9.");
         } catch (IllegalArgumentException e) {
         }
+        boundDefl.end();
     }
 
     private void helper_end_test(Deflater defl, String desc) {
@@ -1061,6 +1071,7 @@ public class DeflaterTest extends TestCase {
         assertEquals(0, inf.getTotalOut());
         assertEquals(0, inf.getBytesRead());
         assertEquals(0, inf.getBytesWritten());
+        inf.end();
     }
 
     /**
@@ -1087,6 +1098,7 @@ public class DeflaterTest extends TestCase {
         assertEquals(14, def.getTotalIn());
         assertEquals(compressedDataLength, def.getTotalOut());
         assertEquals(14, def.getBytesRead());
+        def.end();
     }
 
     /**
@@ -1113,6 +1125,7 @@ public class DeflaterTest extends TestCase {
         assertEquals(14, def.getTotalIn());
         assertEquals(compressedDataLength, def.getTotalOut());
         assertEquals(compressedDataLength, def.getBytesWritten());
+        def.end();
     }
 
     //Regression Test for HARMONY-2481
@@ -1125,5 +1138,6 @@ public class DeflaterTest extends TestCase {
         for (int i = 0; i < expectedBytes.length; i++) {
             assertEquals(expectedBytes[i], buffer[i]);
         }
+        deflater.end();
     }
 }

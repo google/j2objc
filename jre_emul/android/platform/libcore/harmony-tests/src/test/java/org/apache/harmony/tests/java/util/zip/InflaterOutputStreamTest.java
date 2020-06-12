@@ -23,10 +23,15 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterOutputStream;
 import java.util.zip.ZipException;
+//import libcore.junit.junit3.TestCaseWithRules;
+//import libcore.junit.util.ResourceLeakageDetector;
+//import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-import junit.framework.TestCase;
-
-public class InflaterOutputStreamTest extends TestCase {
+public class InflaterOutputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
+//    @Rule
+//    public TestRule guardRule = ResourceLeakageDetector.getRule();
 
     private ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -37,8 +42,14 @@ public class InflaterOutputStreamTest extends TestCase {
     /**
      * java.util.zip.InflaterOutputStream#InflaterOutputStream(java.io.OutputStream)
      */
+//    @DisableResourceLeakageDetection(
+//            why = "InflaterOutputStream does not clean up the default Inflater created in the"
+//                    + " constructor if the constructor fails; i.e. constructor calls"
+//                    + " this(..., new Inflater(), ...) and that constructor fails but does not know"
+//                    + " that it needs to call Inflater.end() as the caller has no access to it",
+//            bug = "31798154")
     public void test_ConstructorLjava_io_OutputStream() throws IOException {
-        new InflaterOutputStream(os);
+        new InflaterOutputStream(os).close();
 
         try {
             new InflaterOutputStream(null);
@@ -51,11 +62,12 @@ public class InflaterOutputStreamTest extends TestCase {
     /**
      * java.util.zip.InflaterOutputStream#InflaterOutputStream(java.io.OutputStream, Inflater)
      */
-    public void test_ConstructorLjava_io_OutputStreamLjava_util_zip_Inflater() {
-        new InflaterOutputStream(os, new Inflater());
+    public void test_ConstructorLjava_io_OutputStreamLjava_util_zip_Inflater() throws IOException {
+        Inflater inflater = new Inflater();
+        new InflaterOutputStream(os, inflater).close();
 
         try {
-            new InflaterOutputStream(null, new Inflater());
+            new InflaterOutputStream(null, inflater);
             fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
@@ -67,13 +79,16 @@ public class InflaterOutputStreamTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+
+        inflater.end();
     }
 
     /**
      * java.util.zip.InflaterOutputStream#InflaterOutputStream(java.io.OutputStream, Inflater, int)
      */
-    public void test_ConstructorLjava_io_OutputStreamLjava_util_zip_InflaterI() {
-        new InflaterOutputStream(os, new Inflater(), 20);
+    public void test_ConstructorLjava_io_OutputStreamLjava_util_zip_InflaterI() throws IOException {
+        Inflater inflater = new Inflater();
+        new InflaterOutputStream(os, inflater, 20).close();
 
         try {
             new InflaterOutputStream(null, null, 10);
@@ -83,7 +98,7 @@ public class InflaterOutputStreamTest extends TestCase {
         }
 
         try {
-            new InflaterOutputStream(null, new Inflater(), -1);
+            new InflaterOutputStream(null, inflater, -1);
             fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
@@ -104,18 +119,20 @@ public class InflaterOutputStreamTest extends TestCase {
         }
 
         try {
-            new InflaterOutputStream(os, new Inflater(), 0);
+            new InflaterOutputStream(os, inflater, 0);
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // expected
         }
 
         try {
-            new InflaterOutputStream(os, new Inflater(), -10000);
+            new InflaterOutputStream(os, inflater, -10000);
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // expected
         }
+
+        inflater.end();
     }
 
     /**
@@ -144,6 +161,7 @@ public class InflaterOutputStreamTest extends TestCase {
         ios = new InflaterOutputStream(os);
         ios.flush();
         ios.flush();
+        ios.close();
     }
 
     /**
@@ -165,18 +183,21 @@ public class InflaterOutputStreamTest extends TestCase {
         ios.flush();
         ios.flush();
         ios.finish();
+        ios.close();
 
         byte[] bytes1 = { 10, 20, 30, 40, 50 };
         Deflater defaultDeflater = new Deflater(Deflater.BEST_SPEED);
         defaultDeflater.setInput(bytes1);
         defaultDeflater.finish();
         int length1 = defaultDeflater.deflate(compressedBytes);
+        defaultDeflater.end();
 
         byte[] bytes2 = { 100, 90, 80, 70, 60 };
         Deflater bestDeflater = new Deflater(Deflater.BEST_COMPRESSION);
         bestDeflater.setInput(bytes2);
         bestDeflater.finish();
         int length2 = bestDeflater.deflate(compressedBytes, length1, compressedBytes.length - length1);
+        bestDeflater.end();
 
         ios = new InflaterOutputStream(os);
         for (int i = 0; i < length1; i++) {
@@ -211,13 +232,14 @@ public class InflaterOutputStreamTest extends TestCase {
         int length = compressToBytes(testString);
 
         // uncompress the data stored in the compressedBytes
-        InflaterOutputStream ios = new InflaterOutputStream(os);
-        for (int i = 0; i < length; i++) {
-            ios.write(compressedBytes[i]);
-        }
+        try (InflaterOutputStream ios = new InflaterOutputStream(os)) {
+            for (int i = 0; i < length; i++) {
+                ios.write(compressedBytes[i]);
+            }
 
-        String result = new String(os.toByteArray());
-        assertEquals(testString, result);
+            String result = new String(os.toByteArray());
+            assertEquals(testString, result);
+        }
     }
 
     /**
@@ -243,20 +265,25 @@ public class InflaterOutputStreamTest extends TestCase {
         int length = compressToBytes(testString);
 
         // uncompress the data stored in the compressedBytes
-        InflaterOutputStream ios = new InflaterOutputStream(os);
-        ios.write(compressedBytes, 0, length);
+        try (InflaterOutputStream ios = new InflaterOutputStream(os)) {
+            ios.write(compressedBytes, 0, length);
 
-        String result = new String(os.toByteArray());
-        assertEquals(testString, result);
+            String result = new String(os.toByteArray());
+            assertEquals(testString, result);
+        }
     }
 
     /**
      * java.util.zip.InflaterOutputStream#write(byte[], int, int)
      */
+//    @DisableResourceLeakageDetection(
+//            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
+//                    + " exception; finish() throws an exception if the output is invalid.",
+//            bug = "31797037")
     public void test_write_$BII_Illegal() throws IOException {
         // write error compression (ZIP) format
-        InflaterOutputStream ios = new InflaterOutputStream(os);
         byte[] bytes = { 0, 1, 2, 3 };
+        InflaterOutputStream ios = new InflaterOutputStream(os);
         try {
             ios.write(bytes, 0, 4);
             fail("Should throw ZipException");
@@ -304,70 +331,72 @@ public class InflaterOutputStreamTest extends TestCase {
             // expected
         }
 
-        ios = new InflaterOutputStream(os);
-        try {
-            ios.write(null, 0, 4);
-            fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            ios.write(null, -1, 4);
-            fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            ios.write(null, 0, -4);
-            fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            ios.write(null, 0, 1000);
-            fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            ios.write(bytes, -1, 4);
-            fail("Should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ios.write(bytes, 0, -4);
-            fail("Should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ios.write(bytes, 0, 100);
-            fail("Should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ios.write(bytes, -100, 100);
-            fail("Should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
+        try (InflaterOutputStream ios2 = new InflaterOutputStream(os)) {
+            try {
+                ios2.write(null, 0, 4);
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                ios2.write(null, -1, 4);
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                ios2.write(null, 0, -4);
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                ios2.write(null, 0, 1000);
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                ios2.write(bytes, -1, 4);
+                fail("Should throw IndexOutOfBoundsException");
+            } catch (IndexOutOfBoundsException e) {
+                // expected
+            }
+            try {
+                ios2.write(bytes, 0, -4);
+                fail("Should throw IndexOutOfBoundsException");
+            } catch (IndexOutOfBoundsException e) {
+                // expected
+            }
+            try {
+                ios2.write(bytes, 0, 100);
+                fail("Should throw IndexOutOfBoundsException");
+            } catch (IndexOutOfBoundsException e) {
+                // expected
+            }
+            try {
+                ios2.write(bytes, -100, 100);
+                fail("Should throw IndexOutOfBoundsException");
+            } catch (IndexOutOfBoundsException e) {
+                // expected
+            }
         }
 
-        ios = new InflaterOutputStream(os);
-        ios.finish();
+        try (InflaterOutputStream ios2 = new InflaterOutputStream(os)) {
+            ios2.finish();
 
-        try {
-            ios.write(bytes, -1, -100);
-            fail("Should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ios.write(null, -1, -100);
-            fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
+            try {
+                ios2.write(bytes, -1, -100);
+                fail("Should throw IndexOutOfBoundsException");
+            } catch (IndexOutOfBoundsException e) {
+                // expected
+            }
+            try {
+                ios2.write(null, -1, -100);
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
         }
 
         ios = new InflaterOutputStream(os);
@@ -384,9 +413,12 @@ public class InflaterOutputStreamTest extends TestCase {
     private int compressToBytes(String string) {
         byte[] input = string.getBytes();
         Deflater deflater = new Deflater();
-        deflater.setInput(input);
-        deflater.finish();
-        return deflater.deflate(compressedBytes);
+        try {
+            deflater.setInput(input);
+            deflater.finish();
+            return deflater.deflate(compressedBytes);
+        } finally {
+            deflater.end();
+        }
     }
-
 }
