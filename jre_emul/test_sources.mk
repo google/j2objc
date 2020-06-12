@@ -654,6 +654,9 @@ TEST_SOURCES := \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/SimpleBeanInfoTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/BadPaddingExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/CipherSpiTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/ExemptionMechanismExceptionTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPrivateKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPublicKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/PBEKeyTest.java \

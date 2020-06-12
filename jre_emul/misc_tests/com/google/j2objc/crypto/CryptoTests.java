@@ -19,7 +19,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Returns a suite of all java.nio.charset tests.
+ * Returns a suite of all javax.crypto tests.
  */
 public class CryptoTests {
 
