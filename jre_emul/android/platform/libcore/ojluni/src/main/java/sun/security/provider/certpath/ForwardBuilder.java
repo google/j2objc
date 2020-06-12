@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -46,9 +46,10 @@ import sun.security.provider.certpath.PKIX.BuilderParams;
 import sun.security.util.Debug;
 import sun.security.x509.AccessDescription;
 import sun.security.x509.AuthorityInfoAccessExtension;
+import sun.security.x509.AuthorityKeyIdentifierExtension;
 import static sun.security.x509.PKIXExtensions.*;
 import sun.security.x509.X500Name;
-import sun.security.x509.AuthorityKeyIdentifierExtension;
+import sun.security.x509.X509CertImpl;
 
 /**
  * This class represents a forward builder, which is able to retrieve
@@ -69,7 +70,6 @@ class ForwardBuilder extends Builder {
     private AdaptableX509CertSelector caSelector;
     private X509CertSelector caTargetSelector;
     TrustAnchor trustAnchor;
-    private Comparator<X509Certificate> comparator;
     private boolean searchAllCertStores = true;
 
     /**
@@ -93,7 +93,6 @@ class ForwardBuilder extends Builder {
                 trustedSubjectDNs.add(anchor.getCA());
             }
         }
-        comparator = new PKIXCertComparator(trustedSubjectDNs);
         this.searchAllCertStores = searchAllCertStores;
     }
 
@@ -122,6 +121,8 @@ class ForwardBuilder extends Builder {
          * As each cert is added, it is sorted based on the PKIXCertComparator
          * algorithm.
          */
+        Comparator<X509Certificate> comparator =
+            new PKIXCertComparator(trustedSubjectDNs, currState.cert);
         Set<X509Certificate> certs = new TreeSet<>(comparator);
 
         /*
@@ -209,7 +210,8 @@ class ForwardBuilder extends Builder {
              * getMatchingEECerts
              */
             if (debug != null) {
-                debug.println("ForwardBuilder.getMatchingCACerts(): ca is target");
+                debug.println("ForwardBuilder.getMatchingCACerts(): " +
+                              "the target is a CA");
             }
 
             if (caTargetSelector == null) {
@@ -264,14 +266,6 @@ class ForwardBuilder extends Builder {
                 (caSelector, currentState.subjectNamesTraversed);
 
             /*
-             * Facilitate certification path construction with authority
-             * key identifier and subject key identifier.
-             */
-            AuthorityKeyIdentifierExtension akidext =
-                    currentState.cert.getAuthorityKeyIdentifierExtension();
-            caSelector.parseAuthorityKeyIdentifierExtension(akidext);
-
-            /*
              * check the validity period
              */
             caSelector.setValidityPeriod(currentState.cert.getNotBefore(),
@@ -291,8 +285,14 @@ class ForwardBuilder extends Builder {
         for (X509Certificate trustedCert : trustedCerts) {
             if (sel.match(trustedCert)) {
                 if (debug != null) {
-                    debug.println("ForwardBuilder.getMatchingCACerts: "
-                        + "found matching trust anchor");
+                    debug.println("ForwardBuilder.getMatchingCACerts: " +
+                        "found matching trust anchor." +
+                        "\n  SN: " +
+                            Debug.toHexString(trustedCert.getSerialNumber()) +
+                        "\n  Subject: " +
+                            trustedCert.getSubjectX500Principal() +
+                        "\n  Issuer: " +
+                            trustedCert.getIssuerX500Principal());
                 }
                 if (caCerts.add(trustedCert) && !searchAllCertStores) {
                     return;
@@ -397,41 +397,68 @@ class ForwardBuilder extends Builder {
      *
      * Preference order for current cert:
      *
-     * 1) Issuer matches a trusted subject
+     * 1) The key identifier of an AKID extension (if present) in the
+     *    previous certificate matches the key identifier in the SKID extension
+     *
+     * 2) Issuer matches a trusted subject
      *    Issuer: ou=D,ou=C,o=B,c=A
      *
-     * 2) Issuer is a descendant of a trusted subject (in order of
+     * 3) Issuer is a descendant of a trusted subject (in order of
      *    number of links to the trusted subject)
      *    a) Issuer: ou=E,ou=D,ou=C,o=B,c=A        [links=1]
      *    b) Issuer: ou=F,ou=E,ou=D,ou=C,ou=B,c=A  [links=2]
      *
-     * 3) Issuer is an ancestor of a trusted subject (in order of number of
+     * 4) Issuer is an ancestor of a trusted subject (in order of number of
      *    links to the trusted subject)
      *    a) Issuer: ou=C,o=B,c=A [links=1]
      *    b) Issuer: o=B,c=A      [links=2]
      *
-     * 4) Issuer is in the same namespace as a trusted subject (in order of
+     * 5) Issuer is in the same namespace as a trusted subject (in order of
      *    number of links to the trusted subject)
      *    a) Issuer: ou=G,ou=C,o=B,c=A  [links=2]
      *    b) Issuer: ou=H,o=B,c=A       [links=3]
      *
-     * 5) Issuer is an ancestor of certificate subject (in order of number
+     * 6) Issuer is an ancestor of certificate subject (in order of number
      *    of links to the certificate subject)
      *    a) Issuer:  ou=K,o=J,c=A
      *       Subject: ou=L,ou=K,o=J,c=A
      *    b) Issuer:  o=J,c=A
      *       Subject: ou=L,ou=K,0=J,c=A
      *
-     * 6) Any other certificates
+     * 7) Any other certificates
      */
     static class PKIXCertComparator implements Comparator<X509Certificate> {
 
-        final static String METHOD_NME = "PKIXCertComparator.compare()";
+        static final String METHOD_NME = "PKIXCertComparator.compare()";
 
         private final Set<X500Principal> trustedSubjectDNs;
+        private final X509CertSelector certSkidSelector;
 
-        PKIXCertComparator(Set<X500Principal> trustedSubjectDNs) {
+        PKIXCertComparator(Set<X500Principal> trustedSubjectDNs,
+                           X509CertImpl previousCert) throws IOException {
             this.trustedSubjectDNs = trustedSubjectDNs;
+            this.certSkidSelector = getSelector(previousCert);
+        }
+
+        /**
+         * Returns an X509CertSelector for matching on the authority key
+         * identifier, or null if not applicable.
+         */
+        private X509CertSelector getSelector(X509CertImpl previousCert)
+            throws IOException {
+            if (previousCert != null) {
+                AuthorityKeyIdentifierExtension akidExt =
+                    previousCert.getAuthorityKeyIdentifierExtension();
+                if (akidExt != null) {
+                    byte[] skid = akidExt.getEncodedKeyIdentifier();
+                    if (skid != null) {
+                        X509CertSelector selector = new X509CertSelector();
+                        selector.setSubjectKeyIdentifier(skid);
+                        return selector;
+                    }
+                }
+            }
+            return null;
         }
 
         /**
@@ -454,6 +481,16 @@ class ForwardBuilder extends Builder {
 
             // if certs are the same, return 0
             if (oCert1.equals(oCert2)) return 0;
+
+            // If akid/skid match then it is preferable
+            if (certSkidSelector != null) {
+                if (certSkidSelector.match(oCert1)) {
+                    return -1;
+                }
+                if (certSkidSelector.match(oCert2)) {
+                    return 1;
+                }
+            }
 
             X500Principal cIssuer1 = oCert1.getIssuerX500Principal();
             X500Principal cIssuer2 = oCert2.getIssuerX500Principal();
@@ -666,8 +703,11 @@ class ForwardBuilder extends Builder {
 
         ForwardState currState = (ForwardState)currentState;
 
-        // Don't bother to verify untrusted certificate more.
-        currState.untrustedChecker.check(cert, Collections.<String>emptySet());
+        // BEGIN Android-removed: Certificate checking
+        // Android doesn't use this mechanism for checking untrusted certificates.
+        // // Don't bother to verify untrusted certificate more.
+        // currState.untrustedChecker.check(cert, Collections.<String>emptySet());
+        // END Android-removed: Certificate checking
 
         /*
          * check for looping - abort a loop if we encounter the same
@@ -772,6 +812,7 @@ class ForwardBuilder extends Builder {
          * encountered.
          */
         if (!currState.keyParamsNeeded()) {
+            // Android-changed: sigProvider is not required
             if (buildParams.sigProvider() != null) {
                 (currState.cert).verify(cert.getPublicKey(),
                                         buildParams.sigProvider());
@@ -783,18 +824,19 @@ class ForwardBuilder extends Builder {
 
     /**
      * Verifies whether the input certificate completes the path.
-     * Checks the cert against each trust anchor that was specified, in order,
-     * and returns true as soon as it finds a valid anchor.
-     * Returns true if the cert matches a trust anchor specified as a
-     * certificate or if the cert verifies with a trust anchor that
-     * was specified as a trusted {pubkey, caname} pair. Returns false if none
-     * of the trust anchors are valid for this cert.
-     *
-     * @param cert the certificate to test
-     * @return a boolean value indicating whether the cert completes the path.
+     * First checks the cert against each trust anchor that was specified,
+     * in order, and returns true if the cert matches the trust anchor
+     * specified as a certificate or has the same key and subject of an anchor
+     * specified as a trusted {pubkey, caname} pair.
+     * If no match has been found, does a second check of the cert against
+     * anchors specified as a trusted {pubkey, caname} pair to see if the cert
+     * was issued by that anchor.
+     * Returns false if none of the trust anchors are valid for this cert.
      */
     @Override
     boolean isPathCompleted(X509Certificate cert) {
+        List<TrustAnchor> otherAnchors = new ArrayList<>();
+        // first, check if cert is already trusted
         for (TrustAnchor anchor : trustAnchors) {
             if (anchor.getTrustedCert() != null) {
                 if (cert.equals(anchor.getTrustedCert())) {
@@ -816,7 +858,12 @@ class ForwardBuilder extends Builder {
                 }
                 // else, it is a self-issued certificate of the anchor
             }
-
+            otherAnchors.add(anchor);
+        }
+        // next, check if cert is issued by anchor specified by key/name
+        for (TrustAnchor anchor : otherAnchors) {
+            X500Principal principal = anchor.getCA();
+            PublicKey publicKey = anchor.getCAPublicKey();
             // Check subject/issuer name chaining
             if (principal == null ||
                     !principal.equals(cert.getIssuerX500Principal())) {
@@ -832,6 +879,7 @@ class ForwardBuilder extends Builder {
              * Check signature
              */
             try {
+                // Android-changed: sigProvider is not required
                 if (buildParams.sigProvider() != null) {
                     cert.verify(publicKey, buildParams.sigProvider());
                 } else {

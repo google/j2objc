@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2009, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -31,12 +31,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.KeyFactory;
 import java.security.AlgorithmParameters;
-import java.security.NoSuchAlgorithmException;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.security.cert.X509CRL;
@@ -48,10 +46,13 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.CertPathValidatorException.BasicReason;
 import java.security.cert.PKIXReason;
-import java.io.IOException;
-import java.security.interfaces.*;
-import java.security.spec.*;
+import java.security.interfaces.DSAParams;
+import java.security.interfaces.DSAPublicKey;
+import java.security.spec.DSAPublicKeySpec;
 
+import sun.security.util.AnchorCertificates;
+import sun.security.util.CertConstraintParameters;
+import sun.security.util.Debug;
 import sun.security.util.DisabledAlgorithmConstraints;
 import sun.security.x509.X509CertImpl;
 import sun.security.x509.X509CRLImpl;
@@ -69,17 +70,33 @@ import sun.security.x509.AlgorithmId;
  * @see PKIXParameters
  */
 final public class AlgorithmChecker extends PKIXCertPathChecker {
+    private static final Debug debug = Debug.getInstance("certpath");
 
     private final AlgorithmConstraints constraints;
     private final PublicKey trustedPubKey;
     private PublicKey prevPubKey;
 
     private final static Set<CryptoPrimitive> SIGNATURE_PRIMITIVE_SET =
-                                    EnumSet.of(CryptoPrimitive.SIGNATURE);
+        Collections.unmodifiableSet(EnumSet.of(CryptoPrimitive.SIGNATURE));
+
+    private final static Set<CryptoPrimitive> KU_PRIMITIVE_SET =
+        Collections.unmodifiableSet(EnumSet.of(
+            CryptoPrimitive.SIGNATURE,
+            CryptoPrimitive.KEY_ENCAPSULATION,
+            CryptoPrimitive.PUBLIC_KEY_ENCRYPTION,
+            CryptoPrimitive.KEY_AGREEMENT));
 
     private final static DisabledAlgorithmConstraints
         certPathDefaultConstraints = new DisabledAlgorithmConstraints(
             DisabledAlgorithmConstraints.PROPERTY_CERTPATH_DISABLED_ALGS);
+
+    // If there is no "cacerts" keyword, then disable anchor checking
+    private static final boolean publicCALimits =
+            certPathDefaultConstraints.checkProperty("jdkCA");
+
+    // If anchor checking enabled, this will be true if the trust anchor
+    // has a match in the cacerts file
+    private boolean trustedMatch = false;
 
     /**
      * Create a new <code>AlgorithmChecker</code> with the algorithm
@@ -129,12 +146,30 @@ final public class AlgorithmChecker extends PKIXCertPathChecker {
 
         if (anchor.getTrustedCert() != null) {
             this.trustedPubKey = anchor.getTrustedCert().getPublicKey();
+            // Check for anchor certificate restrictions
+            trustedMatch = checkFingerprint(anchor.getTrustedCert());
+            if (trustedMatch && debug != null) {
+                debug.println("trustedMatch = true");
+            }
         } else {
             this.trustedPubKey = anchor.getCAPublicKey();
         }
 
         this.prevPubKey = trustedPubKey;
         this.constraints = constraints;
+    }
+
+    // Check this 'cert' for restrictions in the AnchorCertificates
+    // trusted certificates list
+    private static boolean checkFingerprint(X509Certificate cert) {
+        if (!publicCALimits) {
+            return false;
+        }
+
+        if (debug != null) {
+            debug.println("AlgorithmChecker.contains: " + cert.getSigAlgName());
+        }
+        return AnchorCertificates.contains(cert);
     }
 
     @Override
@@ -174,45 +209,19 @@ final public class AlgorithmChecker extends PKIXCertPathChecker {
             return;
         }
 
-        X509CertImpl x509Cert = null;
-        try {
-            x509Cert = X509CertImpl.toImpl((X509Certificate)cert);
-        } catch (CertificateException ce) {
-            throw new CertPathValidatorException(ce);
-        }
-
-        PublicKey currPubKey = x509Cert.getPublicKey();
-        String currSigAlg = x509Cert.getSigAlgName();
-
-        AlgorithmId algorithmId = null;
-        try {
-            algorithmId = (AlgorithmId)x509Cert.get(X509CertImpl.SIG_ALG);
-        } catch (CertificateException ce) {
-            throw new CertPathValidatorException(ce);
-        }
-
-        AlgorithmParameters currSigAlgParams = algorithmId.getParameters();
-
-        // Check the current signature algorithm
-        if (!constraints.permits(
-                SIGNATURE_PRIMITIVE_SET,
-                currSigAlg, currSigAlgParams)) {
-            throw new CertPathValidatorException(
-                "Algorithm constraints check failed: " + currSigAlg,
-                null, null, -1, BasicReason.ALGORITHM_CONSTRAINED);
-        }
-
         // check the key usage and key size
-        boolean[] keyUsage = x509Cert.getKeyUsage();
+        boolean[] keyUsage = ((X509Certificate) cert).getKeyUsage();
         if (keyUsage != null && keyUsage.length < 9) {
             throw new CertPathValidatorException(
                 "incorrect KeyUsage extension",
                 null, null, -1, PKIXReason.INVALID_KEY_USAGE);
         }
 
+        // Assume all key usage bits are set if key usage is not present
+        Set<CryptoPrimitive> primitives = KU_PRIMITIVE_SET;
+
         if (keyUsage != null) {
-            Set<CryptoPrimitive> primitives =
-                        EnumSet.noneOf(CryptoPrimitive.class);
+            primitives = EnumSet.noneOf(CryptoPrimitive.class);
 
             if (keyUsage[0] || keyUsage[1] || keyUsage[5] || keyUsage[6]) {
                 // keyUsage[0]: KeyUsage.digitalSignature
@@ -237,26 +246,71 @@ final public class AlgorithmChecker extends PKIXCertPathChecker {
             // KeyUsage.encipherOnly and KeyUsage.decipherOnly are
             // undefined in the absence of the keyAgreement bit.
 
-            if (!primitives.isEmpty()) {
-                if (!constraints.permits(primitives, currPubKey)) {
-                    throw new CertPathValidatorException(
-                        "algorithm constraints check failed",
-                        null, null, -1, BasicReason.ALGORITHM_CONSTRAINED);
-                }
+            if (primitives.isEmpty()) {
+                throw new CertPathValidatorException(
+                    "incorrect KeyUsage extension bits",
+                    null, null, -1, PKIXReason.INVALID_KEY_USAGE);
             }
+        }
+
+        PublicKey currPubKey = cert.getPublicKey();
+
+        if (constraints instanceof DisabledAlgorithmConstraints) {
+            // Check against DisabledAlgorithmConstraints certpath constraints.
+            // permits() will throw exception on failure.
+            ((DisabledAlgorithmConstraints)constraints).permits(primitives,
+                new CertConstraintParameters((X509Certificate)cert,
+                        trustedMatch));
+            // If there is no previous key, set one and exit
+            if (prevPubKey == null) {
+                prevPubKey = currPubKey;
+                return;
+            }
+        }
+
+        X509CertImpl x509Cert;
+        AlgorithmId algorithmId;
+        try {
+            x509Cert = X509CertImpl.toImpl((X509Certificate)cert);
+            algorithmId = (AlgorithmId)x509Cert.get(X509CertImpl.SIG_ALG);
+        } catch (CertificateException ce) {
+            throw new CertPathValidatorException(ce);
+        }
+
+        AlgorithmParameters currSigAlgParams = algorithmId.getParameters();
+        String currSigAlg = x509Cert.getSigAlgName();
+
+        // If 'constraints' is not of DisabledAlgorithmConstraints, check all
+        // everything individually
+        if (!(constraints instanceof DisabledAlgorithmConstraints)) {
+            // Check the current signature algorithm
+            if (!constraints.permits(
+                    SIGNATURE_PRIMITIVE_SET,
+                    currSigAlg, currSigAlgParams)) {
+                throw new CertPathValidatorException(
+                        "Algorithm constraints check failed on signature " +
+                                "algorithm: " + currSigAlg, null, null, -1,
+                        BasicReason.ALGORITHM_CONSTRAINED);
+            }
+
+        if (!constraints.permits(primitives, currPubKey)) {
+            throw new CertPathValidatorException(
+                        "Algorithm constraints check failed on keysize: " +
+                                sun.security.util.KeyUtil.getKeySize(currPubKey),
+                null, null, -1, BasicReason.ALGORITHM_CONSTRAINED);
+        }
         }
 
         // Check with previous cert for signature algorithm and public key
         if (prevPubKey != null) {
-            if (currSigAlg != null) {
                 if (!constraints.permits(
                         SIGNATURE_PRIMITIVE_SET,
                         currSigAlg, prevPubKey, currSigAlgParams)) {
                     throw new CertPathValidatorException(
-                        "Algorithm constraints check failed: " + currSigAlg,
+                    "Algorithm constraints check failed on " +
+                            "signature algorithm: " + currSigAlg,
                         null, null, -1, BasicReason.ALGORITHM_CONSTRAINED);
                 }
-            }
 
             // Inherit key parameters from previous key
             if (PKIX.isDSAPublicKeyWithoutParams(currPubKey)) {
@@ -269,7 +323,7 @@ final public class AlgorithmChecker extends PKIXCertPathChecker {
                 DSAParams params = ((DSAPublicKey)prevPubKey).getParams();
                 if (params == null) {
                     throw new CertPathValidatorException(
-                                    "Key parameters missing");
+                        "Key parameters missing from public key.");
                 }
 
                 try {
@@ -317,6 +371,11 @@ final public class AlgorithmChecker extends PKIXCertPathChecker {
             // Don't bother to change the trustedPubKey.
             if (anchor.getTrustedCert() != null) {
                 prevPubKey = anchor.getTrustedCert().getPublicKey();
+                // Check for anchor certificate restrictions
+                trustedMatch = checkFingerprint(anchor.getTrustedCert());
+                if (trustedMatch && debug != null) {
+                    debug.println("trustedMatch = true");
+                }
             } else {
                 prevPubKey = anchor.getCAPublicKey();
             }
@@ -357,10 +416,10 @@ final public class AlgorithmChecker extends PKIXCertPathChecker {
         if (!certPathDefaultConstraints.permits(
                 SIGNATURE_PRIMITIVE_SET, sigAlgName, key, sigAlgParams)) {
             throw new CertPathValidatorException(
-                "algorithm check failed: " + sigAlgName + " is disabled",
+                "Algorithm constraints check failed on signature algorithm: " +
+                sigAlgName + " is disabled",
                 null, null, -1, BasicReason.ALGORITHM_CONSTRAINED);
         }
     }
 
 }
-
