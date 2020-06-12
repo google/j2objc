@@ -140,7 +140,7 @@ class URICertStore extends CertStoreSpi {
      */
     private static int initializeTimeout() {
         Integer tmp = java.security.AccessController.doPrivileged(
-          new GetIntegerAction("com.sun.security.crl.timeout"));
+                new GetIntegerAction("com.sun.security.crl.timeout"));
         if (tmp == null || tmp < 0) {
             return DEFAULT_CRL_CONNECT_TIMEOUT;
         }

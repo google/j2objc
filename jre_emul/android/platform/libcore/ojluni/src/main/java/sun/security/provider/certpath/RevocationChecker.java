@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -43,6 +43,7 @@ import javax.security.auth.x500.X500Principal;
 
 import static sun.security.provider.certpath.OCSP.*;
 import static sun.security.provider.certpath.PKIX.*;
+import sun.security.action.GetPropertyAction;
 import sun.security.x509.*;
 import static sun.security.x509.PKIXExtensions.*;
 import sun.security.util.Debug;
@@ -342,11 +343,17 @@ class RevocationChecker extends PKIXRevocationChecker {
                        PublicKey pubKey, boolean crlSignFlag)
         throws CertPathValidatorException
     {
+        if (debug != null) {
+            debug.println("RevocationChecker.check: checking cert" +
+                "\n  SN: " + Debug.toHexString(xcert.getSerialNumber()) +
+                "\n  Subject: " + xcert.getSubjectX500Principal() +
+                "\n  Issuer: " + xcert.getIssuerX500Principal());
+        }
         try {
             if (onlyEE && xcert.getBasicConstraints() != -1) {
                 if (debug != null) {
-                    debug.println("Skipping revocation check, not end " +
-                                  "entity cert");
+                    debug.println("Skipping revocation check; cert is not " +
+                                  "an end entity cert");
                 }
                 return;
             }
@@ -1035,16 +1042,16 @@ class RevocationChecker extends PKIXRevocationChecker {
                 List<? extends Certificate> cpList =
                     cpbr.getCertPath().getCertificates();
                 try {
-                    for (int i = cpList.size()-1; i >= 0; i-- ) {
-                        X509Certificate cert = (X509Certificate)cpList.get(i);
+                    for (int i = cpList.size() - 1; i >= 0; i--) {
+                        X509Certificate cert = (X509Certificate) cpList.get(i);
 
                         if (debug != null) {
                             debug.println("RevocationChecker.buildToNewKey()"
-                                          + " index " + i + " checking "
-                                          + cert);
+                                    + " index " + i + " checking "
+                                    + cert);
                         }
                         checkCRLs(cert, prevKey2, null, signFlag, true,
-                                  stackedCerts, newAnchors);
+                                stackedCerts, newAnchors);
                         signFlag = certCanSignCrl(cert);
                         prevKey2 = cert.getPublicKey();
                     }
@@ -1063,8 +1070,10 @@ class RevocationChecker extends PKIXRevocationChecker {
                 // If it doesn't check out, try to find a different key.
                 // And if we can't find a key, then return false.
                 PublicKey newKey = cpbr.getPublicKey();
+                X509Certificate newCert = cpList.isEmpty() ?
+                    null : (X509Certificate) cpList.get(0);
                 try {
-                    checkCRLs(currCert, newKey, (X509Certificate) cpList.get(0),
+                    checkCRLs(currCert, newKey, newCert,
                               true, false, null, params.trustAnchors());
                     // If that passed, the cert is OK!
                     return;
