@@ -49,7 +49,7 @@
 /**
  * Create an empty multi-dimensional array of a specified type.
  */
-extern id IOSArray_NewArrayWithDimensions(
+FOUNDATION_EXPORT id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
 
 #endif // IOSArray_Package_Private_H

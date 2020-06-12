@@ -93,15 +93,17 @@
 #define __ComGoogleProtobufCodedInputStream_H__
 
 #import "JreEmulation.h"
+#import "com/google/protobuf/common.h"
 
+#ifdef __cplusplus
 #include <string>
 
-#import "com/google/protobuf/common.h"
+using std::string;
+
+#endif
 
 @class ComGoogleProtobufByteString;
 @class JavaIoInputStream;
-
-using std::string;
 
 #define CGP_PREDICT_TRUE(x) (__builtin_expect(!!(x), 1))
 
@@ -273,7 +275,9 @@ class CGPCodedInputStream {
   // stream.
   uint32 ReadTagFallback();
   uint32 ReadTagSlow();
+#ifdef __cplusplus
   bool ReadStringFallback(string* buffer, int size);
+#endif
 
   // Return the size of the buffer.
   int BufferSize() const;
