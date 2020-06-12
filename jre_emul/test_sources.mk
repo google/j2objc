@@ -126,6 +126,8 @@ SUPPORT_SOURCES = \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject1/info/MockHomonymySubjectBeanInfo.java \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.java \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.java \
+    org/apache/harmony/crypto/tests/javax/crypto/MockKeyAgreementSpi.java \
+    org/apache/harmony/crypto/tests/javax/crypto/MockMacSpi.java \
     org/apache/harmony/security/tests/support/MDGoldenData.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
@@ -657,6 +659,11 @@ TEST_SOURCES := \
     org/apache/harmony/crypto/tests/javax/crypto/BadPaddingExceptionTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/CipherSpiTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/ExemptionMechanismExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/IllegalBlockSizeExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/NoSuchPaddingExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/NullCipherTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/SecretKeyTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/ShortBufferExceptionTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPrivateKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPublicKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/PBEKeyTest.java \
