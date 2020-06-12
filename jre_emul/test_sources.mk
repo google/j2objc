@@ -617,7 +617,6 @@ TEST_SOURCES := \
     libcore/javax/crypto/CipherOutputStreamTest.java \
     libcore/javax/crypto/CipherTest.java \
     libcore/javax/crypto/KeyAgreementTest.java \
-    libcore/javax/crypto/spec/AlgorithmParametersTestPBES2.java \
     libcore/javax/net/ServerSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
