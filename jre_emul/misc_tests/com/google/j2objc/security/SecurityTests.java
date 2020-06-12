@@ -32,6 +32,7 @@ public class SecurityTests {
         suite.addTest(TestUtil.getPackageTests("tests.java.security"));
         suite.addTest(TestUtil.getPackageTests("tests.security"));
         suite.addTest(TestUtil.getPackageTests("libcore.java.security"));
+        suite.addTest(TestUtil.getPackageTests("libcore.java.security.cert"));
         return suite;
     }
 
