@@ -252,7 +252,6 @@ public abstract class X509CRL extends CRL implements X509Extension {
         // X509CRLImpl.verify(this, key, sigProvider);
         throw new UnsupportedOperationException(
                 "X509CRL instance doesn't not support X509CRL#verify(PublicKey, Provider)");
-        // END Android-changed
     }
 
     /**

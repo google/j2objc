@@ -77,7 +77,7 @@ import sun.security.jca.GetInstance.Instance;
  * </table>
  *
  * This type is described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertStore">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertStore">
  * CertStore section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -212,7 +212,7 @@ public class CertStore {
      *
      * @param type the name of the requested {@code CertStore} type.
      * See the CertStore section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertStore">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertStore">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard types.
      *
@@ -272,7 +272,7 @@ public class CertStore {
      *
      * @param type the requested {@code CertStore} type.
      * See the CertStore section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertStore">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertStore">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard types.
      *
@@ -330,7 +330,7 @@ public class CertStore {
      *
      * @param type the requested {@code CertStore} type.
      * See the CertStore section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertStore">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertStore">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard types.
      *
