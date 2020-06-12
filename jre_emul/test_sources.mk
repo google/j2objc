@@ -75,6 +75,11 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/SpliteratorTester.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
+    libcore/javax/crypto/MockCipherSpi.java \
+    libcore/javax/crypto/MockKey.java \
+    libcore/javax/crypto/MockKey2.java \
+    libcore/javax/crypto/MockKeyAgreementSpi.java \
+    libcore/javax/crypto/MockMacSpi.java \
     libcore/javax/net/ssl/SSLConfigurationAsserts.java \
     libcore/javax/net/ssl/TestSSLContext.java \
     libcore/javax/net/ssl/TestSSLSocketPair.java \
@@ -121,6 +126,8 @@ SUPPORT_SOURCES = \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject1/info/MockHomonymySubjectBeanInfo.java \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.java \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.java \
+    org/apache/harmony/crypto/tests/javax/crypto/MockKeyAgreementSpi.java \
+    org/apache/harmony/crypto/tests/javax/crypto/MockMacSpi.java \
     org/apache/harmony/security/tests/support/MDGoldenData.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
@@ -609,6 +616,9 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/crypto/CipherOutputStreamTest.java \
+    libcore/javax/crypto/CipherTest.java \
+    libcore/javax/crypto/KeyAgreementTest.java \
     libcore/javax/net/ServerSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
@@ -646,9 +656,32 @@ TEST_SOURCES := \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/SimpleBeanInfoTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/BadPaddingExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/CipherSpiTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/ExemptionMechanismExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/IllegalBlockSizeExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/NoSuchPaddingExceptionTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/NullCipherTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/SecretKeyTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/ShortBufferExceptionTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPrivateKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/DHPublicKeyTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/interfaces/PBEKeyTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DESKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DESedeKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHGenParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHPrivateKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/DHPublicKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/GCMParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/IvParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/OAEPParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/PBEKeySpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/PBEParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/PSourceTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/RC2ParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/RC5ParameterSpecTest.java \
+    org/apache/harmony/crypto/tests/javax/crypto/spec/SecretKeySpecTest.java \
     org/apache/harmony/nio/tests/java/nio/channels/spi/SelectorProviderTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
@@ -1151,6 +1184,7 @@ SUITE_SOURCES = \
     android/icu/dev/test/Tests.java \
     jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
+    com/google/j2objc/crypto/CryptoTests.java \
     com/google/j2objc/java8/SmallTests.java \
     com/google/j2objc/nio/NioTests.java \
     com/google/j2objc/security/IosSecurityProviderTests.java \

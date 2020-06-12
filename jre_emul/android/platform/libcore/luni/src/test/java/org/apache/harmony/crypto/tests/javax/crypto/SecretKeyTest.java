@@ -20,51 +20,30 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.crypto.tests.javax.crypto.interfaces;
+package org.apache.harmony.crypto.tests.javax.crypto;
+
+import javax.crypto.SecretKey;
 
 import junit.framework.TestCase;
 
-import java.math.BigInteger;
-
-import javax.crypto.interfaces.PBEKey;
-
 
 /**
- * Tests for <code>PBEKey</code> class field
+ * Tests for <code>SecretKey</code> class field
  *
  */
-public class PBEKeyTest extends TestCase {
-
+public class SecretKeyTest extends TestCase {
 
     /**
      * Test for <code>serialVersionUID</code> field
      */
     public void testField() {
-        checkPBEKey key = new checkPBEKey();
+        checkSecretKey sk = new checkSecretKey();
         assertEquals("Incorrect serialVersionUID",
-                key.getSerVerUID(), //PBEKey.serialVersionUID
-                -1430015993304333921L);
+                sk.getSerVerUID(), //SecretKey.serialVersionUID
+                -4795878709595146952L);
     }
 
-    public void test_getIterationCount() throws Exception {
-        checkPBEKey key = new checkPBEKey();
-
-        key.getIterationCount();
-    }
-
-    public void test_getPassword() throws Exception {
-        checkPBEKey key = new checkPBEKey();
-
-        key.getPassword();
-    }
-
-    public void test_getSalt() throws Exception {
-        checkPBEKey key = new checkPBEKey();
-
-        key.getSalt();
-    }
-
-    public class checkPBEKey implements PBEKey {
+    public class checkSecretKey implements SecretKey {
         public String getAlgorithm() {
             return "SecretKey";
         }
@@ -76,18 +55,6 @@ public class PBEKeyTest extends TestCase {
         }
         public long getSerVerUID() {
             return serialVersionUID;
-        }
-        public BigInteger getY() {
-            return null;
-        }
-        public int getIterationCount() {
-            return 0;
-        }
-        public byte[] getSalt() {
-            return new byte[0];
-        }
-        public char[] getPassword() {
-            return new char[0];
         }
     }
 }
