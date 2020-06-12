@@ -277,7 +277,6 @@ public class TCKDateTimeFormatter {
     //-----------------------------------------------------------------------
     // format
     //-----------------------------------------------------------------------
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @DataProvider
     public static Object[][] data_format_withZone_withChronology() {
         YearMonth ym = YearMonth.of(2008, 6);
@@ -287,7 +286,8 @@ public class TCKDateTimeFormatter {
         OffsetTime ot = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE);
         OffsetDateTime odt = OffsetDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), OFFSET_PONE);
         ZonedDateTime zdt = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS);
-        ChronoZonedDateTime<ThaiBuddhistDate> thaiZdt = ThaiBuddhistChronology.INSTANCE.zonedDateTime(zdt);
+        /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
+        ChronoZonedDateTime<ThaiBuddhistDate> thaiZdt = ThaiBuddhistChronology.INSTANCE.zonedDateTime(zdt); */
         Instant instant = Instant.ofEpochSecond(3600);
         return new Object[][] {
                 {null, null, DayOfWeek.MONDAY, "::::"},
@@ -330,6 +330,7 @@ public class TCKDateTimeFormatter {
                 {null, OFFSET_PTHREE, zdt, "2008:12:+03:00:+03:00:ISO"},
                 {null, OFFSET_PTHREE, instant, "1970:04:+03:00:+03:00:ISO"},
 
+                /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
                 {ThaiBuddhistChronology.INSTANCE, null, DayOfWeek.MONDAY, null},  // not a complete date
                 {ThaiBuddhistChronology.INSTANCE, null, ym, null},  // not a complete date
                 {ThaiBuddhistChronology.INSTANCE, null, ld, "2551::::ThaiBuddhist"},
@@ -353,10 +354,10 @@ public class TCKDateTimeFormatter {
                 {null, ZONE_PARIS, thaiZdt, "2551:11:+02:00:Europe/Paris:ThaiBuddhist"},
                 {ThaiBuddhistChronology.INSTANCE, ZONE_PARIS, thaiZdt, "2551:11:+02:00:Europe/Paris:ThaiBuddhist"},
                 {IsoChronology.INSTANCE, ZONE_PARIS, thaiZdt, "2008:11:+02:00:Europe/Paris:ISO"},
+                 */
         };
-    } */
+    }
 
-    /* J2ObjC removed: Only "gregorian" and "julian" calendars are supported.
     @Test
     @UseDataProvider("data_format_withZone_withChronology")
     public void test_format_withZone_withChronology(Chronology overrideChrono, ZoneId overrideZone, TemporalAccessor temporal, String expected) {
@@ -379,7 +380,7 @@ public class TCKDateTimeFormatter {
                 // expected
             }
         }
-    } */
+    }
 
     @Test
     public void test_format_withChronology_nonChronoFieldMapLink() {
