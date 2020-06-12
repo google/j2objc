@@ -32,6 +32,9 @@ public class SecurityTests {
         suite.addTest(TestUtil.getPackageTests("com.android.org.conscrypt.java.security"));
         suite.addTest(TestUtil.getPackageTests("tests.java.security"));
         suite.addTest(TestUtil.getPackageTests("tests.security"));
+        suite.addTest(TestUtil.getPackageTests("tests.security.cert"));
+        suite.addTest(TestUtil.getPackageTests("tests.security.interfaces"));
+        suite.addTest(TestUtil.getPackageTests("tests.security.spec"));
         suite.addTest(TestUtil.getPackageTests("libcore.java.security"));
         suite.addTest(TestUtil.getPackageTests("libcore.java.security.cert"));
         return suite;
