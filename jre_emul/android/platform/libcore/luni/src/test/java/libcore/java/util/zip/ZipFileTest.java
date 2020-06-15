@@ -16,7 +16,8 @@
 
 package libcore.java.util.zip;
 
-//import android.system.OsConstants;
+/* J2ObjC removed.
+import android.system.OsConstants; */
 import libcore.io.Libcore;
 
 import java.io.BufferedOutputStream;
@@ -38,6 +39,7 @@ public final class ZipFileTest extends AbstractZipFileTest {
         return new ZipOutputStream(wrapped);
     }
 
+    /* J2ObjC removed: do not support android.system.OsConstants. */
     // http://b/30407219
 //    public void testZipFileOffsetNeverChangesAfterInit() throws Exception {
 //        final File f = createTemporaryZipFile();
@@ -74,7 +76,7 @@ public final class ZipFileTest extends AbstractZipFileTest {
 //    private static void assertOffset(long initialOffset, FileDescriptor fd) throws Exception {
 //        long currentOffset = android.system.Os.lseek(fd, 0, OsConstants.SEEK_CUR);
 //        assertEquals(initialOffset, currentOffset);
-//    }
+//    } */
 
     // b/31077136
     public void test_FileNotFound() throws Exception {

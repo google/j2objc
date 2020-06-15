@@ -19,14 +19,16 @@ package libcore.java.util.zip;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-public class DeflaterTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule();
+public class DeflaterTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
 
     private byte[] compressed = new byte[32];
     private byte[] decompressed = new byte[20];

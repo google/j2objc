@@ -16,14 +16,16 @@
  */
 package org.apache.harmony.tests.java.util.zip;
 
+/* J2ObjC Added: import FileTime class to avoid java.nio.file.attribute.FileTime */
+import com.google.j2objc.util.ZipUtils.FileTime;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-//import java.nio.file.attribute.FileTime;
-import java.util.zip.ZipUtils.FileTime;  /* J2ObjC Added: FileTime class to avoid java.nio.file.attribute.FileTime */
+/* J2ObjC Removed: avoid using Java FileTime.
+import java.nio.file.attribute.FileTime; */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -31,15 +33,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
-//import libcore.junit.util.ResourceLeakageDetector;
+
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
+import libcore.junit.util.ResourceLeakageDetector; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-public class ZipOutputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public class ZipOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     ZipOutputStream zos;
 
@@ -126,11 +131,12 @@ public class ZipOutputStreamTest extends junit.framework.TestCase /* TestCaseWit
     /**
      * java.util.zip.ZipOutputStream#setComment(java.lang.String)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; finish() throws an exception if the output is invalid; this is"
-//                    + " an issue with the ZipOutputStream created in setUp()",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; finish() throws an exception if the output is invalid; this is"
+                    + " an issue with the ZipOutputStream created in setUp()",
+            bug = "31797037") */
     public void test_setCommentLjava_lang_String() {
         // There is no way to get the comment back, so no way to determine if
         // the comment is set correct
@@ -184,10 +190,11 @@ public class ZipOutputStreamTest extends junit.framework.TestCase /* TestCaseWit
     /**
      * java.util.zip.ZipOutputStream#write(byte[], int, int)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; finish() throws an exception if the output is invalid.",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; finish() throws an exception if the output is invalid.",
+            bug = "31797037") */
     public void test_write$BII() throws IOException {
         ZipEntry ze = new ZipEntry("test");
         zos.putNextEntry(ze);
@@ -261,11 +268,12 @@ public class ZipOutputStreamTest extends junit.framework.TestCase /* TestCaseWit
     /**
      * java.util.zip.ZipOutputStream#write(byte[], int, int)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; finish() throws an exception if the output is invalid; this is"
-//                    + " an issue with the ZipOutputStream created in setUp()",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; finish() throws an exception if the output is invalid; this is"
+                    + " an issue with the ZipOutputStream created in setUp()",
+            bug = "31797037") */
     public void test_write$BII_2() throws IOException {
         // Regression for HARMONY-577
         File f1 = File.createTempFile("testZip1", "tst");

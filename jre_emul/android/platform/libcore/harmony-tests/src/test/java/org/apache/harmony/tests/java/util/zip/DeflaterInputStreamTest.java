@@ -25,15 +25,17 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterInputStream;
 import libcore.io.Streams;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
-//import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-public class DeflaterInputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public class DeflaterInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     private static final String TEST_STR = "Hi,this is a test";
 
@@ -349,12 +351,13 @@ public class DeflaterInputStreamTest extends junit.framework.TestCase /* TestCas
     /**
      * DeflaterInputStream#DeflaterInputStream(InputStream)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "DeflaterInputStream does not clean up the default Deflater created in the"
-//                    + " constructor if the constructor fails; i.e. constructor calls"
-//                    + " this(..., new Deflater(), ...) and that constructor fails but does not know"
-//                    + " that it needs to call Deflater.end() as the caller has no access to it",
-//            bug = "31798154")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterInputStream does not clean up the default Deflater created in the"
+                    + " constructor if the constructor fails; i.e. constructor calls"
+                    + " this(..., new Deflater(), ...) and that constructor fails but does not know"
+                    + " that it needs to call Deflater.end() as the caller has no access to it",
+            bug = "31798154") */
     public void testDeflaterInputStreamInputStream() throws IOException {
         // ok
         new DeflaterInputStream(is).close();

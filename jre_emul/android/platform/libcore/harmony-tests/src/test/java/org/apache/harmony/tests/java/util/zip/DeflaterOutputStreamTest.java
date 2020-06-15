@@ -26,15 +26,17 @@ import java.io.OutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
-//import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-public class DeflaterOutputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public class DeflaterOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     private class MyDeflaterOutputStream extends DeflaterOutputStream {
         boolean deflateFlag = false;
@@ -181,12 +183,13 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase /* TestCa
     /**
      * java.util.zip.DeflaterOutputStream#close()
      */
-//    @DisableResourceLeakageDetection(
-//            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
-//                    + " underlying OutputStream has been closed and the Deflater still has data to"
-//                    + " write.",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
+                    + " underlying OutputStream has been closed and the Deflater still has data to"
+                    + " write.",
+            bug = "31797037") */
     public void test_close() throws Exception {
         File f1 = File.createTempFile("close", ".tst");
 
@@ -296,12 +299,13 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase /* TestCa
     /**
      * java.util.zip.DeflaterOutputStream#write(int)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
-//                    + " underlying OutputStream has been closed and the Deflater still has data to"
-//                    + " write.",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
+                    + " underlying OutputStream has been closed and the Deflater still has data to"
+                    + " write.",
+            bug = "31797037") */
     public void test_writeI() throws Exception {
         File f1 = File.createTempFile("writeIL", ".tst");
         FileOutputStream fos = new FileOutputStream(f1);
@@ -344,12 +348,13 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase /* TestCa
     /**
      * java.util.zip.DeflaterOutputStream#write(byte[], int, int)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
-//                    + " underlying OutputStream has been closed and the Deflater still has data to"
-//                    + " write.",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
+                    + " underlying OutputStream has been closed and the Deflater still has data to"
+                    + " write.",
+            bug = "31797037") */
     public void test_write$BII() throws Exception {
         byte byteArray[] = { 1, 3, 4, 7, 8, 3, 6 };
 

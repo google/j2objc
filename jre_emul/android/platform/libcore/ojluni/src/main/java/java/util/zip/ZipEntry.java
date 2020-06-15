@@ -26,9 +26,11 @@
 
 package java.util.zip;
 
-import static java.util.zip.ZipUtils.*;
+/* J2ObjC Added: import FileTime class to avoid java.nio.file.attribute.FileTime */
+import static com.google.j2objc.util.ZipUtils.*;
 import java.nio.charset.StandardCharsets;
-//import java.nio.file.attribute.FileTime;
+/* J2ObjC Removed: avoid using Java FileTime.
+import java.nio.file.attribute.FileTime; */
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -72,7 +74,7 @@ class ZipEntry implements ZipConstants, Cloneable {
     /**
      * DOS time constant for representing timestamps before 1980.
      */
-    static final long DOSTIME_BEFORE_1980 = (1 << 21) | (1 << 16);
+    public static final long DOSTIME_BEFORE_1980 = (1 << 21) | (1 << 16);
 
     /**
      * Approximately 128 years, in milliseconds (ignoring leap years etc).

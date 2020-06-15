@@ -34,15 +34,17 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public abstract class AbstractZipFileTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule();
+public abstract class AbstractZipFileTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
 
     /**
      * Exercise Inflater's ability to refill the zlib's input buffer. As of this

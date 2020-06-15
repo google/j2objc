@@ -23,15 +23,17 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterOutputStream;
 import java.util.zip.ZipException;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
-//import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-public class InflaterOutputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public class InflaterOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     private ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -42,12 +44,13 @@ public class InflaterOutputStreamTest extends junit.framework.TestCase /* TestCa
     /**
      * java.util.zip.InflaterOutputStream#InflaterOutputStream(java.io.OutputStream)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "InflaterOutputStream does not clean up the default Inflater created in the"
-//                    + " constructor if the constructor fails; i.e. constructor calls"
-//                    + " this(..., new Inflater(), ...) and that constructor fails but does not know"
-//                    + " that it needs to call Inflater.end() as the caller has no access to it",
-//            bug = "31798154")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterOutputStream does not clean up the default Inflater created in the"
+                    + " constructor if the constructor fails; i.e. constructor calls"
+                    + " this(..., new Inflater(), ...) and that constructor fails but does not know"
+                    + " that it needs to call Inflater.end() as the caller has no access to it",
+            bug = "31798154") */
     public void test_ConstructorLjava_io_OutputStream() throws IOException {
         new InflaterOutputStream(os).close();
 
@@ -276,10 +279,11 @@ public class InflaterOutputStreamTest extends junit.framework.TestCase /* TestCa
     /**
      * java.util.zip.InflaterOutputStream#write(byte[], int, int)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
-//                    + " exception; finish() throws an exception if the output is invalid.",
-//            bug = "31797037")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; finish() throws an exception if the output is invalid.",
+            bug = "31797037") */
     public void test_write_$BII_Illegal() throws IOException {
         // write error compression (ZIP) format
         byte[] bytes = { 0, 1, 2, 3 };

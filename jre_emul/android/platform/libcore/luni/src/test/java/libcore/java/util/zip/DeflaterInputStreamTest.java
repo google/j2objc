@@ -23,14 +23,16 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-public final class DeflaterInputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public final class DeflaterInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     public void testReadByteByByte() throws IOException {
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };

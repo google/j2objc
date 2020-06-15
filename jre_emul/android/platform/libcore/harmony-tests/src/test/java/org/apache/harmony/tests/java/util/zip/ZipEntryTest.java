@@ -16,25 +16,29 @@
  */
 package org.apache.harmony.tests.java.util.zip;
 
+/* J2ObjC Added: import FileTime class to avoid java.nio.file.attribute.FileTime */
+import com.google.j2objc.util.ZipUtils.FileTime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-//import java.nio.file.attribute.FileTime;
-import java.util.zip.ZipUtils.FileTime; /* J2ObjC Added: FileTime class to avoid java.nio.file.attribute.FileTime */
+/* J2ObjC Removed: avoid using Java FileTime.
+import java.nio.file.attribute.FileTime; */
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import libcore.io.Streams;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public class ZipEntryTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public class ZipEntryTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     // zip file hyts_ZipFile.zip must be included as a resource
     private ZipEntry zentry;

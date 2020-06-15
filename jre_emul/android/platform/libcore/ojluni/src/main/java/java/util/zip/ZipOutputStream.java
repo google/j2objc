@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 import java.util.HashSet;
 import static java.util.zip.ZipConstants64.*;
-import static java.util.zip.ZipUtils.*;
+import static com.google.j2objc.util.ZipUtils.*;
 
 /**
  * This class implements an output stream filter for writing files in the

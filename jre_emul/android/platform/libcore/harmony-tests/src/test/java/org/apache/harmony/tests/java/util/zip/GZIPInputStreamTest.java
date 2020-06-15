@@ -27,16 +27,18 @@ import java.net.URL;
 import java.util.zip.Checksum;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-//import libcore.junit.junit3.TestCaseWithRules;
-//import libcore.junit.util.ResourceLeakageDetector;
-//import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public class GZIPInputStreamTest extends junit.framework.TestCase /* TestCaseWithRules */ {
-//    @Rule
-//    public TestRule guardRule = ResourceLeakageDetector.getRule();
+public class GZIPInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     File resources;
 
@@ -83,12 +85,13 @@ public class GZIPInputStreamTest extends junit.framework.TestCase /* TestCaseWit
      * @tests java.util.zip.GZIPInputStream#GZIPInputStream(java.io.InputStream,
      *int)
      */
-//    @DisableResourceLeakageDetection(
-//            why = "InflaterInputStream does not clean up the default Inflater created in the"
-//                    + " constructor if the constructor fails; i.e. constructor calls"
-//                    + " this(..., new Inflater(), ...) and that constructor fails but does not know"
-//                    + " that it needs to call Inflater.end() as the caller has no access to it",
-//            bug = "31798154")
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterInputStream does not clean up the default Inflater created in the"
+                    + " constructor if the constructor fails; i.e. constructor calls"
+                    + " this(..., new Inflater(), ...) and that constructor fails but does not know"
+                    + " that it needs to call Inflater.end() as the caller has no access to it",
+            bug = "31798154") */
     public void test_ConstructorLjava_io_InputStreamI() {
         // test method java.util.zip.GZIPInputStream.constructorI
         try {
