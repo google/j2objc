@@ -33,7 +33,7 @@ import java.io.PushbackInputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.util.zip.ZipConstants64.*;
-import static com.google.j2objc.util.ZipUtils.*;
+import static java.util.zip.ZipUtils.*;
 
 /**
  * This class implements an input stream filter for reading files in the

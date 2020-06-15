@@ -17,7 +17,7 @@
 package org.apache.harmony.tests.java.util.zip;
 
 /* J2ObjC Added: import FileTime class to avoid java.nio.file.attribute.FileTime */
-import com.google.j2objc.util.ZipUtils.FileTime;
+import com.google.j2objc.nio.file.attribute.FileTime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
