@@ -482,12 +482,11 @@ public class X509Certificate2Test extends junit.framework.TestCase {
            + "-----END CERTIFICATE-----\n");
 
     public void testGetBasicConstraints() throws Exception {
-        // iOS Security Framework only generates certificates for with correct constraints.
         assertEquals(5, generateCert(CERT_CORRECT).getBasicConstraints());
-        //assertEquals(-1, generateCert(CERT_WITHOUT_BASIC).getBasicConstraints());
-        //assertEquals(-1, generateCert(CERT_WITH_BASIC_NON_CA).getBasicConstraints());
-        //assertEquals(0, generateCert(CERT_WITH_BASIC_CA_ZERO_PATH_LENGTH).getBasicConstraints());
-        //assertEquals(Integer.MAX_VALUE, generateCert(CERT_WITH_BASIC_CA_NO_PATH_LENGTH).getBasicConstraints());
+        assertEquals(-1, generateCert(CERT_WITHOUT_BASIC).getBasicConstraints());
+        assertEquals(-1, generateCert(CERT_WITH_BASIC_NON_CA).getBasicConstraints());
+        assertEquals(0, generateCert(CERT_WITH_BASIC_CA_ZERO_PATH_LENGTH).getBasicConstraints());
+        assertEquals(Integer.MAX_VALUE, generateCert(CERT_WITH_BASIC_CA_NO_PATH_LENGTH).getBasicConstraints());
     }
 
     public void testCertificateException() throws Exception {

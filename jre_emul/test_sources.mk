@@ -65,6 +65,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/SettableCharsetProvider.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
+    libcore/java/security/cert/FakeOidProvider.java \
     libcore/java/util/AbstractResourceLeakageDetectorTestCase.java \
     libcore/java/util/ForEachRemainingTester.java \
     libcore/java/util/ListDefaultMethodTester.java \
@@ -136,7 +137,15 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
     org/apache/harmony/security/tests/support/TestCertUtils.java \
     org/apache/harmony/security/tests/support/TestKeyPair.java \
+    org/apache/harmony/security/tests/support/cert/MyCertificate.java \
+    org/apache/harmony/security/tests/support/cert/MyCertificateFactorySpi.java \
+    org/apache/harmony/security/tests/support/cert/MyCertPath.java \
+    org/apache/harmony/security/tests/support/cert/MyCertPathBuilderSpi.java \
+    org/apache/harmony/security/tests/support/cert/MyCertPathValidatorSpi.java \
+    org/apache/harmony/security/tests/support/cert/MyCertStoreParameters.java \
+    org/apache/harmony/security/tests/support/cert/MyCertStoreSpi.java \
     org/apache/harmony/security/tests/support/cert/MyCRL.java \
+    org/apache/harmony/security/tests/support/cert/MyFailingCertPath.java \
     org/apache/harmony/security/tests/support/cert/TestUtils.java \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
@@ -505,6 +514,8 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/security/cert/CRLReasonTest.java \
+    libcore/java/security/cert/X509CRLSelectorTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
@@ -1145,6 +1156,35 @@ TEST_SOURCES := \
     test/java/time/temporal/TestJulianFields.java \
     test/java/time/zone/TestFixedZoneRules.java \
     tests/api/java/lang/reflect/ProxyTest.java \
+    tests/security/cert/CRLExceptionTest.java \
+    tests/security/cert/CRLTest.java \
+    tests/security/cert/CertPathBuilderExceptionTest.java \
+    tests/security/cert/CertPathBuilderSpiTest.java \
+    tests/security/cert/CertPathCertPathRepTest.java \
+    tests/security/cert/CertStore2Test.java \
+    tests/security/cert/CertStoreExceptionTest.java \
+    tests/security/cert/CertStoreSpiTest.java \
+    tests/security/cert/CertificateCertificateRepTest.java \
+    tests/security/cert/CertificateEncodingException2Test.java \
+    tests/security/cert/CertificateEncodingExceptionTest.java \
+    tests/security/cert/CertificateException2Test.java \
+    tests/security/cert/CertificateExceptionTest.java \
+    tests/security/cert/CertificateExpiredExceptionTest.java \
+    tests/security/cert/CertificateFactory1Test.java \
+    tests/security/cert/CertificateFactory2Test.java \
+    tests/security/cert/CertificateFactory3Test.java \
+    tests/security/cert/CertificateFactorySpiTest.java \
+    tests/security/cert/CertificateNotYetValidExceptionTest.java \
+    tests/security/cert/CertificateParsingExceptionTest.java \
+    tests/security/cert/CertificateRevocationExceptionTest.java \
+    tests/security/cert/CollectionCertStoreParametersTest.java \
+    tests/security/cert/LDAPCertStoreParametersTest.java \
+    tests/security/cert/PolicyQualifierInfoTest.java \
+    tests/security/cert/X509CRL2Test.java \
+    tests/security/cert/X509CRLEntryTest.java \
+    tests/security/cert/X509CRLSelector2Test.java \
+    tests/security/cert/X509CRLSelectorTest.java \
+    tests/security/cert/X509CRLTest.java \
     tests/security/cert/X509Certificate2Test.java \
     tests/security/interfaces/DSAParamsTest.java \
     tests/security/interfaces/RSAKeyTest.java \
@@ -1268,6 +1308,7 @@ TESTS_USE_SERIALIZATION = \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
+    tests/security/cert/CertificateRevocationExceptionTest.java \
 
 TESTS_USE_REFLECTION = \
     com/google/j2objc/ClassTest.java \
@@ -1293,6 +1334,8 @@ TESTS_USE_REFLECTION = \
     test/java/time/TestYear.java \
     test/java/time/TestYearMonth.java \
     test/java/time/TestZonedDateTime.java \
+    tests/security/cert/CertificateEncodingException2Test.java \
+    tests/security/cert/CertificateFactory1Test.java \
 
 TEST_RESOURCES_SRCS = \
     lib/logging.properties \
@@ -1368,11 +1411,15 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/util/UnknownFormatConversionExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/UnknownFormatFlagsExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/zip/ZipErrorTest.golden.ser \
+    serialization/tests/security/cert/CertPathTest.golden.ser \
+    serialization/tests/security/cert/CertificateRevocationExceptionTest.golden.ser \
+    serialization/tests/security/cert/CertificateTest.golden.ser \
     tests/resources/hyts_compDiction.bin \
     tests/resources/hyts_compressD.bin \
     tests/resources/hyts_construOD.bin \
     tests/resources/hyts_construODI.bin \
-    tests/resources/hyts_gInput.txt.gz
+    tests/resources/hyts_gInput.txt.gz \
+    tests/resources/java/security/cert/CertPath.PkiPath
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     libcore/java/nio/charset/encodings_ISO-8859-1.txt \

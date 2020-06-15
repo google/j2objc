@@ -89,6 +89,10 @@ class PlainDatagramSocketImpl: @ReflectionSupport(FULL)
 package java.nio.channels:
 class SelectionKey: @ReflectionSupport(FULL)
 
+package java.security.cert:
+class Certificate: @ReflectionSupport(FULL)
+class CertPath: @ReflectionSupport(FULL)
+
 package java.sql:
 class SQLException: @ReflectionSupport(FULL)
 

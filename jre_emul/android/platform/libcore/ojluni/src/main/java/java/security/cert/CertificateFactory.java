@@ -127,9 +127,9 @@ import sun.security.jca.GetInstance.Instance;
  * </table>
  *
  * The type and encodings are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertificateFactory">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertificateFactory">
  * CertificateFactory section</a> and the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertPathEncodings">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathEncodings">
  * CertPath Encodings section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -188,7 +188,7 @@ public class CertificateFactory {
      *
      * @param type the name of the requested certificate type.
      * See the CertificateFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertificateFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertificateFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard certificate types.
      *
@@ -226,7 +226,7 @@ public class CertificateFactory {
      *
      * @param type the certificate type.
      * See the CertificateFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertificateFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertificateFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard certificate types.
      *
@@ -250,6 +250,10 @@ public class CertificateFactory {
             String provider) throws CertificateException,
             NoSuchProviderException {
         try {
+            // Android-added: Check for Bouncy Castle deprecation
+            /* J2ObjC removed: BouncyCastle not supported
+            Providers.checkBouncyCastleDeprecation(provider, "CertificateFactory", type);
+             */
             Instance instance = GetInstance.getInstance("CertificateFactory",
                 CertificateFactorySpi.class, type, provider);
             return new CertificateFactory((CertificateFactorySpi)instance.impl,
@@ -270,7 +274,7 @@ public class CertificateFactory {
      *
      * @param type the certificate type.
      * See the CertificateFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertificateFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertificateFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard certificate types.
      * @param provider the provider.
@@ -291,6 +295,10 @@ public class CertificateFactory {
     public static final CertificateFactory getInstance(String type,
             Provider provider) throws CertificateException {
         try {
+            // Android-added: Check for Bouncy Castle deprecation
+            /* J2ObjC removed: BouncyCastle not supported
+            Providers.checkBouncyCastleDeprecation(provider, "CertificateFactory", type);
+             */
             Instance instance = GetInstance.getInstance("CertificateFactory",
                 CertificateFactorySpi.class, type, provider);
             return new CertificateFactory((CertificateFactorySpi)instance.impl,
@@ -366,7 +374,7 @@ public class CertificateFactory {
      * Returns an iteration of the {@code CertPath} encodings supported
      * by this certificate factory, with the default encoding first. See
      * the CertPath Encodings section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertPathEncodings">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathEncodings">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard encoding names and their formats.
      * <p>
@@ -406,7 +414,7 @@ public class CertificateFactory {
      * the data read from the {@code InputStream} inStream. The data
      * is assumed to be in the specified encoding. See
      * the CertPath Encodings section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertPathEncodings">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathEncodings">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard encoding names and their formats.
      *
