@@ -33,45 +33,11 @@ public class FileTime implements Comparable<FileTime>{
   }
 
   public static FileTime from(long value, TimeUnit unit) {
-    switch (unit) {
-      case NANOSECONDS:
-        return new FileTime(value / 1000000);
-      case MICROSECONDS:
-        return new FileTime( value / 1000);
-      case MILLISECONDS:
-        return new FileTime(value);
-      case SECONDS:
-        return new FileTime(value * 1000);
-      case MINUTES:
-        return new FileTime(value * 60000);
-      case HOURS:
-        return new FileTime(value * 3600000);
-      case DAYS:
-        return new FileTime(value * 86400000);
-      default:
-        throw new IllegalArgumentException("unknown TimeUnit type: " + unit);
-    }
+    return new FileTime(TimeUnit.MILLISECONDS.convert(value, unit));
   }
 
   public long to(TimeUnit unit) {
-    switch (unit) {
-      case NANOSECONDS:
-        return millis * 1000000;
-      case MICROSECONDS:
-        return millis * 1000;
-      case MILLISECONDS:
-        return millis;
-      case SECONDS:
-        return millis / 1000;
-      case MINUTES:
-        return millis / 60000;
-      case HOURS:
-        return millis / 3600000;
-      case DAYS:
-        return millis / 86400000;
-      default:
-        throw new IllegalArgumentException("unknown TimeUnit type: " + unit);
-    }
+    return unit.convert(millis, TimeUnit.MILLISECONDS);
   }
 
   public long toMillis() {
