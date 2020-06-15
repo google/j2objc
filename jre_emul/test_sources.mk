@@ -1000,6 +1000,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/net/ssl/SSLSessionBindingEventTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.java \
+    org/apache/harmony/tests/javax/security/auth/x500/X500PrincipalTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \
@@ -1282,6 +1283,7 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
+    org/apache/harmony/tests/javax/security/auth/x500/X500PrincipalTest.java \
     tck/java/time/chrono/TCKChronoPeriod.java \
     tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
@@ -1408,6 +1410,9 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/util/UnknownFormatConversionExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/UnknownFormatFlagsExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/zip/ZipErrorTest.golden.ser \
+    serialization/org/apache/harmony/tests/javax/security/auth/x500/X500PrincipalTest.golden.0.ser \
+    serialization/org/apache/harmony/tests/javax/security/auth/x500/X500PrincipalTest.golden.1.ser \
+    serialization/org/apache/harmony/tests/javax/security/auth/x500/X500PrincipalTest.golden.2.ser \
     serialization/tests/security/cert/CertPathTest.golden.ser \
     serialization/tests/security/cert/CertificateRevocationExceptionTest.golden.ser \
     serialization/tests/security/cert/CertificateTest.golden.ser \
@@ -1416,7 +1421,10 @@ HARMONY_TEST_RESOURCES_SRCS = \
     tests/resources/hyts_construOD.bin \
     tests/resources/hyts_construODI.bin \
     tests/resources/hyts_gInput.txt.gz \
-    tests/resources/java/security/cert/CertPath.PkiPath
+    tests/resources/java/security/cert/CertPath.PkiPath \
+    tests/resources/X500PrincipalTest.0.dat \
+    tests/resources/X500PrincipalTest.1.dat
+
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     libcore/java/nio/charset/encodings_ISO-8859-1.txt \
