@@ -1000,6 +1000,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/net/ssl/SSLSessionBindingEventTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSocketFactoryTest.java \
     org/apache/harmony/tests/javax/net/ssl/SSLSocketTest.java \
+    org/apache/harmony/tests/javax/security/auth/callback/CallbackHandlerTest.java \
+    org/apache/harmony/tests/javax/security/auth/callback/PasswordCallbackTest.java \
+    org/apache/harmony/tests/javax/security/auth/callback/UnsupportedCallbackExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \
@@ -1411,6 +1414,8 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/util/UnknownFormatConversionExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/UnknownFormatFlagsExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/zip/ZipErrorTest.golden.ser \
+    serialization/org/apache/harmony/tests/javax/security/auth/callback/PasswordCallbackTest.golden.0.ser \
+    serialization/org/apache/harmony/tests/javax/security/auth/callback/PasswordCallbackTest.golden.1.ser \
     serialization/tests/security/cert/CertPathTest.golden.ser \
     serialization/tests/security/cert/CertificateRevocationExceptionTest.golden.ser \
     serialization/tests/security/cert/CertificateTest.golden.ser \
