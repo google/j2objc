@@ -1285,6 +1285,7 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
+    org/apache/harmony/tests/javax/security/auth/callback/PasswordCallbackTest.java \
     tck/java/time/chrono/TCKChronoPeriod.java \
     tck/java/time/chrono/serial/TCKChronoLocalDateTimeSerialization.java \
     tck/java/time/chrono/serial/TCKChronoZonedDateTimeSerialization.java \
