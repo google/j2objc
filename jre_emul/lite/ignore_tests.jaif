@@ -657,3 +657,8 @@ package tests.api.java.lang.reflect:
 class ProxyTest:
   method test_newProxyInstanceLjava_lang_ClassLoader$Ljava_lang_ClassLjava_lang_reflect_InvocationHandler()V:
     @ObjectiveCName("ignore_newProxyInstanceLjava_lang_ClassLoader_Ljava_lang_ClassLjava_lang_reflect_InvocationHandler")
+
+package tests.security.cert:
+class CertificateException2Test:
+  method test_Constructor()V:
+    @ObjectiveCName("ignore_test_Constructor")
