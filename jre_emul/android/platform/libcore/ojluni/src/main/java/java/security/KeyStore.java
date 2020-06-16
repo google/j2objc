@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,34 +26,29 @@
 package java.security;
 
 import com.google.j2objc.annotations.WeakOuter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.URI;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Enumeration;
+import java.security.cert.CertificateException;
+import java.security.spec.AlgorithmParameterSpec;
+import java.util.*;
 import javax.crypto.SecretKey;
+
 import javax.security.auth.DestroyFailedException;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.*;
 
 /**
  * This class represents a storage facility for cryptographic
  * keys and certificates.
  *
- * <p> A <code>KeyStore</code> manages different types of entries.
- * Each type of entry implements the <code>KeyStore.Entry</code> interface.
- * Three basic <code>KeyStore.Entry</code> implementations are provided:
+ * <p> A {@code KeyStore} manages different types of entries.
+ * Each type of entry implements the {@code KeyStore.Entry} interface.
+ * Three basic {@code KeyStore.Entry} implementations are provided:
  *
  * <ul>
  * <li><b>KeyStore.PrivateKeyEntry</b>
- * <p> This type of entry holds a cryptographic <code>PrivateKey</code>,
+ * <p> This type of entry holds a cryptographic {@code PrivateKey},
  * which is optionally stored in a protected format to prevent
  * unauthorized access.  It is also accompanied by a certificate chain
  * for the corresponding public key.
@@ -64,12 +59,12 @@ import javax.security.auth.callback.PasswordCallback;
  * and/or licensing software.
  *
  * <li><b>KeyStore.SecretKeyEntry</b>
- * <p> This type of entry holds a cryptographic <code>SecretKey</code>,
+ * <p> This type of entry holds a cryptographic {@code SecretKey},
  * which is optionally stored in a protected format to prevent
  * unauthorized access.
  *
  * <li><b>KeyStore.TrustedCertificateEntry</b>
- * <p> This type of entry contains a single public key <code>Certificate</code>
+ * <p> This type of entry contains a single public key {@code Certificate}
  * belonging to another party. It is called a <i>trusted certificate</i>
  * because the keystore owner trusts that the public key in the certificate
  * indeed belongs to the identity identified by the <i>subject</i> (owner)
@@ -104,7 +99,6 @@ import javax.security.auth.callback.PasswordCallback;
  *    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
  * </pre>
  * The system will return a keystore implementation for the default type.
- * <p>
  *
  * <li>To provide a specific keystore type:
  * <pre>
@@ -122,19 +116,13 @@ import javax.security.auth.callback.PasswordCallback;
  *    // get user password and file input stream
  *    char[] password = getPassword();
  *
- *    java.io.FileInputStream fis = null;
- *    try {
- *        fis = new java.io.FileInputStream("keyStoreName");
+ *    try (FileInputStream fis = new FileInputStream("keyStoreName")) {
  *        ks.load(fis, password);
- *    } finally {
- *        if (fis != null) {
- *            fis.close();
- *        }
  *    }
  * </pre>
  *
- * To create an empty keystore using the above <code>load</code> method,
- * pass <code>null</code> as the <code>InputStream</code> argument.
+ * To create an empty keystore using the above {@code load} method,
+ * pass {@code null} as the {@code InputStream} argument.
  *
  * <p> Once the keystore has been loaded, it is possible
  * to read existing entries from the keystore, or to write new entries
@@ -155,14 +143,8 @@ import javax.security.auth.callback.PasswordCallback;
  *    ks.setEntry("secretKeyAlias", skEntry, protParam);
  *
  *    // store away the keystore
- *    java.io.FileOutputStream fos = null;
- *    try {
- *        fos = new java.io.FileOutputStream("newKeyStoreName");
+ *    try (FileOutputStream fos = new FileOutputStream("newKeyStoreName")) {
  *        ks.store(fos, password);
- *    } finally {
- *        if (fos != null) {
- *            fos.close();
- *        }
  *    }
  * </pre>
  *
@@ -175,46 +157,46 @@ import javax.security.auth.callback.PasswordCallback;
  *
  * <p> Android provides the following <code>KeyStore</code> types:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>AndroidCAStore</td>
- *             <td>14+</td>
- *         </tr>
- *         <tr>
- *             <td>AndroidKeyStore</td>
- *             <td>18+</td>
- *         </tr>
- *         <tr>
- *             <td>BCPKCS12</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *         <tr>
- *             <td>BKS</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>BouncyCastle</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PKCS12</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>PKCS12-DEF</td>
- *             <td>1&ndash;8</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>AndroidCAStore</td>
+ *       <td>14+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>AndroidKeyStore</td>
+ *       <td>18+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>BCPKCS12</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *     <tr>
+ *       <td>BKS</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>BouncyCastle</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>PKCS12</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>PKCS12-DEF</td>
+ *       <td>1-8</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * These types are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyStore">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyStore">
  * KeyStore section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -228,6 +210,15 @@ import javax.security.auth.callback.PasswordCallback;
  */
 
 public class KeyStore {
+
+    // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+    /*
+    private static final Debug pdebug =
+                        Debug.getInstance("provider", "Provider");
+    private static final boolean skipDebug =
+        Debug.isOn("engine=") && !Debug.isOn("keystore");
+    */
+    // END Android-removed: this debugging mechanism is not supported in Android.
 
     /*
      * Constant to lookup in the Security properties file to determine
@@ -252,7 +243,7 @@ public class KeyStore {
     private boolean initialized = false;
 
     /**
-     * A marker interface for <code>KeyStore</code>
+     * A marker interface for {@code KeyStore}
      * {@link #load(KeyStore.LoadStoreParameter) load}
      * and
      * {@link #store(KeyStore.LoadStoreParameter) store}
@@ -272,19 +263,19 @@ public class KeyStore {
     /**
      * A marker interface for keystore protection parameters.
      *
-     * <p> The information stored in a <code>ProtectionParameter</code>
+     * <p> The information stored in a {@code ProtectionParameter}
      * object protects the contents of a keystore.
      * For example, protection parameters may be used to check
      * the integrity of keystore data, or to protect the
      * confidentiality of sensitive keystore data
-     * (such as a <code>PrivateKey</code>).
+     * (such as a {@code PrivateKey}).
      *
      * @since 1.5
      */
     public static interface ProtectionParameter { }
 
     /**
-     * A password-based implementation of <code>ProtectionParameter</code>.
+     * A password-based implementation of {@code ProtectionParameter}.
      *
      * @since 1.5
      */
@@ -292,18 +283,86 @@ public class KeyStore {
                 ProtectionParameter, javax.security.auth.Destroyable {
 
         private final char[] password;
+        private final String protectionAlgorithm;
+        private final AlgorithmParameterSpec protectionParameters;
         private volatile boolean destroyed = false;
 
         /**
          * Creates a password parameter.
          *
-         * <p> The specified <code>password</code> is cloned before it is stored
-         * in the new <code>PasswordProtection</code> object.
+         * <p> The specified {@code password} is cloned before it is stored
+         * in the new {@code PasswordProtection} object.
          *
-         * @param password the password, which may be <code>null</code>
+         * @param password the password, which may be {@code null}
          */
         public PasswordProtection(char[] password) {
             this.password = (password == null) ? null : password.clone();
+            this.protectionAlgorithm = null;
+            this.protectionParameters = null;
+        }
+
+        /**
+         * Creates a password parameter and specifies the protection algorithm
+         * and associated parameters to use when encrypting a keystore entry.
+         * <p>
+         * The specified {@code password} is cloned before it is stored in the
+         * new {@code PasswordProtection} object.
+         *
+         * @param password the password, which may be {@code null}
+         * @param protectionAlgorithm the encryption algorithm name, for
+         *     example, {@code PBEWithHmacSHA256AndAES_256}.
+         *     See the Cipher section in the <a href=
+         * "{@docRoot}/../technotes/guides/security/StandardNames.html#Cipher">
+         * Java Cryptography Architecture Standard Algorithm Name
+         * Documentation</a>
+         *     for information about standard encryption algorithm names.
+         * @param protectionParameters the encryption algorithm parameter
+         *     specification, which may be {@code null}
+         * @exception NullPointerException if {@code protectionAlgorithm} is
+         *     {@code null}
+         *
+         * @since 1.8
+         */
+        public PasswordProtection(char[] password, String protectionAlgorithm,
+            AlgorithmParameterSpec protectionParameters) {
+            if (protectionAlgorithm == null) {
+                throw new NullPointerException("invalid null input");
+            }
+            this.password = (password == null) ? null : password.clone();
+            this.protectionAlgorithm = protectionAlgorithm;
+            this.protectionParameters = protectionParameters;
+        }
+
+        /**
+         * Gets the name of the protection algorithm.
+         * If none was set then the keystore provider will use its default
+         * protection algorithm. The name of the default protection algorithm
+         * for a given keystore type is set using the
+         * {@code 'keystore.<type>.keyProtectionAlgorithm'} security property.
+         * For example, the
+         * {@code keystore.PKCS12.keyProtectionAlgorithm} property stores the
+         * name of the default key protection algorithm used for PKCS12
+         * keystores. If the security property is not set, an
+         * implementation-specific algorithm will be used.
+         *
+         * @return the algorithm name, or {@code null} if none was set
+         *
+         * @since 1.8
+         */
+        public String getProtectionAlgorithm() {
+            return protectionAlgorithm;
+        }
+
+        /**
+         * Gets the parameters supplied for the protection algorithm.
+         *
+         * @return the algorithm parameter specification, or {@code  null},
+         *     if none was set
+         *
+         * @since 1.8
+         */
+        public AlgorithmParameterSpec getProtectionParameters() {
+            return protectionParameters;
         }
 
         /**
@@ -315,7 +374,7 @@ public class KeyStore {
          * after it is no longer needed.
          *
          * @see #destroy()
-         * @return the password, which may be <code>null</code>
+         * @return the password, which may be {@code null}
          * @exception IllegalStateException if the password has
          *              been cleared (destroyed)
          */
@@ -332,8 +391,7 @@ public class KeyStore {
          * @exception DestroyFailedException if this method was unable
          *      to clear the password
          */
-        public synchronized void destroy()
-                throws javax.security.auth.DestroyFailedException {
+        public synchronized void destroy() throws DestroyFailedException {
             destroyed = true;
             if (password != null) {
                 Arrays.fill(password, ' ');
@@ -386,14 +444,51 @@ public class KeyStore {
     }
 
     /**
-     * A marker interface for <code>KeyStore</code> entry types.
+     * A marker interface for {@code KeyStore} entry types.
      *
      * @since 1.5
      */
-    public static interface Entry { }
+    public static interface Entry {
+
+        /**
+         * Retrieves the attributes associated with an entry.
+         * <p>
+         * The default implementation returns an empty {@code Set}.
+         *
+         * @return an unmodifiable {@code Set} of attributes, possibly empty
+         *
+         * @since 1.8
+         */
+        public default Set<Attribute> getAttributes() {
+            return Collections.<Attribute>emptySet();
+        }
+
+        /**
+         * An attribute associated with a keystore entry.
+         * It comprises a name and one or more values.
+         *
+         * @since 1.8
+         */
+        public interface Attribute {
+            /**
+             * Returns the attribute's name.
+             *
+             * @return the attribute name
+             */
+            public String getName();
+
+            /**
+             * Returns the attribute's value.
+             * Multi-valued attributes encode their values as a single string.
+             *
+             * @return the attribute value
+             */
+            public String getValue();
+        }
+    }
 
     /**
-     * A <code>KeyStore</code> entry that holds a <code>PrivateKey</code>
+     * A {@code KeyStore} entry that holds a {@code PrivateKey}
      * and corresponding certificate chain.
      *
      * @since 1.5
@@ -402,33 +497,66 @@ public class KeyStore {
 
         private final PrivateKey privKey;
         private final Certificate[] chain;
+        private final Set<Attribute> attributes;
 
         /**
-         * Constructs a <code>PrivateKeyEntry</code> with a
-         * <code>PrivateKey</code> and corresponding certificate chain.
+         * Constructs a {@code PrivateKeyEntry} with a
+         * {@code PrivateKey} and corresponding certificate chain.
          *
-         * <p> The specified <code>chain</code> is cloned before it is stored
-         * in the new <code>PrivateKeyEntry</code> object.
+         * <p> The specified {@code chain} is cloned before it is stored
+         * in the new {@code PrivateKeyEntry} object.
          *
-         * @param privateKey the <code>PrivateKey</code>
-         * @param chain an array of <code>Certificate</code>s
+         * @param privateKey the {@code PrivateKey}
+         * @param chain an array of {@code Certificate}s
          *      representing the certificate chain.
          *      The chain must be ordered and contain a
-         *      <code>Certificate</code> at index 0
+         *      {@code Certificate} at index 0
          *      corresponding to the private key.
          *
          * @exception NullPointerException if
-         *      <code>privateKey</code> or <code>chain</code>
-         *      is <code>null</code>
+         *      {@code privateKey} or {@code chain}
+         *      is {@code null}
          * @exception IllegalArgumentException if the specified chain has a
          *      length of 0, if the specified chain does not contain
-         *      <code>Certificate</code>s of the same type,
-         *      or if the <code>PrivateKey</code> algorithm
-         *      does not match the algorithm of the <code>PublicKey</code>
-         *      in the end entity <code>Certificate</code> (at index 0)
+         *      {@code Certificate}s of the same type,
+         *      or if the {@code PrivateKey} algorithm
+         *      does not match the algorithm of the {@code PublicKey}
+         *      in the end entity {@code Certificate} (at index 0)
          */
         public PrivateKeyEntry(PrivateKey privateKey, Certificate[] chain) {
-            if (privateKey == null || chain == null) {
+            this(privateKey, chain, Collections.<Attribute>emptySet());
+        }
+
+        /**
+         * Constructs a {@code PrivateKeyEntry} with a {@code PrivateKey} and
+         * corresponding certificate chain and associated entry attributes.
+         *
+         * <p> The specified {@code chain} and {@code attributes} are cloned
+         * before they are stored in the new {@code PrivateKeyEntry} object.
+         *
+         * @param privateKey the {@code PrivateKey}
+         * @param chain an array of {@code Certificate}s
+         *      representing the certificate chain.
+         *      The chain must be ordered and contain a
+         *      {@code Certificate} at index 0
+         *      corresponding to the private key.
+         * @param attributes the attributes
+         *
+         * @exception NullPointerException if {@code privateKey}, {@code chain}
+         *      or {@code attributes} is {@code null}
+         * @exception IllegalArgumentException if the specified chain has a
+         *      length of 0, if the specified chain does not contain
+         *      {@code Certificate}s of the same type,
+         *      or if the {@code PrivateKey} algorithm
+         *      does not match the algorithm of the {@code PublicKey}
+         *      in the end entity {@code Certificate} (at index 0)
+         *
+         * @since 1.8
+         */
+        public PrivateKeyEntry(PrivateKey privateKey, Certificate[] chain,
+           Set<Attribute> attributes) {
+
+            if (privateKey == null || chain == null || attributes == null) {
                 throw new NullPointerException("invalid null input");
             }
             if (chain.length == 0) {
@@ -463,44 +591,60 @@ public class KeyStore {
             } else {
                 this.chain = clonedChain;
             }
+
+            this.attributes =
+                Collections.unmodifiableSet(new HashSet<>(attributes));
         }
 
         /**
-         * Gets the <code>PrivateKey</code> from this entry.
+         * Gets the {@code PrivateKey} from this entry.
          *
-         * @return the <code>PrivateKey</code> from this entry
+         * @return the {@code PrivateKey} from this entry
          */
         public PrivateKey getPrivateKey() {
             return privKey;
         }
 
         /**
-         * Gets the <code>Certificate</code> chain from this entry.
+         * Gets the {@code Certificate} chain from this entry.
          *
          * <p> The stored chain is cloned before being returned.
          *
-         * @return an array of <code>Certificate</code>s corresponding
+         * @return an array of {@code Certificate}s corresponding
          *      to the certificate chain for the public key.
          *      If the certificates are of type X.509,
          *      the runtime type of the returned array is
-         *      <code>X509Certificate[]</code>.
+         *      {@code X509Certificate[]}.
          */
         public Certificate[] getCertificateChain() {
             return chain.clone();
         }
 
         /**
-         * Gets the end entity <code>Certificate</code>
+         * Gets the end entity {@code Certificate}
          * from the certificate chain in this entry.
          *
-         * @return the end entity <code>Certificate</code> (at index 0)
+         * @return the end entity {@code Certificate} (at index 0)
          *      from the certificate chain in this entry.
          *      If the certificate is of type X.509,
          *      the runtime type of the returned certificate is
-         *      <code>X509Certificate</code>.
+         *      {@code X509Certificate}.
          */
         public Certificate getCertificate() {
             return chain[0];
+        }
+
+        /**
+         * Retrieves the attributes associated with an entry.
+         * <p>
+         *
+         * @return an unmodifiable {@code Set} of attributes, possibly empty
+         *
+         * @since 1.8
+         */
+        @Override
+        public Set<Attribute> getAttributes() {
+            return attributes;
         }
 
         /**
@@ -521,37 +665,77 @@ public class KeyStore {
     }
 
     /**
-     * A <code>KeyStore</code> entry that holds a <code>SecretKey</code>.
+     * A {@code KeyStore} entry that holds a {@code SecretKey}.
      *
      * @since 1.5
      */
     public static final class SecretKeyEntry implements Entry {
 
         private final SecretKey sKey;
+        private final Set<Attribute> attributes;
 
         /**
-         * Constructs a <code>SecretKeyEntry</code> with a
-         * <code>SecretKey</code>.
+         * Constructs a {@code SecretKeyEntry} with a
+         * {@code SecretKey}.
          *
-         * @param secretKey the <code>SecretKey</code>
+         * @param secretKey the {@code SecretKey}
          *
-         * @exception NullPointerException if <code>secretKey</code>
-         *      is <code>null</code>
+         * @exception NullPointerException if {@code secretKey}
+         *      is {@code null}
          */
         public SecretKeyEntry(SecretKey secretKey) {
             if (secretKey == null) {
                 throw new NullPointerException("invalid null input");
             }
             this.sKey = secretKey;
+            this.attributes = Collections.<Attribute>emptySet();
         }
 
         /**
-         * Gets the <code>SecretKey</code> from this entry.
+         * Constructs a {@code SecretKeyEntry} with a {@code SecretKey} and
+         * associated entry attributes.
          *
-         * @return the <code>SecretKey</code> from this entry
+         * <p> The specified {@code attributes} is cloned before it is stored
+         * in the new {@code SecretKeyEntry} object.
+         *
+         * @param secretKey the {@code SecretKey}
+         * @param attributes the attributes
+         *
+         * @exception NullPointerException if {@code secretKey} or
+         *     {@code attributes} is {@code null}
+         *
+         * @since 1.8
+         */
+        public SecretKeyEntry(SecretKey secretKey, Set<Attribute> attributes) {
+
+            if (secretKey == null || attributes == null) {
+                throw new NullPointerException("invalid null input");
+            }
+            this.sKey = secretKey;
+            this.attributes =
+                Collections.unmodifiableSet(new HashSet<>(attributes));
+        }
+
+        /**
+         * Gets the {@code SecretKey} from this entry.
+         *
+         * @return the {@code SecretKey} from this entry
          */
         public SecretKey getSecretKey() {
             return sKey;
+        }
+
+        /**
+         * Retrieves the attributes associated with an entry.
+         * <p>
+         *
+         * @return an unmodifiable {@code Set} of attributes, possibly empty
+         *
+         * @since 1.8
+         */
+        @Override
+        public Set<Attribute> getAttributes() {
+            return attributes;
         }
 
         /**
@@ -564,38 +748,78 @@ public class KeyStore {
     }
 
     /**
-     * A <code>KeyStore</code> entry that holds a trusted
-     * <code>Certificate</code>.
+     * A {@code KeyStore} entry that holds a trusted
+     * {@code Certificate}.
      *
      * @since 1.5
      */
     public static final class TrustedCertificateEntry implements Entry {
 
         private final Certificate cert;
+        private final Set<Attribute> attributes;
 
         /**
-         * Constructs a <code>TrustedCertificateEntry</code> with a
-         * trusted <code>Certificate</code>.
+         * Constructs a {@code TrustedCertificateEntry} with a
+         * trusted {@code Certificate}.
          *
-         * @param trustedCert the trusted <code>Certificate</code>
+         * @param trustedCert the trusted {@code Certificate}
          *
          * @exception NullPointerException if
-         *      <code>trustedCert</code> is <code>null</code>
+         *      {@code trustedCert} is {@code null}
          */
         public TrustedCertificateEntry(Certificate trustedCert) {
             if (trustedCert == null) {
                 throw new NullPointerException("invalid null input");
             }
             this.cert = trustedCert;
+            this.attributes = Collections.<Attribute>emptySet();
         }
 
         /**
-         * Gets the trusted <code>Certficate</code> from this entry.
+         * Constructs a {@code TrustedCertificateEntry} with a
+         * trusted {@code Certificate} and associated entry attributes.
          *
-         * @return the trusted <code>Certificate</code> from this entry
+         * <p> The specified {@code attributes} is cloned before it is stored
+         * in the new {@code TrustedCertificateEntry} object.
+         *
+         * @param trustedCert the trusted {@code Certificate}
+         * @param attributes the attributes
+         *
+         * @exception NullPointerException if {@code trustedCert} or
+         *     {@code attributes} is {@code null}
+         *
+         * @since 1.8
+         */
+        public TrustedCertificateEntry(Certificate trustedCert,
+           Set<Attribute> attributes) {
+            if (trustedCert == null || attributes == null) {
+                throw new NullPointerException("invalid null input");
+            }
+            this.cert = trustedCert;
+            this.attributes =
+                Collections.unmodifiableSet(new HashSet<>(attributes));
+        }
+
+        /**
+         * Gets the trusted {@code Certficate} from this entry.
+         *
+         * @return the trusted {@code Certificate} from this entry
          */
         public Certificate getTrustedCertificate() {
             return cert;
+        }
+
+        /**
+         * Retrieves the attributes associated with an entry.
+         * <p>
+         *
+         * @return an unmodifiable {@code Set} of attributes, possibly empty
+         *
+         * @since 1.8
+         */
+        @Override
+        public Set<Attribute> getAttributes() {
+            return attributes;
         }
 
         /**
@@ -620,6 +844,15 @@ public class KeyStore {
         this.keyStoreSpi = keyStoreSpi;
         this.provider = provider;
         this.type = type;
+
+        // BEGIN Android-removed: this debugging mechanism is not supported in Android.
+        /*
+        if (!skipDebug && pdebug != null) {
+            pdebug.println("KeyStore." + type.toUpperCase() + " type from: " +
+                this.provider.getName());
+        }
+        */
+        // END Android-removed: this debugging mechanism is not supported in Android.
     }
 
     /**
@@ -636,7 +869,7 @@ public class KeyStore {
      *
      * @param type the type of keystore.
      * See the KeyStore section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyStore">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyStore">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard keystore types.
      *
@@ -674,7 +907,7 @@ public class KeyStore {
      *
      * @param type the type of keystore.
      * See the KeyStore section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyStore">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyStore">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard keystore types.
      *
@@ -717,7 +950,7 @@ public class KeyStore {
      *
      * @param type the type of keystore.
      * See the KeyStore section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyStore">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyStore">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard keystore types.
      *
@@ -749,27 +982,23 @@ public class KeyStore {
     }
 
     /**
-     * Returns the default keystore type as specified in the Java security
-     * properties file, or the string
-     * &quot;jks&quot; (acronym for &quot;Java keystore&quot;)
+     * Returns the default keystore type as specified by the
+     * {@code keystore.type} security property, or the string
+     * {@literal "jks"} (acronym for {@literal "Java keystore"})
      * if no such property exists.
-     * The Java security properties file is located in the file named
-     * &lt;JAVA_HOME&gt;/lib/security/java.security.
-     * &lt;JAVA_HOME&gt; refers to the value of the java.home system property,
-     * and specifies the directory where the JRE is installed.
      *
      * <p>The default keystore type can be used by applications that do not
      * want to use a hard-coded keystore type when calling one of the
-     * <code>getInstance</code> methods, and want to provide a default keystore
+     * {@code getInstance} methods, and want to provide a default keystore
      * type in case a user does not specify its own.
      *
      * <p>The default keystore type can be changed by setting the value of the
-     * "keystore.type" security property (in the Java security properties
-     * file) to the desired keystore type.
+     * {@code keystore.type} security property to the desired keystore type.
      *
-     * @return the default keystore type as specified in the
-     * Java security properties file, or the string &quot;jks&quot;
+     * @return the default keystore type as specified by the
+     * {@code keystore.type} security property, or the string {@literal "jks"}
      * if no such property exists.
+     * @see java.security.Security security properties
      */
     public final static String getDefaultType() {
         String kstype;
@@ -807,9 +1036,9 @@ public class KeyStore {
     /**
      * Returns the key associated with the given alias, using the given
      * password to recover it.  The key must have been associated with
-     * the alias by a call to <code>setKeyEntry</code>,
-     * or by a call to <code>setEntry</code> with a
-     * <code>PrivateKeyEntry</code> or <code>SecretKeyEntry</code>.
+     * the alias by a call to {@code setKeyEntry},
+     * or by a call to {@code setEntry} with a
+     * {@code PrivateKeyEntry} or {@code SecretKeyEntry}.
      *
      * @param alias the alias name
      * @param password the password for recovering the key
@@ -837,9 +1066,9 @@ public class KeyStore {
     /**
      * Returns the certificate chain associated with the given alias.
      * The certificate chain must have been associated with the alias
-     * by a call to <code>setKeyEntry</code>,
-     * or by a call to <code>setEntry</code> with a
-     * <code>PrivateKeyEntry</code>.
+     * by a call to {@code setKeyEntry},
+     * or by a call to {@code setEntry} with a
+     * {@code PrivateKeyEntry}.
      *
      * @param alias the alias name
      *
@@ -863,15 +1092,15 @@ public class KeyStore {
      * Returns the certificate associated with the given alias.
      *
      * <p> If the given alias name identifies an entry
-     * created by a call to <code>setCertificateEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>TrustedCertificateEntry</code>,
+     * created by a call to {@code setCertificateEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code TrustedCertificateEntry},
      * then the trusted certificate contained in that entry is returned.
      *
      * <p> If the given alias name identifies an entry
-     * created by a call to <code>setKeyEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>PrivateKeyEntry</code>,
+     * created by a call to {@code setKeyEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code PrivateKeyEntry},
      * then the first element of the certificate chain in that entry
      * is returned.
      *
@@ -916,7 +1145,7 @@ public class KeyStore {
      * Assigns the given key to the given alias, protecting it with the given
      * password.
      *
-     * <p>If the given key is of type <code>java.security.PrivateKey</code>,
+     * <p>If the given key is of type {@code java.security.PrivateKey},
      * it must be accompanied by a certificate chain certifying the
      * corresponding public key.
      *
@@ -929,7 +1158,7 @@ public class KeyStore {
      * @param password the password to protect the key
      * @param chain the certificate chain for the corresponding public
      * key (only required if the given key is of type
-     * <code>java.security.PrivateKey</code>).
+     * {@code java.security.PrivateKey}).
      *
      * @exception KeyStoreException if the keystore has not been initialized
      * (loaded), the given key cannot be protected, or this operation fails
@@ -956,11 +1185,11 @@ public class KeyStore {
      * alias.
      *
      * <p>If the protected key is of type
-     * <code>java.security.PrivateKey</code>, it must be accompanied by a
+     * {@code java.security.PrivateKey}, it must be accompanied by a
      * certificate chain certifying the corresponding public key. If the
-     * underlying keystore implementation is of type <code>jks</code>,
-     * <code>key</code> must be encoded as an
-     * <code>EncryptedPrivateKeyInfo</code> as defined in the PKCS #8 standard.
+     * underlying keystore implementation is of type {@code jks},
+     * {@code key} must be encoded as an
+     * {@code EncryptedPrivateKeyInfo} as defined in the PKCS #8 standard.
      *
      * <p>If the given alias already exists, the keystore information
      * associated with it is overridden by the given key (and possibly
@@ -970,7 +1199,7 @@ public class KeyStore {
      * @param key the key (in protected format) to be associated with the alias
      * @param chain the certificate chain for the corresponding public
      *          key (only useful if the protected key is of type
-     *          <code>java.security.PrivateKey</code>).
+     *          {@code java.security.PrivateKey}).
      *
      * @exception KeyStoreException if the keystore has not been initialized
      * (loaded), or if this operation fails for some other reason.
@@ -989,9 +1218,9 @@ public class KeyStore {
      * Assigns the given trusted certificate to the given alias.
      *
      * <p> If the given alias identifies an existing entry
-     * created by a call to <code>setCertificateEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>TrustedCertificateEntry</code>,
+     * created by a call to {@code setCertificateEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code TrustedCertificateEntry},
      * the trusted certificate in the existing entry
      * is overridden by the given certificate.
      *
@@ -1084,9 +1313,9 @@ public class KeyStore {
 
     /**
      * Returns true if the entry identified by the given alias
-     * was created by a call to <code>setKeyEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>PrivateKeyEntry</code> or a <code>SecretKeyEntry</code>.
+     * was created by a call to {@code setKeyEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code PrivateKeyEntry} or a {@code SecretKeyEntry}.
      *
      * @param alias the alias for the keystore entry to be checked
      *
@@ -1107,9 +1336,9 @@ public class KeyStore {
 
     /**
      * Returns true if the entry identified by the given alias
-     * was created by a call to <code>setCertificateEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>TrustedCertificateEntry</code>.
+     * was created by a call to {@code setCertificateEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code TrustedCertificateEntry}.
      *
      * @param alias the alias for the keystore entry to be checked
      *
@@ -1134,15 +1363,15 @@ public class KeyStore {
      *
      * <p> This method attempts to match the given certificate with each
      * keystore entry. If the entry being considered was
-     * created by a call to <code>setCertificateEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>TrustedCertificateEntry</code>,
+     * created by a call to {@code setCertificateEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code TrustedCertificateEntry},
      * then the given certificate is compared to that entry's certificate.
      *
      * <p> If the entry being considered was
-     * created by a call to <code>setKeyEntry</code>,
-     * or created by a call to <code>setEntry</code> with a
-     * <code>PrivateKeyEntry</code>,
+     * created by a call to {@code setKeyEntry},
+     * or created by a call to {@code setEntry} with a
+     * {@code PrivateKeyEntry},
      * then the given certificate is compared to the first
      * element of that entry's certificate chain.
      *
@@ -1189,14 +1418,14 @@ public class KeyStore {
     }
 
     /**
-     * Stores this keystore using the given <code>LoadStoreParameter</code>.
+     * Stores this keystore using the given {@code LoadStoreParameter}.
      *
-     * @param param the <code>LoadStoreParameter</code>
+     * @param param the {@code LoadStoreParameter}
      *          that specifies how to store the keystore,
-     *          which may be <code>null</code>
+     *          which may be {@code null}
      *
      * @exception IllegalArgumentException if the given
-     *          <code>LoadStoreParameter</code>
+     *          {@code LoadStoreParameter}
      *          input is not recognized
      * @exception KeyStoreException if the keystore has not been initialized
      *          (loaded)
@@ -1227,24 +1456,24 @@ public class KeyStore {
      * then integrity checking is not performed.
      *
      * <p>In order to create an empty keystore, or if the keystore cannot
-     * be initialized from a stream, pass <code>null</code>
-     * as the <code>stream</code> argument.
+     * be initialized from a stream, pass {@code null}
+     * as the {@code stream} argument.
      *
      * <p> Note that if this keystore has already been loaded, it is
      * reinitialized and loaded again from the given input stream.
      *
      * @param stream the input stream from which the keystore is loaded,
-     * or <code>null</code>
+     * or {@code null}
      * @param password the password used to check the integrity of
      * the keystore, the password used to unlock the keystore,
-     * or <code>null</code>
+     * or {@code null}
      *
      * @exception IOException if there is an I/O or format problem with the
      * keystore data, if a password is required but not given,
      * or if the given password was incorrect. If the error is due to a
      * wrong password, the {@link Throwable#getCause cause} of the
-     * <code>IOException</code> should be an
-     * <code>UnrecoverableKeyException</code>
+     * {@code IOException} should be an
+     * {@code UnrecoverableKeyException}
      * @exception NoSuchAlgorithmException if the algorithm used to check
      * the integrity of the keystore cannot be found
      * @exception CertificateException if any of the certificates in the
@@ -1258,24 +1487,24 @@ public class KeyStore {
     }
 
     /**
-     * Loads this keystore using the given <code>LoadStoreParameter</code>.
+     * Loads this keystore using the given {@code LoadStoreParameter}.
      *
      * <p> Note that if this KeyStore has already been loaded, it is
      * reinitialized and loaded again from the given parameter.
      *
-     * @param param the <code>LoadStoreParameter</code>
+     * @param param the {@code LoadStoreParameter}
      *          that specifies how to load the keystore,
-     *          which may be <code>null</code>
+     *          which may be {@code null}
      *
      * @exception IllegalArgumentException if the given
-     *          <code>LoadStoreParameter</code>
+     *          {@code LoadStoreParameter}
      *          input is not recognized
      * @exception IOException if there is an I/O or format problem with the
      *          keystore data. If the error is due to an incorrect
-     *         <code>ProtectionParameter</code> (e.g. wrong password)
+     *         {@code ProtectionParameter} (e.g. wrong password)
      *         the {@link Throwable#getCause cause} of the
-     *         <code>IOException</code> should be an
-     *         <code>UnrecoverableKeyException</code>
+     *         {@code IOException} should be an
+     *         {@code UnrecoverableKeyException}
      * @exception NoSuchAlgorithmException if the algorithm used to check
      *          the integrity of the keystore cannot be found
      * @exception CertificateException if any of the certificates in the
@@ -1292,26 +1521,26 @@ public class KeyStore {
     }
 
     /**
-     * Gets a keystore <code>Entry</code> for the specified alias
+     * Gets a keystore {@code Entry} for the specified alias
      * with the specified protection parameter.
      *
-     * @param alias get the keystore <code>Entry</code> for this alias
-     * @param protParam the <code>ProtectionParameter</code>
-     *          used to protect the <code>Entry</code>,
-     *          which may be <code>null</code>
+     * @param alias get the keystore {@code Entry} for this alias
+     * @param protParam the {@code ProtectionParameter}
+     *          used to protect the {@code Entry},
+     *          which may be {@code null}
      *
-     * @return the keystore <code>Entry</code> for the specified alias,
-     *          or <code>null</code> if there is no such entry
+     * @return the keystore {@code Entry} for the specified alias,
+     *          or {@code null} if there is no such entry
      *
      * @exception NullPointerException if
-     *          <code>alias</code> is <code>null</code>
+     *          {@code alias} is {@code null}
      * @exception NoSuchAlgorithmException if the algorithm for recovering the
      *          entry cannot be found
      * @exception UnrecoverableEntryException if the specified
-     *          <code>protParam</code> were insufficient or invalid
+     *          {@code protParam} were insufficient or invalid
      * @exception UnrecoverableKeyException if the entry is a
-     *          <code>PrivateKeyEntry</code> or <code>SecretKeyEntry</code>
-     *          and the specified <code>protParam</code> does not contain
+     *          {@code PrivateKeyEntry} or {@code SecretKeyEntry}
+     *          and the specified {@code protParam} does not contain
      *          the information needed to recover the key (e.g. wrong password)
      * @exception KeyStoreException if the keystore has not been initialized
      *          (loaded).
@@ -1333,22 +1562,22 @@ public class KeyStore {
     }
 
     /**
-     * Saves a keystore <code>Entry</code> under the specified alias.
+     * Saves a keystore {@code Entry} under the specified alias.
      * The protection parameter is used to protect the
-     * <code>Entry</code>.
+     * {@code Entry}.
      *
      * <p> If an entry already exists for the specified alias,
      * it is overridden.
      *
-     * @param alias save the keystore <code>Entry</code> under this alias
-     * @param entry the <code>Entry</code> to save
-     * @param protParam the <code>ProtectionParameter</code>
-     *          used to protect the <code>Entry</code>,
-     *          which may be <code>null</code>
+     * @param alias save the keystore {@code Entry} under this alias
+     * @param entry the {@code Entry} to save
+     * @param protParam the {@code ProtectionParameter}
+     *          used to protect the {@code Entry},
+     *          which may be {@code null}
      *
      * @exception NullPointerException if
-     *          <code>alias</code> or <code>entry</code>
-     *          is <code>null</code>
+     *          {@code alias} or {@code entry}
+     *          is {@code null}
      * @exception KeyStoreException if the keystore has not been initialized
      *          (loaded), or if this operation fails for some other reason
      *
@@ -1369,20 +1598,20 @@ public class KeyStore {
     }
 
     /**
-     * Determines if the keystore <code>Entry</code> for the specified
-     * <code>alias</code> is an instance or subclass of the specified
-     * <code>entryClass</code>.
+     * Determines if the keystore {@code Entry} for the specified
+     * {@code alias} is an instance or subclass of the specified
+     * {@code entryClass}.
      *
      * @param alias the alias name
      * @param entryClass the entry class
      *
-     * @return true if the keystore <code>Entry</code> for the specified
-     *          <code>alias</code> is an instance or subclass of the
-     *          specified <code>entryClass</code>, false otherwise
+     * @return true if the keystore {@code Entry} for the specified
+     *          {@code alias} is an instance or subclass of the
+     *          specified {@code entryClass}, false otherwise
      *
      * @exception NullPointerException if
-     *          <code>alias</code> or <code>entryClass</code>
-     *          is <code>null</code>
+     *          {@code alias} or {@code entryClass}
+     *          is {@code null}
      * @exception KeyStoreException if the keystore has not been
      *          initialized (loaded)
      *
@@ -1433,7 +1662,8 @@ public class KeyStore {
         /**
          * Returns the KeyStore described by this object.
          *
-         * @exception KeyStoreException if an error occured during the
+         * @return the {@code KeyStore} described by this object
+         * @exception KeyStoreException if an error occurred during the
          *   operation, for example if the KeyStore could not be
          *   instantiated or loaded
          */
@@ -1442,14 +1672,14 @@ public class KeyStore {
         /**
          * Returns the ProtectionParameters that should be used to obtain
          * the {@link KeyStore.Entry Entry} with the given alias.
-         * The <code>getKeyStore</code> method must be invoked before this
+         * The {@code getKeyStore} method must be invoked before this
          * method may be called.
          *
          * @return the ProtectionParameters that should be used to obtain
          *   the {@link KeyStore.Entry Entry} with the given alias.
          * @param alias the alias of the KeyStore entry
          * @throws NullPointerException if alias is null
-         * @throws KeyStoreException if an error occured during the
+         * @throws KeyStoreException if an error occurred during the
          *   operation
          * @throws IllegalStateException if the getKeyStore method has
          *   not been invoked prior to calling this method
@@ -1460,9 +1690,9 @@ public class KeyStore {
         /**
          * Returns a new Builder that encapsulates the given KeyStore.
          * The {@linkplain #getKeyStore} method of the returned object
-         * will return <code>keyStore</code>, the {@linkplain
+         * will return {@code keyStore}, the {@linkplain
          * #getProtectionParameter getProtectionParameter()} method will
-         * return <code>protectionParameters</code>.
+         * return {@code protectionParameters}.
          *
          * <p> This is useful if an existing KeyStore object needs to be
          * used with Builder-based APIs.
@@ -1510,15 +1740,15 @@ public class KeyStore {
          * Returns a new Builder object.
          *
          * <p>The first call to the {@link #getKeyStore} method on the returned
-         * builder will create a KeyStore of type <code>type</code> and call
+         * builder will create a KeyStore of type {@code type} and call
          * its {@link KeyStore#load load()} method.
-         * The <code>inputStream</code> argument is constructed from
-         * <code>file</code>.
-         * If <code>protection</code> is a
-         * <code>PasswordProtection</code>, the password is obtained by
-         * calling the <code>getPassword</code> method.
-         * Otherwise, if <code>protection</code> is a
-         * <code>CallbackHandlerProtection</code>, the password is obtained
+         * The {@code inputStream} argument is constructed from
+         * {@code file}.
+         * If {@code protection} is a
+         * {@code PasswordProtection}, the password is obtained by
+         * calling the {@code getPassword} method.
+         * Otherwise, if {@code protection} is a
+         * {@code CallbackHandlerProtection}, the password is obtained
          * by invoking the CallbackHandler.
          *
          * <p>Subsequent calls to {@link #getKeyStore} return the same object
@@ -1526,13 +1756,13 @@ public class KeyStore {
          * KeyStoreException, subsequent calls also throw a
          * KeyStoreException.
          *
-         * <p>The KeyStore is instantiated from <code>provider</code> if
+         * <p>The KeyStore is instantiated from {@code provider} if
          * non-null. Otherwise, all installed providers are searched.
          *
          * <p>Calls to {@link #getProtectionParameter getProtectionParameter()}
          * will return a {@link KeyStore.PasswordProtection PasswordProtection}
          * object encapsulating the password that was used to invoke the
-         * <code>load</code> method.
+         * {@code load} method.
          *
          * <p><em>Note</em> that the {@link #getKeyStore} method is executed
          * within the {@link AccessControlContext} of the code invoking this
@@ -1691,17 +1921,17 @@ public class KeyStore {
          * Returns a new Builder object.
          *
          * <p>Each call to the {@link #getKeyStore} method on the returned
-         * builder will return a new KeyStore object of type <code>type</code>.
+         * builder will return a new KeyStore object of type {@code type}.
          * Its {@link KeyStore#load(KeyStore.LoadStoreParameter) load()}
          * method is invoked using a
-         * <code>LoadStoreParameter</code> that encapsulates
-         * <code>protection</code>.
+         * {@code LoadStoreParameter} that encapsulates
+         * {@code protection}.
          *
-         * <p>The KeyStore is instantiated from <code>provider</code> if
+         * <p>The KeyStore is instantiated from {@code provider} if
          * non-null. Otherwise, all installed providers are searched.
          *
          * <p>Calls to {@link #getProtectionParameter getProtectionParameter()}
-         * will return <code>protection</code>.
+         * will return {@code protection}.
          *
          * <p><em>Note</em> that the {@link #getKeyStore} method is executed
          * within the {@link AccessControlContext} of the code invoking this
@@ -1794,6 +2024,7 @@ public class KeyStore {
               }
             };
         }
+
     }
 
     static class SimpleLoadStoreParameter implements LoadStoreParameter {
