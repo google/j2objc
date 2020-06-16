@@ -113,6 +113,7 @@ public abstract class Certificate implements java.io.Serializable {
             byte[] thisCert = X509CertImpl.getEncodedInternal(this);
             byte[] otherCert = X509CertImpl.getEncodedInternal((Certificate)other);
 
+            // J2ObjC changed: arrays should be compared with Arrays.equals
             return Arrays.equals(thisCert, otherCert);
         } catch (CertificateException e) {
             return false;
