@@ -61,4 +61,13 @@ public class FileTimeTest extends TestCase {
     assertEquals(new FileTime(567), FileTime.fromMillis(567));
   }
 
+  public void testCompare() {
+    FileTime ft = new FileTime(1);
+    assertTrue(ft.equals(new FileTime(1)));
+    assertFalse(ft.equals(new FileTime(0)));
+    assertEquals(0, ft.compareTo(new FileTime(1)));
+    assertEquals(-1, ft.compareTo(new FileTime(0)));
+    assertEquals(1, ft.compareTo(new FileTime(5)));
+  }
+
 }

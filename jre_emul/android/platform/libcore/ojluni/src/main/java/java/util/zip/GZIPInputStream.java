@@ -75,9 +75,17 @@ class GZIPInputStream extends InflaterInputStream {
      */
     public GZIPInputStream(InputStream in, int size) throws IOException {
         super(in, new Inflater(true), size);
-        // Android-changed: Unconditionally close external inflaters (b/26462400)
+        // Android-removed: Unconditionally close external inflaters (b/26462400)
         // usesDefaultInflater = true;
-        readHeader(in);
+        // BEGIN Android-changed: Do not rely on finalization to inf.end().
+        // readHeader(in);
+        try {
+            readHeader(in);
+        } catch (Exception e) {
+            inf.end();
+            throw e;
+        }
+        // END Android-changed: Do not rely on finalization to inf.end().
     }
 
     /**

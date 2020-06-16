@@ -201,14 +201,23 @@ public class DeflaterInputStream extends FilterInputStream {
             off += n;
             len -= n;
         }
-        // Android-changed: set reachEOF eagerly (not just when the number of bytes is zero).
-        // so that available is more accurate.
+        // BEGIN Android-changed: Return more accurate value from available().
+        // Set reachEOF eagerly when the Deflater has finished, and not just when the number of
+        // bytes is zero so that available is more accurate.
+        // See http://b/111589691
+        /*
+        if (cnt == 0 && def.finished()) {
+            reachEOF = true;
+            cnt = -1;
+        }
+        */
         if (def.finished()) {
-            reachEOF =true;
+            reachEOF = true;
             if (cnt == 0) {
                 cnt = -1;
             }
         }
+        // END Android-changed: Return more accurate value from available().
 
         return cnt;
     }
