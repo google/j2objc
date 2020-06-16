@@ -97,7 +97,6 @@ public final class IoBridge {
      * Unix practice where you'd read until you got 0 bytes (and any future read would return -1).
      */
     public static int read(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount) throws IOException {
-        Arrays.checkOffsetAndCount(bytes.length, byteOffset, byteCount);
         if (byteCount == 0) {
             return 0;
         }
@@ -121,7 +120,6 @@ public final class IoBridge {
      * Unix it never just writes as many bytes as happens to be convenient.)
      */
     public static void write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount) throws IOException {
-        Arrays.checkOffsetAndCount(bytes.length, byteOffset, byteCount);
         if (byteCount == 0) {
             return;
         }
