@@ -76,7 +76,6 @@ public final class Streams {
         if (dst == null) {
             throw new NullPointerException("dst == null");
         }
-        Arrays.checkOffsetAndCount(dst.length, offset, byteCount);
         while (byteCount > 0) {
             int bytesRead = in.read(dst, offset, byteCount);
             if (bytesRead < 0) {
