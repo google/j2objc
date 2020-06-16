@@ -26,6 +26,8 @@ public class SecurityTests {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.javax.security"));
+        suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.javax.security.auth"));
+        suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.javax.security.auth.callback"));
         suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.javax.security.cert"));
         suite.addTest(TestUtil.getPackageTests("org.apache.harmony.security.tests.java.security"));
         suite.addTest(TestUtil.getPackageTests("tests.targets.security"));

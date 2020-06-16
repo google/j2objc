@@ -26,6 +26,13 @@
 
 package javax.security.auth.callback;
 
+// Android-changed: Removed @see tags (targets do not exist on Android):
+// @see javax.security.auth.callback.ChoiceCallback
+// @see javax.security.auth.callback.ConfirmationCallback
+// @see javax.security.auth.callback.LanguageCallback
+// @see javax.security.auth.callback.NameCallback
+// @see javax.security.auth.callback.TextInputCallback
+// @see javax.security.auth.callback.TextOutputCallback
 /**
  * <p> Implementations of this interface are passed to a
  * {@code CallbackHandler}, allowing underlying security services
@@ -41,12 +48,6 @@ package javax.security.auth.callback;
  * underlying security services.
  *
  * @see javax.security.auth.callback.CallbackHandler
- * @see javax.security.auth.callback.ChoiceCallback
- * @see javax.security.auth.callback.ConfirmationCallback
- * @see javax.security.auth.callback.LanguageCallback
- * @see javax.security.auth.callback.NameCallback
  * @see javax.security.auth.callback.PasswordCallback
- * @see javax.security.auth.callback.TextInputCallback
- * @see javax.security.auth.callback.TextOutputCallback
  */
 public interface Callback { }
