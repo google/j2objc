@@ -21,21 +21,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipEntryTest extends junit.framework.TestCase {
-  private static File createTemporaryZipFile() throws IOException {
-    File result = File.createTempFile("ZipFileTest", "zip");
-    result.deleteOnExit();
-    return result;
-  }
+  // The zip format differentiates between times before and after 1/1/1980. A timestamp before 1980
+  // will produce a different zip binary. ZipOutputStream.putNextEntry defaults the entry times to
+  // the current system clock value. This time can be used explicitly to ensure the behavior of most
+  // tests is independent of the system clock.
+  private static final long ENTRY_TIME = 1262304000000L; //  January 1, 2010 12:00:00 AM GMT
 
   private static ZipOutputStream createZipOutputStream(File f) throws IOException {
     return new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
@@ -47,6 +50,23 @@ public class ZipEntryTest extends junit.framework.TestCase {
       sb.append(s);
     }
     return sb.toString();
+  }
+
+  private List<File> temporaryFiles = new ArrayList<>();
+
+  private File createTemporaryZipFile() throws IOException {
+    File result = File.createTempFile("ZipFileTest", "zip");
+    temporaryFiles.add(result);
+    return result;
+  }
+
+  @Override
+  public void tearDown() throws Exception {
+    for (File file : temporaryFiles) {
+      file.delete();
+    }
+    temporaryFiles.clear();
+    super.tearDown();
   }
 
   // http://code.google.com/p/android/issues/detail?id=4690
@@ -134,6 +154,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
     ZipOutputStream out = createZipOutputStream(f);
     ZipEntry ze = new ZipEntry("x");
     ze.setSize(0);
+    ze.setTime(ENTRY_TIME);
     ze.setExtra(maxLengthExtra);
     out.putNextEntry(ze);
     out.closeEntry();
@@ -145,6 +166,41 @@ public class ZipEntryTest extends junit.framework.TestCase {
     zipFile.close();
   }
 
+  public void testSetTime() throws Exception {
+    // Set a time before the lower bound of dos time, year 1980
+    checkSetTime(0L); // January 1, 1970 12:00:00 AM GMT
+    checkSetTime(31536000000L); // January 1, 1971 12:00:00 AM GMT
+    checkSetTime(315187200000L); // December 28, 1979 12:00:00 AM GMT
+    // December 31, 1979 11:59:59 AM Local time
+    checkSetTime(LocalDate.of(1980, 1, 1).atStartOfDay().minus(1, ChronoUnit.SECONDS)
+                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+    // January 1, 1980 12:00:00 AM Local time
+    checkSetTime(LocalDate.of(1980, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault())
+            .toInstant().toEpochMilli());
+    // Set a time after the lower bound of dos time, year 1980
+    checkSetTime(315705600000L); // January 3, 1980 12:00:00 AM GMT
+    checkSetTime(ENTRY_TIME); // January 1, 2010 12:00:00 AM
+
+    // Set a time after upper bound of dos time.
+    checkSetTime(4134153600000L); // January 3, 2101 12:00:00 AM GMT
+  }
+
+  private void checkSetTime(long time) throws IOException {
+    File f = createTemporaryZipFile();
+    ZipOutputStream out = createZipOutputStream(f);
+    ZipEntry ze = new ZipEntry("x");
+    ze.setSize(0);
+    ze.setTime(time);
+    out.putNextEntry(ze);
+    out.closeEntry();
+    out.close();
+
+    // Read it back, and check that we see the entry.
+    ZipFile zipFile = new ZipFile(f);
+    assertEquals(time, zipFile.getEntry("x").getTime());
+    zipFile.close();
+  }
 
   // TODO: This test does not compile because we need to add a ZipOutputStream constructor
   // that forces zip64. This also needs followup changes in ZipInputStream et al. to assume zip64
@@ -206,6 +262,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
     // Regular (non zip64) format.
     ZipEntry ze = new ZipEntry("x");
     ze.setSize(0);
+    ze.setTime(ENTRY_TIME);
     ze.setExtra(extra);
     ze.setComment(comment);
     out.putNextEntry(ze);
@@ -213,6 +270,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 
     // An entry without a length is assumed to be zip64.
     ze = new ZipEntry("y");
+    ze.setTime(ENTRY_TIME);
     ze.setExtra(extra);
     ze.setComment(comment);
     out.putNextEntry(ze);

@@ -16,7 +16,6 @@
 
 package libcore.java.util.zip;
 
-import junit.framework.TestCase;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +23,17 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.GZIPOutputStream;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public final class GZIPOutputStreamTest extends TestCase {
+public final class GZIPOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+  /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+  @Rule
+  public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
+
   public void testShortMessage() throws IOException {
     byte[] data = gzip(("Hello World").getBytes("UTF-8"));
     assertEquals("[31, -117, 8, 0, 0, 0, 0, 0, 0, 0, -13, 72, -51, -55, -55, 87, 8, -49, " +

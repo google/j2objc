@@ -628,6 +628,9 @@ class ZipErrorTest:
     @ObjectiveCName("ignore_serialization")
   method testSerializationCompatibility()V:
     @ObjectiveCName("ignoreSerializationCompatibility")
+class ZipOutputStreamTest:
+  method test_exttSupport()V:
+    @ObjectiveCName("ignoreReflectionFieldAccess")
 
 package test.java.time:
 class TestLocalDate:

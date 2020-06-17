@@ -20,9 +20,17 @@ import java.io.ByteArrayOutputStream;
 import java.util.zip.Adler32;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-import junit.framework.TestCase;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public class InflaterTest extends TestCase {
+public class InflaterTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
+
     public void testDefaultDictionary() throws Exception {
         assertRoundTrip(null);
     }
@@ -98,22 +106,26 @@ public class InflaterTest extends TestCase {
         assertFalse(inflater.finished());
         assertEquals(0, inflater.inflate(new byte[0], 0, 0));
         assertTrue(inflater.finished());
+        inflater.end();
     }
 
     private static byte[] deflate(byte[] input, byte[] dictionary) {
         Deflater deflater = new Deflater();
-        if (dictionary != null) {
-            deflater.setDictionary(dictionary);
-        }
-        deflater.setInput(input);
-        deflater.finish();
         ByteArrayOutputStream deflatedBytes = new ByteArrayOutputStream();
-        byte[] buf = new byte[8];
-        while (!deflater.finished()) {
-            int byteCount = deflater.deflate(buf);
-            deflatedBytes.write(buf, 0, byteCount);
+        try {
+            if (dictionary != null) {
+                deflater.setDictionary(dictionary);
+            }
+            deflater.setInput(input);
+            deflater.finish();
+            byte[] buf = new byte[8];
+            while (!deflater.finished()) {
+                int byteCount = deflater.deflate(buf);
+                deflatedBytes.write(buf, 0, byteCount);
+            }
+        } finally {
+            deflater.end();
         }
-        deflater.end();
         return deflatedBytes.toByteArray();
     }
 
@@ -125,9 +137,8 @@ public class InflaterTest extends TestCase {
 
     public void testInflaterCounts() throws Exception {
         Inflater inflater = new Inflater();
-
         byte[] decompressed = new byte[32];
-        byte[] compressed = deflate(new byte[] { 1, 2, 3}, null);
+        byte[] compressed = deflate(new byte[] { 1, 2, 3 }, null);
         assertEquals(11, compressed.length);
 
         // Feed in bytes [0, 5) to the first iteration.
@@ -152,5 +163,6 @@ public class InflaterTest extends TestCase {
         assertEquals(0, inflater.getTotalIn());
         assertEquals(0, inflater.getBytesWritten());
         assertEquals(0, inflater.getTotalOut());
+        inflater.end();
     }
 }

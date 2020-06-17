@@ -16,19 +16,33 @@
 
 package libcore.java.util.zip;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import junit.framework.TestCase;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public final class ZipOutputStreamTest extends TestCase {
+public final class ZipOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
+
     public void testShortMessage() throws IOException {
         byte[] data = "Hello World".getBytes("UTF-8");
         byte[] zipped = zip("short", data);
@@ -62,28 +76,61 @@ public final class ZipOutputStreamTest extends TestCase {
     }
 
     /**
-     * Reference implementation does NOT allow writing of an empty zip using a
-     * {@link ZipOutputStream}.
+     * Reference implementation does allow writing of an empty zip using a {@link ZipOutputStream}.
+     *
+     * See JDK-6440786.
      */
     public void testCreateEmpty() throws IOException {
         File result = File.createTempFile("ZipFileTest", "zip");
         ZipOutputStream out =
                 new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(result)));
-        try {
-            out.close();
-            fail("Close on empty stream failed to throw exception");
-        } catch (ZipException e) {
-            // expected
+        out.close();
+
+        // Verify that the empty zip file can be read back using ZipInputStream.
+        try (ZipInputStream in = new ZipInputStream(
+            new BufferedInputStream(new FileInputStream(result)))) {
+            assertNull(in.getNextEntry());
         }
     }
 
     /** Regression test for null comment causing a NullPointerException during write. */
     public void testNullComment() throws IOException {
-        ZipOutputStream out = new ZipOutputStream(new ByteArrayOutputStream());
-        out.setComment(null);
-        out.putNextEntry(new ZipEntry("name"));
-        out.write(new byte[1]);
-        out.closeEntry();
-        out.finish();
+        try (ZipOutputStream out = new ZipOutputStream(new ByteArrayOutputStream())) {
+            out.setComment(null);
+            out.putNextEntry(new ZipEntry("name"));
+            out.write(new byte[1]);
+            out.closeEntry();
+            out.finish();
+        }
+    }
+
+    /**
+     * Test {@link ZipOutputStream#putNextEntry(ZipEntry)} that the current time will be used
+     * if the entry has no set modification time.
+     */
+    public void testPutNextEntryUsingCurrentTime() throws IOException {
+        // Zip file truncates time into 1s (before 1980) or 2s precision.
+        long timeBeforeZip = System.currentTimeMillis() / 2000 * 2000;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (ZipOutputStream out = new ZipOutputStream(bos)) {
+            ZipEntry entryWithoutExplicitTime = new ZipEntry("name");
+            // We do not set a time on the entry. We expect ZipOutputStream to use the current
+            // system clock value.
+            out.putNextEntry(entryWithoutExplicitTime);
+            out.closeEntry();
+            out.finish();
+        }
+        // timeAfterZip will normally be rounded down to  1 / 2 seconds boundary as well, but this
+        // test accepts either exact or rounded-down values because the rounding behavior is outside
+        // of this test's purpose
+        long timeAfterZip = System.currentTimeMillis();
+
+        // Read it back, and check the modification time is almost the system clock value
+        try (ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bos.toByteArray()))) {
+            ZipEntry entry = zis.getNextEntry();
+            assertEquals("name", entry.getName());
+            assertTrue(timeBeforeZip <= entry.getTime());
+            assertTrue(timeAfterZip >= entry.getTime());
+        }
     }
 }

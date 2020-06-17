@@ -287,6 +287,7 @@ TEST_SOURCES := \
     com/google/j2objc/net/IosHttpURLConnectionTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/charset/CharsetTest.java \
+    com/google/j2objc/nio/file/attribute/FileTimeTest.java \
     com/google/j2objc/reflect/ProxyTest.java \
     com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
     com/google/j2objc/security/IosRSAKeyTest.java \

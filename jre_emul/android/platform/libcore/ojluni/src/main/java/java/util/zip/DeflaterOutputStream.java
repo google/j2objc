@@ -249,7 +249,12 @@ class DeflaterOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error has occurred
      */
     protected void deflate() throws IOException {
-        // Android-changed: output all available compressed data (b/4005091)
+        // Android-changed: Output all available compressed data (b/4005091).
+        // See http://b/111496419 for more details.
+        // int len = def.deflate(buf, 0, buf.length);
+        // if (len > 0) {
+        //     out.write(buf, 0, len);
+        // }
         int len = 0;
         while ((len = def.deflate(buf, 0, buf.length)) > 0) {
           out.write(buf, 0, len);

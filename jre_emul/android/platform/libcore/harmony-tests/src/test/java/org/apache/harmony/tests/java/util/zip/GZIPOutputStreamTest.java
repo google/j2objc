@@ -25,8 +25,16 @@ import java.io.PipedOutputStream;
 import java.util.zip.Checksum;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public class GZIPOutputStreamTest extends junit.framework.TestCase {
+public class GZIPOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     class TestGZIPOutputStream extends GZIPOutputStream {
         TestGZIPOutputStream(OutputStream out) throws IOException {
@@ -169,9 +177,12 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
     public void testSyncFlush() throws IOException {
         PipedOutputStream pout = new PipedOutputStream();
         PipedInputStream pin = new PipedInputStream(pout);
+        // Must create in this order so that GZIPOutputStream writes the header before
+        // GZIPInputStream tries to read it otherwise it will deadlock with GZIPInputStream waiting
+        // for the header to be written but it cannot be written until after GZIPInputStream has
+        // read it.
         GZIPOutputStream out = new GZIPOutputStream(pout, true /* syncFlush */);
         GZIPInputStream in = new GZIPInputStream(pin);
-
         out.write(1);
         out.write(2);
         out.write(3);
@@ -183,5 +194,7 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
         assertEquals(1, in.read());
         assertEquals(2, in.read());
         assertEquals(3, in.read());
+        out.close();
+        in.close();
     }
 }

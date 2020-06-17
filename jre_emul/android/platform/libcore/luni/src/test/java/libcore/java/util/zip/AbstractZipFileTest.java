@@ -34,11 +34,18 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import junit.framework.TestCase;
-
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public abstract class AbstractZipFileTest extends TestCase {
+public abstract class AbstractZipFileTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
+
     /**
      * Exercise Inflater's ability to refill the zlib's input buffer. As of this
      * writing, this buffer's max size is 64KiB compressed bytes. We'll write a
@@ -426,8 +433,9 @@ public abstract class AbstractZipFileTest extends TestCase {
         out.putNextEntry(ze);
         out.close();
 
-        ZipFile zipFile = new ZipFile(file);
-        assertEquals(null, zipFile.getComment());
+        try (ZipFile zipFile = new ZipFile(file)) {
+            assertEquals(null, zipFile.getComment());
+        }
     }
 
     // https://code.google.com/p/android/issues/detail?id=58465
@@ -458,6 +466,7 @@ public abstract class AbstractZipFileTest extends TestCase {
         // setCrc takes a long, not an int, so -1 isn't a valid CRC32 (because it's 64 bits).
         try {
             ze.setCrc(-1);
+            fail();
         } catch (IllegalArgumentException expected) {
         }
 
@@ -477,28 +486,16 @@ public abstract class AbstractZipFileTest extends TestCase {
     }
 
     /**
-     * RI does not allow reading of an empty zip using a {@link ZipFile}.
+     * RI does allow reading of an empty zip using a {@link ZipFile}.
      */
-    public void testConstructorFailsWhenReadingEmptyZipArchive() throws IOException {
+    public void testConstructorWorksWhenReadingEmptyZipArchive() throws IOException {
 
         File resources = Support_Resources.createTempFolder();
         File emptyZip = Support_Resources.copyFile(
                 resources, "java/util/zip", "EmptyArchive.zip");
 
-        try {
-            // The following should fail with an exception but if it doesn't then we need to clean
-            // up the resource so we need a reference to it.
-            ZipFile zipFile = new ZipFile(emptyZip);
-
-            // Clean up the resource.
-            try {
-                zipFile.close();
-            } catch (Exception e) {
-                // Ignore
-            }
-            fail();
-        } catch (ZipException expected) {
-            // expected
+        try (ZipFile zipFile = new ZipFile(emptyZip)) {
+            assertEquals(0, zipFile.size());
         }
     }
 
@@ -543,6 +540,102 @@ public abstract class AbstractZipFileTest extends TestCase {
 
         for (String entryName : entryNames) {
             assertTrue(entryNamesFromFile.contains(entryName));
+        }
+    }
+
+    // http://b/65491407
+    public void testReadMoreThan8kInOneRead() throws IOException {
+        // Create a zip file with 1mb entry
+        final File f = createTemporaryZipFile();
+        writeEntries(createZipOutputStream(f), 1, 1024 * 1024, true /* setEntrySize */);
+
+        // Create a ~64kb read buffer (-32 bytes for a slack, inflater wont fill it completly)
+        byte[] readBuffer = new byte[1024 * 64 - 32];
+
+        // Read the data to read buffer
+        ZipFile zipFile = new ZipFile(f);
+        InputStream is = zipFile.getInputStream(zipFile.entries().nextElement());
+        int read = is.read(readBuffer, 0, readBuffer.length);
+
+        // Assert that whole buffer been filled. Due to openJdk choice of buffer size, read
+        // never returned more than 8k of data.
+        assertEquals(readBuffer.length, read);
+        is.close();
+        zipFile.close();
+    }
+
+    // http://b/65491407
+    public void testReadWithOffset() throws IOException {
+        // Create a zip file with 1mb entry
+        final File f = createTemporaryZipFile();
+        writeEntries(createZipOutputStream(f), 1, 1024 * 1024, true /* setEntrySize */);
+
+        int bufferSize = 128;
+        byte[] readBuffer = new byte[bufferSize];
+
+        // Read the data to read buffer
+        ZipFile zipFile = new ZipFile(f);
+        InputStream is = zipFile.getInputStream(zipFile.entries().nextElement());
+
+        // Read data (Random bytes sting) to last 32 bit
+        int read = is.read(readBuffer, bufferSize - 32, 32);
+
+        // Check if buffer looks like expected
+        assertEquals(32, read);
+        for (int i = 0; i < bufferSize - 32; i++) {
+          assertEquals(0, readBuffer[i]);
+        }
+
+        is.close();
+        zipFile.close();
+    }
+
+    // http://b/65491407
+    public void testReadWithOffsetInvalid() throws IOException {
+        // Create a zip file with 1mb entry
+        final File f = createTemporaryZipFile();
+        writeEntries(createZipOutputStream(f), 1, 1024 * 1024, true /* setEntrySize */);
+
+        int bufferSize = 128;
+        byte[] readBuffer = new byte[bufferSize];
+
+        // Read the data to read buffer
+        ZipFile zipFile = new ZipFile(f);
+        InputStream is = zipFile.getInputStream(zipFile.entries().nextElement());
+
+        try {
+          is.read(readBuffer, bufferSize - 32, 33);
+          fail();
+        } catch(IndexOutOfBoundsException expect) {}
+        try {
+          is.read(readBuffer, -1, 32);
+          fail();
+        } catch(IndexOutOfBoundsException expect) {}
+        try {
+          is.read(readBuffer, 32, -1);
+          fail();
+        } catch(IndexOutOfBoundsException expect) {}
+        try {
+          is.read(readBuffer, bufferSize, 1);
+          fail();
+        } catch(IndexOutOfBoundsException expect) {}
+
+        is.close();
+        zipFile.close();
+    }
+
+    public void testReadTruncatedZipFile() throws IOException {
+        final File f = createTemporaryZipFile();
+        try (FileOutputStream fos = new FileOutputStream(f)) {
+            // Byte representation of lower 4 bytes of ZipConstants.LOCSIG in little endian order.
+            byte[] bytes = new byte[] {0x50, 0x4b, 0x03, 0x04};
+            fos.write(bytes);
+        }
+
+        try (ZipFile zipFile = new ZipFile(f)) {
+            fail("Should not be possible to open the ZipFile as it is too short");
+        } catch (ZipException e) {
+            // expected
         }
     }
 }

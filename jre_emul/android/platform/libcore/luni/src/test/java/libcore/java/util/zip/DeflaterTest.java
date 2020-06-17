@@ -19,16 +19,37 @@ package libcore.java.util.zip;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-import junit.framework.TestCase;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public class DeflaterTest extends TestCase {
+public class DeflaterTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
 
     private byte[] compressed = new byte[32];
     private byte[] decompressed = new byte[20];
-    private Deflater deflater = new Deflater();
-    private Inflater inflater = new Inflater();
+    private Deflater deflater;
+    private Inflater inflater;
     private int totalDeflated = 0;
     private int totalInflated = 0;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        deflater = new Deflater();
+        inflater = new Inflater();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        deflater.end();
+        inflater.end();
+        super.tearDown();
+    }
 
     public void testDeflate() throws DataFormatException {
         deflater.setInput(new byte[] { 1, 2, 3 });
@@ -47,6 +68,8 @@ public class DeflaterTest extends TestCase {
         assertEquals(9, totalInflated);
         assertDecompressed(1, 2, 3, 4, 5, 6, 7, 8, 9);
         assertEquals(0, inflater.inflate(decompressed));
+
+        inflater.end();
         inflater = new Inflater(true); // safe because we did a FULL_FLUSH
 
         deflater.setInput(new byte[] { 10, 11, 12 });

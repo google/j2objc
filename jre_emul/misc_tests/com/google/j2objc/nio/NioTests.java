@@ -27,6 +27,7 @@ public class NioTests {
     TestSuite suite = new TestSuite();
     suite.addTest(TestUtil.getPackageTests("com.google.j2objc.nio"));
     suite.addTest(TestUtil.getPackageTests("com.google.j2objc.nio.charset"));
+    suite.addTest(TestUtil.getPackageTests("com.google.j2objc.nio.file.attribute"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio.channels"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio.charset"));
