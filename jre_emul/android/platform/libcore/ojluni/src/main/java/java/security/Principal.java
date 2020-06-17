@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1998, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -45,7 +45,6 @@ public interface Principal {
      *
      * @return true if the principal passed in is the same as that
      * encapsulated by this principal, and false otherwise.
-
      */
     public boolean equals(Object another);
 

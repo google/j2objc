@@ -29,6 +29,8 @@ import java.io.*;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
+import sun.security.jca.Providers;
+
 /**
  * This class is used as an opaque representation of cryptographic parameters.
  *
@@ -62,6 +64,10 @@ import java.security.spec.InvalidParameterSpecException;
  *     <tr>
  *       <td>BLOWFISH</td>
  *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>ChaCha20</td>
+ *       <td>28+</td>
  *     </tr>
  *     <tr>
  *       <td>DES</td>
@@ -147,7 +153,7 @@ import java.security.spec.InvalidParameterSpecException;
  * </table>
  *
  * These algorithms are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameters">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameters">
  * AlgorithmParameters section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -217,7 +223,7 @@ public class AlgorithmParameters {
      *
      * @param algorithm the name of the algorithm requested.
      * See the AlgorithmParameters section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameters">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameters">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -259,7 +265,7 @@ public class AlgorithmParameters {
      *
      * @param algorithm the name of the algorithm requested.
      * See the AlgorithmParameters section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameters">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameters">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -285,6 +291,10 @@ public class AlgorithmParameters {
     {
         if (provider == null || provider.length() == 0)
             throw new IllegalArgumentException("missing provider");
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "AlgorithmParameters", algorithm);
+         */
         Object[] objs = Security.getImpl(algorithm, "AlgorithmParameters",
                                          provider);
         return new AlgorithmParameters((AlgorithmParametersSpi)objs[0],
@@ -306,7 +316,7 @@ public class AlgorithmParameters {
      *
      * @param algorithm the name of the algorithm requested.
      * See the AlgorithmParameters section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameters">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameters">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -330,6 +340,10 @@ public class AlgorithmParameters {
     {
         if (provider == null)
             throw new IllegalArgumentException("missing provider");
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "AlgorithmParameters", algorithm);
+         */
         Object[] objs = Security.getImpl(algorithm, "AlgorithmParameters",
                                          provider);
         return new AlgorithmParameters((AlgorithmParametersSpi)objs[0],
