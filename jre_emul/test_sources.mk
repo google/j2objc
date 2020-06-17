@@ -129,14 +129,21 @@ SUPPORT_SOURCES = \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.java \
     org/apache/harmony/crypto/tests/javax/crypto/MockKeyAgreementSpi.java \
     org/apache/harmony/crypto/tests/javax/crypto/MockMacSpi.java \
+    org/apache/harmony/security/tests/support/KeyStoreTestSupport.java \
     org/apache/harmony/security/tests/support/MDGoldenData.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/MyKeyPairGenerator1.java \
+    org/apache/harmony/security/tests/support/MyKeyPairGenerator2.java \
+    org/apache/harmony/security/tests/support/MyKeyPairGenerator3.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/MyLoadStoreParams.java \
     org/apache/harmony/security/tests/support/MyMessageDigest1.java \
+    org/apache/harmony/security/tests/support/MyProvider.java \
     org/apache/harmony/security/tests/support/MySignature1.java \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
     org/apache/harmony/security/tests/support/TestCertUtils.java \
     org/apache/harmony/security/tests/support/TestKeyPair.java \
+    org/apache/harmony/security/tests/support/TestKeyStoreSpi.java \
     org/apache/harmony/security/tests/support/cert/MyCertificate.java \
     org/apache/harmony/security/tests/support/cert/MyCertificateFactorySpi.java \
     org/apache/harmony/security/tests/support/cert/MyCertPath.java \
@@ -214,6 +221,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_SetTest.java \
     tests/support/Support_StringReader.java \
     tests/support/Support_StringWriter.java \
+    tests/support/Support_TestProvider.java \
     tests/support/Support_TestResource.java \
     tests/support/Support_TestResource_en.java \
     tests/support/Support_TestResource_en_US.java \
@@ -515,7 +523,9 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/security/AccessControllerTest.java \
     libcore/java/security/PrincipalTest.java \
+    libcore/java/security/PrivilegedActionExceptionTest.java \
     libcore/java/security/cert/CRLReasonTest.java \
     libcore/java/security/cert/X509CRLSelectorTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
@@ -703,22 +713,39 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
     org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
+	org/apache/harmony/security/tests/java/security/AlgorithmParameterGenerator2Test.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersTest.java \
+    org/apache/harmony/security/tests/java/security/CodeSignerTest.java \
     org/apache/harmony/security/tests/java/security/DigestExceptionTest.java \
     org/apache/harmony/security/tests/java/security/DigestInputStream2Test.java \
     org/apache/harmony/security/tests/java/security/DigestInputStreamTest.java \
     org/apache/harmony/security/tests/java/security/DigestOutputStreamTest.java \
+    org/apache/harmony/security/tests/java/security/GeneralSecurityExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/GuardedObjectTest.java \
+    org/apache/harmony/security/tests/java/security/InvalidAlgorithmParameterExceptionTest.java \
+	org/apache/harmony/security/tests/java/security/InvalidKeyExceptionTest.java \
+	org/apache/harmony/security/tests/java/security/InvalidParameterExceptionTest.java \
+	org/apache/harmony/security/tests/java/security/KeyExceptionTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactorySpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactoryTest.java \
+    org/apache/harmony/security/tests/java/security/KeyManagementExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/KeyPairGenerator1Test.java \
+    org/apache/harmony/security/tests/java/security/KeyPairGenerator2Test.java \
+    org/apache/harmony/security/tests/java/security/KeyPairGenerator3Test.java \
     org/apache/harmony/security/tests/java/security/KeyPairGeneratorSpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyPairTest.java \
+	org/apache/harmony/security/tests/java/security/KeyStore4Test.java \
+	org/apache/harmony/security/tests/java/security/KeyStoreExceptionTest.java \
     org/apache/harmony/security/tests/java/security/KeyTest.java \
     org/apache/harmony/security/tests/java/security/MessageDigest1Test.java \
     org/apache/harmony/security/tests/java/security/MessageDigest2Test.java \
     org/apache/harmony/security/tests/java/security/MessageDigestSpiTest.java \
+    org/apache/harmony/security/tests/java/security/NoSuchAlgorithmExceptionTest.java \
+	org/apache/harmony/security/tests/java/security/NoSuchProviderExceptionTest.java \
     org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
     org/apache/harmony/security/tests/java/security/ProviderExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/PrivilegedActionTest.java \
     org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
     org/apache/harmony/security/tests/java/security/SecureRandom2Test.java \
     org/apache/harmony/security/tests/java/security/SecureRandomSpiTest.java \
