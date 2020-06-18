@@ -713,7 +713,7 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
     org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
-	org/apache/harmony/security/tests/java/security/AlgorithmParameterGenerator2Test.java \
+    org/apache/harmony/security/tests/java/security/AlgorithmParameterGenerator2Test.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersTest.java \
     org/apache/harmony/security/tests/java/security/CodeSignerTest.java \
@@ -724,9 +724,9 @@ TEST_SOURCES := \
     org/apache/harmony/security/tests/java/security/GeneralSecurityExceptionTest.java \
     org/apache/harmony/security/tests/java/security/GuardedObjectTest.java \
     org/apache/harmony/security/tests/java/security/InvalidAlgorithmParameterExceptionTest.java \
-	org/apache/harmony/security/tests/java/security/InvalidKeyExceptionTest.java \
-	org/apache/harmony/security/tests/java/security/InvalidParameterExceptionTest.java \
-	org/apache/harmony/security/tests/java/security/KeyExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/InvalidKeyExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/InvalidParameterExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/KeyExceptionTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactorySpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyFactoryTest.java \
     org/apache/harmony/security/tests/java/security/KeyManagementExceptionTest.java \
@@ -735,14 +735,14 @@ TEST_SOURCES := \
     org/apache/harmony/security/tests/java/security/KeyPairGenerator3Test.java \
     org/apache/harmony/security/tests/java/security/KeyPairGeneratorSpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyPairTest.java \
-	org/apache/harmony/security/tests/java/security/KeyStore4Test.java \
-	org/apache/harmony/security/tests/java/security/KeyStoreExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/KeyStore4Test.java \
+    org/apache/harmony/security/tests/java/security/KeyStoreExceptionTest.java \
     org/apache/harmony/security/tests/java/security/KeyTest.java \
     org/apache/harmony/security/tests/java/security/MessageDigest1Test.java \
     org/apache/harmony/security/tests/java/security/MessageDigest2Test.java \
     org/apache/harmony/security/tests/java/security/MessageDigestSpiTest.java \
     org/apache/harmony/security/tests/java/security/NoSuchAlgorithmExceptionTest.java \
-	org/apache/harmony/security/tests/java/security/NoSuchProviderExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/NoSuchProviderExceptionTest.java \
     org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
     org/apache/harmony/security/tests/java/security/ProviderExceptionTest.java \
     org/apache/harmony/security/tests/java/security/PrivilegedActionTest.java \
