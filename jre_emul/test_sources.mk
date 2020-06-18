@@ -515,6 +515,7 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/security/AccessControllerTest.java \
     libcore/java/security/PrincipalTest.java \
     libcore/java/security/cert/CRLReasonTest.java \
     libcore/java/security/cert/X509CRLSelectorTest.java \
