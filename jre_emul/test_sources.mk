@@ -1164,6 +1164,8 @@ TEST_SOURCES := \
     test/java/time/temporal/TestJulianFields.java \
     test/java/time/zone/TestFixedZoneRules.java \
     tests/api/java/lang/reflect/ProxyTest.java \
+    tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
+    tests/java/security/SecureClassLoaderTest.java \
     tests/security/cert/CRLExceptionTest.java \
     tests/security/cert/CRLTest.java \
     tests/security/cert/CertPathBuilderExceptionTest.java \
