@@ -132,11 +132,14 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/MDGoldenData.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/MyKeyStoreSpi.java \
+    org/apache/harmony/security/tests/support/MyLoadStoreParams.java \
     org/apache/harmony/security/tests/support/MyMessageDigest1.java \
     org/apache/harmony/security/tests/support/MySignature1.java \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
     org/apache/harmony/security/tests/support/TestCertUtils.java \
     org/apache/harmony/security/tests/support/TestKeyPair.java \
+    org/apache/harmony/security/tests/support/tmpCallbackHandler.java \
     org/apache/harmony/security/tests/support/cert/MyCertificate.java \
     org/apache/harmony/security/tests/support/cert/MyCertificateFactorySpi.java \
     org/apache/harmony/security/tests/support/cert/MyCertPath.java \
@@ -207,6 +210,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_MapTest2.java \
     tests/support/Support_OutputStream.java \
     tests/support/Support_PlatformFile.java \
+    tests/support/Support_ProviderTrust.java \
     tests/support/Support_Proxy_I1.java \
     tests/support/Support_Proxy_I2.java \
     tests/support/Support_Proxy_ParentException.java \
@@ -214,6 +218,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_SetTest.java \
     tests/support/Support_StringReader.java \
     tests/support/Support_StringWriter.java \
+    tests/support/Support_TestProvider.java \
     tests/support/Support_TestResource.java \
     tests/support/Support_TestResource_en.java \
     tests/support/Support_TestResource_en_US.java \
@@ -713,7 +718,14 @@ TEST_SOURCES := \
     org/apache/harmony/security/tests/java/security/KeyFactoryTest.java \
     org/apache/harmony/security/tests/java/security/KeyPairGeneratorSpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyPairTest.java \
+    org/apache/harmony/security/tests/java/security/KeyStorePrivateKeyEntryTest.java \
+    org/apache/harmony/security/tests/java/security/KeyStoreSpiTest.java \
     org/apache/harmony/security/tests/java/security/KeyTest.java \
+    org/apache/harmony/security/tests/java/security/KSCallbackHandlerProtectionTest.java \
+    org/apache/harmony/security/tests/java/security/KSPasswordProtectionTest.java \
+    org/apache/harmony/security/tests/java/security/KSPrivateKeyEntryTest.java \
+    org/apache/harmony/security/tests/java/security/KSSecretKeyEntryTest.java \
+    org/apache/harmony/security/tests/java/security/KSTrustedCertificateEntryTest.java \
     org/apache/harmony/security/tests/java/security/MessageDigest1Test.java \
     org/apache/harmony/security/tests/java/security/MessageDigest2Test.java \
     org/apache/harmony/security/tests/java/security/MessageDigestSpiTest.java \
@@ -722,6 +734,7 @@ TEST_SOURCES := \
     org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
     org/apache/harmony/security/tests/java/security/SecureRandom2Test.java \
     org/apache/harmony/security/tests/java/security/SecureRandomSpiTest.java \
+    org/apache/harmony/security/tests/java/security/Security2Test.java \
     org/apache/harmony/security/tests/java/security/SignatureSpiTest.java \
     org/apache/harmony/security/tests/java/security/SignatureTest.java \
     org/apache/harmony/tests/java/io/InputStreamReaderTest.java \
