@@ -1238,6 +1238,9 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/spec/SecretKeySpec.java \
   javax/security/auth/DestroyFailedException.java \
   javax/security/auth/Destroyable.java \
+  javax/security/auth/PrivateCredentialPermission.java \
+  javax/security/auth/Subject.java \
+  javax/security/auth/SubjectDomainCombiner.java \
   javax/security/auth/callback/Callback.java \
   javax/security/auth/callback/CallbackHandler.java \
   javax/security/auth/callback/PasswordCallback.java \
