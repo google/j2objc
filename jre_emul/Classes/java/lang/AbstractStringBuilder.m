@@ -54,14 +54,16 @@ static inline void NewBuffer(JreStringBuilder *sb, jint size) {
 }
 
 static JavaLangStringIndexOutOfBoundsException *IndexAndLength(JreStringBuilder *sb, jint index) {
-  @throw [[[JavaLangStringIndexOutOfBoundsException alloc]
-      initWithInt:sb->count_ withInt:index] autorelease];
+  @throw [[[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
+          [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index
+          ]] autorelease];
 }
 
 static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
     JreStringBuilder *sb, jint start, jint end) {
-  @throw [[[JavaLangStringIndexOutOfBoundsException alloc]
-      initWithInt:sb->count_ withInt:start withInt:end - start] autorelease];
+  @throw [[[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
+          [NSString stringWithFormat:@"this.length=%d; start=%d; length=%d", sb->count_, start,
+          end - start]] autorelease];
 }
 
 @implementation JavaLangAbstractStringBuilder
@@ -162,7 +164,7 @@ void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars)
 void JreStringBuilder_appendCharArraySubset(
     JreStringBuilder *sb, IOSCharArray *chars, jint offset, jint length) {
   (void)nil_chk(chars);
-  JavaUtilArrays_checkOffsetAndCountWithInt_withInt_withInt_(chars->size_, offset, length);
+  IOSArray_checkRange(chars->size_, offset, length);
   JreStringBuilder_appendBuffer(sb, chars->buffer_ + offset, length);
 }
 
@@ -345,8 +347,9 @@ void JreStringBuilder_insertCharArraySubset(
 
 void JreStringBuilder_insertChar(JreStringBuilder *sb, jint index, jchar ch) {
   if (index < 0 || index > sb->count_) {
-    @throw [[[JavaLangArrayIndexOutOfBoundsException alloc]
-        initWithInt:sb->count_ withInt:index] autorelease];
+    @throw [[[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:
+        [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index
+        ]] autorelease];
   }
   JreStringBuilder_move(sb, 1, index);
   sb->buffer_[index] = ch;

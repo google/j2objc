@@ -112,7 +112,8 @@ static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufBy
 
 - (jbyte)byteAtWithInt:(jint)index {
   if (index < 0 || index >= size_) {
-    @throw [[[JavaLangArrayIndexOutOfBoundsException alloc] initWithInt:size_ withInt:index]
+    @throw [[[JavaLangArrayIndexOutOfBoundsException alloc]
+        initWithNSString:[NSString stringWithFormat:@"this.length=%d; index=%d", size_, index]]
         autorelease];
   }
   return buffer_[index];

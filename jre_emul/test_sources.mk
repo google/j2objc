@@ -651,6 +651,7 @@ TEST_SOURCES := \
     libcore/libcore/icu/LocaleDataTest.java \
     libcore/libcore/io/MemoryTest.java \
     libcore/libcore/net/url/UrlUtilsTest.java \
+    libcore/libcore/util/ArrayUtilsTest.java \
     libcore/libcore/util/BasicLruCacheTest.java \
     libcore/libcore/util/HexEncodingTest.java \
     libcore/libcore/util/SneakyThrowTest.java \

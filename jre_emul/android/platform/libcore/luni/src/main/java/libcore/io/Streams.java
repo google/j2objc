@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
+import libcore.util.ArrayUtils;
 
 public final class Streams {
     private static AtomicReference<byte[]> skipBuffer = new AtomicReference<byte[]>();
@@ -76,7 +77,7 @@ public final class Streams {
         if (dst == null) {
             throw new NullPointerException("dst == null");
         }
-        Arrays.checkOffsetAndCount(dst.length, offset, byteCount);
+        ArrayUtils.throwsIfOutOfBounds(dst.length, offset, byteCount);
         while (byteCount > 0) {
             int bytesRead = in.read(dst, offset, byteCount);
             if (bytesRead < 0) {

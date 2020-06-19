@@ -659,6 +659,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/reflect/TypeVariableImpl.java \
   libcore/reflect/Types.java \
   libcore/reflect/WildcardTypeImpl.java \
+  libcore/util/ArrayUtils.java \
   libcore/util/BasicLruCache.java \
   libcore/util/EmptyArray.java \
   libcore/util/HexEncoding.java \

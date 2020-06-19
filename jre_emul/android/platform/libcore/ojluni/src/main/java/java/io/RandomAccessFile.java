@@ -32,6 +32,7 @@ import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.Memory;
 import libcore.io.SizeOf;
+import libcore.util.ArrayUtils;
 import static libcore.io.OsConstants.*;
 
 /**
@@ -419,7 +420,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      *             if {@code dst} is null.
      */
     public final void readFully(byte[] dst, int offset, int byteCount) throws IOException {
-        Arrays.checkOffsetAndCount(dst.length, offset, byteCount);
+        ArrayUtils.throwsIfOutOfBounds(dst.length, offset, byteCount);
         while (byteCount > 0) {
             int result = read(dst, offset, byteCount);
             if (result < 0) {
