@@ -425,7 +425,8 @@ public class MessageDigest2Test extends junit.framework.TestCase {
         assertNotNull("toString is null", str);
     }
 
-    protected void setUp() {
+    protected void setUp() throws Exception {
+        super.setUp();
         Provider[] providers = Security.getProviders("MessageDigest.SHA");
         for (Provider provider : providers) {
             digestAlgs.put(provider, getDigestAlgorithms(provider));
