@@ -199,7 +199,6 @@ SUPPORT_SOURCES = \
     test/java/time/temporal/MockFieldValue.java \
     tests/net/DelegatingSocketFactory.java \
     tests/security/CertificateFactoryTest.java \
-    tests/security/MessageDigestTest.java \
     tests/security/interfaces/Util.java \
     tests/support/Support_ASimpleInputStream.java \
     tests/support/Support_ASimpleOutputStream.java \
@@ -238,6 +237,7 @@ SUPPORT_SOURCES = \
     tests/support/ThrowingReader.java \
     tests/support/resource/Support_Resources.java \
     tests/targets/security/KeyStoreTest.java \
+    tests/targets/security/MessageDigestTest.java \
     tests/targets/security/cert/CertificateFactoryTestX509.java \
     tests/util/SerializationTester.java \
 
@@ -1203,6 +1203,8 @@ TEST_SOURCES := \
     test/java/time/temporal/TestJulianFields.java \
     test/java/time/zone/TestFixedZoneRules.java \
     tests/api/java/lang/reflect/ProxyTest.java \
+    tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
+    tests/java/security/SecureClassLoaderTest.java \
     tests/security/cert/CRLExceptionTest.java \
     tests/security/cert/CRLTest.java \
     tests/security/cert/CertPathBuilderExceptionTest.java \
@@ -1261,11 +1263,13 @@ TEST_SOURCES := \
     tests/security/spec/RSAPrivateKeySpecTest.java \
     tests/security/spec/RSAPublicKeySpecTest.java \
     tests/security/spec/X509EncodedKeySpecTest.java \
+    tests/targets/security/MessageDigestTestMD2.java \
     tests/targets/security/MessageDigestTestMD5.java \
     tests/targets/security/MessageDigestTestSHA1.java \
     tests/targets/security/MessageDigestTestSHA256.java \
     tests/targets/security/MessageDigestTestSHA384.java \
     tests/targets/security/MessageDigestTestSHA512.java \
+    tests/targets/security/SignatureTestMD2withRSA.java \
 
 SUITE_SOURCES = \
     android/icu/dev/test/Tests.java \

@@ -15,8 +15,6 @@
  */
 package tests.targets.security;
 
-import tests.security.MessageDigestTest;
-
 public class MessageDigestTestSHA256 extends MessageDigestTest {
 
     public MessageDigestTestSHA256() {
