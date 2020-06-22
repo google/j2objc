@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ import java.nio.channels.spi.SelectorProvider;
  * setOption} method. A datagram channel to an Internet Protocol socket supports
  * the following options:
  * <blockquote>
- * <table border>
+ * <table border summary="Socket options">
  *   <tr>
  *     <th>Option Name</th>
  *     <th>Description</th>
@@ -117,6 +117,9 @@ public abstract class DatagramChannel
 
     /**
      * Initializes a new instance of this class.
+     *
+     * @param  provider
+     *         The provider that created this channel
      */
     protected DatagramChannel(SelectorProvider provider) {
         super(provider);
@@ -150,7 +153,7 @@ public abstract class DatagramChannel
      * Opens a datagram channel.
      *
      * <p> The {@code family} parameter is used to specify the {@link
-     * ProtocolFamily}. If the datagram channel is to be used for IP multicasing
+     * ProtocolFamily}. If the datagram channel is to be used for IP multicasting
      * then this should correspond to the address type of the multicast groups
      * that this channel will join.
      *

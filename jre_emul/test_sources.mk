@@ -511,8 +511,11 @@ TEST_SOURCES := \
     libcore/java/nio/OldDirectIntBufferTest.java \
     libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/channels/AcceptPendingExceptionTest.java \
+    libcore/java/nio/channels/InterruptedByTimeoutExceptionTest.java \
     libcore/java/nio/channels/PipeTest.java \
+    libcore/java/nio/channels/ReadPendingExceptionTest.java \
     libcore/java/nio/channels/ShutdownChannelGroupExceptionTest.java \
+    libcore/java/nio/channels/WritePendingExceptionTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/nio/charset/CharsetTest.java \
