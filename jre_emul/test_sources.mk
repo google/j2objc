@@ -526,6 +526,13 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/nio/file/DirectoryIteratorExceptionTest.java \
+    libcore/java/nio/file/FileSystemAlreadyExistsExceptionTest.java \
+    libcore/java/nio/file/FileSystemNotFoundExceptionTest.java \
+    libcore/java/nio/file/InvalidPathExceptionTest.java \
+    libcore/java/nio/file/LinkPermissionTest.java \
+    libcore/java/nio/file/ProviderMismatchExceptionTest.java \
+    libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/security/AccessControllerTest.java \
     libcore/java/security/PrincipalTest.java \
     libcore/java/security/PrivilegedActionExceptionTest.java \
