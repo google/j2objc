@@ -514,7 +514,6 @@ TEST_SOURCES := \
     libcore/java/nio/channels/DatagramChannelTest.java \
     libcore/java/nio/channels/InterruptedByTimeoutExceptionTest.java \
     libcore/java/nio/channels/OldServerSocketChannelTest.java \
-    libcore/java/nio/channels/OldSocketChannelTest.java \
     libcore/java/nio/channels/PipeTest.java \
     libcore/java/nio/channels/ReadPendingExceptionTest.java \
     libcore/java/nio/channels/ShutdownChannelGroupExceptionTest.java \
