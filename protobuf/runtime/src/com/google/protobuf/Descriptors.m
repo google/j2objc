@@ -256,13 +256,15 @@ int SerializationOrderComp(const void *a, const void *b) {
 }
 
 IOSObjectArray *CGPGetSerializationOrderFields(CGPDescriptor *descriptor) {
-  IOSObjectArray *result = descriptor->serializationOrderFields_;
-  if (!result) {
-    result = [descriptor->fields_ copyWithZone:nil];
-    qsort(result->buffer_, result->size_, sizeof(id), SerializationOrderComp);
-    descriptor->serializationOrderFields_ = result;
+  @synchronized(descriptor) {
+    IOSObjectArray *result = descriptor->serializationOrderFields_;
+    if (!result) {
+      result = [descriptor->fields_ copyWithZone:nil];
+      qsort(result->buffer_, result->size_, sizeof(id), SerializationOrderComp);
+      descriptor->serializationOrderFields_ = result;
+    }
+    return result;
   }
-  return result;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_Descriptor)
