@@ -507,6 +507,7 @@ public class ChannelsTest extends TestCase {
         // null channel
         try {
             Writer testWriter = Channels.newWriter(null, Charset.forName(CODE_SET).newEncoder(), -1);
+            fail();
         } catch (NullPointerException expected) {
         }
 
@@ -514,6 +515,7 @@ public class ChannelsTest extends TestCase {
         this.fouts = null;
         try {
             WritableByteChannel wbChannel = Channels.newChannel(this.fouts);
+            fail();
         } catch (NullPointerException expected) {
         }
     }

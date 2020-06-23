@@ -511,8 +511,14 @@ TEST_SOURCES := \
     libcore/java/nio/OldDirectIntBufferTest.java \
     libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/channels/AcceptPendingExceptionTest.java \
+    libcore/java/nio/channels/DatagramChannelTest.java \
+    libcore/java/nio/channels/InterruptedByTimeoutExceptionTest.java \
+    libcore/java/nio/channels/OldServerSocketChannelTest.java \
     libcore/java/nio/channels/PipeTest.java \
+    libcore/java/nio/channels/ReadPendingExceptionTest.java \
     libcore/java/nio/channels/ShutdownChannelGroupExceptionTest.java \
+    libcore/java/nio/channels/SocketChannelTest.java \
+    libcore/java/nio/channels/WritePendingExceptionTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/nio/charset/CharsetTest.java \
@@ -1374,6 +1380,7 @@ TESTS_USE_REFLECTION = \
     libcore/java/io/OldObjectOutputStreamTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
+    libcore/java/nio/channels/SocketChannelTest.java \
     libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \

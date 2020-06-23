@@ -951,6 +951,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/IllegalBlockingModeException.java \
   java/nio/channels/IllegalChannelGroupException.java \
   java/nio/channels/IllegalSelectorException.java \
+  java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
@@ -960,6 +961,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/NotYetConnectedException.java \
   java/nio/channels/OverlappingFileLockException.java \
   java/nio/channels/Pipe.java \
+  java/nio/channels/ReadPendingException.java \
   java/nio/channels/ReadableByteChannel.java \
   java/nio/channels/ScatteringByteChannel.java \
   java/nio/channels/SeekableByteChannel.java \
@@ -972,6 +974,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/UnresolvedAddressException.java \
   java/nio/channels/UnsupportedAddressTypeException.java \
   java/nio/channels/WritableByteChannel.java \
+  java/nio/channels/WritePendingException.java \
   java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/channels/spi/AbstractSelectableChannel.java \
   java/nio/channels/spi/AbstractSelectionKey.java \

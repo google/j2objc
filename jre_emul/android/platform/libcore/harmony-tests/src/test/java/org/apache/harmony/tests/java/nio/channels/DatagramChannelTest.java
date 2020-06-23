@@ -17,6 +17,8 @@
 
 package org.apache.harmony.tests.java.nio.channels;
 
+import android.system.ErrnoException;
+import libcore.io.OsConstants;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -35,10 +37,8 @@ import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.TestCase;
-import android.system.ErrnoException;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
-import libcore.io.OsConstants;
 
 /**
  * Test for DatagramChannel
