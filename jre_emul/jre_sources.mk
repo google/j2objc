@@ -1004,6 +1004,12 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
+  java/nio/file/StandardCopyOption.java \
+  java/nio/file/StandardOpenOption.java \
+  java/nio/file/WatchEvent.java \
+  java/nio/file/WatchKey.java \
+  java/nio/file/WatchService.java \
+  java/nio/file/Watchable.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 
