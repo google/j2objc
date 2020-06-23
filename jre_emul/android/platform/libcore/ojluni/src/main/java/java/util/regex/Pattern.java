@@ -27,8 +27,10 @@
 package java.util.regex;
 
 /* J2ObjC removed.
-import libcore.util.NativeAllocationRegistry;
+import com.android.icu.util.regex.PatternNative;
+import dalvik.system.VMRuntime;
 */
+
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -40,13 +42,16 @@ import java.util.stream.StreamSupport;
 
 import libcore.util.EmptyArray;
 
+// Android-changed: Document that named capturing is only available from API 26.
+// Android-changed: Android always uses unicode character classes.
+// UNICODE_CHARACTER_CLASS has no effect on Android.
 /**
  * A compiled representation of a regular expression.
  *
  * <p> A regular expression, specified as a string, must first be compiled into
  * an instance of this class.  The resulting pattern can then be used to create
- * a {@link Matcher} object that can match arbitrary {@link
- * java.lang.CharSequence </code>character sequences<code>} against the regular
+ * a {@link Matcher} object that can match arbitrary {@linkplain
+ * java.lang.CharSequence character sequences} against the regular
  * expression.  All of the state involved in performing a match resides in the
  * matcher, so many matchers can share the same pattern.
  *
@@ -73,15 +78,14 @@ import libcore.util.EmptyArray;
  * such use.
  *
  *
- * <a name="sum">
- * <h4> Summary of regular-expression constructs </h4>
+ * <h3><a name="sum">Summary of regular-expression constructs</a></h3>
  *
  * <table border="0" cellpadding="1" cellspacing="0"
  *  summary="Regular expression constructs, and what they match">
  *
  * <tr align="left">
- * <th bgcolor="#CCCCFF" align="left" id="construct">Construct</th>
- * <th bgcolor="#CCCCFF" align="left" id="matches">Matches</th>
+ * <th align="left" id="construct">Construct</th>
+ * <th align="left" id="matches">Matches</th>
  * </tr>
  *
  * <tr><th>&nbsp;</th></tr>
@@ -108,7 +112,7 @@ import libcore.util.EmptyArray;
  * <tr><td valign="top" headers="construct characters"><tt>&#92;x</tt><i>{h...h}</i></td>
  *     <td headers="matches">The character with hexadecimal&nbsp;value&nbsp;<tt>0x</tt><i>h...h</i>
  *         ({@link java.lang.Character#MIN_CODE_POINT Character.MIN_CODE_POINT}
- *         &nbsp;&lt;=&nbsp;<tt>0x</tt><i>h...h</i>&nbsp;&lt;=&nbsp
+ *         &nbsp;&lt;=&nbsp;<tt>0x</tt><i>h...h</i>&nbsp;&lt;=&nbsp;
  *          {@link java.lang.Character#MAX_CODE_POINT Character.MAX_CODE_POINT})</td></tr>
  * <tr><td valign="top" headers="matches"><tt>\t</tt></td>
  *     <td headers="matches">The tab character (<tt>'&#92;u0009'</tt>)</td></tr>
@@ -128,24 +132,24 @@ import libcore.util.EmptyArray;
  * <tr><th>&nbsp;</th></tr>
  * <tr align="left"><th colspan="2" id="classes">Character classes</th></tr>
  *
- * <tr><td valign="top" headers="construct classes"><tt>[abc]</tt></td>
- *     <td headers="matches"><tt>a</tt>, <tt>b</tt>, or <tt>c</tt> (simple class)</td></tr>
- * <tr><td valign="top" headers="construct classes"><tt>[^abc]</tt></td>
- *     <td headers="matches">Any character except <tt>a</tt>, <tt>b</tt>, or <tt>c</tt> (negation)</td></tr>
- * <tr><td valign="top" headers="construct classes"><tt>[a-zA-Z]</tt></td>
- *     <td headers="matches"><tt>a</tt> through <tt>z</tt>
- *         or <tt>A</tt> through <tt>Z</tt>, inclusive (range)</td></tr>
- * <tr><td valign="top" headers="construct classes"><tt>[a-d[m-p]]</tt></td>
- *     <td headers="matches"><tt>a</tt> through <tt>d</tt>,
- *      or <tt>m</tt> through <tt>p</tt>: <tt>[a-dm-p]</tt> (union)</td></tr>
- * <tr><td valign="top" headers="construct classes"><tt>[a-z&&[def]]</tt></td>
- *     <td headers="matches"><tt>d</tt>, <tt>e</tt>, or <tt>f</tt> (intersection)</tr>
- * <tr><td valign="top" headers="construct classes"><tt>[a-z&&[^bc]]</tt></td>
- *     <td headers="matches"><tt>a</tt> through <tt>z</tt>,
- *         except for <tt>b</tt> and <tt>c</tt>: <tt>[ad-z]</tt> (subtraction)</td></tr>
- * <tr><td valign="top" headers="construct classes"><tt>[a-z&&[^m-p]]</tt></td>
- *     <td headers="matches"><tt>a</tt> through <tt>z</tt>,
- *          and not <tt>m</tt> through <tt>p</tt>: <tt>[a-lq-z]</tt>(subtraction)</td></tr>
+ * <tr><td valign="top" headers="construct classes">{@code [abc]}</td>
+ *     <td headers="matches">{@code a}, {@code b}, or {@code c} (simple class)</td></tr>
+ * <tr><td valign="top" headers="construct classes">{@code [^abc]}</td>
+ *     <td headers="matches">Any character except {@code a}, {@code b}, or {@code c} (negation)</td></tr>
+ * <tr><td valign="top" headers="construct classes">{@code [a-zA-Z]}</td>
+ *     <td headers="matches">{@code a} through {@code z}
+ *         or {@code A} through {@code Z}, inclusive (range)</td></tr>
+ * <tr><td valign="top" headers="construct classes">{@code [a-d[m-p]]}</td>
+ *     <td headers="matches">{@code a} through {@code d},
+ *      or {@code m} through {@code p}: {@code [a-dm-p]} (union)</td></tr>
+ * <tr><td valign="top" headers="construct classes">{@code [a-z&&[def]]}</td>
+ *     <td headers="matches">{@code d}, {@code e}, or {@code f} (intersection)</tr>
+ * <tr><td valign="top" headers="construct classes">{@code [a-z&&[^bc]]}</td>
+ *     <td headers="matches">{@code a} through {@code z},
+ *         except for {@code b} and {@code c}: {@code [ad-z]} (subtraction)</td></tr>
+ * <tr><td valign="top" headers="construct classes">{@code [a-z&&[^m-p]]}</td>
+ *     <td headers="matches">{@code a} through {@code z},
+ *          and not {@code m} through {@code p}: {@code [a-lq-z]}(subtraction)</td></tr>
  * <tr><th>&nbsp;</th></tr>
  *
  * <tr align="left"><th colspan="2" id="predef">Predefined character classes</th></tr>
@@ -156,46 +160,55 @@ import libcore.util.EmptyArray;
  *     <td headers="matches">A digit: <tt>[0-9]</tt></td></tr>
  * <tr><td valign="top" headers="construct predef"><tt>\D</tt></td>
  *     <td headers="matches">A non-digit: <tt>[^0-9]</tt></td></tr>
+ * <tr><td valign="top" headers="construct predef"><tt>\h</tt></td>
+ *     <td headers="matches">A horizontal whitespace character:
+ *     <tt>[ \t\xA0&#92;u1680&#92;u180e&#92;u2000-&#92;u200a&#92;u202f&#92;u205f&#92;u3000]</tt></td></tr>
+ * <tr><td valign="top" headers="construct predef"><tt>\H</tt></td>
+ *     <td headers="matches">A non-horizontal whitespace character: <tt>[^\h]</tt></td></tr>
  * <tr><td valign="top" headers="construct predef"><tt>\s</tt></td>
  *     <td headers="matches">A whitespace character: <tt>[ \t\n\x0B\f\r]</tt></td></tr>
  * <tr><td valign="top" headers="construct predef"><tt>\S</tt></td>
  *     <td headers="matches">A non-whitespace character: <tt>[^\s]</tt></td></tr>
+ * <tr><td valign="top" headers="construct predef"><tt>\v</tt></td>
+ *     <td headers="matches">A vertical whitespace character: <tt>[\n\x0B\f\r\x85&#92;u2028&#92;u2029]</tt>
+ *     </td></tr>
+ * <tr><td valign="top" headers="construct predef"><tt>\V</tt></td>
+ *     <td headers="matches">A non-vertical whitespace character: <tt>[^\v]</tt></td></tr>
  * <tr><td valign="top" headers="construct predef"><tt>\w</tt></td>
  *     <td headers="matches">A word character: <tt>[a-zA-Z_0-9]</tt></td></tr>
  * <tr><td valign="top" headers="construct predef"><tt>\W</tt></td>
  *     <td headers="matches">A non-word character: <tt>[^\w]</tt></td></tr>
- *
  * <tr><th>&nbsp;</th></tr>
- * <tr align="left"><th colspan="2" id="posix">POSIX character classes</b> (US-ASCII only)<b></th></tr>
+ * <tr align="left"><th colspan="2" id="posix"><b>POSIX character classes (US-ASCII only)</b></th></tr>
  *
- * <tr><td valign="top" headers="construct posix"><tt>\p{Lower}</tt></td>
- *     <td headers="matches">A lower-case alphabetic character: <tt>[a-z]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Upper}</tt></td>
- *     <td headers="matches">An upper-case alphabetic character:<tt>[A-Z]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{ASCII}</tt></td>
- *     <td headers="matches">All ASCII:<tt>[\x00-\x7F]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Alpha}</tt></td>
- *     <td headers="matches">An alphabetic character:<tt>[\p{Lower}\p{Upper}]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Digit}</tt></td>
- *     <td headers="matches">A decimal digit: <tt>[0-9]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Alnum}</tt></td>
- *     <td headers="matches">An alphanumeric character:<tt>[\p{Alpha}\p{Digit}]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Punct}</tt></td>
- *     <td headers="matches">Punctuation: One of <tt>!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~</tt></td></tr>
- *     <!-- <tt>[\!"#\$%&'\(\)\*\+,\-\./:;\<=\>\?@\[\\\]\^_`\{\|\}~]</tt>
- *          <tt>[\X21-\X2F\X31-\X40\X5B-\X60\X7B-\X7E]</tt> -->
- * <tr><td valign="top" headers="construct posix"><tt>\p{Graph}</tt></td>
- *     <td headers="matches">A visible character: <tt>[\p{Alnum}\p{Punct}]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Print}</tt></td>
- *     <td headers="matches">A printable character: <tt>[\p{Graph}\x20]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Blank}</tt></td>
- *     <td headers="matches">A space or a tab: <tt>[ \t]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Cntrl}</tt></td>
- *     <td headers="matches">A control character: <tt>[\x00-\x1F\x7F]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{XDigit}</tt></td>
- *     <td headers="matches">A hexadecimal digit: <tt>[0-9a-fA-F]</tt></td></tr>
- * <tr><td valign="top" headers="construct posix"><tt>\p{Space}</tt></td>
- *     <td headers="matches">A whitespace character: <tt>[ \t\n\x0B\f\r]</tt></td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Lower}}</td>
+ *     <td headers="matches">A lower-case alphabetic character: {@code [a-z]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Upper}}</td>
+ *     <td headers="matches">An upper-case alphabetic character:{@code [A-Z]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{ASCII}}</td>
+ *     <td headers="matches">All ASCII:{@code [\x00-\x7F]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Alpha}}</td>
+ *     <td headers="matches">An alphabetic character:{@code [\p{Lower}\p{Upper}]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Digit}}</td>
+ *     <td headers="matches">A decimal digit: {@code [0-9]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Alnum}}</td>
+ *     <td headers="matches">An alphanumeric character:{@code [\p{Alpha}\p{Digit}]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Punct}}</td>
+ *     <td headers="matches">Punctuation: One of {@code !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}</td></tr>
+ *     <!-- {@code [\!"#\$%&'\(\)\*\+,\-\./:;\<=\>\?@\[\\\]\^_`\{\|\}~]}
+ *          {@code [\X21-\X2F\X31-\X40\X5B-\X60\X7B-\X7E]} -->
+ * <tr><td valign="top" headers="construct posix">{@code \p{Graph}}</td>
+ *     <td headers="matches">A visible character: {@code [\p{Alnum}\p{Punct}]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Print}}</td>
+ *     <td headers="matches">A printable character: {@code [\p{Graph}\x20]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Blank}}</td>
+ *     <td headers="matches">A space or a tab: {@code [ \t]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Cntrl}}</td>
+ *     <td headers="matches">A control character: {@code [\x00-\x1F\x7F]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{XDigit}}</td>
+ *     <td headers="matches">A hexadecimal digit: {@code [0-9a-fA-F]}</td></tr>
+ * <tr><td valign="top" headers="construct posix">{@code \p{Space}}</td>
+ *     <td headers="matches">A whitespace character: {@code [ \t\n\x0B\f\r]}</td></tr>
  *
  * <tr><th>&nbsp;</th></tr>
  * <tr align="left"><th colspan="2">java.lang.Character classes (simple <a href="#jcc">java character type</a>)</th></tr>
@@ -211,19 +224,19 @@ import libcore.util.EmptyArray;
  *
  * <tr><th>&nbsp;</th></tr>
  * <tr align="left"><th colspan="2" id="unicode">Classes for Unicode scripts, blocks, categories and binary properties</th></tr>
- * * <tr><td valign="top" headers="construct unicode"><tt>\p{IsLatin}</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code \p{IsLatin}}</td>
  *     <td headers="matches">A Latin&nbsp;script character (<a href="#usc">script</a>)</td></tr>
- * <tr><td valign="top" headers="construct unicode"><tt>\p{InGreek}</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code \p{InGreek}}</td>
  *     <td headers="matches">A character in the Greek&nbsp;block (<a href="#ubc">block</a>)</td></tr>
- * <tr><td valign="top" headers="construct unicode"><tt>\p{Lu}</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code \p{Lu}}</td>
  *     <td headers="matches">An uppercase letter (<a href="#ucc">category</a>)</td></tr>
- * <tr><td valign="top" headers="construct unicode"><tt>\p{IsAlphabetic}</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code \p{IsAlphabetic}}</td>
  *     <td headers="matches">An alphabetic character (<a href="#ubpc">binary property</a>)</td></tr>
- * <tr><td valign="top" headers="construct unicode"><tt>\p{Sc}</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code \p{Sc}}</td>
  *     <td headers="matches">A currency symbol</td></tr>
- * <tr><td valign="top" headers="construct unicode"><tt>\P{InGreek}</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code \P{InGreek}}</td>
  *     <td headers="matches">Any character except one in the Greek block (negation)</td></tr>
- * <tr><td valign="top" headers="construct unicode"><tt>[\p{L}&&[^\p{Lu}]]&nbsp;</tt></td>
+ * <tr><td valign="top" headers="construct unicode">{@code [\p{L}&&[^\p{Lu}]]}</td>
  *     <td headers="matches">Any letter except an uppercase letter (subtraction)</td></tr>
  *
  * <tr><th>&nbsp;</th></tr>
@@ -246,6 +259,13 @@ import libcore.util.EmptyArray;
  *         <a href="#lt">terminator</a>, if&nbsp;any</td></tr>
  * <tr><td valign="top" headers="construct bounds"><tt>\z</tt></td>
  *     <td headers="matches">The end of the input</td></tr>
+ *
+ * <tr><th>&nbsp;</th></tr>
+ * <tr align="left"><th colspan="2" id="lineending">Linebreak matcher</th></tr>
+ * <tr><td valign="top" headers="construct lineending"><tt>\R</tt></td>
+ *     <td headers="matches">Any Unicode linebreak sequence, is equivalent to
+ *     <tt>&#92;u000D&#92;u000A|[&#92;u000A&#92;u000B&#92;u000C&#92;u000D&#92;u0085&#92;u2028&#92;u2029]
+ *     </tt></td></tr>
  *
  * <tr><th>&nbsp;</th></tr>
  * <tr align="left"><th colspan="2" id="greedy">Greedy quantifiers</th></tr>
@@ -314,7 +334,7 @@ import libcore.util.EmptyArray;
  *
  * <tr><td valign="bottom" headers="construct backref"><tt>\</tt><i>k</i>&lt;<i>name</i>&gt;</td>
  *     <td valign="bottom" headers="matches">Whatever the
- *     <a href="#groupname">named-capturing group</a> "name" matched</td></tr>
+ *     <a href="#groupname">named-capturing group</a> "name" matched. Only available for API 26 or above</td></tr>
  *
  * <tr><th>&nbsp;</th></tr>
  * <tr align="left"><th colspan="2" id="quot">Quotation</th></tr>
@@ -331,7 +351,7 @@ import libcore.util.EmptyArray;
  * <tr align="left"><th colspan="2" id="special">Special constructs (named-capturing and non-capturing)</th></tr>
  *
  * <tr><td valign="top" headers="construct special"><tt>(?&lt;<a href="#groupname">name</a>&gt;</tt><i>X</i><tt>)</tt></td>
- *     <td headers="matches"><i>X</i>, as a named-capturing group</td></tr>
+ *     <td headers="matches"><i>X</i>, as a named-capturing group. Only available for API 26 or above.</td></tr>
  * <tr><td valign="top" headers="construct special"><tt>(?:</tt><i>X</i><tt>)</tt></td>
  *     <td headers="matches"><i>X</i>, as a non-capturing group</td></tr>
  * <tr><td valign="top" headers="construct special"><tt>(?idmsuxU-idmsuxU)&nbsp;</tt></td>
@@ -360,8 +380,7 @@ import libcore.util.EmptyArray;
  * <hr>
  *
  *
- * <a name="bs">
- * <h4> Backslashes, escapes, and quoting </h4>
+ * <h3><a name="bs">Backslashes, escapes, and quoting</a></h3>
  *
  * <p> The backslash character (<tt>'\'</tt>) serves to introduce escaped
  * constructs, as defined in the table above, as well as to quote characters
@@ -389,8 +408,7 @@ import libcore.util.EmptyArray;
  * <tt>(hello)</tt> the string literal <tt>"&#92;&#92;(hello&#92;&#92;)"</tt>
  * must be used.
  *
- * <a name="cc">
- * <h4> Character Classes </h4>
+ * <h3><a name="cc">Character Classes</a></h3>
  *
  *    <p> Character classes may appear within other character classes, and
  *    may be composed by the union operator (implicit) and the intersection
@@ -419,7 +437,7 @@ import libcore.util.EmptyArray;
  *        <td><tt>[a-e][i-u]</tt></td></tr>
  *      <tr><th>5&nbsp;&nbsp;&nbsp;&nbsp;</th>
  *        <td>Intersection</td>
- *        <td><tt>[a-z&&[aeiou]]</tt></td></tr>
+ *        <td>{@code [a-z&&[aeiou]]}</td></tr>
  *    </table></blockquote>
  *
  *    <p> Note that a different set of metacharacters are in effect inside
@@ -428,8 +446,7 @@ import libcore.util.EmptyArray;
  *    character class, while the expression <tt>-</tt> becomes a range
  *    forming metacharacter.
  *
- * <a name="lt">
- * <h4> Line terminators </h4>
+ * <h3><a name="lt">Line terminators</a></h3>
  *
  * <p> A <i>line terminator</i> is a one- or two-character sequence that marks
  * the end of a line of the input character sequence.  The following are
@@ -464,11 +481,9 @@ import libcore.util.EmptyArray;
  * except at the end of input. When in {@link #MULTILINE} mode <tt>$</tt>
  * matches just before a line terminator or the end of the input sequence.
  *
- * <a name="cg">
- * <h4> Groups and capturing </h4>
+ * <h3><a name="cg">Groups and capturing</a></h3>
  *
- * <a name="gnumber">
- * <h5> Group number </h5>
+ * <h4><a name="gnumber">Group number</a></h4>
  * <p> Capturing groups are numbered by counting their opening parentheses from
  * left to right.  In the expression <tt>((A)(B(C)))</tt>, for example, there
  * are four such groups: </p>
@@ -491,9 +506,9 @@ import libcore.util.EmptyArray;
  * subsequence may be used later in the expression, via a back reference, and
  * may also be retrieved from the matcher once the match operation is complete.
  *
- * <a name="groupname">
- * <h5> Group name </h5>
- * <p>A capturing group can also be assigned a "name", a <tt>named-capturing group</tt>,
+ * <h4><a name="groupname">Group name</a></h4>
+ * <p>The constructs and APIs are available since API level 26. A capturing group
+ * can also be assigned a "name", a <tt>named-capturing group</tt>,
  * and then be back-referenced later by the "name". Group names are composed of
  * the following characters. The first character must be a <tt>letter</tt>.
  *
@@ -521,7 +536,7 @@ import libcore.util.EmptyArray;
  * that do not capture text and do not count towards the group total, or
  * <i>named-capturing</i> group.
  *
- * <h4> Unicode support </h4>
+ * <h3> Unicode support </h3>
  *
  * <p> This class is in conformance with Level 1 of <a
  * href="http://www.unicode.org/reports/tr18/"><i>Unicode Technical
@@ -552,18 +567,18 @@ import libcore.util.EmptyArray;
  * <p>
  * Scripts, blocks, categories and binary properties can be used both inside
  * and outside of a character class.
- * <a name="usc">
+ *
  * <p>
- * <b>Scripts</b> are specified either with the prefix {@code Is}, as in
+ * <b><a name="usc">Scripts</a></b> are specified either with the prefix {@code Is}, as in
  * {@code IsHiragana}, or by using  the {@code script} keyword (or its short
  * form {@code sc})as in {@code script=Hiragana} or {@code sc=Hiragana}.
  * <p>
  * The script names supported by <code>Pattern</code> are the valid script names
  * accepted and defined by
  * {@link java.lang.Character.UnicodeScript#forName(String) UnicodeScript.forName}.
- * <a name="ubc">
+ *
  * <p>
- * <b>Blocks</b> are specified with the prefix {@code In}, as in
+ * <b><a name="ubc">Blocks</a></b> are specified with the prefix {@code In}, as in
  * {@code InMongolian}, or by using the keyword {@code block} (or its short
  * form {@code blk}) as in {@code block=Mongolian} or {@code blk=Mongolian}.
  * <p>
@@ -571,8 +586,8 @@ import libcore.util.EmptyArray;
  * accepted and defined by
  * {@link java.lang.Character.UnicodeBlock#forName(String) UnicodeBlock.forName}.
  * <p>
- * <a name="ucc">
- * <b>Categories</b> may be specified with the optional prefix {@code Is}:
+ *
+ * <b><a name="ucc">Categories</a></b> may be specified with the optional prefix {@code Is}:
  * Both {@code \p{L}} and {@code \p{IsL}} denote the category of Unicode
  * letters. Same as scripts and blocks, categories can also be specified
  * by using the keyword {@code general_category} (or its short form
@@ -584,8 +599,8 @@ import libcore.util.EmptyArray;
  * {@link java.lang.Character Character} class. The category names are those
  * defined in the Standard, both normative and informative.
  * <p>
- * <a name="ubpc">
- * <b>Binary properties</b> are specified with the prefix {@code Is}, as in
+ *
+ * <b><a name="ubpc">Binary properties</a></b> are specified with the prefix {@code Is}, as in
  * {@code IsAlphabetic}. The supported binary properties by <code>Pattern</code>
  * are
  * <ul>
@@ -600,22 +615,21 @@ import libcore.util.EmptyArray;
  *   <li> White_Space
  *   <li> Digit
  *   <li> Hex_Digit
+ *   <li> Join_Control
  *   <li> Noncharacter_Code_Point
  *   <li> Assigned
  * </ul>
-
-
  * <p>
- * <b>Predefined Character classes</b> and <b>POSIX character classes</b> are in
- * conformance with the recommendation of <i>Annex C: Compatibility Properties</i>
+ * The following <b>Predefined Character classes</b> and <b>POSIX character classes</b>
+ * are in conformance with the recommendation of <i>Annex C: Compatibility Properties</i>
  * of <a href="http://www.unicode.org/reports/tr18/"><i>Unicode Regular Expression
  * </i></a>.
- * <p>
+ *
  * <table border="0" cellpadding="1" cellspacing="0"
  *  summary="predefined and posix character classes in Unicode mode">
  * <tr align="left">
- * <th bgcolor="#CCCCFF" align="left" id="classes">Classes</th>
- * <th bgcolor="#CCCCFF" align="left" id="matches">Matches</th>
+ * <th align="left" id="predef_classes">Classes</th>
+ * <th align="left" id="predef_matches">Matches</th>
  *</tr>
  * <tr><td><tt>\p{Lower}</tt></td>
  *     <td>A lowercase character:<tt>\p{IsLowercase}</tt></td></tr>
@@ -634,9 +648,9 @@ import libcore.util.EmptyArray;
  * <tr><td><tt>\p{Graph}</tt></td>
  *     <td>A visible character: <tt>[^\p{IsWhite_Space}\p{gc=Cc}\p{gc=Cs}\p{gc=Cn}]</tt></td></tr>
  * <tr><td><tt>\p{Print}</tt></td>
- *     <td>A printable character: <tt>[\p{Graph}\p{Blank}&&[^\p{Cntrl}]]</tt></td></tr>
+ *     <td>A printable character: {@code [\p{Graph}\p{Blank}&&[^\p{Cntrl}]]}</td></tr>
  * <tr><td><tt>\p{Blank}</tt></td>
- *     <td>A space or a tab: <tt>[\p{IsWhite_Space}&&[^\p{gc=Zl}\p{gc=Zp}\x0a\x0b\x0c\x0d\x85]]</tt></td></tr>
+ *     <td>A space or a tab: {@code [\p{IsWhite_Space}&&[^\p{gc=Zl}\p{gc=Zp}\x0a\x0b\x0c\x0d\x85]]}</td></tr>
  * <tr><td><tt>\p{Cntrl}</tt></td>
  *     <td>A control character: <tt>\p{gc=Cc}</tt></td></tr>
  * <tr><td><tt>\p{XDigit}</tt></td>
@@ -652,7 +666,7 @@ import libcore.util.EmptyArray;
  * <tr><td><tt>\S</tt></td>
  *     <td>A non-whitespace character: <tt>[^\s]</tt></td></tr>
  * <tr><td><tt>\w</tt></td>
- *     <td>A word character: <tt>[\p{Alpha}\p{gc=Mn}\p{gc=Me}\p{gc=Mc}\p{Digit}\p{gc=Pc}]</tt></td></tr>
+ *     <td>A word character: <tt>[\p{Alpha}\p{gc=Mn}\p{gc=Me}\p{gc=Mc}\p{Digit}\p{gc=Pc}\p{IsJoin_Control}]</tt></td></tr>
  * <tr><td><tt>\W</tt></td>
  *     <td>A non-word character: <tt>[^\w]</tt></td></tr>
  * </table>
@@ -661,9 +675,9 @@ import libcore.util.EmptyArray;
  * Categories that behave like the java.lang.Character
  * boolean is<i>methodname</i> methods (except for the deprecated ones) are
  * available through the same <tt>\p{</tt><i>prop</i><tt>}</tt> syntax where
- * the specified property has the name <tt>java<i>methodname</i></tt>.
+ * the specified property has the name <tt>java<i>methodname</i></tt></a>.
  *
- * <h4> Comparison to Perl 5 </h4>
+ * <h3> Comparison to Perl 5 </h3>
  *
  * <p>The <code>Pattern</code> engine performs traditional NFA-based matching
  * with ordered alternation as occurs in Perl 5.
@@ -672,12 +686,6 @@ import libcore.util.EmptyArray;
  *
  * <ul>
  *    <li><p> Predefined character classes (Unicode character)
- *    <p><tt>\h&nbsp;&nbsp;&nbsp;&nbsp;</tt>A horizontal whitespace
- *    <p><tt>\H&nbsp;&nbsp;&nbsp;&nbsp;</tt>A non horizontal whitespace
- *    <p><tt>\v&nbsp;&nbsp;&nbsp;&nbsp;</tt>A vertical whitespace
- *    <p><tt>\V&nbsp;&nbsp;&nbsp;&nbsp;</tt>A non vertical whitespace
- *    <p><tt>\R&nbsp;&nbsp;&nbsp;&nbsp;</tt>Any Unicode linebreak sequence
- *    <tt>\u005cu000D\u005cu000A|[\u005cu000A\u005cu000B\u005cu000C\u005cu000D\u005cu0085\u005cu2028\u005cu2029]</tt>
  *    <p><tt>\X&nbsp;&nbsp;&nbsp;&nbsp;</tt>Match Unicode
  *    <a href="http://www.unicode.org/reports/tr18/#Default_Grapheme_Clusters">
  *    <i>extended grapheme cluster</i></a>
@@ -764,7 +772,8 @@ import libcore.util.EmptyArray;
  * @spec        JSR-51
  */
 
-public final class Pattern implements java.io.Serializable
+public final class Pattern
+        implements java.io.Serializable
 {
 
     /**
@@ -892,9 +901,10 @@ public final class Pattern implements java.io.Serializable
      */
     public static final int CANON_EQ = 0x80;
 
+    // Android-changed: Android always uses unicode character classes.
     /**
      * Enables the Unicode version of <i>Predefined character classes</i> and
-     * <i>POSIX character classes</i> as eefined by <a href="http://www.unicode.org/reports/tr18/"><i>Unicode Technical
+     * <i>POSIX character classes</i> as defined by <a href="http://www.unicode.org/reports/tr18/"><i>Unicode Technical
      * Standard #18: Unicode Regular Expression</i></a>
      * <i>Annex C: Compatibility Properties</i>.
      * <p>
@@ -919,6 +929,8 @@ public final class Pattern implements java.io.Serializable
      *
      * @serial
      */
+    // Android-changed: reimplement matching logic natively via ICU.
+    // private String pattern;
     private final String pattern;
 
     /**
@@ -926,22 +938,25 @@ public final class Pattern implements java.io.Serializable
      *
      * @serial
      */
+    // Android-changed: reimplement matching logic natively via ICU.
+    // private int flags;
     private final int flags;
 
+    /* J2ObjC added: platform-specific implementation. */
     transient long address;
 
-    /* J2ObjC removed.
-    private static final NativeAllocationRegistry registry = new NativeAllocationRegistry(
-            Pattern.class.getClassLoader(), getNativeFinalizer(), nativeSize());
-    */
-
+    // BEGIN Android-changed: reimplement matching logic natively via ICU.
+    // We only need some tie-ins to native memory, instead of a large number
+    // of fields on the .java side.
+    /* package */ /* J2ObjC removed: transient PatternNative nativePattern; */
+    // END Android-changed: reimplement matching logic natively via ICU.
 
     /**
-     * Compiles the given regular expression into a pattern.  </p>
+     * Compiles the given regular expression into a pattern.
      *
      * @param  regex
      *         The expression to be compiled
-     *
+     * @return the given regular expression compiled into a pattern
      * @throws  PatternSyntaxException
      *          If the expression's syntax is invalid
      */
@@ -951,7 +966,7 @@ public final class Pattern implements java.io.Serializable
 
     /**
      * Compiles the given regular expression into a pattern with the given
-     * flags.  </p>
+     * flags.
      *
      * @param  regex
      *         The expression to be compiled
@@ -963,6 +978,7 @@ public final class Pattern implements java.io.Serializable
      *         {@link #LITERAL}, {@link #UNICODE_CHARACTER_CLASS}
      *         and {@link #COMMENTS}
      *
+     * @return the given regular expression compiled into a pattern with the given flags
      * @throws  IllegalArgumentException
      *          If bit values other than those corresponding to the defined
      *          match flags are set in <tt>flags</tt>
@@ -970,13 +986,12 @@ public final class Pattern implements java.io.Serializable
      * @throws  PatternSyntaxException
      *          If the expression's syntax is invalid
      */
-    public static Pattern compile(String regex, int flags) throws PatternSyntaxException {
+    public static Pattern compile(String regex, int flags) {
         return new Pattern(regex, flags);
     }
 
     /**
      * Returns the regular expression from which this pattern was compiled.
-     * </p>
      *
      * @return  The source of this pattern
      */
@@ -998,7 +1013,6 @@ public final class Pattern implements java.io.Serializable
 
     /**
      * Creates a matcher that will match the given input against this pattern.
-     * </p>
      *
      * @param  input
      *         The character sequence to be matched
@@ -1006,12 +1020,21 @@ public final class Pattern implements java.io.Serializable
      * @return  A new matcher for this pattern
      */
     public Matcher matcher(CharSequence input) {
+        // Android-removed: Pattern is eagerly compiled() upon construction.
+        /*
+        if (!compiled) {
+            synchronized(this) {
+                if (!compiled)
+                    compile();
+            }
+        }
+        */
         Matcher m = new Matcher(this, input);
         return m;
     }
 
     /**
-     * Returns this pattern's match flags.  </p>
+     * Returns this pattern's match flags.
      *
      * @return  The match flags specified when this pattern was compiled
      */
@@ -1041,7 +1064,7 @@ public final class Pattern implements java.io.Serializable
      *
      * @param  input
      *         The character sequence to be matched
-     *
+     * @return whether or not the regular expression matches on the input
      * @throws  PatternSyntaxException
      *          If the expression's syntax is invalid
      */
@@ -1054,8 +1077,11 @@ public final class Pattern implements java.io.Serializable
         return matches(regex, input.toString());
     }
 
+    /* J2ObjC added: platform-specific implementation */
     static native boolean matches(String regularExpression, String input);
 
+    // Android-changed: Adopt split() behavior change only for apps targeting API > 28.
+    // http://b/109659282#comment7
     /**
      * Splits the given input sequence around matches of this pattern.
      *
@@ -1063,9 +1089,15 @@ public final class Pattern implements java.io.Serializable
      * input sequence that is terminated by another subsequence that matches
      * this pattern or is terminated by the end of the input sequence.  The
      * substrings in the array are in the order in which they occur in the
-     * input.  If this pattern does not match any subsequence of the input then
+     * input. If this pattern does not match any subsequence of the input then
      * the resulting array has just one element, namely the input sequence in
      * string form.
+     *
+     * <p> When there is a positive-width match at the beginning of the input
+     * sequence then an empty leading substring is included at the beginning
+     * of the resulting array. A zero-width match at the beginning however
+     * can only produce such an empty leading substring for apps running on or
+     * targeting API versions <= 28.
      *
      * <p> The <tt>limit</tt> parameter controls the number of times the
      * pattern is applied and therefore affects the length of the resulting
@@ -1083,9 +1115,9 @@ public final class Pattern implements java.io.Serializable
      *
      * <blockquote><table cellpadding=1 cellspacing=0
      *              summary="Split examples showing regex, limit, and result">
-     * <tr><th><P align="left"><i>Regex&nbsp;&nbsp;&nbsp;&nbsp;</i></th>
-     *     <th><P align="left"><i>Limit&nbsp;&nbsp;&nbsp;&nbsp;</i></th>
-     *     <th><P align="left"><i>Result&nbsp;&nbsp;&nbsp;&nbsp;</i></th></tr>
+     * <tr><th align="left"><i>Regex&nbsp;&nbsp;&nbsp;&nbsp;</i></th>
+     *     <th align="left"><i>Limit&nbsp;&nbsp;&nbsp;&nbsp;</i></th>
+     *     <th align="left"><i>Result&nbsp;&nbsp;&nbsp;&nbsp;</i></th></tr>
      * <tr><td align=center>:</td>
      *     <td align=center>2</td>
      *     <td><tt>{ "boo", "and:foo" }</tt></td></tr>
@@ -1106,7 +1138,6 @@ public final class Pattern implements java.io.Serializable
      *     <td><tt>{ "b", "", ":and:f" }</tt></td></tr>
      * </table></blockquote>
      *
-     *
      * @param  input
      *         The character sequence to be split
      *
@@ -1117,11 +1148,12 @@ public final class Pattern implements java.io.Serializable
      *          around matches of this pattern
      */
     public String[] split(CharSequence input, int limit) {
+        // BEGIN Android-added: fastSplit() to speed up simple cases.
         String[] fast = fastSplit(pattern, input.toString(), limit);
         if (fast != null) {
             return fast;
         }
-
+        // END Android-added: fastSplit() to speed up simple cases.
         int index = 0;
         boolean matchLimited = limit > 0;
         ArrayList<String> matchList = new ArrayList<>();
@@ -1130,12 +1162,25 @@ public final class Pattern implements java.io.Serializable
         // Add segments before each match found
         while(m.find()) {
             if (!matchLimited || matchList.size() < limit - 1) {
+                /* J2ObjC removed.
+                if (index == 0 && index == m.start() && m.start() == m.end()) {
+                    // no empty leading substring included for zero-width match
+                    // at the beginning of the input char sequence.
+                    // BEGIN Android-changed: split() compat behavior for apps targeting <= 28.
+                    // continue;
+                    int targetSdkVersion = VMRuntime.getRuntime().getTargetSdkVersion();
+                    if (targetSdkVersion > 28) {
+                        continue;
+                    }
+                    // END Android-changed: split() compat behavior for apps targeting <= 28.
+                }
+                */
                 String match = input.subSequence(index, m.start()).toString();
                 matchList.add(match);
                 index = m.end();
             } else if (matchList.size() == limit - 1) { // last one
                 String match = input.subSequence(index,
-                                                 input.length()).toString();
+                        input.length()).toString();
                 matchList.add(match);
                 index = m.end();
             }
@@ -1158,6 +1203,7 @@ public final class Pattern implements java.io.Serializable
         return matchList.subList(0, resultSize).toArray(result);
     }
 
+    // BEGIN Android-added: fastSplit() to speed up simple cases.
     private static final String FASTSPLIT_METACHARACTERS = "\\?*+[](){}^$.|";
 
     /**
@@ -1236,6 +1282,7 @@ public final class Pattern implements java.io.Serializable
         result[separatorCount] = input.substring(begin, lastPartEnd);
         return result;
     }
+    // END Android-added: fastSplit() to speed up simple cases.
 
     /**
      * Splits the given input sequence around matches of this pattern.
@@ -1250,8 +1297,8 @@ public final class Pattern implements java.io.Serializable
      *
      * <blockquote><table cellpadding=1 cellspacing=0
      *              summary="Split examples showing regex and result">
-     * <tr><th><P align="left"><i>Regex&nbsp;&nbsp;&nbsp;&nbsp;</i></th>
-     *     <th><P align="left"><i>Result</i></th></tr>
+     * <tr><th align="left"><i>Regex&nbsp;&nbsp;&nbsp;&nbsp;</i></th>
+     *     <th align="left"><i>Result</i></th></tr>
      * <tr><td align=center>:</td>
      *     <td><tt>{ "boo", "and", "foo" }</tt></td></tr>
      * <tr><td align=center>o</td>
@@ -1307,19 +1354,51 @@ public final class Pattern implements java.io.Serializable
      * string is read in and the object tree is recompiled from it.
      */
     private void readObject(java.io.ObjectInputStream s)
-        throws java.io.IOException, ClassNotFoundException {
+            throws java.io.IOException, ClassNotFoundException {
 
         // Read in all fields
         s.defaultReadObject();
+
+        // Android-removed: reimplement matching logic natively via ICU.
+        // // Initialize counts
+        // capturingGroupCount = 1;
+        // localCount = 0;
+
+        // Android-changed: Pattern is eagerly compiled() upon construction.
+        /*
+        // if length > 0, the Pattern is lazily compiled
+        compiled = false;
+        if (pattern.length() == 0) {
+            root = new Start(lastAccept);
+            matchRoot = lastAccept;
+            compiled = true;
+        }
+        */
         compile();
     }
 
+    // Android-changed: reimplement matching logic natively via ICU.
+    // Dropped documentation reference to Start and LastNode implementation
+    // details which do not apply on Android.
     /**
      * This private constructor is used to create all Patterns. The pattern
      * string and match flags are all that is needed to completely describe
      * a Pattern.
      */
     private Pattern(String p, int f) {
+        pattern = p;
+        flags = f;
+
+        // BEGIN Android-changed: Only specific flags are supported.
+        /*
+        // to use UNICODE_CASE if UNICODE_CHARACTER_CLASS present
+        if ((flags & UNICODE_CHARACTER_CLASS) != 0)
+            flags |= UNICODE_CASE;
+
+        // Reset group index count
+        capturingGroupCount = 1;
+        localCount = 0;
+        */
         if ((f & CANON_EQ) != 0) {
             throw new UnsupportedOperationException("CANON_EQ flag not supported");
         }
@@ -1327,11 +1406,23 @@ public final class Pattern implements java.io.Serializable
         if ((f & ~supportedFlags) != 0) {
             throw new IllegalArgumentException("Unsupported flags: " + (f & ~supportedFlags));
         }
-        this.pattern = p;
-        this.flags = f;
+        // END Android-changed: Only specific flags are supported.
+
+        // BEGIN Android-removed: Pattern is eagerly compiled() upon construction.
+        // if (pattern.length() > 0) {
+        // END Android-removed: Pattern is eagerly compiled() upon construction.
         compile();
+        // Android-removed: reimplement matching logic natively via ICU.
+        /*
+        } else {
+            root = new Start(lastAccept);
+            matchRoot = lastAccept;
+        }
+        */
     }
 
+    // BEGIN Android-changed: reimplement matching logic natively via ICU.
+    // Use native implementation instead of > 3000 lines of helper methods.
     private void compile() throws PatternSyntaxException {
         if (pattern == null) {
             throw new NullPointerException("pattern == null");
@@ -1345,16 +1436,13 @@ public final class Pattern implements java.io.Serializable
         // These are the flags natively supported by ICU.
         // They even have the same value in native code.
         int icuFlags = flags & (CASE_INSENSITIVE | COMMENTS | MULTILINE | DOTALL | UNIX_LINES);
-        address = compileImpl(icuPattern, icuFlags);
-        /* J2ObjC removed.
-        registry.registerNativeAllocation(this, address);
-        */
-    }
 
-    /* J2ObjC removed.
-    private static native long getNativeFinalizer();
-    private static native int nativeSize();
-    */
+        /* J2ObjC modified: platform-specific implementation.
+        nativePattern = PatternNative.create(icuPattern, icuFlags);
+        */
+        address = compileImpl(icuPattern, icuFlags);
+    }
+    // END Android-changed: reimplement matching logic natively via ICU.
 
     /**
      * Creates a predicate which can be used to match a string.
@@ -1442,7 +1530,7 @@ public final class Pattern implements java.io.Serializable
                     if (!nextElement.isEmpty()) {
                         return true;
                     } else if (current > 0) { // no empty leading substring for zero-width
-                                              // match at the beginning of the input
+                        // match at the beginning of the input
                         emptyElementCount++;
                     }
                 }

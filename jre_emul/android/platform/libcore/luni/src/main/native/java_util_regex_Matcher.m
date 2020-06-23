@@ -128,6 +128,21 @@ jlong Java_java_util_regex_Matcher_openImpl(JNIEnv *env, jclass cls, jlong patte
   return (jlong)result;
 }
 
+jint Java_java_util_regex_Matcher_getMatchedGroupIndexImpl(
+    JNIEnv *env, jclass cls, jlong addr, jstring name) {
+  UErrorCode status = U_ZERO_ERROR;
+  jint nameLength = (jint)[name length];
+  jint result = uregex_groupNumberFromName((URegularExpression *)addr, (UChar *)name, nameLength, &status);
+  if (U_SUCCESS(status)) {
+    return result;
+  }
+  if (status == U_REGEX_INVALID_CAPTURE_GROUP_NAME) {
+    return -1;
+  }
+  maybeThrowIcuException("uregex_groupNumberFromName", status);
+  return -1;
+}
+
 jboolean Java_java_util_regex_Matcher_requireEndImpl(JNIEnv *env, jclass cls, jlong addr) {
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_requireEnd((URegularExpression *)addr, &status);
