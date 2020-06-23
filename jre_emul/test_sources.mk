@@ -716,6 +716,7 @@ TEST_SOURCES := \
     org/apache/harmony/crypto/tests/javax/crypto/spec/RC5ParameterSpecTest.java \
     org/apache/harmony/crypto/tests/javax/crypto/spec/SecretKeySpecTest.java \
     org/apache/harmony/nio/tests/java/nio/channels/spi/SelectorProviderTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/MatcherTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
@@ -1016,6 +1017,8 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/UnknownFormatConversionExceptionTest.java \
     org/apache/harmony/tests/java/util/UnknownFormatFlagsExceptionTest.java \
     org/apache/harmony/tests/java/util/VectorTest.java \
+    org/apache/harmony/tests/java/util/regex/Pattern2Test.java \
+    org/apache/harmony/tests/java/util/regex/PatternErrorTest.java \
     org/apache/harmony/tests/java/util/zip/Adler32Test.java \
     org/apache/harmony/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/tests/java/util/zip/CheckedInputStreamTest.java \

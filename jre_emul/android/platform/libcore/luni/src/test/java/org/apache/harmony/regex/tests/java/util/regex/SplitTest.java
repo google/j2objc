@@ -1,4 +1,25 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.apache.harmony.regex.tests.java.util.regex;
+
+import java.util.Arrays;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import junit.framework.TestCase;
 import java.util.regex.*;
@@ -7,7 +28,9 @@ import java.util.regex.*;
  * TODO Type description
  *
  */
+@SuppressWarnings("nls")
 public class SplitTest extends TestCase {
+
     public void testSimple() {
         Pattern p = Pattern.compile("/");
         String[] results = p.split("have/you/done/it/right");
@@ -15,6 +38,7 @@ public class SplitTest extends TestCase {
         assertArraysEqual(expected, results);
     }
 
+    @SuppressWarnings("InvalidPatternSyntax")
     public void testEmptySplits() {
         // Trailing empty matches are removed.
         assertArraysEqual(new String[0], "hello".split("."));
@@ -151,49 +175,26 @@ public class SplitTest extends TestCase {
         assertEquals("dle z", tokens[2]);
     }
 
-    // b/12096792: empty pattern is invalid in ICU 51.
-//    public void testSplit2() {
-//        Pattern p = Pattern.compile("");
-//        String s[];
-//        s = p.split("a", -1);
-//        assertEquals(3, s.length);
-//        assertEquals("", s[0]);
-//        assertEquals("a", s[1]);
-//        assertEquals("", s[2]);
-//
-//        s = p.split("", -1);
-//        assertEquals(1, s.length);
-//        assertEquals("", s[0]);
-//
-//        s = p.split("abcd", -1);
-//        assertEquals(6, s.length);
-//        assertEquals("", s[0]);
-//        assertEquals("a", s[1]);
-//        assertEquals("b", s[2]);
-//        assertEquals("c", s[3]);
-//        assertEquals("d", s[4]);
-//        assertEquals("", s[5]);
-//
-//        // Regression test for Android
-//        assertEquals("GOOG,23,500".split("|").length, 12);
-//    }
+    /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+    public void testSplit2() {
+        Pattern p = Pattern.compile("");
+        assertEquals(Arrays.asList("a", ""), Arrays.asList(p.split("a", -1)));
+        assertEquals(Arrays.asList(""), Arrays.asList(p.split("", -1)));
+        assertEquals(Arrays.asList("a", "b", "c", "d", ""), Arrays.asList(p.split("abcd", -1)));
 
+        // Regression test for Android
+        assertEquals("GOOG,23,500".split("|").length, 11);
+    }
+    */
 
-    // b/12096792: empty pattern is invalid in ICU 51.
-//    public void testSplitSupplementaryWithEmptyString() {
-//
-//        /*
-//         * See http://www.unicode.org/reports/tr18/#Supplementary_Characters
-//         * We have to treat text as code points not code units.
-//         */
-//        Pattern p = Pattern.compile("");
-//        String s[];
-//        s = p.split("a\ud869\uded6b", -1);
-//        assertEquals(5, s.length);
-//        assertEquals("", s[0]);
-//        assertEquals("a", s[1]);
-//        assertEquals("\ud869\uded6", s[2]);
-//        assertEquals("b", s[3]);
-//        assertEquals("", s[4]);
-//    }
+    /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+    public void testSplitSupplementaryWithEmptyString() {
+        // See http://www.unicode.org/reports/tr18/#Supplementary_Characters
+        // We have to treat text as code points not code units.
+        Pattern p = Pattern.compile("");
+        String[] s = p.split("a\ud869\uded6b", -1);
+        assertEquals(Arrays.asList("a", "\ud869\uded6", "b", ""), Arrays.asList(s));
+    }
+    */
+
 }
