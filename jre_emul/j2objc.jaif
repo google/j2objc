@@ -62,6 +62,8 @@ class RuleBasedBreakIterator$DictionaryCache: @WeakOuter
 package com.google.j2objc.net:
 class ResourceDataStreamHandler: @ReflectionSupport(FULL)
 
+package com.google.j2objc.security: @ReflectionSupport(FULL)
+
 package java.io:
 class FileDescriptor: @ReflectionSupport(FULL)
 
