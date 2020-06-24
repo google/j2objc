@@ -271,7 +271,7 @@ public abstract class X509CRL extends CRL implements X509Extension {
     public abstract int getVersion();
 
     /**
-     * <strong>Denigrated</strong>, replaced by {@linkplain
+     * <strong>Deprecated</strong>, replaced by {@linkplain
      * #getIssuerX500Principal()}. This method returns the {@code issuer}
      * as an implementation specific Principal object, which should not be
      * relied upon by portable code.

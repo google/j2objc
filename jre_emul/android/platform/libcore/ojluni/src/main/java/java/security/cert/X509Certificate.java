@@ -193,7 +193,7 @@ implements X509Extension {
     public abstract BigInteger getSerialNumber();
 
     /**
-     * <strong>Denigrated</strong>, replaced by {@linkplain
+     * <strong>Deprecated</strong>, replaced by {@linkplain
      * #getIssuerX500Principal()}. This method returns the {@code issuer}
      * as an implementation specific Principal object, which should not be
      * relied upon by portable code.
@@ -251,7 +251,7 @@ implements X509Extension {
     }
 
     /**
-     * <strong>Denigrated</strong>, replaced by {@linkplain
+     * <strong>Deprecated</strong>, replaced by {@linkplain
      * #getSubjectX500Principal()}. This method returns the {@code subject}
      * as an implementation specific Principal object, which should not be
      * relied upon by portable code.

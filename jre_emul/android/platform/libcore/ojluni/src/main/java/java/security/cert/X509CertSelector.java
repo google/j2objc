@@ -204,7 +204,7 @@ public class X509CertSelector implements CertSelector {
     }
 
     /**
-     * <strong>Denigrated</strong>, use {@linkplain #setIssuer(X500Principal)}
+     * <strong>Deprecated</strong>, use {@linkplain #setIssuer(X500Principal)}
      * or {@linkplain #setIssuer(byte[])} instead. This method should not be
      * relied on as it can fail to match some certificates because of a loss of
      * encoding information in the
@@ -296,7 +296,7 @@ public class X509CertSelector implements CertSelector {
     }
 
     /**
-     * <strong>Denigrated</strong>, use {@linkplain #setSubject(X500Principal)}
+     * <strong>Deprecated</strong>, use {@linkplain #setSubject(X500Principal)}
      * or {@linkplain #setSubject(byte[])} instead. This method should not be
      * relied on as it can fail to match some certificates because of a loss of
      * encoding information in the RFC 2253 String form of some distinguished
@@ -1319,7 +1319,7 @@ public class X509CertSelector implements CertSelector {
     }
 
     /**
-     * <strong>Denigrated</strong>, use {@linkplain #getIssuer()} or
+     * <strong>Deprecated</strong>, use {@linkplain #getIssuer()} or
      * {@linkplain #getIssuerAsBytes()} instead. This method should not be
      * relied on as it can fail to match some certificates because of a loss of
      * encoding information in the RFC 2253 String form of some distinguished
@@ -1378,7 +1378,7 @@ public class X509CertSelector implements CertSelector {
     }
 
     /**
-     * <strong>Denigrated</strong>, use {@linkplain #getSubject()} or
+     * <strong>Deprecated</strong>, use {@linkplain #getSubject()} or
      * {@linkplain #getSubjectAsBytes()} instead. This method should not be
      * relied on as it can fail to match some certificates because of a loss of
      * encoding information in the RFC 2253 String form of some distinguished

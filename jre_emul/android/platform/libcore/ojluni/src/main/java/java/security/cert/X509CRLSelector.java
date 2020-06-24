@@ -224,7 +224,7 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * <strong>Denigrated</strong>, use
+     * <strong>Deprecated</strong>, use
      * {@linkplain #addIssuer(X500Principal)} or
      * {@linkplain #addIssuerName(byte[])} instead. This method should not be
      * relied on as it can fail to match some CRLs because of a loss of
