@@ -17,11 +17,11 @@
 package libcore.io;
 
 import android.system.ErrnoException;
+import android.system.Int32Ref;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 import java.nio.NioUtils;
 
-import libcore.util.MutableInt;
 import libcore.util.MutableLong;
 
 /*-[
@@ -294,7 +294,7 @@ public final class Posix implements Os {
     return name ? [NSString stringWithUTF8String:name] : nil;
   ]-*/;
 
-  public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt javaArg)
+  public native int ioctlInt(FileDescriptor fd, int cmd, Int32Ref javaArg)
       throws ErrnoException /*-[
     int arg = javaArg->value_;
     int rc = TEMP_FAILURE_RETRY(ioctl([fd getInt$], cmd, &arg));

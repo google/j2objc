@@ -71,6 +71,7 @@ NATIVE_JRE_SOURCES_CORE = \
 # TypeKind is needed by the Checker Framework (https://checkerframework.org/).
 JAVA_PUBLIC_SOURCES_CORE = \
   android/system/ErrnoException.java \
+  android/system/Int32Ref.java \
   com/google/j2objc/util/AutoreleasePool.java \
   com/google/j2objc/util/CurrencyNumericCodes.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
