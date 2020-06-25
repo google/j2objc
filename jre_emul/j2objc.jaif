@@ -62,6 +62,8 @@ class RuleBasedBreakIterator$DictionaryCache: @WeakOuter
 package com.google.j2objc.net:
 class ResourceDataStreamHandler: @ReflectionSupport(FULL)
 
+package com.google.j2objc.net.ssl: @ReflectionSupport(FULL)
+
 package com.google.j2objc.security: @ReflectionSupport(FULL)
 
 package java.io:
@@ -137,5 +139,8 @@ package sun.nio.ch:
 class DatagramChannelImpl: @ReflectionSupport(FULL)
 class DatagramSocketAdaptor$DummyDatagramSocket: @ReflectionSupport(FULL)
 class FileDescriptorHolderSocketImpl: @ReflectionSupport(FULL)
+
+package sun.security.provider:
+class X509Factory: @ReflectionSupport(FULL)
 
 package sun.security.x509: @ReflectionSupport(FULL)
