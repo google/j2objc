@@ -224,7 +224,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (options.useARC() || expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
+    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
       return;
     }
     FunctionElement element =

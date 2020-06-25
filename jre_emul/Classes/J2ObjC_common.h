@@ -73,6 +73,7 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
+id JreRetainedLocalValue(id value);
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
@@ -103,12 +104,6 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     id *pIvar, NS_RELEASES_ARGUMENT id value) {
   [*pIvar autorelease];
   return *pIvar = value;
-}
-#endif
-
-#if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
-  return [[value retain] autorelease];
 }
 #endif
 
