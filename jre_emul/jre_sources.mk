@@ -1661,6 +1661,7 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/jar/JarInputStream.java \
   java/util/jar/JarOutputStream.java \
   java/util/jar/Manifest.java \
+  java/util/jar/Pack200.java \
   java/util/zip/Adler32.java \
   java/util/zip/CRC32.java \
   java/util/zip/CheckedInputStream.java \
