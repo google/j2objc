@@ -625,6 +625,10 @@ TEST_SOURCES := \
     libcore/java/util/jar/OldJarInputStreamTest.java \
     libcore/java/util/jar/OldJarOutputStreamTest.java \
     libcore/java/util/jar/OldManifestTest.java \
+    libcore/java/util/jar/AttributesNameTest.java \
+    libcore/java/util/jar/AttributesTest.java \
+    libcore/java/util/jar/JarExceptionTest.java \
+    libcore/java/util/jar/JarOutputStreamTest.java \
     libcore/java/util/logging/OldErrorManagerTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
     libcore/java/util/logging/OldFormatterTest.java \
