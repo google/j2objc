@@ -29,7 +29,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.File;
 import java.io.IOException;
+/* J2ObjC removed.
 import java.beans.PropertyChangeListener;
+*/
 
 
 
@@ -594,9 +596,11 @@ public abstract class Pack200 {
          *             can poll the value of the {@link #PROGRESS PROGRESS}
          *             property instead.
          */
+        /* J2ObjC removed: avoid PropertyChangeListener.
         @Deprecated
         default void addPropertyChangeListener(PropertyChangeListener listener) {
         }
+        */
 
         /**
          * Remove a listener for PropertyChange events, added by
@@ -616,9 +620,11 @@ public abstract class Pack200 {
          *             Java platform. This method will be removed in a future
          *             release.
          */
+        /* J2ObjC removed: avoid PropertyChangeListener.
         @Deprecated
         default void removePropertyChangeListener(PropertyChangeListener listener) {
         }
+        */
     }
 
     /**
@@ -753,9 +759,11 @@ public abstract class Pack200 {
          *             unpacker can poll the value of the {@link #PROGRESS
          *             PROGRESS} property instead.
          */
+        /* J2ObjC removed: avoid PropertyChangeListener.
         @Deprecated
         default void addPropertyChangeListener(PropertyChangeListener listener) {
         }
+        */
 
         /**
          * Remove a listener for PropertyChange events, added by
@@ -775,9 +783,11 @@ public abstract class Pack200 {
          *             Java platform. This method will be removed in a future
          *             release.
          */
+        /* J2ObjC removed: avoid PropertyChangeListener.
         @Deprecated
         default void removePropertyChangeListener(PropertyChangeListener listener) {
         }
+        */
     }
 
     // Private stuff....

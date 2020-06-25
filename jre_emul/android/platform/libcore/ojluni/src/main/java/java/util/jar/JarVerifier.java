@@ -146,7 +146,7 @@ class JarVerifier {
                     return;
                 }
 
-                /* J2ObjC modified: platform-specific implementation to avoid importing sun.misc.JarIndex */
+                /* J2ObjC modified: platform-specific implementation to avoid importing JarIndex */
                 if (uname.equals(JarFile.MANIFEST_NAME) ||
                         uname.equals(INDEX_NAME)) {
                     return;
