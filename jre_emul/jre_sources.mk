@@ -1728,7 +1728,6 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   libcore/io/BufferIterator.java \
   libcore/net/url/JarHandler.java \
   libcore/net/url/JarURLConnectionImpl.java \
-  libcore/util/CountingOutputStream.java \
   sun/misc/ASCIICaseInsensitiveComparator.java \
   sun/security/timestamp/TimestampToken.java \
   sun/security/util/SignatureFileVerifier.java \
