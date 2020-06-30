@@ -1014,6 +1014,15 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/WatchKey.java \
   java/nio/file/WatchService.java \
   java/nio/file/Watchable.java \
+  java/nio/file/attribute/AclEntry.java \
+  java/nio/file/attribute/AclEntryFlag.java \
+  java/nio/file/attribute/AclEntryPermission.java \
+  java/nio/file/attribute/AclEntryType.java \
+  java/nio/file/attribute/AttributeView.java \
+  java/nio/file/attribute/GroupPrincipal.java \
+  java/nio/file/attribute/UserPrincipal.java \
+  java/nio/file/attribute/UserPrincipalLookupService.java \
+  java/nio/file/attribute/UserPrincipalNotFoundException.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 
