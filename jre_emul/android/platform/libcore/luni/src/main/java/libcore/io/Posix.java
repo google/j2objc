@@ -18,11 +18,10 @@ package libcore.io;
 
 import android.system.ErrnoException;
 import android.system.Int32Ref;
+import android.system.Int64Ref;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 import java.nio.NioUtils;
-
-import libcore.util.MutableLong;
 
 /*-[
 #include "BufferUtils.h"
@@ -554,7 +553,7 @@ public final class Posix implements Os {
     }
   ]-*/;
 
-  public native long sendfile(FileDescriptor outFd, FileDescriptor inFd, MutableLong inOffset,
+  public native long sendfile(FileDescriptor outFd, FileDescriptor inFd, Int64Ref inOffset,
       long byteCount) throws ErrnoException /*-[
     off_t offset = 0;
     off_t* offsetPtr = NULL;

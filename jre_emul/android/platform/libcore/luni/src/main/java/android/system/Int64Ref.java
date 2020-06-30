@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package libcore.util;
+package android.system;
 
-public final class MutableLong {
+import libcore.util.Objects;
+
+/**
+ * A signed 64bit integer reference suitable for passing to lower-level system calls.
+ */
+public class Int64Ref {
     public long value;
 
-    public MutableLong(long value) {
+    public Int64Ref(long value) {
         this.value = value;
+    }
+
+    @Override public String toString() {
+        return Objects.toString(this);
     }
 }

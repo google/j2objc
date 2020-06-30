@@ -72,6 +72,7 @@ NATIVE_JRE_SOURCES_CORE = \
 JAVA_PUBLIC_SOURCES_CORE = \
   android/system/ErrnoException.java \
   android/system/Int32Ref.java \
+  android/system/Int64Ref.java \
   com/google/j2objc/util/AutoreleasePool.java \
   com/google/j2objc/util/CurrencyNumericCodes.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
@@ -665,7 +666,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/BasicLruCache.java \
   libcore/util/EmptyArray.java \
   libcore/util/HexEncoding.java \
-  libcore/util/MutableLong.java \
   libcore/util/NonNull.java \
   libcore/util/NullFromTypeParam.java \
   libcore/util/Nullable.java \
