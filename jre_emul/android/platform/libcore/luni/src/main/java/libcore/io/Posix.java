@@ -741,5 +741,5 @@ public final class Posix implements Os {
 //  }
 //  private native int umaskImpl(int mask);
 //  public native void unsetenv(String name) throws ErrnoException;
-//  public native int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
+//  public native int waitpid(int pid, Int32Ref status, int options) throws ErrnoException;
 }

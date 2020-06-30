@@ -114,5 +114,5 @@ public interface Os {
 //    public void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //    public int umask(int mask);
 //    public void unsetenv(String name) throws ErrnoException;
-//    public int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
+//    public int waitpid(int pid, Int32Ref status, int options) throws ErrnoException;
 }
