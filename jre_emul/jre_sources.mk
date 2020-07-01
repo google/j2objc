@@ -306,6 +306,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
+  java/nio/file/attribute/FileTime.java \
   java/security/AccessControlContext.java \
   java/security/AccessController.java \
   java/security/AllPermission.java \
@@ -1727,7 +1728,6 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/zip/ZipOutputStream.java
 
 JAVA_PRIVATE_SOURCES_ZIP = \
-  com/google/j2objc/nio/file/attribute/FileTime.java \
   java/util/jar/JarVerifier.java \
   java/util/zip/ZStreamRef.java \
   java/util/zip/ZipCoder.java \

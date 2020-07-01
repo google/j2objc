@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package com.google.j2objc.nio.file.attribute;
+package java.nio.file.attribute;
 
 import java.util.concurrent.TimeUnit;
 
