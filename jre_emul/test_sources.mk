@@ -620,8 +620,12 @@ TEST_SOURCES := \
     libcore/java/util/jar/OldManifestTest.java \
     libcore/java/util/jar/AttributesNameTest.java \
     libcore/java/util/jar/AttributesTest.java \
+    libcore/java/util/jar/JarEntryTest.java \
     libcore/java/util/jar/JarExceptionTest.java \
+    libcore/java/util/jar/JarFileTest.java \
+    libcore/java/util/jar/JarInputStreamTest.java \
     libcore/java/util/jar/JarOutputStreamTest.java \
+    libcore/java/util/jar/ManifestTest.java \
     libcore/java/util/logging/OldErrorManagerTest.java \
     libcore/java/util/logging/OldFileHandlerTest.java \
     libcore/java/util/logging/OldFormatterTest.java \
@@ -1532,11 +1536,15 @@ ANDROID_TEST_RESOURCES_SRCS = \
     tests/resources/Broken_entry_data.jar \
     tests/resources/Broken_entry.jar \
     tests/resources/Broken_manifest.jar \
+    tests/resources/Integrate.jar \
     tests/resources/hyts_ZipFile.zip \
+    tests/resources/hyts_att.jar \
     tests/resources/hyts_available.tst \
     tests/resources/hyts_checkInput.txt \
     tests/resources/hyts_patch.jar \
     tests/resources/manifest/hyts_MANIFEST.MF \
+    tests/resources/morestuff/hyts_patch.jar \
+    tests/resources/morestuff/hyts_patch2.jar \
     tests/resources/Modified_SF_EntryAttributes.jar
 
 LOGGING_TEST_RESOURCES_SRCS = \
