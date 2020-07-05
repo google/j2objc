@@ -32,6 +32,8 @@
 #
 # Author: Tom Ball
 
+DEBUGGING_SYMBOLS=YES
+
 APACHE_HARMONY_BASE = apache_harmony/classlib/modules
 JRE_BEANS_ROOT = $(APACHE_HARMONY_BASE)/beans/src/main/java
 JRE_TEST_ROOT = $(APACHE_HARMONY_BASE)/luni/src/test/api/common

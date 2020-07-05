@@ -436,25 +436,36 @@ NSUInteger JreDefaultFastEnumeration(
    Do not declare iter as a __unsafe_unretained.
    It may cause a bad access error after assigned by [obj iterator];
   */
-  id iter = (ARCBRIDGE id) (void *) state->extra[0];
-  if (!iter) {
+  __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
+  bool isFirst = !iter;
+  if (isFirst) {
     static unsigned long no_mutation = 1;
     state->mutationsPtr = &no_mutation;
     // The for/in loop could break early so we have no guarantee of being able
     // to release the iterator. As long as the current autorelease pool is not
     // cleared within the loop, this should be fine.
-    iter = nil_chk([obj iterator]);
+    id new_iter = nil_chk([obj iterator]);
+    iter = new_iter;
     state->extra[0] = (unsigned long) iter;
+    ARGC_strongRetain(iter);
     state->extra[1] = (unsigned long) [iter methodForSelector:hasNextSel];
     state->extra[2] = (unsigned long) [iter methodForSelector:nextSel];
+  }
+  else {
+    ARGC_release(*stackbuf);
   }
   jboolean (*hasNextImpl)(id, SEL) = (jboolean (*)(id, SEL)) state->extra[1];
   id (*nextImpl)(id, SEL) = (id (*)(id, SEL)) state->extra[2];
   NSUInteger objCount = 0;
   state->itemsPtr = stackbuf;
   if (hasNextImpl(iter, hasNextSel)) {
-    *stackbuf++ = nextImpl(iter, nextSel);
+      id item = nextImpl(iter, nextSel);
+    *stackbuf++ = item;
+    ARGC_strongRetain(item);
     objCount++;
+  }
+  else {
+    ARGC_release(iter);
   }
   return objCount;
 }
