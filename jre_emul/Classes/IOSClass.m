@@ -1183,7 +1183,9 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
 }
 
 static IOSObjectArray *GetEnumConstants(IOSClass *cls) {
-  return [cls isEnum] ? JavaLangEnum_getSharedConstantsWithIOSClass_(cls) : nil;
+  if (![cls isEnum]) return nil;
+  cls->metadata_->initialize();
+  return JavaLangEnum_getSharedConstantsWithIOSClass_(cls);
 }
 
 - (IOSObjectArray *)getEnumConstants {
