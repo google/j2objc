@@ -37,7 +37,6 @@ extern "C" {
  * JNI Types
  */
 
-
 #if defined(__OBJC__)
 
 @class IOSArray;
@@ -52,7 +51,7 @@ extern "C" {
 @class IOSDoubleArray;
 @class IOSClass;
 
-typedef __unsafe_unretained id jobject;
+typedef id jobject;
 typedef IOSClass*        jclass;
 typedef jobject          jthrowable;
 typedef NSString*        jstring;
@@ -131,7 +130,11 @@ typedef union jvalue {
     jlong    j;
     jfloat   f;
     jdouble  d;
+#if defined(__OBJC__)
+    __unsafe_unretained id l;
+#else
     jobject  l;
+#endif
 } jvalue;
 
 #if defined(__OBJC__)
