@@ -14,8 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package libcore.java.util.jar;
 
+/**
+ * J2ObjC removed: These test the modified jar feature j2objc doesn't support,
+ * because executing downloaded code is banned from iOS apps
+ */
 //import java.io.ByteArrayOutputStream;
 //import java.io.File;
 //import java.io.FileOutputStream;
@@ -50,13 +55,10 @@ package libcore.java.util.jar;
 import junit.framework.TestCase;
 //import libcore.io.IoUtils;
 //import tests.support.resource.Support_Resources;
-//
-//
+
+
 public class JarFileTest extends TestCase {
-    /**
-     * These test the modified jar feature j2objc doesn't support,
-     * because executing downloaded code is banned from iOS apps
-     */
+
     public void test(){}
 
     // BEGIN Android-added

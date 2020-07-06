@@ -170,7 +170,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
     }
 
     /**
-     * These test the modified jar feature j2objc doesn't support,
+     * J2ObjC removed: These test the modified jar feature j2objc doesn't support,
      * because executing downloaded code is banned from iOS apps
      */
 //    public void test_JarInputStream_Modified_Class_getNextEntry()
