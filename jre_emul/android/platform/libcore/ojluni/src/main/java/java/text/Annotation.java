@@ -1,69 +1,89 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.text;
 
 /**
- * Wrapper for a text attribute value which represents an annotation. An
- * annotation has two special aspects:
- * <ol>
- * <li>it is connected to a range of main text; if this range or the main text
- * is changed then the annotation becomes invalid,</li>
- * <li>it can not be joined with adjacent annotations even if the text attribute
- * value is the same.</li>
- * </ol>
- * <p>
- * By wrapping text attribute values into an {@code Annotation}, these aspects
- * will be taken into account when handling annotation text and the
- * corresponding main text.
- * <p>
- * Note: There is no semantic connection between this annotation class and the
- * {@code java.lang.annotation} package.
- */
+* An Annotation object is used as a wrapper for a text attribute value if
+* the attribute has annotation characteristics. These characteristics are:
+* <ul>
+* <li>The text range that the attribute is applied to is critical to the
+* semantics of the range. That means, the attribute cannot be applied to subranges
+* of the text range that it applies to, and, if two adjacent text ranges have
+* the same value for this attribute, the attribute still cannot be applied to
+* the combined range as a whole with this value.
+* <li>The attribute or its value usually do no longer apply if the underlying text is
+* changed.
+* </ul>
+*
+* An example is grammatical information attached to a sentence:
+* For the previous sentence, you can say that "an example"
+* is the subject, but you cannot say the same about "an", "example", or "exam".
+* When the text is changed, the grammatical information typically becomes invalid.
+* Another example is Japanese reading information (yomi).
+*
+* <p>
+* Wrapping the attribute value into an Annotation object guarantees that
+* adjacent text runs don't get merged even if the attribute values are equal,
+* and indicates to text containers that the attribute should be discarded if
+* the underlying text is modified.
+*
+* @see AttributedCharacterIterator
+* @since 1.2
+*/
+
 public class Annotation {
 
-    private Object value;
-
     /**
-     * Constructs a new {@code Annotation}.
+     * Constructs an annotation record with the given value, which
+     * may be null.
      *
-     * @param attribute the attribute attached to this annotation. This may be
-     *        {@code null}.
+     * @param value the value of the attribute
      */
-    public Annotation(Object attribute) {
-        value = attribute;
+    public Annotation(Object value) {
+        this.value = value;
     }
 
     /**
-     * Returns the value of this annotation. The value may be {@code null}.
+     * Returns the value of the attribute, which may be null.
      *
-     * @return the value of this annotation or {@code null}.
+     * @return the value of the attribute
      */
     public Object getValue() {
         return value;
     }
 
     /**
-     * Returns this annotation in string representation.
+     * Returns the String representation of this Annotation.
      *
-     * @return the string representation of this annotation.
+     * @return the {@code String} representation of this {@code Annotation}
      */
-    @Override
     public String toString() {
-        return getClass().getName() + "[value=" + value + ']';
+        return getClass().getName() + "[value=" + value + "]";
     }
-}
+
+    private Object value;
+
+};
