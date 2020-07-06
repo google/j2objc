@@ -984,6 +984,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/AsynchronousChannelProvider.java \
   java/nio/channels/spi/SelectorProvider.java \
   java/nio/file/AccessDeniedException.java \
+  java/nio/file/AccessMode.java \
   java/nio/file/AtomicMoveNotSupportedException.java \
   java/nio/file/ClosedDirectoryStreamException.java \
   java/nio/file/ClosedFileSystemException.java \
@@ -993,11 +994,13 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/DirectoryNotEmptyException.java \
   java/nio/file/DirectoryStream.java \
   java/nio/file/FileAlreadyExistsException.java \
+  java/nio/file/FileStore.java \
   java/nio/file/FileSystemAlreadyExistsException.java \
   java/nio/file/FileSystemException.java \
   java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
   java/nio/file/FileVisitOption.java \
+  java/nio/file/FileVisitor.java \
   java/nio/file/FileVisitResult.java \
   java/nio/file/InvalidPathException.java \
   java/nio/file/LinkOption.java \
@@ -1009,6 +1012,8 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
+  java/nio/file/SecureDirectoryStream.java \
+  java/nio/file/SimpleFileVisitor.java \
   java/nio/file/StandardCopyOption.java \
   java/nio/file/StandardOpenOption.java \
   java/nio/file/WatchEvent.java \
