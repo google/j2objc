@@ -15,12 +15,16 @@
  *  limitations under the License.
  */
 
-package com.google.j2objc.nio.file.attribute;
+package java.nio.file.attribute;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * Convert FileTime units.
+ *
+ * This is a complete j2objc rewrite, designed to avoid Android's
+ * FileTime java.time dependencies. If an app only needs jre_channels (which many do),
+ * adding java.nio.file.FileTime to jre_channels would increase its size by ~23M.
  *
  * @author Mary Qin
  */

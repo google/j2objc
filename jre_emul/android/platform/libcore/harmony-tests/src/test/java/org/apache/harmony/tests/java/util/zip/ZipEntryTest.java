@@ -16,14 +16,11 @@
  */
 package org.apache.harmony.tests.java.util.zip;
 
-/* J2ObjC Added: import FileTime class to avoid java.nio.file.attribute.FileTime */
-import com.google.j2objc.nio.file.attribute.FileTime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-/* J2ObjC Removed: avoid using Java FileTime.
-import java.nio.file.attribute.FileTime; */
+import java.nio.file.attribute.FileTime;
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;

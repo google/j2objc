@@ -306,6 +306,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
+  java/nio/file/attribute/FileTime.java \
   java/security/AccessControlContext.java \
   java/security/AccessController.java \
   java/security/AllPermission.java \
@@ -1018,8 +1019,22 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/attribute/AclEntryFlag.java \
   java/nio/file/attribute/AclEntryPermission.java \
   java/nio/file/attribute/AclEntryType.java \
+  java/nio/file/attribute/AclFileAttributeView.java \
   java/nio/file/attribute/AttributeView.java \
+  java/nio/file/attribute/BasicFileAttributeView.java \
+  java/nio/file/attribute/BasicFileAttributes.java \
+  java/nio/file/attribute/DosFileAttributeView.java \
+  java/nio/file/attribute/DosFileAttributes.java \
+  java/nio/file/attribute/FileAttribute.java \
+  java/nio/file/attribute/FileAttributeView.java \
+  java/nio/file/attribute/FileOwnerAttributeView.java \
+  java/nio/file/attribute/FileStoreAttributeView.java \
   java/nio/file/attribute/GroupPrincipal.java \
+  java/nio/file/attribute/PosixFileAttributeView.java \
+  java/nio/file/attribute/PosixFileAttributes.java \
+  java/nio/file/attribute/PosixFilePermission.java \
+  java/nio/file/attribute/PosixFilePermissions.java \
+  java/nio/file/attribute/UserDefinedFileAttributeView.java \
   java/nio/file/attribute/UserPrincipal.java \
   java/nio/file/attribute/UserPrincipalLookupService.java \
   java/nio/file/attribute/UserPrincipalNotFoundException.java \
@@ -1727,7 +1742,6 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/zip/ZipOutputStream.java
 
 JAVA_PRIVATE_SOURCES_ZIP = \
-  com/google/j2objc/nio/file/attribute/FileTime.java \
   java/util/jar/JarVerifier.java \
   java/util/zip/ZStreamRef.java \
   java/util/zip/ZipCoder.java \

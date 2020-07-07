@@ -25,10 +25,7 @@
 
 package java.util.zip;
 
-/* J2ObjC Added: import FileTime class to avoid java.nio.file.attribute.FileTime */
-import com.google.j2objc.nio.file.attribute.FileTime;
-/* J2ObjC Removed: avoid using Java FileTime.
-import java.nio.file.attribute.FileTime; */
+import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 

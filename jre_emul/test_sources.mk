@@ -298,7 +298,6 @@ TEST_SOURCES := \
     com/google/j2objc/net/IosHttpURLConnectionTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/charset/CharsetTest.java \
-    com/google/j2objc/nio/file/attribute/FileTimeTest.java \
     com/google/j2objc/reflect/ProxyTest.java \
     com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
     com/google/j2objc/security/IosRSAKeyTest.java \
@@ -313,6 +312,7 @@ TEST_SOURCES := \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
     java/lang/reflect/MethodTest.java \
+    java/nio/file/attribute/FileTimeTest.java \
     java/util/HashMapTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
@@ -539,6 +539,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/LinkPermissionTest.java \
     libcore/java/nio/file/ProviderMismatchExceptionTest.java \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
+    libcore/java/nio/file/attribute/UserPrincipalNotFoundExceptionTest.java \
     libcore/java/security/AccessControllerTest.java \
     libcore/java/security/PrincipalTest.java \
     libcore/java/security/PrivilegedActionExceptionTest.java \

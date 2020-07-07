@@ -17,13 +17,11 @@
 package libcore.java.nio.file.attribute;
 
 import org.junit.Test;
-import junit.framework.TestCase;
-
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
-public class UserPrincipalNotFoundExceptionTest extends TestCase {
+public class UserPrincipalNotFoundExceptionTest {
 
     @Test
     public void testGetters() throws Exception {
