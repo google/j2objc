@@ -469,6 +469,12 @@ class UnsupportedCharsetExceptionTest:
     @ObjectiveCName("ignoreSerializationSelf")
 
 package org.apache.harmony.tests.java.text:
+class AnnotationTest:
+  method testToString()V:
+    @ObjectiveCName("ignore_toString")
+class AttributedCharacterIteratorAttributeTest:
+  method test_readResolve()V:
+    @ObjectiveCName("ignore_readResolve")
 class DateFormatSymbolsTest:
   method test_serialization()V:
     @ObjectiveCName("ignore_serialization")

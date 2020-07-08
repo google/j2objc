@@ -547,6 +547,7 @@ TEST_SOURCES := \
     libcore/java/security/cert/X509CRLSelectorTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
+    libcore/java/text/ChoiceFormatTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DateFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
@@ -959,6 +960,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/charset/UTFCharsetEncoderTest.java \
     org/apache/harmony/tests/java/nio/charset/UnmappableCharacterExceptionTest.java \
     org/apache/harmony/tests/java/nio/charset/UnsupportedCharsetExceptionTest.java \
+    org/apache/harmony/tests/java/text/AnnotationTest.java \
+    org/apache/harmony/tests/java/text/AttributedCharacterIteratorAttributeTest.java \
+    org/apache/harmony/tests/java/text/AttributedCharacterIteratorTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/BreakIteratorTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
@@ -968,10 +972,13 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatTest.java \
     org/apache/harmony/tests/java/text/FieldPositionTest.java \
+    org/apache/harmony/tests/java/text/MessageFormatFieldTest.java \
     org/apache/harmony/tests/java/text/MessageFormatTest.java \
+    org/apache/harmony/tests/java/text/NumberFormatFieldTest.java \
     org/apache/harmony/tests/java/text/NumberFormatTest.java \
     org/apache/harmony/tests/java/text/ParsePositionTest.java \
     org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
+    org/apache/harmony/tests/java/text/StringCharacterIteratorTest.java \
     org/apache/harmony/tests/java/util/AbstractCollectionTest.java \
     org/apache/harmony/tests/java/util/AbstractListTest.java \
     org/apache/harmony/tests/java/util/AbstractMapTest.java \
@@ -1326,6 +1333,7 @@ COPIED_ARC_TEST_SOURCES = \
 
 TESTS_TO_SKIP = \
     jsr166/ExchangerTest.java \
+    libcore/java/text/ChoiceFormatTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
     org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java
 
