@@ -1,269 +1,281 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
+ */
+
+/*
+ * (C) Copyright Taligent, Inc. 1996, 1997 - All Rights Reserved
+ * (C) Copyright IBM Corp. 1996 - 1998 - All Rights Reserved
+ *
+ * The original version of this source code and documentation
+ * is copyrighted and owned by Taligent, Inc., a wholly-owned
+ * subsidiary of IBM. These materials are provided under terms
+ * of a License Agreement between Taligent and Sun. This technology
+ * is protected by multiple US and International patents.
+ *
+ * This notice and attribution to Taligent may not be removed.
+ * Taligent is a registered trademark of Taligent, Inc.
+ *
  */
 
 package java.text;
 
 /**
- * An implementation of {@link CharacterIterator} for strings.
+ * <code>StringCharacterIterator</code> implements the
+ * <code>CharacterIterator</code> protocol for a <code>String</code>.
+ * The <code>StringCharacterIterator</code> class iterates over the
+ * entire <code>String</code>.
+ *
+ * @see CharacterIterator
  */
-public final class StringCharacterIterator implements CharacterIterator {
 
-    String string;
-
-    int start, end, offset;
+public final class StringCharacterIterator implements CharacterIterator
+{
+    private String text;
+    private int begin;
+    private int end;
+    // invariant: begin <= pos <= end
+    private int pos;
 
     /**
-     * Constructs a new {@code StringCharacterIterator} on the specified string.
-     * The begin and current indices are set to the beginning of the string, the
-     * end index is set to the length of the string.
+     * Constructs an iterator with an initial index of 0.
      *
-     * @param value
-     *            the source string to iterate over.
+     * @param text the {@code String} to be iterated over
      */
-    public StringCharacterIterator(String value) {
-        string = value;
-        start = offset = 0;
-        end = string.length();
+    public StringCharacterIterator(String text)
+    {
+        this(text, 0);
     }
 
     /**
-     * Constructs a new {@code StringCharacterIterator} on the specified string
-     * with the current index set to the specified value. The begin index is set
-     * to the beginning of the string, the end index is set to the length of the
-     * string.
+     * Constructs an iterator with the specified initial index.
      *
-     * @param value
-     *            the source string to iterate over.
-     * @param location
-     *            the current index.
-     * @throws IllegalArgumentException
-     *            if {@code location} is negative or greater than the length
-     *            of the source string.
+     * @param  text   The String to be iterated over
+     * @param  pos    Initial iterator position
      */
-    public StringCharacterIterator(String value, int location) {
-        string = value;
-        start = 0;
-        end = string.length();
-        if (location < 0 || location > end) {
-            throw new IllegalArgumentException();
-        }
-        offset = location;
+    public StringCharacterIterator(String text, int pos)
+    {
+    this(text, 0, text.length(), pos);
     }
 
     /**
-     * Constructs a new {@code StringCharacterIterator} on the specified string
-     * with the begin, end and current index set to the specified values.
+     * Constructs an iterator over the given range of the given string, with the
+     * index set at the specified position.
      *
-     * @param value
-     *            the source string to iterate over.
-     * @param start
-     *            the index of the first character to iterate.
-     * @param end
-     *            the index one past the last character to iterate.
-     * @param location
-     *            the current index.
-     * @throws IllegalArgumentException
-     *            if {@code start < 0}, {@code start > end}, {@code location <
-     *            start}, {@code location > end} or if {@code end} is greater
-     *            than the length of {@code value}.
+     * @param  text   The String to be iterated over
+     * @param  begin  Index of the first character
+     * @param  end    Index of the character following the last character
+     * @param  pos    Initial iterator position
      */
-    public StringCharacterIterator(String value, int start, int end, int location) {
-        string = value;
-        if (start < 0 || end > string.length() || start > end
-                || location < start || location > end) {
-            throw new IllegalArgumentException();
-        }
-        this.start = start;
+    public StringCharacterIterator(String text, int begin, int end, int pos) {
+        if (text == null)
+            throw new NullPointerException();
+        this.text = text;
+
+        if (begin < 0 || begin > end || end > text.length())
+            throw new IllegalArgumentException("Invalid substring range");
+
+        if (pos < begin || pos > end)
+            throw new IllegalArgumentException("Invalid position");
+
+        this.begin = begin;
         this.end = end;
-        offset = location;
+        this.pos = pos;
     }
 
     /**
-     * Returns a new {@code StringCharacterIterator} with the same source
-     * string, begin, end, and current index as this iterator.
+     * Reset this iterator to point to a new string.  This package-visible
+     * method is used by other java.text classes that want to avoid allocating
+     * new StringCharacterIterator objects every time their setText method
+     * is called.
      *
-     * @return a shallow copy of this iterator.
-     * @see java.lang.Cloneable
+     * @param  text   The String to be iterated over
+     * @since 1.2
      */
-    @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
+    public void setText(String text) {
+        if (text == null)
+            throw new NullPointerException();
+        this.text = text;
+        this.begin = 0;
+        this.end = text.length();
+        this.pos = 0;
+    }
+
+    /**
+     * Implements CharacterIterator.first() for String.
+     * @see CharacterIterator#first
+     */
+    public char first()
+    {
+        pos = begin;
+        return current();
+    }
+
+    /**
+     * Implements CharacterIterator.last() for String.
+     * @see CharacterIterator#last
+     */
+    public char last()
+    {
+        if (end != begin) {
+            pos = end - 1;
+        } else {
+            pos = end;
         }
+        return current();
+     }
+
+    /**
+     * Implements CharacterIterator.setIndex() for String.
+     * @see CharacterIterator#setIndex
+     */
+    public char setIndex(int p)
+    {
+    if (p < begin || p > end)
+            throw new IllegalArgumentException("Invalid index");
+        pos = p;
+        return current();
     }
 
     /**
-     * Returns the character at the current index in the source string.
-     *
-     * @return the current character, or {@code DONE} if the current index is
-     *         past the end.
+     * Implements CharacterIterator.current() for String.
+     * @see CharacterIterator#current
      */
-    public char current() {
-        if (offset == end) {
+    public char current()
+    {
+        if (pos >= begin && pos < end) {
+            return text.charAt(pos);
+        }
+        else {
             return DONE;
         }
-        return string.charAt(offset);
     }
 
     /**
-     * Compares the specified object with this {@code StringCharacterIterator}
-     * and indicates if they are equal. In order to be equal, {@code object}
-     * must be an instance of {@code StringCharacterIterator} that iterates over
-     * the same sequence of characters with the same index.
-     *
-     * @param object
-     *            the object to compare with this object.
-     * @return {@code true} if the specified object is equal to this
-     *         {@code StringCharacterIterator}; {@code false} otherwise.
-     * @see #hashCode
+     * Implements CharacterIterator.next() for String.
+     * @see CharacterIterator#next
      */
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof StringCharacterIterator)) {
-            return false;
+    public char next()
+    {
+        if (pos < end - 1) {
+            pos++;
+            return text.charAt(pos);
         }
-        StringCharacterIterator it = (StringCharacterIterator) object;
-        return string.equals(it.string) && start == it.start && end == it.end
-                && offset == it.offset;
-    }
-
-    /**
-     * Sets the current position to the begin index and returns the character at
-     * the new position in the source string.
-     *
-     * @return the character at the begin index or {@code DONE} if the begin
-     *         index is equal to the end index.
-     */
-    public char first() {
-        if (start == end) {
+        else {
+            pos = end;
             return DONE;
         }
-        offset = start;
-        return string.charAt(offset);
     }
 
     /**
-     * Returns the begin index in the source string.
-     *
-     * @return the index of the first character of the iteration.
+     * Implements CharacterIterator.previous() for String.
+     * @see CharacterIterator#previous
      */
-    public int getBeginIndex() {
-        return start;
+    public char previous()
+    {
+        if (pos > begin) {
+            pos--;
+            return text.charAt(pos);
+        }
+        else {
+            return DONE;
+        }
     }
 
     /**
-     * Returns the end index in the source string.
-     *
-     * @return the index one past the last character of the iteration.
+     * Implements CharacterIterator.getBeginIndex() for String.
+     * @see CharacterIterator#getBeginIndex
      */
-    public int getEndIndex() {
+    public int getBeginIndex()
+    {
+        return begin;
+    }
+
+    /**
+     * Implements CharacterIterator.getEndIndex() for String.
+     * @see CharacterIterator#getEndIndex
+     */
+    public int getEndIndex()
+    {
         return end;
     }
 
     /**
-     * Returns the current index in the source string.
-     *
-     * @return the current index.
+     * Implements CharacterIterator.getIndex() for String.
+     * @see CharacterIterator#getIndex
      */
-    public int getIndex() {
-        return offset;
-    }
-
-    @Override
-    public int hashCode() {
-        return string.hashCode() + start + end + offset;
+    public int getIndex()
+    {
+        return pos;
     }
 
     /**
-     * Sets the current position to the end index - 1 and returns the character
-     * at the new position.
-     *
-     * @return the character before the end index or {@code DONE} if the begin
-     *         index is equal to the end index.
+     * Compares the equality of two StringCharacterIterator objects.
+     * @param obj the StringCharacterIterator object to be compared with.
+     * @return true if the given obj is the same as this
+     * StringCharacterIterator object; false otherwise.
      */
-    public char last() {
-        if (start == end) {
-            return DONE;
-        }
-        offset = end - 1;
-        return string.charAt(offset);
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof StringCharacterIterator))
+            return false;
+
+        StringCharacterIterator that = (StringCharacterIterator) obj;
+
+        if (hashCode() != that.hashCode())
+            return false;
+        if (!text.equals(that.text))
+            return false;
+        if (pos != that.pos || begin != that.begin || end != that.end)
+            return false;
+        return true;
     }
 
     /**
-     * Increments the current index and returns the character at the new index.
-     *
-     * @return the character at the next index, or {@code DONE} if the next
-     *         index would be past the end.
+     * Computes a hashcode for this iterator.
+     * @return A hash code
      */
-    public char next() {
-        if (offset >= (end - 1)) {
-            offset = end;
-            return DONE;
-        }
-        return string.charAt(++offset);
+    public int hashCode()
+    {
+        return text.hashCode() ^ pos ^ begin ^ end;
     }
 
     /**
-     * Decrements the current index and returns the character at the new index.
-     *
-     * @return the character at the previous index, or {@code DONE} if the
-     *         previous index would be past the beginning.
+     * Creates a copy of this iterator.
+     * @return A copy of this
      */
-    public char previous() {
-        if (offset == start) {
-            return DONE;
+    public Object clone()
+    {
+        try {
+            StringCharacterIterator other
+            = (StringCharacterIterator) super.clone();
+            return other;
         }
-        return string.charAt(--offset);
+        catch (CloneNotSupportedException e) {
+            throw new InternalError(e);
+        }
     }
 
-    /**
-     * Sets the current index in the source string.
-     *
-     * @param location
-     *            the index the current position is set to.
-     * @return the character at the new index, or {@code DONE} if
-     *         {@code location} is set to the end index.
-     * @throws IllegalArgumentException
-     *            if {@code location} is smaller than the begin index or greater
-     *            than the end index.
-     */
-    public char setIndex(int location) {
-        if (location < start || location > end) {
-            throw new IllegalArgumentException();
-        }
-        offset = location;
-        if (offset == end) {
-            return DONE;
-        }
-        return string.charAt(offset);
-    }
-
-    /**
-     * Sets the source string to iterate over. The begin and end positions are
-     * set to the start and end of this string.
-     *
-     * @param value
-     *            the new source string.
-     */
-    public void setText(String value) {
-        string = value;
-        start = offset = 0;
-        end = value.length();
-    }
 }
