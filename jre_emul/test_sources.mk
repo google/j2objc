@@ -547,6 +547,7 @@ TEST_SOURCES := \
     libcore/java/security/cert/X509CRLSelectorTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
+    libcore/java/text/ChoiceFormatTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DateFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
