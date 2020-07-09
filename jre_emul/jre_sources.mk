@@ -989,30 +989,19 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/ClosedDirectoryStreamException.java \
   java/nio/file/ClosedFileSystemException.java \
   java/nio/file/ClosedWatchServiceException.java \
-  java/nio/file/CopyOption.java \
   java/nio/file/DirectoryIteratorException.java \
   java/nio/file/DirectoryNotEmptyException.java \
-  java/nio/file/DirectoryStream.java \
   java/nio/file/FileAlreadyExistsException.java \
-  java/nio/file/FileStore.java \
   java/nio/file/FileSystemAlreadyExistsException.java \
   java/nio/file/FileSystemException.java \
-  java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
-  java/nio/file/FileVisitOption.java \
-  java/nio/file/FileVisitor.java \
-  java/nio/file/FileVisitResult.java \
   java/nio/file/InvalidPathException.java \
-  java/nio/file/LinkOption.java \
-  java/nio/file/LinkPermission.java \
   java/nio/file/NoSuchFileException.java \
   java/nio/file/NotDirectoryException.java \
   java/nio/file/NotLinkException.java \
-  java/nio/file/OpenOption.java \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
-  java/nio/file/SecureDirectoryStream.java \
   java/nio/file/SimpleFileVisitor.java \
   java/nio/file/StandardCopyOption.java \
   java/nio/file/StandardOpenOption.java \
@@ -1115,6 +1104,13 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   PollArrayWrapper.m \
   ServerSocketChannelImpl.m \
   SocketChannelImpl.m
+
+JAVA_PUBLIC_SOURCES_FILE =
+
+JAVA_PRIVATE_SOURCES_FILE = \
+  com/sun/nio/file/ExtendedCopyOption.java \
+  sun/misc/JavaIOFileDescriptorAccess.java \
+  sun/misc/SharedSecrets.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
@@ -2219,6 +2215,7 @@ JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
 JAVA_SOURCES_UTIL = $(JAVA_PUBLIC_SOURCES_UTIL) $(JAVA_PRIVATE_SOURCES_UTIL)
 JAVA_SOURCES_CONCURRENT = $(JAVA_PUBLIC_SOURCES_CONCURRENT) $(JAVA_PRIVATE_SOURCES_CONCURRENT)
 JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_CHANNELS)
+JAVA_SOURCES_FILE = $(JAVA_PUBLIC_SOURCES_FILE) $(JAVA_PRIVATE_SOURCES_FILE)
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_SSL = $(JAVA_PUBLIC_SOURCES_SSL) $(JAVA_PRIVATE_SOURCES_SSL)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_XMLPULL) \
@@ -2376,6 +2373,7 @@ JAVA_PUBLIC_SOURCES_JRE = \
   $(JAVA_PUBLIC_SOURCES_UTIL) \
   $(JAVA_PUBLIC_SOURCES_CONCURRENT) \
   $(JAVA_PUBLIC_SOURCES_CHANNELS) \
+  $(JAVA_PUBLIC_SOURCES_FILE) \
   $(JAVA_PUBLIC_SOURCES_SECURITY) \
   $(JAVA_PUBLIC_SOURCES_SSL) \
   $(JAVA_PUBLIC_SOURCES_XML) \
@@ -2392,6 +2390,7 @@ JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_UTIL) \
   $(JAVA_PRIVATE_SOURCES_CONCURRENT) \
   $(JAVA_PRIVATE_SOURCES_CHANNELS) \
+  $(JAVA_PRIVATE_SOURCES_FILE) \
   $(JAVA_PRIVATE_SOURCES_SECURITY) \
   $(JAVA_PRIVATE_SOURCES_SSL) \
   $(JAVA_PRIVATE_SOURCES_XML) \

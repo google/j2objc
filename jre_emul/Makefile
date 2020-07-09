@@ -66,6 +66,7 @@ NET_OBJS_RELATIVE = $(JAVA_SOURCES_NET:.java=.o) $(NATIVE_JRE_SOURCES_NET:.m=.o)
 UTIL_OBJS_RELATIVE = $(JAVA_SOURCES_UTIL:.java=.o)
 CONCURRENT_OBJS_RELATIVE = $(JAVA_SOURCES_CONCURRENT:.java=.o)
 CHANNELS_OBJS_RELATIVE = $(JAVA_SOURCES_CHANNELS:.java=.o) $(NATIVE_JRE_SOURCES_CHANNELS:.m=.o)
+FILE_OBJS_RELATIVE = $(JAVA_SOURCES_FILE:.java=.o)
 SECURITY_OBJS_RELATIVE = $(JAVA_SOURCES_SECURITY:.java=.o)
 SSL_OBJS_RELATIVE = $(JAVA_SOURCES_SSL:.java=.o) $(NATIVE_JRE_SOURCES_SSL:.m=.o)
 XML_OBJS_RELATIVE = $(JAVA_SOURCES_XML:.java=.o)
@@ -86,6 +87,7 @@ LIBS += $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_util,$(UTIL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_concurrent,$(CONCURRENT_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_channels,$(CHANNELS_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_file,$(FILE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_security,$(SECURITY_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_ssl,$(SSL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_xml,$(XML_OBJS_RELATIVE))
@@ -218,6 +220,7 @@ OBJC_SOURCES_MANIFESTS := \
   $(call objc_manifest,objc_sources_util,$(JAVA_SOURCES_UTIL)) \
   $(call objc_manifest,objc_sources_concurrent,$(JAVA_SOURCES_CONCURRENT)) \
   $(call objc_manifest,objc_sources_channels,$(JAVA_SOURCES_CHANNELS)) \
+  $(call objc_manifest,objc_sources_file,$(JAVA_SOURCES_FILE)) \
   $(call objc_manifest,objc_sources_security,$(JAVA_SOURCES_SECURITY)) \
   $(call objc_manifest,objc_sources_ssl,$(JAVA_SOURCES_SSL)) \
   $(call objc_manifest,objc_sources_xml,$(JAVA_SOURCES_XML)) \
