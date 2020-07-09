@@ -1083,6 +1083,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/NotDirectoryException.java \
   java/nio/file/NotLinkException.java \
   java/nio/file/OpenOption.java \
+  java/nio/file/Path.java \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
@@ -1122,6 +1123,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
+  sun/nio/fs/AbstractPath.java \
   sun/nio/fs/BasicFileAttributesHolder.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DynamicFileAttributeView.java \
@@ -1129,6 +1131,8 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/Globs.java \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
+  sun/nio/fs/UnixConstants.java \
+  sun/nio/fs/UnixMountEntry.java \
   sun/nio/fs/Util.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
