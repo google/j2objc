@@ -1002,9 +1002,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
-  java/nio/file/SimpleFileVisitor.java \
-  java/nio/file/StandardCopyOption.java \
-  java/nio/file/StandardOpenOption.java \
   java/nio/file/WatchEvent.java \
   java/nio/file/WatchKey.java \
   java/nio/file/WatchService.java \
@@ -1108,7 +1105,6 @@ NATIVE_JRE_SOURCES_CHANNELS = \
 JAVA_PUBLIC_SOURCES_FILE =
 
 JAVA_PRIVATE_SOURCES_FILE = \
-  com/sun/nio/file/ExtendedCopyOption.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java
 
