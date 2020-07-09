@@ -1121,13 +1121,15 @@ JAVA_PUBLIC_SOURCES_FILE = \
 JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
+  sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/BasicFileAttributesHolder.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
   sun/nio/fs/NativeBuffer.java \
-  sun/nio/fs/NativeBuffers.java
+  sun/nio/fs/NativeBuffers.java \
+  sun/nio/fs/Util.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
