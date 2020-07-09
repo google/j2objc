@@ -536,6 +536,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/FileSystemAlreadyExistsExceptionTest.java \
     libcore/java/nio/file/FileSystemNotFoundExceptionTest.java \
     libcore/java/nio/file/InvalidPathExceptionTest.java \
+    libcore/java/nio/file/LinkPermissionTest.java \
     libcore/java/nio/file/ProviderMismatchExceptionTest.java \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/nio/file/attribute/UserPrincipalNotFoundExceptionTest.java \

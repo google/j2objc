@@ -1063,19 +1063,33 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/ClosedDirectoryStreamException.java \
   java/nio/file/ClosedFileSystemException.java \
   java/nio/file/ClosedWatchServiceException.java \
+  java/nio/file/CopyOption.java \
   java/nio/file/DirectoryIteratorException.java \
   java/nio/file/DirectoryNotEmptyException.java \
+  java/nio/file/DirectoryStream.java \
   java/nio/file/FileAlreadyExistsException.java \
+  java/nio/file/FileStore.java \
   java/nio/file/FileSystemAlreadyExistsException.java \
   java/nio/file/FileSystemException.java \
+  java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
+  java/nio/file/FileVisitOption.java \
+  java/nio/file/FileVisitResult.java \
+  java/nio/file/FileVisitor.java \
   java/nio/file/InvalidPathException.java \
+  java/nio/file/LinkOption.java \
+  java/nio/file/LinkPermission.java \
   java/nio/file/NoSuchFileException.java \
   java/nio/file/NotDirectoryException.java \
   java/nio/file/NotLinkException.java \
+  java/nio/file/OpenOption.java \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
+  java/nio/file/SecureDirectoryStream.java \
+  java/nio/file/SimpleFileVisitor.java \
+  java/nio/file/StandardCopyOption.java \
+  java/nio/file/StandardOpenOption.java \
   java/nio/file/WatchEvent.java \
   java/nio/file/WatchKey.java \
   java/nio/file/WatchService.java \
