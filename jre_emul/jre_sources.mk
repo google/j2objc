@@ -983,52 +983,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/AbstractSelector.java \
   java/nio/channels/spi/AsynchronousChannelProvider.java \
   java/nio/channels/spi/SelectorProvider.java \
-  java/nio/file/AccessDeniedException.java \
-  java/nio/file/AccessMode.java \
-  java/nio/file/AtomicMoveNotSupportedException.java \
-  java/nio/file/ClosedDirectoryStreamException.java \
-  java/nio/file/ClosedFileSystemException.java \
-  java/nio/file/ClosedWatchServiceException.java \
-  java/nio/file/DirectoryIteratorException.java \
-  java/nio/file/DirectoryNotEmptyException.java \
-  java/nio/file/FileAlreadyExistsException.java \
-  java/nio/file/FileSystemAlreadyExistsException.java \
-  java/nio/file/FileSystemException.java \
-  java/nio/file/FileSystemNotFoundException.java \
-  java/nio/file/InvalidPathException.java \
-  java/nio/file/NoSuchFileException.java \
-  java/nio/file/NotDirectoryException.java \
-  java/nio/file/NotLinkException.java \
-  java/nio/file/ProviderMismatchException.java \
-  java/nio/file/ProviderNotFoundException.java \
-  java/nio/file/ReadOnlyFileSystemException.java \
-  java/nio/file/WatchEvent.java \
-  java/nio/file/WatchKey.java \
-  java/nio/file/WatchService.java \
-  java/nio/file/Watchable.java \
-  java/nio/file/attribute/AclEntry.java \
-  java/nio/file/attribute/AclEntryFlag.java \
-  java/nio/file/attribute/AclEntryPermission.java \
-  java/nio/file/attribute/AclEntryType.java \
-  java/nio/file/attribute/AclFileAttributeView.java \
-  java/nio/file/attribute/AttributeView.java \
-  java/nio/file/attribute/BasicFileAttributeView.java \
-  java/nio/file/attribute/BasicFileAttributes.java \
-  java/nio/file/attribute/DosFileAttributeView.java \
-  java/nio/file/attribute/DosFileAttributes.java \
-  java/nio/file/attribute/FileAttribute.java \
-  java/nio/file/attribute/FileAttributeView.java \
-  java/nio/file/attribute/FileOwnerAttributeView.java \
-  java/nio/file/attribute/FileStoreAttributeView.java \
-  java/nio/file/attribute/GroupPrincipal.java \
-  java/nio/file/attribute/PosixFileAttributeView.java \
-  java/nio/file/attribute/PosixFileAttributes.java \
-  java/nio/file/attribute/PosixFilePermission.java \
-  java/nio/file/attribute/PosixFilePermissions.java \
-  java/nio/file/attribute/UserDefinedFileAttributeView.java \
-  java/nio/file/attribute/UserPrincipal.java \
-  java/nio/file/attribute/UserPrincipalLookupService.java \
-  java/nio/file/attribute/UserPrincipalNotFoundException.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 
@@ -1102,7 +1056,53 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   ServerSocketChannelImpl.m \
   SocketChannelImpl.m
 
-JAVA_PUBLIC_SOURCES_FILE =
+JAVA_PUBLIC_SOURCES_FILE = \
+  java/nio/file/AccessDeniedException.java \
+  java/nio/file/AccessMode.java \
+  java/nio/file/AtomicMoveNotSupportedException.java \
+  java/nio/file/ClosedDirectoryStreamException.java \
+  java/nio/file/ClosedFileSystemException.java \
+  java/nio/file/ClosedWatchServiceException.java \
+  java/nio/file/DirectoryIteratorException.java \
+  java/nio/file/DirectoryNotEmptyException.java \
+  java/nio/file/FileAlreadyExistsException.java \
+  java/nio/file/FileSystemAlreadyExistsException.java \
+  java/nio/file/FileSystemException.java \
+  java/nio/file/FileSystemNotFoundException.java \
+  java/nio/file/InvalidPathException.java \
+  java/nio/file/NoSuchFileException.java \
+  java/nio/file/NotDirectoryException.java \
+  java/nio/file/NotLinkException.java \
+  java/nio/file/ProviderMismatchException.java \
+  java/nio/file/ProviderNotFoundException.java \
+  java/nio/file/ReadOnlyFileSystemException.java \
+  java/nio/file/WatchEvent.java \
+  java/nio/file/WatchKey.java \
+  java/nio/file/WatchService.java \
+  java/nio/file/Watchable.java \
+  java/nio/file/attribute/AclEntry.java \
+  java/nio/file/attribute/AclEntryFlag.java \
+  java/nio/file/attribute/AclEntryPermission.java \
+  java/nio/file/attribute/AclEntryType.java \
+  java/nio/file/attribute/AclFileAttributeView.java \
+  java/nio/file/attribute/AttributeView.java \
+  java/nio/file/attribute/BasicFileAttributeView.java \
+  java/nio/file/attribute/BasicFileAttributes.java \
+  java/nio/file/attribute/DosFileAttributeView.java \
+  java/nio/file/attribute/DosFileAttributes.java \
+  java/nio/file/attribute/FileAttribute.java \
+  java/nio/file/attribute/FileAttributeView.java \
+  java/nio/file/attribute/FileOwnerAttributeView.java \
+  java/nio/file/attribute/FileStoreAttributeView.java \
+  java/nio/file/attribute/GroupPrincipal.java \
+  java/nio/file/attribute/PosixFileAttributeView.java \
+  java/nio/file/attribute/PosixFileAttributes.java \
+  java/nio/file/attribute/PosixFilePermission.java \
+  java/nio/file/attribute/PosixFilePermissions.java \
+  java/nio/file/attribute/UserDefinedFileAttributeView.java \
+  java/nio/file/attribute/UserPrincipal.java \
+  java/nio/file/attribute/UserPrincipalLookupService.java \
+  java/nio/file/attribute/UserPrincipalNotFoundException.java
 
 JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/JavaIOFileDescriptorAccess.java \
