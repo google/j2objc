@@ -249,13 +249,6 @@ public class LogManager {
         }
     }
 
-
-    /**
-     * Protected constructor.  This is protected so that container applications
-     * (such as J2EE containers) can subclass the object.  It is non-public as
-     * it is intended that there only be one LogManager object, whose value is
-     * retrieved by calling LogManager.getLogManager.
-     */
     /**
      * Protected constructor.  This is protected so that container applications
      * (such as J2EE containers) can subclass the object.  It is non-public as
@@ -1357,7 +1350,7 @@ public class LogManager {
                 in = LogManager.class.getResourceAsStream("logging.properties");
                 if (in == null) {
                     in = new ByteArrayInputStream(
-                            IOSLogHandler.IOS_LOG_MANAGER_DEFAULTS.getBytes());
+                        IOSLogHandler.IOS_LOG_MANAGER_DEFAULTS.getBytes());
                 }
             }
             readConfiguration(new BufferedInputStream(in));
