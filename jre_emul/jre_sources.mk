@@ -1084,6 +1084,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/NotLinkException.java \
   java/nio/file/OpenOption.java \
   java/nio/file/Path.java \
+  java/nio/file/PathMatcher.java \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
