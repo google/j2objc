@@ -1069,6 +1069,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/DirectoryStream.java \
   java/nio/file/FileAlreadyExistsException.java \
   java/nio/file/FileStore.java \
+  java/nio/file/FileSystem.java \
   java/nio/file/FileSystemAlreadyExistsException.java \
   java/nio/file/FileSystemException.java \
   java/nio/file/FileSystemLoopException.java \
