@@ -56,7 +56,6 @@ frameworks: dist
 	@cd jre_emul && $(MAKE) framework
 	@cd junit && $(MAKE) framework
 	@cd jsr305 && $(MAKE) framework
-	@cd sqlite-jdbc && $(MAKE) framework
 	@cd inject/javax_inject && $(MAKE) framework
 	@cd guava && $(MAKE) framework
 	@cd testing/mockito && $(MAKE) framework
@@ -65,7 +64,7 @@ frameworks: dist
 all_frameworks: frameworks protobuf_dist
 	@cd protobuf/runtime && $(MAKE) framework
 
-dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist sqlitejdbc_dist \
+dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
   javax_inject_dist guava_dist mockito_dist cycle_finder_dist \
   xalan_dist install-man-pages install-extras
 
@@ -81,7 +80,6 @@ clean:
 	@cd translator && $(MAKE) clean
 	@cd jre_emul && $(MAKE) clean
 	@cd junit && $(MAKE) clean
-	@cd sqlite-jdbc && $(MAKE) clean
 	@cd jsr305 && $(MAKE) clean
 	@cd inject/javax_inject && $(MAKE) clean
 	@cd guava && $(MAKE) clean

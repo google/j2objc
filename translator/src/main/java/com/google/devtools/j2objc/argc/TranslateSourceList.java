@@ -133,9 +133,6 @@ public class TranslateSourceList {
 		
 		InputFile f = InputFile.getInputFile(filename);
 		
-		if (filename.contains("SQLiteJDBCLoader")) {
-			ARGC.trap();
-		}
 		if (f == null) {
 			f = new RegularInputFile(root + filename, filename);
 		}
