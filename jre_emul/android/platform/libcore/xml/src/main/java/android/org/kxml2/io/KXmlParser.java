@@ -20,7 +20,7 @@
 
 // Contributors: Paul Hackenberger (unterminated entity handling in relaxed mode)
 
-package org.kxml2.io;
+package android.org.kxml2.io;
 
 import java.io.Closeable;
 import java.io.IOException;

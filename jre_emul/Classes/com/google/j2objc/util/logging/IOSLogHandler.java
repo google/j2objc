@@ -229,9 +229,15 @@ public class IOSLogHandler extends Handler {
         break;
     }
     if (!self->nativeLog_) {
+#ifdef J2OBJC_USE_GC
+      JreGenericFieldAssign(&self->nativeLog_,
+    [[NativeLog alloc] initWithSubsystem:@"com.google.j2objc.util.logging.IOSLogHandler"
+    category:@"general"]);
+#else
       self->nativeLog_ =
         [[NativeLog alloc] initWithSubsystem:@"com.google.j2objc.util.logging.IOSLogHandler"
                                     category:@"general"];
+#endif
     }
     NativeLog *nativeLog = (NativeLog *)self->nativeLog_;
     os_log_with_type(nativeLog->_log, logType, "%{public}s", logMessage.UTF8String);

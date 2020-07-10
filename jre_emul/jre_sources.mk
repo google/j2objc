@@ -14,7 +14,12 @@
 # classes that are part of the public API, and do not include non-public classes
 # or classes from non-public packages (like libcore.*).
 
+NATIVE_ARGC_SOURCES = \
+  ARGC/ARGC.mm \
+  jni.mm 
+
 NATIVE_JRE_SOURCES_CORE = \
+  ARGC/UnreachableError.m \
   AnnotationUtils.m \
   Bits.m \
   DebugUtils.m \
@@ -58,7 +63,6 @@ NATIVE_JRE_SOURCES_CORE = \
   java_lang_Thread.m \
   java_util_regex_Matcher.m \
   java_util_regex_Pattern.m \
-  jni.m \
   jni_util.m \
   jvm.m \
   libcore_icu_ICU.m \
@@ -1427,7 +1431,8 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/TrustManagerFactorySpi.java \
   javax/net/ssl/X509ExtendedTrustManager.java \
   javax/net/ssl/X509KeyManager.java \
-  javax/net/ssl/X509TrustManager.java
+  javax/net/ssl/X509TrustManager.java \
+
 
 JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsHandler.java \
@@ -1604,8 +1609,8 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/apache/harmony/xml/parsers/DocumentBuilderImpl.java \
   org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
   org/apache/harmony/xml/parsers/SAXParserImpl.java \
-  org/kxml2/io/KXmlParser.java \
-  org/kxml2/io/KXmlSerializer.java
+  android/org/kxml2/io/KXmlParser.java \
+  android/org/kxml2/io/KXmlSerializer.java
 
 NATIVE_JRE_SOURCES_ZIP = \
   io_util.m \
@@ -2084,7 +2089,19 @@ ANDROID_PUBLIC_SOURCES = \
   org/json/JSONException.java \
   org/json/JSONObject.java \
   org/json/JSONStringer.java \
-  org/json/JSONTokener.java
+  org/json/JSONTokener.java \
+  android/annotation/NonNull.java \
+  android/annotation/Nullable.java \
+  android/os/BadParcelableException.java \
+  android/os/BaseBundle.java \
+  android/os/Bundle.java \
+  android/os/Parcel.java \
+  android/os/Parcelable.java \
+  android/util/AndroidRuntimeException.java \
+  android/util/MathUtils.java \
+  android/util/Size.java \
+  android/util/SizeF.java \
+  android/util/Slog.java 
 
 ANDROID_PRIVATE_SOURCES = \
   android/util/ContainerHelpers.java \
@@ -2112,7 +2129,7 @@ JAVA_SOURCES_SQL = $(JAVA_PUBLIC_SOURCES_SQL) $(JAVA_PRIVATE_SOURCES_SQL)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
 JAVA_SOURCES_TIME = $(JAVA_PUBLIC_SOURCES_TIME) $(JAVA_PRIVATE_SOURCES_TIME)
 JAVA_SOURCES_ICU = $(JAVA_PUBLIC_SOURCES_ICU) $(JAVA_PRIVATE_SOURCES_ICU)
-JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
+JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES) 
 
 # These annotations have a SOURCE retention, and so should not be part of the runtime.
 # They need to be included in the jre_emul.jar, however.
@@ -2141,6 +2158,8 @@ EMULATED_JAVA_SOURCES = \
 
 # All non-generated headers that should be made public.
 PUBLIC_NATIVE_HEADERS = \
+  ARGC/ARGC.h \
+  org/slowcoders/j2objc/UnreachableError.h \
   IOSArray.h \
   IOSClass.h \
   IOSMetadata.h \
@@ -2166,7 +2185,8 @@ PUBLIC_NATIVE_HEADERS = \
   java/lang/reflect/Executable.h \
   java/lang/reflect/Field.h \
   java/lang/reflect/Method.h \
-  jni.h
+  jni.h \
+  jni_md.h \
 
 # They are only needed while translating files in the corresponding packages,
 # but they do not need to be translated.
@@ -2211,10 +2231,11 @@ JAVA_PRIVATE_SOURCES = \
   $(JAVA_PRIVATE_SOURCES_TIME) \
   $(JAVA_PRIVATE_SOURCES_ICU) \
   $(JAVA_PRIVATE_SOURCES_OTHER) \
-  $(ANDROID_PRIVATE_SOURCES)
+  $(ANDROID_PRIVATE_SOURCES) \
+  $(ANDROID_PRIVATE_SOURCES_OTHER)
 
 JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
-  $(JAVA_PUBLIC_SOURCES_XMLPULL)
+  $(JAVA_PUBLIC_SOURCES_XMLPULL)  
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \

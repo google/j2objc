@@ -69,4 +69,5 @@ public interface Principal {
      * @return the name of this principal.
      */
     public String getName();
+
 }

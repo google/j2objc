@@ -43,8 +43,8 @@ const jchar JavaLangInteger_digits[] = {
   'u' , 'v' , 'w' , 'x' , 'y' , 'z'
 };
 
-static NSString *SMALL_NEG_VALUES[100];
-static NSString *SMALL_NONNEG_VALUES[100];
+static NSString* SMALL_NEG_VALUES[100] = { nil };
+static NSString* SMALL_NONNEG_VALUES[100] = { nil };
 
 const jchar JavaLangInteger_DigitTens[] = {
   '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
@@ -149,7 +149,7 @@ jstring Java_java_lang_Integer_toString__I(JNIEnv *env, jclass cls, jint i) {
   jboolean negative = i < 0;
   jboolean small = negative ? i > -100 : i < 100;
   if (small) {
-    NSString **smallValues = negative ? SMALL_NEG_VALUES : SMALL_NONNEG_VALUES;
+    __strong NSString** const smallValues = negative ? SMALL_NEG_VALUES : SMALL_NONNEG_VALUES;
 
     if (negative) {
       i = -i;

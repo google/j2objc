@@ -45,6 +45,7 @@ import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -103,7 +105,8 @@ public class MetadataWriter extends UnitTreeVisitor {
     }
 
     ExecutableElement metadataElement =
-        GeneratedExecutableElement.newMethodWithSelector("__metadata", CLASS_INFO_TYPE, type)
+        GeneratedExecutableElement.newMethodWithSelector(/*"__metadata"*/"initialize", 
+        		TypeUtil.javaVoid, type)
         .addModifiers(Modifier.STATIC, Modifier.PRIVATE);
     MethodDeclaration metadataDecl = new MethodDeclaration(metadataElement);
     metadataDecl.setHasDeclaration(false);
@@ -136,21 +139,28 @@ public class MetadataWriter extends UnitTreeVisitor {
       this.stmts = stmts;
     }
 
+    protected boolean needsClassInit() {
+        return !ElementUtil.isAnnotationType(type) && !ElementUtil.isPackageInfo(type)
+        		&&  ElementUtil.getSuperclass(type) != TypeUtil.NS_OBJECT;
+      }
+    
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
-      int methodMetadataCount = generateMethodsMetadata();
+      
+      StringBuilder sbMethodData = new StringBuilder();
+      int methodMetadataCount = generateMethodsMetadata(sbMethodData);
       int fieldMetadataCount = generateFieldsMetadata();
       String annotationsFunc = createAnnotationsFunction(typeNode);
+      int modifiers = getTypeModifiers(type);
       String metadata = UnicodeUtils.format(
           "static const J2ObjcClassInfo _%s = { "
-          + "%s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
+          + "%s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
           fullName,
-          cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type)),
-          cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type)))),
+          needsClassInit() ? (fullName + "_initialize") : "empty_static_initialize",
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
           METADATA_VERSION,
-          getTypeModifiers(type),
+          modifiers ,
           methodMetadataCount,
           fieldMetadataCount,
           cStrIdx(getTypeName(ElementUtil.getDeclaringClass(type))),
@@ -162,10 +172,53 @@ public class MetadataWriter extends UnitTreeVisitor {
       // values.
       metadata = UnicodeUtils.format(metadata, getPtrTableEntry());
       stmts.add(new NativeStatement(metadata));
-      stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
+
+      boolean isPureInterface = TypeUtil.isPureInterface(type.asType());
+      StringBuilder code = new StringBuilder();
+      String qName = elementUtil.getBinaryName(type).replace('/', '.');
+      String typeName = ElementUtil.getName(type);
+      
+      int posSimpleName = qName.length() - typeName.length();
+      if (!isPureInterface) {
+    	  code.append("if (self != " + fullName + ".class) {\n");
+    	  if (qName.equals("java.lang.reflect.Proxy")) {
+    		  code.append("JreBindProxyClass(self);\n");
+    	  }
+    	  else {
+    		  code.append("JreExtendIOSClass(self);\n");
+    	  }
+          code.append("return;\n");
+	      code.append("}\n");
+      }
+      code.append(sbMethodData);
+      if (!isPureInterface) {
+    	  code.append("JreBindIOSClass(self, &_" + fullName
+    			  + ", " + nsStr(qName) + ", " + posSimpleName + ");\n");
+      }
+      else {
+    	  code.append("\nJreBindIOSProtocol(@protocol(" + fullName + "), &_" + fullName
+    			  + ", " + nsStr(qName) + ", " + posSimpleName + ");\n");
+      }
+      stmts.add(new NativeStatement(code.toString()));
     }
 
-    private String getPtrTableEntry() {
+//    private String getEnclosingJavaClassName(TypeElement type) {
+//        String qName = ElementUtil.getQualifiedName(type);
+//		if (qName == null || qName.length() == 0) {
+//		      String binaryName = elementUtil.getBinaryName(element);
+//		      int innerClassIndex = ElementUtil.isAnonymous(element)
+//		          ? binaryName.length() : binaryName.lastIndexOf(ElementUtil.getName(element));
+//		      while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
+//		        --innerClassIndex;
+//		      }
+//		      return binaryName.substring(innerClassIndex);
+//		  qName = getEnclosingJavaClassName(ElementUtil.getDeclaringClass(type)) + "$" + typeName;
+//		    System.out.println(qName + ", " + typeName);
+//		}
+//		return qName;
+//	}
+
+	private String getPtrTableEntry() {
       if (pointers.isEmpty()) {
         return "NULL";
       }
@@ -184,7 +237,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       return "ptrTable";
     }
 
-    private int generateMethodsMetadata() {
+    private int generateMethodsMetadata(StringBuilder sb) {
       List<String> methodMetadata = new ArrayList<>();
       List<String> selectorMetadata = new ArrayList<>();
       int methodCount = 0;
@@ -220,21 +273,21 @@ public class MetadataWriter extends UnitTreeVisitor {
         }
       }
       if (methodMetadata.size() > 0) {
-        StringBuilder sb = new StringBuilder("static J2ObjcMethodInfo methods[] = {\n");
+        sb.append("static J2ObjcMethodInfo methods[] = {\n");
         for (String metadata : methodMetadata) {
           sb.append(metadata);
         }
         sb.append("  };");
         stmts.add(new NativeStatement(sb.toString()));
-        stmts.add(new NativeStatement("#pragma clang diagnostic push"));
-        stmts.add(new NativeStatement(
-            "#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\""));
-        stmts.add(new NativeStatement(
-            "#pragma clang diagnostic ignored \"-Wundeclared-selector\""));
+        sb.setLength(0);
+        
+        sb.append("#pragma clang diagnostic push\n");
+        sb.append("#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\"\n");
+        sb.append("#pragma clang diagnostic ignored \"-Wundeclared-selector\"\n");
         for (String selector : selectorMetadata) {
-          stmts.add(new NativeStatement(selector));
+        	sb.append(selector).append("\n");
         }
-        stmts.add(new NativeStatement("#pragma clang diagnostic pop"));
+        sb.append("#pragma clang diagnostic pop\n");
       }
       return methodMetadata.size();
     }
@@ -330,7 +383,7 @@ public class MetadataWriter extends UnitTreeVisitor {
     }
 
     private String addressOfIdx(String name) {
-      return getPointerIdx(name != null ? "&" + name : null);
+      return getPointerIdx(name != null ? /*ARGC*/"(void *)&" + name : null);
     }
 
     // Same as addressOfIdx, but adds a (void *) cast to satisfy c++ compilers.
@@ -434,6 +487,8 @@ public class MetadataWriter extends UnitTreeVisitor {
       return getTypeName(TypeUtil.asTypeElement(type));
     } else if (TypeUtil.isArray(type)) {
       return "[" + getTypeName(((ArrayType) type).getComponentType());
+    } else if (type.getKind() == TypeKind.ERROR) {
+      return getTypeName(TypeUtil.resolveUnreachableClass(type));
     } else {
       return TypeUtil.getBinaryName(type);
     }
@@ -511,5 +566,9 @@ public class MetadataWriter extends UnitTreeVisitor {
 
   private String cStr(String s) {
     return s == null ? "NULL" : "\"" + s + "\"";
+  }
+
+  private String nsStr(String s) {
+	    return s == null || s.length() == 0 ? "NULL" : "@\"" + s + "\"";
   }
 }

@@ -62,8 +62,10 @@ package sun.misc;
 
 - (void)dealloc {
   [cleaner_ clean];
+#if !__has_feature(objc_arc)
   [cleaner_ release];
   [super dealloc];
+#endif
 }
 
 @end
@@ -99,9 +101,13 @@ public class Cleaner {
 
     private static native void setAssociated(Object ob, Cleaner cleaner) /*-[
         SunMiscCleaner_Associated *associated = [[SunMiscCleaner_Associated alloc] init];
-        associated->cleaner_ = [cleaner retain];
-        objc_setAssociatedObject(ob, cleaner, associated, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [associated release];
+        associated->cleaner_ = RETAIN_(cleaner);
+#if __has_feature(objc_arc)        
+        objc_setAssociatedObject(ob, (__bridge_retained void*)cleaner, associated, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+#else        
+        objc_setAssociatedObject(ob, (__bridge_retained void*)cleaner, associated, OBJC_ASSOCIATION_ASSIGN);
+#endif
+        RELEASE_(associated);
     ]-*/;
 
     /**

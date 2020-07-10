@@ -17,6 +17,8 @@
 
 package java.lang;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.ObjectiveCType;
 import com.google.j2objc.annotations.Weak;
 
 import java.util.ArrayList;
@@ -34,15 +36,6 @@ import sun.nio.ch.Interruptible;
 #import <pthread.h>
 ]-*/
 
-/*-[
-@interface NativeThread : NSObject {
- @public
-  pthread_t t;
-}
-@end
-@implementation NativeThread
-@end
-]-*/
 
 /**
  * Simplified iOS version of java.lang.Thread, based on Apache Harmony source
@@ -57,7 +50,7 @@ public class Thread implements Runnable {
   private static final int NANOS_PER_MILLI = 1000000;
 
   /** Android source declares this as the native VMThread class. */
-  private final Object nativeThread;
+  final Object nativeThread;
   private Runnable target;
   private final long threadId;
   private String name;
@@ -196,7 +189,9 @@ public class Thread implements Runnable {
   }
 
   private static native Object newNativeThread() /*-[
-    return [[[NativeThread alloc] init] autorelease];
+    NativeThread* nativeThread = [[NativeThread alloc] init];
+    nativeThread->jniEnv = &J2ObjC_JNIEnv;
+    return AUTORELEASE([[NativeThread alloc] init]);
   ]-*/;
 
   /**
@@ -361,8 +356,8 @@ public class Thread implements Runnable {
 
   /*-[
   void *start_routine(void *arg) {
-    JavaLangThread *thread = (JavaLangThread *)arg;
-    pthread_setspecific(java_thread_key, thread);
+    JavaLangThread *thread = (__bridge JavaLangThread *)arg;
+    pthread_setspecific(java_thread_key, (__bridge void *)thread);
     @autoreleasepool {
       @try {
         [thread run];
@@ -387,10 +382,10 @@ public class Thread implements Runnable {
    */
   private static native void initializeThreadClass() /*-[
     initJavaThreadKeyOnce();
-    NativeThread *nt = [[[NativeThread alloc] init] autorelease];
+    NativeThread *nt = AUTORELEASE([[NativeThread alloc] init]);
     nt->t = pthread_self();
     JavaLangThread *mainThread = JavaLangThread_createMainThreadWithId_(nt);
-    pthread_setspecific(java_thread_key, [mainThread retain]);
+    pthread_setspecific(java_thread_key, (__bridge_retained void*)mainThread);
   ]-*/;
 
   private static Thread createCurrentThread(Object nativeThread) {
@@ -398,14 +393,14 @@ public class Thread implements Runnable {
   }
 
   public static native Thread currentThread() /*-[
-    JavaLangThread *thread = pthread_getspecific(java_thread_key);
+    JavaLangThread *thread = (__bridge JavaLangThread *)pthread_getspecific(java_thread_key);
     if (thread) {
       return thread;
     }
-    NativeThread *nt = [[[NativeThread alloc] init] autorelease];
+    NativeThread *nt = AUTORELEASE([[NativeThread alloc] init]);
     nt->t = pthread_self();
     thread = JavaLangThread_createCurrentThreadWithId_(nt);
-    pthread_setspecific(java_thread_key, [thread retain]);
+    pthread_setspecific(java_thread_key, (__bridge_retained void*)thread);
     return thread;
   ]-*/;
 
@@ -429,7 +424,7 @@ public class Thread implements Runnable {
     if (stack >= PTHREAD_STACK_MIN) {
       pthread_attr_setstacksize(&attr, stack);
     }
-    pthread_create(&nt->t, &attr, &start_routine, [self retain]);
+    pthread_create(&nt->t, &attr, &start_routine, (__bridge_retained void*)self);
   ]-*/;
 
   void exit() {
@@ -1149,4 +1144,7 @@ public class Thread implements Runnable {
   public final void resume() {
     throw new UnsupportedOperationException();
   }
+
+
 }
+

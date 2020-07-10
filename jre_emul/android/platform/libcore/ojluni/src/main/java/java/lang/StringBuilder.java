@@ -134,7 +134,7 @@ public final class StringBuilder
     }
 
     public native StringBuilder append(String str) /*-[
-      JreStringBuilder_appendString(&self->delegate_, str);
+      JreStringBuilder_appendString(self, str);
       return self;
     ]-*/;
 
@@ -158,13 +158,13 @@ public final class StringBuilder
      * @return  a reference to this object.
      */
     public native StringBuilder append(StringBuffer sb) /*-[
-      JreStringBuilder_appendStringBuffer(&self->delegate_, sb);
+      JreStringBuilder_appendStringBuffer(self, sb);
       return self;
     ]-*/;
 
     @Override
     public native StringBuilder append(CharSequence s) /*-[
-      JreStringBuilder_appendCharSequence(&self->delegate_, s);
+      JreStringBuilder_appendCharSequence(self, s);
       return self;
     ]-*/;
 
@@ -173,12 +173,12 @@ public final class StringBuilder
      */
     @Override
     public native StringBuilder append(CharSequence s, int start, int end) /*-[
-      JreStringBuilder_appendCharSequenceSubset(&self->delegate_, s, start, end);
+      JreStringBuilder_appendCharSequenceSubset(self, s, start, end);
       return self;
     ]-*/;
 
     public native StringBuilder append(char[] str) /*-[
-      JreStringBuilder_appendCharArray(&self->delegate_, str);
+      JreStringBuilder_appendCharArray(self, str);
       return self;
     ]-*/;
 
@@ -186,7 +186,7 @@ public final class StringBuilder
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder append(char[] str, int offset, int len) /*-[
-      JreStringBuilder_appendCharArraySubset(&self->delegate_, str, offset, len);
+      JreStringBuilder_appendCharArraySubset(self, str, offset, len);
       return self;
     ]-*/;
 
@@ -196,27 +196,27 @@ public final class StringBuilder
 
     @Override
     public native StringBuilder append(char c) /*-[
-      JreStringBuilder_appendChar(&self->delegate_, c);
+      JreStringBuilder_appendChar(self, c);
       return self;
     ]-*/;
 
     public native StringBuilder append(int i) /*-[
-      JreStringBuilder_appendInt(&self->delegate_, i);
+      JreStringBuilder_appendInt(self, i);
       return self;
     ]-*/;
 
     public native StringBuilder append(long lng) /*-[
-      JreStringBuilder_appendLong(&self->delegate_, lng);
+      JreStringBuilder_appendLong(self, lng);
       return self;
     ]-*/;
 
     public native StringBuilder append(float f) /*-[
-      JreStringBuilder_appendFloat(&self->delegate_, f);
+      JreStringBuilder_appendFloat(self, f);
       return self;
     ]-*/;
 
     public native StringBuilder append(double d) /*-[
-      JreStringBuilder_appendDouble(&self->delegate_, d);
+      JreStringBuilder_appendDouble(self, d);
       return self;
     ]-*/;
 
@@ -225,7 +225,7 @@ public final class StringBuilder
      */
     public native StringBuilder appendCodePoint(int codePoint) /*-[
       JreStringBuilder_appendCharArray(
-          &self->delegate_, JavaLangCharacter_toCharsWithInt_(codePoint));
+          self, JavaLangCharacter_toCharsWithInt_(codePoint));
       return self;
     ]-*/;
 
@@ -233,7 +233,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder delete(int start, int end) /*-[
-      JreStringBuilder_delete(&self->delegate_, start, end);
+      JreStringBuilder_delete(self, start, end);
       return self;
     ]-*/;
 
@@ -241,7 +241,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder deleteCharAt(int index) /*-[
-      JreStringBuilder_deleteCharAt(&self->delegate_, index);
+      JreStringBuilder_deleteCharAt(self, index);
       return self;
     ]-*/;
 
@@ -249,7 +249,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder replace(int start, int end, String str) /*-[
-      JreStringBuilder_replace(&self->delegate_, start, end, str);
+      JreStringBuilder_replace(self, start, end, str);
       return self;
     ]-*/;
 
@@ -257,7 +257,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder insert(int index, char[] str, int offset, int len) /*-[
-      JreStringBuilder_insertCharArraySubset(&self->delegate_, index, str, offset, len);
+      JreStringBuilder_insertCharArraySubset(self, index, str, offset, len);
       return self;
     ]-*/;
 
@@ -272,7 +272,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder insert(int offset, String str) /*-[
-      JreStringBuilder_insertString(&self->delegate_, offset, str);
+      JreStringBuilder_insertString(self, offset, str);
       return self;
     ]-*/;
 
@@ -280,7 +280,7 @@ public final class StringBuilder
      * @throws StringIndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder insert(int offset, char[] str) /*-[
-      JreStringBuilder_insertCharArray(&self->delegate_, offset, str);
+      JreStringBuilder_insertCharArray(self, offset, str);
       return self;
     ]-*/;
 
@@ -295,7 +295,7 @@ public final class StringBuilder
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder insert(int dstOffset, CharSequence s, int start, int end) /*-[
-      JreStringBuilder_insertCharSequence(&self->delegate_, dstOffset, s, start, end);
+      JreStringBuilder_insertCharSequence(self, dstOffset, s, start, end);
       return self;
     ]-*/;
 
@@ -310,7 +310,7 @@ public final class StringBuilder
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public native StringBuilder insert(int offset, char c) /*-[
-      JreStringBuilder_insertChar(&self->delegate_, offset, c);
+      JreStringBuilder_insertChar(self, offset, c);
       return self;
     ]-*/;
 
@@ -343,13 +343,13 @@ public final class StringBuilder
     }
 
     public native StringBuilder reverse() /*-[
-      JreStringBuilder_reverse(&self->delegate_);
+      JreStringBuilder_reverse(self);
       return self;
     ]-*/;
 
     @Override
     public native String toString() /*-[
-      return JreStringBuilder_toString(&self->delegate_);
+      return JreStringBuilder_toString(self);
     ]-*/;
 
     /**

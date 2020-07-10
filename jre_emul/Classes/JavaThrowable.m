@@ -54,13 +54,13 @@
 
 - (void)dealloc {
   free(frames_);
-  [super dealloc];
+  DEALLOC_(super);
 }
 
 @end
 
-jobject Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
-  return [[[RawStack alloc] init] autorelease];
+id Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
+  return AUTORELEASE([[RawStack alloc] init]);
 }
 
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
@@ -89,12 +89,12 @@ static void ProcessRawStack(RawStack *rawStack, NSMutableArray *frames, jboolean
     if (!applyFilter || !ShouldFilterStackElement(element)) {
       [frames addObject:element];
     }
-    [element release];
+    RELEASE_(element);
   }
 }
 
 jarray Java_java_lang_Throwable_nativeGetStackTrace(
-    JNIEnv *_env_, jclass _cls_, jobject stackState) {
+    JNIEnv *_env_, jclass _cls_, id stackState) {
   RawStack *rawStack = stackState;
   NSMutableArray *frames = [NSMutableArray array];
   if (rawStack) {
@@ -120,5 +120,5 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   //   . otherwise, it's "class-name".
   NSString *clsName = [[self java_getClass] getName];
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
-  [self initWithName:[[self class] description] reason:reason userInfo:nil];
+  (void)[self initWithName:[[self class] description] reason:reason userInfo:nil];
 }

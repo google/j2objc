@@ -86,3 +86,4 @@ endef
 #   5: Translation arguments.
 emit_translate_rule = \
   $(eval $(call translate_rule,$(1),$(2),$(3),$(4),$(5)))$(TRANSLATE_TARGET)
+

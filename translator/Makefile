@@ -58,6 +58,7 @@ J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
+	argc/ARGC.java \
 	ast/AbstractTypeDeclaration.java \
 	ast/AnnotatableType.java \
 	ast/Annotation.java \

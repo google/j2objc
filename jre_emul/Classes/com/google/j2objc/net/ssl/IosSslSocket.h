@@ -24,11 +24,11 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleJ2objcNetSslIosSslSocket)
+J2OBJC_STATIC_INIT(ComGoogleJ2objcNetSslIosSslSocket)
 
 // public IosSslSocket()
 FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_init(
-    ComGoogleJ2objcNetSslIosSslSocket *self);
+    ComGoogleJ2objcNetSslIosSslSocket *self) J2OBJC_METHOD_ATTR;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 new_ComGoogleJ2objcNetSslIosSslSocket_init(void) NS_RETURNS_RETAINED;
@@ -38,64 +38,64 @@ create_ComGoogleJ2objcNetSslIosSslSocket_init(void);
 
 // public IosSslSocket(String host, int port)
 FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(
-    ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port);
+    ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port) J2OBJC_METHOD_ATTR;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
-new_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port)
+new_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port)  J2OBJC_METHOD_ATTR
 NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
-create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port);
+create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_(NSString *host, jint port) J2OBJC_METHOD_ATTR;
 
 // public IosSslSocket(String host, int port, InetAddress localAddr, int localPort)
 FOUNDATION_EXPORT void
 ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
     ComGoogleJ2objcNetSslIosSslSocket *self, NSString *host, jint port,
-    JavaNetInetAddress *localAddr, jint localPort);
+    JavaNetInetAddress *localAddr, jint localPort) J2OBJC_METHOD_ATTR;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 new_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
-    NSString *host, jint port, JavaNetInetAddress *localAddr, jint localPort) NS_RETURNS_RETAINED;
+    NSString *host, jint port, JavaNetInetAddress *localAddr, jint localPort)  J2OBJC_METHOD_ATTR NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 create_ComGoogleJ2objcNetSslIosSslSocket_initWithNSString_withInt_withJavaNetInetAddress_withInt_(
-    NSString *host, jint port, JavaNetInetAddress *localAddr, jint localPort);
+    NSString *host, jint port, JavaNetInetAddress *localAddr, jint localPort) J2OBJC_METHOD_ATTR;
 
 // public IosSslSocket(InetAddress host, int port)
 FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
-    ComGoogleJ2objcNetSslIosSslSocket *self, JavaNetInetAddress *address, jint port);
+    ComGoogleJ2objcNetSslIosSslSocket *self, JavaNetInetAddress *address, jint port) J2OBJC_METHOD_ATTR;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
-    JavaNetInetAddress *address, jint port) NS_RETURNS_RETAINED;
+    JavaNetInetAddress *address, jint port)  J2OBJC_METHOD_ATTR NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_(
-    JavaNetInetAddress *address, jint port);
+    JavaNetInetAddress *address, jint port) J2OBJC_METHOD_ATTR;
 
 // public IosSslSocket(InetAddress address, int port, InetAddress localAddr, int localPort)
 // NOLINTNEXTLINE
 FOUNDATION_EXPORT void ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
     ComGoogleJ2objcNetSslIosSslSocket *self, JavaNetInetAddress *address, jint port,
-    JavaNetInetAddress *localAddr, jint localPort);
+    JavaNetInetAddress *localAddr, jint localPort) J2OBJC_METHOD_ATTR;
 
 // NOLINTNEXTLINE
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
     JavaNetInetAddress *address, jint port, JavaNetInetAddress *localAddr, jint localPort)
-NS_RETURNS_RETAINED;
+NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 // NOLINTNEXTLINE
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetInetAddress_withInt_withJavaNetInetAddress_withInt_(
-    JavaNetInetAddress *address, jint port, JavaNetInetAddress *localAddr, jint localPort);
+    JavaNetInetAddress *address, jint port, JavaNetInetAddress *localAddr, jint localPort) J2OBJC_METHOD_ATTR;
 
 // public IosSslSocket(Socket s, String host, int port, boolean autoClose)
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
-    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) NS_RETURNS_RETAINED;
+    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
-    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose);
+    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) J2OBJC_METHOD_ATTR;
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleJ2objcNetSslIosSslSocket)
 

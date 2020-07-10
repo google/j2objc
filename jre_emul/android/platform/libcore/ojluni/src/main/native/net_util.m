@@ -181,7 +181,7 @@ NET_SockaddrToInetAddress(JNIEnv *env, struct sockaddr *him, int *port) {
             (*env)->SetByteArrayRegion(env, ipaddress, 0, 16,
                                        (jbyte *)&(him6->sin6_addr));
 
-            JreStrongAssign(&((JavaNetInet6Address *)iaObj)->ipaddress_,
+            JreObjectFieldAssign(&((JavaNetInet6Address *)iaObj)->ipaddress_,
                 ipaddress);
 
             setInetAddress_family(env, iaObj, IPv6);

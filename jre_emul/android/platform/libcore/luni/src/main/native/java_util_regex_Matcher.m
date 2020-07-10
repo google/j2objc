@@ -43,7 +43,7 @@ bool maybeThrowIcuException(const char* function, UErrorCode error) {
   } else {
     e = [[JavaLangRuntimeException alloc] initWithNSString:msg];
   }
-  @throw [e autorelease];
+  @throw AUTORELEASE(e);
   return true;
 }
 

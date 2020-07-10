@@ -16,10 +16,17 @@
 #define _J2OBJC_COMMON_H_
 
 #pragma clang system_header
+#pragma clang diagnostic ignored "-Wignored-attributes"
 
 #import <Foundation/Foundation.h>
 
 #import "J2ObjC_types.h"
+#import "pthread.h"
+
+#define J2OBJC_USE_GC 1
+#ifdef J2OBJC_USE_GC
+#import "ARGC/ARGC.h"
+#endif
 
 @class IOSClass;
 @protocol JavaLangIterable;
@@ -41,9 +48,10 @@
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 #  define AUTORELEASE(x) x
-#  define RELEASE_(x) x
+#  define RELEASE_(x) (void)x
 #  define RETAIN_(x) x
 #  define RETAIN_AND_AUTORELEASE(x) x
+#  define DEALLOC_(x)
 # else
 #  define ARCBRIDGE
 #  define ARCBRIDGE_TRANSFER
@@ -52,6 +60,7 @@
 #  define RELEASE_(x) [x release]
 #  define RETAIN_(x) [x retain]
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
+#  define DEALLOC_(x) [x dealloc]
 # endif
 
 #ifdef J2OBJC_DISABLE_ALL_CHECKS
@@ -67,26 +76,64 @@
 
 CF_EXTERN_C_BEGIN
 
-id JreThrowNullPointerException() __attribute__((noreturn));
-void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
-void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
+id JreThrowNullPointerException(id p) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
+void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
+void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
+
+#ifdef J2OBJC_USE_GC
+#define JavaLangObject ARGCObject
+
+#define JreStrongAssign                 ARGC_assignStrongObject
+#define JreStrongAssignAndConsume       ARGC_assignStrongObject
+__attribute__((always_inline)) inline id JreStrongAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
+    JreStrongAssign(pIvar, value);
+    return value;
+}
+
+#define JreNativeFieldAssign              ARGC_assignStrongObject
+#define JreNativeFieldAssignAndConsume    ARGC_assignStrongObject
+__attribute__((always_inline)) inline id JreNativeFieldAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
+    JreNativeFieldAssign(pIvar, value);
+    return value;
+}
+
+#define JreObjectFieldAssign            ARGC_assignARGCObject
+#define JreObjectFieldAssignAndConsume  ARGC_assignARGCObject
+__attribute__((always_inline)) inline id JreObjectFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) J2OBJC_METHOD_ATTR {
+    JreObjectFieldAssign(pIvar, value);
+    return value;
+}
+
+#define JreGenericFieldAssign           ARGC_assignGenericObject
+#define JreGenericFieldAssignAndConsume ARGC_assignGenericObject
+__attribute__((always_inline)) inline id JreGenericFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) J2OBJC_METHOD_ATTR {
+    JreGenericFieldAssign(pIvar, value);
+    return value;
+}
+
+#else
 
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
+#endif
 
 id JreLoadVolatileId(volatile_id *pVar);
-id JreAssignVolatileId(volatile_id *pVar, id value);
-id JreVolatileStrongAssign(volatile_id *pIvar, id value);
-jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
-id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
-void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
-void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
+id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
+id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
+jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, __unsafe_unretained id expected, __unsafe_unretained id newValue);
+id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
 void JreReleaseVolatile(volatile_id *pVar);
+#ifdef J2OBJC_USE_GC
+id JreVolatileNativeAssign(volatile_id *pIvar, __unsafe_unretained id value);
+#else
+void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
+#endif
+void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 
-id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
-id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
-void JreRetainedWithRelease(id parent, id child);
-void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
+id JreRetainedWithAssign(id parent, __strong id *pIvar, __unsafe_unretained id value);
+id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, __unsafe_unretained id value);
+void JreRetainedWithRelease(__unsafe_unretained id parent, __unsafe_unretained id child);
+void JreVolatileRetainedWithRelease(__unsafe_unretained id parent, volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
@@ -108,22 +155,23 @@ CF_EXTERN_C_END
 #ifdef J2OBJC_DISABLE_NIL_CHECKS
 #define nil_chk(p) p
 #else
-#define nil_chk(p) (p ?: JreThrowNullPointerException())
+#define nil_chk(p) (p ?: JreThrowNullPointerException(nil))
 #endif
 
-#if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline id JreAutoreleasedAssign(
-    id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  [*pIvar autorelease];
-  return *pIvar = value;
+// #if !__has_feature(objc_arc)
+__attribute__((always_inline)) inline __unsafe_unretained id JreAutoreleasedAssign(
+    __unsafe_unretained id *pIvar, __unsafe_unretained  id value) J2OBJC_METHOD_ATTR {
+    AUTORELEASE(value);
+    JreGenericFieldAssign(pIvar, value);
+    return value;
 }
-#endif
+// #endif
 
-#if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
-  return [[value retain] autorelease];
+// #if !__has_feature(objc_arc)
+__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) J2OBJC_METHOD_ATTR {
+  return AUTORELEASE(RETAIN_(value));
 }
-#endif
+// #endif
 
 /*!
  * Utility macro for passing an argument that contains a comma.
@@ -131,11 +179,11 @@ __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
 #define J2OBJC_ARG(...) __VA_ARGS__
 
 #define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE) \
-  __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) { \
+  __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) J2OBJC_METHOD_ATTR { \
     return __c11_atomic_load(pVar, __ATOMIC_SEQ_CST); \
   } \
   __attribute__((always_inline)) inline TYPE JreAssignVolatile##NAME( \
-      volatile_##TYPE *pVar, TYPE value) { \
+      volatile_##TYPE *pVar, TYPE value) J2OBJC_METHOD_ATTR { \
     __c11_atomic_store(pVar, value, __ATOMIC_SEQ_CST); \
     return value; \
   }
@@ -150,6 +198,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Float, jfloat)
 J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #undef J2OBJC_VOLATILE_ACCESS_DEFN
 
+#ifndef J2OBJC_USE_GC
 /*!
  * Defines the initialized flag for a class.
  *
@@ -157,7 +206,8 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class for which the initialized flag is defined.
  */
 #define J2OBJC_INITIALIZED_DEFN(CLASS) \
-  _Atomic(jboolean) CLASS##__initialized = false;
+   static _Atomic(jboolean) CLASS##__initialized;
+#endif
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
@@ -178,12 +228,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized; \
-  __attribute__((always_inline)) inline void CLASS##_initialize() { \
-    if (!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE)) { \
-      [CLASS class]; \
-    } \
-  }
+  FOUNDATION_EXPORT void CLASS##_initialize(void);
 
 /*!
  * Defines an empty init function for a class that has no initialization code.
@@ -192,8 +237,15 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
-  __attribute__((always_inline)) inline void CLASS##_initialize() {}
+  __attribute__((always_inline)) inline void CLASS##_initialize(void) {}
 
+FOUNDATION_EXPORT NSString* JreStringConstant(NSString* str);
+
+#define JreString(idx, text)  _string_##idx
+
+FOUNDATION_EXPORT void empty_static_initialize(void);
+
+FOUNDATION_EXPORT void IOSClass_init_class_(pthread_t* initToken, Class cls, void(*clinit)());
 /*!
  * Declares the type literal accessor for a type. This macro should be added to
  * the header of each generated Java type.
@@ -203,6 +255,14 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  */
 #define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
   FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
+
+#define J2OBJC_CLASS_INITIALIZE_SOURCE(CLASS) \
+  void CLASS##_initialize() { \
+    static pthread_t CLASS##_initToken = 0; \
+    if (CLASS##_initToken != (pthread_t)~0L) { \
+      IOSClass_init_class_(&CLASS##_initToken, CLASS.class, CLASS##__clinit__); \
+    } \
+  }
 
 /*!
  * Defines the type literal accessor for a class or enum type. This macro should
@@ -215,10 +275,10 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    TYPE##_initialize(); \
     dispatch_once(&token, ^{ cls = IOSClass_fromClass([TYPE class]); }); \
     return cls; \
   }
+
 
 /*!
  * Defines the type literal accessor for a interface or annotation type. This
@@ -231,30 +291,39 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    TYPE##_initialize(); \
-    dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
+    dispatch_once(&token, ^{ cls = IOSClass_fromProtocol((id)@protocol(TYPE)); }); \
     return cls; \
   }
 
-#if __has_feature(objc_arc)
+
+#ifdef J2OBJC_USE_GC
+#define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \
+__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
+ Jre##REF##FieldAssign(&instance->FIELD, value); \
+}\
+__attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
+CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
+ Jre##REF##FieldAssignAndConsume(&instance->FIELD, value); \
+}
+#elif __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return instance->FIELD = value; \
+  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
+     instance->FIELD = value; \
   }
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreStrongAssign(&instance->FIELD, value); \
-  }\
-  __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
-        CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-    return JreStrongAssignAndConsume(&instance->FIELD, value); \
-  }
+__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
+ JreStrongAssign(&instance->FIELD, value); \
+}\
+__attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
+CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
+ JreStrongAssignAndConsume(&instance->FIELD, value); \
+}
 #endif
 
 #define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreVolatileStrongAssign(&instance->FIELD, value); \
+  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
+     JreVolatileStrongAssign(&instance->FIELD, value); \
   }
 
 /*!
@@ -264,9 +333,14 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  *
  * @define J2OBJC_ETERNAL_SINGLETON
  */
+#ifdef J2OBJC_USE_GC
+#define J2OBJC_ETERNAL_SINGLETON // error!! NO Singlton surpported in ARC.
+#else
 #define J2OBJC_ETERNAL_SINGLETON \
   - (id)retain { return self; } \
   - (oneway void)release {} \
   - (id)autorelease { return self; }
+#endif
+
 
 #endif // _J2OBJC_COMMON_H_

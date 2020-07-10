@@ -212,14 +212,14 @@ public final class Short extends Number implements Comparable<Short> {
 
         private static native void fillValues(Short[] values) /*-[
           Class self = [JavaLangShort class];
-          size_t objSize = class_getInstanceSize(self);
-          uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
-          id *buf = values->buffer_;
+          //size_t objSize = class_getInstanceSize(self);
+          //uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+          ARGC_FIELD_REF id *buf = values->buffer_;
           for (jint i = -128; i < 128; i++) {
-            id obj = objc_constructInstance(self, (void *)ptr);
+            id obj = [JavaLangShort alloc];// objc_constructInstance(self, (void *)ptr);
             JavaLangShort_initWithShort_(obj, (jshort)i);
-            *(buf++) = obj;
-            ptr += objSize;
+            JreGenericFieldAssign(buf++, obj);
+            //ptr += objSize;
           }
         ]-*/;
     }

@@ -614,9 +614,9 @@ JVM_SupportsCX8(void);
  * Structure to pass one probe description to JVM
  */
 typedef struct {
-    jmethodID method;
-    jstring   function;
-    jstring   name;
+    __unsafe_unretained jmethodID method;
+    __unsafe_unretained jstring   function;
+    __unsafe_unretained jstring   name;
     void*            reserved[4];     // for future use
 } JVM_DTraceProbe;
 
@@ -633,7 +633,7 @@ typedef struct {
  * Structure to pass one provider description to JVM
  */
 typedef struct {
-    jstring                       name;
+    __unsafe_unretained jstring   name;
     JVM_DTraceProbe*              probes;
     jint                          probe_count;
     JVM_DTraceInterfaceAttributes providerAttributes;

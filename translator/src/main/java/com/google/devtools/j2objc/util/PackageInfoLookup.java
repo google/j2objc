@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.j2objc.annotations.ReflectionSupport;
 import com.strobel.decompiler.languages.java.ast.Annotation;

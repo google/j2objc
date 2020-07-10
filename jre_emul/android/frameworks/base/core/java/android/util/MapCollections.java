@@ -16,8 +16,6 @@
 
 package android.util;
 
-import com.google.j2objc.annotations.WeakOuter;
-
 import libcore.util.Objects;
 
 import java.lang.reflect.Array;
@@ -164,7 +162,7 @@ abstract class MapCollections<K, V> {
         }
     }
 
-    @WeakOuter
+    //@WeakOuter
     final class EntrySet implements Set<Map.Entry<K, V>> {
         @Override
         public boolean add(Map.Entry<K, V> object) {
@@ -267,7 +265,7 @@ abstract class MapCollections<K, V> {
         }
     };
 
-    @WeakOuter
+    //@WeakOuter
     final class KeySet implements Set<K> {
 
         @Override
@@ -356,7 +354,7 @@ abstract class MapCollections<K, V> {
         }
     };
 
-    @WeakOuter
+    //@WeakOuter
     final class ValuesCollection implements Collection<V> {
 
         @Override

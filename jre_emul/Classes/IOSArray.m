@@ -46,13 +46,13 @@ static id NewArrayWithDimensionsAndComponentTypes(
       return [self newArrayWithLength:size];
     }
   }
-
+    
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
-  __unsafe_unretained id subarrays[size];
+  id subarrays[size];
   for (jint i = 0; i < size; i++) {
-    subarrays[i] = [NewArrayWithDimensionsAndComponentTypes(
-        self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1) autorelease];
+    subarrays[i] = AUTORELEASE(NewArrayWithDimensionsAndComponentTypes(
+        self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1));
   }
   return [IOSObjectArray newArrayWithObjects:subarrays count:size type:componentType];
 }
@@ -81,7 +81,7 @@ id IOSArray_NewArrayWithDimensions(
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const jint *)dimensionLengths {
-  return [IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil) autorelease];
+  return AUTORELEASE(IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil));
 }
 
 + (id)newArrayWithDimensions:(NSUInteger)dimensionCount
@@ -133,17 +133,11 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
 }
 
 - (IOSClass *)java_getClass {
-  return IOSClass_arrayOf([self elementType]);
+  return IOSClass_arrayOf(self->elementType_);
 }
 
 - (IOSClass *)elementType {
-#if __has_feature(objc_arc)
-  @throw [[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"];
-#else
-  @throw [[[JavaLangAssertionError alloc]
-           initWithId:@"abstract method not overridden"] autorelease];
-#endif
-  return nil;
+  return self->elementType_;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -164,12 +158,17 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
       destination:(IOSArray *)destination
         dstOffset:(jint)dstOffset
            length:(jint)length {
-  @throw [[[JavaLangAssertionError alloc]
-      initWithId:@"abstract method not overridden"] autorelease];
+  @throw AUTORELEASE([[JavaLangAssertionError alloc]
+      initWithId:@"abstract method not overridden"]);
 }
 
 - (void *)buffer {
   return nil;
 }
+
++ (void)initialize {
+  // do nothing. class resolved after creation.
+}
+
 
 @end

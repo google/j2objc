@@ -38,8 +38,4 @@ J2OBJC_EMPTY_STATIC_INIT(NSNumber)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSNumber)
 
-// Empty class to force category to be loaded.
-@interface JreNumberCategoryDummy : NSObject
-@end
-
 #endif // _JavaLangNumber_H_

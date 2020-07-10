@@ -48,6 +48,7 @@ import com.google.devtools.j2objc.util.ClassFile;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
@@ -118,7 +119,11 @@ public class ClassFileConverter {
    */
   private void setClassPath() throws IOException {
     String fullPath = file.getAbsolutePath();
-    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(classFile.getRelativePath()));
+    // { ARGC ++
+    int pos = fullPath.lastIndexOf(classFile.getRelativePath());
+    if (pos < 0) pos = fullPath.length();
+    // }
+    String rootPath = fullPath.substring(0, pos);
     List<File> classPath = new ArrayList<>();
     classPath.add(new File(rootPath));
     parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
@@ -293,6 +298,7 @@ public class ClassFileConverter {
     List<Annotation> annotations = new ArrayList<>();
     /* TODO(user): inheritance; consider Elements.getAllAnnotationMirrors() */
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+    	if (TypeUtil.isUnreachbleAnnotationClass(annotationMirror, "@")) continue;
       annotations.add(convertAnnotation(annotationMirror));
     }
     return annotations;
@@ -310,7 +316,7 @@ public class ClassFileConverter {
         }
       }
     }
-    if (typeDecl.isInterface()) {
+    if (TypeUtil.isInterface(element.asType())) {
       removeInterfaceModifiers(typeDecl);
     }
     return typeDecl;

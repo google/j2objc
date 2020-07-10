@@ -26,23 +26,6 @@
 
 @implementation IOSProxyClass
 
-- (instancetype)initWithClass:(Class)cls {
-  static const void *ptrTable[] = { "LJavaLangReflectInvocationHandler;" } ;
-  static J2ObjcMethodInfo proxyMethods[] = {{NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 }};
-  proxyMethods[0].selector = @selector(initWithJavaLangReflectInvocationHandler:);
-  static const J2ObjcClassInfo proxyClassMetadata = {
-    NULL, NULL, ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
-  };
-  return [self initWithClass:cls metadata:&proxyClassMetadata];
-}
-
-- (NSString *)getName {
-  return NSStringFromClass(class_);
-}
-
-- (NSString *)getSimpleName {
-  return NSStringFromClass(class_);
-}
 
 - (IOSObjectArray *)getDeclaredFields {
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
@@ -59,5 +42,6 @@
 - (JavaLangReflectField *)getField:(NSString *)name {
   @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
 }
+
 
 @end

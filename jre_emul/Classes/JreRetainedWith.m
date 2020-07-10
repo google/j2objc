@@ -21,6 +21,7 @@
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"
 
+#ifndef J2OBJC_USE_GC
 // Associate the return reference so that it can be artificially weakened when
 // the child's retain count is 1.
 static char returnRefKey;
@@ -73,7 +74,8 @@ static void *CreateSubclass(void *clsPtr) {
   return subclass;
 }
 
-static FastPointerLookup_t subclassLookup = FAST_POINTER_LOOKUP_INIT(&CreateSubclass);
+static FastPointerLookup_t subclassLookup;
+static int subclassLookup_d = FastPointerLookupInit(&subclassLookup, &CreateSubclass);
 
 // Swizzle the class of the child and make necessary associations.
 static void ApplyRetainedWithSubclass(id parent, id child) {
@@ -167,3 +169,4 @@ void JreRetainedWithHandlePreviousValue(id parent, id value) {
     }
   }
 }
+#endif

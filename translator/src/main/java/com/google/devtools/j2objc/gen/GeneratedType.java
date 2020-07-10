@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -92,8 +93,11 @@ public class GeneratedType {
 
     HeaderImportCollector headerCollector =
         new HeaderImportCollector(unit, HeaderImportCollector.Filter.PUBLIC_ONLY);
-    typeNode.accept(headerCollector);
-
+    boolean isNativeEnum = ElementUtil.isEnum(typeNode.getTypeElement()) && ARGC.inPureObjCMode();
+    if (!isNativeEnum) {
+      typeNode.accept(headerCollector);
+    }
+    
     HeaderImportCollector privateDeclarationCollector =
         new HeaderImportCollector(unit, HeaderImportCollector.Filter.PRIVATE_ONLY);
     typeNode.accept(privateDeclarationCollector);
@@ -118,8 +122,11 @@ public class GeneratedType {
       privateDeclarationCode = builder.toString();
 
       builder = new SourceBuilder(options.emitLineDirectives());
+    implementationCode = "";
+    if (!isNativeEnum) {
       TypeImplementationGenerator.generate(builder, typeNode);
       implementationCode = builder.toString();
+      }
     } else {
       privateDeclarationCode = "";
       implementationCode = String.format(

@@ -51,22 +51,43 @@
 
 @end
 
-__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
-  #pragma unused(self)
+
+#ifdef J2OBJC_USE_GC
+
+__attribute__((always_inline)) inline void NSObject_init(NSObject *self) J2OBJC_METHOD_ATTR {
+#pragma unused(self)
+}
+__attribute__((always_inline)) NS_RETURNS_RETAINED inline JavaLangObject *new_NSObject_init() {
+    return [JavaLangObject alloc];
+}
+__attribute__((always_inline)) inline JavaLangObject *create_NSObject_init() {
+    return AUTORELEASE([JavaLangObject alloc]);
+}
+
+#else
+
+#define JavaLangObject     NSObject
+
+__attribute__((always_inline)) inline void NSObject_init(NSObject *self) J2OBJC_METHOD_ATTR {
+#pragma unused(self)
 }
 __attribute__((always_inline)) NS_RETURNS_RETAINED inline NSObject *new_NSObject_init() {
-  return [NSObject alloc];
+    return [NSObject alloc];
 }
 __attribute__((always_inline)) inline NSObject *create_NSObject_init() {
-  return AUTORELEASE([NSObject alloc]);
+    return AUTORELEASE([NSObject alloc]);
 }
 
-// Empty class to force category to be loaded.
-@interface JreObjectCategoryDummy : NSObject
-@end
+
+#endif
+
 
 J2OBJC_EMPTY_STATIC_INIT(NSObject)
+J2OBJC_EMPTY_STATIC_INIT(NSException)
+J2OBJC_EMPTY_STATIC_INIT(JavaLangObject)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSObject)
+
+
 
 #endif // _NSObject_JavaObject_H_

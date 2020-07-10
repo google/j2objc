@@ -67,7 +67,11 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
     native void readUntilEnd(Object inputStream) /*-[
       if (!accumulatedData_) {
+#ifdef J2OBJC_USE_GC
+        ARGC_assignGenericObject(&accumulatedData_, [[NSMutableData alloc] init]);
+#else
         accumulatedData_ = [[NSMutableData alloc] init];
+#endif
       }
 
       NSRunLoop *runLoop = [NSRunLoop currentRunLoop];

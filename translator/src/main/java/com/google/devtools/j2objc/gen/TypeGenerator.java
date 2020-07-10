@@ -18,6 +18,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -33,6 +34,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
@@ -86,6 +88,17 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return true;
   }
 
+  protected String getSuperTypeName() {
+	if (TypeUtil.isAnnotation(this.typeElement.asType())) {
+		return "J2ObjC_Annotation";
+	}
+    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
+    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
+      return nameTable.getFullName(supertype);
+    }
+    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
+  }
+  
   private List<BodyDeclaration> filterDeclarations(Iterable<BodyDeclaration> declarations) {
     List<BodyDeclaration> filteredDecls = Lists.newArrayList();
     for (BodyDeclaration decl : declarations) {
@@ -180,7 +193,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean isInterfaceType() {
-    return typeElement.getKind().isInterface();
+    return TypeUtil.isPureInterface(typeElement);
   }
 
   protected Iterable<VariableDeclarationFragment> getInstanceFields() {
@@ -246,7 +259,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (typeNode.hasPrivateDeclaration()) {
       return false;
     }
-    return hasInitializeMethod()
+    return (!Options.useGC() && hasInitializeMethod())
         || hasStaticAccessorMethods()
         || ElementUtil.isGeneratedAnnotation(typeElement)
         || hasStaticMethods();
@@ -266,6 +279,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
              || ElementUtil.isLambda(typeElement));
   }
 
+  protected boolean needsClassInit() {
+    return !ElementUtil.isAnnotationType(typeElement) && !ElementUtil.isPackageInfo(typeElement)
+    		&&  TranslationUtil.getSuperType(typeNode) != TypeUtil.NS_OBJECT;
+
+  }
+  
   protected String getDeclarationType(VariableElement var) {
     TypeMirror type = var.asType();
     if (ElementUtil.isVolatile(var)) {
@@ -280,7 +299,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     StringBuilder sb = new StringBuilder();
     ExecutableElement element = m.getExecutableElement();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
-    String returnType = nameTable.getObjCType(element.getReturnType());
+    String returnType = ElementUtil.getObjectiveCType(element);
+  	if (returnType == null) {
+  		returnType = nameTable.getObjCType(element.getReturnType());
+  	}
     String selector = nameTable.getMethodSelector(element);
     if (m.isConstructor()) {
       returnType = "instancetype";
@@ -305,7 +327,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         VariableElement var = params.get(i).getVariableElement();
-        String typeName = nameTable.getObjCType(var.asType());
+        String typeName = nameTable.getObjCParameterType(var);
         sb.append(
             UnicodeUtils.format(
                 "%s:(%s%s)%s",
@@ -321,27 +343,66 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
     StringBuilder sb = new StringBuilder();
-    String returnType = nameTable.getObjCType(function.getReturnType().getTypeMirror());
+    String returnType = function.getObjCReturnType(nameTable);
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
-    if (isPrototype && function.getParameters().isEmpty()) {
-      sb.append("void");
+    boolean hasObjectParam = false;//returnType.endsWith("*");
+    int cntParam = 0;
+    if ((options.useGC() || isPrototype) && function.getParameters().isEmpty()) {
+      if (!options.useGC()) sb.append("void");
     } else {
       for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
-        String paramType = nameTable.getObjCType(var.asType());
-        paramType += (paramType.endsWith("*") ? "" : " ");
+        String paramType = nameTable.getObjCParameterType(var);
+        // ARGC ** {{
+        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+        hasObjectParam |= isObject;
+        cntParam ++;
+        paramType += " ";
         sb.append(paramType + nameTable.getVariableShortName(var));
+        if (!isPrototype && isObject && function.getParameter(var).isMutable()) {
+        	sb.append("_0");
+        }
+        // }}
         if (iter.hasNext()) {
           sb.append(", ");
         }
       }
     }
-    sb.append(')');
+    sb.append(")");
+     // ARGC ++
+    if (cntParam > 0) {
+    	/**
+    	 * clang 버그로 인해 cntParam 이 1 이상인 경우에만 J2OBJC_METHOD_ATTR 적용 가능. 
+    	 */
+    	sb.append(" J2OBJC_METHOD_ATTR");
+    }
     return sb.toString();
   }
 
+   // ARGC ++
+  protected String getMutableParameters(FunctionDeclaration function) {
+	  StringBuilder sb = null;
+	  for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
+			  iter.hasNext(); ) {
+		  SingleVariableDeclaration var = iter.next();
+		  if (var.isMutable()) {
+			  String paramType = nameTable.getObjCType(var.getVariableElement().asType());
+		        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+			  if (isObject) {
+				  if (sb == null) {
+					  sb = new StringBuilder();
+				  }
+				  String name = nameTable.getVariableShortName(var.getVariableElement());
+				  sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
+				    .append(name).append("_0;").append('\n');
+			  }
+		  }
+	  }
+	  return sb == null ? "" : sb.toString();
+  }
+  
   protected String generateExpression(Expression expr) {
     return StatementGenerator.generate(expr, getBuilder().getCurrentLine());
   }

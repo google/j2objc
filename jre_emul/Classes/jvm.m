@@ -37,7 +37,7 @@ static const char *absolutePath(const char *path) {
   if ([pathStr characterAtIndex:0] != '/') {
     JavaIoFile *f = new_JavaIoFile_initWithNSString_(pathStr);
     pathStr = [f getAbsolutePath];
-    [f release];
+    RELEASE_(f);
   }
   return [pathStr fileSystemRepresentation];
 }
@@ -63,7 +63,7 @@ jint JVM_GetLastErrorString(char *buf, int len) {
 char *JVM_NativePath(char *path) {
   NSString *str = [[NSString alloc] initWithUTF8String:path];
   [str getFileSystemRepresentation:path maxLength:strlen(path) + 1];
-  [str release];
+  RELEASE_(str);
   return path;
 }
 

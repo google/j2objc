@@ -258,7 +258,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    if (!node.isInterface()) {
+    if (!node.isPureInterface()) {
       new TypeFixer(node).visit();
     }
   }

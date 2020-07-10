@@ -16,19 +16,29 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import com.sun.tools.javac.code.Type;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -47,6 +57,8 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+
+import org.slowcoders.j2objc.UnreachableError;
 
 /**
  * Utility methods for working with TypeMirrors.
@@ -89,16 +101,17 @@ public final class TypeUtil {
     PRIMITIVE_IOS_ARRAYS = map;
   }
 
-  private final Elements javacElements;
-  private final Types javacTypes;
-  private final ElementUtil elementUtil;
+  private static Elements javacElements;
+  private static Types javacTypes;
+  private static ElementUtil elementUtil;
+  public static NoType javaVoid;
 
   // Commonly accessed types.
-  private final TypeElement javaObject;
-  private final TypeElement javaString;
-  private final TypeElement javaClass;
-  private final TypeElement javaNumber;
-  private final TypeElement javaThrowable;
+  /*ARGC** private*/public static TypeElement javaObject;
+  /*ARGC** private*/public final TypeElement javaString;
+  /*ARGC** private*/public final TypeElement javaClass;
+  /*ARGC** private*/public final TypeElement javaNumber;
+  /*ARGC** private*/public final TypeElement javaThrowable;
 
   private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
 
@@ -115,6 +128,11 @@ public final class TypeUtil {
     javaNumber = javacElements.getTypeElement("java.lang.Number");
     javaThrowable = javacElements.getTypeElement("java.lang.Throwable");
     TypeElement javaCloneable = javacElements.getTypeElement("java.lang.Cloneable");
+    javaVoid = javacTypes.getNoType(TypeKind.VOID);
+    if (javaVoid == null) {
+    	System.err.println("no void");
+    	System.exit(-1);
+    }
 
     ImmutableMap.Builder<TypeElement, TypeElement> typeMapBuilder =
         ImmutableMap.<TypeElement, TypeElement>builder()
@@ -165,6 +183,14 @@ public final class TypeUtil {
     return kind != null ? kind.isInterface() : false;
   }
 
+  public static boolean isPureInterface(TypeElement t) {
+	  return isPureInterface(t.asType());
+  }
+  
+  public static boolean isPureInterface(TypeMirror t) {
+    return isInterface(t) && !isAnnotation(t);
+  }
+
   public static boolean isEnum(TypeMirror t) {
     return getDeclaredTypeKind(t) == ElementKind.ENUM;
   }
@@ -208,6 +234,9 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
+	if (t.getKind() == TypeKind.ERROR) {
+	  return resolveUnreachableClass(t);
+	}
     if (isDeclaredType(t)) {
       return (TypeElement) ((DeclaredType) t).asElement();
     }
@@ -221,9 +250,60 @@ public final class TypeUtil {
 
   public static boolean isJavaObject(TypeMirror t) {
     TypeElement typeElement = asTypeElement(t);
-    return typeElement != null && !isInterface(t) && isNone(typeElement.getSuperclass());
+    return typeElement != null && !isPureInterface(t) && isNone(typeElement.getSuperclass());
   }
 
+  public boolean isARGCFieldEx(TypeElement owner, TypeMirror t) {
+	if (getArgcFieldType(owner.asType()) == "Native") {
+	  return false;
+	}
+	  
+	if (isPrimitiveOrVoid(t)) {
+	  return false;
+	}
+	  
+	return getArgcFieldType(t) != "Native";
+  }
+  
+  public String getArgcFieldTypeEx(Element owner, TypeMirror t) {
+	if (getArgcFieldType(owner.asType()) == "Native") {
+	  return "Native";
+	}
+	return getArgcFieldType(t);
+  }
+  
+  public String getArgcFieldType(TypeMirror t) {
+	if (TypeUtil.isPureInterface(t)) {
+	  return "Generic";
+	}
+	if (ARGC.isPureObjC(t)) {
+	  return "Native";
+	}
+	TypeElement e = asTypeElement(t);
+	if (e == null) {
+	  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
+	  if (tp != null) {
+	    return "Generic";
+	  }
+	}
+	if (e == javaObject) {
+	  return "Generic";
+	}
+	while (e != null) {
+	  if (e == this.javaNumber  || e == javaThrowable
+	  ||  e == javaClass || e == this.javaString) {
+	    return "Native";
+	  }
+	  TypeMirror m = e.getSuperclass();
+	  if (isNone(m)) {
+		break;
+	  }
+	  e = asTypeElement(m);
+	}
+   	return "Object";
+  }
+  
+  
   public static TypeParameterElement asTypeParameterElement(TypeMirror t) {
     return isTypeVariable(t) ? (TypeParameterElement) ((TypeVariable) t).asElement() : null;
   }
@@ -348,7 +428,7 @@ public final class TypeUtil {
     return isAssignable(trueType, falseType) ? falseType : trueType;
   }
 
-  public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
+  public static List<? extends TypeMirror> directSupertypes(TypeMirror t) {
     if (isGeneratedType(t)) {
       if (t instanceof GeneratedTypeElement.Mirror) {
         GeneratedTypeElement element = (GeneratedTypeElement)
@@ -365,7 +445,7 @@ public final class TypeUtil {
       return Collections.emptyList();
     }
     List<? extends TypeMirror> result = new ArrayList<>(javacTypes.directSupertypes(t));
-    if (TypeUtil.isInterface(t)) {
+    if (TypeUtil.isPureInterface(t)) {
       result.remove(javaObject.asType());
     }
     return result;
@@ -393,7 +473,7 @@ public final class TypeUtil {
     }
   }
 
-  boolean isGeneratedType(TypeMirror type) {
+  static boolean isGeneratedType(TypeMirror type) {
     return type instanceof AbstractTypeMirror;
   }
 
@@ -483,7 +563,7 @@ public final class TypeUtil {
     return null;
   }
 
-  public LinkedHashSet<DeclaredType> getObjcOrderedInheritedTypes(TypeMirror type) {
+  public static LinkedHashSet<DeclaredType> getObjcOrderedInheritedTypes(TypeMirror type) {
     LinkedHashSet<DeclaredType> inheritedTypes = new LinkedHashSet<>();
     visitTypeHierarchyObjcOrder(type, visitType -> {
       inheritedTypes.add(visitType);
@@ -526,7 +606,7 @@ public final class TypeUtil {
    * the type signature of a method. Uses a depth-first traversal, visiting interfaces before
    * classes.
    */
-  public boolean visitTypeHierarchyObjcOrder(TypeMirror type, TypeVisitor visitor) {
+  public static boolean visitTypeHierarchyObjcOrder(TypeMirror type, TypeVisitor visitor) {
     boolean result = true;
     if (type == null) {
       return result;
@@ -753,6 +833,10 @@ public final class TypeUtil {
       case VOID:
         return "void";
       default:
+    	  TypeElement type = resolveUnreachableClass(t);
+    	  if (type != null) {
+    		  return ElementUtil.getName(type);
+    	  }
         throw new AssertionError("Cannot resolve name for type: " + t);
     }
   }
@@ -797,7 +881,9 @@ public final class TypeUtil {
       case VOID:
         return getBinaryName(t);
       default:
-        throw new AssertionError("Cannot resolve signature name for type: " + t);
+        TypeElement type = TypeUtil.resolveUnreachableClass(t);
+        String sig = "L" + elementUtil.getBinaryName(type).replace('.', '/') + ";";
+    	return sig;  
     }
   }
 
@@ -914,5 +1000,83 @@ public final class TypeUtil {
   public static boolean isStubType(String typeName) {
     // Currently only NSException and NSFastEnumeration have com.google.j2objc stubs.
     return typeName.startsWith("com.google.j2objc.NS");
+  }
+  
+  private static HashMap<String, String> _unreachableImportedClasses;
+  private static boolean _ignoreAllUnreachableTypeError;
+  private static String _currentPackage;
+
+  public static TypeElement resolveUnreachableClass(TypeMirror type) {
+	  assert type.getKind() == TypeKind.ERROR;
+	  
+	  String t$ = type.toString();
+	  if (t$.charAt(0) == '<') {
+		  _unreachableImportedClasses.put(t$, t$);
+		  return (TypeElement) ((DeclaredType) type).asElement();
+	  }
+	  TypeElement typeElem = resolveUnreachableClass(t$);
+	  if (typeElem == null) {
+		  throw new AssertionError("Cannot resolve signature name for type: " + t$);
+	  }
+	  return typeElem;
+  }
+
+  public static TypeElement resolveUnreachableClass(String typeName) {
+	  if (_ignoreAllUnreachableTypeError) {
+		  return JavacEnvironment.unreachbleError;		  
+	  }
+
+	  if (_unreachableImportedClasses != null) {
+		  String simpleName = typeName;
+		  int p = simpleName.indexOf('<');
+		  if (p > 0) {
+			  simpleName = simpleName.substring(0, p);
+		  }
+
+		  // Inner-class 처리.
+		  p = simpleName.indexOf('.');
+		  if (p > 0) {
+			  if (ARGC.isExcludedClass(simpleName)) {
+				  _unreachableImportedClasses.put(simpleName, simpleName);
+				  return JavacEnvironment.unreachbleError;
+			  }
+			  
+			  simpleName = simpleName.substring(0, p);
+		  }
+		  if (_unreachableImportedClasses.containsKey(simpleName)) {
+			  return JavacEnvironment.unreachbleError;
+		  }
+		  String fullName = _currentPackage + simpleName;
+		  if (ARGC.isExcludedClass(fullName)) {
+			  _unreachableImportedClasses.put(simpleName, fullName);
+			  return JavacEnvironment.unreachbleError;
+		  }
+	  }	 
+	  return null;
+  }
+
+  public static boolean isUnreachbleAnnotationClass(AnnotationMirror annotationMirror, String annotationName) {
+	  if (annotationMirror == null) {
+		  return null != resolveUnreachableClass(annotationName);
+	  }
+	  if (annotationMirror.getAnnotationType() == null || annotationMirror.getAnnotationType().getKind() == TypeKind.ERROR) {
+		  return null != resolveUnreachableClass(annotationMirror.getAnnotationType());
+	  }
+	  return false;
+  }
+
+  public static void setIgnoreAllUnreachableTypeError(boolean ignoreError) {
+	  _ignoreAllUnreachableTypeError = ignoreError;
+  }
+
+  public static void setUnreachableClasses(CompilationUnit unit) {
+	  if (unit == null) {
+		  _unreachableImportedClasses = null;
+		  _currentPackage = null;
+	  }
+	  else {
+		  _unreachableImportedClasses = unit.getUnreachableImportedClasses();
+		  _currentPackage = unit.getPackage().getName().toString().replace('.', '/') + '/';
+	  }
   }
 }

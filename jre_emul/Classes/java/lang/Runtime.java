@@ -58,9 +58,12 @@ public class Runtime {
     _Exit(status);
   ]-*/;
 
-  public void gc() {
-    // No garbage collector, so do nothing.
-  }
+  public native void gc() /*-[
+  #ifdef J2OBJC_USE_GC
+     void ARGC_collectGarbage();
+     ARGC_collectGarbage();
+  #endif
+  ]-*/;
 
   public native long maxMemory() /*-[
     return (long long) [[NSProcessInfo processInfo] physicalMemory];

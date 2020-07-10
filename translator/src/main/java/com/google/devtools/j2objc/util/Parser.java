@@ -158,8 +158,7 @@ public abstract class Parser implements Closeable {
    *
    * TODO(tball): remove when pipeline has integrated annotation processing.
    */
-  public abstract ProcessingResult processAnnotations(Iterable<String> fileArgs,
-      List<ProcessingContext> inputs);
+  public abstract ProcessingResult processAnnotations(List<ProcessingContext> inputs);
 
   /**
    * Release any system resources used by this parser instance.

@@ -19,8 +19,11 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.Import;
 
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -55,6 +58,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printImports();
     printIgnoreIncompletePragmas();
     pushIgnoreDeprecatedDeclarationsPragma();
+    printStringConstants();
     for (GeneratedType generatedType : getOrderedTypes()) {
       print(generatedType.getPrivateDeclarationCode());
     }
@@ -63,6 +67,23 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     popIgnoreDeprecatedDeclarationsPragma();
     save(getOutputPath(), options.fileUtil().getOutputDirectory());
+  }
+
+  private void printStringConstants() {
+	HashMap<String, Integer> stringPool = CompilationUnit.getStringPool(this.getGenerationUnit().getSourceName());
+	if (stringPool == null) return;
+	printf("\n");
+	for (HashMap.Entry<String, Integer> e : stringPool.entrySet()) {
+		printf("static NSString* _string_%s;\n", e.getValue());
+	}
+
+	printf("\n");
+	printf("__attribute__((constructor)) static void initialize_string_constants() {\n");
+	for (HashMap.Entry<String, Integer> e : stringPool.entrySet()) {
+		String nsStr = LiteralGenerator.generateStringLiteral(e.getKey());
+		printf("_string_%s = JreStringConstant(%s);\n", e.getValue(), nsStr);
+	}
+	printf("}\n");
   }
 
   private void printIgnoreIncompletePragmas() {
@@ -84,8 +105,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     includeFiles.add(getGenerationUnit().getOutputPath() + ".h");
     for (GeneratedType generatedType : getOrderedTypes()) {
       for (Import imp : generatedType.getImplementationIncludes()) {
-        if (!isLocalType(imp.getTypeName())) {
-          includeFiles.add(imp.getImportFileName());
+        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
+        	includeFiles.add(imp.getImportFileName());
         }
       }
     }

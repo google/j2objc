@@ -72,3 +72,4 @@ NEW_PROCYON_COMPILERTOOLS_JAR = procyon-compilertools-0.5.33.jar
 PROCYON_JARS = \
     procyon-core-0.5.32.jar \
     $(PROCYON_COMPILERTOOLS_JAR)
+

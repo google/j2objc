@@ -28,10 +28,12 @@
 
 @implementation JavaLangReflectAccessibleObject
 
+J2OBJC_IGNORE_DESIGNATED_BEGIN
 - (instancetype)init {
   JavaLangReflectAccessibleObject_init(self);
   return self;
 }
+J2OBJC_IGNORE_DESIGNATED_END
 
 void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self) {
   NSObject_init(self);
@@ -108,7 +110,13 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   return JavaLangReflectAnnotatedElement_getDeclaredAnnotationsByTypeWithIOSClass_(self, arg0);
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
+static void JavaLangReflectAccessibleObject__clinit__() {
+  JavaLangReflectAnnotatedElement_initialize();
+}
+
++ (void)initialize {
+  assert (self == JavaLangReflectAccessibleObject.class);
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -135,9 +143,10 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",
     "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    "AccessibleObject", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1,
-    -1 };
-  return &_JavaLangReflectAccessibleObject;
+    JavaLangReflectAccessibleObject_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1, -1 };
+
+  JreBindIOSClass(JavaLangReflectAccessibleObject.class, &_JavaLangReflectAccessibleObject, @"java.lang.reflect.AccessibleObject", 18);
 }
 
 @end
@@ -149,4 +158,5 @@ void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleO
   }
 }
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectAccessibleObject)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectAccessibleObject)

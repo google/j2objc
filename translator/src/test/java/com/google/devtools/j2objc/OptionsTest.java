@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class OptionsTest extends GenerationTest {
     String cmdArgs =
         "Test.java -source 8 OtherTest.java -classpath " + tmpDir.getPath() + " AndAnother.java";
     String[] args = cmdArgs.split(" ");
-    List<String> sources = options.load(args);
+    List<InputFile> sources = options.load(args);
     assertEquals(3, sources.size());
     assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
     assertTrue(options.fileUtil().getClassPathEntries().contains(tmpDir.getPath()));

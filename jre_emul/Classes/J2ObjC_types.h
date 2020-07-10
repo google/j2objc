@@ -50,6 +50,15 @@ typedef _Atomic(jboolean)  volatile_jboolean;
 // Volatile object access is guarded by spin locks because of reference counting
 // so we don't use an atomic type. uintptr_t is used for the typedef mainly to
 // prevent accidental usage as a regular id type.
-typedef uintptr_t          volatile_id;
+#if defined(__OBJC__)
+typedef __unsafe_unretained id volatile        volatile_id;
+#endif
+
+#if defined(__OBJC__)
+#define J2OBJC_METHOD_ATTR __attribute__((objc_externally_retained))
+#pragma clang diagnostic ignored "-Wignored-attributes"
+#else
+#define J2OBJC_METHOD_ATTR // ignore
+#endif
 
 #endif // _J2OBJC_TYPES_H_

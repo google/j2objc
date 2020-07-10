@@ -19,7 +19,7 @@
  * IN THE SOFTWARE. */
 
 
-package org.kxml2.io;
+package android.org.kxml2.io;
 
 import java.io.*;
 import java.util.Locale;

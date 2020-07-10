@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -109,11 +110,13 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       node.removeModifiers(Modifier.PRIVATE);
       unitTypes.add(insertIdx, node);
 
-      // Check for erroneous WeakOuter annotation on static inner class.
-      TypeElement type = node.getTypeElement();
-      if (ElementUtil.isStatic(type) && ElementUtil.hasAnnotation(type, WeakOuter.class)) {
-        ErrorUtil.warning("static class " + type.getQualifiedName() + " has WeakOuter annotation");
-      }
+	  if (!Options.useGC()) {
+	      // Check for erroneous WeakOuter annotation on static inner class.
+	      TypeElement type = node.getTypeElement();
+	      if (ElementUtil.isStatic(type) && ElementUtil.hasAnnotation(type, WeakOuter.class)) {
+	        ErrorUtil.warning("static class " + type.getQualifiedName() + " has WeakOuter annotation");
+	      }
+	  }
     }
   }
 

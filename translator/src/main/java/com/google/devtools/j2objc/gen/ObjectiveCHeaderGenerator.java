@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -59,8 +60,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return options.getLanguage().headerSuffix();
   }
 
-  public final void generate() {
+  public void generate() {
+	if (ARGC.inPureObjCMode()) {
+		//
+	}
+	else {
     println(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
+	}
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
     }
@@ -74,11 +80,16 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printTypeDeclaration(generatedType);
     }
 
-    generateFileFooter();
+	if (!ARGC.inPureObjCMode()) {
+      generateFileFooter();
+      if (getGenerationUnit().options().emitKytheMappings()) {
+        generateTypeMappings();
+      }
+	}
+	else {
+	  printf("#endif // __" + varPrefix + "_H__");
+	}
 
-    if (getGenerationUnit().options().emitKytheMappings()) {
-      generateTypeMappings();
-    }
 
     save(getOutputPath(), options.fileUtil().getHeaderOutputDirectory());
   }
@@ -89,10 +100,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void generateFileHeader() {
-    printf("#ifndef %s_H\n", varPrefix);
-    printf("#define %s_H\n", varPrefix);
-    pushIgnoreDeprecatedDeclarationsPragma();
-    pushIgnoreNullabilityPragmas();
+	if (!ARGC.inPureObjCMode()) {
+      printf("#ifndef %s_H\n", varPrefix);
+      printf("#define %s_H\n", varPrefix);
+      pushIgnoreDeprecatedDeclarationsPragma();
+      pushIgnoreNullabilityPragmas();
+	}
 
     Set<String> seenTypes = Sets.newHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
@@ -106,13 +119,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         seenTypes.add(name);
       }
       for (Import imp : type.getHeaderIncludes()) {
-        if (!isLocalType(imp.getTypeName())) {
+        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
           includeFiles.add(imp.getImportFileName());
         }
       }
       for (Import imp : type.getHeaderForwardDeclarations()) {
         // Filter out any declarations that are resolved by an include.
         if (!seenTypes.contains(imp.getTypeName())
+        		 && !ARGC.isExcludedClass(imp.getImportFileName())
             && !includeFiles.contains(imp.getImportFileName())) {
           forwardDeclarations.add(imp);
         }

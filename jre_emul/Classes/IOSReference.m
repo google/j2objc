@@ -17,6 +17,7 @@
 //  Created by Tom Ball on 8/15/13.
 //
 
+#import "NSObject+JavaObject.h"
 #import "IOSReference.h"
 
 #import "IOSClass.h"
@@ -24,6 +25,9 @@
 #import "java/lang/ref/PhantomReference.h"
 #import "java/lang/ref/Reference.h"
 #import "java/lang/ref/SoftReference.h"
+
+#import "java/util/zip/ZipFile.h"//_ZipFileInflaterInputStream
+@class JavaUtilZipZipFile_ZipFileInputStream;
 
 #import <objc/runtime.h>
 #import <pthread.h>
@@ -33,9 +37,7 @@
 #define SUPPORTS_SOFT_REFERENCES 1
 #endif
 
-#if __has_feature(objc_arc)
-#error "IOSReference is not built with ARC"
-#endif
+#if !__has_feature(objc_arc)
 
 // This class implements a variation on the design described in
 // Mike Ash's "Zeroing Weak References in Objective-C" blog entry.
@@ -66,6 +68,7 @@
 
 
 @implementation IOSReference
+
 
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference);
 static void EnsureReferentSubclass(id referent);
@@ -381,3 +384,6 @@ static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
 }
 
 @end
+
+
+#endif

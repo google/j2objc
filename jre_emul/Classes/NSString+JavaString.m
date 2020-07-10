@@ -57,6 +57,8 @@
 
 #define NSString_serialVersionUID -6849794470754667710LL
 
+static void NSString_CaseInsensitiveComparator__clinit__();
+
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {
@@ -74,6 +76,19 @@ static void checkBounds(jint length, jint offset, jint count) {
   }
 }
 
+static NSMutableDictionary* stringPool;
+NSString* JreStringConstant(NSString* str) {
+  NSString* interned = [stringPool objectForKey:str];
+  if (interned == NULL) {
+    interned = str;
+    [stringPool setObject:str forKey:str];
+  }
+  return interned;
+}
+
++ (void) load {
+  stringPool = [[NSMutableDictionary alloc] init];
+}
 // TODO(tball): remove static method wrappers when reflection invocation calls functions directly.
 + (NSString *)java_valueOf:(id<NSObject>)obj {
   return NSString_java_valueOf_((id)obj);
@@ -475,11 +490,11 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     CFStringEncoding encoding =
         (CFStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
-    NSString *result = (NSString *)CFStringCreateWithBytes(
+    NSString *result = (__bridge NSString *)CFStringCreateWithBytes(
         NULL, (const UInt8 *)value->buffer_ + offset, count, encoding, true);
     // CFString can return nil if there are invalid bytes in the input.
     if (result) {
-      return [result autorelease];
+      return AUTORELEASE(result);
     }
   }
   JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
@@ -536,7 +551,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encoding) {
-  CFStringRef cfStr = (CFStringRef)self;
+  CFStringRef cfStr = (__bridge CFStringRef)self;
   CFIndex strLength = CFStringGetLength(cfStr);
   CFIndex max_length = CFStringGetMaximumSizeForEncoding(strLength, encoding);
   jboolean includeBOM = (encoding == kCFStringEncodingUTF16);
@@ -630,10 +645,12 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
 
 NSString *
 NSString_java_formatWithNSString_withNSObjectArray_(NSString *format, IOSObjectArray *args) {
-  JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
-  NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
-  RELEASE_(formatter);
-  return result;
+    @autoreleasepool {
+        JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
+        NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
+        RELEASE_(formatter);
+        return result;
+    }
 }
 
 + (NSString *)java_formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args {
@@ -642,9 +659,11 @@ NSString_java_formatWithNSString_withNSObjectArray_(NSString *format, IOSObjectA
 
 NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
     JavaUtilLocale *locale, NSString *format, IOSObjectArray *args) {
-  JavaUtilFormatter *formatter =
-      AUTORELEASE([[JavaUtilFormatter alloc] initWithJavaUtilLocale:locale]);
-  return [[formatter formatWithNSString:format withNSObjectArray:args] description];
+    @autoreleasepool {
+        JavaUtilFormatter *formatter =
+            AUTORELEASE([[JavaUtilFormatter alloc] initWithJavaUtilLocale:locale]);
+        return [[formatter formatWithNSString:format withNSObjectArray:args] description];
+    }
 }
 
 + (NSString *)java_formatWithJavaUtilLocale:(JavaUtilLocale *)locale
@@ -784,10 +803,9 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 }
 
 - (NSString *)java_intern {
-  // No actual interning is done, since NSString doesn't support it.
-  // Instead, any "string == otherString" expression is changed to
-  // "string.equals(otherString)
-  return self;
+  @synchronized (stringPool) {
+    return JreStringConstant(self);
+  }
 }
 
 - (NSString *)java_concat:string {
@@ -887,7 +905,7 @@ jint javaStringHashCode(NSString *string) {
   return JavaLangCharSequence_codePoints(self);
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
+void NSString__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 },
@@ -1079,11 +1097,16 @@ jint javaStringHashCode(NSString *string) {
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
-  return &_NSString;
+    empty_static_initialize,
+    ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
+  
+  JreBindIOSClass(NSString.class, &_NSString, @"java.lang.String", 10);
+  
+  NSString_CaseInsensitiveComparator__clinit__();
 }
 
 @end
+
 
 NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(
     id<JavaLangCharSequence> delimiter, IOSObjectArray *elements) {
@@ -1116,7 +1139,7 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 
 #define NSString_CaseInsensitiveComparator_serialVersionUID 8575799808933029326LL
 
-@interface NSString_CaseInsensitiveComparator : NSObject
+@interface NSString_CaseInsensitiveComparator : JavaLangObject
     < JavaUtilComparator, JavaIoSerializable >
 @end
 
@@ -1165,7 +1188,7 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
   return JavaUtilComparator_thenComparingLongWithJavaUtilFunctionToLongFunction_(self, arg0);
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
++ (void) initialize {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 0, 1, -1, -1, -1, -1 },
@@ -1184,32 +1207,62 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
     "compare", "LNSString;LNSString;", "LNSString;",
     "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    "CaseInsensitiveComparator", "java.lang", ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
+    empty_static_initialize,
+    ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
     -1 };
-  return &_NSString_CaseInsensitiveComparator;
+  
+  JreBindIOSClass(NSString_CaseInsensitiveComparator.class, &_NSString_CaseInsensitiveComparator, @"java.lang.String$CaseInsensitiveComparator", 17);
 }
 
 @end
 
-J2OBJC_INITIALIZED_DEFN(NSString)
+//J2OBJC_INITIALIZED_DEFN(NSString)
 
 id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
 IOSObjectArray *NSString_serialPersistentFields;
 
-@implementation JreStringCategoryDummy
+void NSString_CaseInsensitiveComparator__clinit__() {
+  [NSString_CaseInsensitiveComparator class];
 
-+ (void)initialize {
-  if (self == [JreStringCategoryDummy class]) {
-    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
-        [[NSString_CaseInsensitiveComparator alloc] init]);
-    JreStrongAssignAndConsume(&NSString_serialPersistentFields,
-        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
-    J2OBJC_SET_INITIALIZED(NSString)
-  }
+  JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
+    [[NSString_CaseInsensitiveComparator alloc] init]);
+  JreStrongAssignAndConsume(&NSString_serialPersistentFields,
+    [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
 }
 
-@end
+//// Empty class to force category to be loaded.
+//@interface JreStringCategoryDummy : JavaLangObject
+//@end
+//
+//@implementation JreStringCategoryDummy
+//
+//+ (void)initialize {
+//  if (self == [JreStringCategoryDummy class]) {
+//    ARGC_bindMetaData(self, [NSString __metadata]);
+//    ARGC_bindMetaData(self, [NSString_CaseInsensitiveComparator __metadata]);
+//
+//    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
+//        [[NSString_CaseInsensitiveComparator alloc] init]);
+//    JreStrongAssignAndConsume(&NSString_serialPersistentFields,
+//        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
+//    J2OBJC_SET_INITIALIZED(NSString)
+//  }
+//}
+//
+//@end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSString)
+//static _Atomic(jboolean) NSString__initialized;
+//void NSString_initialize() {
+//  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
+//    [JreStringCategoryDummy class];
+//  }
+//}
+
+IOSClass *NSString_class_() { \
+  static IOSClass *cls; \
+  static dispatch_once_t token; \
+  dispatch_once(&token, ^{ cls = IOSClass_fromClass([NSString class]); }); \
+  return cls; \
+}
 
 J2OBJC_NAME_MAPPING(NSString, "java.lang.String", "NSString")

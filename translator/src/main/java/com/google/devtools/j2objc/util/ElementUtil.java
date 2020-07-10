@@ -18,29 +18,25 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.google.j2objc.annotations.ObjectiveCType;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.AnnotatedConstruct;
@@ -56,6 +52,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
@@ -105,6 +102,7 @@ public final class ElementUtil {
     return element.getQualifiedName().toString();
   }
 
+  
   public static boolean isNamed(Element element, String name) {
     return element.getSimpleName().contentEquals(name);
   }
@@ -137,6 +135,9 @@ public final class ElementUtil {
   }
 
   public static boolean isVolatile(VariableElement element) {
+	if (element.asType().getKind() == TypeKind.ERROR) {
+		return false;
+	}
     return hasModifier(element, Modifier.VOLATILE)
         // Upgrade reference type fields marked with error prone's LazyInit because this indicates
         // an intentional racy init.
@@ -213,8 +214,17 @@ public final class ElementUtil {
   }
 
   public static List<TypeElement> getInterfaces(TypeElement element) {
-    return Lists.newArrayList(Iterables.transform(
+    ArrayList<TypeElement> list = Lists.newArrayList(Iterables.transform(
         element.getInterfaces(), i -> TypeUtil.asTypeElement(i)));
+    
+//    if (ARGC.hasExcludeRule(false)) {
+//	    list.removeIf(new Predicate<TypeElement>() {
+//			public boolean test(TypeElement t) {
+//				return t == null;
+//			}
+//	    });
+//    }
+    return list;
   }
 
   public static boolean isPrimitiveConstant(VariableElement element) {
@@ -227,16 +237,16 @@ public final class ElementUtil {
   public static boolean isConstant(VariableElement element) {
     Object constantValue = element.getConstantValue();
     return constantValue != null
-        && (element.asType().getKind().isPrimitive()
-            || (constantValue instanceof String
-                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
+        && (element.asType().getKind().isPrimitive());
+//            || (constantValue instanceof String
+//                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
   }
 
-  public static boolean isStringConstant(VariableElement element) {
-    Object constantValue = element.getConstantValue();
-    return constantValue != null && constantValue instanceof String
-        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
-  }
+//  public static boolean isStringConstant(VariableElement element) {
+//    Object constantValue = element.getConstantValue();
+//    return constantValue != null && constantValue instanceof String
+//        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
+//  }
 
   /**
    * Returns whether this variable will be declared in global scope in ObjC.
@@ -304,6 +314,9 @@ public final class ElementUtil {
   }
 
   public static boolean isPackageInfo(TypeElement type) {
+	  if (type == null || type.getSimpleName() == null) {
+		  ARGC.trap();
+	  }
     return type.getSimpleName().toString().equals(NameTable.PACKAGE_INFO_CLASS_NAME);
   }
 
@@ -381,7 +394,20 @@ public final class ElementUtil {
         || (var instanceof GeneratedVariableElement && ((GeneratedVariableElement) var).isWeak());
   }
 
+  // ARGC ++
+  public static String getObjectiveCType(Element var) {
+	    for (AnnotationMirror annotation : getAllAnnotations(var)) {
+	        if (getName(annotation.getAnnotationType().asElement()).equals("ObjectiveCType")) {
+	            return (String) ElementUtil.getAnnotationValue(annotation, "value");
+	        }
+	      }
+	    return null;
+	  }
+  
   public boolean isWeakOuterType(TypeElement type) {
+	  if (Options.useGC()) {
+		  return false;
+	  }
     if (type instanceof LambdaTypeElement) {
       return ((LambdaTypeElement) type).isWeakOuter();
     } else if (isAnonymous(type)) {
@@ -427,12 +453,16 @@ public final class ElementUtil {
   }
 
   public static boolean isRetainedWithField(VariableElement varElement) {
-    return hasAnnotation(varElement, RetainedWith.class);
+    return !Options.useGC() && hasAnnotation(varElement, RetainedWith.class);
   }
 
   public static <T extends Element> Iterable<T> filterEnclosedElements(
       Element elem, Class<T> resultClass, ElementKind... kinds) {
     List<ElementKind> kindsList = Arrays.asList(kinds);
+    if (elem == null) {
+    	elem = JavacEnvironment.unreachbleError;
+    	ARGC.trap();
+    }
     return Iterables.transform(Iterables.filter(
         elem.getEnclosedElements(), e -> kindsList.contains(e.getKind())), resultClass::cast);
   }
@@ -628,6 +658,9 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
+//	  if (mirror == null && ARGC.hasExcludeRule(false)) {
+//		  return false;
+//	  }
     return isRuntimeAnnotation(mirror.getAnnotationType().asElement());
   }
 

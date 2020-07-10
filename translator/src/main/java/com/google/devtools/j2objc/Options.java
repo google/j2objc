@@ -21,6 +21,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.argc.TranslateSourceList;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
@@ -60,7 +63,8 @@ public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
-  private MemoryManagementOption memoryManagementOption = null;
+  private boolean argc_noPackageDeirectories = false;
+  private static MemoryManagementOption memoryManagementOption = null;
   private EmitLineDirectivesOption emitLineDirectives = EmitLineDirectivesOption.NONE;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
@@ -87,6 +91,7 @@ public class Options {
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
   private String annotationsJar = null;
+  private /*ARGC++*/List<String> bootcps;
   private CombinedOutput globalCombinedOutput = null;
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
@@ -99,6 +104,7 @@ public class Options {
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
   private final List<String> entryClasses = new ArrayList<>();
 
+  private /*ARGC++*/String argc_debugSource; 
   private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
@@ -137,7 +143,7 @@ public class Options {
   /**
    * Types of memory management to be used by translated code.
    */
-  public enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
+  public /*ARGC++*/static enum MemoryManagementOption { REFERENCE_COUNTING, ARC, GC }
 
   /**
    * What languages can be generated.
@@ -281,7 +287,8 @@ public class Options {
   }
 
   public boolean isVerbose() {
-    return Logger.getLogger("com.google.devtools.j2objc").getLevel().equals(Level.FINEST);
+    Logger log = Logger.getLogger("com.google.devtools.j2objc");
+    return log != null && log.getLevel().equals(Level.FINEST);
   }
 
   /**
@@ -290,7 +297,7 @@ public class Options {
    * detected, the appropriate status method is invoked and the app terminates.
    * @throws IOException
    */
-  public List<String> load(String[] args) throws IOException {
+  public List<InputFile> load(String[] args) throws IOException {
     setLogLevel(Level.WARNING);
 
     mappings.addJreMappings();
@@ -302,13 +309,13 @@ public class Options {
     ArgProcessor processor = new ArgProcessor();
     processor.processArgs(args);
     postProcessArgs();
-
-    return processor.sourceFiles;
+    
+    return processor.sourceFiles.getInputFiles();
   }
 
   private class ArgProcessor {
 
-    private List<String> sourceFiles = new ArrayList<>();
+    private TranslateSourceList sourceFiles = new TranslateSourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -317,15 +324,15 @@ public class Options {
       }
     }
 
-    private void processArgsFile(String filename) throws IOException {
-      if (filename.isEmpty()) {
-        usage("no @ file specified");
-      }
-      File f = new File(filename);
-      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
-      // Simple split on any whitespace, quoted values aren't supported.
-      processArgs(fileArgs.split("\\s+"));
-    }
+//    private void processArgsFile(String filename) throws IOException {
+//      if (filename.isEmpty()) {
+//        usage("no @ file specified");
+//      }
+//      File f = new File(filename);
+//      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
+//      // Simple split on any whitespace, quoted values aren't supported.
+//      processArgs(fileArgs.split("\\s+"));
+//    }
 
     private String getArgValue(Iterator<String> args, String arg) {
       if (!args.hasNext()) {
@@ -335,15 +342,18 @@ public class Options {
     }
 
     private void processArg(Iterator<String> args) throws IOException {
-      String arg = args.next();
+      String arg = args.next().trim();
       if (arg.isEmpty()) {
         return;
-      } else if (arg.startsWith("@")) {
-        processArgsFile(arg.substring(1));
+//      } else if (arg.startsWith("@")) {
+//        processArgsFile(arg.substring(1));
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-sourcepath")) {
         fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
+        //sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
+      } else if (arg.equals("--not-include")) {
+        ARGC.addExcludeRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-d")) {
@@ -358,6 +368,8 @@ public class Options {
         proGuardUsageFile = new File(getArgValue(args, arg));
       } else if (arg.equals("--prefix")) {
         addPrefixOption(getArgValue(args, arg));
+      } else if (arg.equals("--pure-objc")) { /*ARGC++*/
+          ARGC.addPureObjC(args.next());
       } else if (arg.equals("--prefixes")) {
         packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
@@ -373,8 +385,14 @@ public class Options {
         ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
+      } else if (arg.equals("-use-gc")) { /*ARGC++*/
+          checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
-        headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
+    	  /* ARGC**
+          headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
+          /*/
+    	  argc_noPackageDeirectories = true;
+    	  //*/
       } else if (arg.equals("--preserve-full-paths")) {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
       } else if (arg.equals("-XcombineJars")) {
@@ -508,6 +526,14 @@ public class Options {
         NameTable.addReservedNames(getArgValue(args, arg));
       } else if (arg.equals("-version")) {
         version();
+      } else if (arg.equals("-debugSource")) { /*ARGC++*/
+        // Handle aliasing of version numbers as supported by javac.
+        argc_debugSource = args.next().replace('\\', '/');
+		if (!argc_debugSource.endsWith(".java")) {
+			argc_debugSource += ".java";
+		}
+      } else if (arg.equals("-compatible-v2.0.2")) { /*ARGC++*/
+    	ARGC.compatiable_2_0_2 = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -529,13 +555,15 @@ public class Options {
         // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
         // also ignore
+      } else if (arg.startsWith("-!")) {  /*ARGC++*/
+          args.next();
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
-      } else if (NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
+      } else if (!useGC() && NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
         // TODO(tball): document entry classes when build is updated to Bazel.
         entryClasses.add(arg);
       } else {
-        sourceFiles.add(arg);
+        sourceFiles.addSource(arg);
       }
     }
   }
@@ -655,21 +683,60 @@ public class Options {
     System.exit(0);
   }
 
+  
+  private void addPath(List<String> pathList, String path, boolean expandJarFile) {
+	  File f = new File(path);
+	  if (expandJarFile && !f.isDirectory()) {
+		  f = ARGC.extractSources(f, this);
+		  if (f == null) {
+			  return;
+		  }
+	  }
+	  path = ARGC.getCanonicalPath(f);
+	  TranslateSourceList.addRootPath(path);
+	  pathList.add(path);
+  }
+  
   private List<String> getPathArgument(String argument, boolean expandAarFiles) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
+      entry = entry.trim();
+	  if (entry.length() == 0) {
+		  continue;
+	  }
       if (entry.startsWith("~/")) {
         // Expand bash/csh tildes, which don't get expanded by the shell
         // first if in the middle of a path string.
         entry = System.getProperty("user.home") + entry.substring(1);
       }
-      File f = new File(entry);
-      if (entry.endsWith(".aar") && expandAarFiles) {
-        // Extract classes.jar from Android library AAR file.
-        f = fileUtil().extractClassesJarFromAarFile(f);
+      if (true || this.useGC()) {
+          if (entry.charAt(0) == '@') {
+        	  File f = new File(entry.substring(1));
+        	  ArrayList<String> list = ARGC.processListFile(f);
+        	  if (list != null) {
+        		  String dir = f.getAbsolutePath();
+        		  dir = dir.substring(0, dir.lastIndexOf('/') + 1);
+        		  for (String s : list) {
+                	  addPath(entries, dir + s, !expandAarFiles);
+        		  }
+        	  }
+          }
+          else {
+        	  addPath(entries, entry, !expandAarFiles);
+          }
       }
-      if (f.exists()) {
-        entries.add(f.toString());
+      else {
+	      File f = new File(entry);
+	      if (entry.endsWith(".aar") && expandAarFiles) {
+	        // Extract classes.jar from Android library AAR file.
+	        f = fileUtil().extractClassesJarFromAarFile(f);
+	      }
+	      if (f.exists()) {
+	        entries.add(f.toString());
+	      }
+	      else {
+	    	  System.err.println("invalid path: " + entry);
+	      }
       }
     }
     return entries;
@@ -701,14 +768,18 @@ public class Options {
     this.language = language;
   }
 
-  public boolean useReferenceCounting() {
+  public static boolean useReferenceCounting() {
     return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
 
-  public boolean useARC() {
+  public static boolean useARC() {
     return memoryManagementOption == MemoryManagementOption.ARC;
   }
 
+  public static boolean useGC() {
+	    return memoryManagementOption == MemoryManagementOption.GC;
+	  }
+  
   public MemoryManagementOption getMemoryManagementOption() {
     return memoryManagementOption;
   }
@@ -774,7 +845,13 @@ public class Options {
   }
 
   public List<String> getBootClasspath() {
-    return getPathArgument(bootclasspath, false);
+	  if (this.bootcps == null) {
+		  bootcps = getPathArgument(bootclasspath, true);
+		  if (isVerbose()) {
+		    System.out.println("bootclasspath = " + bootcps);
+		  }
+	  }
+	  return this.bootcps;
   }
 
   public Mappings getMappings() {
@@ -1010,6 +1087,10 @@ public class Options {
   @VisibleForTesting
   public void setTranslateClassfiles(boolean b) {
     translateClassfiles = b;
+    }
+    
+   public String getDebugSourceFile() {  /*ARGC++*/
+	return argc_debugSource;
   }
 
   public List<String> entryClasses() {

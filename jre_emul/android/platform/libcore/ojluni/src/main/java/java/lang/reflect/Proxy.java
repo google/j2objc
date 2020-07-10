@@ -72,10 +72,12 @@ import sun.reflect.CallerSensitive;
   return originalName_;
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
   RELEASE_(originalName_);
   [super dealloc];
 }
+#endif
 @end
 ]-*/
 
@@ -908,7 +910,7 @@ public class Proxy implements java.io.Serializable {
       Method constructor = class_getInstanceMethod([JavaLangReflectProxy class], sel);
       class_addMethod(proxyClass, sel, method_getImplementation(constructor),
           method_getTypeEncoding(constructor));
-      return IOSClass_NewProxyClass(proxyClass);
+      return IOSClass_fromClass([proxyClass class]);
     ]-*/;
 
     /*-[

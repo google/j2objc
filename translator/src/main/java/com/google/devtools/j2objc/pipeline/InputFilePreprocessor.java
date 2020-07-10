@@ -16,6 +16,10 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -41,6 +45,19 @@ public class InputFilePreprocessor {
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
+    if (options.useGC()) { 
+    	String target = options.getDebugSourceFile();
+    	if (target != null) {
+    		for (ProcessingContext input : inputs) {
+    			String s = input.getOriginalSourcePath();
+    			if (s.endsWith(target)) {
+    				processInput(input);
+    				break;
+    			}
+    		}
+    		return;
+    	}
+	}
     for (ProcessingContext input : inputs) {
       if (input.getFile().getUnitName().endsWith(".java")) {
         processInput(input);
@@ -88,7 +105,7 @@ public class InputFilePreprocessor {
     if (shouldMapHeaders) {
       options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
     }
-    if (doIncompatibleStripping) {
+    if (false && doIncompatibleStripping) {
       parseResult.stripIncompatibleSource();
       File strippedDir = getCreatedStrippedSourcesDir();
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";

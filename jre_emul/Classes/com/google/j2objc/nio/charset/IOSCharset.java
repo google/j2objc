@@ -109,8 +109,8 @@ public class IOSCharset extends Charset {
   typedef struct {
     CFStringEncoding cfEncoding;
     const char *iconvName;
-    NSString *javaName;
-    NSString **aliases;
+    __unsafe_unretained NSString *javaName;
+    const __unsafe_unretained NSString **aliases;
     unsigned aliasCount;
     jfloat averageBytesPerChar;
     jfloat maxBytesPerChar;
@@ -120,51 +120,51 @@ public class IOSCharset extends Charset {
     unsigned replacementBytesCount;
   } CharsetInfo;
 
-  static const NSString *utf8_aliases[] = { @"unicode-1-1-utf-8", @"UTF8" };
-  static const NSString *ascii_aliases[] = {
+  static const __unsafe_unretained NSString *utf8_aliases[] = { @"unicode-1-1-utf-8", @"UTF8" };
+  static const __unsafe_unretained NSString *ascii_aliases[] = {
       @"cp367", @"ascii7", @"ISO646-US", @"646", @"csASCII", @"us", @"iso_646.irv:1983",
       @"ISO_646.irv:1991", @"IBM367", @"ASCII", @"default", @"ANSI_X3.4-1986",
       @"ANSI_X3.4-1968", @"iso-ir-6", @"ANSI_X3.4-1968", @"ANSI_X3.4-1986" };
-  static const NSString *eucjp_aliases[] = {
+  static const __unsafe_unretained NSString *eucjp_aliases[] = {
       @"eucjis", @"Extended_UNIX_Code_Packed_Format_for_Japanese", @"x-eucjp", @"eucjp",
       @"csEUCPkdFmtjapanese", @"x-euc-jp", @"euc_jp" };
-  static const NSString *iso8859_aliases[] = {
+  static const __unsafe_unretained NSString *iso8859_aliases[] = {
       @"csISOLatin1", @"latin1", @"IBM-819", @"iso-ir-100", @"8859_1",
       @ "ISO_8859-1:1987", @"ISO_8859-1", @"819", @"l1", @"ISO8859-1",
       @"IBM819", @"ISO_8859_1", @"ISO8859_1", @"cp819", @"ISO8859-1" };
-  static const NSString *shiftjis_aliases[] = {
+  static const __unsafe_unretained NSString *shiftjis_aliases[] = {
       @"x-sjis", @"shift_jis", @"sjis", @"ms_kanji", @"shift-jis", @"csShiftJIS" };
-  static const NSString *latin2_aliases[] = {
+  static const __unsafe_unretained NSString *latin2_aliases[] = {
       @"csISOLatin2", @"iso-ir-101", @"ibm-912", @"8859_2", @"l2", @"ISO_8859-2",
       @"ibm912", @"912", @"ISO8859-2", @"latin2", @"iso8859_2", @"ISO_8859-2:1987", @"cp912" };
-  static const NSString *utf16_aliases[] = {
+  static const __unsafe_unretained NSString *utf16_aliases[] = {
       @"utf16", @"Unicode", @"UnicodeBig", @"UTF_16", @"unicode" };
-  static const NSString *win1251_aliases[] = { @"ansi-1251", @"cp5347", @"cp1251" };
-  static const NSString *win1252_aliases[] = { @"cp1252", @"cp5348" };
-  static const NSString *win1253_aliases[] = { @"cp5349", @"cp1253" };
-  static const NSString *win1254_aliases[] = { @"cp5350", @"cp1254" };
-  static const NSString *win1250_aliases[] = { @"cp1250", @"cp5346" };
-  static const NSString *iso2022_aliases[] = {
+  static const __unsafe_unretained NSString *win1251_aliases[] = { @"ansi-1251", @"cp5347", @"cp1251" };
+  static const __unsafe_unretained NSString *win1252_aliases[] = { @"cp1252", @"cp5348" };
+  static const __unsafe_unretained NSString *win1253_aliases[] = { @"cp5349", @"cp1253" };
+  static const __unsafe_unretained NSString *win1254_aliases[] = { @"cp5350", @"cp1254" };
+  static const __unsafe_unretained NSString *win1250_aliases[] = { @"cp1250", @"cp5346" };
+  static const __unsafe_unretained NSString *iso2022_aliases[] = {
       @"jis_encoding", @"csjisencoding", @"jis", @"iso2022jp", @"csISO2022JP" };
-  static const NSString *macroman_aliases[] = { @"MacRoman" };
-  static const NSString *utf16be_aliases[] = {
+  static const __unsafe_unretained NSString *macroman_aliases[] = { @"MacRoman" };
+  static const __unsafe_unretained NSString *utf16be_aliases[] = {
       @"X-UTF-16BE", @"UTF_16BE", @"ISO-10646-UCS-2", @"UnicodeBigUnmarked" };
-  static const NSString *utf16le_aliases[] = {
+  static const __unsafe_unretained NSString *utf16le_aliases[] = {
       @"UnicodeLittleUnmarked", @"UTF_16LE", @"X-UTF-16LE" };
-  static const NSString *utf32_aliases[] = { @"UTF32", @"UTF_32" };
-  static const NSString *utf32be_aliases[] = { @"X-UTF-32BE", @"UTF_32BE" };
-  static const NSString *utf32le_aliases[] = { @"X-UTF-32LE", @"UTF_32LE" };
-  static const NSString *gb2312_aliases[] = {
+  static const __unsafe_unretained NSString *utf32_aliases[] = { @"UTF32", @"UTF_32" };
+  static const __unsafe_unretained NSString *utf32be_aliases[] = { @"X-UTF-32BE", @"UTF_32BE" };
+  static const __unsafe_unretained NSString *utf32le_aliases[] = { @"X-UTF-32LE", @"UTF_32LE" };
+  static const __unsafe_unretained NSString *gb2312_aliases[] = {
       @"gb2312", @"euc-cn", @"x-EUC-CN", @"euccn", @"EUC_CN", @"gb2312-80", @"gb2312-1980" };
-  static const NSString *euckr_aliases[] = {
+  static const __unsafe_unretained NSString *euckr_aliases[] = {
       @"euc_kr", @"csEUCKR", @"ksc5601", @"5601", @"ksc5601_1987", @"ksc_5601",
       @"ksc5601-1987", @"ks_c_5601-1987", @"euckr" };
-  static const NSString *gbk_aliases[] = {
+  static const __unsafe_unretained NSString *gbk_aliases[] = {
       @"windows-936", @"CP936", @"MS936", @"ms_936", @"x-mswin-936" };
-  static const NSString *gb18030_aliases[] = { @"gb18030-2000" };
-  static const NSString *big5_aliases[] = {
+  static const __unsafe_unretained NSString *gb18030_aliases[] = { @"gb18030-2000" };
+  static const __unsafe_unretained NSString *big5_aliases[] = {
       @"csBig5", @"CN-Big5", @"BIG-FIVE", @"BIGFIVE" };
-  static const NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
+  static const __unsafe_unretained NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
 
   static const jbyte ascii_replacement[] = { 63 };
   static const jbyte utf16be_replacement[] = { -1, -3 };

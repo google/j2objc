@@ -54,9 +54,9 @@ static NSString *regexDetailMessage(UErrorCode status) {
 }
 
 static void throwPatternSyntaxException(UErrorCode status, NSString *pattern, UParseError error) {
-  @throw [[[JavaUtilRegexPatternSyntaxException alloc] initWithNSString:regexDetailMessage(status)
+  @throw AUTORELEASE([[JavaUtilRegexPatternSyntaxException alloc] initWithNSString:regexDetailMessage(status)
                                                            withNSString:pattern
-                                                                withInt:error.offset] autorelease];
+                                                                withInt:error.offset]);
 }
 
 void Java_java_util_regex_Pattern_closeImpl(JNIEnv *env, jclass cls, jlong addr) {

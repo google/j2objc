@@ -26,7 +26,7 @@ static void unalignedPointer(void *ptr) {
       [NSString stringWithFormat:@"Cannot perform atomic access on unaligned address %p", ptr]);
 }
 
-#define PTR(OBJ, OFFSET) (uintptr_t)(((uintptr_t)OBJ) + OFFSET)
+#define PTR(OBJ, OFFSET) (uintptr_t)(((uintptr_t)/*(__bridge void*)*/OBJ) + OFFSET)
 #define CHECK_ADDR(TYPE, PTR) \
   if (sizeof(volatile_##TYPE) != sizeof(TYPE) \
       || (PTR & (__alignof__(volatile_##TYPE) - 1)) != 0) { \
@@ -56,12 +56,14 @@ static void unalignedPointer(void *ptr) {
 #define GET_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  return JreLoadVolatileId((volatile_id *)ptr);
+  return JreLoadVolatileId((volatile_id *)(void*)ptr);
 
 #define PUT_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  JreVolatileStrongAssign((volatile_id *)ptr, newValue);
+  ARGC_pubObject(obj, ptr, newValue);
+
+void ARGC_pubObject(jobject obj, uintptr_t ptr, jobject newValue);
 
 
 // Native method implementations.
@@ -137,7 +139,7 @@ jboolean Java_sun_misc_Unsafe_compareAndSwapObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject expectedValue, jobject newValue) {
   uintptr_t ptr = PTR(obj, offset);
   CHECK_ADDR(id, ptr)
-  return JreCompareAndSwapVolatileStrongId((volatile_id *)ptr, expectedValue, newValue);
+  return JreCompareAndSwapVolatileStrongId((volatile_id *)(void *)ptr, expectedValue, newValue);
 }
 
 

@@ -19,6 +19,7 @@
 #import "JRELogOutputStream.h"
 #import "JRELogPaneView.h"
 #import "java/util/Arrays.h"
+#import "IOSReflection.h"
 
 @interface JRELogOutputStream () {
   JRELogPaneView *logPane_;
@@ -47,9 +48,9 @@
                    withInt:(jint)length {
   nil_chk(buffer);
   [JavaUtilArrays checkOffsetAndCountWithInt:buffer->size_ withInt:offset withInt:length];
-  NSString *str = [[[NSString alloc] initWithBytes:(void *)IOSByteArray_GetRef(buffer, offset)
+  NSString *str = AUTORELEASE([[NSString alloc] initWithBytes:(void *)IOSByteArray_GetRef(buffer, offset)
                                            length:length
-                                         encoding:NSUTF8StringEncoding] autorelease];
+                                         encoding:NSUTF8StringEncoding]);
   dispatch_async(dispatch_get_main_queue(), ^{
     [logPane_ printString:str];
   });

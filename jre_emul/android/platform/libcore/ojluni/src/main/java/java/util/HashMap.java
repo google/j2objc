@@ -950,7 +950,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                                             count:(NSUInteger)len {
           NSUInteger objCount =
               [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
-          for (id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
+          for (__unsafe_unretained id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
             *e = ((JavaUtilHashMap_Node *) *e)->key_;
           }
           return objCount;
@@ -1015,7 +1015,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                                             count:(NSUInteger)len {
           NSUInteger objCount =
               [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
-          for (id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
+          for (__unsafe_unretained id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
             *e = ((JavaUtilHashMap_Node *) *e)->value_;
           }
           return objCount;
@@ -2458,7 +2458,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         return 0;
       }
       NSUInteger position = state->extra[0];
-      JavaUtilHashMap_Node *entry = (JavaUtilHashMap_Node *) state->extra[1];
+      __unsafe_unretained JavaUtilHashMap_Node *entry = (__bridge __unsafe_unretained JavaUtilHashMap_Node *)(void*) state->extra[1];
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;
       while (objCount < len) {

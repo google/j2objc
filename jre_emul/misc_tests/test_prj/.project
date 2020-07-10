@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>test_prj</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>android-platform-libcore-luni</name>
+			<type>2</type>
+			<location>/Users/zeedh/work/j2objc+argc/jre_emul/android/platform/libcore/luni/src/test/java</location>
+		</link>
+		<link>
+			<name>libcore-harmony-src-test</name>
+			<type>2</type>
+			<location>/Users/zeedh/work/j2objc+argc/jre_emul/android/platform/libcore/harmony-tests/src/test/java</location>
+		</link>
+	</linkedResources>
+</projectDescription>

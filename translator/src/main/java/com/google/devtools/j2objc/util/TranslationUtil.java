@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
@@ -102,7 +103,10 @@ public final class TranslationUtil {
 
     List<TypeElement> result = new ArrayList<>();
     for (TypeMirror typeMirror : astInterfaces) {
-      result.add(TypeUtil.asTypeElement(typeMirror));
+    	TypeElement type = TypeUtil.asTypeElement(typeMirror);
+      if (type != null) {
+        result.add(type);
+      }
     }
     return result;
   }
@@ -310,7 +314,7 @@ public final class TranslationUtil {
     if (ElementUtil.isVolatile(var)) {
       modifier += "Volatile";
     }
-    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || options.useARC())) {
+    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || !options.useReferenceCounting())) {
       modifier += "Strong";
     }
     return modifier;
@@ -339,6 +343,11 @@ public final class TranslationUtil {
       invocation.addArgument(createAnnotationValue(valueType, values.get(member)));
     }
     return invocation;
+  }
+  
+  // ARGC ++
+  public TypeMirror getVoidType() {
+	  return typeUtil.getVoid();
   }
 
   public Expression createAnnotationValue(TypeMirror type, AnnotationValue aValue) {

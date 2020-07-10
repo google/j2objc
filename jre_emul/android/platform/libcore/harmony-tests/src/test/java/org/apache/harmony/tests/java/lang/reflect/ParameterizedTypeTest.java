@@ -80,10 +80,6 @@ public class ParameterizedTypeTest extends GenericReflectionTestsBase {
         assertEquals(ParameterizedTypeTest.class, parameterizedType.getOwnerType());
         assertEquals(E.class, parameterizedType.getRawType());
 
-        String eName = E.class.getName();
-        assertEquals(eName + "<T>", parameterizedType.toString());
-        assertEquals(eName + "<T>", parameterizedType.getTypeName());
-
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
         assertLenghtOne(actualTypeArguments);
         assertEquals(getTypeParameter(clazz), actualTypeArguments[0]);

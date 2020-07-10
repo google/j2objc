@@ -49,22 +49,22 @@ Java_java_net_DatagramPacket_init (JNIEnv *env, jclass cls) {
     dp_addressID = (*env)->GetFieldID(env, cls, "address",
                                       "Ljava/net/InetAddress;");
     CHECK_NULL(dp_addressID);
-    [(id) dp_addressID retain];
+    (void)RETAIN_((id) dp_addressID);
     dp_portID = (*env)->GetFieldID(env, cls, "port", "I");
     CHECK_NULL(dp_portID);
-    [(id) dp_portID retain];
+    (void)RETAIN_((id) dp_portID);
     dp_bufID = (*env)->GetFieldID(env, cls, "buf", "[B");
     CHECK_NULL(dp_bufID);
-    [(id) dp_bufID retain];
+    (void)RETAIN_((id) dp_bufID);
     dp_offsetID = (*env)->GetFieldID(env, cls, "offset", "I");
     CHECK_NULL(dp_offsetID);
-    [(id) dp_offsetID retain];
+    (void)RETAIN_((id) dp_offsetID);
     dp_lengthID = (*env)->GetFieldID(env, cls, "length", "I");
     CHECK_NULL(dp_lengthID);
-    [(id) dp_lengthID retain];
+    (void)RETAIN_((id) dp_lengthID);
     dp_bufLengthID = (*env)->GetFieldID(env, cls, "bufLength", "I");
     CHECK_NULL(dp_bufLengthID);
-    [(id) dp_bufLengthID retain];
+    (void)RETAIN_((id) dp_bufLengthID);
 }
 
 /* J2ObjC: unused.

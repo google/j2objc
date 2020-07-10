@@ -134,7 +134,7 @@ public class OcniExtractor extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    if (!node.isInterface()) {
+    if (!node.isPureInterface()) {
       visitType(node);
     }
   }

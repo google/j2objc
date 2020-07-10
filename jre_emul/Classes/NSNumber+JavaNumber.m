@@ -25,7 +25,7 @@
 
 @implementation NSNumber (JavaNumber)
 
-+ (const J2ObjcClassInfo *)__metadata {
+void NSNumber__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "B", 0x1, 0, -1, -1, -1, -1, -1 },
@@ -51,8 +51,10 @@
   };
   static const void *ptrTable[] = { "byteValue", "longValue" };
   static const J2ObjcClassInfo _NSNumber = {
-    "Number", "java.lang", ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
-  return &_NSNumber;
+    empty_static_initialize,
+    ptrTable, methods, fields, 7, 0x401, 7, 1, -1, -1, -1, -1, -1 };
+
+  JreBindIOSClass(NSNumber.class, &_NSNumber, @"java.lang.Number", 10);
 }
 
 @end
@@ -61,6 +63,3 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSNumber)
 
 J2OBJC_NAME_MAPPING(NSNumber, "java.lang.Number", "NSNumber")
 
-// Empty class to force category to be loaded.
-@implementation JreNumberCategoryDummy
-@end

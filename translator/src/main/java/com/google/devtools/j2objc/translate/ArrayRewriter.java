@@ -66,7 +66,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
 
   private MethodInvocation createInvocation(ArrayCreation node) {
     ArrayType arrayType = node.getTypeMirror();
-    boolean retainedResult = node.hasRetainedResult() || options.useARC();
+    boolean retainedResult = node.hasRetainedResult() || !options.useReferenceCounting();
     ArrayInitializer initializer = node.getInitializer();
     if (initializer != null) {
       return newInitializedArrayInvocation(arrayType, initializer.getExpressions(), retainedResult);

@@ -45,7 +45,7 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectConstructor)
+J2OBJC_STATIC_INIT(JavaLangReflectConstructor)
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectConstructor)
 

@@ -53,7 +53,7 @@ public class DirectByteBuffer extends MappedByteBuffer implements DirectBuffer {
         boolean isAccessible;
 
         private native void allocate(int byteCount) /*-[
-            JreStrongAssign(&self->buffer_, [IOSByteArray arrayWithLength:byteCount]);
+            JreObjectFieldAssign(&self->buffer_, [IOSByteArray arrayWithLength:byteCount]);
             self->allocatedAddress_ = (long long) (uintptr_t) (self->buffer_)->buffer_;
         ]-*/;
 

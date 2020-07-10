@@ -70,6 +70,7 @@ public class WeakReferenceTest extends TestCase {
       assertEquals("referent dealloc'ed too soon", 0, finalizeCount[0]);
     }
 
+    System.gc();
     // Verify weak reference was cleared.
     assertNull("weakRef wasn't cleared", weakRef.get());
     assertEquals("referent wasn't dealloc'ed", 1, finalizeCount[0]);
@@ -94,6 +95,7 @@ public class WeakReferenceTest extends TestCase {
       assertFalse("referent dealloc'ed too soon", dealloced[0]);
     }
 
+    System.gc();
     // Verify weak reference was queued.
     Reference<?> queuedRef = queue.poll();
     assertNotNull("weakRef wasn't queued", queuedRef);

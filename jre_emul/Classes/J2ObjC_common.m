@@ -31,7 +31,7 @@
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
 
-id JreThrowNullPointerException() {
+id JreThrowNullPointerException(id p) {
   @throw create_JavaLangNullPointerException_init(); // NOLINT
 }
 
@@ -51,7 +51,7 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);  // NOLINT
 }
 
-void JreFinalize(id self) {
+void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
     [self java_finalize];
   } @catch (JavaLangThrowable *e) {
@@ -62,14 +62,18 @@ void JreFinalize(id self) {
   }
 }
 
+
+#ifndef J2OBJC_USE_GC
 id JreStrongAssign(__strong id *pIvar, id value) {
-  return JreAutoreleasedAssign(pIvar, [value retain]);
+  return JreAutoreleasedAssign(pIvar, RETAIN_(value));
 }
 
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
   return JreAutoreleasedAssign(pIvar, value);
 }
+#endif
 
+#ifndef J2OBJC_USE_GC
 // Declare a pool of spin locks for volatile variable access. The use of spin
 // locks for atomic access is consistent with how Apple implements atomic
 // property accessors, and the hashing used here is inspired by Apple's
@@ -93,9 +97,9 @@ static pthread_mutex_t volatile_locks[VOLATILE_NLOCKS] =
 id JreLoadVolatileId(volatile_id *pVar) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pVar);
   VOLATILE_LOCK(lock);
-  id value = [*(id *)pVar retain];
+  id value = RETAIN_(*(id *)pVar);
   VOLATILE_UNLOCK(lock);
-  return [value autorelease];
+  return AUTORELEASE(value);
 }
 
 id JreAssignVolatileId(volatile_id *pVar, id value) {
@@ -108,12 +112,12 @@ id JreAssignVolatileId(volatile_id *pVar, id value) {
 
 id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pIvar);
-  [value retain];
+  (void)RETAIN_(value);
   VOLATILE_LOCK(lock);
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
-  [oldValue autorelease];
+  (void)AUTORELEASE(oldValue);
   return value;
 }
 
@@ -122,23 +126,23 @@ jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id ne
   VOLATILE_LOCK(lock);
   jboolean result = *(id *)pVar == expected;
   if (result) {
-    *(id *)pVar = [newValue retain];
+    *(id *)pVar = RETAIN_(newValue);
   }
   VOLATILE_UNLOCK(lock);
   if (result) {
-    [expected autorelease];
+    (void)AUTORELEASE(expected);
   }
   return result;
 }
 
 id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
-  [newValue retain];
+  (void)RETAIN_(newValue);
   volatile_lock_t lock = VOLATILE_GETLOCK(pVar);
   VOLATILE_LOCK(lock);
   id oldValue = *(id *)pVar;
   *(id *)pVar = newValue;
   VOLATILE_UNLOCK(lock);
-  [oldValue autorelease];
+  (void)AUTORELEASE(oldValue);
   return oldValue;
 }
 
@@ -146,7 +150,7 @@ void JreReleaseVolatile(volatile_id *pVar) {
   // This is only called from a dealloc method, so we can assume there are no
   // concurrent threads with access to this address. Therefore, synchronization
   // is unnecessary.
-  [*(id *)pVar release];
+  RELEASE_(*(id *)pVar);
 }
 
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {
@@ -163,18 +167,18 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
   // assignment within pOther's lock to provide sequencial consistency.
   volatile_lock_t lock = VOLATILE_GETLOCK(pOther);
   VOLATILE_LOCK(lock);
-  *(id *)pVar = [*(id *)pOther retain];
+  *(id *)pVar = RETAIN_(*(id *)pOther);
   VOLATILE_UNLOCK(lock);
 }
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
   if (*pIvar) {
     JreRetainedWithHandlePreviousValue(parent, *pIvar);
-    [*pIvar autorelease];
+    (void)AUTORELEASE(*pIvar);
   }
   // This retain makes sure that the child object has a retain count of at
   // least 2 which is required by JreRetainedWithInitialize.
-  [value retain];
+  (void)RETAIN_(value);
   JreRetainedWithInitialize(parent, value);
   return *pIvar = value;
 }
@@ -182,7 +186,7 @@ id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value) {
   // This retain makes sure that the child object has a retain count of at
   // least 2 which is required by JreRetainedWithInitialize.
-  [value retain];
+  (void)RETAIN_(value);
   JreRetainedWithInitialize(parent, value);
   volatile_lock_t lock = VOLATILE_GETLOCK(pIvar);
   VOLATILE_LOCK(lock);
@@ -191,14 +195,14 @@ id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value) {
   VOLATILE_UNLOCK(lock);
   if (oldValue) {
     JreRetainedWithHandlePreviousValue(parent, oldValue);
-    [oldValue autorelease];
+    AUTORELEASE(oldValue);
   }
   return value;
 }
 
 void JreRetainedWithRelease(id parent, id value) {
   JreRetainedWithHandleDealloc(parent, value);
-  [value release];
+  RELEASE_(value);
 }
 
 void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
@@ -206,8 +210,9 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
   // This is only called from a dealloc method, so we can assume there are no
   // concurrent threads with access to this address. Therefore, synchronization
   // is unnecessary.
-  [*(id *)pVar release];
+  RELEASE_(*(id *)pVar);
 }
+#endif
 
 jint JreIndexOfStr(NSString *str, NSString **values, jint size) {
   for (int i = 0; i < size; i++) {
@@ -227,8 +232,11 @@ static NSUInteger CountObjectArgs(const char *types) {
   return numObjs;
 }
 
+void ARGC_strongRetain(id obj);
+void ARGC_release(id obj);
+
 // Computes the capacity for the buffer.
-static jint ComputeCapacity(const char *types, va_list va, NSString **objDescriptions) {
+static jint ComputeCapacity(const char *types, va_list va, __unsafe_unretained NSString **objDescriptions) {
   jint capacity = 0;
   while (*types) {
     switch(*types) {
@@ -273,7 +281,8 @@ static jint ComputeCapacity(const char *types, va_list va, NSString **objDescrip
         {
           NSString *description = [va_arg(va, id) description];
           if (description) {
-            *(objDescriptions++) = description;
+              *(objDescriptions++) = description;
+              ARGC_strongRetain(description);
             capacity += CFStringGetLength((CFStringRef)description);
           } else {
             *(objDescriptions++) = nil;
@@ -288,7 +297,7 @@ static jint ComputeCapacity(const char *types, va_list va, NSString **objDescrip
 }
 
 static void AppendArgs(
-    const char *types, va_list va, NSString **objDescriptions, JreStringBuilder *sb) {
+    const char *types, va_list va, __unsafe_unretained NSString **objDescriptions, JreStringBuilder *sb) {
   while (*types) {
     switch (*types) {
       case 'C':
@@ -316,7 +325,9 @@ static void AppendArgs(
         break;
       case '@':
         va_arg(va, id);
-        JreStringBuilder_appendString(sb, *(objDescriptions++));
+        NSString* description= *(objDescriptions++);
+        JreStringBuilder_appendString(sb, description);
+        ARGC_release(description);
         break;
     }
     types++;
@@ -324,25 +335,25 @@ static void AppendArgs(
 }
 
 NSString *JreStrcat(const char *types, ...) {
-  NSString *objDescriptions[CountObjectArgs(types)];
+  __unsafe_unretained NSString *objDescriptions[CountObjectArgs(types)];
   va_list va;
   va_start(va, types);
-  jint capacity = ComputeCapacity(types, va, objDescriptions);
+    jint capacity = ComputeCapacity(types, va, objDescriptions);
   va_end(va);
 
   // Create a string builder and fill it.
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
+  JreStringBuilder* sb = [JreStringBuilder alloc];
+  JreStringBuilder_initWithCapacity(sb, capacity);
   va_start(va, types);
-  AppendArgs(types, va, objDescriptions, &sb);
+  AppendArgs(types, va, objDescriptions, sb);
   va_end(va);
-  return JreStringBuilder_toStringAndDealloc(&sb);
+  return JreStringBuilder_toStringAndDealloc(sb);
 }
 
 id JreStrAppendInner(id lhs, const char *types, va_list va) {
   va_list va_capacity;
   va_copy(va_capacity, va);
-  NSString *objDescriptions[CountObjectArgs(types)];
+  __unsafe_unretained NSString *objDescriptions[CountObjectArgs(types)];
 
   jint capacity = ComputeCapacity(types, va_capacity, objDescriptions);
   va_end(va_capacity);
@@ -355,12 +366,12 @@ id JreStrAppendInner(id lhs, const char *types, va_list va) {
     capacity += 4;
   }
 
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
-  JreStringBuilder_appendString(&sb, lhsDescription);
-  AppendArgs(types, va, objDescriptions, &sb);
+    JreStringBuilder* sb = [JreStringBuilder alloc];
+  JreStringBuilder_initWithCapacity(sb, capacity);
+  JreStringBuilder_appendString(sb, lhsDescription);
+  AppendArgs(types, va, objDescriptions, sb);
 
-  return JreStringBuilder_toStringAndDealloc(&sb);
+  return JreStringBuilder_toStringAndDealloc(sb);
 }
 
 id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...) {
@@ -376,7 +387,7 @@ id JreStrAppendStrong(__strong id *lhs, const char *types, ...) {
   va_start(va, types);
   NSString *result = JreStrAppendInner(*lhs, types, va);
   va_end(va);
-  return JreStrongAssign(lhs, result);
+  return JreStrongAssignAndGet(lhs, result);
 }
 
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...) {
@@ -404,11 +415,11 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
 }
 
 FOUNDATION_EXPORT void JreRelease(id obj) {
-  [obj release];
+  RELEASE_(obj);
 }
 
 FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal) {
-  const J2ObjcClassInfo *metadata = [enumClass getMetadata];
+  const J2ObjcClassInfo *metadata = enumClass->metadata_;
   if (metadata) {
     return [NSString stringWithUTF8String:metadata->fields[ordinal].name];
   } else {
@@ -421,25 +432,40 @@ NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id *stackbuf) {
   SEL hasNextSel = sel_registerName("hasNext");
   SEL nextSel = sel_registerName("next");
+  /**
+   Do not declare iter as a __unsafe_unretained.
+   It may cause a bad access error after assigned by [obj iterator];
+  */
   __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
-  if (!iter) {
+  bool isFirst = !iter;
+  if (isFirst) {
     static unsigned long no_mutation = 1;
     state->mutationsPtr = &no_mutation;
     // The for/in loop could break early so we have no guarantee of being able
     // to release the iterator. As long as the current autorelease pool is not
     // cleared within the loop, this should be fine.
-    iter = nil_chk([obj iterator]);
+    id new_iter = nil_chk([obj iterator]);
+    iter = new_iter;
     state->extra[0] = (unsigned long) iter;
+    ARGC_strongRetain(iter);
     state->extra[1] = (unsigned long) [iter methodForSelector:hasNextSel];
     state->extra[2] = (unsigned long) [iter methodForSelector:nextSel];
+  }
+  else {
+    ARGC_release(*stackbuf);
   }
   jboolean (*hasNextImpl)(id, SEL) = (jboolean (*)(id, SEL)) state->extra[1];
   id (*nextImpl)(id, SEL) = (id (*)(id, SEL)) state->extra[2];
   NSUInteger objCount = 0;
   state->itemsPtr = stackbuf;
   if (hasNextImpl(iter, hasNextSel)) {
-    *stackbuf++ = nextImpl(iter, nextSel);
+      id item = nextImpl(iter, nextSel);
+    *stackbuf++ = item;
+    ARGC_strongRetain(item);
     objCount++;
+  }
+  else {
+    ARGC_release(iter);
   }
   return objCount;
 }

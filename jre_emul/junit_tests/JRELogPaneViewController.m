@@ -22,12 +22,20 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "IOSReflection.h"
 #import "NSString+JavaString.h"
 #import "java/io/PrintStream.h"
 #import "java/lang/System.h"
 #import "java/lang/Thread.h"
 #import "org/junit/internal/RealSystem.h"
 #import "org/junit/runner/JUnitCore.h"
+#import "AllJreTests.h"
+
+@interface TestThread : JavaLangThread
+- (void) run;
+@end
+
+
 
 @interface JRELogPaneViewController ()
 
@@ -61,10 +69,12 @@
   return self;
 }
 
+JRELogPaneViewController* controller ;
 - (void)viewDidAppear:(BOOL)animated {
   CGRect textFrame = self.textPane.frame;
-  textFrame.size.height -= 20;
-  self.logPane = [[JRELogPaneView alloc] initWithFrame:self.textPane.frame];
+  textFrame.origin.y += 40;
+  textFrame.size.height -= 40 + 20;
+  self.logPane = [[JRELogPaneView alloc] initWithFrame:textFrame];
   [self.textPane addSubview:self.logPane];
   [self.saveButton setEnabled:NO];
   [self.logPane setDelegate:self];
@@ -75,14 +85,23 @@
       [[JavaIoPrintStream alloc] initWithJavaIoOutputStream:logStream withBoolean:YES];
   [JavaLangSystem setOutWithJavaIoPrintStream:printStream];
   [JavaLangSystem setErrWithJavaIoPrintStream:printStream];
+    controller = self;
+    
+    JavaLangThread* thread = new_AllJreTests_init();
+    [thread start];
+}
 
+void runAllJreTests() {
   // Execute test runner on new dispatch queue.
+    TestThread* thread = [[TestThread alloc]init];
+    [thread start];
+    /*
   dispatch_queue_t backgroundQueue =
       dispatch_queue_create("JUnit Test Runner", DISPATCH_QUEUE_CONCURRENT);
   dispatch_async(backgroundQueue, ^{
-    self.testThread = [JavaLangThread currentThread];
+    controller.testThread = [JavaLangThread currentThread];
     IOSObjectArray *testClasses =
-        [IOSObjectArray arrayWithObjects:(id[]) { self.className }
+        [IOSObjectArray arrayWithObjects:(id[]) { controller.className }
                                    count:1
                                     type:NSString_class_()];
     OrgJunitRunnerJUnitCore *testRunner = [[OrgJunitRunnerJUnitCore alloc] init];
@@ -91,8 +110,10 @@
     id<OrgJunitInternalJUnitSystem> junitSystem =
         AUTORELEASE([[OrgJunitInternalRealSystem alloc] init]);
     [testRunner runMainWithOrgJunitInternalJUnitSystem:junitSystem withNSStringArray:testClasses];
-    self.testThread = nil;
+      NSLog(@"Test done");
+    controller.testThread = nil;
   });
+     */
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -118,15 +139,39 @@
   NSData *databuffer = [self.logPane.text dataUsingEncoding: NSUTF8StringEncoding];
   [filemgr createFileAtPath: dataFile contents: databuffer attributes:nil];
 
+    NSLog(@"Log saved: %@", dataFile);
   UIAlertController *alert =
       [UIAlertController alertControllerWithTitle:nil
-                                          message:@"Log saved"
+                                          message:dataFile
                                    preferredStyle:UIAlertControllerStyleAlert];
   [self presentViewController:alert animated:YES completion:nil];
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),
                  dispatch_get_main_queue(), ^{
     [self dismissViewControllerAnimated:YES completion:nil];
   });
+}
+
+@end
+
+@interface TestThread()
+@end
+
+
+@implementation TestThread
+- (void) run {
+    controller.testThread = [JavaLangThread currentThread];
+    IOSObjectArray *testClasses =
+        [IOSObjectArray arrayWithObjects:(id[]) { controller.className }
+                                   count:1
+                                    type:NSString_class_()];
+    OrgJunitRunnerJUnitCore *testRunner = [[OrgJunitRunnerJUnitCore alloc] init];
+    [testRunner
+         addListenerWithOrgJunitRunnerNotificationRunListener:[[JRETestRunListener alloc] init]];
+    id<OrgJunitInternalJUnitSystem> junitSystem =
+        AUTORELEASE([[OrgJunitInternalRealSystem alloc] init]);
+    [testRunner runMainWithOrgJunitInternalJUnitSystem:junitSystem withNSStringArray:testClasses];
+      NSLog(@"Test done");
+    controller.testThread = nil;
 }
 
 @end

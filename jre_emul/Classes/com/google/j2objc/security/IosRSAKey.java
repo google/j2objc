@@ -119,7 +119,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
-      NSData *publicKey = nil;
+      CFTypeRef publicKeyRef = nil;
       NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -130,13 +130,14 @@ public abstract class IosRSAKey implements RSAKey, Key {
       publicKeyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPublic;
       publicKeyQuery[(id) kSecReturnData] = (id) kCFBooleanTrue;
       OSStatus status =
-          SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, (CFTypeRef *)&publicKey);
-      [publicKeyQuery release];
+          SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, &publicKeyRef);
+      RELEASE_(publicKeyQuery);
 
       IOSByteArray *bytes = nil;
+      NSData* publicKey = (__bridge NSData*)publicKeyRef;
       if (status == noErr && publicKey.length > 0) {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)publicKey.bytes count:publicKey.length];
-        [publicKey release];
+        RELEASE_(publicKey);
       } else {
           NSString *msg =
               [NSString stringWithFormat:@"PublicKey getEncoded error %d", (int)status];
@@ -229,7 +230,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 #endif
       }
 
-      [publicKey release];
+      RELEASE_(publicKey);
       return (jlong)secKeyRef;
     ]-*/;
   }
@@ -273,7 +274,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
-      NSData *privateKey = nil;
+      CFTypeRef privateKeyRef = nil;
       NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -282,14 +283,15 @@ public abstract class IosRSAKey implements RSAKey, Key {
       [privateKeyQuery setObject:privateTag forKey:(id)kSecAttrApplicationTag];
       [privateKeyQuery setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
       [privateKeyQuery setObject:[NSNumber numberWithBool:true] forKey:(id)kSecReturnData];
-      OSStatus status =
-          SecItemCopyMatching((CFDictionaryRef)privateKeyQuery, (CFTypeRef *)&privateKey);
-      [privateKeyQuery release];
+      OSStatus result =
+          SecItemCopyMatching((CFDictionaryRef)privateKeyQuery, &privateKeyRef);
+      RELEASE_(privateKeyQuery);
 
       IOSByteArray *bytes = nil;
-      if (status == noErr && privateKey.length > 0) {
+      NSData* privateKey = (__bridge NSData*)privateKeyRef;
+      if (result == noErr && privateKey.length > 0) {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)privateKey.bytes count:privateKey.length];
-        [privateKey release];
+        RELEASE_(privateKey);
       }
       return bytes;
     ]-*/;
@@ -325,8 +327,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
      * certificate needs to be stripped first.
      */
     private static native long createPrivateSecKeyRef(byte[] bytes) /*-[
-      NSData * privateKey = [[[NSData alloc] initWithBytes:(const void *)(bytes->buffer_)
-                                                    length:bytes->size_] autorelease];
+      NSData * privateKey = AUTORELEASE([[NSData alloc] initWithBytes:(const void *)(bytes->buffer_) length:bytes->size_]);
 
       // Delete any previous key definition.
       NSMutableDictionary *keyQuery = getPrivateQuery();
@@ -367,7 +368,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       if (secKeyRef == NULL) {
         // Try again, my way.
         // Convert a PKCS#8 key to PKCS#1 key by stripping off the header.
-        NSData *pkcs1Key = [privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)];
+        NSData *pkcs1Key = AUTORELEASE([privateKey subdataWithRange:NSMakeRange(26, [privateKey length] - 26)]);
 
         keyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
         keyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPrivate;

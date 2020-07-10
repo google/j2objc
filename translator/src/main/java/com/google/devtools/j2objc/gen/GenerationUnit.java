@@ -218,7 +218,11 @@ public class GenerationUnit {
 
   private void useSourceDirectoryForOutput(InputFile sourceFile) {
     String sourceDir = sourceFile.getUnitName();
-    sourceDir = sourceDir.substring(0, sourceDir.lastIndexOf(".java"));
+    int pos = sourceDir.lastIndexOf(".java");
+    if (pos < 0) {
+    	pos = sourceDir.lastIndexOf(".class");
+    }
+    sourceDir = sourceDir.substring(0, pos);
     outputPath = sourceDir;
   }
 

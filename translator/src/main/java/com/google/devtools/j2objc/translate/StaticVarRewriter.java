@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
@@ -56,6 +57,9 @@ public class StaticVarRewriter extends UnitTreeVisitor {
     VariableElement var = TreeUtil.getVariableElement(node);
     if (var == null || !needsStaticLoad(node, var)) {
       return;
+    }
+    if (ElementUtil.isEnumConstant(var) && ARGC.isPureObjC(elementUtil.getType(var))) {
+    	return;
     }
 
     TypeElement declaringClass = ElementUtil.getDeclaringClass(var);

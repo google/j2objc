@@ -29,7 +29,8 @@
 
 // A raw value is the union of all possible native types.
 typedef union {
-  void *asId;
+  __unsafe_unretained id asId;
+    void* asPointer;
   char asChar;
   unichar asUnichar;
   short asShort;
@@ -71,8 +72,7 @@ typedef struct J2ObjcFieldInfo {
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjcClassInfo {
-  const char *typeName;
-  const char *packageName;
+  void (*initialize)();
   const void **ptrTable;
   const J2ObjcMethodInfo *methods;
   const J2ObjcFieldInfo *fields;

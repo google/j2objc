@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeKind;
 
 /**
  * Modifies initializers to be more iOS like.  Static initializers are
@@ -169,8 +172,8 @@ public class InitializationNormalizer extends UnitTreeVisitor {
         }
         return;
       }
-      if (constantValue instanceof String
-          && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
+      if (constantValue instanceof String) {//
+          //&& (Options.useGC() || !UnicodeUtils.hasValidCppCharacters((String) constantValue))) {
         // String constant that can't be an ObjC literal. Move it to the class initializer but order
         // constants such as this before other init statements.
         classInitStatements.add(constInitIdx++, makeAssignmentStatement(frag));
@@ -191,12 +194,21 @@ public class InitializationNormalizer extends UnitTreeVisitor {
    */
   private List<Statement> getInitLocation(MethodDeclaration node) {
     List<Statement> stmts = node.getBody().getStatements();
-    if (!stmts.isEmpty() && stmts.get(0) instanceof SuperConstructorInvocation) {
-      return stmts.subList(0, 1);
+    if (!stmts.isEmpty()) {
+    	Statement stmt0 = stmts.get(0);
+    	if (stmt0 instanceof SuperConstructorInvocation) {
+    		return stmts.subList(0, 1);
+    	}
     }
+
+    TypeElement typeElem = ElementUtil.getDeclaringClass(node.getExecutableElement());
+    if (typeElem.getSuperclass().getKind() == TypeKind.ERROR) {
+    	TypeUtil.resolveUnreachableClass(typeElem.getSuperclass());
+        return stmts.subList(0, 0);
+    }
+
     // java.lang.Object supertype is null. All other types should have a super() call.
-    assert TypeUtil.isNone(
-        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass())
+    assert TypeUtil.isNone(typeElem.getSuperclass())
         : "Constructor didn't have a super() call.";
     return stmts.subList(0, 0);
   }

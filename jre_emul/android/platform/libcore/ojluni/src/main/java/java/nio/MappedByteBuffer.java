@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
+<<<<<<< HEAD
+ * Copyright (c) 2000, 2010, Oracle and/or its affiliates. All rights reserved.
+=======
  * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+>>>>>>> cefc8e6b2ff4f8651fa6f01b520dbd988e154a9f
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it

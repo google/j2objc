@@ -18,9 +18,12 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
+
 import java.util.Collection;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
@@ -37,18 +40,24 @@ public class Import implements Comparable<Import> {
   private final String typeName;
   private final String importFileName;
   private final String javaQualifiedName;
-  private final boolean isInterface;
+  private final boolean isPureInterface;
+  private final boolean /*ARGC*/isNativeEnum; 
 
-  private Import(TypeElement type, NameTable nameTable, Options options) {
+  private Import(TypeElement type, NameTable nameTable, /*ARGC** Options options*/TranslationEnvironment env) {
+  //*/
     this.typeName = nameTable.getFullName(type);
+    if (true/*ARGC*/) {
+    	String s = env.elementUtil().getType(type).toString();
+    	this.isNativeEnum = (env.elementUtil().isEnum(type) || env.elementUtil().isEnumConstant(type)) && ARGC.isPureObjC(env.elementUtil().getType(type));
+    } 
     TypeElement mainType = type;
     while (!ElementUtil.isTopLevel(mainType)) {
-      mainType = ElementUtil.getDeclaringClass(mainType);
+    	mainType = ElementUtil.getDeclaringClass(mainType);
     }
-    this.importFileName = options.getHeaderMap().get(mainType);
+    this.importFileName = env.options().getHeaderMap().get(mainType);
     this.javaQualifiedName =
-        ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
-    this.isInterface = type.getKind().isInterface();
+    		ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
+    this.isPureInterface = TypeUtil.isPureInterface(type.asType());
   }
 
   /**
@@ -72,8 +81,13 @@ public class Import implements Comparable<Import> {
     return javaQualifiedName;
   }
 
-  public boolean isInterface() {
-    return isInterface;
+  public boolean isPureInterface() {
+    return isPureInterface;
+  }
+
+  // ARGC
+  public boolean isNativeEnum() {
+	  return isNativeEnum;
   }
 
   @Override
@@ -115,7 +129,7 @@ public class Import implements Comparable<Import> {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
     for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
-      Import newImport = new Import(objcClass, env.nameTable(), env.options());
+      Import newImport = new Import(objcClass, env.nameTable(), env/*ARGC*/);
       // An empty header indicates a Foundation type that doesn't require an import or forward
       // declaration.
       if (!newImport.getImportFileName().isEmpty()) {

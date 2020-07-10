@@ -21,9 +21,9 @@ pthread_key_t java_thread_key;
 pthread_once_t java_thread_key_init_once = PTHREAD_ONCE_INIT;
 
 static void javaThreadDestructor(void *javaThread) {
-  JavaLangThread *thread = (JavaLangThread *)javaThread;
+  JavaLangThread *thread = (__bridge JavaLangThread *)javaThread;
   [thread exit];
-  [thread release];
+  RELEASE_(thread);
 }
 
 static void createJavaThreadKey() {
@@ -40,5 +40,5 @@ void initJavaThreadKeyOnce() {
 // Returns the current Java thread or NULL if the calling thread is not a Java thread.
 JavaLangThread *getCurrentJavaThreadOrNull() {
   initJavaThreadKeyOnce();
-  return pthread_getspecific(java_thread_key);
+  return (__bridge JavaLangThread*)pthread_getspecific(java_thread_key);
 }

@@ -48,7 +48,7 @@
 }
 
 - (instancetype)initWithDeclaringClass:(IOSClass *)aClass
-                              metadata:(const J2ObjcMethodInfo *)metadata;
+                              metadata:(const J2ObjcMethodInfo *)metadata NS_RETURNS_RETAINED;
 
 - (NSString *)getName;
 
@@ -93,5 +93,7 @@
 - (jboolean)hasRealParameterData;
 
 @end
+
+J2OBJC_STATIC_INIT(JavaLangReflectExecutable)
 
 #endif // _JavaLangReflectExecutable_H_

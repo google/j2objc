@@ -54,7 +54,7 @@ FAT_LIB_SOURCE_DIRS = $(NATIVE_SOURCE_DIRS) $(GEN_OBJC_DIR)
 # OBJCPP_BUILD is an optional environment variable for Objective-C++ build experiments.
 # J2ObjC and app releases should not be built with this flag, nor is its use supported.
 ifeq ($(OBJCPP_BUILD), YES)
-FAT_LIB_COMPILE = $(CLANG) $(OBJCPPFLAGS) -I$(GEN_OBJC_DIR)
+FAT_LIB_COMPILE = $(CLANG) $(OBJCPPFLAGS) $(ARGC_CPP_FLAGS) -I$(GEN_OBJC_DIR)
 # TODO(tball): add support for Obj-C++ precompiled header.
 else
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(GEN_OBJC_DIR)
@@ -62,6 +62,7 @@ FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
 endif
 
 CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(NATIVE_JRE_SOURCES_CORE:.m=.o)
+ARGC_OBJS_RELATIVE = $(NATIVE_ARGC_SOURCES:.mm=.o)
 IO_OBJS_RELATIVE = $(JAVA_SOURCES_IO:.java=.o)
 NET_OBJS_RELATIVE = $(JAVA_SOURCES_NET:.java=.o) $(NATIVE_JRE_SOURCES_NET:.m=.o)
 UTIL_OBJS_RELATIVE = $(JAVA_SOURCES_UTIL:.java=.o)
@@ -80,7 +81,7 @@ ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
-LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
+LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE) $(ARGC_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_io,$(IO_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))

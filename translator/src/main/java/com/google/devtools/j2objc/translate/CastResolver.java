@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -131,7 +132,7 @@ public class CastResolver extends UnitTreeVisitor {
   private FunctionInvocation createCastCheck(TypeMirror type, Expression expr) {
     type = typeUtil.erasure(type);
     TypeMirror idType = TypeUtil.ID_TYPE;
-    if (TypeUtil.isInterface(type) || isObjectArray(type)) {
+    if (TypeUtil.isPureInterface(type) || isObjectArray(type)) {
       // Interfaces and object arrays require an isInstance call.
       FunctionElement element = new FunctionElement("cast_check", idType, null)
           .addParameters(idType, TypeUtil.IOS_CLASS.asType());
@@ -256,6 +257,7 @@ public class CastResolver extends UnitTreeVisitor {
         for (ExecutableElement currentMethod : ElementUtil.getMethods(inheritedElem)) {
           ExecutableType currentMethodType = typeUtil.asMemberOf(inheritedType, currentMethod);
           if (typeUtil.isSubsignature(methodType, currentMethodType)
+        	  && method.getSimpleName().equals(currentMethod.getSimpleName()) // ARGC ++
               && nameTable.getMethodSelector(currentMethod).equals(selector)) {
             TypeMirror newReturnType = typeUtil.erasure(currentMethodType.getReturnType());
             if (returnType == null || typeUtil.isSubtype(newReturnType, returnType)) {
@@ -295,8 +297,13 @@ public class CastResolver extends UnitTreeVisitor {
     Iterator<Expression> argIter = args.iterator();
     Iterator<? extends TypeMirror> paramTypeIter = paramTypes.iterator();
     // Implicit assert that size(paramTypes) >= size(args). Don't cast vararg arguments.
+    try {
     while (paramTypeIter.hasNext()) {
       maybeAddCast(argIter.next(), paramTypeIter.next(), false);
+    }
+    }
+    catch (Exception e) {
+    	ARGC.trap();
     }
   }
 

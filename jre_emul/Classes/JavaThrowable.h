@@ -25,7 +25,7 @@
 
 CF_EXTERN_C_BEGIN
 
-void NSException_initWithNSString_(NSException *self, NSString *message);
+void NSException_initWithNSString_(NSException *self, NSString *message) J2OBJC_METHOD_ATTR;
 
 CF_EXTERN_C_END
 

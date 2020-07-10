@@ -15,6 +15,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
@@ -188,6 +189,14 @@ public class FileUtil {
   private static InputFile findFileOnPaths(
       String sourceFileName, List<String> paths) throws IOException {
     // Zip/jar files always use forward slashes.
+  	if (ARGC.isExcludedClass(sourceFileName)) {
+		return null;
+	}
+	  
+  	InputFile inf = InputFile.getInputFile(sourceFileName);
+  	if (inf != null) {
+  		return inf;
+  	}
     String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
     for (String pathEntry : paths) {
       File f = new File(pathEntry);
@@ -243,14 +252,14 @@ public class FileUtil {
   }
 
   public static File createTempDir(String dirname) throws IOException {
-    File tmpDirectory = File.createTempFile(dirname, ".tmp");
-    tmpDirectory.delete();
-    if (!tmpDirectory.mkdir()) {
-      throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
-    }
-    tmpDirectory.deleteOnExit();
-    return tmpDirectory;
-  }
+		  File tmpDirectory = File.createTempFile(dirname, ".tmp");
+		  tmpDirectory.delete();
+		  if (!tmpDirectory.mkdir()) {
+			  throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
+		  }
+		  tmpDirectory.deleteOnExit();
+		  return tmpDirectory;
+	  }
 
   /**
    * Recursively delete specified directory.

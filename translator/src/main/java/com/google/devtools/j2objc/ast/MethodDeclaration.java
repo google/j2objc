@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -113,6 +114,16 @@ public class MethodDeclaration extends BodyDeclaration {
     return parameters.get(index);
   }
 
+  // ARGC ++
+  public SingleVariableDeclaration getParameter(VariableElement name) {
+	  for (SingleVariableDeclaration arg : parameters) {
+		  if (arg.getVariableElement() == name) {
+			  return arg;
+		  }
+	  }
+	  return null;
+  }
+  
   public List<SingleVariableDeclaration> getParameters() {
     return parameters;
   }

@@ -127,25 +127,25 @@ JNIEXPORT void JNICALL Java_java_net_NetworkInterface_init(JNIEnv *env) {
     ni_class = (*env)->FindClass(env,"java/net/NetworkInterface");
     ni_class = (*env)->NewGlobalRef(env, ni_class);
     ni_nameID = (*env)->GetFieldID(env, ni_class,"name", "Ljava/lang/String;");
-    [(id) ni_nameID retain];
+    (void)RETAIN_((id) ni_nameID);
     ni_indexID = (*env)->GetFieldID(env, ni_class, "index", "I");
-    [(id) ni_indexID retain];
+    (void)RETAIN_((id) ni_indexID);
     ni_addrsID = (*env)->GetFieldID(env, ni_class, "addrs", "[Ljava/net/InetAddress;");
-    [(id) ni_addrsID retain];
+    (void)RETAIN_((id) ni_addrsID);
     ni_bindsID = (*env)->GetFieldID(env, ni_class, "bindings", "[Ljava/net/InterfaceAddress;");
-    [(id) ni_bindsID retain];
+    (void)RETAIN_((id) ni_bindsID);
     ni_descID = (*env)->GetFieldID(env, ni_class, "displayName", "Ljava/lang/String;");
-    [(id) ni_descID retain];
+    (void)RETAIN_((id) ni_descID);
     ni_virutalID = (*env)->GetFieldID(env, ni_class, "virtual", "Z");
-    [(id) ni_virutalID retain];
+    (void)RETAIN_((id) ni_virutalID);
     ni_childsID = (*env)->GetFieldID(env, ni_class, "childs", "[Ljava/net/NetworkInterface;");
-    [(id) ni_childsID retain];
+    (void)RETAIN_((id) ni_childsID);
     ni_parentID = (*env)->GetFieldID(env, ni_class, "parent", "Ljava/net/NetworkInterface;");
-    [(id) ni_parentID retain];
+    (void)RETAIN_((id) ni_parentID);
     ni_hardwareAddrID = (*env)->GetFieldID(env, ni_class, "hardwareAddr", "[B");
-    [(id) ni_hardwareAddrID retain];
+    (void)RETAIN_((id) ni_hardwareAddrID);
     ni_ctrID = (*env)->GetMethodID(env, ni_class, "<init>", "()V");
-    [(id) ni_ctrID retain];
+    (void)RETAIN_((id) ni_ctrID);
 
     ni_iacls = (*env)->FindClass(env, "java/net/InetAddress");
     ni_iacls = (*env)->NewGlobalRef(env, ni_iacls);
@@ -156,21 +156,21 @@ JNIEXPORT void JNICALL Java_java_net_NetworkInterface_init(JNIEnv *env) {
     ni_ibcls = (*env)->FindClass(env, "java/net/InterfaceAddress");
     ni_ibcls = (*env)->NewGlobalRef(env, ni_ibcls);
     ni_ia4ctrID = (*env)->GetMethodID(env, ni_ia4cls, "<init>", "()V");
-    [(id) ni_ia4ctrID retain];
+    (void)RETAIN_((id) ni_ia4ctrID);
     ni_ia6ctrID = (*env)->GetMethodID(env, ni_ia6cls, "<init>", "()V");
-    [(id) ni_ia6ctrID retain];
+    (void)RETAIN_((id) ni_ia6ctrID);
     ni_ibctrID = (*env)->GetMethodID(env, ni_ibcls, "<init>", "()V");
-    [(id) ni_ibctrID retain];
+    (void)RETAIN_((id) ni_ibctrID);
     ni_ia6ipaddressID = (*env)->GetFieldID(env, ni_ia6cls, "ipaddress", "[B");
-    [(id) ni_ia6ipaddressID retain];
+    (void)RETAIN_((id) ni_ia6ipaddressID);
     ni_ibaddressID = (*env)->GetFieldID(env, ni_ibcls, "address", "Ljava/net/InetAddress;");
-    [(id) ni_ibaddressID retain];
+    (void)RETAIN_((id) ni_ibaddressID);
     ni_ib4broadcastID = (*env)->GetFieldID(env, ni_ibcls, "broadcast", "Ljava/net/Inet4Address;");
-    [(id) ni_ib4broadcastID retain];
+    (void)RETAIN_((id) ni_ib4broadcastID);
     ni_ib4maskID = (*env)->GetFieldID(env, ni_ibcls, "maskLength", "S");
-    [(id) ni_ib4maskID retain];
+    (void)RETAIN_((id) ni_ib4maskID);
     ni_defaultIndexID = (*env)->GetStaticFieldID(env, ni_class, "defaultIndex", "I");
-    [(id) ni_defaultIndexID retain];
+    (void)RETAIN_((id) ni_defaultIndexID);
 }
 
 /*

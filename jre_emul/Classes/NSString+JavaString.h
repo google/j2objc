@@ -293,50 +293,41 @@
 
 // String.format(Locale, String, Object...)
 FOUNDATION_EXPORT NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
-    JavaUtilLocale *l, NSString *s, IOSObjectArray *objs);
+    JavaUtilLocale *l, NSString *s, IOSObjectArray *objs) J2OBJC_METHOD_ATTR;
 // String.format(String, Object...)
 FOUNDATION_EXPORT NSString *NSString_java_formatWithNSString_withNSObjectArray_(
-    NSString *s, IOSObjectArray *objs);
+    NSString *s, IOSObjectArray *objs) J2OBJC_METHOD_ATTR;
 // String.valueOf(boolean)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfBool_(jboolean b);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfBool_(jboolean b) J2OBJC_METHOD_ATTR;
 // String.valueOf(char)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfChar_(jchar c);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfChar_(jchar c) J2OBJC_METHOD_ATTR;
 // String.valueOf(char[])
 // String.copyValueOf(char[])
-FOUNDATION_EXPORT NSString *NSString_java_valueOfChars_(IOSCharArray *chars);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfChars_(IOSCharArray *chars) J2OBJC_METHOD_ATTR;
 // String.valueOf(char[], int, int)
 // String.copyValueOf(char[], int, int)
 FOUNDATION_EXPORT NSString *NSString_java_valueOfChars_offset_count_(
-    IOSCharArray *chars, jint i, jint j);
+    IOSCharArray *chars, jint i, jint j) J2OBJC_METHOD_ATTR;
 // String.valueOf(double)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfDouble_(jdouble d);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfDouble_(jdouble d) J2OBJC_METHOD_ATTR;
 // String.valueOf(float)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfFloat_(jfloat f);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfFloat_(jfloat f) J2OBJC_METHOD_ATTR;
 // String.valueOf(int)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfInt_(jint i);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfInt_(jint i) J2OBJC_METHOD_ATTR;
 // String.valueOf(long)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfLong_(jlong l);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfLong_(jlong l) J2OBJC_METHOD_ATTR;
 // String.valueOf(Object)
-FOUNDATION_EXPORT NSString *NSString_java_valueOf_(id o);
+FOUNDATION_EXPORT NSString *NSString_java_valueOf_(id o) J2OBJC_METHOD_ATTR;
 // String.join(CharSequence, CharSequence...)
 FOUNDATION_EXPORT NSString *
 NSString_java_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(
-    id<JavaLangCharSequence> delimiter, IOSObjectArray *elements);
+    id<JavaLangCharSequence> delimiter, IOSObjectArray *elements) J2OBJC_METHOD_ATTR;
 // String.join(CharSequence, Iterable<? extends CharSequence>)
 FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
-    id<JavaLangCharSequence> delimiter, id<JavaLangIterable> elements);
-
-// Empty class to force category to be loaded.
-@interface JreStringCategoryDummy : NSObject
-@end
+    id<JavaLangCharSequence> delimiter, id<JavaLangIterable> elements) J2OBJC_METHOD_ATTR;
 
 // Use the category dummy to initialize static variables for the String class.
-FOUNDATION_EXPORT _Atomic(jboolean) NSString__initialized;
-__attribute__((always_inline)) inline void NSString_initialize() {
-  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
-    [JreStringCategoryDummy class];
-  }
-}
+J2OBJC_EMPTY_STATIC_INIT(NSString)
 
 inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER(void);
 /*! INTERNAL ONLY - Use accessor function from above. */

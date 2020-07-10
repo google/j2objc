@@ -77,10 +77,10 @@ public class Mappings {
     return ImmutableMap.copyOf(classMappings);
   }
 
-  public ImmutableMap<String, String> getMethodMappings() {
-    return ImmutableMap.copyOf(methodMappings);
+  public /*ARGC** ImmutableMap*/Map<String, String> getMethodMappings() {
+    return /*ARGC** ImmutableMap.copyOf*/methodMappings;
   }
-
+  
   @VisibleForTesting
   void addClass(String key, String name) {
     classMappings.put(key, name);
