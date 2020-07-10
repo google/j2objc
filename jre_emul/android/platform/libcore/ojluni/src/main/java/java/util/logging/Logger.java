@@ -1836,15 +1836,15 @@ public class Logger {
             @Override
             protected Object[][] getContents() {
                 return new Object[][] {
-                        { "ALL", "ALL" },
-                        { "SEVERE", "SEVERE" },
-                        { "WARNING", "WARNING" },
-                        { "INFO", "INFO" },
-                        { "CONFIG", "CONFIG" },
-                        { "FINE", "FINE" },
-                        { "FINER", "FINER" },
-                        { "FINEST", "FINEST" },
-                        { "OFF", "OFF" }
+                    { "ALL", "ALL" },
+                    { "SEVERE", "SEVERE" },
+                    { "WARNING", "WARNING" },
+                    { "INFO", "INFO" },
+                    { "CONFIG", "CONFIG" },
+                    { "FINE", "FINE" },
+                    { "FINER", "FINER" },
+                    { "FINEST", "FINEST" },
+                    { "OFF", "OFF" }
                 };
             }
         };
