@@ -40,23 +40,17 @@ abstract class AbstractPath implements Path {
 
     @Override
     public final boolean startsWith(String other) {
-        return false;
-//    TODO(amisail) uncomment this when working
-//        return startsWith(getFileSystem().getPath(other));
+        return startsWith(getFileSystem().getPath(other));
     }
 
     @Override
     public final boolean endsWith(String other) {
-        return false;
-//    TODO(amisail) uncomment this when working
-//        return endsWith(getFileSystem().getPath(other));
+        return endsWith(getFileSystem().getPath(other));
     }
 
     @Override
     public final Path resolve(String other) {
-        return null;
-//    TODO(amisail) uncomment this when working
-//        return resolve(getFileSystem().getPath(other));
+        return resolve(getFileSystem().getPath(other));
     }
 
     @Override
@@ -67,11 +61,10 @@ abstract class AbstractPath implements Path {
         return (parent == null) ? other : parent.resolve(other);
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public final Path resolveSibling(String other) {
-//        return resolveSibling(getFileSystem().getPath(other));
-//    }
+    @Override
+    public final Path resolveSibling(String other) {
+        return resolveSibling(getFileSystem().getPath(other));
+    }
 
     @Override
     public final Iterator<Path> iterator() {
