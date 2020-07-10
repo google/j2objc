@@ -76,7 +76,6 @@ all_dist: dist all_frameworks examples_dist
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_DIR)
-	@cd procyon-clone && $(MAKE) clean
 	@cd annotations && $(MAKE) clean
 	@cd java_deps && $(MAKE) clean
 	@cd translator && $(MAKE) clean

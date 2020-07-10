@@ -29,16 +29,13 @@ ifeq ("$(J2OBJC_CALL_RECURSIVE_DEPS)", "YES")
 annotations_dist:
 	@$(MAKE) -C $(J2OBJC_ROOT)/annotations dist
 
-procyon_dist:
-	@$(MAKE) -C $(J2OBJC_ROOT)/procyon-clone dist
-
 java_deps_dist:
 	@$(MAKE) -C $(J2OBJC_ROOT)/java_deps dist
 
 jre_emul_jars_dist: annotations_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul -f java.mk jars_dist
 
-translator: annotations_dist java_deps_dist procyon_dist
+translator: annotations_dist java_deps_dist 
 	@$(MAKE) -C $(J2OBJC_ROOT)/translator dist
 
 translator_dist: translator jre_emul_jars_dist
