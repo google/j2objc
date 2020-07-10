@@ -677,6 +677,7 @@ TEST_SOURCES := \
     libcore/org/json/JSONTokenerTest.java \
     libcore/org/json/ParsingTest.java \
     libcore/org/json/SelfUseTest.java \
+    libcore/sun/util/logging/PlatformLoggerTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
