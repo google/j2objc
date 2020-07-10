@@ -184,6 +184,7 @@ run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/core_plus_android_util \
   $(TESTS_DIR)/core_plus_beans \
   $(TESTS_DIR)/core_plus_channels \
+  $(TESTS_DIR)/core_plus_file \
   $(TESTS_DIR)/core_plus_concurrent \
   $(TESTS_DIR)/core_plus_io \
   $(TESTS_DIR)/core_plus_icu \
@@ -334,6 +335,10 @@ $(TESTS_DIR)/core_plus_util:
 $(TESTS_DIR)/core_plus_concurrent:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_concurrent -ljre_util -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_file:
+	@mkdir -p $(@D)
+	$(J2OBJCC) -ljre_file -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
