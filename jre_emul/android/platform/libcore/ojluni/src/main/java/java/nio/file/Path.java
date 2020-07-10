@@ -103,8 +103,7 @@ public interface Path
      *
      * @return  the file system that created this object
      */
-//    TODO(amisail) uncomment this when working
-//    FileSystem getFileSystem();
+    FileSystem getFileSystem();
 
     /**
      * Tells whether or not this path is absolute.
