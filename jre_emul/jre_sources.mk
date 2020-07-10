@@ -1120,12 +1120,14 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/UserDefinedFileAttributeView.java \
   java/nio/file/attribute/UserPrincipal.java \
   java/nio/file/attribute/UserPrincipalLookupService.java \
-  java/nio/file/attribute/UserPrincipalNotFoundException.java
+  java/nio/file/attribute/UserPrincipalNotFoundException.java \
+  java/nio/file/spi/FileTypeDetector.java
 
 JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
+  sun/nio/fs/AbstractFileTypeDetector.java \
   sun/nio/fs/AbstractPath.java \
   sun/nio/fs/BasicFileAttributesHolder.java \
   sun/nio/fs/Cancellable.java \
