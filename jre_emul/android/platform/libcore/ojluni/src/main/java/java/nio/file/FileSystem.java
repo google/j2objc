@@ -26,7 +26,8 @@
 package java.nio.file;
 
 import java.nio.file.attribute.*;
-import java.nio.file.spi.FileSystemProvider;
+//TODO(amisail) uncomment this when working
+//import java.nio.file.spi.FileSystemProvider;
 import java.util.Set;
 import java.io.Closeable;
 import java.io.IOException;
@@ -109,7 +110,8 @@ public abstract class FileSystem
      *
      * @return  The provider that created this file system.
      */
-    public abstract FileSystemProvider provider();
+//    TODO(amisail) uncomment this when working
+//    public abstract FileSystemProvider provider();
 
     /**
      * Closes this file system.
