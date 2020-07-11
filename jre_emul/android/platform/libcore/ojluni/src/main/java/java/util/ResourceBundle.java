@@ -92,6 +92,12 @@ public abstract class ResourceBundle {
 
     private long lastLoadTime = 0;
 
+    private String name;
+
+    public String getBaseBundleName() {
+        return name;
+    }
+
     static class MissingBundle extends ResourceBundle {
         @Override
         public Enumeration<String> getKeys() {
@@ -509,6 +515,7 @@ public abstract class ResourceBundle {
 
         if (bundle != null) {
             bundle.setLocale(locale);
+            bundle.setName(bundleName);
         } else {
             String fileName = bundleName.replace('.', '/') + ".properties";
             InputStream stream = loader != null
@@ -519,6 +526,7 @@ public abstract class ResourceBundle {
                     bundle = new PropertyResourceBundle(
                         new InputStreamReader(stream, StandardCharsets.UTF_8));
                     bundle.setLocale(locale);
+                    bundle.setName(bundleName);
                 } catch (IOException ignored) {
                 } finally {
                     IoUtils.closeQuietly(stream);
@@ -603,6 +611,10 @@ public abstract class ResourceBundle {
 
     private void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 
     public static void clearCache() {
@@ -899,6 +911,7 @@ public abstract class ResourceBundle {
                 try {
                     ResourceBundle bundle = (ResourceBundle) cls.newInstance();
                     bundle.setLocale(locale);
+                    bundle.setName(bundleName);
                     return bundle;
                 } catch (NullPointerException e) {
                     return null;
@@ -928,6 +941,7 @@ public abstract class ResourceBundle {
                     try {
                         ret = new PropertyResourceBundle(new InputStreamReader(streams));
                         ret.setLocale(locale);
+                        ret.setName(bundleName);
                         streams.close();
                     } catch (IOException e) {
                         return null;
