@@ -1063,19 +1063,37 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/ClosedDirectoryStreamException.java \
   java/nio/file/ClosedFileSystemException.java \
   java/nio/file/ClosedWatchServiceException.java \
+  java/nio/file/CopyOption.java \
   java/nio/file/DirectoryIteratorException.java \
   java/nio/file/DirectoryNotEmptyException.java \
+  java/nio/file/DirectoryStream.java \
   java/nio/file/FileAlreadyExistsException.java \
+  java/nio/file/FileStore.java \
+  java/nio/file/FileSystem.java \
   java/nio/file/FileSystemAlreadyExistsException.java \
   java/nio/file/FileSystemException.java \
+  java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
+  java/nio/file/FileVisitOption.java \
+  java/nio/file/FileVisitResult.java \
+  java/nio/file/FileVisitor.java \
   java/nio/file/InvalidPathException.java \
+  java/nio/file/LinkOption.java \
+  java/nio/file/LinkPermission.java \
   java/nio/file/NoSuchFileException.java \
   java/nio/file/NotDirectoryException.java \
   java/nio/file/NotLinkException.java \
+  java/nio/file/OpenOption.java \
+  java/nio/file/Path.java \
+  java/nio/file/PathMatcher.java \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
+  java/nio/file/SecureDirectoryStream.java \
+  java/nio/file/SimpleFileVisitor.java \
+  java/nio/file/StandardCopyOption.java \
+  java/nio/file/StandardOpenOption.java \
+  java/nio/file/StandardWatchEventKinds.java \
   java/nio/file/WatchEvent.java \
   java/nio/file/WatchKey.java \
   java/nio/file/WatchService.java \
@@ -1102,18 +1120,26 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/UserDefinedFileAttributeView.java \
   java/nio/file/attribute/UserPrincipal.java \
   java/nio/file/attribute/UserPrincipalLookupService.java \
-  java/nio/file/attribute/UserPrincipalNotFoundException.java
+  java/nio/file/attribute/UserPrincipalNotFoundException.java \
+  java/nio/file/spi/FileTypeDetector.java
 
 JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
+  sun/nio/fs/AbstractBasicFileAttributeView.java \
+  sun/nio/fs/AbstractFileTypeDetector.java \
+  sun/nio/fs/AbstractPath.java \
   sun/nio/fs/BasicFileAttributesHolder.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
   sun/nio/fs/NativeBuffer.java \
-  sun/nio/fs/NativeBuffers.java
+  sun/nio/fs/NativeBuffers.java \
+  sun/nio/fs/UnixConstants.java \
+  sun/nio/fs/UnixFileModeAttribute.java \
+  sun/nio/fs/UnixMountEntry.java \
+  sun/nio/fs/Util.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
