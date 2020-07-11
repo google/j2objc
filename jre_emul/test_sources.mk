@@ -687,6 +687,7 @@ TEST_SOURCES := \
     libcore/org/json/JSONTokenerTest.java \
     libcore/org/json/ParsingTest.java \
     libcore/org/json/SelfUseTest.java \
+    libcore/sun/util/logging/PlatformLoggerTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
@@ -1409,6 +1410,7 @@ TESTS_USE_REFLECTION = \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
     libcore/java/nio/channels/SocketChannelTest.java \
     libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
+    libcore/sun/util/logging/PlatformLoggerTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
