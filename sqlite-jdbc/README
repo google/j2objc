@@ -1,6 +1,0 @@
-This package creates an Objective-C library of the JSR 305 annotations.
-This project's Java files are extracted from the jsr305 source jar when
-building.
-
-Modifications:
-  None.

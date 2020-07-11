@@ -67,13 +67,9 @@ JAVAC_JAR = tools.jar
 DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
 
-#ARGC**
-PROCYON_COMPILERTOOLS_JAR = procyon-compilertools-0.5.36.jar
-
-#ARGC--
-#NEW_PROCYON_COMPILERTOOLS_JAR = procyon-compilertools-0.5.36.jar
-
+PROCYON_COMPILERTOOLS_JAR = procyon-compilertools-0.5.32.jar
+NEW_PROCYON_COMPILERTOOLS_JAR = procyon-compilertools-0.5.33.jar
 PROCYON_JARS = \
-    procyon-core-0.5.36.jar \
+    procyon-core-0.5.32.jar \
     $(PROCYON_COMPILERTOOLS_JAR)
 
