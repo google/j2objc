@@ -43,7 +43,7 @@
 #include "J2ObjC_source.h"
 
 #if !GC_DEBUG
-#pragma GCC optimize ("O2")
+//#pragma GCC optimize ("O2")
 #pragma clang optimize on
 #else
 #pragma clang optimize off

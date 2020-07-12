@@ -289,7 +289,7 @@ public class Options {
 
   public boolean isVerbose() {
     Logger log = Logger.getLogger("com.google.devtools.j2objc");
-    return log != null && log.getLevel() != null && log.getLevel().equals(Level.FINEST);
+    return log != null && Level.FINEST.equals(log.getLevel());
   }
 
   /**

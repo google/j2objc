@@ -174,8 +174,6 @@ public class TranslateSourceList {
 			if (source == null) return;
 
 			filepath = filepath.substring(0, filepath.length() - 5) + "java";
-			System.out.println("discompiled: " + filepath);
-			System.out.println(source);
 			try {
 				PrintStream out = new PrintStream(new FileOutputStream(filepath));
 				out.println(source);

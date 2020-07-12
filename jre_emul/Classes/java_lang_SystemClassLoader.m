@@ -75,6 +75,21 @@ JNIEXPORT jclass Java_java_lang_SystemClassLoader_findClass(
   return [IOSClass forName:name];
 }
 
+
+static NSBundle* j2objc_getSystemResourceBundle() {
+  static NSBundle *j2objc_bundle = NULL;
+  if (j2objc_bundle == NULL) {
+    // NSURL* url = [[NSBundle mainBundle] URLForResource:@"j2objc_resources" withExtension:@"bundle"];
+    // if (url != NULL) {
+    //   j2objc_bundle = [NSBundle bundleWithURL:url];
+    // }
+    if (j2objc_bundle == NULL) {
+      j2objc_bundle = [NSBundle mainBundle];
+    }
+  }
+  return j2objc_bundle;
+}
+
 JNIEXPORT jobject Java_java_lang_SystemClassLoader_findResource(
       JNIEnv *env, jobject obj, jstring name) {
   if (!name) {
