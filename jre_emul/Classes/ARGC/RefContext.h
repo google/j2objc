@@ -10,7 +10,7 @@
 
 #import <atomic>
 
-#define GC_DEBUG 1
+#define GC_DEBUG 0
 
 static const int64_t BIND_COUNT_MASK        = 0x00fffFFFF;
 static const int64_t PHANTOM_FLAG           = 0x02000LL * 0x10000;

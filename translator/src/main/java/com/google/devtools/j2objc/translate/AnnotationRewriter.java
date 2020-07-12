@@ -170,7 +170,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
       constructorDecl.addParameter(new SingleVariableDeclaration(param));
       if (options.useGC() && TypeUtil.isReferenceType(memberType)) {
 	      String rhs = propName;
-			String fType = typeUtil.getArgcFieldType(memberType);
+			String fType = typeUtil.getArgcFieldTypeEx(node.getTypeElement(), memberType);
 			String funcName = "Jre" + fType + "FieldAssign";
 	      stmts.add(new NativeStatement(funcName + "(&self->" + fieldName + ", " + rhs + ");"));
       }

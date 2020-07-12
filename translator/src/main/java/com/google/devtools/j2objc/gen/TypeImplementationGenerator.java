@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -292,7 +293,17 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     syncLineNumbers(m);  // avoid doc-comment
     print(getMethodSignature(m) + " ");
-    print(reindent(generateStatement(m.getBody())) + "\n");
+    String body = generateStatement(m.getBody());
+    if (options.isIOSTest() && ARGC.isTestClass(super.typeElement.asType())) {
+    	if (m.isTestClassSetup()) {
+    	      String clazz = nameTable.getFullName(typeNode.getTypeElement());
+    		
+    	    List<Statement> initStatements = typeNode.getClassInitStatements();
+    	    String name = m.getName().toString();
+    	    initStatements.add(new NativeStatement("[" + clazz + " " + name + "];"));
+    	}
+    }
+    print(reindent(body) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
     }

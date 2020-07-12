@@ -146,7 +146,7 @@ public final class IosMockMaker implements MockMaker {
       class_addProtocol(proxyClass, intrface.objcProtocol);
     }
     objc_registerClassPair(proxyClass);
-    return IOSClass_fromClass(proxyClass);
+    return IOSClass_fromClass([proxyClass class]);
   ]-*/;
 
   static class ClassProxy {

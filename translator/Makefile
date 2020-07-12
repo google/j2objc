@@ -59,6 +59,7 @@ JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
 	argc/ARGC.java \
+	argc/TranslateSourceList.java \
 	ast/AbstractTypeDeclaration.java \
 	ast/AnnotatableType.java \
 	ast/Annotation.java \

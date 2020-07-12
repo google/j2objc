@@ -239,6 +239,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
   __attribute__((always_inline)) inline void CLASS##_initialize(void) {}
 
+
 FOUNDATION_EXPORT NSString* JreStringConstant(NSString* str);
 
 #define JreString(idx, text)  _string_##idx
@@ -341,6 +342,5 @@ CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
   - (oneway void)release {} \
   - (id)autorelease { return self; }
 #endif
-
 
 #endif // _J2OBJC_COMMON_H_

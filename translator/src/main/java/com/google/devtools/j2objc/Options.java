@@ -96,6 +96,7 @@ public class Options {
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
+  private static boolean iostest = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -288,7 +289,7 @@ public class Options {
 
   public boolean isVerbose() {
     Logger log = Logger.getLogger("com.google.devtools.j2objc");
-    return log != null && log.getLevel().equals(Level.FINEST);
+    return log != null && Level.FINEST.equals(log.getLevel());
   }
 
   /**
@@ -358,6 +359,8 @@ public class Options {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
       } else if (arg.equals("-d")) {
         fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
+      } else if (arg.equals("--resource-dir")) {
+          fileUtil.setResourceDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--mapping")) {
         mappings.addMappingsFiles(getArgValue(args, arg).split(","));
       } else if (arg.equals("--header-mapping")) {
@@ -520,6 +523,8 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
+      } else if (arg.equals("-Xios-test")) {
+        iostest = true;
       } else if (arg.equals("-external-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
@@ -687,7 +692,7 @@ public class Options {
   private void addPath(List<String> pathList, String path, boolean expandJarFile) {
 	  File f = new File(path);
 	  if (expandJarFile && !f.isDirectory()) {
-		  f = ARGC.extractSources(f, this);
+		  f = ARGC.extractSources(f, this, false);
 		  if (f == null) {
 			  return;
 		  }
@@ -1060,6 +1065,10 @@ public class Options {
     return emitSourceHeaders;
   }
 
+  public static boolean isIOSTest() {
+    return iostest;
+  }
+  
   @VisibleForTesting
   public void setEmitSourceHeaders(boolean b) {
     emitSourceHeaders = b;

@@ -52,6 +52,7 @@ public class FileUtil {
   private File headerOutputDirectory = null;
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private Charset charset = Charset.forName(fileEncoding);
+  private File resourceDirectory;
 
   public void setSourcePathEntries(List<String> sourcePathEntries) {
     this.sourcePathEntries = sourcePathEntries;
@@ -74,25 +75,39 @@ public class FileUtil {
   }
 
   public void setOutputDirectory(File outputDirectory) {
+	if (outputDirectory != null && !outputDirectory.exists()) {
+	   outputDirectory.mkdirs();
+	}
     this.outputDirectory = outputDirectory;
   }
 
+  public void setResourceDirectory(File outputDirectory) {
+	if (this.resourceDirectory != null) {
+		throw new RuntimeException("Resource directory is already created. --resource-dir option should be declared before -sourcepath");
+	}
+	if (outputDirectory != null && !outputDirectory.exists()) {
+	  outputDirectory.mkdirs();
+	}
+	this.resourceDirectory = outputDirectory;
+  }
+
+  public File getResourceDirectory() {
+	return this.resourceDirectory;
+  }
+
   public void setHeaderOutputDirectory(File outputDirectory) {
+    if (outputDirectory != null && !outputDirectory.exists()) {
+	   outputDirectory.mkdirs();
+	}
     this.headerOutputDirectory = outputDirectory;
   }
 
   public File getOutputDirectory() {
-    if (!outputDirectory.exists()) {
-      outputDirectory.mkdirs();
-    }
     return outputDirectory;
   }
 
   public File getHeaderOutputDirectory() {
     if (headerOutputDirectory != null) {
-      if (!headerOutputDirectory.exists()) {
-        headerOutputDirectory.mkdirs();
-      }
       return headerOutputDirectory;
     } else {
       return getOutputDirectory();

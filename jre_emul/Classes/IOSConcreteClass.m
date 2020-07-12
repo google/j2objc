@@ -56,7 +56,7 @@
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
   }
   // Check if reflection is available.
-  if (self->metadata_) {
+  if (self->metadata_ && self->metadata_->methods) {
     // Get the nullary constructor.
     JavaLangReflectConstructor *constructor = JreConstructorWithParamTypes(self, nil);
     if (!constructor) {
@@ -79,7 +79,11 @@
   }
   Class superclass = class_getSuperclass(class_);
   if (superclass != nil) {
-    return IOSClass_fromClass(superclass);
+    IOSClass* c = IOSClass_fromClass(superclass);
+    if (c == NULL) {
+      c = NSObject_class_();
+    }
+    return c;
   }
   return nil;
 }
