@@ -1140,6 +1140,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixException.java \
   sun/nio/fs/UnixFileModeAttribute.java \
   sun/nio/fs/UnixMountEntry.java \
+  sun/nio/fs/UnixPath.java \
   sun/nio/fs/Util.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
