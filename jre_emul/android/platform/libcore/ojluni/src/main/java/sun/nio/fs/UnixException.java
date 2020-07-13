@@ -97,20 +97,19 @@ class UnixException extends Exception {
         IOException x = translateToIOException(file, null);
         throw x;
     }
+    
+    void rethrowAsIOException(UnixPath file, UnixPath other) throws IOException {
+        String a = (file == null) ? null : file.getPathForExceptionMessage();
+        String b = (other == null) ? null : other.getPathForExceptionMessage();
+        IOException x = translateToIOException(a, b);
+        throw x;
+    }
 
-//    TODO(amisail) uncomment this when working
-//    void rethrowAsIOException(UnixPath file, UnixPath other) throws IOException {
-//        String a = (file == null) ? null : file.getPathForExceptionMessage();
-//        String b = (other == null) ? null : other.getPathForExceptionMessage();
-//        IOException x = translateToIOException(a, b);
-//        throw x;
-//    }
-//
-//    void rethrowAsIOException(UnixPath file) throws IOException {
-//        rethrowAsIOException(file, null);
-//    }
-//
-//    IOException asIOException(UnixPath file) {
-//        return translateToIOException(file.getPathForExceptionMessage(), null);
-//    }
+    void rethrowAsIOException(UnixPath file) throws IOException {
+        rethrowAsIOException(file, null);
+    }
+
+    IOException asIOException(UnixPath file) {
+        return translateToIOException(file.getPathForExceptionMessage(), null);
+    }
 }
