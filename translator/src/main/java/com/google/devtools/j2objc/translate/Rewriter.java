@@ -245,28 +245,17 @@ public class Rewriter extends UnitTreeVisitor {
     TypeMirror fieldType = field.getTypeMirror();
     String getter = node.getGetter();
     String setter = node.getSetter();
-    if (field.getFragments().size() > 1) {
-      if (getter != null) {
-        ErrorUtil.error(field, "@Property getter declared for multiple fields");
-        return;
+    // Check that specified accessors exist.
+    TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(node);
+    if (getter != null) {
+      if (ElementUtil.findMethod(enclosingType, getter) == null) {
+        ErrorUtil.error(field, "Non-existent getter specified: " + getter);
       }
-      if (setter != null) {
-        ErrorUtil.error(field, "@Property setter declared for multiple fields");
-        return;
-      }
-    } else {
-      // Check that specified accessors exist.
-      TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(node);
-      if (getter != null) {
-        if (ElementUtil.findMethod(enclosingType, getter) == null) {
-          ErrorUtil.error(field, "Non-existent getter specified: " + getter);
-        }
-      }
-      if (setter != null) {
-        if (ElementUtil.findMethod(
-            enclosingType, setter, TypeUtil.getQualifiedName(fieldType)) == null) {
-          ErrorUtil.error(field, "Non-existent setter specified: " + setter);
-        }
+    }
+    if (setter != null) {
+      if (ElementUtil.findMethod(
+          enclosingType, setter, TypeUtil.getQualifiedName(fieldType)) == null) {
+        ErrorUtil.error(field, "Non-existent setter specified: " + setter);
       }
     }
   }

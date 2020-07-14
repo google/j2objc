@@ -104,6 +104,7 @@ public abstract class SocketFactory
         return theFactory;
     }
 
+    // Android-added: Added method for testing default socket factory.
     /** @hide Visible for testing only */
     public static void setDefault(SocketFactory factory) {
         synchronized (SocketFactory.class) {

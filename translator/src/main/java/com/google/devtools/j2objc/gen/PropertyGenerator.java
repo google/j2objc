@@ -102,7 +102,7 @@ public final class PropertyGenerator {
   }
 
   private boolean processMemoryManagementAttributes(Set<String> attributes) {
-    VariableDeclarationFragment firstVarNode = declaration.getFragment(0);
+    VariableDeclarationFragment firstVarNode = declaration.getFragment();
     if (typeUtil.isString(varType)) {
       attributes.add("copy");
     } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {

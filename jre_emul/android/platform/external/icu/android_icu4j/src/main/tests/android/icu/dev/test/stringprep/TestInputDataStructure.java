@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class TestInputDataStructure {
     
-    // TODO(user): not running before - added empty test to keep failures away
+    // TODO(junit): not running before - added empty test to keep failures away
     @Ignore
     @Test
     public void dummyTest() {}

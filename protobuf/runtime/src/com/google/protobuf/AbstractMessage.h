@@ -35,18 +35,21 @@
 #ifndef __ComGoogleProtobufAbstractMessage_H__
 #define __ComGoogleProtobufAbstractMessage_H__
 
-#include "JreEmulation.h"
+#include "J2ObjC_header.h"
 
+#include "com/google/protobuf/AbstractMessageLite.h"
 #include "com/google/protobuf/Message.h"
 
-@interface ComGoogleProtobufAbstractMessage : NSObject<ComGoogleProtobufMessage>
+@interface ComGoogleProtobufAbstractMessage :
+    ComGoogleProtobufAbstractMessageLite<ComGoogleProtobufMessage>
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage)
 
-@interface ComGoogleProtobufAbstractMessage_Builder : NSObject<ComGoogleProtobufMessage_Builder>
+@interface ComGoogleProtobufAbstractMessage_Builder :
+    ComGoogleProtobufAbstractMessageLite_Builder<ComGoogleProtobufMessage_Builder>
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage_Builder)

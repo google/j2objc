@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ import java.io.IOException;
  * next selection operation.  The validity of a key may be tested by invoking
  * its {@link #isValid isValid} method.
  *
- * <a name="opsets">
+ * <a name="opsets"></a>
  *
  * <p> A selection key contains two <i>operation sets</i> represented as
  * integer values.  Each bit of an operation set denotes a category of
@@ -106,6 +106,7 @@ import java.io.IOException;
  * @see SelectableChannel
  * @see Selector
  */
+
 public abstract class SelectionKey {
 
     /**
@@ -118,7 +119,7 @@ public abstract class SelectionKey {
 
     /**
      * Returns the channel for which this key was created.  This method will
-     * continue to return the channel even after the key is cancelled.  </p>
+     * continue to return the channel even after the key is cancelled.
      *
      * @return  This key's channel
      */
@@ -126,7 +127,7 @@ public abstract class SelectionKey {
 
     /**
      * Returns the selector for which this key was created.  This method will
-     * continue to return the selector even after the key is cancelled.  </p>
+     * continue to return the selector even after the key is cancelled.
      *
      * @return  This key's selector
      */
@@ -190,7 +191,7 @@ public abstract class SelectionKey {
      * @throws  IllegalArgumentException
      *          If a bit in the set does not correspond to an operation that
      *          is supported by this key's channel, that is, if
-     *          <tt>(ops & ~channel().validOps()) != 0</tt>
+     *          {@code (ops & ~channel().validOps()) != 0}
      *
      * @throws  CancelledKeyException
      *          If this key has been cancelled
@@ -227,7 +228,7 @@ public abstract class SelectionKey {
     public static final int OP_READ = 1 << 0;
 
     /**
-     * Operation-set bit for write operations.  </p>
+     * Operation-set bit for write operations.
      *
      * <p> Suppose that a selection key's interest set contains
      * <tt>OP_WRITE</tt> at the start of a <a
@@ -240,7 +241,7 @@ public abstract class SelectionKey {
     public static final int OP_WRITE = 1 << 2;
 
     /**
-     * Operation-set bit for socket-connect operations.  </p>
+     * Operation-set bit for socket-connect operations.
      *
      * <p> Suppose that a selection key's interest set contains
      * <tt>OP_CONNECT</tt> at the start of a <a
@@ -253,7 +254,7 @@ public abstract class SelectionKey {
     public static final int OP_CONNECT = 1 << 3;
 
     /**
-     * Operation-set bit for socket-accept operations.  </p>
+     * Operation-set bit for socket-accept operations.
      *
      * <p> Suppose that a selection key's interest set contains
      * <tt>OP_ACCEPT</tt> at the start of a <a
@@ -271,15 +272,15 @@ public abstract class SelectionKey {
      * <p> An invocation of this method of the form <tt>k.isReadable()</tt>
      * behaves in exactly the same way as the expression
      *
-     * <blockquote><pre>
-     * k.readyOps()&nbsp;&amp;&nbsp;OP_READ&nbsp;!=&nbsp;0</pre></blockquote>
+     * <blockquote><pre>{@code
+     * k.readyOps() & OP_READ != 0
+     * }</pre></blockquote>
      *
      * <p> If this key's channel does not support read operations then this
      * method always returns <tt>false</tt>.  </p>
      *
      * @return  <tt>true</tt> if, and only if,
-     *          <tt>readyOps()</tt>&nbsp;<tt>&</tt>&nbsp;<tt>OP_READ</tt> is
-     *          nonzero
+                {@code readyOps() & OP_READ} is nonzero
      *
      * @throws  CancelledKeyException
      *          If this key has been cancelled
@@ -294,15 +295,15 @@ public abstract class SelectionKey {
      * <p> An invocation of this method of the form <tt>k.isWritable()</tt>
      * behaves in exactly the same way as the expression
      *
-     * <blockquote><pre>
-     * k.readyOps()&nbsp;&amp;&nbsp;OP_WRITE&nbsp;!=&nbsp;0</pre></blockquote>
+     * <blockquote><pre>{@code
+     * k.readyOps() & OP_WRITE != 0
+     * }</pre></blockquote>
      *
      * <p> If this key's channel does not support write operations then this
      * method always returns <tt>false</tt>.  </p>
      *
      * @return  <tt>true</tt> if, and only if,
-     *          <tt>readyOps()</tt>&nbsp;<tt>&</tt>&nbsp;<tt>OP_WRITE</tt>
-     *          is nonzero
+     *          {@code readyOps() & OP_WRITE} is nonzero
      *
      * @throws  CancelledKeyException
      *          If this key has been cancelled
@@ -318,15 +319,15 @@ public abstract class SelectionKey {
      * <p> An invocation of this method of the form <tt>k.isConnectable()</tt>
      * behaves in exactly the same way as the expression
      *
-     * <blockquote><pre>
-     * k.readyOps()&nbsp;&amp;&nbsp;OP_CONNECT&nbsp;!=&nbsp;0</pre></blockquote>
+     * <blockquote><pre>{@code
+     * k.readyOps() & OP_CONNECT != 0
+     * }</pre></blockquote>
      *
      * <p> If this key's channel does not support socket-connect operations
      * then this method always returns <tt>false</tt>.  </p>
      *
      * @return  <tt>true</tt> if, and only if,
-     *          <tt>readyOps()</tt>&nbsp;<tt>&</tt>&nbsp;<tt>OP_CONNECT</tt>
-     *          is nonzero
+     *          {@code readyOps() & OP_CONNECT} is nonzero
      *
      * @throws  CancelledKeyException
      *          If this key has been cancelled
@@ -342,15 +343,15 @@ public abstract class SelectionKey {
      * <p> An invocation of this method of the form <tt>k.isAcceptable()</tt>
      * behaves in exactly the same way as the expression
      *
-     * <blockquote><pre>
-     * k.readyOps()&nbsp;&amp;&nbsp;OP_ACCEPT&nbsp;!=&nbsp;0</pre></blockquote>
+     * <blockquote><pre>{@code
+     * k.readyOps() & OP_ACCEPT != 0
+     * }</pre></blockquote>
      *
      * <p> If this key's channel does not support socket-accept operations then
      * this method always returns <tt>false</tt>.  </p>
      *
      * @return  <tt>true</tt> if, and only if,
-     *          <tt>readyOps()</tt>&nbsp;<tt>&</tt>&nbsp;<tt>OP_ACCEPT</tt>
-     *          is nonzero
+     *          {@code readyOps() & OP_ACCEPT} is nonzero
      *
      * @throws  CancelledKeyException
      *          If this key has been cancelled
@@ -388,7 +389,7 @@ public abstract class SelectionKey {
     }
 
     /**
-     * Retrieves the current attachment.  </p>
+     * Retrieves the current attachment.
      *
      * @return  The object currently attached to this key,
      *          or <tt>null</tt> if there is no attachment

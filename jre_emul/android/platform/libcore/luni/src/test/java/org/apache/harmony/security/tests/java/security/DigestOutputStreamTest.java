@@ -594,6 +594,67 @@ public class DigestOutputStreamTest extends TestCase {
                        Arrays.equals(digestResult, expected));
     }
 
+    private class MessageDigestWithUnsupportedUpdate extends MessageDigest {
+        private MessageDigestWithUnsupportedUpdate() {
+            super("SomeAlgorithm");
+        }
+
+        @Override
+        protected void engineUpdate(byte input) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected void engineUpdate(byte[] input, int offset, int len) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected byte[] engineDigest() {
+            return new byte[0];
+        }
+
+        @Override
+        protected void engineReset() {
+
+        }
+    }
+
+    public void test_write_writeToUnderlyingStreamBeforeUpdatingDigest() {
+        MessageDigest messageDigestWithUnsupportedUpdate = new MessageDigestWithUnsupportedUpdate();
+        OutputStream outputStreamThatThrowsIOException = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                throw new IOException();
+            }
+        };
+
+        DigestOutputStream digestOutputStream = new DigestOutputStream(
+                outputStreamThatThrowsIOException, messageDigestWithUnsupportedUpdate);
+
+        // Writing throws an IOException (and not an UnsupportedOperationException) meaning than
+        // it tried to write to the underlying stream before updating the digest.
+        digestOutputStream.on(true);
+        try {
+            digestOutputStream.write(3);
+            fail();
+        } catch (IOException expected) {
+        }
+
+        digestOutputStream.on(true);
+        try {
+            digestOutputStream.write(new byte[10], 0, 10);
+            fail();
+        } catch (IOException expected) {
+        }
+
+        digestOutputStream.on(true);
+        try {
+            digestOutputStream.write(new byte[10]);
+            fail();
+        } catch (IOException expected) {
+        }
+    }
 
     private class MyOutputStream extends OutputStream {
         @Override

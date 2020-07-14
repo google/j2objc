@@ -25,9 +25,7 @@
 
 package java.util.regex;
 
-/* J2ObjC removed.
 import sun.security.action.GetPropertyAction;
-*/
 
 
 /**
@@ -95,12 +93,9 @@ public class PatternSyntaxException
         return pattern;
     }
 
-    private static final String nl = System.getProperty("line.separator");
-    /* J2ObjC modified.
     private static final String nl =
         java.security.AccessController
             .doPrivileged(new GetPropertyAction("line.separator"));
-    */
 
     /**
      * Returns a multi-line string containing the description of the syntax

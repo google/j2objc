@@ -16,8 +16,6 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
-
 default: test
 
 include environment.mk
@@ -39,6 +37,8 @@ ALL_TESTS_CLASS = AllJreTests
 ALL_TESTS_SOURCE = $(RELATIVE_TESTS_DIR)/AllJreTests.java
 
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o) $(NATIVE_SOURCES:%.cpp=$(TESTS_DIR)/%.o)
+MOCKWEBSERVER_OBJS = \
+    $(MOCKWEBSERVER_SOURCES:%.java=$(TESTS_DIR)/%.o) $(NATIVE_SOURCES:%.cpp=$(TESTS_DIR)/%.o)
 TEST_OBJS = \
     $(ALL_TEST_SOURCES:%.java=$(TESTS_DIR)/%.o) \
     $(ALL_SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o) \
@@ -60,7 +60,7 @@ endif
 
 SDK_PATH = $(shell xcrun --show-sdk-path)
 TEST_JOCC := $(J2OBJCC) -g $(WARNINGS) -isysroot $(SDK_PATH)
-LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support
+LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support -fsanitize=address
 COMPILE_FLAGS := $(INCLUDE_ARGS) -c -Wno-objc-redundant-literal-use -Wno-format -Werror \
   -Wno-parentheses
 
@@ -82,7 +82,12 @@ endif
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TRANSLATE_ARGS += -external-annotation-file lite/ignore_tests.jaif
 endif
-TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
+TRANSLATE_SOURCES = \
+    $(SUPPORT_SOURCES) \
+    $(MOCKWEBSERVER_SOURCES) \
+    $(TEST_SOURCES) \
+    $(SUITE_SOURCES) \
+    $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
@@ -90,7 +95,7 @@ TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
 TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   jre_emul_tests,\
   $(TESTS_DIR),\
-  $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
+  $(SUPPORT_SOURCES) $(MOCKWEBSERVER_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
   $(TRANSLATE_ARGS) -use-gc)
 
@@ -179,6 +184,7 @@ run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/core_plus_android_util \
   $(TESTS_DIR)/core_plus_beans \
   $(TESTS_DIR)/core_plus_channels \
+  $(TESTS_DIR)/core_plus_file \
   $(TESTS_DIR)/core_plus_concurrent \
   $(TESTS_DIR)/core_plus_io \
   $(TESTS_DIR)/core_plus_icu \
@@ -202,6 +208,9 @@ run-beans-tests: link resources $(TEST_BIN)
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore jsr166.ConcurrencyTests
 
+run-crypto-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.crypto.CryptoTests
+
 run-icu-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore android.icu.dev.test.Tests
 
@@ -223,6 +232,12 @@ run-logging-tests: link resources $(TEST_BIN)
 
 run-net-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.net.SmallTests
+
+run-nio-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.nio.NioTests
+
+run-security-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.security.SecurityTests
 
 run-text-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.text.SmallTests libcore.java.text.LargeTests
@@ -251,9 +266,9 @@ run-xctests: test
 	    'platform=iOS Simulator,name=iPhone 6 (10.3)' test
 	@killall 'Simulator'
 
-$(SUPPORT_LIB): $(SUPPORT_OBJS)
+$(SUPPORT_LIB): $(SUPPORT_OBJS) $(MOCKWEBSERVER_OBJS)
 	@echo libtool -o $(SUPPORT_LIB)
-	@xcrun libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
+	@xcrun libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS) $(MOCKWEBSERVER_OBJS)
 
 clean:
 	@rm -rf $(TESTS_DIR)
@@ -268,8 +283,8 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | $(TRANSLATE_ARTIFACTS)
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/arc/%.m | $(TRANSLATE_ARTIFACTS)
 	@mkdir -p $(@D)
-	@echo j2objcc -c -use-gc $?
-	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -o $@ $<
+	@echo j2objcc -c $?
+	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -fobjc-arc-exceptions -o $@ $<
 
 $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	xcrun cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \
@@ -320,6 +335,10 @@ $(TESTS_DIR)/core_plus_util:
 $(TESTS_DIR)/core_plus_concurrent:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_concurrent -ljre_util -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_file:
+	@mkdir -p $(@D)
+	$(J2OBJCC) -ljre_file -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)

@@ -22,7 +22,14 @@
 
 package org.apache.harmony.tests.javax.security.cert;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import tests.targets.security.cert.CertificateFactoryTestX509;
+
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -32,22 +39,28 @@ import java.security.Principal;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
+import java.security.Signature;
 import java.security.SignatureException;
+import java.security.Provider.Service;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 import java.util.logging.Logger;
+
 import javax.security.cert.Certificate;
 import javax.security.cert.CertificateEncodingException;
 import javax.security.cert.CertificateException;
 import javax.security.cert.CertificateExpiredException;
 import javax.security.cert.CertificateNotYetValidException;
 import javax.security.cert.X509Certificate;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import tests.targets.security.cert.CertificateFactoryTestX509;
 
 /**
  */

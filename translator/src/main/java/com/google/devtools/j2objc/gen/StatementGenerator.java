@@ -78,14 +78,6 @@ public class StatementGenerator extends UnitTreeVisitor {
     }
   }
 
-  /**
-   * A temporary stub to show pseudocode in place of Java 8 features.
-   */
-  private boolean assertIncompleteJava8Support(TreeNode node) {
-    buffer.append(node.toString());
-    return false;
-  }
-
   @Override
   public boolean preVisit(TreeNode node) {
     super.preVisit(node);
@@ -272,12 +264,6 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(CreationReference node) {
     throw new AssertionError("CreationReference nodes are rewritten by LambdaRewriter.");
-  }
-
-  @Override
-  public boolean visit(Dimension node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
-    return assertIncompleteJava8Support(node);
   }
 
   @Override
@@ -503,12 +489,6 @@ public class StatementGenerator extends UnitTreeVisitor {
     printMethodInvocationNameAndArgs(nameTable.getMethodSelector(element), node.getArguments());
     buffer.append(']');
     return false;
-  }
-
-  @Override
-  public boolean visit(NameQualifiedType node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
-    return assertIncompleteJava8Support(node);
   }
 
   @Override

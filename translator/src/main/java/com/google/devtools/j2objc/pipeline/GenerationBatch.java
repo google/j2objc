@@ -76,123 +76,110 @@ public class GenerationBatch {
 	}
   }
 
-//  private void processSourceFile(String filename) {
-//    logger.finest("processing  " + filename);
-//    if (filename.endsWith(".java")
-//        || (options.translateClassfiles() && filename.endsWith(".class"))) {
-//      processJavaFile(filename);
-//    } else {
-//      processJarFile(filename);
-//    }
-//  }
-//
-//  private void processJavaFile(String filename) {
-//    InputFile inputFile;
-//
-//    try {
-//      inputFile = new RegularInputFile(filename, filename);
-//
-//      if (!inputFile.exists()) {
-//        // Check source path for regular file.
-//        inputFile = options.fileUtil().findFileOnSourcePath(filename);
-//        if (inputFile == null) {
-//          ErrorUtil.error("No such file: " + filename);
-//          return;
-//        }
-//      }
-//    } catch (IOException e) {
-//      ErrorUtil.warning(e.getMessage());
-//      return;
-//    }
-//
-//    addSource(inputFile);
-//  }
-//
-//  private File findJarFile(String filename) {
-//    File f = new File(filename);
-//    if (f.exists() && f.isFile()) {
-//      return f;
-//    }
-//    // Checking the sourcepath is helpful for our unit tests where the source
-//    // jars aren't relative to the current working directory.
-//    for (String path : options.fileUtil().getSourcePathEntries()) {
-//      File dir = new File(path);
-//      if (dir.isDirectory()) {
-//        f = new File(dir, filename);
-//        if (f.exists() && f.isFile()) {
-//          return f;
-//        }
-//      }
-//    }
-//    return null;
-//  }
-//
-//  static HashMap<File, File> gInflatedJars = new HashMap<>();
-//  
-//  private void processJarFile(String filename) {
-//    File f = findJarFile(filename);
-//    if (f == null) {
-//      ErrorUtil.warning("No such jar file: " + filename);
-//      return;
-//    }
-//
-//    if (gInflatedJars.get(f) != null) {
-//    	return;
-//    }
-//    
-//    gInflatedJars.put(f, f);
-//    
-//    // Warn if source debugging is specified for a jar file, since native debuggers
-//    // don't support Java-like source paths.
-//    if (options.emitLineDirectives()) {
-//      ErrorUtil.warning("source debugging of jar files is not supported: " + filename);
-//    }
-//
-//    GenerationUnit combinedUnit = null;
-//    if (globalCombinedUnit != null) {
-//      combinedUnit = globalCombinedUnit;
-//    } else if (options.getHeaderMap().combineSourceJars()) {
-//      combinedUnit = GenerationUnit.newCombinedJarUnit(filename, options);
-//    }
-//    try {
-//      ZipFile zfile = new ZipFile(f);
-//      try {
-//        Enumeration<? extends ZipEntry> enumerator = zfile.entries();
-//        File tempDir = FileUtil.createTempDir(J2OBJC_TEMP_DIR_PREFIX);
-//        String tempDirPath = tempDir.getAbsolutePath();
-//        options.fileUtil().addTempDir(tempDirPath);
-//        options.fileUtil().appendSourcePath(tempDirPath);
-//
-//        while (enumerator.hasMoreElements()) {
-//          ZipEntry entry = enumerator.nextElement();
-//          String internalPath = entry.getName();
-//          if (internalPath.endsWith(".java")
-//              || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
-//            // Extract JAR file to a temporary directory
-//            File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
-//            InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);
-//            if (combinedUnit != null) {
-//              inputs.add(new ProcessingContext(newFile, combinedUnit));
-//            } else {
-//              addExtractedJarSource(newFile, filename, internalPath);
-//            }
-//          }
-//        }
-//      } finally {
-//        zfile.close();  // Also closes input stream.
-//      }
-//    } catch (ZipException e) { // Also catches JarExceptions
-//      logger.fine(e.getMessage());
-//      ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
-//    } catch (IOException e) {
-//      ErrorUtil.error(e.getMessage());
-//    }
-//  }
-//
-//  private void addExtractedJarSource(InputFile file, String jarFileName, String internalPath) {
-//    String sourceName = "jar:file:" + jarFileName + "!" + internalPath;
-//    inputs.add(ProcessingContext.fromExtractedJarEntry(file, sourceName, options));
-//  }
+  private void processJavaFile(String filename) {
+    InputFile inputFile;
+
+    try {
+      inputFile = new RegularInputFile(filename, filename);
+
+      if (!inputFile.exists()) {
+        // Check source path for regular file.
+        inputFile = options.fileUtil().findFileOnSourcePath(filename);
+        if (inputFile == null) {
+          ErrorUtil.error("No such file: " + filename);
+          return;
+        }
+      }
+    } catch (IOException e) {
+      ErrorUtil.warning(e.getMessage());
+      return;
+    }
+
+    addSource(inputFile);
+  }
+
+  private File findJarFile(String filename) {
+    File f = new File(filename);
+    if (f.exists() && f.isFile()) {
+      return f;
+    }
+    // Checking the sourcepath is helpful for our unit tests where the source
+    // jars aren't relative to the current working directory.
+    for (String path : options.fileUtil().getSourcePathEntries()) {
+      File dir = new File(path);
+      if (dir.isDirectory()) {
+        f = new File(dir, filename);
+        if (f.exists() && f.isFile()) {
+          return f;
+        }
+      }
+    }
+    return null;
+  }
+
+  private void processJarFile(String filename) {
+    File f = findJarFile(filename);
+    if (f == null) {
+      ErrorUtil.error("No such file: " + filename);
+      return;
+    }
+
+    // Warn if source debugging is specified for a jar file, since native debuggers
+    // don't support Java-like source paths.
+    if (options.emitLineDirectives()) {
+      ErrorUtil.warning("source debugging of jar files is not supported: " + filename);
+    }
+
+    GenerationUnit combinedUnit = null;
+    if (globalCombinedUnit != null) {
+      combinedUnit = globalCombinedUnit;
+    } else if (options.getHeaderMap().combineSourceJars()) {
+      combinedUnit = GenerationUnit.newCombinedJarUnit(filename, options);
+    }
+    try {
+      ZipFile zfile = new ZipFile(f);
+      try {
+        boolean containsJavaFile = false;
+        Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+        File tempDir = FileUtil.createTempDir(J2OBJC_TEMP_DIR_PREFIX);
+        String tempDirPath = tempDir.getAbsolutePath();
+        options.fileUtil().addTempDir(tempDirPath);
+        options.fileUtil().appendSourcePath(tempDirPath);
+
+        while (enumerator.hasMoreElements()) {
+          ZipEntry entry = enumerator.nextElement();
+          String internalPath = entry.getName();
+          if (internalPath.endsWith(".java")
+              || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
+            // Extract JAR file to a temporary directory
+            File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+            InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);
+            if (combinedUnit != null) {
+              inputs.add(new ProcessingContext(newFile, combinedUnit));
+            } else {
+              addExtractedJarSource(newFile, filename, internalPath);
+            }
+            containsJavaFile = true;
+          }
+        }
+        if (!options.translateClassfiles() && !containsJavaFile) {
+          ErrorUtil.error(filename + " does not contain any Java source files.");
+        }
+      } finally {
+        zfile.close();  // Also closes input stream.
+      }
+    } catch (ZipException e) { // Also catches JarExceptions
+      logger.fine(e.getMessage());
+      ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
+    }
+  }
+
+  private void addExtractedJarSource(InputFile file, String jarFileName, String internalPath) {
+    String sourceName = "jar:file:" + jarFileName + "!" + internalPath;
+    inputs.add(ProcessingContext.fromExtractedJarEntry(file, sourceName, options));
+  }
 
   /**
    * Adds the given InputFile to this GenerationBatch,

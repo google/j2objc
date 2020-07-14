@@ -26,10 +26,17 @@ import java.io.OutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-import junit.framework.TestCase;
-
-public class DeflaterOutputStreamTest extends TestCase {
+public class DeflaterOutputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     private class MyDeflaterOutputStream extends DeflaterOutputStream {
         boolean deflateFlag = false;
@@ -105,6 +112,7 @@ public class DeflaterOutputStreamTest extends TestCase {
         dos.write(byteArray);
         dos.close();
         f1.delete();
+        defl.end();
     }
 
     /**
@@ -169,19 +177,28 @@ public class DeflaterOutputStreamTest extends TestCase {
         dos.write(byteArray);
         dos.close();
         f1.delete();
+        defl.end();
     }
 
     /**
      * java.util.zip.DeflaterOutputStream#close()
      */
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
+                    + " underlying OutputStream has been closed and the Deflater still has data to"
+                    + " write.",
+            bug = "31797037") */
     public void test_close() throws Exception {
         File f1 = File.createTempFile("close", ".tst");
 
-        InflaterInputStream iis = new InflaterInputStream(new FileInputStream(f1));
-        try {
-            iis.read();
-            fail("EOFException Not Thrown");
-        } catch (EOFException e) {
+        try (InflaterInputStream iis = new InflaterInputStream(new FileInputStream(f1))) {
+            try {
+                iis.read();
+                fail("EOFException Not Thrown");
+            } catch (EOFException e) {
+            }
         }
 
         FileOutputStream fos = new FileOutputStream(f1);
@@ -190,16 +207,15 @@ public class DeflaterOutputStreamTest extends TestCase {
         dos.write(byteArray);
         dos.close();
 
-        iis = new InflaterInputStream(new FileInputStream(f1));
-
-        // Test to see if the finish method wrote the bytes to the file.
-        assertEquals("Incorrect Byte Returned.", 1, iis.read());
-        assertEquals("Incorrect Byte Returned.", 3, iis.read());
-        assertEquals("Incorrect Byte Returned.", 4, iis.read());
-        assertEquals("Incorrect Byte Returned.", 6, iis.read());
-        assertEquals("Incorrect Byte Returned.", -1, iis.read());
-        assertEquals("Incorrect Byte Returned.", -1, iis.read());
-        iis.close();
+        try (InflaterInputStream iis = new InflaterInputStream(new FileInputStream(f1))) {
+            // Test to see if the finish method wrote the bytes to the file.
+            assertEquals("Incorrect Byte Returned.", 1, iis.read());
+            assertEquals("Incorrect Byte Returned.", 3, iis.read());
+            assertEquals("Incorrect Byte Returned.", 4, iis.read());
+            assertEquals("Incorrect Byte Returned.", 6, iis.read());
+            assertEquals("Incorrect Byte Returned.", -1, iis.read());
+            assertEquals("Incorrect Byte Returned.", -1, iis.read());
+        }
 
         // Not sure if this test will stay.
         FileOutputStream fos2 = new FileOutputStream(f1);
@@ -255,8 +271,8 @@ public class DeflaterOutputStreamTest extends TestCase {
         // Test for writing with a new FileOutputStream using the same
         // DeflaterOutputStream.
         FileOutputStream fos2 = new FileOutputStream(f1);
-        dos = new DeflaterOutputStream(fos2);
-        dos.write(1);
+        DeflaterOutputStream dos4 = new DeflaterOutputStream(fos2);
+        dos4.write(1);
 
         // Test for writing to FileOutputStream fos1, which should be open.
         fos1.write(("testing").getBytes());
@@ -273,17 +289,23 @@ public class DeflaterOutputStreamTest extends TestCase {
             fail("IOException not thrown");
         } catch (IOException e) {
         }
+        dos3.close();
 
-        // dos.close() won't close fos1 because it has been re-assigned to
-        // fos2
-        fos1.close();
         dos.close();
+        dos4.close();
         f1.delete();
     }
 
     /**
      * java.util.zip.DeflaterOutputStream#write(int)
      */
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
+                    + " underlying OutputStream has been closed and the Deflater still has data to"
+                    + " write.",
+            bug = "31797037") */
     public void test_writeI() throws Exception {
         File f1 = File.createTempFile("writeIL", ".tst");
         FileOutputStream fos = new FileOutputStream(f1);
@@ -313,6 +335,12 @@ public class DeflaterOutputStreamTest extends TestCase {
             fail("IOException not thrown");
         } catch (IOException e) {
         }
+        // Close to try and free up the resources.
+        try {
+            dos2.close();
+            fail("IOException not thrown");
+        } catch (IOException e) {
+        }
 
         f1.delete();
     }
@@ -320,6 +348,13 @@ public class DeflaterOutputStreamTest extends TestCase {
     /**
      * java.util.zip.DeflaterOutputStream#write(byte[], int, int)
      */
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterOutputStream.close() does not work properly if finish() throws an"
+                    + " exception; DeflaterOutputStream.finish() throws an exception if the"
+                    + " underlying OutputStream has been closed and the Deflater still has data to"
+                    + " write.",
+            bug = "31797037") */
     public void test_write$BII() throws Exception {
         byte byteArray[] = { 1, 3, 4, 7, 8, 3, 6 };
 
@@ -381,6 +416,12 @@ public class DeflaterOutputStreamTest extends TestCase {
         fos3.close();
         try {
             dos3.write(byteArray, 2, 3);
+            fail("IOException not thrown");
+        } catch (IOException e) {
+        }
+        // Close to try and free up the resources.
+        try {
+            dos3.close();
             fail("IOException not thrown");
         } catch (IOException e) {
         }

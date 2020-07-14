@@ -43,14 +43,14 @@ namespace compiler {
 namespace j2objc {
 
 namespace {
-  string ContainingClassName(const FieldDescriptor *descriptor) {
-    const Descriptor *scope = descriptor->extension_scope();
-    if (scope != NULL) {
-      return ClassName(scope);
-    } else {
-      return ClassName(descriptor->file());
-    }
+std::string ContainingClassName(const FieldDescriptor* descriptor) {
+  const Descriptor* scope = descriptor->extension_scope();
+  if (scope != NULL) {
+    return ClassName(scope);
+  } else {
+    return ClassName(descriptor->file());
   }
+}
 }  // namespace
 
 ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
@@ -60,7 +60,8 @@ ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
 ExtensionGenerator::~ExtensionGenerator() {
 }
 
-void ExtensionGenerator::CollectSourceImports(std::set<string>* imports) const {
+void ExtensionGenerator::CollectSourceImports(
+    std::set<std::string>* imports) const {
   imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
   // Imports needed for metadata of enum and message types.
   CollectSourceImportsForField(imports, descriptor_);
@@ -89,7 +90,7 @@ void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) const {
 }
 
 void ExtensionGenerator::GenerateFieldData(io::Printer* printer) const {
-  std::map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["field_name"] = descriptor_->name();
   vars["capitalized_name"] = UnderscoresToCapitalizedCamelCase(descriptor_);
   vars["field_number"] = SimpleItoa(descriptor_->number());
@@ -109,16 +110,16 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) const {
           "$field_type$,\n"
       "  .defaultValue.value$default_value_type$ = $default_value$,\n"
       "  .hasBitIndex = 0,\n"
-      "  .offset = 0,\n"
-      "  .objcType = NULL,\n"
+      "  .offset = 0,\n");
+  GenerateClassReference(printer);
+  printer->Print(vars,
       "  .containingType = \"$containing_type_name$\",\n"
       "  .optionsData = $options_data$,\n"
       "},\n");
 }
 
-void ExtensionGenerator::GenerateNonStaticFieldData(
-      io::Printer *printer, const string& arr_name, uint32_t idx) const {
-  GenerateObjcClass(printer, descriptor_, arr_name, idx);
+void ExtensionGenerator::GenerateClassReference(io::Printer *printer) const {
+  GenerateObjcClassRef(printer, descriptor_);
 }
 
 void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) const {

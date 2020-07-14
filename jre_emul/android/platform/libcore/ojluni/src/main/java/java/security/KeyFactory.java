@@ -100,7 +100,7 @@ import sun.security.jca.GetInstance.Instance;
  * </table>
  *
  * These algorithms are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyFactory">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyFactory">
  * KeyFactory section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -178,7 +178,7 @@ public class KeyFactory {
      *
      * @param algorithm the name of the requested key algorithm.
      * See the KeyFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -209,7 +209,7 @@ public class KeyFactory {
      *
      * @param algorithm the name of the requested key algorithm.
      * See the KeyFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -231,6 +231,10 @@ public class KeyFactory {
      */
     public static KeyFactory getInstance(String algorithm, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "KeyFactory", algorithm);
+         */
         Instance instance = GetInstance.getInstance("KeyFactory",
             KeyFactorySpi.class, algorithm, provider);
         return new KeyFactory((KeyFactorySpi)instance.impl,
@@ -248,7 +252,7 @@ public class KeyFactory {
      *
      * @param algorithm the name of the requested key algorithm.
      * See the KeyFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#KeyFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#KeyFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -268,6 +272,10 @@ public class KeyFactory {
      */
     public static KeyFactory getInstance(String algorithm, Provider provider)
             throws NoSuchAlgorithmException {
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "KeyFactory", algorithm);
+         */
         Instance instance = GetInstance.getInstance("KeyFactory",
             KeyFactorySpi.class, algorithm, provider);
         return new KeyFactory((KeyFactorySpi)instance.impl,

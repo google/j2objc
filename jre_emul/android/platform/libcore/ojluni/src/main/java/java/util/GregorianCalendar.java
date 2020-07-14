@@ -1280,25 +1280,44 @@ public class GregorianCalendar extends Calendar {
                 int woy = internalGet(WEEK_OF_YEAR);
                 int value = woy + amount;
                 if (!isCutoverYear(y)) {
-                    // If the new value is in between min and max
-                    // (exclusive), then we can use the value.
-                    if (value > min && value < max) {
-                        set(WEEK_OF_YEAR, value);
-                        return;
-                    }
-                    long fd = getCurrentFixedDate();
-                    // Make sure that the min week has the current DAY_OF_WEEK
-                    long day1 = fd - (7 * (woy - min));
-                    if (calsys.getYearFromFixedDate(day1) != y) {
-                        min++;
-                    }
+                    int weekYear = getWeekYear();
+                    if (weekYear == y) {
+                        // If the new value is in between min and max
+                        // (exclusive), then we can use the value.
+                        if (value > min && value < max) {
+                            set(WEEK_OF_YEAR, value);
+                            return;
+                        }
+                        long fd = getCurrentFixedDate();
+                        // Make sure that the min week has the current DAY_OF_WEEK
+                        // in the calendar year
+                        long day1 = fd - (7 * (woy - min));
+                        if (calsys.getYearFromFixedDate(day1) != y) {
+                            min++;
+                        }
 
-                    // Make sure the same thing for the max week
-                    fd += 7 * (max - internalGet(WEEK_OF_YEAR));
-                    if (calsys.getYearFromFixedDate(fd) != y) {
-                        max--;
+                        // Make sure the same thing for the max week
+                        fd += 7 * (max - internalGet(WEEK_OF_YEAR));
+                        if (calsys.getYearFromFixedDate(fd) != y) {
+                            max--;
+                        }
+                    } else {
+                        // When WEEK_OF_YEAR and YEAR are out of sync,
+                        // adjust woy and amount to stay in the calendar year.
+                        if (weekYear > y) {
+                            if (amount < 0) {
+                                amount++;
+                            }
+                            woy = max;
+                        } else {
+                            if (amount > 0) {
+                                amount -= woy - max;
+                            }
+                            woy = min;
+                        }
                     }
-                    break;
+                    set(field, getRolledValue(woy, amount, min, max));
+                    return;
                 }
 
                 // Handle cutover here.

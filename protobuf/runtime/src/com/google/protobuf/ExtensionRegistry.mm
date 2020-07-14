@@ -92,6 +92,19 @@ ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyR
   return CGPExtensionRegistry_EMPTY_;
 }
 
+void ComGoogleProtobufExtensionRegistry_initWithBoolean_(
+    ComGoogleProtobufExtensionRegistry *self, jboolean empty) {
+  ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
+}
+
+ComGoogleProtobufExtensionRegistry_ExtensionInfo *
+ComGoogleProtobufExtensionRegistry_newExtensionInfoWithComGoogleProtobufExtension_(
+    ComGoogleProtobufExtension *extension) {
+  return [[ComGoogleProtobufExtensionRegistry_ExtensionInfo alloc]
+      initWithField:[extension getDescriptor]];
+}
+
+
 @implementation ComGoogleProtobufExtensionRegistry_ExtensionInfo
 
 - (instancetype)initWithField:(CGPFieldDescriptor *)field {

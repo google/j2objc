@@ -41,10 +41,9 @@ import sun.net.www.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
-/* J2ObjC removed.
 import sun.security.action.GetPropertyAction;
 import sun.security.action.GetIntegerAction;
-import sun.security.action.GetBooleanAction; */
+import sun.security.action.GetBooleanAction;
 
 public class FileURLConnection extends URLConnection {
 

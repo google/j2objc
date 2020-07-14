@@ -14,8 +14,6 @@
 #
 # Author: Keith Stanger
 
-SUFFIXES:
-
 J2OBJC_ROOT = ../..
 
 include $(J2OBJC_ROOT)/make/common.mk
@@ -24,6 +22,7 @@ include $(J2OBJC_ROOT)/java_deps/jars.mk
 
 SRCS = \
   com/google/protobuf/AbstractMessage.m \
+  com/google/protobuf/AbstractMessageLite.m \
   com/google/protobuf/ByteString.m \
   com/google/protobuf/CodedInputStream.mm \
   com/google/protobuf/CodedOutputStream.mm \
@@ -42,8 +41,9 @@ SRCS = \
 
 # This headers list defines those headers included by all client code
 # of the ProtobufRuntime framework.
-STATIC_FRAMEWORK_PUBLIC_HEADERS = \
+FRAMEWORK_PUBLIC_HEADERS = \
   com/google/protobuf/AbstractMessage.h \
+  com/google/protobuf/AbstractMessageLite.h \
   com/google/protobuf/ByteString.h \
   com/google/protobuf/Descriptors.h \
   com/google/protobuf/Extension.h \
@@ -91,10 +91,10 @@ FAT_LIB_SOURCE_DIRS = src $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) $(C_FLAGS) $(INCLUDE_DIRS:%=-I%)
 include $(J2OBJC_ROOT)/make/fat_lib.mk
 
-STATIC_FRAMEWORK_NAME = ProtobufRuntime
-STATIC_FRAMEWORK_HEADERS = $(DIST_HEADERS)
+FRAMEWORK_NAME = ProtobufRuntime
+FRAMEWORK_HEADERS = $(DIST_HEADERS)
 STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
-include $(J2OBJC_ROOT)/make/static_framework.mk
+include $(J2OBJC_ROOT)/make/framework.mk
 
 fat_lib_dependencies: jre_emul_dist $(DESCRIPTOR_PROTO_H)
 
@@ -131,7 +131,7 @@ $(PROTOBUF_LICENSE_DIST): $(PROTOBUF_LICENSE)
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_JAR) $(FAT_LIBS_DIST) $(DIST_HEADERS)
 	@rm -rf $(PROTOBUF_LICENSE_DIST)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 
 DESCRIPTOR_PROTO_M_CMD = $(PROTOBUF_PROTOC) --plugin=protoc-gen-j2objc=$(PROTOC_PLUGIN) \
   --proto_path=$(PROTOBUF_INCLUDE_PATH) --j2objc_out=$(GEN_OBJC_DIR) $(DESCRIPTOR_PROTO)

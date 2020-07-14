@@ -47,14 +47,15 @@ public final class ByteOrder {
      * multibyte value are ordered from most significant to least significant.
      */
     public static final ByteOrder BIG_ENDIAN
-            = new ByteOrder("BIG_ENDIAN");
+        = new ByteOrder("BIG_ENDIAN");
 
     /**
      * Constant denoting little-endian byte order.  In this order, the bytes of
-     * a multibyte value are ordered from least significant to most.
+     * a multibyte value are ordered from least significant to most
+     * significant.
      */
     public static final ByteOrder LITTLE_ENDIAN
-            = new ByteOrder("LITTLE_ENDIAN");
+        = new ByteOrder("LITTLE_ENDIAN");
 
     /**
      * Retrieves the native byte order of the underlying platform.
@@ -64,8 +65,8 @@ public final class ByteOrder {
      * Native code libraries are often more efficient when such buffers are
      * used.  </p>
      *
-     * @return The native byte order of the hardware upon which this Java
-     * virtual machine is running
+     * @return  The native byte order of the hardware upon which this Java
+     *          virtual machine is running
      */
     public static ByteOrder nativeOrder() {
         return Bits.byteOrder();
@@ -78,7 +79,7 @@ public final class ByteOrder {
      * #BIG_ENDIAN} and <tt>"LITTLE_ENDIAN"</tt> for {@link #LITTLE_ENDIAN}.
      * </p>
      *
-     * @return The specified string
+     * @return  The specified string
      */
     public String toString() {
         return name;

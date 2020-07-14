@@ -17,7 +17,6 @@
 #
 # Author: Tom Ball
 
-SUFFIXES:
 .PHONY: translator dist test
 
 default: dist
@@ -70,7 +69,6 @@ dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
 
 protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 
-
 all_dist: dist all_frameworks examples_dist
 
 clean:
@@ -90,8 +88,9 @@ clean:
 	@cd protobuf/tests && $(MAKE) clean
 	@cd xalan && $(MAKE) clean
 
-test_translator: annotations_dist java_deps_dist jre_emul_jars_dist
+test_translator: annotations_dist java_deps_dist jre_emul_dist
 	@cd translator && $(MAKE) test
+	@cd translator && $(MAKE) regression-test
 
 test_jre_emul: jre_emul_dist junit_dist
 	@cd jre_emul && $(MAKE) -f tests.mk test
@@ -110,7 +109,6 @@ test: test_translator test_jre_emul test_cycle_finder test_jre_cycles
 test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 	@cd protobuf/tests && $(MAKE) test
 
-
 test_all: test test_protobuf
 
 examples_dist: install_examples
@@ -119,7 +117,10 @@ copy_examples:
 	@cp -r examples $(DIST_DIR)
 
 install_examples: copy_examples
-	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/config.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/Hello/Hello.xcodeproj/project.pbxproj
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/HelloSwift/config.xcconfig
+	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/HelloSwift/HelloSwift.xcodeproj/project.pbxproj
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/protobuf/Makefile
 	@sed -i '' 's/\<path to local j2objc distribution\>/..\/../' \
 	  $(DIST_DIR)/examples/Contacts/WORKSPACE

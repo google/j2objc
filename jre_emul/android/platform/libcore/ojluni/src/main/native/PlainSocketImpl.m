@@ -171,6 +171,10 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, j
         }
     }
 
+    // Disable SIGPIPE signals, as JRE reports socket errors using exceptions.
+    int set = 1;
+    setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+
     fdObj->descriptor_ = fd;
 }
 

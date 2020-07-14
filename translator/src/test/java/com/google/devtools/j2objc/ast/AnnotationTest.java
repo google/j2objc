@@ -50,4 +50,30 @@ public class AnnotationTest extends GenerationTest {
         + "Simple[] value(); }", "Elements", "Elements.h");
     assertTranslation(translation, "@property (readonly) IOSObjectArray *value;");
   }
+
+  // Issue 1063: test default values like Double.NEGATIVE_INFINITY.
+  public void testDefaultValues() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; "
+            + "import java.lang.annotation.*; "
+            + "@Retention(RetentionPolicy.RUNTIME) "
+            + "public @interface Bar { "
+            + "  int a() default Integer.MIN_VALUE; "
+            + "  float b() default Float.NEGATIVE_INFINITY; "
+            + "  double c() default Double.NaN; "
+            + "} ",
+        "Bar", "foo/Bar.m");
+    assertTranslatedLines(translation,
+        "+ (jint)aDefault {",
+        "  return ((jint) 0x80000000);",
+        "}");
+    assertTranslatedLines(translation,
+        "+ (jfloat)bDefault {",
+        "  return -INFINITY;",
+        "}");
+    assertTranslatedLines(translation,
+        "+ (jdouble)cDefault {",
+        "  return NAN;",
+        "}");
+  }
 }

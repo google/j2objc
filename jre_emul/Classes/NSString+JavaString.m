@@ -871,31 +871,6 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   return NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(delimiter, elements);
 }
 
-
-jint javaStringHashCode(NSString *string) {
-  static const char *hashKey = "__JAVA_STRING_HASH_CODE_KEY__";
-  id cachedHash = objc_getAssociatedObject(string, hashKey);
-  if (cachedHash) {
-    return (jint) [(JavaLangInteger *) cachedHash intValue];
-  }
-  jint len = (jint)[string length];
-  jint hash = 0;
-  if (len > 0) {
-    unichar *chars = (unichar *)malloc(len * sizeof(unichar));
-    [string getCharacters:chars range:NSMakeRange(0, len)];
-    for (int i = 0; i < len; i++) {
-      hash = 31 * hash + (jint)chars[i];
-    }
-    free(chars);
-  }
-  if (![string isKindOfClass:[NSMutableString class]]) {
-    // Only cache hash for immutable strings.
-    objc_setAssociatedObject(string, hashKey, JavaLangInteger_valueOfWithInt_(hash),
-                             OBJC_ASSOCIATION_RETAIN);
-  }
-  return hash;
-}
-
 // Java 8 default methods from CharSequence.
 - (id<JavaUtilStreamIntStream>)chars {
   return JavaLangCharSequence_chars(self);

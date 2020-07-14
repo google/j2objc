@@ -44,14 +44,15 @@ namespace protobuf {
 namespace compiler {
 namespace j2objc {
 
-string SafeName(const string& name);
+std::string SafeName(const std::string &name);
 
-string UnderscoresToCamelCase(const string& input, bool cap_next_letter);
+std::string UnderscoresToCamelCase(const std::string &input,
+                                   bool cap_next_letter);
 
 // Converts the field's name to camel-case, e.g. "foo_bar_baz" becomes
 // "fooBarBaz" or "FooBarBaz", respectively.
-string UnderscoresToCamelCase(const FieldDescriptor* field);
-string UnderscoresToCapitalizedCamelCase(const FieldDescriptor* field);
+std::string UnderscoresToCamelCase(const FieldDescriptor *field);
+std::string UnderscoresToCapitalizedCamelCase(const FieldDescriptor *field);
 
 inline bool IsMapEntry(const Descriptor* descriptor) {
   return descriptor->options().map_entry();
@@ -63,45 +64,50 @@ inline bool IsMapField(const FieldDescriptor* descriptor) {
 }
 
 // Returns the file's base name.
-string FileBaseName(const FileDescriptor* file);
+std::string FileBaseName(const FileDescriptor *file);
 
 // Returns the file's parent directory.
-string FileParentDir(const FileDescriptor* file);
+std::string FileParentDir(const FileDescriptor *file);
 
 // Gets the unqualified class name for the file.  Each .proto file becomes a
 // single Java class, with all its contents nested in that class.
-string FileClassName(const FileDescriptor* file);
+std::string FileClassName(const FileDescriptor *file);
+
+// Check whether there is any type defined in the proto file that has
+// the given class name.
+bool HasConflictingClassName(const FileDescriptor *file,
+                             const std::string &classname);
 
 // Returns the file's Java package name.
-string FileJavaPackage(const FileDescriptor* file);
+std::string FileJavaPackage(const FileDescriptor *file);
 
 // Returns output directory for the given package name.
-string JavaPackageToDir(string package_name);
+std::string JavaPackageToDir(std::string package_name);
 
 // These return the J2ObjC class name corresponding to the given descriptor.
-string ClassName(const Descriptor *descriptor);
-string ClassName(const EnumDescriptor *descriptor);
-string ClassName(const FileDescriptor *descriptor);
+std::string ClassName(const Descriptor *descriptor);
+std::string ClassName(const EnumDescriptor *descriptor);
+std::string ClassName(const FileDescriptor *descriptor);
 
-string CEnumName(const EnumDescriptor *descriptor);
+std::string CEnumName(const EnumDescriptor *descriptor);
 
-string EnumValueName(const EnumValueDescriptor *descriptor);
+std::string EnumValueName(const EnumValueDescriptor *descriptor);
 
 // These return the Java class name corresponding to the given descriptor.
-string JavaClassName(const Descriptor *descriptor);
-string JavaClassName(const EnumDescriptor *descriptor);
-string JavaClassName(const FileDescriptor *descriptor);
+std::string JavaClassName(const Descriptor *descriptor);
+std::string JavaClassName(const EnumDescriptor *descriptor);
+std::string JavaClassName(const FileDescriptor *descriptor);
 
 // Get the unqualified name that should be used for a field's field
 // number constant.
-string FieldConstantName(const FieldDescriptor *field);
+std::string FieldConstantName(const FieldDescriptor *field);
 
-string GetHeader(const FileDescriptor *descriptor);
-string GetHeader(const Descriptor *descriptor);
-string GetHeader(const EnumDescriptor *descriptor);
+std::string GetHeader(const FileDescriptor *descriptor);
+std::string GetHeader(const Descriptor *descriptor);
+std::string GetHeader(const EnumDescriptor *descriptor);
 
-string JoinFlags(const std::vector<string> &flags);
-string GetFieldFlags(const FieldDescriptor *field);
+std::string JoinFlags(const std::vector<std::string> &flags);
+std::string GetFieldFlags(const FieldDescriptor *field);
 
 enum JavaType {
   JAVATYPE_INT,
@@ -117,16 +123,17 @@ enum JavaType {
 
 JavaType GetJavaType(const FieldDescriptor* field);
 
-string DefaultValue(const FieldDescriptor *field);
-string GetFieldTypeEnumValue(const FieldDescriptor *descriptor);
-string GetDefaultValueTypeName(const FieldDescriptor *descriptor);
-string GetFieldOptionsData(const FieldDescriptor *descriptor);
+std::string DefaultValue(const FieldDescriptor *field);
+std::string GetFieldTypeEnumValue(const FieldDescriptor *descriptor);
+std::string GetDefaultValueTypeName(const FieldDescriptor *descriptor);
+std::string GetFieldOptionsData(const FieldDescriptor *descriptor);
 
-void ParsePrefixFile(string prefix_file);
+void ParsePrefixFile(std::string prefix_file);
 
-string MappedInputName(const FileDescriptor* file);
-string StaticOutputFileName(const FileDescriptor* file, string suffix);
-string FileDirMappingOutputName(const FileDescriptor* file);
+std::string MappedInputName(const FileDescriptor *file);
+std::string StaticOutputFileName(const FileDescriptor *file,
+                                 std::string suffix);
+std::string FileDirMappingOutputName(const FileDescriptor *file);
 void GenerateFileDirMapping();
 bool IsGenerateFileDirMapping();
 

@@ -7,6 +7,8 @@ package org.xml.sax.helpers;
 
 import org.xml.sax.Locator;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 
 /**
  * Provide an optional convenience implementation of Locator.
@@ -204,9 +206,13 @@ public class LocatorImpl implements Locator
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
+    @UnsupportedAppUsage
     private String publicId;
+    @UnsupportedAppUsage
     private String systemId;
+    @UnsupportedAppUsage
     private int lineNumber;
+    @UnsupportedAppUsage
     private int columnNumber;
 
 }

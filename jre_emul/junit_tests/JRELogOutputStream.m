@@ -19,7 +19,11 @@
 #import "JRELogOutputStream.h"
 #import "JRELogPaneView.h"
 #import "java/util/Arrays.h"
+<<<<<<< HEAD
 #import "IOSReflection.h"
+=======
+#import "libcore/util/ArrayUtils.h"
+>>>>>>> ARGC-v2.0
 
 @interface JRELogOutputStream () {
   JRELogPaneView *logPane_;
@@ -46,9 +50,9 @@
 - (void)writeWithByteArray:(IOSByteArray *)buffer
                    withInt:(jint)offset
                    withInt:(jint)length {
-  nil_chk(buffer);
-  [JavaUtilArrays checkOffsetAndCountWithInt:buffer->size_ withInt:offset withInt:length];
-  NSString *str = AUTORELEASE([[NSString alloc] initWithBytes:(void *)IOSByteArray_GetRef(buffer, offset)
+  (void)nil_chk(buffer);
+  [LibcoreUtilArrayUtils throwsIfOutOfBoundsWithInt:buffer->size_ withInt:offset withInt:length];
+  NSString *str = [[[NSString alloc] initWithBytes:(void *)IOSByteArray_GetRef(buffer, offset)
                                            length:length
                                          encoding:NSUTF8StringEncoding]);
   dispatch_async(dispatch_get_main_queue(), ^{

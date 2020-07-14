@@ -196,7 +196,6 @@ public class LongTest extends junit.framework.TestCase {
             }
         }
 
-        /* TODO(b/137121871): generates SIGFPE instead of ArithmeticException.
         for(BigInteger dividend : vals) {
             try {
                 Long.divideUnsigned(dividend.longValue(), 0);
@@ -206,7 +205,7 @@ public class LongTest extends junit.framework.TestCase {
                 Long.remainderUnsigned(dividend.longValue(), 0);
                 fail();
             } catch (ArithmeticException expected) { }
-        } */
+        }
     }
 
     public void testParseUnsignedLong() {

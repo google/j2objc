@@ -93,15 +93,17 @@
 #define __ComGoogleProtobufCodedInputStream_H__
 
 #import "JreEmulation.h"
+#import "com/google/protobuf/common.h"
 
+#ifdef __cplusplus
 #include <string>
 
-#import "com/google/protobuf/common.h"
+using std::string;
+
+#endif
 
 @class ComGoogleProtobufByteString;
 @class JavaIoInputStream;
-
-using std::string;
 
 #define CGP_PREDICT_TRUE(x) (__builtin_expect(!!(x), 1))
 
@@ -273,7 +275,9 @@ class CGPCodedInputStream {
   // stream.
   uint32 ReadTagFallback();
   uint32 ReadTagSlow();
+#ifdef __cplusplus
   bool ReadStringFallback(string* buffer, int size);
+#endif
 
   // Return the size of the buffer.
   int BufferSize() const;
@@ -305,7 +309,9 @@ inline bool CGPCodedInputStream::ReadVarint64(uint64* value) {
 
 inline bool CGPCodedInputStream::ReadLittleEndian32(uint32* value) {
   if (CGP_PREDICT_TRUE(BufferSize() >= static_cast<int>(sizeof(*value)))) {
-    *value = OSReadLittleInt32(buffer_, 0);
+    uint32 readVal;
+    memcpy(&readVal, buffer_, sizeof(readVal));
+    *value = OSSwapLittleToHostInt32(readVal);
     Advance(sizeof(*value));
     return true;
   } else {
@@ -315,7 +321,9 @@ inline bool CGPCodedInputStream::ReadLittleEndian32(uint32* value) {
 
 inline bool CGPCodedInputStream::ReadLittleEndian64(uint64* value) {
   if (CGP_PREDICT_TRUE(BufferSize() >= static_cast<int>(sizeof(*value)))) {
-    *value = OSReadLittleInt64(buffer_, 0);
+    uint64 readVal;
+    memcpy(&readVal, buffer_, sizeof(readVal));
+    *value = OSSwapLittleToHostInt64(readVal);
     Advance(sizeof(*value));
     return true;
   } else {

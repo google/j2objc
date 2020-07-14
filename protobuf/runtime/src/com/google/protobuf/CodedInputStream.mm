@@ -171,7 +171,9 @@ bool CGPCodedInputStream::ReadLittleEndian32Fallback(uint32* value) {
     if (!ReadRaw(bytes, sizeof(*value))) return false;
     ptr = bytes;
   }
-  OSReadLittleInt32(ptr, 0);
+  uint32 readVal;
+  memcpy(&readVal, ptr, sizeof(readVal));
+  *value = OSSwapLittleToHostInt32(readVal);
   return true;
 }
 
@@ -188,7 +190,9 @@ bool CGPCodedInputStream::ReadLittleEndian64Fallback(uint64* value) {
     if (!ReadRaw(bytes, sizeof(*value))) return false;
     ptr = bytes;
   }
-  OSReadLittleInt64(ptr, 0);
+  uint64 readVal;
+  memcpy(&readVal, ptr, sizeof(readVal));
+  *value = OSSwapLittleToHostInt64(readVal);
   return true;
 }
 

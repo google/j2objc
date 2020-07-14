@@ -44,6 +44,7 @@ import java.util.Map;
 import javax.security.auth.x500.X500Principal;
 
 import sun.misc.HexDumpEncoder;
+import sun.security.action.GetIntegerAction;
 import sun.security.x509.*;
 import sun.security.util.*;
 
@@ -161,9 +162,8 @@ public final class OCSPResponse {
      * value is negative, set the skew to the default.
      */
     private static int initializeClockSkew() {
-//        Integer tmp = java.security.AccessController.doPrivileged(
-//                new GetIntegerAction("com.sun.security.ocsp.clockSkew"));
-        Integer tmp = Integer.getInteger("com.sun.security.ocsp.clockSkew");
+        Integer tmp = java.security.AccessController.doPrivileged(
+                new GetIntegerAction("com.sun.security.ocsp.clockSkew"));
         if (tmp == null || tmp < 0) {
             return DEFAULT_MAX_CLOCK_SKEW;
         }

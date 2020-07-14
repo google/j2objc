@@ -61,7 +61,7 @@ import java.util.stream.StreamSupport;
  * a MergeSort, but it does have to be <i>stable</i>.)
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author Josh Bloch
@@ -78,7 +78,7 @@ public class Arrays {
      * tasks that makes parallel speedups unlikely.
      * @hide
      */
-    // Android-changed: make public (used by harmony ArraysTest)
+    // Android-changed: Make MIN_ARRAY_SORT_GRAN public and @hide (used by harmony ArraysTest)
     public static final int MIN_ARRAY_SORT_GRAN = 1 << 13;
 
     // Suppresses default constructor, ensuring non-instantiability.
@@ -121,20 +121,6 @@ public class Arrays {
         }
         if (toIndex > arrayLength) {
             throw new ArrayIndexOutOfBoundsException(toIndex);
-        }
-    }
-
-    /**
-     * Checks that the range described by {@code offset} and {@code count} doesn't exceed
-     * {@code arrayLength}.
-     *
-     * Android-changed.
-     * @hide
-     */
-    public static void checkOffsetAndCount(int arrayLength, int offset, int count) {
-        if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
-            throw new ArrayIndexOutOfBoundsException(arrayLength, offset,
-                    count);
         }
     }
 
@@ -1201,6 +1187,8 @@ public class Arrays {
      * Sorting of complex type arrays.
      */
 
+    // Android-removed: LegacyMergeSort class (unused on Android).
+
     /**
      * Sorts the specified array of objects into ascending order, according
      * to the {@linkplain Comparable natural ordering} of its elements.
@@ -1244,12 +1232,14 @@ public class Arrays {
      *         {@link Comparable} contract
      */
     public static void sort(Object[] a) {
-        // Android-changed: LegacyMergeSort is no longer supported
+        // Android-removed: LegacyMergeSort support
         // if (LegacyMergeSort.userRequested)
         //     legacyMergeSort(a);
         // else
             ComparableTimSort.sort(a, 0, a.length, null, 0, 0);
     }
+
+    // Android-removed: legacyMergeSort() (unused on Android)
 
     /**
      * Sorts the specified range of the specified array of objects into
@@ -1305,12 +1295,14 @@ public class Arrays {
      */
     public static void sort(Object[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
-        // Android-changed: LegacyMergeSort is no longer supported
+        // Android-removed: LegacyMergeSort support
         // if (LegacyMergeSort.userRequested)
         //     legacyMergeSort(a, fromIndex, toIndex);
         // else
             ComparableTimSort.sort(a, fromIndex, toIndex, null, 0, 0);
     }
+
+    // Android-removed: legacyMergeSort() (unused on Android)
 
     /**
      * Tuning parameter: list size at or below which insertion sort will be
@@ -1425,13 +1417,15 @@ public class Arrays {
         if (c == null) {
             sort(a);
         } else {
-            // Android-changed: LegacyMergeSort is no longer supported
+        // Android-removed: LegacyMergeSort support
             // if (LegacyMergeSort.userRequested)
             //     legacyMergeSort(a, c);
             // else
                 TimSort.sort(a, 0, a.length, c, null, 0, 0);
         }
     }
+
+    // Android-removed: legacyMergeSort() (unused on Android)
 
     /**
      * Sorts the specified range of the specified array of objects according
@@ -1491,13 +1485,16 @@ public class Arrays {
             sort(a, fromIndex, toIndex);
         } else {
             rangeCheck(a.length, fromIndex, toIndex);
-            // Android-changed: LegacyMergeSort is no longer supported
+            // Android-removed: LegacyMergeSort support
             // if (LegacyMergeSort.userRequested)
             //     legacyMergeSort(a, fromIndex, toIndex, c);
             // else
                 TimSort.sort(a, fromIndex, toIndex, c, null, 0, 0);
         }
     }
+
+    // Android-removed: legacyMergeSort() (unused on Android)
+    // Android-removed: mergeSort() (unused on Android)
 
     // Parallel prefix
 
@@ -4196,8 +4193,7 @@ public class Arrays {
 
             if (e1 == e2)
                 continue;
-            // Android-changed: Return early if e2 == null
-            if (e1 == null || e2 == null)
+            if (e1 == null)
                 return false;
 
             // Figure out whether the two elements are equal
@@ -4210,34 +4206,29 @@ public class Arrays {
     }
 
     static boolean deepEquals0(Object e1, Object e2) {
-        // BEGIN Android-changed: getComponentType() is faster than instanceof()
-        Class<?> cl1 = e1.getClass().getComponentType();
-        Class<?> cl2 = e2.getClass().getComponentType();
-
-        if (cl1 != cl2) {
-            return false;
-        }
-        if (e1 instanceof Object[])
-            return deepEquals ((Object[]) e1, (Object[]) e2);
-        else if (cl1 == byte.class)
-            return equals((byte[]) e1, (byte[]) e2);
-        else if (cl1 == short.class)
-            return equals((short[]) e1, (short[]) e2);
-        else if (cl1 == int.class)
-            return equals((int[]) e1, (int[]) e2);
-        else if (cl1 == long.class)
-            return equals((long[]) e1, (long[]) e2);
-        else if (cl1 == char.class)
-            return equals((char[]) e1, (char[]) e2);
-        else if (cl1 == float.class)
-            return equals((float[]) e1, (float[]) e2);
-        else if (cl1 == double.class)
-            return equals((double[]) e1, (double[]) e2);
-        else if (cl1 == boolean.class)
-            return equals((boolean[]) e1, (boolean[]) e2);
+        assert e1 != null;
+        boolean eq;
+        if (e1 instanceof Object[] && e2 instanceof Object[])
+            eq = deepEquals ((Object[]) e1, (Object[]) e2);
+        else if (e1 instanceof byte[] && e2 instanceof byte[])
+            eq = equals((byte[]) e1, (byte[]) e2);
+        else if (e1 instanceof short[] && e2 instanceof short[])
+            eq = equals((short[]) e1, (short[]) e2);
+        else if (e1 instanceof int[] && e2 instanceof int[])
+            eq = equals((int[]) e1, (int[]) e2);
+        else if (e1 instanceof long[] && e2 instanceof long[])
+            eq = equals((long[]) e1, (long[]) e2);
+        else if (e1 instanceof char[] && e2 instanceof char[])
+            eq = equals((char[]) e1, (char[]) e2);
+        else if (e1 instanceof float[] && e2 instanceof float[])
+            eq = equals((float[]) e1, (float[]) e2);
+        else if (e1 instanceof double[] && e2 instanceof double[])
+            eq = equals((double[]) e1, (double[]) e2);
+        else if (e1 instanceof boolean[] && e2 instanceof boolean[])
+            eq = equals((boolean[]) e1, (boolean[]) e2);
         else
-            return e1.equals(e2);
-        // END Android-changed: getComponentType() is faster than instanceof()
+            eq = e1.equals(e2);
+        return eq;
     }
 
     /**

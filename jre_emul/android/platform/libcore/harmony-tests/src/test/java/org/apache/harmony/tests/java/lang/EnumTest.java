@@ -214,6 +214,7 @@ public class EnumTest extends TestCase {
      * serialization/deserialization compatibility.
      */
     public void testSerializationSelf() throws Exception {
+
         // test a map class that has enums.
         // regression test for Harmony-1163
         HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
@@ -243,6 +244,7 @@ public class EnumTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
+
         // regression test for Harmony-1163
         HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
         enumColorMap.put(Color.Red, 1);

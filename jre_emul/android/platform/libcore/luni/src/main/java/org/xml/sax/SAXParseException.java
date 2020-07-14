@@ -5,6 +5,8 @@
 
 package org.xml.sax;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 /**
  * Encapsulate an XML parse error or warning.
  *
@@ -163,6 +165,7 @@ public class SAXParseException extends SAXException {
      * @param lineNumber The line number of the error, or -1.
      * @param columnNumber The column number of the error, or -1.
      */
+    @UnsupportedAppUsage
     private void init (String publicId, String systemId,
                int lineNumber, int columnNumber)
     {
@@ -241,6 +244,7 @@ public class SAXParseException extends SAXException {
      * @serial The public identifier, or null.
      * @see #getPublicId
      */
+    @UnsupportedAppUsage
     private String publicId;
 
 
@@ -248,6 +252,7 @@ public class SAXParseException extends SAXException {
      * @serial The system identifier, or null.
      * @see #getSystemId
      */
+    @UnsupportedAppUsage
     private String systemId;
 
 
@@ -255,6 +260,7 @@ public class SAXParseException extends SAXException {
      * @serial The line number, or -1.
      * @see #getLineNumber
      */
+    @UnsupportedAppUsage
     private int lineNumber;
 
 
@@ -262,6 +268,7 @@ public class SAXParseException extends SAXException {
      * @serial The column number, or -1.
      * @see #getColumnNumber
      */
+    @UnsupportedAppUsage
     private int columnNumber;
 
 }

@@ -14,14 +14,41 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
 .PHONY: default clean
 
 include environment.mk
 
-# Python command to convert sources list in constants.bzl
-BZL_CMD = 'exec(open("constants.bzl").read()); print(" ".join(CONSTANTS_JSR_305_PATHS))'
-JAVA_SOURCES = $(shell python -c $(BZL_CMD))
+JAVA_SOURCES = \
+	javax/annotation/CheckForNull.java \
+	javax/annotation/CheckForSigned.java \
+	javax/annotation/CheckReturnValue.java \
+	javax/annotation/concurrent/GuardedBy.java \
+	javax/annotation/concurrent/Immutable.java \
+	javax/annotation/concurrent/NotThreadSafe.java \
+	javax/annotation/concurrent/ThreadSafe.java \
+	javax/annotation/Detainted.java \
+	javax/annotation/MatchesPattern.java \
+	javax/annotation/meta/Exclusive.java \
+	javax/annotation/meta/Exhaustive.java \
+	javax/annotation/meta/TypeQualifier.java \
+	javax/annotation/meta/TypeQualifierDefault.java \
+	javax/annotation/meta/TypeQualifierNickname.java \
+	javax/annotation/meta/TypeQualifierValidator.java \
+	javax/annotation/meta/When.java \
+	javax/annotation/Nonnegative.java \
+	javax/annotation/Nonnull.java \
+	javax/annotation/Nullable.java \
+	javax/annotation/OverridingMethodsMustInvokeSuper.java \
+	javax/annotation/ParametersAreNonnullByDefault.java \
+	javax/annotation/PropertyKey.java \
+	javax/annotation/RegEx.java \
+	javax/annotation/Signed.java \
+	javax/annotation/Syntax.java \
+	javax/annotation/Tainted.java \
+	javax/annotation/Untainted.java \
+	javax/annotation/WillClose.java \
+	javax/annotation/WillCloseWhenClosed.java \
+	javax/annotation/WillNotClose.java
 
 EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
@@ -44,8 +71,8 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../make/fat_lib.mk
 
-STATIC_FRAMEWORK_NAME = JSR305
-include ../make/static_framework.mk
+FRAMEWORK_NAME = JSR305
+include ../make/framework.mk
 
 JSR305_LICENSE = LICENSE
 JSR305_LICENSE_DIST = $(DIST_LICENSE_DIR)/jsr305_license.txt
@@ -108,6 +135,6 @@ $(BUILD_DIR):
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST)
 	@rm -rf $(JSR305_LICENSE_DIST) $(ARCH_INCLUDE_DIR)/javax/annotation
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(XCFRAMEWORK_DIR)
 
 dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)

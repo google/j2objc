@@ -24,11 +24,18 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterInputStream;
-
-import junit.framework.TestCase;
 import libcore.io.Streams;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public class DeflaterInputStreamTest extends TestCase {
+public class DeflaterInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     private static final String TEST_STR = "Hi,this is a test";
 
@@ -142,21 +149,24 @@ public class DeflaterInputStreamTest extends TestCase {
     }
 
     public void testRead_golden() throws Exception {
-        DeflaterInputStream dis = new DeflaterInputStream(is);
-        byte[] contents = Streams.readFully(dis);
-        assertTrue(Arrays.equals(TEST_STRING_DEFLATED_BYTES, contents));
-
-        byte[] result = new byte[32];
-        dis = new DeflaterInputStream(new ByteArrayInputStream(TEST_STR.getBytes("UTF-8")));
-        int count = 0;
-        int bytesRead = 0;
-        while ((bytesRead = dis.read(result, count, 4)) != -1) {
-            count += bytesRead;
+        try (DeflaterInputStream dis = new DeflaterInputStream(is)) {
+            byte[] contents = Streams.readFully(dis);
+            assertTrue(Arrays.equals(TEST_STRING_DEFLATED_BYTES, contents));
         }
-        assertEquals(23, count);
-        byte[] splicedResult = new byte[23];
-        System.arraycopy(result, 0, splicedResult, 0, 23);
-        assertTrue(Arrays.equals(TEST_STRING_DEFLATED_BYTES, splicedResult));
+
+        try (DeflaterInputStream dis = new DeflaterInputStream(
+                new ByteArrayInputStream(TEST_STR.getBytes("UTF-8")))) {
+            byte[] result = new byte[32];
+            int count = 0;
+            int bytesRead;
+            while ((bytesRead = dis.read(result, count, 4)) != -1) {
+                count += bytesRead;
+            }
+            assertEquals(23, count);
+            byte[] splicedResult = new byte[23];
+            System.arraycopy(result, 0, splicedResult, 0, 23);
+            assertTrue(Arrays.equals(TEST_STRING_DEFLATED_BYTES, splicedResult));
+        }
     }
 
     public void testRead_leavesBufUnmodified() throws Exception {
@@ -181,12 +191,16 @@ public class DeflaterInputStreamTest extends TestCase {
     public void testReadByteArrayIntInt() throws IOException {
         byte[] buf1 = new byte[256];
         byte[] buf2 = new byte[256];
-        DeflaterInputStream dis = new DeflaterInputStream(is);
-        assertEquals(23, dis.read(buf1, 0, 256));
-        dis = new DeflaterInputStream(is);
-        assertEquals(8, dis.read(buf2, 0, 256));
+        try (DeflaterInputStream dis = new DeflaterInputStream(is)) {
+            assertEquals(23, dis.read(buf1, 0, 256));
+        }
+
+        try (DeflaterInputStream dis = new DeflaterInputStream(is)) {
+            assertEquals(8, dis.read(buf2, 0, 256));
+        }
+
         is = new ByteArrayInputStream(TEST_STR.getBytes("UTF-8"));
-        dis = new DeflaterInputStream(is);
+        DeflaterInputStream dis = new DeflaterInputStream(is);
         assertEquals(1, dis.available());
         assertEquals(120, dis.read());
         assertEquals(1, dis.available());
@@ -300,15 +314,23 @@ public class DeflaterInputStreamTest extends TestCase {
      */
     public void testSkip() throws IOException {
         byte[] buf = new byte[1024];
-        DeflaterInputStream dis = new DeflaterInputStream(is);
-        assertEquals(1, dis.available());
-        dis.skip(1);
-        assertEquals(1, dis.available());
-        assertEquals(22, dis.read(buf, 0, 1024));
-        assertEquals(0, dis.available());
-        assertEquals(0, dis.available());
+        try (DeflaterInputStream dis = new DeflaterInputStream(is)) {
+            assertEquals(1, dis.available());
+            dis.skip(1);
+            assertEquals(1, dis.available());
+            assertEquals(22, dis.read(buf, 0, 1024));
+            assertEquals(0, dis.available());
+            assertEquals(0, dis.available());
+            is = new ByteArrayInputStream(TEST_STR.getBytes("UTF-8"));
+        }
+
         is = new ByteArrayInputStream(TEST_STR.getBytes("UTF-8"));
-        dis = new DeflaterInputStream(is);
+        try (DeflaterInputStream dis = new DeflaterInputStream(is)) {
+            assertEquals(23, dis.skip(Long.MAX_VALUE));
+            assertEquals(0, dis.available());
+        }
+
+        DeflaterInputStream dis = new DeflaterInputStream(is);
         assertEquals(1, dis.available());
         dis.skip(56);
         assertEquals(0, dis.available());
@@ -324,19 +346,21 @@ public class DeflaterInputStreamTest extends TestCase {
         } catch (IOException e) {
             // expected
         }
-
-        is = new ByteArrayInputStream(TEST_STR.getBytes("UTF-8"));
-        dis = new DeflaterInputStream(is);
-        assertEquals(23, dis.skip(Long.MAX_VALUE));
-        assertEquals(0, dis.available());
     }
 
     /**
      * DeflaterInputStream#DeflaterInputStream(InputStream)
      */
-    public void testDeflaterInputStreamInputStream() {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "DeflaterInputStream does not clean up the default Deflater created in the"
+                    + " constructor if the constructor fails; i.e. constructor calls"
+                    + " this(..., new Deflater(), ...) and that constructor fails but does not know"
+                    + " that it needs to call Deflater.end() as the caller has no access to it",
+            bug = "31798154") */
+    public void testDeflaterInputStreamInputStream() throws IOException {
         // ok
-        new DeflaterInputStream(is);
+        new DeflaterInputStream(is).close();
         // fail
         try {
             new DeflaterInputStream(null);
@@ -356,21 +380,26 @@ public class DeflaterInputStreamTest extends TestCase {
     /**
      * DeflaterInputStream#DeflaterInputStream(InputStream, Deflater)
      */
-    public void testDeflaterInputStreamInputStreamDeflater() {
+    public void testDeflaterInputStreamInputStreamDeflater() throws IOException {
         // ok
-        new DeflaterInputStream(is, new Deflater());
-        // fail
+        Deflater deflater = new Deflater();
         try {
-            new DeflaterInputStream(is, null);
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            new DeflaterInputStream(null, new Deflater());
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
+            new DeflaterInputStream(is, deflater).close();
+            // fail
+            try {
+                new DeflaterInputStream(is, null);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                new DeflaterInputStream(null, deflater);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+        } finally {
+            deflater.end();
         }
     }
 
@@ -379,37 +408,42 @@ public class DeflaterInputStreamTest extends TestCase {
      */
     public void testDeflaterInputStreamInputStreamDeflaterInt() {
         // ok
-        new DeflaterInputStream(is, new Deflater(), 1024);
-        // fail
+        Deflater deflater = new Deflater();
         try {
-            new DeflaterInputStream(is, null, 1024);
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            new DeflaterInputStream(null, new Deflater(), 1024);
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            new DeflaterInputStream(is, new Deflater(), -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-        try {
-            new DeflaterInputStream(null, new Deflater(), -1);
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
-        }
-        try {
-            new DeflaterInputStream(is, null, -1);
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // expected
+            new DeflaterInputStream(is, deflater, 1024);
+            // fail
+            try {
+                new DeflaterInputStream(is, null, 1024);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                new DeflaterInputStream(null, deflater, 1024);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                new DeflaterInputStream(is, deflater, -1);
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                // expected
+            }
+            try {
+                new DeflaterInputStream(null, deflater, -1);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+            try {
+                new DeflaterInputStream(is, null, -1);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+        } finally {
+            deflater.end();
         }
     }
 

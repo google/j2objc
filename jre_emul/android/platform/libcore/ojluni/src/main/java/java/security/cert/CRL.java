@@ -53,7 +53,7 @@ public abstract class CRL {
      *
      * @param type the standard name of the CRL type.
      * See Appendix A in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+     * "../../../../technotes/guides/security/crypto/CryptoSpec.html#AppA">
      * Java Cryptography Architecture API Specification &amp; Reference </a>
      * for information about standard CRL types.
      */

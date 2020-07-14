@@ -5,6 +5,7 @@
 
 package org.xml.sax;
 
+import android.compat.annotation.UnsupportedAppUsage;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -326,10 +327,15 @@ public class InputSource {
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
+    @UnsupportedAppUsage
     private String publicId;
+    @UnsupportedAppUsage
     private String systemId;
+    @UnsupportedAppUsage
     private InputStream byteStream;
+    @UnsupportedAppUsage
     private String encoding;
+    @UnsupportedAppUsage
     private Reader characterStream;
 
 }

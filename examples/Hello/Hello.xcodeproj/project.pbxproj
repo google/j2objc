@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061162DE244A78D3002D5893 /* JRE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061162DD244A78D3002D5893 /* JRE.xcframework */; };
 		069A97A61C6A86AD00A00560 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97A51C6A86AD00A00560 /* main.m */; };
 		069A97A91C6A86AD00A00560 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97A81C6A86AD00A00560 /* AppDelegate.m */; };
 		069A97AC1C6A86AD00A00560 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97AB1C6A86AD00A00560 /* ViewController.m */; };
@@ -20,7 +21,6 @@
 		06CCF13E1C77E42800CDF952 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B01C6A86AD00A00560 /* Assets.xcassets */; };
 		06CCF13F1C77E42800CDF952 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97AD1C6A86AD00A00560 /* Main.storyboard */; };
 		06CCF1471C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */; };
-		06E954AE1E9C2A4500BA08E2 /* JRE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06E954AD1E9C2A4500BA08E2 /* JRE.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -28,17 +28,21 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.java;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.m",
 				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.h",
 			);
-			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST not correctly defined in Hello.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" --quiet -g -d ${DERIVED_FILES_DIR} -use-arc ${INPUT_FILE_PATH};";
+			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST not correctly defined in config.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" --quiet -g -d ${DERIVED_FILES_DIR} -use-arc ${INPUT_FILE_PATH};\n";
 		};
 		06CCF1401C77E42800CDF952 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.java;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.m",
@@ -49,6 +53,7 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
+		061162DD244A78D3002D5893 /* JRE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = JRE.xcframework; path = ../../dist/frameworks/JRE.xcframework; sourceTree = "<group>"; };
 		069A97A11C6A86AD00A00560 /* HelloJ2ObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloJ2ObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		069A97A51C6A86AD00A00560 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		069A97A71C6A86AD00A00560 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -59,12 +64,13 @@
 		069A97B01C6A86AD00A00560 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		069A97B31C6A86AD00A00560 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		069A97B51C6A86AD00A00560 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		069A97D41C6A897900A00560 /* Hello.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Hello.xcconfig; sourceTree = "<group>"; };
+		069A97D41C6A897900A00560 /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
 		069A97DB1C6AB52A00A00560 /* Status.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Status.java; path = org/j2objc/Status.java; sourceTree = "<group>"; };
 		06B9901D1EA6BDF000581403 /* HelloJ2ObjC.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = HelloJ2ObjC.entitlements; sourceTree = "<group>"; };
 		06CCF1441C77E42800CDF952 /* Hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerNoJ2ObjC.m; sourceTree = "<group>"; };
-		06E954AD1E9C2A4500BA08E2 /* JRE.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JRE.framework; path = ../../dist/frameworks/JRE.framework; sourceTree = "<group>"; };
+		06FCF74A244F6AC500E81301 /* HelloJ2ObjC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HelloJ2ObjC.entitlements; sourceTree = "<group>"; };
+		06FCF74B244F6ACC00E81301 /* Hello.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Hello.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,7 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06E954AE1E9C2A4500BA08E2 /* JRE.framework in Frameworks */,
+				061162DE244A78D3002D5893 /* JRE.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +95,8 @@
 		069A97981C6A86AD00A00560 = {
 			isa = PBXGroup;
 			children = (
-				069A97D41C6A897900A00560 /* Hello.xcconfig */,
+				06FCF74A244F6AC500E81301 /* HelloJ2ObjC.entitlements */,
+				069A97D41C6A897900A00560 /* config.xcconfig */,
 				069A97A31C6A86AD00A00560 /* Hello */,
 				069A97A21C6A86AD00A00560 /* Products */,
 				06E954AA1E9C294A00BA08E2 /* Frameworks */,
@@ -108,6 +115,7 @@
 		069A97A31C6A86AD00A00560 /* Hello */ = {
 			isa = PBXGroup;
 			children = (
+				06FCF74B244F6ACC00E81301 /* Hello.entitlements */,
 				069A97A71C6A86AD00A00560 /* AppDelegate.h */,
 				069A97A81C6A86AD00A00560 /* AppDelegate.m */,
 				069A97AA1C6A86AD00A00560 /* ViewController.h */,
@@ -135,7 +143,7 @@
 		06E954AA1E9C294A00BA08E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				06E954AD1E9C2A4500BA08E2 /* JRE.framework */,
+				061162DD244A78D3002D5893 /* JRE.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -198,6 +206,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -281,7 +290,7 @@
 /* Begin XCBuildConfiguration section */
 		069A97B61C6A86AD00A00560 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -328,7 +337,7 @@
 		};
 		069A97B71C6A86AD00A00560 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -369,49 +378,77 @@
 		};
 		069A97B91C6A86AD00A00560 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HelloJ2ObjC.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
 		};
 		069A97BA1C6A86AD00A00560 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HelloJ2ObjC.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
 		};
 		06CCF1421C77E42800CDF952 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Hello/Hello.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
 		};
 		06CCF1431C77E42800CDF952 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Hello/Hello.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				INFOPLIST_FILE = Hello/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
 		};

@@ -16,7 +16,6 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
 .PHONY: clean
 
 include environment.mk
@@ -27,6 +26,8 @@ JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES)
 
 ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
+
+MKTEMP_DIR = j2objc-jre_emul
 
 clean:
 	@rm -f $(EMULATION_JAR_DIST) $(EMULATION_SRC_JAR_DIST)
@@ -56,14 +57,6 @@ $(EMULATION_MODULE_DIST): $(EMULATION_MODULE)
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR)
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
-
-# The following test returns true on Linux or with GNU tools installed,
-# otherwise false on macOS which uses the BSD version.
-ifeq ($(shell mktemp --version >/dev/null 2>&1 && echo GNU || echo BSD), GNU)
-MKTEMP_CMD = mktemp -d --tmpdir j2objc-jre_emul.XXXXXX
-else
-MKTEMP_CMD = mktemp -d -t j2objc-jre_emul
-endif
 
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES)
 	@mkdir -p $(@D)
@@ -114,4 +107,3 @@ find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder --patch-module java.base=$(JRE_SRC) \
 	  -w cycle_whitelist.txt -s $(JAVA_SOURCES_MANIFEST) \
 	  -external-annotation-file $(J2OBJC_ANNOTATIONS)
-

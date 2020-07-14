@@ -55,6 +55,8 @@ typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
 
 J2OBJC_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
 
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistryLite)
+
 CF_EXTERN_C_BEGIN
 
 ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance();
@@ -68,6 +70,12 @@ ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
     CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors_Descriptor *descriptor,
     jint fieldNumber);
 
+void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
+    ComGoogleProtobufExtensionRegistryLite *self, jboolean empty);
+
+ComGoogleProtobufExtensionRegistryLite *new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
+    jboolean empty) NS_RETURNS_RETAINED;
+
 CF_EXTERN_C_END
 
-#endif // __ComGoogleProtobufExtensionRegistryLite_H__
+#endif  // __ComGoogleProtobufExtensionRegistryLite_H__

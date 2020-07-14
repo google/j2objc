@@ -181,7 +181,6 @@ public class IntegerTest extends junit.framework.TestCase {
             }
         }
 
-        /* TODO(b/137121871): generates SIGFPE instead of ArithmeticException.
         for(long dividend : vals) {
             try {
                 Integer.divideUnsigned((int) dividend, 0);
@@ -191,7 +190,7 @@ public class IntegerTest extends junit.framework.TestCase {
                 Integer.remainderUnsigned((int) dividend, 0);
                 fail();
             } catch (ArithmeticException expected) { }
-        } */
+        }
     }
 
     public void testParseUnsignedInt() {

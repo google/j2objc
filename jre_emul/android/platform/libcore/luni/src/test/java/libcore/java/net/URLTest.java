@@ -25,7 +25,7 @@ import java.net.URL;
 
 import dalvik.system.BlockGuard;
 import junit.framework.TestCase;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public final class URLTest extends TestCase {
 

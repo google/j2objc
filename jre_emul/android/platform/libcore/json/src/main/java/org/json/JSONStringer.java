@@ -16,6 +16,7 @@
 
 package org.json;
 
+import dalvik.annotation.compat.UnsupportedAppUsage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,6 +62,7 @@ import java.util.List;
 public class JSONStringer {
 
     /** The output data, containing at most one top-level array or object. */
+    @UnsupportedAppUsage
     final StringBuilder out = new StringBuilder();
 
     /**
@@ -111,18 +113,21 @@ public class JSONStringer {
      * Unlike the original implementation, this stack isn't limited to 20
      * levels of nesting.
      */
+    @UnsupportedAppUsage
     private final List<Scope> stack = new ArrayList<Scope>();
 
     /**
      * A string containing a full set of spaces for a single level of
      * indentation, or null for no pretty printing.
      */
+    @UnsupportedAppUsage
     private final String indent;
 
     public JSONStringer() {
         indent = null;
     }
 
+    @UnsupportedAppUsage
     JSONStringer(int indentSpaces) {
         char[] indentChars = new char[indentSpaces];
         Arrays.fill(indentChars, ' ');
@@ -171,6 +176,7 @@ public class JSONStringer {
      * Enters a new scope by appending any necessary whitespace and the given
      * bracket.
      */
+    @UnsupportedAppUsage
     JSONStringer open(Scope empty, String openBracket) throws JSONException {
         if (stack.isEmpty() && out.length() > 0) {
             throw new JSONException("Nesting problem: multiple top-level roots");
@@ -185,6 +191,7 @@ public class JSONStringer {
      * Closes the current scope by appending any necessary whitespace and the
      * given bracket.
      */
+    @UnsupportedAppUsage
     JSONStringer close(Scope empty, Scope nonempty, String closeBracket) throws JSONException {
         Scope context = peek();
         if (context != nonempty && context != empty) {
@@ -202,6 +209,7 @@ public class JSONStringer {
     /**
      * Returns the value on the top of the stack.
      */
+    @UnsupportedAppUsage
     private Scope peek() throws JSONException {
         if (stack.isEmpty()) {
             throw new JSONException("Nesting problem");
@@ -212,6 +220,7 @@ public class JSONStringer {
     /**
      * Replace the value on the top of the stack with the given value.
      */
+    @UnsupportedAppUsage
     private void replaceTop(Scope topOfStack) {
         stack.set(stack.size() - 1, topOfStack);
     }
@@ -299,6 +308,7 @@ public class JSONStringer {
         return this;
     }
 
+    @UnsupportedAppUsage
     private void string(String value) {
         out.append("\"");
         for (int i = 0, length = value.length(); i < length; i++) {
@@ -350,6 +360,7 @@ public class JSONStringer {
         out.append("\"");
     }
 
+    @UnsupportedAppUsage
     private void newline() {
         if (indent == null) {
             return;
@@ -380,6 +391,7 @@ public class JSONStringer {
      * Inserts any necessary separators and whitespace before a name. Also
      * adjusts the stack to expect the key's value.
      */
+    @UnsupportedAppUsage
     private void beforeKey() throws JSONException {
         Scope context = peek();
         if (context == Scope.NONEMPTY_OBJECT) { // first in object
@@ -396,6 +408,7 @@ public class JSONStringer {
      * inline array, or inline object. Also adjusts the stack to expect either a
      * closing bracket or another element.
      */
+    @UnsupportedAppUsage
     private void beforeValue() throws JSONException {
         if (stack.isEmpty()) {
             return;

@@ -180,16 +180,10 @@ public class TreeUtil {
       public Iterator<VariableDeclarationFragment> iterator() {
         final Iterator<FieldDeclaration> fieldIter = fieldDecls.iterator();
         return new AbstractIterator<VariableDeclarationFragment>() {
-          private Iterator<VariableDeclarationFragment> fragIter;
           @Override protected VariableDeclarationFragment computeNext() {
-            do {
-              if (fragIter != null && fragIter.hasNext()) {
-                return fragIter.next();
-              }
-              if (fieldIter.hasNext()) {
-                fragIter = fieldIter.next().getFragments().iterator();
-              }
-            } while (fieldIter.hasNext() || (fragIter != null && fragIter.hasNext()));
+            while (fieldIter.hasNext()) {
+              return fieldIter.next().getFragment();
+            }
             return endOfData();
           }
         };
@@ -400,15 +394,7 @@ public class TreeUtil {
     } else if (value instanceof Character) {
       return new CharacterLiteral((Character) value, typeUtil);
     } else if (value instanceof Number) {
-      String token = value.toString();
-      if (value instanceof Long) {
-        token += "L";
-      } else if (value instanceof Float) {
-        token += "F";
-      } else if (value instanceof Double) {
-        token += "D";
-      }
-      return new NumberLiteral((Number) value, typeUtil).setToken(token);
+      return new NumberLiteral((Number) value, typeUtil);
     } else if (value instanceof String) {
       return new StringLiteral((String) value, typeUtil);
     }

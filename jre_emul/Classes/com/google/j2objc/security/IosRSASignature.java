@@ -143,12 +143,12 @@ public abstract class IosRSASignature extends SignatureSpi {
   - (IOSByteArray *)nativeEngineSign:(SecKeyRef)privateKey
                            hashBytes:(uint8_t *)hashBytes
                                 size:(size_t)hashBytesSize
-                                padding: (SecPadding) padding {  
-                     
+                                padding: (SecPadding) padding {
+
     size_t signedHashBytesSize = SecKeyGetBlockSize(privateKey);
     uint8_t *signedHashBytes = calloc(signedHashBytesSize, sizeof(uint8_t));
     SecKeyRawSign(privateKey,
-                  padding,										
+                  padding,
                   hashBytes,
                   hashBytesSize,
                   signedHashBytes,
@@ -166,7 +166,7 @@ public abstract class IosRSASignature extends SignatureSpi {
                        hashBytes:(uint8_t *)hashBytes
                             size:(size_t)hashBytesSize
                          padding:(SecPadding)secPadding {
-                         
+
     size_t signatureSize = SecKeyGetBlockSize(publicKey);
     if (signatureSize != (size_t)signature->size_) {
         NSLog (@"nativeEngineVerify: Wrong Signature Size %d %d", (int)signatureSize,
@@ -190,7 +190,7 @@ public abstract class IosRSASignature extends SignatureSpi {
                                signatureSize);
       if (status != errSecSuccess) {
           NSLog (@"nativeEngineVerify: Signature failed,  %d ", (int) status);
-      }                         
+      }
     }
     return status == errSecSuccess;
   }
@@ -202,13 +202,16 @@ public abstract class IosRSASignature extends SignatureSpi {
       NSData *plainData = [(NSDataOutputStream *)buffer_ data];
       size_t hashBytesSize = CC_MD5_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       if (!CC_MD5([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
+#pragma clang diagnostic pop
         return nil;
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize 
-                                            padding:kSecPaddingPKCS1MD5];  
+                                               size:hashBytesSize
+                                            padding:kSecPaddingPKCS1MD5];
       free(hashBytes);
       return result;
     ]-*/;
@@ -218,7 +221,10 @@ public abstract class IosRSASignature extends SignatureSpi {
       NSData *plainData = [(NSDataOutputStream *)buffer_ data];
       size_t hashBytesSize = CC_MD5_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       if (!CC_MD5([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
+#pragma clang diagnostic pop
         return false;
       }
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
@@ -242,8 +248,8 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize 
-                                            padding:kSecPaddingPKCS1SHA1];  
+                                               size:hashBytesSize
+                                            padding:kSecPaddingPKCS1SHA1];
       free(hashBytes);
       return result;
     ]-*/;
@@ -277,7 +283,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize 
+                                               size:hashBytesSize
 #if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
                                      padding:kSecPaddingPKCS1SHA256];
 #else
@@ -300,7 +306,7 @@ public abstract class IosRSASignature extends SignatureSpi {
                                    hashBytes:hashBytes
                                         size:hashBytesSize
 #if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
-                                     padding:kSecPaddingPKCS1SHA256];  
+                                     padding:kSecPaddingPKCS1SHA256];
 #else
                                      padding:kSecPaddingPKCS1SHA1];
 #endif
@@ -320,11 +326,11 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize 
+                                               size:hashBytesSize
 #if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
-                                     padding:kSecPaddingPKCS1SHA384]; 
+                                     padding:kSecPaddingPKCS1SHA384];
 #else
-                                     padding:kSecPaddingPKCS1SHA1];    
+                                     padding:kSecPaddingPKCS1SHA1];
 #endif
       free(hashBytes);
       return result;
@@ -363,13 +369,13 @@ public abstract class IosRSASignature extends SignatureSpi {
       }
       IOSByteArray *result = [self nativeEngineSign:(SecKeyRef)nativeKey
                                           hashBytes:hashBytes
-                                               size:hashBytesSize 
+                                               size:hashBytesSize
 #if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
-                                     padding:kSecPaddingPKCS1SHA512]; 
+                                     padding:kSecPaddingPKCS1SHA512];
 #else
-                                     padding:kSecPaddingPKCS1SHA1];   
-#endif   
-                                               
+                                     padding:kSecPaddingPKCS1SHA1];
+#endif
+
       free(hashBytes);
       return result;
     ]-*/;

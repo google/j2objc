@@ -14,6 +14,8 @@ package org.w3c.dom.traversal;
 
 import org.w3c.dom.Node;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 /**
  * Filters are objects that know how to "filter out" nodes. If a
  * <code>NodeIterator</code> or <code>TreeWalker</code> is given a
@@ -141,6 +143,7 @@ public interface NodeFilter {
      * @return A constant to determine whether the node is accepted,
      *   rejected, or skipped, as defined above.
      */
+    @UnsupportedAppUsage
     public short acceptNode(Node n);
 
 }

@@ -33,10 +33,11 @@ import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
+import java.security.AccessController;
 import java.util.*;
 import sun.misc.Unsafe;
 import sun.misc.Cleaner;
-
+import sun.security.action.GetPropertyAction;
 
 class Util {
 
@@ -364,10 +365,9 @@ class Util {
             /* J2ObjC modified.
             if (!sun.misc.VM.isBooted())
                 return false;
+            */
             String value = AccessController.doPrivileged(
                 new GetPropertyAction("sun.nio.ch.bugLevel"));
-            */
-            String value = System.getProperty("sun.nio.ch.bugLevel");
             bugLevel = (value != null) ? value : "";
         }
         return bugLevel.equals(bl);

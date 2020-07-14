@@ -17,11 +17,10 @@
 package libcore.io;
 
 import android.system.ErrnoException;
+import android.system.Int32Ref;
+import android.system.Int64Ref;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
-
-import libcore.util.MutableInt;
-import libcore.util.MutableLong;
 
 public interface Os {
 
@@ -42,7 +41,7 @@ public interface Os {
     public void fsync(FileDescriptor fd) throws ErrnoException;
     public void ftruncate(FileDescriptor fd, long length) throws ErrnoException;
     public String if_indextoname(int index);
-    public int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg) throws ErrnoException;
+    public int ioctlInt(FileDescriptor fd, int cmd, Int32Ref arg) throws ErrnoException;
     public boolean isatty(FileDescriptor fd);
     public void listen(FileDescriptor fd, int backlog) throws ErrnoException;
     public long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
@@ -69,7 +68,7 @@ public interface Os {
     public String realpath(String path);
     public void remove(String path) throws ErrnoException;
     public void rename(String oldPath, String newPath) throws ErrnoException;
-    public long sendfile(FileDescriptor outFd, FileDescriptor inFd, MutableLong inOffset,
+    public long sendfile(FileDescriptor outFd, FileDescriptor inFd, Int64Ref inOffset,
         long byteCount) throws ErrnoException;
     public void shutdown(FileDescriptor fd, int how) throws ErrnoException;
     public FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException;
@@ -114,5 +113,5 @@ public interface Os {
 //    public void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //    public int umask(int mask);
 //    public void unsetenv(String name) throws ErrnoException;
-//    public int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
+//    public int waitpid(int pid, Int32Ref status, int options) throws ErrnoException;
 }

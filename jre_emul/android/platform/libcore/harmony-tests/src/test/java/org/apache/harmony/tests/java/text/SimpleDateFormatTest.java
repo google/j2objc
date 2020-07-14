@@ -16,6 +16,8 @@
  */
 package org.apache.harmony.tests.java.text;
 
+import static com.google.j2objc.util.NativeTimeZoneTest.isNativeTimeZone;
+
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.FieldPosition;
@@ -463,8 +465,11 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
                 "America/Los_Angeles", "PST, Pacific Standard Time", "-0800, GMT-08:00",
                 winterDate);
 
-        verifyFormatTimezone("GMT-7", "GMT-07:00, GMT-07:00", "-0700, GMT-07:00", summerDate);
-        verifyFormatTimezone("GMT-7", "GMT-07:00, GMT-07:00", "-0700, GMT-07:00", winterDate);
+        String tzShortFormat = isNativeTimeZone("GMT-7") ? "GMT-7" : "GMT-07:00";
+        verifyFormatTimezone(
+                "GMT-7", tzShortFormat + ", GMT-07:00", "-0700, GMT-07:00", summerDate);
+        verifyFormatTimezone(
+                "GMT-7", tzShortFormat + ", GMT-07:00", "-0700, GMT-07:00", winterDate);
 
         verifyFormatTimezone("GMT+14", "GMT+14, GMT+14:00", "+1400, GMT+14:00", summerDate);
         verifyFormatTimezone("GMT+14", "GMT+14, GMT+14:00", "+1400, GMT+14:00", winterDate);

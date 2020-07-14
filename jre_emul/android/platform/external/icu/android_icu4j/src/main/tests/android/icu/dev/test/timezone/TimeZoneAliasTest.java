@@ -33,7 +33,7 @@ import android.icu.util.TimeZone;
 /**
  * Class for testing TimeZones for consistency
  * @author Davis
- *
+ * 
  */
 public class TimeZoneAliasTest extends TestFmwk {
     /**
@@ -41,7 +41,7 @@ public class TimeZoneAliasTest extends TestFmwk {
      * 1. the alias set must be uniform: if a isAlias b, then aliasSet(a) == aliasSet(b)<br>
      * 2. all aliases must have the same offsets
       */
-    // TODO(user): not working before so turned off
+    // TODO(junit): not working before so turned off
     @Ignore
     @Test
     public void TestAliases() {
@@ -52,7 +52,7 @@ public class TimeZoneAliasTest extends TestFmwk {
             if (id.indexOf('/') < 0 && (id.endsWith("ST") || id.endsWith("DT"))) {
                 if (zone.minRecentOffset != zone.maxRecentOffset) {
                     errln(
-                        "Standard or Daylight Time not constant: " + id
+                        "Standard or Daylight Time not constant: " + id 
                         + ": " + Zone.formatHours(zone.minRecentOffset)
                         + " != " + Zone.formatHours(zone.maxRecentOffset));
                 }
@@ -70,7 +70,7 @@ public class TimeZoneAliasTest extends TestFmwk {
                     errln(
                         "Aliases Unsymmetric: "
                         + id + " => " + Zone.bf.join(aliasesSet)
-                        + "; "
+                        + "; " 
                         + otherId + " => " + Zone.bf.join(otherAliases));
                 }
                 if (zone.findOffsetOrdering(otherZone, seconds) != 0) {
@@ -80,23 +80,23 @@ public class TimeZoneAliasTest extends TestFmwk {
             }
         }
     }
-
+    
     /**
      * We check to see that every timezone that is not an alias is actually different!
      */
-    // TODO(user): not working before so turned off
+    // TODO(junit): not working before so turned off
     @Ignore
     @Test
     public void TestDifferences() {
         Zone last = null;
-        Zone.Seconds diffDate = new Zone.Seconds();
+        Zone.Seconds diffDate = new Zone.Seconds();        
         for (Iterator it = Zone.getZoneSet().iterator(); it.hasNext();) {
             Zone testZone = (Zone)it.next();
             if (last != null) {
                 String common = testZone + "\tvs " + last + ":\t";
                 int diff = testZone.findOffsetOrdering(last, diffDate);
                 if (diff != 0) {
-                    logln("\t" + common + "difference at: " + diffDate
+                    logln("\t" + common + "difference at: " + diffDate 
                         + ", " + Zone.formatHours(diff) + "hr");
                 } else if (testZone.isRealAlias(last)) {
                     logln("\t" + common + "alias, no difference");
@@ -107,7 +107,7 @@ public class TimeZoneAliasTest extends TestFmwk {
             last = testZone;
         }
     }
-
+    
     /**
      * Utility for printing out zones to be translated.
      */
@@ -118,7 +118,7 @@ public class TimeZoneAliasTest extends TestFmwk {
             System.out.println(zone.toString(count++));
         }
     }
-
+    
     /** Utility; ought to be someplace common
      */
     // remove dependency on bagformatter for now
@@ -139,7 +139,7 @@ public class TimeZoneAliasTest extends TestFmwk {
         }
     }
 
-
+        
     /**
      * The guts is in this subclass. It sucks in all the data from the zones,
      * and analyses it. It constructs some mappings for the unique ids,
@@ -166,7 +166,7 @@ public class TimeZoneAliasTest extends TestFmwk {
         static private final long endDate2 = getDate((currentYear+1),6,1).getTime();
         static private final long recentLimit = getDate((currentYear-1),6,1).getTime();
         static private final long startDate = getDate(1905,0,1).getTime();
-
+        
         static private final Map idToZone = new HashMap();
         static private final Set zoneSet = new TreeSet();
         static private final Set uniqueZoneSet = new TreeSet();
@@ -180,7 +180,7 @@ public class TimeZoneAliasTest extends TestFmwk {
             }
             Zone last = null;
             Zone.Seconds diffDate = new Zone.Seconds();
-            String lastUnique = "";
+            String lastUnique = "";      
             for (Iterator it = Zone.getZoneSet().iterator(); it.hasNext();) {
                 Zone testZone = (Zone)it.next();
                 if (last == null) {
@@ -203,11 +203,11 @@ public class TimeZoneAliasTest extends TestFmwk {
                 last = testZone;
             }
         }
-
+        
         static public Set getZoneSet() {
             return zoneSet;
         }
-
+        
         public static Set getUniqueZoneSet() {
             return uniqueZoneSet;
         }
@@ -219,11 +219,11 @@ public class TimeZoneAliasTest extends TestFmwk {
             idToZone.put(id, result);
             return result;
         }
-
+        
         static public String formatHours(int hours) {
             return nf.format(hours/DHOUR);
         }
-
+        
         // utility class for date return, because Date is clunky.
         public static class Seconds {
             public long seconds = Long.MIN_VALUE;
@@ -232,7 +232,7 @@ public class TimeZoneAliasTest extends TestFmwk {
                 return df.format(new Date(seconds));
             }
         }
-
+        
         // instance fields
         // we keep min/max offsets not only over all time (that we care about)
         // but also separate ones for recent years.
@@ -245,11 +245,11 @@ public class TimeZoneAliasTest extends TestFmwk {
         private int maxRecentOffset;
         private List inflectionPoints = new ArrayList();
         private Set purportedAliases = new TreeSet();
-
+    
         private Zone(String id) { // for interal use only; use make instead!
             zone = TimeZone.getTimeZone(id);
             this.id = id;
-
+            
             // get aliases
             int equivCount = TimeZone.countEquivalentIDs(id);
             for (int j = 0; j < equivCount; ++j) {
@@ -266,7 +266,7 @@ public class TimeZoneAliasTest extends TestFmwk {
             inflectionPoints.add(new Long(lastDate));
             int lastOffset = zone.getOffset(endDate);
             long lastInflection = endDate;
-
+            
             // we do a gross search, then narrow in when we find a difference from the last one
             for (long currentDate = endDate; currentDate >= startDate; currentDate -= GROSS_PERIOD) {
                 int currentOffset = zone.getOffset(currentDate);
@@ -295,7 +295,7 @@ public class TimeZoneAliasTest extends TestFmwk {
             }
             inflectionPoints.add(new Long(startDate)); // just to cap it off for comparisons.
         }
-
+        
         // we assume that places will not convert time zones then back within one day
         // so we go first by half
         public int findOffsetOrdering(Zone other, Seconds dateDiffFound) {
@@ -318,14 +318,14 @@ public class TimeZoneAliasTest extends TestFmwk {
                     if (result != 0) {
                         seconds = myIP;
                         break main;
-                    }
+                    } 
                     if (myIP == otherIP) continue; // test other if different
                     myIP = otherIP;
                     result = zone.getOffset(myIP) - other.zone.getOffset(myIP);
                     if (result != 0) {
                         seconds = myIP;
                         break main;
-                    }
+                    } 
                 }
                 // if they are equal so far, we don't care about the rest
                 result = 0;
@@ -336,10 +336,10 @@ public class TimeZoneAliasTest extends TestFmwk {
             if (dateDiffFound != null) dateDiffFound.seconds = seconds;
             return result;
         }
-
+        
         // internal buffer to avoid creation all the time.
         private Seconds diffDateReturn = new Seconds();
-
+        
         public int compareTo(Object o) {
             Zone other = (Zone)o;
             // first order by max and min offsets
@@ -359,31 +359,31 @@ public class TimeZoneAliasTest extends TestFmwk {
             }
             return id.compareTo(other.id);
         }
-
+        
         public Set getPurportedAliases() {
             return new TreeSet(purportedAliases); // clone for safety
         }
-
+        
         public boolean isPurportedAlias(String zoneID) {
             return purportedAliases.contains(zoneID);
         }
-
+        
         public boolean isRealAlias(Zone z) {
             return purportedAliases.contains(z.id);
         }
-
+        
         public String getPurportedAliasesAsString() {
             Set s = getPurportedAliases();
             if (s.size() == 0) return "";
             return " " + bf.join(s);
         }
-
+        
         public String getRealAliasesAsString() {
             Set s = (Set)idToRealAliases.get(id);
             if (s == null) return "";
             return " *" + bf.join(s);
         }
-
+        
         public String getCity() {
             int pos = id.lastIndexOf(('/'));
             String city = id.substring(pos+1);
@@ -393,21 +393,21 @@ public class TimeZoneAliasTest extends TestFmwk {
         public String toString() {
             return toString(-1);
         }
-
+        
         /**
          * Where count > 0, returns string that is set up for translation
          */
         public String toString(int count) {
             String city = getCity();
             String hours = formatHours(minRecentOffset)
-                + (minRecentOffset != maxRecentOffset
-                    ? "," + formatHours(maxRecentOffset)
+                + (minRecentOffset != maxRecentOffset 
+                    ? "," + formatHours(maxRecentOffset) 
                     : "");
             if (count < 0) {
                 return id + getPurportedAliasesAsString() + " (" + hours + ")";
-            }
+            } 
             // for getting template for translation
-            return "\t{\t\"" + id + "\"\t// [" + count + "] " + hours
+            return "\t{\t\"" + id + "\"\t// [" + count + "] " + hours 
                 + getRealAliasesAsString() + "\r\n"
                 + "\t\t// translate the following!!\r\n"
                 + (minRecentOffset != maxRecentOffset

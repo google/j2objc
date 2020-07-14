@@ -84,7 +84,7 @@ public class CreationReferenceTest extends TestCase {
     T apply(int x, I j, String s, Object o);
   }
 
-  public void testBasicReferences() throws Exception {
+  public void testBasicReferences() {
     Lambdas.Zero<I> iInit = I::new;
     FunInt<I> iInit2 = I::new;
     FunInt4<I> iInit3 = I::new;
@@ -107,7 +107,8 @@ public class CreationReferenceTest extends TestCase {
     assertEquals(43, myJ3.getX());
   }
 
-  public void testVarargs() throws Exception {
+  @SuppressWarnings("unchecked")
+  public void testVarargs() {
     Lambdas.Three f = I::new;
     Lambdas.Four<Object, Object, Object, Object, I> f2 = I::new;
     assertEquals("12 [ 22 42 ]", ((I) f.apply(12, 22, "42")).getS());
@@ -115,7 +116,8 @@ public class CreationReferenceTest extends TestCase {
   }
 
   // Creation references can be initialized only for side effects, and have a void return.
-  public void testVoidFunctionalInterface() throws Exception {
+  @SuppressWarnings("unchecked")
+  public void testVoidFunctionalInterface() {
     Lambdas.VoidThree f = I::new;
     Lambdas.VoidFour<Object, Object, Object, Object> f2 = I::new;
     f.apply(12, 22, "42");

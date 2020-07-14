@@ -14,16 +14,24 @@
 
 package com.google.devtools.j2objc.regression;
 
+import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.NameTable;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Basic framework for working with Eclipse regression tests. Eclipse has built a very large set of
@@ -36,20 +44,19 @@ import java.util.List;
  * For testing current features this will probably not be as useful, as it will be easy to get lost
  * fixing bug minutia rather than implementing used features, and the model of j2objc has been to
  * let our users be our bumpers, and point out which features they need, allowing us to only focus
- * on the used parts of the language, rather than trying to match the JLS directly for completeness.
+ * on the used parts of the language, rather than trying to match the JLS directly for
+ * completeness.
  * <p>
  * We can find Eclipse's repository of regression tests here:
+ * <p>
  * https://github.com/eclipse/eclipse.jdt.core/tree/master/org.eclipse.jdt.core.tests.compiler/src/org/eclipse/jdt/core/tests/compiler/regression
- * 
- * @author Seth Kirby
  */
 public abstract class AbstractRegressionTest extends GenerationTest {
-  String methodName = null;
-  public static int testCount = 0;
 
-  static final String J2OBJCC_LOCATION = System.getProperty("j2objcc.path", "j2objcc");
+  private static final String J2OBJCC_LOCATION =
+      System.getProperty("j2objcc.path", "../dist/j2objcc");
 
-  public String writeFileFromString(String filename, String content) {
+  private String writeFileFromString(String filename, String content) {
     PrintWriter out;
     File file = new File(tempDir, filename);
     try {
@@ -63,7 +70,7 @@ public abstract class AbstractRegressionTest extends GenerationTest {
     return file.getAbsolutePath();
   }
 
-  public List<String> writeFiles(String[] ls) {
+  private List<String> writeFiles(String[] ls) {
     List<String> fileArgs = Lists.newArrayListWithCapacity(ls.length / 2);
     for (int i = 0; i < ls.length; i += 2) {
       fileArgs.add(writeFileFromString(ls[i], ls[i + 1]));
@@ -74,7 +81,7 @@ public abstract class AbstractRegressionTest extends GenerationTest {
   /**
    * Takes a list of .java files and returns a list with the .java extension replaced with .m.
    */
-  public List<String> getImplementationFileList(List<String> fileArgs) {
+  private static List<String> getImplementationFileList(List<String> fileArgs) {
     List<String> mFileArgs = Lists.newArrayListWithCapacity(fileArgs.size());
     for (String s : fileArgs) {
       String newString = s.substring(0, s.lastIndexOf('/'));
@@ -87,37 +94,35 @@ public abstract class AbstractRegressionTest extends GenerationTest {
   /**
    * Takes a .java file name and possibly path and returns the name of the represented class.
    */
-  public String className(String path) {
-    int pathIndex = path.lastIndexOf('/');
-    int extensionIndex = path.lastIndexOf('.');
-    return path.substring(Math.max(0, pathIndex), extensionIndex);
+  private static String className(String path) {
+    return NameTable.camelCasePath(path.substring(0, path.lastIndexOf('.')));
   }
 
-  public String runCommand(String command) {
-    Runtime rt = Runtime.getRuntime();
-    Process process;
+  private static String runCommand(List<String> command) {
     try {
-      process = rt.exec(command);
-      BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-      StringBuilder buffer = new StringBuilder();
-      int c;
-      while ((c = stdInput.read()) != -1) {
-        buffer.append((char) c);
-      }
-      while ((c = stdError.read()) != -1) {
-        buffer.append((char) c);
-      }
+      Process process = new ProcessBuilder(command).start();
+
+      BufferedReader stdInput =
+          new BufferedReader(new InputStreamReader(process.getInputStream(), UTF_8));
+      BufferedReader stdError =
+          new BufferedReader(new InputStreamReader(process.getErrorStream(), UTF_8));
+      StringJoiner sj = new StringJoiner(LINE_SEPARATOR.value());
+      stdInput.lines().iterator().forEachRemaining(sj::add);
+      stdError.lines().iterator().forEachRemaining(sj::add);
+      process.waitFor();
+      process.destroy();
+
       stdInput.close();
       stdError.close();
-      return buffer.toString();
-    } catch (IOException e) {
+      return sj.toString();
+    } catch (IOException | InterruptedException e) {
       return null;
     }
   }
-  public void regressionFail(String[] ls, String res, String output, List<String> mFileArgs) {
+
+  private static void regressionFail(String methodName, String[] ls, String res, String output) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append('\n' + methodName);
+    buffer.append('\n').append(methodName);
     buffer.append("\nExpected:\n");
     buffer.append(res);
     buffer.append("\nReturned:\n");
@@ -135,45 +140,45 @@ public abstract class AbstractRegressionTest extends GenerationTest {
       buffer.append('\n');
     }
     System.out.println("FAIL");
-    System.out.println(buffer.toString());
+    System.out.println(buffer);
     fail(buffer.toString());
   }
 
-  public void checkMatch(String[] ls, String res, String output, List<String> mFileArgs) {
+  private static void checkMatch(String methodName, String[] ls, String res, String output) {
     res = res.trim();
     if (output != null) {
       output = output.trim();
     }
     if (!res.equals(output)) {
-      regressionFail(ls, res, output, mFileArgs);
+      regressionFail(methodName, ls, res, output);
     }
   }
 
-  public void runConformTest(String[] ls) {
+  void runConformTest(String[] ls) {
     runConformTest(ls, null);
   }
 
-  public void runConformTest(String[] ls, String res) {
+  void runConformTest(String[] ls, String res) {
     StackTraceElement[] st = Thread.currentThread().getStackTrace();
-    methodName = st[2].getMethodName();
+    String methodName = st[2].getMethodName();
     List<String> fileArgs = writeFiles(ls);
 
     J2ObjC.run(fileArgs, options);
-    List<String> mFileArgs = getImplementationFileList(fileArgs);
-    String command = J2OBJCC_LOCATION + " -g -I. -ObjC -o " + tempDir + "/regressiontesting "
-        + Joiner.on(' ').join(mFileArgs);
+    if (ErrorUtil.errorCount() > 0) {
+      regressionFail(methodName, ls, res, Joiner.on(' ').join(ErrorUtil.getErrorMessages()));
+    }
+    if (J2OBJCC_LOCATION.isEmpty() || res == null || res.isEmpty()) {
+      return;
+    }
+    String executable = tempDir.getPath() + "/regressiontesting";
+    List<String> command = new ArrayList<>(Arrays.asList(
+        J2OBJCC_LOCATION, "-g", "-I", tempDir.getPath(), "-ObjC", "-o", executable));
+    command.addAll(getImplementationFileList(fileArgs));
     String compileOutput = runCommand(command);
-    if (compileOutput.indexOf("error: ") != -1) {
-      regressionFail(ls, res, compileOutput, mFileArgs);
+    if (compileOutput.contains("error: ")) {
+      regressionFail(methodName, ls, res, compileOutput);
     }
-    if (res != null) {
-      checkMatch(ls, res, runCommand(tempDir + "/regressiontesting " + className(ls[0])),
-          mFileArgs);
-      runCommand("rm " + tempDir + "/regressiontesting");
-    }
-  }
-
-  void runNegativeTest(String[] ls, String res) {
-    fail("Negative tests not supported (or needed)");
+    checkMatch(methodName, ls, res, runCommand(Arrays.asList(executable, className(ls[0]))));
+    runCommand(Arrays.asList("rm", executable));
   }
 }

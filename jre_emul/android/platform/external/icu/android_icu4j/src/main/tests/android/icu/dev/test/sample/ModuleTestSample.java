@@ -9,7 +9,7 @@
  */
 package android.icu.dev.test.sample;
 
-// TODO(user) : turned off
+// TODO(junit) : turned off
 
 public class ModuleTestSample /*extends ModuleTest*/ {
     ModuleTestSample(){
@@ -60,7 +60,7 @@ public class ModuleTestSample /*extends ModuleTest*/ {
 //    errln("Test04 should not execute!");
     }
 
-    // special override of validateMethod allows Test05
+    // special override of validateMethod allows Test05 
     // to execute even though it has no data in the module
 //    protected boolean validateMethod(String methodName) {
 //    return methodName.equals("Test05") ? true : super.validateMethod(methodName);
@@ -121,7 +121,7 @@ public class ModuleTestSample /*extends ModuleTest*/ {
 //            }
 //        }
 //    }
-
+                
     // utility print functions to display the data from the resource
     String printArray(String[] a) {
     StringBuffer buf = new StringBuffer("String[] {");
@@ -164,6 +164,6 @@ public class ModuleTestSample /*extends ModuleTest*/ {
      */
     protected void processModules() {
         // TODO Auto-generated method stub
-
+        
     }
 }

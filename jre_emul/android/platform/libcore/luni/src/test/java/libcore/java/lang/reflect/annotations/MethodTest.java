@@ -43,7 +43,6 @@ public class MethodTest extends TestCase {
         checkAnnotatedElementPresentMethods(method, AnnotationB.class, AnnotationC.class);
     }
 
-    /* TODO(b/62095729): repeatable annotations support.
     private static class AnnotatedClass {
         @Repeated(1)
         public void singleAnnotation() {}
@@ -158,5 +157,5 @@ public class MethodTest extends TestCase {
         Method method = c.getDeclaredMethod(methodName);
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 method, annotationType, expectedAnnotationStrings);
-    } */
+    }
 }

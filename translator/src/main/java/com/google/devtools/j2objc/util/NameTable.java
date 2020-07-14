@@ -365,7 +365,14 @@ public class NameTable {
 
   private static String getMethodName(ExecutableElement method) {
     if (ElementUtil.isConstructor(method)) {
-      return "init";
+      TypeElement clazz = ElementUtil.getDeclaringClass(method);
+      boolean needsPackagePrivateSuffix = ElementUtil.isTopLevel(clazz)
+          && ElementUtil.getVisibilityModifiers(clazz).isEmpty()
+          && !ElementUtil.isEnum(clazz)
+          // Do not apply this change to classes in the default package
+          // because it affects/breaks several translator tests.
+          && !ElementUtil.getPackage(clazz).isUnnamed();
+      return needsPackagePrivateSuffix ? "initPackagePrivate" : "init";
     }
     String name = ElementUtil.getName(method);
     if (isReservedName(name)) {
@@ -515,7 +522,6 @@ public class NameTable {
     if (currentType == null) {
       return null;
     }
-    // TODO(tball): simplify to ElementUtil.getSuperclass() when javac update is complete.
     TypeElement superclass = currentType.getKind().isInterface()
         ? typeUtil.getJavaObject() : ElementUtil.getSuperclass(currentType);
     ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);

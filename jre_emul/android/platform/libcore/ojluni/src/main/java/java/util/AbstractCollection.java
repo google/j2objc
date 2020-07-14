@@ -49,7 +49,7 @@ package java.util;
  * the collection being implemented admits a more efficient implementation.<p>
  *
  * This class is a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author  Josh Bloch
@@ -345,6 +345,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #contains(Object)
      */
     public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
         boolean modified = false;
         Iterator<?> it = iterator();
         while (it.hasNext()) {
@@ -378,6 +379,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #contains(Object)
      */
     public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
         boolean modified = false;
         Iterator<E> it = iterator();
         while (it.hasNext()) {

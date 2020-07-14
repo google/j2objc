@@ -298,6 +298,13 @@ public class J2ObjCTest extends GenerationTest {
     assertWarningCount(1);
   }
 
+  // Test for error if jar doesn't contain a Java source file.
+  public void testJarNoJava() throws Exception {
+    String processorJarPath = getResourceAsFile("annotations/Processor.jar");
+    J2ObjC.run(Collections.singletonList(processorJarPath), options);
+    assertErrorCount(1);
+  }
+
   public void testSourcePathTypesIncludedInGlobalCombinedOutput() throws Exception {
     options.setGlobalCombinedOutput("combined_file");
     jarPath = getResourceAsFile("util/example.jar");
@@ -358,5 +365,21 @@ public class J2ObjCTest extends GenerationTest {
 
   public void testJavacVersionString() {
     assertTrue(Version.jarVersion(Options.class).contains("(javac "));
+  }
+
+  public void testClasspathWildcard() throws Exception {
+    // The package-info.class in the jar specifies to keep reflection for the package.
+    // This should take precedence over the strip-reflection option.
+    String jarFilePath = getResourceAsFile("util/packageInfoLookupTest.jar");
+    String wildcard = new File(jarFilePath).getParent() + "/*";
+    options.fileUtil().getClassPathEntries().clear();
+    options.load(new String[] {"--strip-reflection", "-classpath", wildcard});
+
+    String srcPath = addSourceFile(
+        "package com.google.test.packageInfoLookupTest; public class A {} ",
+        "com/google/test/packageInfoLookupTest/A.java");
+    J2ObjC.run(Collections.singletonList(srcPath), options);
+    String translation = getTranslatedFile("com/google/test/packageInfoLookupTest/A.m");
+    assertTranslation(translation, "__metadata");
   }
 }

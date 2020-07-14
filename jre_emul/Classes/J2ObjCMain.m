@@ -18,20 +18,15 @@
 //  Usage: <executable> <class-with-Java-main-method> [args]
 //
 
-#import "JreEmulation.h"
-#import "IOSClass.h"
+#include "JreEmulation.h"
+#include "IOSClass.h"
 #include "IOSObjectArray.h"
-#include "java/io/PrintStream.h"
 #include "java/lang/ClassNotFoundException.h"
-#include "java/lang/IllegalAccessException.h"
-#include "java/lang/NoSuchMethodException.h"
-#include "java/lang/System.h"
 #include "java/lang/Thread.h"
 #include "java/lang/Throwable.h"
-#include "java/lang/reflect/InvocationTargetException.h"
-#include "java/lang/reflect/Method.h"
 
 #include <execinfo.h>
+#include <objc/runtime.h>
 
 static void signalHandler(int sig) {
   // Get void*'s for all entries on the stack.
@@ -83,51 +78,35 @@ int main( int argc, const char *argv[] ) {
     return 1;
   }
   installSignalHandler();
+
   @autoreleasepool {
+    // Find the main class.
     const char *className = argv[1];
     IOSClass *clazz = nil;
-    JavaLangReflectMethod *mainMethod = nil;
-
-    // Find the main class.
     @try {
       clazz = [IOSClass forName:[NSString stringWithUTF8String:className]];
     }
     @catch (JavaLangClassNotFoundException *e) {
-      fprintf(stderr, "Error: could not find or load main class %s\n",
-              className);
+      fprintf(stderr, "Error: could not find or load main class %s\n", className);
       return 1;
     }
 
-    // Find the main method.
-    @try {
-      IOSClass *stringArrayClass = IOSClass_arrayOf(NSString_class_());
-      IOSObjectArray *paramTypes =
-          [IOSObjectArray arrayWithObjects:(id[]) { stringArrayClass }
-                                     count:1
-                                      type:IOSClass_class_()];
-      mainMethod = [clazz getDeclaredMethod:@"main" parameterTypes:paramTypes];
-    }
-    @catch (JavaLangNoSuchMethodException *e) {
+    // Verify class has a main() method.
+    SEL mainSelector = sel_registerName("mainWithNSStringArray:");
+    if (!class_getClassMethod(clazz.objcClass, mainSelector)) {
       fprintf(stderr, "Error: main method not found in class %s\n", className);
       return 1;
     }
 
-    // Execute the main method.
+    // Directly invoke the method's IMP, to avoid a "performSelector may cause a
+    // leak because its selector is unknown" warning when built with ARC.
+    IMP mainImp = [clazz.objcClass methodForSelector:mainSelector];
+    void (*mainFunc)(id, SEL, IOSObjectArray *) = (void *)mainImp;
+
+    // Invoke main() with remaining command-line arguments.
     @try {
       IOSObjectArray *mainArgs = JreEmulationMainArguments(argc - 1, &argv[1]);
-      IOSObjectArray *params =
-          [IOSObjectArray arrayWithObjects:(id[]) { mainArgs }
-                                     count:1
-                                      type:NSObject_class_()];
-      (void) [mainMethod invokeWithId:nil withNSObjectArray:params];
-    }
-    @catch (JavaLangReflectInvocationTargetException *e) {
-      handleUncaughtException([e getCause]);
-      return 1;
-    }
-    @catch (JavaLangIllegalAccessException *e) {
-      handleUncaughtException(e);
-      return 1;
+      mainFunc(clazz.objcClass, mainSelector, mainArgs);
     }
     @catch (JavaLangThrowable *e) {
       handleUncaughtException(e);

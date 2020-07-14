@@ -22,12 +22,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+/* J2ObjC removed.
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.SwitchTargetSdkVersionRule;
+import libcore.junit.util.SwitchTargetSdkVersionRule.TargetSdkVersion; */
 import junit.framework.TestCase;
-
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-public class PatternTest extends TestCase {
+/* J2ObjC removed.
+import org.junit.Rule;
+import org.junit.rules.TestRule; */
+
+import static java.util.Arrays.asList;
+
+public class PatternTest extends TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed.
+    @Rule
+    public TestRule switchTargetSdkVersionRule = SwitchTargetSdkVersionRule.getInstance(); */
+
     String[] testPatterns = {
             "(a|b)*abb",
             "(1*2*3*4*)*567",
@@ -37,11 +50,11 @@ public class PatternTest extends TestCase {
             "(a|b)*(a|b)*A(a|b)*lice.*",
             "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)(a|b|c|d|e|f|g|h|"
                     + "i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)*(1|2|3|4|5|6|7|8|9|0)*|while|for|struct|if|do",
-// BEGIN android-changed
+// BEGIN Android-changed
 // We don't have canonical equivalence.
 //            "x(?c)y", "x(?cc)y"
 //            "x(?:c)y"
-// END android-changed
+// END Android-changed
 
     };
 
@@ -76,18 +89,21 @@ public class PatternTest extends TestCase {
         assertNotSame(p.matcher("a"), p.matcher("a"));
     }
 
-    public void testSplitCharSequenceInt() {
+    public void testSplitCharSequenceBug6193() {
         // splitting CharSequence which ends with pattern
-        // bug6193
         assertEquals(",,".split(",", 3).length, 3);
         assertEquals(",,".split(",", 4).length, 3);
-        // bug6193
-        // bug5391
+    }
+
+    public void testSplitCharSequenceBug5391() {
         assertEquals(Pattern.compile("o").split("boo:and:foo", 5).length, 5);
         assertEquals(Pattern.compile("b").split("ab", -1).length, 2);
-        // bug5391
-        String s[];
+    }
+
+    public void testSplitCharSequence() {
         Pattern pat = Pattern.compile("x");
+        String[] s;
+
         s = pat.split("zxx:zzz:zxx", 10);
         assertEquals(s.length, 5);
         s = pat.split("zxx:zzz:zxx", 3);
@@ -96,84 +112,160 @@ public class PatternTest extends TestCase {
         assertEquals(s.length, 5);
         s = pat.split("zxx:zzz:zxx", 0);
         assertEquals(s.length, 3);
-        // other splitting
-        // negative limit
-        pat = Pattern.compile("b");
-        s = pat.split("abccbadfebb", -1);
-        assertEquals(s.length, 5);
-        s = pat.split("", -1);
-        assertEquals(s.length, 1);
-        // b/12096792: empty pattern is invalid in ICU 51.
-//        pat = Pattern.compile("");
-//        s = pat.split("", -1);
-//        assertEquals(s.length, 1);
-//        s = pat.split("abccbadfe", -1);
-//        assertEquals(s.length, 11);
-        // zero limit
-        pat = Pattern.compile("b");
-        s = pat.split("abccbadfebb", 0);
-        assertEquals(s.length, 3);
-        s = pat.split("", 0);
-        assertEquals(s.length, 1);
-        // b/12096792: empty pattern is invalid in ICU 51.
-//        pat = Pattern.compile("");
-//        s = pat.split("", 0);
-//        assertEquals(s.length, 1);
-//        s = pat.split("abccbadfe", 0);
-//        assertEquals(s.length, 10);
-        // positive limit
-        pat = Pattern.compile("b");
-        s = pat.split("abccbadfebb", 12);
-        assertEquals(s.length, 5);
-        s = pat.split("", 6);
-        assertEquals(s.length, 1);
-        // b/12096792: empty pattern is invalid in ICU 51.
-//        pat = Pattern.compile("");
-//        s = pat.split("", 11);
-//        assertEquals(s.length, 1);
-//        s = pat.split("abccbadfe", 15);
-//        assertEquals(s.length, 11);
 
         pat = Pattern.compile("b");
-        s = pat.split("abccbadfebb", 5);
-        assertEquals(s.length, 5);
-        s = pat.split("", 1);
-        assertEquals(s.length, 1);
-        // b/12096792: empty pattern is invalid in ICU 51.
-//        pat = Pattern.compile("");
-//        s = pat.split("", 1);
-//        assertEquals(s.length, 1);
-//        s = pat.split("abccbadfe", 11);
-//        assertEquals(s.length, 11);
-
-        pat = Pattern.compile("b");
-        s = pat.split("abccbadfebb", 3);
-        assertEquals(s.length, 3);
-        // b/12096792: empty pattern is invalid in ICU 51.
-//        pat = Pattern.compile("");
-//        s = pat.split("abccbadfe", 5);
-//        assertEquals(s.length, 5);
-    }
-
-    public void testSplitCharSequence() {
-        String s[];
-        Pattern pat = Pattern.compile("b");
         s = pat.split("abccbadfebb");
         assertEquals(s.length, 3);
         s = pat.split("");
         assertEquals(s.length, 1);
-        // b/12096792: empty pattern is invalid in ICU 51.
-//        pat = Pattern.compile("");
-//        s = pat.split("");
-//        assertEquals(s.length, 1);
-//        s = pat.split("abccbadfe");
-//        assertEquals(s.length, 10);
-        // bug6544
-        String s1 = "";
-        String[] arr = s1.split(":");
-        assertEquals(arr.length, 1);
-        // bug6544
+
+        /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+        pat = Pattern.compile("");
+        s = pat.split("");
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe");
+        assertEquals(s.length, 9);
+        */
     }
+
+    public void testBug6544() {
+        String s = "";
+        String[] arr = s.split(":");
+        assertEquals(arr.length, 1);
+    }
+
+    public void testSplitCharSequenceNegativeLimit() {
+        // negative limit
+        Pattern pat = Pattern.compile("b");
+        String[] s;
+
+        s = pat.split("abccbadfebb", -1);
+        assertEquals(s.length, 5);
+        s = pat.split("", -1);
+        assertEquals(s.length, 1);
+        /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+        pat = Pattern.compile("");
+        s = pat.split("", -1);
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe", -1);
+        assertEquals(s.length, 10);
+        */
+    }
+
+    public void testSplitCharSequenceZeroLimit() {
+        String[] s;
+        Pattern pat = Pattern.compile("b");
+
+        s = pat.split("abccbadfebb", 0);
+        assertEquals(s.length, 3);
+        s = pat.split("", 0);
+        assertEquals(s.length, 1);
+        /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+        pat = Pattern.compile("");
+        s = pat.split("", 0);
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe", 0);
+        assertEquals(s.length, 9);
+        */
+    }
+
+    public void testSplitCharSequencePositiveLimitCase1() {
+        String[] s;
+        Pattern pat = Pattern.compile("b");
+
+        s = pat.split("abccbadfebb", 12);
+        assertEquals(s.length, 5);
+        s = pat.split("", 6);
+        assertEquals(s.length, 1);
+        /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+        pat = Pattern.compile("");
+        s = pat.split("", 11);
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe", 15);
+        assertEquals(s.length, 10);
+        */
+    }
+
+    public void testSplitCharSequencePositiveLimitCase2() {
+        String[] s;
+        Pattern pat = Pattern.compile("b");
+
+        s = pat.split("abccbadfebb", 5);
+        assertEquals(s.length, 5);
+        s = pat.split("", 1);
+        assertEquals(s.length, 1);
+        pat = Pattern.compile("");
+        s = pat.split("", 1);
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe", 10);
+        assertEquals(s.length, 10);
+    }
+
+    public void testSplitCharSequencePositiveLimitCase3() {
+        Pattern pat = Pattern.compile("b");
+        String[] s;
+
+        s = pat.split("abccbadfebb", 3);
+        assertEquals(s.length, 3);
+        pat = Pattern.compile("");
+        s = pat.split("abccbadfe", 5);
+        assertEquals(s.length, 5);
+    }
+
+    /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+    public void testSplitOnEmptyPattern_apiCurrent() {
+        assertEquals(asList("t", "e", "s", "t"), asList("test".split("")));
+        assertEquals(asList(""), asList("".split("")));
+        assertEquals(asList(""), asList(Pattern.compile("").split("")));
+        assertEquals(asList(""), asList("".split("", -1)));
+    }
+    */
+
+    /* J2ObjC removed.
+    @TargetSdkVersion(28)
+    public void testSplitOnEmptyPattern_api28() {
+        assertEquals(asList("", "t", "e", "s", "t"), asList("test".split("")));
+        assertEquals(asList(""), asList("".split("")));
+        assertEquals(asList(""), asList(Pattern.compile("").split("")));
+        assertEquals(asList(""), asList("".split("", -1)));
+    }
+    */
+
+    /**
+     * Tests that a match at the beginning of the input string only produces
+     * a "" if the match is positive-width.
+     */
+    public void testMatchBeginningOfInputSequence_apiCurrent() {
+        // Positive-width match at the beginning of the input.
+        assertEquals(asList("", "", "rdv", "rk"), asList("aardvark".split("a")));
+        assertEquals(asList("", "anana"), asList("banana".split("b")));
+
+        /* J2ObjC removed: empty pattern is invalid in ICU 51. (b/12096792)
+        // Zero-width match at the beginning of the input
+        assertEquals(asList("a", "ardv", "ark"), asList("aardvark".split("(?=a)")));
+        assertEquals(asList("banana"), asList("banana".split("(?=b)")));
+        */
+
+        // For comparison, matches in the middle of the input never yield an empty substring:
+        assertEquals(asList("aar", "vark"), asList("aardvark".split("d")));
+        assertEquals(asList("aar", "dvark"), asList("aardvark".split("(?=d)")));
+    }
+
+    /* J2ObjC removed.
+    @TargetSdkVersion(28)
+    public void testMatchBeginningOfInputSequence_api28() {
+        // Positive-width match at the beginning of the input.
+        assertEquals(asList("", "", "rdv", "rk"), asList("aardvark".split("a")));
+        assertEquals(asList("", "anana"), asList("banana".split("b")));
+        // Zero-width match at the beginning of the input
+        assertEquals(asList("", "a", "ardv", "ark"), asList("aardvark".split("(?=a)")));
+        assertEquals(asList("banana"), asList("banana".split("(?=b)")));
+
+        // For comparison, matches in the middle of the input never yield an empty substring:
+        assertEquals(asList("aar", "vark"), asList("aardvark".split("d")));
+        assertEquals(asList("aar", "dvark"), asList("aardvark".split("(?=d)")));
+    }
+    */
 
     public void testPattern() {
         /* Positive assertion test. */
@@ -187,8 +279,7 @@ public class PatternTest extends TestCase {
         }
     }
 
-    public void testCompile() {
-        /* Positive assertion test. */
+    public void testCompile_Valid() {
         for (String aPattern : testPatterns) {
             try {
                 Pattern p = Pattern.compile(aPattern);
@@ -197,7 +288,6 @@ public class PatternTest extends TestCase {
             }
         }
 
-        /* Positive assertion test with alternative templates. */
         for (String aPattern : testPatternsAlt) {
             try {
                 Pattern p = Pattern.compile(aPattern);
@@ -205,8 +295,9 @@ public class PatternTest extends TestCase {
                 fail("Unexpected exception: " + e);
             }
         }
+    }
 
-        /* Negative assertion test. */
+    public void testCompile_WrongPatternsFail() {
         for (String aPattern : wrongTestPatterns) {
             try {
                 Pattern p = Pattern.compile(aPattern);
@@ -219,130 +310,167 @@ public class PatternTest extends TestCase {
         }
     }
 
-    public void testFlags() {
-        String baseString;
-        String testString;
-        Pattern pat;
-        Matcher mat;
-
-        baseString = "((?i)|b)a";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        baseString = "(?i)a|b";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)a|b";
-        testString = "B";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "c|(?i)a|b";
-        testString = "B";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)a|(?s)b";
-        testString = "B";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)a|(?-i)b";
-        testString = "B";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        baseString = "(?i)a|(?-i)c|b";
-        testString = "B";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        baseString = "(?i)a|(?-i)c|(?i)b";
-        testString = "B";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)a|(?-i)b";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "((?i))a";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        baseString = "|(?i)|a";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)((?s)a.)";
-        testString = "A\n";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)((?-i)a)";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        baseString = "(?i)(?s:a.)";
-        testString = "A\n";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)fgh(?s:aa)";
-        testString = "fghAA";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "(?i)((?-i))a";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "abc(?i)d";
-        testString = "ABCD";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        testString = "abcD";
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        baseString = "a(?i)a(?-i)a(?i)a(?-i)a";
-        testString = "aAaAa";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        testString = "aAAAa";
-        mat = pat.matcher(testString);
+    public void testFlagsCase1() {
+        String baseString = "((?i)|b)a";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
         assertFalse(mat.matches());
     }
 
-// BEGIN android-removed
+    public void testFlagsCase2() {
+        String baseString = "(?i)a|b";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase3() {
+        String baseString = "(?i)a|b";
+        String testString = "B";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase4() {
+        String baseString = "c|(?i)a|b";
+        String testString = "B";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase5() {
+        String baseString = "(?i)a|(?s)b";
+        String testString = "B";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase6() {
+        String baseString = "(?i)a|(?-i)b";
+        String testString = "B";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testFlagsCase7() {
+        String baseString = "(?i)a|(?-i)c|b";
+        String testString = "B";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testFlagsCase8() {
+        String  baseString = "(?i)a|(?-i)c|(?i)b";
+        String  testString = "B";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase9() {
+        String baseString = "(?i)a|(?-i)b";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase10() {
+        String baseString = "((?i))a";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testFlagsCase11() {
+        String baseString = "|(?i)|a";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase12() {
+        String baseString = "(?i)((?s)a.)";
+        String testString = "A\n";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase13() {
+        String baseString = "(?i)((?-i)a)";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testFlagsCase14() {
+        String baseString = "(?i)(?s:a.)";
+        String testString = "A\n";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase15() {
+        String baseString = "(?i)fgh(?s:aa)";
+        String testString = "fghAA";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase16() {
+        String baseString = "(?i)((?-i))a";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase17() {
+        String baseString = "abc(?i)d";
+        String testString = "ABCD";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testFlagsCase18() {
+        String baseString = "abc(?i)d";
+        String testString = "abcD";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase19() {
+        String baseString = "a(?i)a(?-i)a(?i)a(?-i)a";
+        String testString = "aAaAa";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testFlagsCase20() {
+        String baseString = "a(?i)a(?-i)a(?i)a(?-i)a";
+        String testString = "aAAAa";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+// BEGIN Android-removed
 // The flags() method should only return those flags that were explicitly
 // passed during the compilation. The JDK also accepts the ones implicitly
 // contained in the pattern, but ICU doesn't do this.
@@ -385,7 +513,7 @@ public class PatternTest extends TestCase {
 //        pat = Pattern.compile("(?is)abc");
 //        assertEquals(pat.flags(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 //    }
-//END android-removed
+//END Android-removed
 
     /*
      * Check default flags when they are not specified in pattern. Based on RI
@@ -488,13 +616,13 @@ public class PatternTest extends TestCase {
             }
         }
         // Regression for HARMONY-1365
-// BEGIN android-changed
+// BEGIN Android-changed
 // Original regex contained some illegal stuff. Changed it slightly,
 // while maintaining the wicked character of this "mother of all
 // regexes".
 //        String pattern = "(?![^\\<C\\f\\0146\\0270\\}&&[|\\02-\\x3E\\}|X-\\|]]{7,}+)[|\\\\\\x98\\<\\?\\u4FCFr\\,\\0025\\}\\004|\\0025-\\052\061]|(?<![|\\01-\\u829E])|(?<!\\p{Alpha})|^|(?-s:[^\\x15\\\\\\x24F\\a\\,\\a\\u97D8[\\x38\\a[\\0224-\\0306[^\\0020-\\u6A57]]]]??)(?uxix:[^|\\{\\[\\0367\\t\\e\\x8C\\{\\[\\074c\\]V[|b\\fu\\r\\0175\\<\\07f\\066s[^D-\\x5D]]])(?xx:^{5,}+)(?uuu)(?=^\\D)|(?!\\G)(?>\\G*?)(?![^|\\]\\070\\ne\\{\\t\\[\\053\\?\\\\\\x51\\a\\075\\0023-\\[&&[|\\022-\\xEA\\00-\\u41C2&&[^|a-\\xCC&&[^\\037\\uECB3\\u3D9A\\x31\\|\\<b\\0206\\uF2EC\\01m\\,\\ak\\a\\03&&\\p{Punct}]]]])(?-dxs:[|\\06-\\07|\\e-\\x63&&[|Tp\\u18A3\\00\\|\\xE4\\05\\061\\015\\0116C|\\r\\{\\}\\006\\xEA\\0367\\xC4\\01\\0042\\0267\\xBB\\01T\\}\\0100\\?[|\\[-\\u459B|\\x23\\x91\\rF\\0376[|\\?-\\x94\\0113-\\\\\\s]]]]{6}?)(?<=[^\\t-\\x42H\\04\\f\\03\\0172\\?i\\u97B6\\e\\f\\uDAC2])(?=\\B*+)(?>[^\\016\\r\\{\\,\\uA29D\\034\\02[\\02-\\[|\\t\\056\\uF599\\x62\\e\\<\\032\\uF0AC\\0026\\0205Q\\|\\\\\\06\\0164[|\\057-\\u7A98&&[\\061-g|\\|\\0276\\n\\042\\011\\e\\xE8\\x64B\\04\\u6D0EDW^\\p{Lower}]]]]?)(?<=[^\\n\\\\\\t\\u8E13\\,\\0114\\u656E\\xA5\\]&&[\\03-\\026|\\uF39D\\01\\{i\\u3BC2\\u14FE]])(?<=[^|\\uAE62\\054H\\|\\}&&^\\p{Space}])(?sxx)(?<=[\\f\\006\\a\\r\\xB4]*+)|(?x-xd:^{5}+)()";
         String pattern = "(?![^\\<C\\f\\0146\\0270\\}&&[|\\02-\\x3E\\}|X-\\|]]{7,}+)[|\\\\\\x98\\<\\?\\u4FCFr\\,\\0025\\}\\004|\\0025-\\052\061]|(?<![|\\01-\\u829E])|(?<!\\p{Alpha})|^|(?-s:[^\\x15\\\\\\x24F\\a\\,\\a\\u97D8[\\x38\\a[\\0224-\\0306[^\\0020-\\u6A57]]]]??)(?uxix:[^|\\{\\[\\0367\\t\\e\\x8C\\{\\[\\074c\\]V[|b\\fu\\r\\0175\\<\\07f\\066s[^D-\\x5D]]])(?xx:^{5,}+)(?uuu)(?=^\\D)|(?!\\G)(?>\\.*?)(?![^|\\]\\070\\ne\\{\\t\\[\\053\\?\\\\\\x51\\a\\075\\0023-\\[&&[|\\022-\\xEA\\00-\\u41C2&&[^|a-\\xCC&&[^\\037\\uECB3\\u3D9A\\x31\\|\\<b\\0206\\uF2EC\\01m\\,\\ak\\a\\03&&\\p{Punct}]]]])(?-dxs:[|\\06-\\07|\\e-\\x63&&[|Tp\\u18A3\\00\\|\\xE4\\05\\061\\015\\0116C|\\r\\{\\}\\006\\xEA\\0367\\xC4\\01\\0042\\0267\\xBB\\01T\\}\\0100\\?[|\\[-\\u459B|\\x23\\x91\\rF\\0376[|\\?-\\x94\\0113-\\\\\\s]]]]{6}?)(?<=[^\\t-\\x42H\\04\\f\\03\\0172\\?i\\u97B6\\e\\f\\uDAC2])(?=\\.*+)(?>[^\\016\\r\\{\\,\\uA29D\\034\\02[\\02-\\[|\\t\\056\\uF599\\x62\\e\\<\\032\\uF0AC\\0026\\0205Q\\|\\\\\\06\\0164[|\\057-\\u7A98&&[\\061-g|\\|\\0276\\n\\042\\011\\e\\xE8\\x64B\\04\\u6D0EDW^\\p{Lower}]]]]?)(?<=[^\\n\\\\\\t\\u8E13\\,\\0114\\u656E\\xA5\\]&&[\\03-\\026|\\uF39D\\01\\{i\\u3BC2\\u14FE]])(?<=[^|\\uAE62\\054H\\|\\}&&^\\p{Space}])(?sxx)(?<=[\\f\\006\\a\\r\\xB4]{1,5})|(?x-xd:^{5}+)()";
-// END android-changed
+// END Android-changed
         assertNotNull(Pattern.compile(pattern));
     }
 
@@ -566,7 +694,7 @@ public class PatternTest extends TestCase {
         assertEquals("45", m.group(4));
     }
 
-// BEGIN android-changed
+    // BEGIN Android-changed
 // Removed one pattern that is buggy on the JDK. We don't want to duplicate that.
     public void testCompileRanges() {
         String[] correctTestPatterns = { "[^]*abb]*", /* "[^a-d[^m-p]]*abb", */
@@ -622,7 +750,7 @@ public class PatternTest extends TestCase {
                     pat, inp));
         }
     }
- // END android-changed
+    // END Android-changed
 
     public void testZeroSymbols() {
         assertTrue(Pattern.matches("[\0]*abb", "\0\0\0\0\0\0abb"));
@@ -639,13 +767,15 @@ public class PatternTest extends TestCase {
         Pattern.compile("[\\t-\\r]");
     }
 
+    /* J2ObjC removed.
     // https://code.google.com/p/android/issues/detail?id=40103
-//    public void test_bug_40103() {
-//        Pattern.compile("(?<!abc {1,100}|def {1,100}|ghi {1,100})jkl");
-//
-//        // Looks like harmony had a similar "Bug187"...
-//        Pattern.compile("|(?idmsux-idmsux)|(?idmsux-idmsux)|[^|\\[-\\0274|\\,-\\\\[^|W\\}\\nq\\x65\\002\\xFE\\05\\06\\00\\x66\\x47i\\,\\xF2\\=\\06\\u0EA4\\x9B\\x3C\\f\\|\\{\\xE5\\05\\r\\u944A\\xCA\\e|\\x19\\04\\x07\\04\\u607B\\023\\0073\\x91Tr\\0150\\x83]]?(?idmsux-idmsux:\\p{Alpha}{7}?)||(?<=[^\\uEC47\\01\\02\\u3421\\a\\f\\a\\013q\\035w\\e])(?<=\\p{Punct}{0,}?)(?=^\\p{Lower})(?!\\b{8,14})(?<![|\\00-\\0146[^|\\04\\01\\04\\060\\f\\u224DO\\x1A\\xC4\\00\\02\\0315\\0351\\u84A8\\xCBt\\xCC\\06|\\0141\\00\\=\\e\\f\\x6B\\0026Tb\\040\\x76xJ&&[\\\\-\\]\\05\\07\\02\\u2DAF\\t\\x9C\\e\\0023\\02\\,X\\e|\\u6058flY\\u954C]]]{5}?)(?<=\\p{Sc}{8}+)[^|\\026-\\u89BA|o\\u6277\\t\\07\\x50&&\\p{Punct}]{8,14}+((?<=^\\p{Punct})|(?idmsux-idmsux)||(?>[\\x3E-\\]])|(?idmsux-idmsux:\\p{Punct})|(?<![\\0111\\0371\\xDF\\u6A49\\07\\u2A4D\\00\\0212\\02Xd-\\xED[^\\a-\\0061|\\0257\\04\\f\\[\\0266\\043\\03\\x2D\\042&&[^\\f-\\]&&\\s]]])|(?>[|\\n\\042\\uB09F\\06\\u0F2B\\uC96D\\x89\\uC166\\xAA|\\04-\\][^|\\a\\|\\rx\\04\\uA770\\n\\02\\t\\052\\056\\0274\\|\\=\\07\\e|\\00-\\x1D&&[^\\005\\uB15B\\uCDAC\\n\\x74\\0103\\0147\\uD91B\\n\\062G\\u9B4B\\077\\}\\0324&&[^\\0302\\,\\0221\\04\\u6D16\\04xy\\uD193\\[\\061\\06\\045\\x0F|\\e\\xBB\\f\\u1B52\\023\\u3AD2\\033\\007\\022\\}\\x66\\uA63FJ-\\0304]]]]{0,0})||(?<![^|\\0154U\\u0877\\03\\fy\\n\\|\\0147\\07-\\=[|q\\u69BE\\0243\\rp\\053\\02\\x33I\\u5E39\\u9C40\\052-\\xBC[|\\0064-\\?|\\uFC0C\\x30\\0060\\x45\\\\\\02\\?p\\xD8\\0155\\07\\0367\\04\\uF07B\\000J[^|\\0051-\\{|\\u9E4E\\u7328\\]\\u6AB8\\06\\x71\\a\\]\\e\\|KN\\u06AA\\0000\\063\\u2523&&[\\005\\0277\\x41U\\034\\}R\\u14C7\\u4767\\x09\\n\\054Ev\\0144\\<\\f\\,Q-\\xE4]]]]]{3}+)|(?>^+)|(?![^|\\|\\nJ\\t\\<\\04E\\\\\\t\\01\\\\\\02\\|\\=\\}\\xF3\\uBEC2\\032K\\014\\uCC5F\\072q\\|\\0153\\xD9\\0322\\uC6C8[^\\t\\0342\\x34\\x91\\06\\{\\xF1\\a\\u1710\\?\\xE7\\uC106\\02pF\\<&&[^|\\]\\064\\u381D\\u50CF\\eO&&[^|\\06\\x2F\\04\\045\\032\\u8536W\\0377\\0017|\\x06\\uE5FA\\05\\xD4\\020\\04c\\xFC\\02H\\x0A\\r]]]]+?)(?idmsux-idmsux)|(?<![|\\r-\\,&&[I\\t\\r\\0201\\xDB\\e&&[^|\\02\\06\\00\\<\\a\\u7952\\064\\051\\073\\x41\\?n\\040\\0053\\031&&[\\x15-\\|]]]]{8,11}?)(?![^|\\<-\\uA74B\\xFA\\u7CD2\\024\\07n\\<\\x6A\\0042\\uE4FF\\r\\u896B\\[\\=\\042Y&&^\\p{ASCII}]++)|(?<![R-\\|&&[\\a\\0120A\\u6145\\<\\050-d[|\\e-\\uA07C|\\016-\\u80D9]]]{1,}+)|(?idmsux-idmsux)|(?idmsux-idmsux)|(?idmsux-idmsux:\\B{6,}?)|(?<=\\D{5,8}?)|(?>[\\{-\\0207|\\06-\\0276\\p{XDigit}])(?idmsux-idmsux:[^|\\x52\\0012\\]u\\xAD\\0051f\\0142\\\\l\\|\\050\\05\\f\\t\\u7B91\\r\\u7763\\{|h\\0104\\a\\f\\0234\\u2D4F&&^\\P{InGreek}]))");
-//    }
+    public void test_bug_40103() {
+        Pattern.compile("(?<!abc {1,100}|def {1,100}|ghi {1,100})jkl");
+
+        // Looks like harmony had a similar "Bug187"...
+        Pattern.compile("|(?idmsux-idmsux)|(?idmsux-idmsux)|[^|\\[-\\0274|\\,-\\\\[^|W\\}\\nq\\x65\\002\\xFE\\05\\06\\00\\x66\\x47i\\,\\xF2\\=\\06\\u0EA4\\x9B\\x3C\\f\\|\\{\\xE5\\05\\r\\u944A\\xCA\\e|\\x19\\04\\x07\\04\\u607B\\023\\0073\\x91Tr\\0150\\x83]]?(?idmsux-idmsux:\\p{Alpha}{7}?)||(?<=[^\\uEC47\\01\\02\\u3421\\a\\f\\a\\013q\\035w\\e])(?<=\\p{Punct}{0,}?)(?=^\\p{Lower})(?!\\b{8,14})(?<![|\\00-\\0146[^|\\04\\01\\04\\060\\f\\u224DO\\x1A\\xC4\\00\\02\\0315\\0351\\u84A8\\xCBt\\xCC\\06|\\0141\\00\\=\\e\\f\\x6B\\0026Tb\\040\\x76xJ&&[\\\\-\\]\\05\\07\\02\\u2DAF\\t\\x9C\\e\\0023\\02\\,X\\e|\\u6058flY\\u954C]]]{5}?)(?<=\\p{Sc}{8}+)[^|\\026-\\u89BA|o\\u6277\\t\\07\\x50&&\\p{Punct}]{8,14}+((?<=^\\p{Punct})|(?idmsux-idmsux)||(?>[\\x3E-\\]])|(?idmsux-idmsux:\\p{Punct})|(?<![\\0111\\0371\\xDF\\u6A49\\07\\u2A4D\\00\\0212\\02Xd-\\xED[^\\a-\\0061|\\0257\\04\\f\\[\\0266\\043\\03\\x2D\\042&&[^\\f-\\]&&\\s]]])|(?>[|\\n\\042\\uB09F\\06\\u0F2B\\uC96D\\x89\\uC166\\xAA|\\04-\\][^|\\a\\|\\rx\\04\\uA770\\n\\02\\t\\052\\056\\0274\\|\\=\\07\\e|\\00-\\x1D&&[^\\005\\uB15B\\uCDAC\\n\\x74\\0103\\0147\\uD91B\\n\\062G\\u9B4B\\077\\}\\0324&&[^\\0302\\,\\0221\\04\\u6D16\\04xy\\uD193\\[\\061\\06\\045\\x0F|\\e\\xBB\\f\\u1B52\\023\\u3AD2\\033\\007\\022\\}\\x66\\uA63FJ-\\0304]]]]{0,0})||(?<![^|\\0154U\\u0877\\03\\fy\\n\\|\\0147\\07-\\=[|q\\u69BE\\0243\\rp\\053\\02\\x33I\\u5E39\\u9C40\\052-\\xBC[|\\0064-\\?|\\uFC0C\\x30\\0060\\x45\\\\\\02\\?p\\xD8\\0155\\07\\0367\\04\\uF07B\\000J[^|\\0051-\\{|\\u9E4E\\u7328\\]\\u6AB8\\06\\x71\\a\\]\\e\\|KN\\u06AA\\0000\\063\\u2523&&[\\005\\0277\\x41U\\034\\}R\\u14C7\\u4767\\x09\\n\\054Ev\\0144\\<\\f\\,Q-\\xE4]]]]]{3}+)|(?>^+)|(?![^|\\|\\nJ\\t\\<\\04E\\\\\\t\\01\\\\\\02\\|\\=\\}\\xF3\\uBEC2\\032K\\014\\uCC5F\\072q\\|\\0153\\xD9\\0322\\uC6C8[^\\t\\0342\\x34\\x91\\06\\{\\xF1\\a\\u1710\\?\\xE7\\uC106\\02pF\\<&&[^|\\]\\064\\u381D\\u50CF\\eO&&[^|\\06\\x2F\\04\\045\\032\\u8536W\\0377\\0017|\\x06\\uE5FA\\05\\xD4\\020\\04c\\xFC\\02H\\x0A\\r]]]]+?)(?idmsux-idmsux)|(?<![|\\r-\\,&&[I\\t\\r\\0201\\xDB\\e&&[^|\\02\\06\\00\\<\\a\\u7952\\064\\051\\073\\x41\\?n\\040\\0053\\031&&[\\x15-\\|]]]]{8,11}?)(?![^|\\<-\\uA74B\\xFA\\u7CD2\\024\\07n\\<\\x6A\\0042\\uE4FF\\r\\u896B\\[\\=\\042Y&&^\\p{ASCII}]++)|(?<![R-\\|&&[\\a\\0120A\\u6145\\<\\050-d[|\\e-\\uA07C|\\016-\\u80D9]]]{1,}+)|(?idmsux-idmsux)|(?idmsux-idmsux)|(?idmsux-idmsux:\\B{6,}?)|(?<=\\D{5,8}?)|(?>[\\{-\\0207|\\06-\\0276\\p{XDigit}])(?idmsux-idmsux:[^|\\x52\\0012\\]u\\xAD\\0051f\\0142\\\\l\\|\\050\\05\\f\\t\\u7B91\\r\\u7763\\{|h\\0104\\a\\f\\0234\\u2D4F&&^\\P{InGreek}]))");
+    }
+    */
 
     public void test_bug_4472() {
         // HARMONY-4472
@@ -759,16 +889,16 @@ public class PatternTest extends TestCase {
         }
     }
 
-//    public void testFindBoundaryCases6() {
-//        String[] res = { "", "a", "", "" };
-//        Pattern pat = Pattern.compile(".*");
-//        Matcher mat = pat.matcher("\na\n");
-//        int k = 0;
-//        for (; mat.find(); k++) {
-//            assertEquals(res[k], mat.group());
-//        }
-//        assertEquals(4, k);
-//    }
+    public void testFindBoundaryCases6() {
+        String[] res = { "", "a", "", "" };
+        Pattern pat = Pattern.compile(".*");
+        Matcher mat = pat.matcher("\na\n");
+        int k = 0;
+        for (; mat.find(); k++) {
+            assertEquals(res[k], mat.group());
+        }
+        assertEquals(4, k);
+    }
 
     public void testBackReferences() {
         Pattern pat = Pattern.compile("(\\((\\w*):(.*):(\\2)\\))");
@@ -807,7 +937,7 @@ public class PatternTest extends TestCase {
         Pattern pat = Pattern.compile("a*bc");
         SerializableAssert comparator = new SerializableAssert() {
             public void assertDeserialized(Serializable initial,
-                    Serializable deserialized) {
+                                           Serializable deserialized) {
                 assertEquals(((Pattern) initial).toString(),
                         ((Pattern) deserialized).toString());
             }
@@ -839,20 +969,23 @@ public class PatternTest extends TestCase {
         Pattern.compile("\\p{Lower}");
     }
 
-    public void testNonCaptConstr() {
-        // Flags
+    public void testCapture_Flags() {
         Pattern pat = Pattern.compile("(?i)b*(?-i)a*");
         assertTrue(pat.matcher("bBbBaaaa").matches());
         assertFalse(pat.matcher("bBbBAaAa").matches());
+    }
 
-        // Non-capturing groups
-        pat = Pattern.compile("(?i:b*)a*");
+    public void testCapture_NonCaptGroups() {
+        Pattern pat = Pattern.compile("(?i:b*)a*");
         assertTrue(pat.matcher("bBbBaaaa").matches());
         assertFalse(pat.matcher("bBbBAaAa").matches());
+    }
 
-        pat = Pattern
-        // 1 2 3 4 5 6 7 8 9 10 11
-                .compile("(?:-|(-?\\d+\\d\\d\\d))?(?:-|-(\\d\\d))?(?:-|-(\\d\\d))?(T)?(?:(\\d\\d):(\\d\\d):(\\d\\d)(\\.\\d+)?)?(?:(?:((?:\\+|\\-)\\d\\d):(\\d\\d))|(Z))?");
+    public void testCapture() {
+        Pattern pat = Pattern
+                // 1 2 3 4 5 6 7 8 9 10 11
+                .compile(
+                        "(?:-|(-?\\d+\\d\\d\\d))?(?:-|-(\\d\\d))?(?:-|-(\\d\\d))?(T)?(?:(\\d\\d):(\\d\\d):(\\d\\d)(\\.\\d+)?)?(?:(?:((?:\\+|\\-)\\d\\d):(\\d\\d))|(Z))?");
         Matcher mat = pat.matcher("-1234-21-31T41:51:61.789+71:81");
         assertTrue(mat.matches());
         assertEquals("-1234", mat.group(1));
@@ -865,46 +998,59 @@ public class PatternTest extends TestCase {
         assertEquals(".789", mat.group(8));
         assertEquals("+71", mat.group(9));
         assertEquals("81", mat.group(10));
+    }
 
-        // positive lookahead
-        pat = Pattern.compile(".*\\.(?=log$).*$");
+    public void testCapture_PositiveLookahead() {
+        Pattern pat = Pattern.compile(".*\\.(?=log$).*$");
         assertTrue(pat.matcher("a.b.c.log").matches());
         assertFalse(pat.matcher("a.b.c.log.").matches());
+    }
 
-        // negative lookahead
-        pat = Pattern.compile(".*\\.(?!log$).*$");
+    public void testCapture_NegativeLookahead() {
+        Pattern pat = Pattern.compile(".*\\.(?!log$).*$");
         assertFalse(pat.matcher("abc.log").matches());
         assertTrue(pat.matcher("abc.logg").matches());
+    }
 
-        // positive lookbehind
-        pat = Pattern.compile(".*(?<=abc)\\.log$");
+    public void testCapture_PositiveLookbehind() {
+        Pattern pat = Pattern.compile(".*(?<=abc)\\.log$");
         assertFalse(pat.matcher("cde.log").matches());
         assertTrue(pat.matcher("abc.log").matches());
+    }
 
-        // negative lookbehind
-        pat = Pattern.compile(".*(?<!abc)\\.log$");
+    public void testCapture_NegativeLookbehind() {
+        Pattern pat = Pattern.compile(".*(?<!abc)\\.log$");
         assertTrue(pat.matcher("cde.log").matches());
         assertFalse(pat.matcher("abc.log").matches());
+    }
 
-        // atomic group
-        pat = Pattern.compile("(?>a*)abb");
+    public void testCapture_AtomicGroupCase1() {
+        Pattern pat = Pattern.compile("(?>a*)abb");
         assertFalse(pat.matcher("aaabb").matches());
-        pat = Pattern.compile("(?>a*)bb");
-        assertTrue(pat.matcher("aaabb").matches());
+    }
 
-        pat = Pattern.compile("(?>a|aa)aabb");
+    public void testCapture_AtomicGroupCase2() {
+        Pattern pat = Pattern.compile("(?>a*)bb");
         assertTrue(pat.matcher("aaabb").matches());
-        pat = Pattern.compile("(?>aa|a)aabb");
+    }
+
+    public void testCapture_AtomicGroupCase3() {
+        Pattern pat = Pattern.compile("(?>a|aa)aabb");
+        assertTrue(pat.matcher("aaabb").matches());
+    }
+
+    public void testCapture_AtomicGroupCase4() {
+        Pattern pat = Pattern.compile("(?>aa|a)aabb");
         assertFalse(pat.matcher("aaabb").matches());
 
-// BEGIN android-removed
+// BEGIN Android-removed
 // Questionable constructs that ICU doesn't support.
 //        // quantifiers over look ahead
 //        pat = Pattern.compile(".*(?<=abc)*\\.log$");
 //        assertTrue(pat.matcher("cde.log").matches());
 //        pat = Pattern.compile(".*(?<=abc)+\\.log$");
 //        assertFalse(pat.matcher("cde.log").matches());
-// END android-removed
+// END Android-removed
 
     }
 
@@ -932,88 +1078,115 @@ public class PatternTest extends TestCase {
         assertTrue(mat.matches());
     }
 
-    public void testAlternations() {
+    public void testAlternationsCase1() {
         String baseString = "|a|bc";
         Pattern pat = Pattern.compile(baseString);
         Matcher mat = pat.matcher("");
 
         assertTrue(mat.matches());
+    }
 
-        baseString = "a||bc";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("");
-        assertTrue(mat.matches());
-
-        baseString = "a|bc|";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("");
-        assertTrue(mat.matches());
-
-        baseString = "a|b|";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("");
-        assertTrue(mat.matches());
-
-        baseString = "a(|b|cd)e";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("ae");
-        assertTrue(mat.matches());
-
-        baseString = "a(b||cd)e";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("ae");
-        assertTrue(mat.matches());
-
-        baseString = "a(b|cd|)e";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("ae");
-        assertTrue(mat.matches());
-
-        baseString = "a(b|c|)e";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("ae");
-        assertTrue(mat.matches());
-
-        baseString = "a(|)e";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("ae");
-        assertTrue(mat.matches());
-
-        baseString = "|";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("");
-        assertTrue(mat.matches());
-
-        baseString = "a(?:|)e";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("ae");
-        assertTrue(mat.matches());
-
-        baseString = "a||||bc";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("");
-        assertTrue(mat.matches());
-
-        baseString = "(?i-is)|a";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher("a");
+    public void testAlternationsCase2() {
+        String baseString = "a||bc";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("");
         assertTrue(mat.matches());
     }
 
-    public void testMatchWithGroups() {
+    public void testAlternationsCase3() {
+        String baseString = "a|bc|";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase4() {
+        String baseString = "a|b|";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase5() {
+        String baseString = "a(|b|cd)e";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("ae");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase6() {
+        String baseString = "a(b||cd)e";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("ae");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase7() {
+        String baseString = "a(b|cd|)e";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("ae");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase8() {
+        String baseString = "a(b|c|)e";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("ae");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase9() {
+        String baseString = "a(|)e";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("ae");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase10() {
+        String baseString = "|";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase11() {
+        String baseString = "a(?:|)e";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("ae");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase12() {
+        String baseString = "a||||bc";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("");
+        assertTrue(mat.matches());
+    }
+
+    public void testAlternationsCase13() {
+        String baseString = "(?i-is)|a";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher("a");
+        assertTrue(mat.matches());
+    }
+
+    public void testMatchWithGroups14() {
         String baseString = "jwkerhjwehrkwjehrkwjhrwkjehrjwkehrjkwhrkwehrkwhrkwrhwkhrwkjehr";
         String pattern = ".*(..).*\\1.*";
         assertTrue(Pattern.compile(pattern).matcher(baseString).matches());
+    }
 
-        baseString = "saa";
-        pattern = ".*(.)\\1";
+    public void testMatchWithGroups15() {
+        String baseString = "saa";
+        String pattern = ".*(.)\\1";
         assertTrue(Pattern.compile(pattern).matcher(baseString).matches());
         assertTrue(Pattern.compile(pattern).matcher(baseString).find());
     }
 
     public void testSplitEmptyCharSequence() {
-        String s1 = "";
-        String[] arr = s1.split(":");
+        String s = "";
+        String[] arr = s.split(":");
+
         assertEquals(arr.length, 1);
     }
 
@@ -1029,49 +1202,66 @@ public class PatternTest extends TestCase {
         assertTrue(Pattern.matches("(?i-:AbC)", "ABC"));
     }
 
-    public void testEmptyGroups() {
+    public void testEmptyGroupsCase1() {
         Pattern pat = Pattern.compile("ab(?>)cda");
         Matcher mat = pat.matcher("abcda");
-        assertTrue(mat.matches());
 
-        pat = Pattern.compile("ab()");
-        mat = pat.matcher("ab");
-        assertTrue(mat.matches());
-
-        pat = Pattern.compile("abc(?:)(..)");
-        mat = pat.matcher("abcgf");
         assertTrue(mat.matches());
     }
 
-    public void testEmbeddedFlags() {
+    public void testEmptyGroupsCase2() {
+        Pattern pat = Pattern.compile("ab()");
+        Matcher mat = pat.matcher("ab");
+
+        assertTrue(mat.matches());
+    }
+
+    public void testEmptyGroupsCase3() {
+        Pattern pat = Pattern.compile("abc(?:)(..)");
+        Matcher mat = pat.matcher("abcgf");
+
+        assertTrue(mat.matches());
+    }
+
+    public void testEmbeddedFlagsCase1() {
         String baseString = "(?i)((?s)a)";
         String testString = "A";
         Pattern pat = Pattern.compile(baseString);
         Matcher mat = pat.matcher(testString);
-        assertTrue(mat.matches());
 
-        baseString = "(?x)(?i)(?s)(?d)a";
-        testString = "A";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        baseString = "(?x)(?i)(?s)(?d)a.";
-        testString = "a\n";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
+    public void testEmbeddedFlagsCase2() {
+        String baseString = "(?x)(?i)(?s)(?d)a";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+
         assertTrue(mat.matches());
+    }
 
-        baseString = "abc(?x:(?i)(?s)(?d)a.)";
-        testString = "abcA\n";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
+    public void testEmbeddedFlagsCase3() {
+        String baseString = "(?x)(?i)(?s)(?d)a.";
+        String testString = "a\n";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        baseString = "abc((?x)d)(?i)(?s)a";
-        testString = "abcdA";
-        pat = Pattern.compile(baseString);
-        mat = pat.matcher(testString);
+    public void testEmbeddedFlagsCase4() {
+        String baseString = "abc(?x:(?i)(?s)(?d)a.)";
+        String testString = "abcA\n";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testEmbeddedFlagsCase5() {
+        String baseString = "abc((?x)d)(?i)(?s)a";
+        String testString = "abcdA";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
     }
 
@@ -1143,174 +1333,278 @@ public class PatternTest extends TestCase {
         assertNotNull(pattern);
     }
 
-    public void testRangesWithSurrogatesSupplementary() {
+    public void testRangesWithSurrogatesSupplementaryCase1() {
         String patString = "[abc\uD8D2]";
         String testString = "\uD8D2";
         Pattern pat = Pattern.compile(patString);
         Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        testString = "a";
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        testString = "ef\uD8D2\uDD71gh";
-        mat = pat.matcher(testString);
-        assertFalse(mat.find());
-
-        testString = "ef\uD8D2gh";
-        mat = pat.matcher(testString);
-        assertTrue(mat.find());
-
-        patString = "[abc\uD8D3&&[c\uD8D3]]";
-        testString = "c";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        testString = "a";
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        testString = "ef\uD8D3\uDD71gh";
-        mat = pat.matcher(testString);
-        assertFalse(mat.find());
-
-        testString = "ef\uD8D3gh";
-        mat = pat.matcher(testString);
-        assertTrue(mat.find());
-
-        patString = "[abc\uD8D3\uDBEE\uDF0C&&[c\uD8D3\uDBEE\uDF0C]]";
-        testString = "c";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        testString = "\uDBEE\uDF0C";
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        testString = "ef\uD8D3\uDD71gh";
-        mat = pat.matcher(testString);
-        assertFalse(mat.find());
-
-        testString = "ef\uD8D3gh";
-        mat = pat.matcher(testString);
-        assertTrue(mat.find());
-
-        patString = "[abc\uDBFC]\uDDC2cd";
-        testString = "\uDBFC\uDDC2cd";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.matches());
-
-        testString = "a\uDDC2cd";
-        mat = pat.matcher(testString);
+    public void testRangesWithSurrogatesSupplementaryCase2() {
+        String patString = "[abc\uD8D2]";
+        String testString = "a";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
     }
 
-    public void testSequencesWithSurrogatesSupplementary() {
+    public void testRangesWithSurrogatesSupplementaryCase3() {
+        String patString = "[abc\uD8D2]";
+        String testString = "ef\uD8D2\uDD71gh";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.find());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase4() {
+        String patString = "[abc\uD8D2]";
+        String testString = "ef\uD8D2gh";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.find());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase5() {
+        String patString = "[abc\uD8D3&&[c\uD8D3]]";
+        String testString = "c";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase6() {
+        String patString = "[abc\uD8D3&&[c\uD8D3]]";
+        String testString = "a";;
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase7() {
+        String patString = "[abc\uD8D3&&[c\uD8D3]]";
+        String testString = "ef\uD8D3\uDD71gh";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.find());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase8() {
+        String patString = "[abc\uD8D3&&[c\uD8D3]]";
+        String testString = "ef\uD8D3gh";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.find());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase9() {
+        String patString = "[abc\uD8D3\uDBEE\uDF0C&&[c\uD8D3\uDBEE\uDF0C]]";
+        String testString = "c";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase10() {
+        String patString = "[abc\uD8D3\uDBEE\uDF0C&&[c\uD8D3\uDBEE\uDF0C]]";
+        String testString = "\uDBEE\uDF0C";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase11() {
+        String patString = "[abc\uD8D3\uDBEE\uDF0C&&[c\uD8D3\uDBEE\uDF0C]]";
+        String testString = "ef\uD8D3\uDD71gh";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.find());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase12() {
+        String patString = "[abc\uD8D3\uDBEE\uDF0C&&[c\uD8D3\uDBEE\uDF0C]]";
+        String testString = "ef\uD8D3gh";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.find());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase13() {
+        String patString = "[abc\uDBFC]\uDDC2cd";
+        String testString = "\uDBFC\uDDC2cd";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.matches());
+    }
+
+    public void testRangesWithSurrogatesSupplementaryCase14() {
+        String patString = "[abc\uDBFC]\uDDC2cd";
+        String testString = "a\uDDC2cd";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testSequencesWithSurrogatesSupplementaryCase1() {
         String patString = "abcd\uD8D3";
         String testString = "abcd\uD8D3\uDFFC";
         Pattern pat = Pattern.compile(patString);
         Matcher mat = pat.matcher(testString);
-// BEGIN android-changed
+// BEGIN Android-changed
 // This one really doesn't make sense, as the above is a corrupt surrogate.
 // Even if it's matched by the JDK, it's more of a bug than of a behavior one
 // might want to duplicate.
 //        assertFalse(mat.find());
-// END android-changed
+// END Android-changed
+    }
 
-        testString = "abcd\uD8D3abc";
-        mat = pat.matcher(testString);
-        assertTrue(mat.find());
 
-        patString = "ab\uDBEFcd";
-        testString = "ab\uDBEFcd";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
-        assertTrue(mat.matches());
-
-        patString = "\uDFFCabcd";
-        testString = "\uD8D3\uDFFCabcd";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
-        assertFalse(mat.find());
-
-        testString = "abc\uDFFCabcdecd";
-        mat = pat.matcher(testString);
-        assertTrue(mat.find());
-
-        patString = "\uD8D3\uDFFCabcd";
-        testString = "abc\uD8D3\uD8D3\uDFFCabcd";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+    public void testSequencesWithSurrogatesSupplementaryCase2() {
+        String patString = "abcd\uD8D3";
+        String testString = "abcd\uD8D3abc";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
     }
 
-    public void testPredefinedClassesWithSurrogatesSupplementary() {
+    public void testSequencesWithSurrogatesSupplementaryCase3() {
+        String patString = "ab\uDBEFcd";
+        String testString = "ab\uDBEFcd";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+    }
+
+    public void testSequencesWithSurrogatesSupplementaryCase4() {
+        String patString = "\uDFFCabcd";
+        String testString = "\uD8D3\uDFFCabcd";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertFalse(mat.find());
+    }
+
+    public void testSequencesWithSurrogatesSupplementaryCase5() {
+        String patString = "\uDFFCabcd";
+        String testString = "abc\uDFFCabcdecd";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.find());
+    }
+
+    public void testSequencesWithSurrogatesSupplementaryCase6String () {
+        String patString = "\uD8D3\uDFFCabcd";
+        String testString = "abc\uD8D3\uD8D3\uDFFCabcd";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.find());
+    }
+
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase1() {
         String patString = "[123\\D]";
         String testString = "a";
         Pattern pat = Pattern.compile(patString);
         Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        testString = "5";
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase2() {
+        String patString = "[123\\D]";
+        String testString = "5";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertFalse(mat.find());
+    }
 
-        testString = "3";
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase3() {
+        String patString = "[123\\D]";
+        String testString = "3";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase4() {
         // low surrogate
-        testString = "\uDFC4";
-        mat = pat.matcher(testString);
+        String patString = "[123\\D]";
+        String testString = "\uDFC4";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase5() {
         // high surrogate
-        testString = "\uDADA";
-        mat = pat.matcher(testString);
+        String patString = "[123\\D]";
+        String testString = "\uDADA";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        testString = "\uDADA\uDFC4";
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase6() {
+        String patString = "[123\\D]";
+        String testString = "\uDADA\uDFC4";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        patString = "[123[^\\p{javaDigit}]]";
-        testString = "a";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase7() {
+        String patString = "[123[^\\p{javaDigit}]]";
+        String testString = "a";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        testString = "5";
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase8() {
+        String patString = "[123[^\\p{javaDigit}]]";
+        String testString = "5";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertFalse(mat.find());
+    }
 
-        testString = "3";
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase9() {
+        String patString = "[123[^\\p{javaDigit}]]";
+        String testString = "3";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase10() {
         // low surrogate
-        testString = "\uDFC4";
-        mat = pat.matcher(testString);
+        String patString = "[123[^\\p{javaDigit}]]";
+        String testString = "\uDFC4";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase11() {
         // high surrogate
-        testString = "\uDADA";
-        mat = pat.matcher(testString);
+        String patString = "[123[^\\p{javaDigit}]]";
+        String testString = "\uDADA";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        testString = "\uDADA\uDFC4";
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase12() {
+        String patString = "[123[^\\p{javaDigit}]]";
+        String testString = "\uDADA\uDFC4";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase13() {
         // surrogate characters
-        patString = "\\p{Cs}";
-        testString = "\uD916\uDE27";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
-
+        String patString = "\\p{Cs}";
+        String testString = "\uD916\uDE27";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         /*
          * see http://www.unicode.org/reports/tr18/#Supplementary_Characters we
          * have to treat text as code points not code units. \\p{Cs} matches any
@@ -1319,69 +1613,104 @@ public class PatternTest extends TestCase {
          * nothing
          */
         // assertFalse(mat.find());
+    }
+
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase14() {
         // swap low and high surrogates
-        testString = "\uDE27\uD916";
-        mat = pat.matcher(testString);
+        String patString = "\\p{Cs}";
+        String testString = "\uDE27\uD916";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        patString = "[\uD916\uDE271\uD91623&&[^\\p{Cs}]]";
-        testString = "1";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase15() {
+        String patString = "[\uD916\uDE271\uD91623&&[^\\p{Cs}]]";
+        String testString = "1";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
-        testString = "\uD916";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase16() {
+        String patString = "[\uD916\uDE271\uD91623&&[^\\p{Cs}]]";
+        String testString = "\uD916";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertFalse(mat.find());
+    }
 
-        testString = "\uD916\uDE27";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase17() {
+        String patString = "[\uD916\uDE271\uD91623&&[^\\p{Cs}]]";
+        String testString = "\uD916\uDE27";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.find());
+    }
 
+    public void testPredefinedClassesWithSurrogatesSupplementaryCase18() {
         // \uD9A0\uDE8E=\u7828E
         // \u78281=\uD9A0\uDE81
-        patString = "[a-\uD9A0\uDE8E]";
-        testString = "\uD9A0\uDE81";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+        String patString = "[a-\uD9A0\uDE8E]";
+        String testString = "\uD9A0\uDE81";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
     }
 
-    public void testDotConstructionWithSurrogatesSupplementary() {
+    public void testDotConstructionWithSurrogatesSupplementaryCase1() {
         String patString = ".";
         String testString = "\uD9A0\uDE81";
         Pattern pat = Pattern.compile(patString);
         Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        testString = "\uDE81";
-        mat = pat.matcher(testString);
+    public void testDotConstructionWithSurrogatesSupplementaryCase2() {
+        String patString = ".";
+        String testString = "\uDE81";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        testString = "\uD9A0";
-        mat = pat.matcher(testString);
+    public void testDotConstructionWithSurrogatesSupplementaryCase3() {
+        String patString = ".";
+        String testString = "\uD9A0";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        testString = "\n";
-        mat = pat.matcher(testString);
+    public void testDotConstructionWithSurrogatesSupplementaryCase4() {
+        String patString = ".";
+        String testString = "\n";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertFalse(mat.matches());
+    }
 
-        patString = ".*\uDE81";
-        testString = "\uD9A0\uDE81\uD9A0\uDE81\uD9A0\uDE81";
-        pat = Pattern.compile(patString);
-        mat = pat.matcher(testString);
+    public void testDotConstructionWithSurrogatesSupplementaryCase5() {
+        String patString = ".*\uDE81";
+        String testString = "\uD9A0\uDE81\uD9A0\uDE81\uD9A0\uDE81";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertFalse(mat.matches());
+    }
 
-        testString = "\uD9A0\uDE81\uD9A0\uDE81\uDE81";
-        mat = pat.matcher(testString);
+    public void testDotConstructionWithSurrogatesSupplementaryCase6() {
+        String patString = ".*\uDE81";
+        String testString = "\uD9A0\uDE81\uD9A0\uDE81\uDE81";
+        Pattern pat = Pattern.compile(patString);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
+    }
 
-        patString = ".*";
-        testString = "\uD9A0\uDE81\n\uD9A0\uDE81\uD9A0\n\uDE81";
-        pat = Pattern.compile(patString, Pattern.DOTALL);
-        mat = pat.matcher(testString);
+    public void testDotConstructionWithSurrogatesSupplementaryCase7() {
+        String patString = ".*";
+        String testString = "\uD9A0\uDE81\n\uD9A0\uDE81\uD9A0\n\uDE81";
+        Pattern pat = Pattern.compile(patString, Pattern.DOTALL);
+        Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
     }
 
@@ -1436,7 +1765,9 @@ public class PatternTest extends TestCase {
         Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
 
+        patString = "\uD9A0\uDE81*abc";
         testString = "abc";
+        pat = Pattern.compile(patString);
         mat = pat.matcher(testString);
         assertTrue(mat.matches());
     }
@@ -1448,21 +1779,26 @@ public class PatternTest extends TestCase {
         Matcher mat = pat.matcher(testString);
         assertTrue(mat.matches());
 
+        patString = "\uDE81|\uD9A0\uDE81|\uD9A0";
         testString = "\uDE81";
+        pat = Pattern.compile(patString);
         mat = pat.matcher(testString);
         assertTrue(mat.matches());
 
+        patString = "\uDE81|\uD9A0\uDE81|\uD9A0";
         testString = "\uD9A0\uDE81";
+        pat = Pattern.compile(patString);
         mat = pat.matcher(testString);
         assertTrue(mat.matches());
 
+        patString = "\uDE81|\uD9A0\uDE81|\uD9A0";
         testString = "\uDE81\uD9A0";
+        pat = Pattern.compile(patString);
         mat = pat.matcher(testString);
         assertFalse(mat.matches());
     }
 
     public void testGroupsWithSurrogatesSupplementary() {
-
         //this pattern matches nothing
         String patString = "(\uD9A0)\uDE81";
         String testString = "\uD9A0\uDE81";
@@ -1486,15 +1822,14 @@ public class PatternTest extends TestCase {
         assertTrue(matcher.find());
     }
 
-    // b/12096792: empty pattern is invalid in ICU 51.
-//    public void testSplitEmpty() {
-//
-//        Pattern pat = Pattern.compile("");
-//        String[] s = pat.split("", -1);
-//
-//        assertEquals(1, s.length);
-//        assertEquals("", s[0]);
-//    }
+    public void testSplitEmpty() {
+
+        Pattern pat = Pattern.compile("");
+        String[] s = pat.split("", -1);
+
+        assertEquals(1, s.length);
+        assertEquals("", s[0]);
+    }
 
     public void testToString() {
         for (int i = 0; i < testPatterns.length; i++) {
@@ -1504,13 +1839,12 @@ public class PatternTest extends TestCase {
     }
 
     // http://code.google.com/p/android/issues/detail?id=19308
-    // Fix is in ICU 4.9, iOS uses 4.2.1.
-//    public void test_hitEnd() {
-//        Pattern p = Pattern.compile("^2(2[4-9]|3\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
-//        Matcher m = p.matcher("224..");
-//        boolean isPartialMatch = !m.matches() && m.hitEnd();
-//        assertFalse(isPartialMatch);
-//    }
+    public void test_hitEnd() {
+        Pattern p = Pattern.compile("^2(2[4-9]|3\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+        Matcher m = p.matcher("224..");
+        boolean isPartialMatch = !m.matches() && m.hitEnd();
+        assertFalse(isPartialMatch);
+    }
 
     public void testCommentsInPattern() {
         Pattern p = Pattern.compile("ab# this is a comment\ncd", Pattern.COMMENTS);
@@ -1876,15 +2210,22 @@ public class PatternTest extends TestCase {
     }
 
     public void testSplitAsStream() {
-        String s[];
-        Pattern pat = Pattern.compile("b");
+        Pattern pat;
+        String[] s;
+
+        pat = Pattern.compile("b");
         s = pat.splitAsStream("abccbadfebb").toArray(String[]::new);
         assertEquals(s.length, 3);
+
+        pat = Pattern.compile("b");
         s = pat.splitAsStream("").toArray(String[]::new);
         assertEquals(s.length, 0);
+
         pat = Pattern.compile("");
         s = pat.splitAsStream("").toArray(String[]::new);
         assertEquals(s.length, 0);
+
+        pat = Pattern.compile("");
         s = pat.splitAsStream("abccbadfe").toArray(String[]::new);
         assertEquals(s.length, 9);
     }

@@ -14,8 +14,6 @@
 #
 # Author: Keith Stanger
 
-SUFFIXES:
-
 .SECONDARY:
 
 J2OBJC_ROOT = ..
@@ -48,7 +46,6 @@ DOCLET_JARS = $(DOCLAVA_JAR) $(JSILVER_JAR)
 BUILD_DIR_JARS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(INTERNAL_JARS:%=$(BUILD_DIR)/%)
 BUILD_DIR_DOCLET_JARS = $(DOCLET_JARS:%=$(BUILD_DIR)/%)
 
-
 $(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 
 # Postprocessing: update procyon to not depend on URLClassPath.
@@ -71,11 +68,11 @@ $(BUILD_DIR)/$(JAVAC_JAR): | $(BUILD_DIR)
 	@cp -f $(JAVA_HOME)/lib/$(JAVAC_JAR) $@
 
 $(BUILD_DIR)/$(SCENELIB_JAR): | $(BUILD_DIR)
-	@curl -s -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.8.0.zip
-	@unzip -qq -d $(BUILD_DIR) $@.zip annotation-tools/annotation-file-utilities/annotation-file-utilities.jar
-	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/annotation-tools/annotation-file-utilities/annotation-file-utilities.jar "scenelib/*"
+	@curl -s -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.9.1.zip
+	@unzip -qq -d $(BUILD_DIR) $@.zip annotation-file-utilities/annotation-file-utilities.jar
+	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/annotation-file-utilities/annotation-file-utilities.jar "scenelib/*"
 	@cd $(BUILD_DIR) && zip -q -r $(SCENELIB_JAR) scenelib/
-	@rm -rf $(BUILD_DIR)/annotation-tools/ $(BUILD_DIR)/scenelib/
+	@rm -rf $(BUILD_DIR)/annotation-file-utilities/ $(BUILD_DIR)/scenelib/
 
 $(BUILD_DIR)/$(JARJAR_JAR): | $(BUILD_DIR)
 	@cp -f $(JARJAR_HOME)/$(JARJAR_JAR) $@

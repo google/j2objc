@@ -358,6 +358,7 @@ public class Thread implements Runnable {
   void *start_routine(void *arg) {
     JavaLangThread *thread = (__bridge JavaLangThread *)arg;
     pthread_setspecific(java_thread_key, (__bridge void *)thread);
+    pthread_setname_np([thread->name_ UTF8String]);
     @autoreleasepool {
       @try {
         [thread run];
@@ -424,6 +425,7 @@ public class Thread implements Runnable {
     if (stack >= PTHREAD_STACK_MIN) {
       pthread_attr_setstacksize(&attr, stack);
     }
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
     pthread_create(&nt->t, &attr, &start_routine, (__bridge_retained void*)self);
   ]-*/;
 
@@ -662,12 +664,14 @@ public class Thread implements Runnable {
    * @see Thread#interrupt
    * @see Thread#isInterrupted
    */
-  public static boolean interrupted() {
-    Thread currentThread = currentThread();
-    boolean result = currentThread.interrupted;
-    currentThread.interrupted = false;
-    return result;
-  }
+  public static native boolean interrupted() /*-[
+    JavaLangThread *currentThread = JavaLangThread_currentThread();
+    @synchronized(currentThread->nativeThread_) {
+      jboolean result = currentThread->interrupted_;
+      currentThread->interrupted_ = false;
+      return result;
+    }
+  ]-*/;
 
   /**
    * Returns a <code>boolean</code> indicating whether the receiver has a
@@ -696,9 +700,10 @@ public class Thread implements Runnable {
           return;
       }
 
-      synchronized (nativeThread) {
+      Object lock = currentThread().nativeThread;
+      synchronized (lock) {
           while (isAlive()) {
-              nativeThread.wait(POLL_INTERVAL);
+              lock.wait(POLL_INTERVAL);
           }
       }
   }
@@ -747,7 +752,8 @@ public class Thread implements Runnable {
           return;
       }
 
-      synchronized (nativeThread) {
+      Object lock = currentThread().nativeThread;
+      synchronized (lock) {
           if (!isAlive()) {
               return;
           }
@@ -759,9 +765,9 @@ public class Thread implements Runnable {
           long start = System.nanoTime();
           while (true) {
               if (millis > POLL_INTERVAL) {
-                nativeThread.wait(POLL_INTERVAL);
+                lock.wait(POLL_INTERVAL);
               } else {
-                nativeThread.wait(millis, nanos);
+                lock.wait(millis, nanos);
               }
               if (!isAlive()) {
                   break;
@@ -1115,7 +1121,7 @@ public class Thread implements Runnable {
   /**
    * Returns a map of stack traces for all live threads.
    */
-  // TODO(user): Can we update this to return something useful?
+  // TODO(dweis): Can we update this to return something useful?
   public static Map<Thread,StackTraceElement[]> getAllStackTraces() {
     return Collections.<Thread, StackTraceElement[]>emptyMap();
   }

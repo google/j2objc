@@ -16,18 +16,25 @@
 
 package libcore.java.util;
 
+import junit.framework.TestCase;
+
+import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.SortedMap;
+import java.util.Spliterator;
 import java.util.TreeMap;
-
-import junit.framework.TestCase;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public class TreeMapTest extends TestCase {
 
@@ -434,5 +441,317 @@ public class TreeMapTest extends TestCase {
                 }
             }
         }.test();
+    }
+
+    /**
+     * Taking a headMap or tailMap (exclusive or inclusive of the bound) of
+     * a TreeMap with unbounded range never throws IllegalArgumentException.
+     */
+    public void testBounds_fromUnbounded() {
+        applyBound('[', new TreeMap<>());
+        applyBound(']', new TreeMap<>());
+        applyBound('(', new TreeMap<>());
+        applyBound(')', new TreeMap<>());
+    }
+
+    /**
+     * Taking an exclusive-end submap of a parent map with an exclusive
+     * range is allowed only if the bounds go in the same direction
+     * (if parent and child are either both headMaps or both tailMaps,
+     * but not otherwise).
+     */
+    public void testBounds_openSubrangeOfOpenRange() {
+        // NavigableMap.{tail,head}Map(T key, boolean inclusive)'s
+        // documentation says that it throws IAE "if this map itself has a
+        // restricted range, and key lies outside the bounds of the range".
+        // Since that documentation doesn't mention the value of inclusive,
+        // one could argue that the following two cases should throw IAE,
+        // but the actual implementation in TreeMap does not. This test
+        // asserts the actual behavior.
+        assertTrue(isWithinBounds(')', ')'));
+        assertTrue(isWithinBounds('(', '('));
+
+        // The following two tests check that TreeMap's behavior matches
+        // that from earlier versions of Android (from before Android N).
+        // AOSP commit b4105e7f1e3ab24131976f68be4554e694a0e1d4 ensured
+        // that Android N was consistent with earlier versions' behavior.
+        // Specifically, on Android,
+        //      new TreeMap<>().headMap(0, false).tailMap(0, false)
+        // and  new TreeMap<>().tailMap(0, false).headMap(0, false)
+        // are both not allowed.
+        assertFalse(isWithinBounds(')', '('));
+        assertFalse(isWithinBounds('(', ')'));
+    }
+
+    /**
+     * Taking a exclusive-end submap of an inclusive-end parent map is not
+     * allowed regardless of the direction of the constraints (headMap
+     * vs. tailMap) because the inclusive bound of the submap is not
+     * contained in the exclusive range of the parent map.
+     */
+    public void testBounds_closedSubrangeOfOpenRange() {
+        assertFalse(isWithinBounds(']', '('));
+        assertFalse(isWithinBounds('[', ')'));
+        assertFalse(isWithinBounds(']', ')'));
+        assertFalse(isWithinBounds('[', '('));
+    }
+
+    /**
+     * Taking an inclusive-end submap of an inclusive-end parent map
+     * is allowed regardless of the direction of the constraints (headMap
+     * vs. tailMap) because the inclusive bound of the submap is
+     * contained in the inclusive range of the parent map.
+     */
+    public void testBounds_closedSubrangeOfClosedRange() {
+        assertTrue(isWithinBounds(']', '['));
+        assertTrue(isWithinBounds('[', ']'));
+        assertTrue(isWithinBounds(']', ']'));
+        assertTrue(isWithinBounds('[', '['));
+    }
+
+    /**
+     * Taking an exclusive-end submap of an inclusive-end parent map
+     * is allowed regardless of the direction of the constraints (headMap
+     * vs. tailMap) because the exclusive bound of the submap is
+     * contained in the inclusive range of the parent map.
+     *
+     * Note that
+     * (a) isWithinBounds(')', '[') == true, while
+     * (b) isWithinBounds('[', ')') == false
+     * means that
+     *   {@code new TreeMap<>().tailMap(0, true).headMap(0, false)}
+     * is allowed but
+     *   {@code new TreeMap<>().headMap(0, false).tailMap(0, true)}
+     * is not.
+     */
+    public void testBounds_openSubrangeOfClosedRange() {
+        assertTrue(isWithinBounds(')', '['));
+        assertTrue(isWithinBounds('(', ']'));
+        assertTrue(isWithinBounds('(', '['));
+        assertTrue(isWithinBounds(')', ']'));
+
+        // This is allowed:
+        new TreeMap<>().tailMap(0, true).headMap(0, false);
+
+        // This is not:
+        try {
+            new TreeMap<>().headMap(0, false).tailMap(0, true);
+            fail("Should have thrown");
+        } catch (IllegalArgumentException expected) {
+            // expected
+        }
+    }
+
+    /**
+     * Asserts whether constructing a (head or tail) submap with (inclusive or
+     * exclusive) bound 0 is allowed on a (head or tail) map with (inclusive or
+     * exclusive) bound 0. For example,
+     *
+     * {@code isWithinBounds(')', ']'} is true because the boundary of "0)"
+     * (an infinitesimally small negative value) lies within the range "0]",
+     * but {@code isWithinBounds(']', ')'} is false because 0 does not lie
+     * within the range "0)".
+     */
+    private static boolean isWithinBounds(char submapBound, char mapBound) {
+        NavigableMap<Integer, Void> m = applyBound(mapBound, new TreeMap<>());
+        IllegalArgumentException thrownException = null;
+        try {
+            applyBound(submapBound, m);
+        } catch (IllegalArgumentException e) {
+            thrownException = e;
+        }
+        return (thrownException == null);
+    }
+
+    /**
+     * Constructs a submap of the specified map, constrained by the given bound.
+     */
+    private static<V> NavigableMap<Integer, V> applyBound(char bound, NavigableMap<Integer, V> m) {
+        Integer boundValue = 0; // arbitrary
+        if (isLowerBound(bound)) {
+            return m.tailMap(boundValue, isBoundInclusive(bound));
+        } else {
+            return m.headMap(boundValue, isBoundInclusive(bound));
+        }
+    }
+
+    private static boolean isBoundInclusive(char bound) {
+        return bound == '[' || bound == ']';
+    }
+
+    /**
+     * Returns whether the specified bound corresponds to a tailMap, i.e. a Map whose
+     * range of values has an (exclusive or inclusive) lower bound.
+     */
+    private static boolean isLowerBound(char bound) {
+        return bound == '[' || bound == '(';
+    }
+
+    public void test_spliterator_keySet() {
+        TreeMap<String, String> treeMap = new TreeMap<>();
+        // Elements are added out of order to ensure ordering is still preserved.
+        treeMap.put("a", "1");
+        treeMap.put("i", "9");
+        treeMap.put("j", "10");
+        treeMap.put("k", "11");
+        treeMap.put("l", "12");
+        treeMap.put("b", "2");
+        treeMap.put("c", "3");
+        treeMap.put("d", "4");
+        treeMap.put("e", "5");
+        treeMap.put("n", "14");
+        treeMap.put("o", "15");
+        treeMap.put("p", "16");
+        treeMap.put("f", "6");
+        treeMap.put("g", "7");
+        treeMap.put("h", "8");
+        treeMap.put("m", "13");
+
+        Set<String> keys = treeMap.keySet();
+        List<String> expectedKeys = Arrays.asList(
+                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k" , "l", "m", "n", "o", "p");
+
+        SpliteratorTester.runBasicIterationTests_unordered(keys.spliterator(), expectedKeys,
+                String::compareTo);
+        SpliteratorTester.runBasicSplitTests(keys, expectedKeys);
+        SpliteratorTester.testSpliteratorNPE(keys.spliterator());
+        assertEquals(
+                Spliterator.DISTINCT | Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SORTED,
+                keys.spliterator().characteristics());
+        SpliteratorTester.runSortedTests(keys);
+        SpliteratorTester.runOrderedTests(keys);
+        SpliteratorTester.assertSupportsTrySplit(keys);
+    }
+
+    public void test_spliterator_values() {
+        TreeMap<String, String> treeMap = new TreeMap<>();
+        // Elements are added out of order to ensure ordering is still preserved.
+        treeMap.put("a", "1");
+        treeMap.put("i", "9");
+        treeMap.put("j", "10");
+        treeMap.put("k", "11");
+        treeMap.put("l", "12");
+        treeMap.put("b", "2");
+        treeMap.put("c", "3");
+        treeMap.put("d", "4");
+        treeMap.put("e", "5");
+        treeMap.put("n", "14");
+        treeMap.put("o", "15");
+        treeMap.put("p", "16");
+        treeMap.put("f", "6");
+        treeMap.put("g", "7");
+        treeMap.put("h", "8");
+        treeMap.put("m", "13");
+
+        Collection<String> values = treeMap.values();
+        List<String> expectedValues = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9",
+                "10", "11", "12", "13", "14", "15", "16");
+
+        SpliteratorTester.runBasicIterationTests_unordered(
+                values.spliterator(), expectedValues, String::compareTo);
+        SpliteratorTester.runBasicSplitTests(values, expectedValues);
+        SpliteratorTester.testSpliteratorNPE(values.spliterator());
+
+        assertEquals(Spliterator.ORDERED | Spliterator.SIZED,
+                values.spliterator().characteristics());
+        SpliteratorTester.runSizedTests(values, 16);
+        SpliteratorTester.runOrderedTests(values);
+        SpliteratorTester.assertSupportsTrySplit(values);
+    }
+
+    public void test_spliterator_entrySet() {
+        TreeMap<String, String> treeMap = new TreeMap<>();
+        // Elements are added out of order to ensure ordering is still preserved.
+        treeMap.put("a", "1");
+        treeMap.put("i", "9");
+        treeMap.put("j", "10");
+        treeMap.put("k", "11");
+        treeMap.put("l", "12");
+        treeMap.put("b", "2");
+        treeMap.put("c", "3");
+        treeMap.put("d", "4");
+        treeMap.put("e", "5");
+        treeMap.put("n", "14");
+        treeMap.put("o", "15");
+        treeMap.put("p", "16");
+        treeMap.put("f", "6");
+        treeMap.put("g", "7");
+        treeMap.put("h", "8");
+        treeMap.put("m", "13");
+
+        Set<Map.Entry<String, String>> entries = treeMap.entrySet();
+        List<Map.Entry<String, String>> expectedValues = Arrays.asList(
+                entry("a", "1"),
+                entry("b", "2"),
+                entry("c", "3"),
+                entry("d", "4"),
+                entry("e", "5"),
+                entry("f", "6"),
+                entry("g", "7"),
+                entry("h", "8"),
+                entry("i", "9"),
+                entry("j", "10"),
+                entry("k", "11"),
+                entry("l", "12"),
+                entry("m", "13"),
+                entry("n", "14"),
+                entry("o", "15"),
+                entry("p", "16")
+        );
+
+        Comparator<Map.Entry<String, String>> comparator =
+                (a, b) -> (a.getKey().compareTo(b.getKey()));
+
+        SpliteratorTester.runBasicIterationTests_unordered(entries.spliterator(), expectedValues,
+                (a, b) -> (a.getKey().compareTo(b.getKey())));
+        SpliteratorTester.runBasicSplitTests(entries, expectedValues, comparator);
+        SpliteratorTester.testSpliteratorNPE(entries.spliterator());
+
+        assertEquals(
+                Spliterator.DISTINCT | Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SORTED,
+                entries.spliterator().characteristics());
+        SpliteratorTester.runSortedTests(entries, (a, b) -> (a.getKey().compareTo(b.getKey())));
+        SpliteratorTester.runOrderedTests(entries);
+        SpliteratorTester.assertSupportsTrySplit(entries);
+    }
+
+    private static<K, V> Map.Entry<K, V> entry(K key, V value) {
+        return new AbstractMap.SimpleEntry<>(key, value);
+    }
+
+    public void test_replaceAll() throws Exception {
+        TreeMap<String, String> map = new TreeMap<>();
+        map.put("one", "1");
+        map.put("two", "2");
+        map.put("three", "3");
+
+        TreeMap<String, String> output = new TreeMap<>();
+        map.replaceAll((k, v) -> k + v);
+        assertEquals("one1", map.get("one"));
+        assertEquals("two2", map.get("two"));
+        assertEquals("three3", map.get("three"));
+
+        try {
+            map.replaceAll(null);
+            fail();
+        } catch(NullPointerException expected) {}
+
+        try {
+            map.replaceAll((k, v) -> {
+                map.put("foo", v);
+                return v;
+            });
+            fail();
+        } catch(ConcurrentModificationException expected) {}
+    }
+
+    public void test_replace$K$V$V() {
+        MapDefaultMethodTester.test_replace$K$V$V(new TreeMap<>(), false /* acceptsNullKey */,
+                true /* acceptsNullValue */);
+    }
+
+    public void test_replace$K$V() {
+        MapDefaultMethodTester.test_replace$K$V(new TreeMap<>(), false /* acceptsNullKey */,
+                true /* acceptsNullValue */);
     }
 }

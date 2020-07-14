@@ -103,23 +103,23 @@ public class LambdaTest extends TestCase {
     outerY++;
   }
 
-  public void testFunctionArray() throws Exception {
-    List<Lambdas.One> fs = new ArrayList<>();
+  public void testFunctionArray() {
+    List<Lambdas.One<Object, Integer>> fs = new ArrayList<>();
     int[] nums = { 3, 2, 1, 0 };
     for (int i : nums) {
       fs.add((x) -> i);
     }
-    assertEquals(0, fs.get(3).apply("5"));
-    assertEquals(1, fs.get(2).apply(new Object()));
-    assertEquals(2, fs.get(1).apply(new Object()));
-    assertEquals(3, fs.get(0).apply("4"));
+    assertEquals((Integer) 0, fs.get(3).apply("5"));
+    assertEquals((Integer) 1, fs.get(2).apply(new Object()));
+    assertEquals((Integer) 2, fs.get(1).apply(new Object()));
+    assertEquals((Integer) 3, fs.get(0).apply("4"));
   }
 
   public <T> UnaryOperator<T> yComb(UnaryOperator<UnaryOperator<T>> r) {
     return ((UOToUO<T>) f -> f.apply(f)).apply(f -> r.apply(x -> f.apply(f).apply(x)));
   }
 
-  public void testYCombinator() throws Exception {
+  public void testYCombinator() {
     UnaryOperator<UnaryOperator<String>> a = (UnaryOperator<String> f) -> {
       return (x) -> {
         if (x.length() == 5) {
@@ -144,16 +144,16 @@ public class LambdaTest extends TestCase {
     assertEquals((Integer) 55, yComb(fibonacci).apply(10));
   }
 
-  Lambdas.One outerF = (x) -> x;
+  Lambdas.One<Integer, Integer> outerF = (x) -> x;
 
-  public void testOuterFunctions() throws Exception {
-    assertEquals(42, outerF.apply(42));
+  public void testOuterFunctions() {
+    assertEquals((Integer) 42, outerF.apply(42));
   }
 
-  static Lambdas.One staticF = (x) -> x;
+  static Lambdas.One<Integer, Integer> staticF = (x) -> x;
 
-  public void testStaticFunctions() throws Exception {
-    assertEquals(42, staticF.apply(42));
+  public void testStaticFunctions() {
+    assertEquals((Integer) 42, staticF.apply(42));
   }
 
   public void testNestedLambdas() throws Exception {
@@ -177,14 +177,14 @@ public class LambdaTest extends TestCase {
 
   // Tests outer reference resolution, and that inner fields are being correctly resolved for
   // lambdas with implicit blocks.
-  public void testAdditionInLambda() throws Exception {
-    Lambdas.One f = new Lambdas.One<Integer, Integer>() {
-        @Override
+  public void testAdditionInLambda() {
+    Lambdas.One<Integer, Integer> f = new Lambdas.One<Integer, Integer>() {
+      @Override
       public Integer apply(Integer x) {
         return x + 20;
       }
     };
-    assertEquals(42, f.apply(22));
+    assertEquals((Integer) 42, f.apply(22));
     Lambdas.One<Integer, Integer> g = x -> {
       return x + 20;
     };
@@ -193,17 +193,18 @@ public class LambdaTest extends TestCase {
     assertEquals((Integer) 42, h.apply(22));
   }
 
-  public void testBasicAnonymousClass() throws Exception {
-    Lambdas.One h = new Lambdas.One() {
-        @Override
-      public Object apply(Object x) {
+  public void testBasicAnonymousClass() {
+    Lambdas.One<Integer, Integer> h = new Lambdas.One<Integer, Integer>() {
+      @Override
+      public Integer apply(Integer x) {
         return x;
       }
     };
-    assertEquals(42, h.apply(42));
+    assertEquals((Integer) 42, h.apply(42));
   }
 
-  public void testBasicFunction() throws Exception {
+  @SuppressWarnings("unchecked")
+  public void testBasicFunction() {
     Lambdas.One f = x -> x;
     assertEquals(42, f.apply(42));
     Lambdas.One<Integer, Integer> f2 = x -> x;
@@ -218,14 +219,14 @@ public class LambdaTest extends TestCase {
     assertEquals("Foo4.214true", appendFour.apply("Foo", 4.2, 14, true));
   }
 
-  public void testBasicSupplier() throws Exception {
+  public void testBasicSupplier() {
     Lambdas.Zero s = () -> 42;
     assertEquals(42, s.apply());
   }
 
-  public void testBasicConsumer() throws Exception {
+  public void testBasicConsumer() {
     Object[] ls = new Object[1];
-    Lambdas.VoidOne c = (x) -> ls[0] = x;
+    Lambdas.VoidOne<Integer> c = (x) -> ls[0] = x;
     c.apply(42);
     assertEquals(42, ls[0]);
   }
@@ -242,30 +243,30 @@ public class LambdaTest extends TestCase {
 
   static class CaptureTest1 {
     int y;
-    NumberFunction f = x -> y + x.intValue();
+    NumberFunction<Integer, Integer> f = x -> y + x.intValue();
   }
 
   static class CaptureTest2 {
     int y;
     class InnerCaptureTest {
       int y;
-      NumberFunction fOuter = x -> CaptureTest2.this.y + x.intValue();
-      NumberFunction fInner = x -> y + x.intValue();
+      NumberFunction<Integer, Integer> fOuter = x -> CaptureTest2.this.y + x.intValue();
+      NumberFunction<Integer, Integer> fInner = x -> y + x.intValue();
     }
   }
 
-  public void testImplicitCapture() throws Exception {
+  public void testImplicitCapture() {
     CaptureTest1 t1 = new CaptureTest1();
-    assertEquals(1, t1.f.apply(1));
+    assertEquals((Integer) 1, t1.f.apply(1));
     t1.y = 1;
-    assertEquals(3, t1.f.apply(2));
+    assertEquals((Integer) 3, t1.f.apply(2));
 
     CaptureTest2 t2 = new CaptureTest2();
     CaptureTest2.InnerCaptureTest t2i = t2.new InnerCaptureTest();
     t2.y = 10;
     t2i.y = 20;
-    assertEquals(9, t2i.fOuter.apply(-1));
-    assertEquals(19, t2i.fInner.apply(-1));
+    assertEquals((Integer) 9, t2i.fOuter.apply(-1));
+    assertEquals((Integer) 19, t2i.fInner.apply(-1));
   }
 
   interface IntSupplier {
@@ -364,7 +365,7 @@ public class LambdaTest extends TestCase {
     }
   }
 
-  public void testNestingLambdasAndAnonymousClasses() throws Exception {
+  public void testNestingLambdasAndAnonymousClasses() {
     // Each method is called twice to make sure that all lambdas are capturing ones.
     assertEquals(102, getFromSimpleLambda(100, 1));
     assertEquals(104, getFromSimpleLambda(100, 2));

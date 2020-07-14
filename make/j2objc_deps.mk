@@ -96,7 +96,6 @@ xalan_dist: translator_dist jre_emul_dist
 xalan_java: java_deps_dist jre_emul_jars_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/xalan java
 
-
 else
 
 annotations_dist:

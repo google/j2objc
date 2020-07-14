@@ -38,10 +38,10 @@ import java.util.Map;
  * The zid<->metazone mappings are based on CLDR metaZones.xml.
  * The alias mappings are based on Link entries in tzdb data files.
  */
-// Android-changed: delegate to ICU.
 class ZoneName {
 
     public static String toZid(String zid, Locale locale) {
+        // Android-changed: delegate to ICU.
         TimeZoneNames tzNames = TimeZoneNames.getInstance(locale);
         if (tzNames.getAvailableMetaZoneIDs().contains(zid)) {
             // Compare TimeZoneFormat#getTargetRegion.
@@ -64,4 +64,7 @@ class ZoneName {
         }
         return zid;
     }
+
+    // Android-removed: zidMap and aliasMap containing zone id data.
+    // Android-removed: zidToMzone, mzoneToZid, mzoneToZidL, aliases and their initialization code.
 }

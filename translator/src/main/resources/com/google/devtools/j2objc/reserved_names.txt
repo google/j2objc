@@ -137,6 +137,9 @@ SO_RCVTIMEO SO_SNDBUF TCP_NODELAY
 # Definitions from stat.h
 S_IFBLK S_IFCHR S_IFDIR S_IFIFO S_IFLNK S_IFMT S_IFREG S_IFSOCK
 
+# Definitions from sys/event.h
+EVFILT_READ EVFILT_WRITE
+
 # Definitions from sys/poll.h
 POLLERR POLLHUP POLLIN POLLOUT
 
@@ -163,7 +166,7 @@ EXC_MASK_CORPSE_NOTIFY EXC_MASK_ALL FIRST_EXCEPTION EXC_SOFT_SIGNAL EXC_MACF_MIN
 EXC_MACF_MAX
 
 # Definitions from time.h
-daylight getdate_err tzname
+daylight getdate_err timezone tzname
 
 # Definitions from types.h
 S_IRGRP S_IROTH S_IRUSR S_IRWXG S_IRWXO S_IRWXU S_IWGRP S_IWOTH
@@ -172,6 +175,9 @@ S_IWUSR S_IXGRP S_IXOTH S_IXUSR
 # Definitions from unistd.h
 F_OK R_OK STDERR_FILENO STDIN_FILENO STDOUT_FILENO W_OK X_OK
 _SC_PAGESIZE _SC_PAGE_SIZE optind opterr optopt optreset
+
+# Definitions from mach/i386/vm_param.h
+PAGE_SIZE PAGE_SHIFT PAGE_MASK I386_PGBYTES
 
 # Cocoa definitions from ConditionalMacros.h
 CFMSYSTEMCALLS CGLUESUPPORTED FUNCTION_PASCAL FUNCTION_DECLSPEC

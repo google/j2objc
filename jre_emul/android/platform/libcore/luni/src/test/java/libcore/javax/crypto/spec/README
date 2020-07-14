@@ -1,0 +1,2 @@
+Most tests for javax.crypto.spec can be found in external/conscrypt.
+They should be updated at http://github.com/google/conscrypt.

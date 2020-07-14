@@ -117,6 +117,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     };
 
     printTypeDocumentation();
+    if (options.defaultNonnull()) {
+      println("NS_ASSUME_NONNULL_BEGIN");
+    }
     if (super.isInterfaceType()) {
     	boolean argc_patch = true;
     	if (argc_patch) {
@@ -138,6 +141,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     printInnerDeclarations();
     println("\n@end");
+    if (options.defaultNonnull()) {
+      println("NS_ASSUME_NONNULL_END");
+    }
 
     if (ElementUtil.isPackageInfo(typeElement)) {
       printOuterDeclarations();
@@ -251,7 +257,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Prints the list of static variable and/or enum constant accessor methods.
    */
   protected void printStaticAccessors() {
-    if (options.staticAccessorMethods()) {
+    if (options.staticAccessorMethods() && !options.classProperties()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         VariableElement var = fragment.getVariableElement();
         TypeMirror type = var.asType();
@@ -363,7 +369,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (options.nullability()) {
           print(", nonnull");
         }
-        // TODO(user): use nameTable.getSwiftName() when it is implemented.
+        // TODO(antoniocortes): use nameTable.getSwiftName() when it is implemented.
         printf(") %s *%s NS_SWIFT_NAME(%s);", typeName, accessorName, accessorName);
       }
     }

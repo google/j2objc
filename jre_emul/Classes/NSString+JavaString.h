@@ -341,9 +341,6 @@ J2OBJC_STATIC_FIELD_OBJ_FINAL(NSString, serialPersistentFields, IOSObjectArray *
 
 J2OBJC_TYPE_LITERAL_HEADER(NSString)
 
-/** Function that returns String hash values as specified by java.lang.String. */
-FOUNDATION_EXPORT jint javaStringHashCode(NSString *string);
-
 #endif // _NSString_JavaString_H_
 
 #if __has_feature(nullability)

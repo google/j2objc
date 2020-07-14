@@ -17,17 +17,20 @@
 package libcore.io;
 
 import android.system.ErrnoException;
+import android.system.Int32Ref;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
+import libcore.util.ArrayUtils;
 
 import static libcore.io.OsConstants.*;
-import libcore.util.MutableInt;
 
 /**
  * Implements java.io/java.net/java.nio semantics in terms of the underlying POSIX system calls.
+ *
+ * @hide
  */
+@libcore.api.CorePlatformApi
 public final class IoBridge {
 
     private IoBridge() {
@@ -35,7 +38,7 @@ public final class IoBridge {
 
     public static int available(FileDescriptor fd) throws IOException {
         try {
-            MutableInt available = new MutableInt(0);
+            Int32Ref available = new Int32Ref(0);
             Libcore.os.ioctlInt(fd, FIONREAD, available);
             if (available.value < 0) {
                 // If the fd refers to a regular file, the result is the difference between
@@ -57,17 +60,40 @@ public final class IoBridge {
     }
 
     /**
+     * Closes the Unix file descriptor associated with the supplied file descriptor, resets the
+     * internal int to -1, and sends a signal to any threads are currently blocking. In order for
+     * the signal to be sent the blocked threads must have registered with the
+     * AsynchronousCloseMonitor before they entered the blocking operation. {@code fd} will be
+     * invalid after this call.
+     *
+     * <p>This method is a no-op if passed a {@code null} or already-closed file descriptor.
+     */
+    @libcore.api.CorePlatformApi
+    public static void closeAndSignalBlockedThreads(FileDescriptor fd) throws IOException {
+        if (fd == null || !fd.valid()) {
+            return;
+        }
+        // fd is invalid after we call release.
+        FileDescriptor oldFd = fd.release$();
+        AsynchronousCloseMonitor.signalBlockedThreads(oldFd);
+        try {
+            Libcore.os.close(oldFd);
+        } catch (ErrnoException errnoException) {
+            throw errnoException.rethrowAsIOException();
+        }
+    }
+
+
+    /**
      * java.io only throws FileNotFoundException when opening files, regardless of what actually
      * went wrong. Additionally, java.io is more restrictive than POSIX when it comes to opening
-     * directories: POSIX says read-only is okay, but java.io doesn't even allow that. We also
-     * have an Android-specific hack to alter the default permissions.
+     * directories: POSIX says read-only is okay, but java.io doesn't even allow that.
      */
+    @libcore.api.CorePlatformApi
     public static FileDescriptor open(String path, int flags) throws FileNotFoundException {
         FileDescriptor fd = null;
         try {
-            // On Android, we don't want default permissions to allow global access.
-            int mode = ((flags & O_ACCMODE) == O_RDONLY) ? 0 : 0600;
-            fd = Libcore.os.open(path, flags, mode);
+            fd = Libcore.os.open(path, flags, 0666);
             // Posix open(2) fails with EISDIR only if you ask for write permission.
             // Java disallows reading directories too.
             if (isDirectory(path)) {
@@ -77,7 +103,7 @@ public final class IoBridge {
         } catch (ErrnoException errnoException) {
             try {
                 if (fd != null) {
-                    IoUtils.close(fd);
+                    closeAndSignalBlockedThreads(fd);
                 }
             } catch (IOException ignored) {
             }
@@ -96,8 +122,9 @@ public final class IoBridge {
      * java.io thinks that a read at EOF is an error and should return -1, contrary to traditional
      * Unix practice where you'd read until you got 0 bytes (and any future read would return -1).
      */
+    @libcore.api.CorePlatformApi
     public static int read(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount) throws IOException {
-        Arrays.checkOffsetAndCount(bytes.length, byteOffset, byteCount);
+        ArrayUtils.throwsIfOutOfBounds(bytes.length, byteOffset, byteCount);
         if (byteCount == 0) {
             return 0;
         }
@@ -120,8 +147,9 @@ public final class IoBridge {
      * java.io always writes every byte it's asked to, or fails with an error. (That is, unlike
      * Unix it never just writes as many bytes as happens to be convenient.)
      */
+    @libcore.api.CorePlatformApi
     public static void write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount) throws IOException {
-        Arrays.checkOffsetAndCount(bytes.length, byteOffset, byteCount);
+        ArrayUtils.throwsIfOutOfBounds(bytes.length, byteOffset, byteCount);
         if (byteCount == 0) {
             return;
         }

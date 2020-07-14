@@ -1376,6 +1376,7 @@ public class DoubleTest extends TestCase {
     /**
      * java.lang.Double#equals(java.lang.Object)
      */
+    @SuppressWarnings("EqualsNaN")
     public void test_equalsLjava_lang_Object() {
         Double d1 = new Double(87654321.12345d);
         Double d2 = new Double(87654321.12345d);

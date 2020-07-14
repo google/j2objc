@@ -413,7 +413,7 @@ public class CycleFinderTest extends TestCase {
         + "public class A { class B { int test() { return o.hashCode(); }} B o; }";
     addSourceFile("A.java", source);
     Options options = new Options();
-    options.addExternalAnnotationFileContents(externalWeakOuterAnnotation);
+    addExternalAnnotationFileContents(options, externalWeakOuterAnnotation);
     findCycles(options);
     assertNoCycles();
   }
@@ -430,7 +430,7 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("A.java", "package p; class A { B b; }");
     addSourceFile("B.java", "package p; class B { A a; }");
     Options options = new Options();
-    options.addExternalAnnotationFileContents(externalWeakAnnotation);
+    addExternalAnnotationFileContents(options, externalWeakAnnotation);
     findCycles(options);
     assertNoCycles();
   }
@@ -447,7 +447,7 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("A.java", "package p; class A { B b; }");
     addSourceFile("B.java", "package p; class B { A a; }");
     Options options = new Options();
-    options.addExternalAnnotationFileContents(externalRetainedWithAnnotation);
+    addExternalAnnotationFileContents(options, externalRetainedWithAnnotation);
     findCycles(options);
     assertNoCycles();
   }
@@ -525,11 +525,20 @@ public class CycleFinderTest extends TestCase {
     }
   }
 
-  private void addSourceFile(String fileName, String source) throws IOException {
+  private File addFile(String fileName, String source) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
     Files.asCharSink(file, Charset.defaultCharset()).write(source);
-    inputFiles.add(file.getAbsolutePath());
+    return file;
+  }
+
+  private void addSourceFile(String fileName, String source) throws IOException {
+    inputFiles.add(addFile(fileName, source).getAbsolutePath());
+  }
+
+  private void addExternalAnnotationFileContents(Options options, String content)
+      throws IOException {
+    options.addExternalAnnotationFile(addFile("annotations.jaif", content).getPath());
   }
 
   private File createTempDir() throws IOException {

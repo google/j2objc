@@ -62,6 +62,26 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(translation, "return Foo_fWithInt_(self, y) + 1;");
   }
 
+  public void testSuperMethodReferenceToDefaultMethod() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.function.BooleanSupplier; "
+            + "interface I { "
+            + "  default boolean foo() { "
+            + "    return true; "
+            + "  } "
+            + "} "
+            + "public class Test implements I { "
+            + "  BooleanSupplier f() { "
+            + "    return I.super::foo; "
+            + "  } "
+            + "}", "Test", "Test.m");
+
+    assertTranslatedLines(translation,
+        "- (id<JavaUtilFunctionBooleanSupplier>)f {",
+        "  return create_Test_$Lambda$1_initWithTest_(self);",
+        "}");
+  }
+
   public void testBasicDefaultMethodUsage() throws IOException {
     String source = "  interface A {"
         + "  default void f() {}"

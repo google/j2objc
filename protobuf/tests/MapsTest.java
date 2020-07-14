@@ -147,6 +147,7 @@ public class MapsTest extends ProtobufTest {
     assertEquals("default", msg.getIntStringOrDefault(7, "default"));
   }
 
+  @SuppressWarnings("unchecked")
   public void testMapFieldDescriptor() throws Exception {
     Descriptor descriptor = MapMsg.Builder.getDescriptor();
     FieldDescriptor stringStringField = descriptor.findFieldByNumber(1);
@@ -248,6 +249,7 @@ public class MapsTest extends ProtobufTest {
     assertEquals(Integer.valueOf(2), entry.getValue());
   }
 
+  @SuppressWarnings("unchecked")
   public void testMixingMapAndListApi() throws Exception {
     Descriptor descriptor = MapMsg.Builder.getDescriptor();
     FieldDescriptor field = descriptor.findFieldByNumber(1);

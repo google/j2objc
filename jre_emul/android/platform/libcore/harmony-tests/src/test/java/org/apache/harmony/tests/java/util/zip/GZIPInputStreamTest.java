@@ -27,10 +27,19 @@ import java.net.URL;
 import java.util.zip.Checksum;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+import libcore.junit.util.ResourceLeakageDetector.DisableResourceLeakageDetection; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public class GZIPInputStreamTest extends junit.framework.TestCase {
+public class GZIPInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
+
     File resources;
 
     class TestGZIPInputStream extends GZIPInputStream {
@@ -76,6 +85,13 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
      * @tests java.util.zip.GZIPInputStream#GZIPInputStream(java.io.InputStream,
      *int)
      */
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @DisableResourceLeakageDetection(
+            why = "InflaterInputStream does not clean up the default Inflater created in the"
+                    + " constructor if the constructor fails; i.e. constructor calls"
+                    + " this(..., new Inflater(), ...) and that constructor fails but does not know"
+                    + " that it needs to call Inflater.end() as the caller has no access to it",
+            bug = "31798154") */
     public void test_ConstructorLjava_io_InputStreamI() {
         // test method java.util.zip.GZIPInputStream.constructorI
         try {
@@ -162,68 +178,71 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
         out.write(test);
         out.close();
         byte[] comp = bout.toByteArray();
-        GZIPInputStream gin2 = new GZIPInputStream(new ByteArrayInputStream(
-                comp), 512);
-        int total = 0;
-        while ((result = gin2.read(test)) != -1) {
-            total += result;
+        int total;
+        try (GZIPInputStream gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512)) {
+            total = 0;
+            while ((result = gin2.read(test)) != -1) {
+                total += result;
+            }
+            assertEquals("Should return -1", -1, gin2.read());
         }
-        assertEquals("Should return -1", -1, gin2.read());
-        gin2.close();
         assertEquals("Incorrectly decompressed", test.length, total);
 
-        gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
-        total = 0;
-        while ((result = gin2.read(new byte[200])) != -1) {
-            total += result;
+        try (GZIPInputStream gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512)) {
+            total = 0;
+            while ((result = gin2.read(new byte[200])) != -1) {
+                total += result;
+            }
+            assertEquals("Should return -1", -1, gin2.read());
         }
-        assertEquals("Should return -1", -1, gin2.read());
-        gin2.close();
         assertEquals("Incorrectly decompressed", test.length, total);
 
-        gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 516);
-        total = 0;
-        while ((result = gin2.read(new byte[200])) != -1) {
-            total += result;
+        try (GZIPInputStream gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 516)) {
+            total = 0;
+            while ((result = gin2.read(new byte[200])) != -1) {
+                total += result;
+            }
+            assertEquals("Should return -1", -1, gin2.read());
         }
-        assertEquals("Should return -1", -1, gin2.read());
-        gin2.close();
         assertEquals("Incorrectly decompressed", test.length, total);
 
         comp[40] = 0;
-        gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
-        boolean exception = false;
-        try {
-            while (gin2.read(test) != -1) {
-                ;
+        try (GZIPInputStream gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512)) {
+            boolean exception = false;
+            try {
+                while (gin2.read(test) != -1) {
+                    ;
+                }
+            } catch (IOException e) {
+                exception = true;
             }
-        } catch (IOException e) {
-            exception = true;
+            assertTrue("Exception expected", exception);
         }
-        assertTrue("Exception expected", exception);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        GZIPOutputStream zipout = new GZIPOutputStream(baos);
-        zipout.write(test);
-        zipout.close();
+        try (GZIPOutputStream zipout = new GZIPOutputStream(baos)) {
+            zipout.write(test);
+        }
         outBuf = new byte[530];
-        GZIPInputStream in = new GZIPInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        try {
-            in.read(outBuf, 530, 1);
-            fail("Test failed IOOBE was not thrown");
-        } catch (IndexOutOfBoundsException e) {
-        }
-        while (true) {
-            result = in.read(outBuf, 0, 5);
-            if (result == -1) {
-                //"EOF was reached";
-                break;
+        try (GZIPInputStream in = new GZIPInputStream(
+                new ByteArrayInputStream(baos.toByteArray()))) {
+            try {
+                in.read(outBuf, 530, 1);
+                fail("Test failed IOOBE was not thrown");
+            } catch (IndexOutOfBoundsException e) {
             }
+            while (true) {
+                result = in.read(outBuf, 0, 5);
+                if (result == -1) {
+                    //"EOF was reached";
+                    break;
+                }
+            }
+            result = -10;
+            result = in.read(null, 100, 1);
+            result = in.read(outBuf, -100, 1);
+            result = in.read(outBuf, -1, 1);// 100, 1);
         }
-        result = -10;
-        result = in.read(null, 100, 1);
-        result = in.read(outBuf, -100, 1);
-        result = in.read(outBuf, -1, 1);// 100, 1);
     }
 
     /**
@@ -264,7 +283,6 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
      * @tests java.util.zip.GZIPInputStream#read()
      */
     public void test_read() throws IOException {
-        GZIPInputStream gis = null;
         int result = 0;
         byte[] buffer = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         File f = new File(resources.getAbsolutePath() + "test.gz");
@@ -278,8 +296,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
         gout.finish();
         out.write(1);
         out.close();
+        gout.close();
 
-        gis = new GZIPInputStream(new FileInputStream(f));
+        GZIPInputStream gis = new GZIPInputStream(new FileInputStream(f));
         buffer = new byte[100];
         gis.read(buffer);
         result = gis.read();

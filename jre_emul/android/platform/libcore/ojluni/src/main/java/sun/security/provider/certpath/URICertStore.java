@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import sun.security.action.GetIntegerAction;
 import sun.security.x509.AccessDescription;
 import sun.security.x509.GeneralNameInterface;
 import sun.security.x509.URIName;
@@ -138,9 +139,8 @@ class URICertStore extends CertStoreSpi {
      * value is negative, set the timeout length to the default.
      */
     private static int initializeTimeout() {
-//        Integer tmp = java.security.AccessController.doPrivileged(
-//          new GetIntegerAction("com.sun.security.crl.timeout"));
-        Integer tmp = Integer.getInteger("com.sun.security.crl.timeout");
+        Integer tmp = java.security.AccessController.doPrivileged(
+          new GetIntegerAction("com.sun.security.crl.timeout"));
         if (tmp == null || tmp < 0) {
             return DEFAULT_CRL_CONNECT_TIMEOUT;
         }

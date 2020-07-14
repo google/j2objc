@@ -48,14 +48,14 @@ namespace j2objc {
 
 namespace {
 
-void AddHeaderImports(std::set<string> &imports) {
+void AddHeaderImports(std::set<std::string>& imports) {
   imports.insert("J2ObjC_header.h");
   imports.insert("com/google/protobuf/GeneratedMessage.h");
   imports.insert("com/google/protobuf/ProtocolMessageEnum.h");
   imports.insert("java/lang/Enum.h");
 }
 
-void AddSourceImports(std::set<string> &imports) {
+void AddSourceImports(std::set<std::string>& imports) {
   imports.insert("J2ObjC_source.h");
   imports.insert("com/google/protobuf/RepeatedField.h");
   imports.insert("com/google/protobuf/Descriptors_PackagePrivate.h");
@@ -66,25 +66,27 @@ void PrintSourcePreamble(io::Printer *printer) {
       "#pragma GCC diagnostic ignored \"-Wprotocol\"\n"
       "#pragma clang diagnostic ignored \"-Wprotocol\"\n"
       "#pragma GCC diagnostic ignored \"-Wincomplete-implementation\"\n"
-      "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n");
+      "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n"
+      "#pragma clang diagnostic ignored "
+      "\"-Wdollar-in-identifier-extension\"\n");
 }
 
-void PrintImports(const std::set<string>* imports, io::Printer *printer) {
+void PrintImports(const std::set<std::string>* imports, io::Printer* printer) {
   if (!imports->empty()) {
     printer->Print("\n");
   }
-  for (std::set<string>::const_iterator it = imports->begin();
+  for (std::set<std::string>::const_iterator it = imports->begin();
        it != imports->end(); it++) {
     printer->Print("#import \"$header$\"\n", "header", *it);
   }
 }
 
-void PrintForwardDeclarations(const std::set<string>* declarations,
-                              io::Printer *printer) {
+void PrintForwardDeclarations(const std::set<std::string>* declarations,
+                              io::Printer* printer) {
   if (!declarations->empty()) {
     printer->Print("\n");
   }
-  for (std::set<string>::const_iterator it = declarations->begin();
+  for (std::set<std::string>::const_iterator it = declarations->begin();
        it != declarations->end(); it++) {
     printer->Print("$declaration$;\n", "declaration", *it);
   }
@@ -104,30 +106,12 @@ FileGenerator::FileGenerator(const FileDescriptor *file)
 
 FileGenerator::~FileGenerator() {}
 
-bool FileGenerator::Validate(string* error) {
+bool FileGenerator::Validate(std::string* error) {
   // Check that no class name matches the file's class name.  This is a common
   // problem that leads to Java compile errors that can be hard to understand.
   // It's especially bad when using the java_multiple_files, since we would
   // end up overwriting the outer class with one of the inner ones.
-
-  bool found_conflict = false;
-  for (int i = 0; i < file_->enum_type_count() && !found_conflict; i++) {
-    if (file_->enum_type(i)->name() == classname_) {
-      found_conflict = true;
-    }
-  }
-  for (int i = 0; i < file_->message_type_count() && !found_conflict; i++) {
-    if (file_->message_type(i)->name() == classname_) {
-      found_conflict = true;
-    }
-  }
-  for (int i = 0; i < file_->service_count() && !found_conflict; i++) {
-    if (file_->service(i)->name() == classname_) {
-      found_conflict = true;
-    }
-  }
-
-  if (found_conflict) {
+  if (HasConflictingClassName(file_, classname_)) {
     error->assign(file_->name());
     error->append(
       ": Cannot generate Java output because the file's outer class name, \"");
@@ -158,8 +142,8 @@ void FileGenerator::GenerateSourceBoilerplate(io::Printer* printer) {
 }
 
 void FileGenerator::GenerateHeader(GeneratorContext* context,
-                                   std::vector<string>* file_list) {
-  string filename = GetFileName(".h");
+                                   std::vector<std::string>* file_list) {
+  std::string filename = GetFileName(".h");
   file_list->push_back(filename);
 
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
@@ -167,9 +151,9 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
 
   GenerateHeaderBoilerplate(&printer);
 
-  std::set<string> headers;
+  std::set<std::string> headers;
   AddHeaderImports(headers);
-  std::set<string> declarations;
+  std::set<std::string> declarations;
   declarations.insert("@class ComGoogleProtobufExtensionRegistry");
   declarations.insert("@class ComGoogleProtobufExtensionRegistryLite");
 
@@ -237,8 +221,8 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateSource(GeneratorContext* context,
-                                   std::vector<string>* file_list) {
-  string filename = GetFileName(".m");
+                                   std::vector<std::string>* file_list) {
+  std::string filename = GetFileName(".m");
   file_list->push_back(filename);
 
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
@@ -246,7 +230,7 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
 
   GenerateSourceBoilerplate(&printer);
 
-  std::set<string> headers;
+  std::set<std::string> headers;
   AddSourceImports(headers);
   headers.insert(GetFileName(".h"));
   headers.insert("com/google/protobuf/ExtensionRegistry.h");
@@ -310,10 +294,6 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
     printer.Print("};\n");
     for (int i = 0; i < file_->extension_count(); i++) {
       ExtensionGenerator(file_->extension(i))
-          .GenerateNonStaticFieldData(&printer, "extensionFields", i);
-    }
-    for (int i = 0; i < file_->extension_count(); i++) {
-      ExtensionGenerator(file_->extension(i))
           .GenerateSourceInitializer(&printer);
     }
     printer.Print(
@@ -360,30 +340,30 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
   }
 }
 
-string FileGenerator::GetFileName(string suffix) {
+std::string FileGenerator::GetFileName(std::string suffix) {
   if (IsGenerateFileDirMapping()) {
     return StaticOutputFileName(file_, suffix);
   } else {
     return output_dir_ + classname_ + suffix;
   }
-};
+}
 
 void FileGenerator::Generate(GeneratorContext* context,
-                             std::vector<string>* file_list) {
+                             std::vector<std::string>* file_list) {
   GenerateHeader(context, file_list);
   GenerateSource(context, file_list);
 }
 
 void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
-                                       std::vector<string>* file_list,
+                                       std::vector<std::string>* file_list,
                                        const EnumDescriptor* descriptor) {
-  string filename = output_dir_ + descriptor->name() + ".h";
+  std::string filename = output_dir_ + descriptor->name() + ".h";
   file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
-  std::set<string> headers;
+  std::set<std::string> headers;
   AddHeaderImports(headers);
   PrintImports(&headers, &printer);
 
@@ -392,9 +372,9 @@ void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateEnumSource(GeneratorContext* context,
-                                       std::vector<string>* file_list,
+                                       std::vector<std::string>* file_list,
                                        const EnumDescriptor* descriptor) {
-  string filename = output_dir_ + descriptor->name() + ".m";
+  std::string filename = output_dir_ + descriptor->name() + ".m";
   file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
@@ -402,7 +382,7 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
   GenerateBoilerplate(&printer);
 
   EnumGenerator generator(descriptor);
-  std::set<string> headers;
+  std::set<std::string> headers;
   headers.insert(output_dir_ + descriptor->name() + ".h");
   AddSourceImports(headers);
   generator.CollectSourceImports(&headers);
@@ -412,9 +392,9 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
-                                          std::vector<string>* file_list,
+                                          std::vector<std::string>* file_list,
                                           const Descriptor* descriptor) {
-  string filename = output_dir_ + descriptor->name() + ".h";
+  std::string filename = output_dir_ + descriptor->name() + ".h";
   file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
@@ -422,22 +402,22 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
   GenerateBoilerplate(&printer);
 
   MessageGenerator generator(descriptor);
-  std::set<string> headers;
+  std::set<std::string> headers;
   headers.insert(output_dir_ + descriptor->name() + "OrBuilder.h");
   AddHeaderImports(headers);
   generator.CollectHeaderImports(&headers);
   PrintImports(&headers, &printer);
 
-  std::set<string> declarations;
+  std::set<std::string> declarations;
   generator.CollectForwardDeclarations(&declarations);
   PrintForwardDeclarations(&declarations, &printer);
   generator.GenerateHeader(&printer);
 }
 
 void FileGenerator::GenerateMessageSource(GeneratorContext* context,
-                                          std::vector<string>* file_list,
+                                          std::vector<std::string>* file_list,
                                           const Descriptor* descriptor) {
-  string filename = output_dir_ + descriptor->name() + ".m";
+  std::string filename = output_dir_ + descriptor->name() + ".m";
   file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
@@ -445,7 +425,7 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
   GenerateBoilerplate(&printer);
 
   MessageGenerator generator(descriptor);
-  std::set<string> headers;
+  std::set<std::string> headers;
   headers.insert(output_dir_ + descriptor->name() + ".h");
   generator.CollectSourceImports(&headers);
   AddSourceImports(headers);
@@ -454,10 +434,10 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
   generator.GenerateSource(&printer);
 }
 
-void FileGenerator::GenerateMessageOrBuilder(GeneratorContext* context,
-                                             std::vector<string>* file_list,
-                                             const Descriptor* descriptor) {
-  string filename = output_dir_ + descriptor->name() + "OrBuilder.h";
+void FileGenerator::GenerateMessageOrBuilder(
+    GeneratorContext* context, std::vector<std::string>* file_list,
+    const Descriptor* descriptor) {
+  std::string filename = output_dir_ + descriptor->name() + "OrBuilder.h";
   file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
@@ -465,18 +445,18 @@ void FileGenerator::GenerateMessageOrBuilder(GeneratorContext* context,
   GenerateBoilerplate(&printer);
   MessageGenerator generator(descriptor);
 
-  std::set<string> headers;
+  std::set<std::string> headers;
   generator.CollectMessageOrBuilderImports(&headers);
   PrintImports(&headers, &printer);
 
-  std::set<string> declarations;
+  std::set<std::string> declarations;
   generator.CollectMessageOrBuilderForwardDeclarations(&declarations);
   PrintForwardDeclarations(&declarations, &printer);
   generator.GenerateMessageOrBuilder(&printer);
 }
 
 void FileGenerator::GenerateSiblings(GeneratorContext* context,
-                                     std::vector<string>* file_list) {
+                                     std::vector<std::string>* file_list) {
   if (GenerateMultipleFiles()) {
     for (int i = 0; i < file_->enum_type_count(); i++) {
       GenerateEnumHeader(context, file_list, file_->enum_type(i));
@@ -494,12 +474,13 @@ bool FileGenerator::GenerateMultipleFiles() {
   return file_->options().java_multiple_files() && !IsGenerateFileDirMapping();
 }
 
-void PrintProperty(io::Printer* printer, const string& key, const string& value) {
+void PrintProperty(io::Printer* printer, const std::string& key,
+                   const std::string& value) {
   printer->Print("$key$=$value$\n", "key", key, "value", value);
 }
 
 void FileGenerator::GenerateHeaderMappings(GeneratorContext* context) {
-  string headerFile = StaticOutputFileName(file_, ".h");
+  std::string headerFile = StaticOutputFileName(file_, ".h");
   std::unique_ptr<io::ZeroCopyOutputStream> output(
       context->Open(FileDirMappingOutputName(file_)));
   io::Printer printer(output.get(), '$');
@@ -509,7 +490,7 @@ void FileGenerator::GenerateHeaderMappings(GeneratorContext* context) {
   }
 
   for (int i = 0; i < file_->message_type_count(); i++) {
-    string messageClassName = JavaClassName(file_->message_type(i));
+    std::string messageClassName = JavaClassName(file_->message_type(i));
     PrintProperty(&printer, messageClassName, headerFile);
     PrintProperty(&printer, messageClassName + "OrBuilder", headerFile);
   }
@@ -525,7 +506,7 @@ void PrintClassMappings(const Descriptor* descriptor, io::Printer* printer) {
 }
 
 void FileGenerator::GenerateClassMappings(GeneratorContext* context) {
-  string filename = MappedInputName(file_) + ".clsmap.properties";
+  std::string filename = MappedInputName(file_) + ".clsmap.properties";
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
   PrintProperty(&printer, JavaClassName(file_), ClassName(file_));

@@ -238,7 +238,7 @@ import sun.security.jca.GetInstance.Instance;
  * </table>
  *
  * These algorithms are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#Signature">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#Signature">
  * Signature section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -298,7 +298,7 @@ public abstract class Signature extends SignatureSpi {
      *
      * @param algorithm the standard string name of the algorithm.
      * See the Signature section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#Signature">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#Signature">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      */
@@ -338,7 +338,7 @@ public abstract class Signature extends SignatureSpi {
      *
      * @param algorithm the standard name of the algorithm requested.
      * See the Signature section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#Signature">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#Signature">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -368,6 +368,8 @@ public abstract class Signature extends SignatureSpi {
         do {
             Service s = t.next();
             if (isSpi(s)) {
+                // Android-changed: Delegate constructor only takes algorithm.
+                // return new Delegate(s, t, algorithm);
                 return new Delegate(algorithm);
             } else {
                 // must be a subclass of Signature, disable dynamic selection
@@ -463,7 +465,7 @@ public abstract class Signature extends SignatureSpi {
      *
      * @param algorithm the name of the algorithm requested.
      * See the Signature section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#Signature">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#Signature">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -497,6 +499,10 @@ public abstract class Signature extends SignatureSpi {
             }
             return getInstanceRSA(p);
         }
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "Signature", algorithm);
+         */
         Instance instance = GetInstance.getInstance
                 ("Signature", SignatureSpi.class, algorithm, provider);
         return getInstance(instance, algorithm);
@@ -513,7 +519,7 @@ public abstract class Signature extends SignatureSpi {
      *
      * @param algorithm the name of the algorithm requested.
      * See the Signature section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#Signature">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#Signature">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -540,6 +546,10 @@ public abstract class Signature extends SignatureSpi {
             }
             return getInstanceRSA(provider);
         }
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "Signature", algorithm);
+         */
         Instance instance = GetInstance.getInstance
                 ("Signature", SignatureSpi.class, algorithm, provider);
         return getInstance(instance, algorithm);
@@ -1065,7 +1075,7 @@ public abstract class Signature extends SignatureSpi {
      * @deprecated Deprecated.
      */
     @Deprecated
-    // Android-changed add "Deprecated."
+    // Android-changed: add "Deprecated."
     public final Object getParameter(String param)
             throws InvalidParameterException {
         return engineGetParameter(param);
@@ -1087,6 +1097,7 @@ public abstract class Signature extends SignatureSpi {
         }
     }
 
+    // BEGIN Android-added: Allow access to the current SPI for testing purposes.
     /**
      * Returns the {@code SignatureSpi} backing this {@code Signature}.
      *
@@ -1095,6 +1106,7 @@ public abstract class Signature extends SignatureSpi {
     public SignatureSpi getCurrentSpi() {
       return null;
     }
+    // END Android-added: Allow access to the current SPI for testing purposes.
 
     /*
      * The following class allows providers to extend from SignatureSpi
@@ -1115,25 +1127,43 @@ public abstract class Signature extends SignatureSpi {
 
         // The provider implementation (delegate)
         // filled in once the provider is selected
-        // BEGIN Android-added
+        // BEGIN Android-note: Note on sigSpi invariants.
         // (Not necessarily Android specific)
         // Invariant to be preserved: sigSpi cannot be changed once it was assigned to something
-        // different than null and lock is null. That is the case when sigSpi is specified in the
-        // constructor.
-        // END Android-added
+        // different than null and lock is null. That is only the case when sigSpi is specified
+        // in the constructor.
+        // END Android-note: Note on sigSpi invariants.
         private SignatureSpi sigSpi;
 
         // lock for mutex during provider selection
         private final Object lock;
 
+        // BEGIN Android-removed: Redo the provider selection logic to allow reselecting provider.
+        // When only the algorithm is specified, we want to allow the Signature provider for that
+        // algorithm to change if multiple providers exist and they support different subsets of
+        // keys.  To that end, we don't hold an iterator and exhaust it when we need to choose
+        // a provider like the upstream implementation, we reestablish the list of providers
+        // each time.
+        /*
+        // next service to try in provider selection
+        // null once provider is selected
+        private Service firstService;
+
+        // remaining services to try in provider selection
+        // null once provider is selected
+        private Iterator<Service> serviceIterator;
+        */
+        // END Android-removed: Redo the provider selection logic to allow reselecting provider.
+
         // constructor
         Delegate(SignatureSpi sigSpi, String algorithm) {
             super(algorithm);
             this.sigSpi = sigSpi;
-            this.lock = null;
+            this.lock = null; // no lock needed
         }
 
         // used with delayed provider selection
+        // Android-changed: Remove Service and Iterator from constructor args.
         Delegate(String algorithm) {
             super(algorithm);
             this.lock = new Object();
@@ -1216,6 +1246,7 @@ public abstract class Signature extends SignatureSpi {
                 */
                 // END Android-removed: this debugging mechanism is not supported in Android.
                 Exception lastException = null;
+// BEGIN Android-changed: Provider selection; loop over a new list each time.
                 List<Service> list;
                 if (((Signature)this).algorithm.equalsIgnoreCase(RSA_SIGNATURE)) {
                     list = GetInstance.getServices(rsaIds);
@@ -1224,12 +1255,19 @@ public abstract class Signature extends SignatureSpi {
                             ((Signature)this).algorithm);
                 }
                 for (Service s : list) {
+// END Android-changed: Provider selection; loop over a new list each time.
                     if (isSpi(s) == false) {
                         continue;
                     }
                     try {
                         sigSpi = newInstance(s);
                         provider = s.getProvider();
+                        // Android-removed: Provider selection; loop over a new list each time.
+                        /*
+                        // not needed any more
+                        firstService = null;
+                        serviceIterator = null;
+                        */
                         return;
                     } catch (NoSuchAlgorithmException e) {
                         lastException = e;
@@ -1247,11 +1285,14 @@ public abstract class Signature extends SignatureSpi {
         private void chooseProvider(int type, Key key, SecureRandom random)
                 throws InvalidKeyException {
             synchronized (lock) {
+                // Android-changed: Use the currently-selected provider only if no key was provided.
+                // if (sigSpi != null) {
                 if (sigSpi != null && key == null) {
                     init(sigSpi, type, key, random);
                     return;
                 }
                 Exception lastException = null;
+// BEGIN Android-changed: Provider selection; loop over a new list each time.
                 List<Service> list;
                 if (((Signature)this).algorithm.equalsIgnoreCase(RSA_SIGNATURE)) {
                     list = GetInstance.getServices(rsaIds);
@@ -1260,6 +1301,7 @@ public abstract class Signature extends SignatureSpi {
                             ((Signature)this).algorithm);
                 }
                 for (Service s : list) {
+// END Android-changed: Provider selection; loop over a new list each time.
                     // if provider says it does not support this key, ignore it
                     if (s.supportsParameter(key) == false) {
                         continue;
@@ -1273,6 +1315,11 @@ public abstract class Signature extends SignatureSpi {
                         init(spi, type, key, random);
                         provider = s.getProvider();
                         sigSpi = spi;
+                        // Android-removed: Provider selection; loop over a new list each time.
+                        /*
+                        firstService = null;
+                        serviceIterator = null;
+                        */
                         return;
                     } catch (Exception e) {
                         // NoSuchAlgorithmException from newInstance()
@@ -1281,6 +1328,7 @@ public abstract class Signature extends SignatureSpi {
                         if (lastException == null) {
                             lastException = e;
                         }
+                        // Android-added: Throw InvalidKeyException immediately.
                         if (lastException instanceof InvalidKeyException) {
                           throw (InvalidKeyException)lastException;
                         }
@@ -1323,6 +1371,8 @@ public abstract class Signature extends SignatureSpi {
 
         protected void engineInitVerify(PublicKey publicKey)
                 throws InvalidKeyException {
+            // Android-changed: Use the currently-selected provider only if no key was provided.
+            // if (sigSpi != null) {
             if (sigSpi != null && (lock == null || publicKey == null)) {
                 sigSpi.engineInitVerify(publicKey);
             } else {
@@ -1332,6 +1382,8 @@ public abstract class Signature extends SignatureSpi {
 
         protected void engineInitSign(PrivateKey privateKey)
                 throws InvalidKeyException {
+            // Android-changed: Use the currently-selected provider only if no key was provided.
+            // if (sigSpi != null) {
             if (sigSpi != null && (lock == null || privateKey == null)) {
                 sigSpi.engineInitSign(privateKey);
             } else {
@@ -1341,6 +1393,8 @@ public abstract class Signature extends SignatureSpi {
 
         protected void engineInitSign(PrivateKey privateKey, SecureRandom sr)
                 throws InvalidKeyException {
+            // Android-changed: Use the currently-selected provider only if no key was provided.
+            // if (sigSpi != null) {
             if (sigSpi != null  && (lock == null || privateKey == null)) {
                 sigSpi.engineInitSign(privateKey, sr);
             } else {
@@ -1410,6 +1464,7 @@ public abstract class Signature extends SignatureSpi {
             return sigSpi.engineGetParameters();
         }
 
+        // BEGIN Android-added: Allow access to the current SPI for testing purposes.
         @Override
         public SignatureSpi getCurrentSpi() {
             if (lock == null) {
@@ -1419,6 +1474,7 @@ public abstract class Signature extends SignatureSpi {
                 return sigSpi;
             }
         }
+        // END Android-added: Allow access to the current SPI for testing purposes.
     }
 
     // adapter for RSA/ECB/PKCS1Padding ciphers

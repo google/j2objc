@@ -22,7 +22,7 @@ import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 import junit.framework.TestCase;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public final class SerializationTest extends TestCase {
 

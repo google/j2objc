@@ -16,7 +16,6 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
 .PHONY: default clean
 
 include environment.mk
@@ -68,6 +67,7 @@ NET_OBJS_RELATIVE = $(JAVA_SOURCES_NET:.java=.o) $(NATIVE_JRE_SOURCES_NET:.m=.o)
 UTIL_OBJS_RELATIVE = $(JAVA_SOURCES_UTIL:.java=.o)
 CONCURRENT_OBJS_RELATIVE = $(JAVA_SOURCES_CONCURRENT:.java=.o)
 CHANNELS_OBJS_RELATIVE = $(JAVA_SOURCES_CHANNELS:.java=.o) $(NATIVE_JRE_SOURCES_CHANNELS:.m=.o)
+FILE_OBJS_RELATIVE = $(JAVA_SOURCES_FILE:.java=.o)
 SECURITY_OBJS_RELATIVE = $(JAVA_SOURCES_SECURITY:.java=.o)
 SSL_OBJS_RELATIVE = $(JAVA_SOURCES_SSL:.java=.o) $(NATIVE_JRE_SOURCES_SSL:.m=.o)
 XML_OBJS_RELATIVE = $(JAVA_SOURCES_XML:.java=.o)
@@ -88,6 +88,7 @@ LIBS += $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_util,$(UTIL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_concurrent,$(CONCURRENT_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_channels,$(CHANNELS_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_file,$(FILE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_security,$(SECURITY_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_ssl,$(SSL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_xml,$(XML_OBJS_RELATIVE))
@@ -106,11 +107,11 @@ PUBLIC_TRANSLATED_HEADERS = $(JAVA_PUBLIC_SOURCES:.java=.h)
 INCLUDES = $(PUBLIC_TRANSLATED_HEADERS) $(PUBLIC_EMULATION_HEADERS)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
 
-STATIC_FRAMEWORK_NAME = JRE
-STATIC_FRAMEWORK_HEADERS = $(PUBLIC_EMULATION_HEADERS) $(PUBLIC_TRANSLATED_HEADERS)
+FRAMEWORK_NAME = JRE
+FRAMEWORK_HEADERS = $(PUBLIC_EMULATION_HEADERS) $(PUBLIC_TRANSLATED_HEADERS)
 STATIC_LIBRARY_NAME = $(TRANSLATE_NAME)
 STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
-include ../make/static_framework.mk
+include ../make/framework.mk
 
 JRE_EMUL_LICENSES = \
   $(DIST_LICENSE_DIR)/android_license.txt \
@@ -176,14 +177,19 @@ clean:
 	@rm -f $(DIST_DIR)/j2objcc $(DIST_LIBS) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 	@rm -f $(JRE_EMUL_LICENSES)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 	@$(MAKE) -f java.mk clean
 
 dist: jre_emul_jars_dist libs_dist $(DIST_DIR)/j2objcc licenses
 
 jars_dist: jre_emul_jars_dist
 
-libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
+libs_dist: archs_list libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
+
+# Log which archs will be built (phony because archs_list isn't a file).
+.PHONY: archs_list
+archs_list:
+	@$(info building jre_emul archs: ${J2OBJC_ARCHS})
 
 $(ARCH_LIB_DIR)/%.a: $(ARCH_BUILD_DIR)/%.a
 	@mkdir -p $(@D)
@@ -215,6 +221,7 @@ OBJC_SOURCES_MANIFESTS := \
   $(call objc_manifest,objc_sources_util,$(JAVA_SOURCES_UTIL)) \
   $(call objc_manifest,objc_sources_concurrent,$(JAVA_SOURCES_CONCURRENT)) \
   $(call objc_manifest,objc_sources_channels,$(JAVA_SOURCES_CHANNELS)) \
+  $(call objc_manifest,objc_sources_file,$(JAVA_SOURCES_FILE)) \
   $(call objc_manifest,objc_sources_security,$(JAVA_SOURCES_SECURITY)) \
   $(call objc_manifest,objc_sources_ssl,$(JAVA_SOURCES_SSL)) \
   $(call objc_manifest,objc_sources_xml,$(JAVA_SOURCES_XML)) \
@@ -250,4 +257,3 @@ $(DIST_LICENSE_DIR)/icu_license.txt: icu4c/LICENSE
 $(DIST_LICENSE_DIR)/openjdk_license.txt: openjdk/LICENSE
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
-

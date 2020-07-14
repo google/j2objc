@@ -74,6 +74,8 @@ JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, SEL se
 JavaLangReflectMethod *JreMethodWithNameAndParamTypesInherited(
     IOSClass *iosClass, NSString *name, IOSObjectArray *types) J2OBJC_METHOD_ATTR;
 JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, SEL selector) J2OBJC_METHOD_ATTR;
+// Returns a string representation of the metadata.
+NSString *JreMetadataToString(const J2ObjcClassInfo *metadata);
 
 // J2ObjcMethodInfo accessor functions.
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable) J2OBJC_METHOD_ATTR;

@@ -34,6 +34,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.SignatureException;
+import java.security.SignatureSpi;
 import java.security.cert.Certificate;
 import java.security.spec.AlgorithmParameterSpec;
 
@@ -519,6 +520,19 @@ public class SignatureTest extends TestCase {
 
     }
 
+    // https://android-review.googlesource.com/#/c/309105/
+    // http://b/33383388
+    // getCurrentSpi throws a NPE on a Signature that was obtained via a provider that has that
+    // algorithm registered for a SignatureSpi.
+    public void testSignature_getCurrentSpi_Success() throws Exception {
+        Provider provider = new MyProvider(
+                "TestProvider", 1.0, "Test Provider", "Signature.ABC",
+                MySignatureSpi.class.getName());
+        Signature signature = Signature.getInstance("ABC", provider);
+        assertNotNull(signature.getCurrentSpi());
+        assertEquals(MySignatureSpi.class, signature.getCurrentSpi().getClass());
+    }
+
     private class MyKey implements Key {
         public String getFormat() {
             return "123";
@@ -557,11 +571,78 @@ public class SignatureTest extends TestCase {
     }
 
     @SuppressWarnings("unused")
-    protected static class MySignature extends Signature implements Cloneable {
+    // Needs to be public as this is checked by the provider class when providing an instance of
+    // a class
+    // There is a lot of code duplication, or better said, signature duplication with respect to
+    // MySignatureSpi. However, as for the test to check the desired functionality this class
+    // must extend from Signature and MySignatureSpi must extend from SignatureSpi. Then there is
+    // no way to avoid duplication other than delegation, but delegation would require to repeat
+    // all method signatures once more.
+    public static class MySignature extends Signature implements Cloneable {
 
         public MySignature() {
             super("TestSignature");
         }
+
+        @Override
+        protected Object engineGetParameter(String param)
+                throws InvalidParameterException {
+            throw new InvalidParameterException();
+        }
+
+        @Override
+        protected void engineInitSign(PrivateKey privateKey)
+                throws InvalidKeyException {
+            throw new InvalidKeyException();
+        }
+
+        @Override
+        protected void engineInitVerify(PublicKey publicKey)
+                throws InvalidKeyException {
+            throw new InvalidKeyException();
+        }
+
+        @Override
+        protected void engineSetParameter(String param, Object value)
+                throws InvalidParameterException {
+            throw new InvalidParameterException();
+        }
+
+        @Override
+        protected byte[] engineSign() throws SignatureException {
+            return null;
+        }
+
+        @Override
+        protected void engineUpdate(byte b) throws SignatureException {
+            throw new SignatureException();
+        }
+
+        @Override
+        protected void engineUpdate(byte[] b, int off, int len)
+                throws SignatureException {
+
+        }
+
+        @Override
+        protected boolean engineVerify(byte[] sigBytes)
+                throws SignatureException {
+            return false;
+        }
+
+        @Override
+        protected void engineSetParameter(AlgorithmParameterSpec params)
+                throws InvalidAlgorithmParameterException {
+            if (params == null) {
+                throw new InvalidAlgorithmParameterException();
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    // Needs to be public as this is checked by the provider class when providing an instance of
+    // a class
+    public static class MySignatureSpi extends SignatureSpi implements Cloneable {
 
         @Override
         protected Object engineGetParameter(String param)

@@ -19,7 +19,7 @@ package libcore.java.net;
 import junit.framework.TestCase;
 import java.net.URI;
 import java.net.URISyntaxException;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public final class URITest extends TestCase {
 

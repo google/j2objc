@@ -31,11 +31,11 @@ import android.icu.util.TimeZone;
 import android.icu.util.ULocale;
 import android.icu.util.UResourceBundle;
 
-// TODO(user): test is broken in main branch
+// TODO(junit): test is broken in main branch
 
 public class DisplayNameTest extends TestFmwk {
     static final boolean SHOW_ALL = false;
-
+    
     interface DisplayNameGetter {
         public String get(ULocale locale, String code, Object context);
     }
@@ -44,12 +44,12 @@ public class DisplayNameTest extends TestFmwk {
     {
         for (int k = 0; k < codeToName.length; ++k) codeToName[k] = new HashMap();
     }
-
+    
     static final Object[] zoneFormats = {new Integer(0), new Integer(1), new Integer(2),
         new Integer(3), new Integer(4), new Integer(5), new Integer(6), new Integer(7)};
     static final Object[] currencyFormats = {new Integer(Currency.SYMBOL_NAME), new Integer(Currency.LONG_NAME)};
     static final Object[] NO_CONTEXT = {null};
-
+    
     static final Date JAN1;
     static final Date JULY1;
 
@@ -134,9 +134,9 @@ public class DisplayNameTest extends TestFmwk {
         });
 
     }
-
+    
     Map zoneData = new HashMap();
-
+    
     private String getZoneString(ULocale locale, String olsonID, int item) {
         Map data = (Map)zoneData.get(locale);
         if (data == null) {
@@ -164,7 +164,7 @@ public class DisplayNameTest extends TestFmwk {
         if (strings == null || item >= strings.length) return olsonID;
         return strings[item];
     }
-
+    
     static String[][] zonesAliases = {
         {"America/Atka", "America/Atka"},
         {"America/Ensenada", "America/Ensenada"},
@@ -352,9 +352,9 @@ public class DisplayNameTest extends TestFmwk {
         System.arraycopy(strings,0,result,2,strings.length);
         return result;
     }
-
+    
     Map bogusZones = null;
-
+    
     private Map getAliasMap() {
         if (bogusZones == null) {
             bogusZones = new TreeMap();
@@ -366,7 +366,7 @@ public class DisplayNameTest extends TestFmwk {
     }
 
 
-    private void check(String type, ULocale locale,
+    private void check(String type, ULocale locale, 
       String[] codes, Object[] contextList, DisplayNameGetter getter) {
         if (contextList == null) contextList = NO_CONTEXT;
         for (int k = 0; k < contextList.length; ++k) codeToName[k].clear();
@@ -382,7 +382,7 @@ public class DisplayNameTest extends TestFmwk {
                         + ":\t" + locale + " [" + locale.getDisplayName(ULocale.ENGLISH) + "]"
                         + "\t" + code + " [" + getter.get(ULocale.ENGLISH, code, context) + "]"
                     );
-                    continue;
+                    continue;            
                 }
                 String otherCode = (String) codeToName[k].get(name);
                 if (otherCode != null) {
@@ -396,11 +396,11 @@ public class DisplayNameTest extends TestFmwk {
                 } else {
                     codeToName[k].put(name, code);
                     if (SHOW_ALL) logln(
-                        type
+                        type 
                         + " (" + ((context != null) ? context : "") + ")"
                         + "\t" + locale + " [" + locale.getDisplayName(ULocale.ENGLISH) + "]"
                         + "\t" + code + "[" + getter.get(ULocale.ENGLISH, code, context) + "]"
-                        + "\t=> " + name
+                        + "\t=> " + name 
                     );
                 }
             }

@@ -27,11 +27,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import junit.framework.TestCase;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public class ZipInputStreamTest extends TestCase {
+public class ZipInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
+
     // the file hyts_zipFile.zip used in setup needs to included as a resource
     private ZipEntry zentry;
 
@@ -171,11 +178,11 @@ public class ZipInputStreamTest extends TestCase {
             }
         };
 
-        zis = new ZipInputStream(in);
-        while ((zentry = zis.getNextEntry()) != null) {
-            zentry.getName();
+        try (ZipInputStream zis = new ZipInputStream(in)) {
+            while ((zentry = zis.getNextEntry()) != null) {
+                zentry.getName();
+            }
         }
-        zis.close();
     }
 
     /**
@@ -193,18 +200,19 @@ public class ZipInputStreamTest extends TestCase {
         long s = zis.skip(1025);
         assertEquals("invalid skip: " + s, 1025, s);
 
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipBytes));
-        zis.getNextEntry();
-        long skipLen = dataBytes.length / 2;
-        assertEquals("Assert 0: failed valid skip", skipLen, zis.skip(skipLen));
-        zis.skip(dataBytes.length);
-        assertEquals("Assert 1: performed invalid skip", 0, zis.skip(1));
-        assertEquals("Assert 2: failed zero len skip", 0, zis.skip(0));
-        try {
-            zis.skip(-1);
-            fail("Assert 3: Expected Illegal argument exception");
-        } catch (IllegalArgumentException e) {
-            // Expected
+        try (ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipBytes))) {
+            zis.getNextEntry();
+            long skipLen = dataBytes.length / 2;
+            assertEquals("Assert 0: failed valid skip", skipLen, zis.skip(skipLen));
+            zis.skip(dataBytes.length);
+            assertEquals("Assert 1: performed invalid skip", 0, zis.skip(1));
+            assertEquals("Assert 2: failed zero len skip", 0, zis.skip(0));
+            try {
+                zis.skip(-1);
+                fail("Assert 3: Expected Illegal argument exception");
+            } catch (IllegalArgumentException e) {
+                // Expected
+            }
         }
     }
 
@@ -228,7 +236,7 @@ public class ZipInputStreamTest extends TestCase {
         if (i != entrySize) {
             fail("ZipInputStream.available or ZipInputStream.skip does not " +
                     "working properly. Only skipped " + i +
-                    " bytes instead of " + entrySize);
+                    " bytes instead of " + entrySize + " for entry " + entry.getName());
         }
         assertEquals(0, zis1.skip(1));
         assertEquals(0, zis1.available());

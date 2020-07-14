@@ -244,7 +244,7 @@ public class MeasureUnitTest extends TestFmwk {
      * @author markdavis
      *
      */
-    // TODO(user): resolve
+    // TODO(junit): resolve
 //    public static void main(String[] args) {
 //        //generateConstants(); if (true) return;
 //

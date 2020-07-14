@@ -108,7 +108,7 @@ public class WeakReferenceTest extends TestCase {
   @Test
   public void testGetClassMethod() {
     Object obj = new Object();
-    new WeakReference(obj);
+    new WeakReference<>(obj);
     assertSame(Object.class, obj.getClass());
   }
 

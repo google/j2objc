@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,7 +25,11 @@
 
 package javax.crypto;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 
 /**
  * A CipherInputStream is composed of an InputStream and a Cipher so
@@ -86,6 +90,8 @@ public class CipherInputStream extends FilterInputStream {
     private int ostart = 0;
     // the offset pointing to the last "new" byte
     private int ofinish = 0;
+    // stream status
+    private boolean closed = false;
 
     /**
      * private convenience function.
@@ -97,32 +103,51 @@ public class CipherInputStream extends FilterInputStream {
      * return (ofinish-ostart) (we have this many bytes for you)
      * return 0 (no data now, but could have more later)
      * return -1 (absolutely no more data)
+     *
+     * Note:  Exceptions are only thrown after the stream is completely read.
+     * For AEAD ciphers a read() of any length will internally cause the
+     * whole stream to be read fully and verify the authentication tag before
+     * returning decrypted data or exceptions.
      */
     private int getMoreData() throws IOException {
+        // Android-changed: The method was creating a new object every time update(byte[], int, int)
+        // or doFinal() was called resulting in the old object being GCed. With do(byte[], int) and
+        // update(byte[], int, int, byte[], int), we use already initialized obuffer.
         if (done) return -1;
+        ofinish = 0;
+        ostart = 0;
+        int expectedOutputSize = cipher.getOutputSize(ibuffer.length);
+        if (obuffer == null || expectedOutputSize > obuffer.length) {
+            obuffer = new byte[expectedOutputSize];
+        }
         int readin = input.read(ibuffer);
         if (readin == -1) {
             done = true;
             try {
-                obuffer = cipher.doFinal();
+                // doFinal resets the cipher and it is the final call that is made. If there isn't
+                // any more byte available, it returns 0. In case of any exception is raised,
+                // obuffer will get reset and therefore, it is equivalent to no bytes returned.
+                ofinish = cipher.doFinal(obuffer, 0);
+            } catch (IllegalBlockSizeException | BadPaddingException e) {
+                obuffer = null;
+                throw new IOException(e);
+            } catch (ShortBufferException e) {
+                obuffer = null;
+                throw new IllegalStateException("ShortBufferException is not expected", e);
             }
-            catch (IllegalBlockSizeException e) {obuffer = null;}
-            catch (BadPaddingException e) {obuffer = null;}
-            if (obuffer == null)
-                return -1;
-            else {
-                ostart = 0;
-                ofinish = obuffer.length;
-                return ofinish;
+        } else {
+            // update returns number of bytes stored in obuffer.
+            try {
+                ofinish = cipher.update(ibuffer, 0, readin, obuffer, 0);
+            } catch (IllegalStateException e) {
+                obuffer = null;
+                throw e;
+            } catch (ShortBufferException e) {
+                // Should not reset the value of ofinish as the cipher is still not invalidated.
+                obuffer = null;
+                throw new IllegalStateException("ShortBufferException is not expected", e);
             }
         }
-        try {
-            obuffer = cipher.update(ibuffer, 0, readin);
-        } catch (IllegalStateException e) {obuffer = null;};
-        ostart = 0;
-        if (obuffer == null)
-            ofinish = 0;
-        else ofinish = obuffer.length;
         return ofinish;
     }
 
@@ -243,7 +268,7 @@ public class CipherInputStream extends FilterInputStream {
      * <p>Fewer bytes than requested might be skipped.
      * The actual number of bytes skipped is equal to <code>n</code> or
      * the result of a call to
-     * {@link #available() <code>available</code>},
+     * {@link #available() available},
      * whichever is smaller.
      * If <code>n</code> is less than zero, no bytes are skipped.
      *
@@ -293,14 +318,24 @@ public class CipherInputStream extends FilterInputStream {
      * @since JCE1.2
      */
     public void close() throws IOException {
+        if (closed) {
+            return;
+        }
+
+        closed = true;
         input.close();
-        try {
-            // throw away the unprocessed data
-            cipher.doFinal();
-        }
-        catch (BadPaddingException ex) {
-        }
-        catch (IllegalBlockSizeException ex) {
+
+        // Android-removed: Removed a now-inaccurate comment
+        if (!done) {
+            try {
+                cipher.doFinal();
+            }
+            catch (BadPaddingException | IllegalBlockSizeException ex) {
+                // Android-changed: Added throw if bad tag is seen.  See b/31590622.
+                if (ex instanceof AEADBadTagException) {
+                    throw new IOException(ex);
+                }
+            }
         }
         ostart = 0;
         ofinish = 0;

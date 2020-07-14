@@ -1623,7 +1623,6 @@ public class StringBuilderTest extends TestCase {
         str = "abcdefg";
         reverseTest(str, "gfedcba", str);
 
-        /* TODO(tball): update illegal Unicode characters.
         str = "\ud800\udc00";
         reverseTest(str, str, str);
 
@@ -1674,7 +1673,6 @@ public class StringBuilderTest extends TestCase {
 
         str = "abcd\ud802\udc02\ud801\udc01\ud800\udc00";
         reverseTest(str, "\ud800\udc00\ud801\udc01\ud802\udc02dcba", str);
-        */
     }
 
     /**

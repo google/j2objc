@@ -3659,6 +3659,12 @@ public class Bidi {
         System.arraycopy(getLevels(), 0, saveLevels, 0, this.length);
         saveTrailingWSStart = trailingWSStart;
 
+        /* FOOD FOR THOUGHT: instead of writing the visual text, we could use
+         * the visual map and the dirProps array to drive the second call
+         * to setPara (but must make provision for possible removal of
+         * Bidi controls.  Alternatively, only use the dirProps array via
+         * customized classifier callback.
+         */
         visualText = writeReordered(DO_MIRRORING);
         visualMap = getVisualMap();
         this.reorderingOptions = saveOptions;

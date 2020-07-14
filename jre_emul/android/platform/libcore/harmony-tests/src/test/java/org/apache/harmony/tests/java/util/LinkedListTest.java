@@ -943,8 +943,8 @@ public class LinkedListTest extends junit.framework.TestCase {
     }
 
     public void test_forEachRemaining_iterator() throws Exception {
-        ForEachRemainingTester.runTests(LinkedList.class, new String[]{ "foo", "bar", "baz "});
-        ForEachRemainingTester.runTests(LinkedList.class, new String[] { "foo" });
+        ForEachRemainingTester.runTests(LinkedList::new, new String[]{ "foo", "bar", "baz "});
+        ForEachRemainingTester.runTests(LinkedList::new, new String[] { "foo" });
     }
 
     public void test_spliterator() throws Exception {

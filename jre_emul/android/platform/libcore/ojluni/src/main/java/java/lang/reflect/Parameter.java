@@ -269,8 +269,13 @@ public final class Parameter implements AnnotatedElement {
      */
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         Objects.requireNonNull(annotationClass);
-        T[] annotations = getAnnotationsByType(annotationClass);
-        return annotations.length > 0 ? annotations[0] : null;
+        Annotation[] annotations = getDeclaredAnnotations();
+        for (int i = 0; i < annotations.length; ++i) {
+          if (annotationClass.isInstance(annotations[i])) {
+            return (T)annotations[i];
+          }
+        }
+        return null;
     }
 
     /**

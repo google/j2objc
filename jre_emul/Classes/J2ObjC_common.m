@@ -22,6 +22,7 @@
 #import "IOSClass.h"
 #import "JreRetainedWith.h"
 #import "java/lang/AbstractStringBuilder.h"
+#import "java/lang/ArithmeticException.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/Iterable.h"
@@ -45,6 +46,10 @@ void JreThrowClassCastExceptionWithIOSClass(id obj, IOSClass *cls) {
   @throw create_JavaLangClassCastException_initWithNSString_(  // NOLINT
       [NSString stringWithFormat:@"Cannot cast object of type %@ to %@",
           [[obj java_getClass] getName], [cls getName]]);
+}
+
+void JreThrowArithmeticExceptionWithNSString(NSString *msg) {
+  @throw create_JavaLangArithmeticException_initWithNSString_(msg);  // NOLINT
 }
 
 void JreThrowAssertionError(id __unsafe_unretained msg) {

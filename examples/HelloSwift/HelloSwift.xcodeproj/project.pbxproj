@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061162E1244E31CD002D5893 /* JRE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061162E0244E31CD002D5893 /* JRE.xcframework */; };
 		FA8AEA8D210F718A00FDC9ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */; };
 		FA8AEA8F210F718A00FDC9ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8AEA8E210F718A00FDC9ED /* ViewController.swift */; };
 		FA8AEA92210F718A00FDC9ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA8AEA90210F718A00FDC9ED /* Main.storyboard */; };
@@ -21,12 +22,14 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			fileType = sourcecode.java;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}.h",
 				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}.m",
 			);
-			script = "if [ ! -f \"${J2OBJC_HOME}/j2objc\" ]; then echo \"J2OBJC_HOME is not correctly defined, currently set to '${J2OBJC_HOME}'\"; exit 1; fi;\n\"${J2OBJC_HOME}/j2objc\" -d ${DERIVED_FILE_DIR} --no-package-directories -g --swift-friendly --class-properties ${INPUT_FILE_PATH};";
+			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST is not correctly defined in config.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" -d ${DERIVED_FILE_DIR} --no-package-directories -g --swift-friendly --class-properties ${INPUT_FILE_PATH};\n";
 		};
 /* End PBXBuildRule section */
 
@@ -41,6 +44,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		061162DF244E29C6002D5893 /* config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
+		061162E0244E31CD002D5893 /* JRE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = JRE.xcframework; path = ../../dist/frameworks/JRE.xcframework; sourceTree = "<group>"; };
+		06FCF749244F63DF00E81301 /* HelloSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HelloSwift.entitlements; sourceTree = "<group>"; };
 		FA8AEA89210F718A00FDC9ED /* HelloSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FA8AEA8E210F718A00FDC9ED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -59,6 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8AEB10210FB4BE00FDC9ED /* libHelloSwiftJava.a in Frameworks */,
+				061162E1244E31CD002D5893 /* JRE.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +82,7 @@
 		FA8AEA80210F718A00FDC9ED = {
 			isa = PBXGroup;
 			children = (
+				061162DF244E29C6002D5893 /* config.xcconfig */,
 				FA8AEA8B210F718A00FDC9ED /* HelloSwift */,
 				FA8AEB00210FB05000FDC9ED /* HelloSwiftJava */,
 				FA8AEA8A210F718A00FDC9ED /* Products */,
@@ -94,6 +102,7 @@
 		FA8AEA8B210F718A00FDC9ED /* HelloSwift */ = {
 			isa = PBXGroup;
 			children = (
+				06FCF749244F63DF00E81301 /* HelloSwift.entitlements */,
 				FA8AEA8C210F718A00FDC9ED /* AppDelegate.swift */,
 				FA8AEA8E210F718A00FDC9ED /* ViewController.swift */,
 				FA8AEA90210F718A00FDC9ED /* Main.storyboard */,
@@ -116,6 +125,7 @@
 		FA8AEB0F210FB4BE00FDC9ED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				061162E0244E31CD002D5893 /* JRE.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -276,6 +286,7 @@
 /* Begin XCBuildConfiguration section */
 		FA8AEA99210F718B00FDC9ED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 061162DF244E29C6002D5893 /* config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -336,6 +347,7 @@
 		};
 		FA8AEA9A210F718B00FDC9ED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 061162DF244E29C6002D5893 /* config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -390,13 +402,16 @@
 		};
 		FA8AEA9C210F718B00FDC9ED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 061162DF244E29C6002D5893 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = HelloSwift/HelloSwift.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
 				INFOPLIST_FILE = HelloSwift/Info.plist;
-				J2OBJC_HOME = ../..;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -408,6 +423,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.HelloSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "HelloSwift/HelloSwift-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -418,13 +434,16 @@
 		};
 		FA8AEA9D210F718B00FDC9ED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 061162DF244E29C6002D5893 /* config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = HelloSwift/HelloSwift.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
 				INFOPLIST_FILE = HelloSwift/Info.plist;
-				J2OBJC_HOME = ../..;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -436,6 +455,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.HelloSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "HelloSwift/HelloSwift-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -445,11 +465,11 @@
 		};
 		FA8AEB05210FB05000FDC9ED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 061162DF244E29C6002D5893 /* config.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
-				J2OBJC_HOME = ../..;
 				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -465,11 +485,11 @@
 		};
 		FA8AEB06210FB05000FDC9ED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 061162DF244E29C6002D5893 /* config.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "${J2OBJC_HOME}/frameworks";
-				J2OBJC_HOME = ../..;
 				LIBRARY_SEARCH_PATHS = "${J2OBJC_HOME}/lib";
 				OTHER_LDFLAGS = (
 					"-ObjC",

@@ -5,9 +5,12 @@
 
 package org.xml.sax.ext;
 
-import libcore.util.EmptyArray;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
+
+import android.compat.annotation.UnsupportedAppUsage;
+
+import libcore.util.EmptyArray;
 
 /**
  * SAX2 extension helper for additional Attributes information,
@@ -37,7 +40,9 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class Attributes2Impl extends AttributesImpl implements Attributes2
 {
+    @UnsupportedAppUsage
     private boolean[] declared;
+    @UnsupportedAppUsage
     private boolean[] specified;
 
 

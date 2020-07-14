@@ -76,18 +76,18 @@ public class SuperMethodReferenceTest extends TestCase {
   class XXX extends XX {
     public Object fooBaz() {
       Lambdas.Zero o = super::b;
-      Lambdas.Zero<Lambdas.One> f = super::superFooBar;
+      Lambdas.Zero<Lambdas.One<Lambdas.Zero, String>> f = super::superFooBar;
       return f.apply().apply(o);
     }
 
     public String superString() {
-      Lambdas.Three f = super::m;
-      Lambdas.Four f2 = super::m;
+      Lambdas.Three<Object, Object, Object, String> f = super::m;
+      Lambdas.Four<Object, Object, Object, Object, String> f2 = super::m;
       return f.apply("10", "15", "20") + " : " + f2.apply("40", "41", "42", "43");
     }
   }
 
-  public void testBasicReferences() throws Exception {
+  public void testBasicReferences() {
     XX xx = new XX();
     Lambdas.Zero c = xx.foo();
     Lambdas.Zero c2 = xx.bar();
@@ -95,12 +95,12 @@ public class SuperMethodReferenceTest extends TestCase {
     assertEquals("Bar", c2.apply());
   }
 
-  public void testNestedReferences() throws Exception {
+  public void testNestedReferences() {
     XXX xxx = new XXX();
     assertEquals("FooBaz", Lambdas.get(xxx::fooBaz).apply());
   }
 
-  public void testVarargs() throws Exception {
+  public void testVarargs() {
     XXX xxx = new XXX();
     assertEquals("10 [ 15 20 ] : 40 [ 41 42 43 ]", Lambdas.get(xxx::superString).apply());
   }

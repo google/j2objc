@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,9 +28,12 @@ package java.nio.channels.spi;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.nio.channels.*;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.ServiceConfigurationError;
+import sun.security.action.GetPropertyAction;
 
 
 /**
@@ -69,7 +72,7 @@ public abstract class SelectorProvider {
     private static SelectorProvider provider = null;
 
     /**
-     * Initializes a new instance of this class.  </p>
+     * Initializes a new instance of this class.
      *
      * @throws  SecurityException
      *          If a security manager has been installed and it denies
@@ -162,7 +165,7 @@ public abstract class SelectorProvider {
         synchronized (lock) {
             if (provider != null)
                 return provider;
-            /*
+            /* j2objc: removed access controller use.
             return AccessController.doPrivileged(
                 new PrivilegedAction<SelectorProvider>() {
                     public SelectorProvider run() {
@@ -187,9 +190,12 @@ public abstract class SelectorProvider {
     }
 
     /**
-     * Opens a datagram channel.  </p>
+     * Opens a datagram channel.
      *
      * @return  The new channel
+     *
+     * @throws  IOException
+     *          If an I/O error occurs
      */
     public abstract DatagramChannel openDatagramChannel()
         throws IOException;
@@ -213,33 +219,45 @@ public abstract class SelectorProvider {
         throws IOException;
 
     /**
-     * Opens a pipe. </p>
+     * Opens a pipe.
      *
      * @return  The new pipe
+     *
+     * @throws  IOException
+     *          If an I/O error occurs
      */
     public abstract Pipe openPipe()
         throws IOException;
 
     /**
-     * Opens a selector.  </p>
+     * Opens a selector.
      *
      * @return  The new selector
+     *
+     * @throws  IOException
+     *          If an I/O error occurs
      */
     public abstract AbstractSelector openSelector()
         throws IOException;
 
     /**
-     * Opens a server-socket channel.  </p>
+     * Opens a server-socket channel.
      *
      * @return  The new channel
+     *
+     * @throws  IOException
+     *          If an I/O error occurs
      */
     public abstract ServerSocketChannel openServerSocketChannel()
         throws IOException;
 
     /**
-     * Opens a socket channel. </p>
+     * Opens a socket channel.
      *
      * @return  The new channel
+     *
+     * @throws  IOException
+     *          If an I/O error occurs
      */
     public abstract SocketChannel openSocketChannel()
         throws IOException;

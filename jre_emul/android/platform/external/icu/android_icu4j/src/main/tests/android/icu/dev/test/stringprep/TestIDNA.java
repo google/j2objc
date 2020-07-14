@@ -34,24 +34,24 @@ public class TestIDNA extends TestFmwk {
             // test StringBuffer toUnicode
             doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.DEFAULT, null);
             doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.ALLOW_UNASSIGNED, null);
-            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES, null);
-            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES|IDNA.ALLOW_UNASSIGNED, null);
-
+            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES, null); 
+            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES|IDNA.ALLOW_UNASSIGNED, null); 
+    
         }
     }
-
+    
     @Test
     public void TestToASCII() throws Exception{
         for(int i=0; i<TestData.asciiIn.length; i++){
             // test StringBuffer toUnicode
             doTestToASCII(new String(TestData.unicodeIn[i]),TestData.asciiIn[i],IDNA.DEFAULT, null);
             doTestToASCII(new String(TestData.unicodeIn[i]),TestData.asciiIn[i],IDNA.ALLOW_UNASSIGNED, null);
-            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES, null);
-            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES|IDNA.ALLOW_UNASSIGNED, null);
-
+            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES, null); 
+            doTestToUnicode(TestData.asciiIn[i],new String(TestData.unicodeIn[i]),IDNA.USE_STD3_RULES|IDNA.ALLOW_UNASSIGNED, null); 
+    
         }
     }
-
+    
     @Test
     public void TestIDNToASCII() throws Exception{
         for(int i=0; i<TestData.domainNames.length; i++){
@@ -60,7 +60,7 @@ public class TestIDNA extends TestFmwk {
             doTestIDNToASCII(TestData.domainNames[i],TestData.domainNames[i],IDNA.USE_STD3_RULES, null);
             doTestIDNToASCII(TestData.domainNames[i],TestData.domainNames[i],IDNA.ALLOW_UNASSIGNED|IDNA.USE_STD3_RULES, null);
         }
-
+        
         for(int i=0; i<TestData.domainNames1Uni.length; i++){
             doTestIDNToASCII(TestData.domainNames1Uni[i],TestData.domainNamesToASCIIOut[i],IDNA.DEFAULT, null);
             doTestIDNToASCII(TestData.domainNames1Uni[i],TestData.domainNamesToASCIIOut[i],IDNA.ALLOW_UNASSIGNED, null);
@@ -79,16 +79,16 @@ public class TestIDNA extends TestFmwk {
             doTestIDNToUnicode(TestData.domainNamesToASCIIOut[i],TestData.domainNamesToUnicodeOut[i],IDNA.ALLOW_UNASSIGNED, null);
         }
     }
-
-    private void doTestToUnicode(String src, String expected, int options, Object expectedException)
+    
+    private void doTestToUnicode(String src, String expected, int options, Object expectedException) 
                 throws Exception{
         StringBuffer inBuf = new StringBuffer(src);
         UCharacterIterator inIter = UCharacterIterator.getInstance(src);
         try{
-
+            
             StringBuffer out = IDNA.convertToUnicode(src,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
-                errln("convertToUnicode did not return expected result with options : "+ options +
+                errln("convertToUnicode did not return expected result with options : "+ options + 
                       " Expected: " + prettify(expected)+" Got: "+prettify(out));
             }
             if(expectedException!=null && !unassignedException.equals(expectedException)){
@@ -100,10 +100,10 @@ public class TestIDNA extends TestFmwk {
             }
         }
         try{
-
+            
             StringBuffer out = IDNA.convertToUnicode(inBuf,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
-               errln("convertToUnicode did not return expected result with options : "+ options +
+               errln("convertToUnicode did not return expected result with options : "+ options + 
                      " Expected: " + prettify(expected)+" Got: "+out);
             }
             if(expectedException!=null && !unassignedException.equals(expectedException)){
@@ -114,7 +114,7 @@ public class TestIDNA extends TestFmwk {
                 errln("convertToUnicode did not get the expected exception for source: " + prettify(src) +" Got:  "+ ex.toString());
             }
         }
-
+        
         try{
             StringBuffer out = IDNA.convertToUnicode(inIter,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
@@ -130,16 +130,16 @@ public class TestIDNA extends TestFmwk {
             }
         }
     }
-
-    private void doTestIDNToUnicode(String src, String expected, int options, Object expectedException)
+    
+    private void doTestIDNToUnicode(String src, String expected, int options, Object expectedException) 
                 throws Exception{
         StringBuffer inBuf = new StringBuffer(src);
         UCharacterIterator inIter = UCharacterIterator.getInstance(src);
         try{
-
+            
             StringBuffer out = IDNA.convertIDNToUnicode(src,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
-                errln("convertToUnicode did not return expected result with options : "+ options +
+                errln("convertToUnicode did not return expected result with options : "+ options + 
                       " Expected: " + prettify(expected)+" Got: "+prettify(out));
             }
             if(expectedException!=null && !unassignedException.equals(expectedException)){
@@ -153,7 +153,7 @@ public class TestIDNA extends TestFmwk {
         try{
             StringBuffer out = IDNA.convertIDNToUnicode(inBuf,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
-               errln("convertToUnicode did not return expected result with options : "+ options +
+               errln("convertToUnicode did not return expected result with options : "+ options + 
                      " Expected: " + prettify(expected)+" Got: "+out);
             }
             if(expectedException!=null && !unassignedException.equals(expectedException)){
@@ -164,7 +164,7 @@ public class TestIDNA extends TestFmwk {
                 errln("convertToUnicode did not get the expected exception for source: " +src +" Got:  "+ ex.toString());
             }
         }
-
+        
         try{
             StringBuffer out = IDNA.convertIDNToUnicode(inIter,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
@@ -180,17 +180,17 @@ public class TestIDNA extends TestFmwk {
             }
         }
     }
-    private void doTestToASCII(String src, String expected, int options, Object expectedException)
+    private void doTestToASCII(String src, String expected, int options, Object expectedException) 
                 throws Exception{
         StringBuffer inBuf = new StringBuffer(src);
         UCharacterIterator inIter = UCharacterIterator.getInstance(src);
         try{
-
+            
             StringBuffer out = IDNA.convertToASCII(src,options);
             if(!unassignedException.equals(expectedException) && expected!=null && out != null && expected!=null && out != null && !out.toString().equals(expected.toLowerCase())){
-                errln("convertToASCII did not return expected result with options : "+ options +
+                errln("convertToASCII did not return expected result with options : "+ options + 
                       " Expected: " + expected+" Got: "+out);
-            }
+            }           
             if(expectedException!=null && !unassignedException.equals(expectedException)){
                 errln("convertToASCII did not get the expected exception. The operation succeeded!");
             }
@@ -199,11 +199,11 @@ public class TestIDNA extends TestFmwk {
                 errln("convertToASCII did not get the expected exception for source: " +src +"\n Got:  "+ ex.toString() +"\n Expected: " +ex.toString());
             }
         }
-
-        try{
+        
+        try{            
             StringBuffer out = IDNA.convertToASCII(inBuf,options);
             if(!unassignedException.equals(expectedException) && expected!=null && out != null && expected!=null && out != null && !out.toString().equals(expected.toLowerCase())){
-               errln("convertToASCII did not return expected result with options : "+ options +
+               errln("convertToASCII did not return expected result with options : "+ options + 
                      " Expected: " + expected+" Got: "+out);
             }
             if(expectedException!=null && !unassignedException.equals(expectedException)){
@@ -214,7 +214,7 @@ public class TestIDNA extends TestFmwk {
                 errln("convertToASCII did not get the expected exception for source: " +src +" Got:  "+ ex.toString());
             }
         }
-
+        
         try{
             StringBuffer out = IDNA.convertToASCII(inIter,options);
             if(!unassignedException.equals(expectedException) && expected!=null && out != null && expected!=null && out != null && !out.toString().equals(expected.toLowerCase())){
@@ -230,15 +230,15 @@ public class TestIDNA extends TestFmwk {
             }
         }
     }
-    private void doTestIDNToASCII(String src, String expected, int options, Object expectedException)
+    private void doTestIDNToASCII(String src, String expected, int options, Object expectedException) 
                 throws Exception{
         StringBuffer inBuf = new StringBuffer(src);
         UCharacterIterator inIter = UCharacterIterator.getInstance(src);
         try{
-
+            
             StringBuffer out = IDNA.convertIDNToASCII(src,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
-                errln("convertToIDNASCII did not return expected result with options : "+ options +
+                errln("convertToIDNASCII did not return expected result with options : "+ options + 
                       " Expected: " + expected+" Got: "+out);
             }
             if(expectedException!=null && !unassignedException.equals(expectedException)){
@@ -252,9 +252,9 @@ public class TestIDNA extends TestFmwk {
         try{
             StringBuffer out = IDNA.convertIDNToASCII(inBuf,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
-               errln("convertToIDNASCII did not return expected result with options : "+ options +
+               errln("convertToIDNASCII did not return expected result with options : "+ options + 
                      " Expected: " + expected+" Got: "+out);
-            }
+            }           
             if(expectedException!=null && !unassignedException.equals(expectedException)){
                 errln("convertToIDNASCII did not get the expected exception. The operation succeeded!");
             }
@@ -263,14 +263,14 @@ public class TestIDNA extends TestFmwk {
                 errln("convertToIDNASCII did not get the expected exception for source: " +src +" Got:  "+ ex.toString());
             }
         }
-
+        
         try{
             StringBuffer out = IDNA.convertIDNToASCII(inIter,options);
             if(expected!=null && out != null && !out.toString().equals(expected)){
                errln("convertIDNToASCII did not return expected result with options : "+ options +
                      " Expected: " + expected+" Got: "+ out);
             }
-
+            
             if(expectedException!=null && !unassignedException.equals(expectedException)){
                 errln("convertIDNToASCII did not get the expected exception. The operation succeeded!");
             }
@@ -283,7 +283,7 @@ public class TestIDNA extends TestFmwk {
     @Test
     public void TestConformance()throws Exception{
         for(int i=0; i<TestData.conformanceTestCases.length;i++){
-
+            
             TestData.ConformanceTestCase testCase = TestData.conformanceTestCases[i];
             if(testCase.expected != null){
                 //Test toASCII
@@ -314,7 +314,7 @@ public class TestIDNA extends TestFmwk {
                     errln("Did not get the expected exception for source: " +testCase.input +" Got:  "+ ex.toString());
                 }
             }
-
+            
             try{
                 iter.setToStart();
                 StringBuffer output = namePrep.prepare(iter,StringPrep.ALLOW_UNASSIGNED);
@@ -331,7 +331,7 @@ public class TestIDNA extends TestFmwk {
                 }
             }
         }
-
+        
     }
     @Test
     public void TestErrorCases() throws Exception{
@@ -346,11 +346,11 @@ public class TestIDNA extends TestFmwk {
                 }
             }
             if(errCase.useSTD3ASCIIRules!=true){
-
+                
                 // Test IDNToASCII
                 doTestIDNToASCII(new String(errCase.unicode),errCase.ascii,IDNA.DEFAULT,errCase.expected);
                 doTestIDNToASCII(new String(errCase.unicode),errCase.ascii,IDNA.ALLOW_UNASSIGNED,errCase.expected);
-
+                
             }else{
                 doTestIDNToASCII(new String(errCase.unicode),errCase.ascii,IDNA.USE_STD3_RULES,errCase.expected);
             }
@@ -360,7 +360,7 @@ public class TestIDNA extends TestFmwk {
                     // Test IDNToUnicode
                     doTestIDNToUnicode(errCase.ascii,new String(errCase.unicode),IDNA.DEFAULT,errCase.expected);
                     doTestIDNToUnicode(errCase.ascii,new String(errCase.unicode),IDNA.ALLOW_UNASSIGNED,errCase.expected);
-
+                
                 }else{
                     doTestIDNToUnicode(errCase.ascii,new String(errCase.unicode),IDNA.USE_STD3_RULES,errCase.expected);
                 }
@@ -371,38 +371,38 @@ public class TestIDNA extends TestFmwk {
         try{
             int retVal = IDNA.compare(s1,s2,IDNA.DEFAULT);
             if(isEqual==true && retVal != 0){
-                errln("Did not get the expected result for s1: "+ prettify(s1)+
+                errln("Did not get the expected result for s1: "+ prettify(s1)+ 
                       " s2: "+prettify(s2));
             }
             retVal = IDNA.compare(new StringBuffer(s1), new StringBuffer(s2), IDNA.DEFAULT);
             if(isEqual==true && retVal != 0){
-                errln("Did not get the expected result for s1: "+ prettify(s1)+
+                errln("Did not get the expected result for s1: "+ prettify(s1)+ 
                      " s2: "+prettify(s2));
             }
             retVal = IDNA.compare(UCharacterIterator.getInstance(s1), UCharacterIterator.getInstance(s2), IDNA.DEFAULT);
             if(isEqual==true && retVal != 0){
-                errln("Did not get the expected result for s1: "+ prettify(s1)+
+                errln("Did not get the expected result for s1: "+ prettify(s1)+ 
                      " s2: "+prettify(s2));
             }
         }catch(Exception e){
             e.printStackTrace();
             errln("Unexpected exception thrown by IDNA.compare");
         }
-
+        
         try{
             int retVal = IDNA.compare(s1,s2,IDNA.ALLOW_UNASSIGNED);
             if(isEqual==true && retVal != 0){
-                errln("Did not get the expected result for s1: "+ prettify(s1)+
+                errln("Did not get the expected result for s1: "+ prettify(s1)+ 
                       " s2: "+prettify(s2));
             }
             retVal = IDNA.compare(new StringBuffer(s1), new StringBuffer(s2), IDNA.ALLOW_UNASSIGNED);
             if(isEqual==true && retVal != 0){
-                errln("Did not get the expected result for s1: "+ prettify(s1)+
+                errln("Did not get the expected result for s1: "+ prettify(s1)+ 
                      " s2: "+prettify(s2));
             }
             retVal = IDNA.compare(UCharacterIterator.getInstance(s1), UCharacterIterator.getInstance(s2), IDNA.ALLOW_UNASSIGNED);
             if(isEqual==true && retVal != 0){
-                errln("Did not get the expected result for s1: "+ prettify(s1)+
+                errln("Did not get the expected result for s1: "+ prettify(s1)+ 
                      " s2: "+prettify(s2));
             }
         }catch(Exception e){
@@ -438,13 +438,13 @@ public class TestIDNA extends TestFmwk {
             source.setLength(4);
             source.append(TestData.unicodeIn[i]);
             source.append(com);
-
+            
             // a) compare it with itself
             doTestCompare(source.toString(),source.toString(),true);
-
+        
             // b) compare it with asciiIn equivalent
             doTestCompare(source.toString(),www+TestData.asciiIn[i]+com,true);
-
+        
             // c) compare it with unicodeIn not equivalent
             if(i==0){
                 doTestCompare(source.toString(), uni1.toString(), false);
@@ -464,9 +464,9 @@ public class TestIDNA extends TestFmwk {
     //  test and ascertain
     //  func(func(func(src))) == func(src)
     private void doTestChainingToASCII(String source) throws Exception {
-        StringBuffer expected;
+        StringBuffer expected; 
         StringBuffer chained;
-
+        
         // test convertIDNToASCII
         expected = IDNA.convertIDNToASCII(source,IDNA.DEFAULT);
         chained = expected;
@@ -484,15 +484,15 @@ public class TestIDNA extends TestFmwk {
         }
         if(!expected.toString().equals(chained.toString())){
             errln("Chaining test failed for convertToASCII");
-        }
+        }   
     }
-
+    
     //  test and ascertain
     //  func(func(func(src))) == func(src)
     private void doTestChainingToUnicode(String source) throws Exception {
-        StringBuffer expected;
+        StringBuffer expected; 
         StringBuffer chained;
-
+        
         // test convertIDNToUnicode
         expected = IDNA.convertIDNToUnicode(source,IDNA.DEFAULT);
         chained = expected;
@@ -510,7 +510,7 @@ public class TestIDNA extends TestFmwk {
         }
         if(!expected.toString().equals(chained.toString())){
             errln("Chaining test failed for convertToUnicode");
-        }
+        }   
     }
     @Test
     public void TestChaining() throws Exception{
@@ -521,7 +521,7 @@ public class TestIDNA extends TestFmwk {
             doTestChainingToASCII(new String(TestData.unicodeIn[i]));
         }
     }
-
+    
 
     /* IDNA RFC Says:
     A label is an individual part of a domain name.  Labels are usually
@@ -560,13 +560,13 @@ public class TestIDNA extends TestFmwk {
             source.setLength(4);
             source.append(TestData.unicodeIn[i]);
             source.append(com);
-
+            
             // a) compare it with itself
             doTestCompare(source.toString(),source.toString(),true);
-
+        
             // b) compare it with asciiIn equivalent
             doTestCompare(source.toString(),www+TestData.asciiIn[i]+com,true);
-
+        
             // c) compare it with unicodeIn not equivalent
             if(i==0){
                 doTestCompare(source.toString(), uni1.toString(), false);
@@ -583,13 +583,13 @@ public class TestIDNA extends TestFmwk {
         }
 
     }
-
-
+    
+    
     private static final int loopCount = 100;
     private static final int maxCharCount = 15;
    // private static final int maxCodePoint = 0x10ffff;
     private Random random = null;
-
+    
     /**
      * Return a random integer i where 0 <= i < n.
      * A special function that gets random codepoints from planes 0,1,2 and 14
@@ -623,30 +623,30 @@ public class TestIDNA extends TestFmwk {
             i++;
         }
         return fillIn;
-
+       
     }
-
-    // TODO(user): turned off because not running before
+    
+    // TODO(junit): turned off because not running before
     @Ignore
     @Test
     public void MonkeyTest() throws Exception{
          StringBuffer source = new StringBuffer();
-         /* do the monkey test   */
+         /* do the monkey test   */       
          for(int i=0; i<loopCount; i++){
              source.setLength(0);
              getTestSource(source);
              doTestCompareReferenceImpl(source);
          }
-
-         // test string with embedded null
+         
+         // test string with embedded null  
          source.append( "\\u0000\\u2109\\u3E1B\\U000E65CA\\U0001CAC5" );
-
+                           
          source = new StringBuffer(Utility.unescape(source.toString()));
          doTestCompareReferenceImpl(source);
-
+         
          //StringBuffer src = new StringBuffer(Utility.unescape("\\uDEE8\\U000E228C\\U0002EE8E\\U000E6350\\U00024DD9\u4049\\U000E0DE4\\U000E448C\\U0001869B\\U000E3380\\U00016A8E\\U000172D5\\U0001C408\\U000E9FB5"));
          //doTestCompareReferenceImpl(src);
-
+         
          //test deletion of code points
          source = new StringBuffer(Utility.unescape("\\u043f\\u00AD\\u034f\\u043e\\u0447\\u0435\\u043c\\u0443\\u0436\\u0435\\u043e\\u043d\\u0438\\u043d\\u0435\\u0433\\u043e\\u0432\\u043e\\u0440\\u044f\\u0442\\u043f\\u043e\\u0440\\u0443\\u0441\\u0441\\u043a\\u0438"));
          StringBuffer expected = new StringBuffer("xn--b1abfaaepdrnnbgefbadotcwatmq2g4l");
@@ -743,7 +743,7 @@ public class TestIDNA extends TestFmwk {
                 "\u00F5\u00dE\u00dF\u00dD",
                 "\uFB00\uFB01"
                };
-        for ( int i=0; i< in.length; i++){
+        for ( int i=0; i< in.length; i++){   
             try{
                 String ascii = IDNA.convertToASCII(in[i],IDNA.DEFAULT).toString();
                 try{
@@ -764,7 +764,7 @@ public class TestIDNA extends TestFmwk {
                         "test"
                        };
         for ( int i=0; i< in.length; i++){
-
+            
             try{
                 String ascii = IDNA.convertToASCII(in[i],IDNA.DEFAULT).toString();
                 if(!ascii.equals(in[i])){
@@ -774,11 +774,11 @@ public class TestIDNA extends TestFmwk {
                 errln("Unexpected exception: " + ex.getMessage());
             }
         }
-
+            
     }
-
+        
     @Test
-    public void TestDebug(){
+    public void TestDebug(){     
         try{
             String src = "\u00ED4dn";
             String uni = IDNA.convertToUnicode(src,IDNA.DEFAULT).toString();
@@ -809,7 +809,7 @@ public class TestIDNA extends TestFmwk {
         } catch (ArrayIndexOutOfBoundsException ex) {
             errln("Got an ArrayIndexOutOfBoundsException calling convertIDNToUnicode(\"" + INVALID_DOMAIN_NAME + "\")");
         }
-
+        
         String domain = "xn--m\u00FCller.de";
         try{
             IDNA.convertIDNToUnicode(domain, IDNA.DEFAULT);
@@ -841,12 +841,12 @@ public class TestIDNA extends TestFmwk {
             errln("ToUnicode operation failed! "+ex.getMessage());
         }
     }
-
+    
     @Test
     public void TestLength(){
         String ul = "my_very_very_very_very_very_very_very_very_very_very_very_very_very_long_and_incredibly_uncreative_domain_label";
 
-        /* this unicode string is longer than MAX_LABEL_BUFFER_SIZE and produces an
+        /* this unicode string is longer than MAX_LABEL_BUFFER_SIZE and produces an 
            IDNA prepared string (including xn--)that is exactly 63 bytes long */
         String ul1 ="\uC138\uACC4\uC758\uBAA8\uB4E0\uC0AC\uB78C\uB4E4\uC774"+
                     "\uD55C\uAD6D\uC5B4\uB97C\uC774\u00AD\u034F\u1806\u180B"+
@@ -888,7 +888,7 @@ public class TestIDNA extends TestFmwk {
         }catch (StringPrepParseException ex){
             errln("IDNA.convertToASCII failed with error: "+ex.toString());
         }
-
+        
         String idn = "my_very_very_long_and_incredibly_uncreative_domain_label.my_very_very_long_and_incredibly_uncreative_domain_label.my_very_very_long_and_incredibly_uncreative_domain_label.my_very_very_long_and_incredibly_uncreative_domain_label.my_very_very_long_and_incredibly_uncreative_domain_label.my_very_very_long_and_incredibly_uncreative_domain_label.ibm.com";
         try{
             IDNA.convertIDNToASCII(idn, IDNA.DEFAULT);
@@ -902,7 +902,7 @@ public class TestIDNA extends TestFmwk {
         }
         try{
             IDNA.convertIDNToUnicode(idn, IDNA.DEFAULT);
-            errln("IDNA.convertToUnicode did not fail!");
+            errln("IDNA.convertToUnicode did not fail!");  
         }catch (StringPrepParseException ex){
             if(ex.getError()!= StringPrepParseException.DOMAIN_NAME_TOO_LONG_ERROR){
                 errln("IDNA.convertToUnicode failed with error: "+ex.toString());
@@ -911,7 +911,7 @@ public class TestIDNA extends TestFmwk {
             }
         }
     }
-
+    
     /* Tests the method public static StringBuffer convertToASCII(String src, int options) */
     @Test
     public void TestConvertToASCII() {

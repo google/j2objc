@@ -280,7 +280,7 @@ public class RBBITest extends TestFmwk {
         List<String> previousResults = _testLastAndPrevious(rbbi, text);
 
         logln("comparing forward and backward...");
-        //TODO(user) - needs to be rewritten
+        //TODO(junit) - needs to be rewritten
         //int errs = getErrorCount();
         compareFragmentLists("forward iteration", "backward iteration", nextResults, previousResults);
         //if (getErrorCount() == errs) {
@@ -854,3 +854,4 @@ public class RBBITest extends TestFmwk {
         assertEquals("Rule chaining test", 3,  bi.next());
          }
     }
+

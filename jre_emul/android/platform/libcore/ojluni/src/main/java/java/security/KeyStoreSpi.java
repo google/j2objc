@@ -34,6 +34,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
 import javax.crypto.SecretKey;
+
 import javax.security.auth.callback.*;
 
 /**
@@ -451,34 +452,43 @@ public abstract class KeyStoreSpi {
             return null;
         }
 
-        if (protParam != null &&
-                !(protParam instanceof KeyStore.PasswordProtection)) {
-            throw new UnsupportedOperationException();
+        if (protParam == null) {
+            if (engineIsCertificateEntry(alias)) {
+                return new KeyStore.TrustedCertificateEntry
+                                (engineGetCertificate(alias));
+            // Android-removed: Allow access to entries with no password.
+            // } else {
+            //    throw new UnrecoverableKeyException
+            //            ("requested entry requires a password");
+            }
         }
 
-        if (engineIsCertificateEntry(alias)) {
-            if (protParam == null) {
-                return new KeyStore.TrustedCertificateEntry
-                        (engineGetCertificate(alias));
-            } else {
+        // Android-changed: Add protParam == null to allow access to entries with no password.
+        if ((protParam == null) || protParam instanceof KeyStore.PasswordProtection) {
+            if (engineIsCertificateEntry(alias)) {
                 throw new UnsupportedOperationException
                     ("trusted certificate entries are not password-protected");
+            } else if (engineIsKeyEntry(alias)) {
+                // Android-changed: Allow access to entries with no password.
+                // KeyStore.PasswordProtection pp =
+                //         (KeyStore.PasswordProtection)protParam;
+                // char[] password = pp.getPassword();
+                char[] password = null;
+                if (protParam != null) {
+                    KeyStore.PasswordProtection pp =
+                        (KeyStore.PasswordProtection)protParam;
+                    password = pp.getPassword();
+                }
+                Key key = engineGetKey(alias, password);
+                if (key instanceof PrivateKey) {
+                    Certificate[] chain = engineGetCertificateChain(alias);
+                    return new KeyStore.PrivateKeyEntry((PrivateKey)key, chain);
+                } else if (key instanceof SecretKey) {
+                    return new KeyStore.SecretKeyEntry((SecretKey)key);
+                }
             }
-        } else if (engineIsKeyEntry(alias)) {
-          char[] password = null;
-          if (protParam != null) {
-              KeyStore.PasswordProtection pp =
-                      (KeyStore.PasswordProtection)protParam;
-              password = pp.getPassword();
-          }
-          Key key = engineGetKey(alias, password);
-          if (key instanceof PrivateKey) {
-              Certificate[] chain = engineGetCertificateChain(alias);
-              return new KeyStore.PrivateKeyEntry((PrivateKey)key, chain);
-          } else if (key instanceof SecretKey) {
-              return new KeyStore.SecretKeyEntry((SecretKey)key);
-          }
         }
+
         throw new UnsupportedOperationException();
     }
 
@@ -514,6 +524,7 @@ public abstract class KeyStoreSpi {
             pProtect = (KeyStore.PasswordProtection)protParam;
         }
 
+        // BEGIN Android-changed: Allow access to entries with no password.
         char[] password = (pProtect == null) ? null : pProtect.getPassword();
         // set entry
         if (entry instanceof KeyStore.TrustedCertificateEntry) {
@@ -536,6 +547,7 @@ public abstract class KeyStoreSpi {
                 (Certificate[])null);
             return;
         }
+        // END Android-changed: Allow access to entries with no password.
 
         throw new KeyStoreException
                 ("unsupported entry type: " + entry.getClass().getName());

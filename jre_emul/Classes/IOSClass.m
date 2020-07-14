@@ -631,6 +631,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
         PackagePrefixLoader *loader = [[PackagePrefixLoader alloc] init];
         [JavaUtilProperties loadLineReaderWithJavaUtilProperties_LineReader:lr
                                       withJavaUtilProperties_KeyValueLoader:loader];
+        [loader release];
       }
     });
   }
@@ -1005,8 +1006,19 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
-  return LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+  IOSObjectArray *annotations = LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
       self, annotationClass);
+  if (annotations->size_ > 0) {
+    return annotations;
+  }
+
+  if ([annotationClass getDeclaredAnnotationWithIOSClass:JavaLangAnnotationInherited_class_()]) {
+    IOSClass *superClass = [self getSuperclass];
+    if (superClass) {
+      return [superClass getAnnotationsByTypeWithIOSClass:annotationClass];
+    }
+  }
+  return annotations;
 }
 
 - (IOSObjectArray *)getDeclaredAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
@@ -1069,13 +1081,21 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   };
 }
 
+__attribute__((noreturn))
+static void ThrowNoSuchFieldException(IOSClass *iosClass, NSString *fieldName) {
+  NSMutableString *msg = [NSMutableString stringWithString:fieldName];
+  [msg appendString:@". "];
+  [msg appendString:JreMetadataToString(IOSClass_GetMetadataOrFail(iosClass))];
+  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:msg]);
+}
+
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   (void)nil_chk(name);
   JavaLangReflectField *field = FindDeclaredField(self, name, false);
   if (field) {
     return field;
   }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  ThrowNoSuchFieldException(self, name);
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
@@ -1084,7 +1104,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   if (field) {
     return field;
   }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  ThrowNoSuchFieldException(self, name);
 }
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {

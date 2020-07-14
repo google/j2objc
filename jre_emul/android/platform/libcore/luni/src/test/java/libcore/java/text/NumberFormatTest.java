@@ -16,7 +16,6 @@
 
 package libcore.java.text;
 
-import com.google.j2objc.EnvironmentUtil;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -214,19 +213,18 @@ public class NumberFormatTest extends junit.framework.TestCase {
     public void test_setCurrency() throws Exception {
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);
 
-        // The Armenian Dram is a special case where the fractional digits are 0.
-        Currency amd = Currency.getInstance("AMD");
-        assertEquals(0, amd.getDefaultFractionDigits());
+        // The Japanese Yen is a special case where the fractional digits are 0.
+        Currency jpy = Currency.getInstance("JPY");
+        assertEquals(0, jpy.getDefaultFractionDigits());
 
-        // Armenian Dram ISO 4217 code.
-        nf.setCurrency(amd);
+        nf.setCurrency(jpy);
         assertEquals(2, nf.getMinimumFractionDigits());  // Check DecimalFormat has not taken the
         assertEquals(2, nf.getMaximumFractionDigits());  // currency specific fractional digits.
-        assertEquals("AMD50.00", nf.format(50.00));
+        assertEquals("¥50.00", nf.format(50.00));
 
         // Try and explicitly request fractional digits for the specified currency.
-        nf.setMaximumFractionDigits(amd.getDefaultFractionDigits());
-        assertEquals("AMD50", nf.format(50.00));
+        nf.setMaximumFractionDigits(jpy.getDefaultFractionDigits());
+        assertEquals("¥50", nf.format(50.00));
 
         nf = NumberFormat.getCurrencyInstance(Locale.US);
 
@@ -234,9 +232,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
         nf.setCurrency(Currency.getInstance("EUR"));
         assertEquals("€50.00", nf.format(50.00));
 
-        // Japanese Yen symbol.
-        nf.setCurrency(Currency.getInstance("JPY"));
-        assertEquals("¥50.00", nf.format(50.00));
+        // Armenian Dram symbol.
+        nf.setCurrency(Currency.getInstance("AMD"));
+        assertEquals("AMD50.00", nf.format(50.00));
 
         // Swiss Franc ISO 4217 code.
         nf.setCurrency(Currency.getInstance("CHF"));
@@ -245,24 +243,23 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
     // Test the setting of locale specific patterns which have different fractional digits.
     public void test_currencyWithPatternDigits() throws Exception {
-      // Locale strings updated in macOS 10.12 to match iOS.
-      if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
-        // Japanese Yen 0 fractional digits.
-        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.JAPAN);
-        String result = nf.format(50.00);
-        // Allow either full-width (0xFFE5) or regular width yen sign (0xA5).
-        assertTrue(result.equals("￥50") || result.equals("¥50"));
+      // Japanese Yen 0 fractional digits.
+      NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.JAPAN);
+      String result = nf.format(50.00);
+      // Allow either full-width (0xFFE5) or regular width yen sign (0xA5).
+      assertTrue(result.equals("￥50") || result.equals("¥50"));
 
-        // Armenian Dram 0 fractional digits.
-        nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
-        result = nf.format(50.00);
-        // Allow different versions of the ICU CLDR.
-        assertTrue(result.equals("֏\u00a050") || result.equals("50\u00a0֏"));
+      // Armenian Dram 0 fractional digits.
+      nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
+      result = nf.format(50.00);
+      // Allow different versions of the ICU CLDR.
+      assertTrue(result.equals("֏\u00a050")
+          || result.equals("50\u00a0֏")  // iOS 12
+          || result.equals("50,00 ֏"));  // macOS 10.15
 
-        // Swiss Francs 2 fractional digits.
-        nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
-        assertEquals("CHF\u00a050.00", nf.format(50.00));
-      }
+      // Swiss Francs 2 fractional digits.
+      nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
+      assertEquals("CHF\u00a050.00", nf.format(50.00));
     }
 
     // http://b/28893763

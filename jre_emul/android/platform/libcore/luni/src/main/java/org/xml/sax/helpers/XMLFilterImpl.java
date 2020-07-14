@@ -6,7 +6,6 @@
 
 package org.xml.sax.helpers;
 
-import java.io.IOException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -20,6 +19,10 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
+
+import android.compat.annotation.UnsupportedAppUsage;
+
+import java.io.IOException;
 
 
 /**
@@ -683,6 +686,7 @@ public class XMLFilterImpl
      * non-null, and re-register the filter for all of the
      * events.</p>
      */
+    @UnsupportedAppUsage
     private void setupParse ()
     {
     if (parent == null) {
@@ -700,11 +704,17 @@ public class XMLFilterImpl
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
+    @UnsupportedAppUsage
     private XMLReader parent = null;
+    @UnsupportedAppUsage
     private Locator locator = null;
+    @UnsupportedAppUsage
     private EntityResolver entityResolver = null;
+    @UnsupportedAppUsage
     private DTDHandler dtdHandler = null;
+    @UnsupportedAppUsage
     private ContentHandler contentHandler = null;
+    @UnsupportedAppUsage
     private ErrorHandler errorHandler = null;
 
 }

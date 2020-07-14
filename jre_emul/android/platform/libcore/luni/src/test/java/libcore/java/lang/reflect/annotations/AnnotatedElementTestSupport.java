@@ -291,8 +291,8 @@ public class AnnotatedElementTestSupport {
     }
 
     private static String createAnnotationTestString(Annotation annotation) {
-        return "@" + annotation.annotationType().getSimpleName() + createArgumentsTestString(
-                annotation);
+        return "@" + annotation.annotationType().getSimpleName()
+                + createArgumentsTestString(annotation);
     }
 
     private static String createArgumentsTestString(Annotation annotation) {
@@ -309,6 +309,6 @@ public class AnnotatedElementTestSupport {
             String repeatedValuesString = joiner.toString();
             return "(" +  repeatedValuesString + ")";
         }
-        throw new AssertionError("Unknown annotation: " + annotation);
+        return "";
     }
 }

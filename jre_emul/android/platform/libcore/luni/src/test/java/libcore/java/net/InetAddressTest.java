@@ -16,6 +16,7 @@
 
 package libcore.java.net;
 
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -25,7 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public class InetAddressTest extends junit.framework.TestCase {
     private static final byte[] LOOPBACK4_BYTES = new byte[] { 127, 0, 0, 1 };
@@ -330,7 +331,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 
     public void test_getHostNameCaches() throws Exception {
         InetAddress inetAddress = InetAddress.getByAddress(LOOPBACK6_BYTES);
-        // TODO(user): Investigate why these tests are suppressed.
+        // TODO(narayan): Investigate why these tests are suppressed.
         // assertEquals("::1", inetAddress.getHostString());
         /* J2ObjC: getnameinfo() in Inet6AddressImpl.m returns "localhost".
         assertEquals("ip6-localhost", inetAddress.getHostName());
@@ -372,7 +373,7 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals(LOOPBACK6_BYTES, "localhost", inetAddress);
         assertTrue(inetAddress.isLoopbackAddress());
     }
-// TODO(user): b/65289980.
+// TODO(zgao): b/65289980.
 //    public void test_getAllByName_localhost() throws Exception {
 //        InetAddress[] inetAddresses = InetAddress.getAllByName("localhost");
 //        assertEquals(1, inetAddresses.length);
@@ -381,7 +382,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 //        assertTrue(inetAddress.isLoopbackAddress());
 //    }
 
-// TODO(user): b/65289980.
+// TODO(zgao): b/65289980.
 //    public void test_getAllByName_ip6_localhost() throws Exception {
 //        InetAddress[] inetAddresses = InetAddress.getAllByName("ip6-localhost");
 //        assertEquals(1, inetAddresses.length);
