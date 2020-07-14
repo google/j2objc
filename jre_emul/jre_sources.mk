@@ -1138,6 +1138,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixException.java \
+  sun/nio/fs/UnixFileAttributeViews.java \
   sun/nio/fs/UnixFileAttributes.java \
   sun/nio/fs/UnixFileKey.java \
   sun/nio/fs/UnixFileModeAttribute.java \
