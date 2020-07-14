@@ -91,6 +91,10 @@ arch_flags = $(strip \
 fat_lib_dependencies:
 	@:
 
+
+ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
+ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
+
 # Generates compile rule.
 # Args:
 #   1: output directory
@@ -99,15 +103,20 @@ fat_lib_dependencies:
 #   4: precompiled header file, or empty
 #   5: other compiler flags
 define compile_rule
+$(1)/%.o: $(2)/%.c $(4:%=$(1)/%.pch) | fat_lib_dependencies
+	@mkdir -p $$(@D)
+	@echo compiling '$$<'
+	@$(3) -std=c11  $(4:%=-include $(1)/%) $(5) -c '$$<' -o '$$@'
+
 $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(3) $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
+	@$(3) $(ARGC_C_FLAGS) $(4:%=-include $(1)/%) $(5) -c '$$<' -o '$$@'
 
-$(1)/%.o: $(2)/%.mm $(4:%=%.pch) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.mm  | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(3) -x objective-c++ $(4:%=-include %) $(5) -MD -c '$$<' -o '$$@'
+	@$(3) -x objective-c++ $(ARGC_CPP_FLAGS) $(5) -c '$$<' -o '$$@'
 endef
 
 # Generates rule to build precompiled headers file.
