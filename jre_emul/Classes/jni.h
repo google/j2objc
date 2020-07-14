@@ -177,6 +177,7 @@ struct JNINativeInterface {
   jboolean      (*IsAssignableFrom)(JNIEnv*, jclass, jclass);
   jint          (*Throw)(JNIEnv*, jthrowable);
   jint          (*ThrowNew)(JNIEnv *, jclass, const char *);
+  jint          (*EnsureLocalCapacity)(JNIEnv *, jint);
   void          (*ExceptionClear)(JNIEnv *);
 
   jobject       (*NewGlobalRef)(JNIEnv*, jobject);
@@ -515,6 +516,9 @@ struct _JNIEnv {
 
     jint ThrowNew(jclass clazz, const char* message)
     { return functions->ThrowNew(this, clazz, message); }
+
+    jint EnsureLocalCapacity(jint capacity)
+    { return functions->EnsureLocalCapacity(this, capacity); }
 
     void ExceptionClear()
     { functions->ExceptionClear(this); }

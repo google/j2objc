@@ -455,6 +455,11 @@ static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   return 0;
 }
 
+static jint EnsureLocalCapacity(JNIEnv *env, jint capacity) {
+  // no-op
+  return 0;
+}
+
 static void ExceptionClear(JNIEnv *env) {
   // no-op
 }
@@ -812,6 +817,7 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &IsAssignableFrom,
   &Throw,
   &ThrowNew,
+  &EnsureLocalCapacity,
   &ExceptionClear,
   &NewGlobalRef,
   &NewLocalRef,
