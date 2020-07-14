@@ -35,6 +35,7 @@ import java.util.HashSet;
  */
 
 class UnixFileAttributes
+    implements PosixFileAttributes
 {
     private int     st_mode;
     private long    st_ino;
@@ -55,17 +56,16 @@ class UnixFileAttributes
     // created lazily
     private volatile UserPrincipal owner;
     private volatile GroupPrincipal group;
-//    TODO(amisail) uncomment this when working
-//    private volatile UnixFileKey key;
+    private volatile UnixFileKey key;
 
     private UnixFileAttributes() {
     }
 
-//    TODO(amisail) uncomment this when working
-//    // get the UnixFileAttributes for a given file
-//    static UnixFileAttributes get(UnixPath path, boolean followLinks)
-//        throws UnixException
-//    {
+    // get the UnixFileAttributes for a given file
+    static UnixFileAttributes get(UnixPath path, boolean followLinks)
+        throws UnixException
+    {
+//        TODO(amisail) uncomment this when working
 //        UnixFileAttributes attrs = new UnixFileAttributes();
 //        if (followLinks) {
 //            UnixNativeDispatcher.stat(path, attrs);
@@ -73,24 +73,28 @@ class UnixFileAttributes
 //            UnixNativeDispatcher.lstat(path, attrs);
 //        }
 //        return attrs;
-//    }
-//
-//    // get the UnixFileAttributes for an open file
-//    static UnixFileAttributes get(int fd) throws UnixException {
+        throw new UnixException("not implemented");
+    }
+
+    // get the UnixFileAttributes for an open file
+    static UnixFileAttributes get(int fd) throws UnixException {
+//        TODO(amisail) uncomment this when working
 //        UnixFileAttributes attrs = new UnixFileAttributes();
 //        UnixNativeDispatcher.fstat(fd, attrs);
 //        return attrs;
-//    }
-//
-//    // get the UnixFileAttributes for a given file, relative to open directory
-//    static UnixFileAttributes get(int dfd, UnixPath path, boolean followLinks)
-//        throws UnixException
-//    {
+        throw new UnixException("not implemented");
+    }
+
+    // get the UnixFileAttributes for a given file, relative to open directory
+    static UnixFileAttributes get(int dfd, UnixPath path, boolean followLinks)
+        throws UnixException
+    {
 //        UnixFileAttributes attrs = new UnixFileAttributes();
 //        int flag = (followLinks) ? 0 : UnixConstants.AT_SYMLINK_NOFOLLOW;
 //        UnixNativeDispatcher.fstatat(dfd, path.asByteArray(), flag, attrs);
 //        return attrs;
-//    }
+        throw new UnixException("not implemented");
+    }
 
     // package-private
     boolean isSameFile(UnixFileAttributes attrs) {
@@ -129,14 +133,17 @@ class UnixFileAttributes
                 type == UnixConstants.S_IFIFO);
     }
 
+    @Override
     public FileTime lastModifiedTime() {
         return toFileTime(st_mtime_sec, st_mtime_nsec);
     }
 
+    @Override
     public FileTime lastAccessTime() {
         return toFileTime(st_atime_sec, st_atime_nsec);
     }
 
+    @Override
     public FileTime creationTime() {
         if (UnixNativeDispatcher.birthtimeSupported()) {
             return FileTime.from(st_birthtime_sec, TimeUnit.SECONDS);
@@ -146,18 +153,22 @@ class UnixFileAttributes
         }
     }
 
+    @Override
     public boolean isRegularFile() {
        return ((st_mode & UnixConstants.S_IFMT) == UnixConstants.S_IFREG);
     }
 
+    @Override
     public boolean isDirectory() {
         return ((st_mode & UnixConstants.S_IFMT) == UnixConstants.S_IFDIR);
     }
 
+    @Override
     public boolean isSymbolicLink() {
         return ((st_mode & UnixConstants.S_IFMT) == UnixConstants.S_IFLNK);
     }
 
+    @Override
     public boolean isOther() {
         int type = st_mode & UnixConstants.S_IFMT;
         return (type != UnixConstants.S_IFREG &&
@@ -165,47 +176,48 @@ class UnixFileAttributes
                 type != UnixConstants.S_IFLNK);
     }
 
+    @Override
     public long size() {
         return st_size;
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public UnixFileKey fileKey() {
-//        if (key == null) {
-//            synchronized (this) {
-//                if (key == null) {
-//                    key = new UnixFileKey(st_dev, st_ino);
-//                }
-//            }
-//        }
-//        return key;
-//    }
-//
-//    @Override
-//    public UserPrincipal owner() {
-//        if (owner == null) {
-//            synchronized (this) {
-//                if (owner == null) {
-//                    owner = UnixUserPrincipals.fromUid(st_uid);
-//                }
-//            }
-//        }
-//        return owner;
-//    }
-//
-//    @Override
-//    public GroupPrincipal group() {
-//        if (group == null) {
-//            synchronized (this) {
-//                if (group == null) {
-//                    group = UnixUserPrincipals.fromGid(st_gid);
-//                }
-//            }
-//        }
-//        return group;
-//    }
+    @Override
+    public UnixFileKey fileKey() {
+        if (key == null) {
+            synchronized (this) {
+                if (key == null) {
+                    key = new UnixFileKey(st_dev, st_ino);
+                }
+            }
+        }
+        return key;
+    }
 
+    @Override
+    public UserPrincipal owner() {
+        if (owner == null) {
+            synchronized (this) {
+                if (owner == null) {
+                    owner = UnixUserPrincipals.fromUid(st_uid);
+                }
+            }
+        }
+        return owner;
+    }
+
+    @Override
+    public GroupPrincipal group() {
+        if (group == null) {
+            synchronized (this) {
+                if (group == null) {
+                    group = UnixUserPrincipals.fromGid(st_gid);
+                }
+            }
+        }
+        return group;
+    }
+
+    @Override
     public Set<PosixFilePermission> permissions() {
         int bits = (st_mode & UnixConstants.S_IAMB);
         HashSet<PosixFilePermission> perms = new HashSet<>();
@@ -301,9 +313,7 @@ class UnixFileAttributes
         }
         @Override
         public Object fileKey() {
-//            TODO(amisail) uncomment this when working
-//            return attrs.fileKey();
-            return null;
+            return attrs.fileKey();
         }
     }
 }
