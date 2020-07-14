@@ -82,7 +82,7 @@ public abstract class AtomicIntegerFieldUpdater<T> {
         return new AtomicIntegerFieldUpdaterImpl<U>(tclass, fieldName, null);
         /* J2ObjC: Call stack not available.
         return new AtomicIntegerFieldUpdaterImpl<U>
-            (tclass, fieldName, VMStack.getStackClass1()); // android-changed
+            (tclass, fieldName, Reflection.getCallerClass()); // android-changed
         */
     }
 
