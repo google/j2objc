@@ -1141,6 +1141,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixFileAttributes.java \
   sun/nio/fs/UnixFileKey.java \
   sun/nio/fs/UnixFileModeAttribute.java \
+  sun/nio/fs/UnixFileStore.java \
   sun/nio/fs/UnixFileStoreAttributes.java \
   sun/nio/fs/UnixMountEntry.java \
   sun/nio/fs/UnixNativeDispatcher.java \
