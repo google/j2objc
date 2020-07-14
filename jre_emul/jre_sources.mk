@@ -1139,11 +1139,13 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixException.java \
   sun/nio/fs/UnixFileAttributes.java \
+  sun/nio/fs/UnixFileKey.java \
   sun/nio/fs/UnixFileModeAttribute.java \
   sun/nio/fs/UnixFileStoreAttributes.java \
   sun/nio/fs/UnixMountEntry.java \
   sun/nio/fs/UnixNativeDispatcher.java \
   sun/nio/fs/UnixPath.java \
+  sun/nio/fs/UnixUserPrincipals.java \
   sun/nio/fs/Util.java
 
 NATIVE_JRE_SOURCES_FILE = \
