@@ -19,10 +19,6 @@
 //  Created by Tom Ball on 9/9/11.
 //
 
-#if __has_feature(objc_arc)
-#error "b/158196682: IOSObjectArray cannot be built with ARC"
-#endif
-
 #import "IOSObjectArray.h"
 
 #import "IOSArray_PackagePrivate.h"
@@ -41,7 +37,7 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
   }
   size_t buf_size = length * sizeof(id);
-  IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], buf_size, nil);
+  IOSObjectArray *array = ARGC_allocateObject([IOSObjectArray class], buf_size, nil);
   // Set array contents to Java default value (null).
   memset(array->buffer_, 0, buf_size);
   array->size_ = length;
@@ -51,7 +47,7 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type) {
 
 static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
     jint length, IOSClass *type, const id *objects) {
-  IOSObjectArray *array = IOSObjectArray_CreateArray(length, type, retained);
+  IOSObjectArray *array = IOSObjectArray_CreateArray(length, type);
 #ifdef J2OBJC_USE_GC
     for (jint i = 0; i < length; i++) {
         JreGenericFieldAssign(array->buffer_ + i, objects[i]);
@@ -228,10 +224,11 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
     (void)ARGC_genericRelease(buffer[i]);
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
-#if ! __has_feature(objc_arc)
-  for (jint i = retainStart; i < retainEnd; i++) {
-    (void)ARGC_genericRetain(buffer[i]);
-  }
+  #if ! __has_feature(objc_arc)
+    for (jint i = retainStart; i < retainEnd; i++) {
+      (void)ARGC_genericRetain(buffer[i]);
+    }
+  #endif
 #endif
 }
 
@@ -280,14 +277,13 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
   return (NSString *) [buffer_[index] description];
 }
 
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   for (jint i = 0; i < size_; i++) {
     RELEASE_(buffer_[i]);   // NO-OP with ARC.
     buffer_[i] = nil;
   }
-#if ! __has_feature(objc_arc)
   [super dealloc];
-#endif
 }
 #endif
 

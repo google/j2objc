@@ -56,16 +56,18 @@ static inline void NewBuffer(JreStringBuilder *sb, jint size) {
 }
 
 static JavaLangStringIndexOutOfBoundsException *IndexAndLength(JreStringBuilder *sb, jint index) {
-  @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
+  JavaLangStringIndexOutOfBoundsException* ex = [[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
           [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index
-          ]);
+          ]];
+  @throw AUTORELEASE(ex);        
 }
 
 static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
     JreStringBuilder *sb, jint start, jint end) {
-  @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
+  JavaLangStringIndexOutOfBoundsException* ex = [[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
           [NSString stringWithFormat:@"this.length=%d; start=%d; length=%d", sb->count_, start,
-          end - start]);
+          end - start]];
+  @throw AUTORELEASE(ex);
 }
 
 @implementation JavaLangAbstractStringBuilder
@@ -95,7 +97,7 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
 }
 
 void JavaLangAbstractStringBuilder_initPackagePrivate(JavaLangAbstractStringBuilder *self) {
-  NewBuffer(&self->delegate_, INITIAL_CAPACITY);
+  NewBuffer(self, INITIAL_CAPACITY);
 }
 
 void JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(
@@ -350,9 +352,10 @@ void JreStringBuilder_insertCharArraySubset(
 
 void JreStringBuilder_insertChar(JreStringBuilder *sb, jint index, jchar ch) {
   if (index < 0 || index > sb->count_) {
-    @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:
+    JavaLangArrayIndexOutOfBoundsException* ex = [[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:
         [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index
-        ]);
+        ]];
+    @throw AUTORELEASE(ex);
   }
   JreStringBuilder_move(sb, 1, index);
   sb->buffer_[index] = ch;

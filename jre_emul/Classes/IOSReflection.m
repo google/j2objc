@@ -331,8 +331,10 @@ JavaLangReflectField *FindField(IOSClass *iosClass, NSString *name, jboolean pub
   return nil;
 }
 
-NSString *JreMetadataToString(const J2ObjcClassInfo *metadata) {
-  NSMutableString *str = BuildQualifiedName(metadata);
+NSString *JreMetadataToString(IOSClass *iosClass) {
+  NSMutableString *str = [[NSMutableString alloc] init];
+  [str appendString:[iosClass getName]];
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
 
   [str appendString:@" Fields:"];
   for (int i = 0; i < metadata->fieldCount; i++) {

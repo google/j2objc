@@ -150,7 +150,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       println("#if !__has_feature(objc_arc)");
       println(String.format("#error \"%s must be compiled with ARC (-fobjc-arc)\"", filename));
     } else {
-      println("#if __has_feature(objc_arc)");
+      println("#if !J2OBJC_USE_GC && __has_feature(objc_arc)");
       println(String.format("#error \"%s must not be compiled with ARC (-fobjc-arc)\"", filename));
     }
 

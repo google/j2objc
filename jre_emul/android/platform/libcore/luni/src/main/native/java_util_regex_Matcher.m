@@ -132,7 +132,7 @@ jint Java_java_util_regex_Matcher_getMatchedGroupIndexImpl(
     JNIEnv *env, jclass cls, jlong addr, jstring name) {
   UErrorCode status = U_ZERO_ERROR;
   jint nameLength = (jint)[name length];
-  jint result = uregex_groupNumberFromName((URegularExpression *)addr, (UChar *)name, nameLength, &status);
+  jint result = uregex_groupNumberFromName((URegularExpression *)addr, (UChar *)(__bridge void*)name, nameLength, &status);
   if (U_SUCCESS(status)) {
     return result;
   }

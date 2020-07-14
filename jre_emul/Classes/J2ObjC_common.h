@@ -66,7 +66,7 @@
 
 CF_EXTERN_C_BEGIN
 
-id JreThrowNullPointerException(id p) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
+id JreThrowNullPointerException() __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;

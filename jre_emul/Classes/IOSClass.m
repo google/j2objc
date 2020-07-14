@@ -631,7 +631,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
         PackagePrefixLoader *loader = [[PackagePrefixLoader alloc] init];
         [JavaUtilProperties loadLineReaderWithJavaUtilProperties_LineReader:lr
                                       withJavaUtilProperties_KeyValueLoader:loader];
-        [loader release];
+        RELEASE_(loader);
       }
     });
   }
@@ -1085,7 +1085,7 @@ __attribute__((noreturn))
 static void ThrowNoSuchFieldException(IOSClass *iosClass, NSString *fieldName) {
   NSMutableString *msg = [NSMutableString stringWithString:fieldName];
   [msg appendString:@". "];
-  [msg appendString:JreMetadataToString(IOSClass_GetMetadataOrFail(iosClass))];
+  [msg appendString:JreMetadataToString(iosClass)];
   @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:msg]);
 }
 

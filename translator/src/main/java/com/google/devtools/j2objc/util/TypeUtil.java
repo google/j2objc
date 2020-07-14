@@ -451,9 +451,9 @@ public final class TypeUtil {
       return Collections.emptyList();
     }
     List<? extends TypeMirror> result = new ArrayList<>(javacTypes.directSupertypes(t));
-    if (TypeUtil.isPureInterface(t)) {
-      result.remove(javaObject.asType());
-    }
+//    if (TypeUtil.isPureInterface(t)) {
+//      result.remove(javaObject.asType());
+//    }
     return result;
   }
 

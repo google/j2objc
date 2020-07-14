@@ -33,7 +33,7 @@
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [data_ autorelease];
+  AUTORELEASE(data_);
   [super dealloc];
 }
 #endif

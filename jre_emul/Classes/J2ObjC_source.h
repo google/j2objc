@@ -182,7 +182,7 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
     needsRelease = false; \
   } @finally { \
     if (__builtin_expect(needsRelease, 0)) { \
-      [self autorelease]; \
+      AUTORELEASE(self); \
     } \
   } \
   return self;

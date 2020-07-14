@@ -56,25 +56,21 @@ static void unalignedPointer(void *ptr) {
 #define GET_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  return *((id *)ptr);
+  return JreLoadVolatileId((volatile_id *)(void*)ptr); // TODO@zeedh check optimize
 
 #define GET_OBJECT_VOLATILE_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  return JreLoadVolatileId((volatile_id *)ptr);
+  return JreLoadVolatileId((volatile_id *)(void*)ptr);
 
 #define PUT_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
-  CHECK_ADDR(id, ptr) \
-  ARGC_pubObject(obj, ptr, newValue);
-
-void ARGC_pubObject(jobject obj, uintptr_t ptr, jobject newValue);
-  JreStrongAssign((id *)ptr, newValue);
+  JreVolatileStrongAssign((volatile_id *)(void*)ptr, newValue); // TODO@zeedh check optimize
 
 #define PUT_OBJECT_VOLATILE_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
-  JreVolatileStrongAssign((volatile_id *)ptr, newValue);
+  JreVolatileStrongAssign((volatile_id *)(void*)ptr, newValue);
 
 
 // Native method implementations.

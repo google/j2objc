@@ -32,7 +32,7 @@
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
 
-id JreThrowNullPointerException(id p) {
+id JreThrowNullPointerException() {
   @throw create_JavaLangNullPointerException_init(); // NOLINT
 }
 

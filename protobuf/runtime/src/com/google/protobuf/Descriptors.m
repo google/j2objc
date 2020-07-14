@@ -404,16 +404,16 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
 
 - (CGPDescriptor *)getMessageType {
   if (!CGPJavaTypeIsMessage(CGPFieldGetJavaType(self))) {
-    @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
-        @"This field is not of message type."] autorelease];
+    @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] initWithNSString:
+        @"This field is not of message type."]);
   }
   return valueType_;
 }
 
 - (CGPEnumDescriptor *)getEnumType {
   if (!CGPJavaTypeIsEnum(CGPFieldGetJavaType(self))) {
-    @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
-        @"This field is not of enum type."] autorelease];
+    @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] initWithNSString:
+        @"This field is not of enum type."]);
   }
   return valueType_;
 }
@@ -731,7 +731,7 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:name]);
   return nil;
 }
 
@@ -860,7 +860,7 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:name]);
   return nil;
 }
 
