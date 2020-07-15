@@ -41,95 +41,93 @@ class UnixUriUtils {
     /**
      * Converts URI to Path
      */
-//    TODO(amisail) uncomment this when working
-//    static Path fromUri(UnixFileSystem fs, URI uri) {
-//        if (!uri.isAbsolute())
-//            throw new IllegalArgumentException("URI is not absolute");
-//        if (uri.isOpaque())
-//            throw new IllegalArgumentException("URI is not hierarchical");
-//        String scheme = uri.getScheme();
-//        if ((scheme == null) || !scheme.equalsIgnoreCase("file"))
-//            throw new IllegalArgumentException("URI scheme is not \"file\"");
-//        if (uri.getAuthority() != null)
-//            throw new IllegalArgumentException("URI has an authority component");
-//        if (uri.getFragment() != null)
-//            throw new IllegalArgumentException("URI has a fragment component");
-//        if (uri.getQuery() != null)
-//            throw new IllegalArgumentException("URI has a query component");
-//
-//        // compatibility with java.io.File
-//        if (!uri.toString().startsWith("file:///"))
-//            return new File(uri).toPath();
-//
-//        // transformation use raw path
-//        String p = uri.getRawPath();
-//        int len = p.length();
-//        if (len == 0)
-//            throw new IllegalArgumentException("URI path component is empty");
-//
-//        // transform escaped octets and unescaped characters to bytes
-//        if (p.endsWith("/") && len > 1)
-//            len--;
-//        byte[] result = new byte[len];
-//        int rlen = 0;
-//        int pos = 0;
-//        while (pos < len) {
-//            char c = p.charAt(pos++);
-//            byte b;
-//            if (c == '%') {
-//                assert (pos+2) <= len;
-//                char c1 = p.charAt(pos++);
-//                char c2 = p.charAt(pos++);
-//                b = (byte)((decode(c1) << 4) | decode(c2));
-//                if (b == 0)
-//                    throw new IllegalArgumentException("Nul character not allowed");
-//            } else {
-//                assert c < 0x80;
-//                b = (byte)c;
-//            }
-//            result[rlen++] = b;
-//        }
-//        if (rlen != result.length)
-//            result = Arrays.copyOf(result, rlen);
-//
-//        return new UnixPath(fs, result);
-//    }
+    static Path fromUri(UnixFileSystem fs, URI uri) {
+        if (!uri.isAbsolute())
+            throw new IllegalArgumentException("URI is not absolute");
+        if (uri.isOpaque())
+            throw new IllegalArgumentException("URI is not hierarchical");
+        String scheme = uri.getScheme();
+        if ((scheme == null) || !scheme.equalsIgnoreCase("file"))
+            throw new IllegalArgumentException("URI scheme is not \"file\"");
+        if (uri.getAuthority() != null)
+            throw new IllegalArgumentException("URI has an authority component");
+        if (uri.getFragment() != null)
+            throw new IllegalArgumentException("URI has a fragment component");
+        if (uri.getQuery() != null)
+            throw new IllegalArgumentException("URI has a query component");
 
-//    TODO(amisail) uncomment this when working
-//    /**
-//     * Converts Path to URI
-//     */
-//    static URI toUri(UnixPath up) {
-//        byte[] path = up.toAbsolutePath().asByteArray();
-//        StringBuilder sb = new StringBuilder("file:///");
-//        assert path[0] == '/';
-//        for (int i=1; i<path.length; i++) {
-//            char c = (char)(path[i] & 0xff);
-//            if (match(c, L_PATH, H_PATH)) {
-//                sb.append(c);
-//            } else {
-//               sb.append('%');
-//               sb.append(hexDigits[(c >> 4) & 0x0f]);
-//               sb.append(hexDigits[(c) & 0x0f]);
-//            }
-//        }
-//
-//        // trailing slash if directory
-//        if (sb.charAt(sb.length()-1) != '/') {
-//            try {
-//                 if (UnixFileAttributes.get(up, true).isDirectory())
-//                     sb.append('/');
-//            } catch (UnixException x) {
-//                // ignore
-//            }
-//        }
-//
-//        try {
-//            return new URI(sb.toString());
-//        } catch (URISyntaxException x) {
-//            throw new AssertionError(x);  // should not happen
-//        }
-//    }
+        // compatibility with java.io.File
+        if (!uri.toString().startsWith("file:///"))
+            return null;
+
+        // transformation use raw path
+        String p = uri.getRawPath();
+        int len = p.length();
+        if (len == 0)
+            throw new IllegalArgumentException("URI path component is empty");
+
+        // transform escaped octets and unescaped characters to bytes
+        if (p.endsWith("/") && len > 1)
+            len--;
+        byte[] result = new byte[len];
+        int rlen = 0;
+        int pos = 0;
+        while (pos < len) {
+            char c = p.charAt(pos++);
+            byte b;
+            if (c == '%') {
+                assert (pos+2) <= len;
+                char c1 = p.charAt(pos++);
+                char c2 = p.charAt(pos++);
+                b = (byte)((decode(c1) << 4) | decode(c2));
+                if (b == 0)
+                    throw new IllegalArgumentException("Nul character not allowed");
+            } else {
+                assert c < 0x80;
+                b = (byte)c;
+            }
+            result[rlen++] = b;
+        }
+        if (rlen != result.length)
+            result = Arrays.copyOf(result, rlen);
+
+        return new UnixPath(fs, result);
+    }
+
+    /**
+     * Converts Path to URI
+     */
+    static URI toUri(UnixPath up) {
+        byte[] path = up.toAbsolutePath().asByteArray();
+        StringBuilder sb = new StringBuilder("file:///");
+        assert path[0] == '/';
+        for (int i=1; i<path.length; i++) {
+            char c = (char)(path[i] & 0xff);
+            if (match(c, L_PATH, H_PATH)) {
+                sb.append(c);
+            } else {
+               sb.append('%');
+               sb.append(hexDigits[(c >> 4) & 0x0f]);
+               sb.append(hexDigits[(c) & 0x0f]);
+            }
+        }
+
+        // trailing slash if directory
+        if (sb.charAt(sb.length()-1) != '/') {
+            try {
+                 if (UnixFileAttributes.get(up, true).isDirectory())
+                     sb.append('/');
+            } catch (UnixException x) {
+                // ignore
+            }
+        }
+
+        try {
+            return new URI(sb.toString());
+        } catch (URISyntaxException x) {
+            throw new AssertionError(x);  // should not happen
+        }
+    }
 
     // The following is copied from java.net.URI
 
