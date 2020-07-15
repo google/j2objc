@@ -1129,6 +1129,8 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/AbstractFileTypeDetector.java \
   sun/nio/fs/AbstractPath.java \
+  sun/nio/fs/AbstractWatchKey.java \
+  sun/nio/fs/AbstractWatchService.java \
   sun/nio/fs/BasicFileAttributesHolder.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DynamicFileAttributeView.java \
