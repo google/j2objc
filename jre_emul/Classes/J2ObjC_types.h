@@ -55,7 +55,11 @@ typedef __unsafe_unretained id volatile        volatile_id;
 #endif
 
 #if defined(__OBJC__)
+/* TODO 'objc_externally_retained' option makes more optimized source generation
+ * But current clang compiler crashes in compiling some files (cf. X509CRLTest.m)
 #define J2OBJC_METHOD_ATTR __attribute__((objc_externally_retained))
+*/
+#define J2OBJC_METHOD_ATTR // ignore
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #else
 #define J2OBJC_METHOD_ATTR // ignore

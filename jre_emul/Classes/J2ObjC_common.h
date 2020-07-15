@@ -116,12 +116,13 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValu
 void JreReleaseVolatile(volatile_id *pVar);
 #ifdef J2OBJC_USE_GC
 id JreVolatileNativeAssign(volatile_id *pIvar, __unsafe_unretained id value);
+__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) { return value; }
 #else
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
+id JreRetainedLocalValue(id value);
 #endif
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
-id JreRetainedLocalValue(id value); // zz check!!
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, __unsafe_unretained id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, __unsafe_unretained id value);

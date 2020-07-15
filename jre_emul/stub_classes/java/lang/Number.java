@@ -42,4 +42,13 @@ public abstract class Number implements java.io.Serializable {
   public short shortValue() {
     return 0;
   }
+
+  /*--[
++ (instancetype)alloc
+{
+    ARGC_initStatic(self);
+    return [super alloc];
+}
+
+  ]--*/
 }

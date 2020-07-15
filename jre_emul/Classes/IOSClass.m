@@ -202,6 +202,12 @@ IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJ
   return RETAIN_(javaClass);
 }
 
+void ARGC_initStatic(Class c) {
+  IOSClass* iosClass = ARGC_getIOSClass(c);
+  if (iosClass != NULL) {
+    iosClass->metadata_->initialize();
+  }
+}
 
 @implementation IOSClass
 

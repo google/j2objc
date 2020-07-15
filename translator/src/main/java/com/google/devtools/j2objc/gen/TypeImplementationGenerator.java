@@ -400,9 +400,6 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (!super.needsClassInit()) {
     	return;
     }
-//    if (initStatements.isEmpty() && interfaces.isEmpty()) {
-//      return;
-//    }
     StringBuilder sb = new StringBuilder();
     sb.append("{\n");
     
@@ -423,18 +420,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));
     }
-    //sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
     sb.append("}");
     print("\nstatic void " + typeName + "__clinit__() " + reindent(sb.toString()) + "\n");
     
-//    if (env.translationUtil().needsReflection(typeElement)) {
-//    	print("\n+ (void)initialize {\n");
-//    	print("  if (self == [" + typeName + " class]) {\n");
-//    	print("    ARGC_bindMetaData(self, [" + typeName + " __metadata]);\n");
-//    	print("  }\n");
-//    	print("}\n");
-//    }
-    //print("\n+ (void)" + typeName + "_clinit(Class self) {\n" + reindent(sb.toString()) + "\n}\n");
   }
 
   protected String generateStatement(Statement stmt) {
