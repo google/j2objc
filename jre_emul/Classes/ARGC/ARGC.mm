@@ -12,10 +12,17 @@
  * limitations under the License.
  */
 
-//
-//  Created by daehoon.zee on 30/10/2016.
-//  https://github.com/zeedh/j2objc.git
-//
+/**
+  @author Deahoon Zee
+
+  ARGC is a simple merge of Reference Count and Mark&Sweep alorithms.
+  ARGC is based very simple idea dividing refernce count into the root-ref-count 
+ and the member-ref-count. The root-ref-count represents count of the root references
+ of Mark & Sweep scanning that are stored in the local variables and the global variables. 
+  The member-ref-count represents count of the references stored in member variables of 
+ objects. The member-ref-count of cyclic garbage can be greater than 0. 
+  ARGC provides non stop-the-world garbage collection mechanism without stack-scanning.
+*/
 
 #import "ARGC.h"
 #import "objc/runtime.h"
@@ -31,8 +38,6 @@
 #include "java/lang/reflect/Modifier.h"
 #include "java/lang/reflect/Method.h"
 
-#include "RefContext.h"
-#include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
 #include "IOSMetadata.h"
 #include "IOSClass.h"
@@ -41,6 +46,10 @@
 #include "IOSProtocolClass.h"
 #include "NSString+JavaString.h"
 #include "J2ObjC_source.h"
+
+#define GC_DEBUG 0
+
+#include "NSObject+ARGC.h"
 
 #if !GC_DEBUG
 //#pragma GCC optimize ("O2")
@@ -90,20 +99,11 @@ static int refAssocKey;
 static int64_t gc_interval = 1000;
 
 static Class getARGCClass(id jobj) {
-//  /*
-//   NSObject 상속 객체에 대해서만 사용 가능.
-//   그 외의 경우엔 메모리 억세스 오류 발생.
-//   */
-//  Class c = (Class)(((NSUInteger*)jobj)[0] & ~7);
-//
-//  assert(c == [jobj class]);
   return [jobj class];
 }
 
 static JObj_p toARGCObject(id oid) {
   if (oid == NULL) return NULL;
-  //return [oid toJObject];
-  //object_getClass(oid);
   if ([oid isKindOfClass:g_ARGCClass]) {
     JObj_p jobj = (JObj_p)oid;
     if (!jobj->_rc.isPhantom()) {
@@ -113,12 +113,15 @@ static JObj_p toARGCObject(id oid) {
   return NULL;
 }
 
+/*
+ GC_dumpTraceWithTag is not thread-safe. 
+ It just for providing information.
+*/
 static void GC_dumpTraceWithTag(JObj_p jobj, NSString* tag) {
   int bindCount = jobj->_rc.bindCount();
   int refCount = (int)NSExtraRefCount(jobj)+1;
   NSLog(@"%@ %p #%d+%d %@", tag, jobj, bindCount, refCount-bindCount, getARGCClass(jobj));
   if ((int)NSExtraRefCount(jobj) < (int)jobj->_rc.bindCount() - 1) {
-      // 멀티쓰레드환경이라 두 값의 비교가 정확하지 않다. 관련 정보를 적는다.
       NSLog(@"Maybe error %@ %p %d(%d) %@", tag, jobj, (int)NSExtraRefCount(jobj), jobj->_rc.bindCount(), getARGCClass(jobj));
   };
 }
@@ -209,7 +212,6 @@ public:
     registerScanOffsets(cls);
     oid->_rc.initialize(_finalizeClasses[cls] == NULL);
     _cntAllocated ++;
-    // bindCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
     addStrongRef(oid);
     return oid;
   }
@@ -398,9 +400,10 @@ private:
           return;
       }
 
-    if (allocCountInGeneration > 0) {
-      allocCountInGeneration --;
-    }
+      if (allocCountInGeneration > 0) {
+          allocCountInGeneration --;
+      }
+      
       [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc inDepth: 0];
       _instance.unregisterRef(jobj);
 
@@ -413,22 +416,26 @@ private:
           reclaimInstance(jobj);
       }
       else {
-          @synchronized (tableLock) {
-              int index = _cntPhantom ++;
-              int idxBucket = index / REFS_IN_BUCKET;
-              int idxRef = index % REFS_IN_BUCKET;
-              RefSlot* row = _phantomeTable[idxBucket];
-              if (row == NULL) {
-                  row = _phantomeTable[idxBucket];
-                  if (row == NULL) {
-                      row = _phantomeTable[idxBucket] = newBucket();
-                  }
-              }
-              row[idxRef] = jobj;
-          }
+          registerPhantom(jobj);
       }
   }
   
+  void registerPhantom(JObj_p jobj) {
+      @synchronized (tableLock) {
+          int index = _cntPhantom ++;
+          int idxBucket = index / REFS_IN_BUCKET;
+          int idxRef = index % REFS_IN_BUCKET;
+          RefSlot* row = _phantomeTable[idxBucket];
+          if (row == NULL) {
+              row = _phantomeTable[idxBucket];
+              if (row == NULL) {
+                  row = _phantomeTable[idxBucket] = newBucket();
+              }
+          }
+          row[idxRef] = jobj;
+      }
+  }
+
   void registerScanOffsets(Class clazz);
   
   size_t argcObjectSize;
@@ -481,10 +488,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 + (instancetype)alloc
 {
-    IOSClass* iosClass = ARGC_getIOSClass(self);
-    if (iosClass != NULL) {
-      iosClass->metadata_->initialize();
-    }
+    ARGC_initStatic(self);
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
 }
@@ -510,7 +514,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 - (BOOL)retainWeakReference {
     if ([super retainWeakReference]) {
-        // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
+        // Do not call NSLog, it makes crashes in retainWeakReference()
         if (self->_rc.isStrongReachable()) {
             self->_rc.bind();
         }
@@ -700,9 +704,6 @@ void ARGC::registerScanOffsets(Class clazz) {
         id field = _test_obj_buf[i];
         NSUInteger cntRef = NSExtraRefCount(field);
         if (cntRef > 1) {
-            /**
-             Dealloc 과정에서 ARC-decreement 가 발생하지 않은 것은 ARGC-Field 이다.
-             */
             _offset_buf[cntARGC++] = offset;
         }
     }
@@ -1092,8 +1093,9 @@ void ARGC::doGC() {
             }
             v->count ++;
         }
+
         /*
-         주의. 현재 jobj 가 다른 쓰레드에 의해 삭제될 수 있다.
+         Warning) current jobj can be deleted by the other thread.
          */
         if (!jobj->_rc.isStrongReachable()) {
             if (idxSlot == cntAlive) {
@@ -1103,9 +1105,6 @@ void ARGC::doGC() {
             }
             assert(!jobj->_rc.isRootReachable() || jobj->_rc.isPendingRelease());
             addPhantom(jobj, false);
-//                @autoreleasepool {
-//                    [jobj dealloc];
-//                }
             continue;
         }
         
