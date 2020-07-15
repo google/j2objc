@@ -377,22 +377,33 @@ public abstract class AtomicLongFieldUpdater<T> {
             final Field field;
             final int modifiers;
             try {
-                field = tclass.getDeclaredField(fieldName); // android-changed
+                // Android-changed: Skip privilege escalation which is a noop on Android.
+                /*
+                field = AccessController.doPrivileged(
+                    new PrivilegedExceptionAction<Field>() {
+                        public Field run() throws NoSuchFieldException {
+                            return tclass.getDeclaredField(fieldName);
+                        }
+                    });
+                */
+                field = tclass.getDeclaredField(fieldName);
                 modifiers = field.getModifiers();
-                // BEGIN Android-removed
-                // sun.reflect.misc.ReflectUtil.ensureMemberAccess(
-                //     caller, tclass, null, modifiers);
-                // ClassLoader cl = tclass.getClassLoader();
-                // ClassLoader ccl = caller.getClassLoader();
-                // if ((ccl != null) && (ccl != cl) &&
-                //     ((cl == null) || !isAncestor(cl, ccl))) {
-                //     sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
-                // }
-                // END Android-removed
-            // BEGIN Android-removed
-            // } catch (PrivilegedActionException pae) {
-            //     throw new RuntimeException(pae.getException());
-            // END Android-removed
+                // Android-removed: Skip checkPackageAccess which is a noop on Android.
+                /*
+                sun.reflect.misc.ReflectUtil.ensureMemberAccess(
+                        caller, tclass, null, modifiers);
+                ClassLoader cl = tclass.getClassLoader();
+                ClassLoader ccl = caller.getClassLoader();
+                if ((ccl != null) && (ccl != cl) &&
+                    ((cl == null) || !isAncestor(cl, ccl))) {
+                    sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
+                }
+                */
+                // Android-removed: Skip privilege escalation which is a noop on Android.
+            /*
+            } catch (PrivilegedActionException pae) {
+                throw new RuntimeException(pae.getException());
+            */
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -507,22 +518,33 @@ public abstract class AtomicLongFieldUpdater<T> {
             Field field = null;
             int modifiers = 0;
             try {
-                field = tclass.getDeclaredField(fieldName); // android-changed
+                // Android-changed: Skip privilege escalation which is a noop on Android.
+                /*
+                field = AccessController.doPrivileged(
+                    new PrivilegedExceptionAction<Field>() {
+                        public Field run() throws NoSuchFieldException {
+                            return tclass.getDeclaredField(fieldName);
+                        }
+                    });
+                */
+                field = tclass.getDeclaredField(fieldName);
                 modifiers = field.getModifiers();
-                // BEGIN Android-removed
-                // sun.reflect.misc.ReflectUtil.ensureMemberAccess(
-                //     caller, tclass, null, modifiers);
-                // ClassLoader cl = tclass.getClassLoader();
-                // ClassLoader ccl = caller.getClassLoader();
-                // if ((ccl != null) && (ccl != cl) &&
-                //     ((cl == null) || !isAncestor(cl, ccl))) {
-                //     sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
-                // }
-                // END Android-removed
-            // BEGIN Android-removed
-            // } catch (PrivilegedActionException pae) {
-            //     throw new RuntimeException(pae.getException());
-            // END Android-removed
+                // Android-removed: Skip checkPackageAccess which is a noop on Android.
+                /*
+                sun.reflect.misc.ReflectUtil.ensureMemberAccess(
+                        caller, tclass, null, modifiers);
+                ClassLoader cl = tclass.getClassLoader();
+                ClassLoader ccl = caller.getClassLoader();
+                if ((ccl != null) && (ccl != cl) &&
+                    ((cl == null) || !isAncestor(cl, ccl))) {
+                    sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
+                }
+                */
+                // Android-removed: Skip privilege escalation which is a noop on Android.
+            /*
+            } catch (PrivilegedActionException pae) {
+                throw new RuntimeException(pae.getException());
+            */
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -603,21 +625,22 @@ public abstract class AtomicLongFieldUpdater<T> {
         }
     }
 
-    // BEGIN Android-removed
-    // /**
-    //  * Returns true if the second classloader can be found in the first
-    //  * classloader's delegation chain.
-    //  * Equivalent to the inaccessible: first.isAncestor(second).
-    //  */
-    // static boolean isAncestor(ClassLoader first, ClassLoader second) {
-    //     ClassLoader acl = first;
-    //     do {
-    //         acl = acl.getParent();
-    //         if (second == acl) {
-    //             return true;
-    //         }
-    //     } while (acl != null);
-    //     return false;
-    // }
-    // END Android-removed
+    // Android-removed: isAncestor's only usage was removed above.
+    /*
+    /**
+     * Returns true if the second classloader can be found in the first
+     * classloader's delegation chain.
+     * Equivalent to the inaccessible: first.isAncestor(second).
+     *
+    static boolean isAncestor(ClassLoader first, ClassLoader second) {
+        ClassLoader acl = first;
+        do {
+            acl = acl.getParent();
+            if (second == acl) {
+                return true;
+            }
+        } while (acl != null);
+        return false;
+    }
+    */
 }
