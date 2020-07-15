@@ -1124,6 +1124,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/spi/FileTypeDetector.java
 
 JAVA_PRIVATE_SOURCES_FILE = \
+  com/sun/nio/file/ExtendedCopyOption.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
@@ -1139,6 +1140,8 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/UnixConstants.java \
+  sun/nio/fs/UnixCopyFile.java \
+  sun/nio/fs/UnixDirectoryStream.java \
   sun/nio/fs/UnixException.java \
   sun/nio/fs/UnixFileAttributeViews.java \
   sun/nio/fs/UnixFileAttributes.java \
@@ -1154,6 +1157,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/Util.java
 
 NATIVE_JRE_SOURCES_FILE = \
+  UnixCopyFile.m \
   UnixNativeDispatcher.m
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
