@@ -1128,6 +1128,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
+  sun/nio/fs/AbstractFileSystemProvider.java \
   sun/nio/fs/AbstractFileTypeDetector.java \
   sun/nio/fs/AbstractPath.java \
   sun/nio/fs/AbstractWatchKey.java \
