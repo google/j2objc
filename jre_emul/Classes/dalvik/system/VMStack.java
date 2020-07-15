@@ -21,12 +21,17 @@ import android.compat.annotation.UnsupportedAppUsage;
 import dalvik.annotation.optimization.FastNative;
 
 /**
+ * Stub implementation of dalvik.system.VMStack.
+ * This implementation is necessary for use in ObjectInputStream.java
+ */
+
+/**
  * Provides a limited interface to the Dalvik VM stack. This class is mostly
  * used for implementing security checks.
  *
  * @hide
  */
-@libcore.api.CorePlatformApi
+// @libcore.api.CorePlatformApi
 public final class VMStack {
 
   private VMStack() {
@@ -41,10 +46,9 @@ public final class VMStack {
    *         Note that that can return {@link BootClassLoader} on Android where the RI
    *         would have returned null.
    */
-  @UnsupportedAppUsage
-  @FastNative
-  @Deprecated
-  native public static ClassLoader getCallingClassLoader();
+  public static ClassLoader getCallingClassLoader() {
+    return null;
+  }
 
   /**
    * Returns the class of the caller's caller.
@@ -52,26 +56,27 @@ public final class VMStack {
    * @return the requested class, or {@code null}.
    * @deprecated Use {@link sun.reflect.Reflection#getCallerClass()}.
    */
-  @Deprecated
+  /* @Deprecated
   public static Class<?> getStackClass1() {
     return getStackClass2();
-  }
+  } */
 
   /**
    * Returns the class of the caller's caller's caller.
    *
    * @return the requested class, or {@code null}.
    */
-  @UnsupportedAppUsage
+  /* @UnsupportedAppUsage
   @FastNative
-  native public static Class<?> getStackClass2();
+  native public static Class<?> getStackClass2(); */
 
   /**
    * Returns the first ClassLoader on the call stack that isn't the
    * bootstrap class loader.
    */
-  @FastNative
-  public native static ClassLoader getClosestUserClassLoader();
+  public static ClassLoader getClosestUserClassLoader() {
+    return null;
+  }
 
   /**
    * Retrieves the stack trace from the specified thread.
@@ -81,9 +86,9 @@ public final class VMStack {
    * @return an array of stack trace elements, or null if the thread
    *      doesn't have a stack trace (e.g. because it exited)
    */
-  @UnsupportedAppUsage
+ /* @UnsupportedAppUsage
   @FastNative
-  native public static StackTraceElement[] getThreadStackTrace(Thread t);
+  native public static StackTraceElement[] getThreadStackTrace(Thread t); */
 
   /**
    * Retrieves an annotated stack trace from the specified thread.
@@ -93,10 +98,10 @@ public final class VMStack {
    * @return an array of annotated stack frames, or null if the thread
    *      doesn't have a stack trace (e.g. because it exited)
    */
-  @libcore.api.CorePlatformApi
+  /* @libcore.api.CorePlatformApi
   @FastNative
   native public static AnnotatedStackTraceElement[]
-  getAnnotatedThreadStackTrace(Thread t);
+  getAnnotatedThreadStackTrace(Thread t);*/
 
   /**
    * Retrieves a partial stack trace from the specified thread into
@@ -109,8 +114,8 @@ public final class VMStack {
    *      desired. Unused elements will be filled with null values.
    * @return the number of elements filled
    */
-  @UnsupportedAppUsage
+ /* @UnsupportedAppUsage
   @FastNative
   native public static int fillStackTraceElements(Thread t,
-                                                  StackTraceElement[] stackTraceElements);
+                                                  StackTraceElement[] stackTraceElements); */
 }

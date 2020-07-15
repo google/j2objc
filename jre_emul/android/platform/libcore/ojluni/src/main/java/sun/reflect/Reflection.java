@@ -29,18 +29,18 @@ import java.lang.reflect.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import dalvik.system.VMStack;
+//import dalvik.system.VMStack;
 
 /** Common utility routines used by both java.lang and
     java.lang.reflect */
 
 public class Reflection {
 
-    public static Class<?> getCallerClass() {
+   /*  public static Class<?> getCallerClass() {
         // This method (getCallerClass()) constitutes another stack frame,
         // so we need to call getStackClass2() rather than getStackClass1().
         return VMStack.getStackClass2();
-    }
+    } */
 
     public static void ensureMemberAccess(Class<?> currentClass,
                                           Class<?> memberClass,
