@@ -767,28 +767,26 @@ class UnixPath
 
     // package-private
     int openForAttributeAccess(boolean followLinks) throws IOException {
-        return -1;
-//        TODO(amisail) uncomment this when working
-//        int flags = O_RDONLY;
-//        if (!followLinks) {
-//            if (O_NOFOLLOW == 0)
-//                throw new IOException("NOFOLLOW_LINKS is not supported on this platform");
-//            flags |= O_NOFOLLOW;
-//        }
-//        try {
-//            return open(this, flags, 0);
-//        } catch (UnixException x) {
-//            // HACK: EINVAL instead of ELOOP on Solaris 10 prior to u4 (see 6460380)
-//            if (getFileSystem().isSolaris() && x.errno() == EINVAL)
-//                x.setError(ELOOP);
-//
-//            if (x.errno() == ELOOP)
-//                throw new FileSystemException(getPathForExceptionMessage(), null,
-//                    x.getMessage() + " or unable to access attributes of symbolic link");
-//
-//            x.rethrowAsIOException(this);
-//            return -1; // keep compile happy
-//        }
+        int flags = O_RDONLY;
+        if (!followLinks) {
+            if (O_NOFOLLOW == 0)
+                throw new IOException("NOFOLLOW_LINKS is not supported on this platform");
+            flags |= O_NOFOLLOW;
+        }
+        try {
+            return open(this, flags, 0);
+        } catch (UnixException x) {
+            // HACK: EINVAL instead of ELOOP on Solaris 10 prior to u4 (see 6460380)
+            if (getFileSystem().isSolaris() && x.errno() == EINVAL)
+                x.setError(ELOOP);
+
+            if (x.errno() == ELOOP)
+                throw new FileSystemException(getPathForExceptionMessage(), null,
+                    x.getMessage() + " or unable to access attributes of symbolic link");
+
+            x.rethrowAsIOException(this);
+            return -1; // keep compile happy
+        }
     }
 
     void checkRead() {
@@ -826,60 +824,58 @@ class UnixPath
 
     @Override
     public Path toRealPath(LinkOption... options) throws IOException {
-        return null;
-//        TODO(amisail) uncomment this when working
-//        checkRead();
-//
-//        UnixPath absolute = toAbsolutePath();
-//
-//        // if resolving links then use realpath
-//        if (Util.followLinks(options)) {
-//            try {
-//                byte[] rp = realpath(absolute);
-//                return new UnixPath(getFileSystem(), rp);
-//            } catch (UnixException x) {
-//                x.rethrowAsIOException(this);
-//            }
-//        }
-//
-//        // if not resolving links then eliminate "." and also ".."
-//        // where the previous element is not a link.
-//        UnixPath result = fs.rootDirectory();
-//        for (int i=0; i<absolute.getNameCount(); i++) {
-//            UnixPath element = absolute.getName(i);
-//
-//            // eliminate "."
-//            if ((element.asByteArray().length == 1) && (element.asByteArray()[0] == '.'))
-//                continue;
-//
-//            // cannot eliminate ".." if previous element is a link
-//            if ((element.asByteArray().length == 2) && (element.asByteArray()[0] == '.') &&
-//                (element.asByteArray()[1] == '.'))
-//            {
-//                UnixFileAttributes attrs = null;
-//                try {
-//                    attrs = UnixFileAttributes.get(result, false);
-//                } catch (UnixException x) {
-//                    x.rethrowAsIOException(result);
-//                }
-//                if (!attrs.isSymbolicLink()) {
-//                    result = result.getParent();
-//                    if (result == null) {
-//                        result = fs.rootDirectory();
-//                    }
-//                    continue;
-//                }
-//            }
-//            result = result.resolve(element);
-//        }
-//
-//        // check file exists (without following links)
-//        try {
-//            UnixFileAttributes.get(result, false);
-//        } catch (UnixException x) {
-//            x.rethrowAsIOException(result);
-//        }
-//        return result;
+        checkRead();
+
+        UnixPath absolute = toAbsolutePath();
+
+        // if resolving links then use realpath
+        if (Util.followLinks(options)) {
+            try {
+                byte[] rp = realpath(absolute);
+                return new UnixPath(getFileSystem(), rp);
+            } catch (UnixException x) {
+                x.rethrowAsIOException(this);
+            }
+        }
+
+        // if not resolving links then eliminate "." and also ".."
+        // where the previous element is not a link.
+        UnixPath result = fs.rootDirectory();
+        for (int i=0; i<absolute.getNameCount(); i++) {
+            UnixPath element = absolute.getName(i);
+
+            // eliminate "."
+            if ((element.asByteArray().length == 1) && (element.asByteArray()[0] == '.'))
+                continue;
+
+            // cannot eliminate ".." if previous element is a link
+            if ((element.asByteArray().length == 2) && (element.asByteArray()[0] == '.') &&
+                (element.asByteArray()[1] == '.'))
+            {
+                UnixFileAttributes attrs = null;
+                try {
+                    attrs = UnixFileAttributes.get(result, false);
+                } catch (UnixException x) {
+                    x.rethrowAsIOException(result);
+                }
+                if (!attrs.isSymbolicLink()) {
+                    result = result.getParent();
+                    if (result == null) {
+                        result = fs.rootDirectory();
+                    }
+                    continue;
+                }
+            }
+            result = result.resolve(element);
+        }
+
+        // check file exists (without following links)
+        try {
+            UnixFileAttributes.get(result, false);
+        } catch (UnixException x) {
+            x.rethrowAsIOException(result);
+        }
+        return result;
     }
 
     @Override
@@ -893,13 +889,11 @@ class UnixPath
                              WatchEvent.Modifier... modifiers)
         throws IOException
     {
-        return null;
-//        TODO(amisail) uncomment this when working
-//        if (watcher == null)
-//            throw new NullPointerException();
-//        if (!(watcher instanceof AbstractWatchService))
-//            throw new ProviderMismatchException();
-//        checkRead();
-//        return ((AbstractWatchService)watcher).register(this, events, modifiers);
+        if (watcher == null)
+            throw new NullPointerException();
+        if (!(watcher instanceof AbstractWatchService))
+            throw new ProviderMismatchException();
+        checkRead();
+        return ((AbstractWatchService)watcher).register(this, events, modifiers);
     }
 }

@@ -44,36 +44,32 @@ abstract class UnixFileStore
     private final UnixPath file;
 
     // device ID
-//    TODO(amisail) uncomment this when working
-//    private final long dev;
+    private final long dev;
 
     // entry in the mount tab
     private final UnixMountEntry entry;
 
     // return the device ID where the given file resides
-//    TODO(amisail) uncomment this when working
-//    private static long devFor(UnixPath file) throws IOException {
-//        try {
-//            return UnixFileAttributes.get(file, true).dev();
-//        } catch (UnixException x) {
-//            x.rethrowAsIOException(file);
-//            return 0L;  // keep compiler happy
-//        }
-//    }
+    private static long devFor(UnixPath file) throws IOException {
+        try {
+            return UnixFileAttributes.get(file, true).dev();
+        } catch (UnixException x) {
+            x.rethrowAsIOException(file);
+            return 0L;  // keep compiler happy
+        }
+    }
 
     UnixFileStore(UnixPath file) throws IOException {
         this.file = file;
-//        TODO(amisail) uncomment this when working
-//        this.dev = devFor(file);
+        this.dev = devFor(file);
         this.entry = findMountEntry();
     }
 
-//    TODO(amisail) uncomment this when working
-//    UnixFileStore(UnixFileSystem fs, UnixMountEntry entry) throws IOException {
-//        this.file = new UnixPath(fs, entry.dir());
-//        this.dev = (entry.dev() == 0L) ? devFor(this.file) : entry.dev();
-//        this.entry = entry;
-//    }
+    UnixFileStore(UnixFileSystem fs, UnixMountEntry entry) throws IOException {
+        this.file = new UnixPath(fs, entry.dir());
+        this.dev = (entry.dev() == 0L) ? devFor(this.file) : entry.dev();
+        this.entry = entry;
+    }
 
     /**
      * Find the mount entry for the file store
@@ -84,10 +80,9 @@ abstract class UnixFileStore
         return file;
     }
 
-//    TODO(amisail) uncomment this when working
-//    long dev() {
-//        return dev;
-//    }
+    long dev() {
+        return dev;
+    }
 
     UnixMountEntry entry() {
         return entry;
@@ -155,9 +150,10 @@ abstract class UnixFileStore
         throw new UnsupportedOperationException("'" + attribute + "' not recognized");
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public boolean supportsFileAttributeView(Class<? extends FileAttributeView> type) {
+    @Override
+    public boolean supportsFileAttributeView(Class<? extends FileAttributeView> type) {
+        return false;
+//        TODO(amisail) uncomment this when working
 //        if (type == null)
 //            throw new NullPointerException();
 //        if (type == BasicFileAttributeView.class)
@@ -171,7 +167,7 @@ abstract class UnixFileStore
 //            return (status != FeatureStatus.NOT_PRESENT);
 //        }
 //        return false;
-//    }
+    }
 
     @Override
     public boolean supportsFileAttributeView(String name) {
@@ -184,24 +180,22 @@ abstract class UnixFileStore
         return false;
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public boolean equals(Object ob) {
-//        if (ob == this)
-//            return true;
-//        if (!(ob instanceof UnixFileStore))
-//            return false;
-//        UnixFileStore other = (UnixFileStore)ob;
-//        return (this.dev == other.dev) &&
-//               Arrays.equals(this.entry.dir(), other.entry.dir()) &&
-//               this.entry.name().equals(other.entry.name());
-//    }
-//
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public int hashCode() {
-//        return (int)(dev ^ (dev >>> 32)) ^ Arrays.hashCode(entry.dir());
-//    }
+    @Override
+    public boolean equals(Object ob) {
+        if (ob == this)
+            return true;
+        if (!(ob instanceof UnixFileStore))
+            return false;
+        UnixFileStore other = (UnixFileStore)ob;
+        return (this.dev == other.dev) &&
+               Arrays.equals(this.entry.dir(), other.entry.dir()) &&
+               this.entry.name().equals(other.entry.name());
+    }
+
+    @Override
+    public int hashCode() {
+        return (int)(dev ^ (dev >>> 32)) ^ Arrays.hashCode(entry.dir());
+    }
 
     @Override
     public String toString() {
