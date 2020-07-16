@@ -16,6 +16,7 @@
 
 NATIVE_ARGC_SOURCES = \
   ARGC/ARGC.mm \
+  ARGC/Volatiles.mm \
   jni.mm 
 
 NATIVE_JRE_SOURCES_CORE = \
