@@ -1136,6 +1136,9 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/AbstractWatchKey.java \
   sun/nio/fs/AbstractWatchService.java \
   sun/nio/fs/BasicFileAttributesHolder.java \
+  sun/nio/fs/BsdFileStore.java \
+  sun/nio/fs/BsdFileSystem.java \
+  sun/nio/fs/BsdNativeDispatcher.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
@@ -1163,6 +1166,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/Util.java
 
 NATIVE_JRE_SOURCES_FILE = \
+  BsdNativeDispatcher.m \
   UnixCopyFile.m \
   UnixNativeDispatcher.m
 
