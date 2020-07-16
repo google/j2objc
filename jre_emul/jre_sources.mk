@@ -1125,6 +1125,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
 
 JAVA_PRIVATE_SOURCES_FILE = \
   com/sun/nio/file/ExtendedCopyOption.java \
+  com/sun/nio/file/SensitivityWatchEventModifier.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
@@ -1140,6 +1141,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/Globs.java \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
+  sun/nio/fs/PollingWatchService.java \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixCopyFile.java \
   sun/nio/fs/UnixDirectoryStream.java \
