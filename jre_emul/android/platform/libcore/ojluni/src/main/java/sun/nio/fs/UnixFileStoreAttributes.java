@@ -36,8 +36,7 @@ class UnixFileStoreAttributes {
 
     static UnixFileStoreAttributes get(UnixPath path) throws UnixException {
         UnixFileStoreAttributes attrs = new UnixFileStoreAttributes();
-//        TODO(amisail) uncomment this when working
-//        UnixNativeDispatcher.statvfs(path, attrs);
+        UnixNativeDispatcher.statvfs(path, attrs);
         return attrs;
     }
 

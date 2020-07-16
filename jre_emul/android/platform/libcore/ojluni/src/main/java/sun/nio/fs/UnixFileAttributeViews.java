@@ -46,17 +46,15 @@ class UnixFileAttributeViews {
 
         @Override
         public BasicFileAttributes readAttributes() throws IOException {
-//            TODO(amisail) uncomment this when working
-//            file.checkRead();
-//            try {
-//                 UnixFileAttributes attrs =
-//                     UnixFileAttributes.get(file, followLinks);
-//                 return attrs.asBasicFileAttributes();
-//            } catch (UnixException x) {
-//                x.rethrowAsIOException(file);
-//                return null;    // keep compiler happy
-//            }
-            throw new IOException("not implemented");
+            file.checkRead();
+            try {
+                 UnixFileAttributes attrs =
+                     UnixFileAttributes.get(file, followLinks);
+                 return attrs.asBasicFileAttributes();
+            } catch (UnixException x) {
+                x.rethrowAsIOException(file);
+                return null;    // keep compiler happy
+            }
         }
 
         @Override
@@ -64,71 +62,69 @@ class UnixFileAttributeViews {
                              FileTime lastAccessTime,
                              FileTime createTime) throws IOException
         {
-            throw new IOException("not implemented");
-//            TODO(amisail) uncomment this when working
-//            // null => don't change
-//            if (lastModifiedTime == null && lastAccessTime == null) {
-//                // no effect
-//                return;
-//            }
-//
-//            // permission check
-//            file.checkWrite();
-//
-//            int fd = file.openForAttributeAccess(followLinks);
-//            try {
-//                // assert followLinks || !UnixFileAttributes.get(fd).isSymbolicLink();
-//
-//                // if not changing both attributes then need existing attributes
-//                if (lastModifiedTime == null || lastAccessTime == null) {
-//                    try {
-//                        UnixFileAttributes attrs = UnixFileAttributes.get(fd);
-//                        if (lastModifiedTime == null)
-//                            lastModifiedTime = attrs.lastModifiedTime();
-//                        if (lastAccessTime == null)
-//                            lastAccessTime = attrs.lastAccessTime();
-//                    } catch (UnixException x) {
-//                        x.rethrowAsIOException(file);
-//                    }
-//                }
-//
-//                // uptime times
-//                long modValue = lastModifiedTime.to(TimeUnit.MICROSECONDS);
-//                long accessValue= lastAccessTime.to(TimeUnit.MICROSECONDS);
-//
-//                boolean retry = false;
-//                try {
-//                    if (futimesSupported()) {
-//                        futimes(fd, accessValue, modValue);
-//                    } else {
-//                        utimes(file, accessValue, modValue);
-//                    }
-//                } catch (UnixException x) {
-//                    // if futimes/utimes fails with EINVAL and one/both of the times is
-//                    // negative then we adjust the value to the epoch and retry.
-//                    if (x.errno() == UnixConstants.EINVAL &&
-//                        (modValue < 0L || accessValue < 0L)) {
-//                        retry = true;
-//                    } else {
-//                        x.rethrowAsIOException(file);
-//                    }
-//                }
-//                if (retry) {
-//                    if (modValue < 0L) modValue = 0L;
-//                    if (accessValue < 0L) accessValue= 0L;
-//                    try {
-//                        if (futimesSupported()) {
-//                            futimes(fd, accessValue, modValue);
-//                        } else {
-//                            utimes(file, accessValue, modValue);
-//                        }
-//                    } catch (UnixException x) {
-//                        x.rethrowAsIOException(file);
-//                    }
-//                }
-//            } finally {
-//                close(fd);
-//            }
+            // null => don't change
+            if (lastModifiedTime == null && lastAccessTime == null) {
+                // no effect
+                return;
+            }
+
+            // permission check
+            file.checkWrite();
+
+            int fd = file.openForAttributeAccess(followLinks);
+            try {
+                // assert followLinks || !UnixFileAttributes.get(fd).isSymbolicLink();
+
+                // if not changing both attributes then need existing attributes
+                if (lastModifiedTime == null || lastAccessTime == null) {
+                    try {
+                        UnixFileAttributes attrs = UnixFileAttributes.get(fd);
+                        if (lastModifiedTime == null)
+                            lastModifiedTime = attrs.lastModifiedTime();
+                        if (lastAccessTime == null)
+                            lastAccessTime = attrs.lastAccessTime();
+                    } catch (UnixException x) {
+                        x.rethrowAsIOException(file);
+                    }
+                }
+
+                // uptime times
+                long modValue = lastModifiedTime.to(TimeUnit.MICROSECONDS);
+                long accessValue= lastAccessTime.to(TimeUnit.MICROSECONDS);
+
+                boolean retry = false;
+                try {
+                    if (futimesSupported()) {
+                        futimes(fd, accessValue, modValue);
+                    } else {
+                        utimes(file, accessValue, modValue);
+                    }
+                } catch (UnixException x) {
+                    // if futimes/utimes fails with EINVAL and one/both of the times is
+                    // negative then we adjust the value to the epoch and retry.
+                    if (x.errno() == UnixConstants.EINVAL &&
+                        (modValue < 0L || accessValue < 0L)) {
+                        retry = true;
+                    } else {
+                        x.rethrowAsIOException(file);
+                    }
+                }
+                if (retry) {
+                    if (modValue < 0L) modValue = 0L;
+                    if (accessValue < 0L) accessValue= 0L;
+                    try {
+                        if (futimesSupported()) {
+                            futimes(fd, accessValue, modValue);
+                        } else {
+                            utimes(file, accessValue, modValue);
+                        }
+                    } catch (UnixException x) {
+                        x.rethrowAsIOException(file);
+                    }
+                }
+            } finally {
+                close(fd);
+            }
         }
     }
 
@@ -148,8 +144,7 @@ class UnixFileAttributeViews {
         final void checkReadExtended() {
             SecurityManager sm = System.getSecurityManager();
             if (sm != null) {
-//                TODO(amisail) uncomment this when working
-//                file.checkRead();
+                file.checkRead();
                 sm.checkPermission(new RuntimePermission("accessUserInformation"));
             }
         }
@@ -157,8 +152,7 @@ class UnixFileAttributeViews {
         final void checkWriteExtended() {
             SecurityManager sm = System.getSecurityManager();
             if (sm != null) {
-//                TODO(amisail) uncomment this when working
-//                file.checkWrite();
+                file.checkWrite();
                 sm.checkPermission(new RuntimePermission("accessUserInformation"));
             }
         }
@@ -228,39 +222,35 @@ class UnixFileAttributeViews {
 
         // chmod
         final void setMode(int mode) throws IOException {
-            throw new IOException("not implemented");
-//            TODO(amisail) uncomment this when working
-//            checkWriteExtended();
-//            try {
-//                if (followLinks) {
-//                    chmod(file, mode);
-//                } else {
-//                    int fd = file.openForAttributeAccess(false);
-//                    try {
-//                        fchmod(fd, mode);
-//                    } finally {
-//                        close(fd);
-//                    }
-//                }
-//            } catch (UnixException x) {
-//                x.rethrowAsIOException(file);
-//            }
+            checkWriteExtended();
+            try {
+                if (followLinks) {
+                    chmod(file, mode);
+                } else {
+                    int fd = file.openForAttributeAccess(false);
+                    try {
+                        fchmod(fd, mode);
+                    } finally {
+                        close(fd);
+                    }
+                }
+            } catch (UnixException x) {
+                x.rethrowAsIOException(file);
+            }
         }
 
         // chown
         final void setOwners(int uid, int gid) throws IOException {
-            throw new IOException("not implemented");
-//            TODO(amisail) uncomment this when working
-//            checkWriteExtended();
-//            try {
-//                if (followLinks) {
-//                    chown(file, uid, gid);
-//                } else {
-//                    lchown(file, uid, gid);
-//                }
-//            } catch (UnixException x) {
-//                x.rethrowAsIOException(file);
-//            }
+            checkWriteExtended();
+            try {
+                if (followLinks) {
+                    chown(file, uid, gid);
+                } else {
+                    lchown(file, uid, gid);
+                }
+            } catch (UnixException x) {
+                x.rethrowAsIOException(file);
+            }
         }
 
         @Override

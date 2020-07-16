@@ -65,35 +65,30 @@ class UnixFileAttributes
     static UnixFileAttributes get(UnixPath path, boolean followLinks)
         throws UnixException
     {
-//        TODO(amisail) uncomment this when working
-//        UnixFileAttributes attrs = new UnixFileAttributes();
-//        if (followLinks) {
-//            UnixNativeDispatcher.stat(path, attrs);
-//        } else {
-//            UnixNativeDispatcher.lstat(path, attrs);
-//        }
-//        return attrs;
-        throw new UnixException("not implemented");
+        UnixFileAttributes attrs = new UnixFileAttributes();
+        if (followLinks) {
+            UnixNativeDispatcher.stat(path, attrs);
+        } else {
+            UnixNativeDispatcher.lstat(path, attrs);
+        }
+        return attrs;
     }
 
     // get the UnixFileAttributes for an open file
     static UnixFileAttributes get(int fd) throws UnixException {
-//        TODO(amisail) uncomment this when working
-//        UnixFileAttributes attrs = new UnixFileAttributes();
-//        UnixNativeDispatcher.fstat(fd, attrs);
-//        return attrs;
-        throw new UnixException("not implemented");
+        UnixFileAttributes attrs = new UnixFileAttributes();
+        UnixNativeDispatcher.fstat(fd, attrs);
+        return attrs;
     }
 
     // get the UnixFileAttributes for a given file, relative to open directory
     static UnixFileAttributes get(int dfd, UnixPath path, boolean followLinks)
         throws UnixException
     {
-//        UnixFileAttributes attrs = new UnixFileAttributes();
-//        int flag = (followLinks) ? 0 : UnixConstants.AT_SYMLINK_NOFOLLOW;
-//        UnixNativeDispatcher.fstatat(dfd, path.asByteArray(), flag, attrs);
-//        return attrs;
-        throw new UnixException("not implemented");
+        UnixFileAttributes attrs = new UnixFileAttributes();
+        int flag = (followLinks) ? 0 : UnixConstants.AT_SYMLINK_NOFOLLOW;
+        UnixNativeDispatcher.fstatat(dfd, path.asByteArray(), flag, attrs);
+        return attrs;
     }
 
     // package-private
