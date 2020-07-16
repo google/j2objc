@@ -40,10 +40,7 @@
 #define IPv6 AF_INET6
 
 #define NET_ERROR(env, ex, msg) \
-{ if (!(*env)->ExceptionOccurred(env)) JNU_ThrowByName(env, ex, msg) }
-
-#define CHECK_NULL(x) if ((x) == NULL) return;
-#define CHECK_NULL_RETURN(x, y) if ((x) == NULL) return y;
+{ if (!(*env)->ExceptionOccurred(env)) JNU_ThrowByName(env, ex, msg); }
 
 /************************************************************************
  * Cached field IDs

@@ -281,6 +281,25 @@ JNU_NotifyAll(JNIEnv *env, jobject object);
 #define IS_NULL(obj) ((obj) == NULL)
 #define JNU_IsNull(env,obj) ((obj) == NULL)
 
+/************************************************************************
+ * Miscellaneous utilities used by the class libraries to return from
+ * a function if a value is NULL or an exception is pending.
+ */
+
+#define CHECK_NULL(x)                           \
+    do {                                        \
+        if ((x) == NULL) {                      \
+            return;                             \
+        }                                       \
+    } while (0)                                 \
+
+#define CHECK_NULL_RETURN(x, y)                 \
+    do {                                        \
+        if ((x) == NULL) {                      \
+            return (y);                         \
+        }                                       \
+    } while (0)                                 \
+
 
 /************************************************************************
  * Debugging utilities

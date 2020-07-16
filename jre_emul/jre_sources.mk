@@ -1138,10 +1138,16 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixException.java \
+  sun/nio/fs/UnixFileAttributes.java \
   sun/nio/fs/UnixFileModeAttribute.java \
+  sun/nio/fs/UnixFileStoreAttributes.java \
   sun/nio/fs/UnixMountEntry.java \
+  sun/nio/fs/UnixNativeDispatcher.java \
   sun/nio/fs/UnixPath.java \
   sun/nio/fs/Util.java
+
+NATIVE_JRE_SOURCES_FILE = \
+  UnixNativeDispatcher.m
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
@@ -2438,5 +2444,5 @@ JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
 NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
-  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_NET) $(NATIVE_JRE_SOURCES_SSL) \
-  $(NATIVE_JRE_ICU_EMBEDDED_DATA)
+  $(NATIVE_JRE_SOURCES_CHANNELS) $(NATIVE_JRE_SOURCES_FILE) $(NATIVE_JRE_SOURCES_NET) \
+  $(NATIVE_JRE_SOURCES_SSL) $(NATIVE_JRE_ICU_EMBEDDED_DATA)
