@@ -54,7 +54,7 @@ void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValu
 
 
 /* execute garbage collection now. */
-void ARGC_collectGarbage();
+void ARGC_collectGarbage(bool clearSoftRef);
 
 /* set background garbage collection interval. (default: 1000ms) */
 void ARGC_setGarbageCollectionInterval(int time_in_ms);

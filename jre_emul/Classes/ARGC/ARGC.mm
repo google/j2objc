@@ -95,7 +95,6 @@ static const int FINISHED = 0;
 static scan_offset_t _emptyFields[1] = { 0 };
 
 static int refAssocKey;
-//static int metadataAssocKey;
 static int64_t gc_interval = 1000;
 
 static Class getARGCClass(id jobj) {
@@ -191,7 +190,7 @@ public:
     while (oid == NULL) {
       cntGCLoop ++;
       _clearSoftReference = 1;
-      ARGC_collectGarbage();
+      ARGC_collectGarbage(true);
       oid = NSAllocateObject(cls, extraBytes, zone);
       if (cntGCLoop > 2) {
           OutOfMemory();
@@ -450,11 +449,11 @@ private:
   NSMutableDictionary* _scanOffsetCache;
   NSMutableDictionary* _finalizeClasses;
   NSObject* tableLock;
-  NSObject* scanLock;
   size_t allocCountInGeneration;
   
   BOOL _inGC;
 public:
+  NSObject* scanLock;
   static NSObject* gcTrigger;
   static std::atomic_int gcTriggered;
   static std::atomic_int _clearSoftReference;
@@ -625,7 +624,9 @@ ARGC::ARGC() {
         }
         gcTriggered = FALSE;
       }
-      ARGC::doGC();
+        if (allocCountInGeneration > 1) {
+            ARGC::doGC();
+        }
       @synchronized (gcTrigger) {
         [gcTrigger java_notifyAll];
       }
@@ -633,13 +634,12 @@ ARGC::ARGC() {
   });
 }
 
-void ARGC_collectGarbage() {
-  ARGC::_instance.gcTriggered = TRUE;
-  @synchronized (ARGC::gcTrigger) {
-    if (ARGC::gcTriggered) {
-      [ARGC::gcTrigger java_notifyAll];
-      [ARGC::gcTrigger java_wait];
-    }
+void ARGC_collectGarbage(bool clearSoftRef) {
+  //ARGC::_instance.gcTriggered = TRUE;
+  @synchronized (ARGC::_instance.scanLock) {
+      ARGC::_clearSoftReference |= clearSoftRef;
+      ARGC::_instance.doGC();
+      ARGC::_instance.doGC();
   }
 }
 
@@ -968,18 +968,17 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
-  if (allocCountInGeneration < 1) return;
   
-  allocCountInGeneration = 0;
-  NSMutableDictionary<Class, Counter*>* roots =
-      (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
-
-  BOOL doClearSoftReference = _clearSoftReference;
-  if (doClearSoftReference) {
-      _clearSoftReference = 0;
-  }
-
   @synchronized (scanLock) {
+    allocCountInGeneration = 0;
+    NSMutableDictionary<Class, Counter*>* roots =
+          (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
+
+    BOOL doClearSoftReference = _clearSoftReference;
+    if (doClearSoftReference) {
+          _clearSoftReference = 0;
+    }
+
     SLEEP_WHILE (_cntMarkingThread > 0);
     gc_state = SCANNING;
     RefContext::change_generation();
@@ -1291,7 +1290,6 @@ extern "C" {
         return ARGC::_instance.allocateInstance(cls, extraBytes, zone);
     }
     
-#include "Volatiles.mm"
 }
 
 
@@ -1394,8 +1392,7 @@ extern "C" {
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
-    ARGC::_clearSoftReference = 1;
-    ARGC_collectGarbage();
+    ARGC_collectGarbage(true);
 }
 
 

@@ -145,6 +145,7 @@ public class SoftReferenceTest extends TestCase {
       softRef = null;
       assertFalse("referent dealloc'ed too soon", dealloced[0]);
     }
+    System.gc();
     assertTrue("referent wasn't dealloc'ed", dealloced[0]);
   }
 
