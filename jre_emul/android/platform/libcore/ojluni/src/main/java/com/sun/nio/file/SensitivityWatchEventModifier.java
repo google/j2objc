@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2009, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,37 +23,40 @@
  * questions.
  */
 
-package sun.nio.fs;
+package com.sun.nio.file;
 
-class UnixFileStoreAttributes {
-    private long f_frsize;          // block size
-    private long f_blocks;          // total
-    private long f_bfree;           // free
-    private long f_bavail;          // usable
+import java.nio.file.WatchEvent.Modifier;
 
-    private UnixFileStoreAttributes() {
+/**
+ * Defines the <em>sensitivity levels</em> when registering objects with a
+ * watch service implementation that polls the file system.
+ *
+ * @since 1.7
+ */
+
+public enum SensitivityWatchEventModifier implements Modifier {
+    /**
+     * High sensitivity.
+     */
+    HIGH(2),
+    /**
+     * Medium sensitivity.
+     */
+    MEDIUM(10),
+    /**
+     * Low sensitivity.
+     */
+    LOW(30);
+
+    /**
+     * Returns the sensitivity in seconds.
+     */
+    public int sensitivityValueInSeconds() {
+        return sensitivity;
     }
 
-    static UnixFileStoreAttributes get(UnixPath path) throws UnixException {
-        UnixFileStoreAttributes attrs = new UnixFileStoreAttributes();
-        UnixNativeDispatcher.statvfs(path, attrs);
-        return attrs;
+    private final int sensitivity;
+    private SensitivityWatchEventModifier(int sensitivity) {
+        this.sensitivity = sensitivity;
     }
-
-    long blockSize() {
-        return f_frsize;
-    }
-
-    long totalBlocks() {
-        return f_blocks;
-    }
-
-    long freeBlocks() {
-        return f_bfree;
-    }
-
-    long availableBlocks() {
-        return f_bavail;
-    }
-
 }

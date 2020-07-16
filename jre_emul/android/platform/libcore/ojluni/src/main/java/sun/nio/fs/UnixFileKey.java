@@ -25,35 +25,43 @@
 
 package sun.nio.fs;
 
-class UnixFileStoreAttributes {
-    private long f_frsize;          // block size
-    private long f_blocks;          // total
-    private long f_bfree;           // free
-    private long f_bavail;          // usable
+/**
+ * Container for device/inode to uniquely identify file.
+ */
 
-    private UnixFileStoreAttributes() {
+class UnixFileKey {
+    private final long st_dev;
+    private final long st_ino;
+
+    UnixFileKey(long st_dev, long st_ino) {
+        this.st_dev = st_dev;
+        this.st_ino = st_ino;
     }
 
-    static UnixFileStoreAttributes get(UnixPath path) throws UnixException {
-        UnixFileStoreAttributes attrs = new UnixFileStoreAttributes();
-        UnixNativeDispatcher.statvfs(path, attrs);
-        return attrs;
+    @Override
+    public int hashCode() {
+        return (int)(st_dev ^ (st_dev >>> 32)) +
+               (int)(st_ino ^ (st_ino >>> 32));
     }
 
-    long blockSize() {
-        return f_frsize;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof UnixFileKey))
+            return false;
+        UnixFileKey other = (UnixFileKey)obj;
+        return (this.st_dev == other.st_dev) && (this.st_ino == other.st_ino);
     }
 
-    long totalBlocks() {
-        return f_blocks;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(dev=")
+          .append(Long.toHexString(st_dev))
+          .append(",ino=")
+          .append(st_ino)
+          .append(')');
+        return sb.toString();
     }
-
-    long freeBlocks() {
-        return f_bfree;
-    }
-
-    long availableBlocks() {
-        return f_bavail;
-    }
-
 }

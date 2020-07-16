@@ -61,9 +61,7 @@ class UnixException extends Exception {
         if (msg != null) {
             return msg;
         } else {
-//            TODO(amisail) uncomment this when working
-//            return Util.toString(UnixNativeDispatcher.strerror(errno()));
-            return "";
+            return Util.toString(UnixNativeDispatcher.strerror(errno()));
         }
     }
 
@@ -97,7 +95,7 @@ class UnixException extends Exception {
         IOException x = translateToIOException(file, null);
         throw x;
     }
-    
+
     void rethrowAsIOException(UnixPath file, UnixPath other) throws IOException {
         String a = (file == null) ? null : file.getPathForExceptionMessage();
         String b = (other == null) ? null : other.getPathForExceptionMessage();

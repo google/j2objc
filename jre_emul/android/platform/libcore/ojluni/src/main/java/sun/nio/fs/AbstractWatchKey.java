@@ -25,6 +25,7 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.Weak;
 import java.nio.file.*;
 import java.util.*;
 
@@ -51,6 +52,7 @@ abstract class AbstractWatchKey implements WatchKey {
     private static enum State { READY, SIGNALLED };
 
     // reference to watcher
+    @Weak
     private final AbstractWatchService watcher;
 
     // reference to the original directory
