@@ -339,7 +339,7 @@ $(TESTS_DIR)/core_plus_concurrent:
 $(TESTS_DIR)/core_plus_file:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_file -ljre_concurrent -ljre_net -ljre_security \
-		-ljre_util -o $@ -ObjC
+	    -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
@@ -356,7 +356,7 @@ $(TESTS_DIR)/core_plus_ssl:
 $(TESTS_DIR)/core_plus_time:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_time -ljre_icu -ljre_channels -ljre_net -ljre_util \
-		-ljre_security -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC
+	    -ljre_security -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
