@@ -61,9 +61,7 @@ class UnixException extends Exception {
         if (msg != null) {
             return msg;
         } else {
-//            TODO(amisail) uncomment this when working
-//            return Util.toString(UnixNativeDispatcher.strerror(errno()));
-            return "";
+            return Util.toString(UnixNativeDispatcher.strerror(errno()));
         }
     }
 

@@ -39,7 +39,7 @@ import sun.security.action.GetPropertyAction;
  */
 
 abstract class UnixFileSystem
-        extends FileSystem
+    extends FileSystem
 {
     //    TODO(amisail) uncomment this when working
 //    private final UnixFileSystemProvider provider;
@@ -62,9 +62,9 @@ abstract class UnixFileSystem
         // process working directory then paths must be resolved against the
         // default directory.
         String propValue = AccessController.doPrivileged(
-                new GetPropertyAction("sun.nio.fs.chdirAllowed", "false"));
+            new GetPropertyAction("sun.nio.fs.chdirAllowed", "false"));
         boolean chdirAllowed = (propValue.length() == 0) ?
-                true : Boolean.valueOf(propValue);
+            true : Boolean.valueOf(propValue);
         if (chdirAllowed) {
             this.needToResolveAgainstDefaultDirectory = true;
         } else {
@@ -82,9 +82,7 @@ abstract class UnixFileSystem
         }
 
         // the root directory
-//        TODO(amisail) uncomment this when working
-//        this.rootDirectory = new UnixPath(this, "/");
-        this.rootDirectory = null;
+        this.rootDirectory = new UnixPath(this, "/");
     }
 
     // package-private
@@ -158,7 +156,7 @@ abstract class UnixFileSystem
     @Override
     public final Iterable<Path> getRootDirectories() {
         final List<Path> allowedList =
-                Collections.unmodifiableList(Arrays.asList((Path)rootDirectory));
+           Collections.unmodifiableList(Arrays.asList((Path)rootDirectory));
         return new Iterable<Path>() {
             public Iterator<Path> iterator() {
                 try {
@@ -285,9 +283,7 @@ abstract class UnixFileSystem
             }
             path = sb.toString();
         }
-//        TODO(amisail) uncomment this when working
-//        return new UnixPath(this, path);
-        return null;
+        return new UnixPath(this, path);
     }
 
     @Override
@@ -306,7 +302,7 @@ abstract class UnixFileSystem
                 expr = input;
             } else {
                 throw new UnsupportedOperationException("Syntax '" + syntax +
-                        "' not recognized");
+                    "' not recognized");
             }
         }
 
@@ -331,21 +327,21 @@ abstract class UnixFileSystem
 
     private static class LookupService {
         static final UserPrincipalLookupService instance =
-                new UserPrincipalLookupService() {
-                    @Override
-                    public UserPrincipal lookupPrincipalByName(String name)
-                            throws IOException
-                    {
-                        return UnixUserPrincipals.lookupUser(name);
-                    }
+            new UserPrincipalLookupService() {
+                @Override
+                public UserPrincipal lookupPrincipalByName(String name)
+                    throws IOException
+                {
+                    return UnixUserPrincipals.lookupUser(name);
+                }
 
-                    @Override
-                    public GroupPrincipal lookupPrincipalByGroupName(String group)
-                            throws IOException
-                    {
-                        return UnixUserPrincipals.lookupGroup(group);
-                    }
-                };
+                @Override
+                public GroupPrincipal lookupPrincipalByGroupName(String group)
+                    throws IOException
+                {
+                    return UnixUserPrincipals.lookupGroup(group);
+                }
+            };
     }
 
     // Override if the platform has different path match requrement, such as
