@@ -124,6 +124,10 @@ public:
         return this->markFlags(PHANTOM_FLAG);
     }
 
+    BOOL clearPhantom() {
+        return this->clearFlags(PHANTOM_FLAG);
+    }
+
     BOOL isPhantom() {
         return (_flags & PHANTOM_FLAG) != 0;
     }

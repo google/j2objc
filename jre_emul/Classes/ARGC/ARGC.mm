@@ -391,16 +391,19 @@ private:
   }
   
   void addPhantom(JObj_p jobj, BOOL isThreadSafe) {
-      if (jobj->_rc.markFinalized()) {
-          bindRoot(jobj, @"finalize");
-          JreFinalize(jobj);
-          unbindRoot(jobj);
-          if (jobj->_rc.isStrongReachable()) {
-              return;
-          }
-      }
       if (!jobj->_rc.markPhantom()) {
           return;
+      }
+      if (jobj->_rc.markFinalized()) {
+          jobj->_rc.bind();
+          ARGC::increaseReferenceCount(jobj, @"finalize");
+          JreFinalize(jobj);
+          jobj->_rc.unbind();
+          ARGC::decreaseRefCount(jobj, @"finalize");
+          if (jobj->_rc.isStrongReachable()) {
+              jobj->_rc.clearPhantom();
+              return;
+          }
       }
 
       if (allocCountInGeneration > 0) {
@@ -491,7 +494,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 + (instancetype)alloc
 {
-    // ARGC_initStatic(self);
+    ARGC_initStatic(self);
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
 }
