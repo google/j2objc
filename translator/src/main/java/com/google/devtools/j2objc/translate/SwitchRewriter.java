@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
@@ -83,8 +84,9 @@ public class SwitchRewriter extends UnitTreeVisitor {
     }
     TypeMirror type = var.asType();
     if (TypeUtil.isEnum(type)) {
-      String enumValue =
-          NameTable.getNativeEnumName(nameTable.getFullName(TypeUtil.asTypeElement(type))) + "_"
+    	String enumName = nameTable.getFullName(TypeUtil.asTypeElement(type));
+    	enumName = NameTable.getNativeEnumName(enumName);
+      String enumValue = enumName + "_"
           + nameTable.getVariableBaseName(var);
       node.setExpression(new NativeExpression(enumValue, typeUtil.getInt()));
     } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
@@ -161,6 +163,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!TypeUtil.isEnum(type)) {
       return;
     }
+
     DeclaredType enumType = typeUtil.getSuperclass(type);
     ExecutablePair ordinalMethod = typeUtil.findMethod(enumType, "ordinal");
     MethodInvocation invocation = new MethodInvocation(ordinalMethod, TreeUtil.remove(expr));

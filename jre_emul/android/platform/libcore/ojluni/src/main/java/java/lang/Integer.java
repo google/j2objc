@@ -650,14 +650,14 @@ public final class Integer extends Number implements Comparable<Integer> {
 
         private static native void fillValues(Integer[] values) /*-[
           Class self = [JavaLangInteger class];
-          size_t objSize = class_getInstanceSize(self);
-          uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
-          id *buf = values->buffer_;
+          //size_t objSize = class_getInstanceSize(self);
+          //uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+          ARGC_FIELD_REF id *buf = values->buffer_;
           for (jint i = -128; i < 128; i++) {
-            id obj = objc_constructInstance(self, (void *)ptr);
+            id obj = [JavaLangInteger alloc]; //objc_constructInstance(self, (void *)ptr);
             JavaLangInteger_initWithInt_(obj, i);
-            *(buf++) = obj;
-            ptr += objSize;
+            JreGenericFieldAssign(buf++, obj);
+            //ptr += objSize;
           }
         ]-*/;
     }

@@ -17,8 +17,11 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.File;
@@ -135,7 +138,9 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
     Set<String> forwardStmts = new TreeSet<>();
     for (Import imp : forwardDecls) {
-      forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
+		if (!ARGC.isExcludedClass(imp.getImportFileName())){
+			forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isPureInterface()));
+		}
     }
     if (!forwardStmts.isEmpty()) {
       newline();

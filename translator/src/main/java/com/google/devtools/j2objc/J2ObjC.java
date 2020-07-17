@@ -19,6 +19,9 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.argc.TranslateSourceList;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
@@ -87,6 +90,14 @@ public class J2ObjC {
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
   public static void run(List<String> fileArgs, Options options) {
+	  TranslateSourceList sourceFiles = new TranslateSourceList(options);
+	  for (String s : fileArgs) {
+		  sourceFiles.addSource(s);
+	  }
+	  runEx(sourceFiles.getInputFiles(), options);
+  }
+
+  public static void runEx(List<InputFile> fileArgs, Options options) {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
     Parser parser = null;
@@ -100,7 +111,7 @@ public class J2ObjC {
       }
 
       parser = createParser(options);
-      Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);
+      Parser.ProcessingResult processingResult = parser.processAnnotations(inputs);
       List<ProcessingContext> generatedInputs = processingResult.getGeneratedSources();
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.
       preProcessorTempDir = processingResult.getSourceOutputDirectory();
@@ -125,12 +136,13 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      if (ErrorUtil.errorCount() > 0) {
+      if (ErrorUtil.errorCount() > 0 && !ARGC.hasExcludeRule()) {
         return;
       }
       translationProcessor.postProcess();
 
       options.getHeaderMap().printMappings();
+      System.out.println("done - " + inputs.size() + " files are translated.");
     } finally {
       if (parser != null) {
         try {
@@ -155,12 +167,20 @@ public class J2ObjC {
    * @param args command-line arguments: flags and source file names
    */
   public static void main(String[] args) {
+	if (true) {  
+	  for (int i = 0; i < args.length; i ++) {
+		  System.out.print(args[i]);
+		  System.out.print(" ");
+	  }
+	  System.out.println(new File(".").getAbsolutePath());
+	  System.out.println("===================================================");
+	}
     if (args.length == 0) {
       Options.help(true);
     }
     long startTime = System.currentTimeMillis();
 
-    List<String> files = null;
+    List<InputFile> files = null;
     Options options = new Options();
 
     try {
@@ -173,7 +193,11 @@ public class J2ObjC {
       System.exit(1);
     }
 
-    run(files, options);
+	  if (true) {
+		  options.setMemoryManagementOption(Options.MemoryManagementOption.GC);
+	  }
+
+    runEx(files, options);
 
     TimingLevel timingLevel = options.timingLevel();
     if (timingLevel == TimingLevel.TOTAL || timingLevel == TimingLevel.ALL) {

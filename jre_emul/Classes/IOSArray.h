@@ -27,13 +27,19 @@
  * An abstract class that represents a Java array.  Like a Java array,
  * an IOSArray is fixed-size but its elements are mutable.
  */
-@interface IOSArray : NSObject < NSCopying > {
+@interface IOSArray : JavaLangObject < NSCopying > {
  @public
   /**
    * Size of the array. This field is read-only, visible only for
    * performance reasons. DO NOT MODIFY.
    */
   jint size_;
+
+  /**
+   * The type of elements in this array.
+   * This field is read-only, visible only for performance reasons. DO NOT MODIFY!
+   */
+  IOSClass *elementType_;
 }
 
 /** Returns the size of this array. */

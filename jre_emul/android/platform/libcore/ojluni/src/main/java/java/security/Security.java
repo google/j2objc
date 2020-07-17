@@ -111,6 +111,8 @@ public final class Security {
     private static void initializeStatic() {
         props.put("security.provider.1", "com.google.j2objc.security.IosSecurityProvider");
         props.put("security.provider.2", "sun.security.provider.CertPathProvider");
+        props.put("ssl.TrustManagerFactory.algorithm", "PKIX");
+        props.put("ssl.KeyManagerFactory.algorithm", "SunX509");
     }
 
     /**

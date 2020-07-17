@@ -75,12 +75,27 @@ JNIEXPORT jclass Java_java_lang_SystemClassLoader_findClass(
   return [IOSClass forName:name];
 }
 
+
+static NSBundle* j2objc_getSystemResourceBundle() {
+  static NSBundle *j2objc_bundle = NULL;
+  if (j2objc_bundle == NULL) {
+    // NSURL* url = [[NSBundle mainBundle] URLForResource:@"j2objc_resources" withExtension:@"bundle"];
+    // if (url != NULL) {
+    //   j2objc_bundle = [NSBundle bundleWithURL:url];
+    // }
+    if (j2objc_bundle == NULL) {
+      j2objc_bundle = [NSBundle mainBundle];
+    }
+  }
+  return j2objc_bundle;
+}
+
 JNIEXPORT jobject Java_java_lang_SystemClassLoader_findResource(
       JNIEnv *env, jobject obj, jstring name) {
   if (!name) {
     return nil;
   }
-  NSBundle *bundle = [NSBundle mainBundle];
+  NSBundle *bundle = j2objc_getSystemResourceBundle();
   NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
   if (nativeURL) {
     return create_JavaNetURL_initWithNSString_([nativeURL description]);
@@ -119,13 +134,15 @@ JNIEXPORT jobject Java_java_lang_SystemClassLoader_getResourceAsStream(
   if (!name) {
     return nil;
   }
-  NSBundle *bundle = [NSBundle mainBundle];
+  
+  NSBundle *bundle = j2objc_getSystemResourceBundle();
   NSString *path = [bundle pathForResource:name ofType:nil];
   if (path) {
     return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
         create_JavaIoFileInputStream_initWithNSString_(path));
   }
 
+  
   // No iOS resource available, check for linked resource.
   IOSByteArray *data = GetLinkedResource(name);
   return data ? create_JavaIoByteArrayInputStream_initWithByteArray_(data) : nil;

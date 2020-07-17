@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 /**
  * Adapter class for a file in J2ObjC.
@@ -25,6 +26,17 @@ import java.nio.charset.Charset;
  * @author Mike Thvedt
  */
 public interface InputFile {
+
+  static HashMap<String, InputFile> fileMap = new HashMap<>(); 
+	
+  static void add(InputFile file) {
+	  fileMap.put(file.getUnitName(), file);
+  }
+  
+  static InputFile getInputFile(String unitPath) {
+	  return fileMap.get(unitPath);
+  }
+	
   boolean exists() throws IOException;
 
   InputStream getInputStream() throws IOException;

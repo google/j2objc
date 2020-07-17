@@ -91,6 +91,7 @@ Java_java_net_SocketInputStream_socketRead0(JNIEnv *env, jobject this,
         bufP = BUF;
     }
 
+
     if (timeout) {
         nread = NET_Timeout(fd, timeout);
         if (nread <= 0) {

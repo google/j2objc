@@ -99,4 +99,6 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+echo ${JAVA} ${JAVA_ARGS[*]} -jar "${JAR}" "${J2OBJC_ARGS[@]}"
+
 ${JAVA} ${JAVA_ARGS[*]} -jar "${JAR}" "${J2OBJC_ARGS[@]}"

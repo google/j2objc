@@ -41,6 +41,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RetainedWithTest extends TestCase {
 
   private static Set<Integer> finalizedObjects = new HashSet<>();
+  private static boolean isGarbageCollectionEnabled;
+
+  static {
+    detectGarbageCollectionMode();
+  }
+
+  private native static void detectGarbageCollectionMode()  
+  /*-[
+    #ifdef J2OBJC_USE_GC
+       ComGoogleJ2objcRetainedWithTest_isGarbageCollectionEnabled = TRUE;
+    #endif
+  ]-*/;
 
   @Override
   public void tearDown() throws Exception {
@@ -89,6 +101,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testObjectPairIsDeallocated() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<>();
     newA(objectCodes);
     for (Integer i : objectCodes) {
@@ -114,6 +127,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testSymmetricObjectPairIsDeallocated() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<>();
     newSymmetric(objectCodes);
     for (Integer i : objectCodes) {
@@ -136,6 +150,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testCloneParentObject() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<>();
     newAPlusClone(objectCodes);
     for (Integer i : objectCodes) {
@@ -154,6 +169,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testCloneChildObject() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<>();
     newAPlusCloneChild(objectCodes);
     for (Integer i : objectCodes) {
@@ -171,6 +187,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testReassignChild() {
+    if (isGarbageCollectionEnabled) return;
     List<Integer> objectCodes = new ArrayList<>();
     newAPlusReassignChild(objectCodes);
     for (Integer i : objectCodes) {
@@ -252,6 +269,7 @@ public class RetainedWithTest extends TestCase {
   }
 
   public void testMapChildren() {
+    if (isGarbageCollectionEnabled) return;
     new MapTest<>().run(new MapFactory<Object>(new Object()) {
       public Map<Object, ValueType> newMap() {
         return new IdentityHashMap<>();

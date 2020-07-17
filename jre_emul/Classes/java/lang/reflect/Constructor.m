@@ -35,9 +35,12 @@
 
 + (instancetype)constructorWithDeclaringClass:(IOSClass *)aClass
                                      metadata:(const J2ObjcMethodInfo *)metadata {
-  return [[[JavaLangReflectConstructor alloc] initWithDeclaringClass:aClass
-                                                            metadata:metadata] autorelease];
+  return AUTORELEASE([[JavaLangReflectConstructor alloc] initWithDeclaringClass:aClass
+                                                            metadata:metadata]);
 }
+
+void ARGC_strongRetain(id oid);
+void ARGC_release(id oid);
 
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
   SEL selector = self->metadata_->selector;
@@ -55,12 +58,16 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   fillArgs(invocation);
   id newInstance;
   @try {
+    ARGC_initStatic(cls);
     if (isFactory) {
       [invocation invokeWithTarget:cls];
       [invocation getReturnValue:&newInstance];
     } else {
-      newInstance = [[cls alloc] autorelease];
+      // Is NSInvocation has ARC bug?? If Exception throws in invocation, newInstance is so early deallocated.
+      newInstance = [cls alloc];
+      ARGC_strongRetain(newInstance);
       [invocation invokeWithTarget:newInstance];
+      ARGC_release(newInstance);
     }
   }
   @catch (JavaLangThrowable *e) {
@@ -130,7 +137,14 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   return [s description];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
+static void JavaLangReflectConstructor__clinit__() {
+  JavaLangReflectExecutable_initialize();
+}
+
+
++ (void)initialize {
+  assert (self == JavaLangReflectConstructor.class);
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -178,11 +192,14 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
+    JavaLangReflectConstructor_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
   };
-  return &_JavaLangReflectConstructor;
+
+  JreBindIOSClass(JavaLangReflectConstructor.class, &_JavaLangReflectConstructor, @"java.lang.reflect.Constructor", 18);
 }
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectConstructor)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectConstructor)

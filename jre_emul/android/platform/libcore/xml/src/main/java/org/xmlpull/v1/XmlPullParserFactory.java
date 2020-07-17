@@ -37,8 +37,8 @@ public class XmlPullParserFactory {
         serializerClasses = new ArrayList<String>();
 
         try {
-            parserClasses.add(Class.forName("org.kxml2.io.KXmlParser"));
-            serializerClasses.add(Class.forName("org.kxml2.io.KXmlSerializer"));
+            parserClasses.add(Class.forName("android.org.kxml2.io.KXmlParser"));
+            serializerClasses.add(Class.forName("android.org.kxml2.io.KXmlSerializer"));
         } catch (ClassNotFoundException e) {
             throw new AssertionError();
         }

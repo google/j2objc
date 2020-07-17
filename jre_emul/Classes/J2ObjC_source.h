@@ -52,6 +52,15 @@ __attribute__((always_inline)) inline id cast_check(id __unsafe_unretained p, IO
   return p;
 }
 
+FOUNDATION_EXPORT void JreBindProxyClass(Class _class) J2OBJC_METHOD_ATTR;
+
+FOUNDATION_EXPORT void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR;
+
+FOUNDATION_EXPORT void JreBindIOSClass(Class _class, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR;
+
+FOUNDATION_EXPORT void JreBindIOSProtocol(Protocol* protocol, const J2ObjcClassInfo *metaData, NSString* clsName, int posSimpleName) J2OBJC_METHOD_ATTR;
+
+
 FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);
 
 #ifndef NS_BLOCK_ASSERTIONS
@@ -65,14 +74,16 @@ FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);
 FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
-FOUNDATION_EXPORT void JreFinalize(id self);
+FOUNDATION_EXPORT void JreFinalize(id self) J2OBJC_METHOD_ATTR;
 
-__attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) {
+__attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) J2OBJC_METHOD_ATTR {
+#ifndef J2OBJC_USE_GC
   // Use [self java_getClass].objcClass instead of [self class] in case the object
   // has it's class swizzled.
   if ([self java_getClass].objcClass == cls) {
     JreFinalize(self);
   }
+#endif
 }
 
 /*!
@@ -157,13 +168,15 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
  */
 #if __has_feature(objc_arc)
 #define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
+  CLASS##_initialize(); \
   CLASS *self = [CLASS alloc]; \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
-#define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
-  return new_##CLASS##_##NAME(__VA_ARGS__);
+//#define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
+//  return new_##CLASS##_##NAME(__VA_ARGS__);
 #else
 #define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
+  CLASS##_initialize(); \
   CLASS *self = [CLASS alloc]; \
   bool needsRelease = true; \
   @try { \
@@ -171,15 +184,17 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
     needsRelease = false; \
   } @finally { \
     if (__builtin_expect(needsRelease, 0)) { \
-      [self autorelease]; \
+      AUTORELEASE(self); \
     } \
   } \
   return self;
+#endif // ARGC ++
 #define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
-  CLASS *self = [[CLASS alloc] autorelease]; \
+  CLASS##_initialize(); \
+  CLASS *self = AUTORELEASE([CLASS alloc]); \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
-#endif
+// ARGC-- #endif
 
 #define J2OBJC_IGNORE_DESIGNATED_BEGIN \
   _Pragma("clang diagnostic push") \

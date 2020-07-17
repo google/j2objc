@@ -31,7 +31,7 @@
 @interface IOSReference : NSObject
 
 // Methods should only be called by java.lang.ref.Reference.
-+ (void)initReferent:(JavaLangRefReference *)reference;
++ (void)initReferent:(JavaLangRefReference *)reference withReferent:(id)obj;
 + (id)getReferent:(JavaLangRefReference *)reference;
 + (void)clearReferent:(JavaLangRefReference *)reference;
 

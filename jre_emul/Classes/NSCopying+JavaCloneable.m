@@ -21,15 +21,13 @@
 
 #include "J2ObjC_source.h"
 
-@implementation NSCopying
-
-+ (const J2ObjcClassInfo *)__metadata {
+void NSCopying__init_class__() {
   static const J2ObjcClassInfo _NSCopying = {
-    "Cloneable", "java.lang", NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
-  return &_NSCopying;
+    empty_static_initialize,
+    NULL, NULL, NULL, 7, 0x609, 0, 0, -1, -1, -1, -1, -1 };
+  
+  JreBindIOSProtocol(@protocol(NSCopying), &_NSCopying, @"java.lang.Cloneable", 10);
 }
-
-@end
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(NSCopying)
 

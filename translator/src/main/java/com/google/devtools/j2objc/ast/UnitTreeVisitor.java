@@ -49,4 +49,18 @@ public class UnitTreeVisitor extends TreeVisitor {
   public void run() {
     unit.accept(this);
   }
+
+  @Override
+  public boolean visit(StringLiteral node) {
+	// StringPool 등록을 위한 함수 호출.
+	String cs = unit.getStringConstant(node.getLiteralValue());
+	return super.visit(node);
+  }
+  
+  @Override
+  public boolean visit(CStringLiteral node) {
+	// StringPool 등록을 위한 함수 호출.
+	String cs = unit.getStringConstant(node.getLiteralValue());
+	return super.visit(node);
+  }
 }

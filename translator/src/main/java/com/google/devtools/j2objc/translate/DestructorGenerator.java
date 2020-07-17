@@ -75,7 +75,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    if (!node.isInterface()) {
+    if (!node.isPureInterface()) {
       addDeallocMethod(node);
     }
   }
@@ -125,7 +125,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
   private List<Statement> createReleaseStatements(AbstractTypeDeclaration node) {
     List<Statement> statements = Lists.newArrayList();
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
-      Statement releaseStmt = createRelease(fragment.getVariableElement());
+      Statement releaseStmt = createRelease(/*ARGC*/node, fragment.getVariableElement());
       if (releaseStmt != null) {
         statements.add(releaseStmt);
       }
@@ -133,7 +133,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     return statements;
   }
 
-  private Statement createRelease(VariableElement var) {
+  private Statement createRelease(/*ARGC*/AbstractTypeDeclaration node, VariableElement var) {
     TypeMirror varType = var.asType();
     if (ElementUtil.isStatic(var) || varType.getKind().isPrimitive()
         || ElementUtil.isWeakReference(var)) {
@@ -144,8 +144,9 @@ public class DestructorGenerator extends UnitTreeVisitor {
     String funcName = null;
     if (isRetainedWith) {
       funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
-    } else if (isVolatile) {
-      funcName = "JreReleaseVolatile";
+    } else if (isVolatile && (!options.useGC() || typeUtil.getArgcFieldTypeEx(node.getTypeElement(), var.asType()) == "Native")) {
+    	// @zee Type of volatile_id is (__unsafe_unretained id). so It should be released manually in Native class.
+        funcName = "JreReleaseVolatile";
     } else if (options.useReferenceCounting()) {
       funcName = "RELEASE_";
     }

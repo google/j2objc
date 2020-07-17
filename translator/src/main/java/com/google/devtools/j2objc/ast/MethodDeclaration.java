@@ -16,8 +16,11 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.util.ElementUtil;
+
+import java.io.InvalidClassException;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -113,6 +116,16 @@ public class MethodDeclaration extends BodyDeclaration {
     return parameters.get(index);
   }
 
+  // ARGC ++
+  public SingleVariableDeclaration getParameter(VariableElement name) {
+	  for (SingleVariableDeclaration arg : parameters) {
+		  if (arg.getVariableElement() == name) {
+			  return arg;
+		  }
+	  }
+	  return null;
+  }
+  
   public List<SingleVariableDeclaration> getParameters() {
     return parameters;
   }
@@ -157,4 +170,42 @@ public class MethodDeclaration extends BodyDeclaration {
     super.validateInner();
     Preconditions.checkNotNull(executableElement);
   }
+
+  public boolean isTestClassSetup() {
+	for (Annotation a : this.annotations) {
+		String type = a.toString();//.getTypeName().toString();
+		if ("@BeforeClass".equals(type)) {
+			return true;
+		}
+	}
+	return false;
+  }
+
+  public boolean checkTestMethod() throws InvalidClassException {
+	for (Annotation a : this.annotations) {
+		TypeMirror type = a.getTypeMirror();
+		String name = type.toString();
+		if (name.startsWith("org.junit.")) {
+			if (name.equals("org.junit.Before")) {
+				if (!"setUp".equals(this.name.toString())) {
+					throw new InvalidClassException(this.name.toString());
+				}
+			}
+			if (name.equals("org.junit.After")) {
+				if (!"tearDown".equals(this.name.toString())) {
+					throw new InvalidClassException(this.name.toString());
+				}
+			}
+			else if (name.equals("org.junit.Test")) {
+				if (!this.name.toString().startsWith("test")) {
+					throw new InvalidClassException(this.name.toString());
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+  }
 }
+
+

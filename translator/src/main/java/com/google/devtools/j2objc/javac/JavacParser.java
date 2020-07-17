@@ -17,6 +17,9 @@ package com.google.devtools.j2objc.javac;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.argc.FileManagerProxy;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -26,7 +29,21 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
+import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.IMetadataResolver;
+import com.strobel.assembler.metadata.ITypeLoader;
+import com.strobel.assembler.metadata.JarTypeLoader;
+import com.strobel.assembler.metadata.MetadataParser;
+import com.strobel.assembler.metadata.MetadataSystem;
+import com.strobel.assembler.metadata.TypeDefinition;
+import com.strobel.assembler.metadata.TypeReference;
+import com.strobel.decompiler.DecompilationOptions;
+import com.strobel.decompiler.DecompilerSettings;
+import com.strobel.decompiler.PlainTextOutput;
 import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.SourcePositions;
 import java.io.ByteArrayOutputStream;
@@ -34,19 +51,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.processing.Processor;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager;
 import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -101,12 +124,71 @@ public class JavacParser extends Parser {
         assert options.translateClassfiles();
         JavacEnvironment parserEnv =
             createEnvironment(Collections.emptyList(), Collections.emptyList(), false);
-        return ClassFileConverter.convertClassFile(options, parserEnv, file);
+        if (true) {
+        	return parseDecompiledClass(parserEnv, file);
+        }
+        else {
+        	return ClassFileConverter.convertClassFile(options, parserEnv, file);
+        }
       }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
       return null;
     }
+  }
+  
+  
+  private static TypeReference lookupType(String path, ITypeLoader loader) {
+	  MetadataSystem metadataSystem = new MetadataSystem(loader);
+	  /* Hack to get around classes whose descriptors clash with primitive types. */
+	  if (path.length() == 1) {
+		  MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+		  return metadataSystem.resolve(parser.parseTypeDescriptor(path));
+	  }
+	  return metadataSystem.lookupType(path);
+  }
+  
+  private CompilationUnit parseDecompiledClass(JavacEnvironment parserEnv, InputFile file) throws IOException { /*ARGC ++*/
+      String fullPath = file.getAbsolutePath();
+      // { ARGC ++
+      int pos = fullPath.lastIndexOf(file.getUnitName());
+      if (pos < 0) pos = fullPath.length();
+      // }
+      String rootPath = fullPath.substring(0, pos);
+//      List<File> classPath = new ArrayList<>();
+//      classPath.add(new File(rootPath));
+//      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
+      
+      String path = file.getUnitName().substring(0, file.getUnitName().length() - 6);
+      ITypeLoader loader;
+      loader = new JarTypeLoader(new JarFile(rootPath));
+	      //loader = new InputTypeLoader();
+	    TypeReference typeRef = lookupType(path, loader);
+	  
+        TypeDefinition resolvedType = null;
+        if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
+            throw new RuntimeException("Unable to resolve type.");
+        }
+			DecompilerSettings settings = DecompilerSettings.javaDefaults();
+		    settings.setShowSyntheticMembers(true);
+          StringWriter stringwriter = new StringWriter();
+          DecompilationOptions decompilationOptions;
+          decompilationOptions = new DecompilationOptions();
+          decompilationOptions.setSettings(settings);
+          decompilationOptions.setFullDecompilation(true);
+          PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
+          plainTextOutput.setUnicodeOutputEnabled(
+                  decompilationOptions.getSettings().isUnicodeOutputEnabled());
+          settings.getLanguage().decompileType(resolvedType, plainTextOutput,
+                  decompilationOptions);
+          String decompiledSource = stringwriter.toString();
+          System.out.println(decompiledSource);
+//          if (decompiledSource.contains(textField.getText().toLowerCase())) {
+//              addClassName(entry.getName());
+//          }
+          return parse(null, file.getUnitName(), decompiledSource);
+		  
+	  
   }
 
   @Override
@@ -116,7 +198,7 @@ public class JavacParser extends Parser {
       JavacTask task = parserEnv.task();
       CompilationUnitTree unit = task.parse().iterator().next();
       task.analyze();
-      processDiagnostics(parserEnv.diagnostics());
+      processDiagnostics(null, parserEnv.diagnostics());
       return TreeConverter.convertCompilationUnit(options, parserEnv, unit);
     } catch (IOException e) {
       ErrorUtil.fatalError(e, path);
@@ -126,8 +208,7 @@ public class JavacParser extends Parser {
 
   private StandardJavaFileManager getFileManager(JavaCompiler compiler,
       DiagnosticCollector<JavaFileObject> diagnostics) throws IOException {
-    fileManager =
-        compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset());
+	  fileManager = new FileManagerProxy(compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset()));
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
     addPaths(StandardLocation.PLATFORM_CLASS_PATH, options.getBootClasspath(), fileManager);
@@ -179,6 +260,7 @@ public class JavacParser extends Parser {
     } else {
       javacOptions.add("-proc:none");
     }
+    javacOptions.add("-implicit:none");
     javacOptions.addAll(options.getPlatformModuleSystemOptions());
     return javacOptions;
   }
@@ -196,18 +278,34 @@ public class JavacParser extends Parser {
         units.add(unit);
       }
       env.task().analyze();
-      processDiagnostics(env.diagnostics());
 
+      ArrayList<com.google.devtools.j2objc.ast.CompilationUnit> compileUnits = new ArrayList<>();
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
               .convertCompilationUnit(options, env, ast);
-          processDiagnostics(env.diagnostics());
-          handler.handleParsedUnit(unit.getSourceFilePath(), unit);
+
+          if (unit != null) {
+        	  ARGC.registerUnit(unit);
+        	  compileUnits.add(unit);
+          }
+        }
+		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
+			ARGC.preprocessUnit(unit);
+		}
+		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
+			TypeUtil.setUnreachableClasses(unit);
+			TypeUtil.setIgnoreAllUnreachableTypeError(false);
+        	handler.handleParsedUnit(unit.getSourceFilePath(), unit);
+        	if (!unit.getUnreachableImportedClasses().isEmpty()) {
+        		ErrorUtil.addSkip(unit.getSourceFilePath());
+        	}
         }
       }
-    } catch (IOException e) {
-      ErrorUtil.fatalError(e, "javac file manager error");
+      processDiagnostics(paths, env.diagnostics());
+      
+    } catch (Exception e) {
+    	ErrorUtil.warning(e, "javac file manager error");
     }
   }
 
@@ -266,9 +364,9 @@ public class JavacParser extends Parser {
     return new JavacEnvironment(task, fileManager, diagnostics);
   }
 
-  private void processDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
+  private void processDiagnostics(Collection<String> compileUnits, DiagnosticCollector<JavaFileObject> diagnostics) {
     for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-      ErrorUtil.parserDiagnostic(diagnostic);
+      ErrorUtil.parserDiagnostic(compileUnits, diagnostic);
     }
   }
 
@@ -279,7 +377,7 @@ public class JavacParser extends Parser {
       JavacEnvironment parserEnv = createEnvironment(path, source);
       JavacTask task = parserEnv.task();
       CompilationUnitTree unit = task.parse().iterator().next();
-      processDiagnostics(parserEnv.diagnostics());
+      processDiagnostics(null, parserEnv.diagnostics());
       return new JavacParseResult(
           file, source, unit, parserEnv.treeUtilities().getSourcePositions());
     } catch (IOException e) {
@@ -290,8 +388,7 @@ public class JavacParser extends Parser {
 
 
   @Override
-  public ProcessingResult processAnnotations(Iterable<String> fileArgs,
-      List<ProcessingContext> inputs) {
+  public ProcessingResult processAnnotations(List<ProcessingContext> inputs) {
     final List<ProcessingContext> generatedInputs = Lists.newArrayList();
     PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
     loader.addPaths(options.getProcessorPathEntries());
@@ -305,7 +402,7 @@ public class JavacParser extends Parser {
         JavacEnvironment env = createEnvironment(inputFiles, null, true);
         env.task().parse();
         env.task().analyze();
-        processDiagnostics(env.diagnostics());
+        processDiagnostics(null, env.diagnostics());
         // The source output directory is created and set in createEnvironment().
         File sourceOutputDirectory =
             env.fileManager().getLocation(StandardLocation.SOURCE_OUTPUT).iterator().next();

@@ -64,50 +64,7 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.strobel.assembler.metadata.MethodReference;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.core.StringUtilities;
-import com.strobel.decompiler.languages.java.ast.AnonymousObjectCreationExpression;
-import com.strobel.decompiler.languages.java.ast.ArrayCreationExpression;
-import com.strobel.decompiler.languages.java.ast.ArrayInitializerExpression;
-import com.strobel.decompiler.languages.java.ast.ArraySpecifier;
-import com.strobel.decompiler.languages.java.ast.AssignmentExpression;
-import com.strobel.decompiler.languages.java.ast.AstNode;
-import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
-import com.strobel.decompiler.languages.java.ast.AstType;
-import com.strobel.decompiler.languages.java.ast.BinaryOperatorExpression;
-import com.strobel.decompiler.languages.java.ast.BlockStatement;
-import com.strobel.decompiler.languages.java.ast.CaseLabel;
-import com.strobel.decompiler.languages.java.ast.ClassOfExpression;
-import com.strobel.decompiler.languages.java.ast.ComposedType;
-import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
-import com.strobel.decompiler.languages.java.ast.DoWhileStatement;
-import com.strobel.decompiler.languages.java.ast.EnumValueDeclaration;
-import com.strobel.decompiler.languages.java.ast.ForEachStatement;
-import com.strobel.decompiler.languages.java.ast.GotoStatement;
-import com.strobel.decompiler.languages.java.ast.IAstVisitor;
-import com.strobel.decompiler.languages.java.ast.IdentifierExpression;
-import com.strobel.decompiler.languages.java.ast.IfElseStatement;
-import com.strobel.decompiler.languages.java.ast.ImportDeclaration;
-import com.strobel.decompiler.languages.java.ast.IndexerExpression;
-import com.strobel.decompiler.languages.java.ast.InstanceInitializer;
-import com.strobel.decompiler.languages.java.ast.InvocationExpression;
-import com.strobel.decompiler.languages.java.ast.JavaTokenNode;
-import com.strobel.decompiler.languages.java.ast.Keys;
-import com.strobel.decompiler.languages.java.ast.MemberReferenceExpression;
-import com.strobel.decompiler.languages.java.ast.MethodGroupExpression;
-import com.strobel.decompiler.languages.java.ast.NewLineNode;
-import com.strobel.decompiler.languages.java.ast.NullReferenceExpression;
-import com.strobel.decompiler.languages.java.ast.ObjectCreationExpression;
-import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
-import com.strobel.decompiler.languages.java.ast.PrimitiveExpression;
-import com.strobel.decompiler.languages.java.ast.SuperReferenceExpression;
-import com.strobel.decompiler.languages.java.ast.SwitchSection;
-import com.strobel.decompiler.languages.java.ast.TextNode;
-import com.strobel.decompiler.languages.java.ast.ThisReferenceExpression;
-import com.strobel.decompiler.languages.java.ast.TryCatchStatement;
-import com.strobel.decompiler.languages.java.ast.TypeParameterDeclaration;
-import com.strobel.decompiler.languages.java.ast.TypeReferenceExpression;
-import com.strobel.decompiler.languages.java.ast.UnaryOperatorExpression;
-import com.strobel.decompiler.languages.java.ast.VariableInitializer;
-import com.strobel.decompiler.languages.java.ast.WildcardType;
+import com.strobel.decompiler.languages.java.ast.*;
 import com.strobel.decompiler.patterns.Pattern;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -939,9 +896,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     throw new AssertionError("Method not yet implemented");
   }
 
-  @Override
-  public TreeNode visitLocalTypeDeclarationStatement(
-      com.strobel.decompiler.languages.java.ast.LocalTypeDeclarationStatement node, Void data) {
-    throw new AssertionError("Method not yet implemented");
-  }
+	@Override
+	public TreeNode visitLocalTypeDeclarationStatement(LocalTypeDeclarationStatement arg0, Void arg1) {
+	    throw new AssertionError("Method not yet implemented");
+	}
+
 }

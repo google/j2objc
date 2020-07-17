@@ -22,7 +22,7 @@
 
 - (instancetype)initWithData:(NSData *)data {
   if ((self = [super init])) {
-    data_ = [data retain];
+    data_ = RETAIN_(data);
     position_ = 0;
   }
 
@@ -33,10 +33,12 @@
   return AUTORELEASE([[NSDataInputStream alloc] initWithData:data]);
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
   [data_ release];
   [super dealloc];
 }
+#endif
 
 - (jint)read {
   if (position_ == data_.length) {
@@ -77,7 +79,7 @@
 }
 
 - (void)close {
-  [data_ release];
+  RELEASE_(data_);
   data_ = nil;
   position_ = 0;
 }

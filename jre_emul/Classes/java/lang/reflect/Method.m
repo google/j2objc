@@ -34,12 +34,17 @@
 #import "libcore/reflect/GenericSignatureParser.h"
 #import "libcore/reflect/Types.h"
 
+@interface JavaLangReflectMethod() {
+  NSString*  internedName_;
+}
+@end
+
 @implementation JavaLangReflectMethod
 
 + (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
                                 metadata:(const J2ObjcMethodInfo *)metadata {
-  return [[[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
-                                                       metadata:metadata] autorelease];
+  return AUTORELEASE([[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
+                                                       metadata:metadata]);
 }
 
 static bool IsStatic(const J2ObjcMethodInfo *metadata) {
@@ -48,7 +53,12 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
 
 // Returns method name.
 - (NSString *)getName {
-  return [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
+  NSString* name = self->internedName_;
+  if (name == NULL) {
+    name = [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
+    self->internedName_ = [name java_intern];
+  }
+  return name;
 }
 
 - (int)getModifiers {
@@ -70,7 +80,7 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
                                                    withNSString:genericSignature
                                               withIOSClassArray:rawExceptions];
     id<JavaLangReflectType> result = [LibcoreReflectTypes getType:parser->returnType_];
-    [parser release];
+    RELEASE_(parser);
     return result;
   }
   return [self getReturnType];
@@ -106,8 +116,8 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
 
+    @autoreleasepool {
   [self invoke:invocation object:object];
-
   IOSClass *returnType = [self getReturnType];
   if (returnType == [IOSClass voidClass]) {
     return nil;
@@ -115,6 +125,7 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
   J2ObjcRawValue returnValue;
   [invocation getReturnValue:&returnValue];
   return [returnType __boxValue:&returnValue];
+    }
 }
 
 - (void)jniInvokeWithId:(id)object
@@ -159,8 +170,8 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
       class_addMethod(cls, sel, method_getImplementation(method), method_getTypeEncoding(method));
     }
   }
-  [invocation setSelector:sel];
-  return invocation;
+    [invocation setSelector:sel];
+    return invocation;
 }
 
 - (void)invoke:(NSInvocation *)invocation object:(id)object {
@@ -216,6 +227,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 }
 
 - (id)getDefaultValue {
+    @autoreleasepool {
   if ([self->class_ isAnnotation]) {
     // Invoke the class method for this method name plus "Default". For example, if this
     // method is named "foo", then return the result from "fooDefault".
@@ -233,6 +245,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
       return [[self getReturnType] __boxValue:&returnValue];
     }
   }
+    }
   return nil;
 }
 
@@ -255,7 +268,13 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   return [[class_ getName] hash] ^ [[self getName] hash];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
+static void JavaLangReflectMethod__clinit__() {
+  JavaLangReflectExecutable_initialize();
+}
+
++ (void)initialize {
+  if (self != JavaLangReflectMethod.class) return;
+
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -310,10 +329,13 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;",
     "()[Ljava/lang/reflect/TypeVariable<Ljava/lang/reflect/Method;>;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
-    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 21, 0, -1, -1, -1, -1, -1 };
-  return &_JavaLangReflectMethod;
+    JavaLangReflectMethod_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 21, 0, -1, -1, -1, -1, -1 };
+
+  JreBindIOSClass(JavaLangReflectMethod.class, &_JavaLangReflectMethod, @"java.lang.reflect.Method", 18);
 }
 
 @end
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(JavaLangReflectMethod)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectMethod)

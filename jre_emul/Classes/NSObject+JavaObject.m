@@ -33,6 +33,11 @@
 #import "java/lang/Thread.h"
 #import "objc-sync.h"
 
+#ifdef J2OBJC_USE_GC
+void ARGC_genericRetain(id obj);
+
+#endif
+
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
 
@@ -47,13 +52,13 @@
   size_t instanceSize = class_getInstanceSize(cls);
   // We don't want to copy the NSObject portion of the object, in particular the
   // isa pointer, because it may contain the retain count.
-  size_t nsObjectSize = class_getInstanceSize([NSObject class]);
+  size_t nsObjectSize = class_getInstanceSize([JavaLangObject class]);
 
   // Deliberately not calling "init" on the cloned object. To match Java's
   // behavior we simply copy the data. However we must additionally retain all
   // fields with object type.
   id clone = AUTORELEASE([cls alloc]);
-  memcpy((char *)clone + nsObjectSize, (char *)self + nsObjectSize, instanceSize - nsObjectSize);
+  memcpy((char *)(__bridge void*)clone + nsObjectSize, (char *)(__bridge void*)self + nsObjectSize, instanceSize - nsObjectSize);
 
   // Reflectively examine all the fields for the object's type and retain any
   // object fields.
@@ -65,8 +70,12 @@
       const char *ivarType = ivar_getTypeEncoding(ivar);
       if (*ivarType == '@') {
         ptrdiff_t offset = ivar_getOffset(ivar);
-        id field = *(id *)((char *)clone + offset);
+        __unsafe_unretained id field = *(__unsafe_unretained id *)(void*)((char *)(__bridge void*)clone + offset);
+#ifdef J2OBJC_USE_GC
+        if (field != NULL) ARGC_genericRetain(field);
+#else
         [field retain];
+#endif
       }
     }
     free(ivars);
@@ -83,11 +92,7 @@
 }
 
 - (int)compareToWithId:(id)other {
-#if __has_feature(objc_arc)
-  @throw [[JavaLangClassCastException alloc] init];
-#else
-  @throw [[[JavaLangClassCastException alloc] init] autorelease];
-#endif
+  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
   return 0;
 }
 
@@ -169,7 +174,7 @@ static void doWait(id obj, long long timeout) {
 - (void)__javaClone:(id)original {
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
+void NSObject__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x11, 0, -1, -1, 1, -1, -1 },
@@ -204,9 +209,12 @@ static void doWait(id obj, long long timeout) {
     "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LJavaLangThrowable;", "notify",
     "notifyAll", "wait", "J", "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {
-    "Object", "java.lang", ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
-  return &_NSObject;
+    empty_static_initialize,
+    ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
+
+  JreBindIOSClass(NSObject.class, &_NSObject, @"java.lang.Object", 10);
 }
+
 
 // Unimplemented private methods for java.lang.ref.Reference. The methods'
 // implementations are set when swizzling the Reference's referent class.
@@ -215,9 +223,8 @@ static void doWait(id obj, long long timeout) {
 
 @end
 
-@implementation JreObjectCategoryDummy
-@end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)
 
 J2OBJC_NAME_MAPPING(NSObject, "java.lang.Object", "NSObject")
+

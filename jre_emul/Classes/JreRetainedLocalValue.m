@@ -20,12 +20,11 @@
 
 #import "J2ObjC_common.h"
 
-#if __has_feature(objc_arc)
-#error "JreRetainedLocalValue cannot be built with ARC"
-#endif
+#if !__has_feature(objc_arc)
 
 id JreRetainedLocalValue(id value) {
-  return [[value retain] autorelease];
+  return AUTORELEASE([[value retain]);
 }
+#endif
 
 #endif // JRERETAINEDLOCALVALUE_H

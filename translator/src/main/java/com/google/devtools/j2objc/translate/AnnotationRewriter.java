@@ -71,7 +71,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     Map<ExecutableElement, VariableElement> fieldElements = createMemberFields(node, members);
     addMemberProperties(node, members, fieldElements);
     addDefaultAccessors(node, members);
-    bodyDecls.add(createAnnotationTypeMethod(type));
+    //bodyDecls.add(createAnnotationTypeMethod(type));
     bodyDecls.add(createDescriptionMethod(type, members, fieldElements));
     addConstructor(node, fieldElements);
     addEqualsMethod(node);
@@ -168,9 +168,17 @@ public class AnnotationRewriter extends UnitTreeVisitor {
 
       VariableElement param = GeneratedVariableElement.newParameter(propName, memberType, null);
       constructorDecl.addParameter(new SingleVariableDeclaration(param));
-      String paramName = nameTable.getVariableShortName(param);
-      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + paramName + ")" : paramName;
-      stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
+      if (options.useGC() && TypeUtil.isReferenceType(memberType)) {
+	      String rhs = propName;
+			String fType = typeUtil.getArgcFieldTypeEx(node.getTypeElement(), memberType);
+			String funcName = "Jre" + fType + "FieldAssign";
+	      stmts.add(new NativeStatement(funcName + "(&self->" + fieldName + ", " + rhs + ");"));
+      }
+      else {
+        String paramName = nameTable.getVariableShortName(param);
+	      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + paramName + ")" : paramName;
+	      stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
+      }
     }
 
     stmts.add(new NativeStatement("return self;"));

@@ -48,12 +48,19 @@
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
+@public
+  NSString * const name_;
+  int simpleNamePos_;
+  const J2ObjcClassInfo *metadata_;
 }
 
 @property (readonly) Class objcClass;
 @property (readonly) Protocol *objcProtocol;
 
-- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata;
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata
+                            name:(NSString *)clsName
+                   simpleNamePos:(int)simpleNamePos;
+
 
 // IOSClass Getters.
 + (IOSClass *)classForIosName:(NSString *)iosName;
@@ -199,7 +206,6 @@
 - (JavaLangReflectMethod *)getMethodWithSelector:(const char *)selector;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
-- (const J2ObjcClassInfo *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
 - (void)appendMetadataName:(NSMutableString *)str;
@@ -213,17 +219,17 @@
 CF_EXTERN_C_BEGIN
 
 // Class.forName(String)
-IOSClass *IOSClass_forName_(NSString *className);
+IOSClass *IOSClass_forName_(NSString *className) J2OBJC_METHOD_ATTR;
 // Class.forName(String, boolean, ClassLoader)
 IOSClass *IOSClass_forName_initialize_classLoader_(
-    NSString *className, jboolean load, JavaLangClassLoader *loader);
+    NSString *className, jboolean load, JavaLangClassLoader *loader) J2OBJC_METHOD_ATTR;
 
 // Lookup a IOSClass from its associated ObjC class, protocol or component type.
-IOSClass *IOSClass_fromClass(Class cls);
-IOSClass *IOSClass_fromProtocol(Protocol *protocol);
-IOSClass *IOSClass_arrayOf(IOSClass *componentType);
+IOSClass *IOSClass_fromClass(Class cls) J2OBJC_METHOD_ATTR;
+IOSClass *IOSClass_fromProtocol(Protocol *protocol) J2OBJC_METHOD_ATTR;
+IOSClass *IOSClass_arrayOf(IOSClass *componentType) J2OBJC_METHOD_ATTR;
 // Same as "arrayOf" but allows dimensions to be specified.
-IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
+IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) J2OBJC_METHOD_ATTR;
 
 // Primitive array type literals.
 #define IOSClass_byteArray(DIM) IOSClass_arrayType([IOSClass byteClass], DIM)
@@ -236,16 +242,16 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
 #define IOSClass_booleanArray(DIM) IOSClass_arrayType([IOSClass booleanClass], DIM)
 
 // Internal functions
-const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass);
-IOSClass *IOSClass_NewProxyClass(Class cls);
+const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass) J2OBJC_METHOD_ATTR;
+IOSClass *IOSClass_NewProxyClass(Class cls) J2OBJC_METHOD_ATTR;
 
 // Return value is retained
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
-    Protocol **list, unsigned int count, bool excludeNSCopying);
+   __unsafe_unretained Protocol **list, unsigned int count, bool excludeNSCopying) J2OBJC_METHOD_ATTR;
 
 CF_EXTERN_C_END
 
-J2OBJC_STATIC_INIT(IOSClass)
+J2OBJC_EMPTY_STATIC_INIT(IOSClass)
 
 J2OBJC_TYPE_LITERAL_HEADER(IOSClass)
 

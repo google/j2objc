@@ -17,24 +17,18 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
-import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
-import com.google.devtools.j2objc.ast.FunctionDeclaration;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.NativeDeclaration;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.ast.*;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -104,11 +98,11 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     syncFilename(getSourceFilePath());
 
-    printInitFlagDefinition();
+    //printInitFlagDefinition();
     printStaticVars();
     printEnumValuesArray();
 
-    if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
+    if (!super.isInterfaceType() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
@@ -125,9 +119,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printInitFlagDefinition() {
-    if (hasInitializeMethod()) {
+    //if (hasInitializeMethod()) {
       printf("\nJ2OBJC_INITIALIZED_DEFN(%s)\n", typeName);
-    }
+    //}
   }
 
   private static final Predicate<VariableDeclarationFragment> PROPERTIES =
@@ -166,6 +160,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   };
 
   private void printStaticVars() {
+	  
     Iterable<VariableDeclarationFragment> fields =
         Iterables.filter(getStaticFields(), NEEDS_DEFINITION);
     if (Iterables.isEmpty(fields)) {
@@ -222,8 +217,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
             ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (setter == null && !ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
-              ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")
-              : (isPrimitive | options.useARC() ? null : "JreStrongAssign");
+              ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : (options.useGC() && ElementUtil.isStatic(varElement) ? "JreVolatileNativeAssign" : "JreVolatileStrongAssign"))
+              : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStrongAssign");
           if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                 NameTable.capitalize(accessorName), objcType, varName);
@@ -253,10 +248,15 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printTypeLiteralImplementation() {
-    if (needsTypeLiteral()) {
+    if (needsTypeLiteral() || needsClassInit()) {
       newline();
-      printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
-          isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+      if (needsClassInit()) {
+    	 printf("J2OBJC_CLASS_INITIALIZE_SOURCE(%s)\n", typeName);
+      }
+      if (needsTypeLiteral()) {
+     	 printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
+     	   isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+      }
     }
   }
 
@@ -293,7 +293,17 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     syncLineNumbers(m);  // avoid doc-comment
     print(getMethodSignature(m) + " ");
-    print(reindent(generateStatement(m.getBody())) + "\n");
+    String body = generateStatement(m.getBody());
+    if (options.isIOSTest() && ARGC.isTestClass(super.typeElement.asType())) {
+    	if (m.isTestClassSetup()) {
+    	      String clazz = nameTable.getFullName(typeNode.getTypeElement());
+    		
+    	    List<Statement> initStatements = typeNode.getClassInitStatements();
+    	    String name = m.getName().toString();
+    	    initStatements.add(new NativeStatement("[" + clazz + " " + name + "];"));
+    	}
+    }
+    print(reindent(body) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
     }
@@ -305,7 +315,16 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncLineNumbers(function);  // avoid doc-comment
     if (Modifier.isNative(function.getModifiers())) {
       printJniFunctionAndWrapper(function);
-    } else {
+    } else if (options.useGC()) {
+      String functionBody = generateStatement(function.getBody());
+      String sig = getFunctionSignature(function, false);
+      String mutableParams = getMutableParameters(function);
+      if (mutableParams.length() > 0) {
+    	  functionBody = "{\n" + mutableParams + "\n@autoreleasepool " + functionBody + "}";
+      }
+      println(sig + ' ' + reindent(functionBody));
+    }
+    else {
       String functionBody = generateStatement(function.getBody());
       println(getFunctionSignature(function, false) + " " + reindent(functionBody));
     }
@@ -377,17 +396,33 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printInitializeMethod() {
     List<Statement> initStatements = typeNode.getClassInitStatements();
-    if (initStatements.isEmpty()) {
-      return;
+    List<TypeElement> interfaces = TranslationUtil.getInterfaceTypes(typeNode);
+    if (!super.needsClassInit()) {
+    	return;
     }
     StringBuilder sb = new StringBuilder();
-    sb.append("{\nif (self == [" + typeName + " class]) {\n");
+    sb.append("{\n");
+    
+    if (!TypeUtil.isAnnotation(this.typeElement.asType())) {
+	    String superType = super.getSuperTypeName();
+	    sb.append(superType + "_initialize();\n");
+	    
+	    // super interfaces 초기화.
+	    for (TypeElement intrface : interfaces) {
+	    	if (intrface == JavacEnvironment.unreachbleError
+	    	||  intrface.getQualifiedName().toString().startsWith("com.google.j2objc.")) {
+	    		continue;
+	    	}
+	      	sb.append(nameTable.getFullName(intrface) + "_initialize();\n");
+	    }
+    }
+    
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));
     }
-    sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
-    sb.append("}\n}");
-    print("\n+ (void)initialize " + reindent(sb.toString()) + "\n");
+    sb.append("}");
+    print("\nstatic void " + typeName + "__clinit__() " + reindent(sb.toString()) + "\n");
+    
   }
 
   protected String generateStatement(Statement stmt) {

@@ -80,7 +80,7 @@ static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
 
 CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance() {
   ComGoogleProtobufExtensionRegistryLite_initialize();
-  return [[[CGPExtensionRegistryLite alloc] init] autorelease];
+  return AUTORELEASE([[CGPExtensionRegistryLite alloc] init]);
 }
 
 CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistry() {
@@ -103,7 +103,7 @@ ComGoogleProtobufExtensionRegistryLite *
 new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(jboolean empty) {
   ComGoogleProtobufExtensionRegistryLite *self = [ComGoogleProtobufExtensionRegistryLite alloc];
   ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
-  return [self autorelease];
+  return AUTORELEASE(self);
 }
 
 CGPFieldDescriptor *CGPExtensionRegistryFind(

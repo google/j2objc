@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef NO_TEMPORAY_PATCH
+typedef void* id;
+#endif
+
 #include "jni.h"
 #include <stdlib.h> // for abort
 

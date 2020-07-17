@@ -32,6 +32,8 @@
 #
 # Author: Tom Ball
 
+DEBUGGING_SYMBOLS=YES
+
 APACHE_HARMONY_BASE = apache_harmony/classlib/modules
 JRE_BEANS_ROOT = $(APACHE_HARMONY_BASE)/beans/src/main/java
 BEANS_TEST_ROOT = $(APACHE_HARMONY_BASE)/beans/src/test/java
@@ -171,13 +173,14 @@ endif
 # Settings for classes that need to always compile without ARC.
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 
-OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0
+OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0 
 
 # Require C11 compilation to support Java volatile translation.
-OBJCFLAGS += -std=c11
+#ARGC-- OBJCFLAGS += -std=c11
+
 
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
-$(error The jre_emul build no longer supports an ARC build)
+#ARGC-- $(error The jre_emul build no longer supports an ARC build)
 endif
 
 # Specify bitcode flag if clang version 7 or greater. This is necessary to support

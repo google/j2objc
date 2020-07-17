@@ -19,12 +19,15 @@ import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import com.google.devtools.j2objc.javac.JavacEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
+
 /**
  * Node type for a class or interface declaration.
  */
 public class TypeDeclaration extends AbstractTypeDeclaration {
 
-  private boolean isInterface = false;
+  private boolean isPureInterface = false;
 
   // DeadCodeEliminator will set this field if this class is marked as unused
   private boolean stripSupertypes = false;
@@ -36,7 +39,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
   public TypeDeclaration(TypeDeclaration other) {
     super(other);
-    isInterface = other.isInterface();
+    isPureInterface = other.isPureInterface();
     stripSupertypes = other.stripSupertypes;
     superOuter.copyFrom(other.getSuperOuter());
     superCaptureArgs.copyFrom(other.getSuperCaptureArgs());
@@ -44,7 +47,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
   public TypeDeclaration(TypeElement typeElement) {
     super(typeElement);
-    isInterface = typeElement.getKind().isInterface();
+    isPureInterface = TypeUtil.isPureInterface(typeElement.asType());
   }
 
   @Override
@@ -52,12 +55,12 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     return Kind.TYPE_DECLARATION;
   }
 
-  public boolean isInterface() {
-    return isInterface;
+  public boolean isPureInterface() {
+    return isPureInterface;
   }
 
   public TypeDeclaration setInterface(boolean b) {
-    isInterface = b;
+    isPureInterface = b;
     return this;
   }
 
@@ -88,6 +91,9 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
+	  TypeMirror superT = this.getSuperclassTypeMirror();
+	  TypeElement elem = TypeUtil.asTypeElement(superT);
+	  TypeUtil.setIgnoreAllUnreachableTypeError(elem == JavacEnvironment.unreachbleError);
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);

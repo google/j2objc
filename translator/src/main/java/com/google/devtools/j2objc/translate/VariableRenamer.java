@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -46,6 +47,13 @@ public class VariableRenamer extends UnitTreeVisitor {
     super(unit);
   }
 
+  @Override
+  public boolean visit(StringLiteral node) {
+	// StringPool 등록을 위한 함수 호출.
+	String cs = unit.getStringConstant(node.getLiteralValue());
+	return super.visit(node);
+  }
+  
   private void collectAndRenameFields(TypeElement type, Set<VariableElement> fields) {
     if (type == null) {
       return;

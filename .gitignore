@@ -19,3 +19,32 @@ dist/
 # IntelliJ IDEA Files
 *.iml
 .idea
+translator/.settings
+j2objc-argc-2.0.2
+jre_emul/build_result-debug
+j2objc-argc-2.0.2.zip
+build_result-debug.zip
+j2objc-argc-2.0.2.r3.zip
+j2objc-argc-2.0.2.r4.zip
+translator copy
+procyon-clone/.gradle
+procyon-clone/.hg
+procyon-clone/.settings
+procyon-clone/build
+procyon-clone/Procyon.Reflection/.settings
+procyon-clone/Procyon.Expressions/.settings
+procyon-clone/Procyon.Decompiler/.settings
+procyon-clone/Procyon.Core/.settings
+procyon-clone/Procyon.CompilerTools/.settings
+jre_emul/misc_tests/bin
+procyon-clone/Procyon.CompilerTools/bin
+procyon-clone/Procyon.Core/bin
+procyon-clone/Procyon.Decompiler/bin
+procyon-clone/Procyon.Expressions/bin
+procyon-clone/Procyon.Reflection/bin
+zee
+jre_emul_java_sources
+sqlite-jdbc/sources/sqlite-jdbc-3.27.2.1-sources
+jre_emul/Classes copy
+jre_emul/junit_tests/tests
+.vscode

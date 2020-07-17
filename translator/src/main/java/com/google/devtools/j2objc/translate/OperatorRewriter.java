@@ -15,31 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.BooleanLiteral;
-import com.google.devtools.j2objc.ast.CStringLiteral;
-import com.google.devtools.j2objc.ast.CharacterLiteral;
-import com.google.devtools.j2objc.ast.CommaExpression;
-import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FieldAccess;
-import com.google.devtools.j2objc.ast.FunctionInvocation;
-import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.PrefixExpression;
-import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
-import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.StringLiteral;
-import com.google.devtools.j2objc.ast.SuperFieldAccess;
-import com.google.devtools.j2objc.ast.SynchronizedStatement;
-import com.google.devtools.j2objc.ast.ThisExpression;
-import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.PointerType;
@@ -49,6 +25,9 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.RetainedLocalRef;
+import com.sun.tools.javac.code.Symbol;
+
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,6 +36,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -72,6 +54,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   private final LinkedList<Set<VariableElement>> retainedLocalCandidateStack = new LinkedList<>();
   private Set<VariableElement> retainedLocalCandidates = new HashSet<>();
   private boolean isSynchronizedMethod = false;
+private FunctionDeclaration argc_currentMethod;
 
   public OperatorRewriter(CompilationUnit unit) {
     super(unit);
@@ -130,6 +113,22 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
+  @Override // ARGC ++
+  public boolean visit(FunctionDeclaration node) {
+		if (options.useGC()) {
+			  assert this.argc_currentMethod == null;
+			  this.argc_currentMethod = node;
+		}
+	  return true;
+  }
+
+  @Override // ARGC ++
+  public void endVisit(FunctionDeclaration node) {
+	  if (options.useGC()) {
+	    this.argc_currentMethod = null;
+	  }
+  }
+  
   @Override
   public boolean visit(MethodDeclaration node) {
     isSynchronizedMethod = Modifier.isSynchronized(node.getModifiers());
@@ -144,6 +143,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
+	if (options.useGC()) {
+	  this.argc_currentMethod = null;
+	}
     retainedLocalCandidateStack.clear();
     retainedLocalCandidates.clear();
     isSynchronizedMethod = false;
@@ -224,7 +226,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
+    if (!options.useReferenceCounting() || expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
       return;
     }
     FunctionElement element =
@@ -265,7 +267,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isStrong = !isPrimitive && !ElementUtil.isWeakReference(var);
     boolean isVolatile = ElementUtil.isVolatile(var);
 
-    if (isRetainedWith) {
+    if (!options.useGC() && isRetainedWith) {
       return isVolatile ? "JreVolatileRetainedWithAssign" : "JreRetainedWithAssign";
     }
 
@@ -273,24 +275,52 @@ public class OperatorRewriter extends UnitTreeVisitor {
       // We can't use the "AndConsume" optimization for volatile objects because that might leave
       // the newly created object vulnerable to being deallocated by another thread assigning to the
       // same field.
-      return isStrong ? "JreVolatileStrongAssign" : "JreAssignVolatile"
+      return isStrong ? (options.useGC() && ElementUtil.isStatic(var) ? "JreVolatileNativeAssign" :  "JreVolatileStrongAssign") : "JreAssignVolatile"
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
     }
+    
+    Element enc = var.getEnclosingElement();
 
-    if (isStrong && options.useReferenceCounting()) {
-      String funcName = "JreStrongAssign";
-      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
-      if (retainedRhs != null) {
-        funcName += "AndConsume";
-        node.setRightHandSide(retainedRhs);
-      }
-      return funcName;
+    String funcName = null;
+    if (!isPrimitive) {
+    	if (options.useGC()) {
+    		if (ElementUtil.isStatic(var)) {
+    			funcName = "JreStrongAssign";
+    		}
+    		else {
+    			String fType = typeUtil.getArgcFieldTypeEx(enc, type);
+    			funcName = "Jre" + fType + "FieldAssign";
+    		}
+    	}
+    	else if (options.useReferenceCounting()) {
+    		funcName = "JreStrongAssign";
+    	}
+    }
+    
+    if (funcName != null) {
+	      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
+	      if (retainedRhs != null) {
+	    	  if (options.useReferenceCounting()) {
+	    		  funcName += "AndConsume";
+	    	  }
+	        node.setRightHandSide(retainedRhs);
+	      }
+	      if (options.useGC()) {
+		      if (!(node.getParent() instanceof ExpressionStatement)) {
+		    	  funcName += "AndGet";
+		      }
+	      }
+	      return funcName;
     }
 
     return null;
   }
 
-  // Counter to create unique local variables for the RetainedWith target.
+  private boolean /*ARGC*/isStaticVar(VariableElement var) {
+	return ElementUtil.isStatic(var);
+}
+
+// Counter to create unique local variables for the RetainedWith target.
   private int rwCount = 0;
 
   // Gets the target object for a call to the RetainedWith wrapper.
@@ -323,6 +353,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
+    	if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+    		//Name arg = (Name) node.getLeftHandSide();
+    		SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+    		arg.markMutable();
+    	}
       return;
     }
     TypeMirror type = node.getTypeMirror();
@@ -330,7 +365,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
-    FunctionInvocation invocation = new FunctionInvocation(element, type);
+    
+    FunctionInvocation invocation = new FunctionInvocation(element, 
+    		(funcName.endsWith("AndGet") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
+    				 ? type : this.translationUtil.getVoidType());
+    
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {
       element.addParameters(idType);
@@ -510,6 +549,15 @@ public class OperatorRewriter extends UnitTreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
+
+    if (options.useGC()) {
+      VariableElement var = TreeUtil.getVariableElement(lhs);
+	    if (var != null && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+		    SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+		    arg.markMutable();
+	    }
+    }
+    
     String funcName = "JreStrAppend" + translationUtil.getOperatorFunctionModifier(lhs);
     FunctionElement element = new FunctionElement(funcName, TypeUtil.ID_TYPE, null)
         .addParameters(TypeUtil.ID_PTR_TYPE, TypeUtil.NATIVE_CHAR_PTR)

@@ -32,16 +32,19 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 
-const J2ObjcClassInfo JreEmptyClassInfo = {
-    NULL, NULL, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
 
+
+#ifndef J2OBJC_USE_GC
 const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   // Can't use respondsToSelector here because that will search superclasses.
   Method metadataMethod = cls ? JreFindClassMethod(cls, @selector(__metadata)) : NULL;
   if (metadataMethod) {
-    static J2ObjcClassInfo *(*method_invoke_metadata)(Class, Method) =
-        (J2ObjcClassInfo * (*)(Class, Method)) method_invoke;
-    const J2ObjcClassInfo *metadata = method_invoke_metadata(cls, metadataMethod);
+#if OBJC_OLD_DISPATCH_PROTOTYPES
+      const J2ObjcClassInfo *metadata = (__bridge const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
+#else
+      const J2ObjcClassInfo* (*_invoke)(id, Method) = (void*)method_invoke;
+      const J2ObjcClassInfo *metadata = _invoke(cls, metadataMethod);
+#endif
     // We don't use any Java based assert or throwables here because this function is called during
     // IOSClass construction under mutual exclusion so causing any other IOSClass to be initialized
     // would result in deadlock.
@@ -51,6 +54,7 @@ const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   }
   return NULL;
 }
+#endif
 
 // Parses the next IOSClass from the delimited string, advancing the c-string pointer past the
 // parsed type.
@@ -65,7 +69,7 @@ static IOSClass *ParseNextClass(const char **strPtr) {
                                              encoding:NSUTF8StringEncoding];
     *strPtr = delimitor + 1;
     IOSClass *result = [IOSClass classForIosName:name];
-    [name release];
+    RELEASE_(name);
     return result;
   }
   IOSClass *primitiveType = [IOSClass primitiveClassForChar:c];
@@ -164,6 +168,7 @@ const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const c
   return NULL;
 }
 
+#ifndef J2OBJC_USE_GC
 NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) {
   return metadata ? [NSString stringWithUTF8String:metadata->typeName] : nil;
 }
@@ -172,6 +177,35 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
   return metadata && metadata->packageName
       ? [NSString stringWithUTF8String:metadata->packageName] : nil;
 }
+NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
+  return BuildQualifiedName(metadata);
+}
+
+static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
+  if (!metadata) {
+    return nil;
+  }
+  const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
+  if (enclosingClass) {
+    NSMutableString *qName = BuildQualifiedName(JreClassForString(enclosingClass)->metadata_);
+    if (!qName) {
+      return nil;
+    }
+    [qName appendString:@"$"];
+    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
+    return qName;
+  } else if (metadata->packageName) {
+    NSMutableString *qName = [NSMutableString stringWithUTF8String:metadata->packageName];
+    [qName appendString:@"."];
+    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
+    return qName;
+  } else {
+    return [NSMutableString stringWithUTF8String:metadata->typeName];
+  }
+}
+
+
+#endif
 
 static bool NullableCStrEquals(const char *a, const char *b) {
   return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);
@@ -268,33 +302,6 @@ NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **
   return genericSig ? [NSString stringWithUTF8String:genericSig] : nil;
 }
 
-static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
-  if (!metadata) {
-    return nil;
-  }
-  const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
-  if (enclosingClass) {
-    NSMutableString *qName = BuildQualifiedName([JreClassForString(enclosingClass) getMetadata]);
-    if (!qName) {
-      return nil;
-    }
-    [qName appendString:@"$"];
-    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
-    return qName;
-  } else if (metadata->packageName) {
-    NSMutableString *qName = [NSMutableString stringWithUTF8String:metadata->packageName];
-    [qName appendString:@"."];
-    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
-    return qName;
-  } else {
-    return [NSMutableString stringWithUTF8String:metadata->typeName];
-  }
-}
-
-NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
-  return BuildQualifiedName(metadata);
-}
-
 JavaLangReflectField *FindDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
@@ -324,8 +331,10 @@ JavaLangReflectField *FindField(IOSClass *iosClass, NSString *name, jboolean pub
   return nil;
 }
 
-NSString *JreMetadataToString(const J2ObjcClassInfo *metadata) {
-  NSMutableString *str = BuildQualifiedName(metadata);
+NSString *JreMetadataToString(IOSClass *iosClass) {
+  NSMutableString *str = [[NSMutableString alloc] init];
+  [str appendString:[iosClass getName]];
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
 
   [str appendString:@" Fields:"];
   for (int i = 0; i < metadata->fieldCount; i++) {

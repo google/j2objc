@@ -24,6 +24,9 @@
 #import "IOSObjectArray.h"
 #import "J2ObjC_source.h"
 #import "java/lang/StackTraceElement.h"
+#import "java/io/PrintWriter.h"
+#import "java/io/StringWriter.h"
+#import "java/lang/Throwable.h"
 #import "jni.h"
 
 #import <execinfo.h>
@@ -54,19 +57,19 @@
 
 - (void)dealloc {
   free(frames_);
-  [super dealloc];
+  DEALLOC_(super);
 }
 
 @end
 
-jobject Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
-  return [[[RawStack alloc] init] autorelease];
+id Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
+  return AUTORELEASE([[RawStack alloc] init]);
 }
 
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
 static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   NSString *className = [element getClassName];
-  if ([className hasPrefix:JavaLangStackTraceElement_STRIPPED]) {
+  if ([className hasPrefix:JreLoadStatic(JavaLangStackTraceElement, STRIPPED)]) {
     return true;
   }
   if ([className isEqualToString:@"NSInvocation"]) {
@@ -89,12 +92,12 @@ static void ProcessRawStack(RawStack *rawStack, NSMutableArray *frames, jboolean
     if (!applyFilter || !ShouldFilterStackElement(element)) {
       [frames addObject:element];
     }
-    [element release];
+    RELEASE_(element);
   }
 }
 
 jarray Java_java_lang_Throwable_nativeGetStackTrace(
-    JNIEnv *_env_, jclass _cls_, jobject stackState) {
+    JNIEnv *_env_, jclass _cls_, id stackState) {
   RawStack *rawStack = stackState;
   NSMutableArray *frames = [NSMutableArray array];
   if (rawStack) {
@@ -120,5 +123,14 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   //   . otherwise, it's "class-name".
   NSString *clsName = [[self java_getClass] getName];
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
-  [self initWithName:[[self class] description] reason:reason userInfo:nil];
+  (void)[self initWithName:[[self class] description] reason:reason userInfo:nil];
 }
+
+FOUNDATION_EXPORT NSString* JreGetStackTraceText(JavaLangThrowable* ex) {
+  JavaIoStringWriter* wr = new_JavaIoStringWriter_init();
+  JavaIoPrintWriter* pw = new_JavaIoPrintWriter_initWithJavaIoWriter_(wr);
+  [ex printStackTraceWithJavaIoPrintWriter:pw];
+  NSString* text = [wr description];
+  return text;
+}
+

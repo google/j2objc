@@ -35,7 +35,7 @@ java_deps_dist:
 jre_emul_jars_dist: annotations_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul -f java.mk jars_dist
 
-translator: annotations_dist java_deps_dist
+translator: annotations_dist java_deps_dist 
 	@$(MAKE) -C $(J2OBJC_ROOT)/translator dist
 
 translator_dist: translator jre_emul_jars_dist

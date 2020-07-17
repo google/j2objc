@@ -22,6 +22,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -107,7 +110,21 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
     return fullMessage;
   }
 
-  public static void parserDiagnostic(Diagnostic<? extends JavaFileObject> diagnostic) {
+  private static HashSet<String> skipDiagnostics = new HashSet<>();
+  
+  public static void addSkip(String s) {
+	  skipDiagnostics.add(s);
+  }
+  
+  public static void parserDiagnostic(Collection<String> sourcePaths, Diagnostic<? extends JavaFileObject> diagnostic) {
+	  JavaFileObject source = diagnostic.getSource();
+	  String filePath = source.getName().toString();
+	  if (skipDiagnostics.contains(filePath)) {
+		return;
+	  }
+	  if (sourcePaths != null && !sourcePaths.contains(filePath)) {
+		  return;
+	  }
     Kind kind = diagnostic.getKind();
     if (kind == Kind.ERROR) {
       errorMessages.add(diagnostic.getMessage(null));
@@ -155,6 +172,14 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
     warning(formatMessage(node, message));
   }
 
+  public static void warning(Throwable error, String message) {
+    StringWriter msg = new StringWriter();
+    PrintWriter writer = new PrintWriter(msg);
+    writer.println(String.format("internal error translating \"%s\"", message));
+    error.printStackTrace();//.printStackTrace(writer);
+    writer.flush();
+  }
+  
   /**
    * Report that an internal error happened when translating a specific source.
    */

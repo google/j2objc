@@ -20,6 +20,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -32,6 +33,7 @@ import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -47,6 +49,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -109,24 +112,29 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printStaticFieldDeclarations();
       return;
     }
+    
     printNativeEnum();
 
     printTypeDocumentation();
     if (options.defaultNonnull()) {
       println("NS_ASSUME_NONNULL_BEGIN");
     }
-    if (typeElement.getKind().isInterface()) {
+    if (super.isInterfaceType()) {
+    	boolean argc_patch = true;
+    	if (argc_patch) {
+    		printf("@class IOSClass;\n\n");
+    	}
       printf("@protocol %s", typeName);
     } else {
       printf("@interface %s : %s", typeName, getSuperTypeName());
     }
     printImplementedProtocols();
-    if (!typeElement.getKind().isInterface()) {
+    if (!super.isInterfaceType()) {
       printInstanceVariables();
     } else {
       newline();
     }
-    if (!typeElement.getKind().isInterface()) {
+    if (!super.isInterfaceType()) {
       printProperties();
       printStaticAccessors();
     }
@@ -187,20 +195,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  private String getSuperTypeName() {
-    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
-    if (supertype != null) {
-      return nameTable.getFullName(supertype);
-    }
-    return "NSObject";
-  }
+//  protected String getSuperTypeName() {
+//    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
+//    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
+//      return nameTable.getFullName(supertype);
+//    }
+//    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
+//  }
 
-  private List<String> getInterfaceNames() {
+  protected List<String> getInterfaceNames() {
     if (ElementUtil.isAnnotationType(typeElement)) {
       return Lists.newArrayList("JavaLangAnnotationAnnotation");
     }
     List<String> names = Lists.newArrayList();
     for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
+    	if (intrface == JavacEnvironment.unreachbleError) {
+    		continue;
+    	}
       names.add(nameTable.getFullName(intrface));
     }
     if (ElementUtil.getQualifiedName(typeElement).equals("java.lang.Enum")) {
@@ -213,6 +224,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printImplementedProtocols() {
+	if (TypeUtil.isAnnotation(this.typeElement.asType())) {
+		return;
+	}
     List<String> interfaces = getInterfaceNames();
     if (!interfaces.isEmpty()) {
       print(" < ");
@@ -298,12 +312,25 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
-          // We must add this even without -use-arc because the header may be
-          // included by a file compiled with ARC.
-          print("__unsafe_unretained ");
-        }
-        String objcType = getDeclarationType(varElement);
+        
+      	String objcType = ElementUtil.getObjectiveCType(varElement);
+      	if (objcType == null) {
+            objcType = getDeclarationType(varElement);
+            if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+            	if (ElementUtil.isWeakReference(varElement)) {
+            		print("ARGC_WEAK_REF ");
+            	}
+            	else {
+            		print("ARGC_FIELD_REF ");
+            	}
+            }
+            else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
+              // We must add this even without -use-arc because the header may be
+              // included by a file compiled with ARC.
+              print("__unsafe_unretained ");
+            }
+      	}
+        
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.
@@ -346,11 +373,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-    if (!typeElement.getKind().isInterface() || !needsCompanionClass()
+	if (!super.isInterfaceType() || !needsCompanionClass()
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : NSObject", typeName);
+    printf("\n@interface %s : %s", typeName, /*ARGC*/getSuperTypeName());
     if (ElementUtil.isGeneratedAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
@@ -363,11 +390,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printStaticInitFunction() {
-    if (hasInitializeMethod()) {
-      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
-    } else {
-      printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
-    }
+	if (super.needsClassInit()) {
+		printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+	}
+	else {
+		printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
+	}
   }
 
   private void printEnumConstants() {
@@ -394,7 +422,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         assert !ElementUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
         return false;
       }
-      return !var.asType().getKind().isPrimitive() && !ElementUtil.isSynthetic(var)
+      TypeKind kind = var.asType().getKind();
+      return !kind.isPrimitive() && kind != TypeKind.ERROR && !ElementUtil.isSynthetic(var)
           && !ElementUtil.isWeakReference(var);
     }
   };
@@ -414,8 +443,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       String fieldName = nameTable.getVariableShortName(var);
       String isVolatile = ElementUtil.isVolatile(var) ? "_VOLATILE" : "";
-      println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
+      if (options.useGC() && isVolatile.length() == 0) {
+      	println(UnicodeUtils.format("J2OBJC_FIELD_SETTER(%s, %s, %s, %s)",
+                typeName, typeUtil.getArgcFieldTypeEx(typeElement, var.asType()),  fieldName, typeStr));
+      }
+      else {
+    	println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
           isVolatile, typeName, fieldName, typeStr));
+      }
     }
   }
 
@@ -431,7 +466,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   // Overridden in TypePrivateDeclarationGenerator
   protected void printStaticFieldDeclaration(
-      VariableDeclarationFragment fragment, String baseDeclaration) {
+    VariableDeclarationFragment fragment, String baseDeclaration) {
     println("/*! INTERNAL ONLY - Use accessor function from above. */");
     println("FOUNDATION_EXPORT " + baseDeclaration + ";");
   }
@@ -455,18 +490,18 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
     printf("inline %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
     if (!isFinal) {
-      printf("inline %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
-      if (isPrimitive && !isVolatile) {
-        printf("inline %s *%s_getRef_%s(void);\n", objcType, typeName, name);
-      }
-    }
+        printf("inline %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
+        if (isPrimitive && !isVolatile) {
+    	   printf("inline %s *%s_getRef_%s(void);\n", objcType, typeName, name);
+        }
+	}
     if (isConstant) {
       Object value = var.getConstantValue();
       assert value != null;
       printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
     } else {
       printStaticFieldDeclaration(
-          fragment, UnicodeUtils.format("%s%s_%s", declType, typeName, name));
+          fragment, UnicodeUtils.format("%s%s_%s/**/", declType, typeName, name));
     }
     printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
   }
@@ -543,7 +578,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String unprefixedName =
           NameTable.camelCaseQualifiedName(ElementUtil.getQualifiedName(typeElement));
       if (!unprefixedName.equals(typeName)) {
-        if (typeElement.getKind().isInterface()) {
+        if (super.isInterfaceType()) {
           // Protocols can't be used in typedefs.
           printf("\n#define %s %s\n", unprefixedName, typeName);
         } else {
@@ -563,7 +598,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     ExecutableElement methodElement = m.getExecutableElement();
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
 
-    if (typeElement.getKind().isInterface()) {
+    if (super.isInterfaceType()) {
       // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
       // in @protocol) or must both be true (i.e. this prints a static method decl in the
       // companion class' @interface).

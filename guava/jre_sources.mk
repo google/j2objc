@@ -427,18 +427,15 @@ GUAVA_SOURCES = \
     com/google/common/io/FileWriteMode.java \
     com/google/common/io/Files.java \
     com/google/common/io/Flushables.java \
-    com/google/common/io/InsecureRecursiveDeleteException.java \
     com/google/common/io/LineBuffer.java \
     com/google/common/io/LineProcessor.java \
     com/google/common/io/LineReader.java \
     com/google/common/io/LittleEndianDataInputStream.java \
     com/google/common/io/LittleEndianDataOutputStream.java \
-    com/google/common/io/MoreFiles.java \
     com/google/common/io/MultiInputStream.java \
     com/google/common/io/MultiReader.java \
     com/google/common/io/PatternFilenameFilter.java \
     com/google/common/io/ReaderInputStream.java \
-    com/google/common/io/RecursiveDeleteOption.java \
     com/google/common/io/Resources.java \
     com/google/common/io/package-info.java \
     com/google/common/math/BigIntegerMath.java \
@@ -578,6 +575,12 @@ GUAVA_SOURCES = \
     com/google/thirdparty/publicsuffix/PublicSuffixPatterns.java \
     com/google/thirdparty/publicsuffix/PublicSuffixType.java \
     com/google/thirdparty/publicsuffix/TrieParser.java \
+
+J2OBJC_INCOMPATIBLE_SOURCES = \
+    com/google/common/io/InsecureRecursiveDeleteException.java \
+    com/google/common/io/MoreFiles.java \
+    com/google/common/io/RecursiveDeleteOption.java \
+
 
 ERROR_PRONE_ANNOTATIONS_SOURCES = \
     com/google/errorprone/annotations/CanIgnoreReturnValue.java \

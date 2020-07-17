@@ -31,7 +31,7 @@
 #import "objc/runtime.h"
 
 @interface IOSConcreteClass () {
-  _Atomic(IOSObjectArray *) interfaces_;
+   IOSObjectArray * interfaces_;
 }
 @end
 
@@ -40,15 +40,13 @@
 @synthesize objcClass = class_;
 
 - (instancetype)initWithClass:(Class)cls
-                     metadata:(const J2ObjcClassInfo *)metadata {
-  if ((self = [super initWithMetadata:metadata])) {
+                     metadata:(const J2ObjcClassInfo *)metadata
+                               name:(NSString *)clsName
+                      simpleNamePos:(int)simpleNamePos {
+  if ((self = [super initWithMetadata:metadata name:clsName simpleNamePos:simpleNamePos])) {
     class_ = cls;
   }
   return self;
-}
-
-- (instancetype)initWithClass:(Class)cls {
-  return [self initWithClass:cls metadata:JreFindMetadata(cls)];
 }
 
 - (id)newInstance {
@@ -58,7 +56,7 @@
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
   }
   // Check if reflection is available.
-  if ([self getMetadata]) {
+  if (self->metadata_ && self->metadata_->methods) {
     // Get the nullary constructor.
     JavaLangReflectConstructor *constructor = JreConstructorWithParamTypes(self, nil);
     if (!constructor) {
@@ -74,28 +72,24 @@
 - (IOSClass *)getSuperclass {
   // Number and Throwable are special cases where its superclass doesn't match Java's.
   const char *clsName = class_getName(class_);
-  if (strcmp("NSNumber", clsName) == 0 || strcmp("JavaLangThrowable", clsName) == 0) {
+  if (strcmp("NSNumber", clsName) == 0
+      || strcmp("JavaLangThrowable", clsName) == 0
+      ) {
     return NSObject_class_();
   }
-  Class superclass = [class_ superclass];
+  Class superclass = class_getSuperclass(class_);
   if (superclass != nil) {
-    return IOSClass_fromClass(superclass);
+    IOSClass* c = IOSClass_fromClass(superclass);
+    if (c == NULL) {
+      c = NSObject_class_();
+    }
+    return c;
   }
   return nil;
 }
 
 - (jboolean)isInstance:(id)object {
   return [object isKindOfClass:class_];
-}
-
-- (NSString *)getName {
-  NSString *name = JreClassQualifiedName([self getMetadata]);
-  return name ? name : NSStringFromClass(class_);
-}
-
-- (NSString *)getSimpleName {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
-  return metadata ? JreClassTypeName(metadata) : NSStringFromClass(class_);
 }
 
 - (NSString *)objcName {
@@ -113,7 +107,7 @@
 }
 
 - (jboolean)isEnum {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = self->metadata_;
   if (metadata) {
     return (metadata->modifiers & JavaLangReflectModifier_ENUM) > 0 &&
         [self getSuperclass] == JavaLangEnum_class_();
@@ -123,7 +117,7 @@
 }
 
 - (jboolean)isAnonymousClass {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = self->metadata_;
   if (metadata) {
     return (metadata->modifiers & 0x8000) > 0;
   }
@@ -151,7 +145,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
   }
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:constructors
                                                        type:JavaLangReflectConstructor_class_()];
-  [constructors release];
+  RELEASE_(constructors);
   return result;
 }
 
@@ -180,13 +174,16 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = __c11_atomic_load(&interfaces_, __ATOMIC_ACQUIRE);
+    IOSObjectArray *result = interfaces_;
   if (!result) {
     @synchronized(self) {
-      result = __c11_atomic_load(&interfaces_, __ATOMIC_RELAXED);
+        result = interfaces_;
+        if (result) {
+            return result;
+        }
       if (!result) {
         unsigned int count;
-        Protocol **protocolList = class_copyProtocolList(class_, &count);
+        __unsafe_unretained Protocol **protocolList = class_copyProtocolList(class_, &count);
         bool excludeNSCopying = false;
         const char *clsName = class_getName(class_);
         // IOSClass and JavaLangEnum are made to conform to NSCopying so that they can be used as
@@ -195,7 +192,7 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
           excludeNSCopying = true;
         }
         result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, excludeNSCopying);
-        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
+          interfaces_ = RETAIN_(result);
         free(protocolList);
       }
     }
@@ -205,8 +202,9 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [class_ release];
-  [super dealloc];
+  RELEASE_(interfaces_);
+  RELEASE_(class_);
+  DEALLOC_(super);
 }
 #endif
 

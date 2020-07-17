@@ -14,6 +14,21 @@
 
 package com.google.devtools.j2objc.pipeline;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
@@ -22,14 +37,8 @@ import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
+import com.google.devtools.j2objc.util.HeaderMap;
+import com.google.devtools.j2objc.util.Parser;
 
 /**
  * A set of input files for J2ObjC to process,
@@ -48,7 +57,7 @@ public class GenerationBatch {
   private final List<ProcessingContext> inputs = Lists.newArrayList();
 
   private GenerationUnit globalCombinedUnit = null;
-
+  
   public GenerationBatch(Options options){
     this.options = options;
     if (options.globalCombinedOutput() != null) {
@@ -60,20 +69,11 @@ public class GenerationBatch {
     return inputs;
   }
 
-  public void processFileArgs(Iterable<String> args) {
-    for (String arg : args) {
-      processSourceFile(arg);
-    }
-  }
-
-  private void processSourceFile(String filename) {
-    logger.finest("processing " + filename);
-    if (filename.endsWith(".java")
-        || (options.translateClassfiles() && filename.endsWith(".class"))) {
-      processJavaFile(filename);
-    } else {
-      processJarFile(filename);
-    }
+  public void processFileArgs(Iterable<InputFile> args) {
+	for (InputFile arg : args) {
+		addSource(arg);
+	  //processSourceFile(arg);
+	}
   }
 
   private void processJavaFile(String filename) {
@@ -187,10 +187,10 @@ public class GenerationBatch {
    */
   @VisibleForTesting
   public void addSource(InputFile file) {
-    if (globalCombinedUnit != null) {
-      inputs.add(new ProcessingContext(file, globalCombinedUnit));
-    } else {
-      inputs.add(ProcessingContext.fromFile(file, options));
-    }
+	  if (globalCombinedUnit != null) {
+		  inputs.add(new ProcessingContext(file, globalCombinedUnit));
+	  } else {
+		  inputs.add(ProcessingContext.fromFile(file, options));
+	  }
   }
 }

@@ -16,9 +16,10 @@
 
 package android.util;
 
-import com.google.j2objc.annotations.WeakOuter;
+import libcore.util.EmptyArray;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,6 +50,18 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     private static final String TAG = "ArrayMap";
 
     /**
+     * Attempt to spot concurrent modifications to this data structure.
+     *
+     * It's best-effort, but any time we can throw something more diagnostic than an
+     * ArrayIndexOutOfBoundsException deep in the ArrayMap internals it's going to
+     * save a lot of development time.
+     *
+     * Good times to look for CME include after any allocArrays() call and at the end of
+     * functions that change mSize (put/remove/clear).
+     */
+    private static final boolean CONCURRENT_MODIFICATION_EXCEPTIONS = true;
+
+    /**
      * The minimum amount by which the capacity of a ArrayMap will increase.
      * This is tuned to be relatively space-efficient.
      */
@@ -60,9 +73,14 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     private static final int CACHE_SIZE = 10;
 
     /**
+     * Special hash array value that indicates the container is immutable.
+     */
+    static final int[] EMPTY_IMMUTABLE_INTS = new int[0];
+
+    /**
      * @hide Special immutable empty ArrayMap.
      */
-    public static final ArrayMap EMPTY = new ArrayMap(true);
+    public static final ArrayMap EMPTY = new ArrayMap<>(-1);
 
     /**
      * Caches of small array objects to avoid spamming garbage.  The cache
@@ -75,15 +93,23 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     static Object[] mTwiceBaseCache;
     static int mTwiceBaseCacheSize;
 
-    /**
-     * Special hash array value that indicates the container is immutable.
-     */
-    static final int[] EMPTY_IMMUTABLE_INTS = new int[0];
-
+    final boolean mIdentityHashCode;
     int[] mHashes;
     Object[] mArray;
     int mSize;
     MapCollections<K, V> mCollections;
+
+    private static int binarySearchHashes(int[] hashes, int N, int hash) {
+        try {
+            return ContainerHelpers.binarySearch(hashes, N, hash);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            if (CONCURRENT_MODIFICATION_EXCEPTIONS) {
+                throw new ConcurrentModificationException();
+            } else {
+                throw e; // the cache is poisoned at this point, there's not much we can do
+            }
+        }
+    }
 
     int indexOf(Object key, int hash) {
         final int N = mSize;
@@ -93,7 +119,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
             return ~0;
         }
 
-        int index = ContainerHelpers.binarySearch(mHashes, N, hash);
+        int index = binarySearchHashes(mHashes, N, hash);
 
         // If the hash code wasn't found, then we have no entry for this key.
         if (index < 0) {
@@ -131,7 +157,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
             return ~0;
         }
 
-        int index = ContainerHelpers.binarySearch(mHashes, N, 0);
+        int index = binarySearchHashes(mHashes, N, 0);
 
         // If the hash code wasn't found, then we have no entry for this key.
         if (index < 0) {
@@ -236,34 +262,39 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      * will grow once items are added to it.
      */
     public ArrayMap() {
-        mHashes = ContainerHelpers.EMPTY_INTS;
-        mArray = ContainerHelpers.EMPTY_OBJECTS;
-        mSize = 0;
+        this(0, false);
     }
 
     /**
      * Create a new ArrayMap with a given initial capacity.
      */
     public ArrayMap(int capacity) {
-        if (capacity == 0) {
-            mHashes = ContainerHelpers.EMPTY_INTS;
-            mArray = ContainerHelpers.EMPTY_OBJECTS;
+        this(capacity, false);
+    }
+
+    /** {@hide} */
+    public ArrayMap(int capacity, boolean identityHashCode) {
+        mIdentityHashCode = identityHashCode;
+
+        // If this is immutable, use the sentinal EMPTY_IMMUTABLE_INTS
+        // instance instead of the usual EmptyArray.INT. The reference
+        // is checked later to see if the array is allowed to grow.
+        if (capacity < 0) {
+            mHashes = EMPTY_IMMUTABLE_INTS;
+            mArray = EmptyArray.OBJECT;
+        } else if (capacity == 0) {
+            mHashes = EmptyArray.INT;
+            mArray = EmptyArray.OBJECT;
         } else {
             allocArrays(capacity);
         }
         mSize = 0;
     }
 
-    private ArrayMap(boolean immutable) {
-        mHashes = EMPTY_IMMUTABLE_INTS;
-        mArray = ContainerHelpers.EMPTY_OBJECTS;
-        mSize = 0;
-    }
-
     /**
      * Create a new ArrayMap with the mappings from the given ArrayMap.
      */
-    public ArrayMap(ArrayMap map) {
+    public ArrayMap(ArrayMap<K, V> map) {
         this();
         if (map != null) {
             putAll(map);
@@ -276,10 +307,16 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     @Override
     public void clear() {
         if (mSize > 0) {
-            freeArrays(mHashes, mArray, mSize);
-            mHashes = ContainerHelpers.EMPTY_INTS;
-            mArray = ContainerHelpers.EMPTY_OBJECTS;
+            final int[] ohashes = mHashes;
+            final Object[] oarray = mArray;
+            final int osize = mSize;
+            mHashes = EmptyArray.INT;
+            mArray = EmptyArray.OBJECT;
             mSize = 0;
+            freeArrays(ohashes, oarray, osize);
+        }
+        if (CONCURRENT_MODIFICATION_EXCEPTIONS && mSize > 0) {
+            throw new ConcurrentModificationException();
         }
     }
 
@@ -303,15 +340,19 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      * items.
      */
     public void ensureCapacity(int minimumCapacity) {
+        final int osize = mSize;
         if (mHashes.length < minimumCapacity) {
             final int[] ohashes = mHashes;
             final Object[] oarray = mArray;
             allocArrays(minimumCapacity);
             if (mSize > 0) {
-                System.arraycopy(ohashes, 0, mHashes, 0, mSize);
-                System.arraycopy(oarray, 0, mArray, 0, mSize<<1);
+                System.arraycopy(ohashes, 0, mHashes, 0, osize);
+                System.arraycopy(oarray, 0, mArray, 0, osize<<1);
             }
-            freeArrays(ohashes, oarray, mSize);
+            freeArrays(ohashes, oarray, osize);
+        }
+        if (CONCURRENT_MODIFICATION_EXCEPTIONS && mSize != osize) {
+            throw new ConcurrentModificationException();
         }
     }
 
@@ -323,7 +364,18 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      */
     @Override
     public boolean containsKey(Object key) {
-        return key == null ? (indexOfNull() >= 0) : (indexOf(key, key.hashCode()) >= 0);
+        return indexOfKey(key) >= 0;
+    }
+
+    /**
+     * Returns the index of a key in the set.
+     *
+     * @param key The key to search for.
+     * @return Returns the index of the key if it exists, else a negative integer.
+     */
+    public int indexOfKey(Object key) {
+        return key == null ? indexOfNull()
+                : indexOf(key, mIdentityHashCode ? System.identityHashCode(key) : key.hashCode());
     }
 
     int indexOfValue(Object value) {
@@ -365,7 +417,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      */
     @Override
     public V get(Object key) {
-        final int index = key == null ? indexOfNull() : indexOf(key, key.hashCode());
+        final int index = indexOfKey(key);
         return index >= 0 ? (V)mArray[(index<<1)+1] : null;
     }
 
@@ -410,7 +462,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
 
     /**
      * Add a new value to the array map.
-     * @param key The key under which to store the value.  <b>Must not be null.</b>  If
+     * @param key The key under which to store the value.  If
      * this key already exists in the array, its value will be replaced.
      * @param value The value to store for the given key.
      * @return Returns the old value that was stored for the given key, or null if there
@@ -418,13 +470,14 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      */
     @Override
     public V put(K key, V value) {
+        final int osize = mSize;
         final int hash;
         int index;
         if (key == null) {
             hash = 0;
             index = indexOfNull();
         } else {
-            hash = key.hashCode();
+            hash = mIdentityHashCode ? System.identityHashCode(key) : key.hashCode();
             index = indexOf(key, hash);
         }
         if (index >= 0) {
@@ -435,9 +488,9 @@ public final class ArrayMap<K, V> implements Map<K, V> {
         }
 
         index = ~index;
-        if (mSize >= mHashes.length) {
-            final int n = mSize >= (BASE_SIZE*2) ? (mSize+(mSize>>1))
-                    : (mSize >= BASE_SIZE ? (BASE_SIZE*2) : BASE_SIZE);
+        if (osize >= mHashes.length) {
+            final int n = osize >= (BASE_SIZE*2) ? (osize+(osize>>1))
+                    : (osize >= BASE_SIZE ? (BASE_SIZE*2) : BASE_SIZE);
 
             if (DEBUG) Log.d(TAG, "put: grow from " + mHashes.length + " to " + n);
 
@@ -445,22 +498,31 @@ public final class ArrayMap<K, V> implements Map<K, V> {
             final Object[] oarray = mArray;
             allocArrays(n);
 
+            if (CONCURRENT_MODIFICATION_EXCEPTIONS && osize != mSize) {
+                throw new ConcurrentModificationException();
+            }
+
             if (mHashes.length > 0) {
-                if (DEBUG) Log.d(TAG, "put: copy 0-" + mSize + " to 0");
+                if (DEBUG) Log.d(TAG, "put: copy 0-" + osize + " to 0");
                 System.arraycopy(ohashes, 0, mHashes, 0, ohashes.length);
                 System.arraycopy(oarray, 0, mArray, 0, oarray.length);
             }
 
-            freeArrays(ohashes, oarray, mSize);
+            freeArrays(ohashes, oarray, osize);
         }
 
-        if (index < mSize) {
-            if (DEBUG) Log.d(TAG, "put: move " + index + "-" + (mSize-index)
+        if (index < osize) {
+            if (DEBUG) Log.d(TAG, "put: move " + index + "-" + (osize-index)
                     + " to " + (index+1));
-            System.arraycopy(mHashes, index, mHashes, index + 1, mSize - index);
+            System.arraycopy(mHashes, index, mHashes, index + 1, osize - index);
             System.arraycopy(mArray, index << 1, mArray, (index + 1) << 1, (mSize - index) << 1);
         }
 
+        if (CONCURRENT_MODIFICATION_EXCEPTIONS) {
+            if (osize != mSize || index >= mHashes.length) {
+                throw new ConcurrentModificationException();
+            }
+        }
         mHashes[index] = hash;
         mArray[index<<1] = key;
         mArray[(index<<1)+1] = value;
@@ -475,7 +537,8 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      */
     public void append(K key, V value) {
         int index = mSize;
-        final int hash = key == null ? 0 : key.hashCode();
+        final int hash = key == null ? 0
+                : (mIdentityHashCode ? System.identityHashCode(key) : key.hashCode());
         if (index >= mHashes.length) {
             throw new IllegalStateException("Array is full");
         }
@@ -493,6 +556,44 @@ public final class ArrayMap<K, V> implements Map<K, V> {
         index <<= 1;
         mArray[index] = key;
         mArray[index+1] = value;
+    }
+
+    /**
+     * The use of the {@link #append} function can result in invalid array maps, in particular
+     * an array map where the same key appears multiple times.  This function verifies that
+     * the array map is valid, throwing IllegalArgumentException if a problem is found.  The
+     * main use for this method is validating an array map after unpacking from an IPC, to
+     * protect against malicious callers.
+     * @hide
+     */
+    public void validate() {
+        final int N = mSize;
+        if (N <= 1) {
+            // There can't be dups.
+            return;
+        }
+        int basehash = mHashes[0];
+        int basei = 0;
+        for (int i=1; i<N; i++) {
+            int hash = mHashes[i];
+            if (hash != basehash) {
+                basehash = hash;
+                basei = i;
+                continue;
+            }
+            // We are in a run of entries with the same hash code.  Go backwards through
+            // the array to see if any keys are the same.
+            final Object cur = mArray[i<<1];
+            for (int j=i-1; j>=basei; j--) {
+                final Object prev = mArray[j<<1];
+                if (cur == prev) {
+                    throw new IllegalArgumentException("Duplicate key in ArrayMap: " + cur);
+                }
+                if (cur != null && prev != null && cur.equals(prev)) {
+                    throw new IllegalArgumentException("Duplicate key in ArrayMap: " + cur);
+                }
+            }
+        }
     }
 
     /**
@@ -523,7 +624,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      */
     @Override
     public V remove(Object key) {
-        int index = key == null ? indexOfNull() : indexOf(key, key.hashCode());
+        final int index = indexOfKey(key);
         if (index >= 0) {
             return removeAt(index);
         }
@@ -538,19 +639,22 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      */
     public V removeAt(int index) {
         final Object old = mArray[(index << 1) + 1];
-        if (mSize <= 1) {
+        final int osize = mSize;
+        final int nsize;
+        if (osize <= 1) {
             // Now empty.
             if (DEBUG) Log.d(TAG, "remove: shrink from " + mHashes.length + " to 0");
-            freeArrays(mHashes, mArray, mSize);
-            mHashes = ContainerHelpers.EMPTY_INTS;
-            mArray = ContainerHelpers.EMPTY_OBJECTS;
-            mSize = 0;
+            freeArrays(mHashes, mArray, osize);
+            mHashes = EmptyArray.INT;
+            mArray = EmptyArray.OBJECT;
+            nsize = 0;
         } else {
+            nsize = osize - 1;
             if (mHashes.length > (BASE_SIZE*2) && mSize < mHashes.length/3) {
                 // Shrunk enough to reduce size of arrays.  We don't allow it to
                 // shrink smaller than (BASE_SIZE*2) to avoid flapping between
                 // that and BASE_SIZE.
-                final int n = mSize > (BASE_SIZE*2) ? (mSize + (mSize>>1)) : (BASE_SIZE*2);
+                final int n = osize > (BASE_SIZE*2) ? (osize + (osize>>1)) : (BASE_SIZE*2);
 
                 if (DEBUG) Log.d(TAG, "remove: shrink from " + mHashes.length + " to " + n);
 
@@ -558,32 +662,38 @@ public final class ArrayMap<K, V> implements Map<K, V> {
                 final Object[] oarray = mArray;
                 allocArrays(n);
 
-                mSize--;
+                if (CONCURRENT_MODIFICATION_EXCEPTIONS && osize != mSize) {
+                    throw new ConcurrentModificationException();
+                }
+
                 if (index > 0) {
                     if (DEBUG) Log.d(TAG, "remove: copy from 0-" + index + " to 0");
                     System.arraycopy(ohashes, 0, mHashes, 0, index);
                     System.arraycopy(oarray, 0, mArray, 0, index << 1);
                 }
-                if (index < mSize) {
-                    if (DEBUG) Log.d(TAG, "remove: copy from " + (index+1) + "-" + mSize
+                if (index < nsize) {
+                    if (DEBUG) Log.d(TAG, "remove: copy from " + (index+1) + "-" + nsize
                             + " to " + index);
-                    System.arraycopy(ohashes, index + 1, mHashes, index, mSize - index);
+                    System.arraycopy(ohashes, index + 1, mHashes, index, nsize - index);
                     System.arraycopy(oarray, (index + 1) << 1, mArray, index << 1,
-                            (mSize - index) << 1);
+                            (nsize - index) << 1);
                 }
             } else {
-                mSize--;
-                if (index < mSize) {
-                    if (DEBUG) Log.d(TAG, "remove: move " + (index+1) + "-" + mSize
+                if (index < nsize) {
+                    if (DEBUG) Log.d(TAG, "remove: move " + (index+1) + "-" + nsize
                             + " to " + index);
-                    System.arraycopy(mHashes, index + 1, mHashes, index, mSize - index);
+                    System.arraycopy(mHashes, index + 1, mHashes, index, nsize - index);
                     System.arraycopy(mArray, (index + 1) << 1, mArray, index << 1,
-                            (mSize - index) << 1);
+                            (nsize - index) << 1);
                 }
-                mArray[mSize << 1] = null;
-                mArray[(mSize << 1) + 1] = null;
+                mArray[nsize << 1] = null;
+                mArray[(nsize << 1) + 1] = null;
             }
         }
+        if (CONCURRENT_MODIFICATION_EXCEPTIONS && osize != mSize) {
+            throw new ConcurrentModificationException();
+        }
+        mSize = nsize;
         return (V)old;
     }
 
@@ -695,55 +805,53 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     // ------------------------------------------------------------------------
 
     private MapCollections<K, V> getCollection() {
-        @WeakOuter
-        class InteropMapCollections extends MapCollections<K, V> {
-            @Override
-            protected int colGetSize() {
-                return mSize;
-            }
-
-            @Override
-            protected Object colGetEntry(int index, int offset) {
-                return mArray[(index<<1) + offset];
-            }
-
-            @Override
-            protected int colIndexOfKey(Object key) {
-                return key == null ? indexOfNull() : indexOf(key, key.hashCode());
-            }
-
-            @Override
-            protected int colIndexOfValue(Object value) {
-                return indexOfValue(value);
-            }
-
-            @Override
-            protected Map<K, V> colGetMap() {
-                return ArrayMap.this;
-            }
-
-            @Override
-            protected void colPut(K key, V value) {
-                put(key, value);
-            }
-
-            @Override
-            protected V colSetValue(int index, V value) {
-                return setValueAt(index, value);
-            }
-
-            @Override
-            protected void colRemoveAt(int index) {
-                removeAt(index);
-            }
-
-            @Override
-            protected void colClear() {
-                clear();
-            }
-        }
         if (mCollections == null) {
-            mCollections = new InteropMapCollections();
+            mCollections = new MapCollections<K, V>() {
+                @Override
+                protected int colGetSize() {
+                    return mSize;
+                }
+
+                @Override
+                protected Object colGetEntry(int index, int offset) {
+                    return mArray[(index<<1) + offset];
+                }
+
+                @Override
+                protected int colIndexOfKey(Object key) {
+                    return indexOfKey(key);
+                }
+
+                @Override
+                protected int colIndexOfValue(Object value) {
+                    return indexOfValue(value);
+                }
+
+                @Override
+                protected Map<K, V> colGetMap() {
+                    return ArrayMap.this;
+                }
+
+                @Override
+                protected void colPut(K key, V value) {
+                    put(key, value);
+                }
+
+                @Override
+                protected V colSetValue(int index, V value) {
+                    return setValueAt(index, value);
+                }
+
+                @Override
+                protected void colRemoveAt(int index) {
+                    removeAt(index);
+                }
+
+                @Override
+                protected void colClear() {
+                    clear();
+                }
+            };
         }
         return mCollections;
     }
@@ -794,7 +902,8 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      * in the array map.
      *
      * <p><b>Note:</b> this is a very inefficient way to access the array contents, it
-     * requires generating a number of temporary objects.</p>
+     * requires generating a number of temporary objects and allocates additional state
+     * information associated with the container that will remain for the life of the container.</p>
      *
      * <p><b>Note:</b></p> the semantics of this
      * Set are subtly different than that of a {@link java.util.HashMap}: most important,
@@ -812,7 +921,8 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      * in the array map.
      *
      * <p><b>Note:</b> this is a fairly inefficient way to access the array contents, it
-     * requires generating a number of temporary objects.</p>
+     * requires generating a number of temporary objects and allocates additional state
+     * information associated with the container that will remain for the life of the container.</p>
      */
     @Override
     public Set<K> keySet() {
@@ -824,7 +934,8 @@ public final class ArrayMap<K, V> implements Map<K, V> {
      * in the array map.
      *
      * <p><b>Note:</b> this is a fairly inefficient way to access the array contents, it
-     * requires generating a number of temporary objects.</p>
+     * requires generating a number of temporary objects and allocates additional state
+     * information associated with the container that will remain for the life of the container.</p>
      */
     @Override
     public Collection<V> values() {

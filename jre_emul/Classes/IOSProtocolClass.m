@@ -25,20 +25,25 @@
 
 @interface IOSProtocolClass () {
   Protocol *protocol_;
-  _Atomic(IOSObjectArray *) interfaces_;
+  IOSObjectArray* interfaces_;
 }
 @end
 
 @implementation IOSProtocolClass
 
 static Class GetBackingClass(Protocol *protocol) {
-  return objc_lookUpClass(protocol_getName(protocol));
+  const char * n1 = protocol_getName(protocol);
+  Class c1 = objc_lookUpClass(n1);
+  return c1;
 }
 
 @synthesize objcProtocol = protocol_;
 
-- (instancetype)initWithProtocol:(Protocol *)protocol {
-  if ((self = [super initWithMetadata:JreFindMetadata(GetBackingClass(protocol))])) {
+- (instancetype)initWithProtocol:(Protocol *)protocol
+                        metadata:(const J2ObjcClassInfo *)metadata
+                            name:(NSString *)clsName
+                   simpleNamePos:(int)simpleNamePos {
+  if ((self = [super initWithMetadata:metadata name:clsName simpleNamePos:simpleNamePos])) {
     protocol_ = RETAIN_(protocol);
   }
   return self;
@@ -69,16 +74,6 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   return [NSString stringWithFormat:@"interface %@", [self getName]];
 }
 
-- (NSString *)getName {
-  NSString *name = JreClassQualifiedName([self getMetadata]);
-  return name ? name : NSStringFromProtocol(protocol_);
-}
-
-- (NSString *)getSimpleName {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
-  return metadata ? JreClassTypeName(metadata) : NSStringFromProtocol(protocol_);
-}
-
 - (NSString *)objcName {
   return NSStringFromProtocol(protocol_);
 }
@@ -95,7 +90,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (int)getModifiers {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = self->metadata_;
   if (metadata) {
     return metadata->modifiers
         & (JavaLangReflectModifier_INTERFACE | JavaLangReflectModifier_interfaceModifiers());
@@ -113,19 +108,19 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = __c11_atomic_load(&interfaces_, __ATOMIC_ACQUIRE);
+    IOSObjectArray *result = interfaces_;
   if (!result) {
     @synchronized(self) {
-      result = __c11_atomic_load(&interfaces_, __ATOMIC_RELAXED);
+            result = interfaces_;
       if (!result) {
         unsigned int count;
-        Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
-        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, false);
-        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
+        __unsafe_unretained Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
+                result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, false);
+                interfaces_ = result;
         free(protocolList);
       }
     }
-  }
+    }
   return result;
 }
 

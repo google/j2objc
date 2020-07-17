@@ -22,7 +22,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DebugUtils : NSObject {
+@interface DebugUtils : JavaLangObject {
 }
 
 +(void)logStack:(NSUInteger)nFrames;

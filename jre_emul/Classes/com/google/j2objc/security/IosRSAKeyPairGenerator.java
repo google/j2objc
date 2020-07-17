@@ -69,9 +69,9 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     SecKeyRef publicKeyRef = NULL;
     SecKeyRef privateKeyRef = NULL;
     SecKeyGeneratePair((CFDictionaryRef)keyPairAttr, &publicKeyRef, &privateKeyRef);
-    [privateKeyAttr release];
-    [publicKeyAttr release];
-    [keyPairAttr release];
+    RELEASE_(privateKeyAttr);
+    RELEASE_(publicKeyAttr);
+    RELEASE_(keyPairAttr);
 
     ComGoogleJ2objcSecurityIosRSAKey_IosRSAPublicKey *publicKey =
         [[ComGoogleJ2objcSecurityIosRSAKey_IosRSAPublicKey alloc]
@@ -83,8 +83,8 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
         AUTORELEASE([[JavaSecurityKeyPair alloc] initWithJavaSecurityPublicKey:publicKey
                                                     withJavaSecurityPrivateKey:privateKey]);
 
-    [publicKey release];
-    [privateKey release];
+    RELEASE_(publicKey);
+    RELEASE_(privateKey);
     return keyPair;
   ]-*/;
 
@@ -96,7 +96,7 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     NSMutableDictionary *query = [NSMutableDictionary dictionary];
     query[(id)kSecClass] = (id)kSecClassKey;
     query[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
-    query[(id)kSecAttrKeyClass] = (id)keyClass;
+    query[(id)kSecAttrKeyClass] = (__bridge id)keyClass;
     query[(id)kSecAttrApplicationTag] = tagBytes;
     OSStatus status = SecItemDelete((CFDictionaryRef) query);
     if (status != errSecSuccess && status != errSecItemNotFound) {

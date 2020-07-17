@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="libcore-harmony-src-test"/>
+	<classpathentry kind="src" path="android-platform-libcore-luni"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC+ARGC annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC+ARGC translator"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

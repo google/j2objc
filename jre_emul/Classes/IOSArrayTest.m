@@ -75,7 +75,7 @@
 - (void)testBooleanArrayCopy {
   const jboolean *bools = (jboolean[]){ TRUE, FALSE, TRUE, FALSE };
   IOSBooleanArray *a1 = [IOSBooleanArray arrayWithBooleans:bools count:4];
-  IOSBooleanArray *a2 = [[a1 copy] autorelease];
+  IOSBooleanArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 booleanAtIndex:i], [a2 booleanAtIndex:i],
@@ -86,7 +86,7 @@
 - (void)testByteArrayCopy {
   const jbyte *bytes = (jbyte[]){ 1, 2, 3, 4 };
   IOSByteArray *a1 = [IOSByteArray arrayWithBytes:bytes count:4];
-  IOSByteArray *a2 = [[a1 copy] autorelease];
+  IOSByteArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 byteAtIndex:i], [a2 byteAtIndex:i],
@@ -97,7 +97,7 @@
 - (void)testCharArrayCopy {
   const jchar *chars = (jchar[]){ 'a', 'b', 'c', 'd' };
   IOSCharArray *a1 = [IOSCharArray arrayWithChars:chars count:4];
-  IOSCharArray *a2 = [[a1 copy] autorelease];
+  IOSCharArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 charAtIndex:i], [a2 charAtIndex:i],
@@ -108,7 +108,7 @@
 - (void)testDoubleArrayCopy {
   const jdouble *doubles = (jdouble[]){ 1.1, 2.2, 3.3, 4.4 };
   IOSDoubleArray *a1 = [IOSDoubleArray arrayWithDoubles:doubles count:4];
-  IOSDoubleArray *a2 = [[a1 copy] autorelease];
+  IOSDoubleArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 doubleAtIndex:i], [a2 doubleAtIndex:i],
@@ -119,7 +119,7 @@
 - (void)testFloatArrayCopy {
   const float *floats = (float[]){ 1.1f, 2.2f, 3.3f, 4.4f };
   IOSFloatArray *a1 = [IOSFloatArray arrayWithFloats:floats count:4];
-  IOSFloatArray *a2 = [[a1 copy] autorelease];
+  IOSFloatArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 floatAtIndex:i], [a2 floatAtIndex:i],
@@ -130,7 +130,7 @@
 - (void)testIntArrayCopy {
   const int *ints = (int[]){ 1, 2, 3, 4 };
   IOSIntArray *a1 = [IOSIntArray arrayWithInts:ints count:4];
-  IOSIntArray *a2 = [[a1 copy] autorelease];
+  IOSIntArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 intAtIndex:i], [a2 intAtIndex:i],
@@ -141,7 +141,7 @@
 - (void)testLongArrayCopy {
   const jlong *longs = (jlong[]){ 1, 2, 3, 4 };
   IOSLongArray *a1 = [IOSLongArray arrayWithLongs:longs count:4];
-  IOSLongArray *a2 = [[a1 copy] autorelease];
+  IOSLongArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 longAtIndex:i], [a2 longAtIndex:i],
@@ -152,7 +152,7 @@
 - (void)testShortArrayCopy {
   const jshort *shorts = (jshort[]){ 1, 2, 3, 4 };
   IOSShortArray *a1 = [IOSShortArray arrayWithShorts:shorts count:4];
-  IOSShortArray *a2 = [[a1 copy] autorelease];
+  IOSShortArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");
   for (jint i = 0; i < 4; i++) {
     XCTAssertEqual([a1 shortAtIndex:i], [a2 shortAtIndex:i],

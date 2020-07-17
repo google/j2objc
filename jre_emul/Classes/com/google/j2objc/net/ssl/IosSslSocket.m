@@ -190,11 +190,10 @@ static NSDictionary *protocolMapping;
 
 @implementation ComGoogleJ2objcNetSslIosSslSocket
 
-+ (void)initialize {
-  if (self != [ComGoogleJ2objcNetSslIosSslSocket class]) {
-    return;
-  }
-  NSMutableDictionary *temp = [[[NSMutableDictionary alloc] init] autorelease];
+static void ComGoogleJ2objcNetSslIosSslSocket__clinit__() {
+  JavaxNetSslSSLSocket_initialize();
+
+  NSMutableDictionary *temp = AUTORELEASE([[NSMutableDictionary alloc] init]);
   NSString *key;
   key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_DEFAULT() description];
   temp[key] = @(kTLSProtocol1);
@@ -207,6 +206,11 @@ static NSDictionary *protocolMapping;
   key = [ComGoogleJ2objcSecurityIosSecurityProvider_SslProtocol_get_TLS_V12() description];
   temp[key] = @(kTLSProtocol12);
   protocolMapping = [[NSDictionary alloc] initWithDictionary:temp];
+}
+
++ (void)initialize {
+  [super initialize];
+  ComGoogleJ2objcNetSslIosSslSocket_initialize();
 }
 
 - (JavaIoInputStream *)plainInputStream {
@@ -223,10 +227,12 @@ static NSDictionary *protocolMapping;
 
 - (void)dealloc {
   tearDownContext(self);
+#if !__has_feature(objc_arc)
   [_sslInputStream release];
   [_sslOutputStream release];
   [_sslException release];
   [super dealloc];
+#endif
 }
 
 #pragma mark JavaNetSocket methods
@@ -347,7 +353,7 @@ static NSDictionary *protocolMapping;
 
 static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t *dataLength) {
   @autoreleasepool {
-    ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
+    ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) (__bridge id) connection;
     IOSByteArray *array = [IOSByteArray arrayWithLength:*dataLength];
     jint processed;
     @try {
@@ -375,7 +381,7 @@ static OSStatus SslWriteCallback(SSLConnectionRef connection,
                                  const void *data,
                                  size_t *dataLength) {
   @autoreleasepool {
-    ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) connection;
+    ComGoogleJ2objcNetSslIosSslSocket *socket = (ComGoogleJ2objcNetSslIosSslSocket *) (__bridge id)connection;
     IOSByteArray *array = [IOSByteArray arrayWithBytes:(const jbyte *)data count:*dataLength];
     @try {
       [[socket plainOutputStream] writeWithByteArray:array];
@@ -404,7 +410,7 @@ static void init(ComGoogleJ2objcNetSslIosSslSocket *self) {
 static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
   self->_sslContext = SSLCreateContext(nil, kSSLClientSide, kSSLStreamType);
   checkStatus(SSLSetIOFuncs(self->_sslContext, SslReadCallback, SslWriteCallback));
-  checkStatus(SSLSetConnection(self->_sslContext, self));
+  checkStatus(SSLSetConnection(self->_sslContext, (__bridge void*)self));
   NSString *hostName = [self getHostname];
   checkStatus(SSLSetPeerDomainName(self->_sslContext, [hostName UTF8String], [hostName length]));
   SSLProtocol protocol = [protocolMapping[[self->enabledProtocols objectAtIndex:0]] intValue];
@@ -533,11 +539,13 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 @implementation WrapperSocket
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
   [underlyingSocket release];
   [hostname release];
   [super dealloc];
 }
+#endif
 
 #pragma mark ComGoogleJ2objcNetSslIosSslSocket methods
 
@@ -756,6 +764,8 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(WrapperSocket)
+
 // public IosSslSocket(Socket s, String host, int port, boolean autoClose)
 void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
     WrapperSocket *self, JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) {
@@ -782,6 +792,7 @@ create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_with
                      socket, host, port, autoClose)
 }
 
+J2OBJC_CLASS_INITIALIZE_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
 
 #pragma clang diagnostic pop

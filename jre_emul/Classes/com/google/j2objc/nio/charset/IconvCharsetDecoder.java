@@ -163,8 +163,8 @@ public class IconvCharsetDecoder extends CharsetDecoder {
       }
     }
 
-    [inArray release];
-    [outArray release];
+    RELEASE_(inArray);
+    RELEASE_(outArray);
     return result;
   ]-*/;
 

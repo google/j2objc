@@ -22,16 +22,16 @@
 
 // Defines a string builder struct so that J2ObjC string concatenation does not
 // need to allocate a new ObjC string builder object.
-typedef struct JreStringBuilder {
-  jchar *buffer_;
-  jint bufferSize_;
-  jint count_;
-} JreStringBuilder;
 
-@interface JavaLangAbstractStringBuilder : NSObject < JavaLangAppendable, JavaLangCharSequence > {
+@interface JavaLangAbstractStringBuilder : JavaLangObject < JavaLangAppendable, JavaLangCharSequence > {
  @package
-  JreStringBuilder delegate_;
+    jchar *buffer_;
+    jint bufferSize_;
+    jint count_;
+  //JreStringBuilder delegate_;
 }
+
+typedef JavaLangAbstractStringBuilder JreStringBuilder;
 
 - (IOSCharArray *)getValue;
 
@@ -92,6 +92,8 @@ typedef struct JreStringBuilder {
                           withInt:(jint)codePointOffset;
 
 @end
+
+J2OBJC_STATIC_INIT(JavaLangAbstractStringBuilder)
 
 CF_EXTERN_C_BEGIN
 

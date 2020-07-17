@@ -37,7 +37,7 @@
 @interface JavaLangReflectMethod : JavaLangReflectExecutable
 
 + (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
-                                metadata:(const J2ObjcMethodInfo *)metadata;
+                                metadata:(const J2ObjcMethodInfo *)metadata NS_RETURNS_RETAINED;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
@@ -75,7 +75,7 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectMethod)
+J2OBJC_STATIC_INIT(JavaLangReflectMethod)
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectMethod)
 

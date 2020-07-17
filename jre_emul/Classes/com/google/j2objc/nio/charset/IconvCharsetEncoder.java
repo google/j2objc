@@ -131,8 +131,8 @@ public class IconvCharsetEncoder extends CharsetEncoder {
       }
     }
 
-    [inArray release];
-    [outArray release];
+    RELEASE_(inArray);
+    RELEASE_(outArray);
     return result;
   ]-*/;
 

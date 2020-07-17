@@ -452,7 +452,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketConnect(JNIEnv *env, 
     fdObj->descriptor_ = fd;
 
     /* set the remote peer address and port */
-    JreStrongAssign(&plainSocketImpl->address_, iaObj);
+    JreObjectFieldAssign(&plainSocketImpl->address_, iaObj);
     plainSocketImpl->port_ = port;
 
     /*
@@ -521,7 +521,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketBind(JNIEnv *env, job
     }
 
     /* set the address */
-    JreStrongAssign(&plainSocketImpl->address_, iaObj);
+    JreObjectFieldAssign(&plainSocketImpl->address_, iaObj);
 
     /* intialize the local port */
     if (localport == 0) {
@@ -633,6 +633,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
             prevTime = JVM_CurrentTimeMillis(env, 0);
         }
 
+
         /* passing a timeout of 0 to poll will return immediately,
            but in the case of ServerSocket 0 means infinite. */
         if (timeout <= 0) {
@@ -718,7 +719,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
      */
     JavaNetPlainSocketImpl *tempSocket = (JavaNetPlainSocketImpl *)socket;
     tempSocket->fd_->descriptor_ = newfd;
-    JreStrongAssign(&tempSocket->address_, socketAddressObj);
+    JreObjectFieldAssign(&tempSocket->address_, socketAddressObj);
     tempSocket->port_ = port;
     /* also fill up the local port information */
      port = plainSocketImpl->localport_;

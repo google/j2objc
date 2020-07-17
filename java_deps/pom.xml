@@ -225,8 +225,7 @@
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
       <version>0.5.32</version>
-    </dependency>
-    <dependency>
+    </dependency>    <dependency>
       <groupId>org.plumelib</groupId>
       <artifactId>plume-util</artifactId>
       <version>1.0.6</version>

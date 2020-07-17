@@ -81,7 +81,9 @@ extends CharSequence
      * immediately after a \n character, and if the \n
      * that anchors it is deleted, the endpoint is pulled to the
      * next \n that follows in the buffer (or to the end of
-     * the buffer).
+     * the buffer). If a span with SPAN_PARAGRAPH flag is pasted
+     * into another text and the paragraph boundary constraint
+     * is not satisfied, the span is discarded.
      */
     public static final int SPAN_PARAGRAPH =   0x33;
 
@@ -187,12 +189,11 @@ extends CharSequence
     public int getSpanFlags(Object tag);
 
     /**
-     * Return the first offset greater than or equal to <code>start</code>
-     * where a markup object of class <code>type</code> begins or ends,
-     * or <code>limit</code> if there are no starts or ends greater than or
-     * equal to <code>start</code> but less than <code>limit</code>.  Specify
-     * <code>null</code> or Object.class for the type if you want every
-     * transition regardless of type.
+     * Return the first offset greater than <code>start</code> where a markup
+     * object of class <code>type</code> begins or ends, or <code>limit</code>
+     * if there are no starts or ends greater than <code>start</code> but less
+     * than <code>limit</code>. Specify <code>null</code> or Object.class for
+     * the type if you want every transition regardless of type.
      */
     public int nextSpanTransition(int start, int limit, Class type);
 }

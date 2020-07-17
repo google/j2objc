@@ -40,24 +40,12 @@
 @implementation IOSPrimitiveClass
 
 - (instancetype)initWithName:(NSString *)name type:(NSString *)type {
-  if ((self = [super initWithMetadata:&JreEmptyClassInfo])) {
-    name_ = RETAIN_(name);
+  if ((self = [super initWithMetadata:&JreEmptyClassInfo name:name simpleNamePos:0])) {
     type_ = RETAIN_(type);
   }
   return self;
 }
 
-- (NSString *)getName {
-  return name_;
-}
-
-- (NSString *)getSimpleName {
-  return name_;
-}
-
-- (NSString *)getCanonicalName {
-  return name_;
-}
 
 - (NSString *)objcName {
   return name_;

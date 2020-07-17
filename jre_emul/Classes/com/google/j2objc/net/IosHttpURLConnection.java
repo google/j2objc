@@ -587,7 +587,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
                                    delegateQueue:nil];
       NSURLSessionTask *task = [session dataTaskWithRequest:request];
       [task resume];
-      JreStrongAssign(&self->nativeDataTask_, task);
+      JreGenericFieldAssign(&self->nativeDataTask_, task);
       [session finishTasksAndInvalidate];
     }
   ]-*/;
@@ -629,7 +629,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
       // Make errorDataStream an alias to responseBodyStream. Since getInputStream() throws an
       // exception when status code >= HTTP_BAD_REQUEST, it is guaranteed that responseBodyStream
       // can only mean error stream going forward.
-      JreStrongAssign(&self->errorDataStream_, self->responseBodyStream_);
+      JreGenericFieldAssign(&self->errorDataStream_, self->responseBodyStream_);
     }
 
     completionHandler(NSURLSessionResponseAllow);
@@ -726,14 +726,14 @@ didCompleteWithError:(NSError *)error {
 
     // Set nativeDataTask to null.
     @synchronized(nativeDataTaskLock_) {
-      JreStrongAssign(&self->nativeDataTask_, nil);
+      JreGenericFieldAssign(&self->nativeDataTask_, nil);
     }
 
     // Unblock getResponse() and set responseException. This call to notifyAll() is needed because
     // -URLSession:dataTask:didReceiveResponse: may not be called if a non-server error (such as
     // lost connection) occurs.
     @synchronized(getResponseLock_) {
-      JreStrongAssign(&self->responseException_, responseException);
+      JreNativeFieldAssign(&self->responseException_, responseException);
       [self->getResponseLock_ java_notifyAll];
     }
   }
@@ -783,7 +783,7 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
     if (self->instanceFollowRedirects_
         && [response.URL.scheme isEqualToString:request.URL.scheme]) {
       // Workaround for iOS bug (https://forums.developer.apple.com/thread/43818).
-      NSMutableURLRequest *nextRequest = [[request mutableCopy] autorelease];
+      NSMutableURLRequest *nextRequest = AUTORELEASE([request mutableCopy]);
 
       NSString *responseCookies = [response.allHeaderFields objectForKey:@"Set-Cookie"];
       if (responseCookies) {
@@ -801,7 +801,7 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         JavaNetURL *redirectURL = [[JavaNetURL alloc] initWithNSString:[response.URL description]];
         ComGoogleJ2objcNetIosHttpURLConnection_saveResponseCookiesWithJavaNetURL_withJavaUtilMap_(
             redirectURL, headerMap);
-        [redirectURL release];
+        RELEASE_(redirectURL);
       }
       completionHandler(nextRequest);
     } else {
@@ -884,7 +884,7 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
     @synchronized (self->nativeDataTaskLock_) {
       // Safe to do even if self->nativeDataTask_ is already nil.
       [(NSURLSessionDataTask *)self->nativeDataTask_ cancel];
-      JreStrongAssign(&self->nativeDataTask_, nil);
+      JreGenericFieldAssign(&self->nativeDataTask_, nil);
     }
   ]-*/;
 

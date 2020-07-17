@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.CreationReference;
@@ -66,6 +67,9 @@ public class LambdaTypeElementAdder extends UnitTreeVisitor {
   }
 
   private boolean isWeakOuter(FunctionalExpression node) {
+	  if (Options.useGC()) {
+		  return false;
+	  }
     VariableElement var = getAssignedVariable(node);
     return var != null && ElementUtil.hasNamedAnnotation(var, "WeakOuter");
   }

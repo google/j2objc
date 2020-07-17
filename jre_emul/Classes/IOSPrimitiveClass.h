@@ -28,7 +28,6 @@
 // be used with Java reflection routines.  This class is minimal because Java
 // primitive types have/need little runtime support, other than their name.
 @interface IOSPrimitiveClass : IOSClass {
-  NSString *name_;
   NSString *type_;
 }
 

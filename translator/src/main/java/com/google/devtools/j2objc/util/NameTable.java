@@ -23,6 +23,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -42,11 +44,14 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -161,7 +166,7 @@ public class NameTable {
   private final PackagePrefixes prefixMap;
 
   private final ImmutableMap<String, String> classMappings;
-  private final ImmutableMap<String, String> methodMappings;
+  private final /*ARGC** ImmutableMap*/Map<String, String> methodMappings;
 
   public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo, Options options) {
     this.typeUtil = typeUtil;
@@ -232,8 +237,17 @@ public class NameTable {
    */
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
+    if (Options.useGC() && var.getKind() == ElementKind.FIELD) {
+    	/* ARGC **
+    	 * static 변수명과 inner class 이름이 서로 겹치는 문제를 해결하기 위하여
+    	 * 모든 변수와 상수에 '_'를 추가야 한다.
+    	 */
+        // return baseName + '_';
+    }
     if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
       return baseName + '_';
+    }
+    else if (var.getKind() == ElementKind.FIELD) {
     }
     return baseName;
   }
@@ -286,7 +300,7 @@ public class NameTable {
    */
   public static String camelCasePath(String fqn) {
     StringBuilder sb = new StringBuilder();
-    for (String part : fqn.split(Pattern.quote(File.separator))) {
+    for (String part : fqn.split(Pattern.quote("/"/* argc File.separator*/))) {
       sb.append(capitalize(part));
     }
     return sb.toString();
@@ -313,6 +327,9 @@ public class NameTable {
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
       TypeElement elem = bounds.isEmpty()
           ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
+      if (Options.useGC() && elem == null) {
+    	  elem = TypeUtil.NS_OBJECT;
+      }
       assert elem != null;
       if (arrayDimensions == 0 && elem.equals(TypeUtil.NS_OBJECT)) {
         // Special case: Non-array object types become "id".
@@ -528,8 +545,9 @@ public class NameTable {
    * Converts a Java type to an equivalent Objective-C type, returning "id" for an object type.
    */
   public static String getPrimitiveObjCType(TypeMirror type) {
-    return TypeUtil.isVoid(type) ? "void"
+    String res = TypeUtil.isVoid(type) ? "void"
         : type.getKind().isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
+		return res;
   }
 
   /**
@@ -540,6 +558,14 @@ public class NameTable {
     return getObjcTypeInner(type, null);
   }
 
+  public String getObjCParameterType(VariableElement var) {
+	String objcType = ElementUtil.getObjectiveCType(var);
+	if (objcType == null) {
+		objcType = getObjcTypeInner(var.asType(), null);
+	}
+	return objcType;
+  }
+  
   public String getObjCType(VariableElement var) {
     return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var));
   }
@@ -590,18 +616,23 @@ public class NameTable {
   }
 
   private String constructObjcTypeFromBounds(TypeMirror type) {
-    String classType = null;
+	if (type.getKind() == TypeKind.ERROR) {
+	   TypeUtil.resolveUnreachableClass(type);
+	   return "/*" + type + "*/ id";
+	}
+    /* ARGC** String*/TypeElement classType = null;
     List<String> interfaces = new ArrayList<>();
     for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
-      if (bound.getKind().isInterface()) {
+      if (TypeUtil.isPureInterface(bound)) {
         interfaces.add(getFullName(bound));
       } else {
         assert classType == null : "Cannot have multiple class bounds";
-        classType = getFullName(bound);
+        classType = bound;
       }
     }
+
     String protocols = interfaces.isEmpty() ? "" : "<" + Joiner.on(", ").join(interfaces) + ">";
-    return classType == null ? ID_TYPE + protocols : classType + protocols + " *";
+    return classType == null ? ID_TYPE + protocols : getFullName(classType) + protocols + " *";
   }
 
   public static String getNativeEnumName(String typeName) {
@@ -641,7 +672,8 @@ public class NameTable {
 
     TypeElement outerClass = ElementUtil.getDeclaringClass(element);
     if (outerClass != null) {
-      return getFullName(outerClass) + '_' + getTypeSubName(element);
+        String name = getFullName(outerClass) + '_' + getTypeSubName(element);
+        return name;
     }
 
     // Use mapping file entry, if it exists.
@@ -651,10 +683,11 @@ public class NameTable {
     }
 
     // Use camel-cased package+class name.
-    return getPrefix(ElementUtil.getPackage(element)) + getTypeSubName(element);
+    String name = getPrefix(ElementUtil.getPackage(element)) + getTypeSubName(element);
+    return name;
   }
 
-  private String getTypeSubName(TypeElement element) {
+  public String getTypeSubName(TypeElement element) {
     if (ElementUtil.isLambda(element)) {
       return ElementUtil.getName(element);
     } else if (ElementUtil.isLocal(element)) {

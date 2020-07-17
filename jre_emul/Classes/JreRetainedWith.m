@@ -21,6 +21,7 @@
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"
 
+#ifndef J2OBJC_USE_GC
 // Associate the return reference so that it can be artificially weakened when
 // the child's retain count is 1.
 static char returnRefKey;
@@ -42,7 +43,7 @@ static id RetainedWithRetain(id self, SEL _cmd) {
 static void RetainedWithRelease(id self, SEL _cmd) {
   @synchronized (self) {
     if ([self retainCount] == 2) {
-      [objc_getAssociatedObject(self, &returnRefKey) autorelease];
+      AUTORELEASE(objc_getAssociatedObject(self, &returnRefKey));
     }
     Class superCls = objc_getAssociatedObject(self, &superClsKey);
     IMP superRelease = class_getMethodImplementation(superCls, @selector(release));
@@ -73,7 +74,8 @@ static void *CreateSubclass(void *clsPtr) {
   return subclass;
 }
 
-static FastPointerLookup_t subclassLookup = FAST_POINTER_LOOKUP_INIT(&CreateSubclass);
+static FastPointerLookup_t subclassLookup;
+static int subclassLookup_d = FastPointerLookupInit(&subclassLookup, &CreateSubclass);
 
 // Swizzle the class of the child and make necessary associations.
 static void ApplyRetainedWithSubclass(id parent, id child) {
@@ -137,7 +139,7 @@ void JreRetainedWithInitialize(id parent, id value) {
   if (returnRefs > 0) {
     // Make all but one of the return refs weak.
     while (returnRefs-- > 1) {
-      [parent release];
+      RELEASE_(parent);
     }
     ApplyRetainedWithSubclass(parent, value);
   }
@@ -167,3 +169,4 @@ void JreRetainedWithHandlePreviousValue(id parent, id value) {
     }
   }
 }
+#endif

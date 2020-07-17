@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.types.Import;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +43,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   @Override
   protected void generateFileHeader() {
     println("#include \"J2ObjC_header.h\"");
+    if (options.isIOSTest()) {
+    	println("#include \"IOSTest.h\"");
+    }
     newline();
     printf("#pragma push_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
     printf("#ifdef RESTRICT_%s\n", varPrefix);
@@ -61,8 +65,8 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     Collection<String> nativeBlocks = getGenerationUnit().getNativeHeaderBlocks();
     if (!nativeBlocks.isEmpty()) {
       // Use a normal header guard for OCNI code outside of a type declaration.
-      printf("\n#ifndef %s_H\n", varPrefix);
-      printf("#define %s_H\n", varPrefix);
+	  printf("\n#ifndef %s_H\n", varPrefix);
+	  printf("#define %s_H\n", varPrefix);
       for (String code : nativeBlocks) {
         print(code);
       }
@@ -82,7 +86,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     Set<Import> includes = type.getHeaderIncludes();
     List<Import> localImports = Lists.newArrayList();
     for (Import imp : includes) {
-      if (isLocalType(imp.getTypeName())) {
+      if (isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
         localImports.add(imp);
       }
     }
@@ -121,7 +125,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     for (Import imp : type.getHeaderIncludes()) {
       // Verify this import isn't declared in this source file.
-      if (isLocalType(imp.getTypeName())) {
+      if (isLocalType(imp.getTypeName()) || ARGC.isExcludedClass(imp.getImportFileName())) {
         continue;
       }
       newline();

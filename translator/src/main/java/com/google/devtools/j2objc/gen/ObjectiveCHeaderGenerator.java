@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -34,7 +35,7 @@ import java.util.Set;
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
-  private final Options options;
+  protected final Options options;
 
   // The prefix to use for preprocessor variable names. Derived from the path of
   // the generated file. For example if "my/pkg/Foo.h" is being generated the
@@ -59,7 +60,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return options.getLanguage().headerSuffix();
   }
 
-  public final void generate() {
+  public void generate() {
     println(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
@@ -75,7 +76,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
 
     generateFileFooter();
-
     if (getGenerationUnit().options().emitKytheMappings()) {
       generateTypeMappings();
     }
@@ -99,6 +99,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     Set<Import> forwardDeclarations = Sets.newHashSet();
 
     includeFiles.add("J2ObjC_header.h");
+    if (options.isIOSTest()) {
+        includeFiles.add("IOSTest.h");
+    }
 
     for (GeneratedType type : getOrderedTypes()) {
       String name = type.getTypeName();
@@ -106,13 +109,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         seenTypes.add(name);
       }
       for (Import imp : type.getHeaderIncludes()) {
-        if (!isLocalType(imp.getTypeName())) {
+        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
           includeFiles.add(imp.getImportFileName());
         }
       }
       for (Import imp : type.getHeaderForwardDeclarations()) {
         // Filter out any declarations that are resolved by an include.
         if (!seenTypes.contains(imp.getTypeName())
+        		 && !ARGC.isExcludedClass(imp.getImportFileName())
             && !includeFiles.contains(imp.getImportFileName())) {
           forwardDeclarations.add(imp);
         }

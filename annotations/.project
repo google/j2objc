@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>annotations</name>
+	<name>J2ObjC+ARGC annotations</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>rtgc</name>
+			<type>2</type>
+			<location>/Users/zeedh/Documents/rtgc/src</location>
+		</link>
+	</linkedResources>
 </projectDescription>

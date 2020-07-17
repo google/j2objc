@@ -1291,6 +1291,10 @@ class SystemClassLoader extends ClassLoader {
 
   @Override
   protected native Class<?> findClass(String name) throws ClassNotFoundException;
+  /****-[ 2.0.5 legacy imple
+    (void)nil_chk(name);
+    return [IOSClass forName:name initialize:YES classLoader:self];
+  ]-*/;
 
   @Override
   public Package getPackage(String name) {
@@ -1300,7 +1304,7 @@ class SystemClassLoader extends ClassLoader {
       }
       return pkg;
   }
-
+  
   @Override
   protected native URL findResource(String name);
 

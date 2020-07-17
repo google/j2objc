@@ -67,6 +67,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    // ARGC does not need Field Adjustment.
+    if (options.useGC()) return;
+
     TypeElement type = node.getTypeElement();
     VariableElement originalVar =
         GeneratedVariableElement.newParameter("original", type.asType(), null);
@@ -109,7 +112,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
       boolean isWeak = ElementUtil.isWeakReference(var);
       boolean isVolatile = ElementUtil.isVolatile(var);
       if (isVolatile) {
-        adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
+    	adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
       } else if (isWeak) {
         adjustments.add(createReleaseStatement(var));
       }
@@ -118,7 +121,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
   }
 
   private Statement createReleaseStatement(VariableElement var) {
-    if (options.useARC()) {
+    if (!options.useReferenceCounting()) {
       TypeMirror voidType = typeUtil.getVoid();
       FunctionElement element = new FunctionElement("JreRelease", voidType, null)
           .addParameters(TypeUtil.ID_TYPE);

@@ -808,7 +808,7 @@ public class LinkedHashMap<K,V>
         state->mutationsPtr = (unsigned long *) &modCount_;
         entry = head_;
       } else {
-        entry = (JavaUtilLinkedHashMap_LinkedHashMapEntry *) state->extra[0];
+        entry = (__bridge __unsafe_unretained JavaUtilLinkedHashMap_LinkedHashMapEntry *)(void*)state->extra[0];
       }
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;

@@ -64,8 +64,8 @@ public class GenericArrayTypeTest extends GenericReflectionTestsBase {
         GenericArrayType arrayType = (GenericArrayType) genericType;
         Type componentType = arrayType.getGenericComponentType();
         assertInstanceOf(ParameterizedType.class, componentType);
-        ParameterizedType parameterizedType = (ParameterizedType) componentType;
-        assertEquals(clazz, parameterizedType.getRawType());
-        assertEquals(clazz.getTypeParameters()[0], parameterizedType.getActualTypeArguments()[0]);
+        ParameterizedType parameteriezdType = (ParameterizedType) componentType;
+        assertEquals(clazz, parameteriezdType.getRawType());
+        assertEquals(clazz.getTypeParameters()[0], parameteriezdType.getActualTypeArguments()[0]);
     }
 }

@@ -34,7 +34,9 @@
 @implementation IOSArrayClass
 
 - (instancetype)initWithComponentType:(IOSClass *)type {
-  if ((self = [super initWithMetadata:&JreEmptyClassInfo])) {
+  NSString * name = [NSString stringWithFormat:@"[%@", [type binaryName]];
+  
+  if ((self = [super initWithMetadata:&JreEmptyClassInfo name:name simpleNamePos:1])) {
     componentType_ = RETAIN_(type);
   }
   return self;
@@ -52,6 +54,10 @@
   return NSObject_class_();
 }
 
+- (id)getPackage {
+  return NULL;
+}
+
 - (jboolean)isInstance:(id)object {
   IOSClass *objClass = [object java_getClass];
   return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
@@ -61,16 +67,8 @@
   return [cls isArray] && [componentType_ isAssignableFrom:[cls getComponentType]];
 }
 
-- (NSString *)getName {
-  return [self binaryName];
-}
-
-- (NSString *)getSimpleName {
-  return [[[self getComponentType] getSimpleName] stringByAppendingString:@"[]"];
-}
-
 - (NSString *)binaryName {
-  return [NSString stringWithFormat:@"[%@", [componentType_ binaryName]];
+  return name_;
 }
 
 - (NSString *)objcName {
@@ -80,6 +78,11 @@
 - (void)appendMetadataName:(NSMutableString *)str {
   [str appendString:@"["];
   [componentType_ appendMetadataName:str];
+}
+
+- (NSString *)getSimpleName {
+  NSString * simpleName = [[super getSimpleName] stringByAppendingString:@"[]"];
+  return simpleName;
 }
 
 - (NSString *)getCanonicalName {

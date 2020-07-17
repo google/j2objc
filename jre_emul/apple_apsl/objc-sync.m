@@ -87,7 +87,7 @@ done:
 
 typedef struct SyncData {
     struct SyncData* nextData;
-    id               object;
+    __unsafe_unretained id object;
     int              threadCount;  // number of THREADS using this block
     pthread_mutex_t  mutex;
     pthread_cond_t   conditionVariable;
@@ -176,7 +176,7 @@ static SyncCache *fetch_cache(BOOL create)
 }
 
 
-static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
+static SyncCacheItem* id2SyncCacheItem(id object, enum usage why) J2OBJC_METHOD_ATTR
 {
     J2OBJC_FAST_LOCK_TYPE *lockp = &LOCK_FOR_OBJ(object);
     SyncData **listp = &LIST_FOR_OBJ(object);
@@ -297,7 +297,7 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
 }
 
 
-static SyncData* id2data(id object, enum usage why)
+static SyncData* id2data(id object, enum usage why) J2OBJC_METHOD_ATTR
 {
     SyncCacheItem *item = id2SyncCacheItem(object, why);
     return item ? item->data : NULL;
@@ -314,7 +314,7 @@ int objc_sync_nil(void)
 // Begin synchronizing on 'obj'.
 // Allocates recursive pthread_mutex associated with 'obj' if needed.
 // Returns OBJC_SYNC_SUCCESS once lock is acquired.
-int objc_sync_enter(id obj)
+int objc_sync_enter(id obj) J2OBJC_METHOD_ATTR
 {
     int result = OBJC_SYNC_SUCCESS;
 
@@ -350,7 +350,7 @@ done:
 
 // End synchronizing on 'obj'.
 // Returns OBJC_SYNC_SUCCESS or OBJC_SYNC_NOT_OWNING_THREAD_ERROR
-int objc_sync_exit(id obj)
+int objc_sync_exit(id obj) J2OBJC_METHOD_ATTR
 {
     int result = OBJC_SYNC_SUCCESS;
 
@@ -374,7 +374,7 @@ done:
 
 // Temporarily release lock on 'obj' and wait for another thread to notify on 'obj'
 // Return OBJC_SYNC_SUCCESS, OBJC_SYNC_NOT_OWNING_THREAD_ERROR, OBJC_SYNC_TIMED_OUT, OBJC_SYNC_INTERRUPTED
-int objc_sync_wait(id obj, long long milliSecondsMaxWait)
+int objc_sync_wait(id obj, long long milliSecondsMaxWait) J2OBJC_METHOD_ATTR
 {
     int result = OBJC_SYNC_SUCCESS;
 
@@ -419,8 +419,8 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
 
 done:
     if (javaThread != NULL) {
-      JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_RUNNABLE);
-    }
+            JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_RUNNABLE);
+        }
 
     if ( result == EPERM )
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
@@ -438,7 +438,7 @@ done:
 
 // Wake up another thread waiting on 'obj'
 // Return OBJC_SYNC_SUCCESS, OBJC_SYNC_NOT_OWNING_THREAD_ERROR
-int objc_sync_notify(id obj)
+int objc_sync_notify(id obj) J2OBJC_METHOD_ATTR
 {
     int result = OBJC_SYNC_SUCCESS;
 
@@ -460,7 +460,7 @@ done:
 
 // Wake up all threads waiting on 'obj'
 // Return OBJC_SYNC_SUCCESS, OBJC_SYNC_NOT_OWNING_THREAD_ERROR
-int objc_sync_notifyAll(id obj)
+int objc_sync_notifyAll(id obj) J2OBJC_METHOD_ATTR
 {
     int result = OBJC_SYNC_SUCCESS;
 
@@ -481,7 +481,7 @@ done:
 
 
 // Returns true if an object has a pthread_mutux allocated for it on this thread.
-BOOL j2objc_sync_holds_lock(id obj) {
+BOOL j2objc_sync_holds_lock(id obj) J2OBJC_METHOD_ATTR {
   (void)nil_chk(obj);
   SyncData* data = id2data(obj, TEST);
   return data ? YES : NO;

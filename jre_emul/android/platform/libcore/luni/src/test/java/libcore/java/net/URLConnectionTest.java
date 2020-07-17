@@ -121,7 +121,7 @@ public final class URLConnectionTest extends AbstractResourceLeakageDetectorTest
       NSURLCache *newCache =
           [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
       [NSURLCache setSharedURLCache:newCache];
-      [newCache release];
+      RELEASE_(newCache);
       return oldCache;
     ]-*/;
 

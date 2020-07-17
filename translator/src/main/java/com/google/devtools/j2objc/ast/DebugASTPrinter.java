@@ -1020,7 +1020,7 @@ public class DebugASTPrinter extends TreeVisitor {
     }
     printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
-    sb.print(node.isInterface() ? "interface " : "class ");
+    sb.print(node.isPureInterface() ? "interface " : "class ");
     node.getName().accept(this);
     printTypeParameters(node.getTypeElement().getTypeParameters());
     sb.print(' ');
@@ -1033,7 +1033,7 @@ public class DebugASTPrinter extends TreeVisitor {
     }
     List<? extends TypeMirror> superInterfaceTypeMirrors = node.getSuperInterfaceTypeMirrors();
     if (!superInterfaceTypeMirrors.isEmpty()) {
-      sb.print(node.isInterface() ? "extends " : "implements "); //$NON-NLS-2$
+      sb.print(node.isPureInterface() ? "extends " : "implements "); //$NON-NLS-2$
       for (Iterator<? extends TypeMirror> it = node.getSuperInterfaceTypeMirrors().iterator();
           it.hasNext(); ) {
         sb.print(it.next().toString());

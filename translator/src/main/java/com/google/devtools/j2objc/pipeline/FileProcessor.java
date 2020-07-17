@@ -17,13 +17,17 @@ package com.google.devtools.j2objc.pipeline;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.TypeUtil;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -109,7 +113,7 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-    return file.getAbsolutePath().endsWith(".java");
+		  return file.getAbsolutePath().endsWith(".java");
   }
 
   private void processBatch() {
@@ -121,8 +125,13 @@ abstract class FileProcessor {
     final Map<String, ProcessingContext> inputMap = new CanonicalPathMap(batchInputs.size());
     for (ProcessingContext input : batchInputs) {
       String path = input.getFile().getAbsolutePath();
-      paths.add(path);
-      inputMap.put(path, input);
+      if (paths.indexOf(path) < 0) {
+    	  paths.add(path);
+    	  inputMap.put(path, input);
+      }
+      else {
+    	  System.out.println("warning! duplicated path: " + path);
+      }
     }
 
     Parser.Handler handler = new Parser.Handler() {
@@ -147,11 +156,18 @@ abstract class FileProcessor {
   private void processCompiledSource(ProcessingContext input,
       com.google.devtools.j2objc.ast.CompilationUnit unit) {
     InputFile file = input.getFile();
+    if (ARGC.isExcludedClass(file.getUnitName())) {
+    	throw new RuntimeException("exclude " + file.getUnitName());
+    }
+    
     if (closureQueue != null) {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
+    
     try {
+      TypeUtil.setUnreachableClasses(unit);
       processConvertedTree(input, unit);
+      TypeUtil.setUnreachableClasses(null);
       outputs.add(input);
     } catch (Throwable t) {
       // Report any uncaught exceptions.
