@@ -659,7 +659,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
             return;
         }
 
-        newfd = (int) NET_Accept(fd, (struct sockaddr *)&him, /*(socklen_t *)*/&len);
+        newfd = (int) NET_Accept(fd, (struct sockaddr *)&him, (socklen_t *)&len);
 
         /* connection accepted */
         if (newfd >= 0) {

@@ -24,6 +24,20 @@ import junit.framework.TestCase;
  * @author Michał Pociecha-Łoś
  */
 public class HashMapTest extends TestCase {
+
+  private static boolean isGarbageCollectionEnabled;
+
+  static {
+    detectGarbageCollectionMode();
+  }
+
+  private native static void detectGarbageCollectionMode()
+  /*-[
+    #ifdef J2OBJC_USE_GC
+       JavaUtilHashMapTest_isGarbageCollectionEnabled = TRUE;
+    #endif
+  ]-*/;
+
   public void testFinalize() {
     assertNoLeaks(
         () -> {
@@ -79,6 +93,10 @@ public class HashMapTest extends TestCase {
   private void assertNoLeaks(Runnable runnable) {
     leakCounter = 0;
     runInAutoreleasedPool(runnable);
+    if (isGarbageCollectionEnabled) {
+      // In GC mode, the deletion of Object that has finalize method is deferred.
+      System.gc();
+    }
     assertEquals("leak detected", 0, leakCounter);
   }
 

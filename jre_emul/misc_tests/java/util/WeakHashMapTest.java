@@ -69,6 +69,7 @@ public class WeakHashMapTest extends TestCase {
       assertEquals("weak map released key/value before autorelease", 1, weakMap.size());
     }
 
+    System.gc();
     // Verify weak reference was cleared.
     assertTrue("weakMap not empty", weakMap.isEmpty());
   }
