@@ -58,6 +58,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   fillArgs(invocation);
   id newInstance;
   @try {
+    ARGC_initStatic(cls);
     if (isFactory) {
       [invocation invokeWithTarget:cls];
       [invocation getReturnValue:&newInstance];
