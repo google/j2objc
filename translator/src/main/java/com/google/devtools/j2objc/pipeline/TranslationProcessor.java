@@ -324,7 +324,6 @@ public class TranslationProcessor extends FileProcessor {
   public static void generateObjectiveCSource(GenerationUnit unit) {
     assert unit.getOutputPath() != null;
     assert unit.isFullyParsed();
-    ARGC.startSourceFileGeneration(unit.getOutputPath());
     
     TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName(), unit.options().timingLevel());
     logger.fine("Generating " + unit.getOutputPath());
@@ -350,7 +349,6 @@ public class TranslationProcessor extends FileProcessor {
     ticker.pop();
     ticker.tick("Source generation");
     ticker.printResults(System.out);
-    ARGC.endSourceFileGeneration();
   }
 
   @Override

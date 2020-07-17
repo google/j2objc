@@ -41,15 +41,10 @@ public class Import implements Comparable<Import> {
   private final String importFileName;
   private final String javaQualifiedName;
   private final boolean isPureInterface;
-  private final boolean /*ARGC*/isNativeEnum; 
 
   private Import(TypeElement type, NameTable nameTable, /*ARGC** Options options*/TranslationEnvironment env) {
   //*/
     this.typeName = nameTable.getFullName(type);
-    if (true/*ARGC*/) {
-    	String s = env.elementUtil().getType(type).toString();
-    	this.isNativeEnum = (env.elementUtil().isEnum(type) || env.elementUtil().isEnumConstant(type)) && ARGC.isPureObjC(env.elementUtil().getType(type));
-    } 
     TypeElement mainType = type;
     while (!ElementUtil.isTopLevel(mainType)) {
     	mainType = ElementUtil.getDeclaringClass(mainType);
@@ -83,11 +78,6 @@ public class Import implements Comparable<Import> {
 
   public boolean isPureInterface() {
     return isPureInterface;
-  }
-
-  // ARGC
-  public boolean isNativeEnum() {
-	  return isNativeEnum;
   }
 
   @Override

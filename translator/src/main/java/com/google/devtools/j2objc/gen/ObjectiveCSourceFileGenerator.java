@@ -138,11 +138,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
     Set<String> forwardStmts = new TreeSet<>();
     for (Import imp : forwardDecls) {
-    	//imp.get
-		if (Options.useGC() && imp.isNativeEnum()) {
-			forwardStmts.add("typedef NS_ENUM(NSUInteger, " + NameTable.getNativeEnumName(imp.getTypeName()) + ");");
-		}
-		else if (!ARGC.isExcludedClass(imp.getImportFileName())){
+		if (!ARGC.isExcludedClass(imp.getImportFileName())){
 			forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isPureInterface()));
 		}
     }

@@ -112,9 +112,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printStaticFieldDeclarations();
       return;
     }
-    if (printNativeEnum() && ARGC.inPureObjCMode()) {
-    	return;
-    };
+    
+    printNativeEnum();
 
     printTypeDocumentation();
     if (options.defaultNonnull()) {
@@ -161,10 +160,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printUnprefixedAlias();
   }
 
-  // argc changed return type: void -> boolean
-  private boolean printNativeEnum() {
+  private void printNativeEnum() {
     if (!(typeNode instanceof EnumDeclaration)) {
-      return false;
+      return;
     }
 
     List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
@@ -187,7 +185,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       unindent();
       print("};\n");
     }
-    return true;
   }
 
   private void printTypeDocumentation() {
@@ -220,7 +217,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (ElementUtil.getQualifiedName(typeElement).equals("java.lang.Enum")) {
       names.remove("NSCopying");
       names.add(0, "NSCopying");
-    } else if (isInterfaceType() && !ARGC.inPureObjCMode()) {
+    } else if (isInterfaceType()) {
       names.add("JavaObject");
     }
     return names;
@@ -393,30 +390,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printStaticInitFunction() {
-	if (ARGC.inPureObjCMode()) {
-		if (hasInitializeMethod()) {
-			System.err.println("Pure Objective-C class can not have CLASS_initialie\n");
-		} 
-		printf("FOUNDATION_EXPORT void %s_initialize(void);\n", typeName);
-		return;
-	}
-	if (options.useGC()) {
-		if (super.needsClassInit()) {
-			printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
-		}
-		else {
-			printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
-		}
+	if (super.needsClassInit()) {
+		printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
 	}
 	else {
-	    if (!super.isInterfaceType()) {
-	    	/**
-	    	 * 상위 Class 가 InitializeMethod를 가진 경우에 반드시 처리.
-	    	 */
-	      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
-	    } else {
-	      printf("\nJ2OBJC_INTERFACE_STATIC_INIT(%s)\n", typeName);
-	    }
+		printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
 	}
   }
 
@@ -453,7 +431,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   protected void printFieldSetters() {
     Iterable<VariableDeclarationFragment> fields =
         Iterables.filter(getInstanceFields(), NEEDS_SETTER);
-    if (Iterables.isEmpty(fields) || ARGC.inPureObjCMode()) {
+    if (Iterables.isEmpty(fields)) {
       return;
     }
     newline();
@@ -489,9 +467,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   // Overridden in TypePrivateDeclarationGenerator
   protected void printStaticFieldDeclaration(
     VariableDeclarationFragment fragment, String baseDeclaration) {
-	if (!ARGC.inPureObjCMode()) {
-      println("/*! INTERNAL ONLY - Use accessor function from above. */");
-	}
+    println("/*! INTERNAL ONLY - Use accessor function from above. */");
     println("FOUNDATION_EXPORT " + baseDeclaration + ";");
   }
 
@@ -509,17 +485,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     String qualifiers = isConstant ? "_CONSTANT"
         : (isPrimitive ? "_PRIMITIVE" : "_OBJ") + (isVolatile ? "_VOLATILE" : "")
         + (isFinal ? "_FINAL" : "");
-	if (!ARGC.inPureObjCMode()) {
-      newline();
-      FieldDeclaration decl = (FieldDeclaration) fragment.getParent();
-      JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
-      printf("inline %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
-      if (!isFinal) {
+    newline();
+    FieldDeclaration decl = (FieldDeclaration) fragment.getParent();
+    JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
+    printf("inline %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
+    if (!isFinal) {
         printf("inline %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
         if (isPrimitive && !isVolatile) {
     	   printf("inline %s *%s_getRef_%s(void);\n", objcType, typeName, name);
         }
-      }
 	}
     if (isConstant) {
       Object value = var.getConstantValue();
@@ -529,9 +503,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printStaticFieldDeclaration(
           fragment, UnicodeUtils.format("%s%s_%s/**/", declType, typeName, name));
     }
-	if (!ARGC.inPureObjCMode()) {
-      printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
-    }
+    printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
   }
 
   // Overridden in TypePrivateDeclarationGenerator
@@ -553,14 +525,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printTypeLiteralDeclaration() {
     if (needsTypeLiteral()) {
       newline();
-	  if (ARGC.inPureObjCMode()) {
-		if (super.isInterfaceType()) {
-		  printf("FOUNDATION_EXPORT IOSClass *%s_class_();\n", typeName);
-		}
-	  }
-	  else {
-        printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
-      }
+      printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
     }
   }
 
@@ -671,9 +636,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
       // Sections 5.1 (Explicit method family control)
       // and 5.2.2 (Related result types)
-      if (!ARGC.inPureObjCMode()) {
-        print(" OBJC_METHOD_FAMILY_NONE");
-      }
+      print(" OBJC_METHOD_FAMILY_NONE");
     }
 
     if (needsDeprecatedAttribute(m.getAnnotations())) {

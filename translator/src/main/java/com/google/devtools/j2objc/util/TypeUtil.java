@@ -281,9 +281,6 @@ public final class TypeUtil {
   	  // IOSTest class 는 ARGCObject 를 상속하지 않는다.
       return "Native";
 	}
-	if (ARGC.isPureObjC(t)) {
-	  return "Native";
-	}
 	
 	TypeElement e = asTypeElement(t);
 	if (e == null) {

@@ -405,7 +405,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     
     if (!TypeUtil.isAnnotation(this.typeElement.asType())) {
 	    String superType = super.getSuperTypeName();
-	    sb.append(super.getSuperTypeName() + "_initialize();\n");
+	    sb.append(superType + "_initialize();\n");
 	    
 	    // super interfaces 초기화.
 	    for (TypeElement intrface : interfaces) {

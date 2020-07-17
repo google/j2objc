@@ -372,8 +372,6 @@ public class Options {
         proGuardUsageFile = new File(getArgValue(args, arg));
       } else if (arg.equals("--prefix")) {
         addPrefixOption(getArgValue(args, arg));
-      } else if (arg.equals("--pure-objc")) { /*ARGC++*/
-          ARGC.addPureObjC(args.next());
       } else if (arg.equals("--prefixes")) {
         packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
@@ -544,8 +542,6 @@ public class Options {
 		if (!argc_debugSource.endsWith(".java")) {
 			argc_debugSource += ".java";
 		}
-      } else if (arg.equals("-compatible-v2.0.2")) { /*ARGC++*/
-    	ARGC.compatiable_2_0_2 = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {

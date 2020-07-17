@@ -42,24 +42,18 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   protected void generateFileHeader() {
-	if (!ARGC.inPureObjCMode()) {
-	    println("#include \"J2ObjC_header.h\"");
-	    if (options.isIOSTest()) {
-	    	println("#include \"IOSTest.h\"");
-	    }
-	    newline();
-	    printf("#pragma push_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
-	    printf("#ifdef RESTRICT_%s\n", varPrefix);
-	    printf("#define INCLUDE_ALL_%s 0\n", varPrefix);
-	    println("#else");
-	    printf("#define INCLUDE_ALL_%s 1\n", varPrefix);
-	    println("#endif");
-	    printf("#undef RESTRICT_%s\n", varPrefix);
-	}
-	else {
-		println("#ifndef __" + varPrefix + "_H__");
-		printf("#define __" + varPrefix + "_H__");
-	}
+    println("#include \"J2ObjC_header.h\"");
+    if (options.isIOSTest()) {
+    	println("#include \"IOSTest.h\"");
+    }
+    newline();
+    printf("#pragma push_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
+    printf("#ifdef RESTRICT_%s\n", varPrefix);
+    printf("#define INCLUDE_ALL_%s 0\n", varPrefix);
+    println("#else");
+    printf("#define INCLUDE_ALL_%s 1\n", varPrefix);
+    println("#endif");
+    printf("#undef RESTRICT_%s\n", varPrefix);
 
     for (GeneratedType type : Lists.reverse(getOrderedTypes())) {
       printLocalIncludes(type);
@@ -71,16 +65,12 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     Collection<String> nativeBlocks = getGenerationUnit().getNativeHeaderBlocks();
     if (!nativeBlocks.isEmpty()) {
       // Use a normal header guard for OCNI code outside of a type declaration.
-	  if (!ARGC.inPureObjCMode()) {
-	    printf("\n#ifndef %s_H\n", varPrefix);
-	    printf("#define %s_H\n", varPrefix);
-	  }
+	  printf("\n#ifndef %s_H\n", varPrefix);
+	  printf("#define %s_H\n", varPrefix);
       for (String code : nativeBlocks) {
         print(code);
       }
-	  if (!ARGC.inPureObjCMode()) {
-        printf("\n#endif // %s_H\n", varPrefix);
-      }
+      printf("\n#endif // %s_H\n", varPrefix);
     }
   }
 
@@ -127,11 +117,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     }
 
     newline();
-    if (!ARGC.inPureObjCMode()) {
-      printf("#if !defined (%s_) && (INCLUDE_ALL_%s || defined(INCLUDE_%s))\n",
+    printf("#if !defined (%s_) && (INCLUDE_ALL_%s || defined(INCLUDE_%s))\n",
         typeName, varPrefix, typeName);
-      printf("#define %s_\n", typeName);
-    }
+    printf("#define %s_\n", typeName);
 
     Set<Import> forwardDeclarations = Sets.newHashSet(type.getHeaderForwardDeclarations());
 
@@ -141,22 +129,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
         continue;
       }
       newline();
-      if (!ARGC.inPureObjCMode()) {
-        printf("#define RESTRICT_%s 1\n", getVarPrefix(imp.getImportFileName()));
-        printf("#define INCLUDE_%s 1\n", imp.getTypeName());
-        printf("#include \"%s\"\n", imp.getImportFileName());
-      }
-      else {
-    	  String imp_f = imp.getImportFileName();
-    	  String this_f = this.getGenerationUnit().getOutputPath();
-    	  int p = this_f.lastIndexOf('/') + 1;
-    	  String package_ = this_f.substring(0, p);
-    	  if (imp_f.startsWith(package_)) {
-    		  imp_f = imp_f.substring(p);
-    	  }
-    	  
-	      printf("#import \"%s\"\n", imp_f);
-      }
+      printf("#define RESTRICT_%s 1\n", getVarPrefix(imp.getImportFileName()));
+      printf("#define INCLUDE_%s 1\n", imp.getTypeName());
+      printf("#include \"%s\"\n", imp.getImportFileName());
       forwardDeclarations.remove(imp);
     }
 
@@ -165,8 +140,6 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     type.getGeneratedSourceMappings().setTargetOffset(getBuilder().length());
     print(code);
     newline();
-    if (!ARGC.inPureObjCMode()) {
-      println("#endif");
-    }
+    println("#endif");
   }
 }

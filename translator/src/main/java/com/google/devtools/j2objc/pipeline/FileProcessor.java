@@ -65,7 +65,6 @@ abstract class FileProcessor {
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
-	ARGC.processPureObjC(parser);
     for (ProcessingContext input : inputs) {
       processInput(input);
     }
@@ -166,11 +165,9 @@ abstract class FileProcessor {
     }
     
     try {
-      ARGC.startSourceFileGeneration(file.getUnitName());
       TypeUtil.setUnreachableClasses(unit);
       processConvertedTree(input, unit);
       TypeUtil.setUnreachableClasses(null);
-      ARGC.endSourceFileGeneration();
       outputs.add(input);
     } catch (Throwable t) {
       // Report any uncaught exceptions.

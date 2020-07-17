@@ -260,14 +260,9 @@ public class NameTable {
     if (ElementUtil.isGlobalVar(var)) {
       String className = getFullName(ElementUtil.getDeclaringClass(var));
       if (ElementUtil.isEnumConstant(var)) {
-    	  if (ARGC.isPureObjC(elementUtil.getType(var))) {
-    		  className = getNativeEnumName(className);
-    	  }
-    	  else {
-	        // Enums are declared in an array, so we use a macro to shorten the
-	        // array access expression.
-	        return "JreEnum(" + className + ", " + shortName + ")";
-    	  }
+        // Enums are declared in an array, so we use a macro to shorten the
+        // array access expression.
+        return "JreEnum(" + className + ", " + shortName + ")";
       }
       return className + '_' + shortName;
     }
@@ -552,9 +547,6 @@ public class NameTable {
   public static String getPrimitiveObjCType(TypeMirror type) {
     String res = TypeUtil.isVoid(type) ? "void"
         : type.getKind().isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
-		if (type.getKind().isPrimitive() && ARGC.inPureObjCMode()) {
-			res = ARGC.getObjCType(res);
-		}
 		return res;
   }
 
@@ -637,18 +629,6 @@ public class NameTable {
         assert classType == null : "Cannot have multiple class bounds";
         classType = bound;
       }
-    }
-    if (classType != null) {
-    	if ((ElementUtil.isEnum(classType) || ElementUtil.isEnumConstant(classType)) && ARGC.isPureObjC(elementUtil.getType(classType))) {
-    		return NameTable.getNativeEnumName(getFullName(classType));
-    	}
-//    	else if (Oz.inPureObjCMode()) {
-//    		TypeMirror tm = elementUtil.getType(classType);
-//    		String s = tm.toString();
-//    		if (s.equals("java.util.HashMap")) {
-//    			return "NSDictionary *";
-//    		}
-//    	}
     }
 
     String protocols = interfaces.isEmpty() ? "" : "<" + Joiner.on(", ").join(interfaces) + ">";

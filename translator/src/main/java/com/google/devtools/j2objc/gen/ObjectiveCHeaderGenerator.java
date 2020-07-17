@@ -61,12 +61,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   public void generate() {
-	if (ARGC.inPureObjCMode()) {
-		//
-	}
-	else {
     println(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
-	}
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
     }
@@ -80,16 +75,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printTypeDeclaration(generatedType);
     }
 
-	if (!ARGC.inPureObjCMode()) {
-      generateFileFooter();
-      if (getGenerationUnit().options().emitKytheMappings()) {
-        generateTypeMappings();
-      }
-	}
-	else {
-	  printf("#endif // __" + varPrefix + "_H__");
-	}
-
+    generateFileFooter();
+    if (getGenerationUnit().options().emitKytheMappings()) {
+      generateTypeMappings();
+    }
 
     save(getOutputPath(), options.fileUtil().getHeaderOutputDirectory());
   }
@@ -100,12 +89,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void generateFileHeader() {
-	if (!ARGC.inPureObjCMode()) {
-      printf("#ifndef %s_H\n", varPrefix);
-      printf("#define %s_H\n", varPrefix);
-      pushIgnoreDeprecatedDeclarationsPragma();
-      pushIgnoreNullabilityPragmas();
-	}
+    printf("#ifndef %s_H\n", varPrefix);
+    printf("#define %s_H\n", varPrefix);
+    pushIgnoreDeprecatedDeclarationsPragma();
+    pushIgnoreNullabilityPragmas();
 
     Set<String> seenTypes = Sets.newHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
