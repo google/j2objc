@@ -1108,11 +1108,5 @@ public class Throwable extends NSException implements Serializable {
     - (NSUInteger)hash {
       return (NSUInteger)self;
     }
-
-    + (instancetype)alloc
-    {
-        ARGC_initStatic(self);
-        return [super alloc];
-    }
     ]-*/
 }

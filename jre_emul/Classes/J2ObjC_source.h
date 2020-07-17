@@ -168,6 +168,7 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
  */
 #if __has_feature(objc_arc)
 #define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
+  CLASS##_initialize(); \
   CLASS *self = [CLASS alloc]; \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
@@ -175,6 +176,7 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
 //  return new_##CLASS##_##NAME(__VA_ARGS__);
 #else
 #define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
+  CLASS##_initialize(); \
   CLASS *self = [CLASS alloc]; \
   bool needsRelease = true; \
   @try { \
@@ -188,6 +190,7 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
   return self;
 #endif // ARGC ++
 #define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
+  CLASS##_initialize(); \
   CLASS *self = AUTORELEASE([CLASS alloc]); \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;

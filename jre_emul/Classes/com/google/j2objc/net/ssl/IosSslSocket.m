@@ -764,6 +764,8 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(WrapperSocket)
+
 // public IosSslSocket(Socket s, String host, int port, boolean autoClose)
 void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
     WrapperSocket *self, JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) {

@@ -25,12 +25,6 @@
 
 @implementation NSNumber (JavaNumber)
 
-+ (instancetype)alloc
-{
-    ARGC_initStatic(self);
-    return [super alloc];
-}
-
 void NSNumber__init_class__() {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
