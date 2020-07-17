@@ -60,8 +60,8 @@ public class Runtime {
 
   public native void gc() /*-[
   #ifdef J2OBJC_USE_GC
-     void ARGC_collectGarbage();
-     ARGC_collectGarbage();
+     void ARGC_collectGarbage(bool clearSoftRef);
+     ARGC_collectGarbage(false);
   #endif
   ]-*/;
 

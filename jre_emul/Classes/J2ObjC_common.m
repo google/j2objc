@@ -56,6 +56,8 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);  // NOLINT
 }
 
+
+#ifndef J2OBJC_USE_GC
 void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
     [self java_finalize];
@@ -68,7 +70,6 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
 }
 
 
-#ifndef J2OBJC_USE_GC
 id JreStrongAssign(__strong id *pIvar, id value) {
   return JreAutoreleasedAssign(pIvar, RETAIN_(value));
 }

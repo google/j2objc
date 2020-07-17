@@ -37,6 +37,8 @@
 #include "java/lang/Exception.h"
 #include "java/lang/reflect/Modifier.h"
 #include "java/lang/reflect/Method.h"
+#include "java/util/logging/Logger.h"
+#include "java/util/logging/Level.h"
 
 #include "IOSPrimitiveArray.h"
 #include "IOSMetadata.h"
@@ -295,7 +297,7 @@ public:
   static BOOL markStrongReachable(JObj_p jobj) {
       BOOL res = jobj->_rc.markStrongReachable();
       if (res && GC_TRACE(jobj, 0)) {
-          NSLog(@"Mark Reachable %p", jobj);
+          GC_dumpTraceWithTag(jobj, @"Mark Reachable");
       }
       return res;
   }
@@ -390,7 +392,9 @@ private:
   
   void addPhantom(JObj_p jobj, BOOL isThreadSafe) {
       if (jobj->_rc.markFinalized()) {
+          bindRoot(jobj, @"finalize");
           JreFinalize(jobj);
+          unbindRoot(jobj);
           if (jobj->_rc.isStrongReachable()) {
               return;
           }
@@ -487,7 +491,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 + (instancetype)alloc
 {
-    ARGC_initStatic(self);
+    // ARGC_initStatic(self);
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
 }
@@ -624,9 +628,9 @@ ARGC::ARGC() {
         }
         gcTriggered = FALSE;
       }
-        if (allocCountInGeneration > 1) {
-            ARGC::doGC();
-        }
+      if (allocCountInGeneration > 1) {
+        ARGC::doGC();
+      }
       @synchronized (gcTrigger) {
         [gcTrigger java_notifyAll];
       }
@@ -637,9 +641,8 @@ ARGC::ARGC() {
 void ARGC_collectGarbage(bool clearSoftRef) {
   //ARGC::_instance.gcTriggered = TRUE;
   @synchronized (ARGC::_instance.scanLock) {
-      ARGC::_clearSoftReference |= clearSoftRef;
-      ARGC::_instance.doGC();
-      ARGC::_instance.doGC();
+    ARGC::_clearSoftReference |= clearSoftRef;
+    ARGC::_instance.doGC();
   }
 }
 
@@ -935,7 +938,7 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
             for (int j = (int)rm.count; --j >= 0; ) {
                 JavaLangRefReference* reference = (JavaLangRefReference*)[rm pointerAtIndex:j];
                 if (reference != NULL) {
-                    reference->referent_ = NULL;
+                    *(std::atomic<id>*)&reference->referent_ = NULL;
                     [reference enqueue];
                     decreaseRefCount(reference, @"-c_rfc");
                 }
@@ -1290,6 +1293,17 @@ extern "C" {
         return ARGC::_instance.allocateInstance(cls, extraBytes, zone);
     }
     
+    void JreFinalize(id self) J2OBJC_METHOD_ATTR {
+      @try {
+        [self java_finalize];
+      } @catch (JavaLangThrowable *e) {
+        [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
+            logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
+                           withNSString:@"Uncaught exception in finalizer"
+                  withJavaLangThrowable:e];
+      }
+    }
+
 }
 
 
@@ -1366,16 +1380,16 @@ extern "C" {
 }
 + (id)getReferent:(JavaLangRefReference *)reference
 {
-    return (id)reference->referent_;
+    return *(std::atomic<id>*)&reference->referent_;
 }
 
 + (void)clearReferent:(JavaLangRefReference *)reference
 {
-    id oid = (id)reference->referent_;
+    id oid = *(std::atomic<id>*)&reference->referent_;
     if (oid == NULL) return;
     
     @synchronized (self) {
-        reference->referent_ = NULL;
+        *(std::atomic<id>*)&reference->referent_ = NULL;
         NSPointerArray* rm = objc_getAssociatedObject(oid, &refAssocKey);
         if (rm == NULL) return;
 
