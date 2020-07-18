@@ -93,7 +93,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
       VariableDeclarationFragment fragment, String baseDeclaration) {
     Expression initializer = fragment.getInitializer();
     print("static " + baseDeclaration);
-    if (initializer != null) {
+    if (initializer != null && !elementUtil.isStringConstant(fragment.getVariableElement())) {
       print(" = " + generateExpression(initializer));
     }
     println(";");
