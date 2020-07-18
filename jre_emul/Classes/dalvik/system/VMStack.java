@@ -18,11 +18,8 @@ package dalvik.system;
 
 import android.compat.annotation.UnsupportedAppUsage;
 
-import dalvik.annotation.optimization.FastNative;
-
 /**
  * Stub implementation of dalvik.system.VMStack.
- * This implementation is necessary for use in ObjectInputStream.java
  */
 
 /**
@@ -31,14 +28,17 @@ import dalvik.annotation.optimization.FastNative;
  *
  * @hide
  */
-// @libcore.api.CorePlatformApi
+
+@libcore.api.CorePlatformApi
 public final class VMStack {
 
   private VMStack() {
   }
 
   /**
-   * Returns the defining class loader of the caller's caller.
+   * Stub implementation of getCallingClassLoader()
+   *
+   *  Returns the defining class loader of the caller's caller.
    *
    * @return the requested class loader, or {@code null} if this is the
    *         bootstrap class loader.
@@ -56,21 +56,33 @@ public final class VMStack {
    * @return the requested class, or {@code null}.
    * @deprecated Use {@link sun.reflect.Reflection#getCallerClass()}.
    */
-  /* @Deprecated
-  public static Class<?> getStackClass1() {
+  @Deprecated
+  public static Class<?> getStackClass1() throws ClassNotFoundException {
     return getStackClass2();
-  } */
+  }
 
   /**
+   * Implementation unique to J2ObjC
+   *
    * Returns the class of the caller's caller's caller.
    *
    * @return the requested class, or {@code null}.
    */
-  /* @UnsupportedAppUsage
-  @FastNative
-  native public static Class<?> getStackClass2(); */
+  @UnsupportedAppUsage
+  public static Class<?> getStackClass2() throws ClassNotFoundException {
+    // This method (getCallerClass()) constitutes another stack frame,
+    // so we need to get stack class 2 rather than get stack class 1.
+    try {
+      StackTraceElement[] stack = new Throwable().getStackTrace();
+      return Class.forName(stack[2].getClassName());
+    } catch (ClassNotFoundException e) {
+      throw e;
+    }
+  }
 
   /**
+   * Stub implementation of getClosestUserClassLoader()
+   *
    * Returns the first ClassLoader on the call stack that isn't the
    * bootstrap class loader.
    */
@@ -79,6 +91,8 @@ public final class VMStack {
   }
 
   /**
+   * Implementation unique to J2ObjC
+   *
    * Retrieves the stack trace from the specified thread.
    *
    * @param t
@@ -86,24 +100,30 @@ public final class VMStack {
    * @return an array of stack trace elements, or null if the thread
    *      doesn't have a stack trace (e.g. because it exited)
    */
- /* @UnsupportedAppUsage
-  @FastNative
-  native public static StackTraceElement[] getThreadStackTrace(Thread t); */
+  @UnsupportedAppUsage
+  public static StackTraceElement[] getThreadStackTrace(Thread t) {
+    return t.getStackTrace();
+  }
 
   /**
+   * Cannot be implemented in J2ObjC
+   *
    * Retrieves an annotated stack trace from the specified thread.
    *
    * @param t
    *      thread of interest
    * @return an array of annotated stack frames, or null if the thread
    *      doesn't have a stack trace (e.g. because it exited)
-   */
-  /* @libcore.api.CorePlatformApi
+
+  @libcore.api.CorePlatformApi
   @FastNative
   native public static AnnotatedStackTraceElement[]
-  getAnnotatedThreadStackTrace(Thread t);*/
+  getAnnotatedThreadStackTrace(Thread t);
+  */
 
   /**
+   * Implementation unique to J2ObjC
+   *
    * Retrieves a partial stack trace from the specified thread into
    * the provided array.
    *
@@ -114,8 +134,13 @@ public final class VMStack {
    *      desired. Unused elements will be filled with null values.
    * @return the number of elements filled
    */
- /* @UnsupportedAppUsage
-  @FastNative
-  native public static int fillStackTraceElements(Thread t,
-                                                  StackTraceElement[] stackTraceElements); */
+  @UnsupportedAppUsage
+  public static int fillStackTraceElements(Thread t,
+                                                  StackTraceElement[] stackTraceElements) {
+    StackTraceElement[] stackTrace = t.getStackTrace();
+    for (int i = 0; i < stackTraceElements.length; i++) {
+      stackTraceElements[i] = stackTrace[i];
+    }
+    return stackTraceElements.length;
+ }
 }
