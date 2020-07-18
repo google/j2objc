@@ -155,7 +155,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
     public boolean apply(VariableDeclarationFragment fragment) {
       return !ElementUtil.isPrimitiveConstant(fragment.getVariableElement())
           // Private static vars are defined in the private declaration.
-          && !((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration();
+          && (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()
+        		  || ElementUtil.isStringConstant(fragment.getVariableElement()));
     }
   };
 
@@ -167,19 +168,33 @@ public class TypeImplementationGenerator extends TypeGenerator {
       return;
     }
     newline();
+    StringBuilder sb = new StringBuilder();
     for (VariableDeclarationFragment fragment : fields) {
       VariableElement varElement = fragment.getVariableElement();
       Expression initializer = fragment.getInitializer();
       String name = nameTable.getVariableQualifiedName(varElement);
       String objcType = getDeclarationType(varElement);
       objcType += objcType.endsWith("*") ? "" : " ";
-      if (initializer != null) {
-        String cast = !varElement.asType().getKind().isPrimitive()
-            && ElementUtil.isVolatile(varElement) ? "(void *)" : "";
-        printf("%s%s = %s%s;\n", objcType, name, cast, generateExpression(initializer));
-      } else {
-        printf("%s%s;\n", objcType, name);
+      if (initializer == null) {
+          printf("%s%s;\n", objcType, name);
+      } 
+      else if (ElementUtil.isStringConstant(varElement)) {
+          if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
+        	  printf("%s%s;\n", objcType, name);
+          }
+          sb.append("  ").append(name).append(" = ")
+          	.append(generateExpression(initializer)).append(";\n");
       }
+      else {
+          String cast = !varElement.asType().getKind().isPrimitive()
+                  && ElementUtil.isVolatile(varElement) ? "(void *)" : "";
+              printf("%s%s = %s%s;\n", objcType, name, cast, generateExpression(initializer));
+      }
+    }
+    if (sb.length() > 0) {
+    	printf("\n__attribute__((constructor)) static void %s_init_string_constants() {\n", this.typeName);
+    	print(sb.toString());
+    	print("}\n");
     }
   }
 
