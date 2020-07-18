@@ -563,6 +563,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
   dalvik/system/VersionCodes.java \
+  dalvik/system/VMStack.java \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
