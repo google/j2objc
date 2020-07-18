@@ -395,11 +395,13 @@ private:
           return;
       }
       if (jobj->_rc.markFinalized()) {
-          jobj->_rc.bind();
-          ARGC::increaseReferenceCount(jobj, @"finalize");
+          //jobj->_rc.bind();
+          //ARGC::increaseReferenceCount(jobj, @"finalize");
+          bindRoot(jobj, @"finalize");
           JreFinalize(jobj);
-          jobj->_rc.unbind();
-          ARGC::decreaseRefCount(jobj, @"finalize");
+          unbindRoot(jobj);
+          //jobj->_rc.unbind();
+          //ARGC::decreaseRefCount(jobj, @"finalize");
           if (jobj->_rc.isStrongReachable()) {
               jobj->_rc.clearPhantom();
               return;
