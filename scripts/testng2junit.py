@@ -71,7 +71,7 @@ def MigrateDataProviders(content):
   data_provider_test_regex = re.compile(
       r'@Test\(dataProvider\s*=\s*(".*"),?\s?(.*)?\)')
   content_new = data_provider_test_regex.sub(
-      r'@Test(\\2)\n    @UseDataProvider(\\1)', content)
+      '@Test(\\2)\n    @UseDataProvider(\\1)', content)
 
   for tup in data_provider_rename_tuples:
     content_new = re.sub(tup[0], '"' + tup[1] + '"', content_new)
@@ -86,7 +86,7 @@ def MigrateDataProviders(content):
   # In JUnit data providers have to be public and static.
   object_array_provider_regex = re.compile(r'Object\[\]\[\] (.*)\(\)')
   content_new = object_array_provider_regex.sub(
-      r'public static Object[][] \\1()', content_new)
+      'public static Object[][] \\1()', content_new)
 
   return content_new
 
