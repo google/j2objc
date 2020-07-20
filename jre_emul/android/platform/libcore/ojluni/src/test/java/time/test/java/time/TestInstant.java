@@ -81,7 +81,7 @@ public class TestInstant extends AbstractTest {
 
     @DataProvider
     public static Object[][] provider_sampleEpochMillis() {
-        return new Object [][] {
+        return new Object[][] {
             {"Long.MAX_VALUE", Long.MAX_VALUE},
             {"Long.MAX_VALUE-1", Long.MAX_VALUE - 1},
             {"1", 1L},

@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 public class CalendarTest extends junit.framework.TestCase {
 

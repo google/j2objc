@@ -22,6 +22,7 @@
 #import "IOSClass.h"
 #import "JreRetainedWith.h"
 #import "java/lang/AbstractStringBuilder.h"
+#import "java/lang/ArithmeticException.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/Iterable.h"
@@ -31,7 +32,7 @@
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
 
-id JreThrowNullPointerException(id p) {
+id JreThrowNullPointerException() {
   @throw create_JavaLangNullPointerException_init(); // NOLINT
 }
 
@@ -47,10 +48,16 @@ void JreThrowClassCastExceptionWithIOSClass(id obj, IOSClass *cls) {
           [[obj java_getClass] getName], [cls getName]]);
 }
 
+void JreThrowArithmeticExceptionWithNSString(NSString *msg) {
+  @throw create_JavaLangArithmeticException_initWithNSString_(msg);  // NOLINT
+}
+
 void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);  // NOLINT
 }
 
+
+#ifndef J2OBJC_USE_GC
 void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
     [self java_finalize];
@@ -63,7 +70,6 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
 }
 
 
-#ifndef J2OBJC_USE_GC
 id JreStrongAssign(__strong id *pIvar, id value) {
   return JreAutoreleasedAssign(pIvar, RETAIN_(value));
 }

@@ -12,8 +12,6 @@
 
 # Builds a J2ObjC translated Guava library.
 
-SUFFIXES:
-
 default: dist
 
 include jre_environment.mk

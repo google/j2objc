@@ -82,7 +82,7 @@ public class SecretKeySpec implements KeySpec, SecretKey {
      * @param algorithm the name of the secret-key algorithm to be associated
      * with the given key material.
      * See Appendix A in the <a href=
-     *   "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+     *   "{@docRoot}/../technotes/guides/security/crypto/CryptoSpec.html#AppA">
      * Java Cryptography Architecture Reference Guide</a>
      * for information about standard algorithm names.
      * @exception IllegalArgumentException if <code>algorithm</code>
@@ -127,7 +127,7 @@ public class SecretKeySpec implements KeySpec, SecretKey {
      * @param algorithm the name of the secret-key algorithm to be associated
      * with the given key material.
      * See Appendix A in the <a href=
-     *   "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+     *   "{@docRoot}/../technotes/guides/security/crypto/CryptoSpec.html#AppA">
      * Java Cryptography Architecture Reference Guide</a>
      * for information about standard algorithm names.
      * @exception IllegalArgumentException if <code>algorithm</code>

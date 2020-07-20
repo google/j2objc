@@ -17,6 +17,8 @@
 
 package org.apache.harmony.tests.java.nio.channels;
 
+import android.system.ErrnoException;
+import libcore.io.OsConstants;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -35,10 +37,8 @@ import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.TestCase;
-import android.system.ErrnoException;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
-import libcore.io.OsConstants;
 
 /**
  * Test for DatagramChannel
@@ -1189,6 +1189,7 @@ public class DatagramChannelTest extends TestCase {
         receiveOnChannel1AndClose(CAPACITY_NORMAL, datagramSocket1Address, "");
     }
 
+    /** iOS poll of empty datagram fails: Apple Radar #47594701
     public void testReceiveSend_Block_Empty_C2S() throws Exception {
         sendOnChannel2("", datagramSocket1Address);
         receiveOnDatagramSocket1(CAPACITY_NORMAL, "");
@@ -1212,6 +1213,7 @@ public class DatagramChannelTest extends TestCase {
         this.datagramSocket2.receive(rdp);
         assertEquals(new String(buf, 0, CAPACITY_NORMAL).trim(), msg);
     }
+    */
 
     public void testReceiveSend_Block_Oversize() throws Exception {
         sendOnChannel2("0123456789", channel1Address);
@@ -1327,7 +1329,7 @@ public class DatagramChannelTest extends TestCase {
         assertAscii(buf, strHello);
     }
 
-    /* TODO(user): fix and enable.
+    /* TODO(zgao): fix and enable.
     public void testReceive_Peek_NoSecurity_Nonblocking() throws Exception {
         String strHello = "hello";
 

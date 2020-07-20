@@ -438,7 +438,7 @@ public class SocketAdaptor
         sc.close();
     }
 
-    /* TODO(user): Enable after java.nio.channels is updated to Android Nougat.
+    /* TODO(zgao): Enable after java.nio.channels is updated to Android Nougat.
     public void shutdownInput() throws IOException {
         try {
             sc.shutdownInput();

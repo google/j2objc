@@ -35,6 +35,8 @@
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/Extension.h"
 
+#include "J2ObjC_source.h"
+
 typedef std::pair<const CGPDescriptor *, jint> ExtensionRegistryKey;
 typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMap;
 
@@ -62,6 +64,11 @@ static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
   return self;
 }
 
+- (instancetype)initWithBoolean:(jboolean)empty {
+  ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
+  return self;
+}
+
 + (void)initialize {
   if (self == [CGPExtensionRegistryLite class]) {
     CGPExtensionRegistryLite_EMPTY_ = [[CGPExtensionRegistryLite alloc] init];
@@ -73,7 +80,7 @@ static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
 
 CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance() {
   ComGoogleProtobufExtensionRegistryLite_initialize();
-  return [[[CGPExtensionRegistryLite alloc] init] autorelease];
+  return AUTORELEASE([[CGPExtensionRegistryLite alloc] init]);
 }
 
 CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistry() {
@@ -87,6 +94,18 @@ void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLit
   registry->map_[ExtensionRegistryKey(containingType, CGPFieldGetNumber(field))] = field;
 }
 
+void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
+    ComGoogleProtobufExtensionRegistryLite *self, jboolean empty) {
+  NSObject_init(self);
+}
+
+ComGoogleProtobufExtensionRegistryLite *
+new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(jboolean empty) {
+  ComGoogleProtobufExtensionRegistryLite *self = [ComGoogleProtobufExtensionRegistryLite alloc];
+  ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
+  return AUTORELEASE(self);
+}
+
 CGPFieldDescriptor *CGPExtensionRegistryFind(
     CGPExtensionRegistryLite *registry, CGPDescriptor *descriptor, jint fieldNumber) {
   ExtensionRegistryMap *map = &registry->map_;
@@ -96,3 +115,5 @@ CGPFieldDescriptor *CGPExtensionRegistryFind(
   }
   return nil;
 }
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufExtensionRegistryLite)

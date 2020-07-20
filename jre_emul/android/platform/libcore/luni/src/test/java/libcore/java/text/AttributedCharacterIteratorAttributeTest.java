@@ -22,7 +22,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import junit.framework.TestCase;
-import libcore.util.SerializationTester;
+import libcore.libcore.util.SerializationTester;
 
 /**
  * AttributedCharacterIterator.Attribute is used like the base enum type and

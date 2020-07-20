@@ -559,7 +559,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
      */
     @Override
     public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-        Arrays.checkOffsetAndCount(buffer.length, byteOffset, byteCount);
         if (byteCount == 0) {
             return 0;
         }

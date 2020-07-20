@@ -62,10 +62,15 @@ class RuleBasedBreakIterator$DictionaryCache: @WeakOuter
 package com.google.j2objc.net:
 class ResourceDataStreamHandler: @ReflectionSupport(FULL)
 
+package com.google.j2objc.net.ssl: @ReflectionSupport(FULL)
+
+package com.google.j2objc.security: @ReflectionSupport(FULL)
+
 package java.io:
 class FileDescriptor: @ReflectionSupport(FULL)
 
 package java.lang:
+class Package$1PackageInfoProxy: @ReflectionSupport(FULL)
 class Thread: @ReflectionSupport(FULL)
 
 package java.math:
@@ -88,6 +93,10 @@ class PlainDatagramSocketImpl: @ReflectionSupport(FULL)
 package java.nio.channels:
 class SelectionKey: @ReflectionSupport(FULL)
 
+package java.security.cert:
+class Certificate: @ReflectionSupport(FULL)
+class CertPath: @ReflectionSupport(FULL)
+
 package java.sql:
 class SQLException: @ReflectionSupport(FULL)
 
@@ -95,6 +104,10 @@ package java.util:
 class Random: @ReflectionSupport(FULL)
 
 package java.util.concurrent: @ReflectionSupport(FULL)
+
+package java.util.concurrent.atomic:
+class Striped64: @ReflectionSupport(FULL)
+class Striped64$Cell: @ReflectionSupport(FULL)
 
 package java.util.concurrent.locks:
 class AbstractQueuedLongSynchronizer: @ReflectionSupport(FULL)
@@ -104,6 +117,14 @@ class LockSupport: @ReflectionSupport(FULL)
 
 package java.util.logging:
 class LoggingProxyImpl: @ReflectionSupport(FULL)
+
+package javax.crypto:
+class SecretKey: @ReflectionSupport(FULL)
+
+package javax.crypto.interfaces:
+class DHPrivateKey: @ReflectionSupport(FULL)
+class DHPublicKey: @ReflectionSupport(FULL)
+class PBEKey: @ReflectionSupport(FULL)
 
 package javax.net.ssl:
 class SSLException: @ReflectionSupport(FULL)
@@ -118,5 +139,8 @@ package sun.nio.ch:
 class DatagramChannelImpl: @ReflectionSupport(FULL)
 class DatagramSocketAdaptor$DummyDatagramSocket: @ReflectionSupport(FULL)
 class FileDescriptorHolderSocketImpl: @ReflectionSupport(FULL)
+
+package sun.security.provider:
+class X509Factory: @ReflectionSupport(FULL)
 
 package sun.security.x509: @ReflectionSupport(FULL)

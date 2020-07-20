@@ -98,7 +98,7 @@ public class LineDirectivesTest extends GenerationTest {
     assertTranslatedLines(translation,
         "for (jint i = 0; i < 10; i++)",
         "#line 4",
-        "if ((n % 2) == 0)",
+        "if ((JreIntMod(n, 2)) == 0)",
         "#line 5",
         "n += i;",
         "",

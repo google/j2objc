@@ -58,9 +58,6 @@ public class StaticVarRewriter extends UnitTreeVisitor {
     if (var == null || !needsStaticLoad(node, var)) {
       return;
     }
-    if (ElementUtil.isEnumConstant(var) && ARGC.isPureObjC(elementUtil.getType(var))) {
-    	return;
-    }
 
     TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
     boolean assignable = TranslationUtil.isAssigned(node);

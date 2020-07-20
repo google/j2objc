@@ -102,7 +102,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     if (!annotatedElementStack.peekLast().isPresent()) {
-      return false;
+      return true;
     }
     AClass annotatedParent = (AClass) annotatedElementStack.peekLast().get();
     ExecutableElement executable = node.getExecutableElement();
@@ -116,7 +116,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       recordAnnotations(node.getExecutableElement(), annotations);
       injectAnnotationsToNode(node, annotations);
     }
-    return false;
+    return true;
   }
 
   @Override
@@ -125,7 +125,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
       return false;
     }
     AClass annotatedParent = (AClass) annotatedElementStack.peekLast().get();
-    VariableElement element = node.getFragment(0).getVariableElement();
+    VariableElement element = node.getFragment().getVariableElement();
     AField annotatedField = annotatedParent.fields.get(ElementUtil.getName(element));
     if (annotatedField != null) {
       recordAnnotations(element, annotatedField.tlAnnotationsHere);

@@ -56,14 +56,21 @@ static void unalignedPointer(void *ptr) {
 #define GET_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
+  return JreLoadVolatileId((volatile_id *)(void*)ptr); // TODO@zeedh check optimize
+
+#define GET_OBJECT_VOLATILE_IMPL() \
+  uintptr_t ptr = PTR(obj, offset); \
+  CHECK_ADDR(id, ptr) \
   return JreLoadVolatileId((volatile_id *)(void*)ptr);
 
 #define PUT_OBJECT_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
-  CHECK_ADDR(id, ptr) \
-  ARGC_pubObject(obj, ptr, newValue);
+  JreVolatileStrongAssign((volatile_id *)(void*)ptr, newValue); // TODO@zeedh check optimize
 
-void ARGC_pubObject(jobject obj, uintptr_t ptr, jobject newValue);
+#define PUT_OBJECT_VOLATILE_IMPL() \
+  uintptr_t ptr = PTR(obj, offset); \
+  CHECK_ADDR(id, ptr) \
+  JreVolatileStrongAssign((volatile_id *)(void*)ptr, newValue);
 
 
 // Native method implementations.
@@ -202,7 +209,7 @@ jint Java_sun_misc_Unsafe_pageSize(JNIEnv *env, jobject self) {
  */
 void Java_sun_misc_Unsafe_setMemory(
     JNIEnv *env, jobject self, jlong address, jlong bytes, jbyte value) {
-  memset((void*)address, value, bytes);
+  memset((void*)address, value, (size_t)bytes);
 }
 
 
@@ -636,7 +643,7 @@ jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, j
  */
 jobject Java_sun_misc_Unsafe_getObjectVolatile(
     JNIEnv *env, jobject self, jobject obj, jlong offset) {
-  GET_OBJECT_IMPL()
+  GET_OBJECT_VOLATILE_IMPL()
 }
 
 /*
@@ -654,7 +661,7 @@ void Java_sun_misc_Unsafe_putObject(
  */
 void Java_sun_misc_Unsafe_putOrderedObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+  PUT_OBJECT_VOLATILE_IMPL()
 }
 
 
@@ -664,7 +671,7 @@ void Java_sun_misc_Unsafe_putOrderedObject(
  */
 void Java_sun_misc_Unsafe_putObjectVolatile(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+  PUT_OBJECT_VOLATILE_IMPL()
 }
 
 

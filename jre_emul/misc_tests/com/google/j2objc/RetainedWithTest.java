@@ -102,7 +102,7 @@ public class RetainedWithTest extends TestCase {
 
   public void testObjectPairIsDeallocated() {
     if (isGarbageCollectionEnabled) return;
-    List<Integer> objectCodes = new ArrayList<Integer>();
+    List<Integer> objectCodes = new ArrayList<>();
     newA(objectCodes);
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
@@ -128,7 +128,7 @@ public class RetainedWithTest extends TestCase {
 
   public void testSymmetricObjectPairIsDeallocated() {
     if (isGarbageCollectionEnabled) return;
-    List<Integer> objectCodes = new ArrayList<Integer>();
+    List<Integer> objectCodes = new ArrayList<>();
     newSymmetric(objectCodes);
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
@@ -151,7 +151,7 @@ public class RetainedWithTest extends TestCase {
 
   public void testCloneParentObject() {
     if (isGarbageCollectionEnabled) return;
-    List<Integer> objectCodes = new ArrayList<Integer>();
+    List<Integer> objectCodes = new ArrayList<>();
     newAPlusClone(objectCodes);
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
@@ -170,7 +170,7 @@ public class RetainedWithTest extends TestCase {
 
   public void testCloneChildObject() {
     if (isGarbageCollectionEnabled) return;
-    List<Integer> objectCodes = new ArrayList<Integer>();
+    List<Integer> objectCodes = new ArrayList<>();
     newAPlusCloneChild(objectCodes);
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
@@ -188,31 +188,31 @@ public class RetainedWithTest extends TestCase {
 
   public void testReassignChild() {
     if (isGarbageCollectionEnabled) return;
-    List<Integer> objectCodes = new ArrayList<Integer>();
+    List<Integer> objectCodes = new ArrayList<>();
     newAPlusReassignChild(objectCodes);
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
     }
   }
 
-  abstract class MapFactory {
+  private abstract class MapFactory<K> {
 
-    final Object key;
+    final K key;
 
-    MapFactory(Object key) {
+    MapFactory(K key) {
       this.key = key;
     }
 
-    public abstract Map newMap();
+    public abstract Map<K, ValueType> newMap();
 
-    public Object getKey() {
+    public K getKey() {
       return key;
     }
   }
 
   // We use this class as a value to insert in our maps so we can verity that the map has been
   // deallocated.
-  static class ValueType {
+  private static class ValueType {
     protected void finalize() {
       finalizedObjects.add(System.identityHashCode(this));
     }
@@ -220,85 +220,89 @@ public class RetainedWithTest extends TestCase {
 
   enum Color { RED, GREEN, BLUE }
 
-  Set keys;
-  Collection values;
-  Set<Map.Entry> entrySet;
+  private static class MapTest<K> {
 
-  @AutoreleasePool
-  private void createMapChildren(MapFactory factory, List<Integer> objectCodes) {
-    // Use separate maps for each of the views to ensure that each view type is strengthening its
-    // reference to the map.
-    Map m1 = factory.newMap();
-    Map m2 = factory.newMap();
-    Map m3 = factory.newMap();
-    ValueType v = new ValueType();
-    m1.put(factory.getKey(), v);
-    m2.put(factory.getKey(), v);
-    m3.put(factory.getKey(), v);
-    keys = m1.keySet();
-    values = m2.values();
-    entrySet = m3.entrySet();
-    objectCodes.add(System.identityHashCode(v));
-  }
+    private Set<K> keys;
+    private Collection<ValueType> values;
+    private Set<Map.Entry<K, ValueType>> entrySet;
 
-  @AutoreleasePool
-  private void checkMapChildren(MapFactory factory, List<Integer> objectCodes) {
-    createMapChildren(factory, objectCodes);
-    // Call some methods to make sure they still exist and can access the parent
-    assertEquals(1, keys.size());
-    assertEquals(1, values.size());
-    assertEquals(1, entrySet.size());
-    assertTrue(keys.contains(factory.getKey()));
-    assertFalse(values.contains(new Object()));
-    assertEquals(factory.getKey(), entrySet.iterator().next().getKey());
-    keys = null;
-    values = null;
-    entrySet = null;
-  }
+    @AutoreleasePool
+    private void createMapChildren(MapFactory<K> factory,
+        List<Integer> objectCodes) {
+      // Use separate maps for each of the views to ensure that each view type is strengthening its
+      // reference to the map.
+      Map<K, ValueType> m1 = factory.newMap();
+      Map<K, ValueType> m2 = factory.newMap();
+      Map<K, ValueType> m3 = factory.newMap();
+      ValueType v = new ValueType();
+      m1.put(factory.getKey(), v);
+      m2.put(factory.getKey(), v);
+      m3.put(factory.getKey(), v);
+      keys = m1.keySet();
+      values = m2.values();
+      entrySet = m3.entrySet();
+      objectCodes.add(System.identityHashCode(v));
+    }
 
-  public void runMapTest(MapFactory factory) {
-    List<Integer> objectCodes = new ArrayList<Integer>();
-    checkMapChildren(factory, objectCodes);
-    for (Integer i : objectCodes) {
-      assertTrue(finalizedObjects.contains(i));
+    @AutoreleasePool
+    private void checkMapChildren(MapFactory<K> factory, List<Integer> objectCodes) {
+      createMapChildren(factory, objectCodes);
+      // Call some methods to make sure they still exist and can access the parent
+      assertEquals(1, keys.size());
+      assertEquals(1, values.size());
+      assertEquals(1, entrySet.size());
+      assertTrue(keys.contains(factory.getKey()));
+      assertFalse(values.contains(new ValueType()));
+      assertEquals(factory.getKey(), entrySet.iterator().next().getKey());
+      keys = null;
+      values = null;
+      entrySet = null;
+    }
+
+    private void run(MapFactory<K> factory) {
+      List<Integer> objectCodes = new ArrayList<>();
+      checkMapChildren(factory, objectCodes);
+      for (Integer i : objectCodes) {
+        assertTrue(finalizedObjects.contains(i));
+      }
     }
   }
 
   public void testMapChildren() {
     if (isGarbageCollectionEnabled) return;
-    runMapTest(new MapFactory(new Object()) {
-      public Map newMap() {
-        return new IdentityHashMap();
+    new MapTest<>().run(new MapFactory<Object>(new Object()) {
+      public Map<Object, ValueType> newMap() {
+        return new IdentityHashMap<>();
       }
     });
-    runMapTest(new MapFactory(new Object()) {
-      public Map newMap() {
-        return new WeakHashMap();
+    new MapTest<>().run(new MapFactory<Object>(new Object()) {
+      public Map<Object, ValueType> newMap() {
+        return new WeakHashMap<>();
       }
     });
-    runMapTest(new MapFactory(Color.RED) {
-      public Map newMap() {
-        return new EnumMap(Color.class);
+    new MapTest<Color>().run(new MapFactory<Color>(Color.RED) {
+      public Map<Color, ValueType> newMap() {
+        return new EnumMap<>(Color.class);
       }
     });
-    runMapTest(new MapFactory(new Object()) {
-      public Map newMap() {
-        return new HashMap();
+    new MapTest<>().run(new MapFactory<Object>(new Object()) {
+      public Map<Object, ValueType> newMap() {
+        return new HashMap<>();
       }
     });
-    runMapTest(new MapFactory(5) {
-      public Map newMap() {
-        return new TreeMap();
+    new MapTest<Integer>().run(new MapFactory<Integer>(5) {
+      public Map<Integer, ValueType> newMap() {
+        return new TreeMap<>();
       }
     });
-    runMapTest(new MapFactory(new Object()) {
-      public Map newMap() {
-        return new Hashtable();
+    new MapTest<>().run(new MapFactory<Object>(new Object()) {
+      public Map<Object, ValueType> newMap() {
+        return new Hashtable<>();
       }
     });
-    runMapTest(new MapFactory(new Object()) {
-      public Map newMap() {
-        return new ConcurrentHashMap();
+    new MapTest<>().run(new MapFactory<Object>(new Object()) {
+      public Map<Object, ValueType> newMap() {
+        return new ConcurrentHashMap<>();
       }
     });
   }

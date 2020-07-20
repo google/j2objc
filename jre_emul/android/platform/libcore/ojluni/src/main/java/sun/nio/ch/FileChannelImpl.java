@@ -33,16 +33,15 @@ import java.nio.ByteBuffer;
 import java.nio.DirectByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
+import libcore.io.Libcore;
 
 import dalvik.system.BlockGuard;
 import sun.misc.Cleaner;
 import sun.misc.IoTrace;
-
-// ----- BEGIN android -----
-import libcore.io.Libcore;
-// ----- END android -----
+import sun.security.action.GetPropertyAction;
 
 public class FileChannelImpl
     extends FileChannel
@@ -969,13 +968,9 @@ public class FileChannelImpl
         if (!propertyChecked) {
             synchronized (FileChannelImpl.class) {
                 if (!propertyChecked) {
-                    /*
                     String value = AccessController.doPrivileged(
                         new GetPropertyAction(
                             "sun.nio.ch.disableSystemWideOverlappingFileLockCheck"));
-                    */
-                    String value =
-                        System.getProperty("sun.nio.ch.disableSystemWideOverlappingFileLockCheck");
                     isSharedFileLockTable = ((value == null) || value.equals("false"));
                     propertyChecked = true;
                 }

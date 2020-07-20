@@ -15,8 +15,6 @@
  */
 package tests.targets.security;
 
-import tests.security.MessageDigestTest;
-
 public class MessageDigestTestMD5 extends MessageDigestTest {
 
     public MessageDigestTestMD5() {

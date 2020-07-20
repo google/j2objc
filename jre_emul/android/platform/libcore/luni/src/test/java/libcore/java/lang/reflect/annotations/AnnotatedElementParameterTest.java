@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationA;
 import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationB;
 import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationC;
 import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationD;
@@ -102,7 +103,6 @@ public class AnnotatedElementParameterTest extends TestCase {
         }
     }
 
-    /* TODO(b/62095729): repeatable annotations support.
     private static class AnnotatedMethodClass {
         void noAnnotation(String p0) {}
 
@@ -155,7 +155,7 @@ public class AnnotatedElementParameterTest extends TestCase {
     }
 
     // Tests for isAnnotationPresent and getDeclaredAnnotation.
-    public void testMethodDeclaredAnnotation() throws Exception {
+    public void testMethodDeclaredAnnotation_repeated() throws Exception {
         Class<? extends Annotation> repeated = Repeated.class;
         checkParameter0DeclaredAnnotation(
                 AnnotatedMethodClass.getMethodWithoutAnnotations(),
@@ -232,7 +232,7 @@ public class AnnotatedElementParameterTest extends TestCase {
     }
 
     // Tests for isAnnotationPresent and getDeclaredAnnotation.
-    public void testConstructorDeclaredAnnotation() throws Exception {
+    public void testConstructorDeclaredAnnotation_repeated() throws Exception {
         Class<? extends Annotation> repeated = Repeated.class;
         checkParameter0DeclaredAnnotation(
                 AnnotatedConstructorClass.getConstructorWithoutAnnotations(),
@@ -280,7 +280,7 @@ public class AnnotatedElementParameterTest extends TestCase {
         assertGetDeclaredAnnotation(parameter, annotationType, expectedAnnotationString);
     }
 
-    public void testMethodGetDeclaredAnnotationsByType() throws Exception {
+    public void testMethodGetDeclaredAnnotationsByType_repeated() throws Exception {
         Class<? extends Annotation> repeated = Repeated.class;
         checkParameter0GetDeclaredAnnotationsByType(
                 AnnotatedMethodClass.getMethodWithoutAnnotations(),
@@ -316,7 +316,7 @@ public class AnnotatedElementParameterTest extends TestCase {
                 container, EXPECT_EMPTY);
     }
 
-    public void testConstructorGetDeclaredAnnotationsByType() throws Exception {
+    public void testConstructorGetDeclaredAnnotationsByType_repeated() throws Exception {
         Class<? extends Annotation> repeated = Repeated.class;
         checkParameter0GetDeclaredAnnotationsByType(
                 AnnotatedConstructorClass.getConstructorWithoutAnnotations(),
@@ -360,7 +360,7 @@ public class AnnotatedElementParameterTest extends TestCase {
                 parameter, annotationType, expectedAnnotationStrings);
     }
 
-    public void testMethodGetAnnotationsByType() throws Exception {
+    public void testMethodGetAnnotationsByType_repeated() throws Exception {
         Class<? extends Annotation> repeated = Repeated.class;
         checkParameter0GetAnnotationsByType(
                 AnnotatedMethodClass.getMethodWithoutAnnotations(),
@@ -396,7 +396,7 @@ public class AnnotatedElementParameterTest extends TestCase {
                 container, EXPECT_EMPTY);
     }
 
-    public void testConstructorGetAnnotationsByType() throws Exception {
+    public void testConstructorGetAnnotationsByType_repeated() throws Exception {
         Class<? extends Annotation> repeated = Repeated.class;
         checkParameter0GetAnnotationsByType(
                 AnnotatedConstructorClass.getConstructorWithoutAnnotations(),
@@ -443,37 +443,111 @@ public class AnnotatedElementParameterTest extends TestCase {
     /**
      * As an inner class the constructor will actually have two parameters: the first, referencing
      * the enclosing object, is inserted by the compiler.
-     *
+     */
     class InnerClass {
-        InnerClass(@Repeated(1) String p1) {}
+        InnerClass(@AnnotationA String p1) {}
     }
 
-    /** Special case testing for a compiler-generated constructor parameter. *
-    public void testImplicitConstructorParameters_singleAnnotation() throws Exception {
+    /** Special case testing for a compiler-generated constructor parameter. JLS 8.8.1, JLS 13.1. */
+    public void testImplicitConstructorParameters_innerClass() throws Exception {
         Constructor<InnerClass> constructor =
                 InnerClass.class.getDeclaredConstructor(
                         AnnotatedElementParameterTest.class, String.class);
         Parameter[] parameters = constructor.getParameters();
 
+        // The parameter annotation code behaves as if there are two parameters.
+
         // The compiler-generated constructor should have no annotations.
         Parameter parameter0 = parameters[0];
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
-                parameter0, Repeated.class, new String[0]);
+                parameter0, AnnotationA.class, new String[0]);
         AnnotatedElementTestSupport.assertGetDeclaredAnnotationsByType(
-                parameter0, Repeated.class, new String[0]);
+                parameter0, AnnotationA.class, new String[0]);
         AnnotatedElementTestSupport.assertGetDeclaredAnnotation(
-                parameter0, Repeated.class, null);
-        AnnotatedElementTestSupport.assertIsAnnotationPresent(parameter0, Repeated.class, false);
+                parameter0, AnnotationA.class, null);
+        AnnotatedElementTestSupport.assertIsAnnotationPresent(parameter0, AnnotationA.class, false);
 
         // The annotation should remain on the correct parameter.
         Parameter parameter1 = parameters[1];
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
-                parameter1, Repeated.class, new String[] {"@Repeated(1)"});
+                parameter1, AnnotationA.class, new String[] {"@AnnotationA"});
         AnnotatedElementTestSupport.assertGetDeclaredAnnotationsByType(
-                parameter1, Repeated.class, new String[] {"@Repeated(1)"});
+                parameter1, AnnotationA.class, new String[] {"@AnnotationA"});
         AnnotatedElementTestSupport.assertGetDeclaredAnnotation(
-                parameter1, Repeated.class, "@Repeated(1)");
+                parameter1, AnnotationA.class, "@AnnotationA");
         AnnotatedElementTestSupport.assertIsAnnotationPresent(
-                parameter1, Repeated.class, true);
-    } */
+                parameter1, AnnotationA.class, true);
+    }
+
+    static abstract class AnonymousBaseClass {
+        public AnonymousBaseClass(@AnnotationA String p1) {}
+    }
+
+    /** Special case testing for a compiler-generated constructor parameter. JLS 13.1 */
+    public void testImplicitConstructorParameters_anonymousClass() throws Exception {
+        /*
+         * As an anonymous class the constructor will actually have two parameters: the first,
+         * referencing the enclosing object, is inserted by the compiler.
+         */
+        AnonymousBaseClass anonymousClassInstance = new AnonymousBaseClass("p1") {
+            /* J2ObjC: capture the enclosing object by invoking an instance method. */
+            void captureEnclosingObject() throws Exception {
+                testConstructorParameterAnnotations();
+            };
+        };
+
+        Constructor<? extends AnonymousBaseClass> constructor =
+                anonymousClassInstance.getClass().getDeclaredConstructor(
+                        AnnotatedElementParameterTest.class, String.class);
+        Parameter[] parameters = constructor.getParameters();
+        assertEquals(2, parameters.length);
+
+        // The parameter annotation code behaves as if there are two parameters.
+
+        // This is the synthetic parameter.
+        Parameter parameter0 = parameters[0];
+        AnnotatedElementTestSupport.assertGetAnnotationsByType(
+                parameter0, AnnotationA.class, new String[0]);
+        AnnotatedElementTestSupport.assertGetDeclaredAnnotationsByType(
+                parameter0, AnnotationA.class, new String[0]);
+        AnnotatedElementTestSupport.assertGetDeclaredAnnotation(
+                parameter0, AnnotationA.class, null);
+        AnnotatedElementTestSupport.assertIsAnnotationPresent(parameter0, AnnotationA.class, false);
+
+        // There's no annotation since we cannot annotate the parameter on the anonymous class.
+        Parameter parameter1 = parameters[1];
+        AnnotatedElementTestSupport.assertGetAnnotationsByType(
+                parameter1, AnnotationA.class, new String[0]);
+        AnnotatedElementTestSupport.assertGetDeclaredAnnotationsByType(
+                parameter1, AnnotationA.class, new String[0]);
+        AnnotatedElementTestSupport.assertGetDeclaredAnnotation(
+                parameter1, AnnotationA.class, null);
+        AnnotatedElementTestSupport.assertIsAnnotationPresent(parameter1, AnnotationA.class, false);
+    }
+
+    /**
+     * A static inner / nested member class will not have synthetic parameters and should behave
+     * like a top-level class.
+     */
+    static class StaticInnerClass {
+        StaticInnerClass(@AnnotationA String p1) {}
+    }
+
+    /** Special case testing for a compiler-generated constructor parameter. */
+    public void testImplicitConstructorParameters_staticInnerClass() throws Exception {
+        Constructor<StaticInnerClass> constructor =
+                StaticInnerClass.class.getDeclaredConstructor(String.class);
+        Parameter[] parameters = constructor.getParameters();
+        assertEquals(1, parameters.length);
+
+        Parameter parameter0 = parameters[0];
+        AnnotatedElementTestSupport.assertGetAnnotationsByType(
+                parameter0, AnnotationA.class, new String[] {"@AnnotationA"});
+        AnnotatedElementTestSupport.assertGetDeclaredAnnotationsByType(
+                parameter0, AnnotationA.class, new String[] {"@AnnotationA"});
+        AnnotatedElementTestSupport.assertGetDeclaredAnnotation(
+                parameter0, AnnotationA.class, "@AnnotationA");
+        AnnotatedElementTestSupport.assertIsAnnotationPresent(
+                parameter0, AnnotationA.class, true);
+    }
 }

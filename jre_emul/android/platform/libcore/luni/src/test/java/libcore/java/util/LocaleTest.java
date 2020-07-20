@@ -1130,6 +1130,7 @@ public class LocaleTest extends junit.framework.TestCase {
 
     // Tests cases where our "guess" for the output size is incorrect.
     //
+    // https://b.corp.google.com/issue?id=13414549
     public void test_toLanguageTag_largerTag() {
         Locale posix = new Locale.Builder()
                 .setLanguage("en").setRegion("US").setVariant("POSIX")

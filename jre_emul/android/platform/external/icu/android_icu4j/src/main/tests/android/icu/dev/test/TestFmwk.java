@@ -141,7 +141,7 @@ abstract public class TestFmwk extends AbstractTestLog {
         }
 
         StringBuffer descBuf = new StringBuffer();
-        // TODO(user) : what to do about this?
+        // TODO(junit) : what to do about this?
         //getParams().stack.appendPath(descBuf);
         if (comment != null && comment.length() > 0) {
             descBuf.append(" (" + comment + ")");
@@ -728,7 +728,7 @@ abstract public class TestFmwk extends AbstractTestLog {
         if (level == TestLog.WARN || level == TestLog.ERR) {
             Assert.fail(message);
         }
-        // TODO(user): turned off - causing OOM running under ant
+        // TODO(stuartg): turned off - causing OOM running under ant
 //        while (level > 0) {
 //            System.out.print(" ");
 //            level--;

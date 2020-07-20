@@ -28,6 +28,9 @@
 #import "java/io/IOException.h"
 #import "jni_util.h"
 
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 @class SslInputStream;
 @class SslOutputStream;
 static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t *dataLength);
@@ -538,9 +541,9 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 #if !__has_feature(objc_arc)
 - (void)dealloc {
-  [super dealloc];
   [underlyingSocket release];
   [hostname release];
+  [super dealloc];
 }
 #endif
 
@@ -761,6 +764,8 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(WrapperSocket)
+
 // public IosSslSocket(Socket s, String host, int port, boolean autoClose)
 void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
     WrapperSocket *self, JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) {
@@ -789,3 +794,5 @@ create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_with
 
 J2OBJC_CLASS_INITIALIZE_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
+
+#pragma clang diagnostic pop

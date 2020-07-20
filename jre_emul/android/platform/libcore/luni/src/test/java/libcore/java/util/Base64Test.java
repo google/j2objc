@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import libcore.util.HexEncoding;
+
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Arrays.copyOfRange;
 
@@ -1115,16 +1117,9 @@ public class Base64Test extends TestCase {
     /** Checks array contents. */
     private static void assertArrayEquals(byte[] expected, byte[] actual) {
         if (!Arrays.equals(expected, actual)) {
-            fail("Expected " + hexString(expected) + ", got " + hexString(actual));
+            fail("Expected " + HexEncoding.encodeToString(expected)
+                    + ", got " + HexEncoding.encodeToString(actual));
         }
-    }
-
-    private static String hexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder("0x");
-        for (byte b : bytes) {
-            sb.append(Integer.toHexString(b & 0xff));
-        }
-        return sb.toString();
     }
 
     private static void assertThrowsNpe(Runnable runnable) {

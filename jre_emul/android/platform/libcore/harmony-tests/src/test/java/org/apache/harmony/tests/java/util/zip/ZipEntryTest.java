@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,23 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.attribute.FileTime;
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import libcore.io.Streams;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import tests.support.resource.Support_Resources;
 
-public class ZipEntryTest extends junit.framework.TestCase {
+public class ZipEntryTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
+
     // zip file hyts_ZipFile.zip must be included as a resource
     private ZipEntry zentry;
     private ZipFile zfile;
@@ -152,6 +162,27 @@ public class ZipEntryTest extends junit.framework.TestCase {
     public void test_getTime() {
         // Test for method long java.util.zip.ZipEntry.getTime()
         assertEquals("Failed to get time", orgTime, zentry.getTime());
+    }
+
+    /**
+     * java.util.zip.ZipEntry#getCreationTime()
+     */
+    public void test_getCreationTime() {
+        assertNull(zentry.getCreationTime());
+    }
+
+    /**
+     * java.util.zip.ZipEntry#getLastAccessTime()
+     */
+    public void test_getLastAccessTime() {
+        assertNull(zentry.getLastAccessTime());
+    }
+
+    /**
+     * java.util.zip.ZipEntry#getLastModifiedTime()
+     */
+    public void test_getLastModifiedTime() {
+        assertEquals(orgTime, zentry.getLastModifiedTime().toMillis());
     }
 
     /**
@@ -341,27 +372,68 @@ public class ZipEntryTest extends junit.framework.TestCase {
                 zentry.getTime());
         TimeZone zone = TimeZone.getDefault();
         try {
+            // These cases are supported since Android O thanks to
+            // Info-ZIP Extended Timestamp. Before Android O/openJdk8
+            // these cases would behave differently.
             TimeZone.setDefault(TimeZone.getTimeZone("EST"));
             zentry.setTime(0);
             assertEquals("Test 3: Failed to set time: " + zentry.getTime(),
-                    315550800000L, zentry.getTime());
+                    0L, zentry.getTime());
             TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
             assertEquals("Test 3a: Failed to set time: " + zentry.getTime(),
-                    315532800000L, zentry.getTime());
+                    0L, zentry.getTime());
             zentry.setTime(0);
             TimeZone.setDefault(TimeZone.getTimeZone("EST"));
             assertEquals("Test 3b: Failed to set time: " + zentry.getTime(),
-                    315550800000L, zentry.getTime());
+                    0L, zentry.getTime());
 
             zentry.setTime(-25);
             assertEquals("Test 4: Failed to set time: " + zentry.getTime(),
-                    315550800000L, zentry.getTime());
+                    -25L, zentry.getTime());
             zentry.setTime(4354837200000L);
             assertEquals("Test 5: Failed to set time: " + zentry.getTime(),
-                    315550800000L, zentry.getTime());
+                    4354837200000L, zentry.getTime());
         } finally {
             TimeZone.setDefault(zone);
         }
+    }
+
+    /**
+     * java.util.zip.ZipEntry#setLastModifiedTime(FileTime)
+     */
+    public void test_setLastModifiedTime() {
+        zentry.setLastModifiedTime(FileTime.fromMillis(0));
+        assertEquals(0, zentry.getLastModifiedTime().toMillis());
+        assertEquals(0, zentry.getTime());
+
+        final long someTimestampValue = 1478624967000L;
+        zentry.setLastModifiedTime(FileTime.fromMillis(someTimestampValue));
+        assertEquals(someTimestampValue, zentry.getLastModifiedTime().toMillis());
+        assertEquals(someTimestampValue, zentry.getTime());
+    }
+
+    /**
+     * java.util.zip.ZipEntry#setCreationTime(FileTime)
+     */
+    public void test_setCreationTime() {
+        zentry.setCreationTime(FileTime.fromMillis(0));
+        assertEquals(0, zentry.getCreationTime().toMillis());
+
+        final long someTimestampValue = 1478624967000L;
+        zentry.setCreationTime(FileTime.fromMillis(someTimestampValue));
+        assertEquals(someTimestampValue, zentry.getCreationTime().toMillis());
+    }
+
+    /**
+     * java.util.zip.ZipEntry#setLastAccessTime(FileTime)
+     */
+    public void test_setLastAccessTime() {
+        zentry.setLastAccessTime(FileTime.fromMillis(0));
+        assertEquals(0, zentry.getLastAccessTime().toMillis());
+
+        final long someTimestampValue = 1478624967000L;
+        zentry.setLastAccessTime(FileTime.fromMillis(someTimestampValue));
+        assertEquals(someTimestampValue, zentry.getLastAccessTime().toMillis());
     }
 
     /**
@@ -450,4 +522,3 @@ public class ZipEntryTest extends junit.framework.TestCase {
         }
     }
 }
-

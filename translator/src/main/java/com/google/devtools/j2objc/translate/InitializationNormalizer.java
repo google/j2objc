@@ -142,10 +142,9 @@ public class InitializationNormalizer extends UnitTreeVisitor {
      * add them to the appropriate list of initialization statements.
      */
     private void addFieldInitializer(FieldDeclaration field) {
-      for (VariableDeclarationFragment frag : field.getFragments()) {
-        if (frag.getInitializer() != null) {
-          handleFieldInitializer(frag);
-        }
+      VariableDeclarationFragment frag = field.getFragment();
+      if (frag.getInitializer() != null) {
+        handleFieldInitializer(frag);
       }
     }
 
@@ -172,8 +171,7 @@ public class InitializationNormalizer extends UnitTreeVisitor {
         }
         return;
       }
-      if (constantValue instanceof String) {//
-          //&& (Options.useGC() || !UnicodeUtils.hasValidCppCharacters((String) constantValue))) {
+      if (constantValue instanceof String && !ElementUtil.isStringConstant(frag.getVariableElement())) {
         // String constant that can't be an ObjC literal. Move it to the class initializer but order
         // constants such as this before other init statements.
         classInitStatements.add(constInitIdx++, makeAssignmentStatement(frag));

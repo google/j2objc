@@ -50,24 +50,36 @@ public class IosMD5MessageDigest extends MessageDigest implements Cloneable {
 
   @Override
   protected native void engineReset() /*-[
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     CC_MD5_Init((CC_MD5_CTX *)ctx_);
+#pragma clang diagnostic pop
   ]-*/;
 
   @Override
   protected native void engineUpdate(byte input) /*-[
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     CC_MD5_Update((CC_MD5_CTX *)ctx_, &input, 1);
+#pragma clang diagnostic pop
   ]-*/;
 
   @Override
   protected native void engineUpdate(byte[] input, int offset, int len) /*-[
     IOSArray_checkRange(input->size_, offset, len);
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     CC_MD5_Update((CC_MD5_CTX *)ctx_, input->buffer_ + offset, len);
+#pragma clang diagnostic pop
   ]-*/;
 
   @Override
   protected native byte[] engineDigest() /*-[
     IOSByteArray *md = [IOSByteArray arrayWithLength:CC_MD5_DIGEST_LENGTH];
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     CC_MD5_Final((unsigned char *)md->buffer_, (CC_MD5_CTX *)ctx_);
+#pragma clang diagnostic pop
     [self engineReset];
     return md;
   ]-*/;

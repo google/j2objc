@@ -23,9 +23,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+import java.util.HashSet;
 import libcore.io.Streams;
 //import libcore.java.lang.ref.FinalizationTester;
 import tests.support.resource.Support_Resources;
@@ -395,6 +400,48 @@ public class ZipFileTest extends junit.framework.TestCase {
         }
 
         is.close();
+    }
+
+    /**
+     * java.util.zip.ZipFile#stream()
+     */
+    public void test_stream() {
+        assertEquals(6,  zfile.stream().count());
+        final List<String> names = new ArrayList<>();
+        zfile.stream().forEach((ZipEntry entry) -> names.add(entry.getName()));
+        assertEquals(Arrays.asList("File1.txt","File2.txt","File3.txt",
+                "testdir1/","testdir1/File1.txt",
+                "testdir1/testdir1"), names);
+    }
+
+    public void test_sameNamesDifferentCase() throws Exception {
+        // Create a
+        final File tempFile = File.createTempFile("smdc", "zip");
+        try {
+            // Create a zip file with multiple entries with same text and different
+            // capitalization
+            FileOutputStream tempFileStream = new FileOutputStream(tempFile);
+            ZipOutputStream zipOutputStream = new ZipOutputStream(tempFileStream);
+            zipOutputStream.putNextEntry(new ZipEntry("test.txt"));
+            zipOutputStream.write(new byte[2]);
+            zipOutputStream.closeEntry();
+            zipOutputStream.putNextEntry(new ZipEntry("Test.txt"));
+            zipOutputStream.write(new byte[2]);
+            zipOutputStream.closeEntry();
+            zipOutputStream.putNextEntry(new ZipEntry("TEST.TXT"));
+            zipOutputStream.write(new byte[2]);
+            zipOutputStream.closeEntry();
+            zipOutputStream.close();
+            tempFileStream.close();
+
+            ZipFile zipFile = new ZipFile(tempFile);
+            final List<String> names = new ArrayList<>();
+            zipFile.stream().forEach((ZipEntry entry) -> names.add(entry.getName()));
+            assertEquals(Arrays.asList("test.txt", "Test.txt", "TEST.TXT"), names);
+        } finally {
+            tempFile.delete();
+        }
+
     }
 
     @Override

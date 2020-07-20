@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charsets;
-import static java.nio.charset.Charsets.UTF_8;
+import java.nio.charset.StandardCharsets;
 import libcore.io.IoUtils;
 
 /**
@@ -92,6 +91,12 @@ public abstract class ResourceBundle {
     private Locale locale;
 
     private long lastLoadTime = 0;
+
+    private String name;
+
+    public String getBaseBundleName() {
+        return name;
+    }
 
     static class MissingBundle extends ResourceBundle {
         @Override
@@ -510,6 +515,7 @@ public abstract class ResourceBundle {
 
         if (bundle != null) {
             bundle.setLocale(locale);
+            bundle.setName(bundleName);
         } else {
             String fileName = bundleName.replace('.', '/') + ".properties";
             InputStream stream = loader != null
@@ -517,8 +523,10 @@ public abstract class ResourceBundle {
                     : ClassLoader.getSystemResourceAsStream(fileName);
             if (stream != null) {
                 try {
-                    bundle = new PropertyResourceBundle(new InputStreamReader(stream, UTF_8));
+                    bundle = new PropertyResourceBundle(
+                        new InputStreamReader(stream, StandardCharsets.UTF_8));
                     bundle.setLocale(locale);
+                    bundle.setName(bundleName);
                 } catch (IOException ignored) {
                 } finally {
                     IoUtils.closeQuietly(stream);
@@ -603,6 +611,10 @@ public abstract class ResourceBundle {
 
     private void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 
     public static void clearCache() {
@@ -899,6 +911,7 @@ public abstract class ResourceBundle {
                 try {
                     ResourceBundle bundle = (ResourceBundle) cls.newInstance();
                     bundle.setLocale(locale);
+                    bundle.setName(bundleName);
                     return bundle;
                 } catch (NullPointerException e) {
                     return null;
@@ -928,6 +941,7 @@ public abstract class ResourceBundle {
                     try {
                         ret = new PropertyResourceBundle(new InputStreamReader(streams));
                         ret.setLocale(locale);
+                        ret.setName(bundleName);
                         streams.close();
                     } catch (IOException e) {
                         return null;

@@ -35,10 +35,8 @@ import java.io.ByteArrayInputStream;
 
 import java.nio.ByteBuffer;
 
-/*
-Android-removed: this debugging mechanism is not available in Android.
-import sun.security.util.Debug;
-*/
+import sun.security.jca.Providers;
+
 /**
  * This MessageDigest class provides applications the functionality of a
  * message digest algorithm, such as SHA-1 or SHA-256.
@@ -122,7 +120,7 @@ import sun.security.util.Debug;
  * </table>
  *
  * These algorithms are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#MessageDigest">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#MessageDigest">
  * MessageDigest section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -134,8 +132,8 @@ import sun.security.util.Debug;
 
 public abstract class MessageDigest extends MessageDigestSpi {
 
+    // Android-removed: this debugging mechanism is not used in Android.
     /*
-    Android-removed: this debugging mechanism is not available in Android.
     private static final Debug pdebug =
                         Debug.getInstance("provider", "Provider");
     private static final boolean skipDebug =
@@ -157,7 +155,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      *
      * @param algorithm the standard name of the digest algorithm.
      * See the MessageDigest section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#MessageDigest">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#MessageDigest">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      */
@@ -180,7 +178,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      *
      * @param algorithm the name of the algorithm requested.
      * See the MessageDigest section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#MessageDigest">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#MessageDigest">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -205,8 +203,8 @@ public abstract class MessageDigest extends MessageDigestSpi {
             }
             md.provider = (Provider)objs[1];
 
+            // Android-removed: this debugging mechanism is not used in Android.
             /*
-            Android-removed: this debugging mechanism is not available in Android.
             if (!skipDebug && pdebug != null) {
                 pdebug.println("MessageDigest." + algorithm +
                     " algorithm from: " + md.provider.getName());
@@ -234,7 +232,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      *
      * @param algorithm the name of the algorithm requested.
      * See the MessageDigest section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#MessageDigest">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#MessageDigest">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -259,6 +257,10 @@ public abstract class MessageDigest extends MessageDigestSpi {
     {
         if (provider == null || provider.length() == 0)
             throw new IllegalArgumentException("missing provider");
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "MessageDigest", algorithm);
+         */
         Object[] objs = Security.getImpl(algorithm, "MessageDigest", provider);
         if (objs[0] instanceof MessageDigest) {
             MessageDigest md = (MessageDigest)objs[0];
@@ -283,7 +285,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      *
      * @param algorithm the name of the algorithm requested.
      * See the MessageDigest section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#MessageDigest">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#MessageDigest">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -307,6 +309,10 @@ public abstract class MessageDigest extends MessageDigestSpi {
     {
         if (provider == null)
             throw new IllegalArgumentException("missing provider");
+        // Android-added: Check for Bouncy Castle deprecation
+        /* J2ObjC removed: BouncyCastle not supported
+        Providers.checkBouncyCastleDeprecation(provider, "MessageDigest", algorithm);
+         */
         Object[] objs = Security.getImpl(algorithm, "MessageDigest", provider);
         if (objs[0] instanceof MessageDigest) {
             MessageDigest md = (MessageDigest)objs[0];
@@ -450,6 +456,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      * Returns a string representation of this message digest object.
      */
     public String toString() {
+        // BEGIN Android-changed: Use StringBuilder instead of a ByteArrayOutputStream.
         StringBuilder builder = new StringBuilder();
         builder.append(algorithm);
         builder.append(" Message Digest from ");
@@ -466,6 +473,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
         }
 
         return builder.toString();
+        // END Android-changed: Use StringBuilder instead of a ByteArrayOutputStream.
     }
 
     /**
@@ -507,7 +515,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      * implementation details. The name should be a standard
      * Java Security name (such as "SHA", "MD5", and so on).
      * See the MessageDigest section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#MessageDigest">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#MessageDigest">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *

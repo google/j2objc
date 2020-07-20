@@ -237,16 +237,14 @@ public final class ElementUtil {
   public static boolean isConstant(VariableElement element) {
     Object constantValue = element.getConstantValue();
     return constantValue != null
-        && (element.asType().getKind().isPrimitive());
-//            || (constantValue instanceof String
-//                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
+        && (element.asType().getKind().isPrimitive()
+            || constantValue instanceof String);
   }
 
-//  public static boolean isStringConstant(VariableElement element) {
-//    Object constantValue = element.getConstantValue();
-//    return constantValue != null && constantValue instanceof String
-//        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
-//  }
+  public static boolean isStringConstant(VariableElement element) {
+    Object constantValue = element.getConstantValue();
+    return constantValue != null && constantValue instanceof String;
+  }
 
   /**
    * Returns whether this variable will be declared in global scope in ObjC.
@@ -758,10 +756,12 @@ public final class ElementUtil {
   }
 
   private static boolean hasNullabilityAnnotation(Element element, Pattern pattern) {
-    // Ignore nullability annotation on primitive types.
-    if (isMethod(element)
-        && ((ExecutableElement) element).getReturnType().getKind().isPrimitive()) {
-      return false;
+    // Ignore nullability annotation on primitive or void return types.
+    if (isMethod(element)) {
+      TypeKind kind = ((ExecutableElement) element).getReturnType().getKind();
+      if (kind.isPrimitive() || kind == TypeKind.VOID) {
+        return false;
+      }
     }
     if (isVariable(element) && element.asType().getKind().isPrimitive()) {
       return false;

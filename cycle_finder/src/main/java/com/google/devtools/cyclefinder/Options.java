@@ -155,13 +155,9 @@ class Options {
     return externalAnnotations;
   }
 
-  private void addExternalAnnotationFile(String file) throws IOException {
-    externalAnnotations.addExternalAnnotationFile(file);
-  }
-
   @VisibleForTesting
-  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
-    externalAnnotations.addExternalAnnotationFileContents(fileContents);
+  public void addExternalAnnotationFile(String file) throws IOException {
+    externalAnnotations.addExternalAnnotationFile(file);
   }
 
   public void addPlatformModuleSystemOptions(String... flags) {

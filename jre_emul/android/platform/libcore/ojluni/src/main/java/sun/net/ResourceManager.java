@@ -27,6 +27,7 @@ package sun.net;
 
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicInteger;
+import sun.security.action.GetPropertyAction;
 
 /**
  * Manages count of total number of UDP sockets and ensures
@@ -52,12 +53,9 @@ public class ResourceManager {
     private static final AtomicInteger numSockets;
 
     static {
-        /* J2ObjC modified.
         String prop = java.security.AccessController.doPrivileged(
             new GetPropertyAction("sun.net.maxDatagramSockets")
         );
-        */
-        String prop = System.getProperty("sun.net.maxDatagramSockets");
         int defmax = DEFAULT_MAX_SOCKETS;
         try {
             if (prop != null) {

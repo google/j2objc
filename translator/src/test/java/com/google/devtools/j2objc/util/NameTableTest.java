@@ -216,6 +216,12 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "return create_A_init_offset_(@\"foo\", 5);");
   }
 
+  public void testRenamePackagePrivateClassConstructor() throws IOException {
+    String translation = translateSourceFile("package foo.bar; class Test { Test(int unused) {} }",
+        "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslation(translation, "initPackagePrivateWithInt_");
+  }
+
   public void testSuperMethodNotNamedWarning() throws IOException {
     translateSourceFile("class A { void test(String s, int n) {}"
         + "static class B extends A { "

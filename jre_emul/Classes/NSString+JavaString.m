@@ -62,10 +62,7 @@ static void NSString_CaseInsensitiveComparator__clinit__();
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {
-  id exception = [[exceptionClass alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
+  id exception = AUTORELEASE([[exceptionClass alloc] init]);
   return exception;
 }
 
@@ -730,18 +727,12 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   NSLocale* locale =
-      [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
-#if ! __has_feature(objc_arc)
-  [locale autorelease];
-#endif
+      AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]]);
   CFMutableStringRef tempCFMString =
       CFStringCreateMutableCopy(NULL, 0, (ARCBRIDGE CFStringRef)self);
   CFStringLowercase(tempCFMString, (ARCBRIDGE CFLocaleRef)locale);
-  NSString *result = [(ARCBRIDGE NSString*)tempCFMString copy];
+  NSString *result = AUTORELEASE([(ARCBRIDGE NSString*)tempCFMString copy]);
   CFRelease(tempCFMString);
-#if ! __has_feature(objc_arc)
-  [result autorelease];
-#endif
   return result;
 }
 
@@ -750,18 +741,12 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   NSLocale* locale =
-      [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
-#if ! __has_feature(objc_arc)
-  [locale autorelease];
-#endif
+      AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]]);
   CFMutableStringRef tempCFMString =
       CFStringCreateMutableCopy(NULL, 0, (ARCBRIDGE CFStringRef)self);
   CFStringUppercase(tempCFMString, (ARCBRIDGE CFLocaleRef)locale);
-  NSString *result = [(ARCBRIDGE NSString*)tempCFMString copy];
+  NSString *result = AUTORELEASE([(ARCBRIDGE NSString*)tempCFMString copy]);
   CFRelease(tempCFMString);
-#if ! __has_feature(objc_arc)
-  [result autorelease];
-#endif
   return result;
 }
 
@@ -869,31 +854,6 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 + (NSString *)java_joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter
                            withJavaLangIterable:(id<JavaLangIterable>)elements {
   return NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(delimiter, elements);
-}
-
-
-jint javaStringHashCode(NSString *string) {
-  static const char *hashKey = "__JAVA_STRING_HASH_CODE_KEY__";
-  id cachedHash = objc_getAssociatedObject(string, hashKey);
-  if (cachedHash) {
-    return (jint) [(JavaLangInteger *) cachedHash intValue];
-  }
-  jint len = (jint)[string length];
-  jint hash = 0;
-  if (len > 0) {
-    unichar *chars = (unichar *)malloc(len * sizeof(unichar));
-    [string getCharacters:chars range:NSMakeRange(0, len)];
-    for (int i = 0; i < len; i++) {
-      hash = 31 * hash + (jint)chars[i];
-    }
-    free(chars);
-  }
-  if (![string isKindOfClass:[NSMutableString class]]) {
-    // Only cache hash for immutable strings.
-    objc_setAssociatedObject(string, hashKey, JavaLangInteger_valueOfWithInt_(hash),
-                             OBJC_ASSOCIATION_RETAIN);
-  }
-  return hash;
 }
 
 // Java 8 default methods from CharSequence.

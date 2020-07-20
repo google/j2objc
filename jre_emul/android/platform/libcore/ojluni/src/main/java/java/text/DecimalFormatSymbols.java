@@ -66,8 +66,7 @@ import libcore.icu.LocaleData;
 
 public class DecimalFormatSymbols implements Cloneable, Serializable {
 
-    // Android-changed: Removed reference to DecimalFormatSymbolsProvider but suggested
-    // getInstance() be used instead in case Android supports it in future.
+    // Android-changed: Removed reference to DecimalFormatSymbolsProvider, suggested getInstance().
     /**
      * Create a DecimalFormatSymbols object for the default
      * {@link java.util.Locale.Category#FORMAT FORMAT} locale.
@@ -83,8 +82,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         initialize( Locale.getDefault(Locale.Category.FORMAT) );
     }
 
-    // Android-changed: Removed reference to DecimalFormatSymbolsProvider but suggested
-    // getInstance() be used instead in case Android supports it in future.
+    // Android-changed: Removed reference to DecimalFormatSymbolsProvider, suggested getInstance().
     /**
      * Create a DecimalFormatSymbols object for the given locale.
      * It is recommended that the {@link #getInstance(Locale) getInstance} method is used
@@ -244,6 +242,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         return percent;
     }
 
+    // Android-added: getPercentString() for percent signs longer than one char.
     /**
      * Gets the string used for percent sign. Different for Arabic, etc.
      *
@@ -357,6 +356,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
 
+    // Android-added: getPercentString() for percent signs longer than one char.
     /**
      * Gets the string used to represent minus sign. If no explicit
      * negative format is specified, one is formed by prefixing
@@ -440,6 +440,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         if (currencyCode != null) {
             try {
                 currency = Currency.getInstance(currencyCode);
+                // Android-changed: get currencySymbol for locale.
                 currencySymbol = currency.getSymbol(locale);
             } catch (IllegalArgumentException e) {
             }
@@ -608,6 +609,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             int result = zeroDigit;
             result = result * 37 + groupingSeparator;
             result = result * 37 + decimalSeparator;
+            // BEGIN Android-added: more fields in hashcode calculation.
             result = result * 37 + percent;
             result = result * 37 + perMill;
             result = result * 37 + digit;
@@ -621,6 +623,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             result = result * 37 + monetarySeparator;
             result = result * 37 + exponentialSeparator.hashCode();
             result = result * 37 + locale.hashCode();
+           // END Android-added: more fields in hashcode calculation.
             return result;
     }
 
@@ -712,12 +715,14 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     // Android-changed: maybeStripMarkers added in b/26207216, fixed in b/32465689.
     /**
-     * Attempts to strip RTL, LTR and Arabic letter markers from {@code symbol}. If the symbol's
-     * length is 1, then the first char of the symbol is returned. If the symbol's length is more
-     * than 1 and the first char is a marker, then this marker is ignored. In all other cases,
-     * {@code fallback} is returned.
+     * Attempts to strip RTL, LTR and Arabic letter markers from {@code symbol}.
+     * If the string contains a single non-marker character (and any number of marker characters),
+     * then that character is returned, otherwise {@code fallback} is returned.
+     *
+     * @hide
      */
-    private static char maybeStripMarkers(String symbol, char fallback) {
+    // VisibleForTesting
+    public static char maybeStripMarkers(String symbol, char fallback) {
         final int length = symbol.length();
         if (length == 1) {
             return symbol.charAt(0);
@@ -733,6 +738,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         return fallback;
     }
 
+    // BEGIN Android-added: getIcuDecimalFormatSymbols() and fromIcuInstance().
     /**
      * Convert an instance of this class to the ICU version so that it can be used with ICU4J.
      * @hide
@@ -743,12 +749,20 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         }
 
         cachedIcuDFS = new android.icu.text.DecimalFormatSymbols(this.locale);
+        // Do not localize plus sign. See "Special Pattern Characters" section in DecimalFormat.
+        // http://b/67034519
+        cachedIcuDFS.setPlusSign('+');
         cachedIcuDFS.setZeroDigit(zeroDigit);
         cachedIcuDFS.setDigit(digit);
         cachedIcuDFS.setDecimalSeparator(decimalSeparator);
         cachedIcuDFS.setGroupingSeparator(groupingSeparator);
+        // {@link #setGroupingSeparator(char)} should set grouping separator for currency, but
+        // ICU has a separate API setMonetaryGroupingSeparator. Need to call it explicitly here.
+        // http://b/38021063
+        cachedIcuDFS.setMonetaryGroupingSeparator(groupingSeparator);
         cachedIcuDFS.setPatternSeparator(patternSeparator);
         cachedIcuDFS.setPercent(percent);
+        cachedIcuDFS.setPerMill(perMill);
         cachedIcuDFS.setMonetaryDecimalSeparator(monetarySeparator);
         cachedIcuDFS.setMinusSign(minusSign);
         cachedIcuDFS.setInfinity(infinity);
@@ -853,6 +867,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         fields.put("percentStr", getPercentString());
         stream.writeFields();
     }
+    // END Android-added: Android specific serialization code.
 
     /**
      * Reads the default serializable fields, provides default values for objects
@@ -925,6 +940,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         } catch (IllegalArgumentException e) {
             currency = null;
         }
+        // END Android-changed: Android specific serialization code.
     }
 
     /**
@@ -1095,9 +1111,11 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      */
     private int serialVersionOnStream = currentSerialVersion;
 
+    // BEGIN Android-added: cache for cachedIcuDFS.
     /**
-     * cache to hold the NumberElements and the Currency
-     * of a Locale.
+     * Lazily created cached instance of an ICU DecimalFormatSymbols that's equivalent to this one.
+     * This field is reset to null whenever any of the relevant fields of this class are modified
+     * and will be re-created by {@link #getIcuDecimalFormatSymbols()} as necessary.
      */
     private static final ConcurrentHashMap<Locale, Object[]> cachedLocaleData = new ConcurrentHashMap<Locale, Object[]>(3);
 

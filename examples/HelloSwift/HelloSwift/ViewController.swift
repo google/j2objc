@@ -35,6 +35,36 @@ class ViewController: UIViewController {
     textView.text = text
   }
 
+  // It fails to build if the JRE was not build with nullability annotations.
+  func testNonNullReturnTypes() {
+    let b = JavaLangBoolean.valueOf(with: "x")
+    let _: JavaLangBoolean = b
+
+    let f = JavaLangFloat.valueOf(with: 3.14)
+    let _: JavaLangFloat = f
+
+    let h = JavaLangLong.toHexString(withLong: 100)
+    let _: String = h
+
+    let it = JavaUtilArrayList().iterator()
+    let _: JavaUtilIterator = it
+
+    let t = JavaUtilCalendar.getInstance().getTime()
+    let _: JavaUtilDate = t
+
+    let c = JavaUtilCalendar_Builder().setDateWith(2019, with: 10, with: 18).build()
+    let _: JavaUtilCalendar = c
+
+    let e = JavaUtilVector().elements()
+    let _: JavaUtilEnumeration = e
+
+    let r = JavaUtilRegexPattern.compile(with: ".*")
+    let _: JavaUtilRegexPattern = r
+
+    let nf = JavaTextNumberFormat.getInstance().format(with: 2.71828)
+    let _: String = nf
+  }
+
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.

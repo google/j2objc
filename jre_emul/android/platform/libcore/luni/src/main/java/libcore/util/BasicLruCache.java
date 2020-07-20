@@ -16,18 +16,21 @@
 
 package libcore.util;
 
-import java.util.Iterator;
+import dalvik.annotation.compat.UnsupportedAppUsage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * A minimal least-recently-used cache for libcore. Prefer {@code
  * android.util.LruCache} where that is available.
+ * @hide
  */
 public class BasicLruCache<K, V> {
+    @UnsupportedAppUsage
     private final LinkedHashMap<K, V> map;
     private final int maxSize;
 
+    @UnsupportedAppUsage
     public BasicLruCache(int maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException("maxSize <= 0");
@@ -42,22 +45,35 @@ public class BasicLruCache<K, V> {
      * head of the queue. This returns null if a value is not cached and cannot
      * be created.
      */
-    public synchronized final V get(K key) {
+    @UnsupportedAppUsage
+    public final V get(K key) {
         if (key == null) {
             throw new NullPointerException("key == null");
         }
 
-        V result = map.get(key);
-        if (result != null) {
-            return result;
+        V result;
+        synchronized (this) {
+            result = map.get(key);
+            if (result != null) {
+                return result;
+            }
         }
 
+        // Don't hold any locks while calling create.
         result = create(key);
 
-        if (result != null) {
-            map.put(key, result);
-            trimToSize(maxSize);
+        synchronized (this) {
+            // NOTE: Another thread might have already inserted a value for |key| into the map.
+            // This shouldn't be an observable change as long as create creates equal values for
+            // equal keys. We will however attempt to trim the map twice, but that shouldn't be
+            // a big deal since uses of this class aren't heavily contended (and this class
+            // isn't design for such usage anyway).
+            if (result != null) {
+                map.put(key, result);
+                trimToSize(maxSize);
+            }
         }
+
         return result;
     }
 
@@ -68,6 +84,7 @@ public class BasicLruCache<K, V> {
      * @return the previous value mapped by {@code key}. Although that entry is
      *     no longer cached, it has not been passed to {@link #entryEvicted}.
      */
+    @UnsupportedAppUsage
     public synchronized final V put(K key, V value) {
         if (key == null) {
             throw new NullPointerException("key == null");
@@ -81,9 +98,8 @@ public class BasicLruCache<K, V> {
     }
 
     private void trimToSize(int maxSize) {
-	Iterator<java.util.Map.Entry<K, V>> iterator = map.entrySet().iterator();
         while (map.size() > maxSize) {
-            Map.Entry<K, V> toEvict = iterator.next();
+            Map.Entry<K, V> toEvict = map.eldest();
 
             K key = toEvict.getKey();
             V value = toEvict.getValue();
@@ -119,6 +135,7 @@ public class BasicLruCache<K, V> {
     /**
      * Clear the cache, calling {@link #entryEvicted} on each removed entry.
      */
+    @UnsupportedAppUsage
     public synchronized final void evictAll() {
         trimToSize(0);
     }

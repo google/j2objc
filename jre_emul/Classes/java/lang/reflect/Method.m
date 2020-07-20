@@ -136,13 +136,11 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
     [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
   }
 
-    // jni에서 호출되는 함수. autorelease pool을 사용하지 않는다.
-    //@autoreleasepool {
   [self invoke:invocation object:object];
+
   if (result) {
     [invocation getReturnValue:result];
   }
-    //}
 }
 
 // Creates a unique method selector by prepending the class name.

@@ -91,13 +91,26 @@ public class TranslationUtilTest extends GenerationTest {
     assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
   }
 
-  public void testJUnit4TestKeepsReflection() {
+  public void testJUnit4TestClassKeepsReflection() {
     options.setStripReflection(true);
     String source =
         "package foo; "
             + "import org.junit.runner.RunWith; "
             + "import org.junit.runners.JUnit4; "
             + "@RunWith(JUnit4.class) public class A {} ";
+    CompilationUnit unit = translateType("foo.A", source);
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+  }
+
+  public void testJUnit4TestKeepsReflection() {
+    options.setStripReflection(true);
+    String source =
+        "package foo; "
+            + "import org.junit.Test; "
+            + "public class A {"
+            + "  @Test public void simpleTest() {}"
+            + "} ";
     CompilationUnit unit = translateType("foo.A", source);
     TranslationUtil translationUtil = unit.getEnv().translationUtil();
     assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));

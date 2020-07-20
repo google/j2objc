@@ -14,13 +14,6 @@
  *
  */
 
-//
-//  ARC+GC.h
-//
-//  Created by daehoon.zee on 19/07/2017.
-//  https://github.com/zeedh/j2objc.git
-//
-
 #ifndef __ARGC_H__
 #define __ARGC_H__
 
@@ -32,7 +25,8 @@ CF_EXTERN_C_BEGIN
 
 @class IOSClass;
 
-@interface ARGCObject : NSObject
+@interface ARGCObject : NSObject {    
+}
 @end
 
         
@@ -61,7 +55,7 @@ void ARGC_assignStrongObject(__strong id* pField, __unsafe_unretained id newValu
 
 
 /* execute garbage collection now. */
-void ARGC_collectGarbage();
+void ARGC_collectGarbage(bool clearSoftRef);
 
 /* set background garbage collection interval. (default: 1000ms) */
 void ARGC_setGarbageCollectionInterval(int time_in_ms);
@@ -70,11 +64,10 @@ void ARGC_setGarbageCollectionInterval(int time_in_ms);
 /* wake garbage collection thread. */
 void ARGC_requestGC();
 
-/* wake garbage collection thread. */
-id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
+id ARGC_allocateArray(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
-id ARGC_globalLock(__unsafe_unretained id obj) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
-id ARGC_globalUnlock(__unsafe_unretained id obj) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
+void ARGC_initStatic(Class cls) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
+
 #define ARGC_FIELD(type, name)
 #define ARGC_PROXY_FIELD(type, name)
 #define ARGC_SYNTHESIZE(type, name)

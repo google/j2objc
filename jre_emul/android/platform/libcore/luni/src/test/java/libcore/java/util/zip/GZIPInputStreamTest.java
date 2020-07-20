@@ -29,11 +29,23 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import junit.framework.TestCase;
 import libcore.io.IoUtils;
 import libcore.io.Streams;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public final class GZIPInputStreamTest extends TestCase {
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+
+public final class GZIPInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule(); */
 
     private static final byte[] HELLO_WORLD_GZIPPED = new byte[] {
         31, -117, 8, 0, 0, 0, 0, 0, 0, 0,  // 10 byte header
@@ -192,19 +204,63 @@ public final class GZIPInputStreamTest extends TestCase {
         }
     }
 
-    public static byte[] gunzip(byte[] bytes) throws IOException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        InputStream in = new GZIPInputStream(bis);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int count;
-        while ((count = in.read(buffer)) != -1) {
-            out.write(buffer, 0, count);
+    public void testNonGzipData() {
+        byte[] data = new byte[100];
+        try (InputStream is = new GZIPInputStream(new ByteArrayInputStream(data), data.length)) {
+            fail();
+        } catch (IOException expected) {
+            // Zeroes do not match the GZIPInputStream.GZIP_MAGIC number.
+            assertEquals("Not in GZIP format", expected.getMessage());
+        }
+    }
+
+    /**
+     * Test a openJdk8 fix for case where GZIPInputStream.readTrailer may accidently
+     * close the input stream if trailing bytes looks "close" enough. Wrapping GZIP in
+     * a ZipOutputStream will do that. */
+    public void testNoCloseInReadTrailerDueToRead() throws IOException {
+        final int numBytes = 128;
+        byte[] data = new byte[numBytes];
+        final boolean[] closedHolder = new boolean[]{false};
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+            zipOutputStream.putNextEntry(new ZipEntry("entry1"));
+            try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(zipOutputStream)) {
+                gzipOutputStream.write(data);
+            }
         }
 
-        byte[] outArray = out.toByteArray();
-        in.close();
+        final byte[] compressedData = byteArrayOutputStream.toByteArray();
+        InputStream byteArrayInputStream =
+            new ByteArrayInputStream(compressedData) {
+                @Override
+                public void close() throws IOException {
+                    closedHolder[0] = true;
+                }
+            };
 
-        return outArray;
+        try (ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
+            zipInputStream.getNextEntry();
+            try (InputStream in = new GZIPInputStream(zipInputStream)) {
+                assertEquals(numBytes, in.skip(numBytes+1));
+                assertFalse(closedHolder[0]);
+            }
+            assertTrue(closedHolder[0]);
+        }
+    }
+
+    public static byte[] gunzip(byte[] bytes) throws IOException {
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        try (InputStream in = new GZIPInputStream(bis)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = in.read(buffer)) != -1) {
+                out.write(buffer, 0, count);
+            }
+
+            return out.toByteArray();
+        }
     }
 }

@@ -148,6 +148,7 @@ public class TimeZoneTest extends TestCase {
         }
     }
 
+    // http://b.corp.google.com/issue?id=6556561
     public void testCustomZoneIds() throws Exception {
         // These are all okay (and equivalent).
         /* J2ObjC: Result is "GMT+0500".

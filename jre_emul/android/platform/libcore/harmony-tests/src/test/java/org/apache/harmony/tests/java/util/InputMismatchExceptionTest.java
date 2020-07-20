@@ -52,6 +52,7 @@ public class InputMismatchExceptionTest extends TestCase {
      * serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
+
         SerializationTest.verifySelf(new InputMismatchException(ERROR_MESSAGE));
     }
 
@@ -59,6 +60,7 @@ public class InputMismatchExceptionTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
+
         SerializationTest.verifyGolden(this, new InputMismatchException(
                 ERROR_MESSAGE));
     }

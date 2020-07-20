@@ -164,7 +164,7 @@ void JreExtendIOSClass(Class _class) J2OBJC_METHOD_ATTR {
   //IOSClass *javaClass = [[IOSProxyClass alloc] initWithClass:_class metadata:&proxyClassMetadata name:name simpleNamePos:(int)name.length];
   IOSClass *javaClass = [[IOSConcreteClass alloc] initWithClass:_class metadata:&JreEmptyClassInfo name:name simpleNamePos:(int)name.length];
   ARGC_bindJavaClass(_class, javaClass);
-  // super.__clinit__() 를 호출한다.
+
   IOSClass *superClass = [javaClass getSuperclass];
   superClass->metadata_->initialize();
 }
@@ -202,6 +202,12 @@ IOSClass* ARGC_getIOSProtocolClass(Protocol* protocol) NS_RETURNS_RETAINED J2OBJ
   return RETAIN_(javaClass);
 }
 
+void ARGC_initStatic(Class c) {
+  IOSClass* iosClass = ARGC_getIOSClass(c);
+  if (iosClass != NULL) {
+    iosClass->metadata_->initialize();
+  }
+}
 
 @implementation IOSClass
 
@@ -631,6 +637,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
         PackagePrefixLoader *loader = [[PackagePrefixLoader alloc] init];
         [JavaUtilProperties loadLineReaderWithJavaUtilProperties_LineReader:lr
                                       withJavaUtilProperties_KeyValueLoader:loader];
+        RELEASE_(loader);
       }
     });
   }
@@ -1005,8 +1012,19 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
-  return LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+  IOSObjectArray *annotations = LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
       self, annotationClass);
+  if (annotations->size_ > 0) {
+    return annotations;
+  }
+
+  if ([annotationClass getDeclaredAnnotationWithIOSClass:JavaLangAnnotationInherited_class_()]) {
+    IOSClass *superClass = [self getSuperclass];
+    if (superClass) {
+      return [superClass getAnnotationsByTypeWithIOSClass:annotationClass];
+    }
+  }
+  return annotations;
 }
 
 - (IOSObjectArray *)getDeclaredAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
@@ -1069,13 +1087,21 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   };
 }
 
+__attribute__((noreturn))
+static void ThrowNoSuchFieldException(IOSClass *iosClass, NSString *fieldName) {
+  NSMutableString *msg = [NSMutableString stringWithString:fieldName];
+  [msg appendString:@". "];
+  [msg appendString:JreMetadataToString(iosClass)];
+  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:msg]);
+}
+
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   (void)nil_chk(name);
   JavaLangReflectField *field = FindDeclaredField(self, name, false);
   if (field) {
     return field;
   }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  ThrowNoSuchFieldException(self, name);
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
@@ -1084,7 +1110,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
   if (field) {
     return field;
   }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  ThrowNoSuchFieldException(self, name);
 }
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
@@ -1273,24 +1299,6 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return ![type isPrimitive];
 }
 
-//
-//OS_INLINE id FastObjectLookup(FastPointerLookup_t *lookup, __unsafe_unretained id key) {
-//    J2ObjcRawValue v;
-//    v.asId = key;
-//    v.asPointer = FastPointerLookup(lookup, v.asPointer);
-//    ARGC_strongRetain(v.asId);
-//    return v.asId;
-//}
-//
-//OS_INLINE bool FastObjectLookupAddMapping(FastPointerLookup_t *lookup, __unsafe_unretained id key, __unsafe_unretained id value) {
-//    J2ObjcRawValue k, v;
-//    k.asId = key;
-//    v.asId = value;
-//    ARGC_strongRetain(value);
-//    return FastPointerLookupAddMapping(lookup, k.asPointer, v.asPointer);
-//}
-
-
 
 // Implementing NSCopying allows IOSClass objects to be used as keys in the
 // class cache.
@@ -1342,13 +1350,8 @@ FOUNDATION_EXPORT void JreInitTestClass(Class testClass) {
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
   // lookup because +initialize makes calls into IOSClass_fromClass().
-#ifdef J2OBJC_USE_GC
   IOSClass * ios_cls = ARGC_getIOSConcreteClass(cls);
   return ios_cls;
-#else
-  IOSClass_initialize();
-  return (IOSClass *)FastObjectLookup(&classLookup, cls);
-#endif
 }
 
 IOSClass* IOSClass_classForIosNameOrNull(NSString* className) {
@@ -1379,27 +1382,12 @@ IOSClass *IOSClass_NewProxyClass(Class cls) {
 }
 
 
-//static IOSProtocolClass *CreateProtocolLookup(Protocol *protocol) {
-//#ifdef J2OBJC_USE_GC
-//  return NULL;
-//#else
-//  return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
-//#endif
-//}
 
 IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
-#ifdef J2OBJC_USE_GC
   IOSClass * ios_cls = ARGC_getIOSProtocolClass(protocol);
   assert (ios_cls != NULL);
   return ios_cls;
-#else
-  return (IOSClass *)FastObjectLookup(&protocolLookup, protocol);
-#endif
 }
-
-//static IOSArrayClass *CreateArrayLookup(IOSClass *componentType) {
-//  return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
-//}
 
 void ARGC_strongRetain(id oid);
 
@@ -1648,9 +1636,6 @@ void NSCopying__init_class__(void);
                         "emulation library. Try adding the -force_load linker flag."];
   }
 
-#ifdef J2OBJC_USE_GC
-  //FastObjectLookupAddMapping(&classLookup, [ARGCObject class], NSObject_class_());
-#endif
 }
 
 

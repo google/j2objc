@@ -12,8 +12,6 @@
 
 # Builds Android's Apache Xalan library.
 
-SUFFIXES:
-
 default: dist
 
 include environment.mk
@@ -42,7 +40,10 @@ include $(J2OBJC_ROOT)/make/fat_lib.mk
 PUBLIC_JAVA_SOURCES = \
     $(shell cd $(SRC_DIR) && find org -name *.java | xargs egrep -l "^(public|protected) ")
 
-STATIC_FRAMEWORK_RESOURCE_FILES = \
+FRAMEWORK_RESOURCE_FILES = \
+	META-INF/services/javax.xml.transform.TransformerFactory \
+	META-INF/services/javax.xml.xpath.XPathFactory \
+	META-INF/services/org.apache.xml.dtm.DTMManager \
 	org/apache/xalan/res/XSLTInfo.properties \
 	org/apache/xml/serializer/Encodings.properties \
 	org/apache/xml/serializer/HTMLEntities.properties \
@@ -52,14 +53,16 @@ STATIC_FRAMEWORK_RESOURCE_FILES = \
 	org/apache/xml/serializer/output_xml.properties \
 	org/apache/xml/serializer/XMLEntities.properties
 
-STATIC_FRAMEWORK_NAME = Xalan
-STATIC_FRAMEWORK_PUBLIC_HEADERS = $(PUBLIC_JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.h)
-include $(J2OBJC_ROOT)/make/static_framework.mk
+FRAMEWORK_NAME = Xalan
+FRAMEWORK_PUBLIC_HEADERS = $(PUBLIC_JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.h)
+include $(J2OBJC_ROOT)/make/framework.mk
 
 fat_lib_dependencies: jre_emul_dist
 
 JAR = $(BUILD_DIR)/j2objc_xalan.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_xalan.jar
+
+MKTEMP_DIR = j2objc-xalan
 
 XALAN_LICENSE = NOTICE
 XALAN_LICENSE_DIST = $(DIST_LICENSE_DIR)/apache_xalan_license.txt
@@ -74,13 +77,13 @@ test: $(FAT_LIBS)
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(ARCH_INCLUDE_DIR)/com/google/common $(DIST_JAR)
 	@rm -rf $(XALAN_LICENSE_DIST)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 
 java: $(DIST_JAR)
 
 $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_xalan.jar"
-	@stage_dir=`mktemp -d -t j2objc-xalan`; \
+	@stage_dir=`${MKTEMP_CMD}`; \
 	$(JAVAC) -sourcepath $(SOURCEPATH) -encoding UTF-8 \
 	    -cp $(DIST_JAR_DIR)/j2objc_annotations.jar -d $$stage_dir \
 	    -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \

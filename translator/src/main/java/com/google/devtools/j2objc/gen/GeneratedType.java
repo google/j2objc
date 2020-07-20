@@ -93,10 +93,7 @@ public class GeneratedType {
 
     HeaderImportCollector headerCollector =
         new HeaderImportCollector(unit, HeaderImportCollector.Filter.PUBLIC_ONLY);
-    boolean isNativeEnum = ElementUtil.isEnum(typeNode.getTypeElement()) && ARGC.inPureObjCMode();
-    if (!isNativeEnum) {
       typeNode.accept(headerCollector);
-    }
     
     HeaderImportCollector privateDeclarationCollector =
         new HeaderImportCollector(unit, HeaderImportCollector.Filter.PRIVATE_ONLY);
@@ -122,11 +119,9 @@ public class GeneratedType {
       privateDeclarationCode = builder.toString();
 
       builder = new SourceBuilder(options.emitLineDirectives());
-    implementationCode = "";
-    if (!isNativeEnum) {
+      implementationCode = "";
       TypeImplementationGenerator.generate(builder, typeNode);
       implementationCode = builder.toString();
-      }
     } else {
       privateDeclarationCode = "";
       implementationCode = String.format(

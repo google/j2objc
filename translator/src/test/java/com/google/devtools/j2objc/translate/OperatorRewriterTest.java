@@ -36,7 +36,25 @@ public class OperatorRewriterTest extends GenerationTest {
         "JreStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
   }
 
-  public void testModAssignOperator() throws IOException {
+  public void testDivisionOperator() {
+    String source = "short s = 0; int i = 3 / s; long l = 7L / s; double d = 9.0 / s;";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(4, stmts.size());
+    assertEquals("jint i = JreIntDiv(3, s);", generateStatement(stmts.get(1)));
+    assertEquals("jlong l = JreLongDiv(7LL, s);", generateStatement(stmts.get(2)));
+    assertEquals("jdouble d = 9.0 / s;", generateStatement(stmts.get(3)));
+  }
+
+  public void testModuloOperator() {
+    String source = "short s = 0; int i = 3 % s; long l = 7L % s; double d = 9.0 % s;";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(4, stmts.size());
+    assertEquals("jint i = JreIntMod(3, s);", generateStatement(stmts.get(1)));
+    assertEquals("jlong l = JreLongMod(7LL, s);", generateStatement(stmts.get(2)));
+    assertEquals("jdouble d = fmod(9.0, s);", generateStatement(stmts.get(3)));
+  }
+
+  public void testModAssignOperator() {
     String source = "float a = 4.2f; a %= 2.1f; double b = 5.6; b %= 1.2; byte c = 3; c %= 2.3; "
         + "short d = 4; d %= 3.4; int e = 5; e %= 4.5; long f = 6; f %= 5.6; char g = 'a'; "
         + "g %= 6.7;";
@@ -61,7 +79,7 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return fmodf(three, four);");
   }
 
-  public void testLShift32WithExtendedOperands() throws IOException {
+  public void testLShift32WithExtendedOperands() {
     String source = "int a; a = 1 << 2; a = 1 << 2 << 3; a = 1 << 2 << 3 << 4;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
@@ -71,7 +89,7 @@ public class OperatorRewriterTest extends GenerationTest {
                  generateStatement(stmts.get(3)));
   }
 
-  public void testURShift64WithExtendedOperands() throws IOException {
+  public void testURShift64WithExtendedOperands() {
     String source = "long a; a = 65535L >>> 2; a = 65535L >>> 2 >>> 3; "
         + "a = 65535L >>> 2 >>> 3 >>> 4;";
     List<Statement> stmts = translateStatements(source);

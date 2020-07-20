@@ -8,6 +8,8 @@ package org.xml.sax.helpers;
 
 import org.xml.sax.Attributes;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 
 /**
  * Default implementation of the Attributes interface.
@@ -563,6 +565,7 @@ public class AttributesImpl implements Attributes
      * @param n The minimum number of attributes that the array must
      *        be able to hold.
      */
+    @UnsupportedAppUsage
     private void ensureCapacity (int n)    {
         if (n <= 0) {
             return;
@@ -595,6 +598,7 @@ public class AttributesImpl implements Attributes
      * @param index The index to report.
      * @exception java.lang.ArrayIndexOutOfBoundsException Always.
      */
+    @UnsupportedAppUsage
     private void badIndex (int index)
     throws ArrayIndexOutOfBoundsException
     {
@@ -609,7 +613,9 @@ public class AttributesImpl implements Attributes
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
+    @UnsupportedAppUsage
     int length;
+    @UnsupportedAppUsage
     String data [];
 
 }

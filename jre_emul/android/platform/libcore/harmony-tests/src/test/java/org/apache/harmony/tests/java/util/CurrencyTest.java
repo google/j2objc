@@ -143,27 +143,27 @@ public class CurrencyTest extends junit.framework.TestCase {
         Currency currUS = Currency.getInstance("USD");
 
         Locale.setDefault(Locale.US);
-        // BEGIN android-changed
+        // BEGIN Android-changed
         // KRW currency symbol is \u20a9 since CLDR1.7 release.
         assertEquals("currK.getSymbol()", "\u20a9", currK.getSymbol());
         // IEP currency symbol is IEP since CLDR2.0 release.
         assertEquals("currI.getSymbol()", "IEP", currI.getSymbol());
-        // END android-changed
+        // END Android-changed
         assertEquals("currUS.getSymbol()", "$", currUS.getSymbol());
 
         Locale.setDefault(new Locale("en", "IE"));
-        // BEGIN android-changed
+        // BEGIN Android-changed
         assertEquals("currK.getSymbol()", "\u20a9", currK.getSymbol());
         assertEquals("currI.getSymbol()", "IEP", currI.getSymbol());
-        assertEquals("currUS.getSymbol()1", "US$", currUS.getSymbol());
-        // END android-changed
+        assertEquals("currUS.getSymbol()", "US$", currUS.getSymbol());
+        // END Android-changed
 
         // Test what happens if the default is an invalid locale, one with the country Korea (KR)
         // but a currently unsupported language. "kr" == Kanuri (Korean is actually "ko").
         // All these values are those defined in the "root" locale or the currency code if one isn't
         // defined.
         Locale.setDefault(new Locale("kr", "KR"));
-        // BEGIN android-changed
+        // BEGIN Android-changed
         assertEquals("currK.getSymbol()", "\u20a9", currK.getSymbol());
         assertEquals("currI.getSymbol()", "IEP", currI.getSymbol());
         /* NSNumberFormatter returns "$" for the currency symbol here.
@@ -223,10 +223,10 @@ public class CurrencyTest extends junit.framework.TestCase {
         // But the RI returns the \uffe5 and Android returns those with \u00a5
         String[] yen     = new String[] {"JPY", "\u00a5", "\u00a5JP", "JP\u00a5", "\uffe5", "\uffe5JP", "JP\uffe5"};
         String[] dollar  = new String[] {"USD", "$", "US$", "$US", "$ US"};
-        // BEGIN android-changed
+        // BEGIN Android-changed
         // Starting CLDR 1.7 release, currency symbol for CAD changed to CA$ in some locales such as ja.
         String[] cDollar = new String[] {"CA$", "CAD", "$", "Can$", "$CA"};
-        // END android-changed
+        // END Android-changed
 
         Currency currE   = Currency.getInstance("EUR");
         Currency currJ   = Currency.getInstance("JPY");

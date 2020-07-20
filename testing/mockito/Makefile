@@ -14,7 +14,6 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES:
 .PHONY: default clean
 
 include environment.mk
@@ -438,8 +437,8 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
 include $(J2OBJC_ROOT)/make/fat_lib.mk
 
-STATIC_FRAMEWORK_NAME = Mockito
-include $(J2OBJC_ROOT)/make/static_framework.mk
+FRAMEWORK_NAME = Mockito
+include $(J2OBJC_ROOT)/make/framework.mk
 
 MOCKITO_LICENSE = LICENSE
 MOCKITO_LICENSE_DIST = $(DIST_LICENSE_DIR)/mockito_license.txt
@@ -492,6 +491,6 @@ test: dist $(DIST_DIR)/j2objcc
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(MOCKITO_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 
 dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)

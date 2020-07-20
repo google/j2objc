@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -69,7 +69,7 @@ import java.util.Locale;
  * behavior is defined by the pattern that you provide as well as the
  * subformats used for inserted arguments.
  *
- * <h4><a name="patterns">Patterns and Their Interpretation</a></h4>
+ * <h3><a name="patterns">Patterns and Their Interpretation</a></h3>
  *
  * <code>MessageFormat</code> uses patterns of the following form:
  * <blockquote><pre>
@@ -126,7 +126,6 @@ import java.util.Locale;
  * valid patterns, but <code>"ab {0'}' de"</code>, <code>"ab } de"</code>
  * and <code>"''{''"</code> are not.
  *
- * <p>
  * <dl><dt><b>Warning:</b><dd>The rules for using quotes within message
  * format patterns unfortunately have shown to be somewhat confusing.
  * In particular, it isn't always obvious to localizers whether single
@@ -147,7 +146,7 @@ import java.util.Locale;
  * table shows how the values map to {@code Format} instances. Combinations not
  * shown in the table are illegal. A <i>SubformatPattern</i> must
  * be a valid pattern string for the {@code Format} subclass used.
- * <p>
+ *
  * <table border=1 summary="Shows how FormatType and FormatStyle values map to Format instances">
  *    <tr>
  *       <th id="ft" class="TableHeadingColor">FormatType
@@ -216,7 +215,6 @@ import java.util.Locale;
  *       <td headers="fs"><i>SubformatPattern</i>
  *       <td headers="sc">{@code new} {@link ChoiceFormat#ChoiceFormat(String) ChoiceFormat}{@code (subformatPattern)}
  * </table>
- * <p>
  *
  * <h4>Usage Information</h4>
  *
@@ -288,10 +286,10 @@ import java.util.Locale;
  * You can create the <code>ChoiceFormat</code> programmatically, as in the
  * above example, or by using a pattern. See {@link ChoiceFormat}
  * for more information.
- * <blockquote><pre>
+ * <blockquote><pre>{@code
  * form.applyPattern(
- *    "There {0,choice,0#are no files|1#is one file|1&lt;are {0,number,integer} files}.");
- * </pre></blockquote>
+ *    "There {0,choice,0#are no files|1#is one file|1<are {0,number,integer} files}.");
+ * }</pre></blockquote>
  *
  * <p>
  * <strong>Note:</strong> As we see above, the string produced
@@ -349,7 +347,8 @@ public class MessageFormat extends Format {
     private static final long serialVersionUID = 6479157306784022952L;
 
     /**
-     * Constructs a MessageFormat for the default locale and the
+     * Constructs a MessageFormat for the default
+     * {@link java.util.Locale.Category#FORMAT FORMAT} locale and the
      * specified pattern.
      * The constructor first sets the locale, then parses the pattern and
      * creates a list of subformats for the format elements contained in it.
@@ -423,6 +422,7 @@ public class MessageFormat extends Format {
      * @param pattern the pattern for this message format
      * @exception IllegalArgumentException if the pattern is invalid
      */
+    @SuppressWarnings("fallthrough") // fallthrough in switch is expected, suppress it
     public void applyPattern(String pattern) {
             StringBuilder[] segments = new StringBuilder[4];
             // Allocate only segments[SEG_RAW] here. The rest are
@@ -690,8 +690,11 @@ public class MessageFormat extends Format {
      *            larger than the number of format elements in the pattern string
      */
     public void setFormat(int formatElementIndex, Format newFormat) {
+        // Android-added: prevent setting unused formatters.
         if (formatElementIndex > maxOffset) {
-            throw new ArrayIndexOutOfBoundsException(maxOffset, formatElementIndex);
+            // Note: maxOffset is maximum index, not the length.
+            throw new ArrayIndexOutOfBoundsException(
+                    "maxOffset=" + maxOffset + "; formatElementIndex=" + formatElementIndex);
         }
         formats[formatElementIndex] = newFormat;
     }
@@ -763,7 +766,7 @@ public class MessageFormat extends Format {
      * as indicated by the first matching line of the following table. An
      * argument is <i>unavailable</i> if <code>arguments</code> is
      * <code>null</code> or has fewer than argumentIndex+1 elements.
-     * <p>
+     *
      * <table border=1 summary="Examples of subformat,argument,and formatted text">
      *    <tr>
      *       <th>Subformat
@@ -780,7 +783,7 @@ public class MessageFormat extends Format {
      *    <tr>
      *       <td><code>instanceof ChoiceFormat</code>
      *       <td><i>any</i>
-     *       <td><code>subformat.format(argument).indexOf('{') >= 0 ?<br>
+     *       <td><code>subformat.format(argument).indexOf('{') &gt;= 0 ?<br>
      *           (new MessageFormat(subformat.format(argument), getLocale())).format(argument) :
      *           subformat.format(argument)</code>
      *    <tr>
@@ -813,6 +816,8 @@ public class MessageFormat extends Format {
      * @param result where text is appended.
      * @param pos On input: an alignment field, if desired.
      *            On output: the offsets of the alignment field.
+     * @return the string buffer passed in as {@code result}, with formatted
+     * text appended
      * @exception IllegalArgumentException if an argument in the
      *            <code>arguments</code> array is not of the type
      *            expected by the format element(s) that use it.
@@ -830,6 +835,9 @@ public class MessageFormat extends Format {
      *     <code>(new {@link #MessageFormat(String) MessageFormat}(pattern)).{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}(arguments, new StringBuffer(), null).toString()</code>
      * </blockquote>
      *
+     * @param pattern   the pattern string
+     * @param arguments object(s) to format
+     * @return the formatted string
      * @exception IllegalArgumentException if the pattern is invalid,
      *            or if an argument in the <code>arguments</code> array
      *            is not of the type expected by the format element(s)
@@ -901,7 +909,7 @@ public class MessageFormat extends Format {
      */
     public AttributedCharacterIterator formatToCharacterIterator(Object arguments) {
         StringBuffer result = new StringBuffer();
-        ArrayList iterators = new ArrayList();
+        ArrayList<AttributedCharacterIterator> iterators = new ArrayList<>();
 
         if (arguments == null) {
             throw new NullPointerException(
@@ -912,7 +920,7 @@ public class MessageFormat extends Format {
             return createAttributedCharacterIterator("");
         }
         return createAttributedCharacterIterator(
-                     (AttributedCharacterIterator[])iterators.toArray(
+                     iterators.toArray(
                      new AttributedCharacterIterator[iterators.size()]));
     }
 
@@ -942,6 +950,10 @@ public class MessageFormat extends Format {
      * is comparing against the pattern "AAD {0} BBB", the error index is
      * 0. When an error occurs, the call to this method will return null.
      * If the source is null, return an empty array.
+     *
+     * @param source the string to parse
+     * @param pos    the parse position
+     * @return an array of parsed objects
      */
     public Object[] parse(String source, ParsePosition pos) {
         if (source == null) {
@@ -1078,14 +1090,14 @@ public class MessageFormat extends Format {
         MessageFormat other = (MessageFormat) super.clone();
 
         // clone arrays. Can't do with utility because of bug in Cloneable
-        other.formats = (Format[]) formats.clone(); // shallow clone
+        other.formats = formats.clone(); // shallow clone
         for (int i = 0; i < formats.length; ++i) {
             if (formats[i] != null)
                 other.formats[i] = (Format)formats[i].clone();
         }
         // for primitives or immutables, shallow clone is enough
-        other.offsets = (int[]) offsets.clone();
-        other.argumentNumbers = (int[]) argumentNumbers.clone();
+        other.offsets = offsets.clone();
+        other.argumentNumbers = argumentNumbers.clone();
 
         return other;
     }
@@ -1228,7 +1240,7 @@ public class MessageFormat extends Format {
      *            expected by the format element(s) that use it.
      */
     private StringBuffer subformat(Object[] arguments, StringBuffer result,
-                                   FieldPosition fp, List characterIterators) {
+                                   FieldPosition fp, List<AttributedCharacterIterator> characterIterators) {
         // note: this implementation assumes a fast substring & index.
         // if this is not true, would be better to append chars one by one.
         int lastOffset = 0;

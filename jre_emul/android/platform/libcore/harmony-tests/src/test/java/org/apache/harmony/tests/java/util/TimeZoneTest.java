@@ -17,6 +17,8 @@
 
 package org.apache.harmony.tests.java.util;
 
+import static com.google.j2objc.util.NativeTimeZoneTest.isNativeTimeZone;
+
 import tests.support.Support_TimeZone;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -143,7 +145,8 @@ public class TimeZoneTest extends junit.framework.TestCase {
         assertEquals("Must return proper GMT formatted string for GMT+8:30 (eg. GMT+08:20).",
                 "GMT+08:30", TimeZone.getTimeZone("GMT+8:30").getID());*/
         assertEquals("Must return proper GMT formatted string for GMT+3 (eg. GMT+08:20).",
-                "GMT+03:00", TimeZone.getTimeZone("GMT+3").getID());
+                isNativeTimeZone("GMT+3") ? "GMT+0300" : "GMT+03:00",
+                TimeZone.getTimeZone("GMT+3").getID());
         /* j2objc: NSTimeZone can actually parse this format.
         assertEquals("Must return proper GMT formatted string for GMT+3:02 (eg. GMT+08:20).",
                 "GMT+03:02", TimeZone.getTimeZone("GMT+3:02").getID());*/
@@ -232,14 +235,14 @@ public class TimeZoneTest extends junit.framework.TestCase {
         int rawOffset = tz.getRawOffset();
         assertEquals(-8 * 60 * 60 * 1000, rawOffset);
         List<String> ids = Arrays.asList(TimeZone.getAvailableIDs(rawOffset));
-
+        
         // Obviously, for all time zones, the time zone whose raw offset we started with
         // should be one of the available ids for that offset.
         assertTrue(ids.toString(), ids.contains("America/Los_Angeles"));
 
         // Any one of these might legitimately change its raw offset, though that's
         // fairly unlikely, and the chances of more than one changing are very slim.
-        assertTrue(ids.toString(), ids.contains("America/Dawson"));
+        assertTrue(ids.toString(), ids.contains("America/Santa_Isabel"));
         assertTrue(ids.toString(), ids.contains("America/Tijuana"));
         assertTrue(ids.toString(), ids.contains("America/Vancouver"));
         // j2objc: NSTimeZone does not list Canada/* as known time zone names.

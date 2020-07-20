@@ -96,7 +96,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
       return nameTable.getFullName(supertype);
     }
-    if (this.isInterfaceType() || ARGC.inPureObjCMode()) return "NSObject";
+    if (this.isInterfaceType()) return "NSObject";
     return options.isIOSTest() && ARGC.isTestClass(this.typeElement.asType()) ? "IOSTest" : "JavaLangObject";
   }
   
@@ -281,7 +281,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean needsClassInit() {
-    return !ElementUtil.isAnnotationType(typeElement) && !ElementUtil.isPackageInfo(typeElement)
+    return !ElementUtil.isPackageInfo(typeElement)
     		&&  TranslationUtil.getSuperType(typeNode) != TypeUtil.NS_OBJECT;
 
   }

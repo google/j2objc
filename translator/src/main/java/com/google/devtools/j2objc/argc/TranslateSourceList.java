@@ -36,7 +36,6 @@ public class TranslateSourceList {
 	private String root;
 	private Options options;
 	private JarTypeLoader currTypeLoader;
-	private ArrayList<InputFile> pureObjCFiles = new ArrayList<>();
 	private HashSet<String> pathSet = new HashSet<>();
 	private File jarFile;
 	private ArrayList<InputFile> inputFiles = new ArrayList<>();
@@ -153,10 +152,6 @@ public class TranslateSourceList {
 		}
 		
 		inputFiles.add(f);
-		
-		if (ARGC.isPureObjC(filename)) {
-			pureObjCFiles.add(f);
-		}
 		
 		return true;
 	}

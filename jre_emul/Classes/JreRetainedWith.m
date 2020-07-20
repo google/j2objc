@@ -43,7 +43,7 @@ static id RetainedWithRetain(id self, SEL _cmd) {
 static void RetainedWithRelease(id self, SEL _cmd) {
   @synchronized (self) {
     if ([self retainCount] == 2) {
-      [objc_getAssociatedObject(self, &returnRefKey) autorelease];
+      AUTORELEASE(objc_getAssociatedObject(self, &returnRefKey));
     }
     Class superCls = objc_getAssociatedObject(self, &superClsKey);
     IMP superRelease = class_getMethodImplementation(superCls, @selector(release));
@@ -139,7 +139,7 @@ void JreRetainedWithInitialize(id parent, id value) {
   if (returnRefs > 0) {
     // Make all but one of the return refs weak.
     while (returnRefs-- > 1) {
-      [parent release];
+      RELEASE_(parent);
     }
     ApplyRetainedWithSubclass(parent, value);
   }

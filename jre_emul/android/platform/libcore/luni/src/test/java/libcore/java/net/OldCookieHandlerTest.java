@@ -30,6 +30,20 @@ import tests.support.Support_Configuration;
 
 public class OldCookieHandlerTest extends TestCase {
 
+    private MockWebServer server;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        server = new MockWebServer();
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        server.shutdown();
+        super.tearDown();
+    }
+
     public void test_CookieHandler() {
         assertNull(CookieHandler.getDefault());
     }
@@ -40,7 +54,6 @@ public class OldCookieHandlerTest extends TestCase {
         try {
             CookieHandler.setDefault(mch);
 
-            MockWebServer server = new MockWebServer();
             server.play();
             server.enqueue(new MockResponse().addHeader("Set-Cookie2: a=\"android\"; "
                     + "Comment=\"this cookie is delicious\"; "

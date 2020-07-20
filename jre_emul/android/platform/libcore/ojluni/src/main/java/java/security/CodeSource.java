@@ -35,17 +35,34 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.cert.*;
 
+// Android-changed: Stubbed the implementation.  Android doesn't support SecurityManager.
+// See comments in java.lang.SecurityManager for details.
 /**
  * Legacy security code; do not use.
  */
 
 public class CodeSource implements java.io.Serializable {
 
-    public CodeSource(URL url, java.security.cert.Certificate certs[]) { }
+    /**
+     * The code location.
+     *
+     * @serial
+     */
+    private URL location;
 
-    public CodeSource(URL url, CodeSigner[] signers) { }
+    public CodeSource(URL url, java.security.cert.Certificate certs[]) {
+        this.location = url;
+    }
 
-    public final URL getLocation() { return null; }
+    public CodeSource(URL url, CodeSigner[] signers) {
+        this.location = url;
+    }
+
+    public final URL getLocation() {
+        /* since URL is practically immutable, returning itself is not
+           a security problem */
+        return this.location;
+    }
 
     public final java.security.cert.Certificate[] getCertificates() { return null; }
 

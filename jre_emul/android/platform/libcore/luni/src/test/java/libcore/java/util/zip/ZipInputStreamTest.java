@@ -16,31 +16,28 @@
 
 package libcore.java.util.zip;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import junit.framework.TestCase;
-
+import libcore.io.Streams;
 import tests.support.resource.Support_Resources;
 
-public final class ZipInputStreamTest extends TestCase {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector; */
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+
+public final class ZipInputStreamTest extends junit.framework.TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule(); */
 
     public void testShortMessage() throws IOException {
         byte[] data = "Hello World".getBytes("UTF-8");
@@ -114,5 +111,65 @@ public final class ZipInputStreamTest extends TestCase {
         }
 
         zi.close();
+    }
+
+    public void testAvailable() throws Exception {
+        // NOTE: We don't care about the contents of any of these entries as long as they're
+        // not empty.
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(
+                zip(new String[] { "foo", "bar", "baz" }, new byte[] { 0, 0, 0, 1, 1, 1 })));
+
+        assertEquals(1, zis.available());
+        zis.getNextEntry();
+        assertEquals(1, zis.available());
+        zis.closeEntry();
+        // On Android M and below, this call would return "1". That seems a bit odd given that the
+        // contract for available states that we should return 1 if there are any bytes left to read
+        // from the "current" entry.
+        assertEquals(0, zis.available());
+
+        // There shouldn't be any bytes left to read if the entry is fully consumed...
+        zis.getNextEntry();
+        Streams.readFullyNoClose(zis);
+        assertEquals(0, zis.available());
+
+        // ... or if the entry is fully skipped over.
+        zis.getNextEntry();
+        zis.skip(Long.MAX_VALUE);
+        assertEquals(0, zis.available());
+
+        // There are no entries left in the file, so there whould be nothing left to read.
+        assertNull(zis.getNextEntry());
+        assertEquals(0, zis.available());
+
+        zis.close();
+    }
+
+    private static final byte[] ZIP_WITH_DATA_DESCRIPTOR = new byte[] {
+(byte) 80, 75, 3, 4, 10, 0, 8, 0, 0, 0, -51, 90, -121, 80, -20, 62, -84, -103, 2, 0, 0, 0, 2, 0, 0, 0, 8, 0, 28, 0, 116, 101, 115, 116, 46, 116, 120, 116, 85, 84, 9, 0, 3, 97, 84, -116, 94, 102, 84, -116, 94, 117, 120, 11, 0, 1, 4, -119, 66, 0, 0, 4, 83, 95, 1, 0, 72, 10, 80, 75, 7, 8, -20, 62, -84, -103, 2, 0, 0, 0, 2, 0, 0, 0, 80, 75, 1, 2, 30, 3, 10, 0, 0, 0, 0, 0, -51, 90, -121, 80, -20, 62, -84, -103, 2, 0, 0, 0, 2, 0, 0, 0, 8, 0, 24, 0, 0, 0, 0, 0, 1, 0, 0, 0, -92, -127, 0, 0, 0, 0, 116, 101, 115, 116, 46, 116, 120, 116, 85, 84, 5, 0, 3, 97, 84, -116, 94, 117, 120, 11, 0, 1, 4, -119, 66, 0, 0, 4, 83, 95, 1, 0, 80, 75, 5, 6, 0, 0, 0, 0, 1, 0, 1, 0, 78, 0, 0, 0, 84, 0, 0, 0, 0, 0 };
+
+    public void testDataDescriptorOnStoredEntry() throws Exception {
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(
+                ZIP_WITH_DATA_DESCRIPTOR));
+
+        ZipEntry entry = zis.getNextEntry();
+        assertEquals("test.txt", entry.getName());
+
+        zis.close();
+    }
+
+    private static byte[] zip(String[] names, byte[] bytes) throws IOException {
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        ZipOutputStream zippedOut = new ZipOutputStream(bytesOut);
+
+        for (String name : names) {
+            ZipEntry entry = new ZipEntry(name);
+            zippedOut.putNextEntry(entry);
+            zippedOut.write(bytes);
+            zippedOut.closeEntry();
+        }
+
+        zippedOut.close();
+        return bytesOut.toByteArray();
     }
 }

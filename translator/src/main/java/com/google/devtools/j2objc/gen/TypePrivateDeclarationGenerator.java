@@ -70,10 +70,16 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
     if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
       newline();
+      if (options.defaultNonnull()) {
+        println("NS_ASSUME_NONNULL_BEGIN");
+      }
       printf("@interface %s ()", typeName);
       printInstanceVariables();
       printDeclarations(privateDecls);
       println("\n@end");
+      if (options.defaultNonnull()) {
+        println("NS_ASSUME_NONNULL_END");
+      }
     }
   }
 
@@ -87,7 +93,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
       VariableDeclarationFragment fragment, String baseDeclaration) {
     Expression initializer = fragment.getInitializer();
     print("static " + baseDeclaration);
-    if (initializer != null) {
+    if (initializer != null && !elementUtil.isStringConstant(fragment.getVariableElement())) {
       print(" = " + generateExpression(initializer));
     }
     println(";");

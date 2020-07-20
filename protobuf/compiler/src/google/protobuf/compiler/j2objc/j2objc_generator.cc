@@ -46,13 +46,13 @@ J2ObjCGenerator::J2ObjCGenerator() {}
 J2ObjCGenerator::~J2ObjCGenerator() {}
 
 bool J2ObjCGenerator::Generate(const FileDescriptor* file,
-                             const string& parameter,
-                             GeneratorContext* context,
-                             string* error) const {
+                               const std::string& parameter,
+                               GeneratorContext* context,
+                               std::string* error) const {
   // -----------------------------------------------------------------
   // parse generator options
 
-  std::vector<std::pair<string, string> > options;
+  std::vector<std::pair<std::string, std::string> > options;
   ParseGeneratorParameter(parameter, &options);
 
   bool generate_class_mappings = false;
@@ -77,7 +77,7 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
     return false;
   }
 
-  std::vector<string> all_files;
+  std::vector<std::string> all_files;
 
   // Generate main source and header files.
   file_generator.Generate(context, &all_files);

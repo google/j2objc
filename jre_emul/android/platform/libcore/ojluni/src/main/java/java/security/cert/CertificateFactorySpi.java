@@ -183,7 +183,7 @@ public abstract class CertificateFactorySpi {
      * Returns an iteration of the {@code CertPath} encodings supported
      * by this certificate factory, with the default encoding first. See
      * the CertPath Encodings section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertPathEncodings">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathEncodings">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard encoding names.
      * <p>

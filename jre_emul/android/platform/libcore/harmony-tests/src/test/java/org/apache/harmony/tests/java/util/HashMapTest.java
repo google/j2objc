@@ -539,6 +539,7 @@ public class HashMapTest extends junit.framework.TestCase {
     /**
      * java.util.HashMap#remove(java.lang.Object)
      */
+    @SuppressWarnings("CollectionIncompatibleType")
     public void test_removeLjava_lang_Object() {
         int size = hm.size();
         Integer y = new Integer(9);

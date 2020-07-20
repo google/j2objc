@@ -56,11 +56,6 @@ public final class ExternalAnnotations {
     IndexFileParser.parseFile(file, scene);
   }
 
-  /** Useful for testing. */
-  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
-    IndexFileParser.parseString(fileContents, scene);
-  }
-
   /**
    * {@link com.google.devtools.j2objc.translate.ExternalAnnotationInjector} should use this method
    * to retrieve external annotations.

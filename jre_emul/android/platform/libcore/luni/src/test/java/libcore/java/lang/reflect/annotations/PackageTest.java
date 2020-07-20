@@ -33,11 +33,6 @@ import static libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.
 
 public class PackageTest extends TestCase {
 
-    public void testEmpty() {
-        // remove when the other tests are enabled.
-    }
-
-    /* TODO(b/62095729): repeatable annotations support.
     // Tests for isAnnotationPresent and getDeclaredAnnotation.
     public void testDeclaredAnnotation() throws Exception {
         Class<Repeated> repeated = Repeated.class;
@@ -130,5 +125,5 @@ public class PackageTest extends TestCase {
         Package aPackage = classInPackage.getPackage();
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 aPackage, annotationType, expectedAnnotationStrings);
-    } */
+    }
 }

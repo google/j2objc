@@ -1,4 +1,3 @@
-
 #import "com/google/j2objc/testing/JUnitTestRunner.h"
 
 #include "java/lang/Thread.h"

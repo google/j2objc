@@ -22,7 +22,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
+import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationA;
 import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationB;
 import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationC;
 import libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.AnnotationD;
@@ -36,7 +38,7 @@ import static libcore.java.lang.reflect.annotations.AnnotatedElementTestSupport.
 
 /**
  * Tests for {@link Executable#getParameterAnnotations()} via the {@link Constructor} and
- * {@link Method} classes. See {@link AnnotatedElementParameterTest} for testing of the
+ * {@link Method} classes. See {@link  for testing of the
  * {@link java.lang.reflect.AnnotatedElement} methods.
  */
 public class ExecutableParameterTest extends TestCase {
@@ -50,53 +52,21 @@ public class ExecutableParameterTest extends TestCase {
     public void testMethodGetParameterAnnotations() throws Exception {
         Method methodWithoutAnnotatedParameters = MethodClass.class.getMethod(
                 "methodWithoutAnnotatedParameters", String.class, String.class);
-        Annotation[][] noParameterAnnotations =
-                methodWithoutAnnotatedParameters.getParameterAnnotations();
-        assertEquals(2, noParameterAnnotations.length);
+        Annotation[][] noParameterAnnotations = getParameterAnnotations(
+                methodWithoutAnnotatedParameters, 2);
         assertEquals(set(), annotationsToTypes(noParameterAnnotations[0]));
         assertEquals(set(), annotationsToTypes(noParameterAnnotations[1]));
 
         Method methodWithAnnotatedParameters = MethodClass.class.getMethod(
                 "methodWithAnnotatedParameters", String.class, String.class);
-        Annotation[][] parameterAnnotations =
-                methodWithAnnotatedParameters.getParameterAnnotations();
-        assertEquals(2, parameterAnnotations.length);
+        Annotation[][] parameterAnnotations = getParameterAnnotations(
+                methodWithAnnotatedParameters, 2);
         assertEquals(set(AnnotationB.class, AnnotationD.class),
                 annotationsToTypes(parameterAnnotations[0]));
         assertEquals(set(AnnotationC.class, AnnotationD.class),
                 annotationsToTypes(parameterAnnotations[1]));
     }
 
-    private static class ConstructorClass {
-        // No annotations.
-        public ConstructorClass(Integer parameter1, Integer parameter2) {}
-
-        // Annotations.
-        public ConstructorClass(@AnnotationB @AnnotationD String parameter1,
-                @AnnotationC @AnnotationD String parameter2) {}
-    }
-
-    public void testConstructorGetParameterAnnotations() throws Exception {
-        Constructor constructorWithoutAnnotatedParameters =
-                ConstructorClass.class.getDeclaredConstructor(Integer.class, Integer.class);
-        Annotation[][] noParameterAnnotations =
-                constructorWithoutAnnotatedParameters.getParameterAnnotations();
-        assertEquals(2, noParameterAnnotations.length);
-        assertEquals(set(), annotationsToTypes(noParameterAnnotations[0]));
-        assertEquals(set(), annotationsToTypes(noParameterAnnotations[1]));
-
-        Constructor constructorWithAnnotatedParameters =
-                ConstructorClass.class.getDeclaredConstructor(String.class, String.class);
-        Annotation[][] parameterAnnotations =
-                constructorWithAnnotatedParameters.getParameterAnnotations();
-        assertEquals(2, parameterAnnotations.length);
-        assertEquals(set(AnnotationB.class, AnnotationD.class),
-                annotationsToTypes(parameterAnnotations[0]));
-        assertEquals(set(AnnotationC.class, AnnotationD.class),
-                annotationsToTypes(parameterAnnotations[1]));
-    }
-
-    /* TODO(b/62095729): repeatable annotations support.
     private static class AnnotatedMethodClass {
         void noAnnotation(String p0) {}
 
@@ -150,27 +120,54 @@ public class ExecutableParameterTest extends TestCase {
 
 
     public void testMethodGetParameterAnnotations_repeated() throws Exception {
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodClass.getMethodWithoutAnnotations(), EXPECT_EMPTY);
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodClass.getMethodMultipleAnnotationOddity(),
                 "@Repeated(1)", "@Container({@Repeated(2), @Repeated(3)})");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodClass.getMethodMultipleAnnotationExplicitSingle(),
                 "@Container({@Repeated(1)})");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodClass.getMethodMultipleAnnotation(),
                 "@Container({@Repeated(1), @Repeated(2)})");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodClass.getMethodSingleAnnotation(),
                 "@Repeated(1)");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodClass.getMethodStaticSingleAnnotation(),
                 "@Repeated(1)");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedMethodAbstractClass.getMethodAbstractSingleAnnotation(),
                 "@Repeated(1)");
 
+    }
+
+    private static class ConstructorClass {
+        // No annotations.
+        public ConstructorClass(Integer parameter1, Integer parameter2) {}
+
+        // Annotations.
+        public ConstructorClass(@AnnotationB @AnnotationD String parameter1,
+                @AnnotationC @AnnotationD String parameter2) {}
+    }
+
+    public void testConstructorGetParameterAnnotations() throws Exception {
+        Constructor constructorWithoutAnnotatedParameters =
+                ConstructorClass.class.getDeclaredConstructor(Integer.class, Integer.class);
+        Annotation[][] noParameterAnnotations = getParameterAnnotations(
+                constructorWithoutAnnotatedParameters, 2);
+        assertEquals(set(), annotationsToTypes(noParameterAnnotations[0]));
+        assertEquals(set(), annotationsToTypes(noParameterAnnotations[1]));
+
+        Constructor constructorWithAnnotatedParameters =
+                ConstructorClass.class.getDeclaredConstructor(String.class, String.class);
+        Annotation[][] parameterAnnotations = getParameterAnnotations(
+                constructorWithAnnotatedParameters, 2);
+        assertEquals(set(AnnotationB.class, AnnotationD.class),
+                annotationsToTypes(parameterAnnotations[0]));
+        assertEquals(set(AnnotationC.class, AnnotationD.class),
+                annotationsToTypes(parameterAnnotations[1]));
     }
 
     private static class AnnotatedConstructorClass {
@@ -208,30 +205,100 @@ public class ExecutableParameterTest extends TestCase {
     }
 
     public void testConstructorGetParameterAnnotations_repeated() throws Exception {
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedConstructorClass.getConstructorWithoutAnnotations(),
                 EXPECT_EMPTY);
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotationOddity(),
                 "@Repeated(1)", "@Container({@Repeated(2), @Repeated(3)})");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotationExplicitSingle(),
                 "@Container({@Repeated(1)})");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedConstructorClass.getConstructorMultipleAnnotation(),
                 "@Container({@Repeated(1), @Repeated(2)})");
-        assertParameter0Annotations(
+        assertOnlyParameterAnnotations(
                 AnnotatedConstructorClass.getConstructorSingleAnnotation(),
                 "@Repeated(1)");
     }
 
-    private static void assertParameter0Annotations(
+    /**
+     * As an inner class the constructor will actually have two parameters: the first, referencing
+     * the enclosing object, is inserted by the compiler.
+     */
+    class InnerClass {
+        InnerClass(@AnnotationA String p1) {}
+    }
+
+    /** Special case testing for a compiler-generated constructor parameter. JLS 8.8.1, JLS 13.1. */
+    public void testImplicitConstructorParameters_innerClass() throws Exception {
+        Constructor<InnerClass> constructor =
+                InnerClass.class.getDeclaredConstructor(
+                        ExecutableParameterTest.class, String.class);
+
+        // The parameter annotation code behaves as if there are two parameters.
+        Annotation[][] annotations = getParameterAnnotations(constructor, 2);
+        assertAnnotationsMatch(annotations[0], new String[0]);
+        assertAnnotationsMatch(annotations[1], new String[] { "@AnnotationA" });
+    }
+
+    static abstract class AnonymousBaseClass {
+        public AnonymousBaseClass(@AnnotationA String p1) {}
+    }
+
+    /** Special case testing for a compiler-generated constructor parameter. JLS 13.1 */
+    public void testImplicitConstructorParameters_anonymousClass() throws Exception {
+        /*
+         * As an anonymous class the constructor will actually have two parameters: the first,
+         * referencing the enclosing object, is inserted by the compiler.
+         */
+        AnonymousBaseClass anonymousClassInstance = new AnonymousBaseClass("p1") {
+            /* J2ObjC: capture the enclosing object by invoking an instance method. */
+            void captureEnclosingObject() throws Exception {
+                testMethodGetParameterAnnotations();
+            };
+        };
+
+        Constructor<? extends AnonymousBaseClass> constructor =
+                anonymousClassInstance.getClass().getDeclaredConstructor(
+                        ExecutableParameterTest.class, String.class);
+        // The parameter annotation code behaves as if there are two parameters.
+        Annotation[][] annotations = getParameterAnnotations(constructor, 2);
+        assertAnnotationsMatch(annotations[0], new String[0]);
+        assertAnnotationsMatch(annotations[1], new String[0]);
+    }
+
+    /**
+     * A static inner / nested member class will not have synthetic parameters and should behave
+     * like a top-level class.
+     */
+    static class StaticInnerClass {
+        StaticInnerClass(@AnnotationA String p1) {}
+    }
+
+    /** Special case testing for a compiler-generated constructor parameter. */
+    public void testImplicitConstructorParameters_staticInnerClass() throws Exception {
+        Constructor<StaticInnerClass> constructor =
+                StaticInnerClass.class.getDeclaredConstructor(String.class);
+        Parameter[] parameters = constructor.getParameters();
+        assertEquals(1, parameters.length);
+
+        Annotation[][] annotations = getParameterAnnotations(constructor, 1);
+        assertAnnotationsMatch(annotations[0], new String[] { "@AnnotationA" });
+    }
+
+    private static void assertOnlyParameterAnnotations(
             Executable executable, String... expectedAnnotationStrings) throws Exception {
-        Annotation[][] allAnnotations = executable.getParameterAnnotations();
-        final int expectedParameterCount = 1;
-        assertEquals(expectedParameterCount, allAnnotations.length);
+        Annotation[][] allAnnotations = getParameterAnnotations(executable, 1);
 
         Annotation[] p0Annotations = allAnnotations[0];
         assertAnnotationsMatch(p0Annotations, expectedAnnotationStrings);
-    } */
+    }
+
+    private static Annotation[][] getParameterAnnotations(
+            Executable executable, int expectedParameterAnnotationsSize) {
+        Annotation[][] allAnnotations = executable.getParameterAnnotations();
+        assertEquals(expectedParameterAnnotationsSize, allAnnotations.length);
+        return allAnnotations;
+    }
 }

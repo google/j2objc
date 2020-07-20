@@ -61,8 +61,8 @@ final class FactoryFinder {
             File f = new File(configFile);
             if (f.exists()) {
                 if (debug) debugPrintln("Read properties file " + f);
-                try {
-                    cacheProps.load(new FileInputStream(f));
+                try (FileInputStream inputStream = new FileInputStream(f)) {
+                    cacheProps.load(inputStream);
                 } catch (Exception ex) {
                     if (debug) {
                         ex.printStackTrace();

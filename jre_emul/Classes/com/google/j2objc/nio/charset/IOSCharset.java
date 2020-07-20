@@ -44,8 +44,6 @@ public class IOSCharset extends Charset {
 
   private static Map<String, IOSCharset> encodings = new HashMap<String, IOSCharset>();
 
-  public static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
-
   private IOSCharset(String canonicalName, String[] aliases, long info) {
     super(canonicalName, aliases);
     charsetInfo = info;
@@ -167,6 +165,7 @@ public class IOSCharset extends Charset {
   static const __unsafe_unretained NSString *big5hkscs_aliases[] = { @"Big5_HKSCS", @"big5hkscs" };
 
   static const jbyte ascii_replacement[] = { 63 };
+  static const jbyte gb18030_replacement[] =  { 0x1a };
   static const jbyte utf16be_replacement[] = { -1, -3 };
   static const jbyte utf16le_replacement[] = { -3, -1 };
   static const jbyte iso2022_replacement[] = { 33, 41 };
@@ -178,7 +177,7 @@ public class IOSCharset extends Charset {
   // All encoding names must be uppercase, so map lookups are case-insensitive.
   static const CharsetInfo iosCharsets[] = {
     { kCFStringEncodingUTF8, "UTF-8", @"UTF-8", utf8_aliases, 2,
-      1.1f, 3.0f, 1.0f, 1.0f, ascii_replacement, 1 },
+      2.0f, 3.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingASCII, "ASCII", @"US-ASCII", ascii_aliases, 16,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingEUC_JP, "EUC-JP", @"EUC-JP", eucjp_aliases, 7,
@@ -190,7 +189,7 @@ public class IOSCharset extends Charset {
     { kCFStringEncodingISOLatin2, "ISO-8859-2", @"ISO-8859-2", latin2_aliases, 13,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingUnicode, "UTF-16", @"UTF-16", utf16_aliases, 5,
-      2.0f, 4.0f, 0.5f, 1.0f, utf16be_replacement, 2 },
+      4.0f, 4.0f, 0.5f, 1.0f, utf16be_replacement, 2 },
     { kCFStringEncodingWindowsCyrillic, "CP1251", @"WINDOWS-1251", win1251_aliases, 3,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingWindowsLatin1, "CP1252", @"WINDOWS-1252", win1252_aliases, 2,
@@ -225,7 +224,7 @@ public class IOSCharset extends Charset {
     { kCFStringEncodingGBK_95, "GBK", @"GBK", gbk_aliases, 4,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingGB_18030_2000, "GB18030", @"GB18030", gb18030_aliases, 1,
-      4.0f, 4.0f, 1.0f, 2.0f, ascii_replacement, 1 },
+      2.5f, 4.0f, 1.0f, 2.0f, gb18030_replacement, 1 },
     { kCFStringEncodingBig5, "BIG5", @"BIG5", big5_aliases, 4,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
     { kCFStringEncodingBig5_HKSCS_1999, "BIG5-HKSCS", @"BIG5-HKSCS", big5hkscs_aliases, 2,
@@ -244,21 +243,6 @@ public class IOSCharset extends Charset {
     return cs;
   }
   ]-*/
-
-  private static native IOSCharset getDefaultCharset() /*-[
-    NSString *fileEncoding = JavaLangSystem_getPropertyWithNSString_(@"file.encoding");
-    if (fileEncoding) {
-      @try {
-        return (ComGoogleJ2objcNioCharsetIOSCharset *)
-            JavaNioCharsetCharset_forNameUEEWithNSString_(fileEncoding);
-      }
-      @catch (JavaIoUnsupportedEncodingException *e) {
-        // Fall-through to use system default.
-      }
-    }
-    // Return UTF-8 default, like JRE does.
-    return addEncoding(&iosCharsets[0]);
-  ]-*/;
 
   private static native Map<String, IOSCharset> getEncodings() /*-[
     static dispatch_once_t onceToken;

@@ -152,6 +152,7 @@ public class XMLFormatter extends Formatter {
             escape(sb, message);
             sb.append("</message>");
             sb.append("\n");
+        // Android-added: Include empty <message/> tag. http://b/25861348#comment17
         } else {
             sb.append("<message/>");
             sb.append("\n");

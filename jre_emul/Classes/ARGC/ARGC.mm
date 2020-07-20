@@ -12,10 +12,17 @@
  * limitations under the License.
  */
 
-//
-//  Created by daehoon.zee on 30/10/2016.
-//  https://github.com/zeedh/j2objc.git
-//
+/**
+  @author Deahoon Zee
+
+  ARGC is a simple merge of Reference Count and Mark&Sweep alorithms.
+  ARGC is based very simple idea dividing refernce count into the root-ref-count 
+ and the member-ref-count. The root-ref-count represents count of the root references
+ of Mark & Sweep scanning that are stored in the local variables and the global variables. 
+  The member-ref-count represents count of the references stored in member variables of 
+ objects. The member-ref-count of cyclic garbage can be greater than 0. 
+  ARGC provides non stop-the-world garbage collection mechanism without stack-scanning.
+*/
 
 #import "ARGC.h"
 #import "objc/runtime.h"
@@ -30,9 +37,9 @@
 #include "java/lang/Exception.h"
 #include "java/lang/reflect/Modifier.h"
 #include "java/lang/reflect/Method.h"
+#include "java/util/logging/Logger.h"
+#include "java/util/logging/Level.h"
 
-#include "RefContext.h"
-#include "NSObject+ARGC.h"
 #include "IOSPrimitiveArray.h"
 #include "IOSMetadata.h"
 #include "IOSClass.h"
@@ -41,6 +48,10 @@
 #include "IOSProtocolClass.h"
 #include "NSString+JavaString.h"
 #include "J2ObjC_source.h"
+
+#define GC_DEBUG 0
+
+#include "NSObject+ARGC.h"
 
 #if !GC_DEBUG
 //#pragma GCC optimize ("O2")
@@ -86,24 +97,14 @@ static const int FINISHED = 0;
 static scan_offset_t _emptyFields[1] = { 0 };
 
 static int refAssocKey;
-//static int metadataAssocKey;
 static int64_t gc_interval = 1000;
 
 static Class getARGCClass(id jobj) {
-//  /*
-//   NSObject 상속 객체에 대해서만 사용 가능.
-//   그 외의 경우엔 메모리 억세스 오류 발생.
-//   */
-//  Class c = (Class)(((NSUInteger*)jobj)[0] & ~7);
-//
-//  assert(c == [jobj class]);
   return [jobj class];
 }
 
 static JObj_p toARGCObject(id oid) {
   if (oid == NULL) return NULL;
-  //return [oid toJObject];
-  //object_getClass(oid);
   if ([oid isKindOfClass:g_ARGCClass]) {
     JObj_p jobj = (JObj_p)oid;
     if (!jobj->_rc.isPhantom()) {
@@ -113,12 +114,15 @@ static JObj_p toARGCObject(id oid) {
   return NULL;
 }
 
+/*
+ GC_dumpTraceWithTag is not thread-safe. 
+ It just for providing information.
+*/
 static void GC_dumpTraceWithTag(JObj_p jobj, NSString* tag) {
   int bindCount = jobj->_rc.bindCount();
   int refCount = (int)NSExtraRefCount(jobj)+1;
   NSLog(@"%@ %p #%d+%d %@", tag, jobj, bindCount, refCount-bindCount, getARGCClass(jobj));
   if ((int)NSExtraRefCount(jobj) < (int)jobj->_rc.bindCount() - 1) {
-      // 멀티쓰레드환경이라 두 값의 비교가 정확하지 않다. 관련 정보를 적는다.
       NSLog(@"Maybe error %@ %p %d(%d) %@", tag, jobj, (int)NSExtraRefCount(jobj), jobj->_rc.bindCount(), getARGCClass(jobj));
   };
 }
@@ -188,7 +192,7 @@ public:
     while (oid == NULL) {
       cntGCLoop ++;
       _clearSoftReference = 1;
-      ARGC_collectGarbage();
+      ARGC_collectGarbage(true);
       oid = NSAllocateObject(cls, extraBytes, zone);
       if (cntGCLoop > 2) {
           OutOfMemory();
@@ -209,7 +213,6 @@ public:
     registerScanOffsets(cls);
     oid->_rc.initialize(_finalizeClasses[cls] == NULL);
     _cntAllocated ++;
-    // bindCount 0 인 상태, 즉 allocation 직후에도 stack에서 참조가능한 상태이다.
     addStrongRef(oid);
     return oid;
   }
@@ -294,7 +297,7 @@ public:
   static BOOL markStrongReachable(JObj_p jobj) {
       BOOL res = jobj->_rc.markStrongReachable();
       if (res && GC_TRACE(jobj, 0)) {
-          NSLog(@"Mark Reachable %p", jobj);
+          GC_dumpTraceWithTag(jobj, @"Mark Reachable");
       }
       return res;
   }
@@ -388,19 +391,27 @@ private:
   }
   
   void addPhantom(JObj_p jobj, BOOL isThreadSafe) {
-      if (jobj->_rc.markFinalized()) {
-          JreFinalize(jobj);
-          if (jobj->_rc.isStrongReachable()) {
-              return;
-          }
-      }
       if (!jobj->_rc.markPhantom()) {
           return;
       }
+      if (jobj->_rc.markFinalized()) {
+          //jobj->_rc.bind();
+          //ARGC::increaseReferenceCount(jobj, @"finalize");
+          bindRoot(jobj, @"finalize");
+          JreFinalize(jobj);
+          unbindRoot(jobj);
+          //jobj->_rc.unbind();
+          //ARGC::decreaseRefCount(jobj, @"finalize");
+          if (jobj->_rc.isStrongReachable()) {
+              jobj->_rc.clearPhantom();
+              return;
+          }
+      }
 
-    if (allocCountInGeneration > 0) {
-      allocCountInGeneration --;
-    }
+      if (allocCountInGeneration > 0) {
+          allocCountInGeneration --;
+      }
+      
       [jobj forEachObjectField:(ARGCObjectFieldVisitor)decreaseGenericReferenceCountOrDealloc inDepth: 0];
       _instance.unregisterRef(jobj);
 
@@ -413,22 +424,26 @@ private:
           reclaimInstance(jobj);
       }
       else {
-          @synchronized (tableLock) {
-              int index = _cntPhantom ++;
-              int idxBucket = index / REFS_IN_BUCKET;
-              int idxRef = index % REFS_IN_BUCKET;
-              RefSlot* row = _phantomeTable[idxBucket];
-              if (row == NULL) {
-                  row = _phantomeTable[idxBucket];
-                  if (row == NULL) {
-                      row = _phantomeTable[idxBucket] = newBucket();
-                  }
-              }
-              row[idxRef] = jobj;
-          }
+          registerPhantom(jobj);
       }
   }
   
+  void registerPhantom(JObj_p jobj) {
+      @synchronized (tableLock) {
+          int index = _cntPhantom ++;
+          int idxBucket = index / REFS_IN_BUCKET;
+          int idxRef = index % REFS_IN_BUCKET;
+          RefSlot* row = _phantomeTable[idxBucket];
+          if (row == NULL) {
+              row = _phantomeTable[idxBucket];
+              if (row == NULL) {
+                  row = _phantomeTable[idxBucket] = newBucket();
+              }
+          }
+          row[idxRef] = jobj;
+      }
+  }
+
   void registerScanOffsets(Class clazz);
   
   size_t argcObjectSize;
@@ -443,11 +458,11 @@ private:
   NSMutableDictionary* _scanOffsetCache;
   NSMutableDictionary* _finalizeClasses;
   NSObject* tableLock;
-  NSObject* scanLock;
   size_t allocCountInGeneration;
   
   BOOL _inGC;
 public:
+  NSObject* scanLock;
   static NSObject* gcTrigger;
   static std::atomic_int gcTriggered;
   static std::atomic_int _clearSoftReference;
@@ -481,10 +496,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 + (instancetype)alloc
 {
-    IOSClass* iosClass = ARGC_getIOSClass(self);
-    if (iosClass != NULL) {
-      iosClass->metadata_->initialize();
-    }
+    ARGC_initStatic(self);
     id oid = ARGC::_instance.allocateInstance(self, 0, NULL);
     return oid;
 }
@@ -510,7 +522,7 @@ IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 - (BOOL)retainWeakReference {
     if ([super retainWeakReference]) {
-        // retainWeakReference 함수 수행 중에는 NSLog 등 다른 API 호출이 금지된 것으로 보인다.
+        // Do not call NSLog, it makes crashes in retainWeakReference()
         if (self->_rc.isStrongReachable()) {
             self->_rc.bind();
         }
@@ -621,7 +633,9 @@ ARGC::ARGC() {
         }
         gcTriggered = FALSE;
       }
-      ARGC::doGC();
+      if (allocCountInGeneration > 1) {
+        ARGC::doGC();
+      }
       @synchronized (gcTrigger) {
         [gcTrigger java_notifyAll];
       }
@@ -629,13 +643,11 @@ ARGC::ARGC() {
   });
 }
 
-void ARGC_collectGarbage() {
-  ARGC::_instance.gcTriggered = TRUE;
-  @synchronized (ARGC::gcTrigger) {
-    if (ARGC::gcTriggered) {
-      [ARGC::gcTrigger java_notifyAll];
-      [ARGC::gcTrigger java_wait];
-    }
+void ARGC_collectGarbage(bool clearSoftRef) {
+  //ARGC::_instance.gcTriggered = TRUE;
+  @synchronized (ARGC::_instance.scanLock) {
+    ARGC::_clearSoftReference |= clearSoftRef;
+    ARGC::_instance.doGC();
   }
 }
 
@@ -700,9 +712,6 @@ void ARGC::registerScanOffsets(Class clazz) {
         id field = _test_obj_buf[i];
         NSUInteger cntRef = NSExtraRefCount(field);
         if (cntRef > 1) {
-            /**
-             Dealloc 과정에서 ARC-decreement 가 발생하지 않은 것은 ARGC-Field 이다.
-             */
             _offset_buf[cntARGC++] = offset;
         }
     }
@@ -934,7 +943,7 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
             for (int j = (int)rm.count; --j >= 0; ) {
                 JavaLangRefReference* reference = (JavaLangRefReference*)[rm pointerAtIndex:j];
                 if (reference != NULL) {
-                    reference->referent_ = NULL;
+                    *(std::atomic<id>*)&reference->referent_ = NULL;
                     [reference enqueue];
                     decreaseRefCount(reference, @"-c_rfc");
                 }
@@ -967,18 +976,17 @@ void ARGC::doClearReferences(NSPointerArray* refList, BOOL markSoftRef) {
 #define SLEEP_WHILE(cond) for (int cntSpin = 0; cond; ) { usleep(100); if (++cntSpin % 100 == 0) { NSLog(@"%s, %d", #cond, cntSpin); } }
 
 void ARGC::doGC() {
-  if (allocCountInGeneration < 1) return;
   
-  allocCountInGeneration = 0;
-  NSMutableDictionary<Class, Counter*>* roots =
-      (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
-
-  BOOL doClearSoftReference = _clearSoftReference;
-  if (doClearSoftReference) {
-      _clearSoftReference = 0;
-  }
-
   @synchronized (scanLock) {
+    allocCountInGeneration = 0;
+    NSMutableDictionary<Class, Counter*>* roots =
+          (GC_LOG_ROOTS > 0 || GC_LOG_ALIVE > 0) ? [NSMutableDictionary new] : NULL;
+
+    BOOL doClearSoftReference = _clearSoftReference;
+    if (doClearSoftReference) {
+          _clearSoftReference = 0;
+    }
+
     SLEEP_WHILE (_cntMarkingThread > 0);
     gc_state = SCANNING;
     RefContext::change_generation();
@@ -1092,8 +1100,9 @@ void ARGC::doGC() {
             }
             v->count ++;
         }
+
         /*
-         주의. 현재 jobj 가 다른 쓰레드에 의해 삭제될 수 있다.
+         Warning) current jobj can be deleted by the other thread.
          */
         if (!jobj->_rc.isStrongReachable()) {
             if (idxSlot == cntAlive) {
@@ -1103,9 +1112,6 @@ void ARGC::doGC() {
             }
             assert(!jobj->_rc.isRootReachable() || jobj->_rc.isPendingRelease());
             addPhantom(jobj, false);
-//                @autoreleasepool {
-//                    [jobj dealloc];
-//                }
             continue;
         }
         
@@ -1203,21 +1209,6 @@ extern "C" {
         return (int)NSExtraRefCount(oid) + 1;
     }
     
-    __attribute__((always_inline)) id ARGC_globalLock(id oid) {
-        [oid retain];
-        return oid;
-    }
-    
-    id ARGC_globalUnlock(id oid) {
-        if (GC_DEBUG && GC_LOG_ALLOC) {
-            if (toARGCObject(oid) == NULL) {
-                NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
-            }
-        }
-        [oid autorelease];
-        return oid;
-    }
-    
     void ARGC_strongRetain(id oid) {
         [oid retain];
     }
@@ -1288,11 +1279,25 @@ extern "C" {
         }
     }
     
-    id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) {
+    id ARGC_allocateArray(Class cls, NSUInteger extraBytes, NSZone* zone) {
         return ARGC::_instance.allocateInstance(cls, extraBytes, zone);
     }
-    
-#include "Volatiles.mm"
+
+    id ARGC_allocateObject(Class cls) {
+        return ARGC::_instance.allocateInstance(cls, 0, NULL);
+    }
+
+    void JreFinalize(id self) J2OBJC_METHOD_ATTR {
+      @try {
+        [self java_finalize];
+      } @catch (JavaLangThrowable *e) {
+        [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
+            logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
+                           withNSString:@"Uncaught exception in finalizer"
+                  withJavaLangThrowable:e];
+      }
+    }
+
 }
 
 
@@ -1369,16 +1374,16 @@ extern "C" {
 }
 + (id)getReferent:(JavaLangRefReference *)reference
 {
-    return (id)reference->referent_;
+    return *(std::atomic<id>*)&reference->referent_;
 }
 
 + (void)clearReferent:(JavaLangRefReference *)reference
 {
-    id oid = (id)reference->referent_;
+    id oid = *(std::atomic<id>*)&reference->referent_;
     if (oid == NULL) return;
     
     @synchronized (self) {
-        reference->referent_ = NULL;
+        *(std::atomic<id>*)&reference->referent_ = NULL;
         NSPointerArray* rm = objc_getAssociatedObject(oid, &refAssocKey);
         if (rm == NULL) return;
 
@@ -1395,8 +1400,7 @@ extern "C" {
 }
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
-    ARGC::_clearSoftReference = 1;
-    ARGC_collectGarbage();
+    ARGC_collectGarbage(true);
 }
 
 

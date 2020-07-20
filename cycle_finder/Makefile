@@ -16,8 +16,6 @@
 #
 # Author: Keith Stanger
 
-SUFFIXES:
-
 SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
 RESOURCE_DIR = $(SOURCE_DIR)/resources

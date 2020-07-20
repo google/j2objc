@@ -99,7 +99,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * </table>
  *
  * These algorithms are described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
  * AlgorithmParameterGenerator section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -164,7 +164,7 @@ public class AlgorithmParameterGenerator {
      * @param algorithm the name of the algorithm this
      * parameter generator is associated with.
      * See the AlgorithmParameterGenerator section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -206,7 +206,7 @@ public class AlgorithmParameterGenerator {
      * @param algorithm the name of the algorithm this
      * parameter generator is associated with.
      * See the AlgorithmParameterGenerator section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *
@@ -252,7 +252,7 @@ public class AlgorithmParameterGenerator {
      * @param algorithm the string name of the algorithm this
      * parameter generator is associated with.
      * See the AlgorithmParameterGenerator section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#AlgorithmParameterGenerator">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard algorithm names.
      *

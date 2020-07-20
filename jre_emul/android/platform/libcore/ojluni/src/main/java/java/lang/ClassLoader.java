@@ -1304,7 +1304,7 @@ class SystemClassLoader extends ClassLoader {
       }
       return pkg;
   }
-
+  
   @Override
   protected native URL findResource(String name);
 

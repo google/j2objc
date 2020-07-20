@@ -434,7 +434,28 @@ class DateTimeTextProvider {
         }
 
         if (field == IsoFields.QUARTER_OF_YEAR) {
-            // Android-changed: Use ICU resources.
+            // BEGIN Android-changed: Use ICU resources.
+            /*
+            // The order of keys must correspond to the TextStyle.values() order.
+            final String[] keys = {
+                "QuarterNames",
+                "standalone.QuarterNames",
+                "QuarterAbbreviations",
+                "standalone.QuarterAbbreviations",
+                "QuarterNarrows",
+                "standalone.QuarterNarrows",
+            };
+            for (int i = 0; i < keys.length; i++) {
+                String[] names = getLocalizedResource(keys[i], locale);
+                if (names != null) {
+                    Map<Long, String> map = new HashMap<>();
+                    for (int q = 0; q < names.length; q++) {
+                        map.put((long) (q + 1), names[q]);
+                    }
+                    styleMap.put(TextStyle.values()[i], map);
+                }
+            }
+            */
             ICUResourceBundle rb = (ICUResourceBundle) UResourceBundle
                     .getBundleInstance(ICUData.ICU_BASE_NAME, locale);
             ICUResourceBundle quartersRb = rb.getWithFallback("calendar/gregorian/quarters");
@@ -446,12 +467,14 @@ class DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT_STANDALONE, extractQuarters(standaloneRb, "abbreviated"));
             styleMap.put(TextStyle.NARROW, extractQuarters(formatRb, "narrow"));
             styleMap.put(TextStyle.NARROW_STANDALONE, extractQuarters(standaloneRb, "narrow"));
+            // END Android-changed: Use ICU resources.
             return new LocaleStore(styleMap);
         }
 
         return "";  // null marker for map
     }
 
+    // BEGIN Android-added: Extracts a Map of quarter names from ICU resource bundle.
     private static Map<Long, String> extractQuarters(ICUResourceBundle rb, String key) {
         String[] names = rb.getWithFallback(key).getStringArray();
         Map<Long, String> map = new HashMap<>();
@@ -460,6 +483,7 @@ class DateTimeTextProvider {
         }
         return map;
     }
+    // END Android-added: Extracts a Map of quarter names from ICU resource bundle.
 
     /**
      * Helper method to create an immutable entry.
@@ -472,7 +496,24 @@ class DateTimeTextProvider {
         return new SimpleImmutableEntry<>(text, field);
     }
 
-    // Android-changed: removed getLocalizedResource.
+    // BEGIN Android-removed: Android uses ICU resources and has no LocaleProviderAdapter.
+    /**
+     * Returns the localized resource of the given key and locale, or null
+     * if no localized resource is available.
+     *
+     * @param key  the key of the localized resource, not null
+     * @param locale  the locale, not null
+     * @return the localized resource, or null if not available
+     * @throws NullPointerException if key or locale is null
+     */
+    // @SuppressWarnings("unchecked")
+    // static <T> T getLocalizedResource(String key, Locale locale) {
+    //     LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased()
+    //                                 .getLocaleResources(locale);
+    //     ResourceBundle rb = lr.getJavaTimeFormatData();
+    //     return rb.containsKey(key) ? (T) rb.getObject(key) : null;
+    // }
+    // END Android-removed: Android uses ICU resources and has no LocaleProviderAdapter.
 
     /**
      * Stores the text for a single locale.

@@ -25,8 +25,8 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.Serializable;
@@ -1851,10 +1851,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * linked node.
      */
     static final class TreeNode<K,V> extends LinkedHashMap.LinkedHashMapEntry<K,V> {
-        TreeNode<K,V> parent;  // red-black tree links
-        TreeNode<K,V> left;
-        TreeNode<K,V> right;
-        TreeNode<K,V> prev;    // needed to unlink next upon deletion
+        @Weak TreeNode<K,V> parent; // red-black tree links
+        @Weak TreeNode<K,V> left;
+        @Weak TreeNode<K,V> right;
+        @Weak TreeNode<K,V> prev;    // needed to unlink next upon deletion
         boolean red;
         TreeNode(int hash, K key, V val, Node<K,V> next) {
             super(hash, key, val, next);

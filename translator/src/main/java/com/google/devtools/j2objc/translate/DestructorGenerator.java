@@ -145,6 +145,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     if (isRetainedWith) {
       funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
     } else if (isVolatile && (!options.useGC() || typeUtil.getArgcFieldTypeEx(node.getTypeElement(), var.asType()) == "Native")) {
+    	// @zee Type of volatile_id is (__unsafe_unretained id). so It should be released manually in Native class.
         funcName = "JreReleaseVolatile";
     } else if (options.useReferenceCounting()) {
       funcName = "RELEASE_";

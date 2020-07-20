@@ -258,7 +258,7 @@ public class ClassFileConverter {
   }
 
   private Expression convertAnnotationValue(TypeMirror type, AnnotationValue annot) {
-    /* TODO(user): see if the method implements the AnnotationMirror branch correctly */
+    /* TODO(manvithn): see if the method implements the AnnotationMirror branch correctly */
     return translationEnv.translationUtil().createAnnotationValue(type, annot);
   }
 
@@ -296,7 +296,7 @@ public class ClassFileConverter {
 
   private List<Annotation> convertAnnotations(Element element) {
     List<Annotation> annotations = new ArrayList<>();
-    /* TODO(user): inheritance; consider Elements.getAllAnnotationMirrors() */
+    /* TODO(manvithn): inheritance; consider Elements.getAllAnnotationMirrors() */
     for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
     	if (TypeUtil.isUnreachbleAnnotationClass(annotationMirror, "@")) continue;
       annotations.add(convertAnnotation(annotationMirror));

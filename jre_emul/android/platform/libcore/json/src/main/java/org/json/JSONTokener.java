@@ -16,6 +16,8 @@
 
 package org.json;
 
+import dalvik.annotation.compat.UnsupportedAppUsage;
+
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
 /**
@@ -62,12 +64,14 @@ package org.json;
 public class JSONTokener {
 
     /** The input JSON. */
+    @UnsupportedAppUsage
     private final String in;
 
     /**
      * The index of the next character to be returned by {@link #next}. When
      * the input is exhausted, this equals the input's length.
      */
+    @UnsupportedAppUsage
     private int pos;
 
     /**
@@ -112,6 +116,7 @@ public class JSONTokener {
         }
     }
 
+    @UnsupportedAppUsage
     private int nextCleanInternal() throws JSONException {
         while (pos < in.length()) {
             int c = in.charAt(pos++);
@@ -171,6 +176,7 @@ public class JSONTokener {
      * is terminated by "\r\n", the '\n' must be consumed as whitespace by the
      * caller.
      */
+    @UnsupportedAppUsage
     private void skipToEndOfLine() {
         for (; pos < in.length(); pos++) {
             char c = in.charAt(pos);
@@ -188,8 +194,6 @@ public class JSONTokener {
      * not include it in the returned string.
      *
      * @param quote either ' or ".
-     * @throws NumberFormatException if any unicode escape sequences are
-     *     malformed.
      */
     public String nextString(char quote) throws JSONException {
         /*
@@ -235,10 +239,8 @@ public class JSONTokener {
      * immediately follow a backslash. The backslash '\' should have already
      * been read. This supports both unicode escapes "u000A" and two-character
      * escapes "\n".
-     *
-     * @throws NumberFormatException if any unicode escape sequences are
-     *     malformed.
      */
+    @UnsupportedAppUsage
     private char readEscapeCharacter() throws JSONException {
         char escaped = in.charAt(pos++);
         switch (escaped) {
@@ -248,7 +250,11 @@ public class JSONTokener {
                 }
                 String hex = in.substring(pos, pos + 4);
                 pos += 4;
-                return (char) Integer.parseInt(hex, 16);
+                try {
+                    return (char) Integer.parseInt(hex, 16);
+                } catch (NumberFormatException nfe) {
+                    throw syntaxError("Invalid escape sequence: " + hex);
+                }
 
             case 't':
                 return '\t';
@@ -278,6 +284,7 @@ public class JSONTokener {
      * values will be returned as an Integer, Long, or Double, in that order of
      * preference.
      */
+    @UnsupportedAppUsage
     private Object readLiteral() throws JSONException {
         String literal = nextToInternal("{}[]/\\:,=;# \t\f");
 
@@ -332,6 +339,7 @@ public class JSONTokener {
      * Returns the string up to but not including any of the given characters or
      * a newline character. This does not consume the excluded character.
      */
+    @UnsupportedAppUsage
     private String nextToInternal(String excluded) {
         int start = pos;
         for (; pos < in.length(); pos++) {
@@ -347,6 +355,7 @@ public class JSONTokener {
      * Reads a sequence of key/value pairs and the trailing closing brace '}' of
      * an object. The opening brace '{' should have already been read.
      */
+    @UnsupportedAppUsage
     private JSONObject readObject() throws JSONException {
         JSONObject result = new JSONObject();
 
@@ -402,6 +411,7 @@ public class JSONTokener {
      * "[]" yields an empty array, but "[,]" returns a two-element array
      * equivalent to "[null,null]".
      */
+    @UnsupportedAppUsage
     private JSONArray readArray() throws JSONException {
         JSONArray result = new JSONArray();
 

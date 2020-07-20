@@ -241,16 +241,17 @@ public abstract class X509CRL extends CRL implements X509Extension {
     public void verify(PublicKey key, Provider sigProvider)
         throws CRLException, NoSuchAlgorithmException,
         InvalidKeyException, SignatureException {
-        // BEGIN Android-changed
-        // TODO(user): was X509CRLImpl.verify(this, key, sigProvider);
+        // Android-changed: Eliminate infinite recursion in default implementation.
         // As the javadoc says, this "default implementation" was introduced as to avoid breaking
         // providers that generate concrete subclasses of this class.
         // The method X509Impl in the original definition calls this method, thus entering an
-        // infinite loop. This strange behaviour was checked to be not specific to libcore by
-        // running a test with vogar --mode=jvm .
+        // infinite recursive loop. This strange behaviour was checked to be not specific to
+        // libcore by running a test with vogar --mode=jvm .  See b/31294527.
+        // This is fixed upstream in OpenJDK 10.
+        //
+        // X509CRLImpl.verify(this, key, sigProvider);
         throw new UnsupportedOperationException(
                 "X509CRL instance doesn't not support X509CRL#verify(PublicKey, Provider)");
-        // END Android-changed
     }
 
     /**

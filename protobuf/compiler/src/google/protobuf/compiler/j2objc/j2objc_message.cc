@@ -49,8 +49,8 @@ namespace j2objc {
 
 namespace {
 
-string GetMessageFlags(const Descriptor *descriptor) {
-  std::vector<string> flags;
+std::string GetMessageFlags(const Descriptor* descriptor) {
+  std::vector<std::string> flags;
   if (descriptor->extension_range_count() > 0) {
     flags.push_back("CGPMessageFlagExtendable");
   }
@@ -71,8 +71,12 @@ MessageGenerator::~MessageGenerator() {
 }
 
 void MessageGenerator::CollectForwardDeclarations(
-    std::set<string>* declarations) const {
+    std::set<std::string>* declarations) const {
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) + ")");
   declarations->insert("@class " + ClassName(descriptor_) + "_Builder");
+  declarations->insert(
+      "J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) + "_Builder)");
   declarations->insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -88,8 +92,8 @@ void MessageGenerator::CollectForwardDeclarations(
   }
 }
 
-void MessageGenerator::CollectMessageOrBuilderImports(std::set<string>* imports)
-    const {
+void MessageGenerator::CollectMessageOrBuilderImports(
+    std::set<std::string>* imports) const {
   if (descriptor_->extension_range_count() > 0) {
     imports->insert("com/google/protobuf/GeneratedMessage.h");
   } else {
@@ -103,7 +107,7 @@ void MessageGenerator::CollectMessageOrBuilderImports(std::set<string>* imports)
 }
 
 void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
-    std::set<string>* declarations) const {
+    std::set<std::string>* declarations) const {
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
         .CollectMessageOrBuilderForwardDeclarations(declarations);
@@ -115,7 +119,8 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
   }
 }
 
-void MessageGenerator::CollectHeaderImports(std::set<string>* imports) const {
+void MessageGenerator::CollectHeaderImports(
+    std::set<std::string>* imports) const {
   for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).CollectHeaderImports(imports);
   }
@@ -128,7 +133,8 @@ void MessageGenerator::CollectHeaderImports(std::set<string>* imports) const {
   }
 }
 
-void MessageGenerator::CollectSourceImports(std::set<string>* imports) const {
+void MessageGenerator::CollectSourceImports(
+    std::set<std::string>* imports) const {
   imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -154,7 +160,7 @@ void MessageGenerator::CollectSourceImports(std::set<string>* imports) const {
 }
 
 void MessageGenerator::GenerateHeader(io::Printer* printer) {
-  string superclassName = "ComGoogleProtobufGeneratedMessage";
+  std::string superclassName = "ComGoogleProtobufGeneratedMessage";
   if (descriptor_->extension_range_count() > 0) {
     superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableMessage";
   }
@@ -320,6 +326,18 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "classname", ClassName(descriptor_));
 
   printer->Print("\n"
+      "// Minimal metadata for runtime access to Java class name.\n"
+      "+ (const J2ObjcClassInfo *)__metadata {\n"
+      "  static const J2ObjcClassInfo _$classname$ = { \"$simplename$\", "
+          "\"$packagename$\", NULL, NULL, NULL, 7, 0x1, 0, 0, -1, -1, -1, "
+          "-1, -1 };\n"
+      "  return &_$classname$;\n"
+      "}\n",
+      "classname", ClassName(descriptor_),
+      "simplename", descriptor_->name(),
+      "packagename", FileJavaPackage(descriptor_->file()));
+
+  printer->Print("\n"
       "+ (void)initialize {\n"
       "  if (self == [$classname$ class]) {\n",
       "classname", ClassName(descriptor_));
@@ -343,10 +361,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     }
     printer->Outdent();
     printer->Print("};\n");
-    for (int i = 0; i < descriptor_->field_count(); i++) {
-      field_generators_.get(descriptor_->field(i))
-          .GenerateMapEntryNonStaticFieldData(printer, "mapEntryFields");
-    }
   }
   printer->Print("static CGPFieldData fields[] = {\n");
   printer->Indent();
@@ -355,10 +369,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Outdent();
   printer->Print("};\n");
-  for (int i = 0; i < descriptor_->field_count(); i++) {
-    field_generators_.get(descriptor_->field(i))
-        .GenerateNonStaticFieldData(printer, "fields", i);
-  }
   if (descriptor_->oneof_decl_count() > 0) {
     printer->Print("static CGPOneofData oneofs[] = {\n");
     printer->Indent();
@@ -386,10 +396,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     printer->Print("};\n");
     for (int i = 0; i < descriptor_->extension_count(); i++) {
       ExtensionGenerator(descriptor_->extension(i))
-          .GenerateNonStaticFieldData(printer, "extensionFields", i);
-    }
-    for (int i = 0; i < descriptor_->extension_count(); i++) {
-      ExtensionGenerator(descriptor_->extension(i))
           .GenerateSourceInitializer(printer);
     }
   }
@@ -408,14 +414,12 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "$classname$ *$classname$_getDefaultInstance(void) {\n"
       "  $classname$_initialize();\n"
-      "  return ($classname$ *)[CGPNewMessage($classname$_descriptor_) "
-      "autorelease];\n"
+      "  return ($classname$ *)AUTORELEASE(CGPNewMessage($classname$_descriptor_));\n"
       "}\n"
       "\n"
       "$classname$_Builder *$classname$_newBuilder(void) {\n"
       "  $classname$_initialize();\n"
-      "  return ($classname$_Builder *)[CGPNewBuilder($classname$_descriptor_)"
-      " autorelease];\n"
+      "  return ($classname$_Builder *)AUTORELEASE(CGPNewBuilder($classname$_descriptor_));\n"
       "}\n"
       "\n"
       "$classname$_Builder *$classname$_newBuilderWith$classname$_("
@@ -472,7 +476,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
 }
 
 void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
-  string superclassName = "ComGoogleProtobufGeneratedMessage_Builder";
+  std::string superclassName = "ComGoogleProtobufGeneratedMessage_Builder";
   if (descriptor_->extension_range_count() > 0) {
     superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableBuilder";
   }
@@ -532,7 +536,7 @@ void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
 }
 
 void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
-  string protocolName = "ComGoogleProtobufMessageOrBuilder";
+  std::string protocolName = "ComGoogleProtobufMessageOrBuilder";
   if (descriptor_->extension_range_count() > 0) {
     protocolName =
         "ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder";

@@ -19,7 +19,7 @@ ios_application(
     infoplists = ["src/Info.plist"],
     families = ["iphone", "ipad"],
     deps = [":ContactsMainLib"],
-    minimum_os_version = "10.0",
+    minimum_os_version = "11.0",,
 )
 
 objc_library(

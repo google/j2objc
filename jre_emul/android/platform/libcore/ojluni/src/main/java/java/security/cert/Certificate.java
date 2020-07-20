@@ -74,7 +74,7 @@ public abstract class Certificate implements java.io.Serializable {
      *
      * @param type the standard name of the certificate type.
      * See the CertificateFactory section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#CertificateFactory">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertificateFactory">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard certificate types.
      */
@@ -113,6 +113,7 @@ public abstract class Certificate implements java.io.Serializable {
             byte[] thisCert = X509CertImpl.getEncodedInternal(this);
             byte[] otherCert = X509CertImpl.getEncodedInternal((Certificate)other);
 
+            // J2ObjC changed: arrays should be compared with Arrays.equals
             return Arrays.equals(thisCert, otherCert);
         } catch (CertificateException e) {
             return false;

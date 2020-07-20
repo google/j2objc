@@ -1083,7 +1083,7 @@ public class DateTimeGeneratorTest extends TestFmwk {
     /* Tests the constructor
      *    public VariableField(String string)
      */
-    //TODO(user) why is this "unused"
+    //TODO(junit) why is this "unused"
     @SuppressWarnings("unused")
     @Test
     public void TestVariableField_String(){

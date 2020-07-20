@@ -32,6 +32,7 @@ import libcore.reflect.AnnotatedElements;
 
 // Android-changed: Removed some references to bytecode spec below that do not
 // apply and added a note about annotation ordering.
+// J2ObjC-changed: fixed doc-comment warnings.
 /**
  * Represents an annotated element of the program currently running in this
  * VM.  This interface allows annotations to be read reflectively.  All
@@ -101,24 +102,24 @@ import libcore.reflect.AnnotatedElements;
  *
  * <table border>
  * <caption>Overview of kind of presence detected by different AnnotatedElement methods</caption>
- * <tr><th colspan=2></th><th colspan=4>Kind of Presence</th>
- * <tr><th colspan=2>Method</th><th>Directly Present</th><th>Indirectly Present</th><th>Present</th><th>Associated</th>
- * <tr><td align=right>{@code T}</td><td>{@link #getAnnotation(Class) getAnnotation(Class&lt;T&gt;)}
+ * <tr><th colspan="2"></th><th colspan="4">Kind of Presence</th>
+ * <tr><th colspan="2">Method</th><th>Directly Present</th><th>Indirectly Present</th><th>Present</th><th>Associated</th>
+ * <tr><td align="right">{@code T}</td><td>{@link #getAnnotation(Class) getAnnotation(Class&lt;T&gt;)}
  * <td></td><td></td><td>X</td><td></td>
  * </tr>
- * <tr><td align=right>{@code Annotation[]}</td><td>{@link #getAnnotations getAnnotations()}
+ * <tr><td align="right">{@code Annotation[]}</td><td>{@link #getAnnotations getAnnotations()}
  * <td></td><td></td><td>X</td><td></td>
  * </tr>
- * <tr><td align=right>{@code T[]}</td><td>{@link #getAnnotationsByType(Class) getAnnotationsByType(Class&lt;T&gt;)}
+ * <tr><td align="right">{@code T[]}</td><td>{@link #getAnnotationsByType(Class) getAnnotationsByType(Class&lt;T&gt;)}
  * <td></td><td></td><td></td><td>X</td>
  * </tr>
- * <tr><td align=right>{@code T}</td><td>{@link #getDeclaredAnnotation(Class) getDeclaredAnnotation(Class&lt;T&gt;)}
+ * <tr><td align="right">{@code T}</td><td>{@link #getDeclaredAnnotation(Class) getDeclaredAnnotation(Class&lt;T&gt;)}
  * <td>X</td><td></td><td></td><td></td>
  * </tr>
- * <tr><td align=right>{@code Annotation[]}</td><td>{@link #getDeclaredAnnotations getDeclaredAnnotations()}
+ * <tr><td align="right">{@code Annotation[]}</td><td>{@link #getDeclaredAnnotations getDeclaredAnnotations()}
  * <td>X</td><td></td><td></td><td></td>
  * </tr>
- * <tr><td align=right>{@code T[]}</td><td>{@link #getDeclaredAnnotationsByType(Class) getDeclaredAnnotationsByType(Class&lt;T&gt;)}
+ * <tr><td align="right">{@code T[]}</td><td>{@link #getDeclaredAnnotationsByType(Class) getDeclaredAnnotationsByType(Class&lt;T&gt;)}
  * <td>X</td><td>X</td><td></td><td></td>
  * </tr>
  * </table>
@@ -316,6 +317,9 @@ public interface AnnotatedElement {
      * @since 1.8
      */
     default <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
+        // Android-changed: Altered method implementation for getAnnotationsByType(Class).
+        // Android's annotation code is customized because of the use of the DEX format on Android
+        // and code sharing with the runtime.
         // This method does not handle inherited annotations and is intended for use for
         // {@code Method}, {@code Field}, {@code Package}. The {@link Class#getAnnotationsByType}
         // is implemented explicitly. Therefore this implementation does not fulfill the documented

@@ -1,18 +1,40 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
+ */
+
+/*
+ * (C) Copyright Taligent, Inc. 1996-1998 -  All Rights Reserved
+ * (C) Copyright IBM Corp. 1996-1998 - All Rights Reserved
+ *
+ *   The original version of this source code and documentation is copyrighted
+ * and owned by Taligent, Inc., a wholly-owned subsidiary of IBM. These
+ * materials are provided under terms of a License Agreement between Taligent
+ * and Sun. This technology is protected by multiple US and International
+ * patents. This notice and attribution to Taligent may not be removed.
+ *   Taligent is a registered trademark of Taligent, Inc.
+ *
  */
 
 package java.text;
@@ -23,87 +45,80 @@ import java.util.Locale;
 import libcore.icu.ICU;
 
 /**
- * Performs locale-sensitive string comparison.
+ * The <code>Collator</code> class performs locale-sensitive
+ * <code>String</code> comparison. You use this class to build
+ * searching and sorting routines for natural language text.
+ *
  * <p>
- * Following the <a href=http://www.unicode.org>Unicode Consortium</a>'s
- * specifications for the <a
- * href="http://www.unicode.org/unicode/reports/tr10/"> Unicode Collation
- * Algorithm (UCA)</a>, there are 4 different levels of strength used in
- * comparisons:
- * <ul>
- * <li>PRIMARY strength: Typically, this is used to denote differences between
- * base characters (for example, "a" &lt; "b"). It is the strongest difference.
- * For example, dictionaries are divided into different sections by base
- * character.
- * <li>SECONDARY strength: Accents in the characters are considered secondary
- * differences (for example, "as" &lt; "&agrave;s" &lt; "at"). Other differences
- * between letters can also be considered secondary differences, depending on
- * the language. A secondary difference is ignored when there is a primary
- * difference anywhere in the strings.
- * <li>TERTIARY strength: Upper and lower case differences in characters are
- * distinguished at tertiary strength (for example, "ao" &lt; "Ao" &lt;
- * "a&ograve;"). In addition, a variant of a letter differs from the base form
- * on the tertiary strength (such as "A" and "&#9398;"). Another example is the
- * difference between large and small Kana. A tertiary difference is ignored
- * when there is a primary or secondary difference anywhere in the strings.
- * <li>IDENTICAL strength: When all other strengths are equal, the IDENTICAL
- * strength is used as a tiebreaker. The Unicode code point values of the NFD
- * form of each string are compared, just in case there is no difference. For
- * example, Hebrew cantellation marks are only distinguished at this strength.
- * This strength should be used sparingly, as only code point value differences
- * between two strings are an extremely rare occurrence. Using this strength
- * substantially decreases the performance for both comparison and collation key
- * generation APIs. This strength also increases the size of the collation key.
- * </ul>
+ * <code>Collator</code> is an abstract base class. Subclasses
+ * implement specific collation strategies. One subclass,
+ * <code>RuleBasedCollator</code>, is currently provided with
+ * the Java Platform and is applicable to a wide set of languages. Other
+ * subclasses may be created to handle more specialized needs.
+ *
  * <p>
- * This {@code Collator} deals only with two decomposition modes, the canonical
- * decomposition mode and one that does not use any decomposition. The
- * compatibility decomposition mode
- * {@code java.text.Collator.FULL_DECOMPOSITION} is not supported here. If the
- * canonical decomposition mode is set, {@code Collator} handles un-normalized
- * text properly, producing the same results as if the text were normalized in
- * NFD. If canonical decomposition is turned off, it is the user's
- * responsibility to ensure that all text is already in the appropriate form
- * before performing a comparison or before getting a {@link CollationKey}.
+ * Like other locale-sensitive classes, you can use the static
+ * factory method, <code>getInstance</code>, to obtain the appropriate
+ * <code>Collator</code> object for a given locale. You will only need
+ * to look at the subclasses of <code>Collator</code> if you need
+ * to understand the details of a particular collation strategy or
+ * if you need to modify that strategy.
+ *
  * <p>
- * <em>Examples:</em>
+ * The following example shows how to compare two strings using
+ * the <code>Collator</code> for the default locale.
  * <blockquote>
- *
- * <pre>
- * // Get the Collator for US English and set its strength to PRIMARY
- * Collator usCollator = Collator.getInstance(Locale.US);
- * usCollator.setStrength(Collator.PRIMARY);
- * if (usCollator.compare(&quot;abc&quot;, &quot;ABC&quot;) == 0) {
- *     System.out.println(&quot;Strings are equivalent&quot;);
- * }
- * </pre>
- *
- * </blockquote>
- * <p>
- * The following example shows how to compare two strings using the collator for
- * the default locale.
- * <blockquote>
- *
- * <pre>
+ * <pre>{@code
  * // Compare two strings in the default locale
  * Collator myCollator = Collator.getInstance();
- * myCollator.setDecomposition(Collator.NO_DECOMPOSITION);
- * if (myCollator.compare(&quot;\u00e0\u0325&quot;, &quot;a\u0325\u0300&quot;) != 0) {
- *     System.out.println(&quot;\u00e0\u0325 is not equal to a\u0325\u0300 without decomposition&quot;);
- *     myCollator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
- *     if (myCollator.compare(&quot;\u00e0\u0325&quot;, &quot;a\u0325\u0300&quot;) != 0) {
- *         System.out.println(&quot;Error: \u00e0\u0325 should be equal to a\u0325\u0300 with decomposition&quot;);
- *     } else {
- *         System.out.println(&quot;\u00e0\u0325 is equal to a\u0325\u0300 with decomposition&quot;);
- *     }
- * } else {
- *     System.out.println(&quot;Error: \u00e0\u0325 should be not equal to a\u0325\u0300 without decomposition&quot;);
- * }
- * </pre>
- *
+ * if( myCollator.compare("abc", "ABC") < 0 )
+ *     System.out.println("abc is less than ABC");
+ * else
+ *     System.out.println("abc is greater than or equal to ABC");
+ * }</pre>
  * </blockquote>
  *
- * @see CollationKey
+ * <p>
+ * You can set a <code>Collator</code>'s <em>strength</em> property
+ * to determine the level of difference considered significant in
+ * comparisons. Four strengths are provided: <code>PRIMARY</code>,
+ * <code>SECONDARY</code>, <code>TERTIARY</code>, and <code>IDENTICAL</code>.
+ * The exact assignment of strengths to language features is
+ * locale dependant.  For example, in Czech, "e" and "f" are considered
+ * primary differences, while "e" and "&#283;" are secondary differences,
+ * "e" and "E" are tertiary differences and "e" and "e" are identical.
+ * The following shows how both case and accents could be ignored for
+ * US English.
+ * <blockquote>
+ * <pre>
+ * //Get the Collator for US English and set its strength to PRIMARY
+ * Collator usCollator = Collator.getInstance(Locale.US);
+ * usCollator.setStrength(Collator.PRIMARY);
+ * if( usCollator.compare("abc", "ABC") == 0 ) {
+ *     System.out.println("Strings are equivalent");
+ * }
+ * </pre>
+ * </blockquote>
+ * <p>
+ * For comparing <code>String</code>s exactly once, the <code>compare</code>
+ * method provides the best performance. When sorting a list of
+ * <code>String</code>s however, it is generally necessary to compare each
+ * <code>String</code> multiple times. In this case, <code>CollationKey</code>s
+ * provide better performance. The <code>CollationKey</code> class converts
+ * a <code>String</code> to a series of bits that can be compared bitwise
+ * against other <code>CollationKey</code>s. A <code>CollationKey</code> is
+ * created by a <code>Collator</code> object for a given <code>String</code>.
+ * <br>
+ * <strong>Note:</strong> <code>CollationKey</code>s from different
+ * <code>Collator</code>s can not be compared. See the class description
+ * for {@link CollationKey}
+ * for an example using <code>CollationKey</code>s.
+ *
+ * @see         RuleBasedCollator
+ * @see         CollationKey
+ * @see         CollationElementIterator
+ * @see         Locale
+ * @author      Helena Shih, Laura Werner, Richard Gillam
  */
 public abstract class Collator implements Comparator<Object>, Cloneable {
     /**

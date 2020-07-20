@@ -52,9 +52,9 @@ class OneofGenerator {
   ~OneofGenerator();
 
   void CollectMessageOrBuilderForwardDeclarations(
-      std::set<string>* declarations) const;
-  void CollectHeaderImports(std::set<string>* imports) const;
-  void CollectSourceImports(std::set<string>* imports) const;
+      std::set<std::string>* declarations) const;
+  void CollectHeaderImports(std::set<std::string>* imports) const;
+  void CollectSourceImports(std::set<std::string>* imports) const;
   void GenerateStorageDeclaration(io::Printer* printer) const;
   void GenerateOneofData(io::Printer* printer) const;
   void GenerateHeader(io::Printer* printer);

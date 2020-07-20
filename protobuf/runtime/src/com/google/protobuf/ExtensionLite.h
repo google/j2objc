@@ -42,7 +42,7 @@
 struct CGPFieldData;
 
 @interface ComGoogleProtobufExtensionLite : NSObject {
-  @public
+ @public
   CGPFieldDescriptor *fieldDescriptor_;
 }
 
@@ -54,10 +54,15 @@ struct CGPFieldData;
 
 @end
 
+typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
+
+CF_EXTERN_C_BEGIN
+void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,
+                                                      struct CGPFieldData *data);
+CF_EXTERN_C_END
+
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionLite)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionLite)
 
-typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
-
-#endif // __ComGoogleProtobufExtensionLite_H__
+#endif  // __ComGoogleProtobufExtensionLite_H__

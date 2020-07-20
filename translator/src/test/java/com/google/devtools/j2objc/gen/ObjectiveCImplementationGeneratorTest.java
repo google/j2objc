@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import java.io.IOException;
 import javax.tools.ToolProvider;
@@ -773,13 +774,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   public void testReservedWordAsAnnotationPropertyName() throws IOException {
     String translation = translateSourceFile(
-        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
-        + "public @interface Bar { String namespace() default \"\"; } "
-        + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
+        "package foo; "
+            + "import java.lang.annotation.*; "
+            + "@Retention(RetentionPolicy.RUNTIME) "
+            + "public @interface Bar { "
+            + "  String in() default \"XYZ\"; "
+            + "  String namespace() default \"\"; "
+            + "} "
+            + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
         "Bar", "foo/Bar.m");
+    assertTranslation(translation, "@synthesize in = in_;");
     assertTranslation(translation, "@synthesize namespace__ = namespace___;");
-    assertTranslation(translation, "id<FooBar> create_FooBar(NSString *namespace__) {");
+    assertTranslation(translation,
+        "id<FooBar> create_FooBar(NSString *inArg, NSString *namespace__) {");
+    assertTranslation(translation, "self->in_ = RETAIN_(inArg);");
     assertTranslation(translation, "self->namespace___ = RETAIN_(namespace__);");
+    assertTranslation(translation, "+ (NSString *)inDefault {");
     assertTranslation(translation, "+ (NSString *)namespace__Default {");
   }
 
@@ -905,5 +915,55 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "FooBarMumblepackage_info");
     assertNotInTranslation(translation, "FBMpackage_info");
     assertNotInTranslation(translation, "J2OBJC_NAME_MAPPING");
+  }
+
+  //  Verifies that the error test and message lines are generated for ARC when
+  //  using ARC as Memory Management Option
+  public void testErrorTestAndMessageLinesGeneratedWithARC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String translation =
+        translateSourceFile(
+            "package foo.bar; public class A { public A(int i) {} A() {} }",
+            "foo.bar.A",
+            "foo/bar/A.m");
+
+    assertTranslation(
+        translation,
+        "#if !__has_feature(objc_arc)\n"
+            + "#error \"foo/bar/A must be compiled with ARC (-fobjc-arc)\"\n"
+            + "#endif");
+  }
+
+  //  Verifies that the error test and message lines are generated for Reference Counting
+  //  when using Reference Counting as Memory Management Option
+  public void testErrorTestAndMessageLinesGeneratedWithReferenceCounting() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    String translation =
+        translateSourceFile(
+            "package foo.bar; public class A { public A(int i) {} A() {} }",
+            "foo.bar.A",
+            "foo/bar/A.m");
+
+    assertTranslation(
+        translation,
+        "#if __has_feature(objc_arc)\n"
+            + "#error \"foo/bar/A must not be compiled with ARC (-fobjc-arc)\"\n"
+            + "#endif");
+  }
+
+  //  Verifies that the error test and message lines are generated for Reference Counting
+  //  when no Memory Management Option is set
+  public void testErrorTestAndMessageLinesGeneratedDefaultMemoryManagement() throws IOException {
+    String translation =
+        translateSourceFile(
+            "package foo.bar; public class A { public A(int i) {} A() {} }",
+            "foo.bar.A",
+            "foo/bar/A.m");
+
+    assertTranslation(
+        translation,
+        "#if __has_feature(objc_arc)\n"
+            + "#error \"foo/bar/A must not be compiled with ARC (-fobjc-arc)\"\n"
+            + "#endif");
   }
 }

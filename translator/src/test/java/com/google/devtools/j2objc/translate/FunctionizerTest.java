@@ -583,6 +583,13 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
   }
 
+  public void testDisallowedConstructorInAbstractClass() throws IOException {
+    String translation = translateSourceFile(
+        "public abstract class A { public A(String unused) {} }", "A", "A.h");
+    // init is inherited from NSObject.
+    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+  }
+
   // Even when the private method contains a super invocation, it must be functionized. (b/63163887)
   public void testPrivateInstanceMethodIsFunctionized() throws IOException {
     String translation = translateSourceFile(

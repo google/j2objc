@@ -43,7 +43,6 @@ public class ConstructorTest extends TestCase {
         checkAnnotatedElementPresentMethods(constructor, AnnotationA.class, AnnotationC.class);
     }
 
-    /* TODO(b/62095729): repeatable annotations support.
     // A class with multiple constructors that differ by their argument count.
     private static class AnnotatedClass {
         @Repeated(1)
@@ -158,5 +157,5 @@ public class ConstructorTest extends TestCase {
             args[i] = Integer.TYPE;
         }
         return c.getDeclaredConstructor(args);
-    } */
+    }
 }

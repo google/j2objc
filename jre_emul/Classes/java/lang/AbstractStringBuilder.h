@@ -35,9 +35,9 @@ typedef JavaLangAbstractStringBuilder JreStringBuilder;
 
 - (IOSCharArray *)getValue;
 
-- (instancetype)init;
+- (instancetype)initPackagePrivate;
 
-- (instancetype)initWithInt:(jint)capacity;
+- (instancetype)initPackagePrivateWithInt:(jint)capacity;
 
 - (instancetype)initWithNSString:(NSString *)string;
 
@@ -97,8 +97,8 @@ J2OBJC_STATIC_INIT(JavaLangAbstractStringBuilder)
 
 CF_EXTERN_C_BEGIN
 
-void JavaLangAbstractStringBuilder_init(JavaLangAbstractStringBuilder *self);
-void JavaLangAbstractStringBuilder_initWithInt_(
+void JavaLangAbstractStringBuilder_initPackagePrivate(JavaLangAbstractStringBuilder *self);
+void JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(
     JavaLangAbstractStringBuilder *self, jint capacity);
 void JavaLangAbstractStringBuilder_initWithNSString_(
     JavaLangAbstractStringBuilder *self, NSString *string);

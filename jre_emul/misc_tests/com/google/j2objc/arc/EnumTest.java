@@ -25,6 +25,19 @@ import junit.framework.TestCase;
  */
 public class EnumTest extends TestCase {
 
+  private static boolean isGarbageCollectionEnabled;
+
+  static {
+    detectGarbageCollectionMode();
+  }
+
+  private native static void detectGarbageCollectionMode()
+  /*-[
+    #ifdef J2OBJC_USE_GC
+       ComGoogleJ2objcArcEnumTest_isGarbageCollectionEnabled = TRUE;
+    #endif
+  ]-*/;
+
   // The existence of this enum type serves as a regression test for enum
   // compilation with ARC.
   enum Color {
@@ -33,8 +46,10 @@ public class EnumTest extends TestCase {
 
   // All enum values should always have a retain count of 1.
   public void testEnumRetainCount() {
-    assertEquals(1, NativeUtil.getRetainCount(Color.RED));
-    assertEquals(1, NativeUtil.getRetainCount(Color.GREEN));
-    assertEquals(1, NativeUtil.getRetainCount(Color.BLUE));
+    if (!isGarbageCollectionEnabled) {
+      assertEquals(1, NativeUtil.getRetainCount(Color.RED));
+      assertEquals(1, NativeUtil.getRetainCount(Color.GREEN));
+      assertEquals(1, NativeUtil.getRetainCount(Color.BLUE));
+    }
   }
 }

@@ -349,6 +349,19 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "RELEASE_(i_);");
   }
 
+  public void testStaticFinalFieldAccessWithParenthesizedExpression() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { "
+            + "  private static final int t = 7; "
+            + "  static int test() { "
+            + "    Object o = new Test(); "
+            + "    return ((Test)o).t; "
+            + "  } "
+            + "}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return Test_t;");
+  }
+
   public void testInnerInnerClassFieldAccess() throws IOException {
     String translation = translateSourceFile(
         "public class Test { static class One {} static class Two extends Test { "
@@ -1357,6 +1370,25 @@ public class StatementGeneratorTest extends GenerationTest {
         "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
     assertNotInTranslation(translation,
         "@catch (JavaLangException *e) {\n    @throw e;\n  }");
+  }
+
+  public void testLambdaCapturesMultiCatchExceptionParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.function.Supplier; "
+            + "public class Test { "
+            + "  public void test() { "
+            + "    try { "
+            + "      \"\".charAt(10); "
+            + "    } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e) { "
+            + "      Supplier<String> s = () -> e.getMessage(); "
+            + "      System.out.println(s.get()); "
+            + "    } "
+            + "  } "
+            + "} ",
+        "Test", "Test.m");
+    // Note that the type of the captured parameter is the least upper bound of
+    // (Array | String) IndexOutOfBoundsException.
+    assertTranslation(translation, "JavaLangIndexOutOfBoundsException *capture$0");
   }
 
   public void testDifferentTypesInConditionalExpression() throws IOException {

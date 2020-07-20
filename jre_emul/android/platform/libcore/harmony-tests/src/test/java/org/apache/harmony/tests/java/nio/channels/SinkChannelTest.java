@@ -158,7 +158,7 @@ public class SinkChannelTest extends TestCase {
 		}
 	}
 
-    /* TODO(user): fix b/64675894.
+    /* TODO(zgao): fix b/64675894.
     public void test_write_LByteBuffer_SourceClosed() throws IOException {
         source.close();
         try {
@@ -235,7 +235,7 @@ public class SinkChannelTest extends TestCase {
 		}
 	}
 
-    /* TODO(user): fix and enable.
+    /* TODO(zgao): fix and enable.
     public void test_write_$LByteBuffer_SourceClosed() throws IOException {
         ByteBuffer[] bufArray = { buffer };
         source.close();
@@ -375,7 +375,7 @@ public class SinkChannelTest extends TestCase {
         }
     }
 
-    /* TODO(user): fix and enable.
+    /* TODO(zgao): fix and enable.
     public void test_write_$LByteBufferII_SourceClosed() throws IOException {
         ByteBuffer[] bufArray = { buffer };
         source.close();

@@ -286,7 +286,7 @@ int cmpScopeID (unsigned int scope, struct sockaddr *him) {
 void
 NET_ThrowByNameWithLastError(JNIEnv *env, const char *name,
                    const char *defaultDetail) {
-/* TODO(user): Enable after JNU_ThrowByNameWithLastError() is implemented.
+/* TODO(zgao): Enable after JNU_ThrowByNameWithLastError() is implemented.
     char errmsg[255];
     snprintf(errmsg, sizeof(errmsg), "errno: %d, error: %s\n", errno,
              defaultDetail);
@@ -309,7 +309,7 @@ NET_ThrowNew(JNIEnv *env, int errorNumber, char *msg) {
     NSString *errMsg = msg ? [NSString stringWithUTF8String:msg] : nil;
     switch(errorNumber) {
     case EBADF:
-        // TODO(user): implement jio_snprintf.
+        // TODO(zgao): implement jio_snprintf.
         // jio_snprintf(fullMsg, sizeof(fullMsg), "socket closed: %s", msg);
         // JNU_ThrowByName(env, "JavaNetSocketException", fullMsg);
         J2ObjCThrowByName(JavaNetSocketException, errMsg);

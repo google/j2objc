@@ -52,9 +52,9 @@ FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
   - (oneway void)release { \
     @synchronized (self) { \
       if ([self retainCount] == NUM_REFS + 1) { \
-        [PARENT_REF autorelease]; \
+        AUTORELEASE(PARENT_REF); \
       } \
-      [super release]; \
+      RELEASE_(super); \
     } \
   }
 

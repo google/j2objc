@@ -92,7 +92,7 @@ import java.util.function.UnaryOperator;
  * should be used only to detect bugs.</i>
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author  Josh Bloch
@@ -103,8 +103,8 @@ import java.util.function.UnaryOperator;
  * @see     Vector
  * @since   1.2
  */
+// Android-changed: Inlined methods; CME in iterators; throw AIOOBE when toIndex < fromIndex.
 /*
- * Android-changed:
  * - AOSP commit 3be987f0f18648b3c532c8b89d09505e18594241
  *   Inline for improved performance:
  *   - checkForComodification
@@ -686,6 +686,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @see Collection#contains(Object)
      */
     public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
         return batchRemove(c, false);
     }
 
@@ -706,6 +707,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @see Collection#contains(Object)
      */
     public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
         return batchRemove(c, true);
     }
 

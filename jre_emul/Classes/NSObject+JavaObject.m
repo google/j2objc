@@ -92,11 +92,7 @@ void ARGC_genericRetain(id obj);
 }
 
 - (int)compareToWithId:(id)other {
-#if __has_feature(objc_arc)
-  @throw [[JavaLangClassCastException alloc] init];
-#else
-  @throw [[[JavaLangClassCastException alloc] init] autorelease];
-#endif
+  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
   return 0;
 }
 

@@ -65,22 +65,4 @@ class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
     public ArrayIndexOutOfBoundsException(String s) {
         super(s);
     }
-
-    /**
-     * Used internally for consistent high-quality error reporting.
-     * @hide
-     */
-    public ArrayIndexOutOfBoundsException(int sourceLength, int index) {
-        super("length=" + sourceLength + "; index=" + index);
-    }
-
-    /**
-     * Used internally for consistent high-quality error reporting.
-     * @hide
-     */
-    public ArrayIndexOutOfBoundsException(int sourceLength, int offset,
-            int count) {
-        super("length=" + sourceLength + "; regionStart=" + offset
-                + "; regionLength=" + count);
-    }
 }

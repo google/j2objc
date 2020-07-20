@@ -54,6 +54,7 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.UnionType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -280,9 +281,6 @@ public final class TypeUtil {
   	  // IOSTest class 는 ARGCObject 를 상속하지 않는다.
       return "Native";
 	}
-	if (ARGC.isPureObjC(t)) {
-	  return "Native";
-	}
 	
 	TypeElement e = asTypeElement(t);
 	if (e == null) {
@@ -345,7 +343,7 @@ public final class TypeUtil {
 
   public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
     if (isGeneratedType(t1) || isGeneratedType(t2)) {
-      // TODO(user): implement as part of converting Elements to their generated versions.
+      // TODO(antoniocortes): implement as part of converting Elements to their generated versions.
       return false;
     }
     return javacTypes.isAssignable(t1, t2);
@@ -353,7 +351,7 @@ public final class TypeUtil {
 
   public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
     if (isGeneratedType(t1) || isGeneratedType(t2)) {
-      // TODO(user): implement as part of converting Elements to their generated versions.
+      // TODO(antoniocortes): implement as part of converting Elements to their generated versions.
       return false;
     }
     return javacTypes.isSubtype(t1, t2);
@@ -424,7 +422,7 @@ public final class TypeUtil {
   }
 
   /**
-   * TODO(user): See jls-5.6.2 and jls-15.25.
+   * TODO(manvithn): See jls-5.6.2 and jls-15.25.
    * @param trueType the type of the true expression
    * @param falseType the type of the false expression
    * @return the inferred type of the conditional expression
@@ -450,9 +448,9 @@ public final class TypeUtil {
       return Collections.emptyList();
     }
     List<? extends TypeMirror> result = new ArrayList<>(javacTypes.directSupertypes(t));
-    if (TypeUtil.isPureInterface(t)) {
-      result.remove(javaObject.asType());
-    }
+//    if (TypeUtil.isPureInterface(t)) {
+//      result.remove(javaObject.asType());
+//    }
     return result;
   }
 
@@ -533,8 +531,25 @@ public final class TypeUtil {
       return getIosArray(((ArrayType) t).getComponentType());
     } else if (isDeclaredType(t)) {
       return getObjcClass((TypeElement) ((DeclaredType) t).asElement());
+    } else if (t.getKind() == TypeKind.UNION) {
+      TypeMirror lub = leastUpperBound(((UnionType)t).getAlternatives());
+      return getObjcClass(asTypeElement(lub));
     }
     return null;
+  }
+
+  private TypeMirror leastUpperBound(List<? extends TypeMirror> types) {
+    List<TypeMirror> superTypes = new ArrayList<>();
+    superTypes.add(types.get(0));
+    while (!superTypes.isEmpty()) {
+      TypeMirror lub = superTypes.remove(0);
+      if (types.stream().allMatch(t -> isAssignable(t, lub))) {
+        // At some point we'll get here because Object is the root of the class hierarchy.
+        return lub;
+      }
+      superTypes.addAll(directSupertypes(lub));
+    }
+    throw new AssertionError("Unreachable path.");
   }
 
   public TypeElement getObjcClass(TypeElement element) {

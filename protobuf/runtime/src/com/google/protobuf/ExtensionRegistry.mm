@@ -41,7 +41,7 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
 @implementation ComGoogleProtobufExtensionRegistry
 
 + (CGPExtensionRegistry *)newInstance {
-  return [[[CGPExtensionRegistry alloc] init] autorelease];
+  return AUTORELEASE([[CGPExtensionRegistry alloc] init]);
 }
 
 + (CGPExtensionRegistry *)getEmptyRegistry {
@@ -62,7 +62,7 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
     withInt:(jint)fieldId {
   CGPFieldDescriptor *field = CGPExtensionRegistryFind(self, descriptor, fieldId);
   if (field != nil) {
-    return [[[CGPExtensionInfo alloc] initWithField:field] autorelease];
+    return AUTORELEASE([[CGPExtensionInfo alloc] initWithField:field]);
   }
   return nil;
 }
@@ -84,13 +84,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufExtensionRegistry)
 
 ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_newInstance() {
   ComGoogleProtobufExtensionRegistry_initialize();
-  return [[[CGPExtensionRegistry alloc] init] autorelease];
+  return AUTORELEASE([[CGPExtensionRegistry alloc] init]);
 }
 
 ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyRegistry() {
   ComGoogleProtobufExtensionRegistry_initialize();
   return CGPExtensionRegistry_EMPTY_;
 }
+
+void ComGoogleProtobufExtensionRegistry_initWithBoolean_(
+    ComGoogleProtobufExtensionRegistry *self, jboolean empty) {
+  ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
+}
+
+ComGoogleProtobufExtensionRegistry_ExtensionInfo *
+ComGoogleProtobufExtensionRegistry_newExtensionInfoWithComGoogleProtobufExtension_(
+    ComGoogleProtobufExtension *extension) {
+  return [[ComGoogleProtobufExtensionRegistry_ExtensionInfo alloc]
+      initWithField:[extension getDescriptor]];
+}
+
 
 @implementation ComGoogleProtobufExtensionRegistry_ExtensionInfo
 

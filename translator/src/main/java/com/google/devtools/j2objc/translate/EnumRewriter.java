@@ -247,17 +247,12 @@ public class EnumRewriter extends UnitTreeVisitor {
       VariableElement varElement = constant.getVariableElement();
       ClassInstanceCreation creation = new ClassInstanceCreation(constant.getExecutablePair());
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      if (ARGC.compatiable_2_0_2) {
-    	  creation.addArgument(new StringLiteral(ElementUtil.getName(varElement), typeUtil));
-      }
-      else {
-          Expression constName = options.stripEnumConstants()
-                  ? new StringLiteral("JAVA_LANG_ENUM_NAME_STRIPPED", typeUtil)
-                  : new NativeExpression(
-                    UnicodeUtils.format("JreEnumConstantName(%s_class_(), %d)", enumClassName, i),
-                    typeUtil.getJavaString().asType());
-    	  creation.addArgument(constName);
-      }
+      Expression constName = options.stripEnumConstants()
+              ? new StringLiteral("JAVA_LANG_ENUM_NAME_STRIPPED", typeUtil)
+              : new NativeExpression(
+                UnicodeUtils.format("JreEnumConstantName(%s_class_(), %d)", enumClassName, i),
+                typeUtil.getJavaString().asType());
+	  creation.addArgument(constName);
       creation.addArgument(new NumberLiteral(i++, typeUtil));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varElement), creation)));
@@ -333,7 +328,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     int numConstants = node.getEnumConstants().size();
 
     // The native type is not declared for an empty enum.
-    if (options.staticAccessorMethods() && numConstants > 0) {
+    if (numConstants > 0) {
       String nativeName = NameTable.getNativeEnumName(typeName);
       node.addBodyDeclaration(NativeDeclaration.newInnerDeclaration(
           UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName),

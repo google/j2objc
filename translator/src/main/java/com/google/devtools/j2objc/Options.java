@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.util.PackagePrefixes;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
@@ -84,6 +85,7 @@ public class Options {
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
   private boolean nullability = false;
+  private boolean defaultNonnull = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
   private String lintArgument = null;
@@ -246,7 +248,6 @@ public class Options {
       ImmutableSet.of("--patch-module", "--system", "--add-reads");
   private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
-
   static {
     // Load string resources.
     URL propertiesUrl = Resources.getResource(J2ObjC.class, "J2ObjC.properties");
@@ -349,14 +350,14 @@ public class Options {
 //      } else if (arg.startsWith("@")) {
 //        processArgsFile(arg.substring(1));
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
-        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true));
+        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true, true));
       } else if (arg.equals("-sourcepath")) {
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false, true));
         //sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
       } else if (arg.equals("--not-include")) {
         ARGC.addExcludeRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
-        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true));
+        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true, false));
       } else if (arg.equals("-d")) {
         fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--resource-dir")) {
@@ -371,8 +372,6 @@ public class Options {
         proGuardUsageFile = new File(getArgValue(args, arg));
       } else if (arg.equals("--prefix")) {
         addPrefixOption(getArgValue(args, arg));
-      } else if (arg.equals("--pure-objc")) { /*ARGC++*/
-          ARGC.addPureObjC(args.next());
       } else if (arg.equals("--prefixes")) {
         packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
@@ -501,6 +500,8 @@ public class Options {
         staticAccessorMethods = true;
       } else if (arg.equals("--class-properties")) {
         setClassProperties(true);
+      } else if (arg.equals("--no-class-properties")) {
+        setClassProperties(false);
       } else if (arg.equals("--swift-friendly")) {
         setSwiftFriendly(true);
       } else if (arg.equals("-processor")) {
@@ -509,6 +510,10 @@ public class Options {
         disallowInheritedConstructors = false;
       } else if (arg.equals("--nullability")) {
         nullability = true;
+      } else if (arg.equals("--no-nullability")) {
+        nullability = false;
+      } else if (arg.equals("-Xdefault-nonnull")) {
+        defaultNonnull = true;
       } else if (arg.startsWith("-Xlint")) {
         lintArgument = arg;
       } else if (arg.equals("-Xtranslate-bootclasspath")) {
@@ -537,8 +542,6 @@ public class Options {
 		if (!argc_debugSource.endsWith(".java")) {
 			argc_debugSource += ".java";
 		}
-      } else if (arg.equals("-compatible-v2.0.2")) { /*ARGC++*/
-    	ARGC.compatiable_2_0_2 = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -702,7 +705,7 @@ public class Options {
 	  pathList.add(path);
   }
   
-  private List<String> getPathArgument(String argument, boolean expandAarFiles) {
+  private List<String> getPathArgument(String argument, boolean expandAarFiles, boolean expandWildcard) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       entry = entry.trim();
@@ -714,34 +717,45 @@ public class Options {
         // first if in the middle of a path string.
         entry = System.getProperty("user.home") + entry.substring(1);
       }
-      if (true || this.useGC()) {
-          if (entry.charAt(0) == '@') {
-        	  File f = new File(entry.substring(1));
-        	  ArrayList<String> list = ARGC.processListFile(f);
-        	  if (list != null) {
-        		  String dir = f.getAbsolutePath();
-        		  dir = dir.substring(0, dir.lastIndexOf('/') + 1);
-        		  for (String s : list) {
-                	  addPath(entries, dir + s, !expandAarFiles);
-        		  }
-        	  }
-          }
-          else {
-        	  addPath(entries, entry, !expandAarFiles);
-          }
+      if (false && this.useGC()) {
+        if (entry.charAt(0) == '@') {
+            File f = new File(entry.substring(1));
+            ArrayList<String> list = ARGC.processListFile(f);
+            if (list != null) {
+                String dir = f.getAbsolutePath();
+                dir = dir.substring(0, dir.lastIndexOf('/') + 1);
+                for (String s : list) {
+                    addPath(entries, dir + s, !expandAarFiles);
+                }
+            }
+        }
+        else {
+            addPath(entries, entry, !expandAarFiles);
+        }
       }
       else {
-	      File f = new File(entry);
-	      if (entry.endsWith(".aar") && expandAarFiles) {
-	        // Extract classes.jar from Android library AAR file.
-	        f = fileUtil().extractClassesJarFromAarFile(f);
-	      }
-	      if (f.exists()) {
-	        entries.add(f.toString());
-	      }
-	      else {
-	    	  System.err.println("invalid path: " + entry);
-	      }
+        File f = new File(entry);
+        if (f.getName().equals("*") && expandWildcard) {
+          File parent = f.getParentFile() == null ? new File(".") : f.getParentFile();
+          FileFilter jarFilter = file -> file.getName().endsWith(".jar");
+          File[] files = parent.listFiles(jarFilter);
+          if (files != null) {
+            for (File jar : files) {
+              entries.add(jar.toString());
+            }
+          }
+          continue;
+        }
+        if (entry.endsWith(".aar") && expandAarFiles) {
+          // Extract classes.jar from Android library AAR file.
+          f = fileUtil().extractClassesJarFromAarFile(f);
+        }
+        if (f.exists()) {
+          entries.add(f.toString());
+        }
+        else {
+            System.err.println("invalid path: " + entry);
+        }
       }
     }
     return entries;
@@ -851,7 +865,7 @@ public class Options {
 
   public List<String> getBootClasspath() {
 	  if (this.bootcps == null) {
-		  bootcps = getPathArgument(bootclasspath, true);
+		  bootcps = getPathArgument(bootclasspath, true, true);
 		  if (isVerbose()) {
 		    System.out.println("bootclasspath = " + bootcps);
 		  }
@@ -1032,6 +1046,16 @@ public class Options {
     nullability = b;
   }
 
+  public boolean defaultNonnull() {
+    return nullability && defaultNonnull;
+  }
+
+  @VisibleForTesting
+  public void setDefaultNonnull(boolean b) {
+    nullability = true;
+    defaultNonnull = b;
+  }
+
   public String lintArgument() {
     return lintArgument;
   }
@@ -1081,11 +1105,6 @@ public class Options {
   @VisibleForTesting
   public void addExternalAnnotationFile(String file) throws IOException {
     externalAnnotations.addExternalAnnotationFile(file);
-  }
-
-  @VisibleForTesting
-  public void addExternalAnnotationFileContents(String fileContents) throws IOException {
-    externalAnnotations.addExternalAnnotationFileContents(fileContents);
   }
 
   // Unreleased experimental project.

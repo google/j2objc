@@ -128,4 +128,11 @@ public class ElementUtilTest extends GenerationTest {
     TypeElement element = decl.getTypeElement();
     assertTrue(ElementUtil.hasAnnotation(element, ObjectiveCName.class));
   }
+
+  // Verify nullability annotation on a method with a void return type is ignored.
+  public void testNullableAnnotationOnVoidMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { @javax.annotation.Nullable void foo() {} }", "Test", "Test.m");
+    assertTranslation(translation, "- (void)foo");  // not (void __nullable)foo
+  }
 }

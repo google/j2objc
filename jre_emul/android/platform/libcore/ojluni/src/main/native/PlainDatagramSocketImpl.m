@@ -989,6 +989,10 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_datagramSocketCreat
                         strerror(errno));
         return;
     }
+
+    // Disable SIGPIPE signals, as JRE reports socket errors using exceptions.
+    int set = 1;
+    setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 #endif /* __APPLE__ */
 
      setsockopt(fd, SOL_SOCKET, SO_BROADCAST, (char*) &t, sizeof(int));
@@ -1127,7 +1131,7 @@ static void mcast_set_if_by_addr_v6(JNIEnv *env, jobject this, int fd, jobject v
     jobject ni_value = (*env)->CallStaticObjectMethod(
         env, ni_class, ni_getByInetAddress, value);
     if (ni_value == NULL) {
-        // TODO(user): fix ExceptionOccurred
+        // TODO(zgao): fix ExceptionOccurred
         /*
         if (!(*env)->ExceptionOccurred(env)) {
             J2ObjCThrowByName(JavaNetSocketException,
@@ -1141,7 +1145,7 @@ static void mcast_set_if_by_addr_v6(JNIEnv *env, jobject this, int fd, jobject v
      * Get the NetworkInterface index
      */
     jint ifindex = (*env)->CallIntMethod(env, ni_value, ni_getIndex);
-    // TODO(user): fix ExceptionOccurred
+    // TODO(zgao): fix ExceptionOccurred
     /*
     if ((*env)->ExceptionOccurred(env)) {
         return;

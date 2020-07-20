@@ -82,7 +82,7 @@ package java.security;
  * <p> A Key should use KeyRep as its serialized representation.
  * Note that a serialized Key may contain sensitive information
  * which should not be exposed in untrusted environments.  See the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/platform/serialization/spec/security.html">
+ * <a href="../../../platform/serialization/spec/security.html">
  * Security Appendix</a>
  * of the Serialization Specification for more information.
  *
@@ -114,7 +114,7 @@ public interface Key extends java.io.Serializable {
      * Returns the standard algorithm name for this key. For
      * example, "DSA" would indicate that this key is a DSA key.
      * See Appendix A in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+     * "../../../technotes/guides/security/crypto/CryptoSpec.html#AppA">
      * Java Cryptography Architecture API Specification &amp; Reference </a>
      * for information about standard algorithm names.
      *

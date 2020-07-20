@@ -163,9 +163,6 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!TypeUtil.isEnum(type)) {
       return;
     }
-    if (ARGC.isPureObjC(type)) {
-    	return;
-    }
 
     DeclaredType enumType = typeUtil.getSuperclass(type);
     ExecutablePair ordinalMethod = typeUtil.findMethod(enumType, "ordinal");

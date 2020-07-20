@@ -17,6 +17,7 @@
 package org.apache.harmony.tests.java.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -206,7 +207,6 @@ public class EnumSetTest extends TestCase {
         EnumSet<HugeEnum> anotherHugeSet = EnumSet.allOf(HugeEnum.class);
         assertEquals(hugeEnumSet, anotherHugeSet);
         assertNotSame(hugeEnumSet, anotherHugeSet);
-
     }
 
     /**
@@ -474,6 +474,7 @@ public class EnumSetTest extends TestCase {
     /**
      * java.util.EnumSet#remove(Object)
      */
+    @SuppressWarnings("CollectionIncompatibleType")
     public void test_remove_LOject() {
         Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
         Enum[] elements = EnumFoo.class.getEnumConstants();
@@ -604,16 +605,46 @@ public class EnumSetTest extends TestCase {
      * java.util.EnumSet#size()
      */
     public void test_size() {
-        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
-        set.add(EnumFoo.a);
-        set.add(EnumFoo.b);
-        assertEquals("Size should be 2", 2, set.size());
+        assertEmpty(EnumSet.noneOf(EnumFoo.class));
+        assertSize(2, EnumSet.of(EnumFoo.a, EnumFoo.b));
 
-        // test enum type with more than 64 elements
-        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
-        hugeSet.add(HugeEnum.a);
-        hugeSet.add(HugeEnum.bb);
-        assertEquals("Size should be 2", 2, hugeSet.size());
+        // enum type with more than 64 elements
+        assertEmpty(EnumSet.noneOf(HugeEnum.class));
+        assertSize(2, EnumSet.of(HugeEnum.a, HugeEnum.bb));
+        assertSize(65, EnumSet.allOf(HugeEnum.class));
+    }
+
+    public void test_size_modification_regular() {
+        EnumSet<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        assertEmpty(set);
+        set.addAll(Arrays.asList(EnumFoo.a, EnumFoo.b));
+        assertSize(2, set);
+        set.add(EnumFoo.c);
+        assertSize(3, set);
+        set.remove(EnumFoo.d);
+        assertSize(3, set);
+        set.remove(EnumFoo.b);
+        assertSize(2, set);
+        set.clear();
+        assertEmpty(set);
+    }
+
+    public void test_size_modification_jumbo() {
+        EnumSet<HugeEnum> set = EnumSet.allOf(HugeEnum.class);
+        assertSize(65, set);
+        set.remove(HugeEnum.b);
+        assertSize(64, set);
+        set.clear();
+        assertEmpty(set);
+    }
+
+    private static void assertEmpty(EnumSet<?> set) {
+        assertSize(0, set);
+    }
+
+    private static void assertSize(int expectedSize, Set<?> set) {
+        assertEquals(expectedSize, set.size());
+        assertEquals(expectedSize == 0, set.isEmpty());
     }
 
     /**
@@ -669,6 +700,7 @@ public class EnumSetTest extends TestCase {
     /**
      * java.util.EnumSet#contains(Object)
      */
+    @SuppressWarnings("CollectionIncompatibleType")
     public void test_contains_LObject() {
         Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
         Enum[] elements = EnumFoo.class.getEnumConstants();
@@ -740,7 +772,7 @@ public class EnumSetTest extends TestCase {
     /**
      * java.util.EnumSet#containsAll(Collection)
      */
-    @SuppressWarnings( { "unchecked", "boxing" })
+    @SuppressWarnings( { "unchecked", "boxing", "CollectionIncompatibleType" })
     public void test_containsAll_LCollection() {
         EnumSet<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
         Enum[] elements = EnumFoo.class.getEnumConstants();
@@ -1025,7 +1057,7 @@ public class EnumSetTest extends TestCase {
     /**
      * java.util.EnumSet#removeAll(Collection)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "CollectionIncompatibleType" })
     public void test_removeAll_LCollection() {
         Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
         try {
@@ -1199,7 +1231,7 @@ public class EnumSetTest extends TestCase {
     /**
      * java.util.EnumSet#retainAll(Collection)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "CollectionIncompatibleType" })
     public void test_retainAll_LCollection() {
         Set<EnumFoo> set = EnumSet.allOf(EnumFoo.class);
 
@@ -1211,11 +1243,15 @@ public class EnumSetTest extends TestCase {
         }
 
         set.clear();
-        boolean result = set.retainAll(null);
-        assertFalse("Should return false", result); //$NON-NLS-1$
+        try {
+            set.retainAll(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
         Collection rawCollection = new ArrayList();
-        result = set.retainAll(rawCollection);
+        boolean result = set.retainAll(rawCollection);
         assertFalse("Should return false", result);
 
         rawCollection.add(EnumFoo.a);
@@ -1305,8 +1341,12 @@ public class EnumSetTest extends TestCase {
         }
 
         hugeSet.clear();
-        result = hugeSet.retainAll(null);
-        assertFalse(result);
+        try {
+            hugeSet.retainAll(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
         rawCollection = new ArrayList();
         result = hugeSet.retainAll(rawCollection);
@@ -1388,6 +1428,7 @@ public class EnumSetTest extends TestCase {
     /**
      * java.util.EnumSet#iterator()
      */
+    @SuppressWarnings("CollectionIncompatibleType")
     public void test_iterator() {
         Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
         set.add(EnumFoo.a);

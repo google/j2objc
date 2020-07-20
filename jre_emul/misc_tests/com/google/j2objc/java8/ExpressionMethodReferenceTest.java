@@ -74,7 +74,8 @@ public class ExpressionMethodReferenceTest extends TestCase {
     public String m(Integer a1, Integer a2, String a3, String a4);
   }
 
-  public void testBasicReferences() throws Exception {
+  @SuppressWarnings("unchecked")
+  public void testBasicReferences() {
     Lambdas.One f = Z.ZZ::o;
     Lambdas.One<String, Object> f2 = Z.ZZ::o;
     Lambdas.One<String, String> f3 = new Z()::o;
@@ -87,7 +88,7 @@ public class ExpressionMethodReferenceTest extends TestCase {
     assertEquals("Bar", f5.apply("Bar"));
   }
 
-  public void testVarArgs() throws Exception {
+  public void testVarArgs() {
     I i = Y::m;
     J j = Y::m;
     assertEquals("12 [ 22 42 ]", i.foo(12, 22, "42"));
@@ -110,7 +111,7 @@ public class ExpressionMethodReferenceTest extends TestCase {
     return "Bar";
   }
 
-  public void testBoxingAndUnboxing() throws Exception {
+  public void testBoxingAndUnboxing() {
     IntFun i = this::foo;
     assertEquals("Foo", i.apply(new Integer(42)));
     i = (int x) -> "Lambda";
@@ -145,7 +146,7 @@ public class ExpressionMethodReferenceTest extends TestCase {
     return out;
   }
 
-  public void testVarargBoxingAndUnboxing() throws Exception {
+  public void testVarargBoxingAndUnboxing() {
     IntegerVarargsFun i = this::foos;
     int b = 42, d = 24;
     Integer a = 5, c = 8, e = 13;
@@ -170,7 +171,7 @@ public class ExpressionMethodReferenceTest extends TestCase {
     return 43;
   }
 
-  public void testReturnBoxingAndUnboxing() throws Exception {
+  public void testReturnBoxingAndUnboxing() {
     Fun f = this::size;
     assertEquals((Integer) 42, f.apply());
     Fun2 f2 = this::size2;

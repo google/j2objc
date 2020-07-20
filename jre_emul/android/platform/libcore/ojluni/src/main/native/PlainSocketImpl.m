@@ -171,6 +171,10 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, j
         }
     }
 
+    // Disable SIGPIPE signals, as JRE reports socket errors using exceptions.
+    int set = 1;
+    setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+
     fdObj->descriptor_ = fd;
 }
 
@@ -628,6 +632,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketAccept(JNIEnv *env, j
         if (prevTime == 0 && timeout > 0) {
             prevTime = JVM_CurrentTimeMillis(env, 0);
         }
+
 
         /* passing a timeout of 0 to poll will return immediately,
            but in the case of ServerSocket 0 means infinite. */

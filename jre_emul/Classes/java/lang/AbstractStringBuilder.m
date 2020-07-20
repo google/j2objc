@@ -56,14 +56,18 @@ static inline void NewBuffer(JreStringBuilder *sb, jint size) {
 }
 
 static JavaLangStringIndexOutOfBoundsException *IndexAndLength(JreStringBuilder *sb, jint index) {
-  @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
-      initWithInt:sb->count_ withInt:index]);
+  JavaLangStringIndexOutOfBoundsException* ex = [[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
+          [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index
+          ]];
+  @throw AUTORELEASE(ex);        
 }
 
 static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
     JreStringBuilder *sb, jint start, jint end) {
-  @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
-      initWithInt:sb->count_ withInt:start withInt:end - start]);
+  JavaLangStringIndexOutOfBoundsException* ex = [[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
+          [NSString stringWithFormat:@"this.length=%d; start=%d; length=%d", sb->count_, start,
+          end - start]];
+  @throw AUTORELEASE(ex);
 }
 
 @implementation JavaLangAbstractStringBuilder
@@ -77,13 +81,13 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
   sb->count_ = 0;
 }
 
-- (instancetype)init {
-  JavaLangAbstractStringBuilder_init(self);
+- (instancetype)initPackagePrivate {
+  JavaLangAbstractStringBuilder_initPackagePrivate(self);
   return self;
 }
 
-- (instancetype)initWithInt:(jint)capacity {
-  JavaLangAbstractStringBuilder_initWithInt_(self, capacity);
+- (instancetype)initPackagePrivateWithInt:(jint)capacity {
+  JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(self, capacity);
   return self;
 }
 
@@ -92,11 +96,11 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
   return self;
 }
 
-void JavaLangAbstractStringBuilder_init(JavaLangAbstractStringBuilder *self) {
+void JavaLangAbstractStringBuilder_initPackagePrivate(JavaLangAbstractStringBuilder *self) {
   NewBuffer(self, INITIAL_CAPACITY);
 }
 
-void JavaLangAbstractStringBuilder_initWithInt_(
+void JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(
     JavaLangAbstractStringBuilder *self, jint capacity) {
   if (capacity < 0) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] initWithNSString:
@@ -164,7 +168,7 @@ void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars)
 void JreStringBuilder_appendCharArraySubset(
     JreStringBuilder *sb, IOSCharArray *chars, jint offset, jint length) {
   (void)nil_chk(chars);
-  JavaUtilArrays_checkOffsetAndCountWithInt_withInt_withInt_(chars->size_, offset, length);
+  IOSArray_checkRange(chars->size_, offset, length);
   JreStringBuilder_appendBuffer(sb, chars->buffer_ + offset, length);
 }
 
@@ -348,8 +352,10 @@ void JreStringBuilder_insertCharArraySubset(
 
 void JreStringBuilder_insertChar(JreStringBuilder *sb, jint index, jchar ch) {
   if (index < 0 || index > sb->count_) {
-    @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc]
-        initWithInt:sb->count_ withInt:index]);
+    JavaLangArrayIndexOutOfBoundsException* ex = [[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:
+        [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index
+        ]];
+    @throw AUTORELEASE(ex);
   }
   JreStringBuilder_move(sb, 1, index);
   sb->buffer_[index] = ch;
@@ -762,8 +768,8 @@ static void JavaLangAbstractStringBuilder__clinit__() {
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  methods[0].selector = @selector(init);
-  methods[1].selector = @selector(initWithInt:);
+  methods[0].selector = @selector(initPackagePrivate);
+  methods[1].selector = @selector(initPackagePrivateWithInt:);
   methods[2].selector = @selector(java_length);
   methods[3].selector = @selector(capacity);
   methods[4].selector = @selector(ensureCapacityWithInt:);

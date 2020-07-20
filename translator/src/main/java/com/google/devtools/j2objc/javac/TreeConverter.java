@@ -816,7 +816,8 @@ public class TreeConverter {
     if (ElementUtil.isConstant((VariableElement) element)
         && ElementUtil.isStatic(element)
         && !(selected.getKind() == Kind.METHOD_INVOCATION)
-        && !(selected.getKind() == Kind.MEMBER_SELECT)) {
+        && !(selected.getKind() == Kind.MEMBER_SELECT)
+        && !(selected.getKind() == Kind.PARENTHESIZED)) {
       return new QualifiedName()
           .setName(convertSimpleName(element, typeMirror, pos))
           .setQualifier((Name) convert(selected, path))

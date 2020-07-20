@@ -17,12 +17,11 @@
 package libcore.io;
 
 import android.system.ErrnoException;
+import android.system.Int32Ref;
+import android.system.Int64Ref;
 import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 import java.nio.NioUtils;
-
-import libcore.util.MutableInt;
-import libcore.util.MutableLong;
 
 /*-[
 #include "BufferUtils.h"
@@ -294,7 +293,7 @@ public final class Posix implements Os {
     return name ? [NSString stringWithUTF8String:name] : nil;
   ]-*/;
 
-  public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt javaArg)
+  public native int ioctlInt(FileDescriptor fd, int cmd, Int32Ref javaArg)
       throws ErrnoException /*-[
     int arg = javaArg->value_;
     int rc = TEMP_FAILURE_RETRY(ioctl([fd getInt$], cmd, &arg));
@@ -554,7 +553,7 @@ public final class Posix implements Os {
     }
   ]-*/;
 
-  public native long sendfile(FileDescriptor outFd, FileDescriptor inFd, MutableLong inOffset,
+  public native long sendfile(FileDescriptor outFd, FileDescriptor inFd, Int64Ref inOffset,
       long byteCount) throws ErrnoException /*-[
     off_t offset = 0;
     off_t* offsetPtr = NULL;
@@ -741,5 +740,5 @@ public final class Posix implements Os {
 //  }
 //  private native int umaskImpl(int mask);
 //  public native void unsetenv(String name) throws ErrnoException;
-//  public native int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
+//  public native int waitpid(int pid, Int32Ref status, int options) throws ErrnoException;
 }

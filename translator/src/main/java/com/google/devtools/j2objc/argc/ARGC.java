@@ -64,66 +64,11 @@ import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.ITypeLoader;
 
 public class ARGC {
-	public static boolean compatiable_2_0_2 = false;
-	private static boolean isPureObjCGenerationMode;
-	private static HashMap<String, PureObjCPackage> pureObjCMap = new HashMap<>();
 	private static ArrayList<String> excludeClasses = new ArrayList<String>();
 	private static ArrayList<String> excludePackages = new ArrayList<String>();
 	static HashMap<String, CompilationUnit> units = new HashMap<>();
 	static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
 
-	public static boolean inPureObjCMode() {
-		return isPureObjCGenerationMode;
-	}
-
-	public static void endSourceFileGeneration() {
-		isPureObjCGenerationMode = false;
-	}
-
-	public static void addPureObjC(String srcAndPackagePair) {
-		int p = srcAndPackagePair.lastIndexOf('/') + 1;
-		String root = srcAndPackagePair.substring(0, p);
-		String package_ = srcAndPackagePair.substring(p).replace('.', '/');
-		pureObjCMap.put(package_, new PureObjCPackage(root, package_));
-	}
-
-	public static void startSourceFileGeneration(String unitName) {
-		isPureObjCGenerationMode = isPureObjC(unitName);
-		if (isPureObjCGenerationMode) {
-			trap();
-		}
-	}
-
-	static boolean isPureObjC(String path) {
-		int p = path.lastIndexOf('/');
-		if (p < 0) {
-			return false;
-		}
-		path = path.substring(0, p);
-		return isPureObjFolder(path);
-	}
-
-	private static boolean isPureObjFolder(String path) {
-		for (String s : pureObjCMap.keySet()) {
-			if (path.startsWith(s)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean isPureObjC(TypeMirror type) {
-		String s = type.toString().replace('.', '/');
-		boolean res = isPureObjC(s);
-		return res;
-	}
-
-	public static void processPureObjC(Parser parser) {
-		for (Entry<String, PureObjCPackage> e : pureObjCMap.entrySet()) {
-			PureObjCPackage objc = e.getValue();
-			objc.preprocess(parser);
-		}
-	}
 
 	static HashMap<String, String> map = new HashMap<String, String>();
 	static {
@@ -289,128 +234,7 @@ public class ARGC {
 		return a;
 	}
 
-	private static class PureObjCPackage {
-
-		final String root;
-		final String package_;
-		private Parser parser;
-
-		public PureObjCPackage(String root, String package_) {
-			this.root = root;
-			this.package_ = package_;
-		}
-
-		public void preprocess(Parser parser) {
-			this.parser = parser;
-			
-			File f = new File(root, package_);
-			add(f);
-		}
-
-		private void add(File f) {
-			if (f.isDirectory()) {
-				File files[] = f.listFiles();
-				for (File f2 : files) {
-					add(f2);
-				}
-			}
-			else {
-				String path = ARGC.getCanonicalPath(f);
-				if (path.endsWith(".java")) {
-					RegularInputFile inp = new RegularInputFile(path, path.substring(root.length()));				
-				    CompilationUnit compilationUnit = parser.parse(inp);
-				    new NoWithSuffixMethodRegister(compilationUnit).run();
-				}
-			}
-		}
-	}
 	
-	static public class NoWithSuffixMethodRegister extends UnitTreeVisitor {
-
-		StringBuilder sb = new StringBuilder();
-		private Map<String, String> map;
-		private TypeUtil typeUtil;
-
-		public NoWithSuffixMethodRegister(CompilationUnit unit) {
-			super(unit);
-			this.typeUtil = unit.getEnv()
-					.typeUtil();
-			map = options.getMappings()
-					.getMethodMappings();
-		}
-
-		@Override
-		public void endVisit(MethodDeclaration node) {
-			ExecutableElement methodElement = node.getExecutableElement();
-			if (!ElementUtil.isPublic(methodElement)) {
-				return;
-			}
-			if (node.getParameters().size() == 0) {
-				return;
-			}
-
-			String key = Mappings.getMethodKey(node.getExecutableElement(), typeUtil);
-			int cntParam = node.getParameters().size();
-
-			sb.setLength(0);
-			sb.append(methodElement.getSimpleName().toString());
-			if (cntParam > 1) {
-				SingleVariableDeclaration first_p = node.getParameter(0);
-				Type type = first_p.getType();
-				if (type.isPrimitiveType()) {
-					boolean all_type_matched = true;
-					for (int i = 1; i < cntParam; i++) {
-						SingleVariableDeclaration p = node.getParameter(i);
-						if (p.getType().equals(first_p)) {
-							all_type_matched = false;
-							break;
-						}
-					}
-					if (all_type_matched) {
-						if (node.isConstructor()) {
-							sb.setLength(0);
-							sb.append("init");
-						}
-						sb.append('_');
-						String n = first_p.getVariableElement().getSimpleName().toString();
-						sb.append(n);
-					}
-				}
-			}
-
-			sb.append(':');
-			for (int i = 1; i < cntParam; i++) {
-				String n = node.getParameter(i).getVariableElement().getSimpleName().toString();
-				sb.append(n);
-				sb.append(':');
-			}
-			map.put(key, sb.toString());
-		}
-
-		@Override
-		public void endVisit(TypeDeclaration node) {
-			visitType(node);
-		}
-
-		@Override
-		public void endVisit(EnumDeclaration node) {
-			visitType(node);
-		}
-
-		@Override
-		public void endVisit(AnnotationTypeDeclaration node) {
-			visitType(node);
-		}
-
-		private void visitType(AbstractTypeDeclaration node) {
-			addReturnTypeNarrowingDeclarations(node);
-		}
-
-		// Adds declarations for any methods where the known return type is more
-		// specific than what is already declared in inherited types.
-		private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
-		}
-	}
 
 	private static HashMap<TypeMirror, TypeMirror> testClasses = new HashMap<>(); 
 	
@@ -425,26 +249,8 @@ public class ARGC {
 		preprocessUnreachableImportedClasses(unit, new HashMap<>());
 		
 		
-//		for (AbstractTypeDeclaration _t : unit.getTypes()) {
-//		}
 	}
 
-//	private static boolean resolveStaticInitializer(AbstractTypeDeclaration _t) {
-//		TypeElement type = _t.getTypeElement();
-//		boolean hasStaticInitializer = false;
-//        for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
-//            String name = inheritedType.toString();
-//            int idx = name.indexOf('<');
-//            if (idx > 0) {
-//            	name = name.substring(0, idx);
-//            }
-//    		AbstractTypeDeclaration superType = types.get(name);
-//    		if (superType != null) {
-//    			hasStaticInitializer |= resolveStaticInitializer(superType);
-//    		}
-//			hasStaticInitializer |= types.get(superType);
-//        }
-//	}
 	
 	private static HashMap<String, String> preprocessUnreachableImportedClasses(CompilationUnit unit, HashMap<String, String> processed) {
 		HashMap<String, String> urMap = unit.getUnreachableImportedClasses();

@@ -55,7 +55,7 @@ import android.icu.util.ULocale;
  * The logging is only possible if "-v" or verbose is set as an argument.
  * This will allow users to know what problems occurred within CLDR and ICU.
  * Collator was disabled in this test file and therefore will be skipped.
- *
+ * 
  * Instructions:
  * 1)   In order for this to work correctly, you must download the latest CLDR data
  *      in the form of XML. You must also set the CLDR directory using:
@@ -68,7 +68,7 @@ import android.icu.util.ULocale;
  *          -DXML_MATCH=".*"
  *              -DXML_MATCH="de.*"  (or whatever regex you want) to just test certain locales.
  *          -DTEST_MATCH="zone.*"   (or whatever regex you want) to just test collation, numbers, etc.
- *          -DZONE_MATCH="(?!America/Argentina).*"
+ *          -DZONE_MATCH="(?!America/Argentina).*" 
  *              -DZONE_MATCH=".*Moscow.*" (to only test certain zones)
 
  * @author medavis
@@ -110,7 +110,7 @@ public class TestCLDRVsICU extends TestFmwk {
 
     Set allLocales = new TreeSet();
 
-    // TODO(user): seems to be failing with missing locales - maybe rewrite as parameterized
+    // TODO(junit): seems to be failing with missing locales - maybe rewrite as parameterized
     @Ignore
     @Test
     public void TestFiles() throws SAXException, IOException {
@@ -153,7 +153,7 @@ public class TestCLDRVsICU extends TestFmwk {
         File f = new File(CLDR_DIRECTORY, "test/" + localeName + ".xml");
         logln("Testing " + f.getCanonicalPath());
         SAX.parse(f, DEFAULT_HANDLER);
-    }
+    }  
 
     private static class ToHex {
         public String transliterate(String in) {
@@ -528,7 +528,7 @@ public class TestCLDRVsICU extends TestFmwk {
                         parse = attributeValue;
                     }
                 }
-
+                
                 if (!ZONE_MATCH.reset(zone).matches()) return;
                 Date dateValue = iso.parse(date);
                 SimpleDateFormat field = new SimpleDateFormat(pattern, locale);
@@ -538,7 +538,7 @@ public class TestCLDRVsICU extends TestFmwk {
                 result = result.trim(); // HACK because of SAX
                 if (!temp.equals(result)) {
                     temp = field.format(dateValue).trim(); // call again for debugging
-                    logln("Zone Format: Locale: " + locale
+                    logln("Zone Format: Locale: " + locale 
                             + "\n\tZone: " + zone
                             + "\n\tDate: " + date
                             + "\n\tField: " + pattern

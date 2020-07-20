@@ -30,7 +30,7 @@ import android.icu.util.ULocale;
 public class SimpleFilteredSentenceBreakIterator extends BreakIterator {
 
     private BreakIterator delegate;
-    private UCharacterIterator text; // TODO(user): suffice to move into the local scope in next() ?
+    private UCharacterIterator text; // TODO(Tom): suffice to move into the local scope in next() ?
     private CharsTrie backwardsTrie; // i.e. ".srM" for Mrs.
     private CharsTrie forwardsPartialTrie; // Has ".a" for "a.M."
 

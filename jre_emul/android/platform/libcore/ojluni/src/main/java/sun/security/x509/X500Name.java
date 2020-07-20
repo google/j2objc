@@ -26,8 +26,6 @@
 
 package sun.security.x509;
 
-import com.google.j2objc.annotations.Weak;
-
 import java.lang.reflect.*;
 import java.io.IOException;
 import java.io.StringReader;
@@ -137,7 +135,6 @@ public class X500Name implements GeneralNameInterface, Principal {
     private String rfc2253Dn; // RFC 2253 DN, or null
     private String canonicalDn; // canonical RFC 2253 DN or null
     private RDN[] names;        // RDNs (never null)
-    @Weak private X500Principal x500Principal;
     private byte[] encoded;
 
     // cached immutable list of the RDNs and all the AVAs
@@ -1435,16 +1432,13 @@ public class X500Name implements GeneralNameInterface, Principal {
      * package private constructor in X500Principal.
      */
     public X500Principal asX500Principal() {
-        if (x500Principal == null) {
-            try {
-                Object[] args = new Object[] {this};
-                x500Principal =
-                        (X500Principal)principalConstructor.newInstance(args);
-            } catch (Exception e) {
-                throw new RuntimeException("Unexpected exception", e);
-            }
+        // j2objc: always create x500Principal to avoid retain cycle.
+        try {
+            Object[] args = new Object[] {this};
+            return (X500Principal) principalConstructor.newInstance(args);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected exception", e);
         }
-        return x500Principal;
     }
 
     /**
@@ -1453,10 +1447,9 @@ public class X500Name implements GeneralNameInterface, Principal {
      * Note that the X500Name is retrieved using reflection.
      */
     public static X500Name asX500Name(X500Principal p) {
+        // j2objc: always fetch x500Principal to avoid retain cycle.
         try {
-            X500Name name = (X500Name)principalField.get(p);
-            name.x500Principal = p;
-            return name;
+            return (X500Name) principalField.get(p);
         } catch (Exception e) {
             throw new RuntimeException("Unexpected exception", e);
         }

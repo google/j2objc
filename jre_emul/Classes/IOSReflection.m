@@ -331,4 +331,32 @@ JavaLangReflectField *FindField(IOSClass *iosClass, NSString *name, jboolean pub
   return nil;
 }
 
+NSString *JreMetadataToString(IOSClass *iosClass) {
+  NSMutableString *str = [[NSMutableString alloc] init];
+  [str appendString:[iosClass getName]];
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
+
+  [str appendString:@" Fields:"];
+  for (int i = 0; i < metadata->fieldCount; i++) {
+    const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
+    const char *javaName = JrePtrAtIndex(metadata->ptrTable, fieldInfo->javaNameIdx);
+    [str appendString:@" "];
+    if (javaName) {
+      [str appendString:[NSString stringWithUTF8String:javaName]];
+    } else {
+      [str appendString:[NSString stringWithUTF8String:fieldInfo->name]];
+    }
+  }
+
+  [str appendString:@" Methods:"];
+  const void **ptrTable = metadata->ptrTable;
+  for (int i = 0; i < metadata->methodCount; i++) {
+    [str appendString:@" "];
+    const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
+    [str appendString:[NSString stringWithUTF8String:JreMethodJavaName(methodInfo, ptrTable)]];
+  }
+
+  return str;
+}
+
 #pragma clang diagnostic pop

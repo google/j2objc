@@ -576,4 +576,8 @@ public class NativeTimeZoneTest extends TestCase {
     assertNotNull(TimeZone.getDefault());
     assertFalse(TimeZone.getDefault().getID().equals("Etc/UTC"));
   }
+
+  public static boolean isNativeTimeZone(String id) {
+    return NativeTimeZone.get(id) != null;
+  }
 }

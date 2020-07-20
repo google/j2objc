@@ -83,7 +83,10 @@ public class IosX509Certificate extends X509CertImpl {
     NSDate *nsDate = [NSDate dateWithTimeIntervalSince1970:requestedTime];
     SecTrustResultType trustResult;
     SecTrustSetVerifyDate(trust, (ARCBRIDGE CFDateRef) nsDate);
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     status = SecTrustEvaluate(trust, &trustResult);
+#pragma clang diagnostic pop
     RELEASE_(nsDate);
     if (status != noErr) {
       NSString *errMsg =

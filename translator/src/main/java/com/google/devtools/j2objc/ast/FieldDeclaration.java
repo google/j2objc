@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import java.util.List;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -23,26 +22,19 @@ import javax.lang.model.type.TypeMirror;
  */
 public class FieldDeclaration extends BodyDeclaration {
 
-  // TODO(user): Change fragments to ChildLink after JDT code is dropped. With Javac,
-  // FieldDeclaration only has one VariableDeclarationFragment.
-  private ChildList<VariableDeclarationFragment> fragments =
-      ChildList.create(VariableDeclarationFragment.class, this);
+  private final ChildLink<VariableDeclarationFragment> fragment =
+      ChildLink.create(VariableDeclarationFragment.class, this);
 
   public FieldDeclaration() {}
 
   public FieldDeclaration(FieldDeclaration other) {
     super(other);
-    fragments.copyFrom(other.getFragments());
-  }
-
-  public FieldDeclaration(VariableDeclarationFragment fragment) {
-    super(fragment.getVariableElement());
-    fragments.add(fragment);
+    fragment.copyFrom(other.getFragment());
   }
 
   public FieldDeclaration(VariableElement variableElement, Expression initializer) {
     super(variableElement);
-    fragments.add(new VariableDeclarationFragment(variableElement, initializer));
+    fragment.set(new VariableDeclarationFragment(variableElement, initializer));
   }
 
   @Override
@@ -51,20 +43,11 @@ public class FieldDeclaration extends BodyDeclaration {
   }
 
   public TypeMirror getTypeMirror() {
-    return fragments.get(0).getVariableElement().asType();
+    return fragment.get().getVariableElement().asType();
   }
 
-  public VariableDeclarationFragment getFragment(int index) {
-    return fragments.get(index);
-  }
-
-  public List<VariableDeclarationFragment> getFragments() {
-    return fragments;
-  }
-
-  public FieldDeclaration addFragment(VariableDeclarationFragment f) {
-    fragments.add(f);
-    return this;
+  public VariableDeclarationFragment getFragment() {
+    return fragment.get();
   }
 
   @Override
@@ -72,7 +55,7 @@ public class FieldDeclaration extends BodyDeclaration {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);
-      fragments.accept(visitor);
+      fragment.accept(visitor);
     }
     visitor.endVisit(this);
   }

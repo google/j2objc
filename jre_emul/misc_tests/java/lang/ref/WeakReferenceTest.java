@@ -108,7 +108,7 @@ public class WeakReferenceTest extends TestCase {
   @Test
   public void testGetClassMethod() {
     Object obj = new Object();
-    new WeakReference(obj);
+    new WeakReference<>(obj);
     assertSame(Object.class, obj.getClass());
   }
 
@@ -128,6 +128,8 @@ public class WeakReferenceTest extends TestCase {
       weakRef = new WeakReference<Object>(referent);
       referent = null;
     }
+
+    System.gc();
     // Verify that referent's hashCode() was not called
     assertEquals("referent's hashCode() was called", 0, hashCodeCount[0]);
   }

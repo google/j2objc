@@ -85,6 +85,7 @@ public class UnsupportedOperationExceptionTest extends TestCase {
      * serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
+
         SerializationTest.verifySelf(new UnsupportedOperationException());
     }
 
@@ -92,6 +93,7 @@ public class UnsupportedOperationExceptionTest extends TestCase {
      * serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
+
         SerializationTest.verifyGolden(this,
                 new UnsupportedOperationException());
     }

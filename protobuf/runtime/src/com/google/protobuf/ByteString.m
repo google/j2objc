@@ -62,7 +62,7 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
   (void)nil_chk(bytes);  // Ensure Java compatibility.
   CGPByteString *byteString = CGPNewByteString(bytes->size_);
   memcpy(byteString->buffer_, bytes->buffer_, bytes->size_);
-  return [byteString autorelease];
+  return AUTORELEASE(byteString);
 }
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text) {
@@ -76,7 +76,7 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
          options:0
            range:NSMakeRange(0, [text length])
       remainingRange:NULL];
-  return [byteString autorelease];
+  return AUTORELEASE(byteString);
 }
 
 
@@ -112,8 +112,8 @@ static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufBy
 
 - (jbyte)byteAtWithInt:(jint)index {
   if (index < 0 || index >= size_) {
-    @throw [[[JavaLangArrayIndexOutOfBoundsException alloc] initWithInt:size_ withInt:index]
-        autorelease];
+    @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc]
+        initWithNSString:[NSString stringWithFormat:@"this.length=%d; index=%d", size_, index]]);
   }
   return buffer_[index];
 }
@@ -133,14 +133,14 @@ static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufBy
 - (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex withInt:(jint)endIndex {
   jint substringLength = endIndex - beginIndex;
   if (beginIndex < 0 || endIndex > size_ || substringLength < 0) {
-    @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaLangIndexOutOfBoundsException alloc] init]);
   }
   if (substringLength == 0) {
     return ComGoogleProtobufByteString_EMPTY;
   } else {
     CGPByteString *byteString = CGPNewByteString(substringLength);
     memcpy(byteString->buffer_, buffer_ + beginIndex, substringLength);
-    return [byteString autorelease];
+    return AUTORELEASE(byteString);
   }
 }
 
@@ -157,9 +157,9 @@ static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufBy
 }
 
 - (NSString *)toStringUtf8 {
-  return [[[NSString alloc] initWithBytes:buffer_
+  return AUTORELEASE([[NSString alloc] initWithBytes:buffer_
                                    length:size_
-                                 encoding:NSUTF8StringEncoding] autorelease];
+                                 encoding:NSUTF8StringEncoding]);
 }
 
 - (id<ComGoogleProtobufByteString_ByteIterator>)iterator {
@@ -285,7 +285,7 @@ ComGoogleProtobufByteString *ByteStringFromChunks(jint size, IOSByteArray *chunk
     [chunk release];
     chunk = next;
   }
-  return [byteString autorelease];
+  return AUTORELEASE(byteString);
 }
 
 // Unlike the Java implementation, which uses RopeByteString to chain the chunks

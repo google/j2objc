@@ -87,7 +87,6 @@ public class ClassTest extends TestCase {
     @Repeated(3)
     private static class InheritedMultipleWithNewMultipleAnnotations extends MultipleAnnotation {}
 
-    /* TODO(b/62095729): repeatable annotations support.
     public void testIsAnnotationPresent() throws Exception {
         Class<Repeated> repeated = Repeated.class;
         assertIsAnnotationPresent(NoAnnotation.class, repeated, false);
@@ -263,5 +262,5 @@ public class ClassTest extends TestCase {
         AnnotatedElementTestSupport.assertGetAnnotationsByType(
                 InheritedMultipleWithNewMultipleAnnotations.class, container,
                 new String[] { "@Container({@Repeated(2), @Repeated(3)})" });
-    } */
+    }
 }

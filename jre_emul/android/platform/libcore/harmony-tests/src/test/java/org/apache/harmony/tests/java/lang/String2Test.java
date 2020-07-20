@@ -397,6 +397,17 @@ public class String2Test extends junit.framework.TestCase {
         } catch (UnsupportedEncodingException e) {
             // expected
         }
+
+        bytes = "-".getBytes("UTF-16");
+        expected = new byte[] { (byte) 0xfe, (byte) 0xff, (byte) 0x00, (byte) 0x2d };
+        assertEquals(expected[0], bytes[0]);
+        assertEquals(expected[1], bytes[1]);
+        assertEquals(expected[2], bytes[2]);
+        assertEquals(expected[3], bytes[3]);
+
+        byte[] bytes2 = "-".getBytes("UTF-16LE");
+        assertEquals(bytes2[0], bytes[3]);
+        assertEquals(bytes2[1], bytes[2]);
     }
 
     /*
@@ -610,6 +621,7 @@ public class String2Test extends junit.framework.TestCase {
     /**
      * java.lang.String#substring(int)
      */
+    @SuppressWarnings("SubstringOfZero")
     public void test_substringI() {
         // Test for method java.lang.String java.lang.String.substring(int)
         assertEquals("Incorrect substring returned", "World", hw1.substring(5));
@@ -858,7 +870,7 @@ public class String2Test extends junit.framework.TestCase {
     /**
      * java.lang.String#format(Locale, String, Object[])
      */
-    @SuppressWarnings("boxing")
+    @SuppressWarnings({ "boxing", "FormatString" })
     public void test_format() {
         assertEquals("13% of sum is 0x11", String.format("%d%% of %s is 0x%x",
                 13, "sum", 17));
