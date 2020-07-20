@@ -306,7 +306,8 @@ public class Exchanger<V> {
      * Nodes hold partially exchanged data, plus other per-thread
      * bookkeeping. Padded via @Contended to reduce memory contention.
      */
-    //@jdk.internal.vm.annotation.Contended // Android-removed
+    // Android-removed: @Contended, this hint is not used by the Android runtime.
+    //@jdk.internal.vm.annotation.Contended
     static final class Node {
         int index;              // Arena index
         int bound;              // Last recorded value of Exchanger.bound
