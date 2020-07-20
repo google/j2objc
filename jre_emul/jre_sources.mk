@@ -1143,6 +1143,8 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
+  sun/nio/fs/MacOSXFileSystem.java \
+  sun/nio/fs/MacOSXNativeDispatcher.java \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/PollingWatchService.java \
@@ -1167,6 +1169,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
 
 NATIVE_JRE_SOURCES_FILE = \
   BsdNativeDispatcher.m \
+  MacOSXNativeDispatcher.m \
   UnixCopyFile.m \
   UnixNativeDispatcher.m
 
