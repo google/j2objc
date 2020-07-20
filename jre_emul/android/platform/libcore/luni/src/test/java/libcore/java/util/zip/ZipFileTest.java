@@ -18,7 +18,7 @@ package libcore.java.util.zip;
 
 /* J2ObjC modified.
 import android.system.OsConstants; */
-import static libcore.io.OsConstants.*;
+import static libcore.io.OsConstants.SEEK_CUR;
 import libcore.io.Libcore;
 
 import java.io.BufferedOutputStream;
