@@ -1135,13 +1135,16 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/BasicFileAttributesHolder.java \
   sun/nio/fs/BsdFileStore.java \
   sun/nio/fs/BsdFileSystem.java \
+  sun/nio/fs/BsdFileSystemProvider.java \
   sun/nio/fs/BsdNativeDispatcher.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
   sun/nio/fs/MacOSXFileSystem.java \
+  sun/nio/fs/MacOSXFileSystemProvider.java \
   sun/nio/fs/MacOSXNativeDispatcher.java \
+  sun/nio/fs/MimeTypesFileTypeDetector.java \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/PollingWatchService.java \
