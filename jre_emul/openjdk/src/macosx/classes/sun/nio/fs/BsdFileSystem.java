@@ -37,9 +37,7 @@ import sun.security.action.GetPropertyAction;
 
 class BsdFileSystem extends UnixFileSystem {
 
-//    TODO(amisail) uncomment this when working
-//    BsdFileSystem(UnixFileSystemProvider provider, String dir) {
-    BsdFileSystem(String provider, String dir) {
+    BsdFileSystem(UnixFileSystemProvider provider, String dir) {
         super(provider, dir);
     }
 

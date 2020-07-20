@@ -49,8 +49,7 @@ abstract class UnixFileSystem
 
     // package-private
 //    TODO(amisail) uncomment this when working
-//    UnixFileSystem(UnixFileSystemProvider provider, String dir) {
-    UnixFileSystem(String provider, String dir) {
+    UnixFileSystem(UnixFileSystemProvider provider, String dir) {
 //        TODO(amisail) uncomment this when working
 //        this.provider = provider;
         this.defaultDirectory = Util.toBytes(UnixPath.normalizeAndCheck(dir));

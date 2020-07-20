@@ -25,45 +25,33 @@
 
 package sun.nio.fs;
 
-import java.nio.file.*;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.nio.file.Path;
+//TODO(amisail) uncomment this when working
+//import java.nio.file.Paths;
+import java.nio.file.spi.FileTypeDetector;
 import java.security.AccessController;
 import sun.security.action.GetPropertyAction;
 
-import static sun.nio.fs.MacOSXNativeDispatcher.*;
-
 /**
- * MacOS implementation of FileSystem
+ * MacOSX implementation of FileSystemProvider
  */
 
-class MacOSXFileSystem extends BsdFileSystem {
-
-    MacOSXFileSystem(UnixFileSystemProvider provider, String dir) {
-        super(provider, dir);
+public class MacOSXFileSystemProvider extends BsdFileSystemProvider {
+    public MacOSXFileSystemProvider() {
+        super();
     }
 
-    // match in unicode canon_eq
-    Pattern compilePathMatchPattern(String expr) {
-        return Pattern.compile(expr, Pattern.CANON_EQ) ;
+    @Override
+    MacOSXFileSystem newFileSystem(String dir) {
+        return new MacOSXFileSystem(this, dir);
     }
 
-    char[] normalizeNativePath(char[] path) {
-        for (char c : path) {
-            if (c > 0x80)
-                return normalizepath(path, kCFStringNormalizationFormD);
-        }
-        return path;
+    @Override
+    FileTypeDetector getFileTypeDetector() {
+//        TODO(amisail) uncomment this when working
+//        Path userMimeTypes = Paths.get(AccessController.doPrivileged(
+//                new GetPropertyAction("user.home")), ".mime.types");
+        Path userMimeTypes = null;
+        return new MimeTypesFileTypeDetector(userMimeTypes);
     }
-
-    String normalizeJavaPath(String path) {
-        for (int i = 0; i < path.length(); i++) {
-            if (path.charAt(i) > 0x80)
-                return new String(normalizepath(path.toCharArray(),
-                                  kCFStringNormalizationFormC));
-        }
-        return path;
-    }
-
 }

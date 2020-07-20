@@ -43,9 +43,8 @@ public class BsdFileSystemProvider extends UnixFileSystemProvider {
         return new BsdFileSystem(this, dir);
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    BsdFileStore getFileStore(UnixPath path) throws IOException {
-//        return new BsdFileStore(path);
-//    }
+    @Override
+    BsdFileStore getFileStore(UnixPath path) throws IOException {
+        return new BsdFileStore(path);
+    }
 }
