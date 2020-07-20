@@ -33,7 +33,7 @@ void ARGC_bindJavaClass(id key, IOSClass* javaClass);
       @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]); \
     } \
     size_t buf_size = length * sizeof(C_TYPE) + 2; \
-    IOS##U_NAME##Array *array = ARGC_allocateObject( \
+    IOS##U_NAME##Array *array = ARGC_allocateArray( \
         [IOS##U_NAME##Array class], buf_size, nil); \
     memset(array->buffer_, 0, buf_size); \
     array->size_ = length; \
