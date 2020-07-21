@@ -1147,6 +1147,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/BsdNativeDispatcher.java \
   sun/nio/fs/Cancellable.java \
   sun/nio/fs/DefaultFileSystemProvider.java \
+  sun/nio/fs/DefaultFileTypeDetector.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
