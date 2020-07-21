@@ -1082,6 +1082,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/FileVisitOption.java \
   java/nio/file/FileVisitResult.java \
   java/nio/file/FileVisitor.java \
+  java/nio/file/Files.java \
   java/nio/file/InvalidPathException.java \
   java/nio/file/LinkOption.java \
   java/nio/file/LinkPermission.java \
