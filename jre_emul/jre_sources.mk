@@ -1120,6 +1120,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/UserPrincipal.java \
   java/nio/file/attribute/UserPrincipalLookupService.java \
   java/nio/file/attribute/UserPrincipalNotFoundException.java \
+  java/nio/file/spi/FileSystemProvider.java \
   java/nio/file/spi/FileTypeDetector.java
 
 JAVA_PRIVATE_SOURCES_FILE = \
