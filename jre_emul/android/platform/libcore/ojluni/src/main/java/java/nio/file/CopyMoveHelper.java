@@ -101,50 +101,52 @@ class CopyMoveHelper {
                                     CopyOption... options)
         throws IOException
     {
-        CopyOptions opts = CopyOptions.parse(options);
-        LinkOption[] linkOptions = (opts.followLinks) ? new LinkOption[0] :
-            new LinkOption[] { LinkOption.NOFOLLOW_LINKS };
-
-        // attributes of source file
-        BasicFileAttributes attrs = Files.readAttributes(source,
-                                                         BasicFileAttributes.class,
-                                                         linkOptions);
-        if (attrs.isSymbolicLink())
-            throw new IOException("Copying of symbolic links not supported");
-
-        // delete target if it exists and REPLACE_EXISTING is specified
-        if (opts.replaceExisting) {
-            Files.deleteIfExists(target);
-        } else if (Files.exists(target))
-            throw new FileAlreadyExistsException(target.toString());
-
-        // create directory or copy file
-        if (attrs.isDirectory()) {
-            Files.createDirectory(target);
-        } else {
-            try (InputStream in = Files.newInputStream(source)) {
-                Files.copy(in, target);
-            }
-        }
-
-        // copy basic attributes to target
-        if (opts.copyAttributes) {
-            BasicFileAttributeView view =
-                Files.getFileAttributeView(target, BasicFileAttributeView.class);
-            try {
-                view.setTimes(attrs.lastModifiedTime(),
-                              attrs.lastAccessTime(),
-                              attrs.creationTime());
-            } catch (Throwable x) {
-                // rollback
-                try {
-                    Files.delete(target);
-                } catch (Throwable suppressed) {
-                    x.addSuppressed(suppressed);
-                }
-                throw x;
-            }
-        }
+        throw new IOException("not implemented");
+//        TODO(amisail) uncomment this when working
+//        CopyOptions opts = CopyOptions.parse(options);
+//        LinkOption[] linkOptions = (opts.followLinks) ? new LinkOption[0] :
+//            new LinkOption[] { LinkOption.NOFOLLOW_LINKS };
+//
+//        // attributes of source file
+//        BasicFileAttributes attrs = Files.readAttributes(source,
+//                                                         BasicFileAttributes.class,
+//                                                         linkOptions);
+//        if (attrs.isSymbolicLink())
+//            throw new IOException("Copying of symbolic links not supported");
+//
+//        // delete target if it exists and REPLACE_EXISTING is specified
+//        if (opts.replaceExisting) {
+//            Files.deleteIfExists(target);
+//        } else if (Files.exists(target))
+//            throw new FileAlreadyExistsException(target.toString());
+//
+//        // create directory or copy file
+//        if (attrs.isDirectory()) {
+//            Files.createDirectory(target);
+//        } else {
+//            try (InputStream in = Files.newInputStream(source)) {
+//                Files.copy(in, target);
+//            }
+//        }
+//
+//        // copy basic attributes to target
+//        if (opts.copyAttributes) {
+//            BasicFileAttributeView view =
+//                Files.getFileAttributeView(target, BasicFileAttributeView.class);
+//            try {
+//                view.setTimes(attrs.lastModifiedTime(),
+//                              attrs.lastAccessTime(),
+//                              attrs.creationTime());
+//            } catch (Throwable x) {
+//                // rollback
+//                try {
+//                    Files.delete(target);
+//                } catch (Throwable suppressed) {
+//                    x.addSuppressed(suppressed);
+//                }
+//                throw x;
+//            }
+//        }
     }
 
     /**
@@ -154,7 +156,8 @@ class CopyMoveHelper {
     static void moveToForeignTarget(Path source, Path target,
                                     CopyOption... options) throws IOException
     {
-        copyToForeignTarget(source, target, convertMoveToCopyOptions(options));
-        Files.delete(source);
+//        TODO(amisail) uncomment this when working
+//        copyToForeignTarget(source, target, convertMoveToCopyOptions(options));
+//        Files.delete(source);
     }
 }

@@ -1064,6 +1064,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/ClosedDirectoryStreamException.java \
   java/nio/file/ClosedFileSystemException.java \
   java/nio/file/ClosedWatchServiceException.java \
+  java/nio/file/CopyMoveHelper.java \
   java/nio/file/CopyOption.java \
   java/nio/file/DirectoryIteratorException.java \
   java/nio/file/DirectoryNotEmptyException.java \
@@ -1098,6 +1099,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/StandardCopyOption.java \
   java/nio/file/StandardOpenOption.java \
   java/nio/file/StandardWatchEventKinds.java \
+  java/nio/file/TempFileHelper.java \
   java/nio/file/WatchEvent.java \
   java/nio/file/WatchKey.java \
   java/nio/file/WatchService.java \

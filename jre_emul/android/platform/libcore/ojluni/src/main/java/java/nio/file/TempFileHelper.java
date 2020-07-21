@@ -49,8 +49,12 @@ class TempFileHelper {
     private static final Path tmpdir =
         Paths.get(doPrivileged(new GetPropertyAction("java.io.tmpdir")));
 
+//    TODO(amisail) uncomment this when working
+//    private static final boolean isPosix =
+//        FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
+
     private static final boolean isPosix =
-        FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
+        true;
 
     // file name generation, same as java.io.File for now
     private static final SecureRandom random = new SecureRandom();
@@ -84,68 +88,70 @@ class TempFileHelper {
                                FileAttribute<?>[] attrs)
         throws IOException
     {
-        if (prefix == null)
-            prefix = "";
-        if (suffix == null)
-            suffix = (createDirectory) ? "" : ".tmp";
-        if (dir == null)
-            dir = tmpdir;
-
-        // in POSIX environments use default file and directory permissions
-        // if initial permissions not given by caller.
-        if (isPosix && (dir.getFileSystem() == FileSystems.getDefault())) {
-            if (attrs.length == 0) {
-                // no attributes so use default permissions
-                attrs = new FileAttribute<?>[1];
-                attrs[0] = (createDirectory) ? PosixPermissions.dirPermissions :
-                                               PosixPermissions.filePermissions;
-            } else {
-                // check if posix permissions given; if not use default
-                boolean hasPermissions = false;
-                for (int i=0; i<attrs.length; i++) {
-                    if (attrs[i].name().equals("posix:permissions")) {
-                        hasPermissions = true;
-                        break;
-                    }
-                }
-                if (!hasPermissions) {
-                    FileAttribute<?>[] copy = new FileAttribute<?>[attrs.length+1];
-                    System.arraycopy(attrs, 0, copy, 0, attrs.length);
-                    attrs = copy;
-                    attrs[attrs.length-1] = (createDirectory) ?
-                        PosixPermissions.dirPermissions :
-                        PosixPermissions.filePermissions;
-                }
-            }
-        }
-
-        // loop generating random names until file or directory can be created
-        SecurityManager sm = System.getSecurityManager();
-        for (;;) {
-            Path f;
-            try {
-                f = generatePath(prefix, suffix, dir);
-            } catch (InvalidPathException e) {
-                // don't reveal temporary directory location
-                if (sm != null)
-                    throw new IllegalArgumentException("Invalid prefix or suffix");
-                throw e;
-            }
-            try {
-                if (createDirectory) {
-                    return Files.createDirectory(f, attrs);
-                } else {
-                    return Files.createFile(f, attrs);
-                }
-            } catch (SecurityException e) {
-                // don't reveal temporary directory location
-                if (dir == tmpdir && sm != null)
-                    throw new SecurityException("Unable to create temporary file or directory");
-                throw e;
-            } catch (FileAlreadyExistsException e) {
-                // ignore
-            }
-        }
+        throw new IOException("not implemented");
+//        TODO(amisail) uncomment this when working
+//        if (prefix == null)
+//            prefix = "";
+//        if (suffix == null)
+//            suffix = (createDirectory) ? "" : ".tmp";
+//        if (dir == null)
+//            dir = tmpdir;
+//
+//        // in POSIX environments use default file and directory permissions
+//        // if initial permissions not given by caller.
+//        if (isPosix && (dir.getFileSystem() == FileSystems.getDefault())) {
+//            if (attrs.length == 0) {
+//                // no attributes so use default permissions
+//                attrs = new FileAttribute<?>[1];
+//                attrs[0] = (createDirectory) ? PosixPermissions.dirPermissions :
+//                                               PosixPermissions.filePermissions;
+//            } else {
+//                // check if posix permissions given; if not use default
+//                boolean hasPermissions = false;
+//                for (int i=0; i<attrs.length; i++) {
+//                    if (attrs[i].name().equals("posix:permissions")) {
+//                        hasPermissions = true;
+//                        break;
+//                    }
+//                }
+//                if (!hasPermissions) {
+//                    FileAttribute<?>[] copy = new FileAttribute<?>[attrs.length+1];
+//                    System.arraycopy(attrs, 0, copy, 0, attrs.length);
+//                    attrs = copy;
+//                    attrs[attrs.length-1] = (createDirectory) ?
+//                        PosixPermissions.dirPermissions :
+//                        PosixPermissions.filePermissions;
+//                }
+//            }
+//        }
+//
+//        // loop generating random names until file or directory can be created
+//        SecurityManager sm = System.getSecurityManager();
+//        for (;;) {
+//            Path f;
+//            try {
+//                f = generatePath(prefix, suffix, dir);
+//            } catch (InvalidPathException e) {
+//                // don't reveal temporary directory location
+//                if (sm != null)
+//                    throw new IllegalArgumentException("Invalid prefix or suffix");
+//                throw e;
+//            }
+//            try {
+//                if (createDirectory) {
+//                    return Files.createDirectory(f, attrs);
+//                } else {
+//                    return Files.createFile(f, attrs);
+//                }
+//            } catch (SecurityException e) {
+//                // don't reveal temporary directory location
+//                if (dir == tmpdir && sm != null)
+//                    throw new SecurityException("Unable to create temporary file or directory");
+//                throw e;
+//            } catch (FileAlreadyExistsException e) {
+//                // ignore
+//            }
+//        }
     }
 
     /**
