@@ -418,24 +418,25 @@ public abstract class FileSystemProvider {
      *          invoked to check delete access if the file is opened with the
      *          {@code DELETE_ON_CLOSE} option.
      */
-    public OutputStream newOutputStream(Path path, OpenOption... options)
-        throws IOException
-    {
-        int len = options.length;
-        Set<OpenOption> opts = new HashSet<OpenOption>(len + 3);
-        if (len == 0) {
-            opts.add(StandardOpenOption.CREATE);
-            opts.add(StandardOpenOption.TRUNCATE_EXISTING);
-        } else {
-            for (OpenOption opt: options) {
-                if (opt == StandardOpenOption.READ)
-                    throw new IllegalArgumentException("READ not allowed");
-                opts.add(opt);
-            }
-        }
-        opts.add(StandardOpenOption.WRITE);
-        return Channels.newOutputStream(newByteChannel(path, opts));
-    }
+//    TODO(amisail) uncomment this when working
+//    public OutputStream newOutputStream(Path path, OpenOption... options)
+//        throws IOException
+//    {
+//        int len = options.length;
+//        Set<OpenOption> opts = new HashSet<OpenOption>(len + 3);
+//        if (len == 0) {
+//            opts.add(StandardOpenOption.CREATE);
+//            opts.add(StandardOpenOption.TRUNCATE_EXISTING);
+//        } else {
+//            for (OpenOption opt: options) {
+//                if (opt == StandardOpenOption.READ)
+//                    throw new IllegalArgumentException("READ not allowed");
+//                opts.add(opt);
+//            }
+//        }
+//        opts.add(StandardOpenOption.WRITE);
+//        return Channels.newOutputStream(newByteChannel(path, opts));
+//    }
 
     /**
      * Opens or creates a file for reading and/or writing, returning a file
