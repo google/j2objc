@@ -201,34 +201,32 @@ class FileTreeWalker implements Closeable {
     private BasicFileAttributes getAttributes(Path file, boolean canUseCached)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        // if attributes are cached then use them if possible
-//        if (canUseCached &&
-//            (file instanceof BasicFileAttributesHolder) &&
-//            (System.getSecurityManager() == null))
-//        {
-//            BasicFileAttributes cached = ((BasicFileAttributesHolder)file).get();
-//            if (cached != null && (!followLinks || !cached.isSymbolicLink())) {
-//                return cached;
-//            }
-//        }
-//
-//        // attempt to get attributes of file. If fails and we are following
-//        // links then a link target might not exist so get attributes of link
-//        BasicFileAttributes attrs;
-//        try {
-//            attrs = Files.readAttributes(file, BasicFileAttributes.class, linkOptions);
-//        } catch (IOException ioe) {
-//            if (!followLinks)
-//                throw ioe;
-//
-//            // attempt to get attrmptes without following links
-//            attrs = Files.readAttributes(file,
-//                                         BasicFileAttributes.class,
-//                                         LinkOption.NOFOLLOW_LINKS);
-//        }
-//        return attrs;
+        // if attributes are cached then use them if possible
+        if (canUseCached &&
+            (file instanceof BasicFileAttributesHolder) &&
+            (System.getSecurityManager() == null))
+        {
+            BasicFileAttributes cached = ((BasicFileAttributesHolder)file).get();
+            if (cached != null && (!followLinks || !cached.isSymbolicLink())) {
+                return cached;
+            }
+        }
+
+        // attempt to get attributes of file. If fails and we are following
+        // links then a link target might not exist so get attributes of link
+        BasicFileAttributes attrs;
+        try {
+            attrs = Files.readAttributes(file, BasicFileAttributes.class, linkOptions);
+        } catch (IOException ioe) {
+            if (!followLinks)
+                throw ioe;
+
+            // attempt to get attrmptes without following links
+            attrs = Files.readAttributes(file,
+                                         BasicFileAttributes.class,
+                                         LinkOption.NOFOLLOW_LINKS);
+        }
+        return attrs;
     }
 
     /**
@@ -236,27 +234,26 @@ class FileTreeWalker implements Closeable {
      * file system loop/cycle.
      */
     private boolean wouldLoop(Path dir, Object key) {
-//        TODO(amisail) uncomment this when working
-//        // if this directory and ancestor has a file key then we compare
-//        // them; otherwise we use less efficient isSameFile test.
-//        for (DirectoryNode ancestor: stack) {
-//            Object ancestorKey = ancestor.key();
-//            if (key != null && ancestorKey != null) {
-//                if (key.equals(ancestorKey)) {
-//                    // cycle detected
-//                    return true;
-//                }
-//            } else {
-//                try {
-//                    if (Files.isSameFile(dir, ancestor.directory())) {
-//                        // cycle detected
-//                        return true;
-//                    }
-//                } catch (IOException | SecurityException x) {
-//                    // ignore
-//                }
-//            }
-//        }
+        // if this directory and ancestor has a file key then we compare
+        // them; otherwise we use less efficient isSameFile test.
+        for (DirectoryNode ancestor: stack) {
+            Object ancestorKey = ancestor.key();
+            if (key != null && ancestorKey != null) {
+                if (key.equals(ancestorKey)) {
+                    // cycle detected
+                    return true;
+                }
+            } else {
+                try {
+                    if (Files.isSameFile(dir, ancestor.directory())) {
+                        // cycle detected
+                        return true;
+                    }
+                } catch (IOException | SecurityException x) {
+                    // ignore
+                }
+            }
+        }
         return false;
     }
 
@@ -273,47 +270,45 @@ class FileTreeWalker implements Closeable {
      * for the file can be used or not.
      */
     private Event visit(Path entry, boolean ignoreSecurityException, boolean canUseCached) {
-        return null;
-//        TODO(amisail) uncomment this when working
-//        // need the file attributes
-//        BasicFileAttributes attrs;
-//        try {
-//            attrs = getAttributes(entry, canUseCached);
-//        } catch (IOException ioe) {
-//            return new Event(EventType.ENTRY, entry, ioe);
-//        } catch (SecurityException se) {
-//            if (ignoreSecurityException)
-//                return null;
-//            throw se;
-//        }
-//
-//        // at maximum depth or file is not a directory
-//        int depth = stack.size();
-//        if (depth >= maxDepth || !attrs.isDirectory()) {
-//            return new Event(EventType.ENTRY, entry, attrs);
-//        }
-//
-//        // check for cycles when following links
-//        if (followLinks && wouldLoop(entry, attrs.fileKey())) {
-//            return new Event(EventType.ENTRY, entry,
-//                             new FileSystemLoopException(entry.toString()));
-//        }
-//
-//        // file is a directory, attempt to open it
-//        DirectoryStream<Path> stream = null;
-//        try {
-//            stream = Files.newDirectoryStream(entry);
-//        } catch (IOException ioe) {
-//            return new Event(EventType.ENTRY, entry, ioe);
-//        } catch (SecurityException se) {
-//            if (ignoreSecurityException)
-//                return null;
-//            throw se;
-//        }
-//
-//        // push a directory node to the stack and return an event
-//        stack.push(new DirectoryNode(entry, attrs.fileKey(), stream));
-//        return new Event(EventType.START_DIRECTORY, entry, attrs);
+        // need the file attributes
+        BasicFileAttributes attrs;
+        try {
+            attrs = getAttributes(entry, canUseCached);
+        } catch (IOException ioe) {
+            return new Event(EventType.ENTRY, entry, ioe);
+        } catch (SecurityException se) {
+            if (ignoreSecurityException)
+                return null;
+            throw se;
+        }
+
+        // at maximum depth or file is not a directory
+        int depth = stack.size();
+        if (depth >= maxDepth || !attrs.isDirectory()) {
+            return new Event(EventType.ENTRY, entry, attrs);
+        }
+
+        // check for cycles when following links
+        if (followLinks && wouldLoop(entry, attrs.fileKey())) {
+            return new Event(EventType.ENTRY, entry,
+                             new FileSystemLoopException(entry.toString()));
+        }
+
+        // file is a directory, attempt to open it
+        DirectoryStream<Path> stream = null;
+        try {
+            stream = Files.newDirectoryStream(entry);
+        } catch (IOException ioe) {
+            return new Event(EventType.ENTRY, entry, ioe);
+        } catch (SecurityException se) {
+            if (ignoreSecurityException)
+                return null;
+            throw se;
+        }
+
+        // push a directory node to the stack and return an event
+        stack.push(new DirectoryNode(entry, attrs.fileKey(), stream));
+        return new Event(EventType.START_DIRECTORY, entry, attrs);
     }
 
 

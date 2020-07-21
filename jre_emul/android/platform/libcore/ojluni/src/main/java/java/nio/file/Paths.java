@@ -81,9 +81,7 @@ public final class Paths {
      * @see FileSystem#getPath
      */
     public static Path get(String first, String... more) {
-//        TODO(amisail) uncomment this when working
-//        return FileSystems.getDefault().getPath(first, more);
-        return null;
+        return FileSystems.getDefault().getPath(first, more);
     }
 
     /**
@@ -131,23 +129,21 @@ public final class Paths {
      *          permission to access the file system
      */
     public static Path get(URI uri) {
-//        TODO(amisail) uncomment this when working
-//        String scheme =  uri.getScheme();
-//        if (scheme == null)
-//            throw new IllegalArgumentException("Missing scheme");
-//
-//        // check for default provider to avoid loading of installed providers
-//        if (scheme.equalsIgnoreCase("file"))
-//            return FileSystems.getDefault().provider().getPath(uri);
-//
-//        // try to find provider
-//        for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
-//            if (provider.getScheme().equalsIgnoreCase(scheme)) {
-//                return provider.getPath(uri);
-//            }
-//        }
-//
-//        throw new FileSystemNotFoundException("Provider \"" + scheme + "\" not installed");
-        return null;
+        String scheme =  uri.getScheme();
+        if (scheme == null)
+            throw new IllegalArgumentException("Missing scheme");
+
+        // check for default provider to avoid loading of installed providers
+        if (scheme.equalsIgnoreCase("file"))
+            return FileSystems.getDefault().provider().getPath(uri);
+
+        // try to find provider
+        for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
+            if (provider.getScheme().equalsIgnoreCase(scheme)) {
+                return provider.getPath(uri);
+            }
+        }
+
+        throw new FileSystemNotFoundException("Provider \"" + scheme + "\" not installed");
     }
 }
