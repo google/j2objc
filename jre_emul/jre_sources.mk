@@ -1073,6 +1073,8 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/FileSystemException.java \
   java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
+  java/nio/file/FileTreeIterator.java \
+  java/nio/file/FileTreeWalker.java \
   java/nio/file/FileVisitOption.java \
   java/nio/file/FileVisitResult.java \
   java/nio/file/FileVisitor.java \
