@@ -144,37 +144,35 @@ class PollingWatchService
                                                  SensitivityWatchEventModifier sensivity)
         throws IOException
     {
-        return null;
-//        TODO(amisail) uncomment this when working
-//        // check file is a directory and get its file key if possible
-//        BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-//        if (!attrs.isDirectory()) {
-//            throw new NotDirectoryException(path.toString());
-//        }
-//        Object fileKey = attrs.fileKey();
-//        if (fileKey == null)
-//            throw new AssertionError("File keys must be supported");
-//
-//        // grab close lock to ensure that watch service cannot be closed
-//        synchronized (closeLock()) {
-//            if (!isOpen())
-//                throw new ClosedWatchServiceException();
-//
-//            PollingWatchKey watchKey;
-//            synchronized (map) {
-//                watchKey = map.get(fileKey);
-//                if (watchKey == null) {
-//                    // new registration
-//                    watchKey = new PollingWatchKey(path, this, fileKey);
-//                    map.put(fileKey, watchKey);
-//                } else {
-//                    // update to existing registration
-//                    watchKey.disable();
-//                }
-//            }
-//            watchKey.enable(events, sensivity.sensitivityValueInSeconds());
-//            return watchKey;
-//        }
+        // check file is a directory and get its file key if possible
+        BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+        if (!attrs.isDirectory()) {
+            throw new NotDirectoryException(path.toString());
+        }
+        Object fileKey = attrs.fileKey();
+        if (fileKey == null)
+            throw new AssertionError("File keys must be supported");
+
+        // grab close lock to ensure that watch service cannot be closed
+        synchronized (closeLock()) {
+            if (!isOpen())
+                throw new ClosedWatchServiceException();
+
+            PollingWatchKey watchKey;
+            synchronized (map) {
+                watchKey = map.get(fileKey);
+                if (watchKey == null) {
+                    // new registration
+                    watchKey = new PollingWatchKey(path, this, fileKey);
+                    map.put(fileKey, watchKey);
+                } else {
+                    // update to existing registration
+                    watchKey.disable();
+                }
+            }
+            watchKey.enable(events, sensivity.sensitivityValueInSeconds());
+            return watchKey;
+        }
 
     }
 
@@ -256,18 +254,17 @@ class PollingWatchService
             this.tickCount = 0;
             this.entries = new HashMap<Path,CacheEntry>();
 
-//            TODO(amisail) uncomment this when working
-//            // get the initial entries in the directory
-//            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-//                for (Path entry: stream) {
-//                    // don't follow links
-//                    long lastModified =
-//                        Files.getLastModifiedTime(entry, LinkOption.NOFOLLOW_LINKS).toMillis();
-//                    entries.put(entry.getFileName(), new CacheEntry(lastModified, tickCount));
-//                }
-//            } catch (DirectoryIteratorException e) {
-//                throw e.getCause();
-//            }
+            // get the initial entries in the directory
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+                for (Path entry: stream) {
+                    // don't follow links
+                    long lastModified =
+                        Files.getLastModifiedTime(entry, LinkOption.NOFOLLOW_LINKS).toMillis();
+                    entries.put(entry.getFileName(), new CacheEntry(lastModified, tickCount));
+                }
+            } catch (DirectoryIteratorException e) {
+                throw e.getCause();
+            }
         }
 
         Object fileKey() {
@@ -325,78 +322,77 @@ class PollingWatchService
             // update tick
             tickCount++;
 
-//            TODO(amisail) uncomment this when working
-//            // open directory
-//            DirectoryStream<Path> stream = null;
-//            try {
-//                stream = Files.newDirectoryStream(watchable());
-//            } catch (IOException x) {
-//                // directory is no longer accessible so cancel key
-//                cancel();
-//                signal();
-//                return;
-//            }
-//
-//            // iterate over all entries in directory
-//            try {
-//                for (Path entry: stream) {
-//                    long lastModified = 0L;
-//                    try {
-//                        lastModified =
-//                            Files.getLastModifiedTime(entry, LinkOption.NOFOLLOW_LINKS).toMillis();
-//                    } catch (IOException x) {
-//                        // unable to get attributes of entry. If file has just
-//                        // been deleted then we'll report it as deleted on the
-//                        // next poll
-//                        continue;
-//                    }
-//
-//                    // lookup cache
-//                    CacheEntry e = entries.get(entry.getFileName());
-//                    if (e == null) {
-//                        // new file found
-//                        entries.put(entry.getFileName(),
-//                                     new CacheEntry(lastModified, tickCount));
-//
-//                        // queue ENTRY_CREATE if event enabled
-//                        if (events.contains(StandardWatchEventKinds.ENTRY_CREATE)) {
-//                            signalEvent(StandardWatchEventKinds.ENTRY_CREATE, entry.getFileName());
-//                            continue;
-//                        } else {
-//                            // if ENTRY_CREATE is not enabled and ENTRY_MODIFY is
-//                            // enabled then queue event to avoid missing out on
-//                            // modifications to the file immediately after it is
-//                            // created.
-//                            if (events.contains(StandardWatchEventKinds.ENTRY_MODIFY)) {
-//                                signalEvent(StandardWatchEventKinds.ENTRY_MODIFY, entry.getFileName());
-//                            }
-//                        }
-//                        continue;
-//                    }
-//
-//                    // check if file has changed
-//                    if (e.lastModified != lastModified) {
-//                        if (events.contains(StandardWatchEventKinds.ENTRY_MODIFY)) {
-//                            signalEvent(StandardWatchEventKinds.ENTRY_MODIFY,
-//                                        entry.getFileName());
-//                        }
-//                    }
-//                    // entry in cache so update poll time
-//                    e.update(lastModified, tickCount);
-//
-//                }
-//            } catch (DirectoryIteratorException e) {
-//                // ignore for now; if the directory is no longer accessible
-//                // then the key will be cancelled on the next poll
-//            } finally {
-//
-//                // close directory stream
-//                try {
-//                    stream.close();
-//                } catch (IOException x) {
-//                    // ignore
-//                }
-//            }
+            // open directory
+            DirectoryStream<Path> stream = null;
+            try {
+                stream = Files.newDirectoryStream(watchable());
+            } catch (IOException x) {
+                // directory is no longer accessible so cancel key
+                cancel();
+                signal();
+                return;
+            }
+
+            // iterate over all entries in directory
+            try {
+                for (Path entry: stream) {
+                    long lastModified = 0L;
+                    try {
+                        lastModified =
+                            Files.getLastModifiedTime(entry, LinkOption.NOFOLLOW_LINKS).toMillis();
+                    } catch (IOException x) {
+                        // unable to get attributes of entry. If file has just
+                        // been deleted then we'll report it as deleted on the
+                        // next poll
+                        continue;
+                    }
+
+                    // lookup cache
+                    CacheEntry e = entries.get(entry.getFileName());
+                    if (e == null) {
+                        // new file found
+                        entries.put(entry.getFileName(),
+                                     new CacheEntry(lastModified, tickCount));
+
+                        // queue ENTRY_CREATE if event enabled
+                        if (events.contains(StandardWatchEventKinds.ENTRY_CREATE)) {
+                            signalEvent(StandardWatchEventKinds.ENTRY_CREATE, entry.getFileName());
+                            continue;
+                        } else {
+                            // if ENTRY_CREATE is not enabled and ENTRY_MODIFY is
+                            // enabled then queue event to avoid missing out on
+                            // modifications to the file immediately after it is
+                            // created.
+                            if (events.contains(StandardWatchEventKinds.ENTRY_MODIFY)) {
+                                signalEvent(StandardWatchEventKinds.ENTRY_MODIFY, entry.getFileName());
+                            }
+                        }
+                        continue;
+                    }
+
+                    // check if file has changed
+                    if (e.lastModified != lastModified) {
+                        if (events.contains(StandardWatchEventKinds.ENTRY_MODIFY)) {
+                            signalEvent(StandardWatchEventKinds.ENTRY_MODIFY,
+                                        entry.getFileName());
+                        }
+                    }
+                    // entry in cache so update poll time
+                    e.update(lastModified, tickCount);
+
+                }
+            } catch (DirectoryIteratorException e) {
+                // ignore for now; if the directory is no longer accessible
+                // then the key will be cancelled on the next poll
+            } finally {
+
+                // close directory stream
+                try {
+                    stream.close();
+                } catch (IOException x) {
+                    // ignore
+                }
+            }
 
             // iterate over cache to detect entries that have been deleted
             Iterator<Map.Entry<Path,CacheEntry>> i = entries.entrySet().iterator();
