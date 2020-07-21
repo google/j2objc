@@ -40,6 +40,7 @@ import java.lang.reflect.Modifier;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 import sun.reflect.CallerSensitive;
+import sun.reflect.Reflection;
 
 /**
  * A reflection-based utility that enables atomic updates to
@@ -101,11 +102,8 @@ public abstract class AtomicReferenceFieldUpdater<T,V> {
     public static <U,W> AtomicReferenceFieldUpdater<U,W> newUpdater(Class<U> tclass,
                                                                     Class<W> vclass,
                                                                     String fieldName) {
-        return new AtomicReferenceFieldUpdaterImpl<U,W>(tclass, vclass, fieldName, null);
-        /* J2ObjC: Call stack not available.
         return new AtomicReferenceFieldUpdaterImpl<U,W>
-            (tclass, vclass, fieldName, Reflection.getCallerClass()); // android-changed
-        */
+            (tclass, vclass, fieldName, Reflection.getCallerClass());
     }
 
     /**

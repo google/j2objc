@@ -49,12 +49,18 @@ class AtomicBooleanTest:
 class AtomicIntegerArrayTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
+class AtomicIntegerFieldUpdaterTest:
+  method testCompareAndSetProtected()V:
+    @ObjectiveCName("ignoreReflectiveAccess")
 class AtomicIntegerTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
 class AtomicLongArrayTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")
+class AtomicLongFieldUpdaterTest:
+  method testCompareAndSetProtected()V:
+    @ObjectiveCName("ignoreReflectiveAccess")
 class AtomicLongTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")

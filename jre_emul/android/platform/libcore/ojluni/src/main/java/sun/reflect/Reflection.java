@@ -25,6 +25,7 @@
 
 package sun.reflect;
 
+import dalvik.system.VMStack;
 import java.lang.reflect.*;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,8 +36,19 @@ import java.util.Map;
 
 public class Reflection {
 
-    public static void ensureMemberAccess(Class currentClass,
-                                          Class memberClass,
+
+    /**
+     * @return Returns the class of the caller of the method calling this method,
+     *      ignoring frames associated with java.lang.reflect.Method.invoke()
+     *      and its implementation
+     * @throws ClassNotFoundException
+     */
+    public static Class<?> getCallerClass() {
+        return VMStack.getStackClass2();
+    }
+
+    public static void ensureMemberAccess(Class<?> currentClass,
+                                          Class<?> memberClass,
                                           Object target,
                                           int modifiers)
         throws IllegalAccessException
@@ -55,10 +67,10 @@ public class Reflection {
         }
     }
 
-    public static boolean verifyMemberAccess(Class currentClass,
+    public static boolean verifyMemberAccess(Class<?> currentClass,
                                              // Declaring class of field
                                              // or method
-                                             Class  memberClass,
+                                             Class<?>  memberClass,
                                              // May be NULL in case of statics
                                              Object target,
                                              int    modifiers)
@@ -119,7 +131,7 @@ public class Reflection {
 
         if (Modifier.isProtected(modifiers)) {
             // Additional test for protected members: JLS 6.6.2
-            Class targetClass = (target == null ? memberClass : target.getClass());
+            Class<?> targetClass = (target == null ? memberClass : target.getClass());
             if (targetClass != currentClass) {
                 if (!gotIsSameClassPackage) {
                     isSameClassPackage = isSameClassPackage(currentClass, memberClass);
@@ -136,7 +148,7 @@ public class Reflection {
         return true;
     }
 
-    private static boolean isSameClassPackage(Class c1, Class c2) {
+    private static boolean isSameClassPackage(Class<?> c1, Class<?> c2) {
         return isSameClassPackage(c1.getClassLoader(), c1.getName(),
                                   c2.getClassLoader(), c2.getName());
     }
@@ -191,8 +203,8 @@ public class Reflection {
         }
     }
 
-    static boolean isSubclassOf(Class queryClass,
-                                Class ofClass)
+    static boolean isSubclassOf(Class<?> queryClass,
+                                Class<?> ofClass)
     {
         while (queryClass != null) {
             if (queryClass == ofClass) {
