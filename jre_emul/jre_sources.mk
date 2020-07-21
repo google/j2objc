@@ -1076,6 +1076,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/FileSystemException.java \
   java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
+  java/nio/file/FileSystems.java \
   java/nio/file/FileTreeIterator.java \
   java/nio/file/FileTreeWalker.java \
   java/nio/file/FileVisitOption.java \
@@ -1147,6 +1148,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/BsdFileSystemProvider.java \
   sun/nio/fs/BsdNativeDispatcher.java \
   sun/nio/fs/Cancellable.java \
+  sun/nio/fs/DefaultFileSystemProvider.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
