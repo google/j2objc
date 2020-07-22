@@ -181,13 +181,15 @@ public abstract class UnixFileSystemProvider
 //        }
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public AsynchronousFileChannel newAsynchronousFileChannel(Path obj,
-//                                                              Set<? extends OpenOption> options,
-//                                                              ExecutorService executor,
-//                                                              FileAttribute<?>... attrs) throws IOException
-//    {
+
+    @Override
+    public AsynchronousFileChannel newAsynchronousFileChannel(Path obj,
+                                                              Set<? extends OpenOption> options,
+                                                              ExecutorService executor,
+                                                              FileAttribute<?>... attrs) throws IOException
+    {
+        return null;
+//        TODO(amisail) uncomment this when working
 //        UnixPath file = checkPath(obj);
 //        int mode = UnixFileModeAttribute
 //            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
@@ -199,7 +201,7 @@ public abstract class UnixFileSystemProvider
 //            x.rethrowAsIOException(file);
 //            return null;
 //        }
-//    }
+    }
 
 
     @Override

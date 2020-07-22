@@ -1058,6 +1058,7 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   SocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_FILE = \
+  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/file/AccessDeniedException.java \
   java/nio/file/AccessMode.java \
   java/nio/file/AtomicMoveNotSupportedException.java \

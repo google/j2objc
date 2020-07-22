@@ -516,15 +516,14 @@ public abstract class FileSystemProvider {
      *          SecurityManager#checkWrite(String)} method is invoked to check
      *          write access if the file is opened for writing
      */
-//    TODO(amisail) uncomment this when working
-//    public AsynchronousFileChannel newAsynchronousFileChannel(Path path,
-//                                                              Set<? extends OpenOption> options,
-//                                                              ExecutorService executor,
-//                                                              FileAttribute<?>... attrs)
-//        throws IOException
-//    {
-//        throw new UnsupportedOperationException();
-//    }
+    public AsynchronousFileChannel newAsynchronousFileChannel(Path path,
+                                                              Set<? extends OpenOption> options,
+                                                              ExecutorService executor,
+                                                              FileAttribute<?>... attrs)
+        throws IOException
+    {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Opens or creates a file, returning a seekable byte channel to access the
