@@ -14,6 +14,8 @@
 
 import junit.framework.TestCase;
 
+import java.lang.reflect.*;
+
 /**
  * Tests that <clinit> execution.
  *
@@ -55,8 +57,7 @@ public class ClassInitializeTest extends TestCase {
     }
   }
 
-  public void testInitializeSequence1() {
-    // Foo1.Singleton.<clinit> should not be called
+  public void testInitializeSequence() throws Exception {
     Class c = Foo1.Singleton.class;
     assertTrue (Foo1.instance != null);
   }
@@ -64,29 +65,24 @@ public class ClassInitializeTest extends TestCase {
   public void testGetMetaclassInformaion() throws Exception {
     // Foo2.<clinit> should not be called
     Foo2.class.getDeclaredClasses();
-    assertFalse(Foo2.innerClassLoaded);
+    assertFalse(Foo2.Check.innerClassInitialized);
 
     // Foo2.<clinit> should not be called
-    Field[] fields = Foo2.class.getFields();
-    assertFalse(Foo2.innerClassLoaded);
+    Field[] fields = Foo2.class.getDeclaredFields();
 
     for (Field f : fields) {
       if (Modifier.isStatic(f.getModifiers())) {
         assertFalse(Foo2.Check.innerClassInitialized);
         Object s = f.get(null);
-        // Foo2.<clinit> must be called
         assertTrue(Foo2.Check.innerClassInitialized);
         break;
       }
     }
-}
+  }
 
-  public void testStringConstantAccess() {
-    // Foo3.InnerClass.<clinit> should not be called
+  public void testStringConstantAccess() throws Exception {
     System.out.print(Foo3.InnerClass.FINAL_CONSTANT_STRING);
     assertFalse(Foo3.innerClassLoaded);
-
-    // Foo3.InnerClass.<clinit> must be called
     System.out.print(Foo3.InnerClass.NOT_FINAL_CONSTANT_STRING);
     assertTrue(Foo3.innerClassLoaded);
   }

@@ -256,6 +256,7 @@ TEST_SOURCES := \
     LocaleTest.java \
     MaxFloatingPointTest.java \
     NoPackageTest.java \
+    ClassInitializeTest.java \
     NSDictionaryMapTest.java \
     PackagePrefixesTest.java \
     SerializationTest.java \

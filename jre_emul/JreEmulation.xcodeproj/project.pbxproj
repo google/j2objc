@@ -1349,6 +1349,7 @@
 		786A518624C0776F004F2A6A /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 786A4C6824C0776B004F2A6A /* ThrowableTest.m */; };
 		786A518724C0776F004F2A6A /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 786A4C6924C0776B004F2A6A /* package-info.m */; };
 		786A518824C0776F004F2A6A /* RetainedWithTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 786A4C6A24C0776B004F2A6A /* RetainedWithTest.m */; };
+		788DA9F624C6CF3F00A73B88 /* ClassInitializeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 788DA9F524C6CF3F00A73B88 /* ClassInitializeTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4124,6 +4125,8 @@
 		786A4C6E24C0776B004F2A6A /* TestUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestUtil.h; sourceTree = "<group>"; };
 		787C8D51237EDFD0003B8EF1 /* NSObject+ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+ARGC.h"; path = "Classes/ARGC/NSObject+ARGC.h"; sourceTree = SOURCE_ROOT; };
 		7881CB692382D783005204FF /* Volatiles.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = Volatiles.mm; path = Classes/ARGC/Volatiles.mm; sourceTree = SOURCE_ROOT; };
+		788DA9F424C6CF3F00A73B88 /* ClassInitializeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassInitializeTest.h; sourceTree = "<group>"; };
+		788DA9F524C6CF3F00A73B88 /* ClassInitializeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassInitializeTest.m; sourceTree = "<group>"; };
 		78A35F1523C5D92C0024004C /* UnreachableError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnreachableError.m; path = Classes/ARGC/UnreachableError.m; sourceTree = SOURCE_ROOT; };
 		78A35F1623C5D9430024004C /* UnreachableError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnreachableError.h; path = Classes/org/slowcoders/j2objc/UnreachableError.h; sourceTree = SOURCE_ROOT; };
 		FAF4EEF8215AF32400413554 /* IosSslSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosSslSocket.m; path = com/google/j2objc/net/ssl/IosSslSocket.m; sourceTree = "<group>"; };
@@ -4386,6 +4389,8 @@
 		786A416424C07765004F2A6A /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				788DA9F424C6CF3F00A73B88 /* ClassInitializeTest.h */,
+				788DA9F524C6CF3F00A73B88 /* ClassInitializeTest.m */,
 				786A416524C07765004F2A6A /* AllJreTests.m */,
 				786A416624C07765004F2A6A /* DateFormatTest.h */,
 				786A416724C07765004F2A6A /* UTF16EncodingTest.m */,
@@ -10024,6 +10029,7 @@
 				786A4F8024C0776D004F2A6A /* ThreadPoolExecutorTest.m in Sources */,
 				786A4E8524C0776D004F2A6A /* PropertyChangeEventTest.m in Sources */,
 				786A4F5924C0776D004F2A6A /* CollectionTest.m in Sources */,
+				788DA9F624C6CF3F00A73B88 /* ClassInitializeTest.m in Sources */,
 				786A4F5524C0776D004F2A6A /* ConcurrentHashMapTest.m in Sources */,
 				786A4FDA24C0776D004F2A6A /* MoreAsserts.m in Sources */,
 				786A4F5E24C0776D004F2A6A /* DoubleAdderTest.m in Sources */,
