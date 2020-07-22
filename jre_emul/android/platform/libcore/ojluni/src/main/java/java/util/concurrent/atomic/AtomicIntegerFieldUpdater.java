@@ -80,8 +80,11 @@ public abstract class AtomicIntegerFieldUpdater<T> {
     @CallerSensitive
     public static <U> AtomicIntegerFieldUpdater<U> newUpdater(Class<U> tclass,
                                                               String fieldName) {
+        return new AtomicIntegerFieldUpdaterImpl<U>(tclass, fieldName, null);
+        /* J2ObjC: Call stack not available.
         return new AtomicIntegerFieldUpdaterImpl<U>
-            (tclass, fieldName, Reflection.getCallerClass());
+            (tclass, fieldName, VMStack.getStackClass1()); // android-changed
+        */
     }
 
     /**

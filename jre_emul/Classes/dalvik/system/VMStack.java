@@ -49,10 +49,6 @@ public final class VMStack {
     return null;
   }
 
-  // j2objc: defines how many stack frames are defined by an exception:
-  // Throwable(), Throwable.fillStackTrace(), and Throwable.nativeFillInStackTrace().
-  private static final int THROWABLE_STACK_FRAMES = 3;
-
   /**
    * Returns the class of the caller's caller.
    *
@@ -62,9 +58,9 @@ public final class VMStack {
   @Deprecated
   public static Class<?> getStackClass1() {
     try {
+      // j2objc implementation.
       StackTraceElement[] stack = new Throwable().getStackTrace();
-      // Also skip 3: Throwable(), Throwable.fillStackTrace(), Throwable.nativeFillInStackTrace().
-      return Class.forName(stack[THROWABLE_STACK_FRAMES + 1].getClassName());
+      return Class.forName(stack[2].getClassName());
     } catch (ClassNotFoundException e) {
       return null;
     }
@@ -80,8 +76,9 @@ public final class VMStack {
   @UnsupportedAppUsage
   public static Class<?> getStackClass2() {
     try {
+      // j2objc implementation, duplicated from above to avoid adding a stack frame.
       StackTraceElement[] stack = new Throwable().getStackTrace();
-      return Class.forName(stack[THROWABLE_STACK_FRAMES + 2].getClassName());
+      return Class.forName(stack[3].getClassName());
     } catch (ClassNotFoundException e) {
       return null;
     }
