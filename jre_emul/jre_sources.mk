@@ -1178,7 +1178,8 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixPath.java \
   sun/nio/fs/UnixUriUtils.java \
   sun/nio/fs/UnixUserPrincipals.java \
-  sun/nio/fs/Util.java
+  sun/nio/fs/Util.java \
+  sun/security/util/SecurityConstants.java
 
 NATIVE_JRE_SOURCES_FILE = \
   BsdNativeDispatcher.m \

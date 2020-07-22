@@ -38,7 +38,7 @@ import java.security.AccessController;
 
 //TODO(amisail) uncomment this when working
 //import sun.nio.ch.ThreadPool;
-//import sun.security.util.SecurityConstants;
+import sun.security.util.SecurityConstants;
 import static sun.nio.fs.UnixNativeDispatcher.*;
 import static sun.nio.fs.UnixConstants.*;
 
@@ -494,25 +494,23 @@ public abstract class UnixFileSystemProvider
 
     @Override
     public Path readSymbolicLink(Path obj1) throws IOException {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        UnixPath link = UnixPath.toUnixPath(obj1);
-//        // permission check
-//        SecurityManager sm = System.getSecurityManager();
-//        if (sm != null) {
-//            FilePermission perm = new FilePermission(link.getPathForPermissionCheck(),
-//                SecurityConstants.FILE_READLINK_ACTION);
-//            sm.checkPermission(perm);
-//        }
-//        try {
-//            byte[] target = readlink(link);
-//            return new UnixPath(link.getFileSystem(), target);
-//        } catch (UnixException x) {
-//           if (x.errno() == UnixConstants.EINVAL)
-//                throw new NotLinkException(link.getPathForExceptionMessage());
-//            x.rethrowAsIOException(link);
-//            return null;    // keep compiler happy
-//        }
+        UnixPath link = UnixPath.toUnixPath(obj1);
+        // permission check
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            FilePermission perm = new FilePermission(link.getPathForPermissionCheck(),
+                SecurityConstants.FILE_READLINK_ACTION);
+            sm.checkPermission(perm);
+        }
+        try {
+            byte[] target = readlink(link);
+            return new UnixPath(link.getFileSystem(), target);
+        } catch (UnixException x) {
+           if (x.errno() == UnixConstants.EINVAL)
+                throw new NotLinkException(link.getPathForExceptionMessage());
+            x.rethrowAsIOException(link);
+            return null;    // keep compiler happy
+        }
     }
 
     /**
