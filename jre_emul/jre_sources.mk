@@ -1178,6 +1178,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixMountEntry.java \
   sun/nio/fs/UnixNativeDispatcher.java \
   sun/nio/fs/UnixPath.java \
+  sun/nio/fs/UnixSecureDirectoryStream.java \
   sun/nio/fs/UnixUriUtils.java \
   sun/nio/fs/UnixUserPrincipals.java \
   sun/nio/fs/Util.java \
