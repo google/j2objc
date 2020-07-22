@@ -1163,6 +1163,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/PollingWatchService.java \
+  sun/nio/fs/UnixChannelFactory.java \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixCopyFile.java \
   sun/nio/fs/UnixDirectoryStream.java \
