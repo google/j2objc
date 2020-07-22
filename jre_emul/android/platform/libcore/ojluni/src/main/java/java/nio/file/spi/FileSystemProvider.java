@@ -151,32 +151,31 @@ public abstract class FileSystemProvider {
      *          When an error occurs while loading a service provider
      */
     public static List<FileSystemProvider> installedProviders() {
-//        TODO(amisail) uncomment this when working
-//        if (installedProviders == null) {
-//            // ensure default provider is initialized
-//            FileSystemProvider defaultProvider = FileSystems.getDefault().provider();
-//
-//            synchronized (lock) {
-//                if (installedProviders == null) {
-//                    if (loadingProviders) {
-//                        throw new Error("Circular loading of installed providers detected");
-//                    }
-//                    loadingProviders = true;
-//
-//                    List<FileSystemProvider> list = AccessController
-//                        .doPrivileged(new PrivilegedAction<List<FileSystemProvider>>() {
-//                            @Override
-//                            public List<FileSystemProvider> run() {
-//                                return loadInstalledProviders();
-//                        }});
-//
-//                    // insert the default provider at the start of the list
-//                    list.add(0, defaultProvider);
-//
-//                    installedProviders = Collections.unmodifiableList(list);
-//                }
-//            }
-//        }
+        if (installedProviders == null) {
+            // ensure default provider is initialized
+            FileSystemProvider defaultProvider = FileSystems.getDefault().provider();
+
+            synchronized (lock) {
+                if (installedProviders == null) {
+                    if (loadingProviders) {
+                        throw new Error("Circular loading of installed providers detected");
+                    }
+                    loadingProviders = true;
+
+                    List<FileSystemProvider> list = AccessController
+                        .doPrivileged(new PrivilegedAction<List<FileSystemProvider>>() {
+                            @Override
+                            public List<FileSystemProvider> run() {
+                                return loadInstalledProviders();
+                        }});
+
+                    // insert the default provider at the start of the list
+                    list.add(0, defaultProvider);
+
+                    installedProviders = Collections.unmodifiableList(list);
+                }
+            }
+        }
         return installedProviders;
     }
 
@@ -374,17 +373,15 @@ public abstract class FileSystemProvider {
     public InputStream newInputStream(Path path, OpenOption... options)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        if (options.length > 0) {
-//            for (OpenOption opt: options) {
-//                // All OpenOption values except for APPEND and WRITE are allowed
-//                if (opt == StandardOpenOption.APPEND ||
-//                    opt == StandardOpenOption.WRITE)
-//                    throw new UnsupportedOperationException("'" + opt + "' not allowed");
-//            }
-//        }
-//        return Channels.newInputStream(Files.newByteChannel(path, options));
+        if (options.length > 0) {
+            for (OpenOption opt: options) {
+                // All OpenOption values except for APPEND and WRITE are allowed
+                if (opt == StandardOpenOption.APPEND ||
+                    opt == StandardOpenOption.WRITE)
+                    throw new UnsupportedOperationException("'" + opt + "' not allowed");
+            }
+        }
+        return Channels.newInputStream(Files.newByteChannel(path, options));
     }
 
     /**
@@ -418,25 +415,24 @@ public abstract class FileSystemProvider {
      *          invoked to check delete access if the file is opened with the
      *          {@code DELETE_ON_CLOSE} option.
      */
-//    TODO(amisail) uncomment this when working
-//    public OutputStream newOutputStream(Path path, OpenOption... options)
-//        throws IOException
-//    {
-//        int len = options.length;
-//        Set<OpenOption> opts = new HashSet<OpenOption>(len + 3);
-//        if (len == 0) {
-//            opts.add(StandardOpenOption.CREATE);
-//            opts.add(StandardOpenOption.TRUNCATE_EXISTING);
-//        } else {
-//            for (OpenOption opt: options) {
-//                if (opt == StandardOpenOption.READ)
-//                    throw new IllegalArgumentException("READ not allowed");
-//                opts.add(opt);
-//            }
-//        }
-//        opts.add(StandardOpenOption.WRITE);
-//        return Channels.newOutputStream(newByteChannel(path, opts));
-//    }
+    public OutputStream newOutputStream(Path path, OpenOption... options)
+        throws IOException
+    {
+        int len = options.length;
+        Set<OpenOption> opts = new HashSet<OpenOption>(len + 3);
+        if (len == 0) {
+            opts.add(StandardOpenOption.CREATE);
+            opts.add(StandardOpenOption.TRUNCATE_EXISTING);
+        } else {
+            for (OpenOption opt: options) {
+                if (opt == StandardOpenOption.READ)
+                    throw new IllegalArgumentException("READ not allowed");
+                opts.add(opt);
+            }
+        }
+        opts.add(StandardOpenOption.WRITE);
+        return Channels.newOutputStream(newByteChannel(path, opts));
+    }
 
     /**
      * Opens or creates a file for reading and/or writing, returning a file
