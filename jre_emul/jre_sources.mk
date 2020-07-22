@@ -1004,9 +1004,9 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/DefaultSelectorProvider.java \
   sun/nio/ch/ExtendedSocketOption.java \
   sun/nio/ch/FileChannelImpl.java \
-  sun/nio/ch/FileLockTable.java \
-  sun/nio/ch/FileLockImpl.java \
   sun/nio/ch/FileKey.java \
+  sun/nio/ch/FileLockImpl.java \
+  sun/nio/ch/FileLockTable.java \
   sun/nio/ch/FileDescriptorHolderSocketImpl.java \
   sun/nio/ch/FileDispatcherImpl.java \
   sun/nio/ch/FileDispatcher.java \
