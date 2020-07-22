@@ -36,8 +36,7 @@ import java.io.FilePermission;
 import java.util.*;
 import java.security.AccessController;
 
-//TODO(amisail) uncomment this when working
-//import sun.nio.ch.ThreadPool;
+import sun.nio.ch.ThreadPool;
 import sun.security.util.SecurityConstants;
 import static sun.nio.fs.UnixNativeDispatcher.*;
 import static sun.nio.fs.UnixConstants.*;
