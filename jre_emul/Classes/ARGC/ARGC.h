@@ -25,7 +25,8 @@ CF_EXTERN_C_BEGIN
 
 @class IOSClass;
 
-@interface ARGCObject : NSObject
+@interface ARGCObject : NSObject {    
+}
 @end
 
         
@@ -63,13 +64,10 @@ void ARGC_setGarbageCollectionInterval(int time_in_ms);
 /* wake garbage collection thread. */
 void ARGC_requestGC();
 
-/* wake garbage collection thread. */
-id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
+id ARGC_allocateArray(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
 void ARGC_initStatic(Class cls) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 
-id ARGC_globalLock(__unsafe_unretained id obj) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
-id ARGC_globalUnlock(__unsafe_unretained id obj) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 #define ARGC_FIELD(type, name)
 #define ARGC_PROXY_FIELD(type, name)
 #define ARGC_SYNTHESIZE(type, name)

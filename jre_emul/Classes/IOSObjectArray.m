@@ -37,7 +37,7 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
   }
   size_t buf_size = length * sizeof(id);
-  IOSObjectArray *array = ARGC_allocateObject([IOSObjectArray class], buf_size, nil);
+  IOSObjectArray *array = ARGC_allocateArray([IOSObjectArray class], buf_size, nil);
   // Set array contents to Java default value (null).
   memset(array->buffer_, 0, buf_size);
   array->size_ = length;

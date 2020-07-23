@@ -1209,21 +1209,6 @@ extern "C" {
         return (int)NSExtraRefCount(oid) + 1;
     }
     
-    __attribute__((always_inline)) id ARGC_globalLock(id oid) {
-        [oid retain];
-        return oid;
-    }
-    
-    id ARGC_globalUnlock(id oid) {
-        if (GC_DEBUG && GC_LOG_ALLOC) {
-            if (toARGCObject(oid) == NULL) {
-                NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
-            }
-        }
-        [oid autorelease];
-        return oid;
-    }
-    
     void ARGC_strongRetain(id oid) {
         [oid retain];
     }
@@ -1294,10 +1279,14 @@ extern "C" {
         }
     }
     
-    id ARGC_allocateObject(Class cls, NSUInteger extraBytes, NSZone* zone) {
+    id ARGC_allocateArray(Class cls, NSUInteger extraBytes, NSZone* zone) {
         return ARGC::_instance.allocateInstance(cls, extraBytes, zone);
     }
-    
+
+    id ARGC_allocateObject(Class cls) {
+        return ARGC::_instance.allocateInstance(cls, 0, NULL);
+    }
+
     void JreFinalize(id self) J2OBJC_METHOD_ATTR {
       @try {
         [self java_finalize];
