@@ -696,20 +696,19 @@ public class Options {
   }
 
   
-  private void addPath(List<String> pathList, String path, boolean expandJarFile) {
-	  File f = new File(path);
-	  if (expandJarFile && !f.isDirectory()) {
+  private void addPath(List<String> entries, File f, boolean expandAarFiles) {
+	  if (expandAarFiles && !f.isDirectory()) {
 		  f = ARGC.extractSources(f, this, false);
 		  if (f == null) {
 			  return;
 		  }
 	  }
-	  path = ARGC.getCanonicalPath(f);
-	  TranslateSourceList.addRootPath(path);
-	  pathList.add(path);
+	  String entry = ARGC.getCanonicalPath(f);
+	  TranslateSourceList.addRootPath(entry);
+	  entries.add(entry);
   }
   
-  private List<String> getPathArgument(String argument, boolean expandAarFiles, boolean expandWildcard) {
+  private List<String> getPathArgument(String argument, boolean isClassPath, boolean expandWildcard) {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       entry = entry.trim();
@@ -721,45 +720,41 @@ public class Options {
         // first if in the middle of a path string.
         entry = System.getProperty("user.home") + entry.substring(1);
       }
-      if (false && this.useGC()) {
-        if (entry.charAt(0) == '@') {
-            File f = new File(entry.substring(1));
-            ArrayList<String> list = ARGC.processListFile(f);
-            if (list != null) {
-                String dir = f.getAbsolutePath();
-                dir = dir.substring(0, dir.lastIndexOf('/') + 1);
-                for (String s : list) {
-                    addPath(entries, dir + s, !expandAarFiles);
-                }
-            }
+      
+      if (entry.charAt(0) == '@') {
+        File f = new File(entry.substring(1));
+        ArrayList<String> list = ARGC.processListFile(f);
+        if (list != null) {
+          String dir = f.getAbsolutePath();
+          dir = dir.substring(0, dir.lastIndexOf('/') + 1);
+          for (String s : list) {
+        	addPath(entries, new File(dir + s), !isClassPath);
+          }
         }
-        else {
-            addPath(entries, entry, !expandAarFiles);
-        }
+        continue;
+      }
+      
+      File f = new File(entry);
+      if (f.getName().equals("*") && expandWildcard) {
+    	File parent = f.getParentFile() == null ? new File(".") : f.getParentFile();
+    	FileFilter jarFilter = file -> file.getName().endsWith(".jar");
+    	File[] files = parent.listFiles(jarFilter);
+    	if (files != null) {
+    		for (File jar : files) {
+    			addPath(entries, jar, !isClassPath);
+    		}
+    	}
+    	continue;
+      }
+      if (entry.endsWith(".aar") && isClassPath) {
+    	// Extract classes.jar from Android library AAR file.
+    	f = fileUtil().extractClassesJarFromAarFile(f);
+      }
+      if (f.exists()) {
+        addPath(entries, f, !isClassPath);
       }
       else {
-        File f = new File(entry);
-        if (f.getName().equals("*") && expandWildcard) {
-          File parent = f.getParentFile() == null ? new File(".") : f.getParentFile();
-          FileFilter jarFilter = file -> file.getName().endsWith(".jar");
-          File[] files = parent.listFiles(jarFilter);
-          if (files != null) {
-            for (File jar : files) {
-              entries.add(jar.toString());
-            }
-          }
-          continue;
-        }
-        if (entry.endsWith(".aar") && expandAarFiles) {
-          // Extract classes.jar from Android library AAR file.
-          f = fileUtil().extractClassesJarFromAarFile(f);
-        }
-        if (f.exists()) {
-          entries.add(f.toString());
-        }
-        else {
-            System.err.println("invalid path: " + entry);
-        }
+    	System.err.println("invalid path: " + entry);
       }
     }
     return entries;
