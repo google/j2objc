@@ -45,19 +45,18 @@ public class InputFilePreprocessor {
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
-    if (options.useGC()) { 
-    	String target = options.getDebugSourceFile();
-    	if (target != null) {
-    		for (ProcessingContext input : inputs) {
-    			String s = input.getOriginalSourcePath();
-    			if (s.endsWith(target)) {
-    				processInput(input);
-    				break;
-    			}
-    		}
-    		return;
-    	}
+	String target = options.getDebugSourceFile();
+	if (target != null) {
+		for (ProcessingContext input : inputs) {
+			String s = input.getOriginalSourcePath();
+			if (s.endsWith(target)) {
+				processInput(input);
+				break;
+			}
+		}
+		return;
 	}
+
     for (ProcessingContext input : inputs) {
       if (input.getFile().getUnitName().endsWith(".java")) {
         processInput(input);

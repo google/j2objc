@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -260,8 +261,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (typeNode.hasPrivateDeclaration()) {
       return false;
     }
-    return (!Options.useGC() && hasInitializeMethod())
-        || hasStaticAccessorMethods()
+    return hasStaticAccessorMethods()
         || ElementUtil.isGeneratedAnnotation(typeElement)
         || hasStaticMethods();
   }
@@ -347,25 +347,23 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     String returnType = function.getObjCReturnType(nameTable);
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
-    boolean hasObjectParam = false;//returnType.endsWith("*");
-    int cntParam = 0;
-    if ((options.useGC() || isPrototype) && function.getParameters().isEmpty()) {
-      if (!options.useGC()) sb.append("void");
+    boolean hasObjectParam = false;
+    if (function.getParameters().isEmpty()) {
+      sb.append("void");
     } else {
       for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
         String paramType = nameTable.getObjCParameterType(var);
-        // ARGC ** {{
+        // for Options.enableConstRefArgs
         boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
         hasObjectParam |= isObject;
-        cntParam ++;
         paramType += " ";
         sb.append(paramType + nameTable.getVariableShortName(var));
-        if (!isPrototype && isObject && function.getParameter(var).isMutable()) {
+        if (J2ObjC.options.enableConstRefArgs() && 
+        		!isPrototype && isObject && function.getParameter(var).isMutable()) {
         	sb.append("_0");
         }
-        // }}
         if (iter.hasNext()) {
           sb.append(", ");
         }
@@ -373,37 +371,16 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
     sb.append(")");
      // ARGC ++
-    if (cntParam > 0) {
+    if (hasObjectParam && J2ObjC.options.enableConstRefArgs()) {
     	/**
-    	 * clang 버그로 인해 cntParam 이 1 이상인 경우에만 J2OBJC_METHOD_ATTR 적용 가능. 
+    	 * clang compiler has a crash bug when __attribute__((objc_externally_retained)) is specified on 
+    	 * method that has not a object reference parameter
     	 */
     	sb.append(" J2OBJC_METHOD_ATTR");
     }
     return sb.toString();
   }
 
-   // ARGC ++
-  protected String getMutableParameters(FunctionDeclaration function) {
-	  StringBuilder sb = null;
-	  for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
-			  iter.hasNext(); ) {
-		  SingleVariableDeclaration var = iter.next();
-		  if (var.isMutable()) {
-			  String paramType = nameTable.getObjCType(var.getVariableElement().asType());
-		        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
-			  if (isObject) {
-				  if (sb == null) {
-					  sb = new StringBuilder();
-				  }
-				  String name = nameTable.getVariableShortName(var.getVariableElement());
-				  sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
-				    .append(name).append("_0;").append('\n');
-			  }
-		  }
-	  }
-	  return sb == null ? "" : sb.toString();
-  }
-  
   protected String generateExpression(Expression expr) {
     return StatementGenerator.generate(expr, getBuilder().getCurrentLine());
   }

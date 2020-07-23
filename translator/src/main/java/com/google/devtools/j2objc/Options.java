@@ -99,6 +99,7 @@ public class Options {
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
   private static boolean iostest = false;
+  public boolean isConstRefArgs;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -528,6 +529,8 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
+      } else if (arg.equals("-Xconst-ref-args")) {
+        isConstRefArgs = true;
       } else if (arg.equals("-Xios-test")) {
         iostest = true;
       } else if (arg.equals("-external-annotation-file")) {
@@ -567,8 +570,9 @@ public class Options {
           args.next();
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
-      } else if (!useGC() && NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
+      } else if (NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
         // TODO(tball): document entry classes when build is updated to Bazel.
+        // TODO(zeedhoon): check useGC mode compatibility.
         entryClasses.add(arg);
       } else {
         sourceFiles.addSource(arg);
@@ -796,8 +800,8 @@ public class Options {
   }
 
   public static boolean useGC() {
-	    return memoryManagementOption == MemoryManagementOption.GC;
-	  }
+	return memoryManagementOption == MemoryManagementOption.GC;
+  }
   
   public MemoryManagementOption getMemoryManagementOption() {
     return memoryManagementOption;
@@ -1131,5 +1135,13 @@ public class Options {
 
   public List<String> getPlatformModuleSystemOptions() {
     return platformModuleSystemOptions;
+  }
+
+  public boolean enableConstRefArgs() {
+	/* 
+	 * ConstRefArgs enables more optimized reference counting.
+	 * see __attribute__((objc_externally_retained))
+	 */
+	return isConstRefArgs;
   }
 }

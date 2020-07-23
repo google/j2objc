@@ -1162,7 +1162,7 @@ public class TreeConverter {
     ExecutableElement executable = (ExecutableElement) getElement(path);
     TypeMirror vargarsType;
     TypeDeclaration anonymousClassDeclaration;
-    if (Options.useGC() && executable == null) {
+    if (executable == null && ARGC.hasExcludeRule()) {
     	JCTree.JCNewClass tree = (JCNewClass) node;
     	String s = tree.clazz.toString();
     	TypeElement type = TypeUtil.resolveUnreachableClass(s);

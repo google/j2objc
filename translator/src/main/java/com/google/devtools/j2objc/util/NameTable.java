@@ -237,13 +237,6 @@ public class NameTable {
    */
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
-    if (Options.useGC() && var.getKind() == ElementKind.FIELD) {
-    	/* ARGC **
-    	 * static 변수명과 inner class 이름이 서로 겹치는 문제를 해결하기 위하여
-    	 * 모든 변수와 상수에 '_'를 추가야 한다.
-    	 */
-        // return baseName + '_';
-    }
     if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
       return baseName + '_';
     }
@@ -327,7 +320,7 @@ public class NameTable {
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
       TypeElement elem = bounds.isEmpty()
           ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
-      if (Options.useGC() && elem == null) {
+      if (ARGC.hasExcludeRule() && elem == null) {
     	  elem = TypeUtil.NS_OBJECT;
       }
       assert elem != null;

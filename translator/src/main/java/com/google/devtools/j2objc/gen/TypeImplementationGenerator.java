@@ -324,13 +324,34 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
+  protected String getMutableParameters(FunctionDeclaration function) {
+	  StringBuilder sb = null;
+	  for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator(); iter.hasNext(); ) {
+		SingleVariableDeclaration var = iter.next();
+		if (var.isMutable()) {
+		  String paramType = nameTable.getObjCType(var.getVariableElement().asType());
+		  boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+		  if (isObject) {
+			if (sb == null) {
+			   sb = new StringBuilder();
+			}
+			String name = nameTable.getVariableShortName(var.getVariableElement());
+			sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
+			  .append(name).append("_0;").append('\n');
+		  }
+		}
+	  }
+	  return sb == null ? "" : sb.toString();
+ }
+ 
+  
   @Override
   protected void printFunctionDeclaration(FunctionDeclaration function) {
     newline();
     syncLineNumbers(function);  // avoid doc-comment
     if (Modifier.isNative(function.getModifiers())) {
       printJniFunctionAndWrapper(function);
-    } else if (options.useGC()) {
+    } else if (options.enableConstRefArgs()) {
       String functionBody = generateStatement(function.getBody());
       String sig = getFunctionSignature(function, false);
       String mutableParams = getMutableParameters(function);
@@ -422,7 +443,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 	    String superType = super.getSuperTypeName();
 	    sb.append(superType + "_initialize();\n");
 	    
-	    // super interfaces 초기화.
+	    // init super classes.
 	    for (TypeElement intrface : interfaces) {
 	    	if (intrface == JavacEnvironment.unreachbleError
 	    	||  intrface.getQualifiedName().toString().startsWith("com.google.j2objc.")) {

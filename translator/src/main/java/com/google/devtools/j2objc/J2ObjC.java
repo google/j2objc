@@ -48,6 +48,7 @@ import java.util.Set;
  */
 public class J2ObjC {
 
+  public static final Options options = new Options();	
   static {
     // Always enable assertions in translator.
     ClassLoader loader = J2ObjC.class.getClassLoader();
@@ -181,7 +182,7 @@ public class J2ObjC {
     long startTime = System.currentTimeMillis();
 
     List<InputFile> files = null;
-    Options options = new Options();
+    Options options = J2ObjC.options;
 
     try {
       files = options.load(args);

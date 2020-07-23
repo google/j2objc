@@ -403,9 +403,9 @@ public final class ElementUtil {
 	  }
   
   public boolean isWeakOuterType(TypeElement type) {
-	  if (Options.useGC()) {
-		  return false;
-	  }
+    if (Options.useGC()) {
+	  return false;
+    }
     if (type instanceof LambdaTypeElement) {
       return ((LambdaTypeElement) type).isWeakOuter();
     } else if (isAnonymous(type)) {

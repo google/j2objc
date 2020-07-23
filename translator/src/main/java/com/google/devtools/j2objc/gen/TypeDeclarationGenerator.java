@@ -443,14 +443,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       String fieldName = nameTable.getVariableShortName(var);
       String isVolatile = ElementUtil.isVolatile(var) ? "_VOLATILE" : "";
-      if (options.useGC() && isVolatile.length() == 0) {
-      	println(UnicodeUtils.format("J2OBJC_FIELD_SETTER(%s, %s, %s, %s)",
-                typeName, typeUtil.getArgcFieldTypeEx(typeElement, var.asType()),  fieldName, typeStr));
-      }
-      else {
-    	println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
-          isVolatile, typeName, fieldName, typeStr));
-      }
+      String refType = typeUtil.getArgcFieldTypeEx(typeElement, var.asType());
+      println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s, %s)",
+        isVolatile, typeName, refType, fieldName, typeStr));
     }
   }
 

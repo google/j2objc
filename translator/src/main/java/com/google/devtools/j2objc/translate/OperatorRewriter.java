@@ -115,18 +115,14 @@ private FunctionDeclaration argc_currentMethod;
 
   @Override // ARGC ++
   public boolean visit(FunctionDeclaration node) {
-		if (options.useGC()) {
-			  assert this.argc_currentMethod == null;
-			  this.argc_currentMethod = node;
-		}
-	  return true;
+	assert this.argc_currentMethod == null;
+	this.argc_currentMethod = node;
+	return true;
   }
 
   @Override // ARGC ++
   public void endVisit(FunctionDeclaration node) {
-	  if (options.useGC()) {
-	    this.argc_currentMethod = null;
-	  }
+	this.argc_currentMethod = null;
   }
   
   @Override
@@ -143,9 +139,7 @@ private FunctionDeclaration argc_currentMethod;
 
   @Override
   public void endVisit(MethodDeclaration node) {
-	if (options.useGC()) {
-	  this.argc_currentMethod = null;
-	}
+	this.argc_currentMethod = null;
     retainedLocalCandidateStack.clear();
     retainedLocalCandidates.clear();
     isSynchronizedMethod = false;
@@ -353,11 +347,10 @@ private FunctionDeclaration argc_currentMethod;
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
-    	if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
-    		//Name arg = (Name) node.getLeftHandSide();
-    		SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
-    		arg.markMutable();
-    	}
+	  if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+		SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+		arg.markMutable();
+	  }
       return;
     }
     TypeMirror type = node.getTypeMirror();
@@ -550,7 +543,7 @@ private FunctionDeclaration argc_currentMethod;
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
 
-    if (options.useGC()) {
+    if (options.enableConstRefArgs()) {
       VariableElement var = TreeUtil.getVariableElement(lhs);
 	    if (var != null && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
 		    SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);

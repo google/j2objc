@@ -282,21 +282,21 @@ FOUNDATION_EXPORT void IOSClass_init_class_(pthread_t* initToken, Class cls, voi
 
 
 #ifdef J2OBJC_USE_GC
-#define J2OBJC_FIELD_SETTER(CLASS, REF, FIELD, TYPE) \
+#define J2OBJC_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
 __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
- Jre##REF##FieldAssign(&instance->FIELD, value); \
+ Jre##REF_TYPE##FieldAssign(&instance->FIELD, value); \
 }\
 __attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
 CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
- Jre##REF##FieldAssignAndConsume(&instance->FIELD, value); \
+ Jre##REF_TYPE##FieldAssignAndConsume(&instance->FIELD, value); \
 }
 #elif __has_feature(objc_arc)
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+#define J2OBJC_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
   __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
      instance->FIELD = value; \
   }
 #else
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+#define J2OBJC_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
 __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
  JreStrongAssign(&instance->FIELD, value); \
 }\
@@ -306,7 +306,7 @@ CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
 }
 #endif
 
-#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
+#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
   __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
      JreVolatileStrongAssign(&instance->FIELD, value); \
   }
