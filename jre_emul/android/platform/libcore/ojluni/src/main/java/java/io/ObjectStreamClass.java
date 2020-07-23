@@ -1892,6 +1892,8 @@ public class ObjectStreamClass implements Serializable {
             for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
                 hash = (hash << 8) | (hashBytes[i] & 0xFF);
             }
+            /* J2ObjC Removed with removal of inheritStaticInitializer section
+
             // BEGIN Android-added: Fix/log clinit serialization workaround. b/29064453
             // ObjectStreamClass instances are cached per Class and caches its default
             // serialVersionUID so it will only log one message per class per app process
@@ -1900,6 +1902,7 @@ public class ObjectStreamClass implements Serializable {
                 suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
             }
             // END Android-added: Fix/log clinit serialization workaround. b/29064453
+             */
             return hash;
         } catch (IOException ex) {
             throw new InternalError(ex);
