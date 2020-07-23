@@ -25,15 +25,14 @@
 
 package sun.reflect;
 
+import dalvik.system.VMStack;
 import java.lang.reflect.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import dalvik.system.VMStack;
-
 /** Common utility routines used by both java.lang and
- java.lang.reflect */
+    java.lang.reflect */
 
 public class Reflection {
 
@@ -44,9 +43,7 @@ public class Reflection {
      *      and its implementation
      * @throws ClassNotFoundException
      */
-    public static Class<?> getCallerClass() throws ClassNotFoundException {
-        // This method (getCallerClass()) constitutes another stack frame,
-        // so we need to call getStackClass2() rather than getStackClass1().
+    public static Class<?> getCallerClass() {
         return VMStack.getStackClass2();
     }
 
@@ -54,7 +51,7 @@ public class Reflection {
                                           Class<?> memberClass,
                                           Object target,
                                           int modifiers)
-            throws IllegalAccessException
+        throws IllegalAccessException
     {
         if (currentClass == null || memberClass == null) {
             throw new InternalError();
@@ -62,11 +59,11 @@ public class Reflection {
 
         if (!verifyMemberAccess(currentClass, memberClass, target, modifiers)) {
             throw new IllegalAccessException("Class " + currentClass.getName() +
-                    " can not access a member of class " +
-                    memberClass.getName() +
-                    " with modifiers \"" +
-                    Modifier.toString(modifiers) +
-                    "\"");
+                                             " can not access a member of class " +
+                                             memberClass.getName() +
+                                             " with modifiers \"" +
+                                             Modifier.toString(modifiers) +
+                                             "\"");
         }
     }
 
@@ -93,7 +90,7 @@ public class Reflection {
         /* ----- BEGIN j2objc -----
         if (!Modifier.isPublic(getClassAccessFlags(memberClass))) {*/
         if (!Modifier.isPublic(memberClass.getModifiers())) {
-            // ----- END android -----
+        // ----- END android -----
             isSameClassPackage = isSameClassPackage(currentClass, memberClass);
             gotIsSameClassPackage = true;
             if (!isSameClassPackage) {
@@ -119,7 +116,7 @@ public class Reflection {
         if (!successSoFar && !Modifier.isPrivate(modifiers)) {
             if (!gotIsSameClassPackage) {
                 isSameClassPackage = isSameClassPackage(currentClass,
-                        memberClass);
+                                                        memberClass);
                 gotIsSameClassPackage = true;
             }
 
@@ -153,11 +150,11 @@ public class Reflection {
 
     private static boolean isSameClassPackage(Class<?> c1, Class<?> c2) {
         return isSameClassPackage(c1.getClassLoader(), c1.getName(),
-                c2.getClassLoader(), c2.getName());
+                                  c2.getClassLoader(), c2.getName());
     }
 
     /** Returns true if two classes are in the same package; classloader
-     and classname information is enough to determine a class's package */
+        and classname information is enough to determine a class's package */
     private static boolean isSameClassPackage(ClassLoader loader1, String name1,
                                               ClassLoader loader2, String name2)
     {

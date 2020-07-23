@@ -44,6 +44,7 @@ public final class VMStack {
    * Note that that can return {@link BootClassLoader} on Android where the RI
    * would have returned null.
    */
+  @Deprecated
   public static ClassLoader getCallingClassLoader() {
     return null;
   }
@@ -55,8 +56,14 @@ public final class VMStack {
    * @deprecated Use {@link sun.reflect.Reflection#getCallerClass()}.
    */
   @Deprecated
-  public static Class<?> getStackClass1() throws ClassNotFoundException {
-    return getStackClass2();
+  public static Class<?> getStackClass1() {
+    try {
+      // j2objc implementation.
+      StackTraceElement[] stack = new Throwable().getStackTrace();
+      return Class.forName(stack[2].getClassName());
+    } catch (ClassNotFoundException e) {
+      return null;
+    }
   }
 
   /**
@@ -67,14 +74,13 @@ public final class VMStack {
    * @return the requested class, or {@code null}.
    */
   @UnsupportedAppUsage
-  public static Class<?> getStackClass2() throws ClassNotFoundException {
-    // This method (getCallerClass()) constitutes another stack frame,
-    // so we need to get stack class 2 rather than get stack class 1.
+  public static Class<?> getStackClass2() {
     try {
+      // j2objc implementation, duplicated from above to avoid adding a stack frame.
       StackTraceElement[] stack = new Throwable().getStackTrace();
-      return Class.forName(stack[2].getClassName());
+      return Class.forName(stack[3].getClassName());
     } catch (ClassNotFoundException e) {
-      throw e;
+      return null;
     }
   }
 
