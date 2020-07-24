@@ -28,6 +28,9 @@ package sun.net.spi.nameservice;
 import java.net.UnknownHostException;
 
 public interface NameService {
+    // Android-changed: Support for network (netId)-specific DNS resolution.
+    // For use by frameworks/base's android.net.Network.
+    // public java.net.InetAddress[] lookupAllHostAddr(String host) throws UnknownHostException;
     public java.net.InetAddress[] lookupAllHostAddr(String host, int netId) throws UnknownHostException;
     public String getHostByAddr(byte[] addr) throws UnknownHostException;
 }
