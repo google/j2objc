@@ -1,6 +1,6 @@
 #include "com/google/j2objc/NotImportedError.h"
 
-@implementation OrgSlowcodersJ2objcNotImportedError
+@implementation ComGoogleJ2objcNotImportedError
 - (instancetype)initWithNSObjectArray:(IOSObjectArray *)objects {
     [NSException raise:@"NSException" format:@"Unreachabe access error"];
     return nil;
@@ -18,13 +18,13 @@
 
 @end
 
-id new_OrgSlowcodersJ2objcNotImportedError_initWithNSObjectArray_(IOSObjectArray * objects) J2OBJC_METHOD_ATTR NS_RETURNS_RETAINED
+id new_ComGoogleJ2objcNotImportedError_initWithNSObjectArray_(IOSObjectArray * objects) J2OBJC_METHOD_ATTR NS_RETURNS_RETAINED
 {
     [NSException raise:@"NSException" format:@"Unreachabe access error"];
     return nil;
 }
 
-id OrgSlowcodersJ2objcNotImportedError_throwUnreachableObjectErrorWithNSObjectArray_(IOSObjectArray * objects) {
+id ComGoogleJ2objcNotImportedError_throwUnreachableObjectErrorWithNSObjectArray_(IOSObjectArray * objects) {
     [NSException raise:@"NSException" format:@"Unreachabe access error"];
     return nil;
 }

@@ -89,7 +89,7 @@ public class SourceStore {
 			}
 		}
 		else {
-			if (filename.charAt(0) == '@') {
+			if (filename.charAt(0) == '!') {
 				File lstf = new File(filename.substring(1));
 				ArrayList<String> files = SourceStore.readPathList(lstf);
 				if (files != null) {

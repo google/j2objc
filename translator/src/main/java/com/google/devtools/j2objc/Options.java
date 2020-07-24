@@ -709,7 +709,7 @@ public class Options {
         entry = System.getProperty("user.home") + entry.substring(1);
       }
             
-      if (entry.charAt(0) == '@') {
+      if (entry.charAt(0) == '!') {
         File f = new File(entry.substring(1));
         ArrayList<String> list = SourceStore.readPathList(f);
         if (list != null) {
