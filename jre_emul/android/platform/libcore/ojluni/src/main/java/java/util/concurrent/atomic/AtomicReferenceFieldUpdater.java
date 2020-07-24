@@ -102,8 +102,11 @@ public abstract class AtomicReferenceFieldUpdater<T,V> {
     public static <U,W> AtomicReferenceFieldUpdater<U,W> newUpdater(Class<U> tclass,
                                                                     Class<W> vclass,
                                                                     String fieldName) {
+        return new AtomicReferenceFieldUpdaterImpl<U,W>(tclass, vclass, fieldName, null);
+        /* J2ObjC: Call stack not available.
         return new AtomicReferenceFieldUpdaterImpl<U,W>
             (tclass, vclass, fieldName, Reflection.getCallerClass());
+        */
     }
 
     /**
