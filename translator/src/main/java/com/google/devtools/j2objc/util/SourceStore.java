@@ -111,6 +111,7 @@ public class SourceStore {
 			try {
 				InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
 				if (inp != null) {
+				  registerInputFile(inp);
 					String absPath = inp.getAbsolutePath();
 					root = absPath.substring(0, absPath.length() - filename.length());
 					addRootPath(new File(root));

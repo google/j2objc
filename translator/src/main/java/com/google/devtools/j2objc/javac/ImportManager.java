@@ -41,6 +41,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
 
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 
 //import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -68,12 +69,15 @@ public class ImportManager {
 	private static HashMap<String, CompilationUnit> units = new HashMap<>();
 
 	public static void addNotImportRule(String classpath) {
-		if (classpath.charAt(0) != '@') {
+		if (classpath.charAt(0) != '!') {
 			if ('.' == classpath.charAt(classpath.length() - 1)) {
 				notImportPackages.add(classpath);
 			}
 			else {
 				notImportClasses.add(classpath);
+			}
+			if (J2ObjC.options.isVerbose()) {
+			  System.out.println("* not import : " + classpath);
 			}
 		}
 		else {
