@@ -1427,12 +1427,15 @@ public class ObjectStreamClass implements Serializable {
             {
                 return null;
             }
+            /* Android change not supported in J2ObjC
+
             // BEGIN Android-changed: Serialization constructor obtained differently.
             // cons = reflFactory.newConstructorForSerialization(cl, cons);
             if (cons.getDeclaringClass() != cl) {
                 cons = cons.serializationCopy(cons.getDeclaringClass(), cl);
             }
             // END Android-changed: Serialization constructor obtained differently.
+             */
             cons.setAccessible(true);
             return cons;
         } catch (NoSuchMethodException ex) {
