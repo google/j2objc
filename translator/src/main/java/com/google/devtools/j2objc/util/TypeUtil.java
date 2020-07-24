@@ -108,20 +108,20 @@ public final class TypeUtil {
   public static NoType javaVoid;
 
   // Commonly accessed types.
-  /*ARGC** private*/public static TypeElement javaObject;
-  /*ARGC** private*/public final TypeElement javaString;
-  /*ARGC** private*/public final TypeElement javaClass;
-  /*ARGC** private*/public final TypeElement javaNumber;
-  /*ARGC** private*/public final TypeElement javaThrowable;
+  public final TypeElement javaObject;
+  public final TypeElement javaString;
+  public final TypeElement javaClass;
+  public final TypeElement javaNumber;
+  public final TypeElement javaThrowable;
 
   private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
 
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
-    this.javacElements = env.elementUtilities();
-    this.javacTypes = env.typeUtilities();
-    this.elementUtil = elementUtil;
+    TypeUtil.javacElements = env.elementUtilities();
+    TypeUtil.javacTypes = env.typeUtilities();
+    TypeUtil.elementUtil = elementUtil;
 
     javaObject = javacElements.getTypeElement("java.lang.Object");
     javaString = javacElements.getTypeElement("java.lang.String");
