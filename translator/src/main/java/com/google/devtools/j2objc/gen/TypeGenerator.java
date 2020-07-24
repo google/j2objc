@@ -370,7 +370,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       }
     }
     sb.append(")");
-     // ARGC ++
     if (hasObjectParam && J2ObjC.options.enableConstRefArgs()) {
     	/**
     	 * clang compiler has a crash bug when __attribute__((objc_externally_retained)) is specified on 

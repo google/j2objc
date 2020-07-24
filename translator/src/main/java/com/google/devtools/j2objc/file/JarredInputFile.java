@@ -61,14 +61,11 @@ private JarFile jarFile;
 
   @Override
   public boolean exists() {
-    // ARGC-- try (JarFile jarFile = new JarFile(jarPath)) {
-    	return jarFile.getEntry(internalPath) != null;
-    	// ARGC--}
+    return jarFile.getEntry(internalPath) != null;
   }
 
   @Override
   public InputStream getInputStream() throws IOException {
-	// ARGC-- final JarFile jarFile = new JarFile(jarPath);
     ZipEntry entry = jarFile.getEntry(internalPath);
     final InputStream entryStream = jarFile.getInputStream(entry);
     return new InputStream() {
@@ -91,7 +88,6 @@ private JarFile jarFile;
       @Override
       public void close() throws IOException {
         entryStream.close();
-        // ARGC--jarFile.close();
       }
     };
   }

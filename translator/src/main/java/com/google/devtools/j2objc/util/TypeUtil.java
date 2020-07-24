@@ -1053,7 +1053,7 @@ public final class TypeUtil {
 			  simpleName = simpleName.substring(0, p);
 		  }
 
-		  // Inner-class 처리.
+		  // Inner-class checking.
 		  p = simpleName.indexOf('.');
 		  if (p > 0) {
 			  if (ARGC.isExcludedClass(simpleName)) {

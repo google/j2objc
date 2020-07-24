@@ -14,19 +14,16 @@
 
 package com.google.devtools.j2objc.pipeline;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
-import com.google.devtools.j2objc.ast.Annotation;
-import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Parser;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * Preprocesses each Java file in the batch.

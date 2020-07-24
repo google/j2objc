@@ -120,10 +120,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println("NS_ASSUME_NONNULL_BEGIN");
     }
     if (super.isInterfaceType()) {
-    	boolean argc_patch = true;
-    	if (argc_patch) {
-    		printf("@class IOSClass;\n\n");
-    	}
+    	printf("@class IOSClass;\n\n");
       printf("@protocol %s", typeName);
     } else {
       printf("@interface %s : %s", typeName, getSuperTypeName());
@@ -194,14 +191,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println(DEPRECATED_ATTRIBUTE);
     }
   }
-
-//  protected String getSuperTypeName() {
-//    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
-//    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
-//      return nameTable.getFullName(supertype);
-//    }
-//    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
-//  }
 
   protected List<String> getInterfaceNames() {
     if (ElementUtil.isAnnotationType(typeElement)) {
@@ -315,20 +304,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         
       	String objcType = ElementUtil.getObjectiveCType(varElement);
       	if (objcType == null) {
-            objcType = getDeclarationType(varElement);
-            if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
-            	if (ElementUtil.isWeakReference(varElement)) {
-            		print("ARGC_WEAK_REF ");
-            	}
-            	else {
-            		print("ARGC_FIELD_REF ");
-            	}
-            }
-            else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
-              // We must add this even without -use-arc because the header may be
-              // included by a file compiled with ARC.
-              print("__unsafe_unretained ");
-            }
+      	  objcType = getDeclarationType(varElement);
+      	  if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+      	    if (ElementUtil.isWeakReference(varElement)) {
+      	      print("ARGC_WEAK_REF ");
+      	    }
+      	    else {
+      	      print("ARGC_FIELD_REF ");
+      	    }
+      	  }
+      	  else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
+      	    // We must add this even without -use-arc because the header may be
+      	    // included by a file compiled with ARC.
+      	    print("__unsafe_unretained ");
+      	  }
       	}
         
         needsAsterisk = objcType.endsWith("*");
@@ -377,7 +366,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : %s", typeName, /*ARGC*/getSuperTypeName());
+    printf("\n@interface %s : %s", typeName, getSuperTypeName());
     if (ElementUtil.isGeneratedAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);

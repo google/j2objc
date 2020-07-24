@@ -204,14 +204,14 @@ public class FileUtil {
   private static InputFile findFileOnPaths(
       String sourceFileName, List<String> paths) throws IOException {
     // Zip/jar files always use forward slashes.
-  	if (ARGC.isExcludedClass(sourceFileName)) {
-		return null;
-	}
-	  
-  	InputFile inf = InputFile.getInputFile(sourceFileName);
-  	if (inf != null) {
-  		return inf;
-  	}
+    if (ARGC.isExcludedClass(sourceFileName)) {
+      return null;
+    }
+
+    InputFile inf = InputFile.getInputFile(sourceFileName);
+    if (inf != null) {
+      return inf;
+    }
     String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
     for (String pathEntry : paths) {
       File f = new File(pathEntry);

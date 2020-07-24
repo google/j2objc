@@ -17,8 +17,6 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
@@ -42,7 +40,7 @@ public class Import implements Comparable<Import> {
   private final String javaQualifiedName;
   private final boolean isPureInterface;
 
-  private Import(TypeElement type, NameTable nameTable, /*ARGC** Options options*/TranslationEnvironment env) {
+  private Import(TypeElement type, NameTable nameTable, TranslationEnvironment env) {
   //*/
     this.typeName = nameTable.getFullName(type);
     TypeElement mainType = type;
@@ -119,7 +117,7 @@ public class Import implements Comparable<Import> {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
     for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
-      Import newImport = new Import(objcClass, env.nameTable(), env/*ARGC*/);
+      Import newImport = new Import(objcClass, env.nameTable(), env);
       // An empty header indicates a Foundation type that doesn't require an import or forward
       // declaration.
       if (!newImport.getImportFileName().isEmpty()) {

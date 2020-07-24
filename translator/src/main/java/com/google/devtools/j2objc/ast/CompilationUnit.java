@@ -235,11 +235,11 @@ public class CompilationUnit extends TreeNode {
   }
   
   public HashMap<String, String> resolveUnreachableImportedClasses(CompilationUnitTree unit) {
-	  HashMap<String, String> map = new HashMap<>();
-	  for (ImportTree tree : unit.getImports()) {
-		  String fullname = tree.getQualifiedIdentifier().toString();
-		  if (ARGC.isExcludedClass(fullname)) {
-			  String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
+	HashMap<String, String> map = new HashMap<>();
+	for (ImportTree tree : unit.getImports()) {
+	  String fullname = tree.getQualifiedIdentifier().toString();
+      if (ARGC.isExcludedClass(fullname)) {
+	    String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
 			  map.put(simpleName, fullname);
 		  }
 	  }

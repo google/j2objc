@@ -93,7 +93,7 @@ public class Options {
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
   private String annotationsJar = null;
-  private /*ARGC++*/List<String> bootcps;
+  private List<String> bootcps;
   private CombinedOutput globalCombinedOutput = null;
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
@@ -108,7 +108,7 @@ public class Options {
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
   private final List<String> entryClasses = new ArrayList<>();
 
-  private /*ARGC++*/String argc_debugSource; 
+  private /*ARGC**++*/String argc_debugSource; 
   private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
@@ -147,7 +147,7 @@ public class Options {
   /**
    * Types of memory management to be used by translated code.
    */
-  public /*ARGC++*/static enum MemoryManagementOption { REFERENCE_COUNTING, ARC, GC }
+  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC, GC }
 
   /**
    * What languages can be generated.
@@ -388,7 +388,7 @@ public class Options {
         ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
-      } else if (arg.equals("-use-gc")) { /*ARGC++*/
+      } else if (arg.equals("-use-gc")) {
           checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
     	  /* ARGC**
@@ -539,12 +539,12 @@ public class Options {
         NameTable.addReservedNames(getArgValue(args, arg));
       } else if (arg.equals("-version")) {
         version();
-      } else if (arg.equals("-debugSource")) { /*ARGC++*/
+      } else if (arg.equals("-debugSource")) { /*ARGC*++*/
         // Handle aliasing of version numbers as supported by javac.
         argc_debugSource = args.next().replace('\\', '/');
-		if (!argc_debugSource.endsWith(".java")) {
-			argc_debugSource += ".java";
-		}
+        if (!argc_debugSource.endsWith(".java")) {
+          argc_debugSource += ".java";
+        }
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -566,8 +566,9 @@ public class Options {
         // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
         // also ignore
-      } else if (arg.startsWith("-!")) {  /*ARGC++*/
-          args.next();
+      } else if (arg.startsWith("-!")) {
+        // ignore
+        args.next();
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else if (NameTable.isValidClassName(arg) && !hasKnownFileSuffix(arg)) {
@@ -1114,10 +1115,10 @@ public class Options {
   @VisibleForTesting
   public void setTranslateClassfiles(boolean b) {
     translateClassfiles = b;
-    }
+  }
     
-   public String getDebugSourceFile() {  /*ARGC++*/
-	return argc_debugSource;
+  public String getDebugSourceFile() {  
+	  return argc_debugSource;
   }
 
   public List<String> entryClasses() {

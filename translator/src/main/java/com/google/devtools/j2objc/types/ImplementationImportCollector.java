@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
@@ -190,11 +189,10 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-	  if (node.getExecutableType() == null) {
-		  ARGC.trap();
-		  addImports(JavacEnvironment.unreachbleError.asType());
-		  return true;
-	  }
+    if (node.getExecutableType() == null) {
+	  addImports(JavacEnvironment.unreachbleError.asType());
+	  return true;
+    }
     addImports(node.getExecutableType().getReturnType());
     Expression receiver = node.getExpression();
     if (receiver != null) {

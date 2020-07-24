@@ -149,46 +149,38 @@ public class JavacParser extends Parser {
   }
   
   private CompilationUnit parseDecompiledClass(JavacEnvironment parserEnv, InputFile file) throws IOException { /*ARGC ++*/
-      String fullPath = file.getAbsolutePath();
-      // { ARGC ++
-      int pos = fullPath.lastIndexOf(file.getUnitName());
-      if (pos < 0) pos = fullPath.length();
-      // }
-      String rootPath = fullPath.substring(0, pos);
-//      List<File> classPath = new ArrayList<>();
-//      classPath.add(new File(rootPath));
-//      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
-      
-      String path = file.getUnitName().substring(0, file.getUnitName().length() - 6);
-      ITypeLoader loader;
-      loader = new JarTypeLoader(new JarFile(rootPath));
-	      //loader = new InputTypeLoader();
-	    TypeReference typeRef = lookupType(path, loader);
-	  
-        TypeDefinition resolvedType = null;
-        if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
-            throw new RuntimeException("Unable to resolve type.");
-        }
-			DecompilerSettings settings = DecompilerSettings.javaDefaults();
-		    settings.setShowSyntheticMembers(true);
-          StringWriter stringwriter = new StringWriter();
-          DecompilationOptions decompilationOptions;
-          decompilationOptions = new DecompilationOptions();
-          decompilationOptions.setSettings(settings);
-          decompilationOptions.setFullDecompilation(true);
-          PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
-          plainTextOutput.setUnicodeOutputEnabled(
-                  decompilationOptions.getSettings().isUnicodeOutputEnabled());
-          settings.getLanguage().decompileType(resolvedType, plainTextOutput,
-                  decompilationOptions);
-          String decompiledSource = stringwriter.toString();
-          System.out.println(decompiledSource);
-//          if (decompiledSource.contains(textField.getText().toLowerCase())) {
-//              addClassName(entry.getName());
-//          }
-          return parse(null, file.getUnitName(), decompiledSource);
-		  
-	  
+    String fullPath = file.getAbsolutePath();
+    int pos = fullPath.lastIndexOf(file.getUnitName());
+    if (pos < 0) pos = fullPath.length();
+    String rootPath = fullPath.substring(0, pos);
+
+    String path = file.getUnitName().substring(0, file.getUnitName().length() - 6);
+    ITypeLoader loader;
+    loader = new JarTypeLoader(new JarFile(rootPath));
+    //loader = new InputTypeLoader();
+    TypeReference typeRef = lookupType(path, loader);
+
+    TypeDefinition resolvedType = null;
+    if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
+      throw new RuntimeException("Unable to resolve type.");
+    }
+    DecompilerSettings settings = DecompilerSettings.javaDefaults();
+    settings.setShowSyntheticMembers(true);
+    StringWriter stringwriter = new StringWriter();
+    DecompilationOptions decompilationOptions;
+    decompilationOptions = new DecompilationOptions();
+    decompilationOptions.setSettings(settings);
+    decompilationOptions.setFullDecompilation(true);
+    PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
+    plainTextOutput.setUnicodeOutputEnabled(
+        decompilationOptions.getSettings().isUnicodeOutputEnabled());
+    settings.getLanguage().decompileType(resolvedType, plainTextOutput,
+        decompilationOptions);
+    String decompiledSource = stringwriter.toString();
+    System.out.println(decompiledSource);
+    return parse(null, file.getUnitName(), decompiledSource);
+
+
   }
 
   @Override
@@ -286,26 +278,26 @@ public class JavacParser extends Parser {
               .convertCompilationUnit(options, env, ast);
 
           if (unit != null) {
-        	  ARGC.registerUnit(unit);
-        	  compileUnits.add(unit);
+            ARGC.registerUnit(unit);
+            compileUnits.add(unit);
           }
         }
-		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
-			ARGC.preprocessUnit(unit);
-		}
-		for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
-			TypeUtil.setUnreachableClasses(unit);
-			TypeUtil.setIgnoreAllUnreachableTypeError(false);
-        	handler.handleParsedUnit(unit.getSourceFilePath(), unit);
-        	if (!unit.getUnreachableImportedClasses().isEmpty()) {
-        		ErrorUtil.addSkip(unit.getSourceFilePath());
-        	}
+        for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
+          ARGC.preprocessUnit(unit);
+        }
+        for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
+          TypeUtil.setUnreachableClasses(unit);
+          TypeUtil.setIgnoreAllUnreachableTypeError(false);
+          handler.handleParsedUnit(unit.getSourceFilePath(), unit);
+          if (!unit.getUnreachableImportedClasses().isEmpty()) {
+            ErrorUtil.addSkip(unit.getSourceFilePath());
+          }
         }
       }
       processDiagnostics(paths, env.diagnostics());
-      
+
     } catch (Exception e) {
-    	ErrorUtil.warning(e, "javac file manager error");
+      ErrorUtil.warning(e, "javac file manager error");
     }
   }
 

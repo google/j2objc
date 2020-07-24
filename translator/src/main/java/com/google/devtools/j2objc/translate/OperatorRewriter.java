@@ -113,16 +113,16 @@ private FunctionDeclaration argc_currentMethod;
     }
   }
 
-  @Override // ARGC ++
+  @Override 
   public boolean visit(FunctionDeclaration node) {
-	assert this.argc_currentMethod == null;
-	this.argc_currentMethod = node;
-	return true;
+    assert this.argc_currentMethod == null;
+    this.argc_currentMethod = node;
+    return true;
   }
 
-  @Override // ARGC ++
+  @Override 
   public void endVisit(FunctionDeclaration node) {
-	this.argc_currentMethod = null;
+    this.argc_currentMethod = null;
   }
   
   @Override
@@ -310,9 +310,9 @@ private FunctionDeclaration argc_currentMethod;
     return null;
   }
 
-  private boolean /*ARGC*/isStaticVar(VariableElement var) {
-	return ElementUtil.isStatic(var);
-}
+  private boolean isStaticVar(VariableElement var) {
+    return ElementUtil.isStatic(var);
+  }
 
 // Counter to create unique local variables for the RetainedWith target.
   private int rwCount = 0;
@@ -347,10 +347,10 @@ private FunctionDeclaration argc_currentMethod;
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
-	  if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
-		SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
-		arg.markMutable();
-	  }
+      if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+        SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+        arg.markMutable();
+      }
       return;
     }
     TypeMirror type = node.getTypeMirror();

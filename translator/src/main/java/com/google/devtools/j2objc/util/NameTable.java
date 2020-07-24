@@ -609,11 +609,11 @@ public class NameTable {
   }
 
   private String constructObjcTypeFromBounds(TypeMirror type) {
-	if (type.getKind() == TypeKind.ERROR) {
-	   TypeUtil.resolveUnreachableClass(type);
-	   return "/*" + type + "*/ id";
-	}
-    /* ARGC** String*/TypeElement classType = null;
+    if (type.getKind() == TypeKind.ERROR) {
+      TypeUtil.resolveUnreachableClass(type);
+      return "/*" + type + "*/ id";
+    }
+    TypeElement classType = null;
     List<String> interfaces = new ArrayList<>();
     for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
       if (TypeUtil.isPureInterface(bound)) {

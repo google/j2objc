@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
-import com.google.j2objc.annotations.ObjectiveCType;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
@@ -36,7 +35,6 @@ import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.AnnotatedConstruct;
@@ -312,9 +310,6 @@ public final class ElementUtil {
   }
 
   public static boolean isPackageInfo(TypeElement type) {
-	  if (type == null || type.getSimpleName() == null) {
-		  ARGC.trap();
-	  }
     return type.getSimpleName().toString().equals(NameTable.PACKAGE_INFO_CLASS_NAME);
   }
 
@@ -392,19 +387,18 @@ public final class ElementUtil {
         || (var instanceof GeneratedVariableElement && ((GeneratedVariableElement) var).isWeak());
   }
 
-  // ARGC ++
   public static String getObjectiveCType(Element var) {
-	    for (AnnotationMirror annotation : getAllAnnotations(var)) {
-	        if (getName(annotation.getAnnotationType().asElement()).equals("ObjectiveCType")) {
-	            return (String) ElementUtil.getAnnotationValue(annotation, "value");
-	        }
-	      }
-	    return null;
-	  }
-  
+    for (AnnotationMirror annotation : getAllAnnotations(var)) {
+      if (getName(annotation.getAnnotationType().asElement()).equals("ObjectiveCType")) {
+        return (String) ElementUtil.getAnnotationValue(annotation, "value");
+      }
+    }
+    return null;
+  }
+
   public boolean isWeakOuterType(TypeElement type) {
     if (Options.useGC()) {
-	  return false;
+      return false;
     }
     if (type instanceof LambdaTypeElement) {
       return ((LambdaTypeElement) type).isWeakOuter();
@@ -457,9 +451,8 @@ public final class ElementUtil {
   public static <T extends Element> Iterable<T> filterEnclosedElements(
       Element elem, Class<T> resultClass, ElementKind... kinds) {
     List<ElementKind> kindsList = Arrays.asList(kinds);
-    if (elem == null) {
+    if (elem == null && ARGC.hasExcludeRule()) {
     	elem = JavacEnvironment.unreachbleError;
-    	ARGC.trap();
     }
     return Iterables.transform(Iterables.filter(
         elem.getEnclosedElements(), e -> kindsList.contains(e.getKind())), resultClass::cast);
@@ -656,9 +649,6 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
-//	  if (mirror == null && ARGC.hasExcludeRule(false)) {
-//		  return false;
-//	  }
     return isRuntimeAnnotation(mirror.getAnnotationType().asElement());
   }
 

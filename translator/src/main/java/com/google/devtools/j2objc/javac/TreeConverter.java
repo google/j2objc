@@ -1055,20 +1055,20 @@ public class TreeConverter {
     }
 
     if (ARGC.hasExcludeRule() && (element == null || type == null))  {
-        MethodInvocation newNode = new MethodInvocation();
-        if (type != null && type.getKind().isPrimitive()) {
-        	newNode
-            .setExecutablePair(new ExecutablePair(env.throwUnreachablePrimitiveError))
-            .setVarargsType(env.javaLangObject.asType())
-            .setTypeMirror(type);//.notImportedException.asType());
-        }
-        else {
-        	newNode
-            .setExecutablePair(new ExecutablePair(env.throwUnreachableObjectError))
-            .setVarargsType(env.javaLangObject.asType())
-            .setTypeMirror(type != null ? type : env.javaLangObject.asType());//.notImportedException.asType());
-        }
-        return newNode;//_throw;
+      MethodInvocation newNode = new MethodInvocation();
+      if (type != null && type.getKind().isPrimitive()) {
+        newNode
+        .setExecutablePair(new ExecutablePair(env.throwUnreachablePrimitiveError))
+        .setVarargsType(env.javaLangObject.asType())
+        .setTypeMirror(type);//.notImportedException.asType());
+      }
+      else {
+        newNode
+        .setExecutablePair(new ExecutablePair(env.throwUnreachableObjectError))
+        .setVarargsType(env.javaLangObject.asType())
+        .setTypeMirror(type != null ? type : env.javaLangObject.asType());//.notImportedException.asType());
+      }
+      return newNode;//_throw;
     }
 
     ExpressionTree target =
@@ -1375,9 +1375,6 @@ public class TreeConverter {
   private TreeNode convertVariableDeclaration(VariableTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     VariableElement element = (VariableElement) getElement(path);
-    if (element == null) {
-    	ARGC.trap();
-    }
     if (element.getKind() == ElementKind.FIELD) {
       FieldDeclaration newNode =
           new FieldDeclaration(element, (Expression) convert(node.getInitializer(), path));
@@ -1578,30 +1575,26 @@ public class TreeConverter {
   }
 
   private TypeMirror getTypeMirror(TreePath path) {
-	    TypeMirror type = trees.getTypeMirror(path);
-	    if (type == null) {
-	    	Tree leaf = path.getLeaf();
-	    	if (leaf instanceof JCTree.JCIdent) {
-	    		String id = leaf.toString();
-	    		if (id.equals("super")/* || id.equals("this")*/) {
-	    			JCIdent ident = (JCTree.JCIdent)leaf;
-	    			if (ident.sym != null) {
-	    				type = ident.sym.type;
-	    			}
-	    		}
-	    	}
-	    	if (type == null) {
-		    	return null;
-	    	}
-	    }
-		  if (type.toString().endsWith("HCardElement")) {
-			  ARGC.trap();
-		  }
-	    
-	    if (type.getKind() == TypeKind.ERROR) {
-	    	type = TypeUtil.resolveUnreachableClass(type).asType();
-	    }
-	    return type;
+    TypeMirror type = trees.getTypeMirror(path);
+    if (type == null) {
+      Tree leaf = path.getLeaf();
+      if (leaf instanceof JCTree.JCIdent) {
+    	String id = leaf.toString();
+    	if (id.equals("super")/* || id.equals("this")*/) {
+    	  JCIdent ident = (JCTree.JCIdent)leaf;
+    	  if (ident.sym != null) {
+    		  type = ident.sym.type;
+    	  }
+    	}
+      }
+      if (type == null) {
+    	return null;
+      }
+    }
+    if (type.getKind() == TypeKind.ERROR) {
+      type = TypeUtil.resolveUnreachableClass(type).asType();
+    }
+    return type;
   }
 
   

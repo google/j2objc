@@ -119,10 +119,8 @@ public class ClassFileConverter {
    */
   private void setClassPath() throws IOException {
     String fullPath = file.getAbsolutePath();
-    // { ARGC ++
     int pos = fullPath.lastIndexOf(classFile.getRelativePath());
     if (pos < 0) pos = fullPath.length();
-    // }
     String rootPath = fullPath.substring(0, pos);
     List<File> classPath = new ArrayList<>();
     classPath.add(new File(rootPath));

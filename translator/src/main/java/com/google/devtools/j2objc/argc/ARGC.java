@@ -296,9 +296,6 @@ public class ARGC {
 	}
 	
 	public static void registerUnit(CompilationUnit unit) {
-		if (unit.getSourceFilePath().endsWith("DateOrTimePropertyScribe.java")) {
-			ARGC.trap();
-		}
 		for (AbstractTypeDeclaration _t : unit.getTypes()) {
 			TypeElement type = _t.getTypeElement();
 			String name = type.getQualifiedName().toString();

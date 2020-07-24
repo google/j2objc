@@ -35,7 +35,7 @@ public class FunctionDeclaration extends BodyDeclaration {
       ChildList.create(SingleVariableDeclaration.class, this);
   private final ChildLink<Block> body = ChildLink.create(Block.class, this);
   private String jniSignature = null;
-private String objCReturnType;
+  private String objCReturnType;
 
   public FunctionDeclaration(FunctionDeclaration other) {
     super(other);
@@ -103,11 +103,11 @@ private String objCReturnType;
   }
   
   public String getObjCReturnType(NameTable nameTable) {
-	  String returnType = objCReturnType;
-	  if (returnType == null) {
-	  		returnType = nameTable.getObjCType(this.getReturnType().getTypeMirror());
-	  }
-	  return returnType;
+	String returnType = objCReturnType;
+	if (returnType == null) {
+	  returnType = nameTable.getObjCType(this.getReturnType().getTypeMirror());
+	}
+	return returnType;
   }
   
 
@@ -133,13 +133,12 @@ private String objCReturnType;
     return this;
   }
 
-  // ARGC ++
-	  public SingleVariableDeclaration getParameter(VariableElement name) {
-		  for (SingleVariableDeclaration arg : parameters) {
-			  if (arg.getVariableElement() == name) {
-				  return arg;
-			  }
-		  }
-		  return null;
+  public SingleVariableDeclaration getParameter(VariableElement name) {
+	for (SingleVariableDeclaration arg : parameters) {
+	  if (arg.getVariableElement() == name) {
+	    return arg;
 	  }
+	}
+	return null;
+  }
 }

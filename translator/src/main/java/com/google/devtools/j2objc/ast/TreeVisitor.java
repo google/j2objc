@@ -567,12 +567,10 @@ public class TreeVisitor {
 
   public void endVisit(WhileStatement node) {}
 
-  // ARGC ++	
   public boolean visit(ExcludedClassAccess excludedClassAccess) {
 		return true;
 	}
 	
-  // ARGC ++	
 	public void endVisit(ExcludedClassAccess excludedClassAccess) {
 	}
 }

@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -257,7 +256,7 @@ public class CastResolver extends UnitTreeVisitor {
         for (ExecutableElement currentMethod : ElementUtil.getMethods(inheritedElem)) {
           ExecutableType currentMethodType = typeUtil.asMemberOf(inheritedType, currentMethod);
           if (typeUtil.isSubsignature(methodType, currentMethodType)
-        	  && method.getSimpleName().equals(currentMethod.getSimpleName()) // ARGC ++
+        	  && method.getSimpleName().equals(currentMethod.getSimpleName()) 
               && nameTable.getMethodSelector(currentMethod).equals(selector)) {
             TypeMirror newReturnType = typeUtil.erasure(currentMethodType.getReturnType());
             if (returnType == null || typeUtil.isSubtype(newReturnType, returnType)) {
@@ -298,12 +297,12 @@ public class CastResolver extends UnitTreeVisitor {
     Iterator<? extends TypeMirror> paramTypeIter = paramTypes.iterator();
     // Implicit assert that size(paramTypes) >= size(args). Don't cast vararg arguments.
     try {
-    while (paramTypeIter.hasNext()) {
-      maybeAddCast(argIter.next(), paramTypeIter.next(), false);
-    }
+      while (paramTypeIter.hasNext()) {
+        maybeAddCast(argIter.next(), paramTypeIter.next(), false);
+      }
     }
     catch (Exception e) {
-    	ARGC.trap();
+      // ARGC.trap();
     }
   }
 

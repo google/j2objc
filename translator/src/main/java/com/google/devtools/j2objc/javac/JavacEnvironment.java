@@ -41,13 +41,12 @@ public class JavacEnvironment implements ParserEnvironment {
   private final Elements elements;
   private final Types types;
   private final Trees trees;
-  // ARGC ++ {{
+
   public static TypeElement unreachbleError;
   public static TypeElement javaLangObject;
   public final ExecutableElement throwUnreachablePrimitiveError;
   public final ExecutableElement throwUnreachableObjectError;
   public final ExecutableElement createUnreachableError;
-  // }}
 
   JavacEnvironment(JavacTask task, StandardJavaFileManager fileManager,
       DiagnosticCollector<JavaFileObject> diagnostics) {
