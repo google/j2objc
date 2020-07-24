@@ -82,17 +82,17 @@ public class FileUtil {
   }
 
   public void setResourceDirectory(File outputDirectory) {
-	if (this.resourceDirectory != null) {
-		throw new RuntimeException("Resource directory is already created. --resource-dir option should be declared before -sourcepath");
-	}
-	if (outputDirectory != null && !outputDirectory.exists()) {
-	  outputDirectory.mkdirs();
-	}
-	this.resourceDirectory = outputDirectory;
+    if (this.resourceDirectory != null) {
+      throw new RuntimeException("Resource directory is already created. --resource-dir option should be declared before -sourcepath");
+    }
+    if (outputDirectory != null && !outputDirectory.exists()) {
+      outputDirectory.mkdirs();
+    }
+    this.resourceDirectory = outputDirectory;
   }
 
   public File getResourceDirectory() {
-	return this.resourceDirectory;
+    return this.resourceDirectory;
   }
 
   public void setHeaderOutputDirectory(File outputDirectory) {
@@ -267,14 +267,14 @@ public class FileUtil {
   }
 
   public static File createTempDir(String dirname) throws IOException {
-		  File tmpDirectory = File.createTempFile(dirname, ".tmp");
-		  tmpDirectory.delete();
-		  if (!tmpDirectory.mkdir()) {
-			  throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
-		  }
-		  tmpDirectory.deleteOnExit();
-		  return tmpDirectory;
-	  }
+    File tmpDirectory = File.createTempFile(dirname, ".tmp");
+    tmpDirectory.delete();
+    if (!tmpDirectory.mkdir()) {
+      throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
+    }
+    tmpDirectory.deleteOnExit();
+    return tmpDirectory;
+  }
 
   /**
    * Recursively delete specified directory.

@@ -20,7 +20,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
 import com.google.devtools.j2objc.argc.ARGC;
-import com.google.devtools.j2objc.argc.TranslateSourceList;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
@@ -31,6 +30,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
+import com.google.devtools.j2objc.util.SourceList;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class J2ObjC {
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
   public static void run(List<String> fileArgs, Options options) {
-	  TranslateSourceList sourceFiles = new TranslateSourceList(options);
+	  SourceList sourceFiles = new SourceList(options);
 	  for (String s : fileArgs) {
 		  sourceFiles.addSource(s);
 	  }

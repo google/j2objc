@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.argc.ARGC;
-import com.google.devtools.j2objc.argc.TranslateSourceList;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -33,6 +32,7 @@ import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.PackageInfoLookup;
 import com.google.devtools.j2objc.util.PackagePrefixes;
+import com.google.devtools.j2objc.util.SourceList;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.File;
@@ -316,7 +316,7 @@ public class Options {
 
   private class ArgProcessor {
 
-    private TranslateSourceList sourceFiles = new TranslateSourceList(Options.this);
+    private SourceList sourceFiles = new SourceList(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -693,7 +693,7 @@ public class Options {
 		  }
 	  }
 	  String entry = ARGC.getCanonicalPath(f);
-	  TranslateSourceList.addRootPath(entry);
+	  SourceList.addRootPath(entry);
 	  entries.add(entry);
   }
   

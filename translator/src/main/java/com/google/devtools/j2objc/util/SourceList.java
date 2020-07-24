@@ -1,4 +1,4 @@
-package com.google.devtools.j2objc.argc;
+package com.google.devtools.j2objc.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,10 +17,9 @@ import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA_2_3.portable.OutputStream;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.assembler.metadata.MetadataParser;
@@ -31,7 +30,7 @@ import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 
-public class TranslateSourceList { 
+public class SourceList { 
 
 	private String root;
 	private Options options;
@@ -39,11 +38,10 @@ public class TranslateSourceList {
 	private HashSet<String> pathSet = new HashSet<>();
 	private File jarFile;
 	private ArrayList<InputFile> inputFiles = new ArrayList<>();
-	private boolean addSourceList = false;
-	static HashSet<String> rootPaths = new HashSet<>();
+	private static HashSet<String> rootPaths = new HashSet<>();
 
 
-	public TranslateSourceList(Options options) {
+	public SourceList(Options options) {
 		this.options = options;
 	}
 
@@ -56,7 +54,6 @@ public class TranslateSourceList {
 
 
 	public boolean addSource(String filename) {
-		this.addSourceList = true;
 		this.root = "";
 		File f = new File(filename);
 		if (f.exists()) {
@@ -101,7 +98,6 @@ public class TranslateSourceList {
 			}
 			if (!f.exists()) {
 				ErrorUtil.warning("Invalid source: " + filename);
-				//new RuntimeException("---").printStackTrace();
 				System.exit(-1);
 				return false;
 			}
@@ -178,15 +174,13 @@ public class TranslateSourceList {
 			}
 			registerSource(new File(filepath));
 		}
-		else if (this.addSourceList) {
+		else {
 			File dir = options.fileUtil().getResourceDirectory();
 			if (dir != null) {
+		    // copy resource files into the specified resource directory.
 				String filename = ARGC.getCanonicalPath(f);
-				if (filename.indexOf("/.") >= 0) {
-					return;
-				}
 				filename = filename.substring(root.length());
-				File of = new File(dir.getAbsolutePath() + "/" + filename + "sss");
+				File of = new File(dir.getAbsolutePath() + "/" + filename);
 				of.getParentFile().mkdirs();
 				try {
 					BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(of));
@@ -225,10 +219,6 @@ public class TranslateSourceList {
 	}
 
 	private String doSaveClassDecompiled(File inFile) {
-		//			      List<File> classPath = new ArrayList<>();
-		//			      classPath.add(new File(rootPath));
-		//			      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);				  
-
 		String filepath = ARGC.getCanonicalPath(inFile);
 		String classsig = filepath.substring(root.length(), filepath.length() - 6);
 
@@ -260,11 +250,6 @@ public class TranslateSourceList {
 		String decompiledSource = stringwriter.toString();
 		//System.out.println(decompiledSource);
 		return decompiledSource;
-		//		            if (decompiledSource.contains(textField.getText().toLowerCase())) {
-		//		                addClassName(entry.getName());
-		//		            }
-
-
 	}
 
 	private void addFolder(File f)  {
@@ -278,8 +263,6 @@ public class TranslateSourceList {
 		if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
 			options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
 		}
-
-		//options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
 		root = ARGC.getCanonicalPath(f) + '/';
 		addRootPath(root);
 		this.addFolder(f);
