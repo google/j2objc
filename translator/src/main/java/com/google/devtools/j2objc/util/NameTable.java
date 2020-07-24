@@ -166,7 +166,7 @@ public class NameTable {
   private final PackagePrefixes prefixMap;
 
   private final ImmutableMap<String, String> classMappings;
-  private final /*ARGC** ImmutableMap*/Map<String, String> methodMappings;
+  private final ImmutableMap<String, String> methodMappings;
 
   public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo, Options options) {
     this.typeUtil = typeUtil;

@@ -64,7 +64,6 @@ public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
-  private boolean argc_noPackageDeirectories = false;
   private static MemoryManagementOption memoryManagementOption = null;
   private EmitLineDirectivesOption emitLineDirectives = EmitLineDirectivesOption.NONE;
   private boolean warningsAsErrors = false;
@@ -108,7 +107,6 @@ public class Options {
   private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
   private final List<String> entryClasses = new ArrayList<>();
 
-  private /*ARGC**++*/String argc_debugSource; 
   private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
@@ -389,13 +387,9 @@ public class Options {
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
       } else if (arg.equals("-use-gc")) {
-          checkMemoryManagementOption(MemoryManagementOption.GC);
+        checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
-    	  /* ARGC**
-          headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
-          /*/
-    	  argc_noPackageDeirectories = true;
-    	  //*/
+        headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
       } else if (arg.equals("--preserve-full-paths")) {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
       } else if (arg.equals("-XcombineJars")) {
@@ -539,12 +533,6 @@ public class Options {
         NameTable.addReservedNames(getArgValue(args, arg));
       } else if (arg.equals("-version")) {
         version();
-      } else if (arg.equals("-debugSource")) { /*ARGC*++*/
-        // Handle aliasing of version numbers as supported by javac.
-        argc_debugSource = args.next().replace('\\', '/');
-        if (!argc_debugSource.endsWith(".java")) {
-          argc_debugSource += ".java";
-        }
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -713,9 +701,10 @@ public class Options {
     List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       entry = entry.trim();
-	  if (entry.length() == 0) {
-		  continue;
-	  }
+      if (entry.length() == 0) {
+        continue;
+      }
+      
       if (entry.startsWith("~/")) {
         // Expand bash/csh tildes, which don't get expanded by the shell
         // first if in the middle of a path string.
@@ -1117,10 +1106,6 @@ public class Options {
     translateClassfiles = b;
   }
     
-  public String getDebugSourceFile() {  
-	  return argc_debugSource;
-  }
-
   public List<String> entryClasses() {
     return entryClasses;
   }

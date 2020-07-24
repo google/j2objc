@@ -77,8 +77,8 @@ public class Mappings {
     return ImmutableMap.copyOf(classMappings);
   }
 
-  public /*ARGC** ImmutableMap*/Map<String, String> getMethodMappings() {
-    return /*ARGC** ImmutableMap.copyOf*/methodMappings;
+  public ImmutableMap<String, String> getMethodMappings() {
+    return ImmutableMap.copyOf(methodMappings);
   }
   
   @VisibleForTesting
