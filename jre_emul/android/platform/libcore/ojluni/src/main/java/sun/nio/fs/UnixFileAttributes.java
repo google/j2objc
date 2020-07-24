@@ -25,6 +25,8 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.ReflectionSupport;
+
 import java.nio.file.attribute.*;
 import java.util.concurrent.TimeUnit;
 import java.util.Set;
@@ -34,6 +36,7 @@ import java.util.HashSet;
  * Unix implementation of PosixFileAttributes.
  */
 
+@ReflectionSupport(ReflectionSupport.Level.FULL)
 class UnixFileAttributes
     implements PosixFileAttributes
 {

@@ -25,10 +25,13 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.ReflectionSupport;
+
 /**
  * Represents an entry in the mount table.
  */
 
+@ReflectionSupport(ReflectionSupport.Level.FULL)
 class UnixMountEntry {
     private byte[] name;        // file system name
     private byte[] dir;         // directory (mount point)
