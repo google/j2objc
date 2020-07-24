@@ -42,7 +42,7 @@ package java.util.concurrent;
  * presence of subtask stalls and blockage than are other forms of
  * ForkJoinTasks, but are less intuitive to program.  Uses of
  * CountedCompleter are similar to those of other completion based
- * components
+ * components (such as {@link java.nio.channels.CompletionHandler})
  * except that multiple <em>pending</em> completions may be necessary
  * to trigger the completion action {@link #onCompletion(CountedCompleter)},
  * not just one.
