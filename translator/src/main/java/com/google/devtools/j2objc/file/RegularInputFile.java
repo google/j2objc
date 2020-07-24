@@ -28,23 +28,19 @@ import com.google.devtools.j2objc.argc.ARGC;
  *
  * @author Mike Thvedt
  */
-public class RegularInputFile implements InputFile {
+public class RegularInputFile extends InputFile {
   private final String absolutePath;
-  private final String unitPath;
 
   public RegularInputFile(String unitPath) {
     this(unitPath, unitPath);
   }
 
   public RegularInputFile(String fsPath, String unitPath) {
+    super(unitPath);
     this.absolutePath = fsPath;
-    this.unitPath = unitPath;
     
     if (ARGC.isExcludedClass(unitPath)) {
     	throw new RuntimeException("exclude " + unitPath);
-    }
-    if (this.exists()) {
-    	InputFile.add(this);
     }
   }
 
@@ -71,16 +67,6 @@ public class RegularInputFile implements InputFile {
   @Override
   public String getOriginalLocation() {
     return absolutePath;
-  }
-
-  @Override
-  public String getUnitName() {
-    return unitPath;
-  }
-
-  @Override
-  public String getBasename() {
-    return unitPath.substring(unitPath.lastIndexOf(File.separatorChar) + 1);
   }
 
   @Override

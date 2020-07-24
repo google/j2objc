@@ -57,7 +57,6 @@ JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
 	argc/ARGC.java \
-	argc/TranslateSourceList.java \
 	ast/AbstractTypeDeclaration.java \
 	ast/AnnotatableType.java \
 	ast/Annotation.java \
@@ -270,6 +269,7 @@ JAVA_SOURCES = \
 	util/ParserEnvironment.java \
 	util/ProGuardUsageParser.java \
 	util/SourceVersion.java \
+	util/SourceStore.java \
 	util/TimeTracker.java \
 	util/TranslationEnvironment.java \
 	util/TranslationUtil.java \

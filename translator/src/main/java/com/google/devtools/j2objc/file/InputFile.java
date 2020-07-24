@@ -13,6 +13,7 @@
  */
 package com.google.devtools.j2objc.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -25,27 +26,23 @@ import java.util.HashMap;
  *
  * @author Mike Thvedt
  */
-public interface InputFile {
+public abstract class InputFile {
 
-  static HashMap<String, InputFile> fileMap = new HashMap<>(); 
-	
-  static void add(InputFile file) {
-	  fileMap.put(file.getUnitName(), file);
-  }
+	private String unitPath;
   
-  static InputFile getInputFile(String unitPath) {
-	  return fileMap.get(unitPath);
+  public InputFile(String unitPath) {
+    this.unitPath = unitPath;
   }
-	
-  boolean exists() throws IOException;
 
-  InputStream getInputStream() throws IOException;
+  public abstract boolean exists() throws IOException;
+
+  public abstract InputStream getInputStream() throws IOException;
 
   /**
    * Opens a new reader for this SourceFile.
    * The caller is responsible for closing the reader.
    */
-  Reader openReader(Charset charset) throws IOException;
+  public abstract Reader openReader(Charset charset) throws IOException;
 
   /**
    * Gets a full path of a Java or JAR file. The path must be an actual file system path that can be
@@ -53,7 +50,7 @@ public interface InputFile {
    * path of the extracted Java source file. For non-extracted JAR files, return the absolute path
    * of the JAR file.
    */
-  String getAbsolutePath();
+  public abstract String getAbsolutePath();
 
   /**
    * Gets the original location of a Java source file.
@@ -61,7 +58,7 @@ public interface InputFile {
    * "jar:file:path/to/originalJarFile.jar!internal/path/to/SourceFile.java".
    * Used in J2ObjC for progress messages, error messages, and output comments.
    */
-  String getOriginalLocation();
+  public abstract String getOriginalLocation();
 
   /**
    * The compilation unit name of this SourceFile.
@@ -69,14 +66,16 @@ public interface InputFile {
    * {@code "path/to/package/SourceFile.java"}, taken from
    * a path relative to some base directory.
    */
-  String getUnitName();
+  public final String getUnitName() { return unitPath; }
 
   /**
    * Gets name of the file stripped of any path components.
    * For example, the basename of "package/path/SourceFile.java" is
    * "SourceFile.java".
    */
-  String getBasename();
+  public final String getBasename() {
+    return unitPath.substring(unitPath.lastIndexOf('/') + 1);
+  }
 
-  long lastModified();
+  public abstract long lastModified();
 }

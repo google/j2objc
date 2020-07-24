@@ -32,7 +32,7 @@ import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.PackageInfoLookup;
 import com.google.devtools.j2objc.util.PackagePrefixes;
-import com.google.devtools.j2objc.util.SourceList;
+import com.google.devtools.j2objc.util.SourceStore;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.File;
@@ -316,7 +316,7 @@ public class Options {
 
   private class ArgProcessor {
 
-    private SourceList sourceFiles = new SourceList(Options.this);
+    private SourceStore sourceFiles = new SourceStore(Options.this);
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -687,14 +687,13 @@ public class Options {
   
   private void addPath(List<String> entries, File f, boolean expandAarFiles) {
 	  if (expandAarFiles && !f.isDirectory()) {
-		  f = ARGC.extractSources(f, this, false);
+		  f = SourceStore.extractSources(f, this, false);
 		  if (f == null) {
 			  return;
 		  }
 	  }
-	  String entry = ARGC.getCanonicalPath(f);
-	  SourceList.addRootPath(entry);
-	  entries.add(entry);
+	  String path = SourceStore.addRootPath(f);
+	  entries.add(path);
   }
   
   private List<String> getPathArgument(String argument, boolean isClassPath, boolean expandWildcard) {
@@ -713,7 +712,7 @@ public class Options {
       
       if (entry.charAt(0) == '@') {
         File f = new File(entry.substring(1));
-        ArrayList<String> list = ARGC.processListFile(f);
+        ArrayList<String> list = SourceStore.readPathList(f);
         if (list != null) {
           String dir = f.getAbsolutePath();
           dir = dir.substring(0, dir.lastIndexOf('/') + 1);
@@ -737,14 +736,14 @@ public class Options {
     	continue;
       }
       if (entry.endsWith(".aar") && isClassPath) {
-    	// Extract classes.jar from Android library AAR file.
-    	f = fileUtil().extractClassesJarFromAarFile(f);
+        // Extract classes.jar from Android library AAR file.
+        f = fileUtil().extractClassesJarFromAarFile(f);
       }
       if (f.exists()) {
         addPath(entries, f, !isClassPath);
       }
       else {
-    	System.err.println("invalid path: " + entry);
+        System.err.println("invalid path: " + entry);
       }
     }
     return entries;

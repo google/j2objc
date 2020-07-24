@@ -208,27 +208,27 @@ public class FileUtil {
       return null;
     }
 
-    InputFile inf = InputFile.getInputFile(sourceFileName);
-    if (inf != null) {
+    InputFile inf = SourceStore.getInputFile(sourceFileName);
+    if (inf != null && inf.exists()) {
       return inf;
     }
-    String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
-    for (String pathEntry : paths) {
-      File f = new File(pathEntry);
-      if (f.isDirectory()) {
-        RegularInputFile regularFile = new RegularInputFile(
-            pathEntry + File.separatorChar + sourceFileName, sourceFileName);
-        if (regularFile.exists()) {
-          return regularFile;
-        }
-      } else {
-        // Assume it's a jar file
-        JarredInputFile jarFile = new JarredInputFile(pathEntry, jarEntryName);
-        if (jarFile.exists()) {
-          return jarFile;
-        }
-      }
-    }
+//    String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
+//    for (String pathEntry : paths) {
+//      File f = new File(pathEntry);
+//      if (f.isDirectory()) {
+//        RegularInputFile regularFile = new RegularInputFile(
+//            pathEntry + File.separatorChar + sourceFileName, sourceFileName);
+//        if (regularFile.exists()) {
+//          return regularFile;
+//        }
+//      } else {
+//        // Assume it's a jar file
+//        JarredInputFile jarFile = new JarredInputFile(pathEntry, jarEntryName);
+//        if (jarFile.exists()) {
+//          return jarFile;
+//        }
+//      }
+//    }
     return null;
   }
 

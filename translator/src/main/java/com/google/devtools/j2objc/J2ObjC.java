@@ -30,7 +30,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
-import com.google.devtools.j2objc.util.SourceList;
+import com.google.devtools.j2objc.util.SourceStore;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class J2ObjC {
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
   public static void run(List<String> fileArgs, Options options) {
-	  SourceList sourceFiles = new SourceList(options);
+	  SourceStore sourceFiles = new SourceStore(options);
 	  for (String s : fileArgs) {
 		  sourceFiles.addSource(s);
 	  }

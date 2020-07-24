@@ -59,6 +59,7 @@ import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.SourceStore;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.ITypeLoader;
@@ -66,110 +67,8 @@ import com.strobel.assembler.metadata.ITypeLoader;
 public class ARGC {
 	private static ArrayList<String> excludeClasses = new ArrayList<String>();
 	private static ArrayList<String> excludePackages = new ArrayList<String>();
-	static HashMap<String, CompilationUnit> units = new HashMap<>();
-	static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
-
-
-	static HashMap<String, String> map = new HashMap<String, String>();
-	static {
-		map.put("jboolean", "bool");
-		map.put("void", "void");
-		map.put("jbyte", "int8_t");
-		map.put("jshort", "uint16_t");
-		map.put("jchar", "UniChar");
-		map.put("jint", "int32_t");
-		map.put("jlong", "int64_t");
-		map.put("jfloat", "float");
-		map.put("jdouble", "double");
-	}
-
-	public static String getObjCType(String res) {
-		return map.get(res);
-	}
-
-	public static ArrayList<String> processListFile(File lstf) {
-		if (!lstf.exists()) return null;
-		
-		ArrayList<String> list = new ArrayList<>();
-		try {
-			InputStreamReader in = new InputStreamReader(new FileInputStream(lstf));
-			StringBuilder sb = new StringBuilder();
-			for (int ch; (ch = in.read()) >=0; ) {
-				if (ch == '\n' && sb.length() > 0) {
-					if (sb.charAt(0) != '#') {
-						list.add(trimPath(sb));
-					}
-					sb.setLength(0);
-				}
-				else if (sb.length() > 0 || ch > ' ') {
-					sb.append((char)ch);
-				}
-			}
-			in.close();
-			if (sb.length() > 0 && sb.charAt(0) != '#') {
-				list.add(trimPath(sb));
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return list;
-	}
-	
-	private static String trimPath(StringBuilder sb) {
-		while (sb.charAt(sb.length() - 1) <= ' ') {
-			sb.setLength(sb.length() - 1);
-		}
-		while (sb.charAt(sb.length() - 1) == '*') {
-			sb.setLength(sb.length() - 1);
-		}
-		while (sb.charAt(sb.length() - 1) <= ' ') {
-			sb.setLength(sb.length() - 1);
-		}
-		return sb.toString();
-	}
-
-	public static File extractSources(File f, Options options, boolean extractResources) {
-		ZipFile zfile = null;
-		try {
-			zfile = new ZipFile(f);
-			Enumeration<? extends ZipEntry> enumerator = zfile.entries();
-			File tempDir = FileUtil.createTempDir(f.getName());
-			while (enumerator.hasMoreElements()) {
-				ZipEntry entry = enumerator.nextElement();
-				String internalPath = entry.getName();
-				if (internalPath.endsWith(".java")
-						|| (options.translateClassfiles() && internalPath.endsWith(".class"))) {
-					// Extract JAR file to a temporary directory
-					if (isExcludedClass(internalPath)) {
-						if (options.isVerbose()) {
-							System.out.println(internalPath + " excluded");
-						}
-						continue;
-					}
-					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
-				}
-				else if (!entry.isDirectory() && extractResources && internalPath.indexOf("/.") < 0) {
-					options.fileUtil().extractZipEntry(tempDir, zfile, entry);
-				}
-			}
-			return tempDir;
-		} catch (ZipException e) { // Also catches JarExceptions
-			e.printStackTrace();
-			ErrorUtil.error("Error reading file " + f.getAbsolutePath() + " as a zip or jar file.");
-		} catch (IOException e) {
-			e.printStackTrace();
-			ErrorUtil.error(e.getMessage());
-		} finally {
-			if (zfile != null) { 
-				try {
-					zfile.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
+	private static HashMap<String, CompilationUnit> units = new HashMap<>();
+	private static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
 
 	public static void addExcludeRule(String classpath) {
 		if (classpath.charAt(0) != '@') {
@@ -182,7 +81,7 @@ public class ARGC {
 		}
 		else {
 			File lstf = new File(classpath.substring(1));
-			ArrayList<String> files = processListFile(lstf);
+			ArrayList<String> files = SourceStore.readPathList(lstf);
 			if (files != null) {
 				for (String s : files) {
 					addExcludeRule(s);
@@ -221,11 +120,6 @@ public class ARGC {
 
 	public static boolean hasExcludeRule() {
 		return excludeClasses.size() > 0;
-	}
-
-	public static List<String> resolveSources(ArrayList<String> sourceFiles) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public static int trap() {
@@ -276,21 +170,21 @@ public class ARGC {
 					System.err.println("Testcase conversion error: " + src_f + 
 							"\nTest method name must start with 'test'." +
 							"\nThe name of method annotated by @Before must be 'setUp'" +
-							"\nThe name of method annotated by @After must be 'tearDown'");
+					    "\nThe name of method annotated by @After must be 'tearDown'");
 				}
 			}
-			
-	        for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
-	            String name = inheritedType.toString();
-	            int idx = name.indexOf('<');
-	            if (idx > 0) {
-	            	name = name.substring(0, idx);
-	            }
-	    		CompilationUnit superUnit = units.get(name);
-	    		if (superUnit != null) {
-	    			urMap.putAll(preprocessUnreachableImportedClasses(superUnit, processed));
-	    		}
-	        }
+
+			for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
+			  String name = inheritedType.toString();
+			  int idx = name.indexOf('<');
+			  if (idx > 0) {
+			    name = name.substring(0, idx);
+			  }
+			  CompilationUnit superUnit = units.get(name);
+			  if (superUnit != null) {
+			    urMap.putAll(preprocessUnreachableImportedClasses(superUnit, processed));
+			  }
+			}
 		}
 		return urMap;
 	}
@@ -300,14 +194,6 @@ public class ARGC {
 			TypeElement type = _t.getTypeElement();
 			String name = type.getQualifiedName().toString();
 	    	units.put(name, unit);
-		}
-	}
-
-	public static String getCanonicalPath(File f) {
-		try {
-			return f.getCanonicalPath();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 	}
 

@@ -28,10 +28,9 @@ import java.util.zip.ZipEntry;
  *
  * @author Mike Thvedt
  */
-public class JarredInputFile implements InputFile {
+public class JarredInputFile extends InputFile {
   private final String jarPath;
-  private final String internalPath;
-private JarFile jarFile;
+  private JarFile jarFile;
 
   private static HashMap<String, JarFile> ozJarCache = new HashMap<>();
   
@@ -42,31 +41,28 @@ private JarFile jarFile;
    * @param internalPath the file's path within the jar
    */
   public JarredInputFile(String jarPath, String internalPath) {
+    super(internalPath);
     assert !jarPath.endsWith(".java");
     this.jarPath = jarPath;
-    this.internalPath = internalPath;
     this.jarFile = ozJarCache.get(jarPath);
     if (jarFile == null) {
-    	try {
-			this.jarFile = new JarFile(jarPath);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+      try {
+        this.jarFile = new JarFile(jarPath);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     	ozJarCache.put(jarPath, jarFile);
-    }
-    if (this.exists()) {
-    	InputFile.add(this);
     }
   }
 
   @Override
   public boolean exists() {
-    return jarFile.getEntry(internalPath) != null;
+    return jarFile.getEntry(super.getUnitName()) != null;
   }
 
   @Override
   public InputStream getInputStream() throws IOException {
-    ZipEntry entry = jarFile.getEntry(internalPath);
+    ZipEntry entry = jarFile.getEntry(super.getUnitName());
     final InputStream entryStream = jarFile.getInputStream(entry);
     return new InputStream() {
 
@@ -104,17 +100,7 @@ private JarFile jarFile;
 
   @Override
   public String getOriginalLocation() {
-    return "jar:file:" + jarPath + "!" + internalPath;
-  }
-
-  @Override
-  public String getUnitName() {
-    return internalPath;
-  }
-
-  @Override
-  public String getBasename() {
-    return internalPath.substring(internalPath.lastIndexOf('/') + 1);
+    return "jar:file:" + jarPath + "!" + super.getUnitName();
   }
 
   @Override
