@@ -25,6 +25,9 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.ReflectionSupport;
+
+@ReflectionSupport(ReflectionSupport.Level.FULL)
 class UnixFileStoreAttributes {
     private long f_frsize;          // block size
     private long f_blocks;          // total
