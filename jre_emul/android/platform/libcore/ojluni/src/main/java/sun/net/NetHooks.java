@@ -38,43 +38,45 @@ import sun.security.action.GetPropertyAction;
 
 public final class NetHooks {
 
-    // Android-removed: No SDP support.
-    // /**
-    //  * A provider with hooks to allow sockets be converted prior to binding or
-    //  * connecting a TCP socket.
-    //  *
-    //  * <p> Concrete implementations of this class should define a zero-argument
-    //  * constructor and implement the abstract methods specified below.
-    //  */
-    //  public static abstract class Provider {
-    //     /**
-    //      * Initializes a new instance of this class.
-    //      */
-    //     protected Provider() {}
-    //
-    //    /**
-    //      * Invoked prior to binding a TCP socket.
-    //      */
-    //     public abstract void implBeforeTcpBind(FileDescriptor fdObj,
-    //                                            InetAddress address,
-    //                                            int port)
-    //         throws IOException;
-    //
-    //     /**
-    //      * Invoked prior to connecting an unbound TCP socket.
-    //      */
-    //     public abstract void implBeforeTcpConnect(FileDescriptor fdObj,
-    //                                              InetAddress address,
-    //                                              int port)
-    //         throws IOException;
-    // }
+    // Android-removed: Android doesn't support Session Description Protocol (SDP).
+    /*
+    /**
+     * A provider with hooks to allow sockets be converted prior to binding or
+     * connecting a TCP socket.
+     *
+     * <p> Concrete implementations of this class should define a zero-argument
+     * constructor and implement the abstract methods specified below.
+     *
+    public static abstract class Provider {
+        /**
+         * Initializes a new instance of this class.
+         *
+        protected Provider() {}
+
+        /**
+         * Invoked prior to binding a TCP socket.
+         *
+        public abstract void implBeforeTcpBind(FileDescriptor fdObj,
+                                               InetAddress address,
+                                               int port)
+            throws IOException;
+
+        /**
+         * Invoked prior to connecting an unbound TCP socket.
+         *
+        public abstract void implBeforeTcpConnect(FileDescriptor fdObj,
+                                                 InetAddress address,
+                                                 int port)
+            throws IOException;
+    }
+    */
 
     /**
      * For now, we load the SDP provider on Solaris. In the future this may
      * be changed to use the ServiceLoader facility to allow the deployment of
      * other providers.
      */
-    // Android-removed: No SDP support
+    // Android-removed: Android doesn't support Session Description Protocol (SDP).
     // private static final Provider provider = new sun.net.sdp.SdpProvider();
 
     /**
@@ -85,7 +87,7 @@ public final class NetHooks {
                                      int port)
         throws IOException
     {
-        // Android-removed: No SDP support
+        // Android-removed: Android doesn't support Session Description Protocol (SDP).
         // provider.implBeforeTcpBind(fdObj, address, port);
     }
 
