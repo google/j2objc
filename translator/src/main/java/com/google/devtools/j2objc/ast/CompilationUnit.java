@@ -14,23 +14,20 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
-import com.google.devtools.j2objc.javac.JavacEnvironment;
-import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.util.TranslationEnvironment;
-import com.google.devtools.j2objc.util.UnicodeUtils;
-import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.ImportTree;
-
 import java.io.InvalidClassException;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.javac.ImportManager;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.ImportTree;
 
 /**
  * Tree node for a Java compilation unit.
@@ -240,7 +237,7 @@ public class CompilationUnit extends TreeNode {
     HashMap<String, String> map = new HashMap<>();
     for (ImportTree tree : unit.getImports()) {
       String fullname = tree.getQualifiedIdentifier().toString();
-      if (ARGC.isExcludedClass(fullname)) {
+      if (!ImportManager.canImportClass(fullname)) {
         String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
         map.put(simpleName, fullname);
       }

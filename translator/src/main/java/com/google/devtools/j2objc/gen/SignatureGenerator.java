@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -326,7 +326,7 @@ public class SignatureGenerator {
         }
         break;
       default:
-    	  if (ARGC.hasExcludeRule()) {
+    	  if (ImportManager.hasCustomImportRule()) {
     		  sb.append(typeUtil.getSignatureName(type));
     	  }
     	  else 

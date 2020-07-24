@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.javac;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -1053,12 +1052,12 @@ public class TreeConverter {
     	element = (ExecutableElement) getElement(methodPath);
     }
     catch (RuntimeException e) {
-    	if (!ARGC.hasExcludeRule()) {
+    	if (!ImportManager.hasCustomImportRule()) {
     		throw e;
     	}
     }
 
-    if (ARGC.hasExcludeRule() && (element == null || type == null))  {
+    if (ImportManager.hasCustomImportRule() && (element == null || type == null))  {
       MethodInvocation newNode = new MethodInvocation();
       if (type != null && type.getKind().isPrimitive()) {
         newNode
@@ -1166,14 +1165,14 @@ public class TreeConverter {
     ExecutableElement executable = (ExecutableElement) getElement(path);
     TypeMirror vargarsType;
     TypeDeclaration anonymousClassDeclaration;
-    if (executable == null && ARGC.hasExcludeRule()) {
+    if (executable == null && ImportManager.hasCustomImportRule()) {
     	JCTree.JCNewClass tree = (JCNewClass) node;
     	String s = tree.clazz.toString();
     	TypeElement type = TypeUtil.resolveUnreachableClass(s);
   	  	if (type == null) {
 		  throw new AssertionError("Cannot resolve signature name for type: " + s);
   	  	}
-    	executable = env.createUnreachableError;
+    	executable = env.createNotImportedError;
     	vargarsType = env.javaLangObject.asType();
     	anonymousClassDeclaration = null;
     }

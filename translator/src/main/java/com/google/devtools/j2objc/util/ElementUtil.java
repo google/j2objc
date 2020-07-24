@@ -18,9 +18,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
@@ -451,7 +451,7 @@ public final class ElementUtil {
   public static <T extends Element> Iterable<T> filterEnclosedElements(
       Element elem, Class<T> resultClass, ElementKind... kinds) {
     List<ElementKind> kindsList = Arrays.asList(kinds);
-    if (elem == null && ARGC.hasExcludeRule()) {
+    if (elem == null && ImportManager.hasCustomImportRule()) {
     	elem = JavacEnvironment.unreachbleError;
     }
     return Iterables.transform(Iterables.filter(

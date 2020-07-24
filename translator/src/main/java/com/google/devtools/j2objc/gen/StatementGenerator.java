@@ -565,7 +565,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     if (ElementUtil.isTypeElement(element)) {
     	boolean isUnreachable = element.asType().getKind() == TypeKind.ERROR;
     	if (isUnreachable) {
-    		buffer.append("0/* UnreachableError: ");
+    		buffer.append("0/* NotImportedError: ");
     	}
         buffer.append(nameTable.getFullName((TypeElement) element));
     	if (isUnreachable) {

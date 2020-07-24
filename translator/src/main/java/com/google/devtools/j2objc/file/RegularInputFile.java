@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
-import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.javac.ImportManager;
 
 /**
  * A single file in the filesystem.
@@ -39,7 +39,7 @@ public class RegularInputFile extends InputFile {
     super(unitPath);
     this.absolutePath = fsPath;
     
-    if (ARGC.isExcludedClass(unitPath)) {
+    if (!ImportManager.canImportClass(unitPath)) {
     	throw new RuntimeException("exclude " + unitPath);
     }
   }

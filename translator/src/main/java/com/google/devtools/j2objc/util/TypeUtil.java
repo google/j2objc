@@ -18,8 +18,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import com.google.j2objc.NotImportedError;
 import com.sun.tools.javac.code.Type;
 
 import java.util.ArrayList;
@@ -59,8 +60,6 @@ import javax.lang.model.type.UnionType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-
-import org.slowcoders.j2objc.UnreachableError;
 
 /**
  * Utility methods for working with TypeMirrors.
@@ -1057,7 +1056,7 @@ public final class TypeUtil {
 		  // Inner-class checking.
 		  p = simpleName.indexOf('.');
 		  if (p > 0) {
-			  if (ARGC.isExcludedClass(simpleName)) {
+			  if (!ImportManager.canImportClass(simpleName)) {
 				  _unreachableImportedClasses.put(simpleName, simpleName);
 				  return JavacEnvironment.unreachbleError;
 			  }
@@ -1068,7 +1067,7 @@ public final class TypeUtil {
 			  return JavacEnvironment.unreachbleError;
 		  }
 		  String fullName = _currentPackage + simpleName;
-		  if (ARGC.isExcludedClass(fullName)) {
+		  if (!ImportManager.canImportClass(fullName)) {
 			  _unreachableImportedClasses.put(simpleName, fullName);
 			  return JavacEnvironment.unreachbleError;
 		  }

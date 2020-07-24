@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.types.Import;
 
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     includeFiles.add(getGenerationUnit().getOutputPath() + ".h");
     for (GeneratedType generatedType : getOrderedTypes()) {
       for (Import imp : generatedType.getImplementationIncludes()) {
-        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
+        if (!isLocalType(imp.getTypeName()) && ImportManager.canImportClass(imp.getImportFileName())) {
         	includeFiles.add(imp.getImportFileName());
         }
       }

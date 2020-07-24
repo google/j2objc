@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -320,7 +320,7 @@ public class NameTable {
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
       TypeElement elem = bounds.isEmpty()
           ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
-      if (ARGC.hasExcludeRule() && elem == null) {
+      if (ImportManager.hasCustomImportRule() && elem == null) {
     	  elem = TypeUtil.NS_OBJECT;
       }
       assert elem != null;

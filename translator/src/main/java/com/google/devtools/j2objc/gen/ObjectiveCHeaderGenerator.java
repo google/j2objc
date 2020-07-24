@@ -21,7 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -109,14 +109,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         seenTypes.add(name);
       }
       for (Import imp : type.getHeaderIncludes()) {
-        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
+        if (!isLocalType(imp.getTypeName()) && ImportManager.canImportClass(imp.getImportFileName())) {
           includeFiles.add(imp.getImportFileName());
         }
       }
       for (Import imp : type.getHeaderForwardDeclarations()) {
         // Filter out any declarations that are resolved by an include.
-        if (!seenTypes.contains(imp.getTypeName())
-        		 && !ARGC.isExcludedClass(imp.getImportFileName())
+        if (!seenTypes.contains(imp.getTypeName()) 
+        		&& ImportManager.canImportClass(imp.getImportFileName())
             && !includeFiles.contains(imp.getImportFileName())) {
           forwardDeclarations.add(imp);
         }

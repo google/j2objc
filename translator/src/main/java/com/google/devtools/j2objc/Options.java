@@ -21,9 +21,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -325,15 +325,15 @@ public class Options {
       }
     }
 
-//    private void processArgsFile(String filename) throws IOException {
-//      if (filename.isEmpty()) {
-//        usage("no @ file specified");
-//      }
-//      File f = new File(filename);
-//      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
-//      // Simple split on any whitespace, quoted values aren't supported.
-//      processArgs(fileArgs.split("\\s+"));
-//    }
+    private void processArgsFile(String filename) throws IOException {
+      if (filename.isEmpty()) {
+        usage("no @ file specified");
+      }
+      File f = new File(filename);
+      String fileArgs = Files.asCharSource(f, fileUtil.getCharset()).read();
+      // Simple split on any whitespace, quoted values aren't supported.
+      processArgs(fileArgs.split("\\s+"));
+    }
 
     private String getArgValue(Iterator<String> args, String arg) {
       if (!args.hasNext()) {
@@ -346,15 +346,14 @@ public class Options {
       String arg = args.next().trim();
       if (arg.isEmpty()) {
         return;
-//      } else if (arg.startsWith("@")) {
-//        processArgsFile(arg.substring(1));
+      } else if (arg.startsWith("@")) {
+        processArgsFile(arg.substring(1));
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true, true));
       } else if (arg.equals("-sourcepath")) {
         fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false, true));
-        //sourceFiles.preprocessSourcePaths(getPathArgument(getArgValue(args, arg), false));
-      } else if (arg.equals("--not-include")) {
-        ARGC.addExcludeRule(getArgValue(args, arg));
+      } else if (arg.equals("--not-import")) {
+        ImportManager.addNotImportRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true, false));
       } else if (arg.equals("-d")) {
@@ -709,7 +708,7 @@ public class Options {
         // first if in the middle of a path string.
         entry = System.getProperty("user.home") + entry.substring(1);
       }
-      
+            
       if (entry.charAt(0) == '@') {
         File f = new File(entry.substring(1));
         ArrayList<String> list = SourceStore.readPathList(f);
@@ -725,15 +724,15 @@ public class Options {
       
       File f = new File(entry);
       if (f.getName().equals("*") && expandWildcard) {
-    	File parent = f.getParentFile() == null ? new File(".") : f.getParentFile();
-    	FileFilter jarFilter = file -> file.getName().endsWith(".jar");
-    	File[] files = parent.listFiles(jarFilter);
-    	if (files != null) {
-    		for (File jar : files) {
-    			addPath(entries, jar, !isClassPath);
-    		}
-    	}
-    	continue;
+        File parent = f.getParentFile() == null ? new File(".") : f.getParentFile();
+        FileFilter jarFilter = file -> file.getName().endsWith(".jar");
+        File[] files = parent.listFiles(jarFilter);
+        if (files != null) {
+          for (File jar : files) {
+            addPath(entries, jar, !isClassPath);
+          }
+        }
+        continue;
       }
       if (entry.endsWith(".aar") && isClassPath) {
         // Extract classes.jar from Android library AAR file.

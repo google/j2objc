@@ -14,12 +14,36 @@
 
 package com.google.devtools.j2objc.javac;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.processing.Processor;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager.Location;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
-import com.google.devtools.j2objc.argc.FileManagerProxy;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -29,9 +53,7 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
-import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.assembler.metadata.JarTypeLoader;
@@ -43,38 +65,8 @@ import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.Tree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.SourcePositions;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.StreamTokenizer;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.annotation.processing.Processor;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileManager;
-import javax.tools.JavaFileManager.Location;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 
 /**
  * Parser front-end that uses javac.
@@ -179,8 +171,6 @@ public class JavacParser extends Parser {
     String decompiledSource = stringwriter.toString();
     System.out.println(decompiledSource);
     return parse(null, file.getUnitName(), decompiledSource);
-
-
   }
 
   @Override
@@ -278,13 +268,19 @@ public class JavacParser extends Parser {
               .convertCompilationUnit(options, env, ast);
 
           if (unit != null) {
-            ARGC.registerCompilationUnit(unit);
+            if (ImportManager.hasCustomImportRule()) {
+              ImportManager.registerCompilationUnit(unit);
+            }
             compileUnits.add(unit);
           }
         }
-        for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
-          ARGC.preprocessUnit(unit);
+        
+        if (ImportManager.hasCustomImportRule()) {
+          for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
+            ImportManager.resolveImportability(unit);
+          }
         }
+        
         for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
           TypeUtil.setUnreachableClasses(unit);
           TypeUtil.setIgnoreAllUnreachableTypeError(false);

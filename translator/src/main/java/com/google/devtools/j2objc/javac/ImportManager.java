@@ -19,7 +19,7 @@
 //  https://github.com/zeedh/j2objc.git
 //
 
-package com.google.devtools.j2objc.argc;
+package com.google.devtools.j2objc.javac;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -47,8 +47,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.gen.SourceBuilder;
-import com.google.devtools.j2objc.gen.StatementGenerator;
 //import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
 //import com.google.devtools.j2objc.util.BindingUtil;
@@ -64,19 +62,18 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.ITypeLoader;
 
-public class ARGC {
-	private static ArrayList<String> excludedClasses = new ArrayList<String>();
-	private static ArrayList<String> excludedPackages = new ArrayList<String>();
+public class ImportManager {
+	private static ArrayList<String> notImportClasses = new ArrayList<String>();
+	private static ArrayList<String> notImportPackages = new ArrayList<String>();
 	private static HashMap<String, CompilationUnit> units = new HashMap<>();
-	private static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
 
-	public static void addExcludeRule(String classpath) {
+	public static void addNotImportRule(String classpath) {
 		if (classpath.charAt(0) != '@') {
 			if ('.' == classpath.charAt(classpath.length() - 1)) {
-				excludedPackages.add(classpath);
+				notImportPackages.add(classpath);
 			}
 			else {
-				excludedClasses.add(classpath);
+				notImportClasses.add(classpath);
 			}
 		}
 		else {
@@ -84,53 +81,50 @@ public class ARGC {
 			ArrayList<String> files = SourceStore.readPathList(lstf);
 			if (files != null) {
 				for (String s : files) {
-					addExcludeRule(s);
+					addNotImportRule(s);
 				}
 			}
 		}
 	}
 
-	public static boolean isExcludedPackage(String _package) {
+	public static boolean canImportPackage(String _package) {
 		_package = _package.replace('/', '.') + '.';
-		for (String s : excludedPackages) {
+		for (String s : notImportPackages) {
 			if (_package.equals(s)) {
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 	
-	public static boolean isExcludedClass(String filename) {
+	public static boolean canImportClass(String filename) {
 		filename = filename.replace('/', '.');
 		if (filename.endsWith(".java")) {
 			filename = filename.substring(0, filename.length() - 5);
 		}
-		for (String s : excludedClasses) {
+		for (String s : notImportClasses) {
 			if (filename.equals(s)) {
-				return true;
+				return false;
 			}
 		}
-		for (String s : excludedPackages) {
+		for (String s : notImportPackages) {
 			if (filename.startsWith(s)) {
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
-	public static boolean hasExcludeRule() {
-		return excludedClasses.size() > 0;
+	public static boolean hasCustomImportRule() {
+		return notImportClasses.size() > 0;
 	}
 
-	public static void preprocessUnit(CompilationUnit unit) {
-		for (AbstractTypeDeclaration type : unit.getTypes()) {
-			types.put(type.getName().toString(), type);
-		}
-		preprocessUnreachableImportedClasses(unit, new HashMap<>());
+	public static void resolveImportability(CompilationUnit unit) {
+		resolveImportability(unit, new HashMap<>());
 	}
 
 	
-	private static HashMap<String, String> preprocessUnreachableImportedClasses(CompilationUnit unit, HashMap<String, String> processed) {
+	private static HashMap<String, String> resolveImportability(CompilationUnit unit, HashMap<String, String> processed) {
 		HashMap<String, String> urMap = unit.getUnreachableImportedClasses();
 		if (processed.containsKey(unit.getSourceFilePath())) {
 			return urMap;
@@ -148,7 +142,7 @@ public class ARGC {
 			  }
 			  CompilationUnit superUnit = units.get(name);
 			  if (superUnit != null) {
-			    urMap.putAll(preprocessUnreachableImportedClasses(superUnit, processed));
+			    urMap.putAll(resolveImportability(superUnit, processed));
 			  }
 			}
 		}

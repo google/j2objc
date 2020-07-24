@@ -19,8 +19,8 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
@@ -137,7 +137,7 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      if (ErrorUtil.errorCount() > 0 && !ARGC.hasExcludeRule()) {
+      if (ErrorUtil.errorCount() > 0 && !ImportManager.hasCustomImportRule()) {
         return;
       }
       translationProcessor.postProcess();

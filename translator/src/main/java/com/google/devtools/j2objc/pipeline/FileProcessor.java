@@ -17,9 +17,9 @@ package com.google.devtools.j2objc.pipeline;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -156,8 +156,8 @@ abstract class FileProcessor {
   private void processCompiledSource(ProcessingContext input,
       com.google.devtools.j2objc.ast.CompilationUnit unit) {
     InputFile file = input.getFile();
-    if (ARGC.isExcludedClass(file.getUnitName())) {
-    	throw new RuntimeException("exclude " + file.getUnitName());
+    if (!ImportManager.canImportClass(file.getUnitName())) {
+    	throw new RuntimeException("Can not import " + file.getUnitName());
     }
     
     if (closureQueue != null) {

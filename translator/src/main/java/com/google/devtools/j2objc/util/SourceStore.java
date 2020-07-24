@@ -25,9 +25,9 @@ import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA_2_3.portable.OutputStream;
 
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.assembler.metadata.MetadataParser;
@@ -167,7 +167,7 @@ public class SourceStore {
 		String filename = getCanonicalPath(src_file);
 		filename = filename.substring(root.length());
 		
-		if (ARGC.isExcludedClass(filename)) {
+		if (!ImportManager.canImportClass(filename)) {
 			return false;
 		}
 		
@@ -348,7 +348,7 @@ public class SourceStore {
         if (internalPath.endsWith(".java")
             || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
           // Extract JAR file to a temporary directory
-          if (ARGC.isExcludedClass(internalPath)) {
+          if (!ImportManager.canImportClass(internalPath)) {
             if (options.isVerbose()) {
               System.out.println(internalPath + " excluded");
             }
