@@ -309,7 +309,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncLineNumbers(m);  // avoid doc-comment
     print(getMethodSignature(m) + " ");
     String body = generateStatement(m.getBody());
-    if (options.isIOSTest() && ARGC.isTestClass(super.typeElement.asType())) {
+    if (options.generateIOSTest() && CompilationUnit.isTestClass(super.typeElement.asType())) {
     	if (m.isTestClassSetup()) {
     	      String clazz = nameTable.getFullName(typeNode.getTypeElement());
     		

@@ -278,7 +278,7 @@ public class JavacParser extends Parser {
               .convertCompilationUnit(options, env, ast);
 
           if (unit != null) {
-            ARGC.registerUnit(unit);
+            ARGC.registerCompilationUnit(unit);
             compileUnits.add(unit);
           }
         }

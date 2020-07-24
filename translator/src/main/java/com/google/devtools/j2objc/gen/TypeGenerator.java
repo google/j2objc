@@ -90,15 +90,15 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected String getSuperTypeName() {
-	if (TypeUtil.isAnnotation(this.typeElement.asType())) {
-		return "J2ObjC_Annotation";
-	}
+    if (TypeUtil.isAnnotation(this.typeElement.asType())) {
+      return "J2ObjC_Annotation";
+    }
     TypeElement supertype = TranslationUtil.getSuperType(typeNode);
     if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
       return nameTable.getFullName(supertype);
     }
     if (this.isInterfaceType()) return "NSObject";
-    return options.isIOSTest() && ARGC.isTestClass(this.typeElement.asType()) ? "IOSTest" : "JavaLangObject";
+    return options.generateIOSTest() && CompilationUnit.isTestClass(this.typeElement.asType()) ? "IOSTest" : "JavaLangObject";
   }
   
   private List<BodyDeclaration> filterDeclarations(Iterable<BodyDeclaration> declarations) {

@@ -99,7 +99,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     Set<Import> forwardDeclarations = Sets.newHashSet();
 
     includeFiles.add("J2ObjC_header.h");
-    if (options.isIOSTest()) {
+    if (options.generateIOSTest()) {
         includeFiles.add("IOSTest.h");
     }
 

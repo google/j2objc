@@ -43,7 +43,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   @Override
   protected void generateFileHeader() {
     println("#include \"J2ObjC_header.h\"");
-    if (options.isIOSTest()) {
+    if (options.generateIOSTest()) {
     	println("#include \"IOSTest.h\"");
     }
     newline();

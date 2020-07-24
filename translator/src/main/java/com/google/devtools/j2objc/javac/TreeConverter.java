@@ -170,6 +170,7 @@ public class TreeConverter {
       TreePath path = new TreePath(javacUnit);
       converter.newUnit.setPackage(converter.convertPackage(path));
       HashMap<String, String> unreachableClases = converter.newUnit.resolveUnreachableImportedClasses(javacUnit);
+      
       TypeUtil.setUnreachableClasses(converter.newUnit);
       if (unreachableClases.size() > 0) {
     	  ErrorUtil.addSkip(sourceFile.getName().toString());
@@ -188,6 +189,9 @@ public class TreeConverter {
         TypeUtil.setIgnoreAllUnreachableTypeError(false); 
       }
       addOcniComments(converter.newUnit, options.jsniWarnings());
+      if (options.generateIOSTest()) {
+        converter.newUnit.resolveTestCase();
+      }
 
       // Enable this to debug tree conversion issues, otherwise let
       // TranslationProcessor.applyMutations() handle verification.

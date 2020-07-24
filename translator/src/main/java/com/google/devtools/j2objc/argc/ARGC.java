@@ -65,18 +65,18 @@ import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.ITypeLoader;
 
 public class ARGC {
-	private static ArrayList<String> excludeClasses = new ArrayList<String>();
-	private static ArrayList<String> excludePackages = new ArrayList<String>();
+	private static ArrayList<String> excludedClasses = new ArrayList<String>();
+	private static ArrayList<String> excludedPackages = new ArrayList<String>();
 	private static HashMap<String, CompilationUnit> units = new HashMap<>();
 	private static HashMap<String, AbstractTypeDeclaration> types = new HashMap<>();
 
 	public static void addExcludeRule(String classpath) {
 		if (classpath.charAt(0) != '@') {
 			if ('.' == classpath.charAt(classpath.length() - 1)) {
-				excludePackages.add(classpath);
+				excludedPackages.add(classpath);
 			}
 			else {
-				excludeClasses.add(classpath);
+				excludedClasses.add(classpath);
 			}
 		}
 		else {
@@ -92,7 +92,7 @@ public class ARGC {
 
 	public static boolean isExcludedPackage(String _package) {
 		_package = _package.replace('/', '.') + '.';
-		for (String s : excludePackages) {
+		for (String s : excludedPackages) {
 			if (_package.equals(s)) {
 				return true;
 			}
@@ -105,12 +105,12 @@ public class ARGC {
 		if (filename.endsWith(".java")) {
 			filename = filename.substring(0, filename.length() - 5);
 		}
-		for (String s : excludeClasses) {
+		for (String s : excludedClasses) {
 			if (filename.equals(s)) {
 				return true;
 			}
 		}
-		for (String s : excludePackages) {
+		for (String s : excludedPackages) {
 			if (filename.startsWith(s)) {
 				return true;
 			}
@@ -119,30 +119,14 @@ public class ARGC {
 	}
 
 	public static boolean hasExcludeRule() {
-		return excludeClasses.size() > 0;
+		return excludedClasses.size() > 0;
 	}
 
-	public static int trap() {
-		int a = 3;
-		a ++;
-		return a;
-	}
-
-	
-
-	private static HashMap<TypeMirror, TypeMirror> testClasses = new HashMap<>(); 
-	
-	public static boolean isTestClass(TypeMirror type) {
-		return testClasses.containsKey(type);
-	}
-	
 	public static void preprocessUnit(CompilationUnit unit) {
 		for (AbstractTypeDeclaration type : unit.getTypes()) {
 			types.put(type.getName().toString(), type);
 		}
 		preprocessUnreachableImportedClasses(unit, new HashMap<>());
-		
-		
 	}
 
 	
@@ -155,24 +139,6 @@ public class ARGC {
 		processed.put(src_f, src_f);
 		for (AbstractTypeDeclaration _t : unit.getTypes()) {
 			TypeElement type = _t.getTypeElement();
-			if (Options.isIOSTest()) {
-				boolean isTestClass = false;
-				try {
-					for (BodyDeclaration body : _t.getBodyDeclarations()) {
-						if (body instanceof MethodDeclaration) {
-							isTestClass |= ((MethodDeclaration)body).checkTestMethod();
-						}
-					}
-					if (isTestClass) {
-						testClasses.put(type.asType(), type.asType()); 
-					}
-				} catch (InvalidClassException e) {
-					System.err.println("Testcase conversion error: " + src_f + 
-							"\nTest method name must start with 'test'." +
-							"\nThe name of method annotated by @Before must be 'setUp'" +
-					    "\nThe name of method annotated by @After must be 'tearDown'");
-				}
-			}
 
 			for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
 			  String name = inheritedType.toString();
@@ -189,7 +155,7 @@ public class ARGC {
 		return urMap;
 	}
 	
-	public static void registerUnit(CompilationUnit unit) {
+	public static void registerCompilationUnit(CompilationUnit unit) {
 		for (AbstractTypeDeclaration _t : unit.getTypes()) {
 			TypeElement type = _t.getTypeElement();
 			String name = type.getQualifiedName().toString();

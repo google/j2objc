@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -277,8 +278,8 @@ public final class TypeUtil {
     if (TypeUtil.isPureInterface(t)) {
       return "Generic";
     }
-    if (Options.isIOSTest() && ARGC.isTestClass(t)) {
-      // IOSTest class 는 ARGCObject 를 상속하지 않는다.
+    if (J2ObjC.options.generateIOSTest() && CompilationUnit.isTestClass(t)) {
+      // IOSTest class is not inherits ARGCObject
       return "Native";
     }
 

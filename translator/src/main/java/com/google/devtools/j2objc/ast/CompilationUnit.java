@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
@@ -24,6 +25,7 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.ImportTree;
 
+import java.io.InvalidClassException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -235,14 +237,14 @@ public class CompilationUnit extends TreeNode {
   }
   
   public HashMap<String, String> resolveUnreachableImportedClasses(CompilationUnitTree unit) {
-	HashMap<String, String> map = new HashMap<>();
-	for (ImportTree tree : unit.getImports()) {
-	  String fullname = tree.getQualifiedIdentifier().toString();
+    HashMap<String, String> map = new HashMap<>();
+    for (ImportTree tree : unit.getImports()) {
+      String fullname = tree.getQualifiedIdentifier().toString();
       if (ARGC.isExcludedClass(fullname)) {
-	    String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
-			  map.put(simpleName, fullname);
-		  }
-	  }
+        String simpleName = fullname.substring(fullname.lastIndexOf('.') + 1);
+        map.put(simpleName, fullname);
+      }
+    }
 	  this.unreachableImports = map;
 	  return map;
   }
@@ -271,9 +273,36 @@ public class CompilationUnit extends TreeNode {
   }
 
   public static HashMap<String, Integer> getStringPool(String sourceFileName) {
-	HashMap<String, Integer> stringPool = stringPools.get(sourceFileName);
-	return stringPool;	
+    HashMap<String, Integer> stringPool = stringPools.get(sourceFileName);
+    return stringPool;	
+  }
+
+  public void resolveTestCase() {
+    for (AbstractTypeDeclaration _t : this.getTypes()) {
+      TypeElement type = _t.getTypeElement();
+      try {
+        boolean isTestCase = false;
+        for (BodyDeclaration body : _t.getBodyDeclarations()) {
+          if (body instanceof MethodDeclaration) {
+            isTestCase |= ((MethodDeclaration)body).checkTestMethod();
+          }
+        }
+        if (isTestCase) {
+          testcaseClasses.put(type.asType(), type.asType()); 
+        }
+      } catch (InvalidClassException e) {
+        System.err.println("Testcase conversion error: " + sourceFilePath + 
+            "\nTest method name must start with 'test'." +
+            "\nThe name of method annotated by @Before must be 'setUp'" +
+            "\nThe name of method annotated by @After must be 'tearDown'");
+      }
+    }
+  }
+
+  private static HashMap<TypeMirror, TypeMirror> testcaseClasses = new HashMap<>(); 
+
+  public static boolean isTestClass(TypeMirror type) {
+    return testcaseClasses.containsKey(type);
   }
   
-
 }

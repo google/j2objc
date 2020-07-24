@@ -1077,7 +1077,7 @@ public class Options {
     return emitSourceHeaders;
   }
 
-  public static boolean isIOSTest() {
+  public boolean generateIOSTest() {
     return iostest;
   }
   
