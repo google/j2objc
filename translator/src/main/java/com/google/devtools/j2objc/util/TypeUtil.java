@@ -235,9 +235,9 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
-	if (t.getKind() == TypeKind.ERROR) {
-	  return resolveUnreachableClass(t);
-	}
+    if (t.getKind() == TypeKind.ERROR) {
+      return resolveUnreachableClass(t);
+    }
     if (isDeclaredType(t)) {
       return (TypeElement) ((DeclaredType) t).asElement();
     }
@@ -255,55 +255,55 @@ public final class TypeUtil {
   }
 
   public boolean isARGCFieldEx(TypeElement owner, TypeMirror t) {
-	if (getArgcFieldType(owner.asType()) == "Native") {
-	  return false;
-	}
-	  
-	if (isPrimitiveOrVoid(t)) {
-	  return false;
-	}
-	  
-	return getArgcFieldType(t) != "Native";
+    if (getArgcFieldType(owner.asType()) == "Native") {
+      return false;
+    }
+
+    if (isPrimitiveOrVoid(t)) {
+      return false;
+    }
+
+    return getArgcFieldType(t) != "Native";
   }
   
   public String getArgcFieldTypeEx(Element owner, TypeMirror t) {
-	if (getArgcFieldType(owner.asType()) == "Native") {
-	  return "Native";
-	}
-	return getArgcFieldType(t);
+    if (getArgcFieldType(owner.asType()) == "Native") {
+      return "Native";
+    }
+    return getArgcFieldType(t);
   }
   
   private String getArgcFieldType(TypeMirror t) {
-	if (TypeUtil.isPureInterface(t)) {
-	  return "Generic";
-	}
+    if (TypeUtil.isPureInterface(t)) {
+      return "Generic";
+    }
     if (Options.isIOSTest() && ARGC.isTestClass(t)) {
-  	  // IOSTest class 는 ARGCObject 를 상속하지 않는다.
+      // IOSTest class 는 ARGCObject 를 상속하지 않는다.
       return "Native";
-	}
-	
-	TypeElement e = asTypeElement(t);
-	if (e == null) {
-	  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
-	  if (tp != null) {
-	    return "Generic";
-	  }
-	}
-	if (e == javaObject) {
-	  return "Generic";
-	}
-	while (e != null) {
-	  if (e == this.javaNumber  || e == javaThrowable
-	  ||  e == javaClass || e == this.javaString) {
-	    return "Native";
-	  }
-	  TypeMirror m = e.getSuperclass();
-	  if (isNone(m)) {
-		break;
-	  }
-	  e = asTypeElement(m);
-	}
-   	return "Object";
+    }
+
+    TypeElement e = asTypeElement(t);
+    if (e == null) {
+      TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
+      if (tp != null) {
+        return "Generic";
+      }
+    }
+    if (e == javaObject) {
+      return "Generic";
+    }
+    while (e != null) {
+      if (e == this.javaNumber  || e == javaThrowable
+          ||  e == javaClass || e == this.javaString) {
+        return "Native";
+      }
+      TypeMirror m = e.getSuperclass();
+      if (isNone(m)) {
+        break;
+      }
+      e = asTypeElement(m);
+    }
+    return "Object";
   }
   
   
