@@ -2306,6 +2306,7 @@ PUBLIC_NATIVE_HEADERS = \
   com/google/j2objc/NotImportedError.h \
   IOSArray.h \
   IOSClass.h \
+  IOSTest.h \
   IOSMetadata.h \
   IOSObjectArray.h \
   IOSPrimitiveArray.h \
