@@ -177,7 +177,7 @@ run-single-test: link resources $(TEST_BIN)
 	done
 
 run-initialization-test: resources $(TESTS_DIR)/jreinitialization
-	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
+	@$(TESTS_DIR)/jreinitialization 2>&1 | grep -v "support not implemented"
 
 run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/full_jre_size \
@@ -300,6 +300,7 @@ $(ALL_TESTS_SOURCE): tests.mk test_sources.mk
 	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
 
 $(TESTS_DIR)/jreinitialization: $(MISC_TEST_ROOT)/JreInitialization.m $(DIST_JRE_EMUL_LIB)
+	@echo Verifying JRE initialization
 	@$(J2OBJCC) -o $@ -ljre_emul -ObjC -Os $(MISC_TEST_ROOT)/JreInitialization.m
 
 $(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2objc/%.java
