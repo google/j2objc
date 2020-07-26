@@ -14,7 +14,26 @@
 
 package com.google.devtools.j2objc.javac;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.tools.JavaFileObject;
+
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
@@ -118,8 +137,54 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
-import com.sun.source.tree.*;
+import com.sun.source.tree.AnnotationTree;
+import com.sun.source.tree.ArrayAccessTree;
+import com.sun.source.tree.ArrayTypeTree;
+import com.sun.source.tree.AssertTree;
+import com.sun.source.tree.AssignmentTree;
+import com.sun.source.tree.BinaryTree;
+import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.BreakTree;
+import com.sun.source.tree.CaseTree;
+import com.sun.source.tree.CatchTree;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.CompoundAssignmentTree;
+import com.sun.source.tree.ConditionalExpressionTree;
+import com.sun.source.tree.ContinueTree;
+import com.sun.source.tree.DoWhileLoopTree;
+import com.sun.source.tree.EnhancedForLoopTree;
+import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.ForLoopTree;
+import com.sun.source.tree.IdentifierTree;
+import com.sun.source.tree.IfTree;
+import com.sun.source.tree.InstanceOfTree;
+import com.sun.source.tree.LabeledStatementTree;
+import com.sun.source.tree.LambdaExpressionTree;
+import com.sun.source.tree.LiteralTree;
+import com.sun.source.tree.MemberReferenceTree;
+import com.sun.source.tree.MemberSelectTree;
+import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.ModifiersTree;
+import com.sun.source.tree.NewArrayTree;
+import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.ParameterizedTypeTree;
+import com.sun.source.tree.ParenthesizedTree;
+import com.sun.source.tree.PrimitiveTypeTree;
+import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.StatementTree;
+import com.sun.source.tree.SwitchTree;
+import com.sun.source.tree.SynchronizedTree;
+import com.sun.source.tree.ThrowTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
+import com.sun.source.tree.TryTree;
+import com.sun.source.tree.TypeCastTree;
+import com.sun.source.tree.UnaryTree;
+import com.sun.source.tree.VariableTree;
+import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
@@ -129,24 +194,19 @@ import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.*;
+import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+import com.sun.tools.javac.tree.JCTree.JCExpression;
+import com.sun.tools.javac.tree.JCTree.JCFunctionalExpression;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
+import com.sun.tools.javac.tree.JCTree.JCMemberReference;
+import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
+import com.sun.tools.javac.tree.JCTree.JCModifiers;
+import com.sun.tools.javac.tree.JCTree.JCNewClass;
+import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
+import com.sun.tools.javac.tree.JCTree.Tag;
 import com.sun.tools.javac.util.Position;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.tools.JavaFileObject;
 
 /** Converts a Java AST from the Javac data structure to our J2ObjC data structure. */
 public class TreeConverter {
@@ -1052,12 +1112,12 @@ public class TreeConverter {
     	element = (ExecutableElement) getElement(methodPath);
     }
     catch (RuntimeException e) {
-    	if (!ImportManager.hasCustomImportRule()) {
+    	if (!J2ObjC.options.hasCustomImportRule()) {
     		throw e;
     	}
     }
 
-    if (ImportManager.hasCustomImportRule() && (element == null || type == null))  {
+    if (J2ObjC.options.hasCustomImportRule() && (element == null || type == null))  {
       MethodInvocation newNode = new MethodInvocation();
       if (type != null && type.getKind().isPrimitive()) {
         newNode
@@ -1165,29 +1225,29 @@ public class TreeConverter {
     ExecutableElement executable = (ExecutableElement) getElement(path);
     TypeMirror vargarsType;
     TypeDeclaration anonymousClassDeclaration;
-    if (executable == null && ImportManager.hasCustomImportRule()) {
-    	JCTree.JCNewClass tree = (JCNewClass) node;
-    	String s = tree.clazz.toString();
-    	TypeElement type = TypeUtil.resolveUnreachableClass(s);
-  	  	if (type == null) {
-		  throw new AssertionError("Cannot resolve signature name for type: " + s);
-  	  	}
-    	executable = env.createNotImportedError;
-    	vargarsType = env.javaLangObject.asType();
-    	anonymousClassDeclaration = null;
+    if (executable == null && J2ObjC.options.hasCustomImportRule()) {
+      JCTree.JCNewClass tree = (JCNewClass) node;
+      String s = tree.clazz.toString();
+      TypeElement type = TypeUtil.resolveUnreachableClass(s);
+      if (type == null) {
+        throw new AssertionError("Cannot resolve signature name for type: " + s);
+      }
+      executable = env.createNotImportedError;
+      vargarsType = env.javaLangObject.asType();
+      anonymousClassDeclaration = null;
     }
     else {
-    	vargarsType = ((JCNewClass) node).varargsElement;
-    // Case where the first parameter of the constructor of an inner class is the outer class (e.g.
-    // new Outer().new Inner(...). Move the enclosing expression (e.g. new Outer()) as the first
-    // argument. A varargs parameter could unintentionally trigger this condition because it could
-    // map to zero arguments.
-	    if (executable.getParameters().size() - node.getArguments().size() == 1
-	        && vargarsType == null) {
-	      newNode.addArgument(enclosingExpression);
-	      enclosingExpression = null;
-	    }
-	    anonymousClassDeclaration = (TypeDeclaration) convert(node.getClassBody(), path);
+      vargarsType = ((JCNewClass) node).varargsElement;
+      // Case where the first parameter of the constructor of an inner class is the outer class (e.g.
+      // new Outer().new Inner(...). Move the enclosing expression (e.g. new Outer()) as the first
+      // argument. A varargs parameter could unintentionally trigger this condition because it could
+      // map to zero arguments.
+      if (executable.getParameters().size() - node.getArguments().size() == 1
+          && vargarsType == null) {
+        newNode.addArgument(enclosingExpression);
+        enclosingExpression = null;
+      }
+      anonymousClassDeclaration = (TypeDeclaration) convert(node.getClassBody(), path);
     }
     for (ExpressionTree arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg, path));

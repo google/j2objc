@@ -137,7 +137,7 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      if (ErrorUtil.errorCount() > 0 && !ImportManager.hasCustomImportRule()) {
+      if (ErrorUtil.errorCount() > 0 && !options.hasCustomImportRule()) {
         return;
       }
       translationProcessor.postProcess();

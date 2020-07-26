@@ -64,102 +64,106 @@ import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.ITypeLoader;
 
 public class ImportManager {
-	private static ArrayList<String> notImportClasses = new ArrayList<String>();
-	private static ArrayList<String> notImportPackages = new ArrayList<String>();
-	private static HashMap<String, CompilationUnit> units = new HashMap<>();
+  private static ArrayList<String> notImportClasses = new ArrayList<String>();
+  private static ArrayList<String> notImportPackages = new ArrayList<String>();
+  private static HashMap<String, CompilationUnit> units = new HashMap<>();
 
-	public static void addNotImportRule(String classpath) {
-		if (classpath.charAt(0) != '!') {
-			if ('.' == classpath.charAt(classpath.length() - 1)) {
-				notImportPackages.add(classpath);
-			}
-			else {
-				notImportClasses.add(classpath);
-			}
-			if (J2ObjC.options.isVerbose()) {
-			  System.out.println("* not import : " + classpath);
-			}
-		}
-		else {
-			File lstf = new File(classpath.substring(1));
-			ArrayList<String> files = SourceStore.readPathList(lstf);
-			if (files != null) {
-				for (String s : files) {
-					addNotImportRule(s);
-				}
-			}
-		}
-	}
+  public static void addNotImportRule(String classpath) {
+    if (classpath.charAt(0) != '!') {
+      if ('.' == classpath.charAt(classpath.length() - 1)) {
+        notImportPackages.add(classpath);
+      }
+      else {
+        notImportClasses.add(classpath);
+      }
+      if (J2ObjC.options.isVerbose()) {
+        System.out.println("* not import : " + classpath);
+      }
+    }
+    else {
+      File lstf = new File(classpath.substring(1));
+      ArrayList<String> files = SourceStore.readPathList(lstf);
+      if (files != null) {
+        for (String s : files) {
+          addNotImportRule(s);
+        }
+      }
+    }
+  }
 
-	public static boolean canImportPackage(String _package) {
-		_package = _package.replace('/', '.') + '.';
-		for (String s : notImportPackages) {
-			if (_package.equals(s)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	public static boolean canImportClass(String filename) {
-		filename = filename.replace('/', '.');
-		if (filename.endsWith(".java")) {
-			filename = filename.substring(0, filename.length() - 5);
-		}
-		for (String s : notImportClasses) {
-			if (filename.equals(s)) {
-				return false;
-			}
-		}
-		for (String s : notImportPackages) {
-			if (filename.startsWith(s)) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public static boolean canImportPackage(String _package) {
+    if (!J2ObjC.options.hasCustomImportRule()) {
+      return true;
+    }
 
-	public static boolean hasCustomImportRule() {
-		return notImportClasses.size() > 0;
-	}
+    _package = _package.replace('/', '.') + '.';
+    for (String s : notImportPackages) {
+      if (_package.equals(s)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public static void resolveImportability(CompilationUnit unit) {
-		resolveImportability(unit, new HashMap<>());
-	}
+  public static boolean canImportClass(String filename) {
+    if (!J2ObjC.options.hasCustomImportRule()) {
+      return true;
+    }
+    
+    filename = filename.replace('/', '.');
+    if (filename.endsWith(".java")) {
+      filename = filename.substring(0, filename.length() - 5);
+    }
+    for (String s : notImportClasses) {
+      if (filename.equals(s)) {
+        return false;
+      }
+    }
+    for (String s : notImportPackages) {
+      if (filename.startsWith(s)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	
-	private static HashMap<String, String> resolveImportability(CompilationUnit unit, HashMap<String, String> processed) {
-		HashMap<String, String> urMap = unit.getUnreachableImportedClasses();
-		if (processed.containsKey(unit.getSourceFilePath())) {
-			return urMap;
-		}
-		String src_f = unit.getSourceFilePath();
-		processed.put(src_f, src_f);
-		for (AbstractTypeDeclaration _t : unit.getTypes()) {
-			TypeElement type = _t.getTypeElement();
+  public static void resolveImportability(CompilationUnit unit) {
+    resolveImportability(unit, new HashMap<>());
+  }
 
-			for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
-			  String name = inheritedType.toString();
-			  int idx = name.indexOf('<');
-			  if (idx > 0) {
-			    name = name.substring(0, idx);
-			  }
-			  CompilationUnit superUnit = units.get(name);
-			  if (superUnit != null) {
-			    urMap.putAll(resolveImportability(superUnit, processed));
-			  }
-			}
-		}
-		return urMap;
-	}
-	
-	public static void registerCompilationUnit(CompilationUnit unit) {
-		for (AbstractTypeDeclaration _t : unit.getTypes()) {
-			TypeElement type = _t.getTypeElement();
-			String name = type.getQualifiedName().toString();
-	    	units.put(name, unit);
-		}
-	}
+
+  private static HashMap<String, String> resolveImportability(CompilationUnit unit, HashMap<String, String> processed) {
+    HashMap<String, String> urMap = unit.getUnreachableImportedClasses();
+    if (processed.containsKey(unit.getSourceFilePath())) {
+      return urMap;
+    }
+    String src_f = unit.getSourceFilePath();
+    processed.put(src_f, src_f);
+    for (AbstractTypeDeclaration _t : unit.getTypes()) {
+      TypeElement type = _t.getTypeElement();
+
+      for (TypeMirror inheritedType : TypeUtil.directSupertypes(type.asType())) {
+        String name = inheritedType.toString();
+        int idx = name.indexOf('<');
+        if (idx > 0) {
+          name = name.substring(0, idx);
+        }
+        CompilationUnit superUnit = units.get(name);
+        if (superUnit != null) {
+          urMap.putAll(resolveImportability(superUnit, processed));
+        }
+      }
+    }
+    return urMap;
+  }
+
+  public static void registerCompilationUnit(CompilationUnit unit) {
+    for (AbstractTypeDeclaration _t : unit.getTypes()) {
+      TypeElement type = _t.getTypeElement();
+      String name = type.getQualifiedName().toString();
+      units.put(name, unit);
+    }
+  }
 
 }
 

@@ -320,8 +320,8 @@ public class NameTable {
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
       TypeElement elem = bounds.isEmpty()
           ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
-      if (ImportManager.hasCustomImportRule() && elem == null) {
-    	  elem = TypeUtil.NS_OBJECT;
+      if (J2ObjC.options.hasCustomImportRule() && elem == null) {
+    	elem = TypeUtil.NS_OBJECT;
       }
       assert elem != null;
       if (arrayDimensions == 0 && elem.equals(TypeUtil.NS_OBJECT)) {

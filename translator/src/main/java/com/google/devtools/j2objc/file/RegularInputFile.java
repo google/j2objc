@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.javac.ImportManager;
 
 /**
@@ -40,7 +41,7 @@ public class RegularInputFile extends InputFile {
     this.absolutePath = fsPath;
     
     if (!ImportManager.canImportClass(unitPath)) {
-    	throw new RuntimeException("exclude " + unitPath);
+      throw new RuntimeException("exclude " + unitPath);
     }
   }
 

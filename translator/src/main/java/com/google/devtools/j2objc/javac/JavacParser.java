@@ -268,14 +268,14 @@ public class JavacParser extends Parser {
               .convertCompilationUnit(options, env, ast);
 
           if (unit != null) {
-            if (ImportManager.hasCustomImportRule()) {
+            if (options.hasCustomImportRule()) {
               ImportManager.registerCompilationUnit(unit);
             }
             compileUnits.add(unit);
           }
         }
         
-        if (ImportManager.hasCustomImportRule()) {
+        if (options.hasCustomImportRule()) {
           for (com.google.devtools.j2objc.ast.CompilationUnit unit : compileUnits) {
             ImportManager.resolveImportability(unit);
           }

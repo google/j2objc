@@ -97,8 +97,9 @@ public class Options {
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
-  private static boolean iostest = false;
-  public boolean isConstRefArgs;
+  private boolean iostest = false;
+  private boolean isConstRefArgs;
+  private boolean hasCustomImportRule = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -353,6 +354,7 @@ public class Options {
       } else if (arg.equals("-sourcepath")) {
         fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false, true));
       } else if (arg.equals("--not-import")) {
+    	hasCustomImportRule = true;
         ImportManager.addNotImportRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {
         processorPathEntries.addAll(getPathArgument(getArgValue(args, arg), true, false));
@@ -1122,5 +1124,9 @@ public class Options {
 	 * see __attribute__((objc_externally_retained))
 	 */
 	return isConstRefArgs;
+  }
+
+  public boolean hasCustomImportRule() {
+	return hasCustomImportRule;
   }
 }

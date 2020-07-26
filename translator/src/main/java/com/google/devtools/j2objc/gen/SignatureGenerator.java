@@ -326,11 +326,11 @@ public class SignatureGenerator {
         }
         break;
       default:
-    	  if (ImportManager.hasCustomImportRule()) {
-    		  sb.append(typeUtil.getSignatureName(type));
-    	  }
-    	  else 
-    		  throw new AssertionError("Unexpected type kind: " + type.getKind());
+        if (J2ObjC.options.hasCustomImportRule()) {
+          sb.append(typeUtil.getSignatureName(type));
+        }
+        else 
+          throw new AssertionError("Unexpected type kind: " + type.getKind());
     }
   }
 

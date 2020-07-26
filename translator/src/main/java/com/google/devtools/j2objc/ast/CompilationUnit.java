@@ -23,6 +23,7 @@ import javax.lang.model.type.TypeMirror;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.UnicodeUtils;
