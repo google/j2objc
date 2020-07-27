@@ -64,7 +64,7 @@ public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
-  private static MemoryManagementOption memoryManagementOption = null;
+  private MemoryManagementOption memoryManagementOption = null;
   private EmitLineDirectivesOption emitLineDirectives = EmitLineDirectivesOption.NONE;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
@@ -687,14 +687,14 @@ public class Options {
 
   
   private void addPath(List<String> entries, File f, boolean expandAarFiles) {
-	  if (expandAarFiles && !f.isDirectory()) {
-		  f = SourceStore.extractSources(f, this, false);
-		  if (f == null) {
-			  return;
-		  }
-	  }
-	  String path = SourceStore.addRootPath(f);
-	  entries.add(path);
+    if (expandAarFiles && !f.isDirectory()) {
+      f = SourceStore.extractSources(f, this, false);
+      if (f == null) {
+        return;
+      }
+    }
+    String path = SourceStore.addRootPath(f);
+    entries.add(path);
   }
   
   private List<String> getPathArgument(String argument, boolean isClassPath, boolean expandWildcard) {
@@ -776,15 +776,15 @@ public class Options {
     this.language = language;
   }
 
-  public static boolean useReferenceCounting() {
+  public boolean useReferenceCounting() {
     return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
 
-  public static boolean useARC() {
+  public boolean useARC() {
     return memoryManagementOption == MemoryManagementOption.ARC;
   }
 
-  public static boolean useGC() {
+  public boolean useGC() {
 	return memoryManagementOption == MemoryManagementOption.GC;
   }
   
@@ -853,13 +853,13 @@ public class Options {
   }
 
   public List<String> getBootClasspath() {
-	  if (this.bootcps == null) {
-		  bootcps = getPathArgument(bootclasspath, true, true);
-		  if (isVerbose()) {
-		    System.out.println("bootclasspath = " + bootcps);
-		  }
-	  }
-	  return this.bootcps;
+    if (this.bootcps == null) {
+      bootcps = getPathArgument(bootclasspath, true, true);
+      if (isVerbose()) {
+        System.out.println("bootclasspath = " + bootcps);
+      }
+    }
+    return this.bootcps;
   }
 
   public Mappings getMappings() {

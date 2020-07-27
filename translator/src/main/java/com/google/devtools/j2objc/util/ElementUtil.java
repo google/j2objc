@@ -408,7 +408,7 @@ public final class ElementUtil {
   }
 
   public boolean isWeakOuterType(TypeElement type) {
-    if (Options.useGC()) {
+    if (J2ObjC.options.useGC()) {
       return false;
     }
     if (type instanceof LambdaTypeElement) {
@@ -456,7 +456,7 @@ public final class ElementUtil {
   }
 
   public static boolean isRetainedWithField(VariableElement varElement) {
-    return !Options.useGC() && hasAnnotation(varElement, RetainedWith.class);
+    return !J2ObjC.options.useGC() && hasAnnotation(varElement, RetainedWith.class);
   }
 
   public static <T extends Element> Iterable<T> filterEnclosedElements(
