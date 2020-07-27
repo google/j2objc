@@ -144,12 +144,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMemoryManagement() {
     Options.MemoryManagementOption memoryManagementOption = options.getMemoryManagementOption();
+    if (memoryManagementOption == Options.MemoryManagementOption.GC) {
+      return;
+    }
+    
     String filename = getGenerationUnit().getOutputPath();
 
     if (memoryManagementOption == Options.MemoryManagementOption.ARC) {
       println("#if !__has_feature(objc_arc)");
       println(String.format("#error \"%s must be compiled with ARC (-fobjc-arc)\"", filename));
-    } else {
+    } else  {
       println("#if !J2OBJC_USE_GC && __has_feature(objc_arc)");
       println(String.format("#error \"%s must not be compiled with ARC (-fobjc-arc)\"", filename));
     }
