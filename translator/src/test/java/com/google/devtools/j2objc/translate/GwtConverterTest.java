@@ -52,7 +52,7 @@ public class GwtConverterTest extends GenerationTest {
         + "  String FOO = foo();"  // Regression requires subsequent non-mapped method invocation.
         + "  static String foo() { return \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->INSTANCE_, [Test_class_() newInstance]);");
+        "JreObjectFieldAssign(&self->INSTANCE_, [Test_class_() newInstance]);");
   }
 
   public void testGwtIsScript() throws IOException {

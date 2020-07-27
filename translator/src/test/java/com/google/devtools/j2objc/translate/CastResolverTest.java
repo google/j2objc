@@ -145,7 +145,7 @@ public class CastResolverTest extends GenerationTest {
         + " Node getNext() { return null; }"
         + " int test() { return (next = getNext()).key; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "return ((Test_Node *) (JreStrongAssign(&Test_next, [self getNext])))->key_;");
+        "return ((Test_Node *) (JreStaticAssign(&Test_next, [self getNext])))->key_;");
   }
 
   public void testCastOfInferredWildcardType() throws IOException {

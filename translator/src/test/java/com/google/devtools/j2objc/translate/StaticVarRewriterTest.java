@@ -40,7 +40,7 @@ public class StaticVarRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(JreLoadStaticRef(A, o), new_NSObject_init());");
+        "JreStaticAssignAndConsume(JreLoadStaticRef(A, o), new_NSObject_init());");
   }
 
   public void testFieldAccessRewriting() throws IOException {

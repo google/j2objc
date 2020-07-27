@@ -74,7 +74,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_date, new_JavaUtilDate_init());");
+        "JreObjectFieldAssignAndConsume(&Test_date, new_JavaUtilDate_init());");
   }
 
   public void testFieldInitializer() throws IOException {
@@ -85,7 +85,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
-        "  JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "  JreObjectFieldAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
         "}");
   }
 
@@ -98,7 +98,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
         "  {",
-        "    JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "    JreObjectFieldAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
         "  }",
         "}");
   }
@@ -131,7 +131,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "void Test_initWithInt_(Test *self, jint i) {",
         "  NSObject_init(self);",
         "  {",
-        "    JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "    JreObjectFieldAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
         "  }",
         "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
           + "printlnWithInt:i];",
@@ -145,7 +145,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
-        "  JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "  JreObjectFieldAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
         "}");
   }
 
@@ -164,7 +164,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo, [NSString stringWithCharacters:(jchar[]) { "
+        "JreNativeFieldAssign(&Test_foo, [NSString stringWithCharacters:(jchar[]) { "
         + "(int) 0xdfff } length:1]);");
   }
 
@@ -174,7 +174,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello1\", "
+        "JreNativeFieldAssign(&Test_foo, JreStrcat(\"$$\", @\"hello1\", "
         + "[NSString stringWithCharacters:(jchar[]) { (int) 0xdfff } length:1]));");
   }
 
@@ -183,9 +183,9 @@ public class InitializationNormalizerTest extends GenerationTest {
          + "  int outerVar = 1; "
          + "  class Inner { int innerVar = outerVar; void test() { outerVar++; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$);");
     assertTranslation(translation, "innerVar_ = outer$->outerVar_;");
-    assertTrue(translation.indexOf("JreStrongAssign(&self->this$0_, outer$);")
+    assertTrue(translation.indexOf("JreObjectFieldAssign(&self->this$0_, outer$);")
                < translation.indexOf("innerVar_ = outer$->outerVar_;"));
   }
 
@@ -197,7 +197,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "  static { iSet.add(I); } "
         + "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    String setInit = "JreStrongAssignAndConsume(&Test_iSet, new_JavaUtilHashSet_init())";
+    String setInit = "JreStaticAssignAndConsume(&Test_iSet, new_JavaUtilHashSet_init())";
     String setAdd = "[Test_iSet addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
     String setSize = "Test_iSetSize = [Test_iSet size]";
     assertTranslation(translation, setInit);
@@ -275,7 +275,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "+ (void)initialize {",
         "  if (self == [Test class]) {",
         // Initialization of the constant FOO must come before initialization of non-constants.
-        "    JreStrongAssign(&Test_FOO, [NSString stringWithCharacters:(jchar[]) { "
+        "    JreStaticAssign(&Test_FOO, [NSString stringWithCharacters:(jchar[]) { "
           + "(int) 0xda6e } length:1]);",
         "    Test_CODE_POINT = Test_getCodePoint();");
   }
@@ -290,6 +290,6 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertNotInTranslation(translation, "static id test_CLASS_LOCK = nil;");
 
     // Was it moved to class initialization?
-    assertNotInTranslation(translation, "JreStrongAssign(&test_CLASS_LOCK, nil);");
+    assertNotInTranslation(translation, "JreStaticAssign(&test_CLASS_LOCK, nil);");
   }
 }

@@ -100,7 +100,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertTranslation(translation, "#define A_foo 1");
     assertTranslation(translation, "NSString *A_bar = @\"bar\";");
     assertTranslation(translation, "abc_ = 9;");
-    assertTranslation(translation, "JreStrongAssign(&self->bah_, @\"123\");");
+    assertTranslation(translation, "JreNativeFieldAssign(&self->bah_, @\"123\");");
     assertNotInTranslation(translation, "baz");
   }
 
@@ -248,7 +248,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "z_;");
     translation = getTranslatedFile("Foo.m");
     assertNotInTranslation(translation, "Foo *this$0_;");
-    assertNotInTranslation(translation, "JreStrongAssign(&self->this$0_, outer$");
+    assertNotInTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$");
     assertNotInTranslation(translation, "self->z_ = x;");
     assertNotInTranslation(translation, "- (jint)f");
   }

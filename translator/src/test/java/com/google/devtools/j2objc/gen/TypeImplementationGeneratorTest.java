@@ -86,7 +86,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(translation, "+ (NSString *)ID {", "return Test_ID;");
     assertTranslatedLines(translation,
-        "+ (void)setID:(NSString *)value {", "JreStrongAssign(&Test_ID, value);");
+        "+ (void)setID:(NSString *)value {", "JreStaticAssign(&Test_ID, value);");
     assertTranslatedLines(translation, "+ (jint)VERSION {", "return Test_VERSION;");
     assertTranslatedLines(translation, "+ (Test *)DEFAULT {", "return Test_DEFAULT;");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value"); // Read-only

@@ -51,7 +51,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "[nil_chk(this$0_->o_) hash]");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$);");
   }
 
   public void testWeakSimpleInnerClass() throws IOException {
@@ -119,7 +119,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "jint val$j_;");
     assertTranslatedLines(translation,
         "void A_B_1_initWithA_B_withInt_(A_B_1 *self, A_B *outer$, jint capture$0) {",
-        "  JreStrongAssign(&self->this$1_, outer$);",
+        "  JreObjectFieldAssign(&self->this$1_, outer$);",
         "  self->val$j_ = capture$0;",
         "  A_C_initWithA_(self, outer$->this$0_);",
         "}");
@@ -178,7 +178,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { public int size() { return 0; } "
         + "class Inner { int size() { return Test.this.size(); } } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$);");
     assertTranslation(translation, "return [this$0_ size];");
   }
 
@@ -193,7 +193,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { public int size() { return 0; } public void add(int n) {} class Inner {} "
         + "class Innermost { void test() { Test.this.add(size()); } } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$);");
     assertTranslation(translation, "[this$0_ addWithInt:[this$0_ size]];");
   }
 
@@ -202,9 +202,9 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { Inner inner = new Inner(true); public int size() { return 0; }"
         + "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); } } }",
         "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssignAndConsume(&self->inner_, "
+    assertTranslation(translation, "JreObjectFieldAssignAndConsume(&self->inner_, "
         + "new_Test_Inner_initWithTest_withBoolean_(self, true));");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$);");
   }
 
   public void testOuterClassAccessOuterVars() throws IOException {
@@ -258,7 +258,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // A.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_->this$0_->x_ = 3");
     // A.Inner init in anonymous Foo's constructor
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$)");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$)");
   }
 
   /**
@@ -288,7 +288,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // A.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_->this$0_->x_ = 4");
     // A.Inner init in anonymous Foo's constructor
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$)");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->this$0_, outer$)");
   }
 
   public void testOuterMethodReference() throws IOException {
@@ -582,7 +582,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&A_test, new_A_1_init());");
+        "JreStaticAssignAndConsume(&A_test, new_A_1_init());");
   }
 
   // Verify that an anonymous class in a static method does not reference
@@ -736,7 +736,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { int i; class Inner { void test() { i++; } } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "void Test_Inner_initWithTest_(Test_Inner *self, Test *outer$) {",
-        "  JreStrongAssign(&self->this$0_, outer$);",
+        "  JreObjectFieldAssign(&self->this$0_, outer$);",
         "  NSObject_init(self);",
         "}");
   }
@@ -772,7 +772,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_1Inner_initWithNSString_withInt_("
           + "Test_1Inner *self, NSString *capture$0, jint i) {",
-        "  JreStrongAssign(&self->val$s_, capture$0);",
+        "  JreNativeFieldAssign(&self->val$s_, capture$0);",
         "  NSObject_init(self);",
         "}");
   }

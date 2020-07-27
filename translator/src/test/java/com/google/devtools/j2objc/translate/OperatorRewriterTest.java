@@ -33,7 +33,7 @@ public class OperatorRewriterTest extends GenerationTest {
         "class Test { String s; static Test getTest() { return null; } "
         + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
+        "JreNativeFieldAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
   }
 
   public void testDivisionOperator() {
@@ -115,7 +115,7 @@ public class OperatorRewriterTest extends GenerationTest {
   public void testParenthesizedLeftHandSide() throws IOException {
     String translation = translateSourceFile(
         "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&(s_), s2);");
+    assertTranslation(translation, "JreNativeFieldAssign(&(s_), s2);");
   }
 
   public void testVolatileLoadAndAssign() throws IOException {

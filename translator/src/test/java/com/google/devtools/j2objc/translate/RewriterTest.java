@@ -146,9 +146,9 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_a, "
+        "JreStaticAssignAndConsume(&Test_a, "
             + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
-        "JreStrongAssignAndConsume(&Test_b, "
+        "JreStaticAssignAndConsume(&Test_b, "
             + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 

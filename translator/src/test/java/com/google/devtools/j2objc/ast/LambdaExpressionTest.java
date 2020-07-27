@@ -81,7 +81,7 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(
         functionHeader + "class Test { Function outerF = (x) -> x;}", "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->outerF_, JreLoadStatic(Test_$Lambda$1, instance));");
+        "JreObjectFieldAssign(&self->outerF_, JreLoadStatic(Test_$Lambda$1, instance));");
   }
 
   public void testStaticFunctions() throws IOException {
@@ -90,7 +90,7 @@ public class LambdaExpressionTest extends GenerationTest {
     assertTranslatedSegments(translation,
         "id<Function> Test_staticF;",
         "if (self == [Test class]) {",
-        "JreStrongAssign(&Test_staticF, JreLoadStatic(Test_$Lambda$1, instance))");
+        "JreStaticAssign(&Test_staticF, JreLoadStatic(Test_$Lambda$1, instance))");
   }
 
   public void testNestedLambdas() throws IOException {

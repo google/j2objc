@@ -193,7 +193,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "String foo; { foo = Bar.FOO; } }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->foo_, Example_Bar_FOO)");
+        "JreNativeFieldAssign(&self->foo_, Example_Bar_FOO)");
     assertTranslation(translation, "NSString *Example_Bar_FOO = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO;");
@@ -212,9 +212,9 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->b1_, JreLoadStatic(JavaLangBoolean, TRUE))");
+        "JreNativeFieldAssign(&self->b1_, JreLoadStatic(JavaLangBoolean, TRUE))");
     assertTranslation(translation,
-        "JreStrongAssign(&self->b2_, JreLoadStatic(JavaLangBoolean, FALSE))");
+        "JreNativeFieldAssign(&self->b2_, JreLoadStatic(JavaLangBoolean, FALSE))");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -262,7 +262,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example<K,V> { String s = \"hello, \" + 50 + \"% of the world\\n\"; }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->s_, @\"hello, 50% of the world\\n\");");
+        "JreNativeFieldAssign(&self->s_, @\"hello, 50% of the world\\n\");");
   }
 
   public void testStringConcatenationMethodInvocation() throws IOException {
@@ -344,7 +344,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  }"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->i_, otherI);");
+    assertTranslation(translation, "JreGenericFieldAssign(&self->i_, otherI);");
     assertTranslation(translation, "j_ = otherJ;");
     assertTranslation(translation, "RELEASE_(i_);");
   }
@@ -524,10 +524,10 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&Test_a, "
+        "JreStaticAssignAndConsume(&Test_a, "
         + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&Test_b, "
+        "JreStaticAssignAndConsume(&Test_b, "
         + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 
@@ -627,7 +627,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&self->map_, new_JavaUtilHashMap_init())");
+        "JreObjectFieldAssignAndConsume(&self->map_, new_JavaUtilHashMap_init())");
   }
 
   public void testStringAddOperator() throws IOException {
@@ -766,7 +766,7 @@ public class StatementGeneratorTest extends GenerationTest {
     // field in its superclass.
     assertTranslation(translation, "Test_B *other_B_;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->other_B_, [self getOther])");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->other_B_, [self getOther])");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {
@@ -835,7 +835,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }"
         + "class Test { void test(java.util.Date now) { Example.today = now; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Example, today), now);");
+    assertTranslation(translation, "JreStaticAssign(JreLoadStaticRef(Example, today), now);");
   }
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
@@ -1076,7 +1076,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "interface Assigner { void assign(String s); } static { "
         + "new Assigner() { public void assign(String s) { foo = s; }}; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Test, foo), s);");
+    assertTranslation(translation, "JreStaticAssign(JreLoadStaticRef(Test, foo), s);");
   }
 
   public void testNoAutoreleasePoolForStatement() throws IOException {
