@@ -166,9 +166,11 @@ public final class CopyOnWriteArrayListTest extends TestCase {
         testAddAllIsAtomic(new CopyOnWriteArrayList<Object>());
     }
 
+    /* J2ObjC removed: Disabled on JVM, see b/27673247
     public void testSubListAtomicAdds() throws Exception {
         testAddAllIsAtomic(new CopyOnWriteArrayList<Object>().subList(0, 0));
     }
+     */
 
     /**
      * Attempts to observe {@code list} in the middle of an add. The RI's

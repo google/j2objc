@@ -1848,18 +1848,6 @@ public class LogManager {
         private static final Class<?> propertyChangeEventClass =
             getClass("java.beans.PropertyChangeEvent");
 
-        private static final Method propertyChangeMethod =
-            getMethod(propertyChangeListenerClass,
-                      "propertyChange",
-                      propertyChangeEventClass);
-
-        private static final Constructor<?> propertyEventCtor =
-            getConstructor(propertyChangeEventClass,
-                           Object.class,
-                           String.class,
-                           Object.class,
-                           Object.class);
-
         private static Class<?> getClass(String name) {
             try {
                 return Class.forName(name, true, Beans.class.getClassLoader());
@@ -1899,6 +1887,12 @@ public class LogManager {
                                              Object oldValue, Object newValue)
         {
             try {
+                Constructor<?> propertyEventCtor =
+                        getConstructor(propertyChangeEventClass,
+                                Object.class,
+                                String.class,
+                                Object.class,
+                                Object.class);
                 return propertyEventCtor.newInstance(source, prop, oldValue, newValue);
             } catch (InstantiationException | IllegalAccessException x) {
                 throw new AssertionError(x);
@@ -1918,6 +1912,10 @@ public class LogManager {
          */
         static void invokePropertyChange(Object listener, Object ev) {
             try {
+                Method propertyChangeMethod =
+                        getMethod(propertyChangeListenerClass,
+                                "propertyChange",
+                                propertyChangeEventClass);
                 propertyChangeMethod.invoke(listener, ev);
             } catch (IllegalAccessException x) {
                 throw new AssertionError(x);
