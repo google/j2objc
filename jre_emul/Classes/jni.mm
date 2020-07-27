@@ -1326,30 +1326,18 @@ static jint DetachCurrentThread(JavaVM *vm) {
 }
 
 static jint GetEnv(JavaVM *vm, void **penv, jint version) {
-#ifdef J2OBJC_USE_GC
-    if (version > JNI_VERSION_1_6) {
-        return JNI_EVERSION;
-    }
-
-    JavaLangThread * javaThread = getCurrentJavaThreadOrNull();
-    if (javaThread == NULL) {
-        *penv = NULL;
-    }
-    else {
-        *penv = ((NativeThread*)javaThread->nativeThread_)->jniEnv;
-    }
-    return (*penv != NULL) ? JNI_OK : JNI_EDETACHED;
-    
-#else
-  static JNIEnv *env_ = NULL;
-  if (!env_) {
-    env_ = (JNIEnv *) malloc(sizeof(JNIEnv));
-    *env_ = J2ObjC_JNIEnv;
+  if (version > JNI_VERSION_1_6) {
+    return JNI_EVERSION;
   }
-  JNIEnv **result = (JNIEnv **) penv;
-  *result = env_;
-#endif
-  return JNI_OK;
+  
+  JavaLangThread * javaThread = getCurrentJavaThreadOrNull();
+  if (javaThread == NULL) {
+    *penv = NULL;
+  }
+  else {
+    *penv = ((NativeThread*)javaThread->nativeThread_)->jniEnv;
+  }
+  return (*penv != NULL) ? JNI_OK : JNI_EDETACHED;
 }
 
 
@@ -1365,16 +1353,7 @@ static struct JNIInvokeInterface JNI_JavaVMTable = {
 C_JavaVM J2ObjC_JavaVM = &JNI_JavaVMTable;
 
 static jint GetJavaVM(JNIEnv *env, JavaVM **vm) {
-#ifdef J2OBJC_USE_GC
   *vm = (JavaVM*)(void*)J2ObjC_JavaVM;
-#else
-  static JavaVM *jvm_ = NULL;
-  if (!jvm_) {
-    jvm_ = (JavaVM *) malloc(sizeof(JavaVM));
-    *jvm_ = J2ObjC_JavaVM;
-  }
-  *vm = jvm_;
-#endif
   return JNI_OK;
 }
 
