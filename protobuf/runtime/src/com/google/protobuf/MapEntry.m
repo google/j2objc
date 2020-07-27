@@ -87,12 +87,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufMapEntry)
 @implementation ComGoogleProtobufMapEntry_Builder
 
 - (ComGoogleProtobufMapEntry_Builder *)setKeyWithId:(id)key {
-  JreStrongAssign(&key_, key);
+  JreGenericFieldAssign(&key_, key);
   return self;
 }
 
 - (ComGoogleProtobufMapEntry_Builder *)setValueWithId:(id)value {
-  JreStrongAssign(&value_, value);
+  JreGenericFieldAssign(&value_, value);
   return self;
 }
 

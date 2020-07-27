@@ -96,27 +96,15 @@ public class System {
   ]-*/;
 
   public static native void setIn(InputStream newIn) /*-[
-#if __has_feature(objc_arc)
-    JavaLangSystem_in = newIn;
-#else
-    JreStrongAssign(&JavaLangSystem_in, newIn);
-#endif
+    JreStaticAssign(&JavaLangSystem_in, newIn);
   ]-*/;
 
   public static native void setOut(java.io.PrintStream newOut) /*-[
-#if __has_feature(objc_arc)
-    JavaLangSystem_out = newOut;
-#else
-    JreStrongAssign(&JavaLangSystem_out, newOut);
-#endif
+    JreStaticAssign(&JavaLangSystem_out, newOut);
   ]-*/;
 
   public static native void setErr(java.io.PrintStream newErr)  /*-[
-#if __has_feature(objc_arc)
-    JavaLangSystem_err = newErr;
-#else
-    JreStrongAssign(&JavaLangSystem_err, newErr);
-#endif
+    JreStaticAssign(&JavaLangSystem_err, newErr);
   ]-*/;
 
   public static native long currentTimeMillis() /*-[

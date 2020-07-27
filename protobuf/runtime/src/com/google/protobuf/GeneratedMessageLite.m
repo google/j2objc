@@ -45,10 +45,10 @@ withComGoogleProtobufGeneratedMessageLite_ExtensionDescriptor:
     @throw create_JavaLangIllegalArgumentException_initWithNSString_(
         @"Null containingTypeDefaultInstance");
   }
-  JreStrongAssign(&self->containingTypeDefaultInstance_, containingTypeDefaultInstance);
-  JreStrongAssign(&self->defaultValue_, defaultValue);
-  JreStrongAssign(&self->messageDefaultInstance_, messageDefaultInstance);
-  JreStrongAssign(&self->descriptor_, descriptor);
+  JreObjectFieldAssign(&self->containingTypeDefaultInstance_, containingTypeDefaultInstance);
+  JreGenericFieldAssign(&self->defaultValue_, defaultValue);
+  JreObjectFieldAssign(&self->messageDefaultInstance_, messageDefaultInstance);
+  JreObjectFieldAssign(&self->descriptor_, descriptor);
   return self;
 }
 
@@ -102,7 +102,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessageLite_Generated
                                                   withBoolean:(jboolean)isPacked {
   NSObject_init(self);
   self->number_ = number;
-  JreStrongAssign(&self->type_, type);
+  JreObjectFieldAssign(&self->type_, type);
   self->isRepeated_ = isRepeated;
   self->isPacked_ = isPacked;
   return self;

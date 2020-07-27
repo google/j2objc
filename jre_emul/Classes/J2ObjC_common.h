@@ -74,57 +74,57 @@ void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noret
 #ifdef J2OBJC_USE_GC
 #define JavaLangObject ARGCObject
 
-#define JreStrongAssign                 ARGC_assignStrongObject
-#define JreStrongAssignAndConsume       ARGC_assignStrongObject
-__attribute__((always_inline)) inline id JreStrongAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
-    JreStrongAssign(pIvar, value);
+__attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, __unsafe_unretained id value) {
+  ARGC_assignStrongObject(pIvar, value);
+  return value;
+}
+
+__attribute__((always_inline)) inline id JreNativeFieldAssign(__strong id *pIvar, __unsafe_unretained id value) {
+  ARGC_assignStrongObject(pIvar, value);
+  return value;
+}
+
+__attribute__((always_inline)) inline id JreObjectFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
+    ARGC_assignARGCObject(pIvar, value);
     return value;
 }
 
-#define JreNativeFieldAssign              ARGC_assignStrongObject
-#define JreNativeFieldAssignAndConsume    ARGC_assignStrongObject
-__attribute__((always_inline)) inline id JreNativeFieldAssignAndGet(__strong id *pIvar, id value) J2OBJC_METHOD_ATTR {
-    JreNativeFieldAssign(pIvar, value);
-    return value;
+__attribute__((always_inline)) inline id JreGenericFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
+  ARGC_assignGenericObject(pIvar, value);
+  return value;
 }
 
-#define JreObjectFieldAssign            ARGC_assignARGCObject
-#define JreObjectFieldAssignAndConsume  ARGC_assignARGCObject
-__attribute__((always_inline)) inline id JreObjectFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) J2OBJC_METHOD_ATTR {
-    JreObjectFieldAssign(pIvar, value);
-    return value;
-}
+#define JreStrongAssignAndConsume       JreStrongAssign
+#define JreStaticAssign                 JreStrongAssign
+#define JreStaticAssignAndConsume       JreStrongAssign
 
-#define JreGenericFieldAssign           ARGC_assignGenericObject
-#define JreGenericFieldAssignAndConsume ARGC_assignGenericObject
-__attribute__((always_inline)) inline id JreGenericFieldAssignAndGet(__unsafe_unretained id *pIvar, id value) J2OBJC_METHOD_ATTR {
-    JreGenericFieldAssign(pIvar, value);
-    return value;
-}
+#define JreObjectFieldAssignAndConsume  JreObjectFieldAssign
+#define JreNativeFieldAssignAndConsume  JreNativeFieldAssign
+#define JreGenericFieldAssignAndConsume JreGenericFieldAssign
 
 #else
+#define JavaLangObject NSObject
 
-void JreGenericFieldAssignAndConsume(__strong id *pIvar, __unsafe_unretained id value) {
-  AUTORELEASE(*pIvar);
-  *pIvar = value;
-}
-
-void JreGenericFieldAssign(__strong id *pIvar, __unsafe_unretained id value) {
+__attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, __unsafe_unretained id value) {
   AUTORELEASE(*pIvar);
   *pIvar = RETAIN_(value);
+  return value;
 }
 
 __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  AUTORELEASE(value);
+  AUTORELEASE(*pIvar);
   *pIvar = value;
   return value;
 }
 
-__attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
-  AUTORELEASE(value);
-  *pIvar = RETAIN_(value);
-  return value;
-}
+#define JreStaticAssign                  JreStrongAssign
+#define JreStaticAssignAndConsume        JreStrongAssignAndConsume
+#define JreObjectFieldAssign             JreObjectFieldAssign
+#define JreObjectFieldAssignAndConsume   JreObjectFieldAssignAndConsume
+#define JreNativeFieldAssign             JreNativeFieldAssign
+#define JreNativeFieldAssignAndConsume   JreNativeFieldAssignAndConsume
+#define JreGenericFieldAssign            JreGenericFieldAssign
+#define JreGenericFieldAssignAndConsume  JreGenericFieldAssignAndConsume
 
 #endif
 
@@ -193,27 +193,6 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Long, jlong)
 J2OBJC_VOLATILE_ACCESS_DEFN(Float, jfloat)
 J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #undef J2OBJC_VOLATILE_ACCESS_DEFN
-
-#ifndef J2OBJC_USE_GC
-/*!
- * Defines the initialized flag for a class.
- *
- * @define J2OBJC_INITIALIZED_DEFN
- * @param CLASS The class for which the initialized flag is defined.
- */
-#define J2OBJC_INITIALIZED_DEFN(CLASS) \
-   static _Atomic(jboolean) CLASS##__initialized;
-#endif
-
-/*!
- * Defines the code to set a class's initialized flag. This should be used at
- * the end of each class's initialize class method.
- *
- * @define J2OBJC_SET_INITIALIZED
- * @param CLASS The class who's flag is to be set.
- */
-#define J2OBJC_SET_INITIALIZED(CLASS) \
-  __c11_atomic_store(&CLASS##__initialized, true, __ATOMIC_RELEASE);
 
 /*!
  * Defines an init function for a class that will ensure that the class is
@@ -293,7 +272,6 @@ FOUNDATION_EXPORT void IOSClass_init_class_(pthread_t* initToken, Class cls, voi
   }
 
 
-#ifdef J2OBJC_USE_GC
 #define J2OBJC_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
 __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
  Jre##REF_TYPE##FieldAssign(&instance->FIELD, value); \
@@ -302,21 +280,6 @@ __attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
 CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
  Jre##REF_TYPE##FieldAssignAndConsume(&instance->FIELD, value); \
 }
-#elif __has_feature(objc_arc)
-#define J2OBJC_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
-  __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
-     instance->FIELD = value; \
-  }
-#else
-#define J2OBJC_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
-__attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \
- JreStrongAssign(&instance->FIELD, value); \
-}\
-__attribute__((unused)) static inline void CLASS##_setAndConsume_##FIELD( \
-CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
- JreStrongAssignAndConsume(&instance->FIELD, value); \
-}
-#endif
 
 #define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, REF_TYPE, FIELD, TYPE) \
   __attribute__((unused)) static inline void CLASS##_set_##FIELD(CLASS *instance, TYPE value) J2OBJC_METHOD_ATTR { \

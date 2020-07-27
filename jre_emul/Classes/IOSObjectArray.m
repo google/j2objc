@@ -48,21 +48,14 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type) {
 static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
     jint length, IOSClass *type, const id *objects) {
   IOSObjectArray *array = IOSObjectArray_CreateArray(length, type);
-#ifdef J2OBJC_USE_GC
-    for (jint i = 0; i < length; i++) {
-        JreGenericFieldAssign(array->buffer_ + i, objects[i]);
-    }
+  for (jint i = 0; i < length; i++) {
+#if __has_feature(objc_arc)
+    JreGenericFieldAssign(array->buffer_ + i, objects[i]);
 #else
-  if (retained) {
-    for (jint i = 0; i < length; i++) {
-      array->buffer_[i] = RETAIN_(objects[i]);
-    }
-  }
-  else {
-    memcpy(array->buffer_, objects, length * sizeof(id));
-  }
+    array->buffer_[i] = RETAIN_(objects[i]);
 #endif
-    return array;
+  }
+  return array;
 }
 
 @implementation IOSObjectArray
@@ -191,7 +184,7 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) J2OBJC_METHOD_ATTR {
 }
 
 static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, jint length) {
-#ifdef J2OBJC_USE_GC
+#ifdef J2OBJC_USE_GC//??
     ARGC_FIELD_REF id *pSrc = buffer + src;
     ARGC_FIELD_REF id *pDst = buffer + dest;
     if (dest < src) {
@@ -261,15 +254,13 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
 
 - (id)copyWithZone:(NSZone *)zone {
   IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_);
-#ifdef J2OBJC_USE_GC
-    for (jint i = 0; i < size_; i++) {
-        JreGenericFieldAssign(result->buffer_ + i, buffer_[i]);
-    }
-#else
   for (jint i = 0; i < size_; i++) {
+#if __has_feature(objc_arc)
+    JreGenericFieldAssign(result->buffer_ + i, buffer_[i]);
+#else
     result->buffer_[i] = RETAIN_(buffer_[i]);
-  }
 #endif
+  }
   return result;
 }
 

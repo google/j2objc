@@ -279,7 +279,7 @@ private FunctionDeclaration argc_currentMethod;
     if (!isPrimitive) {
     	if (options.useGC()) {
     		if (ElementUtil.isStatic(var)) {
-    			funcName = "JreStrongAssign";
+    			funcName = "JreStaticAssign";
     		}
     		else {
     			String fType = typeUtil.getArgcFieldTypeEx(enc, type);
@@ -298,11 +298,6 @@ private FunctionDeclaration argc_currentMethod;
 	    		  funcName += "AndConsume";
 	    	  }
 	        node.setRightHandSide(retainedRhs);
-	      }
-	      if (options.useGC()) {
-		      if (!(node.getParent() instanceof ExpressionStatement)) {
-		    	  funcName += "AndGet";
-		      }
 	      }
 	      return funcName;
     }
@@ -359,8 +354,9 @@ private FunctionDeclaration argc_currentMethod;
     Expression lhs = node.getLeftHandSide();
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
     
+    // TODO(zeedhoon) check compatibility 
     FunctionInvocation invocation = new FunctionInvocation(element, 
-    		(funcName.endsWith("AndGet") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
+    		(!funcName.endsWith("AndConsume") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
     				 ? type : this.translationUtil.getVoidType());
     
     List<Expression> args = invocation.getArguments();

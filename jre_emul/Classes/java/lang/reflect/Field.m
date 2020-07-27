@@ -164,15 +164,7 @@ static void SetWithRawValue(
     }
     void* pValue = (void*)field->ptrTable_[field->metadata_->staticRefIdx];
     if (needsRetain) {
-#ifdef J2OBJC_USE_GC
-      JreStrongAssign((__strong id*)pValue, rawValue->asId);
-#elif __has_feature(objc_arc)
-      (__strong id*)pValue = rawValue->asId;
-#else
-      AUTORELEASE([field getWithId:object]);
-      [type __writeRawValue:rawValue toAddress:pValue];
-      RETAIN_(rawValue->asId);
-#endif
+      JreStaticAssign((__strong id *)pValue, rawValue->asId);
     }
     else {
       [type __writeRawValue:rawValue toAddress:pValue];
@@ -185,7 +177,7 @@ static void SetWithRawValue(
     if (field->ivar_) {
       void* pValue = ((char *)(__bridge void*)object) + ivar_getOffset(field->ivar_);
       if (needsRetain) {
-        JreGenericFieldAssign((__strong id*)pValue, rawValue->asId);
+        JreGenericFieldAssign((__unsafe_unretained id *)pValue, rawValue->asId);
       }
       else {
         [type __writeRawValue:rawValue toAddress:pValue];

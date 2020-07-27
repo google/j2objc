@@ -107,7 +107,7 @@ void setInetAddress_hostName(JNIEnv *env, jobject iaObj, jobject host) {
     holder = (*env)->GetObjectField(env, iaObj, ia_holderID);
     (*env)->SetObjectField(env, holder, iac_hostNameID, host);
     */
-    JreStrongAssign(&((JavaNetInetAddress *)iaObj)->holder_->hostName_, host);
+    JreNativeFieldAssign(&((JavaNetInetAddress *)iaObj)->holder_->hostName_, host);
 }
 
 int getInetAddress_addr(JNIEnv *env, jobject iaObj) {

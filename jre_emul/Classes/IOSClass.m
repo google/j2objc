@@ -631,7 +631,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
       JavaIoInputStream *prefixesResource =
           [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
       if (prefixesResource) {
-        JreStrongAssignAndConsume(&prefixMapping, new_JavaUtilArrayList_init());
+        JreStaticAssignAndConsume(&prefixMapping, new_JavaUtilArrayList_init());
         JavaUtilProperties_LineReader *lr =
             create_JavaUtilProperties_LineReader_initWithJavaIoInputStream_(prefixesResource);
         PackagePrefixLoader *loader = [[PackagePrefixLoader alloc] init];

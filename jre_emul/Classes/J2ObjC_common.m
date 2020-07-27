@@ -385,7 +385,7 @@ id JreStrAppendStrong(__strong id *lhs, const char *types, ...) {
   va_start(va, types);
   NSString *result = JreStrAppendInner(*lhs, types, va);
   va_end(va);
-  return JreStrongAssignAndGet(lhs, result);
+  return JreStrongAssign(lhs, result);
 }
 
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...) {

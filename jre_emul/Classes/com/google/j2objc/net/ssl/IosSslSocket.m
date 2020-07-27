@@ -51,9 +51,9 @@ static NSDictionary *protocolMapping;
 @interface ComGoogleJ2objcNetSslIosSslSocket() {
 @public
   SSLContextRef _sslContext;
-  SslInputStream *_sslInputStream;
-  SslOutputStream *_sslOutputStream;
-  IOSObjectArray *enabledProtocols;
+  ARGC_FIELD_REF SslInputStream *_sslInputStream;
+  ARGC_FIELD_REF SslOutputStream *_sslOutputStream;
+  ARGC_FIELD_REF IOSObjectArray *enabledProtocols;
   BOOL handshakeCompleted;
 
   // Used to forward exceptions from the plain streams to the SSL streams.
@@ -286,7 +286,7 @@ static void ComGoogleJ2objcNetSslIosSslSocket__clinit__() {
       J2ObjCThrowByName(JavaLangIllegalArgumentException, msg);
     }
   }
-  JreStrongAssign(&enabledProtocols, [IOSObjectArray arrayWithArray:protocols]);
+  JreObjectFieldAssign(&enabledProtocols, [IOSObjectArray arrayWithArray:protocols]);
 }
 
 - (id<JavaxNetSslSSLSession>)getSession {
@@ -359,7 +359,7 @@ static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t 
     @try {
       processed = [[socket plainInputStream] readWithByteArray:array];
     } @catch (JavaIoIOException *e) {
-      JreStrongAssign(&socket->_sslException, e);
+      JreNativeFieldAssign(&socket->_sslException, e);
       return errSSLInternal;
     }
 
@@ -387,7 +387,7 @@ static OSStatus SslWriteCallback(SSLConnectionRef connection,
       [[socket plainOutputStream] writeWithByteArray:array];
       [[socket plainOutputStream] flush];
     } @catch (JavaIoIOException *e) {
-      JreStrongAssign(&socket->_sslException, e);
+      JreNativeFieldAssign(&socket->_sslException, e);
       return errSSLInternal;
     }
     return errSecSuccess;
@@ -402,9 +402,9 @@ static void checkStatus(OSStatus status) {
 }
 
 static void init(ComGoogleJ2objcNetSslIosSslSocket *self) {
-  self->_sslInputStream = [[SslInputStream alloc] initWithSocket:self];
-  self->_sslOutputStream = [[SslOutputStream alloc] initWithSocket:self];
-  self->_sslException = nil;
+  JreObjectFieldAssignAndConsume(&self->_sslInputStream, [[SslInputStream alloc] initWithSocket:self]);
+  JreObjectFieldAssignAndConsume(&self->_sslOutputStream, [[SslOutputStream alloc] initWithSocket:self]);
+  JreNativeFieldAssign(&self->_sslException, nil);
 }
 
 static void setUpContext(ComGoogleJ2objcNetSslIosSslSocket *self) {
@@ -531,7 +531,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 // Delegates most of the calls to the underlying socket.
 @interface WrapperSocket : ComGoogleJ2objcNetSslIosSslSocket {
 @public
-  JavaNetSocket *underlyingSocket;
+  ARGC_FIELD_REF JavaNetSocket *underlyingSocket;
   NSString *hostname;
   BOOL autoClose;
 }
@@ -773,8 +773,8 @@ void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
     J2ObjCThrowByName(JavaNetSocketException, @"socket is not connected.");
   }
   init(self);
-  JreStrongAssign(&self->underlyingSocket, socket);
-  JreStrongAssign(&self->hostname, host);
+  JreObjectFieldAssign(&self->underlyingSocket, socket);
+  JreNativeFieldAssign(&self->hostname, host);
   self->autoClose = autoClose;
 }
 
@@ -794,5 +794,6 @@ create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_with
 
 J2OBJC_CLASS_INITIALIZE_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
+
 
 #pragma clang diagnostic pop

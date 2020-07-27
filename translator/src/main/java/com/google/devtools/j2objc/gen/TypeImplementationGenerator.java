@@ -231,7 +231,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         if (setter == null && !ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
               ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : (options.useGC() && ElementUtil.isStatic(varElement) ? "JreVolatileNativeAssign" : "JreVolatileStrongAssign"))
-              : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStrongAssign");
+              : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStaticAssign");
           if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                 NameTable.capitalize(accessorName), objcType, varName);
