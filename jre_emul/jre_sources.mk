@@ -1062,7 +1062,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/ClosedDirectoryStreamException.java \
   java/nio/file/ClosedFileSystemException.java \
   java/nio/file/ClosedWatchServiceException.java \
-  java/nio/file/CopyMoveHelper.java \
   java/nio/file/CopyOption.java \
   java/nio/file/DirectoryIteratorException.java \
   java/nio/file/DirectoryNotEmptyException.java \
@@ -1075,8 +1074,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
   java/nio/file/FileSystems.java \
-  java/nio/file/FileTreeIterator.java \
-  java/nio/file/FileTreeWalker.java \
   java/nio/file/FileVisitOption.java \
   java/nio/file/FileVisitResult.java \
   java/nio/file/FileVisitor.java \
@@ -1099,7 +1096,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/StandardCopyOption.java \
   java/nio/file/StandardOpenOption.java \
   java/nio/file/StandardWatchEventKinds.java \
-  java/nio/file/TempFileHelper.java \
   java/nio/file/WatchEvent.java \
   java/nio/file/WatchKey.java \
   java/nio/file/WatchService.java \
@@ -1133,6 +1129,10 @@ JAVA_PUBLIC_SOURCES_FILE = \
 JAVA_PRIVATE_SOURCES_FILE = \
   com/sun/nio/file/ExtendedCopyOption.java \
   com/sun/nio/file/SensitivityWatchEventModifier.java \
+  java/nio/file/CopyMoveHelper.java \
+  java/nio/file/TempFileHelper.java \
+  java/nio/file/FileTreeIterator.java \
+  java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
