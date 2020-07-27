@@ -69,14 +69,6 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   }
 }
 
-
-id JreStrongAssign(__strong id *pIvar, id value) {
-  return JreAutoreleasedAssign(pIvar, RETAIN_(value));
-}
-
-id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  return JreAutoreleasedAssign(pIvar, value);
-}
 #endif
 
 #ifndef J2OBJC_USE_GC

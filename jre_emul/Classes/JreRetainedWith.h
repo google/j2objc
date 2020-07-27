@@ -61,9 +61,9 @@ FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
 #define RETAINED_WITH_CHILD(PARENT_REF) \
 RETAINED_WITH_CHILD_NUM_REFS(PARENT_REF, 1)
 
-#else
+#else // J2OBJC_USE_GC
 #define RETAINED_WITH_CHILD(PARENT) /*ignore*/
 #define RETAINED_WITH_CHILD_NUM_REFS(PARENT_REF, NUM_REFS) /*ignore*/
-#endif
+#endif // J2OBJC_USE_GC
 
 #endif // JRE_RETAINED_WITH_H_

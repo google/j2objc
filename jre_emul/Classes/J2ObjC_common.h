@@ -104,8 +104,28 @@ __attribute__((always_inline)) inline id JreGenericFieldAssignAndGet(__unsafe_un
 
 #else
 
-id JreStrongAssign(__strong id *pIvar, id value);
-id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
+void JreGenericFieldAssignAndConsume(__strong id *pIvar, __unsafe_unretained id value) {
+  AUTORELEASE(*pIvar);
+  *pIvar = value;
+}
+
+void JreGenericFieldAssign(__strong id *pIvar, __unsafe_unretained id value) {
+  AUTORELEASE(*pIvar);
+  *pIvar = RETAIN_(value);
+}
+
+__attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
+  AUTORELEASE(value);
+  *pIvar = value;
+  return value;
+}
+
+__attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
+  AUTORELEASE(value);
+  *pIvar = RETAIN_(value);
+  return value;
+}
+
 #endif
 
 id JreLoadVolatileId(volatile_id *pVar);
@@ -148,14 +168,6 @@ CF_EXTERN_C_END
  */
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
 
-// #if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline __unsafe_unretained id JreAutoreleasedAssign(
-    __unsafe_unretained id *pIvar, __unsafe_unretained  id value) J2OBJC_METHOD_ATTR {
-    AUTORELEASE(value);
-    JreGenericFieldAssign(pIvar, value);
-    return value;
-}
-// #endif
 
 /*!
  * Utility macro for passing an argument that contains a comma.
