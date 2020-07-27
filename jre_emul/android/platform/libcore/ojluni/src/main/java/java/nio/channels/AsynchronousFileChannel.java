@@ -238,16 +238,15 @@ public abstract class AsynchronousFileChannel
      *          SecurityManager#checkWrite(String)} method is invoked to check
      *          write access if the file is opened for writing
      */
-//    TODO(amisail) uncomment this when working
-//    public static AsynchronousFileChannel open(Path file,
-//                                               Set<? extends OpenOption> options,
-//                                               ExecutorService executor,
-//                                               FileAttribute<?>... attrs)
-//        throws IOException
-//    {
-//        FileSystemProvider provider = file.getFileSystem().provider();
-//        return provider.newAsynchronousFileChannel(file, options, executor, attrs);
-//    }
+    public static AsynchronousFileChannel open(Path file,
+                                               Set<? extends OpenOption> options,
+                                               ExecutorService executor,
+                                               FileAttribute<?>... attrs)
+        throws IOException
+    {
+        FileSystemProvider provider = file.getFileSystem().provider();
+        return provider.newAsynchronousFileChannel(file, options, executor, attrs);
+    }
 
     @SuppressWarnings({"unchecked", "rawtypes"}) // generic array construction
     private static final FileAttribute<?>[] NO_ATTRIBUTES = new FileAttribute[0];
@@ -294,14 +293,13 @@ public abstract class AsynchronousFileChannel
      *          SecurityManager#checkWrite(String)} method is invoked to check
      *          write access if the file is opened for writing
      */
-//    TODO(amisail) uncomment this when working
-//    public static AsynchronousFileChannel open(Path file, OpenOption... options)
-//        throws IOException
-//    {
-//        Set<OpenOption> set = new HashSet<OpenOption>(options.length);
-//        Collections.addAll(set, options);
-//        return open(file, set, null, NO_ATTRIBUTES);
-//    }
+    public static AsynchronousFileChannel open(Path file, OpenOption... options)
+        throws IOException
+    {
+        Set<OpenOption> set = new HashSet<OpenOption>(options.length);
+        Collections.addAll(set, options);
+        return open(file, set, null, NO_ATTRIBUTES);
+    }
 
     /**
      * Returns the current size of this channel's file.
