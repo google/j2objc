@@ -956,6 +956,8 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/IllegalSelectorException.java \
   java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
+  java/nio/channels/MembershipKey.java \
+  java/nio/channels/MulticastChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
   java/nio/channels/NonReadableChannelException.java \
@@ -984,6 +986,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/AbstractSelector.java \
   java/nio/channels/spi/AsynchronousChannelProvider.java \
   java/nio/channels/spi/SelectorProvider.java \
+  java/nio/file/attribute/FileAttribute.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 
@@ -1113,7 +1116,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/BasicFileAttributes.java \
   java/nio/file/attribute/DosFileAttributeView.java \
   java/nio/file/attribute/DosFileAttributes.java \
-  java/nio/file/attribute/FileAttribute.java \
   java/nio/file/attribute/FileAttributeView.java \
   java/nio/file/attribute/FileOwnerAttributeView.java \
   java/nio/file/attribute/FileStoreAttributeView.java \
