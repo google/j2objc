@@ -678,23 +678,6 @@ static NSString *JavaToIosName(NSString *javaName) {
   return [javaName stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
 }
 
-// The __j2objc_aliases custom data segment is built by the linker (along with these start
-// and end section symbols) from structures defined by the J2OBJC_NAME_MAPPING macro.
-// This data defines mapping for Java names to the actual iOS names, and so is only
-// necessary when loading classes by name.
-#ifndef J2OBJC_USE_GC
-static NSDictionary *FetchNameMappings() {
-  extern J2ObjcNameMapping start_alias_section __asm("section$start$__DATA$__j2objc_aliases");
-  extern J2ObjcNameMapping end_alias_section  __asm("section$end$__DATA$__j2objc_aliases");
-  NSUInteger nMappings = (NSUInteger)(&end_alias_section - &start_alias_section);
-  NSMutableDictionary *mappedNames = [[NSMutableDictionary alloc] initWithCapacity:nMappings];
-  for (long i = 0; i < nMappings; i++) {
-    J2ObjcNameMapping* mapping = (&start_alias_section) + i;
-    [mappedNames setObject:@(mapping->ios_name) forKey:@(mapping->java_name)];
-  }
-  return mappedNames;
-}
-#endif
 
 static IOSClass *ClassForJavaName(NSString *name) {
   IOSClass* clazz = [mappedNames objectForKey:name];
@@ -1309,22 +1292,6 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
 - (IOSClass *)java_getClass {
   return IOSClass_class_();
 }
-
-#ifndef J2OBJC_USE_GC
-static jboolean IsStringType(Class cls) {
-  // We can't trigger class initialization because that might recursively enter
-  // FetchClass and result in deadlock within the FastPointerLookup. Therefore,
-  // we can't use [cls isSubclassOfClass:[NSString class]].
-  Class stringCls = [NSString class];
-  while (cls) {
-    if (cls == stringCls) {
-      return true;
-    }
-    cls = class_getSuperclass(cls);
-  }
-  return false;
-}
-#endif
 
 void ARGC_strongRetain(id obj);
 

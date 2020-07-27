@@ -37,8 +37,6 @@ FOUNDATION_EXPORT const J2ObjcClassInfo JreEmptyClassInfo;
 
 CF_EXTERN_C_BEGIN
 
-// JreFindMetadata is not threadsafe.
-const J2ObjcClassInfo *JreFindMetadata(Class cls);
 IOSClass *JreClassForString(const char *str);
 IOSObjectArray *JreParseClassList(const char *listStr);
 Method JreFindInstanceMethod(Class cls, SEL selector);
@@ -48,12 +46,6 @@ __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptr
   return i < 0 ? NULL : ptrTable[i];
 }
 
-// J2ObjcClassInfo accessor functions.
-#ifndef J2OBJC_USE_GC
-NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) J2OBJC_METHOD_ATTR;
-NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) J2OBJC_METHOD_ATTR;
-NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) J2OBJC_METHOD_ATTR;
-#endif
 
 // Field and method lookup functions.
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName) J2OBJC_METHOD_ATTR;
