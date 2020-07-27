@@ -176,67 +176,69 @@ public class SimpleAsynchronousFileChannelImpl
                                   final A attachment,
                                   final CompletionHandler<FileLock,? super A> handler)
     {
-        if (shared && !reading)
-            throw new NonReadableChannelException();
-        if (!shared && !writing)
-            throw new NonWritableChannelException();
-
-        // add to lock table
-        final FileLockImpl fli = addToFileLockTable(position, size, shared);
-        if (fli == null) {
-            Throwable exc = new ClosedChannelException();
-            if (handler == null)
-                return CompletedFuture.withFailure(exc);
-            Invoker.invokeIndirectly(handler, attachment, null, exc, executor);
-            return null;
-        }
-
-        final PendingFuture<FileLock,A> result = (handler == null) ?
-            new PendingFuture<FileLock,A>(this) : null;
-        Runnable task = new Runnable() {
-            public void run() {
-                Throwable exc = null;
-
-                int ti = threads.add();
-                try {
-                    int n;
-                    try {
-                        begin();
-                        do {
-                            n = nd.lock(fdObj, true, position, size, shared);
-                        } while ((n == FileDispatcher.INTERRUPTED) && isOpen());
-                        if (n != FileDispatcher.LOCKED || !isOpen()) {
-                            throw new AsynchronousCloseException();
-                        }
-                    } catch (IOException x) {
-                        removeFromFileLockTable(fli);
-                        if (!isOpen())
-                            x = new AsynchronousCloseException();
-                        exc = x;
-                    } finally {
-                        end();
-                    }
-                } finally {
-                    threads.remove(ti);
-                }
-                if (handler == null) {
-                    result.setResult(fli, exc);
-                } else {
-                    Invoker.invokeUnchecked(handler, attachment, fli, exc);
-                }
-            }
-        };
-        boolean executed = false;
-        try {
-            executor.execute(task);
-            executed = true;
-        } finally {
-            if (!executed) {
-                // rollback
-                removeFromFileLockTable(fli);
-            }
-        }
-        return result;
+        throw new IllegalArgumentException("not implemented");
+//        TODO(amisail): uncomment this when working
+//        if (shared && !reading)
+//            throw new NonReadableChannelException();
+//        if (!shared && !writing)
+//            throw new NonWritableChannelException();
+//
+//        // add to lock table
+//        final FileLockImpl fli = addToFileLockTable(position, size, shared);
+//        if (fli == null) {
+//            Throwable exc = new ClosedChannelException();
+//            if (handler == null)
+//                return CompletedFuture.withFailure(exc);
+//            Invoker.invokeIndirectly(handler, attachment, null, exc, executor);
+//            return null;
+//        }
+//
+//        final PendingFuture<FileLock,A> result = (handler == null) ?
+//            new PendingFuture<FileLock,A>(this) : null;
+//        Runnable task = new Runnable() {
+//            public void run() {
+//                Throwable exc = null;
+//
+//                int ti = threads.add();
+//                try {
+//                    int n;
+//                    try {
+//                        begin();
+//                        do {
+//                            n = nd.lock(fdObj, true, position, size, shared);
+//                        } while ((n == FileDispatcher.INTERRUPTED) && isOpen());
+//                        if (n != FileDispatcher.LOCKED || !isOpen()) {
+//                            throw new AsynchronousCloseException();
+//                        }
+//                    } catch (IOException x) {
+//                        removeFromFileLockTable(fli);
+//                        if (!isOpen())
+//                            x = new AsynchronousCloseException();
+//                        exc = x;
+//                    } finally {
+//                        end();
+//                    }
+//                } finally {
+//                    threads.remove(ti);
+//                }
+//                if (handler == null) {
+//                    result.setResult(fli, exc);
+//                } else {
+//                    Invoker.invokeUnchecked(handler, attachment, fli, exc);
+//                }
+//            }
+//        };
+//        boolean executed = false;
+//        try {
+//            executor.execute(task);
+//            executed = true;
+//        } finally {
+//            if (!executed) {
+//                // rollback
+//                removeFromFileLockTable(fli);
+//            }
+//        }
+//        return result;
     }
 
     @Override
@@ -290,54 +292,56 @@ public class SimpleAsynchronousFileChannelImpl
                                  final A attachment,
                                  final CompletionHandler<Integer,? super A> handler)
     {
-        if (position < 0)
-            throw new IllegalArgumentException("Negative position");
-        if (!reading)
-            throw new NonReadableChannelException();
-        if (dst.isReadOnly())
-            throw new IllegalArgumentException("Read-only buffer");
-
-        // complete immediately if channel closed or no space remaining
-        if (!isOpen() || (dst.remaining() == 0)) {
-            Throwable exc = (isOpen()) ? null : new ClosedChannelException();
-            if (handler == null)
-                return CompletedFuture.withResult(0, exc);
-            Invoker.invokeIndirectly(handler, attachment, 0, exc, executor);
-            return null;
-        }
-
-        final PendingFuture<Integer,A> result = (handler == null) ?
-            new PendingFuture<Integer,A>(this) : null;
-        Runnable task = new Runnable() {
-            public void run() {
-                int n = 0;
-                Throwable exc = null;
-
-                int ti = threads.add();
-                try {
-                    begin();
-                    do {
-                        n = IOUtil.read(fdObj, dst, position, nd);
-                    } while ((n == IOStatus.INTERRUPTED) && isOpen());
-                    if (n < 0 && !isOpen())
-                        throw new AsynchronousCloseException();
-                } catch (IOException x) {
-                    if (!isOpen())
-                        x = new AsynchronousCloseException();
-                    exc = x;
-                } finally {
-                    end();
-                    threads.remove(ti);
-                }
-                if (handler == null) {
-                    result.setResult(n, exc);
-                } else {
-                    Invoker.invokeUnchecked(handler, attachment, n, exc);
-                }
-            }
-        };
-        executor.execute(task);
-        return result;
+        throw new IllegalArgumentException("not implemented");
+//        TODO(amisail): uncomment this when working
+//        if (position < 0)
+//            throw new IllegalArgumentException("Negative position");
+//        if (!reading)
+//            throw new NonReadableChannelException();
+//        if (dst.isReadOnly())
+//            throw new IllegalArgumentException("Read-only buffer");
+//
+//        // complete immediately if channel closed or no space remaining
+//        if (!isOpen() || (dst.remaining() == 0)) {
+//            Throwable exc = (isOpen()) ? null : new ClosedChannelException();
+//            if (handler == null)
+//                return CompletedFuture.withResult(0, exc);
+//            Invoker.invokeIndirectly(handler, attachment, 0, exc, executor);
+//            return null;
+//        }
+//
+//        final PendingFuture<Integer,A> result = (handler == null) ?
+//            new PendingFuture<Integer,A>(this) : null;
+//        Runnable task = new Runnable() {
+//            public void run() {
+//                int n = 0;
+//                Throwable exc = null;
+//
+//                int ti = threads.add();
+//                try {
+//                    begin();
+//                    do {
+//                        n = IOUtil.read(fdObj, dst, position, nd);
+//                    } while ((n == IOStatus.INTERRUPTED) && isOpen());
+//                    if (n < 0 && !isOpen())
+//                        throw new AsynchronousCloseException();
+//                } catch (IOException x) {
+//                    if (!isOpen())
+//                        x = new AsynchronousCloseException();
+//                    exc = x;
+//                } finally {
+//                    end();
+//                    threads.remove(ti);
+//                }
+//                if (handler == null) {
+//                    result.setResult(n, exc);
+//                } else {
+//                    Invoker.invokeUnchecked(handler, attachment, n, exc);
+//                }
+//            }
+//        };
+//        executor.execute(task);
+//        return result;
     }
 
     @Override
@@ -346,51 +350,53 @@ public class SimpleAsynchronousFileChannelImpl
                                   final A attachment,
                                   final CompletionHandler<Integer,? super A> handler)
     {
-        if (position < 0)
-            throw new IllegalArgumentException("Negative position");
-        if (!writing)
-            throw new NonWritableChannelException();
-
-        // complete immediately if channel is closed or no bytes remaining
-        if (!isOpen() || (src.remaining() == 0)) {
-            Throwable exc = (isOpen()) ? null : new ClosedChannelException();
-            if (handler == null)
-                return CompletedFuture.withResult(0, exc);
-            Invoker.invokeIndirectly(handler, attachment, 0, exc, executor);
-            return null;
-        }
-
-        final PendingFuture<Integer,A> result = (handler == null) ?
-            new PendingFuture<Integer,A>(this) : null;
-        Runnable task = new Runnable() {
-            public void run() {
-                int n = 0;
-                Throwable exc = null;
-
-                int ti = threads.add();
-                try {
-                    begin();
-                    do {
-                        n = IOUtil.write(fdObj, src, position, nd);
-                    } while ((n == IOStatus.INTERRUPTED) && isOpen());
-                    if (n < 0 && !isOpen())
-                        throw new AsynchronousCloseException();
-                } catch (IOException x) {
-                    if (!isOpen())
-                        x = new AsynchronousCloseException();
-                    exc = x;
-                } finally {
-                    end();
-                    threads.remove(ti);
-                }
-                if (handler == null) {
-                    result.setResult(n, exc);
-                } else {
-                    Invoker.invokeUnchecked(handler, attachment, n, exc);
-                }
-            }
-        };
-        executor.execute(task);
-        return result;
+        throw new IllegalArgumentException("not implemented");
+//        TODO(amisail): uncomment this when working
+//        if (position < 0)
+//            throw new IllegalArgumentException("Negative position");
+//        if (!writing)
+//            throw new NonWritableChannelException();
+//
+//        // complete immediately if channel is closed or no bytes remaining
+//        if (!isOpen() || (src.remaining() == 0)) {
+//            Throwable exc = (isOpen()) ? null : new ClosedChannelException();
+//            if (handler == null)
+//                return CompletedFuture.withResult(0, exc);
+//            Invoker.invokeIndirectly(handler, attachment, 0, exc, executor);
+//            return null;
+//        }
+//
+//        final PendingFuture<Integer,A> result = (handler == null) ?
+//            new PendingFuture<Integer,A>(this) : null;
+//        Runnable task = new Runnable() {
+//            public void run() {
+//                int n = 0;
+//                Throwable exc = null;
+//
+//                int ti = threads.add();
+//                try {
+//                    begin();
+//                    do {
+//                        n = IOUtil.write(fdObj, src, position, nd);
+//                    } while ((n == IOStatus.INTERRUPTED) && isOpen());
+//                    if (n < 0 && !isOpen())
+//                        throw new AsynchronousCloseException();
+//                } catch (IOException x) {
+//                    if (!isOpen())
+//                        x = new AsynchronousCloseException();
+//                    exc = x;
+//                } finally {
+//                    end();
+//                    threads.remove(ti);
+//                }
+//                if (handler == null) {
+//                    result.setResult(n, exc);
+//                } else {
+//                    Invoker.invokeUnchecked(handler, attachment, n, exc);
+//                }
+//            }
+//        };
+//        executor.execute(task);
+//        return result;
     }
 }
