@@ -344,7 +344,8 @@ $(TESTS_DIR)/core_plus_file:
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_channels -ljre_net -ljre_security -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_channels -ljre_concurrent -ljre_net -ljre_security \
+	    -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_security:
 	@mkdir -p $(@D)

@@ -936,6 +936,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AsynchronousChannel.java \
   java/nio/channels/AsynchronousChannelGroup.java \
   java/nio/channels/AsynchronousCloseException.java \
+  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/channels/AsynchronousServerSocketChannel.java \
   java/nio/channels/AsynchronousSocketChannel.java \
   java/nio/channels/ByteChannel.java \
@@ -999,6 +1000,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/AsynchronousFileChannelImpl.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/DatagramChannelImpl.java \
@@ -1061,7 +1063,6 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   SocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_FILE = \
-  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/file/AccessDeniedException.java \
   java/nio/file/AccessMode.java \
   java/nio/file/AtomicMoveNotSupportedException.java \
