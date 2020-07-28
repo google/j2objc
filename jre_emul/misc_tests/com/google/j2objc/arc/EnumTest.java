@@ -33,7 +33,7 @@ public class EnumTest extends TestCase {
 
   private native static void detectGarbageCollectionMode()
   /*-[
-    #ifdef J2OBJC_USE_GC
+    #if J2OBJC_USE_GC
        ComGoogleJ2objcArcEnumTest_isGarbageCollectionEnabled = TRUE;
     #endif
   ]-*/;

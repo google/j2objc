@@ -184,7 +184,7 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) J2OBJC_METHOD_ATTR {
 }
 
 static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, jint length) {
-#ifdef J2OBJC_USE_GC//??
+#if J2OBJC_USE_GC//??
     ARGC_FIELD_REF id *pSrc = buffer + src;
     ARGC_FIELD_REF id *pDst = buffer + dest;
     if (dest < src) {

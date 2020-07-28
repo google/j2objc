@@ -387,7 +387,7 @@ public class Options {
         ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
-      } else if (arg.equals("-use-gc")) {
+      } else if (arg.equals("-Xuse-gc")) {
         checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);

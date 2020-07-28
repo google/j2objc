@@ -21,7 +21,7 @@
 #ifndef JRE_RETAINED_WITH_H_
 #define JRE_RETAINED_WITH_H_
 
-#ifndef J2OBJC_USE_GC
+#if !J2OBJC_USE_GC
 #import <Foundation/Foundation.h>
 
 // Called by @RetainedWith assignment functions. Caller must ensure that value

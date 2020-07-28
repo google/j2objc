@@ -57,7 +57,7 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
 }
 
 
-#ifndef J2OBJC_USE_GC
+#if !J2OBJC_USE_GC
 void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
     [self java_finalize];
@@ -71,7 +71,7 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
 
 #endif
 
-#ifndef J2OBJC_USE_GC
+#if !J2OBJC_USE_GC
 // Declare a pool of spin locks for volatile variable access. The use of spin
 // locks for atomic access is consistent with how Apple implements atomic
 // property accessors, and the hashing used here is inspired by Apple's

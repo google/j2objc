@@ -33,7 +33,7 @@
 #import "java/lang/Thread.h"
 #import "objc-sync.h"
 
-#ifdef J2OBJC_USE_GC
+#if J2OBJC_USE_GC
 void ARGC_genericRetain(id obj);
 #elif __has_feature(objc_arc)
 #error "NSObject+JavaObject.m must not be compiled with ARC (-fobjc-arc)"
@@ -72,7 +72,7 @@ void ARGC_genericRetain(id obj);
       if (*ivarType == '@') {
         ptrdiff_t offset = ivar_getOffset(ivar);
         __unsafe_unretained id field = *(__unsafe_unretained id *)(void*)((char *)(__bridge void*)clone + offset);
-#ifdef J2OBJC_USE_GC
+#if J2OBJC_USE_GC
         if (field != NULL) ARGC_genericRetain(field);
 #else
         // this code must must not be compiled with ARC (-fobjc-arc)

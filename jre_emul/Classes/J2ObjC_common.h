@@ -24,8 +24,8 @@
 #import "J2ObjC_types.h"
 #import "pthread.h"
 
-#define J2OBJC_USE_GC 1
-#ifdef J2OBJC_USE_GC
+//#define J2OBJC_USE_GC 1
+#if J2OBJC_USE_GC
 #import "ARGC/ARGC.h"
 #endif
 
@@ -71,7 +71,7 @@ void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn)) J2OBJ
 void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noreturn)) J2OBJC_METHOD_ATTR;
 
-#ifdef J2OBJC_USE_GC
+#if J2OBJC_USE_GC
 #define JavaLangObject ARGCObject
 
 __attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, __unsafe_unretained id value) {
@@ -134,7 +134,7 @@ id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, __unsafe_unretained id expected, __unsafe_unretained id newValue);
 id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
 void JreReleaseVolatile(volatile_id *pVar);
-#ifdef J2OBJC_USE_GC
+#if J2OBJC_USE_GC
 id JreVolatileNativeAssign(volatile_id *pIvar, __unsafe_unretained id value);
 __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) { return value; }
 #else
@@ -293,7 +293,7 @@ CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
  *
  * @define J2OBJC_ETERNAL_SINGLETON
  */
-#ifdef J2OBJC_USE_GC
+#if J2OBJC_USE_GC
 #define J2OBJC_ETERNAL_SINGLETON // error!! NO Singlton surpported in ARC.
 #else
 #define J2OBJC_ETERNAL_SINGLETON \

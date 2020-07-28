@@ -77,7 +77,7 @@ FOUNDATION_EXPORT void JreRelease(id obj);
 FOUNDATION_EXPORT void JreFinalize(id self) J2OBJC_METHOD_ATTR;
 
 __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) J2OBJC_METHOD_ATTR {
-#ifndef J2OBJC_USE_GC
+#if !J2OBJC_USE_GC
   // Use [self java_getClass].objcClass instead of [self class] in case the object
   // has it's class swizzled.
   if ([self java_getClass].objcClass == cls) {

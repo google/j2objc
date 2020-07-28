@@ -33,7 +33,7 @@ public class HashMapTest extends TestCase {
 
   private native static void detectGarbageCollectionMode()
   /*-[
-    #ifdef J2OBJC_USE_GC
+    #if J2OBJC_USE_GC
        JavaUtilHashMapTest_isGarbageCollectionEnabled = TRUE;
     #endif
   ]-*/;
