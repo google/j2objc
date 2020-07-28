@@ -342,7 +342,7 @@ private FunctionDeclaration argc_currentMethod;
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
-      if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+      if (options.enableConstRefArgs() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
         SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
         arg.markMutable();
       }
