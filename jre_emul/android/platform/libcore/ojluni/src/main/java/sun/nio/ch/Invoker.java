@@ -171,37 +171,35 @@ class Invoker {
                              V result,
                              Throwable exc)
     {
-        throw new IllegalArgumentException("not implemented");
-//        TODO(amisail): uncomment when Groupable is added
-//        boolean invokeDirect = false;
-//        boolean identityOkay = false;
-//        GroupAndInvokeCount thisGroupAndInvokeCount = myGroupAndInvokeCount.get();
-//        if (thisGroupAndInvokeCount != null) {
-//            if ((thisGroupAndInvokeCount.group() == ((Groupable)channel).group()))
-//                identityOkay = true;
-//            if (identityOkay &&
-//                (thisGroupAndInvokeCount.invokeCount() < maxHandlerInvokeCount))
-//            {
-//                // group match
-//                invokeDirect = true;
-//            }
-//        }
-//        if (invokeDirect) {
-//            invokeDirect(thisGroupAndInvokeCount, handler, attachment, result, exc);
-//        } else {
-//            try {
-//                invokeIndirectly(channel, handler, attachment, result, exc);
-//            } catch (RejectedExecutionException ree) {
-//                // channel group shutdown; fallback to invoking directly
-//                // if the current thread has the right identity.
-//                if (identityOkay) {
-//                    invokeDirect(thisGroupAndInvokeCount,
-//                                 handler, attachment, result, exc);
-//                } else {
-//                    throw new ShutdownChannelGroupException();
-//                }
-//            }
-//        }
+        boolean invokeDirect = false;
+        boolean identityOkay = false;
+        GroupAndInvokeCount thisGroupAndInvokeCount = myGroupAndInvokeCount.get();
+        if (thisGroupAndInvokeCount != null) {
+            if ((thisGroupAndInvokeCount.group() == ((Groupable)channel).group()))
+                identityOkay = true;
+            if (identityOkay &&
+                (thisGroupAndInvokeCount.invokeCount() < maxHandlerInvokeCount))
+            {
+                // group match
+                invokeDirect = true;
+            }
+        }
+        if (invokeDirect) {
+            invokeDirect(thisGroupAndInvokeCount, handler, attachment, result, exc);
+        } else {
+            try {
+                invokeIndirectly(channel, handler, attachment, result, exc);
+            } catch (RejectedExecutionException ree) {
+                // channel group shutdown; fallback to invoking directly
+                // if the current thread has the right identity.
+                if (identityOkay) {
+                    invokeDirect(thisGroupAndInvokeCount,
+                                 handler, attachment, result, exc);
+                } else {
+                    throw new ShutdownChannelGroupException();
+                }
+            }
+        }
     }
 
     /**
@@ -213,21 +211,19 @@ class Invoker {
                                        final V result,
                                        final Throwable exc)
     {
-        throw new IllegalArgumentException("not implemented");
-//        TODO(amisail): uncomment when Groupable is added
-//        try {
-//            ((Groupable)channel).group().executeOnPooledThread(new Runnable() {
-//                public void run() {
-//                    GroupAndInvokeCount thisGroupAndInvokeCount =
-//                        myGroupAndInvokeCount.get();
-//                    if (thisGroupAndInvokeCount != null)
-//                        thisGroupAndInvokeCount.setInvokeCount(1);
-//                    invokeUnchecked(handler, attachment, result, exc);
-//                }
-//            });
-//        } catch (RejectedExecutionException ree) {
-//            throw new ShutdownChannelGroupException();
-//        }
+        try {
+            ((Groupable)channel).group().executeOnPooledThread(new Runnable() {
+                public void run() {
+                    GroupAndInvokeCount thisGroupAndInvokeCount =
+                        myGroupAndInvokeCount.get();
+                    if (thisGroupAndInvokeCount != null)
+                        thisGroupAndInvokeCount.setInvokeCount(1);
+                    invokeUnchecked(handler, attachment, result, exc);
+                }
+            });
+        } catch (RejectedExecutionException ree) {
+            throw new ShutdownChannelGroupException();
+        }
     }
 
     /**
@@ -255,28 +251,27 @@ class Invoker {
      * channel. If the current thread is in the thread pool then the task is
      * invoked directly.
      */
-//    TODO(amisail): uncomment when Groupable is added
-//    static void invokeOnThreadInThreadPool(Groupable channel,
-//                                           Runnable task)
-//    {
-//        boolean invokeDirect;
-//        GroupAndInvokeCount thisGroupAndInvokeCount = myGroupAndInvokeCount.get();
-//        AsynchronousChannelGroupImpl targetGroup = channel.group();
-//        if (thisGroupAndInvokeCount == null) {
-//            invokeDirect = false;
-//        } else {
-//            invokeDirect = (thisGroupAndInvokeCount.group == targetGroup);
-//        }
-//        try {
-//            if (invokeDirect) {
-//                task.run();
-//            } else {
-//                targetGroup.executeOnPooledThread(task);
-//            }
-//        } catch (RejectedExecutionException ree) {
-//            throw new ShutdownChannelGroupException();
-//        }
-//    }
+    static void invokeOnThreadInThreadPool(Groupable channel,
+                                           Runnable task)
+    {
+        boolean invokeDirect;
+        GroupAndInvokeCount thisGroupAndInvokeCount = myGroupAndInvokeCount.get();
+        AsynchronousChannelGroupImpl targetGroup = channel.group();
+        if (thisGroupAndInvokeCount == null) {
+            invokeDirect = false;
+        } else {
+            invokeDirect = (thisGroupAndInvokeCount.group == targetGroup);
+        }
+        try {
+            if (invokeDirect) {
+                task.run();
+            } else {
+                targetGroup.executeOnPooledThread(task);
+            }
+        } catch (RejectedExecutionException ree) {
+            throw new ShutdownChannelGroupException();
+        }
+    }
 
     /**
      * Invoke handler with completed result. This method does not check the

@@ -1145,6 +1145,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/misc/SharedSecrets.java \
   sun/nio/ch/AsynchronousChannelGroupImpl.java \
   sun/nio/ch/CompletedFuture.java \
+  sun/nio/ch/Groupable.java \
   sun/nio/ch/Invoker.java \
   sun/nio/ch/SimpleAsynchronousFileChannelImpl.java \
   sun/nio/ch/ThreadPool.java \
