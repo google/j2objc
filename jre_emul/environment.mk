@@ -73,6 +73,7 @@ ANDROID_PLATFORM_COMPAT_ROOT = $(ANDROID_BASE)/tools/platform-compat/java
 
 OPENJDK_SHARE_ROOT = openjdk/src/share/classes
 OPENJDK_MACOSX_ROOT = openjdk/src/macosx/classes
+OPENJDK_MACOSX_NATIVE = openjdk/src/macosx/native
 
 APPLE_ROOT = apple_apsl
 
@@ -135,7 +136,7 @@ vpath %.java $(JRE_SRC):$(TEST_SRC)
 
 NATIVE_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR) \
   $(ANDROID_OPENJDK_NATIVE) $(J2OBJC_LUNI_NATIVE) \
-  $(ICU_EMBEDDED_RES_DIR)
+  $(ICU_EMBEDDED_RES_DIR) $(OPENJDK_MACOSX_NATIVE)
 
 # Clang warnings
 WARNINGS := $(CC_WARNINGS) $(WARNINGS) -Wno-unused-label -Wno-dangling-else

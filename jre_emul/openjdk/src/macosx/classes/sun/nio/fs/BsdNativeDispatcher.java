@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,14 +23,38 @@
  * questions.
  */
 
-package sun.net.spi.nameservice;
+package sun.nio.fs;
 
-import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
-public interface NameService {
-    // Android-changed: Support for network (netId)-specific DNS resolution.
-    // For use by frameworks/base's android.net.Network.
-    // public java.net.InetAddress[] lookupAllHostAddr(String host) throws UnknownHostException;
-    public java.net.InetAddress[] lookupAllHostAddr(String host, int netId) throws UnknownHostException;
-    public String getHostByAddr(byte[] addr) throws UnknownHostException;
+/**
+ * Bsd specific system calls.
+ */
+
+class BsdNativeDispatcher extends UnixNativeDispatcher {
+    protected BsdNativeDispatcher() { }
+
+    /**
+     * struct fsstat_iter *getfsstat();
+     */
+    static native long getfsstat() throws UnixException;
+
+    /**
+     * int fsstatEntry(struct fsstat_iter * iter, UnixMountEntry entry);
+     */
+    static native int fsstatEntry(long iter, UnixMountEntry entry)
+            throws UnixException;
+
+    /**
+     * void endfsstat(struct fsstat_iter * iter);
+     */
+    static native void endfsstat(long iter) throws UnixException;
+
+    // initialize field IDs
+    private static native void initIDs();
+
+    static {
+        initIDs();
+    }
 }

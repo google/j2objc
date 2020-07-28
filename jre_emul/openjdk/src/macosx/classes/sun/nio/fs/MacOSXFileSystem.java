@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,38 +25,45 @@
 
 package sun.nio.fs;
 
-import com.google.j2objc.annotations.ReflectionSupport;
+import java.nio.file.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.security.AccessController;
+import sun.security.action.GetPropertyAction;
 
-@ReflectionSupport(ReflectionSupport.Level.FULL)
-class UnixFileStoreAttributes {
-    private long f_frsize;          // block size
-    private long f_blocks;          // total
-    private long f_bfree;           // free
-    private long f_bavail;          // usable
+import static sun.nio.fs.MacOSXNativeDispatcher.*;
 
-    private UnixFileStoreAttributes() {
+/**
+ * MacOS implementation of FileSystem
+ */
+
+class MacOSXFileSystem extends BsdFileSystem {
+
+    MacOSXFileSystem(UnixFileSystemProvider provider, String dir) {
+        super(provider, dir);
     }
 
-    static UnixFileStoreAttributes get(UnixPath path) throws UnixException {
-        UnixFileStoreAttributes attrs = new UnixFileStoreAttributes();
-        UnixNativeDispatcher.statvfs(path, attrs);
-        return attrs;
+    // match in unicode canon_eq
+    Pattern compilePathMatchPattern(String expr) {
+        return Pattern.compile(expr, Pattern.CANON_EQ) ;
     }
 
-    long blockSize() {
-        return f_frsize;
+    char[] normalizeNativePath(char[] path) {
+        for (char c : path) {
+            if (c > 0x80)
+                return normalizepath(path, kCFStringNormalizationFormD);
+        }
+        return path;
     }
 
-    long totalBlocks() {
-        return f_blocks;
-    }
-
-    long freeBlocks() {
-        return f_bfree;
-    }
-
-    long availableBlocks() {
-        return f_bavail;
+    String normalizeJavaPath(String path) {
+        for (int i = 0; i < path.length(); i++) {
+            if (path.charAt(i) > 0x80)
+                return new String(normalizepath(path.toCharArray(),
+                                  kCFStringNormalizationFormC));
+        }
+        return path;
     }
 
 }

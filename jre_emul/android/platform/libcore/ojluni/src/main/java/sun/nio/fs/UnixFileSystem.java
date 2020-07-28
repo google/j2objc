@@ -25,6 +25,7 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.Weak;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.nio.file.spi.*;
@@ -41,18 +42,15 @@ import sun.security.action.GetPropertyAction;
 abstract class UnixFileSystem
     extends FileSystem
 {
-    //    TODO(amisail) uncomment this when working
-//    private final UnixFileSystemProvider provider;
+    @Weak
+    private final UnixFileSystemProvider provider;
     private final byte[] defaultDirectory;
     private final boolean needToResolveAgainstDefaultDirectory;
     private final UnixPath rootDirectory;
 
     // package-private
-//    TODO(amisail) uncomment this when working
-//    UnixFileSystem(UnixFileSystemProvider provider, String dir) {
-    UnixFileSystem(String provider, String dir) {
-//        TODO(amisail) uncomment this when working
-//        this.provider = provider;
+    UnixFileSystem(UnixFileSystemProvider provider, String dir) {
+        this.provider = provider;
         this.defaultDirectory = Util.toBytes(UnixPath.normalizeAndCheck(dir));
         if (this.defaultDirectory[0] != '/') {
             throw new RuntimeException("default directory must be absolute");
@@ -106,11 +104,10 @@ abstract class UnixFileSystem
         return Arrays.asList("basic", "posix", "unix", "owner");
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public final FileSystemProvider provider() {
-//        return provider;
-//    }
+    @Override
+    public final FileSystemProvider provider() {
+        return provider;
+    }
 
     @Override
     public final String getSeparator() {

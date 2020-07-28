@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,14 +23,19 @@
  * questions.
  */
 
-package sun.net.spi.nameservice;
+package sun.nio.fs;
 
-import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
-public interface NameService {
-    // Android-changed: Support for network (netId)-specific DNS resolution.
-    // For use by frameworks/base's android.net.Network.
-    // public java.net.InetAddress[] lookupAllHostAddr(String host) throws UnknownHostException;
-    public java.net.InetAddress[] lookupAllHostAddr(String host, int netId) throws UnknownHostException;
-    public String getHostByAddr(byte[] addr) throws UnknownHostException;
+/**
+ * MacOSX specific system calls.
+ */
+
+class MacOSXNativeDispatcher extends BsdNativeDispatcher {
+    private MacOSXNativeDispatcher() { }
+
+    static final int kCFStringNormalizationFormC = 2;
+    static final int kCFStringNormalizationFormD = 0;
+    static native char[] normalizepath(char[] path, int form);
 }

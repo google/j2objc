@@ -26,8 +26,7 @@
 package sun.nio.fs;
 
 import java.nio.file.*;
-//TODO(amisail) uncomment this when working
-//import java.nio.file.spi.FileSystemProvider;
+import java.nio.file.spi.FileSystemProvider;
 import java.io.IOException;
 import java.util.Map;
 
@@ -35,9 +34,7 @@ import java.util.Map;
  * Base implementation class of FileSystemProvider
  */
 
-//TODO(amisail) uncomment this when working
-//abstract class AbstractFileSystemProvider extends FileSystemProvider {
-abstract class AbstractFileSystemProvider {
+abstract class AbstractFileSystemProvider extends FileSystemProvider {
     protected AbstractFileSystemProvider() { }
 
     /**
@@ -66,8 +63,7 @@ abstract class AbstractFileSystemProvider {
                                                            String name,
                                                            LinkOption... options);
 
-//    TODO(amisail) uncomment this when working
-//    @Override
+    @Override
     public final void setAttribute(Path file,
                                    String attribute,
                                    Object value,
@@ -83,8 +79,7 @@ abstract class AbstractFileSystemProvider {
         view.setAttribute(s[1], value);
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
+    @Override
     public final Map<String,Object> readAttributes(Path file, String attributes, LinkOption... options)
         throws IOException
     {
@@ -103,14 +98,12 @@ abstract class AbstractFileSystemProvider {
      */
     abstract boolean implDelete(Path file, boolean failIfNotExists) throws IOException;
 
-//    TODO(amisail) uncomment this when working
-//    @Override
+    @Override
     public final void delete(Path file) throws IOException {
         implDelete(file, true);
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
+    @Override
     public final boolean deleteIfExists(Path file) throws IOException {
         return implDelete(file, false);
     }
