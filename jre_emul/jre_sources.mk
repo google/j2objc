@@ -1143,6 +1143,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
+  sun/nio/ch/AsynchronousChannelGroupImpl.java \
   sun/nio/ch/SimpleAsynchronousFileChannelImpl.java \
   sun/nio/ch/ThreadPool.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \

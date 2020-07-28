@@ -105,13 +105,15 @@ abstract class AsynchronousChannelGroupImpl
     }
 
     private Runnable bindToGroup(final Runnable task) {
-        final AsynchronousChannelGroupImpl thisGroup = this;
-        return new Runnable() {
-            public void run() {
-                Invoker.bindToGroup(thisGroup);
-                task.run();
-            }
-        };
+        throw new IllegalArgumentException("not implemented");
+//        TODO(amisail): uncomment when Invoker is added to build
+//        final AsynchronousChannelGroupImpl thisGroup = this;
+//        return new Runnable() {
+//            public void run() {
+//                Invoker.bindToGroup(thisGroup);
+//                task.run();
+//            }
+//        };
     }
 
     private void startInternalThread(final Runnable task) {
@@ -154,21 +156,23 @@ abstract class AsynchronousChannelGroupImpl
      * Invoked by tasks as they terminate
      */
     final int threadExit(Runnable task, boolean replaceMe) {
-        if (replaceMe) {
-            try {
-                if (Invoker.isBoundToAnyGroup()) {
-                    // submit new task to replace this thread
-                    pool.executor().execute(bindToGroup(task));
-                } else {
-                    // replace internal thread
-                    startInternalThread(task);
-                }
-                return threadCount.get();
-            } catch (RejectedExecutionException x) {
-                // unable to replace
-            }
-        }
-        return threadCount.decrementAndGet();
+        throw new IllegalArgumentException("not implemented");
+//        TODO(amisail): uncomment when Invoker is added to build
+//        if (replaceMe) {
+//            try {
+//                if (Invoker.isBoundToAnyGroup()) {
+//                    // submit new task to replace this thread
+//                    pool.executor().execute(bindToGroup(task));
+//                } else {
+//                    // replace internal thread
+//                    startInternalThread(task);
+//                }
+//                return threadCount.get();
+//            } catch (RejectedExecutionException x) {
+//                // unable to replace
+//            }
+//        }
+//        return threadCount.decrementAndGet();
     }
 
     /**
