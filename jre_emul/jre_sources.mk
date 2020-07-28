@@ -1075,9 +1075,11 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/FileSystemException.java \
   java/nio/file/FileSystemLoopException.java \
   java/nio/file/FileSystemNotFoundException.java \
+  java/nio/file/FileSystems.java \
   java/nio/file/FileVisitOption.java \
   java/nio/file/FileVisitResult.java \
   java/nio/file/FileVisitor.java \
+  java/nio/file/Files.java \
   java/nio/file/InvalidPathException.java \
   java/nio/file/LinkOption.java \
   java/nio/file/LinkPermission.java \
@@ -1087,6 +1089,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/OpenOption.java \
   java/nio/file/Path.java \
   java/nio/file/PathMatcher.java \
+  java/nio/file/Paths.java \
   java/nio/file/ProviderMismatchException.java \
   java/nio/file/ProviderNotFoundException.java \
   java/nio/file/ReadOnlyFileSystemException.java \
@@ -1122,11 +1125,16 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/UserPrincipal.java \
   java/nio/file/attribute/UserPrincipalLookupService.java \
   java/nio/file/attribute/UserPrincipalNotFoundException.java \
+  java/nio/file/spi/FileSystemProvider.java \
   java/nio/file/spi/FileTypeDetector.java
 
 JAVA_PRIVATE_SOURCES_FILE = \
   com/sun/nio/file/ExtendedCopyOption.java \
   com/sun/nio/file/SensitivityWatchEventModifier.java \
+  java/nio/file/CopyMoveHelper.java \
+  java/nio/file/TempFileHelper.java \
+  java/nio/file/FileTreeIterator.java \
+  java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
@@ -1141,6 +1149,8 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/BsdFileSystemProvider.java \
   sun/nio/fs/BsdNativeDispatcher.java \
   sun/nio/fs/Cancellable.java \
+  sun/nio/fs/DefaultFileSystemProvider.java \
+  sun/nio/fs/DefaultFileTypeDetector.java \
   sun/nio/fs/DynamicFileAttributeView.java \
   sun/nio/fs/FileOwnerAttributeViewImpl.java \
   sun/nio/fs/Globs.java \
