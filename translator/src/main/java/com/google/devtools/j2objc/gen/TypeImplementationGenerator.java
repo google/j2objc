@@ -322,24 +322,25 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
+  // for -Xconst-ref-args
   protected String getMutableParameters(FunctionDeclaration function) {
-	  StringBuilder sb = null;
-	  for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator(); iter.hasNext(); ) {
-		SingleVariableDeclaration var = iter.next();
-		if (var.isMutable()) {
-		  String paramType = nameTable.getObjCType(var.getVariableElement().asType());
-		  boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
-		  if (isObject) {
-			if (sb == null) {
-			   sb = new StringBuilder();
-			}
-			String name = nameTable.getVariableShortName(var.getVariableElement());
-			sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
-			  .append(name).append("_0;").append('\n');
-		  }
-		}
-	  }
-	  return sb == null ? "" : sb.toString();
+    StringBuilder sb = null;
+    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator(); iter.hasNext(); ) {
+      SingleVariableDeclaration var = iter.next();
+      if (var.isMutable()) {
+        String paramType = nameTable.getObjCType(var.getVariableElement().asType());
+        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+        if (isObject) {
+          if (sb == null) {
+            sb = new StringBuilder();
+          }
+          String name = nameTable.getVariableShortName(var.getVariableElement());
+          sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
+          .append(name).append("_0;").append('\n');
+        }
+      }
+    }
+    return sb == null ? "" : sb.toString();
  }
  
   

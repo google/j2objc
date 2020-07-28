@@ -68,9 +68,9 @@ public class LambdaTypeElementAdder extends UnitTreeVisitor {
   }
 
   private boolean isWeakOuter(FunctionalExpression node) {
-	  if (J2ObjC.options.useGC()) {
-		  return false;
-	  }
+    if (J2ObjC.options.useGC()) {
+      return false;
+    }
     VariableElement var = getAssignedVariable(node);
     return var != null && ElementUtil.hasNamedAnnotation(var, "WeakOuter");
   }

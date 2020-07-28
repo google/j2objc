@@ -277,29 +277,29 @@ private FunctionDeclaration argc_currentMethod;
 
     String funcName = null;
     if (!isPrimitive) {
-    	if (options.useGC()) {
-    		if (ElementUtil.isStatic(var)) {
-    			funcName = "JreStaticAssign";
-    		}
-    		else {
-    			String fType = typeUtil.getArgcFieldTypeEx(enc, type);
-    			funcName = "Jre" + fType + "FieldAssign";
-    		}
-    	}
-    	else if (options.useReferenceCounting()) {
-    		funcName = "JreStrongAssign";
-    	}
+      if (options.useGC()) {
+        if (ElementUtil.isStatic(var)) {
+          funcName = "JreStaticAssign";
+        }
+        else {
+          String fType = typeUtil.getArgcFieldTypeEx(enc, type);
+          funcName = "Jre" + fType + "FieldAssign";
+        }
+      }
+      else if (options.useReferenceCounting()) {
+        funcName = "JreStrongAssign";
+      }
     }
-    
+
     if (funcName != null) {
-	      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
-	      if (retainedRhs != null) {
-	    	  if (options.useReferenceCounting()) {
-	    		  funcName += "AndConsume";
-	    	  }
-	        node.setRightHandSide(retainedRhs);
-	      }
-	      return funcName;
+      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
+      if (retainedRhs != null) {
+        if (options.useReferenceCounting()) {
+          funcName += "AndConsume";
+        }
+        node.setRightHandSide(retainedRhs);
+      }
+      return funcName;
     }
 
     return null;
