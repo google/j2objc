@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.types.Import;
 
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     includeFiles.add(getGenerationUnit().getOutputPath() + ".h");
     for (GeneratedType generatedType : getOrderedTypes()) {
       for (Import imp : generatedType.getImplementationIncludes()) {
-        if (!isLocalType(imp.getTypeName()) && !ARGC.isExcludedClass(imp.getImportFileName())) {
+        if (!isLocalType(imp.getTypeName()) && ImportManager.canImportClass(imp.getImportFileName())) {
         	includeFiles.add(imp.getImportFileName());
         }
       }
@@ -144,12 +144,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMemoryManagement() {
     Options.MemoryManagementOption memoryManagementOption = options.getMemoryManagementOption();
+    if (memoryManagementOption == Options.MemoryManagementOption.GC) {
+      return;
+    }
+    
     String filename = getGenerationUnit().getOutputPath();
 
     if (memoryManagementOption == Options.MemoryManagementOption.ARC) {
       println("#if !__has_feature(objc_arc)");
       println(String.format("#error \"%s must be compiled with ARC (-fobjc-arc)\"", filename));
-    } else {
+    } else  {
       println("#if !J2OBJC_USE_GC && __has_feature(objc_arc)");
       println(String.format("#error \"%s must not be compiled with ARC (-fobjc-arc)\"", filename));
     }

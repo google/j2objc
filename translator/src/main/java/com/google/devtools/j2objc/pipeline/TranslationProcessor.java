@@ -14,8 +14,13 @@
 
 package com.google.devtools.j2objc.pipeline;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
@@ -68,11 +73,6 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Processes source files by translating each source into an Objective-C header

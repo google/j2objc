@@ -19,9 +19,8 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
-import com.google.devtools.j2objc.argc.ARGC;
-import com.google.devtools.j2objc.argc.TranslateSourceList;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
@@ -31,6 +30,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
+import com.google.devtools.j2objc.util.SourceStore;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +48,7 @@ import java.util.Set;
  */
 public class J2ObjC {
 
+  public static final Options options = new Options();	
   static {
     // Always enable assertions in translator.
     ClassLoader loader = J2ObjC.class.getClassLoader();
@@ -90,7 +91,7 @@ public class J2ObjC {
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
   public static void run(List<String> fileArgs, Options options) {
-	  TranslateSourceList sourceFiles = new TranslateSourceList(options);
+	  SourceStore sourceFiles = new SourceStore(options);
 	  for (String s : fileArgs) {
 		  sourceFiles.addSource(s);
 	  }
@@ -136,7 +137,7 @@ public class J2ObjC {
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
-      if (ErrorUtil.errorCount() > 0 && !ARGC.hasExcludeRule()) {
+      if (ErrorUtil.errorCount() > 0 && !options.hasCustomImportRule()) {
         return;
       }
       translationProcessor.postProcess();
@@ -181,7 +182,7 @@ public class J2ObjC {
     long startTime = System.currentTimeMillis();
 
     List<InputFile> files = null;
-    Options options = new Options();
+    Options options = J2ObjC.options;
 
     try {
       files = options.load(args);

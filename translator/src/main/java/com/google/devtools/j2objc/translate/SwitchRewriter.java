@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;

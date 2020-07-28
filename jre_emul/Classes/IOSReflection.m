@@ -34,28 +34,6 @@
 
 
 
-#ifndef J2OBJC_USE_GC
-const J2ObjcClassInfo *JreFindMetadata(Class cls) {
-  // Can't use respondsToSelector here because that will search superclasses.
-  Method metadataMethod = cls ? JreFindClassMethod(cls, @selector(__metadata)) : NULL;
-  if (metadataMethod) {
-#if OBJC_OLD_DISPATCH_PROTOTYPES
-      const J2ObjcClassInfo *metadata = (__bridge const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
-#else
-      const J2ObjcClassInfo* (*_invoke)(id, Method) = (void*)method_invoke;
-      const J2ObjcClassInfo *metadata = _invoke(cls, metadataMethod);
-#endif
-    // We don't use any Java based assert or throwables here because this function is called during
-    // IOSClass construction under mutual exclusion so causing any other IOSClass to be initialized
-    // would result in deadlock.
-    NSCAssert(metadata->version == J2OBJC_METADATA_VERSION,
-        @"J2ObjC metadata is out-of-date, source must be re-translated.");
-    return metadata;
-  }
-  return NULL;
-}
-#endif
-
 // Parses the next IOSClass from the delimited string, advancing the c-string pointer past the
 // parsed type.
 static IOSClass *ParseNextClass(const char **strPtr) {
@@ -168,44 +146,6 @@ const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const c
   return NULL;
 }
 
-#ifndef J2OBJC_USE_GC
-NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) {
-  return metadata ? [NSString stringWithUTF8String:metadata->typeName] : nil;
-}
-
-NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
-  return metadata && metadata->packageName
-      ? [NSString stringWithUTF8String:metadata->packageName] : nil;
-}
-NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
-  return BuildQualifiedName(metadata);
-}
-
-static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
-  if (!metadata) {
-    return nil;
-  }
-  const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
-  if (enclosingClass) {
-    NSMutableString *qName = BuildQualifiedName(JreClassForString(enclosingClass)->metadata_);
-    if (!qName) {
-      return nil;
-    }
-    [qName appendString:@"$"];
-    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
-    return qName;
-  } else if (metadata->packageName) {
-    NSMutableString *qName = [NSMutableString stringWithUTF8String:metadata->packageName];
-    [qName appendString:@"."];
-    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
-    return qName;
-  } else {
-    return [NSMutableString stringWithUTF8String:metadata->typeName];
-  }
-}
-
-
-#endif
 
 static bool NullableCStrEquals(const char *a, const char *b) {
   return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);

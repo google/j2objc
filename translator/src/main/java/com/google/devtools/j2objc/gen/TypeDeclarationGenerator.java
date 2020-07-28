@@ -20,7 +20,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -120,10 +119,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println("NS_ASSUME_NONNULL_BEGIN");
     }
     if (super.isInterfaceType()) {
-    	boolean argc_patch = true;
-    	if (argc_patch) {
-    		printf("@class IOSClass;\n\n");
-    	}
+    	printf("@class IOSClass;\n\n");
       printf("@protocol %s", typeName);
     } else {
       printf("@interface %s : %s", typeName, getSuperTypeName());
@@ -194,14 +190,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println(DEPRECATED_ATTRIBUTE);
     }
   }
-
-//  protected String getSuperTypeName() {
-//    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
-//    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
-//      return nameTable.getFullName(supertype);
-//    }
-//    return (this.isInterfaceType() || ARGC.inPureObjCMode()) ? "NSObject" : "JavaLangObject";
-//  }
 
   protected List<String> getInterfaceNames() {
     if (ElementUtil.isAnnotationType(typeElement)) {
@@ -315,20 +303,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         
       	String objcType = ElementUtil.getObjectiveCType(varElement);
       	if (objcType == null) {
-            objcType = getDeclarationType(varElement);
-            if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
-            	if (ElementUtil.isWeakReference(varElement)) {
-            		print("ARGC_WEAK_REF ");
-            	}
-            	else {
-            		print("ARGC_FIELD_REF ");
-            	}
-            }
-            else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
-              // We must add this even without -use-arc because the header may be
-              // included by a file compiled with ARC.
-              print("__unsafe_unretained ");
-            }
+      	  objcType = getDeclarationType(varElement);
+      	  if (options.useGC() && typeUtil.isARGCFieldEx(typeElement, varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+      	    if (ElementUtil.isWeakReference(varElement)) {
+      	      print("ARGC_WEAK_REF ");
+      	    }
+      	    else {
+      	      print("ARGC_FIELD_REF ");
+      	    }
+      	  }
+      	  else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
+      	    // We must add this even without -use-arc because the header may be
+      	    // included by a file compiled with ARC.
+      	    print("__unsafe_unretained ");
+      	  }
       	}
         
         needsAsterisk = objcType.endsWith("*");
@@ -377,7 +365,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : %s", typeName, /*ARGC*/getSuperTypeName());
+    printf("\n@interface %s : %s", typeName, getSuperTypeName());
     if (ElementUtil.isGeneratedAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
@@ -443,14 +431,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       String fieldName = nameTable.getVariableShortName(var);
       String isVolatile = ElementUtil.isVolatile(var) ? "_VOLATILE" : "";
-      if (options.useGC() && isVolatile.length() == 0) {
-      	println(UnicodeUtils.format("J2OBJC_FIELD_SETTER(%s, %s, %s, %s)",
-                typeName, typeUtil.getArgcFieldTypeEx(typeElement, var.asType()),  fieldName, typeStr));
-      }
-      else {
-    	println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
-          isVolatile, typeName, fieldName, typeStr));
-      }
+      String refType = typeUtil.getArgcFieldTypeEx(typeElement, var.asType());
+      println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s, %s)",
+        isVolatile, typeName, refType, fieldName, typeStr));
     }
   }
 

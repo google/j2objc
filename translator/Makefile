@@ -56,8 +56,6 @@ J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
-	argc/ARGC.java \
-	argc/TranslateSourceList.java \
 	ast/AbstractTypeDeclaration.java \
 	ast/AnnotatableType.java \
 	ast/Annotation.java \
@@ -191,6 +189,8 @@ JAVA_SOURCES = \
 	gen/TypeImplementationGenerator.java \
 	gen/TypePrivateDeclarationGenerator.java \
 	javac/ClassFileConverter.java \
+	javac/FileManagerProxy.java \
+	javac/ImportManager.java \
 	javac/JavacEnvironment.java \
 	javac/JavacJ2ObjCIncompatibleStripper.java \
 	javac/JavacParser.java \
@@ -270,6 +270,7 @@ JAVA_SOURCES = \
 	util/ParserEnvironment.java \
 	util/ProGuardUsageParser.java \
 	util/SourceVersion.java \
+	util/SourceStore.java \
 	util/TimeTracker.java \
 	util/TranslationEnvironment.java \
 	util/TranslationUtil.java \

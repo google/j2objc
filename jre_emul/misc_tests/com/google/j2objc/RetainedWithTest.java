@@ -49,7 +49,7 @@ public class RetainedWithTest extends TestCase {
 
   private native static void detectGarbageCollectionMode()  
   /*-[
-    #ifdef J2OBJC_USE_GC
+    #if J2OBJC_USE_GC
        ComGoogleJ2objcRetainedWithTest_isGarbageCollectionEnabled = TRUE;
     #endif
   ]-*/;

@@ -15,12 +15,13 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.javac.ImportManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -82,17 +83,17 @@ public class FileUtil {
   }
 
   public void setResourceDirectory(File outputDirectory) {
-	if (this.resourceDirectory != null) {
-		throw new RuntimeException("Resource directory is already created. --resource-dir option should be declared before -sourcepath");
-	}
-	if (outputDirectory != null && !outputDirectory.exists()) {
-	  outputDirectory.mkdirs();
-	}
-	this.resourceDirectory = outputDirectory;
+    if (this.resourceDirectory != null) {
+      throw new RuntimeException("Resource directory is already created. --resource-dir option should be declared before -sourcepath");
+    }
+    if (outputDirectory != null && !outputDirectory.exists()) {
+      outputDirectory.mkdirs();
+    }
+    this.resourceDirectory = outputDirectory;
   }
 
   public File getResourceDirectory() {
-	return this.resourceDirectory;
+    return this.resourceDirectory;
   }
 
   public void setHeaderOutputDirectory(File outputDirectory) {
@@ -204,30 +205,27 @@ public class FileUtil {
   private static InputFile findFileOnPaths(
       String sourceFileName, List<String> paths) throws IOException {
     // Zip/jar files always use forward slashes.
-  	if (ARGC.isExcludedClass(sourceFileName)) {
-		return null;
-	}
-	  
-  	InputFile inf = InputFile.getInputFile(sourceFileName);
-  	if (inf != null) {
-  		return inf;
-  	}
-    String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
-    for (String pathEntry : paths) {
-      File f = new File(pathEntry);
-      if (f.isDirectory()) {
-        RegularInputFile regularFile = new RegularInputFile(
-            pathEntry + File.separatorChar + sourceFileName, sourceFileName);
-        if (regularFile.exists()) {
-          return regularFile;
-        }
-      } else {
-        // Assume it's a jar file
-        JarredInputFile jarFile = new JarredInputFile(pathEntry, jarEntryName);
-        if (jarFile.exists()) {
-          return jarFile;
-        }
-      }
+    if (!ImportManager.canImportClass(sourceFileName)) {
+      return null;
+    }
+
+    InputFile inf = SourceStore.getInputFile(sourceFileName);
+//    if (inf == null) {
+//      String jarEntryName = sourceFileName.replace(File.separatorChar, '/');
+//      for (String pathEntry : paths) {
+//        File f = new File(pathEntry);
+//        if (f.isDirectory()) {
+//          inf = new RegularInputFile(
+//              pathEntry + File.separatorChar + sourceFileName, sourceFileName);
+//        } else {
+//          // Assume it's a jar file
+//          inf = new JarredInputFile(pathEntry, jarEntryName);
+//        }
+//      }
+//    }
+//    
+    if (inf != null && inf.exists()) {
+      return inf;
     }
     return null;
   }
@@ -267,14 +265,14 @@ public class FileUtil {
   }
 
   public static File createTempDir(String dirname) throws IOException {
-		  File tmpDirectory = File.createTempFile(dirname, ".tmp");
-		  tmpDirectory.delete();
-		  if (!tmpDirectory.mkdir()) {
-			  throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
-		  }
-		  tmpDirectory.deleteOnExit();
-		  return tmpDirectory;
-	  }
+    File tmpDirectory = File.createTempFile(dirname, ".tmp");
+    tmpDirectory.delete();
+    if (!tmpDirectory.mkdir()) {
+      throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
+    }
+    tmpDirectory.deleteOnExit();
+    return tmpDirectory;
+  }
 
   /**
    * Recursively delete specified directory.

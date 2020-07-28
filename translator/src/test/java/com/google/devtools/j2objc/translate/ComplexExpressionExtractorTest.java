@@ -64,7 +64,7 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         + "nil_chk([create_JavaLangStringBuilder_init() appendWithChar:'a'])) appendWithChar:'b'];",
         "JavaLangStringBuilder *complex$2 = nil_chk([((JavaLangStringBuilder *) "
         + "nil_chk(complex$1)) appendWithChar:'c']);",
-        "JreStrongAssign(&Test_s, [complex$2 description]);");
+        "JreStaticAssign(&Test_s, [complex$2 description]);");
   }
 
   public void testLongExpression() throws IOException {

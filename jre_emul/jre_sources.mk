@@ -20,7 +20,7 @@ NATIVE_ARGC_SOURCES = \
   jni.mm 
 
 NATIVE_JRE_SOURCES_CORE = \
-  ARGC/UnreachableError.m \
+  ARGC/NotImportedError.m \
   AnnotationUtils.m \
   Bits.m \
   DebugUtils.m \
@@ -2303,9 +2303,10 @@ EMULATED_JAVA_SOURCES = \
 # All non-generated headers that should be made public.
 PUBLIC_NATIVE_HEADERS = \
   ARGC/ARGC.h \
-  org/slowcoders/j2objc/UnreachableError.h \
+  com/google/j2objc/NotImportedError.h \
   IOSArray.h \
   IOSClass.h \
+  IOSTest.h \
   IOSMetadata.h \
   IOSObjectArray.h \
   IOSPrimitiveArray.h \

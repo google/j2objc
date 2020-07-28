@@ -27,15 +27,15 @@ CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(JAVA_SRC_DIR)/%=%)
 TRANSLATE_ARGS = -classpath $(CLASSPATH) -encoding UTF-8 \
-  --not-include java.time.* \
-  --not-include java.nio.file.* \
-  --not-include javax.naming.* \
-  --not-include javax.security.sasl.* \
-  --not-include javax.xml.stream.* \
-  --not-include com.google.common.util.concurrent.ClassValue \
-  --not-include com.google.common.io.MoreFiles \
-  --not-include com.google.common.io.RecursiveDeleteOption \
-  --not-include com.google.common.io.InsecureRecursiveDeleteException
+  --not-import java.time.* \
+  --not-import java.nio.file.* \
+  --not-import javax.naming.* \
+  --not-import javax.security.sasl.* \
+  --not-import javax.xml.stream.* \
+  --not-import com.google.common.util.concurrent.ClassValue \
+  --not-import com.google.common.io.MoreFiles \
+  --not-import com.google.common.io.RecursiveDeleteOption \
+  --not-import com.google.common.io.InsecureRecursiveDeleteException
 
 include $(J2OBJC_ROOT)/make/translate.mk
 

@@ -1,4 +1,4 @@
-package com.google.devtools.j2objc.argc;
+package com.google.devtools.j2objc.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -7,11 +7,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA_2_3.portable.OutputStream;
@@ -19,8 +27,7 @@ import org.omg.CORBA_2_3.portable.OutputStream;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.assembler.metadata.MetadataParser;
@@ -31,36 +38,49 @@ import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 
-public class TranslateSourceList { 
+public class SourceStore { 
 
 	private String root;
 	private Options options;
 	private JarTypeLoader currTypeLoader;
 	private HashSet<String> pathSet = new HashSet<>();
 	private File jarFile;
-	private ArrayList<InputFile> inputFiles = new ArrayList<>();
-	private boolean addSourceList = false;
-	static HashSet<String> rootPaths = new HashSet<>();
+	private static HashSet<String> rootPaths = new HashSet<>();
+  private static HashMap<String, InputFile> inputFileMap = new HashMap<>(); 
 
-
-	public TranslateSourceList(Options options) {
+	public SourceStore(Options options) {
 		this.options = options;
 	}
 
-	public static void addRootPath(String root) {
-		if (root.charAt(root.length() - 1) != '/') {
-			root += '/';
-		}
-		rootPaths.add(root);
+  private static InputFile registerInputFile(InputFile file) {
+    InputFile old = inputFileMap.put(file.getUnitName(), file);
+    return old;
+  }
+  
+  public static InputFile getInputFile(String unitPath) {
+    return inputFileMap.get(unitPath);
+  }
+  
+	public static String addRootPath(File f) {
+    String root = getCanonicalPath(f);
+		rootPaths.add(root + '/');
+		return root;
 	}
+
+  public static String getCanonicalPath(File f) {
+    try {
+      return f.getCanonicalPath();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
 
 	public boolean addSource(String filename) {
-		this.addSourceList = true;
 		this.root = "";
 		File f = new File(filename);
 		if (f.exists()) {
-			filename = ARGC.getCanonicalPath(f);
+			filename = getCanonicalPath(f);
 			for (String s : rootPaths) {
 				if (filename.startsWith(s)) {
 					this.root = s;
@@ -69,9 +89,9 @@ public class TranslateSourceList {
 			}
 		}
 		else {
-			if (filename.charAt(0) == '@') {
+			if (filename.charAt(0) == '!') {
 				File lstf = new File(filename.substring(1));
-				ArrayList<String> files = ARGC.processListFile(lstf);
+				ArrayList<String> files = SourceStore.readPathList(lstf);
 				if (files != null) {
 					if (lstf.getName().charAt(0) == '.') {
 						lstf = new File("j2objc compatible mode - PWD");
@@ -91,9 +111,10 @@ public class TranslateSourceList {
 			try {
 				InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
 				if (inp != null) {
+				  registerInputFile(inp);
 					String absPath = inp.getAbsolutePath();
 					root = absPath.substring(0, absPath.length() - filename.length());
-					addRootPath(root);
+					addRootPath(new File(root));
 					f = new File(absPath);
 				}
 			} catch (IOException e) {
@@ -101,22 +122,21 @@ public class TranslateSourceList {
 			}
 			if (!f.exists()) {
 				ErrorUtil.warning("Invalid source: " + filename);
-				//new RuntimeException("---").printStackTrace();
 				System.exit(-1);
 				return false;
 			}
 		}
 		
-		if (!pathSet.add(ARGC.getCanonicalPath(f))) {
+		if (!pathSet.add(getCanonicalPath(f))) {
 			return false;
 		}
 		if (f.isDirectory()) {
 			this.addFolderTree(f);
 		}
 		else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
-			this.pathSet.add(ARGC.getCanonicalPath(f));
-			File tempDir = ARGC.extractSources(f, options, true);
-			options.fileUtil().appendSourcePath(ARGC.getCanonicalPath(tempDir));
+			this.pathSet.add(getCanonicalPath(f));
+			File tempDir = extractSources(f, options, true);
+			options.fileUtil().appendSourcePath(getCanonicalPath(tempDir));
 			this.metadataSystem = null;
 			this.jarFile = f; 
 			this.addFolderTree(tempDir);
@@ -128,30 +148,39 @@ public class TranslateSourceList {
 	}
 	
 	public ArrayList<InputFile> getInputFiles() {
+    ArrayList<InputFile> inputFiles = new ArrayList<>();
+    for (InputFile f : inputFileMap.values()) {
+      inputFiles.add(f);
+    }
+	  Collections.sort(inputFiles, new Comparator<InputFile>() {
+
+      @Override
+      public int compare(InputFile o1, InputFile o2) {
+        // TODO Auto-generated method stub
+        return o1.getUnitName().compareTo(o2.getUnitName());
+      }
+	    
+	  });
 		return inputFiles;
 	}
 
 	private boolean registerSource(File src_file) {
-		String filename = ARGC.getCanonicalPath(src_file);
+		String filename = getCanonicalPath(src_file);
 		filename = filename.substring(root.length());
 		
-		if (ARGC.isExcludedClass(filename)) {
+		if (!ImportManager.canImportClass(filename)) {
 			return false;
 		}
 		
-		InputFile f = InputFile.getInputFile(filename);
+    InputFile f = new RegularInputFile(root + filename, filename);
+    InputFile old = registerInputFile(f);
 		
-		if (f == null) {
-			f = new RegularInputFile(root + filename, filename);
-		}
-		else if (inputFiles.indexOf(f) >= 0) {
+    if (old != null) {
 			System.out.println("Warning! Source is replaced.");
-			System.out.println("  -- " + root + filename);
-			System.out.println("  ++ " + f.getAbsolutePath());
-			return false;
+      System.out.println("  " + old.getAbsolutePath() + " -> " + root + filename);
 		}
 		
-		inputFiles.add(f);
+		//inputFiles.add(f);
 		
 		return true;
 	}
@@ -164,7 +193,7 @@ public class TranslateSourceList {
 			registerSource(f);
 		}
 		else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
-			String filepath = ARGC.getCanonicalPath(f);
+			String filepath = getCanonicalPath(f);
 			String source = doSaveClassDecompiled(f);
 			if (source == null) return;
 
@@ -178,15 +207,13 @@ public class TranslateSourceList {
 			}
 			registerSource(new File(filepath));
 		}
-		else if (this.addSourceList) {
+		else {
 			File dir = options.fileUtil().getResourceDirectory();
 			if (dir != null) {
-				String filename = ARGC.getCanonicalPath(f);
-				if (filename.indexOf("/.") >= 0) {
-					return;
-				}
+		    // copy resource files into the specified resource directory.
+				String filename = getCanonicalPath(f);
 				filename = filename.substring(root.length());
-				File of = new File(dir.getAbsolutePath() + "/" + filename + "sss");
+				File of = new File(dir.getAbsolutePath() + "/" + filename);
 				of.getParentFile().mkdirs();
 				try {
 					BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(of));
@@ -225,17 +252,9 @@ public class TranslateSourceList {
 	}
 
 	private String doSaveClassDecompiled(File inFile) {
-		//			      List<File> classPath = new ArrayList<>();
-		//			      classPath.add(new File(rootPath));
-		//			      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);				  
-
-		String filepath = ARGC.getCanonicalPath(inFile);
+		String filepath = getCanonicalPath(inFile);
 		String classsig = filepath.substring(root.length(), filepath.length() - 6);
 
-		if (classsig.endsWith("JFlexLexer")) {//$ZzFlexStreamInfo")) {
-			int a = 3;
-			a ++;
-		}
 		TypeReference typeRef = lookupType(classsig); 
 		if (typeRef.getDeclaringType() != null) {
 			return null;
@@ -260,11 +279,6 @@ public class TranslateSourceList {
 		String decompiledSource = stringwriter.toString();
 		//System.out.println(decompiledSource);
 		return decompiledSource;
-		//		            if (decompiledSource.contains(textField.getText().toLowerCase())) {
-		//		                addClassName(entry.getName());
-		//		            }
-
-
 	}
 
 	private void addFolder(File f)  {
@@ -278,11 +292,93 @@ public class TranslateSourceList {
 		if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
 			options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
 		}
-
-		//options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
-		root = ARGC.getCanonicalPath(f) + '/';
-		addRootPath(root);
+		root = addRootPath(f) + '/';
 		this.addFolder(f);
 	}
 
+  public static ArrayList<String> readPathList(File lstf) {
+    if (!lstf.exists()) return null;
+    
+    ArrayList<String> list = new ArrayList<>();
+    try {
+      InputStreamReader in = new InputStreamReader(new FileInputStream(lstf));
+      StringBuilder sb = new StringBuilder();
+      for (int ch; (ch = in.read()) >=0; ) {
+        if (ch == '\n' && sb.length() > 0) {
+          if (sb.charAt(0) != '#') {
+            list.add(trimPath(sb));
+          }
+          sb.setLength(0);
+        }
+        else if (sb.length() > 0 || ch > ' ') {
+          sb.append((char)ch);
+        }
+      }
+      in.close();
+      if (sb.length() > 0 && sb.charAt(0) != '#') {
+        list.add(trimPath(sb));
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return list;
+  }
+  
+  private static String trimPath(StringBuilder sb) {
+    while (sb.charAt(sb.length() - 1) <= ' ') {
+      sb.setLength(sb.length() - 1);
+    }
+    while (sb.charAt(sb.length() - 1) == '*') {
+      sb.setLength(sb.length() - 1);
+    }
+    while (sb.charAt(sb.length() - 1) <= ' ') {
+      sb.setLength(sb.length() - 1);
+    }
+    return sb.toString();
+  }
+
+  public static File extractSources(File f, Options options, boolean extractResources) {
+    ZipFile zfile = null;
+    try {
+      zfile = new ZipFile(f);
+      Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+      File tempDir = FileUtil.createTempDir(f.getName());
+      while (enumerator.hasMoreElements()) {
+        ZipEntry entry = enumerator.nextElement();
+        String internalPath = entry.getName();
+        if (internalPath.endsWith(".java")
+            || (options.translateClassfiles() && internalPath.endsWith(".class"))) {
+          // Extract JAR file to a temporary directory
+          if (!ImportManager.canImportClass(internalPath)) {
+            if (options.isVerbose()) {
+              System.out.println(internalPath + " excluded");
+            }
+            continue;
+          }
+          options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+        }
+        else if (!entry.isDirectory() && extractResources && internalPath.indexOf("/.") < 0) {
+          options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+        }
+      }
+      return tempDir;
+    } catch (ZipException e) { // Also catches JarExceptions
+      e.printStackTrace();
+      ErrorUtil.error("Error reading file " + f.getAbsolutePath() + " as a zip or jar file.");
+    } catch (IOException e) {
+      e.printStackTrace();
+      ErrorUtil.error(e.getMessage());
+    } finally {
+      if (zfile != null) { 
+        try {
+          zfile.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    return null;
+  }
+  
+  	
 }

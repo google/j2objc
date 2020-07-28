@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -470,9 +469,6 @@ public class Autoboxer extends UnitTreeVisitor {
 
   private void convertArguments(ExecutableElement method, List<Expression> args) {
     List<? extends VariableElement> params = method.getParameters();
-    if (!method.isVarArgs() && params.size() < args.size()) {
-    	ARGC.trap(); 
-    }
     for (int i = 0; i < args.size(); i++) {
       TypeMirror paramType;
       if (method.isVarArgs() && i >= params.size() - 1) {

@@ -1184,39 +1184,12 @@ IOSObjectArray *NSString_serialPersistentFields;
 void NSString_CaseInsensitiveComparator__clinit__() {
   [NSString_CaseInsensitiveComparator class];
 
-  JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
+  JreStaticAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
     [[NSString_CaseInsensitiveComparator alloc] init]);
-  JreStrongAssignAndConsume(&NSString_serialPersistentFields,
+  JreStaticAssignAndConsume(&NSString_serialPersistentFields,
     [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
 }
 
-//// Empty class to force category to be loaded.
-//@interface JreStringCategoryDummy : JavaLangObject
-//@end
-//
-//@implementation JreStringCategoryDummy
-//
-//+ (void)initialize {
-//  if (self == [JreStringCategoryDummy class]) {
-//    ARGC_bindMetaData(self, [NSString __metadata]);
-//    ARGC_bindMetaData(self, [NSString_CaseInsensitiveComparator __metadata]);
-//
-//    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
-//        [[NSString_CaseInsensitiveComparator alloc] init]);
-//    JreStrongAssignAndConsume(&NSString_serialPersistentFields,
-//        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
-//    J2OBJC_SET_INITIALIZED(NSString)
-//  }
-//}
-//
-//@end
-
-//static _Atomic(jboolean) NSString__initialized;
-//void NSString_initialize() {
-//  if (!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE)) {
-//    [JreStringCategoryDummy class];
-//  }
-//}
 
 IOSClass *NSString_class_() { \
   static IOSClass *cls; \

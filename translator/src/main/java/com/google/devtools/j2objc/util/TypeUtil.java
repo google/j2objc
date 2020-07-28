@@ -16,9 +16,10 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -26,6 +27,7 @@ import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import com.google.j2objc.NotImportedError;
 import com.sun.tools.javac.code.Type;
 
 import java.util.ArrayList;
@@ -58,8 +60,6 @@ import javax.lang.model.type.UnionType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-
-import org.slowcoders.j2objc.UnreachableError;
 
 /**
  * Utility methods for working with TypeMirrors.
@@ -108,20 +108,20 @@ public final class TypeUtil {
   public static NoType javaVoid;
 
   // Commonly accessed types.
-  /*ARGC** private*/public static TypeElement javaObject;
-  /*ARGC** private*/public final TypeElement javaString;
-  /*ARGC** private*/public final TypeElement javaClass;
-  /*ARGC** private*/public final TypeElement javaNumber;
-  /*ARGC** private*/public final TypeElement javaThrowable;
+  public final TypeElement javaObject;
+  public final TypeElement javaString;
+  public final TypeElement javaClass;
+  public final TypeElement javaNumber;
+  public final TypeElement javaThrowable;
 
   private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
 
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
-    this.javacElements = env.elementUtilities();
-    this.javacTypes = env.typeUtilities();
-    this.elementUtil = elementUtil;
+    TypeUtil.javacElements = env.elementUtilities();
+    TypeUtil.javacTypes = env.typeUtilities();
+    TypeUtil.elementUtil = elementUtil;
 
     javaObject = javacElements.getTypeElement("java.lang.Object");
     javaString = javacElements.getTypeElement("java.lang.String");
@@ -235,9 +235,9 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
-	if (t.getKind() == TypeKind.ERROR) {
-	  return resolveUnreachableClass(t);
-	}
+    if (t.getKind() == TypeKind.ERROR) {
+      return resolveUnreachableClass(t);
+    }
     if (isDeclaredType(t)) {
       return (TypeElement) ((DeclaredType) t).asElement();
     }
@@ -255,55 +255,55 @@ public final class TypeUtil {
   }
 
   public boolean isARGCFieldEx(TypeElement owner, TypeMirror t) {
-	if (getArgcFieldType(owner.asType()) == "Native") {
-	  return false;
-	}
-	  
-	if (isPrimitiveOrVoid(t)) {
-	  return false;
-	}
-	  
-	return getArgcFieldType(t) != "Native";
+    if (getArgcFieldType(owner.asType()) == "Native") {
+      return false;
+    }
+
+    if (isPrimitiveOrVoid(t)) {
+      return false;
+    }
+
+    return getArgcFieldType(t) != "Native";
   }
   
   public String getArgcFieldTypeEx(Element owner, TypeMirror t) {
-	if (getArgcFieldType(owner.asType()) == "Native") {
-	  return "Native";
-	}
-	return getArgcFieldType(t);
+    if (getArgcFieldType(owner.asType()) == "Native") {
+      return "Native";
+    }
+    return getArgcFieldType(t);
   }
   
   private String getArgcFieldType(TypeMirror t) {
-	if (TypeUtil.isPureInterface(t)) {
-	  return "Generic";
-	}
-    if (Options.isIOSTest() && ARGC.isTestClass(t)) {
-  	  // IOSTest class 는 ARGCObject 를 상속하지 않는다.
+    if (TypeUtil.isPureInterface(t)) {
+      return "Generic";
+    }
+    if (J2ObjC.options.generateIOSTest() && CompilationUnit.isTestClass(t)) {
+      // IOSTest class is not inherits ARGCObject
       return "Native";
-	}
-	
-	TypeElement e = asTypeElement(t);
-	if (e == null) {
-	  TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
-	  if (tp != null) {
-	    return "Generic";
-	  }
-	}
-	if (e == javaObject) {
-	  return "Generic";
-	}
-	while (e != null) {
-	  if (e == this.javaNumber  || e == javaThrowable
-	  ||  e == javaClass || e == this.javaString) {
-	    return "Native";
-	  }
-	  TypeMirror m = e.getSuperclass();
-	  if (isNone(m)) {
-		break;
-	  }
-	  e = asTypeElement(m);
-	}
-   	return "Object";
+    }
+
+    TypeElement e = asTypeElement(t);
+    if (e == null) {
+      TypeParameterElement tp = TypeUtil.asTypeParameterElement(t);
+      if (tp != null) {
+        return "Generic";
+      }
+    }
+    if (e == javaObject) {
+      return "Generic";
+    }
+    while (e != null) {
+      if (e == this.javaNumber  || e == javaThrowable
+          ||  e == javaClass || e == this.javaString) {
+        return "Native";
+      }
+      TypeMirror m = e.getSuperclass();
+      if (isNone(m)) {
+        break;
+      }
+      e = asTypeElement(m);
+    }
+    return "Object";
   }
   
   
@@ -1053,10 +1053,10 @@ public final class TypeUtil {
 			  simpleName = simpleName.substring(0, p);
 		  }
 
-		  // Inner-class 처리.
+		  // Inner-class checking.
 		  p = simpleName.indexOf('.');
 		  if (p > 0) {
-			  if (ARGC.isExcludedClass(simpleName)) {
+			  if (!ImportManager.canImportClass(simpleName)) {
 				  _unreachableImportedClasses.put(simpleName, simpleName);
 				  return JavacEnvironment.unreachbleError;
 			  }
@@ -1067,7 +1067,7 @@ public final class TypeUtil {
 			  return JavacEnvironment.unreachbleError;
 		  }
 		  String fullName = _currentPackage + simpleName;
-		  if (ARGC.isExcludedClass(fullName)) {
+		  if (!ImportManager.canImportClass(fullName)) {
 			  _unreachableImportedClasses.put(simpleName, fullName);
 			  return JavacEnvironment.unreachbleError;
 		  }

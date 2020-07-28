@@ -104,7 +104,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_t, new_Test_1_initWithIOSClass_(Test_class_()));");
+        "JreStaticAssignAndConsume(&Test_t, new_Test_1_initWithIOSClass_(Test_class_()));");
   }
 
   public void testFinalParameter() throws IOException {
@@ -118,7 +118,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "id<JavaLangRunnable> r = create_Test_1_initWithId_(test);");
     assertTranslatedLines(translation,
         "void Test_1_initWithId_(Test_1 *self, id capture$0) {",
-        "  JreStrongAssign(&self->val$test_, capture$0);",
+        "  JreGenericFieldAssign(&self->val$test_, capture$0);",
         "  NSObject_init(self);",
         "}");
     assertTranslation(translation, "[nil_chk(val$test_) description]");
@@ -136,7 +136,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "id<JavaLangRunnable> r = create_Test_1_initWithId_(foo);");
     assertTranslatedLines(translation,
         "void Test_1_initWithId_(Test_1 *self, id capture$0) {",
-        "  JreStrongAssign(&self->val$foo_, capture$0);",
+        "  JreGenericFieldAssign(&self->val$foo_, capture$0);",
         "  NSObject_init(self);",
         "}");
     assertTranslation(translation, "[nil_chk(val$foo_) description]");
@@ -163,7 +163,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_EMPTY_ENUMERATION, new_Test_1_init());");
+        "JreStaticAssignAndConsume(&Test_EMPTY_ENUMERATION, new_Test_1_init());");
   }
 
   public void testFinalParameterAccess() throws IOException {
@@ -181,7 +181,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "Test_logWithInt_withId_(this$0_, 1, val$bar__);");
-    assertTranslation(translation, "JreStrongAssign(&self->val$bar__, capture$0);");
+    assertTranslation(translation, "JreGenericFieldAssign(&self->val$bar__, capture$0);");
   }
 
   public void testExternalReferenceAsQualifier() throws IOException {
@@ -367,8 +367,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_A_1_initWithTest_A_withTest_C_withTest_B_withInt_("
             + "Test_A_1 *self, Test_A *outer$, Test_C *capture$0, Test_B *x0, jint i) {",
-        "  JreStrongAssign(&self->this$1_, outer$);",
-        "  JreStrongAssign(&self->val$c_, capture$0);",
+        "  JreObjectFieldAssign(&self->this$1_, outer$);",
+        "  JreObjectFieldAssign(&self->val$c_, capture$0);",
         "  Test_B_Inner_initWithTest_B_withInt_(self, nil_chk(x0), i);",
         "}");
   }
@@ -454,7 +454,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "  A(String foo) {} }",
         "A", "A.m");
     assertOccurrences(impl, "@implementation A_1", 1);
-    assertOccurrences(impl, "JreStrongAssignAndConsume(&self->my_i_, new_A_1_init());", 2);
+    assertOccurrences(impl, "JreObjectFieldAssignAndConsume(&self->my_i_, new_A_1_init());", 2);
   }
 
   public void testNestedAnonymousClasses() throws IOException {

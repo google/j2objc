@@ -26,7 +26,6 @@ public class SingleVariableDeclaration extends VariableDeclaration {
   private boolean isVarargs = false;
   private final ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
   private final ChildLink<Type> type = ChildLink.create(Type.class, this);
-  // ARGC ++
   private boolean isMutable;
 
   public SingleVariableDeclaration() {}
@@ -95,12 +94,10 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     return new SingleVariableDeclaration(this);
   }
 
-  // ARGC ++
   public void markMutable() {
 	  this.isMutable = true;
   }
 
-  // ARGC ++
   public boolean isMutable() {
 	  return this.isMutable;
   }

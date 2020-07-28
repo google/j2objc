@@ -113,20 +113,16 @@ private FunctionDeclaration argc_currentMethod;
     }
   }
 
-  @Override // ARGC ++
+  @Override 
   public boolean visit(FunctionDeclaration node) {
-		if (options.useGC()) {
-			  assert this.argc_currentMethod == null;
-			  this.argc_currentMethod = node;
-		}
-	  return true;
+    assert this.argc_currentMethod == null;
+    this.argc_currentMethod = node;
+    return true;
   }
 
-  @Override // ARGC ++
+  @Override 
   public void endVisit(FunctionDeclaration node) {
-	  if (options.useGC()) {
-	    this.argc_currentMethod = null;
-	  }
+    this.argc_currentMethod = null;
   }
   
   @Override
@@ -143,9 +139,7 @@ private FunctionDeclaration argc_currentMethod;
 
   @Override
   public void endVisit(MethodDeclaration node) {
-	if (options.useGC()) {
-	  this.argc_currentMethod = null;
-	}
+	this.argc_currentMethod = null;
     retainedLocalCandidateStack.clear();
     retainedLocalCandidates.clear();
     isSynchronizedMethod = false;
@@ -283,42 +277,37 @@ private FunctionDeclaration argc_currentMethod;
 
     String funcName = null;
     if (!isPrimitive) {
-    	if (options.useGC()) {
-    		if (ElementUtil.isStatic(var)) {
-    			funcName = "JreStrongAssign";
-    		}
-    		else {
-    			String fType = typeUtil.getArgcFieldTypeEx(enc, type);
-    			funcName = "Jre" + fType + "FieldAssign";
-    		}
-    	}
-    	else if (options.useReferenceCounting()) {
-    		funcName = "JreStrongAssign";
-    	}
+      if (options.useGC()) {
+        if (ElementUtil.isStatic(var)) {
+          funcName = "JreStaticAssign";
+        }
+        else {
+          String fType = typeUtil.getArgcFieldTypeEx(enc, type);
+          funcName = "Jre" + fType + "FieldAssign";
+        }
+      }
+      else if (options.useReferenceCounting()) {
+        funcName = "JreStrongAssign";
+      }
     }
-    
+
     if (funcName != null) {
-	      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
-	      if (retainedRhs != null) {
-	    	  if (options.useReferenceCounting()) {
-	    		  funcName += "AndConsume";
-	    	  }
-	        node.setRightHandSide(retainedRhs);
-	      }
-	      if (options.useGC()) {
-		      if (!(node.getParent() instanceof ExpressionStatement)) {
-		    	  funcName += "AndGet";
-		      }
-	      }
-	      return funcName;
+      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
+      if (retainedRhs != null) {
+        if (options.useReferenceCounting()) {
+          funcName += "AndConsume";
+        }
+        node.setRightHandSide(retainedRhs);
+      }
+      return funcName;
     }
 
     return null;
   }
 
-  private boolean /*ARGC*/isStaticVar(VariableElement var) {
-	return ElementUtil.isStatic(var);
-}
+  private boolean isStaticVar(VariableElement var) {
+    return ElementUtil.isStatic(var);
+  }
 
 // Counter to create unique local variables for the RetainedWith target.
   private int rwCount = 0;
@@ -353,11 +342,10 @@ private FunctionDeclaration argc_currentMethod;
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
-    	if (options.useGC() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
-    		//Name arg = (Name) node.getLeftHandSide();
-    		SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
-    		arg.markMutable();
-    	}
+      if (options.enableConstRefArgs() && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
+        SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);
+        arg.markMutable();
+      }
       return;
     }
     TypeMirror type = node.getTypeMirror();
@@ -366,8 +354,9 @@ private FunctionDeclaration argc_currentMethod;
     Expression lhs = node.getLeftHandSide();
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
     
+    // TODO(zeedhoon) check compatibility 
     FunctionInvocation invocation = new FunctionInvocation(element, 
-    		(funcName.endsWith("AndGet") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
+    		(!funcName.endsWith("AndConsume") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
     				 ? type : this.translationUtil.getVoidType());
     
     List<Expression> args = invocation.getArguments();
@@ -550,7 +539,7 @@ private FunctionDeclaration argc_currentMethod;
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
 
-    if (options.useGC()) {
+    if (options.enableConstRefArgs()) {
       VariableElement var = TreeUtil.getVariableElement(lhs);
 	    if (var != null && var.getKind() == ElementKind.PARAMETER && this.argc_currentMethod != null) {
 		    SingleVariableDeclaration arg = this.argc_currentMethod.getParameter(var);

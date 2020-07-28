@@ -64,7 +64,7 @@ public class MethodReferenceTest extends GenerationTest {
         "Test", "Test.m");
     // Should be non-capturing.
     assertTranslation(staticTranslation,
-        "JreStrongAssign(&self->fun_, JreLoadStatic(Test_$Lambda$1, instance));");
+        "JreStaticAssign(&self->fun_, JreLoadStatic(Test_$Lambda$1, instance));");
     assertTranslatedLines(staticTranslation,
         "- (id)fWithId:(id)a {",
         "  return Q_oWithId_(a);",
@@ -74,7 +74,7 @@ public class MethodReferenceTest extends GenerationTest {
         "Test", "Test.m");
     // Should be capturing.
     assertTranslation(instanceTranslation,
-        "JreStrongAssignAndConsume(&self->fun_, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
+        "JreObjectFieldAssignAndConsume(&self->fun_, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(instanceTranslation,
         "- (id)fWithId:(id)a {",
         "  return [target$_ o2WithId:a];",
@@ -83,7 +83,7 @@ public class MethodReferenceTest extends GenerationTest {
         expressionReferenceHeader + "class Test { static F fun = new Q()::o2; }",
         "Test", "Test.m");
     assertTranslation(staticInstanceTranslation,
-        "JreStrongAssignAndConsume(&Test_fun, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
+        "JreObjectFieldAssignAndConsume(&Test_fun, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(staticInstanceTranslation,
         "- (id)fWithId:(id)a {",
         "  return [target$_ o2WithId:a];",
@@ -268,7 +268,7 @@ public class MethodReferenceTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_$Lambda$1_initWithJavaLangRunnable_("
             + "Test_$Lambda$1 *self, id<JavaLangRunnable> capture$0) {",
-        "  JreStrongAssign(&self->val$r_, capture$0);",
+        "  JreObjectFieldAssign(&self->val$r_, capture$0);",
         "  NSObject_init(self);",
         "}");
     assertTranslatedLines(translation,
@@ -316,6 +316,6 @@ public class MethodReferenceTest extends GenerationTest {
         "  id<Supplier> s = create_Test_$Lambda$1_initWithHolder_(h);",
         "}");
     // Make sure the receiver field is initialized.
-    assertTranslation(translation, "JreStrongAssign(&self->target$_, outer$);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->target$_, outer$);");
   }
 }

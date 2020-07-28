@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.ImportManager;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -166,7 +166,7 @@ public class NameTable {
   private final PackagePrefixes prefixMap;
 
   private final ImmutableMap<String, String> classMappings;
-  private final /*ARGC** ImmutableMap*/Map<String, String> methodMappings;
+  private final ImmutableMap<String, String> methodMappings;
 
   public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo, Options options) {
     this.typeUtil = typeUtil;
@@ -237,13 +237,6 @@ public class NameTable {
    */
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
-    if (Options.useGC() && var.getKind() == ElementKind.FIELD) {
-    	/* ARGC **
-    	 * static 변수명과 inner class 이름이 서로 겹치는 문제를 해결하기 위하여
-    	 * 모든 변수와 상수에 '_'를 추가야 한다.
-    	 */
-        // return baseName + '_';
-    }
     if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
       return baseName + '_';
     }
@@ -327,8 +320,8 @@ public class NameTable {
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
       TypeElement elem = bounds.isEmpty()
           ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
-      if (Options.useGC() && elem == null) {
-    	  elem = TypeUtil.NS_OBJECT;
+      if (J2ObjC.options.hasCustomImportRule() && elem == null) {
+    	elem = TypeUtil.NS_OBJECT;
       }
       assert elem != null;
       if (arrayDimensions == 0 && elem.equals(TypeUtil.NS_OBJECT)) {
@@ -616,11 +609,11 @@ public class NameTable {
   }
 
   private String constructObjcTypeFromBounds(TypeMirror type) {
-	if (type.getKind() == TypeKind.ERROR) {
-	   TypeUtil.resolveUnreachableClass(type);
-	   return "/*" + type + "*/ id";
-	}
-    /* ARGC** String*/TypeElement classType = null;
+    if (type.getKind() == TypeKind.ERROR) {
+      TypeUtil.resolveUnreachableClass(type);
+      return "/*" + type + "*/ id";
+    }
+    TypeElement classType = null;
     List<String> interfaces = new ArrayList<>();
     for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
       if (TypeUtil.isPureInterface(bound)) {

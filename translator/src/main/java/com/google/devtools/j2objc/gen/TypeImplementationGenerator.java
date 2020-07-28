@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.devtools.j2objc.argc.ARGC;
 import com.google.devtools.j2objc.ast.*;
 import com.google.devtools.j2objc.javac.JavacEnvironment;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -28,7 +27,6 @@ import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -233,7 +231,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         if (setter == null && !ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
               ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : (options.useGC() && ElementUtil.isStatic(varElement) ? "JreVolatileNativeAssign" : "JreVolatileStrongAssign"))
-              : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStrongAssign");
+              : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStaticAssign");
           if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                 NameTable.capitalize(accessorName), objcType, varName);
@@ -309,7 +307,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncLineNumbers(m);  // avoid doc-comment
     print(getMethodSignature(m) + " ");
     String body = generateStatement(m.getBody());
-    if (options.isIOSTest() && ARGC.isTestClass(super.typeElement.asType())) {
+    if (options.generateIOSTest() && CompilationUnit.isTestClass(super.typeElement.asType())) {
     	if (m.isTestClassSetup()) {
     	      String clazz = nameTable.getFullName(typeNode.getTypeElement());
     		
@@ -324,13 +322,35 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
+  // for -Xconst-ref-args
+  protected String getMutableParameters(FunctionDeclaration function) {
+    StringBuilder sb = null;
+    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator(); iter.hasNext(); ) {
+      SingleVariableDeclaration var = iter.next();
+      if (var.isMutable()) {
+        String paramType = nameTable.getObjCType(var.getVariableElement().asType());
+        boolean isObject = paramType.endsWith("*") || "id".equals(paramType) || paramType.startsWith("id<");
+        if (isObject) {
+          if (sb == null) {
+            sb = new StringBuilder();
+          }
+          String name = nameTable.getVariableShortName(var.getVariableElement());
+          sb.append("  ").append(paramType).append(' ').append(name).append(" = ")
+          .append(name).append("_0;").append('\n');
+        }
+      }
+    }
+    return sb == null ? "" : sb.toString();
+ }
+ 
+  
   @Override
   protected void printFunctionDeclaration(FunctionDeclaration function) {
     newline();
     syncLineNumbers(function);  // avoid doc-comment
     if (Modifier.isNative(function.getModifiers())) {
       printJniFunctionAndWrapper(function);
-    } else if (options.useGC()) {
+    } else if (options.enableConstRefArgs()) {
       String functionBody = generateStatement(function.getBody());
       String sig = getFunctionSignature(function, false);
       String mutableParams = getMutableParameters(function);
@@ -422,7 +442,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 	    String superType = super.getSuperTypeName();
 	    sb.append(superType + "_initialize();\n");
 	    
-	    // super interfaces 초기화.
+	    // init super classes.
 	    for (TypeElement intrface : interfaces) {
 	    	if (intrface == JavacEnvironment.unreachbleError
 	    	||  intrface.getQualifiedName().toString().startsWith("com.google.j2objc.")) {

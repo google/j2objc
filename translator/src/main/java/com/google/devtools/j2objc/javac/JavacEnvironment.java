@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.j2objc.NotImportedError;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.Trees;
 
@@ -32,8 +33,6 @@ import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
-import org.slowcoders.j2objc.UnreachableError;
-
 public class JavacEnvironment implements ParserEnvironment {
   private final JavacTask task;
   private final StandardJavaFileManager fileManager;
@@ -41,13 +40,12 @@ public class JavacEnvironment implements ParserEnvironment {
   private final Elements elements;
   private final Types types;
   private final Trees trees;
-  // ARGC ++ {{
+
   public static TypeElement unreachbleError;
   public static TypeElement javaLangObject;
   public final ExecutableElement throwUnreachablePrimitiveError;
   public final ExecutableElement throwUnreachableObjectError;
-  public final ExecutableElement createUnreachableError;
-  // }}
+  public final ExecutableElement createNotImportedError;
 
   JavacEnvironment(JavacTask task, StandardJavaFileManager fileManager,
       DiagnosticCollector<JavaFileObject> diagnostics) {
@@ -58,7 +56,7 @@ public class JavacEnvironment implements ParserEnvironment {
     types = task.getTypes();
     trees = Trees.instance(task);
     javaLangObject = elements.getTypeElement("java.lang.Object");
-    unreachbleError = elements.getTypeElement(UnreachableError.class.getCanonicalName());
+    unreachbleError = elements.getTypeElement(NotImportedError.class.getCanonicalName());
     List<? extends Element> list = elements.getAllMembers(unreachbleError);
     ExecutableElement throw_primitive = null, throw_object = null;
     ExecutableElement init_ = null;
@@ -85,7 +83,7 @@ public class JavacEnvironment implements ParserEnvironment {
     }
     throwUnreachableObjectError = throw_object;
     throwUnreachablePrimitiveError = throw_primitive;
-    createUnreachableError = init_;
+    createNotImportedError = init_;
   }
 
   public PackageElement defaultPackage() {

@@ -376,7 +376,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)
 
 void ByteStringIterator_initWithComGoogleProtobufByteString_(
     ByteStringIterator *self, ComGoogleProtobufByteString *byteString) {
-  JreStrongAssign(&self->byteString_, byteString);
+  JreObjectFieldAssign(&self->byteString_, byteString);
   NSObject_init(self);
   self->position_ = 0;
   self->limit_ = [byteString size];

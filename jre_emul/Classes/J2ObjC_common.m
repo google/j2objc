@@ -57,7 +57,7 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
 }
 
 
-#ifndef J2OBJC_USE_GC
+#if !J2OBJC_USE_GC
 void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
     [self java_finalize];
@@ -69,17 +69,9 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   }
 }
 
-
-id JreStrongAssign(__strong id *pIvar, id value) {
-  return JreAutoreleasedAssign(pIvar, RETAIN_(value));
-}
-
-id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  return JreAutoreleasedAssign(pIvar, value);
-}
 #endif
 
-#ifndef J2OBJC_USE_GC
+#if !J2OBJC_USE_GC
 // Declare a pool of spin locks for volatile variable access. The use of spin
 // locks for atomic access is consistent with how Apple implements atomic
 // property accessors, and the hashing used here is inspired by Apple's
@@ -393,7 +385,7 @@ id JreStrAppendStrong(__strong id *lhs, const char *types, ...) {
   va_start(va, types);
   NSString *result = JreStrAppendInner(*lhs, types, va);
   va_end(va);
-  return JreStrongAssignAndGet(lhs, result);
+  return JreStrongAssign(lhs, result);
 }
 
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...) {

@@ -21,30 +21,27 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
-import com.google.devtools.j2objc.argc.ARGC;
+import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.javac.ImportManager;
 
 /**
  * A single file in the filesystem.
  *
  * @author Mike Thvedt
  */
-public class RegularInputFile implements InputFile {
+public class RegularInputFile extends InputFile {
   private final String absolutePath;
-  private final String unitPath;
 
   public RegularInputFile(String unitPath) {
     this(unitPath, unitPath);
   }
 
   public RegularInputFile(String fsPath, String unitPath) {
+    super(unitPath);
     this.absolutePath = fsPath;
-    this.unitPath = unitPath;
     
-    if (ARGC.isExcludedClass(unitPath)) {
-    	throw new RuntimeException("exclude " + unitPath);
-    }
-    if (this.exists()) {
-    	InputFile.add(this);
+    if (!ImportManager.canImportClass(unitPath)) {
+      throw new RuntimeException("exclude " + unitPath);
     }
   }
 
@@ -71,16 +68,6 @@ public class RegularInputFile implements InputFile {
   @Override
   public String getOriginalLocation() {
     return absolutePath;
-  }
-
-  @Override
-  public String getUnitName() {
-    return unitPath;
-  }
-
-  @Override
-  public String getBasename() {
-    return unitPath.substring(unitPath.lastIndexOf(File.separatorChar) + 1);
   }
 
   @Override

@@ -1,4 +1,4 @@
-package com.google.devtools.j2objc.argc;
+package com.google.devtools.j2objc.javac;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class FileManagerProxy implements StandardJavaFileManager {
 	@Override
 	public Iterable<JavaFileObject> list(Location location, String packageName, Set<Kind> kinds, boolean recurse)
 			throws IOException {
-		if (ARGC.isExcludedPackage(packageName)) {
+		if (!ImportManager.canImportPackage(packageName)) {
 			return new ArrayList<>();
 		}
 		return fileManager.list(location, packageName, kinds, recurse);

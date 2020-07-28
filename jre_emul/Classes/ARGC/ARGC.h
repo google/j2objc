@@ -32,7 +32,7 @@ CF_EXTERN_C_BEGIN
         
 @interface ARGCArray : NSObject <NSCopying> {
 @public
-    const NSInteger length_;
+  const NSInteger length_;
 }
 
 @property (readonly) NSInteger length;

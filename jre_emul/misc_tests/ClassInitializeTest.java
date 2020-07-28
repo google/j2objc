@@ -35,7 +35,7 @@ public class ClassInitializeTest extends TestCase {
     static boolean innerClassAutoLoaded = InnerClass.loaded;
 
     static class Check {
-        static boolean innerClassInitialized;
+      static boolean innerClassInitialized;
     }
 
     static class InnerClass {
@@ -52,7 +52,7 @@ public class ClassInitializeTest extends TestCase {
       static String NOT_FINAL_CONSTANT_STRING = ".";
       static final String FINAL_CONSTANT_STRING = ".";
       static {
-          innerClassLoaded = true;
+        innerClassLoaded = true;
       }
     }
   }
@@ -62,7 +62,7 @@ public class ClassInitializeTest extends TestCase {
     assertTrue (Foo1.instance != null);
   }
 
-  public void testGetMetaclassInformaion() throws Exception {
+  public void testGetMetaclassInformation() throws Exception {
     // Foo2.<clinit> should not be called
     Foo2.class.getDeclaredClasses();
     assertFalse(Foo2.Check.innerClassInitialized);

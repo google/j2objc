@@ -280,7 +280,7 @@ public class AutoboxerTest extends GenerationTest {
   public void testBoxedTypeLiteral() throws IOException {
     String source = "public class Test { Class c = int.class; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->c_, [IOSClass intClass]);");
+    assertTranslation(translation, "JreObjectFieldAssign(&self->c_, [IOSClass intClass]);");
   }
 
   public void testBoxedLhsOperatorAssignment() throws IOException {

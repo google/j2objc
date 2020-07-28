@@ -103,7 +103,7 @@ public class FunctionizerTest extends GenerationTest {
         "A", "A.m");
     assertTranslatedLines(translation,
         "NSString *A_B_str(A_B *self) {",
-        "JreStrongAssign(&self->hello_, @\"hi\");",
+        "JreNativeFieldAssign(&self->hello_, @\"hi\");",
         "return self->hello_;");
   }
 
@@ -299,7 +299,7 @@ public class FunctionizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class A { Object o; private void setO(Object o) { this.o = o; }}",
         "A", "A.m");
-    assertTranslation(translation, "JreStrongAssign(&self->o_, o)");
+    assertTranslation(translation, "JreGenericFieldAssign(&self->o_, o)");
   }
 
   public void testClassInitializerCalledFromFunction() throws IOException {

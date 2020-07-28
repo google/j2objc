@@ -162,50 +162,35 @@ static void SetWithRawValue(
       @throw create_JavaLangIllegalAccessException_initWithNSString_(
           @"Cannot set static final field");
     }
-      void* pValue = (void*)field->ptrTable_[field->metadata_->staticRefIdx];
-      if (needsRetain) {
-#ifdef J2OBJC_USE_GC
-          JreStrongAssign((__strong id*)pValue, rawValue->asId);
-#else
-          [type __writeRawValue:rawValue toAddress:pValue];
-          RETAIN_(rawValue->asId);
-#endif
-      }
-      else {
-          [type __writeRawValue:rawValue toAddress:pValue];
-      }
+    void* pValue = (void*)field->ptrTable_[field->metadata_->staticRefIdx];
+    if (needsRetain) {
+      JreStaticAssign((__strong id *)pValue, rawValue->asId);
+    }
+    else {
+      [type __writeRawValue:rawValue toAddress:pValue];
+    }
   } else {
     (void)nil_chk(object);
     if (IsFinal(field) && !field->accessible_) {
       @throw create_JavaLangIllegalAccessException_initWithNSString_(@"Cannot set final field");
     }
-      if (field->ivar_) {
-          void* pValue = ((char *)(__bridge void*)object) + ivar_getOffset(field->ivar_);
-          if (needsRetain) {
-#ifdef J2OBJC_USE_GC
-              if (![object isKindOfClass:[ARGCObject class]] ) {
-                  JreStrongAssign((__strong id*)pValue, rawValue->asId);
-              }
-              else {
-                  JreGenericFieldAssign((__unsafe_unretained id*)pValue, rawValue->asId);
-              }
-#else
-              [type __writeRawValue:rawValue toAddress:pValue];
-              RETAIN_(rawValue->asId);
-#endif
-          }
-          else {
-              [type __writeRawValue:rawValue toAddress:pValue];
-          }
-      } else {
-          // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
-          SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%@:", [field getName]]);
-          if (setter && [object respondsToSelector:setter]) {
-              ((void(*)(id, SEL, void*))[object methodForSelector:setter])(object, setter, rawValue->asPointer);
-              //[object performSelector:setter withObject:rawValue->asId];
-          }
-          // else: It's a final instance field, return without any side effects.
+    if (field->ivar_) {
+      void* pValue = ((char *)(__bridge void*)object) + ivar_getOffset(field->ivar_);
+      if (needsRetain) {
+        JreGenericFieldAssign((__unsafe_unretained id *)pValue, rawValue->asId);
       }
+      else {
+        [type __writeRawValue:rawValue toAddress:pValue];
+      }
+    } else {
+      // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
+      SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%@:", [field getName]]);
+      if (setter && [object respondsToSelector:setter]) {
+        ((void(*)(id, SEL, void*))[object methodForSelector:setter])(object, setter, rawValue->asPointer);
+        //[object performSelector:setter withObject:rawValue->asId];
+      }
+      // else: It's a final instance field, return without any side effects.
+    }
   }
 }
 
@@ -270,20 +255,12 @@ static void SetWithRawValue(
   // If ivar_ is NULL and the field is not static then the field is a mapped
   // class "virtual" field.
   jboolean needsRetain = ![fieldType isPrimitive] && (ivar_ || IsStatic(self));
-#ifdef J2OBJC_USE_GC
-//    if (needsRetain) {
-//        AUTORELEASE([self getWithId:object]);
-//    }
-#endif
   J2ObjcRawValue rawValue;
   if (![fieldType __unboxValue:value toRawValue:&rawValue]) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
                         initWithNSString:@"field type mismatch"]);
   }
   SetWithRawValue(&rawValue, self, object, fieldType, needsRetain);
-//  if (needsRetain) {
-//    (void)RETAIN_(value);
-//  }
 }
 
 - (void)setBooleanWithId:(id)object withBoolean:(jboolean)value {
