@@ -1022,6 +1022,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/KQueueArrayWrapper.java \
   sun/nio/ch/KQueueSelectorImpl.java \
   sun/nio/ch/KQueueSelectorProvider.java \
+  sun/nio/ch/MembershipKeyImpl.java \
+  sun/nio/ch/MembershipRegistry.java \
   sun/nio/ch/NativeDispatcher.java \
   sun/nio/ch/NativeObject.java \
   sun/nio/ch/NativeThread.java \
