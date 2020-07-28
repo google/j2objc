@@ -160,29 +160,26 @@ abstract class AsynchronousFileChannelImpl
      * Adds region to lock table
      */
     protected final FileLockImpl addToFileLockTable(long position, long size, boolean shared) {
-        final FileLockImpl fli = null;
+        final FileLockImpl fli;
+        try {
+            // like begin() but returns null instead of exception
+            closeLock.readLock().lock();
+            if (closed)
+                return null;
+
+            try {
+                ensureFileLockTableInitialized();
+            } catch (IOException x) {
+                // should not happen
+                throw new AssertionError(x);
+            }
+            fli = new FileLockImpl(this, position, size, shared);
+            // may throw OverlappedFileLockException
+            fileLockTable.add(fli);
+        } finally {
+            end();
+        }
         return fli;
-//        TODO(amisail) uncomment this when working
-//        final FileLockImpl fli;
-//        try {
-//            // like begin() but returns null instead of exception
-//            closeLock.readLock().lock();
-//            if (closed)
-//                return null;
-//
-//            try {
-//                ensureFileLockTableInitialized();
-//            } catch (IOException x) {
-//                // should not happen
-//                throw new AssertionError(x);
-//            }
-//            fli = new FileLockImpl(this, position, size, shared);
-//            // may throw OverlappedFileLockException
-//            fileLockTable.add(fli);
-//        } finally {
-//            end();
-//        }
-//        return fli;
     }
 
     protected final void removeFromFileLockTable(FileLockImpl fli) {
