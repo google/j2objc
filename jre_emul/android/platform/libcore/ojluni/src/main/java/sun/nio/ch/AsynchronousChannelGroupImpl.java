@@ -37,6 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.security.PrivilegedAction;
 import java.security.AccessController;
 import java.security.AccessControlContext;
+
+import com.google.j2objc.annotations.Weak;
 import sun.security.action.GetIntegerAction;
 
 /**
@@ -62,6 +64,7 @@ abstract class AsynchronousChannelGroupImpl
 
     // task queue for when using a fixed thread pool. In that case, thread
     // waiting on I/O events must be awokon to poll tasks from this queue.
+    @Weak
     private final Queue<Runnable> taskQueue;
 
     // group shutdown
