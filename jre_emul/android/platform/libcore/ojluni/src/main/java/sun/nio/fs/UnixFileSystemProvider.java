@@ -168,17 +168,15 @@ public abstract class UnixFileSystemProvider
                                       FileAttribute<?>... attrs)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        UnixPath file = checkPath(obj);
-//        int mode = UnixFileModeAttribute
-//            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
-//        try {
-//            return UnixChannelFactory.newFileChannel(file, options, mode);
-//        } catch (UnixException x) {
-//            x.rethrowAsIOException(file);
-//            return null;
-//        }
+        UnixPath file = checkPath(obj);
+        int mode = UnixFileModeAttribute
+            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
+        try {
+            return UnixChannelFactory.newFileChannel(file, options, mode);
+        } catch (UnixException x) {
+            x.rethrowAsIOException(file);
+            return null;
+        }
     }
 
     @Override
@@ -187,19 +185,17 @@ public abstract class UnixFileSystemProvider
                                                               ExecutorService executor,
                                                               FileAttribute<?>... attrs) throws IOException
     {
-        return null;
-//        TODO(amisail) uncomment this when working
-//        UnixPath file = checkPath(obj);
-//        int mode = UnixFileModeAttribute
-//            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
-//        ThreadPool pool = (executor == null) ? null : ThreadPool.wrap(executor, 0);
-//        try {
-//            return UnixChannelFactory
-//                .newAsynchronousFileChannel(file, options, mode, pool);
-//        } catch (UnixException x) {
-//            x.rethrowAsIOException(file);
-//            return null;
-//        }
+        UnixPath file = checkPath(obj);
+        int mode = UnixFileModeAttribute
+            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
+        ThreadPool pool = (executor == null) ? null : ThreadPool.wrap(executor, 0);
+        try {
+            return UnixChannelFactory
+                .newAsynchronousFileChannel(file, options, mode, pool);
+        } catch (UnixException x) {
+            x.rethrowAsIOException(file);
+            return null;
+        }
     }
 
 
@@ -209,17 +205,15 @@ public abstract class UnixFileSystemProvider
                                               FileAttribute<?>... attrs)
          throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        UnixPath file = UnixPath.toUnixPath(obj);
-//        int mode = UnixFileModeAttribute
-//            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
-//        try {
-//            return UnixChannelFactory.newFileChannel(file, options, mode);
-//        } catch (UnixException x) {
-//            x.rethrowAsIOException(file);
-//            return null;  // keep compiler happy
-//        }
+        UnixPath file = UnixPath.toUnixPath(obj);
+        int mode = UnixFileModeAttribute
+            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
+        try {
+            return UnixChannelFactory.newFileChannel(file, options, mode);
+        } catch (UnixException x) {
+            x.rethrowAsIOException(file);
+            return null;  // keep compiler happy
+        }
     }
 
     @Override
