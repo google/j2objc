@@ -36,9 +36,8 @@ import java.io.FilePermission;
 import java.util.*;
 import java.security.AccessController;
 
-//TODO(amisail) uncomment this when working
-//import sun.nio.ch.ThreadPool;
-//import sun.security.util.SecurityConstants;
+import sun.nio.ch.ThreadPool;
+import sun.security.util.SecurityConstants;
 import static sun.nio.fs.UnixNativeDispatcher.*;
 import static sun.nio.fs.UnixConstants.*;
 
@@ -182,13 +181,14 @@ public abstract class UnixFileSystemProvider
 //        }
     }
 
-//    TODO(amisail) uncomment this when working
-//    @Override
-//    public AsynchronousFileChannel newAsynchronousFileChannel(Path obj,
-//                                                              Set<? extends OpenOption> options,
-//                                                              ExecutorService executor,
-//                                                              FileAttribute<?>... attrs) throws IOException
-//    {
+    @Override
+    public AsynchronousFileChannel newAsynchronousFileChannel(Path obj,
+                                                              Set<? extends OpenOption> options,
+                                                              ExecutorService executor,
+                                                              FileAttribute<?>... attrs) throws IOException
+    {
+        return null;
+//        TODO(amisail) uncomment this when working
 //        UnixPath file = checkPath(obj);
 //        int mode = UnixFileModeAttribute
 //            .toUnixMode(UnixFileModeAttribute.ALL_READWRITE, attrs);
@@ -200,7 +200,7 @@ public abstract class UnixFileSystemProvider
 //            x.rethrowAsIOException(file);
 //            return null;
 //        }
-//    }
+    }
 
 
     @Override
@@ -403,45 +403,43 @@ public abstract class UnixFileSystemProvider
     public DirectoryStream<Path> newDirectoryStream(Path obj, DirectoryStream.Filter<? super Path> filter)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        UnixPath dir = UnixPath.toUnixPath(obj);
-//        dir.checkRead();
-//        if (filter == null)
-//            throw new NullPointerException();
-//
-//        // can't return SecureDirectoryStream on kernels that don't support openat
-//        // or O_NOFOLLOW
-//        if (!openatSupported() || O_NOFOLLOW == 0) {
-//            try {
-//                long ptr = opendir(dir);
-//                return new UnixDirectoryStream(dir, ptr, filter);
-//            } catch (UnixException x) {
-//                if (x.errno() == ENOTDIR)
-//                    throw new NotDirectoryException(dir.getPathForExceptionMessage());
-//                x.rethrowAsIOException(dir);
-//            }
-//        }
-//
-//        // open directory and dup file descriptor for use by
-//        // opendir/readdir/closedir
-//        int dfd1 = -1;
-//        int dfd2 = -1;
-//        long dp = 0L;
-//        try {
-//            dfd1 = open(dir, O_RDONLY, 0);
-//            dfd2 = dup(dfd1);
-//            dp = fdopendir(dfd1);
-//        } catch (UnixException x) {
-//            if (dfd1 != -1)
-//                UnixNativeDispatcher.close(dfd1);
-//            if (dfd2 != -1)
-//                UnixNativeDispatcher.close(dfd2);
-//            if (x.errno() == UnixConstants.ENOTDIR)
-//                throw new NotDirectoryException(dir.getPathForExceptionMessage());
-//            x.rethrowAsIOException(dir);
-//        }
-//        return new UnixSecureDirectoryStream(dir, dp, dfd2, filter);
+        UnixPath dir = UnixPath.toUnixPath(obj);
+        dir.checkRead();
+        if (filter == null)
+            throw new NullPointerException();
+
+        // can't return SecureDirectoryStream on kernels that don't support openat
+        // or O_NOFOLLOW
+        if (!openatSupported() || O_NOFOLLOW == 0) {
+            try {
+                long ptr = opendir(dir);
+                return new UnixDirectoryStream(dir, ptr, filter);
+            } catch (UnixException x) {
+                if (x.errno() == ENOTDIR)
+                    throw new NotDirectoryException(dir.getPathForExceptionMessage());
+                x.rethrowAsIOException(dir);
+            }
+        }
+
+        // open directory and dup file descriptor for use by
+        // opendir/readdir/closedir
+        int dfd1 = -1;
+        int dfd2 = -1;
+        long dp = 0L;
+        try {
+            dfd1 = open(dir, O_RDONLY, 0);
+            dfd2 = dup(dfd1);
+            dp = fdopendir(dfd1);
+        } catch (UnixException x) {
+            if (dfd1 != -1)
+                UnixNativeDispatcher.close(dfd1);
+            if (dfd2 != -1)
+                UnixNativeDispatcher.close(dfd2);
+            if (x.errno() == UnixConstants.ENOTDIR)
+                throw new NotDirectoryException(dir.getPathForExceptionMessage());
+            x.rethrowAsIOException(dir);
+        }
+        return new UnixSecureDirectoryStream(dir, dp, dfd2, filter);
     }
 
     @Override
@@ -494,25 +492,23 @@ public abstract class UnixFileSystemProvider
 
     @Override
     public Path readSymbolicLink(Path obj1) throws IOException {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        UnixPath link = UnixPath.toUnixPath(obj1);
-//        // permission check
-//        SecurityManager sm = System.getSecurityManager();
-//        if (sm != null) {
-//            FilePermission perm = new FilePermission(link.getPathForPermissionCheck(),
-//                SecurityConstants.FILE_READLINK_ACTION);
-//            sm.checkPermission(perm);
-//        }
-//        try {
-//            byte[] target = readlink(link);
-//            return new UnixPath(link.getFileSystem(), target);
-//        } catch (UnixException x) {
-//           if (x.errno() == UnixConstants.EINVAL)
-//                throw new NotLinkException(link.getPathForExceptionMessage());
-//            x.rethrowAsIOException(link);
-//            return null;    // keep compiler happy
-//        }
+        UnixPath link = UnixPath.toUnixPath(obj1);
+        // permission check
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            FilePermission perm = new FilePermission(link.getPathForPermissionCheck(),
+                SecurityConstants.FILE_READLINK_ACTION);
+            sm.checkPermission(perm);
+        }
+        try {
+            byte[] target = readlink(link);
+            return new UnixPath(link.getFileSystem(), target);
+        } catch (UnixException x) {
+           if (x.errno() == UnixConstants.EINVAL)
+                throw new NotLinkException(link.getPathForExceptionMessage());
+            x.rethrowAsIOException(link);
+            return null;    // keep compiler happy
+        }
     }
 
     /**

@@ -956,6 +956,8 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/IllegalSelectorException.java \
   java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
+  java/nio/channels/MembershipKey.java \
+  java/nio/channels/MulticastChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
   java/nio/channels/NonReadableChannelException.java \
@@ -984,6 +986,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/AbstractSelector.java \
   java/nio/channels/spi/AsynchronousChannelProvider.java \
   java/nio/channels/spi/SelectorProvider.java \
+  java/nio/file/attribute/FileAttribute.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 
@@ -1004,9 +1007,9 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/DefaultSelectorProvider.java \
   sun/nio/ch/ExtendedSocketOption.java \
   sun/nio/ch/FileChannelImpl.java \
-  sun/nio/ch/FileLockTable.java \
-  sun/nio/ch/FileLockImpl.java \
   sun/nio/ch/FileKey.java \
+  sun/nio/ch/FileLockImpl.java \
+  sun/nio/ch/FileLockTable.java \
   sun/nio/ch/FileDescriptorHolderSocketImpl.java \
   sun/nio/ch/FileDispatcherImpl.java \
   sun/nio/ch/FileDispatcher.java \
@@ -1058,6 +1061,7 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   SocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_FILE = \
+  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/file/AccessDeniedException.java \
   java/nio/file/AccessMode.java \
   java/nio/file/AtomicMoveNotSupportedException.java \
@@ -1112,7 +1116,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/BasicFileAttributes.java \
   java/nio/file/attribute/DosFileAttributeView.java \
   java/nio/file/attribute/DosFileAttributes.java \
-  java/nio/file/attribute/FileAttribute.java \
   java/nio/file/attribute/FileAttributeView.java \
   java/nio/file/attribute/FileOwnerAttributeView.java \
   java/nio/file/attribute/FileStoreAttributeView.java \
@@ -1137,6 +1140,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
+  sun/nio/ch/ThreadPool.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/AbstractFileSystemProvider.java \
   sun/nio/fs/AbstractFileTypeDetector.java \
@@ -1161,6 +1165,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/PollingWatchService.java \
+  sun/nio/fs/UnixChannelFactory.java \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixCopyFile.java \
   sun/nio/fs/UnixDirectoryStream.java \
@@ -1176,9 +1181,11 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixMountEntry.java \
   sun/nio/fs/UnixNativeDispatcher.java \
   sun/nio/fs/UnixPath.java \
+  sun/nio/fs/UnixSecureDirectoryStream.java \
   sun/nio/fs/UnixUriUtils.java \
   sun/nio/fs/UnixUserPrincipals.java \
-  sun/nio/fs/Util.java
+  sun/nio/fs/Util.java \
+  sun/security/util/SecurityConstants.java
 
 NATIVE_JRE_SOURCES_FILE = \
   BsdNativeDispatcher.m \
