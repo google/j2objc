@@ -339,8 +339,8 @@ $(TESTS_DIR)/core_plus_concurrent:
 
 $(TESTS_DIR)/core_plus_file:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_file -ljre_concurrent -ljre_net -ljre_security \
-	    -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_file -ljre_channels -ljre_concurrent -ljre_net \
+	    -ljre_security -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
