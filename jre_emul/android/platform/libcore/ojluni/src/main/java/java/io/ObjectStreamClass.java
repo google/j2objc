@@ -1738,8 +1738,9 @@ public class ObjectStreamClass implements Serializable {
             return 0L;
         }
 
+        Digest digest = getDigest();
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
             DataOutputStream dout = new DataOutputStream(bout);
 
             dout.writeUTF(cl.getName());
@@ -1888,32 +1889,31 @@ public class ObjectStreamClass implements Serializable {
             }
 
             dout.flush();
-
-            MessageDigest md = MessageDigest.getInstance("SHA");
-            byte[] hashBytes = md.digest(bout.toByteArray());
-            long hash = 0;
-            for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
-                hash = (hash << 8) | (hashBytes[i] & 0xFF);
-            }
-            /* J2ObjC Removed with removal of inheritStaticInitializer section
-
-            // BEGIN Android-added: Fix/log clinit serialization workaround. b/29064453
-            // ObjectStreamClass instances are cached per Class and caches its default
-            // serialVersionUID so it will only log one message per class per app process
-            // irrespective of the number of times the class is serialized.
-            if (warnIncompatibleSUIDChange) {
-                suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
-            }
-            // END Android-added: Fix/log clinit serialization workaround. b/29064453
-             */
-            return hash;
         } catch (IOException ex) {
             throw new InternalError(ex);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new SecurityException(ex.getMessage());
         }
+
+        // now compute the UID based on the SHA
+        byte[] hashBytes = digest.digest(bout.toByteArray());
+        long hash = 0;
+        for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
+            hash = (hash << 8) | (hashBytes[i] & 0xFF);
+        }
+        /* J2ObjC Removed with removal of inheritStaticInitializer section
+
+        // BEGIN Android-added: Fix/log clinit serialization workaround. b/29064453
+        // ObjectStreamClass instances are cached per Class and caches its default
+        // serialVersionUID so it will only log one message per class per app process
+        // irrespective of the number of times the class is serialized.
+        if (warnIncompatibleSUIDChange) {
+            suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
+        }
+        // END Android-added: Fix/log clinit serialization workaround. b/29064453
+         */
+        return hash;
     }
 
+    // j2objc: dynamically load MessageDigest to avoid linking jre_security unnecessarily.
     static interface Digest {
         byte[] digest(byte[] input);
     }
