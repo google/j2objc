@@ -652,11 +652,11 @@ public final class Integer extends Number implements Comparable<Integer> {
           Class self = [JavaLangInteger class];
           //size_t objSize = class_getInstanceSize(self);
           //uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
-          ARGC_FIELD_REF id *buf = values->buffer_;
+          __unsafe_unretained id *buf = values->buffer_;
           for (jint i = -128; i < 128; i++) {
             id obj = [JavaLangInteger alloc]; //objc_constructInstance(self, (void *)ptr);
             JavaLangInteger_initWithInt_(obj, i);
-            JreGenericFieldAssign(buf++, obj);
+            JreWeakRefFieldAssign(buf++, obj);
             //ptr += objSize;
           }
         ]-*/;

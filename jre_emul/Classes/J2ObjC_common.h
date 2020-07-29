@@ -25,8 +25,15 @@
 #import "pthread.h"
 
 //#define J2OBJC_USE_GC 1
+
+#define ARGC_WEAK_REF __unsafe_unretained
+
 #if J2OBJC_USE_GC
-#import "ARGC/ARGC.h"
+  #define ARGC_FIELD_REF __unsafe_unretained
+  #import "ARGC/ARGC.h"
+#else
+  #define ARGC_FIELD_REF __strong
+  id ARGC_allocateArray(Class cls, NSUInteger extraBytes, NSZone* zone) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR;
 #endif
 
 @class IOSClass;
@@ -46,6 +53,7 @@
 
 # if __has_feature(objc_arc)
 #  define ARCBRIDGE __bridge
+#  define ARCBRIDGE_RETAINED __bridge_retained
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 #  define AUTORELEASE(x) x
@@ -55,6 +63,7 @@
 #  define DEALLOC_(x)
 # else
 #  define ARCBRIDGE
+#  define ARCBRIDGE_RETAINED
 #  define ARCBRIDGE_TRANSFER
 #  define ARC_CONSUME_PARAMETER
 #  define AUTORELEASE(x) [x autorelease]
@@ -85,8 +94,13 @@ __attribute__((always_inline)) inline id JreNativeFieldAssign(__strong id *pIvar
 }
 
 __attribute__((always_inline)) inline id JreObjectFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
-    ARGC_assignARGCObject(pIvar, value);
-    return value;
+  ARGC_assignARGCObject(pIvar, value);
+  return value;
+}
+
+__attribute__((always_inline)) inline id JreWeakRefFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
+  ARGC_assignGenericObject(pIvar, value);
+  return value;
 }
 
 __attribute__((always_inline)) inline id JreGenericFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
@@ -100,6 +114,7 @@ __attribute__((always_inline)) inline id JreGenericFieldAssign(__unsafe_unretain
 
 #define JreObjectFieldAssignAndConsume  JreObjectFieldAssign
 #define JreNativeFieldAssignAndConsume  JreNativeFieldAssign
+#define JreWeakRefFieldAssignAndConsume JreWeakRefFieldAssign
 #define JreGenericFieldAssignAndConsume JreGenericFieldAssign
 
 #else
@@ -117,14 +132,27 @@ __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *
   return value;
 }
 
+__attribute__((always_inline)) inline id JreWeakRefFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) {
+  AUTORELEASE(*pIvar);
+  *pIvar = RETAIN_(value);
+  return value;
+}
+
+__attribute__((always_inline)) inline id JreWeakRefFieldAssignAndConsume(__unsafe_unretained id *pIvar, NS_RELEASES_ARGUMENT id value) {
+  AUTORELEASE(*pIvar);
+  *pIvar = value;
+  return value;
+}
+
+
 #define JreStaticAssign                  JreStrongAssign
 #define JreStaticAssignAndConsume        JreStrongAssignAndConsume
-#define JreObjectFieldAssign             JreObjectFieldAssign
-#define JreObjectFieldAssignAndConsume   JreObjectFieldAssignAndConsume
-#define JreNativeFieldAssign             JreNativeFieldAssign
-#define JreNativeFieldAssignAndConsume   JreNativeFieldAssignAndConsume
-#define JreGenericFieldAssign            JreGenericFieldAssign
-#define JreGenericFieldAssignAndConsume  JreGenericFieldAssignAndConsume
+#define JreNativeFieldAssign             JreStrongAssign
+#define JreNativeFieldAssignAndConsume   JreStrongAssignAndConsume
+#define JreObjectFieldAssign             JreStrongAssign
+#define JreObjectFieldAssignAndConsume   JreStrongAssignAndConsume
+#define JreGenericFieldAssign            JreStrongAssign
+#define JreGenericFieldAssignAndConsume  JreStrongAssignAndConsume
 
 #endif
 
@@ -134,13 +162,10 @@ id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, __unsafe_unretained id expected, __unsafe_unretained id newValue);
 id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
 void JreReleaseVolatile(volatile_id *pVar);
-#if J2OBJC_USE_GC
+
+#define JreRetainedLocalValue(value) AUTORELEASE(RETAIN_((id)(value)))
 id JreVolatileNativeAssign(volatile_id *pIvar, __unsafe_unretained id value);
-__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) { return value; }
-#else
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
-id JreRetainedLocalValue(id value);
-#endif
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
 
@@ -293,7 +318,7 @@ CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) J2OBJC_METHOD_ATTR { \
  *
  * @define J2OBJC_ETERNAL_SINGLETON
  */
-#if J2OBJC_USE_GC
+#if __has_feature(objc_arc)
 #define J2OBJC_ETERNAL_SINGLETON // error!! NO Singlton surpported in ARC.
 #else
 #define J2OBJC_ETERNAL_SINGLETON \

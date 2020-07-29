@@ -21,7 +21,7 @@
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"
 
-#if !J2OBJC_USE_GC
+#if !__has_feature(objc_arc)
 // Associate the return reference so that it can be artificially weakened when
 // the child's retain count is 1.
 static char returnRefKey;

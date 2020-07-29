@@ -194,10 +194,6 @@ public class J2ObjC {
       System.exit(1);
     }
 
-	  if (true) {
-		  options.setMemoryManagementOption(Options.MemoryManagementOption.GC);
-	  }
-
     runEx(files, options);
 
     TimingLevel timingLevel = options.timingLevel();

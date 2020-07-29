@@ -98,10 +98,10 @@ static CFMutableSetRef soft_references;
 
 static jboolean in_low_memory_cleanup;
 
-+ (void)initReferent:(JavaLangRefReference *)reference {
++ (void)initReferent:(JavaLangRefReference *)reference withReferent:(id) referent {
   WhileLocked(^{
-    id referent = JreLoadVolatileId(&reference->referent_);
     if (referent) {
+      reference->referent_ = referent;
       EnsureReferentSubclass(referent);
       AssociateReferenceWithReferent(referent, reference);
     }

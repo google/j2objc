@@ -24,7 +24,9 @@
  ARGC provides non stop-the-world garbage collection mechanism without stack-scanning.
  */
 
-#import "ARGC.h"
+#import "J2ObjC_common.h"
+
+#if J2OBJC_USE_GC
 #import "objc/runtime.h"
 #include "java/lang/ref/Reference.h"
 #include "java/lang/ref/SoftReference.h"
@@ -1416,5 +1418,5 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
 @end
 @implementation ScanOffsetArray
 @end
-
+#endif //J2OBJC_USE_GC
 

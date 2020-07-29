@@ -105,7 +105,7 @@ public class Cleaner {
 #if __has_feature(objc_arc)        
         objc_setAssociatedObject(ob, (__bridge_retained void*)cleaner, associated, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 #else        
-        objc_setAssociatedObject(ob, (__bridge_retained void*)cleaner, associated, OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(ob, (void*)cleaner, associated, OBJC_ASSOCIATION_ASSIGN);
 #endif
         RELEASE_(associated);
     ]-*/;

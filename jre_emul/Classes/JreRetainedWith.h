@@ -44,7 +44,7 @@ FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
   - (id)retain { \
     @synchronized (self) { \
       if ([self retainCount] == NUM_REFS) { \
-        [PARENT_REF retain]; \
+        RETAIN_(PARENT_REF); \
       } \
       return [super retain]; \
     } \
@@ -64,6 +64,19 @@ RETAINED_WITH_CHILD_NUM_REFS(PARENT_REF, 1)
 #else // J2OBJC_USE_GC
 #define RETAINED_WITH_CHILD(PARENT) /*ignore*/
 #define RETAINED_WITH_CHILD_NUM_REFS(PARENT_REF, NUM_REFS) /*ignore*/
+
+//__attribute__((always_inline)) inline  void JreRetainedWithInitialize(id parent, id value) {
+//  RETAIN_(value);
+//}
+//
+//__attribute__((always_inline)) inline  void JreRetainedWithHandlePreviousValue(id parent, id value) {
+//  RETAIN_(value);
+//}
+//
+//__attribute__((always_inline)) inline  void JreRetainedWithHandleDealloc(id parent, id child) {
+//  RETAIN_(value);
+//}
+
 #endif // J2OBJC_USE_GC
 
 #endif // JRE_RETAINED_WITH_H_

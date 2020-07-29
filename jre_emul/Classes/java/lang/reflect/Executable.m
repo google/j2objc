@@ -42,7 +42,11 @@
 #import "objc/runtime.h"
 
 @interface JavaLangReflectExecutable () {
+#if __has_feature(objc_arc)
   __weak IOSObjectArray * params_;
+#else
+  IOSObjectArray * params_;
+#endif
   IOSObjectArray * paramTypes_;
 }
 @end

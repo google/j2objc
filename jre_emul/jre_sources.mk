@@ -17,6 +17,7 @@
 NATIVE_ARGC_SOURCES = \
   ARGC/ARGC.mm \
   ARGC/Volatiles.mm \
+  JreRetainedWith.mm \
   jni.mm 
 
 NATIVE_JRE_SOURCES_CORE = \
@@ -40,8 +41,6 @@ NATIVE_JRE_SOURCES_CORE = \
   J2ObjC_common.m \
   J2ObjC_icu.m \
   JavaThrowable.m \
-  JreRetainedLocalValue.m \
-  JreRetainedWith.m \
   MappedByteBuffer.m \
   NSCopying+JavaCloneable.m \
   NSDataInputStream.m \

@@ -40,7 +40,7 @@
    * The elements of this array.
    */
   // Ensure alignment for java.util.concurrent.atomic.AtomicReferenceArray.
-  id ARGC_FIELD_REF buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
+  __unsafe_unretained id buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
 }
 
 

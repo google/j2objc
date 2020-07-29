@@ -721,11 +721,11 @@ public final class Long extends Number implements Comparable<Long> {
           Class self = [JavaLangLong class];
           //size_t objSize = class_getInstanceSize(self);
           //uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
-          ARGC_FIELD_REF id *buf = values->buffer_;
+          __unsafe_unretained id *buf = values->buffer_;
           for (jint i = -128; i < 128; i++) {
             id obj = [JavaLangLong alloc]; //objc_constructInstance(self, (void *)ptr);
             JavaLangLong_initWithLong_(obj, i);
-            JreGenericFieldAssign(buf++, obj);
+            JreWeakRefFieldAssign(buf++, obj);
             //ptr += objSize;
           }
         ]-*/;

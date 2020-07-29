@@ -1,4 +1,7 @@
-#import "ARGC.h"
+
+#import "J2ObjC_common.h"
+
+#if J2OBJC_USE_GC
 
 #define GC_DEBUG 0
 
@@ -98,6 +101,4 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
   return oldValue;
 }
 
-
-
-
+#endif // J2OBJC_USE_GC

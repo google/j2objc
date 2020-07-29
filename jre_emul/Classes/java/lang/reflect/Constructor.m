@@ -39,6 +39,7 @@
                                                             metadata:metadata]);
 }
 
+void ARGC_initStatic(Class cls);
 void ARGC_strongRetain(id oid);
 void ARGC_release(id oid);
 

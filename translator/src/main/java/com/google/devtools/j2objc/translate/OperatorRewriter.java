@@ -283,6 +283,11 @@ private FunctionDeclaration argc_currentMethod;
         }
         else {
           String fType = typeUtil.getArgcFieldTypeEx(enc, type);
+          if (fType == "Object" || fType == "Generic") {
+            if (ElementUtil.isWeakReference(var) && !ElementUtil.isVolatile(var)) {
+              fType = "WeakRef";
+            }
+          }
           funcName = "Jre" + fType + "FieldAssign";
         }
       }
@@ -355,9 +360,7 @@ private FunctionDeclaration argc_currentMethod;
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
     
     // TODO(zeedhoon) check compatibility 
-    FunctionInvocation invocation = new FunctionInvocation(element, 
-    		(!funcName.endsWith("AndConsume") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
-    				 ? type : this.translationUtil.getVoidType());
+    FunctionInvocation invocation = new FunctionInvocation(element, type); 
     
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {
