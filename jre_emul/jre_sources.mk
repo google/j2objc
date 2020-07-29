@@ -995,7 +995,10 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   dalvik/system/SocketTagger.java \
   java/net/ProtocolFamily.java \
   java/net/StandardProtocolFamily.java \
+  jdk/net/ExtendedSocketOptions.java \
+  jdk/net/SocketFlow.java \
   sun/misc/LRUCache.java \
+  sun/net/ExtendedOptionsImpl.java \
   sun/net/spi/nameservice/NameService.java \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
