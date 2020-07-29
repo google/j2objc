@@ -1004,6 +1004,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
   sun/nio/ch/AsynchronousFileChannelImpl.java \
+  sun/nio/ch/AsynchronousServerSocketChannelImpl.java \
+  sun/nio/ch/AsynchronousSocketChannelImpl.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/DatagramChannelImpl.java \
@@ -1054,6 +1056,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/SocketDispatcher.java \
   sun/nio/ch/SocketOptionRegistry.java \
   sun/nio/ch/SourceChannelImpl.java \
+  sun/nio/ch/UnixAsynchronousServerSocketChannelImpl.java \
+  sun/nio/ch/UnixAsynchronousSocketChannelImpl.java \
   sun/nio/ch/Util.java
 
 NATIVE_JRE_SOURCES_CHANNELS = \
@@ -1070,7 +1074,9 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   Net.m \
   PollArrayWrapper.m \
   ServerSocketChannelImpl.m \
-  SocketChannelImpl.m
+  SocketChannelImpl.m \
+  UnixAsynchronousServerSocketChannelImpl.m \
+  UnixAsynchronousSocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/AccessDeniedException.java \
