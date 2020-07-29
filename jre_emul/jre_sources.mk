@@ -1022,7 +1022,9 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/IOStatus.java \
   sun/nio/ch/IOUtil.java \
   sun/nio/ch/IOVecWrapper.java \
+  sun/nio/ch/KQueue.java \
   sun/nio/ch/KQueueArrayWrapper.java \
+  sun/nio/ch/KQueuePort.java \
   sun/nio/ch/KQueueSelectorImpl.java \
   sun/nio/ch/KQueueSelectorProvider.java \
   sun/nio/ch/MembershipKeyImpl.java \
@@ -1038,6 +1040,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/PollArrayWrapper.java \
   sun/nio/ch/PollSelectorImpl.java \
   sun/nio/ch/PollSelectorProvider.java \
+  sun/nio/ch/Port.java \
   sun/nio/ch/Reflect.java \
   sun/nio/ch/SelChImpl.java \
   sun/nio/ch/SelectionKeyImpl.java \
@@ -1061,6 +1064,8 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   FileKey.m \
   InheritedChannel.m \
   IOUtil.m \
+  KQueue.m \
+  KQueuePort.m \
   NativeThread.m \
   Net.m \
   PollArrayWrapper.m \
