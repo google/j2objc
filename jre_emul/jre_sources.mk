@@ -1014,6 +1014,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/DatagramChannelImpl.java \
   sun/nio/ch/DatagramDispatcher.java \
   sun/nio/ch/DatagramSocketAdaptor.java \
+  sun/nio/ch/DefaultAsynchronousChannelProvider.java \
   sun/nio/ch/DefaultSelectorProvider.java \
   sun/nio/ch/ExtendedSocketOption.java \
   sun/nio/ch/FileChannelImpl.java \
