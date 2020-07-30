@@ -53,6 +53,14 @@ import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
 import sun.reflect.misc.ReflectUtil;
 //import dalvik.system.VMRuntime;
+import com.google.j2objc.LibraryNotLinkedError;
+
+//J2ObjC: Begin change
+/*-[
+// Thrown by newInstance().
+#include "java/lang/InstantiationException.h"
+]-*/
+//J2ObjC: End change
 
 /**
  * Serialization's descriptor for classes.  It contains the name and
@@ -1004,22 +1012,24 @@ public class ObjectStreamClass implements Serializable {
      * class is non-serializable or if the appropriate no-arg constructor is
      * inaccessible/unavailable.
      */
-    Object newInstance()
-            throws InstantiationException, InvocationTargetException,
-            UnsupportedOperationException
-    {
-        requireInitialized();
-        if (cons != null) {
-            try {
-                return cons.newInstance();
-            } catch (IllegalAccessException ex) {
-                // should not occur, as access checks have been suppressed
-                throw new InternalError(ex);
-            }
-        } else {
-            throw new UnsupportedOperationException();
+    //J2ObjC: begin change
+    native Object newInstance()
+            throws InstantiationException, UnsupportedOperationException /*-[
+        JavaIoObjectStreamClass_requireInitialized(self);
+        if (cons_ == nil) {
+            @throw create_JavaLangUnsupportedOperationException_init();
         }
-    }
+        SEL sel = [cons_ getSelector];
+        IOSClass *instantiationClass = [cons_ getDeclaringClass];
+        id (*imp)(id, SEL) = (id (*)(id, SEL)) class_getMethodImplementation(
+            instantiationClass.objcClass, sel);
+        id newInstance = [[cl_.objcClass alloc] autorelease];
+        if (newInstance == nil) {
+            @throw create_JavaLangInstantiationException_init();
+        }
+        return imp(newInstance, sel);
+    ]-*/;
+    //J2ObjC: end change
 
     /**
      * Invokes the writeObject method of the represented serializable class.
