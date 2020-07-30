@@ -329,8 +329,9 @@ final class KQueuePort
 
     private static native void close0(int fd);
 
-//    TODO(amisail): look at this
-//    static {
-//        IOUtil.load();
-//    }
+    /* J2ObjC removed: Native code initialization not required.
+    static {
+        IOUtil.load();
+    }
+     */
 }
