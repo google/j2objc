@@ -1008,6 +1008,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AsynchronousFileChannelImpl.java \
   sun/nio/ch/AsynchronousServerSocketChannelImpl.java \
   sun/nio/ch/AsynchronousSocketChannelImpl.java \
+  sun/nio/ch/BsdAsynchronousChannelProvider.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/CompletedFuture.java \

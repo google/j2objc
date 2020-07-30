@@ -85,9 +85,7 @@ public abstract class AsynchronousChannelProvider {
                         p = loadProviderAsService();
                         if (p != null)
                             return p;
-                        // b/149121398: port OpenJDK's MacOSX provider.
-                        // return sun.nio.ch.DefaultAsynchronousChannelProvider.create();
-                        return null;
+                        return sun.nio.ch.DefaultAsynchronousChannelProvider.create();
                     }});
         }
 
