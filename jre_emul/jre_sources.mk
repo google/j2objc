@@ -1003,11 +1003,13 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/AsynchronousChannelGroupImpl.java \
   sun/nio/ch/AsynchronousFileChannelImpl.java \
   sun/nio/ch/AsynchronousServerSocketChannelImpl.java \
   sun/nio/ch/AsynchronousSocketChannelImpl.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
+  sun/nio/ch/CompletedFuture.java \
   sun/nio/ch/DatagramChannelImpl.java \
   sun/nio/ch/DatagramDispatcher.java \
   sun/nio/ch/DatagramSocketAdaptor.java \
@@ -1020,7 +1022,9 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/FileDescriptorHolderSocketImpl.java \
   sun/nio/ch/FileDispatcherImpl.java \
   sun/nio/ch/FileDispatcher.java \
+  sun/nio/ch/Groupable.java \
   sun/nio/ch/InheritedChannel.java \
+  sun/nio/ch/Invoker.java \
   sun/nio/ch/IOStatus.java \
   sun/nio/ch/IOUtil.java \
   sun/nio/ch/IOVecWrapper.java \
@@ -1050,12 +1054,14 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/SelectorProviderImpl.java \
   sun/nio/ch/ServerSocketAdaptor.java \
   sun/nio/ch/ServerSocketChannelImpl.java \
+  sun/nio/ch/SimpleAsynchronousFileChannelImpl.java \
   sun/nio/ch/SinkChannelImpl.java \
   sun/nio/ch/SocketAdaptor.java \
   sun/nio/ch/SocketChannelImpl.java \
   sun/nio/ch/SocketDispatcher.java \
   sun/nio/ch/SocketOptionRegistry.java \
   sun/nio/ch/SourceChannelImpl.java \
+  sun/nio/ch/ThreadPool.java \
   sun/nio/ch/UnixAsynchronousServerSocketChannelImpl.java \
   sun/nio/ch/UnixAsynchronousSocketChannelImpl.java \
   sun/nio/ch/Util.java
@@ -1157,12 +1163,6 @@ JAVA_PRIVATE_SOURCES_FILE = \
   java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
-  sun/nio/ch/AsynchronousChannelGroupImpl.java \
-  sun/nio/ch/CompletedFuture.java \
-  sun/nio/ch/Groupable.java \
-  sun/nio/ch/Invoker.java \
-  sun/nio/ch/SimpleAsynchronousFileChannelImpl.java \
-  sun/nio/ch/ThreadPool.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/AbstractFileSystemProvider.java \
   sun/nio/fs/AbstractFileTypeDetector.java \
