@@ -52,7 +52,7 @@ import sun.misc.Unsafe;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
 import sun.reflect.misc.ReflectUtil;
-import dalvik.system.VMRuntime;
+//import dalvik.system.VMRuntime;
 
 /**
  * Serialization's descriptor for classes.  It contains the name and
@@ -1734,9 +1734,12 @@ public class ObjectStreamClass implements Serializable {
         {
             return 0L;
         }
-
+        //J2ObjC: Begin J2ObjC change
+        Digest digest = getDigest();
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            //ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            //J2ObjC: End J2ObjC change
             DataOutputStream dout = new DataOutputStream(bout);
 
             dout.writeUTF(cl.getName());
@@ -1879,28 +1882,52 @@ public class ObjectStreamClass implements Serializable {
             }
 
             dout.flush();
-
-            MessageDigest md = MessageDigest.getInstance("SHA");
-            byte[] hashBytes = md.digest(bout.toByteArray());
-            long hash = 0;
-            for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
-                hash = (hash << 8) | (hashBytes[i] & 0xFF);
-            }
-            //J2ObjC: android change not supported
-
-            // BEGIN Android-added: Fix/log clinit serialization workaround. b/29064453
-            // ObjectStreamClass instances are cached per Class and caches its default
-            // serialVersionUID so it will only log one message per class per app process
-            // irrespective of the number of times the class is serialized.
-            // if (warnIncompatibleSUIDChange) {
-            //     suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
+            //J2ObjC: removed
+            // MessageDigest md = MessageDigest.getInstance("SHA");
+            // byte[] hashBytes = md.digest(bout.toByteArray());
+            // long hash = 0;
+            // for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
+            //     hash = (hash << 8) | (hashBytes[i] & 0xFF);
             // }
-            // END Android-added: Fix/log clinit serialization workaround. b/29064453
-            return hash;
         } catch (IOException ex) {
             throw new InternalError(ex);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new SecurityException(ex.getMessage());
+        }
+        // J2ObjC: removed
+        // catch (NoSuchAlgorithmException ex) {
+        //     throw new SecurityException(ex.getMessage());
+        // }
+        // now compute the UID based on the SHA
+        byte[] hashBytes = digest.digest(bout.toByteArray());
+        long hash = 0;
+        for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
+            hash = (hash << 8) | (hashBytes[i] & 0xFF);
+        }
+        // J2ObjC: android change not supported
+
+        // BEGIN Android-added: Fix/log clinit serialization workaround. b/29064453
+        // ObjectStreamClass instances are cached per Class and caches its default
+        // serialVersionUID so it will only log one message per class per app process
+        // irrespective of the number of times the class is serialized.
+        // if (warnIncompatibleSUIDChange) {
+        //    suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
+        // }
+        // END Android-added: Fix/log clinit serialization workaround. b/29064453
+        return hash;
+    }
+
+    // J2ObjC: dynamically load MessageDigest to avoid linking jre_security unnecessarily.
+    static interface Digest {
+        byte[] digest(byte[] input);
+    }
+
+    private static Digest getDigest() {
+        try {
+            Class<?> digestClass = Class.forName("java.io.SerialVersionUIDDigest");
+            return (Digest) digestClass.newInstance();
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError(
+                    "SerialVersionUID hashing", "jre_security", "JavaIoSerialVersionUIDDigest",
+                    "3) Add serialVersionUID fields to all Serializable classes.");
         }
     }
 
