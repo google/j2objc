@@ -512,6 +512,9 @@ TEST_SOURCES := \
     libcore/java/nio/OldDirectIntBufferTest.java \
     libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/channels/AcceptPendingExceptionTest.java \
+    libcore/java/nio/channels/AsynchronousChannelGroupTest.java \
+    libcore/java/nio/channels/AsynchronousServerSocketChannelTest.java \
+    libcore/java/nio/channels/AsynchronousSocketChannelTest.java \
     libcore/java/nio/channels/DatagramChannelTest.java \
     libcore/java/nio/channels/InterruptedByTimeoutExceptionTest.java \
     libcore/java/nio/channels/OldServerSocketChannelTest.java \
