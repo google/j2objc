@@ -44,6 +44,7 @@ NATIVE_JRE_SOURCES_CORE = \
   NSNumber+JavaNumber.m \
   NSObject+JavaObject.m \
   NSString+JavaString.m \
+  ObjectInputStream.m \
   java/lang/AbstractStringBuilder.m \
   java/lang/reflect/AccessibleObject.m \
   java/lang/reflect/Constructor.m \
