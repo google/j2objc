@@ -478,6 +478,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/locks/Condition.java \
   java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/LockSupport.java \
+  java/util/concurrent/locks/ReadWriteLock.java \
   java/util/concurrent/locks/ReentrantLock.java \
   java/util/function/BiConsumer.java \
   java/util/function/BiFunction.java \
@@ -922,7 +923,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/LongAdder.java \
   java/util/concurrent/atomic/Striped64.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
-  java/util/concurrent/locks/ReadWriteLock.java \
   java/util/concurrent/locks/ReentrantReadWriteLock.java
 
 JAVA_PRIVATE_SOURCES_CONCURRENT =
@@ -936,6 +936,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AsynchronousChannel.java \
   java/nio/channels/AsynchronousChannelGroup.java \
   java/nio/channels/AsynchronousCloseException.java \
+  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/channels/AsynchronousServerSocketChannel.java \
   java/nio/channels/AsynchronousSocketChannel.java \
   java/nio/channels/ByteChannel.java \
@@ -999,6 +1000,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/AsynchronousFileChannelImpl.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/DatagramChannelImpl.java \
@@ -1020,6 +1022,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/KQueueArrayWrapper.java \
   sun/nio/ch/KQueueSelectorImpl.java \
   sun/nio/ch/KQueueSelectorProvider.java \
+  sun/nio/ch/MembershipKeyImpl.java \
+  sun/nio/ch/MembershipRegistry.java \
   sun/nio/ch/NativeDispatcher.java \
   sun/nio/ch/NativeObject.java \
   sun/nio/ch/NativeThread.java \
@@ -1061,7 +1065,6 @@ NATIVE_JRE_SOURCES_CHANNELS = \
   SocketChannelImpl.m
 
 JAVA_PUBLIC_SOURCES_FILE = \
-  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/file/AccessDeniedException.java \
   java/nio/file/AccessMode.java \
   java/nio/file/AtomicMoveNotSupportedException.java \
@@ -1140,6 +1143,11 @@ JAVA_PRIVATE_SOURCES_FILE = \
   java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
+  sun/nio/ch/AsynchronousChannelGroupImpl.java \
+  sun/nio/ch/CompletedFuture.java \
+  sun/nio/ch/Groupable.java \
+  sun/nio/ch/Invoker.java \
+  sun/nio/ch/SimpleAsynchronousFileChannelImpl.java \
   sun/nio/ch/ThreadPool.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/AbstractFileSystemProvider.java \

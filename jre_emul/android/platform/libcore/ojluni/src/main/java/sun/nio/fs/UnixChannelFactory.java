@@ -25,7 +25,6 @@
 
 package sun.nio.fs;
 
-import java.io.IOException;
 import java.nio.file.*;
 import java.nio.channels.*;
 import java.io.FileDescriptor;
@@ -33,8 +32,7 @@ import java.util.Set;
 
 import sun.nio.ch.FileChannelImpl;
 import sun.nio.ch.ThreadPool;
-//TODO(amisail) uncomment this when working
-//import sun.nio.ch.SimpleAsynchronousFileChannelImpl;
+import sun.nio.ch.SimpleAsynchronousFileChannelImpl;
 import sun.misc.SharedSecrets;
 import sun.misc.JavaIOFileDescriptorAccess;
 
@@ -159,22 +157,20 @@ class UnixChannelFactory {
                                                               ThreadPool pool)
         throws UnixException
     {
-        throw new UnixException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        Flags flags = Flags.toFlags(options);
-//
-//        // default is reading
-//        if (!flags.read && !flags.write) {
-//            flags.read = true;
-//        }
-//
-//        // validation
-//        if (flags.append)
-//            throw new UnsupportedOperationException("APPEND not allowed");
-//
-//        // for now use simple implementation
-//        FileDescriptor fdObj = open(-1, path, null, flags, mode);
-//        return SimpleAsynchronousFileChannelImpl.open(fdObj, flags.read, flags.write, pool);
+        Flags flags = Flags.toFlags(options);
+
+        // default is reading
+        if (!flags.read && !flags.write) {
+            flags.read = true;
+        }
+
+        // validation
+        if (flags.append)
+            throw new UnsupportedOperationException("APPEND not allowed");
+
+        // for now use simple implementation
+        FileDescriptor fdObj = open(-1, path, null, flags, mode);
+        return SimpleAsynchronousFileChannelImpl.open(fdObj, flags.read, flags.write, pool);
     }
 
     /**
