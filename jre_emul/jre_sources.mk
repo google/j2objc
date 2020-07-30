@@ -16,7 +16,6 @@
 
 NATIVE_JRE_SOURCES_CORE = \
   AnnotationUtils.m \
-  Bits.m \
   DebugUtils.m \
   FastPointerLookup.m \
   FileDescriptor_md.m \
@@ -567,6 +566,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   dalvik/system/CloseGuard.java \
   dalvik/system/VersionCodes.java \
   dalvik/system/VMStack.java \
+  java/io/Bits.java \
+  java/io/SerialCallbackContext.java \
   java/lang/JavaLangAccess.java \
   java/math/BitSieve.java \
   java/math/MutableBigInteger.java \
