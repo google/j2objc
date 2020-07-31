@@ -162,7 +162,6 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/java/lang/MockEnum2.java \
     org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
     org/apache/harmony/tests/java/net/IDNTest.java \
-    org/apache/harmony/tests/java/nio/AbstractBufferTest.java \
     org/apache/harmony/tests/java/nio/channels/MockDatagramChannel.java \
     org/apache/harmony/tests/java/nio/channels/MockServerSocketChannel.java \
     org/apache/harmony/tests/java/nio/channels/MockSocketChannel.java \
@@ -896,63 +895,6 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/MathContextTest.java \
     org/apache/harmony/tests/java/math/OldBigIntegerTest.java \
     org/apache/harmony/tests/java/math/RoundingModeTest.java \
-    org/apache/harmony/tests/java/nio/BufferOverflowExceptionTest.java \
-    org/apache/harmony/tests/java/nio/BufferUnderflowExceptionTest.java \
-    org/apache/harmony/tests/java/nio/ByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/ByteOrderTest.java \
-    org/apache/harmony/tests/java/nio/CharBufferTest.java \
-    org/apache/harmony/tests/java/nio/DirectByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/DoubleBufferTest.java \
-    org/apache/harmony/tests/java/nio/DuplicateDirectByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/DuplicateHeapByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/DuplicateWrappedByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/FloatBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapCharBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapDoubleBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapFloatBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapIntBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapLongBufferTest.java \
-    org/apache/harmony/tests/java/nio/HeapShortBufferTest.java \
-    org/apache/harmony/tests/java/nio/IntBufferTest.java \
-    org/apache/harmony/tests/java/nio/InvalidMarkExceptionTest.java \
-    org/apache/harmony/tests/java/nio/LongBufferTest.java \
-    org/apache/harmony/tests/java/nio/MappedByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyBufferExceptionTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyCharBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyDirectByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyDoubleBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyFloatBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapCharBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapDoubleBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapFloatBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapIntBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapLongBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyHeapShortBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyIntBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyLongBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyShortBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedCharBufferTest1.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedDoubleBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedFloatBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedIntBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedLongBufferTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyWrappedShortBufferTest.java \
-    org/apache/harmony/tests/java/nio/ShortBufferTest.java \
-    org/apache/harmony/tests/java/nio/SliceDirectByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/SliceHeapByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/SliceSliceDirectByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/SliceWrappedByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/WrappedByteBufferTest.java \
-    org/apache/harmony/tests/java/nio/WrappedCharBufferTest1.java \
-    org/apache/harmony/tests/java/nio/WrappedCharBufferTest2.java \
-    org/apache/harmony/tests/java/nio/WrappedDoubleBufferTest.java \
-    org/apache/harmony/tests/java/nio/WrappedFloatBufferTest.java \
-    org/apache/harmony/tests/java/nio/WrappedIntBufferTest.java \
-    org/apache/harmony/tests/java/nio/WrappedLongBufferTest.java \
-    org/apache/harmony/tests/java/nio/WrappedShortBufferTest.java \
     org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.java \
     org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.java \
     org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.java \
@@ -1426,10 +1368,6 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
-    org/apache/harmony/tests/java/nio/BufferOverflowExceptionTest.java \
-    org/apache/harmony/tests/java/nio/BufferUnderflowExceptionTest.java \
-    org/apache/harmony/tests/java/nio/InvalidMarkExceptionTest.java \
-    org/apache/harmony/tests/java/nio/ReadOnlyBufferExceptionTest.java \
     org/apache/harmony/tests/javax/security/auth/DestroyFailedExceptionTest.java \
     org/apache/harmony/tests/javax/security/auth/SubjectTest.java \
     org/apache/harmony/tests/javax/security/auth/callback/PasswordCallbackTest.java \
@@ -1511,10 +1449,6 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/lang/UnsupportedOperationExceptionTest.golden.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternTest.golden.ser \
-    serialization/org/apache/harmony/tests/java/nio/BufferOverflowExceptionTest.golden.ser \
-    serialization/org/apache/harmony/tests/java/nio/BufferUnderflowExceptionTest.golden.ser \
-    serialization/org/apache/harmony/tests/java/nio/InvalidMarkExceptionTest.golden.ser \
-    serialization/org/apache/harmony/tests/java/nio/ReadOnlyBufferExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/nio/channels/AlreadyConnectedExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/nio/channels/AsynchronousCloseExceptionTest.golden.ser \
     serialization/org/apache/harmony/tests/java/nio/channels/CancelledKeyExceptionTest.golden.ser \

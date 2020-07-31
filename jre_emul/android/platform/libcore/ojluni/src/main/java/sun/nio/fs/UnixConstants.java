@@ -52,7 +52,8 @@ class UnixConstants {
 
     static final int O_SYNC = OsConstants.O_SYNC;
 
-    static final int O_DSYNC = OsConstants.O_DSYNC;
+//    TODO(amisail) uncomment this when working
+//    static final int O_DSYNC = OsConstants.O_DSYNC;
 
     static final int O_NOFOLLOW = OsConstants.O_NOFOLLOW;
 

@@ -19,8 +19,6 @@ package libcore.java.nio;
 import junit.framework.TestCase;
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.lang.ref.PhantomReference;
-import java.lang.ref.ReferenceQueue;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.Buffer;
@@ -39,6 +37,7 @@ import java.nio.ReadOnlyBufferException;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import libcore.io.SizeOf;
 import libcore.io.Memory;
 
 public class BufferTest extends TestCase {
@@ -943,14 +942,14 @@ public class BufferTest extends TestCase {
         // of this buffer.
         assertEquals(1, 1 << ByteBuffer.allocate(0).getElementSizeShift());
 
-        assertEquals(Character.BYTES, 1 << CharBuffer.allocate(0).getElementSizeShift());
-        assertEquals(Short.BYTES, 1 << ShortBuffer.allocate(0).getElementSizeShift());
+        assertEquals(SizeOf.CHAR, 1 << CharBuffer.allocate(0).getElementSizeShift());
+        assertEquals(SizeOf.SHORT, 1 << ShortBuffer.allocate(0).getElementSizeShift());
 
-        assertEquals(Integer.BYTES, 1 << IntBuffer.allocate(0).getElementSizeShift());
-        assertEquals(Float.BYTES, 1 << FloatBuffer.allocate(0).getElementSizeShift());
+        assertEquals(SizeOf.INT, 1 << IntBuffer.allocate(0).getElementSizeShift());
+        assertEquals(SizeOf.FLOAT, 1 << FloatBuffer.allocate(0).getElementSizeShift());
 
-        assertEquals(Long.BYTES, 1 << LongBuffer.allocate(0).getElementSizeShift());
-        assertEquals(Double.BYTES, 1 << DoubleBuffer.allocate(0).getElementSizeShift());
+        assertEquals(SizeOf.LONG, 1 << LongBuffer.allocate(0).getElementSizeShift());
+        assertEquals(SizeOf.DOUBLE, 1 << DoubleBuffer.allocate(0).getElementSizeShift());
     }
 
     public void testFreed() {
@@ -958,7 +957,7 @@ public class BufferTest extends TestCase {
         ByteBuffer b2 = b1.duplicate();
         NioUtils.freeDirectBuffer(b1);
         for (ByteBuffer b: new ByteBuffer[] { b1, b2 }) {
-          assertFalse(b.isAccessible());
+          //assertFalse(b.isAccessible());
             try {
                 b.compact();
                 fail();
@@ -976,6 +975,7 @@ public class BufferTest extends TestCase {
         }
     }
 
+    /* setAccessible is not available in OpenJdk's buffers.
     public void testAccess() {
         ByteBuffer b1 = ByteBuffer.allocate(1);
         ByteBuffer b2 = b1.duplicate();
@@ -1059,7 +1059,7 @@ public class BufferTest extends TestCase {
             testAsMethods(b);
             testGetMethods(b);
         }
-    }
+        }*/
 
     private void testPutMethods(ByteBuffer b) {
         b.position(0);
@@ -1366,106 +1366,5 @@ public class BufferTest extends TestCase {
         DoubleBuffer d = b.asDoubleBuffer();
         d.put(1, (double)1);
         b.limit(0);  d.put(1, (double)1);
-    }
-
-    // http://b/32655865
-    public void test_ByteBufferAsXBuffer_ByteOrder() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(10);
-        // Fill a ByteBuffer with different bytes that make it easy to tell byte ordering issues.
-        for (int i = 0; i < 10; i++) {
-            byteBuffer.put((byte)i);
-        }
-        byteBuffer.rewind();
-        // Obtain a big-endian and little-endian copy of the source array.
-        ByteBuffer bigEndian = byteBuffer.duplicate().order(ByteOrder.BIG_ENDIAN);
-        ByteBuffer littleEndian = byteBuffer.duplicate().order(ByteOrder.LITTLE_ENDIAN);
-
-        // Check each type longer than a byte to confirm the ordering differs.
-        // asXBuffer.
-        assertFalse(bigEndian.asShortBuffer().get() == littleEndian.asShortBuffer().get());
-        assertFalse(bigEndian.asIntBuffer().get() == littleEndian.asIntBuffer().get());
-        assertFalse(bigEndian.asLongBuffer().get() == littleEndian.asLongBuffer().get());
-        assertFalse(bigEndian.asDoubleBuffer().get() == littleEndian.asDoubleBuffer().get());
-        assertFalse(bigEndian.asCharBuffer().get() == littleEndian.asCharBuffer().get());
-        assertFalse(bigEndian.asFloatBuffer().get() == littleEndian.asFloatBuffer().get());
-
-        // asXBuffer().asReadOnlyBuffer()
-        assertFalse(bigEndian.asShortBuffer().asReadOnlyBuffer().get() ==
-                littleEndian.asShortBuffer().asReadOnlyBuffer().get());
-        assertFalse(bigEndian.asIntBuffer().asReadOnlyBuffer().get() ==
-                littleEndian.asIntBuffer().asReadOnlyBuffer().get());
-        assertFalse(bigEndian.asLongBuffer().asReadOnlyBuffer().get() ==
-                littleEndian.asLongBuffer().asReadOnlyBuffer().get());
-        assertFalse(bigEndian.asDoubleBuffer().asReadOnlyBuffer().get() ==
-                littleEndian.asDoubleBuffer().asReadOnlyBuffer().get());
-        assertFalse(bigEndian.asCharBuffer().asReadOnlyBuffer().get() ==
-                littleEndian.asCharBuffer().asReadOnlyBuffer().get());
-        assertFalse(bigEndian.asFloatBuffer().asReadOnlyBuffer().get() ==
-                littleEndian.asFloatBuffer().asReadOnlyBuffer().get());
-
-        // asXBuffer().duplicate()
-        assertFalse(bigEndian.asShortBuffer().duplicate().get() ==
-                littleEndian.asShortBuffer().duplicate().get());
-        assertFalse(bigEndian.asIntBuffer().duplicate().get() ==
-                littleEndian.asIntBuffer().duplicate().get());
-        assertFalse(bigEndian.asLongBuffer().duplicate().get() ==
-                littleEndian.asLongBuffer().duplicate().get());
-        assertFalse(bigEndian.asDoubleBuffer().duplicate().get() ==
-                littleEndian.asDoubleBuffer().duplicate().get());
-        assertFalse(bigEndian.asCharBuffer().duplicate().get() ==
-                littleEndian.asCharBuffer().duplicate().get());
-        assertFalse(bigEndian.asFloatBuffer().duplicate().get() ==
-                littleEndian.asFloatBuffer().duplicate().get());
-
-        // asXBuffer().slice()
-        assertFalse(bigEndian.asShortBuffer().slice().get() ==
-                littleEndian.asShortBuffer().slice().get());
-        assertFalse(bigEndian.asIntBuffer().slice().get() ==
-                littleEndian.asIntBuffer().slice().get());
-        assertFalse(bigEndian.asLongBuffer().slice().get() ==
-                littleEndian.asLongBuffer().slice().get());
-        assertFalse(bigEndian.asDoubleBuffer().slice().get() ==
-                littleEndian.asDoubleBuffer().slice().get());
-        assertFalse(bigEndian.asCharBuffer().slice().get() ==
-                littleEndian.asCharBuffer().slice().get());
-        assertFalse(bigEndian.asFloatBuffer().slice().get() ==
-                littleEndian.asFloatBuffer().slice().get());
-    }
-
-    // http://b/32655865
-    public void test_ByteBufferAsXBuffer_ByteOrder_2() {
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(10);
-        byteBuffer.order(ByteOrder.BIG_ENDIAN);
-        // Fill a ByteBuffer with different bytes that make it easy to tell byte ordering issues.
-        for (int i = 0; i < 10; i++) {
-            byteBuffer.put((byte)i);
-        }
-        byteBuffer.rewind();
-
-        // Create BIG_ENDIAN views of the buffer.
-        ShortBuffer sb_be = byteBuffer.asShortBuffer();
-        LongBuffer lb_be = byteBuffer.asLongBuffer();
-        IntBuffer ib_be = byteBuffer.asIntBuffer();
-        DoubleBuffer db_be = byteBuffer.asDoubleBuffer();
-        CharBuffer cb_be = byteBuffer.asCharBuffer();
-        FloatBuffer fb_be = byteBuffer.asFloatBuffer();
-
-        // Change the order of the underlying buffer.
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-
-        // Create LITTLE_ENDIAN views of the buffer.
-        ShortBuffer sb_le = byteBuffer.asShortBuffer();
-        LongBuffer lb_le = byteBuffer.asLongBuffer();
-        IntBuffer ib_le = byteBuffer.asIntBuffer();
-        DoubleBuffer db_le = byteBuffer.asDoubleBuffer();
-        CharBuffer cb_le = byteBuffer.asCharBuffer();
-        FloatBuffer fb_le = byteBuffer.asFloatBuffer();
-
-        assertFalse(sb_be.get() == sb_le.get());
-        assertFalse(lb_be.get() == lb_le.get());
-        assertFalse(ib_be.get() == ib_le.get());
-        assertFalse(db_be.get() == db_le.get());
-        assertFalse(cb_be.get() == cb_le.get());
-        assertFalse(fb_be.get() == fb_le.get());
     }
 }

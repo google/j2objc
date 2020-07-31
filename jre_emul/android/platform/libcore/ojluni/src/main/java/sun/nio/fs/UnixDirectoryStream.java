@@ -60,7 +60,6 @@ class UnixDirectoryStream
     private volatile boolean isClosed;
 
     // directory iterator
-    @Weak
     private Iterator<Path> iterator;
 
     // Android-added: CloseGuard support.
@@ -171,43 +170,45 @@ class UnixDirectoryStream
 
         // Returns next entry (or null)
         private Path readNextEntry() {
-            assert Thread.holdsLock(this);
-
-            for (;;) {
-                byte[] nameAsBytes = null;
-
-                // prevent close while reading
-                readLock().lock();
-                try {
-                    if (isOpen()) {
-                        nameAsBytes = readdir(dp);
-                    }
-                } catch (UnixException x) {
-                    IOException ioe = x.asIOException(dir);
-                    throw new DirectoryIteratorException(ioe);
-                } finally {
-                    readLock().unlock();
-                }
-
-                // EOF
-                if (nameAsBytes == null) {
-                    atEof = true;
-                    return null;
-                }
-
-                // ignore "." and ".."
-                if (!isSelfOrParent(nameAsBytes)) {
-                    Path entry = dir.resolve(nameAsBytes);
-
-                    // return entry if no filter or filter accepts it
-                    try {
-                        if (filter == null || filter.accept(entry))
-                            return entry;
-                    } catch (IOException ioe) {
-                        throw new DirectoryIteratorException(ioe);
-                    }
-                }
-            }
+            return null;
+//            TODO(amisail) uncomment this when working
+//            assert Thread.holdsLock(this);
+//
+//            for (;;) {
+//                byte[] nameAsBytes = null;
+//
+//                // prevent close while reading
+//                readLock().lock();
+//                try {
+//                    if (isOpen()) {
+//                        nameAsBytes = readdir(dp);
+//                    }
+//                } catch (UnixException x) {
+//                    IOException ioe = x.asIOException(dir);
+//                    throw new DirectoryIteratorException(ioe);
+//                } finally {
+//                    readLock().unlock();
+//                }
+//
+//                // EOF
+//                if (nameAsBytes == null) {
+//                    atEof = true;
+//                    return null;
+//                }
+//
+//                // ignore "." and ".."
+//                if (!isSelfOrParent(nameAsBytes)) {
+//                    Path entry = dir.resolve(nameAsBytes);
+//
+//                    // return entry if no filter or filter accepts it
+//                    try {
+//                        if (filter == null || filter.accept(entry))
+//                            return entry;
+//                    } catch (IOException ioe) {
+//                        throw new DirectoryIteratorException(ioe);
+//                    }
+//                }
+//            }
         }
 
         @Override

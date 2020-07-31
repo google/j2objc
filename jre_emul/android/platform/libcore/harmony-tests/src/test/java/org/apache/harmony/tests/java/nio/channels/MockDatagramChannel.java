@@ -25,7 +25,6 @@ import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.MembershipKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Set;
@@ -112,23 +111,13 @@ class MockDatagramChannel extends DatagramChannel {
         return null;
     }
 
-    public DatagramChannel bind(SocketAddress local) throws IOException {
-        return null;
-    }
-
-    @Override
-    public MembershipKey join(InetAddress group, NetworkInterface interf) {
-        return null;
-    }
-
-    @Override
-    public MembershipKey join(InetAddress group, NetworkInterface interf, InetAddress source)
-            throws IOException {
-        return null;
-    }
-
     @Override
     public Set<SocketOption<?>> supportedOptions() {
+        return null;
+    }
+
+    @Override
+    public DatagramChannel bind(SocketAddress local) throws IOException {
         return null;
     }
 

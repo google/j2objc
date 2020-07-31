@@ -631,7 +631,7 @@ class Bits {                            // package-private
         if (unalignedKnown)
             return unaligned;
         String arch = AccessController.doPrivileged(
-            new sun.security.action.GetPropertyAction("os.arch"));
+                new sun.security.action.GetPropertyAction("os.arch"));
         unaligned = arch.equals("i386") || arch.equals("x86")
             || arch.equals("amd64") || arch.equals("x86_64");
         unalignedKnown = true;
@@ -641,22 +641,9 @@ class Bits {                            // package-private
 
     // -- Direct memory management --
 
-    // BEGIN Android-removed: Direct memory management unused on Android.
-    /*
     // A user-settable upper limit on the maximum amount of allocatable
     // direct buffer memory.  This value may be changed during VM
     // initialization if it is launched with "-XX:MaxDirectMemorySize=<size>".
-    private static volatile long maxMemory = VM.maxDirectMemory();
-    private static final AtomicLong reservedMemory = new AtomicLong();
-    private static final AtomicLong totalCapacity = new AtomicLong();
-    private static final AtomicLong count = new AtomicLong();
-    private static volatile boolean memoryLimitSet = false;
-    // max. number of sleeps during try-reserving with exponentially
-    // increasing delay before throwing OutOfMemoryError:
-    // 1, 2, 4, 8, 16, 32, 64, 128, 256 (total 511 ms ~ 0.5 s)
-    // which means that OOME will be thrown after 0.5 s of trying
-    private static final int MAX_SLEEPS = 9;
-     */
     //private static volatile long maxMemory = VM.maxDirectMemory();
     private static volatile long reservedMemory;
     private static volatile long totalCapacity;

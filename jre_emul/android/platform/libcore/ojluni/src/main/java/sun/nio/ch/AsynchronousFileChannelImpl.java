@@ -25,7 +25,6 @@
 
 package sun.nio.ch;
 
-import com.google.j2objc.LibraryNotLinkedError;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.concurrent.ExecutorService;
@@ -42,19 +41,8 @@ abstract class AsynchronousFileChannelImpl
     extends AsynchronousFileChannel
 {
     // close support
-    protected final ReadWriteLock closeLock = newReentrantReadWriteLock();
+    protected final ReadWriteLock closeLock = new ReentrantReadWriteLock();
     protected volatile boolean closed;
-
-    // j2objc: dynamically load closeLock impl to avoid pulling in all of jre_concurrent.
-    private static ReadWriteLock newReentrantReadWriteLock() {
-        try {
-            String implClass = "java.util.concurrent.locks.ReentrantReadWriteLock";
-            return (ReadWriteLock) Class.forName(implClass).newInstance();
-        } catch (Exception e) {
-            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
-                    "JavaUtilConcurrentLocksReentrantReadWriteLock");
-        }
-    }
 
     // file descriptor
     protected final FileDescriptor fdObj;

@@ -30,15 +30,11 @@ public class NioTests {
     suite.addTest(TestUtil.getPackageTests("com.google.j2objc.nio.file.attribute"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio.channels"));
-    suite.addTest(TestUtil.getPackageTests("libcore.java.nio.channels.spi"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio.charset"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio.file"));
     suite.addTest(TestUtil.getPackageTests("libcore.java.nio.file.attribute"));
-    suite.addTest(TestUtil.getPackageTests("libcore.java.nio.file.spi"));
     suite.addTest(TestUtil.getPackageTests("org.apache.harmony.nio.tests.java.nio.channels.spi"));
-    suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.java.nio"));
     suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.java.nio.channels"));
-    suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.java.nio.channels.spi"));
     suite.addTest(TestUtil.getPackageTests("org.apache.harmony.tests.java.nio.charset"));
     suite.addTest(TestUtil.getPackageTests("test.java.nio.file.attribute"));
     return suite;

@@ -48,20 +48,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import com.google.j2objc.LibraryNotLinkedError;
 import sun.misc.Unsafe;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
 import sun.reflect.misc.ReflectUtil;
 //import dalvik.system.VMRuntime;
-import com.google.j2objc.LibraryNotLinkedError;
 
-//J2ObjC: Begin change
 /*-[
 // Thrown by newInstance().
 #include "java/lang/InstantiationException.h"
 ]-*/
-//J2ObjC: End change
-
 
 /**
  * Serialization's descriptor for classes.  It contains the name and
@@ -1013,7 +1011,6 @@ public class ObjectStreamClass implements Serializable {
      * class is non-serializable or if the appropriate no-arg constructor is
      * inaccessible/unavailable.
      */
-    //J2ObjC: begin change
     native Object newInstance()
             throws InstantiationException, UnsupportedOperationException /*-[
         JavaIoObjectStreamClass_requireInitialized(self);
@@ -1030,7 +1027,6 @@ public class ObjectStreamClass implements Serializable {
         }
         return imp(newInstance, sel);
     ]-*/;
-    //J2ObjC: end change
 
     /**
      * Invokes the writeObject method of the represented serializable class.
@@ -1436,14 +1432,15 @@ public class ObjectStreamClass implements Serializable {
             {
                 return null;
             }
+            /* Android change not supported in J2ObjC
 
-            //J2ObjC: android change not supported
             // BEGIN Android-changed: Serialization constructor obtained differently.
             // cons = reflFactory.newConstructorForSerialization(cl, cons);
-            // if (cons.getDeclaringClass() != cl) {
-            //    cons = cons.serializationCopy(cons.getDeclaringClass(), cl);
-            // }
+            if (cons.getDeclaringClass() != cl) {
+                cons = cons.serializationCopy(cons.getDeclaringClass(), cl);
+            }
             // END Android-changed: Serialization constructor obtained differently.
+             */
             cons.setAccessible(true);
             return cons;
         } catch (NoSuchMethodException ex) {
@@ -1737,24 +1734,6 @@ public class ObjectStreamClass implements Serializable {
         return null;
     }
 
-    // j2objc: dynamically load MessageDigest to avoid linking jre_security unnecessarily.
-    static interface Digest {
-        byte[] digest(byte[] input);
-    }
-
-    private static Digest getDigest() {
-        try {
-            Class<?> digestClass = Class.forName("java.io.SerialVersionUIDDigest");
-            return (Digest) digestClass.newInstance();
-        } catch (Exception e) {
-            throw new LibraryNotLinkedError(
-                    "SerialVersionUID hashing", "jre_security", "JavaIoSerialVersionUIDDigest",
-                    "3) Add serialVersionUID fields to all Serializable classes.");
-        }
-    }
-
-
-    // BEGIN Android-changed: Fix/log clinit serialization workaround. b/29064453
     /**
      * Computes the default serial version UID value for the given class.
      */
@@ -1763,12 +1742,10 @@ public class ObjectStreamClass implements Serializable {
         {
             return 0L;
         }
-        //J2ObjC: Begin J2ObjC change
+
         Digest digest = getDigest();
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try {
-            //ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            //J2ObjC: End J2ObjC change
             DataOutputStream dout = new DataOutputStream(bout);
 
             dout.writeUTF(cl.getName());
@@ -1831,8 +1808,7 @@ public class ObjectStreamClass implements Serializable {
                 }
             }
 
-            //J2ObjC: Android change not supported
-
+            /* J2ObjC removed android change
             // BEGIN Android-changed: Fix/log clinit serialization workaround. b/29064453
             // Prior to SDK 24 hasStaticInitializer() would return true if the superclass had a
             // static initializer, that was contrary to the specification. In SDK 24 the default
@@ -1840,31 +1816,31 @@ public class ObjectStreamClass implements Serializable {
             // or below in order to maintain backwards compatibility.
             //
             // if (hasStaticInitializer(cl)) {
-            // boolean inheritStaticInitializer =
-            //        (VMRuntime.getRuntime().getTargetSdkVersion()
-            //                <= MAX_SDK_TARGET_FOR_CLINIT_UIDGEN_WORKAROUND);
-            // boolean warnIncompatibleSUIDChange = false;
-            // if (hasStaticInitializer(cl, inheritStaticInitializer)) {
+            boolean inheritStaticInitializer =
+                    (VMRuntime.getRuntime().getTargetSdkVersion()
+                            <= MAX_SDK_TARGET_FOR_CLINIT_UIDGEN_WORKAROUND);
+            boolean warnIncompatibleSUIDChange = false;
+            if (hasStaticInitializer(cl, inheritStaticInitializer)) {
                 // If a static initializer was found but the current class does not have one then
                 // the class's default SUID will change if the app targets SDK > 24 so send a
                 // warning.
-            //     if (inheritStaticInitializer && !hasStaticInitializer(cl, false)) {
+                if (inheritStaticInitializer && !hasStaticInitializer(cl, false)) {
                     // Defer until hash has been calculated so the warning message can give precise
                     // instructions to the developer on how to fix the problems.
-            //         warnIncompatibleSUIDChange = true;
-            //     }
+                    warnIncompatibleSUIDChange = true;
+                }
                 // END Android-changed: Fix/log clinit serialization workaround. b/29064453
-            //     dout.writeUTF("<clinit>");
-            //     dout.writeInt(Modifier.STATIC);
-            //     dout.writeUTF("()V");
-            // }
+                dout.writeUTF("<clinit>");
+                dout.writeInt(Modifier.STATIC);
+                dout.writeUTF("()V");
+            }
 
-
-            // if (hasStaticInitializer(cl)) {
-            //     dout.writeUTF("<clinit>");
-            //     dout.writeInt(Modifier.STATIC);
-            //     dout.writeUTF("()V");
-            // }
+            if (hasStaticInitializer(cl)) {
+                dout.writeUTF("<clinit>");
+                dout.writeInt(Modifier.STATIC);
+                dout.writeUTF("()V");
+            }
+             */
 
             Constructor<?>[] cons = cl.getDeclaredConstructors();
             MemberSignature[] consSigs = new MemberSignature[cons.length];
@@ -1918,40 +1894,31 @@ public class ObjectStreamClass implements Serializable {
             }
 
             dout.flush();
-            //J2ObjC: removed
-            // MessageDigest md = MessageDigest.getInstance("SHA");
-            // byte[] hashBytes = md.digest(bout.toByteArray());
-            // long hash = 0;
-            // for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
-            //     hash = (hash << 8) | (hashBytes[i] & 0xFF);
-            // }
         } catch (IOException ex) {
             throw new InternalError(ex);
         }
-        // J2ObjC: removed
-        // catch (NoSuchAlgorithmException ex) {
-        //     throw new SecurityException(ex.getMessage());
-        // }
+
         // now compute the UID based on the SHA
         byte[] hashBytes = digest.digest(bout.toByteArray());
         long hash = 0;
         for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
             hash = (hash << 8) | (hashBytes[i] & 0xFF);
         }
-        // J2ObjC: android change not supported
+        /* J2ObjC Removed with removal of inheritStaticInitializer section
 
         // BEGIN Android-added: Fix/log clinit serialization workaround. b/29064453
         // ObjectStreamClass instances are cached per Class and caches its default
         // serialVersionUID so it will only log one message per class per app process
         // irrespective of the number of times the class is serialized.
-        // if (warnIncompatibleSUIDChange) {
-        //    suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
-        // }
+        if (warnIncompatibleSUIDChange) {
+            suidCompatibilityListener.warnDefaultSUIDTargetVersionDependent(cl, hash);
+        }
         // END Android-added: Fix/log clinit serialization workaround. b/29064453
+         */
         return hash;
     }
 
-    // J2ObjC: dynamically load MessageDigest to avoid linking jre_security unnecessarily.
+    // j2objc: dynamically load MessageDigest to avoid linking jre_security unnecessarily.
     static interface Digest {
         byte[] digest(byte[] input);
     }
@@ -1966,6 +1933,7 @@ public class ObjectStreamClass implements Serializable {
                     "3) Add serialVersionUID fields to all Serializable classes.");
         }
     }
+
 
     // BEGIN Android-changed: Fix/log clinit serialization workaround. b/29064453
     /**
@@ -2001,8 +1969,9 @@ public class ObjectStreamClass implements Serializable {
     /** Max SDK target version for which we use buggy hasStaticInitializer implementation. */
     static final int MAX_SDK_TARGET_FOR_CLINIT_UIDGEN_WORKAROUND = 23;
 
-    //J2ObjC: android change not supported
     /**
+     * J2ObjC removed
+     *
      * Returns true if the given class defines a static initializer method,
      * false otherwise.
      *
@@ -2011,8 +1980,8 @@ public class ObjectStreamClass implements Serializable {
      * that target SDK version <= {@link #MAX_SDK_TARGET_FOR_CLINIT_UIDGEN_WORKAROUND}) it will
      * return true if the given class or any of its ancestor classes have a static initializer.
      */
-    // private native static boolean hasStaticInitializer(
-    //         Class<?> cl, boolean inheritStaticInitializer);
+    /* private native static boolean hasStaticInitializer(
+            Class<?> cl, boolean inheritStaticInitializer); */
     // END Android-changed: Fix/log clinit serialization workaround. b/29064453
 
     /**
@@ -2465,18 +2434,18 @@ public class ObjectStreamClass implements Serializable {
         return matches;
     }
 
-    //J2ObjC: android change not supported
+    /* J2ObjC removed
     // BEGIN Android-added: Keep some private API for app compat. b/28283540.
     // NOTE: The following couple of methods are left here because frameworks such as objenesis
     // use them.
     //
     // **** THESE METHODS WILL BE REMOVED IN A FUTURE ANDROID RELEASE ****.
     //
-    // private static long getConstructorId(Class<?> clazz) {
-    //     final int targetSdkVersion = VMRuntime.getRuntime().getTargetSdkVersion();
-    //     if (targetSdkVersion > 0 && targetSdkVersion <= 24) {
-    //         System.logE("WARNING: ObjectStreamClass.getConstructorId(Class<?>) is private API and" +
-    //                 "will be removed in a future Android release.");
+    private static long getConstructorId(Class<?> clazz) {
+        final int targetSdkVersion = VMRuntime.getRuntime().getTargetSdkVersion();
+        if (targetSdkVersion > 0 && targetSdkVersion <= 24) {
+            System.logE("WARNING: ObjectStreamClass.getConstructorId(Class<?>) is private API and" +
+                    "will be removed in a future Android release.");
             // NOTE: This method is a stub that returns a fixed value. It's meant to be used
             // with newInstance(Class<?>, long) and our current implementation of that method ignores
             // the "constructorId" argument. We return :
@@ -2487,24 +2456,27 @@ public class ObjectStreamClass implements Serializable {
             // three
             //
             // in all cases.
-    //         return 1189998819991197253L;
-    //     }
+            return 1189998819991197253L;
+        }
 
-    //     throw new UnsupportedOperationException("ObjectStreamClass.getConstructorId(Class<?>) is " +
-    //             "not supported on SDK " + targetSdkVersion);
-    // }
-    // private static Object newInstance(Class<?> clazz, long constructorId) {
-    //     final int targetSdkVersion = VMRuntime.getRuntime().getTargetSdkVersion();
-    //    if (targetSdkVersion > 0 && targetSdkVersion <= 24) {
-    //         System.logE("WARNING: ObjectStreamClass.newInstance(Class<?>, long) is private API and" +
-    //                 "will be removed in a future Android release.");
-    //         return sun.misc.Unsafe.getUnsafe().allocateInstance(clazz);
-    //     }
+        throw new UnsupportedOperationException("ObjectStreamClass.getConstructorId(Class<?>) is " +
+                "not supported on SDK " + targetSdkVersion);
+    }
 
-    //     throw new UnsupportedOperationException("ObjectStreamClass.newInstance(Class<?>, long) " +
-    //             "is not supported on SDK " + targetSdkVersion);
-    // }
+    private static Object newInstance(Class<?> clazz, long constructorId) {
+        final int targetSdkVersion = VMRuntime.getRuntime().getTargetSdkVersion();
+        if (targetSdkVersion > 0 && targetSdkVersion <= 24) {
+            System.logE("WARNING: ObjectStreamClass.newInstance(Class<?>, long) is private API and" +
+                    "will be removed in a future Android release.");
+            return sun.misc.Unsafe.getUnsafe().allocateInstance(clazz);
+        }
+
+        throw new UnsupportedOperationException("ObjectStreamClass.newInstance(Class<?>, long) " +
+                "is not supported on SDK " + targetSdkVersion);
+    }
     // END Android-added: Keep some private API for app compat. b/28283540.
+     */
+
 
     /**
      * Removes from the specified map any keys that have been enqueued
