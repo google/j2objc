@@ -53,6 +53,7 @@ public class ConnectException extends SocketException {
      */
     public ConnectException() {}
 
+    // Android-added: Constructor called by IoBridge
     /** @hide */
     public ConnectException(String msg, Throwable cause) {
         super(msg, cause);

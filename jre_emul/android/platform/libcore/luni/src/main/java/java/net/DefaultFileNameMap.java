@@ -16,27 +16,40 @@
 
 package java.net;
 
-import java.util.Locale;
-import libcore.net.MimeUtils;
+import libcore.content.type.MimeMap;
 
 /**
- * Implements {@link FileNameMap} in terms of {@link libcore.net.MimeUtils}.
+ * Implements {@link FileNameMap} in terms of {@link MimeMap}.
  */
 class DefaultFileNameMap implements FileNameMap {
+
     public String getContentTypeFor(String filename) {
-        if (filename.endsWith("/")) {
-            // a directory, return html
-            return MimeUtils.guessMimeTypeFromExtension("html");
+        int fragmentIndex = filename.indexOf('#');
+        if (fragmentIndex >= 0) {
+            filename = filename.substring(0, fragmentIndex);
         }
-        int lastCharInExtension = filename.lastIndexOf('#');
-        if (lastCharInExtension < 0) {
-            lastCharInExtension = filename.length();
+        if (filename.endsWith("/")) { // a directory
+            return "text/html";
         }
-        int firstCharInExtension = filename.lastIndexOf('.') + 1;
-        String ext = "";
-        if (firstCharInExtension > filename.lastIndexOf('/')) {
-            ext = filename.substring(firstCharInExtension, lastCharInExtension);
+
+        int slashIndex = filename.lastIndexOf('/');
+        if (slashIndex >= 0) {
+            filename = filename.substring(slashIndex);
         }
-        return MimeUtils.guessMimeTypeFromExtension(ext.toLowerCase(Locale.US));
+
+        MimeMap mimeMap = MimeMap.getDefault();
+        int dotIndex = -1;
+        do {
+            String ext = filename.substring(dotIndex + 1);
+            String result = mimeMap.guessMimeTypeFromExtension(ext);
+            if ((result != null) &&
+                    // Compat behavior: If there's a '/', then extension must not be the
+                    // whole string. http://b/144977800
+                    (slashIndex < 0 || dotIndex >= 0)) {
+                return result;
+            }
+            dotIndex = filename.indexOf('.', dotIndex + 1);
+        } while (dotIndex >= 0);
+        return null;
     }
 }

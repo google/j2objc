@@ -57,7 +57,7 @@ import libcore.net.http.HttpDate;
  * @since 1.6
  */
 public final class HttpCookie implements Cloneable {
-    // BEGIN Android-added: Reserved name can't be HttpCookie name
+    // BEGIN Android-added: Reserved name can't be HttpCookie name.
     private static final Set<String> RESERVED_NAMES = new HashSet<String>();
 
     static {
@@ -73,7 +73,7 @@ public final class HttpCookie implements Cloneable {
         RESERVED_NAMES.add("secure");     // Netscape  RFC 2109  RFC 2965  RFC 6265
         RESERVED_NAMES.add("version");    //           RFC 2109  RFC 2965  RFC 6265
     }
-    // END Android-added: Reserved name can't be HttpCookie name
+    // END Android-added: Reserved name can't be HttpCookie name.
 
     // ---------------- Fields --------------
 
@@ -691,13 +691,13 @@ public final class HttpCookie implements Cloneable {
             String H = host.substring(0, lengthDiff);
             String D = host.substring(lengthDiff);
 
-            // BEGIN Android-changed: App compat reason
+            // BEGIN Android-changed: App compat reason.
             // 1) Disregard RFC 2965 sec. 3.3.2, the "The request-host is a HDN..."
             // 2) match "foo.local" for domain ".local".
             // return (H.indexOf('.') == -1 && D.equalsIgnoreCase(domain));
             return D.equalsIgnoreCase(domain) && ((domain.startsWith(".") && isFullyQualifiedDomainName(domain, 1))
                 || isLocalDomain);
-            // END Android-changed: App compat reason
+            // END Android-changed: App compat reason.
         }
         else if (lengthDiff == -1) {
             // if domain is actually .host
@@ -708,12 +708,12 @@ public final class HttpCookie implements Cloneable {
         return false;
     }
 
-    // BEGIN Android-added: App compat reason
+    // BEGIN Android-added: App compat reason.
     private static boolean isFullyQualifiedDomainName(String s, int firstCharacter) {
         int dotPosition = s.indexOf('.', firstCharacter + 1);
         return dotPosition != -1 && dotPosition < s.length() - 1;
     }
-    // END Android-added: App compat reason
+    // END Android-added: App compat reason.
 
     /**
      * Constructs a cookie header string representation of this cookie,
@@ -799,7 +799,7 @@ public final class HttpCookie implements Cloneable {
     // from RFC 2068, token special case characters
     //
     // private static final String tspecials = "()<>@,;:\\\"/[]?={} \t";
-    // Android-changed: App compat reason. Disallow "=\t" as token
+    // Android-changed: App compat reason. Disallow "=\t" as token.
     // private static final String tspecials = ",; ";  // deliberately includes space
     private static final String tspecials = ",;= \t";
 
@@ -813,7 +813,7 @@ public final class HttpCookie implements Cloneable {
      *          {@code false} if it is not
      */
     private static boolean isToken(String value) {
-        // Android-added: Reserved name can't be a token
+        // Android-added: Reserved name can't be a token.
         if (RESERVED_NAMES.contains(value.toLowerCase(Locale.US))) {
             return false;
         }
@@ -998,7 +998,7 @@ public final class HttpCookie implements Cloneable {
                         // BEGIN Android-changed: Use HttpDate for date parsing.
                         // it accepts broader set of date formats.
                         // cookie.setMaxAge(cookie.expiryDate2DeltaSeconds(attrValue));
-                        // Android-changed: Altered max age calculation to avoid setting
+                        // Android-changed: Altered max age calculation to avoid setting.
                         // it to MAX_AGE_UNSPECIFIED (-1) if "expires" is one second in past.
                         Date date = HttpDate.parse(attrValue);
                         long maxAgeInSeconds = 0;
@@ -1030,7 +1030,7 @@ public final class HttpCookie implements Cloneable {
         }
     }
 
-    // BEGIN Android-removed: Android doesn't use JavaNetHttpCookieAccess
+    // BEGIN Android-removed: Android doesn't use JavaNetHttpCookieAccess.
     /*
     static {
         sun.misc.SharedSecrets.setJavaNetHttpCookieAccess(
@@ -1046,7 +1046,7 @@ public final class HttpCookie implements Cloneable {
         );
     }
     */
-    // END Android-removed: Android doesn't use JavaNetHttpCookieAccess
+    // END Android-removed: Android doesn't use JavaNetHttpCookieAccess.
 
     /*
      * Returns the original header this cookie was consructed from, if it was

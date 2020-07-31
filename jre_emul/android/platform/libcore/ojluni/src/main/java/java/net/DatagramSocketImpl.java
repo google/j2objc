@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -46,6 +46,26 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      * The file descriptor object.
      */
     protected FileDescriptor fd;
+
+    int dataAvailable() {
+        // default impl returns zero, which disables the calling
+        // functionality
+        return 0;
+    }
+
+    /**
+     * The DatagramSocket or MulticastSocket
+     * that owns this impl
+     */
+    DatagramSocket socket;
+
+    void setDatagramSocket(DatagramSocket socket) {
+        this.socket = socket;
+    }
+
+    DatagramSocket getDatagramSocket() {
+        return socket;
+    }
 
     /**
      * Creates a datagram socket.
@@ -101,7 +121,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
     protected void disconnect() {}
 
     /**
-     * Peek at the packet to see who it is from. Updates the specified <code>InetAddress</code>
+     * Peek at the packet to see who it is from. Updates the specified {@code InetAddress}
      * to the address which the packet came from.
      * @param i an InetAddress object
      * @return the port number which the packet came from.
@@ -114,7 +134,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 
     /**
      * Peek at the packet to see who it is from. The data is copied into the specified
-     * <code>DatagramPacket</code>. The data is returned,
+     * {@code DatagramPacket}. The data is returned,
      * but not consumed, so that a subsequent peekData/receive operation
      * will see the same data.
      * @param p the Packet Received.
@@ -163,7 +183,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 
     /**
      * Set the TTL (time-to-live) option.
-     * @param ttl an <tt>int</tt> specifying the time-to-live value
+     * @param ttl an {@code int} specifying the time-to-live value
      * @exception IOException if an I/O exception occurs
      * while setting the time-to-live option.
      * @see #getTimeToLive()
@@ -174,7 +194,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      * Retrieve the TTL (time-to-live) option.
      * @exception IOException if an I/O exception occurs
      * while retrieving the time-to-live option
-     * @return an <tt>int</tt> representing the time-to-live value
+     * @return an {@code int} representing the time-to-live value
      * @see #setTimeToLive(int)
      */
     protected abstract int getTimeToLive() throws IOException;
@@ -227,15 +247,65 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 
     /**
      * Gets the local port.
-     * @return an <tt>int</tt> representing the local port value
+     * @return an {@code int} representing the local port value
      */
     protected int getLocalPort() {
         return localPort;
     }
 
+    <T> void setOption(SocketOption<T> name, T value) throws IOException {
+        if (name == StandardSocketOptions.SO_SNDBUF) {
+            setOption(SocketOptions.SO_SNDBUF, value);
+        } else if (name == StandardSocketOptions.SO_RCVBUF) {
+            setOption(SocketOptions.SO_RCVBUF, value);
+        } else if (name == StandardSocketOptions.SO_REUSEADDR) {
+            setOption(SocketOptions.SO_REUSEADDR, value);
+        } else if (name == StandardSocketOptions.IP_TOS) {
+            setOption(SocketOptions.IP_TOS, value);
+        } else if (name == StandardSocketOptions.IP_MULTICAST_IF &&
+            (getDatagramSocket() instanceof MulticastSocket)) {
+            setOption(SocketOptions.IP_MULTICAST_IF2, value);
+        } else if (name == StandardSocketOptions.IP_MULTICAST_TTL &&
+            (getDatagramSocket() instanceof MulticastSocket)) {
+            if (! (value instanceof Integer)) {
+                throw new IllegalArgumentException("not an integer");
+            }
+            setTimeToLive((Integer)value);
+        } else if (name == StandardSocketOptions.IP_MULTICAST_LOOP &&
+            (getDatagramSocket() instanceof MulticastSocket)) {
+            setOption(SocketOptions.IP_MULTICAST_LOOP, value);
+        } else {
+            throw new UnsupportedOperationException("unsupported option");
+        }
+    }
+
+    <T> T getOption(SocketOption<T> name) throws IOException {
+        if (name == StandardSocketOptions.SO_SNDBUF) {
+            return (T) getOption(SocketOptions.SO_SNDBUF);
+        } else if (name == StandardSocketOptions.SO_RCVBUF) {
+            return (T) getOption(SocketOptions.SO_RCVBUF);
+        } else if (name == StandardSocketOptions.SO_REUSEADDR) {
+            return (T) getOption(SocketOptions.SO_REUSEADDR);
+        } else if (name == StandardSocketOptions.IP_TOS) {
+            return (T) getOption(SocketOptions.IP_TOS);
+        } else if (name == StandardSocketOptions.IP_MULTICAST_IF &&
+            (getDatagramSocket() instanceof MulticastSocket)) {
+            return (T) getOption(SocketOptions.IP_MULTICAST_IF2);
+        } else if (name == StandardSocketOptions.IP_MULTICAST_TTL &&
+            (getDatagramSocket() instanceof MulticastSocket)) {
+            Integer ttl = getTimeToLive();
+            return (T)ttl;
+        } else if (name == StandardSocketOptions.IP_MULTICAST_LOOP &&
+            (getDatagramSocket() instanceof MulticastSocket)) {
+            return (T) getOption(SocketOptions.IP_MULTICAST_LOOP);
+        } else {
+            throw new UnsupportedOperationException("unsupported option");
+        }
+    }
+
     /**
      * Gets the datagram socket file descriptor.
-     * @return a <tt>FileDescriptor</tt> object representing the datagram socket
+     * @return a {@code FileDescriptor} object representing the datagram socket
      * file descriptor
      */
     protected FileDescriptor getFileDescriptor() {

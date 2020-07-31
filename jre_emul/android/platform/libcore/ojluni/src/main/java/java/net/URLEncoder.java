@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -35,6 +35,12 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException ;
 import java.util.BitSet;
+/* J2ObjC removed.
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import sun.security.action.GetBooleanAction;
+import sun.security.action.GetPropertyAction;
+ */
 
 /**
  * Utility class for HTML form encoding. This class contains static methods
@@ -45,21 +51,20 @@ import java.util.BitSet;
  * <p>
  * When encoding a String, the following rules apply:
  *
- * <p>
  * <ul>
- * <li>The alphanumeric characters &quot;<code>a</code>&quot; through
- *     &quot;<code>z</code>&quot;, &quot;<code>A</code>&quot; through
- *     &quot;<code>Z</code>&quot; and &quot;<code>0</code>&quot;
- *     through &quot;<code>9</code>&quot; remain the same.
- * <li>The special characters &quot;<code>.</code>&quot;,
- *     &quot;<code>-</code>&quot;, &quot;<code>*</code>&quot;, and
- *     &quot;<code>_</code>&quot; remain the same.
- * <li>The space character &quot;<code>&nbsp;</code>&quot; is
- *     converted into a plus sign &quot;<code>+</code>&quot;.
+ * <li>The alphanumeric characters &quot;{@code a}&quot; through
+ *     &quot;{@code z}&quot;, &quot;{@code A}&quot; through
+ *     &quot;{@code Z}&quot; and &quot;{@code 0}&quot;
+ *     through &quot;{@code 9}&quot; remain the same.
+ * <li>The special characters &quot;{@code .}&quot;,
+ *     &quot;{@code -}&quot;, &quot;{@code *}&quot;, and
+ *     &quot;{@code _}&quot; remain the same.
+ * <li>The space character &quot; &nbsp; &quot; is
+ *     converted into a plus sign &quot;{@code +}&quot;.
  * <li>All other characters are unsafe and are first converted into
  *     one or more bytes using some encoding scheme. Then each byte is
  *     represented by the 3-character string
- *     &quot;<code>%<i>xy</i></code>&quot;, where <i>xy</i> is the
+ *     &quot;<i>{@code %xy}</i>&quot;, where <i>xy</i> is the
  *     two-digit hexadecimal representation of the byte.
  *     The recommended encoding scheme to use is UTF-8. However,
  *     for compatibility reasons, if an encoding is not specified,
@@ -137,6 +142,11 @@ public class URLEncoder {
         dontNeedEncoding.set('.');
         dontNeedEncoding.set('*');
 
+        /* J2ObjC modified.
+        dfltEncName = AccessController.doPrivileged(
+            new GetPropertyAction("file.encoding")
+        );
+         */
         dfltEncName = System.getProperty("file.encoding");
     }
 
@@ -146,15 +156,15 @@ public class URLEncoder {
     private URLEncoder() { }
 
     /**
-     * Translates a string into <code>x-www-form-urlencoded</code>
+     * Translates a string into {@code x-www-form-urlencoded}
      * format. This method uses the platform's default encoding
      * as the encoding scheme to obtain the bytes for unsafe characters.
      *
-     * @param   s   <code>String</code> to be translated.
+     * @param   s   {@code String} to be translated.
      * @deprecated The resulting string may vary depending on the platform's
      *             default encoding. Instead, use the encode(String,String)
      *             method to specify the encoding.
-     * @return  the translated <code>String</code>.
+     * @return  the translated {@code String}.
      */
     @Deprecated
     public static String encode(String s) {
@@ -171,7 +181,7 @@ public class URLEncoder {
     }
 
     /**
-     * Translates a string into <code>application/x-www-form-urlencoded</code>
+     * Translates a string into {@code application/x-www-form-urlencoded}
      * format using a specific encoding scheme. This method uses the
      * supplied encoding scheme to obtain the bytes for unsafe
      * characters.
@@ -180,13 +190,13 @@ public class URLEncoder {
      * "http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars">
      * World Wide Web Consortium Recommendation</a> states that
      * UTF-8 should be used. Not doing so may introduce
-     * incompatibilites.</em>
+     * incompatibilities.</em>
      *
-     * @param   s   <code>String</code> to be translated.
+     * @param   s   {@code String} to be translated.
      * @param   enc   The name of a supported
      *    <a href="../lang/package-summary.html#charenc">character
      *    encoding</a>.
-     * @return  the translated <code>String</code>.
+     * @return  the translated {@code String}.
      * @exception  UnsupportedEncodingException
      *             If the named encoding is not supported
      * @see URLDecoder#decode(java.lang.String, java.lang.String)

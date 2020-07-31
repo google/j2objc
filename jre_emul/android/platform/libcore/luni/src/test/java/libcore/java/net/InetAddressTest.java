@@ -21,6 +21,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -184,6 +185,12 @@ public class InetAddressTest extends junit.framework.TestCase {
     public void test_isReachable_neverThrows() throws Exception {
         InetAddress inetAddress = InetAddress.getByName("www.google.com");
 
+        /* J2ObjC modified.
+        final NetworkInterface netIf;
+        try {
+            netIf = NetworkInterface.getByName("dummy0");
+        } catch (SocketException e) {
+         */
         final NetworkInterface netIf = NetworkInterface.getByName("dummy0");
         if (netIf == null) {
             System.logI("Skipping test_isReachable_neverThrows because dummy0 isn't available");
@@ -373,23 +380,26 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals(LOOPBACK6_BYTES, "localhost", inetAddress);
         assertTrue(inetAddress.isLoopbackAddress());
     }
-// TODO(zgao): b/65289980.
-//    public void test_getAllByName_localhost() throws Exception {
-//        InetAddress[] inetAddresses = InetAddress.getAllByName("localhost");
-//        assertEquals(1, inetAddresses.length);
-//        InetAddress inetAddress = inetAddresses[0];
-//        assertEquals(LOOPBACK4_BYTES, "localhost", inetAddress);
-//        assertTrue(inetAddress.isLoopbackAddress());
-//    }
 
-// TODO(zgao): b/65289980.
-//    public void test_getAllByName_ip6_localhost() throws Exception {
-//        InetAddress[] inetAddresses = InetAddress.getAllByName("ip6-localhost");
-//        assertEquals(1, inetAddresses.length);
-//        InetAddress inetAddress = inetAddresses[0];
-//        assertEquals(LOOPBACK6_BYTES, "ip6-localhost", inetAddress);
-//        assertTrue(inetAddress.isLoopbackAddress());
-//    }
+    /* TODO(zgao): b/65289980.
+    public void test_getAllByName_localhost() throws Exception {
+        InetAddress[] inetAddresses = InetAddress.getAllByName("localhost");
+        assertEquals(1, inetAddresses.length);
+        InetAddress inetAddress = inetAddresses[0];
+        assertEquals(LOOPBACK4_BYTES, "localhost", inetAddress);
+        assertTrue(inetAddress.isLoopbackAddress());
+    }
+     */
+
+    /* TODO(zgao): b/65289980.
+    public void test_getAllByName_ip6_localhost() throws Exception {
+        InetAddress[] inetAddresses = InetAddress.getAllByName("ip6-localhost");
+        assertEquals(1, inetAddresses.length);
+        InetAddress inetAddress = inetAddresses[0];
+        assertEquals(LOOPBACK6_BYTES, "ip6-localhost", inetAddress);
+        assertTrue(inetAddress.isLoopbackAddress());
+    }
+     */
 
     public void test_getByName_v6loopback() throws Exception {
         InetAddress inetAddress = InetAddress.getByName("::1");

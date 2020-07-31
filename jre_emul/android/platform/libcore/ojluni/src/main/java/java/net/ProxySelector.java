@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,6 +27,9 @@ package java.net;
 
 import java.io.IOException;
 import java.util.List;
+/* J2ObjC removed.
+import sun.security.util.SecurityConstants;
+ */
 
 /**
  * Selects the proxy server to use, if any, when connecting to the
@@ -68,7 +71,7 @@ public abstract class ProxySelector {
 
     static {
         try {
-            Class c = Class.forName("sun.net.spi.DefaultProxySelector");
+            Class<?> c = Class.forName("sun.net.spi.DefaultProxySelector");
             if (c != null && ProxySelector.class.isAssignableFrom(c)) {
                 theProxySelector = (ProxySelector) c.newInstance();
             }
@@ -82,15 +85,17 @@ public abstract class ProxySelector {
      *
      * @throws  SecurityException
      *          If a security manager has been installed and it denies
-     * {@link NetPermission}<tt>("getProxySelector")</tt>
+     * {@link NetPermission}{@code ("getProxySelector")}
      * @see #setDefault(ProxySelector)
-     * @return the system-wide <code>ProxySelector</code>
+     * @return the system-wide {@code ProxySelector}
      * @since 1.5
      */
     public static ProxySelector getDefault() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            // sm.checkPermission(SecurityConstants.GET_PROXYSELECTOR_PERMISSION);
+            /* J2ObjC removed.
+            sm.checkPermission(SecurityConstants.GET_PROXYSELECTOR_PERMISSION);
+             */
         }
         return theProxySelector;
     }
@@ -101,11 +106,11 @@ public abstract class ProxySelector {
      * Note: non-standard protocol handlers may ignore this setting.
      *
      * @param ps The HTTP proxy selector, or
-     *          <code>null</code> to unset the proxy selector.
+     *          {@code null} to unset the proxy selector.
      *
      * @throws  SecurityException
      *          If a security manager has been installed and it denies
-     * {@link NetPermission}<tt>("setProxySelector")</tt>
+     * {@link NetPermission}{@code ("setProxySelector")}
      *
      * @see #getDefault()
      * @since 1.5
@@ -113,7 +118,9 @@ public abstract class ProxySelector {
     public static void setDefault(ProxySelector ps) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            // sm.checkPermission(SecurityConstants.SET_PROXYSELECTOR_PERMISSION);
+            /* J2ObjC removed.
+            sm.checkPermission(SecurityConstants.SET_PROXYSELECTOR_PERMISSION);
+             */
         }
         theProxySelector = ps;
     }
@@ -126,8 +133,7 @@ public abstract class ProxySelector {
      * <UL>
      * <LI>http URI for http connections</LI>
      * <LI>https URI for https connections
-     * <LI>ftp URI for ftp connections</LI>
-     * <LI><code>socket://host:port</code><br>
+     * <LI>{@code socket://host:port}<br>
      *     for tcp client sockets connections</LI>
      * </UL>
      *

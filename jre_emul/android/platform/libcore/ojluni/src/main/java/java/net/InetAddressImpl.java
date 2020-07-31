@@ -35,6 +35,13 @@ import java.io.IOException;
  * @since 1.4
  */
 interface InetAddressImpl {
+
+    // BEGIN Android-changed: Rewrote hostname lookup methods on top of Libcore.os.
+    /*
+    String getLocalHostName() throws UnknownHostException;
+    InetAddress[]
+        lookupAllHostAddr(String hostname) throws UnknownHostException;
+     */
     /**
      * Lookup all addresses for {@code hostname} on the given {@code netId}.
      */
@@ -49,12 +56,15 @@ interface InetAddressImpl {
      * Clear address caches (if any).
      */
     public void clearAddressCache();
+    // END Android-changed: Rewrote hostname lookup methods on top of Libcore.os.
 
     /**
      * Return the "any" local address.
      */
     InetAddress anyLocalAddress();
 
+    // Android-changed: Let loopbackAddresses() return both Inet4 and Inet6 loopbacks.
+    // InetAddress loopbackAddress();
     /**
      * Return a list of loop back adresses for this implementation.
      */

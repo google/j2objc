@@ -54,6 +54,7 @@ class SocketException extends IOException {
     public SocketException() {
     }
 
+    // BEGIN Android-added: SocketException ctor with cause for internal use.
     /** @hide */
     public SocketException(Throwable cause) {
         super(cause);
@@ -63,4 +64,5 @@ class SocketException extends IOException {
     public SocketException(String msg, Throwable cause) {
         super(msg, cause);
     }
+    // END Android-added: SocketException ctor with cause for internal use.
 }

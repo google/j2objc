@@ -51,6 +51,7 @@ public class PortUnreachableException extends SocketException {
      */
     public PortUnreachableException() {}
 
+    // Android-added: PortUnreachableException ctor used by IoBridge.
     /** @hide */
     public PortUnreachableException(String msg, Throwable cause) {
         super(msg, cause);

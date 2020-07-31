@@ -53,6 +53,7 @@ public class BindException extends SocketException {
      */
     public BindException() {}
 
+    // Android-added: Constructor called by IoBridge
     /** @hide */
     public BindException(String msg, Throwable cause) {
         super(msg, cause);
