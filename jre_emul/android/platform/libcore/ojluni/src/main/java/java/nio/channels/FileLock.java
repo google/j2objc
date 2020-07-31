@@ -160,44 +160,6 @@ public abstract class FileLock implements AutoCloseable {
     }
 
     /**
-     * Initializes a new instance of this class.
-     *
-     * @param  channel
-     *         The channel upon whose file this lock is held
-     *
-     * @param  position
-     *         The position within the file at which the locked region starts;
-     *         must be non-negative
-     *
-     * @param  size
-     *         The size of the locked region; must be non-negative, and the sum
-     *         <tt>position</tt>&nbsp;+&nbsp;<tt>size</tt> must be non-negative
-     *
-     * @param  shared
-     *         <tt>true</tt> if this lock is shared,
-     *         <tt>false</tt> if it is exclusive
-     *
-     * @throws IllegalArgumentException
-     *         If the preconditions on the parameters do not hold
-     *
-     * @since 1.7
-     */
-    protected FileLock(AsynchronousFileChannel channel,
-                       long position, long size, boolean shared)
-    {
-        if (position < 0)
-            throw new IllegalArgumentException("Negative position");
-        if (size < 0)
-            throw new IllegalArgumentException("Negative size");
-        if (position + size < 0)
-            throw new IllegalArgumentException("Negative position + size");
-        this.channel = channel;
-        this.position = position;
-        this.size = size;
-        this.shared = shared;
-    }
-
-    /**
      * Returns the file channel upon whose file this lock was acquired.
      *
      * <p> This method has been superseded by the {@link #acquiredBy acquiredBy}

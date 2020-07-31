@@ -27,7 +27,8 @@ package sun.nio.fs;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
+//TODO(amisail) uncomment this when working
+//import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -102,40 +103,41 @@ class MimeTypesFileTypeDetector extends AbstractFileTypeDetector {
      * optimization to reduce the locking overhead.
      */
     private void loadMimeTypes() {
-        if (!loaded) {
-            synchronized (this) {
-                if (!loaded) {
-                    List<String> lines = AccessController.doPrivileged(
-                            new PrivilegedAction<List<String>>() {
-                                @Override
-                                public List<String> run() {
-                                    try {
-                                        return Files.readAllLines(mimeTypesFile,
-                                                Charset.defaultCharset());
-                                    } catch (IOException ignore) {
-                                        return Collections.emptyList();
-                                    }
-                                }
-                            });
-
-                    mimeTypeMap = new HashMap<>(lines.size());
-                    String entry = "";
-                    for (String line : lines) {
-                        entry += line;
-                        if (entry.endsWith("\\")) {
-                            entry = entry.substring(0, entry.length() - 1);
-                            continue;
-                        }
-                        parseMimeEntry(entry);
-                        entry = "";
-                    }
-                    if (!entry.isEmpty()) {
-                        parseMimeEntry(entry);
-                    }
-                    loaded = true;
-                }
-            }
-        }
+//        TODO(amisail) uncomment this when working
+//        if (!loaded) {
+//            synchronized (this) {
+//                if (!loaded) {
+//                    List<String> lines = AccessController.doPrivileged(
+//                            new PrivilegedAction<List<String>>() {
+//                                @Override
+//                                public List<String> run() {
+//                                    try {
+//                                        return Files.readAllLines(mimeTypesFile,
+//                                                Charset.defaultCharset());
+//                                    } catch (IOException ignore) {
+//                                        return Collections.emptyList();
+//                                    }
+//                                }
+//                            });
+//
+//                    mimeTypeMap = new HashMap<>(lines.size());
+//                    String entry = "";
+//                    for (String line : lines) {
+//                        entry += line;
+//                        if (entry.endsWith("\\")) {
+//                            entry = entry.substring(0, entry.length() - 1);
+//                            continue;
+//                        }
+//                        parseMimeEntry(entry);
+//                        entry = "";
+//                    }
+//                    if (!entry.isEmpty()) {
+//                        parseMimeEntry(entry);
+//                    }
+//                    loaded = true;
+//                }
+//            }
+//        }
     }
 
     /**

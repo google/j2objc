@@ -38,11 +38,6 @@ public class FileLockImpl
         super(channel, position, size, shared);
     }
 
-    FileLockImpl(AsynchronousFileChannel channel, long position, long size, boolean shared)
-    {
-        super(channel, position, size, shared);
-    }
-
     public boolean isValid() {
         return valid;
     }
@@ -59,8 +54,6 @@ public class FileLockImpl
         if (valid) {
             if (ch instanceof FileChannelImpl)
                 ((FileChannelImpl)ch).release(this);
-            else if (ch instanceof AsynchronousFileChannelImpl)
-                ((AsynchronousFileChannelImpl)ch).release(this);
             else throw new AssertionError();
             valid = false;
         }

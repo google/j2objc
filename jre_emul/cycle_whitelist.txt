@@ -20,7 +20,6 @@ FIELD java.net.NetworkInterface.children
 FIELD java.util.HashSet.map
 FIELD java.util.TreeSet.m
 
-FIELD java.util.concurrent.CompletableFuture.TaskSubmitter.executor
 FIELD java.util.concurrent.CompletableFuture.UniCompletion.executor
 FIELD java.util.concurrent.CompletableFuture.UniCompletion.dep
 FIELD java.util.concurrent.CompletableFuture.UniCompletion.src
