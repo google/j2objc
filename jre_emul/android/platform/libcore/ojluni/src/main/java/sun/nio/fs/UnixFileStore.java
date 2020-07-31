@@ -152,19 +152,21 @@ abstract class UnixFileStore
 
     @Override
     public boolean supportsFileAttributeView(Class<? extends FileAttributeView> type) {
-        if (type == null)
-            throw new NullPointerException();
-        if (type == BasicFileAttributeView.class)
-            return true;
-        if (type == PosixFileAttributeView.class ||
-            type == FileOwnerAttributeView.class)
-        {
-            // lookup fstypes.properties
-            FeatureStatus status = checkIfFeaturePresent("posix");
-            // assume supported if UNKNOWN
-            return (status != FeatureStatus.NOT_PRESENT);
-        }
         return false;
+//        TODO(amisail) uncomment this when working
+//        if (type == null)
+//            throw new NullPointerException();
+//        if (type == BasicFileAttributeView.class)
+//            return true;
+//        if (type == PosixFileAttributeView.class ||
+//            type == FileOwnerAttributeView.class)
+//        {
+//            // lookup fstypes.properties
+//            FeatureStatus status = checkIfFeaturePresent("posix");
+//            // assume supported if UNKNOWN
+//            return (status != FeatureStatus.NOT_PRESENT);
+//        }
+//        return false;
     }
 
     @Override
@@ -218,49 +220,51 @@ abstract class UnixFileStore
     /**
      * Returns status to indicate if file system supports a given feature
      */
-    FeatureStatus checkIfFeaturePresent(String feature) {
-        if (props == null) {
-            synchronized (loadLock) {
-                if (props == null) {
-                    props = AccessController.doPrivileged(
-                        new PrivilegedAction<Properties>() {
-                            @Override
-                            public Properties run() {
-                                return loadProperties();
-                            }});
-                }
-            }
-        }
+//    TODO(amisail) uncomment this when working
+//    FeatureStatus checkIfFeaturePresent(String feature) {
+//        if (props == null) {
+//            synchronized (loadLock) {
+//                if (props == null) {
+//                    props = AccessController.doPrivileged(
+//                        new PrivilegedAction<Properties>() {
+//                            @Override
+//                            public Properties run() {
+//                                return loadProperties();
+//                            }});
+//                }
+//            }
+//        }
+//
+//        String value = props.getProperty(type());
+//        if (value != null) {
+//            String[] values = value.split("\\s");
+//            for (String s: values) {
+//                s = s.trim().toLowerCase();
+//                if (s.equals(feature)) {
+//                    return FeatureStatus.PRESENT;
+//                }
+//                if (s.startsWith("no")) {
+//                    s = s.substring(2);
+//                    if (s.equals(feature)) {
+//                        return FeatureStatus.NOT_PRESENT;
+//                    }
+//                }
+//            }
+//        }
+//        return FeatureStatus.UNKNOWN;
+//    }
 
-        String value = props.getProperty(type());
-        if (value != null) {
-            String[] values = value.split("\\s");
-            for (String s: values) {
-                s = s.trim().toLowerCase();
-                if (s.equals(feature)) {
-                    return FeatureStatus.PRESENT;
-                }
-                if (s.startsWith("no")) {
-                    s = s.substring(2);
-                    if (s.equals(feature)) {
-                        return FeatureStatus.NOT_PRESENT;
-                    }
-                }
-            }
-        }
-        return FeatureStatus.UNKNOWN;
-    }
-
-    private static Properties loadProperties() {
-        Properties result = new Properties();
-        String fstypes = System.getProperty("java.home") + "/lib/fstypes.properties";
-        Path file = Paths.get(fstypes);
-        try {
-            try (ReadableByteChannel rbc = Files.newByteChannel(file)) {
-                result.load(Channels.newReader(rbc, "UTF-8"));
-            }
-        } catch (IOException x) {
-        }
-        return result;
-    }
+//    TODO(amisail) uncomment this when working
+//    private static Properties loadProperties() {
+//        Properties result = new Properties();
+//        String fstypes = System.getProperty("java.home") + "/lib/fstypes.properties";
+//        Path file = Paths.get(fstypes);
+//        try {
+//            try (ReadableByteChannel rbc = Files.newByteChannel(file)) {
+//                result.load(Channels.newReader(rbc, "UTF-8"));
+//            }
+//        } catch (IOException x) {
+//        }
+//        return result;
+//    }
 }

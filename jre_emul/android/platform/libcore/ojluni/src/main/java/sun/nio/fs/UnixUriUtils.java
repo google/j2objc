@@ -58,9 +58,7 @@ class UnixUriUtils {
 
         // compatibility with java.io.File
         if (!uri.toString().startsWith("file:///"))
-            throw new IllegalArgumentException("not implemented");
-//            TODO(amisail): uncomment when java.io.File has been updated
-//            return new File(uri).toPath();
+            return null;
 
         // transformation use raw path
         String p = uri.getRawPath();
