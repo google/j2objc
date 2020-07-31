@@ -118,7 +118,8 @@ __attribute__((always_inline)) inline id JreGenericFieldAssign(__unsafe_unretain
 #define JreGenericFieldAssignAndConsume JreGenericFieldAssign
 
 #else
-#define JavaLangObject NSObject
+@interface JavaLangObject : NSObject
+@end
 
 __attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, __unsafe_unretained id value) {
   AUTORELEASE(*pIvar);

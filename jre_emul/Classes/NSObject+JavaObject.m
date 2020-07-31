@@ -226,6 +226,21 @@ void NSObject__init_class__() {
 @end
 
 
+#if !J2OBJC_USE_GC
+
+@implementation JavaLangObject
+
++ (void)initialize
+{
+  if (self != JavaLangObject.class) {
+    JreExtendIOSClass(self);
+  }
+}
+
+@end
+
+#endif
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)
 
 J2OBJC_NAME_MAPPING(NSObject, "java.lang.Object", "NSObject")

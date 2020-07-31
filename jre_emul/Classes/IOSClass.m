@@ -295,9 +295,9 @@ void empty_static_initialize() {}
                            name:(NSString *)clsName
                   simpleNamePos:(int)simpleNamePos {
   if ((self = [super init])) {
-    assert (simpleNamePos_ <= 0 || [name_ charAtWithInt:simpleNamePos_ - 1] == '$'
-            || [name_ charAtWithInt:simpleNamePos_ - 1] == '.'
-            ||  [name_ charAtWithInt:simpleNamePos_ - 1] == '[');
+    assert (simpleNamePos_ <= 0 || [clsName charAtWithInt:simpleNamePos_ - 1] == '$'
+            || [clsName charAtWithInt:simpleNamePos_ - 1] == '.'
+            ||  [clsName charAtWithInt:simpleNamePos_ - 1] == '[');
 
     self->metadata_ = metadata;
     *((NSString**)&self->name_) = RETAIN_(clsName);

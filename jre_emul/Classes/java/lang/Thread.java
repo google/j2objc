@@ -426,7 +426,7 @@ public class Thread implements Runnable {
       pthread_attr_setstacksize(&attr, stack);
     }
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-    pthread_create(&nt->t, &attr, &start_routine, (ARCBRIDGE_RETAINED void*)self);
+    pthread_create(&nt->t, &attr, &start_routine, (ARCBRIDGE_RETAINED void*)RETAIN_(self));
   ]-*/;
 
   void exit() {
