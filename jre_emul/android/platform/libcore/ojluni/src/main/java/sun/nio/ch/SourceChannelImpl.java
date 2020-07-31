@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -119,17 +119,16 @@ class SourceChannelImpl
         int oldOps = sk.nioReadyOps();
         int newOps = initialOps;
 
-        if ((ops & PollArrayWrapper.POLLNVAL) != 0)
+        if ((ops & Net.POLLNVAL) != 0)
             throw new Error("POLLNVAL detected");
 
-        if ((ops & (PollArrayWrapper.POLLERR
-                    | PollArrayWrapper.POLLHUP)) != 0) {
+        if ((ops & (Net.POLLERR | Net.POLLHUP)) != 0) {
             newOps = intOps;
             sk.nioReadyOps(newOps);
             return (newOps & ~oldOps) != 0;
         }
 
-        if (((ops & PollArrayWrapper.POLLIN) != 0) &&
+        if (((ops & Net.POLLIN) != 0) &&
             ((intOps & SelectionKey.OP_READ) != 0))
             newOps |= SelectionKey.OP_READ;
 
@@ -147,7 +146,7 @@ class SourceChannelImpl
 
     public void translateAndSetInterestOps(int ops, SelectionKeyImpl sk) {
         if (ops == SelectionKey.OP_READ)
-            ops = PollArrayWrapper.POLLIN;
+            ops = Net.POLLIN;
         sk.selector.putEventOps(sk, ops);
     }
 
@@ -157,6 +156,7 @@ class SourceChannelImpl
     }
 
     public int read(ByteBuffer dst) throws IOException {
+        // Android-added: Throw NPE if null ByteBuffer passed to read().
         if (dst == null) {
             throw new NullPointerException();
         }
