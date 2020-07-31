@@ -1,1810 +1,2577 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.nio.ByteOrder;
-import java.nio.charset.ModifiedUtf8;
+import com.google.j2objc.annotations.WeakOuter;
+import java.io.ObjectStreamClass.WeakClassKey;
+import java.lang.ref.ReferenceQueue;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import libcore.io.Memory;
-import libcore.io.SizeOf;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import static java.io.ObjectStreamClass.processQueue;
+//import java.io.SerialCallbackContext;
+import sun.reflect.misc.ReflectUtil;
 
 /**
- * A specialized {@link OutputStream} that is able to write (serialize) Java
- * objects as well as primitive data types (int, byte, char etc.). The data can
- * later be loaded using an ObjectInputStream.
+ * An ObjectOutputStream writes primitive data types and graphs of Java objects
+ * to an OutputStream.  The objects can be read (reconstituted) using an
+ * ObjectInputStream.  Persistent storage of objects can be accomplished by
+ * using a file for the stream.  If the stream is a network socket stream, the
+ * objects can be reconstituted on another host or in another process.
  *
- * @see ObjectInputStream
- * @see ObjectOutput
- * @see Serializable
- * @see Externalizable
+ * <p>Only objects that support the java.io.Serializable interface can be
+ * written to streams.  The class of each serializable object is encoded
+ * including the class name and signature of the class, the values of the
+ * object's fields and arrays, and the closure of any other objects referenced
+ * from the initial objects.
+ *
+ * <p>The method writeObject is used to write an object to the stream.  Any
+ * object, including Strings and arrays, is written with writeObject. Multiple
+ * objects or primitives can be written to the stream.  The objects must be
+ * read back from the corresponding ObjectInputstream with the same types and
+ * in the same order as they were written.
+ *
+ * <p>Primitive data types can also be written to the stream using the
+ * appropriate methods from DataOutput. Strings can also be written using the
+ * writeUTF method.
+ *
+ * <p>The default serialization mechanism for an object writes the class of the
+ * object, the class signature, and the values of all non-transient and
+ * non-static fields.  References to other objects (except in transient or
+ * static fields) cause those objects to be written also. Multiple references
+ * to a single object are encoded using a reference sharing mechanism so that
+ * graphs of objects can be restored to the same shape as when the original was
+ * written.
+ *
+ * <p>For example to write an object that can be read by the example in
+ * ObjectInputStream:
+ * <br>
+ * <pre>
+ *      FileOutputStream fos = new FileOutputStream("t.tmp");
+ *      ObjectOutputStream oos = new ObjectOutputStream(fos);
+ *
+ *      oos.writeInt(12345);
+ *      oos.writeObject("Today");
+ *      oos.writeObject(new Date());
+ *
+ *      oos.close();
+ * </pre>
+ *
+ * <p>Classes that require special handling during the serialization and
+ * deserialization process must implement special methods with these exact
+ * signatures:
+ * <br>
+ * <pre>
+ * private void readObject(java.io.ObjectInputStream stream)
+ *     throws IOException, ClassNotFoundException;
+ * private void writeObject(java.io.ObjectOutputStream stream)
+ *     throws IOException
+ * private void readObjectNoData()
+ *     throws ObjectStreamException;
+ * </pre>
+ *
+ * <p>The writeObject method is responsible for writing the state of the object
+ * for its particular class so that the corresponding readObject method can
+ * restore it.  The method does not need to concern itself with the state
+ * belonging to the object's superclasses or subclasses.  State is saved by
+ * writing the individual fields to the ObjectOutputStream using the
+ * writeObject method or by using the methods for primitive data types
+ * supported by DataOutput.
+ *
+ * <p>Serialization does not write out the fields of any object that does not
+ * implement the java.io.Serializable interface.  Subclasses of Objects that
+ * are not serializable can be serializable. In this case the non-serializable
+ * class must have a no-arg constructor to allow its fields to be initialized.
+ * In this case it is the responsibility of the subclass to save and restore
+ * the state of the non-serializable class. It is frequently the case that the
+ * fields of that class are accessible (public, package, or protected) or that
+ * there are get and set methods that can be used to restore the state.
+ *
+ * <p>Serialization of an object can be prevented by implementing writeObject
+ * and readObject methods that throw the NotSerializableException.  The
+ * exception will be caught by the ObjectOutputStream and abort the
+ * serialization process.
+ *
+ * <p>Implementing the Externalizable interface allows the object to assume
+ * complete control over the contents and format of the object's serialized
+ * form.  The methods of the Externalizable interface, writeExternal and
+ * readExternal, are called to save and restore the objects state.  When
+ * implemented by a class they can write and read their own state using all of
+ * the methods of ObjectOutput and ObjectInput.  It is the responsibility of
+ * the objects to handle any versioning that occurs.
+ *
+ * <p>Enum constants are serialized differently than ordinary serializable or
+ * externalizable objects.  The serialized form of an enum constant consists
+ * solely of its name; field values of the constant are not transmitted.  To
+ * serialize an enum constant, ObjectOutputStream writes the string returned by
+ * the constant's name method.  Like other serializable or externalizable
+ * objects, enum constants can function as the targets of back references
+ * appearing subsequently in the serialization stream.  The process by which
+ * enum constants are serialized cannot be customized; any class-specific
+ * writeObject and writeReplace methods defined by enum types are ignored
+ * during serialization.  Similarly, any serialPersistentFields or
+ * serialVersionUID field declarations are also ignored--all enum types have a
+ * fixed serialVersionUID of 0L.
+ *
+ * <p>Primitive data, excluding serializable fields and externalizable data, is
+ * written to the ObjectOutputStream in block-data records. A block data record
+ * is composed of a header and data. The block data header consists of a marker
+ * and the number of bytes to follow the header.  Consecutive primitive data
+ * writes are merged into one block-data record.  The blocking factor used for
+ * a block-data record will be 1024 bytes.  Each block-data record will be
+ * filled up to 1024 bytes, or be written whenever there is a termination of
+ * block-data mode.  Calls to the ObjectOutputStream methods writeObject,
+ * defaultWriteObject and writeFields initially terminate any existing
+ * block-data record.
+ *
+ * @author      Mike Warres
+ * @author      Roger Riggs
+ * @see java.io.DataOutput
+ * @see java.io.ObjectInputStream
+ * @see java.io.Serializable
+ * @see java.io.Externalizable
+ * @see <a href="../../../platform/serialization/spec/output.html">Object Serialization Specification, Section 2, Object Output Classes</a>
+ * @since       JDK1.1
  */
-public class ObjectOutputStream extends OutputStream implements ObjectOutput, ObjectStreamConstants {
+public class ObjectOutputStream
+        extends OutputStream implements ObjectOutput, ObjectStreamConstants
+{
 
-    /*
-     * Mask to zero SC_BLOC_DATA bit.
-     */
-    private static final byte NOT_SC_BLOCK_DATA = (byte) (SC_BLOCK_DATA ^ 0xFF);
+    private static class Caches {
+        /** cache of subclass security audit results */
+        static final ConcurrentMap<WeakClassKey,Boolean> subclassAudits =
+                new ConcurrentHashMap<>();
 
-    /*
-     * How many nested levels to writeObject.
-     */
-    private int nestedLevels;
+        /** queue for WeakReferences to audited subclasses */
+        static final ReferenceQueue<Class<?>> subclassAuditsQueue =
+                new ReferenceQueue<>();
+    }
 
-    /*
-     * Where we write to
-     */
-    private DataOutputStream output;
+    /** filter stream for handling block data conversion */
+    private final BlockDataOutputStream bout;
+    /** obj -> wire handle map */
+    private final HandleTable handles;
+    /** obj -> replacement obj map */
+    private final ReplaceTable subs;
+    /** stream protocol version */
+    private int protocol = PROTOCOL_VERSION_2;
+    /** recursion depth */
+    private int depth;
 
-    /*
-     * If object replacement is enabled or not
-     */
+    /** buffer for writing primitive field values */
+    private byte[] primVals;
+
+    /** if true, invoke writeObjectOverride() instead of writeObject() */
+    private final boolean enableOverride;
+    /** if true, invoke replaceObject() */
     private boolean enableReplace;
 
-    /*
-     * Where we write primitive types to
+    // values below valid only during upcalls to writeObject()/writeExternal()
+    /**
+     * Context during upcalls to class-defined writeObject methods; holds
+     * object currently being serialized and descriptor for current class.
+     * Null when not during writeObject upcall.
      */
-    private DataOutputStream primitiveTypes;
+    private SerialCallbackContext curContext;
 
-    /*
-     * Where the write primitive types are actually written to
-     */
-    private ByteArrayOutputStream primitiveTypesBuffer;
+    /** current PutField object */
+    private PutFieldImpl curPut;
 
-    /*
-     * Table mapping Object -> Integer (handle)
-     */
-    private SerializationHandleMap objectsWritten;
-
-    /*
-     * All objects are assigned an ID (integer handle)
-     */
-    private int currentHandle;
-
-    /*
-     * Used by defaultWriteObject
-     */
-    private Object currentObject;
-
-    /*
-     * Used by defaultWriteObject
-     */
-    private ObjectStreamClass currentClass;
-
-    /*
-     * Either ObjectStreamConstants.PROTOCOL_VERSION_1 or
-     * ObjectStreamConstants.PROTOCOL_VERSION_2
-     */
-    private int protocolVersion;
-
-    /*
-     * Used to keep track of the PutField object for the class/object being
-     * written
-     */
-    private EmulatedFieldsForDumping currentPutField;
-
-    /*
-     * Allows the receiver to decide if it needs to call writeObjectOverride
-     */
-    private boolean subclassOverridingImplementation;
-
-    /*
-     * Descriptor for java.lang.reflect.Proxy
-     */
-    private final ObjectStreamClass proxyClassDesc = ObjectStreamClass.lookup(Proxy.class);
+    /** custom storage for debug trace info */
+    private final DebugTraceInfoStack debugInfoStack;
 
     /**
-     * PutField is an inner class to provide access to the persistent fields
-     * that are written to the target stream.
+     * value of "sun.io.serialization.extendedDebugInfo" property,
+     * as true or false for extended information about exception's place
+     */
+    // BEGIN Android-changed: Do not support extendedDebugInfo on Android.
+    /*
+    private static final boolean extendedDebugInfo =
+        java.security.AccessController.doPrivileged(
+            new sun.security.action.GetBooleanAction(
+                "sun.io.serialization.extendedDebugInfo")).booleanValue();
+    */
+    private static final boolean extendedDebugInfo = false;
+    // END Android-changed: Do not support extendedDebugInfo on Android.
+
+    /**
+     * Creates an ObjectOutputStream that writes to the specified OutputStream.
+     * This constructor writes the serialization stream header to the
+     * underlying stream; callers may wish to flush the stream immediately to
+     * ensure that constructors for receiving ObjectInputStreams will not block
+     * when reading the header.
+     *
+     * <p>If a security manager is installed, this constructor will check for
+     * the "enableSubclassImplementation" SerializablePermission when invoked
+     * directly or indirectly by the constructor of a subclass which overrides
+     * the ObjectOutputStream.putFields or ObjectOutputStream.writeUnshared
+     * methods.
+     *
+     * @param   out output stream to write to
+     * @throws  IOException if an I/O error occurs while writing stream header
+     * @throws  SecurityException if untrusted subclass illegally overrides
+     *          security-sensitive methods
+     * @throws  NullPointerException if <code>out</code> is <code>null</code>
+     * @since   1.4
+     * @see     ObjectOutputStream#ObjectOutputStream()
+     * @see     ObjectOutputStream#putFields()
+     * @see     ObjectInputStream#ObjectInputStream(InputStream)
+     */
+    public ObjectOutputStream(OutputStream out) throws IOException {
+        verifySubclass();
+        bout = new BlockDataOutputStream(out);
+        handles = new HandleTable(10, (float) 3.00);
+        subs = new ReplaceTable(10, (float) 3.00);
+        enableOverride = false;
+        writeStreamHeader();
+        bout.setBlockDataMode(true);
+        if (extendedDebugInfo) {
+            debugInfoStack = new DebugTraceInfoStack();
+        } else {
+            debugInfoStack = null;
+        }
+    }
+
+    /**
+     * Provide a way for subclasses that are completely reimplementing
+     * ObjectOutputStream to not have to allocate private data just used by
+     * this implementation of ObjectOutputStream.
+     *
+     * <p>If there is a security manager installed, this method first calls the
+     * security manager's <code>checkPermission</code> method with a
+     * <code>SerializablePermission("enableSubclassImplementation")</code>
+     * permission to ensure it's ok to enable subclassing.
+     *
+     * @throws  SecurityException if a security manager exists and its
+     *          <code>checkPermission</code> method denies enabling
+     *          subclassing.
+     * @throws  IOException if an I/O error occurs while creating this stream
+     * @see SecurityManager#checkPermission
+     * @see java.io.SerializablePermission
+     */
+    protected ObjectOutputStream() throws IOException, SecurityException {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
+        }
+        bout = null;
+        handles = null;
+        subs = null;
+        enableOverride = true;
+        debugInfoStack = null;
+    }
+
+    /**
+     * Specify stream protocol version to use when writing the stream.
+     *
+     * <p>This routine provides a hook to enable the current version of
+     * Serialization to write in a format that is backwards compatible to a
+     * previous version of the stream format.
+     *
+     * <p>Every effort will be made to avoid introducing additional
+     * backwards incompatibilities; however, sometimes there is no
+     * other alternative.
+     *
+     * @param   version use ProtocolVersion from java.io.ObjectStreamConstants.
+     * @throws  IllegalStateException if called after any objects
+     *          have been serialized.
+     * @throws  IllegalArgumentException if invalid version is passed in.
+     * @throws  IOException if I/O errors occur
+     * @see java.io.ObjectStreamConstants#PROTOCOL_VERSION_1
+     * @see java.io.ObjectStreamConstants#PROTOCOL_VERSION_2
+     * @since   1.2
+     */
+    public void useProtocolVersion(int version) throws IOException {
+        if (handles.size() != 0) {
+            // REMIND: implement better check for pristine stream?
+            throw new IllegalStateException("stream non-empty");
+        }
+        switch (version) {
+            case PROTOCOL_VERSION_1:
+            case PROTOCOL_VERSION_2:
+                protocol = version;
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                        "unknown version: " + version);
+        }
+    }
+
+    /**
+     * Write the specified object to the ObjectOutputStream.  The class of the
+     * object, the signature of the class, and the values of the non-transient
+     * and non-static fields of the class and all of its supertypes are
+     * written.  Default serialization for a class can be overridden using the
+     * writeObject and the readObject methods.  Objects referenced by this
+     * object are written transitively so that a complete equivalent graph of
+     * objects can be reconstructed by an ObjectInputStream.
+     *
+     * <p>Exceptions are thrown for problems with the OutputStream and for
+     * classes that should not be serialized.  All exceptions are fatal to the
+     * OutputStream, which is left in an indeterminate state, and it is up to
+     * the caller to ignore or recover the stream state.
+     *
+     * @throws  InvalidClassException Something is wrong with a class used by
+     *          serialization.
+     * @throws  NotSerializableException Some object to be serialized does not
+     *          implement the java.io.Serializable interface.
+     * @throws  IOException Any exception thrown by the underlying
+     *          OutputStream.
+     */
+    public final void writeObject(Object obj) throws IOException {
+        if (enableOverride) {
+            writeObjectOverride(obj);
+            return;
+        }
+        try {
+            writeObject0(obj, false);
+        } catch (IOException ex) {
+            if (depth == 0) {
+                // BEGIN Android-changed: Ignore secondary exceptions during writeObject().
+                // writeFatalException(ex);
+                try {
+                    writeFatalException(ex);
+
+                } catch (IOException ex2) {
+                    // If writing the exception to the output stream causes another exception there
+                    // is no need to propagate the second exception or generate a third exception,
+                    // both of which might obscure details of the root cause.
+                }
+                // END Android-changed: Ignore secondary exceptions during writeObject().
+            }
+            throw ex;
+        }
+    }
+
+    /**
+     * Method used by subclasses to override the default writeObject method.
+     * This method is called by trusted subclasses of ObjectInputStream that
+     * constructed ObjectInputStream using the protected no-arg constructor.
+     * The subclass is expected to provide an override method with the modifier
+     * "final".
+     *
+     * @param   obj object to be written to the underlying stream
+     * @throws  IOException if there are I/O errors while writing to the
+     *          underlying stream
+     * @see #ObjectOutputStream()
+     * @see #writeObject(Object)
+     * @since 1.2
+     */
+    protected void writeObjectOverride(Object obj) throws IOException {
+        // BEGIN Android-added: Let writeObjectOverride throw IOException if !enableOverride.
+        if (!enableOverride) {
+            // Subclasses must override.
+            throw new IOException();
+        }
+        // END Android-added: Let writeObjectOverride throw IOException if !enableOverride.
+    }
+
+    /**
+     * Writes an "unshared" object to the ObjectOutputStream.  This method is
+     * identical to writeObject, except that it always writes the given object
+     * as a new, unique object in the stream (as opposed to a back-reference
+     * pointing to a previously serialized instance).  Specifically:
+     * <ul>
+     *   <li>An object written via writeUnshared is always serialized in the
+     *       same manner as a newly appearing object (an object that has not
+     *       been written to the stream yet), regardless of whether or not the
+     *       object has been written previously.
+     *
+     *   <li>If writeObject is used to write an object that has been previously
+     *       written with writeUnshared, the previous writeUnshared operation
+     *       is treated as if it were a write of a separate object.  In other
+     *       words, ObjectOutputStream will never generate back-references to
+     *       object data written by calls to writeUnshared.
+     * </ul>
+     * While writing an object via writeUnshared does not in itself guarantee a
+     * unique reference to the object when it is deserialized, it allows a
+     * single object to be defined multiple times in a stream, so that multiple
+     * calls to readUnshared by the receiver will not conflict.  Note that the
+     * rules described above only apply to the base-level object written with
+     * writeUnshared, and not to any transitively referenced sub-objects in the
+     * object graph to be serialized.
+     *
+     * <p>ObjectOutputStream subclasses which override this method can only be
+     * constructed in security contexts possessing the
+     * "enableSubclassImplementation" SerializablePermission; any attempt to
+     * instantiate such a subclass without this permission will cause a
+     * SecurityException to be thrown.
+     *
+     * @param   obj object to write to stream
+     * @throws  NotSerializableException if an object in the graph to be
+     *          serialized does not implement the Serializable interface
+     * @throws  InvalidClassException if a problem exists with the class of an
+     *          object to be serialized
+     * @throws  IOException if an I/O error occurs during serialization
+     * @since 1.4
+     */
+    public void writeUnshared(Object obj) throws IOException {
+        try {
+            writeObject0(obj, true);
+        } catch (IOException ex) {
+            if (depth == 0) {
+                writeFatalException(ex);
+            }
+            throw ex;
+        }
+    }
+
+    /**
+     * Write the non-static and non-transient fields of the current class to
+     * this stream.  This may only be called from the writeObject method of the
+     * class being serialized. It will throw the NotActiveException if it is
+     * called otherwise.
+     *
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          <code>OutputStream</code>
+     */
+    public void defaultWriteObject() throws IOException {
+        SerialCallbackContext ctx = curContext;
+        if (ctx == null) {
+            throw new NotActiveException("not in call to writeObject");
+        }
+        Object curObj = ctx.getObj();
+        ObjectStreamClass curDesc = ctx.getDesc();
+        bout.setBlockDataMode(false);
+        defaultWriteFields(curObj, curDesc);
+        bout.setBlockDataMode(true);
+    }
+
+    /**
+     * Retrieve the object used to buffer persistent fields to be written to
+     * the stream.  The fields will be written to the stream when writeFields
+     * method is called.
+     *
+     * @return  an instance of the class Putfield that holds the serializable
+     *          fields
+     * @throws  IOException if I/O errors occur
+     * @since 1.2
+     */
+    public ObjectOutputStream.PutField putFields() throws IOException {
+        if (curPut == null) {
+            SerialCallbackContext ctx = curContext;
+            if (ctx == null) {
+                throw new NotActiveException("not in call to writeObject");
+            }
+            Object curObj = ctx.getObj();
+            ObjectStreamClass curDesc = ctx.getDesc();
+            curPut = new PutFieldImpl(curDesc);
+        }
+        return curPut;
+    }
+
+    /**
+     * Write the buffered fields to the stream.
+     *
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     * @throws  NotActiveException Called when a classes writeObject method was
+     *          not called to write the state of the object.
+     * @since 1.2
+     */
+    public void writeFields() throws IOException {
+        if (curPut == null) {
+            throw new NotActiveException("no current PutField object");
+        }
+        bout.setBlockDataMode(false);
+        curPut.writeFields();
+        bout.setBlockDataMode(true);
+    }
+
+    /**
+     * Reset will disregard the state of any objects already written to the
+     * stream.  The state is reset to be the same as a new ObjectOutputStream.
+     * The current point in the stream is marked as reset so the corresponding
+     * ObjectInputStream will be reset at the same point.  Objects previously
+     * written to the stream will not be referred to as already being in the
+     * stream.  They will be written to the stream again.
+     *
+     * @throws  IOException if reset() is invoked while serializing an object.
+     */
+    public void reset() throws IOException {
+        if (depth != 0) {
+            throw new IOException("stream active");
+        }
+        bout.setBlockDataMode(false);
+        bout.writeByte(TC_RESET);
+        clear();
+        bout.setBlockDataMode(true);
+    }
+
+    /**
+     * Subclasses may implement this method to allow class data to be stored in
+     * the stream. By default this method does nothing.  The corresponding
+     * method in ObjectInputStream is resolveClass.  This method is called
+     * exactly once for each unique class in the stream.  The class name and
+     * signature will have already been written to the stream.  This method may
+     * make free use of the ObjectOutputStream to save any representation of
+     * the class it deems suitable (for example, the bytes of the class file).
+     * The resolveClass method in the corresponding subclass of
+     * ObjectInputStream must read and use any data or objects written by
+     * annotateClass.
+     *
+     * @param   cl the class to annotate custom data for
+     * @throws  IOException Any exception thrown by the underlying
+     *          OutputStream.
+     */
+    protected void annotateClass(Class<?> cl) throws IOException {
+    }
+
+    /**
+     * Subclasses may implement this method to store custom data in the stream
+     * along with descriptors for dynamic proxy classes.
+     *
+     * <p>This method is called exactly once for each unique proxy class
+     * descriptor in the stream.  The default implementation of this method in
+     * <code>ObjectOutputStream</code> does nothing.
+     *
+     * <p>The corresponding method in <code>ObjectInputStream</code> is
+     * <code>resolveProxyClass</code>.  For a given subclass of
+     * <code>ObjectOutputStream</code> that overrides this method, the
+     * <code>resolveProxyClass</code> method in the corresponding subclass of
+     * <code>ObjectInputStream</code> must read any data or objects written by
+     * <code>annotateProxyClass</code>.
+     *
+     * @param   cl the proxy class to annotate custom data for
+     * @throws  IOException any exception thrown by the underlying
+     *          <code>OutputStream</code>
+     * @see ObjectInputStream#resolveProxyClass(String[])
+     * @since   1.3
+     */
+    protected void annotateProxyClass(Class<?> cl) throws IOException {
+    }
+
+    /**
+     * This method will allow trusted subclasses of ObjectOutputStream to
+     * substitute one object for another during serialization. Replacing
+     * objects is disabled until enableReplaceObject is called. The
+     * enableReplaceObject method checks that the stream requesting to do
+     * replacement can be trusted.  The first occurrence of each object written
+     * into the serialization stream is passed to replaceObject.  Subsequent
+     * references to the object are replaced by the object returned by the
+     * original call to replaceObject.  To ensure that the private state of
+     * objects is not unintentionally exposed, only trusted streams may use
+     * replaceObject.
+     *
+     * <p>The ObjectOutputStream.writeObject method takes a parameter of type
+     * Object (as opposed to type Serializable) to allow for cases where
+     * non-serializable objects are replaced by serializable ones.
+     *
+     * <p>When a subclass is replacing objects it must insure that either a
+     * complementary substitution must be made during deserialization or that
+     * the substituted object is compatible with every field where the
+     * reference will be stored.  Objects whose type is not a subclass of the
+     * type of the field or array element abort the serialization by raising an
+     * exception and the object is not be stored.
+     *
+     * <p>This method is called only once when each object is first
+     * encountered.  All subsequent references to the object will be redirected
+     * to the new object. This method should return the object to be
+     * substituted or the original object.
+     *
+     * <p>Null can be returned as the object to be substituted, but may cause
+     * NullReferenceException in classes that contain references to the
+     * original object since they may be expecting an object instead of
+     * null.
+     *
+     * @param   obj the object to be replaced
+     * @return  the alternate object that replaced the specified one
+     * @throws  IOException Any exception thrown by the underlying
+     *          OutputStream.
+     */
+    protected Object replaceObject(Object obj) throws IOException {
+        return obj;
+    }
+
+    /**
+     * Enable the stream to do replacement of objects in the stream.  When
+     * enabled, the replaceObject method is called for every object being
+     * serialized.
+     *
+     * <p>If <code>enable</code> is true, and there is a security manager
+     * installed, this method first calls the security manager's
+     * <code>checkPermission</code> method with a
+     * <code>SerializablePermission("enableSubstitution")</code> permission to
+     * ensure it's ok to enable the stream to do replacement of objects in the
+     * stream.
+     *
+     * @param   enable boolean parameter to enable replacement of objects
+     * @return  the previous setting before this method was invoked
+     * @throws  SecurityException if a security manager exists and its
+     *          <code>checkPermission</code> method denies enabling the stream
+     *          to do replacement of objects in the stream.
+     * @see SecurityManager#checkPermission
+     * @see java.io.SerializablePermission
+     */
+    protected boolean enableReplaceObject(boolean enable)
+            throws SecurityException
+    {
+        if (enable == enableReplace) {
+            return enable;
+        }
+        if (enable) {
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkPermission(SUBSTITUTION_PERMISSION);
+            }
+        }
+        enableReplace = enable;
+        return !enableReplace;
+    }
+
+    /**
+     * The writeStreamHeader method is provided so subclasses can append or
+     * prepend their own header to the stream.  It writes the magic number and
+     * version to the stream.
+     *
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    protected void writeStreamHeader() throws IOException {
+        bout.writeShort(STREAM_MAGIC);
+        bout.writeShort(STREAM_VERSION);
+    }
+
+    /**
+     * Write the specified class descriptor to the ObjectOutputStream.  Class
+     * descriptors are used to identify the classes of objects written to the
+     * stream.  Subclasses of ObjectOutputStream may override this method to
+     * customize the way in which class descriptors are written to the
+     * serialization stream.  The corresponding method in ObjectInputStream,
+     * <code>readClassDescriptor</code>, should then be overridden to
+     * reconstitute the class descriptor from its custom stream representation.
+     * By default, this method writes class descriptors according to the format
+     * defined in the Object Serialization specification.
+     *
+     * <p>Note that this method will only be called if the ObjectOutputStream
+     * is not using the old serialization stream format (set by calling
+     * ObjectOutputStream's <code>useProtocolVersion</code> method).  If this
+     * serialization stream is using the old format
+     * (<code>PROTOCOL_VERSION_1</code>), the class descriptor will be written
+     * internally in a manner that cannot be overridden or customized.
+     *
+     * @param   desc class descriptor to write to the stream
+     * @throws  IOException If an I/O error has occurred.
+     * @see java.io.ObjectInputStream#readClassDescriptor()
+     * @see #useProtocolVersion(int)
+     * @see java.io.ObjectStreamConstants#PROTOCOL_VERSION_1
+     * @since 1.3
+     */
+    protected void writeClassDescriptor(ObjectStreamClass desc)
+            throws IOException
+    {
+        desc.writeNonProxy(this);
+    }
+
+    /**
+     * Writes a byte. This method will block until the byte is actually
+     * written.
+     *
+     * @param   val the byte to be written to the stream
+     * @throws  IOException If an I/O error has occurred.
+     */
+    public void write(int val) throws IOException {
+        bout.write(val);
+    }
+
+    /**
+     * Writes an array of bytes. This method will block until the bytes are
+     * actually written.
+     *
+     * @param   buf the data to be written
+     * @throws  IOException If an I/O error has occurred.
+     */
+    public void write(byte[] buf) throws IOException {
+        bout.write(buf, 0, buf.length, false);
+    }
+
+    /**
+     * Writes a sub array of bytes.
+     *
+     * @param   buf the data to be written
+     * @param   off the start offset in the data
+     * @param   len the number of bytes that are written
+     * @throws  IOException If an I/O error has occurred.
+     */
+    public void write(byte[] buf, int off, int len) throws IOException {
+        if (buf == null) {
+            throw new NullPointerException();
+        }
+        int endoff = off + len;
+        if (off < 0 || len < 0 || endoff > buf.length || endoff < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        bout.write(buf, off, len, false);
+    }
+
+    /**
+     * Flushes the stream. This will write any buffered output bytes and flush
+     * through to the underlying stream.
+     *
+     * @throws  IOException If an I/O error has occurred.
+     */
+    public void flush() throws IOException {
+        bout.flush();
+    }
+
+    /**
+     * Drain any buffered data in ObjectOutputStream.  Similar to flush but
+     * does not propagate the flush to the underlying stream.
+     *
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    protected void drain() throws IOException {
+        bout.drain();
+    }
+
+    /**
+     * Closes the stream. This method must be called to release any resources
+     * associated with the stream.
+     *
+     * @throws  IOException If an I/O error has occurred.
+     */
+    public void close() throws IOException {
+        flush();
+        // Android-removed:  Don't clear() during close(), keep the handle table. http://b/28159133
+        // clear();
+        bout.close();
+    }
+
+    /**
+     * Writes a boolean.
+     *
+     * @param   val the boolean to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeBoolean(boolean val) throws IOException {
+        bout.writeBoolean(val);
+    }
+
+    /**
+     * Writes an 8 bit byte.
+     *
+     * @param   val the byte value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeByte(int val) throws IOException  {
+        bout.writeByte(val);
+    }
+
+    /**
+     * Writes a 16 bit short.
+     *
+     * @param   val the short value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeShort(int val)  throws IOException {
+        bout.writeShort(val);
+    }
+
+    /**
+     * Writes a 16 bit char.
+     *
+     * @param   val the char value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeChar(int val)  throws IOException {
+        bout.writeChar(val);
+    }
+
+    /**
+     * Writes a 32 bit int.
+     *
+     * @param   val the integer value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeInt(int val)  throws IOException {
+        bout.writeInt(val);
+    }
+
+    /**
+     * Writes a 64 bit long.
+     *
+     * @param   val the long value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeLong(long val)  throws IOException {
+        bout.writeLong(val);
+    }
+
+    /**
+     * Writes a 32 bit float.
+     *
+     * @param   val the float value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeFloat(float val) throws IOException {
+        bout.writeFloat(val);
+    }
+
+    /**
+     * Writes a 64 bit double.
+     *
+     * @param   val the double value to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeDouble(double val) throws IOException {
+        bout.writeDouble(val);
+    }
+
+    /**
+     * Writes a String as a sequence of bytes.
+     *
+     * @param   str the String of bytes to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeBytes(String str) throws IOException {
+        bout.writeBytes(str);
+    }
+
+    /**
+     * Writes a String as a sequence of chars.
+     *
+     * @param   str the String of chars to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeChars(String str) throws IOException {
+        bout.writeChars(str);
+    }
+
+    /**
+     * Primitive data write of this String in
+     * <a href="DataInput.html#modified-utf-8">modified UTF-8</a>
+     * format.  Note that there is a
+     * significant difference between writing a String into the stream as
+     * primitive data or as an Object. A String instance written by writeObject
+     * is written into the stream as a String initially. Future writeObject()
+     * calls write references to the string into the stream.
+     *
+     * @param   str the String to be written
+     * @throws  IOException if I/O errors occur while writing to the underlying
+     *          stream
+     */
+    public void writeUTF(String str) throws IOException {
+        bout.writeUTF(str);
+    }
+
+    /**
+     * Provide programmatic access to the persistent fields to be written
+     * to ObjectOutput.
+     *
+     * @since 1.2
      */
     public static abstract class PutField {
-        /**
-         * Puts the value of the boolean field identified by {@code name} to the
-         * persistent field.
-         *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
-         */
-        public abstract void put(String name, boolean value);
 
         /**
-         * Puts the value of the character field identified by {@code name} to
-         * the persistent field.
+         * Put the value of the named boolean field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>boolean</code>
          */
-        public abstract void put(String name, char value);
+        public abstract void put(String name, boolean val);
 
         /**
-         * Puts the value of the byte field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named byte field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>byte</code>
          */
-        public abstract void put(String name, byte value);
+        public abstract void put(String name, byte val);
 
         /**
-         * Puts the value of the short field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named char field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>char</code>
          */
-        public abstract void put(String name, short value);
+        public abstract void put(String name, char val);
 
         /**
-         * Puts the value of the integer field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named short field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>short</code>
          */
-        public abstract void put(String name, int value);
+        public abstract void put(String name, short val);
 
         /**
-         * Puts the value of the long field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named int field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>int</code>
          */
-        public abstract void put(String name, long value);
+        public abstract void put(String name, int val);
 
         /**
-         * Puts the value of the float field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named long field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>long</code>
          */
-        public abstract void put(String name, float value);
+        public abstract void put(String name, long val);
 
         /**
-         * Puts the value of the double field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named float field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>float</code>
          */
-        public abstract void put(String name, double value);
+        public abstract void put(String name, float val);
 
         /**
-         * Puts the value of the Object field identified by {@code name} to the
-         * persistent field.
+         * Put the value of the named double field into the persistent field.
          *
-         * @param name
-         *            the name of the field to serialize.
-         * @param value
-         *            the value that is put to the persistent field.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not
+         * <code>double</code>
          */
-        public abstract void put(String name, Object value);
+        public abstract void put(String name, double val);
 
         /**
-         * Writes the fields to the target stream {@code out}.
+         * Put the value of the named Object field into the persistent field.
          *
-         * @param out
-         *            the target stream
-         * @throws IOException
-         *             if an error occurs while writing to the target stream.
-         * @deprecated This method is unsafe and may corrupt the target stream.
-         *             Use ObjectOutputStream#writeFields() instead.
+         * @param  name the name of the serializable field
+         * @param  val the value to assign to the field
+         *         (which may be <code>null</code>)
+         * @throws IllegalArgumentException if <code>name</code> does not
+         * match the name of a serializable field for the class whose fields
+         * are being written, or if the type of the named field is not a
+         * reference type
+         */
+        public abstract void put(String name, Object val);
+
+        /**
+         * Write the data and fields to the specified ObjectOutput stream,
+         * which must be the same stream that produced this
+         * <code>PutField</code> object.
+         *
+         * @param  out the stream to write the data and fields to
+         * @throws IOException if I/O errors occur while writing to the
+         *         underlying stream
+         * @throws IllegalArgumentException if the specified stream is not
+         *         the same stream that produced this <code>PutField</code>
+         *         object
+         * @deprecated This method does not write the values contained by this
+         *         <code>PutField</code> object in a proper format, and may
+         *         result in corruption of the serialization stream.  The
+         *         correct way to write <code>PutField</code> data is by
+         *         calling the {@link java.io.ObjectOutputStream#writeFields()}
+         *         method.
          */
         @Deprecated
         public abstract void write(ObjectOutput out) throws IOException;
     }
 
+
     /**
-     * Constructs a new {@code ObjectOutputStream}. This default constructor can
-     * be used by subclasses that do not want to use the public constructor if
-     * it allocates unneeded data.
-     *
-     * @throws IOException
-     *             if an error occurs when creating this stream.
+     * Returns protocol version in use.
      */
-    protected ObjectOutputStream() throws IOException {
-        /*
-         * WARNING - we should throw IOException if not called from a subclass
-         * according to the JavaDoc. Add the test.
-         */
-        this.subclassOverridingImplementation = true;
+    int getProtocolVersion() {
+        return protocol;
     }
 
     /**
-     * Constructs a new ObjectOutputStream that writes to the OutputStream
-     * {@code output}.
-     *
-     * @param output
-     *            the non-null OutputStream to filter writes on.
-     *
-     * @throws IOException
-     *             if an error occurs while writing the object stream
-     *             header
+     * Writes string without allowing it to be replaced in stream.  Used by
+     * ObjectStreamClass to write class descriptor type strings.
      */
-    public ObjectOutputStream(OutputStream output) throws IOException {
-        this.output = (output instanceof DataOutputStream) ? (DataOutputStream) output
-                : new DataOutputStream(output);
-        this.enableReplace = false;
-        this.protocolVersion = PROTOCOL_VERSION_2;
-        this.subclassOverridingImplementation = false;
-
-        resetState();
-        // So write...() methods can be used by
-        // subclasses during writeStreamHeader()
-        primitiveTypes = this.output;
-        // Has to be done here according to the specification
-        writeStreamHeader();
-        primitiveTypes = null;
-    }
-
-    /**
-     * Writes optional information for class {@code aClass} to the output
-     * stream. This optional data can be read when deserializing the class
-     * descriptor (ObjectStreamClass) for this class from an input stream. By
-     * default, no extra data is saved.
-     *
-     * @param aClass
-     *            the class to annotate.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     * @see ObjectInputStream#resolveClass(ObjectStreamClass)
-     */
-    protected void annotateClass(Class<?> aClass) throws IOException {
-        // By default no extra info is saved. Subclasses can override
-    }
-
-    /**
-     * Writes optional information for a proxy class to the target stream. This
-     * optional data can be read when deserializing the proxy class from an
-     * input stream. By default, no extra data is saved.
-     *
-     * @param aClass
-     *            the proxy class to annotate.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     * @see ObjectInputStream#resolveProxyClass(String[])
-     */
-    protected void annotateProxyClass(Class<?> aClass) throws IOException {
-        // By default no extra info is saved. Subclasses can override
-    }
-
-    /**
-     * Do the necessary work to see if the receiver can be used to write
-     * primitive types like int, char, etc.
-     */
-    private void checkWritePrimitiveTypes() {
-        if (primitiveTypes == null) {
-            // If we got here we have no Stream previously created
-            // WARNING - if the stream does not grow, this code is wrong
-            primitiveTypesBuffer = new ByteArrayOutputStream(128);
-            primitiveTypes = new DataOutputStream(primitiveTypesBuffer);
+    void writeTypeString(String str) throws IOException {
+        int handle;
+        if (str == null) {
+            writeNull();
+        } else if ((handle = handles.lookup(str)) != -1) {
+            writeHandle(handle);
+        } else {
+            writeString(str, false);
         }
     }
 
     /**
-     * Closes this stream. Any buffered data is flushed. This implementation
-     * closes the target stream.
-     *
-     * @throws IOException
-     *             if an error occurs while closing this stream.
+     * Verifies that this (possibly subclass) instance can be constructed
+     * without violating security constraints: the subclass must not override
+     * security-sensitive non-final methods, or else the
+     * "enableSubclassImplementation" SerializablePermission is checked.
      */
-    @Override
-    public void close() throws IOException {
-        // First flush what is needed (primitive data, etc)
-        flush();
-        output.close();
-    }
-
-    /**
-     * Computes the collection of emulated fields that users can manipulate to
-     * store a representation different than the one declared by the class of
-     * the object being dumped.
-     *
-     * @see #writeFields
-     * @see #writeFieldValues(EmulatedFieldsForDumping)
-     */
-    private void computePutField() {
-        currentPutField = new EmulatedFieldsForDumping(this, currentClass);
-    }
-
-    /**
-     * Default method to write objects to this stream. Serializable fields
-     * defined in the object's class and superclasses are written to the output
-     * stream.
-     *
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     * @throws NotActiveException
-     *             if this method is not called from {@code writeObject()}.
-     * @see ObjectInputStream#defaultReadObject
-     */
-    public void defaultWriteObject() throws IOException {
-        if (currentObject == null) {
-            throw new NotActiveException();
-        }
-        writeFieldValues(currentObject, currentClass);
-    }
-
-    /**
-     * Writes buffered data to the target stream. This is similar to {@code
-     * flush} but the flush is not propagated to the target stream.
-     *
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    protected void drain() throws IOException {
-        if (primitiveTypes == null || primitiveTypesBuffer == null) {
+    private void verifySubclass() {
+        Class<?> cl = getClass();
+        if (cl == ObjectOutputStream.class) {
             return;
         }
-
-        // If we got here we have a Stream previously created
-        int offset = 0;
-        byte[] written = primitiveTypesBuffer.toByteArray();
-        // Normalize the primitive data
-        while (offset < written.length) {
-            int toWrite = written.length - offset > 1024 ? 1024
-                    : written.length - offset;
-            if (toWrite < 256) {
-                output.writeByte(TC_BLOCKDATA);
-                output.writeByte((byte) toWrite);
-            } else {
-                output.writeByte(TC_BLOCKDATALONG);
-                output.writeInt(toWrite);
-            }
-
-            // write primitive types we had and the marker of end-of-buffer
-            output.write(written, offset, toWrite);
-            offset += toWrite;
+        SecurityManager sm = System.getSecurityManager();
+        if (sm == null) {
+            return;
         }
-
-        // and now we're clean to a state where we can write an object
-        primitiveTypes = null;
-        primitiveTypesBuffer = null;
-    }
-
-    /**
-     * Dumps the parameter {@code obj} only if it is {@code null}
-     * or an object that has already been dumped previously.
-     *
-     * @param obj
-     *            Object to check if an instance previously dumped by this
-     *            stream.
-     * @return -1 if it is an instance which has not been dumped yet (and this
-     *         method does nothing). The handle if {@code obj} is an
-     *         instance which has been dumped already.
-     *
-     * @throws IOException
-     *             If an error occurs attempting to save {@code null} or
-     *             a cyclic reference.
-     */
-    private int dumpCycle(Object obj) throws IOException {
-        // If the object has been saved already, save its handle only
-        int handle = objectsWritten.get(obj);
-        if (handle != -1) {
-            writeCyclicReference(handle);
-            return handle;
+        processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
+        WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
+        Boolean result = Caches.subclassAudits.get(key);
+        if (result == null) {
+            result = Boolean.valueOf(auditSubclass(cl));
+            Caches.subclassAudits.putIfAbsent(key, result);
         }
-        return -1;
-    }
-
-    /**
-     * Enables object replacement for this stream. By default this is not
-     * enabled. Only trusted subclasses (loaded with system class loader) are
-     * allowed to change this status.
-     *
-     * @param enable
-     *            {@code true} to enable object replacement; {@code false} to
-     *            disable it.
-     * @return the previous setting.
-     * @see #replaceObject
-     * @see ObjectInputStream#enableResolveObject
-     */
-    protected boolean enableReplaceObject(boolean enable) {
-        boolean originalValue = enableReplace;
-        enableReplace = enable;
-        return originalValue;
-    }
-
-    /**
-     * Writes buffered data to the target stream and calls the {@code flush}
-     * method of the target stream.
-     *
-     * @throws IOException
-     *             if an error occurs while writing to or flushing the output
-     *             stream.
-     */
-    @Override
-    public void flush() throws IOException {
-        drain();
-        output.flush();
-    }
-
-    /**
-     * Return the next handle to be used to indicate cyclic
-     * references being saved to the stream.
-     *
-     * @return the next handle to represent the next cyclic reference
-     */
-    private int nextHandle() {
-        return currentHandle++;
-    }
-
-    /**
-     * Gets this stream's {@code PutField} object. This object provides access
-     * to the persistent fields that are eventually written to the output
-     * stream. It is used to transfer the values from the fields of the object
-     * that is currently being written to the persistent fields.
-     *
-     * @return the PutField object from which persistent fields can be accessed
-     *         by name.
-     * @throws IOException
-     *             if an I/O error occurs.
-     * @throws NotActiveException
-     *             if this method is not called from {@code writeObject()}.
-     * @see ObjectInputStream#defaultReadObject
-     */
-    public PutField putFields() throws IOException {
-        if (currentObject == null) {
-            throw new NotActiveException();
+        if (result.booleanValue()) {
+            return;
         }
-        if (currentPutField == null) {
-            computePutField();
-        }
-        return currentPutField;
-    }
-
-    private int registerObjectWritten(Object obj) {
-        int handle = nextHandle();
-        objectsWritten.put(obj, handle);
-        return handle;
+        sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
     }
 
     /**
-     * Remove the unshared object from the table, and restore any previous
-     * handle.
-     *
-     * @param obj
-     *            Non-null object being dumped.
-     * @param previousHandle
-     *            The handle of the previous identical object dumped
+     * Performs reflective checks on given subclass to verify that it doesn't
+     * override security-sensitive non-final methods.  Returns true if subclass
+     * is "safe", false otherwise.
      */
-    private void removeUnsharedReference(Object obj, int previousHandle) {
-        if (previousHandle != -1) {
-            objectsWritten.put(obj, previousHandle);
-        } else {
-            objectsWritten.remove(obj);
-        }
-    }
-
-    /**
-     * Allows trusted subclasses to substitute the specified original {@code
-     * object} with a new object. Object substitution has to be activated first
-     * with calling {@code enableReplaceObject(true)}. This implementation just
-     * returns {@code object}.
-     *
-     * @param object
-     *            the original object for which a replacement may be defined.
-     * @return the replacement object for {@code object}.
-     * @throws IOException
-     *             if any I/O error occurs while creating the replacement
-     *             object.
-     * @see #enableReplaceObject
-     * @see ObjectInputStream#enableResolveObject
-     * @see ObjectInputStream#resolveObject
-     */
-    protected Object replaceObject(Object object) throws IOException {
-        // By default no object replacement. Subclasses can override
-        return object;
-    }
-
-    /**
-     * Resets the state of this stream. A marker is written to the stream, so
-     * that the corresponding input stream will also perform a reset at the same
-     * point. Objects previously written are no longer remembered, so they will
-     * be written again (instead of a cyclical reference) if found in the object
-     * graph.
-     *
-     * @throws IOException
-     *             if {@code reset()} is called during the serialization of an
-     *             object.
-     */
-    public void reset() throws IOException {
-        // First we flush what we have
-        drain();
-        /*
-         * And dump a reset marker, so that the ObjectInputStream can reset
-         * itself at the same point
-         */
-        output.writeByte(TC_RESET);
-        // Now we reset ourselves
-        resetState();
-    }
-
-    /**
-     * Reset the collection of objects already dumped by the receiver. If the
-     * objects are found again in the object graph, the receiver will dump them
-     * again, instead of a handle (cyclic reference).
-     *
-     */
-    private void resetSeenObjects() {
-        objectsWritten = new SerializationHandleMap();
-        currentHandle = baseWireHandle;
-    }
-
-    /**
-     * Reset the receiver. The collection of objects already dumped by the
-     * receiver is reset, and internal structures are also reset so that the
-     * receiver knows it is in a fresh clean state.
-     *
-     */
-    private void resetState() {
-        resetSeenObjects();
-        nestedLevels = 0;
-    }
-
-    /**
-     * Sets the specified protocol version to be used by this stream.
-     *
-     * @param version
-     *            the protocol version to be used. Use a {@code
-     *            PROTOCOL_VERSION_x} constant from {@code
-     *            java.io.ObjectStreamConstants}.
-     * @throws IllegalArgumentException
-     *             if an invalid {@code version} is specified.
-     * @throws IOException
-     *             if an I/O error occurs.
-     * @see ObjectStreamConstants#PROTOCOL_VERSION_1
-     * @see ObjectStreamConstants#PROTOCOL_VERSION_2
-     */
-    public void useProtocolVersion(int version) throws IOException {
-        if (!objectsWritten.isEmpty()) {
-            throw new IllegalStateException("Cannot set protocol version when stream in use");
-        }
-        if (version != ObjectStreamConstants.PROTOCOL_VERSION_1
-                && version != ObjectStreamConstants.PROTOCOL_VERSION_2) {
-            throw new IllegalArgumentException("Unknown protocol: " + version);
-        }
-        protocolVersion = version;
-    }
-
-    /**
-     * Writes {@code count} bytes from the byte array {@code buffer} starting at
-     * offset {@code index} to the target stream. Blocks until all bytes are
-     * written.
-     *
-     * @param buffer
-     *            the buffer to write.
-     * @param offset
-     *            the index of the first byte in {@code buffer} to write.
-     * @param length
-     *            the number of bytes from {@code buffer} to write to the output
-     *            stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    @Override
-    public void write(byte[] buffer, int offset, int length) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.write(buffer, offset, length);
-    }
-
-    /**
-     * Writes a single byte to the target stream. Only the least significant
-     * byte of the integer {@code value} is written to the stream. Blocks until
-     * the byte is actually written.
-     *
-     * @param value
-     *            the byte to write.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    @Override
-    public void write(int value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.write(value);
-    }
-
-    /**
-     * Writes a boolean to the target stream.
-     *
-     * @param value
-     *            the boolean value to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeBoolean(boolean value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeBoolean(value);
-    }
-
-    /**
-     * Writes a byte (8 bit) to the target stream.
-     *
-     * @param value
-     *            the byte to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeByte(int value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeByte(value);
-    }
-
-    /**
-     * Writes the string {@code value} as a sequence of bytes to the target
-     * stream. Only the least significant byte of each character in the string
-     * is written.
-     *
-     * @param value
-     *            the string to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeBytes(String value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeBytes(value);
-    }
-
-    /**
-     * Writes a character (16 bit) to the target stream.
-     *
-     * @param value
-     *            the character to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeChar(int value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeChar(value);
-    }
-
-    /**
-     * Writes the string {@code value} as a sequence of characters to the target
-     * stream.
-     *
-     * @param value
-     *            the string to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeChars(String value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeChars(value);
-    }
-
-    /**
-     * Write a class descriptor {@code classDesc} (an
-     * {@code ObjectStreamClass}) to the stream.
-     *
-     * @param classDesc
-     *            The class descriptor (an {@code ObjectStreamClass}) to
-     *            be dumped
-     * @param unshared
-     *            Write the object unshared
-     * @return the handle assigned to the class descriptor
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the class
-     *             descriptor.
-     */
-    private int writeClassDesc(ObjectStreamClass classDesc, boolean unshared) throws IOException {
-        if (classDesc == null) {
-            writeNull();
-            return -1;
-        }
-        int handle = -1;
-        if (!unshared) {
-            handle = dumpCycle(classDesc);
-        }
-        if (handle == -1) {
-            Class<?> classToWrite = classDesc.forClass();
-            int previousHandle = -1;
-            if (unshared) {
-                previousHandle = objectsWritten.get(classDesc);
-            }
-            // If we got here, it is a new (non-null) classDesc that will have
-            // to be registered as well
-            handle = registerObjectWritten(classDesc);
-
-            if (classDesc.isProxy()) {
-                output.writeByte(TC_PROXYCLASSDESC);
-                Class<?>[] interfaces = classToWrite.getInterfaces();
-                output.writeInt(interfaces.length);
-                for (int i = 0; i < interfaces.length; i++) {
-                    output.writeUTF(interfaces[i].getName());
-                }
-                annotateProxyClass(classToWrite);
-                output.writeByte(TC_ENDBLOCKDATA);
-                writeClassDesc(proxyClassDesc, false);
-                if (unshared) {
-                    // remove reference to unshared object
-                    removeUnsharedReference(classDesc, previousHandle);
-                }
-                return handle;
-            }
-
-            output.writeByte(TC_CLASSDESC);
-            if (protocolVersion == PROTOCOL_VERSION_1) {
-                writeNewClassDesc(classDesc);
-            } else {
-                // So write...() methods can be used by
-                // subclasses during writeClassDescriptor()
-                primitiveTypes = output;
-                writeClassDescriptor(classDesc);
-                primitiveTypes = null;
-            }
-            // Extra class info (optional)
-            annotateClass(classToWrite);
-            drain(); // flush primitive types in the annotation
-            output.writeByte(TC_ENDBLOCKDATA);
-            writeClassDesc(classDesc.getSuperclass(), unshared);
-            if (unshared) {
-                // remove reference to unshared object
-                removeUnsharedReference(classDesc, previousHandle);
-            }
-        }
-        return handle;
-    }
-
-    /**
-     * Writes a handle representing a cyclic reference (object previously
-     * dumped).
-     */
-    private void writeCyclicReference(int handle) throws IOException {
-        output.writeByte(TC_REFERENCE);
-        output.writeInt(handle);
-    }
-
-    /**
-     * Writes a double (64 bit) to the target stream.
-     *
-     * @param value
-     *            the double to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeDouble(double value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeDouble(value);
-    }
-
-    /**
-     * Writes a collection of field descriptors (name, type name, etc) for the
-     * class descriptor {@code classDesc} (an
-     * {@code ObjectStreamClass})
-     *
-     * @param classDesc
-     *            The class descriptor (an {@code ObjectStreamClass})
-     *            for which to write field information
-     * @param externalizable
-     *            true if the descriptors are externalizable
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the field
-     *             descriptors.
-     *
-     * @see #writeObject(Object)
-     */
-    private void writeFieldDescriptors(ObjectStreamClass classDesc, boolean externalizable) throws IOException {
-        Class<?> loadedClass = classDesc.forClass();
-        ObjectStreamField[] fields = null;
-        int fieldCount = 0;
-
-        // The fields of String are not needed since Strings are treated as
-        // primitive types
-        if (!externalizable && loadedClass != ObjectStreamClass.STRINGCLASS) {
-            fields = classDesc.fields();
-            fieldCount = fields.length;
-        }
-
-        // Field count
-        output.writeShort(fieldCount);
-        // Field names
-        for (int i = 0; i < fieldCount; i++) {
-            ObjectStreamField f = fields[i];
-            boolean wasPrimitive = f.writeField(output);
-            if (!wasPrimitive) {
-                writeObject(f.getTypeString());
-            }
-        }
-    }
-
-    /**
-     * Writes the fields of the object currently being written to the target
-     * stream. The field values are buffered in the currently active {@code
-     * PutField} object, which can be accessed by calling {@code putFields()}.
-     *
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     * @throws NotActiveException
-     *             if there are no fields to write to the target stream.
-     * @see #putFields
-     */
-    public void writeFields() throws IOException {
-        // Has to have fields to write
-        if (currentPutField == null) {
-            throw new NotActiveException();
-        }
-        writeFieldValues(currentPutField);
-    }
-
-    /**
-     * Writes a collection of field values for the emulated fields
-     * {@code emulatedFields}
-     *
-     * @param emulatedFields
-     *            an {@code EmulatedFieldsForDumping}, concrete subclass
-     *            of {@code PutField}
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the field values.
-     *
-     * @see #writeFields
-     * @see #writeObject(Object)
-     */
-    private void writeFieldValues(EmulatedFieldsForDumping emulatedFields) throws IOException {
-        // Access internal fields which we can set/get. Users can't do this.
-        EmulatedFields accessibleSimulatedFields = emulatedFields.emulatedFields();
-        for (EmulatedFields.ObjectSlot slot : accessibleSimulatedFields.slots()) {
-            Object fieldValue = slot.getFieldValue();
-            Class<?> type = slot.getField().getType();
-            if (type == int.class) {
-                output.writeInt(fieldValue != null ? ((Integer) fieldValue).intValue() : 0);
-            } else if (type == byte.class) {
-                output.writeByte(fieldValue != null ? ((Byte) fieldValue).byteValue() : 0);
-            } else if (type == char.class) {
-                output.writeChar(fieldValue != null ? ((Character) fieldValue).charValue() : 0);
-            } else if (type == short.class) {
-                output.writeShort(fieldValue != null ? ((Short) fieldValue).shortValue() : 0);
-            } else if (type == boolean.class) {
-                output.writeBoolean(fieldValue != null ? ((Boolean) fieldValue).booleanValue() : false);
-            } else if (type == long.class) {
-                output.writeLong(fieldValue != null ? ((Long) fieldValue).longValue() : 0);
-            } else if (type == float.class) {
-                output.writeFloat(fieldValue != null ? ((Float) fieldValue).floatValue() : 0);
-            } else if (type == double.class) {
-                output.writeDouble(fieldValue != null ? ((Double) fieldValue).doubleValue() : 0);
-            } else {
-                // Either array or Object
-                writeObject(fieldValue);
-            }
-        }
-    }
-
-    /**
-     * Writes a collection of field values for the fields described by class
-     * descriptor {@code classDesc} (an {@code ObjectStreamClass}).
-     * This is the default mechanism, when emulated fields (an
-     * {@code PutField}) are not used. Actual values to dump are fetched
-     * directly from object {@code obj}.
-     *
-     * @param obj
-     *            Instance from which to fetch field values to dump.
-     * @param classDesc
-     *            A class descriptor (an {@code ObjectStreamClass})
-     *            defining which fields should be dumped.
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the field values.
-     *
-     * @see #writeObject(Object)
-     */
-    private void writeFieldValues(Object obj, ObjectStreamClass classDesc) throws IOException {
-        for (ObjectStreamField fieldDesc : classDesc.fields()) {
-            try {
-                Class<?> type = fieldDesc.getTypeInternal();
-                Field field = classDesc.getReflectionField(fieldDesc);
-                if (field == null) {
-                    throw new InvalidClassException(classDesc.getName() + " doesn't have a field " + fieldDesc.getName() + " of type " + type);
-                }
-                if (type == byte.class) {
-                    output.writeByte(field.getByte(obj));
-                } else if (type == char.class) {
-                    output.writeChar(field.getChar(obj));
-                } else if (type == double.class) {
-                    output.writeDouble(field.getDouble(obj));
-                } else if (type == float.class) {
-                    output.writeFloat(field.getFloat(obj));
-                } else if (type == int.class) {
-                    output.writeInt(field.getInt(obj));
-                } else if (type == long.class) {
-                    output.writeLong(field.getLong(obj));
-                } else if (type == short.class) {
-                    output.writeShort(field.getShort(obj));
-                } else if (type == boolean.class) {
-                    output.writeBoolean(field.getBoolean(obj));
-                } else {
-                    // Reference types (including arrays).
-                    Object objField = field.get(obj);
-                    if (fieldDesc.isUnshared()) {
-                        writeUnshared(objField);
-                    } else {
-                        writeObject(objField);
-                    }
-                }
-            } catch (IllegalAccessException iae) {
-                // ObjectStreamField should have called setAccessible(true).
-                throw new AssertionError(iae);
-            } catch (NoSuchFieldError nsf) {
-                // The user defined serialPersistentFields but did not provide
-                // the glue to transfer values in writeObject, so we ended up using
-                // the default mechanism but failed to set the emulated field.
-                throw new InvalidClassException(classDesc.getName());
-            }
-        }
-    }
-
-    /**
-     * Writes a float (32 bit) to the target stream.
-     *
-     * @param value
-     *            the float to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeFloat(float value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeFloat(value);
-    }
-
-    /**
-     * Walks the hierarchy of classes described by class descriptor
-     * {@code classDesc} and writes the field values corresponding to
-     * fields declared by the corresponding class descriptor. The instance to
-     * fetch field values from is {@code object}. If the class
-     * (corresponding to class descriptor {@code classDesc}) defines
-     * private instance method {@code writeObject} it will be used to
-     * dump field values.
-     *
-     * @param object
-     *            Instance from which to fetch field values to dump.
-     * @param classDesc
-     *            A class descriptor (an {@code ObjectStreamClass})
-     *            defining which fields should be dumped.
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the field values in
-     *             the hierarchy.
-     * @throws NotActiveException
-     *             If the given object is not active
-     *
-     * @see #defaultWriteObject
-     * @see #writeObject(Object)
-     */
-    private void writeHierarchy(Object object, ObjectStreamClass classDesc)
-            throws IOException, NotActiveException {
-        if (object == null) {
-            throw new NotActiveException();
-        }
-
-        // Fields are written from class closest to Object to leaf class
-        // (down the chain)
-        List<ObjectStreamClass> hierarchy = classDesc.getHierarchy();
-        for (int i = 0, end = hierarchy.size(); i < end; ++i) {
-            ObjectStreamClass osc = hierarchy.get(i);
-            // Have to do this before calling defaultWriteObject or anything
-            // that calls defaultWriteObject
-            currentObject = object;
-            currentClass = osc;
-
-            // See if the object has a writeObject method. If so, run it
-            try {
-                boolean executed = false;
-                if (osc.hasMethodWriteObject()) {
-                    final Method method = osc.getMethodWriteObject();
-                    try {
-                        method.invoke(object, new Object[] { this });
-                        executed = true;
-                    } catch (InvocationTargetException e) {
-                        Throwable ex = e.getTargetException();
-                        if (ex instanceof RuntimeException) {
-                            throw (RuntimeException) ex;
-                        } else if (ex instanceof Error) {
-                            throw (Error) ex;
+    private static boolean auditSubclass(final Class<?> subcl) {
+        Boolean result = AccessController.doPrivileged(
+                new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        for (Class<?> cl = subcl;
+                             cl != ObjectOutputStream.class;
+                             cl = cl.getSuperclass())
+                        {
+                            try {
+                                cl.getDeclaredMethod(
+                                        "writeUnshared", new Class<?>[] { Object.class });
+                                return Boolean.FALSE;
+                            } catch (NoSuchMethodException ex) {
+                            }
+                            try {
+                                cl.getDeclaredMethod("putFields", (Class<?>[]) null);
+                                return Boolean.FALSE;
+                            } catch (NoSuchMethodException ex) {
+                            }
                         }
-                        throw (IOException) ex;
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e.toString());
+                        return Boolean.TRUE;
                     }
                 }
-
-                if (executed) {
-                    drain();
-                    output.writeByte(TC_ENDBLOCKDATA);
-                } else {
-                    // If the object did not have a writeMethod, call
-                    // defaultWriteObject
-                    defaultWriteObject();
-                }
-            } finally {
-                // Cleanup, needs to run always so that we can later detect
-                // invalid calls to defaultWriteObject
-                currentObject = null;
-                currentClass = null;
-                currentPutField = null;
-            }
-        }
+        );
+        return result.booleanValue();
     }
 
     /**
-     * Writes an integer (32 bit) to the target stream.
-     *
-     * @param value
-     *            the integer to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Clears internal data structures.
      */
-    public void writeInt(int value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeInt(value);
+    private void clear() {
+        subs.clear();
+        handles.clear();
     }
 
     /**
-     * Writes a long (64 bit) to the target stream.
-     *
-     * @param value
-     *            the long to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Underlying writeObject/writeUnshared implementation.
      */
-    public void writeLong(long value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeLong(value);
-    }
-
-    /**
-     * Write array {@code array} of class {@code arrayClass} with
-     * component type {@code componentType} into the receiver. It is
-     * assumed the array has not been dumped yet. Returns
-     * the handle for this object (array) which is dumped here.
-     *
-     * @param array
-     *            The array object to dump
-     * @param arrayClass
-     *            A {@code java.lang.Class} representing the class of the
-     *            array
-     * @param componentType
-     *            A {@code java.lang.Class} representing the array
-     *            component type
-     * @return the handle assigned to the array
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the array.
-     */
-    private int writeNewArray(Object array, Class<?> arrayClass, ObjectStreamClass arrayClDesc,
-            Class<?> componentType, boolean unshared) throws IOException {
-        output.writeByte(TC_ARRAY);
-        writeClassDesc(arrayClDesc, false);
-
-        int handle = nextHandle();
-        if (!unshared) {
-            objectsWritten.put(array, handle);
-        }
-
-        // Now we have code duplication just because Java is typed. We have to
-        // write N elements and assign to array positions, but we must typecast
-        // the array first, and also call different methods depending on the
-        // elements.
-
-        if (componentType.isPrimitive()) {
-            if (componentType == int.class) {
-                int[] intArray = (int[]) array;
-                output.writeInt(intArray.length);
-                for (int i = 0; i < intArray.length; i++) {
-                    output.writeInt(intArray[i]);
-                }
-            } else if (componentType == byte.class) {
-                byte[] byteArray = (byte[]) array;
-                output.writeInt(byteArray.length);
-                output.write(byteArray, 0, byteArray.length);
-            } else if (componentType == char.class) {
-                char[] charArray = (char[]) array;
-                output.writeInt(charArray.length);
-                for (int i = 0; i < charArray.length; i++) {
-                    output.writeChar(charArray[i]);
-                }
-            } else if (componentType == short.class) {
-                short[] shortArray = (short[]) array;
-                output.writeInt(shortArray.length);
-                for (int i = 0; i < shortArray.length; i++) {
-                    output.writeShort(shortArray[i]);
-                }
-            } else if (componentType == boolean.class) {
-                boolean[] booleanArray = (boolean[]) array;
-                output.writeInt(booleanArray.length);
-                for (int i = 0; i < booleanArray.length; i++) {
-                    output.writeBoolean(booleanArray[i]);
-                }
-            } else if (componentType == long.class) {
-                long[] longArray = (long[]) array;
-                output.writeInt(longArray.length);
-                for (int i = 0; i < longArray.length; i++) {
-                    output.writeLong(longArray[i]);
-                }
-            } else if (componentType == float.class) {
-                float[] floatArray = (float[]) array;
-                output.writeInt(floatArray.length);
-                for (int i = 0; i < floatArray.length; i++) {
-                    output.writeFloat(floatArray[i]);
-                }
-            } else if (componentType == double.class) {
-                double[] doubleArray = (double[]) array;
-                output.writeInt(doubleArray.length);
-                for (int i = 0; i < doubleArray.length; i++) {
-                    output.writeDouble(doubleArray[i]);
-                }
-            } else {
-                throw new InvalidClassException("Wrong base type in " + arrayClass.getName());
-            }
-        } else {
-            // Array of Objects
-            Object[] objectArray = (Object[]) array;
-            output.writeInt(objectArray.length);
-            for (int i = 0; i < objectArray.length; i++) {
-                // TODO: This place is the opportunity for enhancement
-                //      We can implement writing elements through fast-path,
-                //      without setting up the context (see writeObject()) for
-                //      each element with public API
-                writeObject(objectArray[i]);
-            }
-        }
-        return handle;
-    }
-
-    /**
-     * Write class {@code object} into the receiver. It is assumed the
-     * class has not been dumped yet. Classes are not really dumped, but a class
-     * descriptor ({@code ObjectStreamClass}) that corresponds to them.
-     * Returns the handle for this object (class) which is dumped here.
-     *
-     * @param object
-     *            The {@code java.lang.Class} object to dump
-     * @return the handle assigned to the class being dumped
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the class.
-     */
-    private int writeNewClass(Class<?> object, boolean unshared) throws IOException {
-        output.writeByte(TC_CLASS);
-
-        // Instances of java.lang.Class are always Serializable, even if their
-        // instances aren't (e.g. java.lang.Object.class).
-        // We cannot call lookup because it returns null if the parameter
-        // represents instances that cannot be serialized, and that is not what
-        // we want.
-        ObjectStreamClass clDesc = ObjectStreamClass.lookupStreamClass(object);
-
-        // The handle for the classDesc is NOT the handle for the class object
-        // being dumped. We must allocate a new handle and return it.
-        if (clDesc.isEnum()) {
-            writeEnumDesc(clDesc, unshared);
-        } else {
-            writeClassDesc(clDesc, unshared);
-        }
-
-        int handle = nextHandle();
-        if (!unshared) {
-            objectsWritten.put(object, handle);
-        }
-
-        return handle;
-    }
-
-    /**
-     * Write class descriptor {@code classDesc} into the receiver. It is
-     * assumed the class descriptor has not been dumped yet. The class
-     * descriptors for the superclass chain will be dumped as well. Returns
-     * the handle for this object (class descriptor) which is dumped here.
-     *
-     * @param classDesc
-     *            The {@code ObjectStreamClass} object to dump
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the class
-     *             descriptor.
-     */
-    private void writeNewClassDesc(ObjectStreamClass classDesc)
-            throws IOException {
-        output.writeUTF(classDesc.getName());
-        output.writeLong(classDesc.getSerialVersionUID());
-        byte flags = classDesc.getFlags();
-
-        boolean externalizable = classDesc.isExternalizable();
-
-        if (externalizable) {
-            if (protocolVersion == PROTOCOL_VERSION_1) {
-                flags &= NOT_SC_BLOCK_DATA;
-            } else {
-                // Change for 1.2. Objects can be saved in old format
-                // (PROTOCOL_VERSION_1) or in the 1.2 format (PROTOCOL_VERSION_2).
-                flags |= SC_BLOCK_DATA;
-            }
-        }
-        output.writeByte(flags);
-        if ((SC_ENUM | SC_SERIALIZABLE) != classDesc.getFlags()) {
-            writeFieldDescriptors(classDesc, externalizable);
-        } else {
-            // enum write no fields
-            output.writeShort(0);
-        }
-    }
-
-    /**
-     * Writes a class descriptor to the target stream.
-     *
-     * @param classDesc
-     *            the class descriptor to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    protected void writeClassDescriptor(ObjectStreamClass classDesc)
-            throws IOException {
-        writeNewClassDesc(classDesc);
-    }
-
-    /**
-     * Write exception {@code ex} into the receiver. It is assumed the
-     * exception has not been dumped yet. Returns
-     * the handle for this object (exception) which is dumped here.
-     * This is used to dump the exception instance that happened (if any) when
-     * dumping the original object graph. The set of seen objects will be reset
-     * just before and just after dumping this exception object.
-     *
-     * When exceptions are found normally in the object graph, they are dumped
-     * as a regular object, and not by this method. In that case, the set of
-     * "known objects" is not reset.
-     *
-     * @param ex
-     *            Exception object to dump
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the exception
-     *             object.
-     */
-    private void writeNewException(Exception ex) throws IOException {
-        output.writeByte(TC_EXCEPTION);
-        resetSeenObjects();
-        writeObjectInternal(ex, false, false, false); // No replacements
-        resetSeenObjects();
-    }
-
-    /**
-     * Write object {@code object} of class {@code theClass} into
-     * the receiver. It is assumed the object has not been dumped yet.
-     * Return the handle for this object which
-     * is dumped here.
-     *
-     * If the object implements {@code Externalizable} its
-     * {@code writeExternal} is called. Otherwise, all fields described
-     * by the class hierarchy is dumped. Each class can define how its declared
-     * instance fields are dumped by defining a private method
-     * {@code writeObject}
-     *
-     * @param object
-     *            The object to dump
-     * @param theClass
-     *            A {@code java.lang.Class} representing the class of the
-     *            object
-     * @param unshared
-     *            Write the object unshared
-     * @return the handle assigned to the object
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the object.
-     */
-    private int writeNewObject(Object object, Class<?> theClass, ObjectStreamClass clDesc,
-            boolean unshared) throws IOException {
-        // Not String, not null, not array, not cyclic reference
-
-        EmulatedFieldsForDumping originalCurrentPutField = currentPutField; // save
-        currentPutField = null; // null it, to make sure one will be computed if
-        // needed
-
-        boolean externalizable = clDesc.isExternalizable();
-        boolean serializable = clDesc.isSerializable();
-        if (!externalizable && !serializable) {
-            // Object is neither externalizable nor serializable. Error
-            throw new NotSerializableException(theClass.getName());
-        }
-
-        // Either serializable or externalizable, now we can save info
-        output.writeByte(TC_OBJECT);
-        writeClassDesc(clDesc, false);
-        int previousHandle = -1;
-        if (unshared) {
-            previousHandle = objectsWritten.get(object);
-        }
-
-        int handle = registerObjectWritten(object);
-
-        // This is how we know what to do in defaultWriteObject. And it is also
-        // used by defaultWriteObject to check if it was called from an invalid
-        // place.
-        // It allows writeExternal to call defaultWriteObject and have it work.
-        currentObject = object;
-        currentClass = clDesc;
+    private void writeObject0(Object obj, boolean unshared)
+            throws IOException
+    {
+        boolean oldMode = bout.setBlockDataMode(false);
+        depth++;
         try {
-            if (externalizable) {
-                boolean noBlockData = protocolVersion == PROTOCOL_VERSION_1;
-                if (noBlockData) {
-                    primitiveTypes = output;
+            // handle previously written and non-replaceable objects
+            int h;
+            if ((obj = subs.lookup(obj)) == null) {
+                writeNull();
+                return;
+            } else if (!unshared && (h = handles.lookup(obj)) != -1) {
+                writeHandle(h);
+                return;
+                // BEGIN Android-changed:  Make Class and ObjectStreamClass replaceable.
+            /*
+            } else if (obj instanceof Class) {
+                writeClass((Class) obj, unshared);
+                return;
+            } else if (obj instanceof ObjectStreamClass) {
+                writeClassDesc((ObjectStreamClass) obj, unshared);
+                return;
+            */
+                // END Android-changed:  Make Class and ObjectStreamClass replaceable.
+            }
+
+            // check for replacement object
+            Object orig = obj;
+            Class<?> cl = obj.getClass();
+            ObjectStreamClass desc;
+
+            // BEGIN Android-changed: Make only one call to writeReplace.
+            /*
+            for (;;) {
+                // REMIND: skip this check for strings/arrays?
+                Class<?> repCl;
+                desc = ObjectStreamClass.lookup(cl, true);
+                if (!desc.hasWriteReplaceMethod() ||
+                    (obj = desc.invokeWriteReplace(obj)) == null ||
+                    (repCl = obj.getClass()) == cl)
+                {
+                    break;
                 }
-                // Object is externalizable, just call its own method
-                ((Externalizable) object).writeExternal(this);
-                if (noBlockData) {
-                    primitiveTypes = null;
+                cl = repCl;
+                desc = ObjectStreamClass.lookup(cl, true);
+                break;
+            }
+            */
+            // Do only one replace pass
+
+            Class repCl;
+            desc = ObjectStreamClass.lookup(cl, true);
+            if (desc.hasWriteReplaceMethod() &&
+                    (obj = desc.invokeWriteReplace(obj)) != null &&
+                    (repCl = obj.getClass()) != cl)
+            {
+                cl = repCl;
+                desc = ObjectStreamClass.lookup(cl, true);
+            }
+            // END Android-changed: Make only one call to writeReplace.
+
+            if (enableReplace) {
+                Object rep = replaceObject(obj);
+                if (rep != obj && rep != null) {
+                    cl = rep.getClass();
+                    desc = ObjectStreamClass.lookup(cl, true);
+                }
+                obj = rep;
+            }
+
+            // if object replaced, run through original checks a second time
+            if (obj != orig) {
+                subs.assign(orig, obj);
+                if (obj == null) {
+                    writeNull();
+                    return;
+                } else if (!unshared && (h = handles.lookup(obj)) != -1) {
+                    writeHandle(h);
+                    return;
+// BEGIN Android-changed:  Make Class and ObjectStreamClass replaceable.
+/*
+                } else if (obj instanceof Class) {
+                    writeClass((Class) obj, unshared);
+                    return;
+                } else if (obj instanceof ObjectStreamClass) {
+                    writeClassDesc((ObjectStreamClass) obj, unshared);
+                    return;
+*/
+// END Android-changed:  Make Class and ObjectStreamClass replaceable.
+                }
+            }
+
+            // remaining cases
+            // BEGIN Android-changed: Make Class and ObjectStreamClass replaceable.
+            if (obj instanceof Class) {
+                writeClass((Class) obj, unshared);
+            } else if (obj instanceof ObjectStreamClass) {
+                writeClassDesc((ObjectStreamClass) obj, unshared);
+                // END Android-changed: Make Class and ObjectStreamClass replaceable.
+            } else if (obj instanceof String) {
+                writeString((String) obj, unshared);
+            } else if (cl.isArray()) {
+                writeArray(obj, desc, unshared);
+            } else if (obj instanceof Enum) {
+                writeEnum((Enum<?>) obj, desc, unshared);
+            } else if (obj instanceof Serializable) {
+                writeOrdinaryObject(obj, desc, unshared);
+            } else {
+                if (extendedDebugInfo) {
+                    throw new NotSerializableException(
+                            cl.getName() + "\n" + debugInfoStack.toString());
                 } else {
-                    // Similar to the code in writeHierarchy when object
-                    // implements writeObject.
-                    // Any primitive data has to be flushed and a tag must be
-                    // written
-                    drain();
-                    output.writeByte(TC_ENDBLOCKDATA);
+                    throw new NotSerializableException(cl.getName());
                 }
-            } else { // If it got here, it has to be Serializable
-                // Object is serializable. Walk the class chain writing the
-                // fields
-                writeHierarchy(object, currentClass);
             }
         } finally {
-            // Cleanup, needs to run always so that we can later detect invalid
-            // calls to defaultWriteObject
-            if (unshared) {
-                // remove reference to unshared object
-                removeUnsharedReference(object, previousHandle);
-            }
-            currentObject = null;
-            currentClass = null;
-            currentPutField = originalCurrentPutField;
+            depth--;
+            bout.setBlockDataMode(oldMode);
         }
-
-        return handle;
     }
 
     /**
-     * Write String {@code object} into the receiver. It is assumed the
-     * String has not been dumped yet. Returns the handle for this object (String) which is dumped here.
-     * Strings are saved encoded with {@link DataInput modified UTF-8}.
-     *
-     * @param object
-     *            the string to dump.
-     * @return the handle assigned to the String being dumped
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the String.
-     */
-    private int writeNewString(String object, boolean unshared) throws IOException {
-        long count = ModifiedUtf8.countBytes(object, false);
-        byte[] buffer;
-        int offset = 0;
-        if (count <= 0xffff) {
-            buffer = new byte[1 + SizeOf.SHORT + (int) count];
-            buffer[offset++] = TC_STRING;
-            Memory.pokeShort(buffer, offset, (short) count, ByteOrder.BIG_ENDIAN);
-            offset += SizeOf.SHORT;
-        } else {
-            buffer = new byte[1 + SizeOf.LONG + (int) count];
-            buffer[offset++] = TC_LONGSTRING;
-            Memory.pokeLong(buffer, offset, count, ByteOrder.BIG_ENDIAN);
-            offset += SizeOf.LONG;
-        }
-        ModifiedUtf8.encode(buffer, offset, object);
-        output.write(buffer, 0, buffer.length);
-
-        int handle = nextHandle();
-        if (!unshared) {
-            objectsWritten.put(object, handle);
-        }
-
-        return handle;
-    }
-
-    /**
-     * Write a special tag that indicates the value {@code null} into the
-     * receiver.
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the tag for
-     *             {@code null}.
+     * Writes null code to stream.
      */
     private void writeNull() throws IOException {
-        output.writeByte(TC_NULL);
+        bout.writeByte(TC_NULL);
     }
 
     /**
-     * Writes an object to the target stream.
-     *
-     * @param object
-     *            the object to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     * @see ObjectInputStream#readObject()
+     * Writes given object handle to stream.
      */
-    public final void writeObject(Object object) throws IOException {
-        writeObject(object, false);
+    private void writeHandle(int handle) throws IOException {
+        bout.writeByte(TC_REFERENCE);
+        bout.writeInt(baseWireHandle + handle);
     }
 
     /**
-     * Writes an unshared object to the target stream. This method is identical
-     * to {@code writeObject}, except that it always writes a new object to the
-     * stream versus the use of back-referencing for identical objects by
-     * {@code writeObject}.
-     *
-     * @param object
-     *            the object to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     * @see ObjectInputStream#readUnshared()
+     * Writes representation of given class to stream.
      */
-    public void writeUnshared(Object object) throws IOException {
-        writeObject(object, true);
-    }
-
-    private void writeObject(Object object, boolean unshared) throws IOException {
-        boolean setOutput = (primitiveTypes == output);
-        if (setOutput) {
-            primitiveTypes = null;
-        }
-        // This is the specified behavior in JDK 1.2. Very bizarre way to allow
-        // behavior overriding.
-        if (subclassOverridingImplementation && !unshared) {
-            writeObjectOverride(object);
-            return;
-        }
-
-        try {
-            // First we need to flush primitive types if they were written
-            drain();
-            // Actual work, and class-based replacement should be computed
-            // if needed.
-            writeObjectInternal(object, unshared, true, true);
-            if (setOutput) {
-                primitiveTypes = output;
-            }
-        } catch (IOException ioEx1) {
-            // This will make it pass through until the top caller. Only the top caller writes the
-            // exception (where it can).
-            if (nestedLevels == 0) {
-                try {
-                    writeNewException(ioEx1);
-                } catch (IOException ioEx2) {
-                    // If writing the exception to the output stream causes another exception there
-                    // is no need to propagate the second exception or generate a third exception,
-                    // both of which might obscure details of the root cause.
-                }
-            }
-            throw ioEx1; // and then we propagate the original exception
-        }
+    private void writeClass(Class<?> cl, boolean unshared) throws IOException {
+        bout.writeByte(TC_CLASS);
+        writeClassDesc(ObjectStreamClass.lookup(cl, true), false);
+        handles.assign(unshared ? null : cl);
     }
 
     /**
-     * Write object {@code object} into the receiver's underlying stream.
-     *
-     * @param object
-     *            The object to write
-     * @param unshared
-     *            Write the object unshared
-     * @param computeClassBasedReplacement
-     *            A boolean indicating if class-based replacement should be
-     *            computed (if supported) for the object.
-     * @param computeStreamReplacement
-     *            A boolean indicating if stream-based replacement should be
-     *            computed (if supported) for the object.
-     * @return the handle assigned to the final object being dumped
-     *
-     * @throws IOException
-     *             If an IO exception happened when writing the object
-     *
-     * @see ObjectInputStream#readObject()
+     * Writes representation of given class descriptor to stream.
      */
-    private int writeObjectInternal(Object object, boolean unshared,
-            boolean computeClassBasedReplacement,
-            boolean computeStreamReplacement) throws IOException {
-
-        if (object == null) {
+    private void writeClassDesc(ObjectStreamClass desc, boolean unshared)
+            throws IOException
+    {
+        int handle;
+        if (desc == null) {
             writeNull();
-            return -1;
-        }
-        if (!unshared) {
-            int handle = dumpCycle(object);
-            if (handle != -1) {
-                return handle; // cyclic reference
-            }
-        }
-
-        // Non-null object, first time seen...
-        Class<?> objClass = object.getClass();
-        ObjectStreamClass clDesc = ObjectStreamClass.lookupStreamClass(objClass);
-
-        nestedLevels++;
-        try {
-
-            if (!(enableReplace && computeStreamReplacement)) {
-                // Is it a Class ?
-                if (objClass == ObjectStreamClass.CLASSCLASS) {
-                    return writeNewClass((Class<?>) object, unshared);
-                }
-                // Is it an ObjectStreamClass ?
-                if (objClass == ObjectStreamClass.OBJECTSTREAMCLASSCLASS) {
-                    return writeClassDesc((ObjectStreamClass) object, unshared);
-                }
-            }
-
-            if (clDesc.isSerializable() && computeClassBasedReplacement) {
-                if (clDesc.hasMethodWriteReplace()){
-                    Method methodWriteReplace = clDesc.getMethodWriteReplace();
-                    Object replObj;
-                    try {
-                        replObj = methodWriteReplace.invoke(object, (Object[]) null);
-                    } catch (IllegalAccessException iae) {
-                        replObj = object;
-                    } catch (InvocationTargetException ite) {
-                        // WARNING - Not sure this is the right thing to do
-                        // if we can't run the method
-                        Throwable target = ite.getTargetException();
-                        if (target instanceof ObjectStreamException) {
-                            throw (ObjectStreamException) target;
-                        } else if (target instanceof Error) {
-                            throw (Error) target;
-                        } else {
-                            throw (RuntimeException) target;
-                        }
-                    }
-                    if (replObj != object) {
-                        // All over, class-based replacement off this time.
-                        int replacementHandle = writeObjectInternal(replObj, false, false,
-                                computeStreamReplacement);
-                        // Make the original object also map to the same
-                        // handle.
-                        if (replacementHandle != -1) {
-                            objectsWritten.put(object, replacementHandle);
-                        }
-                        return replacementHandle;
-                    }
-                }
-
-            }
-
-            // We get here either if class-based replacement was not needed or
-            // if it was needed but produced the same object or if it could not
-            // be computed.
-            if (enableReplace && computeStreamReplacement) {
-                // Now we compute the stream-defined replacement.
-                Object streamReplacement = replaceObject(object);
-                if (streamReplacement != object) {
-                    // All over, class-based replacement off this time.
-                    int replacementHandle = writeObjectInternal(streamReplacement, false,
-                            computeClassBasedReplacement, false);
-                    // Make the original object also map to the same handle.
-                    if (replacementHandle != -1) {
-                        objectsWritten.put(object, replacementHandle);
-                    }
-                    return replacementHandle;
-                }
-            }
-
-            // We get here if stream-based replacement produced the same object
-
-            // Is it a Class ?
-            if (objClass == ObjectStreamClass.CLASSCLASS) {
-                return writeNewClass((Class<?>) object, unshared);
-            }
-
-            // Is it an ObjectStreamClass ?
-            if (objClass == ObjectStreamClass.OBJECTSTREAMCLASSCLASS) {
-                return writeClassDesc((ObjectStreamClass) object, unshared);
-            }
-
-            // Is it a String ? (instanceof, but == is faster)
-            if (objClass == ObjectStreamClass.STRINGCLASS) {
-                return writeNewString((String) object, unshared);
-            }
-
-            // Is it an Array ?
-            if (objClass.isArray()) {
-                return writeNewArray(object, objClass, clDesc, objClass
-                        .getComponentType(), unshared);
-            }
-
-            if (object instanceof Enum) {
-                return writeNewEnum(object, objClass, unshared);
-            }
-
-            // Not a String or Class or Array. Default procedure.
-            return writeNewObject(object, objClass, clDesc, unshared);
-        } finally {
-            nestedLevels--;
+        } else if (!unshared && (handle = handles.lookup(desc)) != -1) {
+            writeHandle(handle);
+        } else if (desc.isProxy()) {
+            writeProxyDesc(desc, unshared);
+        } else {
+            writeNonProxyDesc(desc, unshared);
         }
     }
 
-    // write for Enum Class Desc only, which is different from other classes
-    private ObjectStreamClass writeEnumDesc(ObjectStreamClass classDesc, boolean unshared)
-            throws IOException {
-        // write classDesc, classDesc for enum is different
-
-        // set flag for enum, the flag is (SC_SERIALIZABLE | SC_ENUM)
-        classDesc.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
-        int previousHandle = -1;
-        if (unshared) {
-            previousHandle = objectsWritten.get(classDesc);
-        }
-        int handle = -1;
-        if (!unshared) {
-            handle = dumpCycle(classDesc);
-        }
-        if (handle == -1) {
-            Class<?> classToWrite = classDesc.forClass();
-            // If we got here, it is a new (non-null) classDesc that will have
-            // to be registered as well
-            registerObjectWritten(classDesc);
-
-            output.writeByte(TC_CLASSDESC);
-            if (protocolVersion == PROTOCOL_VERSION_1) {
-                writeNewClassDesc(classDesc);
-            } else {
-                // So write...() methods can be used by
-                // subclasses during writeClassDescriptor()
-                primitiveTypes = output;
-                writeClassDescriptor(classDesc);
-                primitiveTypes = null;
-            }
-            // Extra class info (optional)
-            annotateClass(classToWrite);
-            drain(); // flush primitive types in the annotation
-            output.writeByte(TC_ENDBLOCKDATA);
-            // write super class
-            ObjectStreamClass superClassDesc = classDesc.getSuperclass();
-            if (superClassDesc != null) {
-                // super class is also enum
-                superClassDesc.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
-                writeEnumDesc(superClassDesc, unshared);
-            } else {
-                output.writeByte(TC_NULL);
-            }
-            if (unshared) {
-                // remove reference to unshared object
-                removeUnsharedReference(classDesc, previousHandle);
-            }
-        }
-        return classDesc;
+    private boolean isCustomSubclass() {
+        // Return true if this class is a custom subclass of ObjectOutputStream
+        return getClass().getClassLoader()
+                != ObjectOutputStream.class.getClassLoader();
     }
 
-    private int writeNewEnum(Object object, Class<?> theClass, boolean unshared) throws IOException {
-        // write new Enum
-        EmulatedFieldsForDumping originalCurrentPutField = currentPutField; // save
-        // null it, to make sure one will be computed if needed
-        currentPutField = null;
+    /**
+     * Writes class descriptor representing a dynamic proxy class to stream.
+     */
+    private void writeProxyDesc(ObjectStreamClass desc, boolean unshared)
+            throws IOException
+    {
+        bout.writeByte(TC_PROXYCLASSDESC);
+        handles.assign(unshared ? null : desc);
 
-        output.writeByte(TC_ENUM);
-        while (theClass != null && !theClass.isEnum()) {
-            // write enum only
-            theClass = theClass.getSuperclass();
+        Class<?> cl = desc.forClass();
+        Class<?>[] ifaces = cl.getInterfaces();
+        bout.writeInt(ifaces.length);
+        for (int i = 0; i < ifaces.length; i++) {
+            bout.writeUTF(ifaces[i].getName());
         }
-        ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
-        writeEnumDesc(classDesc, unshared);
 
-        int previousHandle = -1;
-        if (unshared) {
-            previousHandle = objectsWritten.get(object);
+        bout.setBlockDataMode(true);
+        if (cl != null && isCustomSubclass()) {
+            ReflectUtil.checkPackageAccess(cl);
         }
-        int handle = registerObjectWritten(object);
+        annotateProxyClass(cl);
+        bout.setBlockDataMode(false);
+        bout.writeByte(TC_ENDBLOCKDATA);
 
-        ObjectStreamField[] fields = classDesc.getSuperclass().fields();
-        // Only write field "name" for enum class, which is the second field of
-        // enum, that is fields[1]. Ignore all non-fields and fields.length < 2
-        if (fields != null && fields.length > 1) {
-            Field field = classDesc.getSuperclass().getReflectionField(fields[1]);
-            if (field == null) {
-                throw new NoSuchFieldError();
+        writeClassDesc(desc.getSuperDesc(), false);
+    }
+
+    /**
+     * Writes class descriptor representing a standard (i.e., not a dynamic
+     * proxy) class to stream.
+     */
+    private void writeNonProxyDesc(ObjectStreamClass desc, boolean unshared)
+            throws IOException
+    {
+        bout.writeByte(TC_CLASSDESC);
+        handles.assign(unshared ? null : desc);
+
+        if (protocol == PROTOCOL_VERSION_1) {
+            // do not invoke class descriptor write hook with old protocol
+            desc.writeNonProxy(this);
+        } else {
+            writeClassDescriptor(desc);
+        }
+
+        Class<?> cl = desc.forClass();
+        bout.setBlockDataMode(true);
+        if (cl != null && isCustomSubclass()) {
+            ReflectUtil.checkPackageAccess(cl);
+        }
+        annotateClass(cl);
+        bout.setBlockDataMode(false);
+        bout.writeByte(TC_ENDBLOCKDATA);
+
+        writeClassDesc(desc.getSuperDesc(), false);
+    }
+
+    /**
+     * Writes given string to stream, using standard or long UTF format
+     * depending on string length.
+     */
+    private void writeString(String str, boolean unshared) throws IOException {
+        handles.assign(unshared ? null : str);
+        long utflen = bout.getUTFLength(str);
+        if (utflen <= 0xFFFF) {
+            bout.writeByte(TC_STRING);
+            bout.writeUTF(str, utflen);
+        } else {
+            bout.writeByte(TC_LONGSTRING);
+            bout.writeLongUTF(str, utflen);
+        }
+    }
+
+    /**
+     * Writes given array object to stream.
+     */
+    private void writeArray(Object array,
+                            ObjectStreamClass desc,
+                            boolean unshared)
+            throws IOException
+    {
+        bout.writeByte(TC_ARRAY);
+        writeClassDesc(desc, false);
+        handles.assign(unshared ? null : array);
+
+        Class<?> ccl = desc.forClass().getComponentType();
+        if (ccl.isPrimitive()) {
+            if (ccl == Integer.TYPE) {
+                int[] ia = (int[]) array;
+                bout.writeInt(ia.length);
+                bout.writeInts(ia, 0, ia.length);
+            } else if (ccl == Byte.TYPE) {
+                byte[] ba = (byte[]) array;
+                bout.writeInt(ba.length);
+                bout.write(ba, 0, ba.length, true);
+            } else if (ccl == Long.TYPE) {
+                long[] ja = (long[]) array;
+                bout.writeInt(ja.length);
+                bout.writeLongs(ja, 0, ja.length);
+            } else if (ccl == Float.TYPE) {
+                float[] fa = (float[]) array;
+                bout.writeInt(fa.length);
+                bout.writeFloats(fa, 0, fa.length);
+            } else if (ccl == Double.TYPE) {
+                double[] da = (double[]) array;
+                bout.writeInt(da.length);
+                bout.writeDoubles(da, 0, da.length);
+            } else if (ccl == Short.TYPE) {
+                short[] sa = (short[]) array;
+                bout.writeInt(sa.length);
+                bout.writeShorts(sa, 0, sa.length);
+            } else if (ccl == Character.TYPE) {
+                char[] ca = (char[]) array;
+                bout.writeInt(ca.length);
+                bout.writeChars(ca, 0, ca.length);
+            } else if (ccl == Boolean.TYPE) {
+                boolean[] za = (boolean[]) array;
+                bout.writeInt(za.length);
+                bout.writeBooleans(za, 0, za.length);
+            } else {
+                throw new InternalError();
+            }
+        } else {
+            Object[] objs = (Object[]) array;
+            int len = objs.length;
+            bout.writeInt(len);
+            if (extendedDebugInfo) {
+                debugInfoStack.push(
+                        "array (class \"" + array.getClass().getName() +
+                                "\", size: " + len  + ")");
             }
             try {
-                String str = (String) field.get(object);
-                int strHandle = -1;
-                if (!unshared) {
-                    strHandle = dumpCycle(str);
+                for (int i = 0; i < len; i++) {
+                    if (extendedDebugInfo) {
+                        debugInfoStack.push(
+                                "element of array (index: " + i + ")");
+                    }
+                    try {
+                        writeObject0(objs[i], false);
+                    } finally {
+                        if (extendedDebugInfo) {
+                            debugInfoStack.pop();
+                        }
+                    }
                 }
-                if (strHandle == -1) {
-                    writeNewString(str, unshared);
+            } finally {
+                if (extendedDebugInfo) {
+                    debugInfoStack.pop();
                 }
-            } catch (IllegalAccessException iae) {
-                throw new AssertionError(iae);
+            }
+        }
+    }
+
+    /**
+     * Writes given enum constant to stream.
+     */
+    private void writeEnum(Enum<?> en,
+                           ObjectStreamClass desc,
+                           boolean unshared)
+            throws IOException
+    {
+        bout.writeByte(TC_ENUM);
+        ObjectStreamClass sdesc = desc.getSuperDesc();
+        writeClassDesc((sdesc.forClass() == Enum.class) ? desc : sdesc, false);
+        handles.assign(unshared ? null : en);
+        writeString(en.name(), false);
+    }
+
+    /**
+     * Writes representation of a "ordinary" (i.e., not a String, Class,
+     * ObjectStreamClass, array, or enum constant) serializable object to the
+     * stream.
+     */
+    private void writeOrdinaryObject(Object obj,
+                                     ObjectStreamClass desc,
+                                     boolean unshared)
+            throws IOException
+    {
+        if (extendedDebugInfo) {
+            debugInfoStack.push(
+                    (depth == 1 ? "root " : "") + "object (class \"" +
+                            obj.getClass().getName() + "\", " + obj.toString() + ")");
+        }
+        try {
+            desc.checkSerialize();
+
+            bout.writeByte(TC_OBJECT);
+            writeClassDesc(desc, false);
+            handles.assign(unshared ? null : obj);
+            if (desc.isExternalizable() && !desc.isProxy()) {
+                writeExternalData((Externalizable) obj);
+            } else {
+                writeSerialData(obj, desc);
+            }
+        } finally {
+            if (extendedDebugInfo) {
+                debugInfoStack.pop();
+            }
+        }
+    }
+
+    /**
+     * Writes externalizable data of given object by invoking its
+     * writeExternal() method.
+     */
+    private void writeExternalData(Externalizable obj) throws IOException {
+        PutFieldImpl oldPut = curPut;
+        curPut = null;
+
+        if (extendedDebugInfo) {
+            debugInfoStack.push("writeExternal data");
+        }
+        SerialCallbackContext oldContext = curContext;
+        try {
+            curContext = null;
+            if (protocol == PROTOCOL_VERSION_1) {
+                obj.writeExternal(this);
+            } else {
+                bout.setBlockDataMode(true);
+                obj.writeExternal(this);
+                bout.setBlockDataMode(false);
+                bout.writeByte(TC_ENDBLOCKDATA);
+            }
+        } finally {
+            curContext = oldContext;
+            if (extendedDebugInfo) {
+                debugInfoStack.pop();
             }
         }
 
-        if (unshared) {
-            // remove reference to unshared object
-            removeUnsharedReference(object, previousHandle);
+        curPut = oldPut;
+    }
+
+    /**
+     * Writes instance data for each serializable class of given object, from
+     * superclass to subclass.
+     */
+    private void writeSerialData(Object obj, ObjectStreamClass desc)
+            throws IOException
+    {
+        ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();
+        for (int i = 0; i < slots.length; i++) {
+            ObjectStreamClass slotDesc = slots[i].desc;
+            if (slotDesc.hasWriteObjectMethod()) {
+                PutFieldImpl oldPut = curPut;
+                curPut = null;
+                SerialCallbackContext oldContext = curContext;
+
+                if (extendedDebugInfo) {
+                    debugInfoStack.push(
+                            "custom writeObject data (class \"" +
+                                    slotDesc.getName() + "\")");
+                }
+                try {
+                    curContext = new SerialCallbackContext(obj, slotDesc);
+                    bout.setBlockDataMode(true);
+                    slotDesc.invokeWriteObject(obj, this);
+                    bout.setBlockDataMode(false);
+                    bout.writeByte(TC_ENDBLOCKDATA);
+                } finally {
+                    curContext.setUsed();
+                    curContext = oldContext;
+                    if (extendedDebugInfo) {
+                        debugInfoStack.pop();
+                    }
+                }
+
+                curPut = oldPut;
+            } else {
+                defaultWriteFields(obj, slotDesc);
+            }
         }
-        currentPutField = originalCurrentPutField;
-        return handle;
     }
 
     /**
-     * Method to be overridden by subclasses to write {@code object} to the
-     * target stream.
-     *
-     * @param object
-     *            the object to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Fetches and writes values of serializable fields of given object to
+     * stream.  The given class descriptor specifies which field values to
+     * write, and in which order they should be written.
      */
-    protected void writeObjectOverride(Object object) throws IOException {
-        if (!subclassOverridingImplementation) {
-            // Subclasses must override.
-            throw new IOException();
+    private void defaultWriteFields(Object obj, ObjectStreamClass desc)
+            throws IOException
+    {
+        Class<?> cl = desc.forClass();
+        if (cl != null && obj != null && !cl.isInstance(obj)) {
+            throw new ClassCastException();
+        }
+
+        desc.checkDefaultSerialize();
+
+        int primDataSize = desc.getPrimDataSize();
+        if (primVals == null || primVals.length < primDataSize) {
+            primVals = new byte[primDataSize];
+        }
+        desc.getPrimFieldValues(obj, primVals);
+        bout.write(primVals, 0, primDataSize, false);
+
+        ObjectStreamField[] fields = desc.getFields(false);
+        Object[] objVals = new Object[desc.getNumObjFields()];
+        int numPrimFields = fields.length - objVals.length;
+        desc.getObjFieldValues(obj, objVals);
+        for (int i = 0; i < objVals.length; i++) {
+            if (extendedDebugInfo) {
+                debugInfoStack.push(
+                        "field (class \"" + desc.getName() + "\", name: \"" +
+                                fields[numPrimFields + i].getName() + "\", type: \"" +
+                                fields[numPrimFields + i].getType() + "\")");
+            }
+            try {
+                writeObject0(objVals[i],
+                        fields[numPrimFields + i].isUnshared());
+            } finally {
+                if (extendedDebugInfo) {
+                    debugInfoStack.pop();
+                }
+            }
         }
     }
 
     /**
-     * Writes a short (16 bit) to the target stream.
-     *
-     * @param value
-     *            the short to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Attempts to write to stream fatal IOException that has caused
+     * serialization to abort.
      */
-    public void writeShort(int value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeShort(value);
+    private void writeFatalException(IOException ex) throws IOException {
+        /*
+         * Note: the serialization specification states that if a second
+         * IOException occurs while attempting to serialize the original fatal
+         * exception to the stream, then a StreamCorruptedException should be
+         * thrown (section 2.1).  However, due to a bug in previous
+         * implementations of serialization, StreamCorruptedExceptions were
+         * rarely (if ever) actually thrown--the "root" exceptions from
+         * underlying streams were thrown instead.  This historical behavior is
+         * followed here for consistency.
+         */
+        clear();
+        boolean oldMode = bout.setBlockDataMode(false);
+        try {
+            bout.writeByte(TC_EXCEPTION);
+            writeObject0(ex, false);
+            clear();
+        } finally {
+            bout.setBlockDataMode(oldMode);
+        }
     }
 
     /**
-     * Writes the {@link ObjectOutputStream} header to the target stream.
-     *
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Converts specified span of float values into byte values.
      */
-    protected void writeStreamHeader() throws IOException {
-        output.writeShort(STREAM_MAGIC);
-        output.writeShort(STREAM_VERSION);
+    // REMIND: remove once hotspot inlines Float.floatToIntBits
+    private static native void floatsToBytes(float[] src, int srcpos,
+                                             byte[] dst, int dstpos,
+                                             int nfloats);
+
+    /**
+     * Converts specified span of double values into byte values.
+     */
+    // REMIND: remove once hotspot inlines Double.doubleToLongBits
+    private static native void doublesToBytes(double[] src, int srcpos,
+                                              byte[] dst, int dstpos,
+                                              int ndoubles);
+
+    /**
+     * Default PutField implementation.
+     */
+    @WeakOuter
+    private class PutFieldImpl extends PutField {
+
+        /** class descriptor describing serializable fields */
+        private final ObjectStreamClass desc;
+        /** primitive field values */
+        private final byte[] primVals;
+        /** object field values */
+        private final Object[] objVals;
+
+        /**
+         * Creates PutFieldImpl object for writing fields defined in given
+         * class descriptor.
+         */
+        PutFieldImpl(ObjectStreamClass desc) {
+            this.desc = desc;
+            primVals = new byte[desc.getPrimDataSize()];
+            objVals = new Object[desc.getNumObjFields()];
+        }
+
+        public void put(String name, boolean val) {
+            Bits.putBoolean(primVals, getFieldOffset(name, Boolean.TYPE), val);
+        }
+
+        public void put(String name, byte val) {
+            primVals[getFieldOffset(name, Byte.TYPE)] = val;
+        }
+
+        public void put(String name, char val) {
+            Bits.putChar(primVals, getFieldOffset(name, Character.TYPE), val);
+        }
+
+        public void put(String name, short val) {
+            Bits.putShort(primVals, getFieldOffset(name, Short.TYPE), val);
+        }
+
+        public void put(String name, int val) {
+            Bits.putInt(primVals, getFieldOffset(name, Integer.TYPE), val);
+        }
+
+        public void put(String name, float val) {
+            Bits.putFloat(primVals, getFieldOffset(name, Float.TYPE), val);
+        }
+
+        public void put(String name, long val) {
+            Bits.putLong(primVals, getFieldOffset(name, Long.TYPE), val);
+        }
+
+        public void put(String name, double val) {
+            Bits.putDouble(primVals, getFieldOffset(name, Double.TYPE), val);
+        }
+
+        public void put(String name, Object val) {
+            objVals[getFieldOffset(name, Object.class)] = val;
+        }
+
+        // deprecated in ObjectOutputStream.PutField
+        public void write(ObjectOutput out) throws IOException {
+            /*
+             * Applications should *not* use this method to write PutField
+             * data, as it will lead to stream corruption if the PutField
+             * object writes any primitive data (since block data mode is not
+             * unset/set properly, as is done in OOS.writeFields()).  This
+             * broken implementation is being retained solely for behavioral
+             * compatibility, in order to support applications which use
+             * OOS.PutField.write() for writing only non-primitive data.
+             *
+             * Serialization of unshared objects is not implemented here since
+             * it is not necessary for backwards compatibility; also, unshared
+             * semantics may not be supported by the given ObjectOutput
+             * instance.  Applications which write unshared objects using the
+             * PutField API must use OOS.writeFields().
+             */
+            if (ObjectOutputStream.this != out) {
+                throw new IllegalArgumentException("wrong stream");
+            }
+            out.write(primVals, 0, primVals.length);
+
+            ObjectStreamField[] fields = desc.getFields(false);
+            int numPrimFields = fields.length - objVals.length;
+            // REMIND: warn if numPrimFields > 0?
+            for (int i = 0; i < objVals.length; i++) {
+                if (fields[numPrimFields + i].isUnshared()) {
+                    throw new IOException("cannot write unshared object");
+                }
+                out.writeObject(objVals[i]);
+            }
+        }
+
+        /**
+         * Writes buffered primitive data and object fields to stream.
+         */
+        void writeFields() throws IOException {
+            bout.write(primVals, 0, primVals.length, false);
+
+            ObjectStreamField[] fields = desc.getFields(false);
+            int numPrimFields = fields.length - objVals.length;
+            for (int i = 0; i < objVals.length; i++) {
+                if (extendedDebugInfo) {
+                    debugInfoStack.push(
+                            "field (class \"" + desc.getName() + "\", name: \"" +
+                                    fields[numPrimFields + i].getName() + "\", type: \"" +
+                                    fields[numPrimFields + i].getType() + "\")");
+                }
+                try {
+                    writeObject0(objVals[i],
+                            fields[numPrimFields + i].isUnshared());
+                } finally {
+                    if (extendedDebugInfo) {
+                        debugInfoStack.pop();
+                    }
+                }
+            }
+        }
+
+        /**
+         * Returns offset of field with given name and type.  A specified type
+         * of null matches all types, Object.class matches all non-primitive
+         * types, and any other non-null type matches assignable types only.
+         * Throws IllegalArgumentException if no matching field found.
+         */
+        private int getFieldOffset(String name, Class<?> type) {
+            ObjectStreamField field = desc.getField(name, type);
+            if (field == null) {
+                throw new IllegalArgumentException("no such field " + name +
+                        " with type " + type);
+            }
+            return field.getOffset();
+        }
     }
 
     /**
-     * Writes a string encoded with {@link DataInput modified UTF-8} to the
-     * target stream.
-     *
-     * @param value
-     *            the string to write to the target stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Buffered output stream with two modes: in default mode, outputs data in
+     * same format as DataOutputStream; in "block data" mode, outputs data
+     * bracketed by block data markers (see object serialization specification
+     * for details).
      */
-    public void writeUTF(String value) throws IOException {
-        checkWritePrimitiveTypes();
-        primitiveTypes.writeUTF(value);
+    private static class BlockDataOutputStream
+            extends OutputStream implements DataOutput
+    {
+        /** maximum data block length */
+        private static final int MAX_BLOCK_SIZE = 1024;
+        /** maximum data block header length */
+        private static final int MAX_HEADER_SIZE = 5;
+        /** (tunable) length of char buffer (for writing strings) */
+        private static final int CHAR_BUF_SIZE = 256;
+
+        /** buffer for writing general/block data */
+        private final byte[] buf = new byte[MAX_BLOCK_SIZE];
+        /** buffer for writing block data headers */
+        private final byte[] hbuf = new byte[MAX_HEADER_SIZE];
+        /** char buffer for fast string writes */
+        private final char[] cbuf = new char[CHAR_BUF_SIZE];
+
+        /** block data mode */
+        private boolean blkmode = false;
+        /** current offset into buf */
+        private int pos = 0;
+
+        /** underlying output stream */
+        private final OutputStream out;
+        /** loopback stream (for data writes that span data blocks) */
+        private final DataOutputStream dout;
+
+        // BEGIN Android-added: Warning if writing to a closed ObjectOutputStream.
+        /**
+         * Indicates that this stream was closed and that a warning must be logged once if an
+         * attempt is made to write to it and the underlying stream does not throw an exception.
+         *
+         * <p>This will be set back to false when a warning is logged to ensure that the log is not
+         * flooded with warnings.
+         *
+         * http://b/28159133
+         */
+        private boolean warnOnceWhenWriting;
+        // END Android-added: Warning if writing to a closed ObjectOutputStream.
+
+        /**
+         * Creates new BlockDataOutputStream on top of given underlying stream.
+         * Block data mode is turned off by default.
+         */
+        BlockDataOutputStream(OutputStream out) {
+            this.out = out;
+            dout = new DataOutputStream(this);
+        }
+
+        /**
+         * Sets block data mode to the given mode (true == on, false == off)
+         * and returns the previous mode value.  If the new mode is the same as
+         * the old mode, no action is taken.  If the new mode differs from the
+         * old mode, any buffered data is flushed before switching to the new
+         * mode.
+         */
+        boolean setBlockDataMode(boolean mode) throws IOException {
+            if (blkmode == mode) {
+                return blkmode;
+            }
+            drain();
+            blkmode = mode;
+            return !blkmode;
+        }
+
+        /**
+         * Returns true if the stream is currently in block data mode, false
+         * otherwise.
+         */
+        boolean getBlockDataMode() {
+            return blkmode;
+        }
+
+        // BEGIN Android-added: Warning about writing to closed ObjectOutputStream.
+        /**
+         * Warns if the stream has been closed.
+         *
+         * <p>This is called after data has been written to the underlying stream in order to allow
+         * the underlying stream to detect and fail if an attempt is made to write to a closed
+         * stream. That ensures that this will only log a warning if the underlying stream does not
+         * so it will not log unnecessary warnings.
+         */
+        private void warnIfClosed() {
+            if (warnOnceWhenWriting) {
+                System.logW("The app is relying on undefined behavior. Attempting to write to a"
+                        + " closed ObjectOutputStream could produce corrupt output in a future"
+                        + " release of Android.", new IOException("Stream Closed"));
+                // Set back to false so no more messages are logged unless the stream is closed
+                // again.
+                warnOnceWhenWriting = false;
+            }
+        }
+        // END Android-added: Warning about writing to closed ObjectOutputStream.
+
+        /* ----------------- generic output stream methods ----------------- */
+        /*
+         * The following methods are equivalent to their counterparts in
+         * OutputStream, except that they partition written data into data
+         * blocks when in block data mode.
+         */
+
+        public void write(int b) throws IOException {
+            if (pos >= MAX_BLOCK_SIZE) {
+                drain();
+            }
+            buf[pos++] = (byte) b;
+        }
+
+        public void write(byte[] b) throws IOException {
+            write(b, 0, b.length, false);
+        }
+
+        public void write(byte[] b, int off, int len) throws IOException {
+            write(b, off, len, false);
+        }
+
+        public void flush() throws IOException {
+            drain();
+            out.flush();
+        }
+
+        public void close() throws IOException {
+            flush();
+            out.close();
+            // Android-added: Warning about writing to closed ObjectOutputStream.
+            warnOnceWhenWriting = true;
+        }
+
+        /**
+         * Writes specified span of byte values from given array.  If copy is
+         * true, copies the values to an intermediate buffer before writing
+         * them to underlying stream (to avoid exposing a reference to the
+         * original byte array).
+         */
+        void write(byte[] b, int off, int len, boolean copy)
+                throws IOException
+        {
+            if (!(copy || blkmode)) {           // write directly
+                drain();
+                out.write(b, off, len);
+                // Android-added: Warning about writing to closed ObjectOutputStream.
+                warnIfClosed();
+                return;
+            }
+
+            while (len > 0) {
+                if (pos >= MAX_BLOCK_SIZE) {
+                    drain();
+                }
+                if (len >= MAX_BLOCK_SIZE && !copy && pos == 0) {
+                    // avoid unnecessary copy
+                    writeBlockHeader(MAX_BLOCK_SIZE);
+                    out.write(b, off, MAX_BLOCK_SIZE);
+                    off += MAX_BLOCK_SIZE;
+                    len -= MAX_BLOCK_SIZE;
+                } else {
+                    int wlen = Math.min(len, MAX_BLOCK_SIZE - pos);
+                    System.arraycopy(b, off, buf, pos, wlen);
+                    pos += wlen;
+                    off += wlen;
+                    len -= wlen;
+                }
+            }
+            // Android-added: Warning about writing to closed ObjectOutputStream.
+            warnIfClosed();
+        }
+
+        /**
+         * Writes all buffered data from this stream to the underlying stream,
+         * but does not flush underlying stream.
+         */
+        void drain() throws IOException {
+            if (pos == 0) {
+                return;
+            }
+            if (blkmode) {
+                writeBlockHeader(pos);
+            }
+            out.write(buf, 0, pos);
+            pos = 0;
+            // Android-added: Warning about writing to closed ObjectOutputStream.
+            warnIfClosed();
+        }
+
+        /**
+         * Writes block data header.  Data blocks shorter than 256 bytes are
+         * prefixed with a 2-byte header; all others start with a 5-byte
+         * header.
+         */
+        private void writeBlockHeader(int len) throws IOException {
+            if (len <= 0xFF) {
+                hbuf[0] = TC_BLOCKDATA;
+                hbuf[1] = (byte) len;
+                out.write(hbuf, 0, 2);
+            } else {
+                hbuf[0] = TC_BLOCKDATALONG;
+                Bits.putInt(hbuf, 1, len);
+                out.write(hbuf, 0, 5);
+            }
+            // Android-added: Warning about writing to closed ObjectOutputStream.
+            warnIfClosed();
+        }
+
+
+        /* ----------------- primitive data output methods ----------------- */
+        /*
+         * The following methods are equivalent to their counterparts in
+         * DataOutputStream, except that they partition written data into data
+         * blocks when in block data mode.
+         */
+
+        public void writeBoolean(boolean v) throws IOException {
+            if (pos >= MAX_BLOCK_SIZE) {
+                drain();
+            }
+            Bits.putBoolean(buf, pos++, v);
+        }
+
+        public void writeByte(int v) throws IOException {
+            if (pos >= MAX_BLOCK_SIZE) {
+                drain();
+            }
+            buf[pos++] = (byte) v;
+        }
+
+        public void writeChar(int v) throws IOException {
+            if (pos + 2 <= MAX_BLOCK_SIZE) {
+                Bits.putChar(buf, pos, (char) v);
+                pos += 2;
+            } else {
+                dout.writeChar(v);
+            }
+        }
+
+        public void writeShort(int v) throws IOException {
+            if (pos + 2 <= MAX_BLOCK_SIZE) {
+                Bits.putShort(buf, pos, (short) v);
+                pos += 2;
+            } else {
+                dout.writeShort(v);
+            }
+        }
+
+        public void writeInt(int v) throws IOException {
+            if (pos + 4 <= MAX_BLOCK_SIZE) {
+                Bits.putInt(buf, pos, v);
+                pos += 4;
+            } else {
+                dout.writeInt(v);
+            }
+        }
+
+        public void writeFloat(float v) throws IOException {
+            if (pos + 4 <= MAX_BLOCK_SIZE) {
+                Bits.putFloat(buf, pos, v);
+                pos += 4;
+            } else {
+                dout.writeFloat(v);
+            }
+        }
+
+        public void writeLong(long v) throws IOException {
+            if (pos + 8 <= MAX_BLOCK_SIZE) {
+                Bits.putLong(buf, pos, v);
+                pos += 8;
+            } else {
+                dout.writeLong(v);
+            }
+        }
+
+        public void writeDouble(double v) throws IOException {
+            if (pos + 8 <= MAX_BLOCK_SIZE) {
+                Bits.putDouble(buf, pos, v);
+                pos += 8;
+            } else {
+                dout.writeDouble(v);
+            }
+        }
+
+        public void writeBytes(String s) throws IOException {
+            int endoff = s.length();
+            int cpos = 0;
+            int csize = 0;
+            for (int off = 0; off < endoff; ) {
+                if (cpos >= csize) {
+                    cpos = 0;
+                    csize = Math.min(endoff - off, CHAR_BUF_SIZE);
+                    s.getChars(off, off + csize, cbuf, 0);
+                }
+                if (pos >= MAX_BLOCK_SIZE) {
+                    drain();
+                }
+                int n = Math.min(csize - cpos, MAX_BLOCK_SIZE - pos);
+                int stop = pos + n;
+                while (pos < stop) {
+                    buf[pos++] = (byte) cbuf[cpos++];
+                }
+                off += n;
+            }
+        }
+
+        public void writeChars(String s) throws IOException {
+            int endoff = s.length();
+            for (int off = 0; off < endoff; ) {
+                int csize = Math.min(endoff - off, CHAR_BUF_SIZE);
+                s.getChars(off, off + csize, cbuf, 0);
+                writeChars(cbuf, 0, csize);
+                off += csize;
+            }
+        }
+
+        public void writeUTF(String s) throws IOException {
+            writeUTF(s, getUTFLength(s));
+        }
+
+
+        /* -------------- primitive data array output methods -------------- */
+        /*
+         * The following methods write out spans of primitive data values.
+         * Though equivalent to calling the corresponding primitive write
+         * methods repeatedly, these methods are optimized for writing groups
+         * of primitive data values more efficiently.
+         */
+
+        void writeBooleans(boolean[] v, int off, int len) throws IOException {
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos >= MAX_BLOCK_SIZE) {
+                    drain();
+                }
+                int stop = Math.min(endoff, off + (MAX_BLOCK_SIZE - pos));
+                while (off < stop) {
+                    Bits.putBoolean(buf, pos++, v[off++]);
+                }
+            }
+        }
+
+        void writeChars(char[] v, int off, int len) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 2;
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos <= limit) {
+                    int avail = (MAX_BLOCK_SIZE - pos) >> 1;
+                    int stop = Math.min(endoff, off + avail);
+                    while (off < stop) {
+                        Bits.putChar(buf, pos, v[off++]);
+                        pos += 2;
+                    }
+                } else {
+                    dout.writeChar(v[off++]);
+                }
+            }
+        }
+
+        void writeShorts(short[] v, int off, int len) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 2;
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos <= limit) {
+                    int avail = (MAX_BLOCK_SIZE - pos) >> 1;
+                    int stop = Math.min(endoff, off + avail);
+                    while (off < stop) {
+                        Bits.putShort(buf, pos, v[off++]);
+                        pos += 2;
+                    }
+                } else {
+                    dout.writeShort(v[off++]);
+                }
+            }
+        }
+
+        void writeInts(int[] v, int off, int len) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 4;
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos <= limit) {
+                    int avail = (MAX_BLOCK_SIZE - pos) >> 2;
+                    int stop = Math.min(endoff, off + avail);
+                    while (off < stop) {
+                        Bits.putInt(buf, pos, v[off++]);
+                        pos += 4;
+                    }
+                } else {
+                    dout.writeInt(v[off++]);
+                }
+            }
+        }
+
+        void writeFloats(float[] v, int off, int len) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 4;
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos <= limit) {
+                    int avail = (MAX_BLOCK_SIZE - pos) >> 2;
+                    int chunklen = Math.min(endoff - off, avail);
+                    floatsToBytes(v, off, buf, pos, chunklen);
+                    off += chunklen;
+                    pos += chunklen << 2;
+                } else {
+                    dout.writeFloat(v[off++]);
+                }
+            }
+        }
+
+        void writeLongs(long[] v, int off, int len) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 8;
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos <= limit) {
+                    int avail = (MAX_BLOCK_SIZE - pos) >> 3;
+                    int stop = Math.min(endoff, off + avail);
+                    while (off < stop) {
+                        Bits.putLong(buf, pos, v[off++]);
+                        pos += 8;
+                    }
+                } else {
+                    dout.writeLong(v[off++]);
+                }
+            }
+        }
+
+        void writeDoubles(double[] v, int off, int len) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 8;
+            int endoff = off + len;
+            while (off < endoff) {
+                if (pos <= limit) {
+                    int avail = (MAX_BLOCK_SIZE - pos) >> 3;
+                    int chunklen = Math.min(endoff - off, avail);
+                    doublesToBytes(v, off, buf, pos, chunklen);
+                    off += chunklen;
+                    pos += chunklen << 3;
+                } else {
+                    dout.writeDouble(v[off++]);
+                }
+            }
+        }
+
+        /**
+         * Returns the length in bytes of the UTF encoding of the given string.
+         */
+        long getUTFLength(String s) {
+            int len = s.length();
+            long utflen = 0;
+            for (int off = 0; off < len; ) {
+                int csize = Math.min(len - off, CHAR_BUF_SIZE);
+                s.getChars(off, off + csize, cbuf, 0);
+                for (int cpos = 0; cpos < csize; cpos++) {
+                    char c = cbuf[cpos];
+                    if (c >= 0x0001 && c <= 0x007F) {
+                        utflen++;
+                    } else if (c > 0x07FF) {
+                        utflen += 3;
+                    } else {
+                        utflen += 2;
+                    }
+                }
+                off += csize;
+            }
+            return utflen;
+        }
+
+        /**
+         * Writes the given string in UTF format.  This method is used in
+         * situations where the UTF encoding length of the string is already
+         * known; specifying it explicitly avoids a prescan of the string to
+         * determine its UTF length.
+         */
+        void writeUTF(String s, long utflen) throws IOException {
+            if (utflen > 0xFFFFL) {
+                throw new UTFDataFormatException();
+            }
+            writeShort((int) utflen);
+            if (utflen == (long) s.length()) {
+                writeBytes(s);
+            } else {
+                writeUTFBody(s);
+            }
+        }
+
+        /**
+         * Writes given string in "long" UTF format.  "Long" UTF format is
+         * identical to standard UTF, except that it uses an 8 byte header
+         * (instead of the standard 2 bytes) to convey the UTF encoding length.
+         */
+        void writeLongUTF(String s) throws IOException {
+            writeLongUTF(s, getUTFLength(s));
+        }
+
+        /**
+         * Writes given string in "long" UTF format, where the UTF encoding
+         * length of the string is already known.
+         */
+        void writeLongUTF(String s, long utflen) throws IOException {
+            writeLong(utflen);
+            if (utflen == (long) s.length()) {
+                writeBytes(s);
+            } else {
+                writeUTFBody(s);
+            }
+        }
+
+        /**
+         * Writes the "body" (i.e., the UTF representation minus the 2-byte or
+         * 8-byte length header) of the UTF encoding for the given string.
+         */
+        private void writeUTFBody(String s) throws IOException {
+            int limit = MAX_BLOCK_SIZE - 3;
+            int len = s.length();
+            for (int off = 0; off < len; ) {
+                int csize = Math.min(len - off, CHAR_BUF_SIZE);
+                s.getChars(off, off + csize, cbuf, 0);
+                for (int cpos = 0; cpos < csize; cpos++) {
+                    char c = cbuf[cpos];
+                    if (pos <= limit) {
+                        if (c <= 0x007F && c != 0) {
+                            buf[pos++] = (byte) c;
+                        } else if (c > 0x07FF) {
+                            buf[pos + 2] = (byte) (0x80 | ((c >> 0) & 0x3F));
+                            buf[pos + 1] = (byte) (0x80 | ((c >> 6) & 0x3F));
+                            buf[pos + 0] = (byte) (0xE0 | ((c >> 12) & 0x0F));
+                            pos += 3;
+                        } else {
+                            buf[pos + 1] = (byte) (0x80 | ((c >> 0) & 0x3F));
+                            buf[pos + 0] = (byte) (0xC0 | ((c >> 6) & 0x1F));
+                            pos += 2;
+                        }
+                    } else {    // write one byte at a time to normalize block
+                        if (c <= 0x007F && c != 0) {
+                            write(c);
+                        } else if (c > 0x07FF) {
+                            write(0xE0 | ((c >> 12) & 0x0F));
+                            write(0x80 | ((c >> 6) & 0x3F));
+                            write(0x80 | ((c >> 0) & 0x3F));
+                        } else {
+                            write(0xC0 | ((c >> 6) & 0x1F));
+                            write(0x80 | ((c >> 0) & 0x3F));
+                        }
+                    }
+                }
+                off += csize;
+            }
+        }
     }
+
+    /**
+     * Lightweight identity hash table which maps objects to integer handles,
+     * assigned in ascending order.
+     */
+    private static class HandleTable {
+
+        /* number of mappings in table/next available handle */
+        private int size;
+        /* size threshold determining when to expand hash spine */
+        private int threshold;
+        /* factor for computing size threshold */
+        private final float loadFactor;
+        /* maps hash value -> candidate handle value */
+        private int[] spine;
+        /* maps handle value -> next candidate handle value */
+        private int[] next;
+        /* maps handle value -> associated object */
+        private Object[] objs;
+
+        /**
+         * Creates new HandleTable with given capacity and load factor.
+         */
+        HandleTable(int initialCapacity, float loadFactor) {
+            this.loadFactor = loadFactor;
+            spine = new int[initialCapacity];
+            next = new int[initialCapacity];
+            objs = new Object[initialCapacity];
+            threshold = (int) (initialCapacity * loadFactor);
+            clear();
+        }
+
+        /**
+         * Assigns next available handle to given object, and returns handle
+         * value.  Handles are assigned in ascending order starting at 0.
+         */
+        int assign(Object obj) {
+            if (size >= next.length) {
+                growEntries();
+            }
+            if (size >= threshold) {
+                growSpine();
+            }
+            insert(obj, size);
+            return size++;
+        }
+
+        /**
+         * Looks up and returns handle associated with given object, or -1 if
+         * no mapping found.
+         */
+        int lookup(Object obj) {
+            if (size == 0) {
+                return -1;
+            }
+            int index = hash(obj) % spine.length;
+            for (int i = spine[index]; i >= 0; i = next[i]) {
+                if (objs[i] == obj) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /**
+         * Resets table to its initial (empty) state.
+         */
+        void clear() {
+            Arrays.fill(spine, -1);
+            Arrays.fill(objs, 0, size, null);
+            size = 0;
+        }
+
+        /**
+         * Returns the number of mappings currently in table.
+         */
+        int size() {
+            return size;
+        }
+
+        /**
+         * Inserts mapping object -> handle mapping into table.  Assumes table
+         * is large enough to accommodate new mapping.
+         */
+        private void insert(Object obj, int handle) {
+            int index = hash(obj) % spine.length;
+            objs[handle] = obj;
+            next[handle] = spine[index];
+            spine[index] = handle;
+        }
+
+        /**
+         * Expands the hash "spine" -- equivalent to increasing the number of
+         * buckets in a conventional hash table.
+         */
+        private void growSpine() {
+            spine = new int[(spine.length << 1) + 1];
+            threshold = (int) (spine.length * loadFactor);
+            Arrays.fill(spine, -1);
+            for (int i = 0; i < size; i++) {
+                insert(objs[i], i);
+            }
+        }
+
+        /**
+         * Increases hash table capacity by lengthening entry arrays.
+         */
+        private void growEntries() {
+            int newLength = (next.length << 1) + 1;
+            int[] newNext = new int[newLength];
+            System.arraycopy(next, 0, newNext, 0, size);
+            next = newNext;
+
+            Object[] newObjs = new Object[newLength];
+            System.arraycopy(objs, 0, newObjs, 0, size);
+            objs = newObjs;
+        }
+
+        /**
+         * Returns hash value for given object.
+         */
+        private int hash(Object obj) {
+            return System.identityHashCode(obj) & 0x7FFFFFFF;
+        }
+    }
+
+    /**
+     * Lightweight identity hash table which maps objects to replacement
+     * objects.
+     */
+    private static class ReplaceTable {
+
+        /* maps object -> index */
+        private final HandleTable htab;
+        /* maps index -> replacement object */
+        private Object[] reps;
+
+        /**
+         * Creates new ReplaceTable with given capacity and load factor.
+         */
+        ReplaceTable(int initialCapacity, float loadFactor) {
+            htab = new HandleTable(initialCapacity, loadFactor);
+            reps = new Object[initialCapacity];
+        }
+
+        /**
+         * Enters mapping from object to replacement object.
+         */
+        void assign(Object obj, Object rep) {
+            int index = htab.assign(obj);
+            while (index >= reps.length) {
+                grow();
+            }
+            reps[index] = rep;
+        }
+
+        /**
+         * Looks up and returns replacement for given object.  If no
+         * replacement is found, returns the lookup object itself.
+         */
+        Object lookup(Object obj) {
+            int index = htab.lookup(obj);
+            return (index >= 0) ? reps[index] : obj;
+        }
+
+        /**
+         * Resets table to its initial (empty) state.
+         */
+        void clear() {
+            Arrays.fill(reps, 0, htab.size(), null);
+            htab.clear();
+        }
+
+        /**
+         * Returns the number of mappings currently in table.
+         */
+        int size() {
+            return htab.size();
+        }
+
+        /**
+         * Increases table capacity.
+         */
+        private void grow() {
+            Object[] newReps = new Object[(reps.length << 1) + 1];
+            System.arraycopy(reps, 0, newReps, 0, reps.length);
+            reps = newReps;
+        }
+    }
+
+    /**
+     * Stack to keep debug information about the state of the
+     * serialization process, for embedding in exception messages.
+     */
+    private static class DebugTraceInfoStack {
+        private final List<String> stack;
+
+        DebugTraceInfoStack() {
+            stack = new ArrayList<>();
+        }
+
+        /**
+         * Removes all of the elements from enclosed list.
+         */
+        void clear() {
+            stack.clear();
+        }
+
+        /**
+         * Removes the object at the top of enclosed list.
+         */
+        void pop() {
+            stack.remove(stack.size()-1);
+        }
+
+        /**
+         * Pushes a String onto the top of enclosed list.
+         */
+        void push(String entry) {
+            stack.add("\t- " + entry);
+        }
+
+        /**
+         * Returns a string representation of this object
+         */
+        public String toString() {
+            StringBuilder buffer = new StringBuilder();
+            if (!stack.isEmpty()) {
+                for(int i = stack.size(); i > 0; i-- ) {
+                    buffer.append(stack.get(i-1) + ((i != 1) ? "\n" : ""));
+                }
+            }
+            return buffer.toString();
+        }
+    }
+
 }

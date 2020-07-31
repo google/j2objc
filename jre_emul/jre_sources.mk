@@ -16,7 +16,6 @@
 
 NATIVE_JRE_SOURCES_CORE = \
   AnnotationUtils.m \
-  Bits.m \
   DebugUtils.m \
   FastPointerLookup.m \
   FileDescriptor_md.m \
@@ -44,6 +43,8 @@ NATIVE_JRE_SOURCES_CORE = \
   NSNumber+JavaNumber.m \
   NSObject+JavaObject.m \
   NSString+JavaString.m \
+  ObjectInputStream.m \
+  ObjectOutputStream.m \
   java/lang/AbstractStringBuilder.m \
   java/lang/reflect/AccessibleObject.m \
   java/lang/reflect/Constructor.m \
@@ -566,9 +567,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   dalvik/system/CloseGuard.java \
   dalvik/system/VersionCodes.java \
   dalvik/system/VMStack.java \
-  java/io/EmulatedFields.java \
-  java/io/EmulatedFieldsForDumping.java \
-  java/io/EmulatedFieldsForLoading.java \
+  java/io/Bits.java \
+  java/io/SerialCallbackContext.java \
   java/lang/JavaLangAccess.java \
   java/math/BitSieve.java \
   java/math/MutableBigInteger.java \
