@@ -290,6 +290,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/InvalidMarkException.java \
   java/nio/LongBuffer.java \
   java/nio/MappedByteBuffer.java \
+  java/nio/NIOAccess.java \
   java/nio/NioUtils.java \
   java/nio/ReadOnlyBufferException.java \
   java/nio/ShortBuffer.java \
