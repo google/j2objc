@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.FileDescriptor;
 import java.security.AccessController;
 
+import com.google.j2objc.annotations.WeakOuter;
 import libcore.io.OsConstants;
 import sun.net.NetHooks;
 import sun.security.action.GetPropertyAction;
@@ -464,7 +465,9 @@ class UnixAsynchronousSocketChannelImpl
         }
     }
 
-    private Runnable readTimeoutTask = new Runnable() {
+    @WeakOuter
+    class ReadTimeoutTask implements Runnable {
+        @Override
         public void run() {
             CompletionHandler<Number,Object> handler = null;
             Object att = null;
@@ -491,7 +494,9 @@ class UnixAsynchronousSocketChannelImpl
                 Invoker.invokeIndirectly(ch, handler, att, null, exc);
             }
         }
-    };
+    }
+
+    private ReadTimeoutTask readTimeoutTask = new ReadTimeoutTask();
 
     /**
      * Initiates a read or scattering read operation
@@ -659,7 +664,9 @@ class UnixAsynchronousSocketChannelImpl
         }
     }
 
-    private Runnable writeTimeoutTask = new Runnable() {
+    @WeakOuter
+    class WriteTimeoutTask implements Runnable {
+        @Override
         public void run() {
             CompletionHandler<Number,Object> handler = null;
             Object att = null;
@@ -681,12 +688,14 @@ class UnixAsynchronousSocketChannelImpl
             Exception exc = new InterruptedByTimeoutException();
             if (handler != null) {
                 Invoker.invokeIndirectly(UnixAsynchronousSocketChannelImpl.this,
-                    handler, att, null, exc);
+                        handler, att, null, exc);
             } else {
                 future.setFailure(exc);
             }
         }
-    };
+    }
+
+    private WriteTimeoutTask writeTimeoutTask = new WriteTimeoutTask();
 
     /**
      * Initiates a read or scattering read operation
