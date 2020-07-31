@@ -62,6 +62,7 @@ import com.google.j2objc.LibraryNotLinkedError;
 ]-*/
 //J2ObjC: End change
 
+
 /**
  * Serialization's descriptor for classes.  It contains the name and
  * serialVersionUID of the class.  The ObjectStreamClass for a specific class
@@ -1736,6 +1737,24 @@ public class ObjectStreamClass implements Serializable {
         return null;
     }
 
+    // j2objc: dynamically load MessageDigest to avoid linking jre_security unnecessarily.
+    static interface Digest {
+        byte[] digest(byte[] input);
+    }
+
+    private static Digest getDigest() {
+        try {
+            Class<?> digestClass = Class.forName("java.io.SerialVersionUIDDigest");
+            return (Digest) digestClass.newInstance();
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError(
+                    "SerialVersionUID hashing", "jre_security", "JavaIoSerialVersionUIDDigest",
+                    "3) Add serialVersionUID fields to all Serializable classes.");
+        }
+    }
+
+
+    // BEGIN Android-changed: Fix/log clinit serialization workaround. b/29064453
     /**
      * Computes the default serial version UID value for the given class.
      */

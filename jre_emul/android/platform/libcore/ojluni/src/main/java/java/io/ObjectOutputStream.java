@@ -1937,7 +1937,6 @@ public class ObjectOutputStream
                 warnIfClosed();
                 return;
             }
-
             while (len > 0) {
                 if (pos >= MAX_BLOCK_SIZE) {
                     drain();
