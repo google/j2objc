@@ -26,7 +26,6 @@
 package sun.nio.ch;
 
 import dalvik.system.BlockGuard;
-import dalvik.system.SocketTagger;
 
 import java.io.*;
 
@@ -39,21 +38,25 @@ class SocketDispatcher extends NativeDispatcher
 {
 
     int read(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return FileDispatcherImpl.read0(fd, address, len);
     }
 
     long readv(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return FileDispatcherImpl.readv0(fd, address, len);
     }
 
     int write(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return FileDispatcherImpl.write0(fd, address, len);
     }
 
     long writev(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return FileDispatcherImpl.writev0(fd, address, len);
     }
