@@ -143,10 +143,8 @@ class MembershipKeyImpl
     }
 
     public void drop() {
-        throw new IllegalArgumentException("not implemented");
-//        TODO(amisail): uncomment when DatagramChannelImpl is updated
-//        // delegate to channel
-//        ((DatagramChannelImpl)ch).drop(this);
+        // delegate to channel
+        ((DatagramChannelImpl)ch).drop(this);
     }
 
     @Override
@@ -173,40 +171,36 @@ class MembershipKeyImpl
     public MembershipKey block(InetAddress toBlock)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail): uncomment when DatagramChannelImpl is updated
-//        if (source != null)
-//            throw new IllegalStateException("key is source-specific");
-//
-//        synchronized (stateLock) {
-//            if ((blockedSet != null) && blockedSet.contains(toBlock)) {
-//                // already blocked, nothing to do
-//                return this;
-//            }
-//
-//            ((DatagramChannelImpl)ch).block(this, toBlock);
-//
-//            // created blocked set if required and add source address
-//            if (blockedSet == null)
-//                blockedSet = new HashSet<InetAddress>();
-//            blockedSet.add(toBlock);
-//        }
-//        return this;
+        if (source != null)
+            throw new IllegalStateException("key is source-specific");
+
+        synchronized (stateLock) {
+            if ((blockedSet != null) && blockedSet.contains(toBlock)) {
+                // already blocked, nothing to do
+                return this;
+            }
+
+            ((DatagramChannelImpl)ch).block(this, toBlock);
+
+            // created blocked set if required and add source address
+            if (blockedSet == null)
+                blockedSet = new HashSet<InetAddress>();
+            blockedSet.add(toBlock);
+        }
+        return this;
     }
 
     @Override
     public MembershipKey unblock(InetAddress toUnblock) {
-        throw new IllegalArgumentException("not implemented");
-//        TODO(amisail): uncomment when DatagramChannelImpl is updated
-//        synchronized (stateLock) {
-//            if ((blockedSet == null) || !blockedSet.contains(toUnblock))
-//                throw new IllegalStateException("not blocked");
-//
-//            ((DatagramChannelImpl)ch).unblock(this, toUnblock);
-//
-//            blockedSet.remove(toUnblock);
-//        }
-//        return this;
+        synchronized (stateLock) {
+            if ((blockedSet == null) || !blockedSet.contains(toUnblock))
+                throw new IllegalStateException("not blocked");
+
+            ((DatagramChannelImpl)ch).unblock(this, toUnblock);
+
+            blockedSet.remove(toUnblock);
+        }
+        return this;
     }
 
     @Override
