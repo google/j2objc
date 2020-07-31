@@ -210,12 +210,11 @@ public final class Files {
      *          invoked to check delete access if the file is opened with the
      *          {@code DELETE_ON_CLOSE} option.
      */
-//    TODO(amisail) uncomment this when working
-//    public static OutputStream newOutputStream(Path path, OpenOption... options)
-//        throws IOException
-//    {
-//        return provider(path).newOutputStream(path, options);
-//    }
+    public static OutputStream newOutputStream(Path path, OpenOption... options)
+        throws IOException
+    {
+        return provider(path).newOutputStream(path, options);
+    }
 
     /**
      * Opens or creates a file, returning a seekable byte channel to access the
@@ -2857,11 +2856,9 @@ public final class Files {
                                                    OpenOption... options)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        CharsetEncoder encoder = cs.newEncoder();
-//        Writer writer = new OutputStreamWriter(newOutputStream(path, options), encoder);
-//        return new BufferedWriter(writer);
+        CharsetEncoder encoder = cs.newEncoder();
+        Writer writer = new OutputStreamWriter(newOutputStream(path, options), encoder);
+        return new BufferedWriter(writer);
     }
 
     /**
@@ -2983,54 +2980,52 @@ public final class Files {
     public static long copy(InputStream in, Path target, CopyOption... options)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        // ensure not null before opening file
-//        Objects.requireNonNull(in);
-//
-//        // check for REPLACE_EXISTING
-//        boolean replaceExisting = false;
-//        for (CopyOption opt: options) {
-//            if (opt == StandardCopyOption.REPLACE_EXISTING) {
-//                replaceExisting = true;
-//            } else {
-//                if (opt == null) {
-//                    throw new NullPointerException("options contains 'null'");
-//                }  else {
-//                    throw new UnsupportedOperationException(opt + " not supported");
-//                }
-//            }
-//        }
-//
-//        // attempt to delete an existing file
-//        SecurityException se = null;
-//        if (replaceExisting) {
-//            try {
-//                deleteIfExists(target);
-//            } catch (SecurityException x) {
-//                se = x;
-//            }
-//        }
-//
-//        // attempt to create target file. If it fails with
-//        // FileAlreadyExistsException then it may be because the security
-//        // manager prevented us from deleting the file, in which case we just
-//        // throw the SecurityException.
-//        OutputStream ostream;
-//        try {
-//            ostream = newOutputStream(target, StandardOpenOption.CREATE_NEW,
-//                                              StandardOpenOption.WRITE);
-//        } catch (FileAlreadyExistsException x) {
-//            if (se != null)
-//                throw se;
-//            // someone else won the race and created the file
-//            throw x;
-//        }
-//
-//        // do the copy
-//        try (OutputStream out = ostream) {
-//            return copy(in, out);
-//        }
+        // ensure not null before opening file
+        Objects.requireNonNull(in);
+
+        // check for REPLACE_EXISTING
+        boolean replaceExisting = false;
+        for (CopyOption opt: options) {
+            if (opt == StandardCopyOption.REPLACE_EXISTING) {
+                replaceExisting = true;
+            } else {
+                if (opt == null) {
+                    throw new NullPointerException("options contains 'null'");
+                }  else {
+                    throw new UnsupportedOperationException(opt + " not supported");
+                }
+            }
+        }
+
+        // attempt to delete an existing file
+        SecurityException se = null;
+        if (replaceExisting) {
+            try {
+                deleteIfExists(target);
+            } catch (SecurityException x) {
+                se = x;
+            }
+        }
+
+        // attempt to create target file. If it fails with
+        // FileAlreadyExistsException then it may be because the security
+        // manager prevented us from deleting the file, in which case we just
+        // throw the SecurityException.
+        OutputStream ostream;
+        try {
+            ostream = newOutputStream(target, StandardOpenOption.CREATE_NEW,
+                                              StandardOpenOption.WRITE);
+        } catch (FileAlreadyExistsException x) {
+            if (se != null)
+                throw se;
+            // someone else won the race and created the file
+            throw x;
+        }
+
+        // do the copy
+        try (OutputStream out = ostream) {
+            return copy(in, out);
+        }
     }
 
     /**
@@ -3154,16 +3149,14 @@ public final class Files {
      *          method is invoked to check read access to the file.
      */
     public static byte[] readAllBytes(Path path) throws IOException {
-        return null;
-//        TODO(amisail) uncomment this when working
-//        try (SeekableByteChannel sbc = Files.newByteChannel(path);
-//             InputStream in = Channels.newInputStream(sbc)) {
-//            long size = sbc.size();
-//            if (size > (long)MAX_BUFFER_SIZE)
-//                throw new OutOfMemoryError("Required array size too large");
-//
-//            return read(in, (int)size);
-//        }
+        try (SeekableByteChannel sbc = Files.newByteChannel(path);
+             InputStream in = Channels.newInputStream(sbc)) {
+            long size = sbc.size();
+            if (size > (long)MAX_BUFFER_SIZE)
+                throw new OutOfMemoryError("Required array size too large");
+
+            return read(in, (int)size);
+        }
     }
 
     /**
@@ -3293,21 +3286,19 @@ public final class Files {
     public static Path write(Path path, byte[] bytes, OpenOption... options)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        // ensure bytes is not null before opening file
-//        Objects.requireNonNull(bytes);
-//
-//        try (OutputStream out = Files.newOutputStream(path, options)) {
-//            int len = bytes.length;
-//            int rem = len;
-//            while (rem > 0) {
-//                int n = Math.min(rem, BUFFER_SIZE);
-//                out.write(bytes, (len-rem), n);
-//                rem -= n;
-//            }
-//        }
-//        return path;
+        // ensure bytes is not null before opening file
+        Objects.requireNonNull(bytes);
+
+        try (OutputStream out = Files.newOutputStream(path, options)) {
+            int len = bytes.length;
+            int rem = len;
+            while (rem > 0) {
+                int n = Math.min(rem, BUFFER_SIZE);
+                out.write(bytes, (len-rem), n);
+                rem -= n;
+            }
+        }
+        return path;
     }
 
     /**
@@ -3354,19 +3345,17 @@ public final class Files {
                              Charset cs, OpenOption... options)
         throws IOException
     {
-        throw new IOException("not implemented");
-//        TODO(amisail) uncomment this when working
-//        // ensure lines is not null before opening file
-//        Objects.requireNonNull(lines);
-//        CharsetEncoder encoder = cs.newEncoder();
-//        OutputStream out = newOutputStream(path, options);
-//        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, encoder))) {
-//            for (CharSequence line: lines) {
-//                writer.append(line);
-//                writer.newLine();
-//            }
-//        }
-//        return path;
+        // ensure lines is not null before opening file
+        Objects.requireNonNull(lines);
+        CharsetEncoder encoder = cs.newEncoder();
+        OutputStream out = newOutputStream(path, options);
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, encoder))) {
+            for (CharSequence line: lines) {
+                writer.append(line);
+                writer.newLine();
+            }
+        }
+        return path;
     }
 
     /**
