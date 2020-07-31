@@ -67,4 +67,12 @@ public class FileKey {
     }
 
     private native void init(FileDescriptor fd) throws IOException;
+    // Android-removed: Code to load native libraries, doesn't make sense on Android.
+    /*
+    private static native void initIDs();
+
+    static {
+        initIDs();
+    }
+    */
 }

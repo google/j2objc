@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -370,7 +370,7 @@ public class DatagramSocketAdaptor
         return dc;
     }
 
-    /** @hide */
+    // Android-added: for testing and internal use.
     @Override
     public final FileDescriptor getFileDescriptor$() {
         return dc.fd;
@@ -397,8 +397,10 @@ public class DatagramSocketAdaptor
 
        protected void receive(DatagramPacket p) throws IOException {}
 
+       @Deprecated
        protected void setTTL(byte ttl) throws IOException {}
 
+       @Deprecated
        protected byte getTTL() throws IOException { return 0; }
 
        protected void setTimeToLive(int ttl) throws IOException {}

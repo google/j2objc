@@ -942,7 +942,7 @@ class SocketChannelImpl
             (state == ST_CONNECTED))
             newOps |= SelectionKey.OP_READ;
 
-        if (((ops & PollArrayWrapper.POLLCONN) != 0) &&
+        if (((ops & Net.POLLCONN) != 0) &&
             ((intOps & SelectionKey.OP_CONNECT) != 0) &&
             ((state == ST_UNCONNECTED) || (state == ST_PENDING))) {
             newOps |= SelectionKey.OP_CONNECT;
@@ -976,7 +976,7 @@ class SocketChannelImpl
         if ((ops & SelectionKey.OP_WRITE) != 0)
             newOps |= PollArrayWrapper.POLLOUT;
         if ((ops & SelectionKey.OP_CONNECT) != 0)
-            newOps |= PollArrayWrapper.POLLCONN;
+            newOps |= Net.POLLCONN;
         sk.selector.putEventOps(sk, newOps);
     }
 
