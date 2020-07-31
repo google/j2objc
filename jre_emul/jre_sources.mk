@@ -290,6 +290,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/InvalidMarkException.java \
   java/nio/LongBuffer.java \
   java/nio/MappedByteBuffer.java \
+  java/nio/NIOAccess.java \
   java/nio/NioUtils.java \
   java/nio/ReadOnlyBufferException.java \
   java/nio/ShortBuffer.java \
@@ -479,6 +480,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/locks/Condition.java \
   java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/LockSupport.java \
+  java/util/concurrent/locks/ReadWriteLock.java \
   java/util/concurrent/locks/ReentrantLock.java \
   java/util/function/BiConsumer.java \
   java/util/function/BiFunction.java \
@@ -922,7 +924,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/LongAdder.java \
   java/util/concurrent/atomic/Striped64.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
-  java/util/concurrent/locks/ReadWriteLock.java \
   java/util/concurrent/locks/ReentrantReadWriteLock.java
 
 JAVA_PRIVATE_SOURCES_CONCURRENT =
@@ -936,6 +937,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AsynchronousChannel.java \
   java/nio/channels/AsynchronousChannelGroup.java \
   java/nio/channels/AsynchronousCloseException.java \
+  java/nio/channels/AsynchronousFileChannel.java \
   java/nio/channels/AsynchronousServerSocketChannel.java \
   java/nio/channels/AsynchronousSocketChannel.java \
   java/nio/channels/ByteChannel.java \
@@ -956,6 +958,8 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/IllegalSelectorException.java \
   java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
+  java/nio/channels/MembershipKey.java \
+  java/nio/channels/MulticastChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
   java/nio/channels/NonReadableChannelException.java \
@@ -984,6 +988,7 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/AbstractSelector.java \
   java/nio/channels/spi/AsynchronousChannelProvider.java \
   java/nio/channels/spi/SelectorProvider.java \
+  java/nio/file/attribute/FileAttribute.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 
@@ -996,6 +1001,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AbstractPollArrayWrapper.java \
   sun/nio/ch/AbstractPollSelectorImpl.java \
   sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/AsynchronousFileChannelImpl.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/DatagramChannelImpl.java \
@@ -1004,9 +1010,9 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/DefaultSelectorProvider.java \
   sun/nio/ch/ExtendedSocketOption.java \
   sun/nio/ch/FileChannelImpl.java \
-  sun/nio/ch/FileLockTable.java \
-  sun/nio/ch/FileLockImpl.java \
   sun/nio/ch/FileKey.java \
+  sun/nio/ch/FileLockImpl.java \
+  sun/nio/ch/FileLockTable.java \
   sun/nio/ch/FileDescriptorHolderSocketImpl.java \
   sun/nio/ch/FileDispatcherImpl.java \
   sun/nio/ch/FileDispatcher.java \
@@ -1017,6 +1023,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/KQueueArrayWrapper.java \
   sun/nio/ch/KQueueSelectorImpl.java \
   sun/nio/ch/KQueueSelectorProvider.java \
+  sun/nio/ch/MembershipKeyImpl.java \
+  sun/nio/ch/MembershipRegistry.java \
   sun/nio/ch/NativeDispatcher.java \
   sun/nio/ch/NativeObject.java \
   sun/nio/ch/NativeThread.java \
@@ -1112,7 +1120,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/attribute/BasicFileAttributes.java \
   java/nio/file/attribute/DosFileAttributeView.java \
   java/nio/file/attribute/DosFileAttributes.java \
-  java/nio/file/attribute/FileAttribute.java \
   java/nio/file/attribute/FileAttributeView.java \
   java/nio/file/attribute/FileOwnerAttributeView.java \
   java/nio/file/attribute/FileStoreAttributeView.java \
@@ -1137,6 +1144,12 @@ JAVA_PRIVATE_SOURCES_FILE = \
   java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
   sun/misc/SharedSecrets.java \
+  sun/nio/ch/AsynchronousChannelGroupImpl.java \
+  sun/nio/ch/CompletedFuture.java \
+  sun/nio/ch/Groupable.java \
+  sun/nio/ch/Invoker.java \
+  sun/nio/ch/SimpleAsynchronousFileChannelImpl.java \
+  sun/nio/ch/ThreadPool.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/AbstractFileSystemProvider.java \
   sun/nio/fs/AbstractFileTypeDetector.java \
@@ -1161,6 +1174,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/NativeBuffer.java \
   sun/nio/fs/NativeBuffers.java \
   sun/nio/fs/PollingWatchService.java \
+  sun/nio/fs/UnixChannelFactory.java \
   sun/nio/fs/UnixConstants.java \
   sun/nio/fs/UnixCopyFile.java \
   sun/nio/fs/UnixDirectoryStream.java \
@@ -1176,9 +1190,11 @@ JAVA_PRIVATE_SOURCES_FILE = \
   sun/nio/fs/UnixMountEntry.java \
   sun/nio/fs/UnixNativeDispatcher.java \
   sun/nio/fs/UnixPath.java \
+  sun/nio/fs/UnixSecureDirectoryStream.java \
   sun/nio/fs/UnixUriUtils.java \
   sun/nio/fs/UnixUserPrincipals.java \
-  sun/nio/fs/Util.java
+  sun/nio/fs/Util.java \
+  sun/security/util/SecurityConstants.java
 
 NATIVE_JRE_SOURCES_FILE = \
   BsdNativeDispatcher.m \

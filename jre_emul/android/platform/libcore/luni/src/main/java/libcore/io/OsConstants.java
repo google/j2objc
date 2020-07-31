@@ -16,6 +16,8 @@
 
 package libcore.io;
 
+import dalvik.annotation.compat.UnsupportedAppUsage;
+
 public final class OsConstants {
     private OsConstants() { }
 
@@ -208,6 +210,7 @@ public final class OsConstants {
     public static final int O_RDONLY = 0x0000;
     public static final int O_RDWR = 0x0002;
     public static final int O_SYNC = 0x0080;
+    public static final int O_DSYNC = placeholder();
     public static final int O_TRUNC = 0x0400;
     public static final int O_WRONLY = 0x0001;
     public static final int POLLERR = 0x0008;
@@ -732,4 +735,8 @@ public final class OsConstants {
         }
         return null;
     }
+
+    // A hack to avoid these constants being inlined by javac...
+    @UnsupportedAppUsage
+    private static int placeholder() { return 0; }
 }

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import static java.io.ObjectStreamClass.processQueue;
+//import java.io.SerialCallbackContext;
 import sun.reflect.misc.ReflectUtil;
 
 /**
@@ -1711,8 +1712,6 @@ public class ObjectOutputStream
             objVals[getFieldOffset(name, Object.class)] = val;
         }
 
-
-
         // deprecated in ObjectOutputStream.PutField
         public void write(ObjectOutput out) throws IOException {
             /*
@@ -1938,7 +1937,6 @@ public class ObjectOutputStream
                 warnIfClosed();
                 return;
             }
-
             while (len > 0) {
                 if (pos >= MAX_BLOCK_SIZE) {
                     drain();
