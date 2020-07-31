@@ -45,13 +45,8 @@ public class ChannelInputStream
     extends InputStream
 {
 
-    // Android-changed: This code didn't make sense. In particular, the block channel is
-    // useless because we throw if the channel is non-blocking!. It would only make sense
-    // if it's called on a blocking channel (but we're asked to make it non-blocking before
-    // the read) we never do that, though.
-    //
-    // read(ReadableByteChannel,ByteBuffer, boolean block)
-    public static int read(ReadableByteChannel ch, ByteBuffer bb)
+    public static int read(ReadableByteChannel ch, ByteBuffer bb,
+                           boolean block)
         throws IOException
     {
         if (ch instanceof SelectableChannel) {
@@ -60,13 +55,11 @@ public class ChannelInputStream
                 boolean bm = sc.isBlocking();
                 if (!bm)
                     throw new IllegalBlockingModeException();
-                // Android-removed.
-                // if (bm != block)
-                //    sc.configureBlocking(block);
+                if (bm != block)
+                    sc.configureBlocking(block);
                 int n = ch.read(bb);
-                // Android-removed.
-                // if (bm != block)
-                //     sc.configureBlocking(bm);
+                if (bm != block)
+                    sc.configureBlocking(bm);
                 return n;
             }
         } else {
@@ -114,7 +107,7 @@ public class ChannelInputStream
     protected int read(ByteBuffer bb)
         throws IOException
     {
-        return ChannelInputStream.read(ch, bb);
+        return ChannelInputStream.read(ch, bb, true);
     }
 
     public int available() throws IOException {

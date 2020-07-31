@@ -274,11 +274,11 @@ public class StreamDecoder extends Reader
     }
 
     // J2ObjC: Avoid link-time dependency on ChannelInputStream class.
-    private static native int readFromChannel(ReadableByteChannel ch, ByteBuffer bb) /*-[
+    private static native int readFromChannel(ReadableByteChannel ch, ByteBuffer bb, boolean block) /*-[
         static Class cls;
         static dispatch_once_t once;
         dispatch_once(&once, ^{ cls = objc_getClass("SunNioChChannelInputStream"); });
-        return [cls readWithJavaNioChannelsReadableByteChannel:ch withJavaNioByteBuffer:bb];
+        return [cls readWithJavaNioChannelsReadableByteChannel:ch withJavaNioByteBuffer:bb withBoolean:block];
     ]-*/;
 
     private int readBytes() throws IOException {
@@ -289,7 +289,7 @@ public class StreamDecoder extends Reader
             // Android-changed : Use ChannelInputStream.read to make sure we throw
             // the right exception for non-blocking channels.
             //int n = sun.nio.ch.ChannelInputStream.read(ch, bb);
-            int n = readFromChannel(ch, bb);
+            int n = readFromChannel(ch, bb, true);
             if (n < 0)
                 return n;
         } else {
