@@ -180,6 +180,7 @@ static JNINativeMethod gMethods[] = {
     NATIVE_METHOD(ObjectInputStream, bytesToFloats, "([BI[FII)V"),
     NATIVE_METHOD(ObjectInputStream, bytesToDoubles, "([BI[DII)V"),
 };
+
 void register_java_io_ObjectInputStream(JNIEnv* env) {
     jniRegisterNativeMethods(env, "java/io/ObjectInputStream", gMethods, NELEM(gMethods));
 }

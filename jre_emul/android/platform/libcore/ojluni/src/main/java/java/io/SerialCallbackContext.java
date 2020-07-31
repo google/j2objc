@@ -23,10 +23,7 @@
  * questions.
  */
 
-package android.platform.libcore.ojluni.src.main.java.java.io;
-
-import java.io.NotActiveException;
-import java.io.ObjectStreamClass;
+package java.io;
 
 /**
  * Context during upcalls from object stream to class-defined

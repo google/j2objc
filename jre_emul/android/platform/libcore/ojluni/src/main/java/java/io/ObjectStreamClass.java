@@ -1840,6 +1840,13 @@ public class ObjectStreamClass implements Serializable {
             //     dout.writeUTF("()V");
             // }
 
+
+            // if (hasStaticInitializer(cl)) {
+            //     dout.writeUTF("<clinit>");
+            //     dout.writeInt(Modifier.STATIC);
+            //     dout.writeUTF("()V");
+            // }
+
             Constructor<?>[] cons = cl.getDeclaredConstructors();
             MemberSignature[] consSigs = new MemberSignature[cons.length];
             for (int i = 0; i < cons.length; i++) {

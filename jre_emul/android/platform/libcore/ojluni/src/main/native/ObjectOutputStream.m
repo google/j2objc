@@ -189,6 +189,7 @@ static JNINativeMethod gMethods[] = {
     NATIVE_METHOD(ObjectOutputStream, floatsToBytes, "([FI[BII)V"),
     NATIVE_METHOD(ObjectOutputStream, doublesToBytes, "([DI[BII)V"),
 };
+
 void register_java_io_ObjectOutputStream(JNIEnv* env) {
     jniRegisterNativeMethods(env, "java/io/ObjectOutputStream", gMethods, NELEM(gMethods));
 }

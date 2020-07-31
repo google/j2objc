@@ -23,7 +23,7 @@
  * questions.
  */
 
-package android.platform.libcore.ojluni.src.main.java.java.io;
+package java.io;
 
 /**
  * Utility methods for packing/unpacking primitive values in/out of byte arrays

@@ -200,6 +200,7 @@ public class ObjectOutputStream
      * Null when not during writeObject upcall.
      */
     private SerialCallbackContext curContext;
+
     /** current PutField object */
     private PutFieldImpl curPut;
 
