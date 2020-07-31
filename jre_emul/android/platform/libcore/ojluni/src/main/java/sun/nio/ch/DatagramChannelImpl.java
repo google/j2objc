@@ -35,6 +35,9 @@ import java.nio.channels.*;
 import java.nio.channels.spi.*;
 import java.util.*;
 
+/* J2ObjC removed: unsupported annotation
+import dalvik.annotation.optimization.ReachabilitySensitive;
+ */
 import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
 import sun.net.ResourceManager;
@@ -53,7 +56,12 @@ class DatagramChannelImpl
     private static NativeDispatcher nd = new DatagramDispatcher();
 
     // Our file descriptor
-    // Android-changed: Make the fd package visible so that we can expose it through DatagramSocketAdaptor.
+    // Android-added: @ReachabilitySensitive.
+    /* J2ObjC removed: unsupported annotation
+    @ReachabilitySensitive
+     */
+    // Android-changed: Make the fd visible for DatagramSocketAdaptor.
+    // private final FileDescriptor fd;
     final FileDescriptor fd;
 
     // fd value needed for dev/poll. This value will remain valid
@@ -111,6 +119,9 @@ class DatagramChannelImpl
     // -- End of fields protected by stateLock
 
     // Android-added: CloseGuard support.
+    /* J2ObjC removed: unsupported annotation
+    @ReachabilitySensitive
+     */
     private final CloseGuard guard = CloseGuard.get();
 
     public DatagramChannelImpl(SelectorProvider sp)
@@ -1117,25 +1128,24 @@ class DatagramChannelImpl
         int oldOps = sk.nioReadyOps();
         int newOps = initialOps;
 
-        if ((ops & PollArrayWrapper.POLLNVAL) != 0) {
+        if ((ops & Net.POLLNVAL) != 0) {
             // This should only happen if this channel is pre-closed while a
             // selection operation is in progress
             // ## Throw an error if this channel has not been pre-closed
             return false;
         }
 
-        if ((ops & (PollArrayWrapper.POLLERR
-                    | PollArrayWrapper.POLLHUP)) != 0) {
+        if ((ops & (Net.POLLERR | Net.POLLHUP)) != 0) {
             newOps = intOps;
             sk.nioReadyOps(newOps);
             return (newOps & ~oldOps) != 0;
         }
 
-        if (((ops & PollArrayWrapper.POLLIN) != 0) &&
+        if (((ops & Net.POLLIN) != 0) &&
             ((intOps & SelectionKey.OP_READ) != 0))
             newOps |= SelectionKey.OP_READ;
 
-        if (((ops & PollArrayWrapper.POLLOUT) != 0) &&
+        if (((ops & Net.POLLOUT) != 0) &&
             ((intOps & SelectionKey.OP_WRITE) != 0))
             newOps |= SelectionKey.OP_WRITE;
 
@@ -1164,7 +1174,7 @@ class DatagramChannelImpl
                         return 0;
                     readerThread = NativeThread.current();
                 }
-//                n = Net.poll(fd, events, timeout);
+                n = Net.poll(fd, events, timeout);
             } finally {
                 readerThread = 0;
                 end(n > 0);
@@ -1180,11 +1190,11 @@ class DatagramChannelImpl
         int newOps = 0;
 
         if ((ops & SelectionKey.OP_READ) != 0)
-            newOps |= PollArrayWrapper.POLLIN;
+            newOps |= Net.POLLIN;
         if ((ops & SelectionKey.OP_WRITE) != 0)
-            newOps |= PollArrayWrapper.POLLOUT;
+            newOps |= Net.POLLOUT;
         if ((ops & SelectionKey.OP_CONNECT) != 0)
-            newOps |= PollArrayWrapper.POLLIN;
+            newOps |= Net.POLLIN;
         sk.selector.putEventOps(sk, newOps);
     }
 
