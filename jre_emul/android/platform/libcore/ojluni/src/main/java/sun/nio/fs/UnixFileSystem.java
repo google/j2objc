@@ -25,6 +25,7 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.Weak;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.nio.file.spi.*;
@@ -41,6 +42,7 @@ import sun.security.action.GetPropertyAction;
 abstract class UnixFileSystem
     extends FileSystem
 {
+    @Weak
     private final UnixFileSystemProvider provider;
     private final byte[] defaultDirectory;
     private final boolean needToResolveAgainstDefaultDirectory;

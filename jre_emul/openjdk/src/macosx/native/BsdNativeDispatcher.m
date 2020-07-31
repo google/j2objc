@@ -53,8 +53,6 @@ struct fsstat_iter {
     int nentries;
 };
 
-#include "sun_nio_fs_BsdNativeDispatcher.h"
-
 static void throwUnixException(JNIEnv* env, int errnum) {
     jobject x = JNU_NewObjectByName(env, "sun/nio/fs/UnixException",
         "(I)V", errnum);

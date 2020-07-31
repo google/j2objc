@@ -44,10 +44,10 @@ Java_sun_nio_fs_MacOSXNativeDispatcher_normalizepath(JNIEnv* env, jclass this,
     if (csref == NULL) {
         JNU_ThrowOutOfMemoryError(env, "native heap");
     } else {
-        char *chars = (char*)(*env)->GetPrimitiveArrayCritical(env, path, 0);
-        jsize len = (*env)->GetArrayLength(env, path);
+        char *chars = (char*)(*env)->GetPrimitiveArrayCritical(env, (jarray)path, 0);
+        jsize len = (*env)->GetArrayLength(env, (jarray)path);
         CFStringAppendCharacters(csref, (const UniChar*)chars, len);
-        (*env)->ReleasePrimitiveArrayCritical(env, path, chars, 0);
+        (*env)->ReleasePrimitiveArrayCritical(env, (jarray)path, chars, 0);
         CFStringNormalize(csref, form);
         len = (jsize) CFStringGetLength(csref);
         if (len < PATH_MAX) {
