@@ -22,7 +22,11 @@ package com.google.j2objc;
 public class NativeUtil {
 
   public static native int getRetainCount(Object o) /*-[
+#if __has_feature(objc_arc)    
   extern jint ARGC_retainCount(id);  
   return (jint) ARGC_retainCount(o);
+#else
+  return (jint) [o retainCount];
+#endif  
   ]-*/;
 }

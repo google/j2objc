@@ -17,11 +17,14 @@
 //  Created by Keith Stanger on Mar. 18, 2016.
 //
 
+extern "C" {
 #include "FastPointerLookup.h"
+}
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"
+#include "JreRetainedWith.h"
 
-#if !__has_feature(objc_arc)
+#if !J2OBJC_USE_GC
 // Associate the return reference so that it can be artificially weakened when
 // the child's retain count is 1.
 static char returnRefKey;

@@ -1219,7 +1219,7 @@ void ARGC_strongRetain(id oid) {
   [oid retain];
 }
 
-void ARGC_release(id oid) {
+void ARGC_strongRelease(id oid) {
   if (GC_DEBUG && GC_LOG_ALLOC) {
     if (toARGCObject(oid) == NULL) {
       NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);

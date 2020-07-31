@@ -116,7 +116,6 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
 
-    @autoreleasepool {
   [self invoke:invocation object:object];
   IOSClass *returnType = [self getReturnType];
   if (returnType == [IOSClass voidClass]) {
@@ -125,7 +124,6 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
   J2ObjcRawValue returnValue;
   [invocation getReturnValue:&returnValue];
   return [returnType __boxValue:&returnValue];
-    }
 }
 
 - (void)jniInvokeWithId:(id)object
@@ -227,7 +225,6 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 }
 
 - (id)getDefaultValue {
-    @autoreleasepool {
   if ([self->class_ isAnnotation]) {
     // Invoke the class method for this method name plus "Default". For example, if this
     // method is named "foo", then return the result from "fooDefault".
@@ -245,7 +242,6 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
       return [[self getReturnType] __boxValue:&returnValue];
     }
   }
-    }
   return nil;
 }
 

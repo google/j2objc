@@ -23,6 +23,10 @@
 
 void ARGC_bindJavaClass(id key, IOSClass* javaClass);
 
+#if !__has_feature(objc_arc)
+#define ARGC_allocateArray  NSAllocateObject
+#endif
+
 /*!
  * Implements the common constructors for the primitive array types.
  * @define PRIMITIVE_ARRAY_CTOR_IMPL

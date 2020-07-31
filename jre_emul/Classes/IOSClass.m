@@ -122,7 +122,13 @@ static const J2ObjcClassInfo *g_javaLangObjectMetadata;
 
 static int iosClassAssocKey;
 
-void ARGC_strongRetain(id oid);
+#if __has_feature(objc_arc)
+void ARGC_strongRetain(id obj);
+void ARGC_strongRelease(id obj);
+#else
+#define ARGC_strongRetain(obj)  [obj retain]
+#define ARGC_strongRelease(obj) [obj release]
+#endif
 
 IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
   IOSClass* jcls = objc_getAssociatedObject(key, &iosClassAssocKey);
@@ -294,7 +300,7 @@ void empty_static_initialize() {}
             ||  [name_ charAtWithInt:simpleNamePos_ - 1] == '[');
 
     self->metadata_ = metadata;
-    *((NSString**)&self->name_) = clsName;
+    *((NSString**)&self->name_) = RETAIN_(clsName);
     self->simpleNamePos_ = simpleNamePos;
   }
   return self;
@@ -1293,8 +1299,6 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return IOSClass_class_();
 }
 
-void ARGC_strongRetain(id obj);
-
 void IOSClass_init_class_(pthread_t* initToken, Class cls, void(*clinit)()) {
   pthread_t th = pthread_self();
   @synchronized (cls) {
@@ -1355,8 +1359,6 @@ IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
   assert (ios_cls != NULL);
   return ios_cls;
 }
-
-void ARGC_strongRetain(id oid);
 
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
   IOSArrayClass* array = componentType->arrayType_;

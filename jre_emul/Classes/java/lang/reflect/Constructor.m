@@ -40,8 +40,13 @@
 }
 
 void ARGC_initStatic(Class cls);
-void ARGC_strongRetain(id oid);
-void ARGC_release(id oid);
+#if __has_feature(objc_arc)
+void ARGC_strongRetain(id obj);
+void ARGC_strongRelease(id obj);
+#else
+#define ARGC_strongRetain(obj)  [obj retain]
+#define ARGC_strongRelease(obj) [obj release]
+#endif
 
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
   SEL selector = self->metadata_->selector;
@@ -68,7 +73,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
       newInstance = [cls alloc];
       ARGC_strongRetain(newInstance);
       [invocation invokeWithTarget:newInstance];
-      ARGC_release(newInstance);
+      ARGC_strongRelease(newInstance);
     }
   }
   @catch (JavaLangThrowable *e) {

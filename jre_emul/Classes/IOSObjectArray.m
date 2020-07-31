@@ -28,8 +28,14 @@
 #import "java/lang/NegativeArraySizeException.h"
 #import "java/lang/reflect/Method.h"
 
+#if __has_feature(objc_arc)
 void ARGC_genericRetain(id oid);
 void ARGC_genericRelease(id oid);
+#else
+#define ARGC_allocateArray  NSAllocateObject
+#define ARGC_genericRetain(obj)  [obj retain]
+#define ARGC_genericRelease(obj) [obj release]
+#endif
 
 // Defined in IOSArray.m
 extern id IOSArray_NewArrayWithDimensions(
@@ -91,14 +97,12 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
-  void ARGC_genericRetain(id obj);
-  
   NSUInteger count = [array count];
   IOSObjectArray *result = AUTORELEASE(IOSObjectArray_CreateArray((jint)count, type));
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
-    for (jint i = 0; i < count; i++) {
-        ARGC_genericRetain(result->buffer_[i]);
-    }
+  for (jint i = 0; i < count; i++) {
+    ARGC_genericRetain(result->buffer_[i]);
+  }
     
   return result;
 }
@@ -217,12 +221,16 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
     releaseEnd = tmp;
   }
   for (jint i = releaseStart; i < releaseEnd; i++) {
+#if __has_feature(objc_arc)
     (void)ARGC_genericRelease(buffer[i]);
+#else
+    [buffer[i] autorelease];
+#endif
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
 #if !__has_feature(objc_arc)
   for (jint i = retainStart; i < retainEnd; i++) {
-    (void)ARGC_genericRetain(buffer[i]);
+    [buffer[i] retain];
   }
 #endif
 #endif

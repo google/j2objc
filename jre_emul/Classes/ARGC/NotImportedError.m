@@ -1,6 +1,5 @@
 #import "J2ObjC_common.h"
 
-#if J2OBJC_USE_GC
 #include "com/google/j2objc/NotImportedError.h"
 
 @implementation ComGoogleJ2objcNotImportedError
@@ -32,4 +31,3 @@ id ComGoogleJ2objcNotImportedError_throwUnreachableObjectErrorWithNSObjectArray_
   return nil;
 }
 
-#endif
