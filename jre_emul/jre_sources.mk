@@ -997,6 +997,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/net/ProtocolFamily.java \
   java/net/StandardProtocolFamily.java \
   jdk/net/ExtendedSocketOptions.java \
+  jdk/net/NetworkPermission.java \
   jdk/net/SocketFlow.java \
   sun/misc/LRUCache.java \
   sun/net/ExtendedOptionsImpl.java \
