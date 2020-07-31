@@ -60,7 +60,7 @@ public class Net {
     private static final boolean exclusiveBind;
 
     // set to true if the fast tcp loopback should be enabled on Windows
-//    private static final boolean fastLoopback;
+    private static final boolean fastLoopback;
 
     // -- Miscellaneous utilities --
 
@@ -367,7 +367,8 @@ public class Net {
         }
 
         boolean mayNeedConversion = (family == UNSPEC);
-        setIntOption0(fd, mayNeedConversion, key.level(), key.name(), arg);
+        boolean isIPv6 = (family == StandardProtocolFamily.INET6);
+        setIntOption0(fd, mayNeedConversion, key.level(), key.name(), arg, isIPv6);
     }
 
     static Object getSocketOption(FileDescriptor fd, ProtocolFamily family,
@@ -444,15 +445,16 @@ public class Net {
         throws IOException {
         boolean preferIPv6 = isIPv6Available() &&
             (family != StandardProtocolFamily.INET);
-        return IOUtil.newFD(socket0(preferIPv6, stream, false));
+        return IOUtil.newFD(socket0(preferIPv6, stream, false, fastLoopback));
     }
 
     static FileDescriptor serverSocket(boolean stream) {
-        return IOUtil.newFD(socket0(isIPv6Available(), stream, true));
+        return IOUtil.newFD(socket0(isIPv6Available(), stream, true, fastLoopback));
     }
 
     // Due to oddities SO_REUSEADDR on windows reuse is ignored
-    private static native int socket0(boolean preferIPv6, boolean stream, boolean reuse);
+    private static native int socket0(boolean preferIPv6, boolean stream, boolean reuse,
+                                      boolean fastLoopback);
 
     public static void bind(FileDescriptor fd, InetAddress addr, int port)
         throws IOException
@@ -536,7 +538,7 @@ public class Net {
         throws IOException;
 
     private static native void setIntOption0(FileDescriptor fd, boolean mayNeedConversion,
-                                             int level, int opt, int arg)
+                                             int level, int opt, int arg, boolean isIPv6)
         throws IOException;
 
     static native int poll(FileDescriptor fd, int events, long timeout)
@@ -697,5 +699,7 @@ public class Net {
         } else {
             exclusiveBind = false;
         }
+
+        fastLoopback = isFastTcpLoopbackRequested();
     }
 }
