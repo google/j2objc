@@ -291,7 +291,7 @@ private FunctionDeclaration argc_currentMethod;
           funcName = "Jre" + fType + "FieldAssign";
         }
       }
-      else if (options.useReferenceCounting()) {
+      else if (isStrong && options.useReferenceCounting()) {
         funcName = "JreStrongAssign";
       }
     }

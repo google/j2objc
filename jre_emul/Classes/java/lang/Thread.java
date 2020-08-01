@@ -386,7 +386,7 @@ public class Thread implements Runnable {
     NativeThread *nt = AUTORELEASE([[NativeThread alloc] init]);
     nt->t = pthread_self();
     JavaLangThread *mainThread = JavaLangThread_createMainThreadWithId_(nt);
-    pthread_setspecific(java_thread_key, (ARCBRIDGE_RETAINED void*)mainThread);
+    pthread_setspecific(java_thread_key, (ARCBRIDGE void*)RETAIN_(mainThread));
   ]-*/;
 
   private static Thread createCurrentThread(Object nativeThread) {
@@ -401,7 +401,7 @@ public class Thread implements Runnable {
     NativeThread *nt = AUTORELEASE([[NativeThread alloc] init]);
     nt->t = pthread_self();
     thread = JavaLangThread_createCurrentThreadWithId_(nt);
-    pthread_setspecific(java_thread_key, (ARCBRIDGE_RETAINED void*)thread);
+    pthread_setspecific(java_thread_key, (ARCBRIDGE void*)RETAIN_(thread));
     return thread;
   ]-*/;
 
@@ -426,7 +426,7 @@ public class Thread implements Runnable {
       pthread_attr_setstacksize(&attr, stack);
     }
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-    pthread_create(&nt->t, &attr, &start_routine, (ARCBRIDGE_RETAINED void*)RETAIN_(self));
+    pthread_create(&nt->t, &attr, &start_routine, (ARCBRIDGE void*)RETAIN_(self));
   ]-*/;
 
   void exit() {
