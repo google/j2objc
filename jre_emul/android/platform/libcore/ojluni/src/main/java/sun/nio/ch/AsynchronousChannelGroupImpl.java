@@ -78,7 +78,7 @@ abstract class AsynchronousChannelGroupImpl
         this.pool = pool;
 
         if (pool.isFixedThreadPool()) {
-            taskQueue = new ConcurrentLinkedQueue<Runnable>();
+            taskQueue = Util.createConcurrentLinkedQueue();
         } else {
             taskQueue = null;   // not used
         }

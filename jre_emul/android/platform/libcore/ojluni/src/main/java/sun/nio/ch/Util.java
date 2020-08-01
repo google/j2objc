@@ -26,6 +26,7 @@
 
 package sun.nio.ch;
 
+import com.google.j2objc.LibraryNotLinkedError;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
 import java.io.IOException;
@@ -35,6 +36,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
 import java.security.AccessController;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.ReadWriteLock;
 import sun.misc.Unsafe;
 import sun.misc.Cleaner;
 import sun.security.action.GetPropertyAction;
@@ -371,5 +374,39 @@ class Util {
             bugLevel = (value != null) ? value : "";
         }
         return bugLevel.equals(bl);
+    }
+
+    // j2objc factory methods to separate jre_channels and jre_concurrent separarate.
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static <E> BlockingQueue<E> createArrayBlockingQueue(int capacity) {
+        try {
+            Class<?> cls = Class.forName("java.util.concurrent.ArrayBlockingQueue");
+            java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor(Integer.TYPE);
+            return (BlockingQueue<E>) cons.newInstance(capacity);
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
+                "JavaUtilConcurrentArrayBlockingQueue");
+        }
+    }
+
+    public static <E> Queue<E> createConcurrentLinkedQueue() {
+        try {
+            Class<?> cls = Class.forName("java.util.concurrent.ConcurrentLinkedQueue");
+            return (Queue<E>) cls.newInstance();
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
+                "JavaUtilConcurrentConcurrentLinkedQueue");
+        }
+    }
+
+    public static ReadWriteLock createReentrantReadWriteLock() {
+        try {
+            Class<?> cls = Class.forName("java.util.concurrent.locks.ReentrantReadWriteLock");
+            return (ReadWriteLock) cls.newInstance();
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
+                "JavaUtilConcurrentLocksReentrantReadWriteLock");
+        }
     }
 }

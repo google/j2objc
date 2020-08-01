@@ -83,6 +83,8 @@ FIELD sun.util.calendar.Era.sinceDate
 
 # False positive: both fields are set only during construction.
 FIELD sun.nio.ch.ChannelInputStream.ch
+FIELD sun.nio.ch.UnixAsynchronousServerSocketChannelImpl.port
+FIELD sun.nio.ch.UnixAsynchronousSocketChannelImpl.port
 
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
