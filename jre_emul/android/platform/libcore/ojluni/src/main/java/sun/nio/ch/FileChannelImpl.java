@@ -373,24 +373,28 @@ public class FileChannelImpl
         }
     }
 
-    public FileChannel truncate(long size) throws IOException {
+    public FileChannel truncate(long newSize) throws IOException {
         ensureOpen();
-        if (size < 0)
-            throw new IllegalArgumentException();
-        // ----- BEGIN android -----
-        // This code may forget to update position.
-        //if (size > size())
-        //    return this;
-        // ----- END android -----
+        if (newSize < 0)
+            throw new IllegalArgumentException("Negative size");
         if (!writable)
             throw new NonWritableChannelException();
         synchronized (positionLock) {
             int rv = -1;
             long p = -1;
             int ti = -1;
+            long rp = -1;
             try {
                 begin();
                 ti = threads.add();
+                if (!isOpen())
+                    return null;
+
+                // get current size
+                long size;
+                do {
+                    size = nd.size(fd);
+                } while ((size == IOStatus.INTERRUPTED) && isOpen());
                 if (!isOpen())
                     return null;
 
@@ -402,23 +406,21 @@ public class FileChannelImpl
                     return null;
                 assert p >= 0;
 
-                // truncate file
-                // ----- BEGIN android -----
-                if (size < size()) {
-                // ----- END android -----
+                // truncate file if given size is less than the current size
+                if (newSize < size) {
                     do {
-                        rv = nd.truncate(fd, size);
+                        rv = nd.truncate(fd, newSize);
                     } while ((rv == IOStatus.INTERRUPTED) && isOpen());
                     if (!isOpen())
                         return null;
                 }
-                // ----- END android -----
-                // set position to size if greater than size
-                if (p > size)
-                    p = size;
+
+                // if position is beyond new size then adjust it
+                if (p > newSize)
+                    p = newSize;
                 do {
-                    rv = (int)position0(fd, p);
-                } while ((rv == IOStatus.INTERRUPTED) && isOpen());
+                    rp = position0(fd, p);
+                } while ((rp == IOStatus.INTERRUPTED) && isOpen());
                 return this;
             } finally {
                 threads.remove(ti);
