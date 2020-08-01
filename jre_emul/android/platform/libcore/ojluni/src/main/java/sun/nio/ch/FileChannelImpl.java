@@ -55,7 +55,6 @@ import dalvik.annotation.optimization.ReachabilitySensitive;
 import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
 import sun.misc.Cleaner;
-import sun.misc.IoTrace;
 import sun.security.action.GetPropertyAction;
 
 public class FileChannelImpl
@@ -195,7 +194,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             int n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileReadBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -207,7 +205,6 @@ public class FileChannelImpl
                 return IOStatus.normalize(n);
             } finally {
                 threads.remove(ti);
-                IoTrace.fileReadEnd(traceContext, n > 0 ? n : 0);
                 end(n > 0);
                 assert IOStatus.check(n);
             }
@@ -225,7 +222,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             long n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileReadBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -237,7 +233,6 @@ public class FileChannelImpl
                 return IOStatus.normalize(n);
             } finally {
                 threads.remove(ti);
-                IoTrace.fileReadEnd(traceContext, n > 0 ? n : 0);
                 end(n > 0);
                 assert IOStatus.check(n);
             }
@@ -251,7 +246,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             int n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileWriteBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -264,7 +258,6 @@ public class FileChannelImpl
             } finally {
                 threads.remove(ti);
                 end(n > 0);
-                IoTrace.fileWriteEnd(traceContext, n > 0 ? n : 0);
                 assert IOStatus.check(n);
             }
         }
@@ -281,7 +274,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             long n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileWriteBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -293,7 +285,6 @@ public class FileChannelImpl
                 return IOStatus.normalize(n);
             } finally {
                 threads.remove(ti);
-                IoTrace.fileWriteEnd(traceContext, n > 0 ? n : 0);
                 end(n > 0);
                 assert IOStatus.check(n);
             }
@@ -526,6 +517,13 @@ public class FileChannelImpl
             // Direct transfer to pipe causes EINVAL on some configurations
             if ((target instanceof SinkChannelImpl) && !pipeSupported)
                 return IOStatus.UNSUPPORTED_CASE;
+
+            // Platform-specific restrictions. Now there is only one:
+            // Direct transfer to non-blocking channel could be forbidden
+            SelectableChannel sc = (SelectableChannel)target;
+            if (!nd.canTransferToDirectly(sc))
+                return IOStatus.UNSUPPORTED_CASE;
+
             targetFD = ((SelChImpl)target).getFD();
         }
 
@@ -804,7 +802,6 @@ public class FileChannelImpl
         assert !nd.needsPositionLock() || Thread.holdsLock(positionLock);
         int n = 0;
         int ti = -1;
-        Object traceContext = IoTrace.fileReadBegin(path);
         try {
             begin();
             ti = threads.add();
@@ -816,7 +813,6 @@ public class FileChannelImpl
             return IOStatus.normalize(n);
         } finally {
             threads.remove(ti);
-            IoTrace.fileReadEnd(traceContext, n > 0 ? n : 0);
             end(n > 0);
             assert IOStatus.check(n);
         }
@@ -843,7 +839,6 @@ public class FileChannelImpl
         assert !nd.needsPositionLock() || Thread.holdsLock(positionLock);
         int n = 0;
         int ti = -1;
-        Object traceContext = IoTrace.fileWriteBegin(path);
         try {
             begin();
             ti = threads.add();
@@ -856,7 +851,6 @@ public class FileChannelImpl
         } finally {
             threads.remove(ti);
             end(n > 0);
-            IoTrace.fileWriteEnd(traceContext, n > 0 ? n : 0);
             assert IOStatus.check(n);
         }
     }
