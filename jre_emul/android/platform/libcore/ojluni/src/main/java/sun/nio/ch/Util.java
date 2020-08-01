@@ -26,14 +26,15 @@
 
 package sun.nio.ch;
 
+<<<<<<< HEAD
 import com.google.j2objc.LibraryNotLinkedError;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
 import java.io.IOException;
 import java.io.FileDescriptor;
+=======
+>>>>>>> c443a0ecd... Updating sun.nio.ch
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
@@ -135,6 +136,9 @@ class Util {
          * size (or null if no suitable buffer is found).
          */
         ByteBuffer get(int size) {
+            // Don't call this if the buffer would be too large.
+            assert !isBufferTooLarge(size);
+
             if (count == 0)
                 return null;  // cache is empty
 
@@ -172,6 +176,9 @@ class Util {
         }
 
         boolean offerFirst(ByteBuffer buf) {
+            // Don't call this if the buffer is too large.
+            assert !isBufferTooLarge(buf);
+
             if (count >= TEMP_BUF_POOL_SIZE) {
                 return false;
             } else {
@@ -183,6 +190,9 @@ class Util {
         }
 
         boolean offerLast(ByteBuffer buf) {
+            // Don't call this if the buffer is too large.
+            assert !isBufferTooLarge(buf);
+
             if (count >= TEMP_BUF_POOL_SIZE) {
                 return false;
             } else {
@@ -210,7 +220,16 @@ class Util {
     /**
      * Returns a temporary buffer of at least the given size
      */
-    static ByteBuffer getTemporaryDirectBuffer(int size) {
+   static ByteBuffer getTemporaryDirectBuffer(int size) {
+        // If a buffer of this size is too large for the cache, there
+        // should not be a buffer in the cache that is at least as
+        // large. So we'll just create a new one. Also, we don't have
+        // to remove the buffer from the cache (as this method does
+        // below) given that we won't put the new buffer in the cache.
+        if (isBufferTooLarge(size)) {
+            return ByteBuffer.allocateDirect(size);
+        }
+
         BufferCache cache = bufferCache.get();
         ByteBuffer buf = cache.get(size);
         if (buf != null) {
@@ -240,6 +259,13 @@ class Util {
      * likely to be returned by a subsequent call to getTemporaryDirectBuffer.
      */
     static void offerFirstTemporaryDirectBuffer(ByteBuffer buf) {
+        // If the buffer is too large for the cache we don't have to
+        // check the cache. We'll just free it.
+        if (isBufferTooLarge(buf)) {
+            free(buf);
+            return;
+        }
+
         assert buf != null;
         BufferCache cache = bufferCache.get();
         if (!cache.offerFirst(buf)) {
@@ -255,6 +281,13 @@ class Util {
      * cache in same order that they were obtained.
      */
     static void offerLastTemporaryDirectBuffer(ByteBuffer buf) {
+        // If the buffer is too large for the cache we don't have to
+        // check the cache. We'll just free it.
+        if (isBufferTooLarge(buf)) {
+            free(buf);
+            return;
+        }
+
         assert buf != null;
         BufferCache cache = bufferCache.get();
         if (!cache.offerLast(buf)) {
@@ -273,66 +306,6 @@ class Util {
         if (cleaner != null) {
             cleaner.clean();
         }
-    }
-
-    private static class SelectorWrapper {
-        private Selector sel;
-        private SelectorWrapper (Selector sel) {
-            this.sel = sel;
-            Cleaner.create(this, new Closer(sel));
-        }
-        private static class Closer implements Runnable {
-            private Selector sel;
-            private Closer (Selector sel) {
-                this.sel = sel;
-            }
-            public void run () {
-                try {
-                    sel.close();
-                } catch (Throwable th) {
-                    throw new Error(th);
-                }
-            }
-        }
-        public Selector get() { return sel;}
-    }
-
-    // Per-thread cached selector
-    private static ThreadLocal<SoftReference<SelectorWrapper>> localSelector
-        = new ThreadLocal<SoftReference<SelectorWrapper>>();
-    // Hold a reference to the selWrapper object to prevent it from
-    // being cleaned when the temporary selector wrapped is on lease.
-    private static ThreadLocal<SelectorWrapper> localSelectorWrapper
-        = new ThreadLocal<SelectorWrapper>();
-
-    // When finished, invoker must ensure that selector is empty
-    // by cancelling any related keys and explicitly releasing
-    // the selector by invoking releaseTemporarySelector()
-    static Selector getTemporarySelector(SelectableChannel sc)
-        throws IOException
-    {
-        SoftReference<SelectorWrapper> ref = localSelector.get();
-        SelectorWrapper selWrapper = null;
-        Selector sel = null;
-        if (ref == null
-            || ((selWrapper = ref.get()) == null)
-            || ((sel = selWrapper.get()) == null)
-            || (sel.provider() != sc.provider())) {
-            sel = sc.provider().openSelector();
-            selWrapper = new SelectorWrapper(sel);
-            localSelector.set(new SoftReference<SelectorWrapper>(selWrapper));
-        }
-        localSelectorWrapper.set(selWrapper);
-        return sel;
-    }
-
-    static void releaseTemporarySelector(Selector sel)
-        throws IOException
-    {
-        // Selector should be empty
-        sel.selectNow();                // Flush cancelled keys
-        assert sel.keys().isEmpty() : "Temporary selector not empty";
-        localSelectorWrapper.set(null);
     }
 
 
@@ -404,6 +377,8 @@ class Util {
         return unsafe;
     }
 
+    // BEGIN Android-removed: DirectByteBuffer is @hide public on Android so reflection unneeded.
+    /*
     private static int pageSize = -1;
 
     static int pageSize() {
@@ -412,7 +387,7 @@ class Util {
         return pageSize;
     }
 
-    /* private static volatile Constructor<?> directByteBufferConstructor = null;
+    private static volatile Constructor<?> directByteBufferConstructor = null;
 
     private static void initDBBConstructor() {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
