@@ -34,7 +34,7 @@
 #import "objc-sync.h"
 
 #if J2OBJC_USE_GC
-void ARGC_genericRetain(id obj);
+id ARGC_cloneObject(id obj) NS_RETURNS_RETAINED;
 #elif __has_feature(objc_arc)
 #error "NSObject+JavaObject.m must not be compiled with ARC (-fobjc-arc)"
 #endif
@@ -46,7 +46,10 @@ void ARGC_genericRetain(id obj);
   if (![NSCopying_class_() isInstance:self]) {
     @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
   }
-
+    
+#if J2OBJC_USE_GC
+  id clone = ARGC_cloneObject(self);
+#else
   // Use the Java getClass method because it returns the class we want in case
   // self's class hass been swizzled by a WeakReference or RetainedWith field.
   Class cls = [self java_getClass].objcClass;
@@ -83,9 +86,9 @@ void ARGC_genericRetain(id obj);
     free(ivars);
     cls = class_getSuperclass(cls);
   }
-
   // Releases any @Weak fields that shouldn't have been retained.
   [clone __javaClone:self];
+#endif
   return clone;
 }
 
