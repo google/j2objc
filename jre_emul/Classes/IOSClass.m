@@ -1594,9 +1594,7 @@ void NSCopying__init_class__(void);
   g_javaStringClass = NSString_class_();
   g_stringClass = NSString.class;
 
-#ifdef J2OBJC_USE_GC
-  ARGC_bindJavaClass(ARGCObject.class, ARGC_getIOSClass(NSObject.class));
-#endif
+  ARGC_bindJavaClass(JavaLangObject.class, ARGC_getIOSClass(NSObject.class));
   
   // Verify that these categories successfully loaded.
   if ([NSObject.class instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
