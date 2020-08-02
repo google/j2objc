@@ -49,3 +49,9 @@ OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions\
  -Wno-arc-bridge-casts-disallowed-in-nonarc \
  -Xclang -fobjc-runtime-has-weak
 endif
+ifdef J2OBJC_USE_GC
+J2OBJC := $(J2OBJC) -Xuse-gc
+OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions\
+ -Wno-arc-bridge-casts-disallowed-in-nonarc \
+ -Xclang -fobjc-runtime-has-weak
+endif

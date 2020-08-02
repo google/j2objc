@@ -24,7 +24,7 @@
 #import "J2ObjC_types.h"
 #import "pthread.h"
 
-//#define J2OBJC_USE_GC 1
+#define J2OBJC_USE_GC 1
 
 #define ARGC_WEAK_REF __unsafe_unretained
 

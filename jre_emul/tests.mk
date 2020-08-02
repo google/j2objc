@@ -82,6 +82,10 @@ endif
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TRANSLATE_ARGS += -external-annotation-file lite/ignore_tests.jaif
 endif
+ifdef J2OBJC_USE_GC
+TRANSLATE_ARGS += -Xuse-gc
+endif
+
 TRANSLATE_SOURCES = \
     $(SUPPORT_SOURCES) \
     $(MOCKWEBSERVER_SOURCES) \
@@ -98,7 +102,6 @@ TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   $(SUPPORT_SOURCES) $(MOCKWEBSERVER_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
   $(TRANSLATE_ARGS))
-#  $(TRANSLATE_ARGS) -Xuse-gc)
 
 TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   jre_emul_tests_arc,\
@@ -106,7 +109,6 @@ TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES:%=$(GEN_JAVA_DIR)/%),\
   ,\
   $(TRANSLATE_ARGS))
-#  $(TRANSLATE_ARGS) -Xuse-gc)
 
 TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_ARC)
 

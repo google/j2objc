@@ -46,6 +46,7 @@ import com.google.j2objc.annotations.ObjectiveCType;
 public abstract class Reference<T> {
 
     @Weak
+    @ObjectiveCType("void *")
     volatile T referent;         /* Treated specially by GC */
     @Weak
     final ReferenceQueue<? super T> queue;

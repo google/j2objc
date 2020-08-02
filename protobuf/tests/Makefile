@@ -95,6 +95,9 @@ TRANSLATE_ARGS = -cp $(CLASSPATH):$(CREATE_JAR_RESULT) \
   $(J2OBJC_PROTOS_CLASS_MAPPING_FILES:%=--mapping %)
 TRANSLATED_SOURCES = $(JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.m)
 TRANSLATED_SOURCES_ARC = $(JAVA_SOURCES_ARC:%.java=$(GEN_OBJC_DIR)/arc/%.m)
+ifdef J2OBJC_USE_GC
+TRANSLATE_ARGS += -Xuse-gc
+endif
 
 TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   protobuf_tests,\
@@ -108,7 +111,7 @@ TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   $(GEN_OBJC_DIR)/arc,\
   $(JAVA_SOURCES_ARC),\
   $(J2OBJC_PROTOS_CLASS_MAPPING_FILES),\
-  $(TRANSLATE_ARGS) -use-arc)
+  $(TRANSLATE_ARGS))
 
 $(TRANSLATED_SOURCES): $(TRANSLATE_ARTIFACT)
 	@:

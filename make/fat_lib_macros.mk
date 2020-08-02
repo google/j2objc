@@ -92,11 +92,15 @@ arch_flags = $(strip \
 fat_lib_dependencies:
 	@:
 
-
+ifdef J2OBJC_USE_GC
+ARGC_C_FLAGS = -std=c11 -fobjc-arc -fobjc-arc-exceptions
+ARGC_CPP_FLAGS = -stdlib=libc++ -fno-objc-arc -fobjc-arc-exceptions
+endif
+ifndef J2OBJC_USE_GC
 ARGC_C_FLAGS = -std=c11 
-# -fobjc-arc -fobjc-arc-exceptions
 ARGC_CPP_FLAGS = -stdlib=libc++ 
-# -fno-objc-arc -fobjc-arc-exceptions
+endif
+
 
 # Generates compile rule.
 # Args:
