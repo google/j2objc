@@ -725,7 +725,7 @@ public final class Long extends Number implements Comparable<Long> {
           for (jint i = -128; i < 128; i++) {
             id obj = [JavaLangLong alloc]; //objc_constructInstance(self, (void *)ptr);
             JavaLangLong_initWithLong_(obj, i);
-            JreWeakRefFieldAssign(buf++, obj);
+            JreUnsafeFieldAssign(buf++, obj);
             //ptr += objSize;
           }
         ]-*/;

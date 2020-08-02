@@ -98,7 +98,7 @@ __attribute__((always_inline)) inline id JreObjectFieldAssign(__unsafe_unretaine
   return value;
 }
 
-__attribute__((always_inline)) inline id JreWeakRefFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
+__attribute__((always_inline)) inline id JreUnsafeFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
   ARGC_assignGenericObject(pIvar, value);
   return value;
 }
@@ -114,7 +114,7 @@ __attribute__((always_inline)) inline id JreGenericFieldAssign(__unsafe_unretain
 
 #define JreObjectFieldAssignAndConsume  JreObjectFieldAssign
 #define JreNativeFieldAssignAndConsume  JreNativeFieldAssign
-#define JreWeakRefFieldAssignAndConsume JreWeakRefFieldAssign
+#define JreUnsafeFieldAssignAndConsume JreUnsafeFieldAssign
 #define JreGenericFieldAssignAndConsume JreGenericFieldAssign
 
 #else
@@ -133,13 +133,13 @@ __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *
   return value;
 }
 
-__attribute__((always_inline)) inline id JreWeakRefFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) {
+__attribute__((always_inline)) inline id JreUnsafeFieldAssign(__unsafe_unretained id *pIvar, __unsafe_unretained id value) {
   AUTORELEASE(*pIvar);
   *pIvar = RETAIN_(value);
   return value;
 }
 
-__attribute__((always_inline)) inline id JreWeakRefFieldAssignAndConsume(__unsafe_unretained id *pIvar, NS_RELEASES_ARGUMENT id value) {
+__attribute__((always_inline)) inline id JreUnsafeFieldAssignAndConsume(__unsafe_unretained id *pIvar, NS_RELEASES_ARGUMENT id value) {
   AUTORELEASE(*pIvar);
   *pIvar = value;
   return value;

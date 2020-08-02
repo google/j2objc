@@ -656,7 +656,7 @@ public final class Integer extends Number implements Comparable<Integer> {
           for (jint i = -128; i < 128; i++) {
             id obj = [JavaLangInteger alloc]; //objc_constructInstance(self, (void *)ptr);
             JavaLangInteger_initWithInt_(obj, i);
-            JreWeakRefFieldAssign(buf++, obj);
+            JreUnsafeFieldAssign(buf++, obj);
             //ptr += objSize;
           }
         ]-*/;

@@ -285,7 +285,7 @@ private FunctionDeclaration argc_currentMethod;
           String fType = typeUtil.getArgcFieldTypeEx(enc, type);
           if (fType == "Object" || fType == "Generic") {
             if (ElementUtil.isWeakReference(var) && !ElementUtil.isVolatile(var)) {
-              fType = "WeakRef";
+              fType = "Unsafe";
             }
           }
           funcName = "Jre" + fType + "FieldAssign";

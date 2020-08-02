@@ -218,7 +218,7 @@ public final class Short extends Number implements Comparable<Short> {
           for (jint i = -128; i < 128; i++) {
             id obj = [JavaLangShort alloc];// objc_constructInstance(self, (void *)ptr);
             JavaLangShort_initWithShort_(obj, (jshort)i);
-            JreWeakRefFieldAssign(buf++, obj);
+            JreUnsafeFieldAssign(buf++, obj);
             //ptr += objSize;
           }
         ]-*/;

@@ -91,7 +91,7 @@ public final class Byte extends Number implements Comparable<Byte> {
          for (jint i = -128; i < 128; i++) {
            id obj = [JavaLangByte alloc];// objc_constructInstance(self, (void *)ptr);
            JavaLangByte_initWithByte_(obj, (jbyte)i);
-           JreWeakRefFieldAssign(buf++, obj);
+           JreUnsafeFieldAssign(buf++, obj);
            //ptr += objSize;
           }
         ]-*/;
