@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -49,6 +50,9 @@ class Util {
     // The number of temp buffers in our pool
     private static final int TEMP_BUF_POOL_SIZE = IOUtil.IOV_MAX;
 
+    // The max size allowed for a cached temp buffer, in bytes
+    private static final long MAX_CACHED_BUFFER_SIZE = getMaxCachedBufferSize();
+
     // Per-thread cache of temporary direct buffers
     private static ThreadLocal<BufferCache> bufferCache =
         new ThreadLocal<BufferCache>()
@@ -58,6 +62,52 @@ class Util {
             return new BufferCache();
         }
     };
+
+    /**
+     * Returns the max size allowed for a cached temp buffers, in
+     * bytes. It defaults to Long.MAX_VALUE. It can be set with the
+     * jdk.nio.maxCachedBufferSize property. Even though
+     * ByteBuffer.capacity() returns an int, we're using a long here
+     * for potential future-proofing.
+     */
+    private static long getMaxCachedBufferSize() {
+        String s = java.security.AccessController.doPrivileged(
+            new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty("jdk.nio.maxCachedBufferSize");
+                }
+            });
+        if (s != null) {
+            try {
+                long m = Long.parseLong(s);
+                if (m >= 0) {
+                    return m;
+                } else {
+                    // if it's negative, ignore the system property
+                }
+            } catch (NumberFormatException e) {
+                // if the string is not well formed, ignore the system property
+            }
+        }
+        return Long.MAX_VALUE;
+    }
+
+    /**
+     * Returns true if a buffer of this size is too large to be
+     * added to the buffer cache, false otherwise.
+     */
+    private static boolean isBufferTooLarge(int size) {
+        return size > MAX_CACHED_BUFFER_SIZE;
+    }
+
+    /**
+     * Returns true if the buffer is too large to be added to the
+     * buffer cache, false otherwise.
+     */
+    private static boolean isBufferTooLarge(ByteBuffer buf) {
+        return isBufferTooLarge(buf.capacity());
+    }
 
     /**
      * A simple cache of direct buffers.
@@ -217,6 +267,8 @@ class Util {
      * Frees the memory for the given direct buffer
      */
     private static void free(ByteBuffer buf) {
+        // Android-changed: Add null check for cleaner. http://b/26040655
+        // ((DirectBuffer)buf).cleaner().clean();
         Cleaner cleaner = ((DirectBuffer)buf).cleaner();
         if (cleaner != null) {
             cleaner.clean();
@@ -345,7 +397,7 @@ class Util {
     }
 
     static void erase(ByteBuffer bb) {
-        unsafe.setMemory(((DirectBuffer) bb).address(), bb.capacity(), (byte) 0);
+        unsafe.setMemory(((DirectBuffer)bb).address(), bb.capacity(), (byte)0);
     }
 
     static Unsafe unsafe() {
@@ -360,7 +412,100 @@ class Util {
         return pageSize;
     }
 
+    /* private static volatile Constructor<?> directByteBufferConstructor = null;
+
+    private static void initDBBConstructor() {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                public Void run() {
+                    try {
+                        Class<?> cl = Class.forName("java.nio.DirectByteBuffer");
+                        Constructor<?> ctor = cl.getDeclaredConstructor(
+                            new Class<?>[] { int.class,
+                                             long.class,
+                                             FileDescriptor.class,
+                                             Runnable.class });
+                        ctor.setAccessible(true);
+                        directByteBufferConstructor = ctor;
+                    } catch (ClassNotFoundException   |
+                             NoSuchMethodException    |
+                             IllegalArgumentException |
+                             ClassCastException x) {
+                        throw new InternalError(x);
+                    }
+                    return null;
+                }});
+    }
+
+    static MappedByteBuffer newMappedByteBuffer(int size, long addr,
+                                                FileDescriptor fd,
+                                                Runnable unmapper)
+    {
+        MappedByteBuffer dbb;
+        if (directByteBufferConstructor == null)
+            initDBBConstructor();
+        try {
+            dbb = (MappedByteBuffer)directByteBufferConstructor.newInstance(
+              new Object[] { new Integer(size),
+                             new Long(addr),
+                             fd,
+                             unmapper });
+        } catch (InstantiationException |
+                 IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new InternalError(e);
+        }
+        return dbb;
+    }
+
+    private static volatile Constructor<?> directByteBufferRConstructor = null;
+
+    private static void initDBBRConstructor() {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                public Void run() {
+                    try {
+                        Class<?> cl = Class.forName("java.nio.DirectByteBufferR");
+                        Constructor<?> ctor = cl.getDeclaredConstructor(
+                            new Class<?>[] { int.class,
+                                             long.class,
+                                             FileDescriptor.class,
+                                             Runnable.class });
+                        ctor.setAccessible(true);
+                        directByteBufferRConstructor = ctor;
+                    } catch (ClassNotFoundException |
+                             NoSuchMethodException |
+                             IllegalArgumentException |
+                             ClassCastException x) {
+                        throw new InternalError(x);
+                    }
+                    return null;
+                }});
+    }
+
+    static MappedByteBuffer newMappedByteBufferR(int size, long addr,
+                                                 FileDescriptor fd,
+                                                 Runnable unmapper)
+    {
+        MappedByteBuffer dbb;
+        if (directByteBufferRConstructor == null)
+            initDBBRConstructor();
+        try {
+            dbb = (MappedByteBuffer)directByteBufferRConstructor.newInstance(
+              new Object[] { new Integer(size),
+                             new Long(addr),
+                             fd,
+                             unmapper });
+        } catch (InstantiationException |
+                 IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new InternalError(e);
+        }
+        return dbb;
+    }
+    */
+    // END Android-removed: DirectByteBuffer is @hide public on Android so reflection unneeded.
+
     // -- Bug compatibility --
+
     private static volatile String bugLevel = null;
 
     static boolean atBugLevel(String bl) {              // package-private

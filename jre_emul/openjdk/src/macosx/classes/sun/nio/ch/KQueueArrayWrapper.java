@@ -65,8 +65,8 @@ import java.util.LinkedList;
 
 class KQueueArrayWrapper {
     // Event masks
-    static final short POLLIN       = AbstractPollArrayWrapper.POLLIN;
-    static final short POLLOUT      = AbstractPollArrayWrapper.POLLOUT;
+    static final short POLLIN       = Net.POLLIN;
+    static final short POLLOUT      = Net.POLLOUT;
 
     // kevent filters
     static short EVFILT_READ;

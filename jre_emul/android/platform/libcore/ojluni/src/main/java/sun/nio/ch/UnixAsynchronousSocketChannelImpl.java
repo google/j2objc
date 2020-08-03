@@ -159,9 +159,9 @@ class UnixAsynchronousSocketChannelImpl
         assert Thread.holdsLock(updateLock);
         int events = 0;
         if (readPending)
-            events |= OsConstants.POLLIN;
+            events |= Net.POLLIN;
         if (connectPending || writePending)
-            events |= OsConstants.POLLOUT;
+            events |= Net.POLLOUT;
         if (events != 0)
             port.startPoll(fdVal, events);
     }
@@ -221,9 +221,9 @@ class UnixAsynchronousSocketChannelImpl
      */
     @Override
     public void onEvent(int events, boolean mayInvokeDirect) {
-        boolean readable = (events & OsConstants.POLLIN) > 0;
-        boolean writable = (events & OsConstants.POLLOUT) > 0;
-        if ((events & (OsConstants.POLLERR | OsConstants.POLLHUP)) > 0) {
+        boolean readable = (events & Net.POLLIN) > 0;
+        boolean writable = (events & Net.POLLOUT) > 0;
+        if ((events & (Net.POLLERR | Net.POLLHUP)) > 0) {
             readable = true;
             writable = true;
         }

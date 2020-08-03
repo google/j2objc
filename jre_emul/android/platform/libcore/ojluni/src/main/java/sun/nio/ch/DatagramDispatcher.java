@@ -37,22 +37,31 @@ import java.net.*;
 
 class DatagramDispatcher extends NativeDispatcher
 {
+    // Android-removed: Native code initialization not required.
+    // static {
+    //     IOUtil.load();
+    // }
+
     int read(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return read0(fd, address, len);
     }
 
     long readv(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return readv0(fd, address, len);
     }
 
     int write(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return write0(fd, address, len);
     }
 
     long writev(FileDescriptor fd, long address, int len) throws IOException {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
         return writev0(fd, address, len);
     }
@@ -62,7 +71,7 @@ class DatagramDispatcher extends NativeDispatcher
     }
 
     void preClose(FileDescriptor fd) throws IOException {
-        FileDispatcherImpl.preCloseImpl(fd);
+        FileDispatcherImpl.preClose0(fd);
     }
 
     static native int read0(FileDescriptor fd, long address, int len)

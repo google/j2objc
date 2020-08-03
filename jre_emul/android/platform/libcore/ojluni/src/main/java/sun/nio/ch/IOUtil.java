@@ -345,7 +345,31 @@ public class IOUtil {
 
     static native int iovMax();
 
+    // Android-removed: Code to load native libraries, doesn't make sense on Android.
+    /*
+    static native void initIDs();
+
+    /**
+     * Used to trigger loading of native libraries
+     *
+    public static void load() { }
+    */
+
     static {
+        // Android-removed: Code to load native libraries, doesn't make sense on Android.
+        /*
+        java.security.AccessController.doPrivileged(
+                new java.security.PrivilegedAction<Void>() {
+                    public Void run() {
+                        System.loadLibrary("net");
+                        System.loadLibrary("nio");
+                        return null;
+                    }
+                });
+
+        initIDs();
+        */
+
         IOV_MAX = iovMax();
     }
 

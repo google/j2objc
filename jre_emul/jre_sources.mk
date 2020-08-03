@@ -997,6 +997,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/net/ProtocolFamily.java \
   java/net/StandardProtocolFamily.java \
   jdk/net/ExtendedSocketOptions.java \
+  jdk/net/NetworkPermission.java \
   jdk/net/SocketFlow.java \
   sun/misc/LRUCache.java \
   sun/net/ExtendedOptionsImpl.java \
@@ -1008,12 +1009,14 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   sun/nio/ch/AsynchronousFileChannelImpl.java \
   sun/nio/ch/AsynchronousServerSocketChannelImpl.java \
   sun/nio/ch/AsynchronousSocketChannelImpl.java \
+  sun/nio/ch/BsdAsynchronousChannelProvider.java \
   sun/nio/ch/Cancellable.java \
   sun/nio/ch/ChannelInputStream.java \
   sun/nio/ch/CompletedFuture.java \
   sun/nio/ch/DatagramChannelImpl.java \
   sun/nio/ch/DatagramDispatcher.java \
   sun/nio/ch/DatagramSocketAdaptor.java \
+  sun/nio/ch/DefaultAsynchronousChannelProvider.java \
   sun/nio/ch/DefaultSelectorProvider.java \
   sun/nio/ch/ExtendedSocketOption.java \
   sun/nio/ch/FileChannelImpl.java \

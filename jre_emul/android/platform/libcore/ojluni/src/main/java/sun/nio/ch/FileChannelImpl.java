@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,18 +27,33 @@
 package sun.nio.ch;
 
 import android.system.ErrnoException;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.DirectByteBuffer;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.ClosedByInterruptException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.FileLockInterruptionException;
+import java.nio.channels.NonReadableChannelException;
+import java.nio.channels.NonWritableChannelException;
+import java.nio.channels.OverlappingFileLockException;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.WritableByteChannel;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
 import libcore.io.Libcore;
 
+/* J2ObjC removed: ReachabilitySensitive unsupported
+import dalvik.annotation.optimization.ReachabilitySensitive;
+ */
 import dalvik.system.BlockGuard;
+import dalvik.system.CloseGuard;
 import sun.misc.Cleaner;
 import sun.misc.IoTrace;
 import sun.security.action.GetPropertyAction;
@@ -53,7 +68,14 @@ public class FileChannelImpl
     private final FileDispatcher nd;
 
     // File descriptor
-    // Android-changed: make public.
+    // Android-added: @ReachabilitySensitive
+    // If this were reclaimed while we're in an operation on fd, the associated Stream
+    // could be finalized, closing the fd while still in use. This is not the case upstream,
+    // since there the Stream is accessible from the FileDescriptor.
+    // Android-changed: make public. Used by NioUtils.getFD(), and possibly others.
+    /* J2ObjC removed: ReachabilitySensitive unsupported
+    @ReachabilitySensitive
+     */
     public final FileDescriptor fd;
 
     // File access mode (immutable)
@@ -64,7 +86,8 @@ public class FileChannelImpl
     // Required to prevent finalization of creating stream (immutable)
     private final Object parent;
 
-    // The path of the referenced file (null if the parent stream is created with a file descriptor)
+    // The path of the referenced file
+    // (null if the parent stream is created with a file descriptor)
     private final String path;
 
     // Thread-safe set of IDs of native threads, for signalling
@@ -73,8 +96,14 @@ public class FileChannelImpl
     // Lock for operations involving position and size
     private final Object positionLock = new Object();
 
+    // Android-added: CloseGuard support.
+    /* J2ObjC removed: ReachabilitySensitive unsupported
+    @ReachabilitySensitive
+     */
+    private final CloseGuard guard = CloseGuard.get();
+
     public FileChannelImpl(FileDescriptor fd, String path, boolean readable,
-                            boolean writable, boolean append, Object parent)
+                           boolean writable, boolean append, Object parent)
     {
         this.fd = fd;
         this.readable = readable;
@@ -83,6 +112,11 @@ public class FileChannelImpl
         this.parent = parent;
         this.path = path;
         this.nd = new FileDispatcherImpl(append);
+        // BEGIN Android-added: CloseGuard support.
+        if (fd != null && fd.valid()) {
+            guard.open("close");
+        }
+        // END Android-added: CloseGuard support.
     }
 
     // Used by FileInputStream.getChannel() and RandomAccessFile.getChannel()
@@ -110,6 +144,8 @@ public class FileChannelImpl
     // -- Standard channel operations --
 
     protected void implCloseChannel() throws IOException {
+        // Android-added: CloseGuard support.
+        guard.close();
         // Release and invalidate any locks that we still hold
         if (fileLockTable != null) {
             for (FileLock fl: fileLockTable.removeAll()) {
@@ -122,6 +158,7 @@ public class FileChannelImpl
             }
         }
 
+        // signal any threads blocked on this channel
         threads.signalAndWait();
 
         if (parent != null) {
@@ -137,6 +174,19 @@ public class FileChannelImpl
         }
 
     }
+
+    // BEGIN Android-added: CloseGuard support.
+    protected void finalize() throws Throwable {
+        try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
+            close();
+        } finally {
+            super.finalize();
+        }
+    }
+    // END Android-added: CloseGuard support.
 
     public int read(ByteBuffer dst) throws IOException {
         ensureOpen();
@@ -262,9 +312,13 @@ public class FileChannelImpl
                 ti = threads.add();
                 if (!isOpen())
                     return 0;
+                // BEGIN Android-added: BlockGuard support.
+                // Note: position() itself doesn't seem to block, so this may be overzealous
+                // when position() is not followed by a read/write operation. http://b/77263638
                 if (append) {
                     BlockGuard.getThreadPolicy().onWriteToDisk();
                 }
+                // END Android-added: BlockGuard support.
                 do {
                     // in append-mode then position is advanced to end before writing
                     p = (append) ? nd.size(fd) : position0(fd, -1);
@@ -290,6 +344,9 @@ public class FileChannelImpl
                 ti = threads.add();
                 if (!isOpen())
                     return null;
+                // Android-added: BlockGuard support.
+                // Note: position() itself doesn't seem to block, so this may be overzealous
+                // when position() is not followed by a read/write operation. http://b/77263638
                 BlockGuard.getThreadPolicy().onReadFromDisk();
                 do {
                     p  = position0(fd, newPosition);
@@ -363,7 +420,6 @@ public class FileChannelImpl
                     } while ((rv == IOStatus.INTERRUPTED) && isOpen());
                     if (!isOpen())
                         return null;
-                // ----- BEGIN android -----
                 }
                 // ----- END android -----
                 // set position to size if greater than size
@@ -415,6 +471,45 @@ public class FileChannelImpl
     //
     private static volatile boolean fileSupported = true;
 
+    private long transferToDirectlyInternal(long position, int icount,
+                                            WritableByteChannel target,
+                                            FileDescriptor targetFD)
+        throws IOException
+    {
+        assert !nd.transferToDirectlyNeedsPositionLock() ||
+               Thread.holdsLock(positionLock);
+
+        long n = -1;
+        int ti = -1;
+        try {
+            begin();
+            ti = threads.add();
+            if (!isOpen())
+                return -1;
+            // Android-added: BlockGuard support.
+            BlockGuard.getThreadPolicy().onWriteToDisk();
+            do {
+//                n = transferTo0(fd, position, icount, targetFD);
+            } while ((n == IOStatus.INTERRUPTED) && isOpen());
+            if (n == IOStatus.UNSUPPORTED_CASE) {
+                if (target instanceof SinkChannelImpl)
+                    pipeSupported = false;
+                if (target instanceof FileChannelImpl)
+                    fileSupported = false;
+                return IOStatus.UNSUPPORTED_CASE;
+            }
+            if (n == IOStatus.UNSUPPORTED) {
+                // Don't bother trying again
+                transferSupported = false;
+                return IOStatus.UNSUPPORTED;
+            }
+            return IOStatus.normalize(n);
+        } finally {
+            threads.remove(ti);
+            end (n > -1);
+        }
+    }
+
     private long transferToDirectly(long position, int icount,
                                     WritableByteChannel target)
         throws IOException
@@ -433,6 +528,7 @@ public class FileChannelImpl
                 return IOStatus.UNSUPPORTED_CASE;
             targetFD = ((SelChImpl)target).getFD();
         }
+
         if (targetFD == null)
             return IOStatus.UNSUPPORTED;
         int thisFDVal = IOUtil.fdVal(fd);
@@ -837,6 +933,8 @@ public class FileChannelImpl
         throws IOException
     {
         ensureOpen();
+        if (mode == null)
+            throw new NullPointerException("Mode is null");
         if (position < 0L)
             throw new IllegalArgumentException("Negative position");
         if (size < 0L)
@@ -845,6 +943,7 @@ public class FileChannelImpl
             throw new IllegalArgumentException("Position + size overflow");
         if (size > Integer.MAX_VALUE)
             throw new IllegalArgumentException("Size exceeds Integer.MAX_VALUE");
+
         int imode = -1;
         if (mode == MapMode.READ_ONLY)
             imode = MAP_RO;
@@ -899,6 +998,13 @@ public class FileChannelImpl
                 addr = 0;
                 // a valid file descriptor is not required
                 FileDescriptor dummy = new FileDescriptor();
+                // Android-changed: Allocate a DirectByteBuffer directly.
+                /*
+                if ((!writable) || (imode == MAP_RO))
+                    return Util.newMappedByteBufferR(0, 0, dummy, null);
+                else
+                    return Util.newMappedByteBuffer(0, 0, dummy, null);
+                */
                 return new DirectByteBuffer(0, 0, dummy, null,
                         (!writable) || (imode == MAP_RO) /* readOnly */);
             }
@@ -907,8 +1013,9 @@ public class FileChannelImpl
             long mapPosition = position - pagePosition;
             long mapSize = size + pagePosition;
             try {
-                // If no exception was thrown from map0, the address is valid
+                // Android-added: BlockGuard support.
                 BlockGuard.getThreadPolicy().onReadFromDisk();
+                // If no exception was thrown from map0, the address is valid
                 addr = map0(imode, mapPosition, mapSize);
             } catch (OutOfMemoryError x) {
                 // An OutOfMemoryError may indicate that we've exhausted memory
@@ -941,6 +1048,20 @@ public class FileChannelImpl
             assert (addr % allocationGranularity == 0);
             int isize = (int)size;
             Unmapper um = new Unmapper(addr, mapSize, isize, mfd);
+            // Android-changed: Allocate a DirectByteBuffer directly.
+            /*
+            if ((!writable) || (imode == MAP_RO)) {
+                return Util.newMappedByteBufferR(isize,
+                                                 addr + pagePosition,
+                                                 mfd,
+                                                 um);
+            } else {
+                return Util.newMappedByteBuffer(isize,
+                                                addr + pagePosition,
+                                                mfd,
+                                                um);
+            }
+            */
             return new DirectByteBuffer(isize, addr + pagePosition, mfd, um,
                     (!writable) || (imode == MAP_RO));
         } finally {
@@ -949,7 +1070,37 @@ public class FileChannelImpl
         }
     }
 
+    // Android-removed: Unused method getMappedBufferPool().
+    /*
+    /**
+     * Invoked by sun.management.ManagementFactoryHelper to create the management
+     * interface for mapped buffers.
+     *
+    public static sun.misc.JavaNioAccess.BufferPool getMappedBufferPool() {
+        return new sun.misc.JavaNioAccess.BufferPool() {
+            @Override
+            public String getName() {
+                return "mapped";
+            }
+            @Override
+            public long getCount() {
+                return Unmapper.count;
+            }
+            @Override
+            public long getTotalCapacity() {
+                return Unmapper.totalCapacity;
+            }
+            @Override
+            public long getMemoryUsed() {
+                return Unmapper.totalSize;
+            }
+        };
+    }
+    */
+
     // -- Locks --
+
+
 
     // keeps track of locks on this file
     private volatile FileLockTable fileLockTable;
@@ -1170,6 +1321,8 @@ public class FileChannelImpl
     private static native long initIDs();
 
     static {
+        // Android-removed: Move clinit code to JNI registration functions.
+        // IOUtil.load();
         allocationGranularity = initIDs();
     }
 

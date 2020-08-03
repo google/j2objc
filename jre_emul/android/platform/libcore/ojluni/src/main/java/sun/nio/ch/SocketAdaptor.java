@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,6 +26,8 @@
 
 package sun.nio.ch;
 
+import sun.misc.IoTrace;
+
 import java.io.*;
 import java.lang.ref.*;
 import java.net.*;
@@ -34,8 +36,6 @@ import java.nio.channels.*;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
-
-import sun.misc.IoTrace;
 
 
 // Make a socket channel look like a socket.
@@ -61,6 +61,7 @@ public class SocketAdaptor
     private volatile int timeout = 0;
 
     private SocketAdaptor(SocketChannelImpl sc) throws SocketException {
+        // Android-changed: Conscrypt compatibility, ensure fd is not null. http://b/25857624
         super(new FileDescriptorHolderSocketImpl(sc.getFD()));
         this.sc = sc;
     }
@@ -96,7 +97,8 @@ public class SocketAdaptor
             try {
 
                 if (timeout == 0) {
-                    // Android-changed: Be consistent
+                    // Android-changed: Translate exceptions consistently.
+                    // sc.connect(remote);
                     try {
                         sc.connect(remote);
                     } catch (Exception ex) {
@@ -158,8 +160,7 @@ public class SocketAdaptor
     }
 
     public InetAddress getInetAddress() {
-        // Use #remoteAddress and do manual isConnected check. #getRemoteAddress() returns
-        // non-null result before connection.
+        // Android-changed: remoteAddress() returns non-null before connection. http://b/26140820
         if (!isConnected()) {
             return null;
         }
@@ -174,15 +175,15 @@ public class SocketAdaptor
     public InetAddress getLocalAddress() {
         if (sc.isOpen()) {
             InetSocketAddress local = sc.localAddress();
-            if (local != null)
+            if (local != null) {
                 return Net.getRevealedLocalAddress(local).getAddress();
+            }
         }
         return new InetSocketAddress(0).getAddress();
     }
 
     public int getPort() {
-        // Use #remoteAddress and do manual isConnected check. #getRemoteAddress() returns
-        // non-null result before connection.
+        // Android-changed: remoteAddress() returns non-null before connection. http://b/26140820
         if (!isConnected()) {
           return 0;
         }
@@ -484,6 +485,7 @@ public class SocketAdaptor
         return !sc.isOutputOpen();
     }
 
+    // Android-added: for testing and internal use.
     @Override
     public FileDescriptor getFileDescriptor$() {
         return sc.getFD();

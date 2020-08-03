@@ -672,6 +672,62 @@ Java_sun_nio_ch_Net_shutdown(JNIEnv *env, jclass cl, jobject fdo, jint jhow)
         handleSocketError(env, errno);
 }
 
+JNIEXPORT jint JNICALL
+Java_sun_nio_ch_Net_poll(JNIEnv* env, jclass this, jobject fdo, jint events, jlong timeout)
+{
+    struct pollfd pfd;
+    int rv;
+    pfd.fd = fdval(env, fdo);
+    pfd.events = events;
+    rv = poll(&pfd, 1, (int) timeout);
+
+    if (rv >= 0) {
+        return pfd.revents;
+    } else if (errno == EINTR) {
+        return IOS_INTERRUPTED;
+    } else {
+        handleSocketError(env, errno);
+        return IOS_THROWN;
+    }
+}
+
+JNIEXPORT jshort JNICALL
+Java_sun_nio_ch_Net_pollinValue(JNIEnv *env, jclass this)
+{
+    return (jshort)POLLIN;
+}
+
+JNIEXPORT jshort JNICALL
+Java_sun_nio_ch_Net_polloutValue(JNIEnv *env, jclass this)
+{
+    return (jshort)POLLOUT;
+}
+
+JNIEXPORT jshort JNICALL
+Java_sun_nio_ch_Net_pollerrValue(JNIEnv *env, jclass this)
+{
+    return (jshort)POLLERR;
+}
+
+JNIEXPORT jshort JNICALL
+Java_sun_nio_ch_Net_pollhupValue(JNIEnv *env, jclass this)
+{
+    return (jshort)POLLHUP;
+}
+
+JNIEXPORT jshort JNICALL
+Java_sun_nio_ch_Net_pollnvalValue(JNIEnv *env, jclass this)
+{
+    return (jshort)POLLNVAL;
+}
+
+JNIEXPORT jshort JNICALL
+Java_sun_nio_ch_Net_pollconnValue(JNIEnv *env, jclass this)
+{
+    return (jshort)POLLOUT;
+}
+
+
 /* Declared in nio_util.h */
 
 jint

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -30,14 +30,16 @@ import dalvik.system.BlockGuard;
 
 import java.io.*;
 import java.net.*;
+import jdk.net.*;
 import java.nio.channels.*;
 import java.util.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
+import sun.net.ExtendedOptionsImpl;
 
 
-class Net {                                             // package-private
+public class Net {
 
     private Net() { }
 
@@ -57,30 +59,8 @@ class Net {                                             // package-private
     // set to true if exclusive binding is on for Windows
     private static final boolean exclusiveBind;
 
-    static {
-        int availLevel = isExclusiveBindAvailable();
-        if (availLevel >= 0) {
-            String exclBindProp =
-                java.security.AccessController.doPrivileged(
-                      new PrivilegedAction<String>() {
-                          @Override
-                        public String run() {
-                            return System.getProperty(
-                                    "sun.net.useExclusiveBind");
-                        }
-                    });
-            if (exclBindProp != null) {
-                exclusiveBind = exclBindProp.length() == 0 ?
-                        true : Boolean.parseBoolean(exclBindProp);
-            } else if (availLevel == 1) {
-                exclusiveBind = true;
-            } else {
-                exclusiveBind = false;
-            }
-        } else {
-            exclusiveBind = false;
-        }
-    }
+    // set to true if the fast tcp loopback should be enabled on Windows
+    private static final boolean fastLoopback;
 
     // -- Miscellaneous utilities --
 
@@ -120,12 +100,12 @@ class Net {                                             // package-private
         return canJoin6WithIPv4Group0();
     }
 
-    static InetSocketAddress checkAddress(SocketAddress sa) {
+    public static InetSocketAddress checkAddress(SocketAddress sa) {
         if (sa == null)
-            // ----- BEGIN android -----
+            // BEGIN Android-changed: Throw IllegalArgumentException not NullPointerException.
             //throw new NullPointerException();
             throw new IllegalArgumentException("sa == null");
-            // ----- END android -----
+            // END Android-changed: Throw IllegalArgumentException not NullPointerException.
 
         if (!(sa instanceof InetSocketAddress))
             throw new UnsupportedAddressTypeException(); // ## needs arg
@@ -162,8 +142,8 @@ class Net {                                             // package-private
             nx = new SocketException("Unsupported address type");
         else if (x instanceof UnresolvedAddressException) {
             nx = new SocketException("Unresolved address");
+        // Android-added: Handling for AlreadyConnectedException.
         } else if (x instanceof AlreadyConnectedException) {
-            // Android added.
             nx = new SocketException("Already connected");
         }
         if (nx != x)
@@ -207,15 +187,12 @@ class Net {                                             // package-private
         if (addr == null || sm == null)
             return addr;
 
-        if (!getRevealLocalAddress()) {
+        try{
+            sm.checkConnect(addr.getAddress().getHostAddress(), -1);
+            // Security check passed
+        } catch (SecurityException e) {
             // Return loopback address only if security check fails
-            try{
-                sm.checkConnect(addr.getAddress().getHostAddress(), -1);
-                //Security check passed
-            } catch (SecurityException e) {
-                //Return loopback address
-                addr = getLoopbackAddress(addr.getPort());
-            }
+            addr = getLoopbackAddress(addr.getPort());
         }
         return addr;
     }
@@ -337,6 +314,16 @@ class Net {                                             // package-private
 
         // only simple values supported by this method
         Class<?> type = name.type();
+
+        if (type == SocketFlow.class) {
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkPermission(new NetworkPermission("setOption.SO_FLOW_SLA"));
+            }
+            ExtendedOptionsImpl.setFlowOption(fd, (SocketFlow)value);
+            return;
+        }
+
         if (type != Integer.class && type != Boolean.class)
             throw new AssertionError("Should not reach here");
 
@@ -380,7 +367,8 @@ class Net {                                             // package-private
         }
 
         boolean mayNeedConversion = (family == UNSPEC);
-        setIntOption0(fd, mayNeedConversion, key.level(), key.name(), arg);
+        boolean isIPv6 = (family == StandardProtocolFamily.INET6);
+        setIntOption0(fd, mayNeedConversion, key.level(), key.name(), arg, isIPv6);
     }
 
     static Object getSocketOption(FileDescriptor fd, ProtocolFamily family,
@@ -388,6 +376,16 @@ class Net {                                             // package-private
         throws IOException
     {
         Class<?> type = name.type();
+
+        if (type == SocketFlow.class) {
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkPermission(new NetworkPermission("getOption.SO_FLOW_SLA"));
+            }
+            SocketFlow flow = SocketFlow.create();
+            ExtendedOptionsImpl.getFlowOption(fd, flow);
+            return flow;
+        }
 
         // only simple values supported by this method
         if (type != Integer.class && type != Boolean.class)
@@ -406,6 +404,23 @@ class Net {                                             // package-private
         } else {
             return (value == 0) ? Boolean.FALSE : Boolean.TRUE;
         }
+    }
+
+    public static boolean isFastTcpLoopbackRequested() {
+        String loopbackProp = java.security.AccessController.doPrivileged(
+            new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty("jdk.net.useFastTcpLoopback");
+                }
+            });
+        boolean enable;
+        if ("".equals(loopbackProp)) {
+            enable = true;
+        } else {
+            enable = Boolean.parseBoolean(loopbackProp);
+        }
+        return enable;
     }
 
     // -- Socket operations --
@@ -430,17 +445,18 @@ class Net {                                             // package-private
         throws IOException {
         boolean preferIPv6 = isIPv6Available() &&
             (family != StandardProtocolFamily.INET);
-        return IOUtil.newFD(socket0(preferIPv6, stream, false));
+        return IOUtil.newFD(socket0(preferIPv6, stream, false, fastLoopback));
     }
 
     static FileDescriptor serverSocket(boolean stream) {
-        return IOUtil.newFD(socket0(isIPv6Available(), stream, true));
+        return IOUtil.newFD(socket0(isIPv6Available(), stream, true, fastLoopback));
     }
 
     // Due to oddities SO_REUSEADDR on windows reuse is ignored
-    private static native int socket0(boolean preferIPv6, boolean stream, boolean reuse);
+    private static native int socket0(boolean preferIPv6, boolean stream, boolean reuse,
+                                      boolean fastLoopback);
 
-    static void bind(FileDescriptor fd, InetAddress addr, int port)
+    public static void bind(FileDescriptor fd, InetAddress addr, int port)
         throws IOException
     {
         bind(UNSPEC, fd, addr, port);
@@ -470,6 +486,7 @@ class Net {                                             // package-private
     static int connect(ProtocolFamily family, FileDescriptor fd, InetAddress remote, int remotePort)
         throws IOException
     {
+        // Android-added: BlockGuard support.
         BlockGuard.getThreadPolicy().onNetwork();
 
         boolean preferIPv6 = isIPv6Available() &&
@@ -496,7 +513,7 @@ class Net {                                             // package-private
     private static native InetAddress localInetAddress(FileDescriptor fd)
         throws IOException;
 
-    static InetSocketAddress localAddress(FileDescriptor fd)
+    public static InetSocketAddress localAddress(FileDescriptor fd)
         throws IOException
     {
         return new InetSocketAddress(localInetAddress(fd), localPort(fd));
@@ -521,7 +538,10 @@ class Net {                                             // package-private
         throws IOException;
 
     private static native void setIntOption0(FileDescriptor fd, boolean mayNeedConversion,
-                                             int level, int opt, int arg)
+                                             int level, int opt, int arg, boolean isIPv6)
+        throws IOException;
+
+    static native int poll(FileDescriptor fd, int events, long timeout)
         throws IOException;
 
     // -- Multicast support --
@@ -619,4 +639,67 @@ class Net {                                             // package-private
     static native void setInterface6(FileDescriptor fd, int index) throws IOException;
 
     static native int getInterface6(FileDescriptor fd) throws IOException;
+
+    // Android-removed: Code to load native libraries, doesn't make sense on Android.
+    // private static native void initIDs();
+
+    /**
+     * Event masks for the various poll system calls.
+     * They will be set platform dependant in the static initializer below.
+     */
+    public static final short POLLIN;
+    public static final short POLLOUT;
+    public static final short POLLERR;
+    public static final short POLLHUP;
+    public static final short POLLNVAL;
+    public static final short POLLCONN;
+
+    static native short pollinValue();
+    static native short polloutValue();
+    static native short pollerrValue();
+    static native short pollhupValue();
+    static native short pollnvalValue();
+    static native short pollconnValue();
+
+    static {
+        // Android-removed: Code to load native libraries, doesn't make sense on Android.
+        /*
+        IOUtil.load();
+        initIDs();
+        */
+
+        POLLIN     = pollinValue();
+        POLLOUT    = polloutValue();
+        POLLERR    = pollerrValue();
+        POLLHUP    = pollhupValue();
+        POLLNVAL   = pollnvalValue();
+        POLLCONN   = pollconnValue();
+    }
+
+    static {
+        int availLevel = isExclusiveBindAvailable();
+        if (availLevel >= 0) {
+            String exclBindProp =
+                java.security.AccessController.doPrivileged(
+                    new PrivilegedAction<String>() {
+                        @Override
+                        public String run() {
+                            return System.getProperty(
+                                    "sun.net.useExclusiveBind");
+                        }
+                    });
+            if (exclBindProp != null) {
+                exclusiveBind = exclBindProp.length() == 0 ?
+                        true : Boolean.parseBoolean(exclBindProp);
+            } else if (availLevel == 1) {
+                exclusiveBind = true;
+            } else {
+                exclusiveBind = false;
+            }
+        } else {
+            exclusiveBind = false;
+        }
+
+        fastLoopback = isFastTcpLoopbackRequested();
+    }
 }

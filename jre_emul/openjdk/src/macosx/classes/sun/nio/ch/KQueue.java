@@ -114,8 +114,9 @@ class KQueue {
     static native int keventPoll(int kqpfd, long pollAddress, int nevents)
         throws IOException;
 
-//    TODO(amisail): look at this
-//    static {
-//        IOUtil.load();
-//    }
+    /* J2ObjC removed: Native code initialization not required.
+    static {
+        IOUtil.load();
+    }
+     */
 }

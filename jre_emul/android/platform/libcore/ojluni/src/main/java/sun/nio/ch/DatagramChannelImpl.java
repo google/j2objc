@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2001, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -35,9 +35,13 @@ import java.nio.channels.*;
 import java.nio.channels.spi.*;
 import java.util.*;
 
+/* J2ObjC removed: unsupported annotation
+import dalvik.annotation.optimization.ReachabilitySensitive;
+ */
 import dalvik.system.BlockGuard;
+import dalvik.system.CloseGuard;
 import sun.net.ResourceManager;
-
+import sun.net.ExtendedOptionsImpl;
 
 /**
  * An implementation of DatagramChannels.
@@ -52,7 +56,12 @@ class DatagramChannelImpl
     private static NativeDispatcher nd = new DatagramDispatcher();
 
     // Our file descriptor
-    // Android-changed: Make the fd package visible so that we can expose it through DatagramSocketAdaptor.
+    // Android-added: @ReachabilitySensitive.
+    /* J2ObjC removed: unsupported annotation
+    @ReachabilitySensitive
+     */
+    // Android-changed: Make the fd visible for DatagramSocketAdaptor.
+    // private final FileDescriptor fd;
     final FileDescriptor fd;
 
     // fd value needed for dev/poll. This value will remain valid
@@ -109,6 +118,11 @@ class DatagramChannelImpl
 
     // -- End of fields protected by stateLock
 
+    // Android-added: CloseGuard support.
+    /* J2ObjC removed: unsupported annotation
+    @ReachabilitySensitive
+     */
+    private final CloseGuard guard = CloseGuard.get();
 
     public DatagramChannelImpl(SelectorProvider sp)
         throws IOException
@@ -121,6 +135,10 @@ class DatagramChannelImpl
             this.fd = Net.socket(family, false);
             this.fdVal = IOUtil.fdVal(fd);
             this.state = ST_UNCONNECTED;
+            // Android-added: CloseGuard support.
+            if (fd != null && fd.valid()) {
+                guard.open("close");
+            }
         } catch (IOException ioe) {
             ResourceManager.afterUdpClose();
             throw ioe;
@@ -148,6 +166,10 @@ class DatagramChannelImpl
         this.fd = Net.socket(family, false);
         this.fdVal = IOUtil.fdVal(fd);
         this.state = ST_UNCONNECTED;
+        // Android-added: CloseGuard support.
+        if (fd != null && fd.valid()) {
+            guard.open("close");
+        }
     }
 
     public DatagramChannelImpl(SelectorProvider sp, FileDescriptor fd)
@@ -160,6 +182,10 @@ class DatagramChannelImpl
         this.fdVal = IOUtil.fdVal(fd);
         this.state = ST_UNCONNECTED;
         this.localAddress = Net.localAddress(fd);
+        // Android-added: CloseGuard support.
+        if (fd != null && fd.valid()) {
+            guard.open("close");
+        }
     }
 
     public DatagramSocket socket() {
@@ -170,10 +196,12 @@ class DatagramChannelImpl
         }
     }
 
+    @Override
     public SocketAddress getLocalAddress() throws IOException {
         synchronized (stateLock) {
             if (!isOpen())
                 throw new ClosedChannelException();
+            // Perform security check before returning address
             return Net.getRevealedLocalAddress(localAddress);
         }
     }
@@ -199,15 +227,8 @@ class DatagramChannelImpl
         synchronized (stateLock) {
             ensureOpen();
 
-            if (name == StandardSocketOptions.IP_TOS) {
-                // IPv4 only; no-op for IPv6
-                if (family == StandardProtocolFamily.INET) {
-                    Net.setSocketOption(fd, family, name, value);
-                }
-                return this;
-            }
-
-            if (name == StandardSocketOptions.IP_MULTICAST_TTL ||
+            if (name == StandardSocketOptions.IP_TOS ||
+                name == StandardSocketOptions.IP_MULTICAST_TTL ||
                 name == StandardSocketOptions.IP_MULTICAST_LOOP)
             {
                 // options are protocol dependent
@@ -224,6 +245,18 @@ class DatagramChannelImpl
                     if (index == -1)
                         throw new IOException("Network interface cannot be identified");
                     Net.setInterface6(fd, index);
+                    // BEGIN Android-added: Apply IP_MULTICAST_IF to dual-stack sockets.
+                    // On dual-stack sockets, IP_MULTICAST_IF sets inet_sk(sk)->mc_index and
+                    // inet_sk(sk)->mc_addr, which are specific to IPv4, and IPV6_MULTICAST_IF sets
+                    // inet6_sk(sk)->mcast_oif, which are specific to IPv6. For IPv4 multicast
+                    // traffic to work over an interface that is not the default, we need to
+                    // configure both. http://b/144222142
+                    Inet4Address target = Net.anyInet4Address(interf);
+                    if (target != null) {
+                        int targetAddress = Net.inet4AsInt(target);
+                        Net.setInterface4(fd, targetAddress);
+                    }
+                    // END Android-added: Apply IP_MULTICAST_IF to dual-stack sockets.
                 } else {
                     // need IPv4 address to identify interface
                     Inet4Address target = Net.anyInet4Address(interf);
@@ -247,6 +280,7 @@ class DatagramChannelImpl
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getOption(SocketOption<T> name)
         throws IOException
@@ -321,10 +355,14 @@ class DatagramChannelImpl
             set.add(StandardSocketOptions.IP_MULTICAST_IF);
             set.add(StandardSocketOptions.IP_MULTICAST_TTL);
             set.add(StandardSocketOptions.IP_MULTICAST_LOOP);
+            if (ExtendedOptionsImpl.flowSupported()) {
+                set.add(jdk.net.ExtendedSocketOptions.SO_FLOW_SLA);
+            }
             return Collections.unmodifiableSet(set);
         }
     }
 
+    @Override
     public final Set<SocketOption<?>> supportedOptions() {
         return DefaultOptionsHolder.defaultOptions;
     }
@@ -341,15 +379,13 @@ class DatagramChannelImpl
             throw new IllegalArgumentException("Read-only buffer");
         if (dst == null)
             throw new NullPointerException();
-        // Android-changed : Do not attempt to bind to 0 (or 0.0.0.0) if there hasn't been
-        // an explicit call to bind() yet. Fail fast and return null.
-        if (localAddress == null)
-            return null;
         synchronized (readLock) {
             ensureOpen();
             // Socket was not bound before attempting receive
-            // if (localAddress() == null)
+            // Android-changed: Do not implicitly to bind to 0 (or 0.0.0.0), return null instead.
+            if (localAddress() == null)
             //     bind(null);
+                return null;
             int n = 0;
             ByteBuffer bb = null;
             try {
@@ -415,6 +451,7 @@ class DatagramChannelImpl
         int newSize = Math.max(rem, 1);
         ByteBuffer bb = Util.getTemporaryDirectBuffer(newSize);
         try {
+            // Android-added: BlockGuard support.
             BlockGuard.getThreadPolicy().onNetwork();
 
             int n = receiveIntoNativeBuffer(fd, bb, newSize, 0);
@@ -478,6 +515,7 @@ class DatagramChannelImpl
                 if (!isOpen())
                     return 0;
                 writerThread = NativeThread.current();
+                // Android-added: BlockGuard support.
                 BlockGuard.getThreadPolicy().onNetwork();
 
                 do {
@@ -762,6 +800,26 @@ class DatagramChannelImpl
 
                     // set or refresh local address
                     localAddress = Net.localAddress(fd);
+
+                    // flush any packets already received.
+                    boolean blocking = false;
+                    synchronized (blockingLock()) {
+                        try {
+                            blocking = isBlocking();
+                            // remainder of each packet thrown away
+                            ByteBuffer tmpBuf = ByteBuffer.allocate(1);
+                            if (blocking) {
+                                configureBlocking(false);
+                            }
+                            do {
+                                tmpBuf.clear();
+                            } while (receive(tmpBuf) != null);
+                        } finally {
+                            if (blocking) {
+                                configureBlocking(true);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -799,7 +857,7 @@ class DatagramChannelImpl
     private MembershipKey innerJoin(InetAddress group,
                                     NetworkInterface interf,
                                     InetAddress source)
-            throws IOException
+        throws IOException
     {
         if (!group.isMulticastAddress())
             throw new IllegalArgumentException("Group not a multicast address");
@@ -845,7 +903,7 @@ class DatagramChannelImpl
 
             MembershipKeyImpl key;
             if ((family == StandardProtocolFamily.INET6) &&
-                    ((group instanceof Inet6Address) || Net.canJoin6WithIPv4Group()))
+                ((group instanceof Inet6Address) || Net.canJoin6WithIPv4Group()))
             {
                 int index = interf.getIndex();
                 if (index == -1)
@@ -854,7 +912,7 @@ class DatagramChannelImpl
                 // need multicast and source address as byte arrays
                 byte[] groupAddress = Net.inet6AsByteArray(group);
                 byte[] sourceAddress = (source == null) ? null :
-                        Net.inet6AsByteArray(source);
+                    Net.inet6AsByteArray(source);
 
                 // join the group
                 int n = Net.join6(fd, groupAddress, index, sourceAddress);
@@ -862,7 +920,7 @@ class DatagramChannelImpl
                     throw new UnsupportedOperationException();
 
                 key = new MembershipKeyImpl.Type6(this, group, interf, source,
-                        groupAddress, index, sourceAddress);
+                                                  groupAddress, index, sourceAddress);
 
             } else {
                 // need IPv4 address to identify interface
@@ -880,7 +938,7 @@ class DatagramChannelImpl
                     throw new UnsupportedOperationException();
 
                 key = new MembershipKeyImpl.Type4(this, group, interf, source,
-                        groupAddress, targetAddress, sourceAddress);
+                                                  groupAddress, targetAddress, sourceAddress);
             }
 
             registry.add(key);
@@ -891,7 +949,7 @@ class DatagramChannelImpl
     @Override
     public MembershipKey join(InetAddress group,
                               NetworkInterface interf)
-            throws IOException
+        throws IOException
     {
         return innerJoin(group, interf, null);
     }
@@ -900,18 +958,121 @@ class DatagramChannelImpl
     public MembershipKey join(InetAddress group,
                               NetworkInterface interf,
                               InetAddress source)
-            throws IOException
+        throws IOException
     {
         if (source == null)
             throw new NullPointerException("source address is null");
         return innerJoin(group, interf, source);
     }
 
+    // package-private
+    void drop(MembershipKeyImpl key) {
+        assert key.channel() == this;
+
+        synchronized (stateLock) {
+            if (!key.isValid())
+                return;
+
+            try {
+                if (key instanceof MembershipKeyImpl.Type6) {
+                    MembershipKeyImpl.Type6 key6 =
+                        (MembershipKeyImpl.Type6)key;
+                    Net.drop6(fd, key6.groupAddress(), key6.index(), key6.source());
+                } else {
+                    MembershipKeyImpl.Type4 key4 = (MembershipKeyImpl.Type4)key;
+                    Net.drop4(fd, key4.groupAddress(), key4.interfaceAddress(),
+                        key4.source());
+                }
+            } catch (IOException ioe) {
+                // should not happen
+                throw new AssertionError(ioe);
+            }
+
+            key.invalidate();
+            registry.remove(key);
+        }
+    }
+
+    /**
+     * Block datagrams from given source if a memory to receive all
+     * datagrams.
+     */
+    void block(MembershipKeyImpl key, InetAddress source)
+        throws IOException
+    {
+        assert key.channel() == this;
+        assert key.sourceAddress() == null;
+
+        synchronized (stateLock) {
+            if (!key.isValid())
+                throw new IllegalStateException("key is no longer valid");
+            if (source.isAnyLocalAddress())
+                throw new IllegalArgumentException("Source address is a wildcard address");
+            if (source.isMulticastAddress())
+                throw new IllegalArgumentException("Source address is multicast address");
+            if (source.getClass() != key.group().getClass())
+                throw new IllegalArgumentException("Source address is different type to group");
+
+            int n;
+            if (key instanceof MembershipKeyImpl.Type6) {
+                 MembershipKeyImpl.Type6 key6 =
+                    (MembershipKeyImpl.Type6)key;
+                n = Net.block6(fd, key6.groupAddress(), key6.index(),
+                               Net.inet6AsByteArray(source));
+            } else {
+                MembershipKeyImpl.Type4 key4 =
+                    (MembershipKeyImpl.Type4)key;
+                n = Net.block4(fd, key4.groupAddress(), key4.interfaceAddress(),
+                               Net.inet4AsInt(source));
+            }
+            if (n == IOStatus.UNAVAILABLE) {
+                // ancient kernel
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    /**
+     * Unblock given source.
+     */
+    void unblock(MembershipKeyImpl key, InetAddress source) {
+        assert key.channel() == this;
+        assert key.sourceAddress() == null;
+
+        synchronized (stateLock) {
+            if (!key.isValid())
+                throw new IllegalStateException("key is no longer valid");
+
+            try {
+                if (key instanceof MembershipKeyImpl.Type6) {
+                    MembershipKeyImpl.Type6 key6 =
+                        (MembershipKeyImpl.Type6)key;
+                    Net.unblock6(fd, key6.groupAddress(), key6.index(),
+                                 Net.inet6AsByteArray(source));
+                } else {
+                    MembershipKeyImpl.Type4 key4 =
+                        (MembershipKeyImpl.Type4)key;
+                    Net.unblock4(fd, key4.groupAddress(), key4.interfaceAddress(),
+                                 Net.inet4AsInt(source));
+                }
+            } catch (IOException ioe) {
+                // should not happen
+                throw new AssertionError(ioe);
+            }
+        }
+    }
+
     protected void implCloseSelectableChannel() throws IOException {
         synchronized (stateLock) {
+            // Android-added: CloseGuard support.
+            guard.close();
             if (state != ST_KILLED)
                 nd.preClose(fd);
             ResourceManager.afterUdpClose();
+
+            // if member of mulitcast group then invalidate all keys
+            if (registry != null)
+                registry.invalidateAll();
 
             long th;
             if ((th = readerThread) != 0)
@@ -937,10 +1098,25 @@ class DatagramChannelImpl
         }
     }
 
+    // BEGIN Android-changed: Add CloseGuard support and call superclass finalizer.
+    /*
     protected void finalize() throws IOException {
         // fd is null if constructor threw exception
         if (fd != null)
             close();
+    */
+    protected void finalize() throws Throwable {
+        try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
+            // fd is null if constructor threw exception
+            if (fd != null)
+                close();
+        } finally {
+            super.finalize();
+        }
+        // END Android-changed: Add CloseGuard support and call superclass finalizer.
     }
 
     /**
@@ -952,25 +1128,24 @@ class DatagramChannelImpl
         int oldOps = sk.nioReadyOps();
         int newOps = initialOps;
 
-        if ((ops & PollArrayWrapper.POLLNVAL) != 0) {
+        if ((ops & Net.POLLNVAL) != 0) {
             // This should only happen if this channel is pre-closed while a
             // selection operation is in progress
             // ## Throw an error if this channel has not been pre-closed
             return false;
         }
 
-        if ((ops & (PollArrayWrapper.POLLERR
-                    | PollArrayWrapper.POLLHUP)) != 0) {
+        if ((ops & (Net.POLLERR | Net.POLLHUP)) != 0) {
             newOps = intOps;
             sk.nioReadyOps(newOps);
             return (newOps & ~oldOps) != 0;
         }
 
-        if (((ops & PollArrayWrapper.POLLIN) != 0) &&
+        if (((ops & Net.POLLIN) != 0) &&
             ((intOps & SelectionKey.OP_READ) != 0))
             newOps |= SelectionKey.OP_READ;
 
-        if (((ops & PollArrayWrapper.POLLOUT) != 0) &&
+        if (((ops & Net.POLLOUT) != 0) &&
             ((intOps & SelectionKey.OP_WRITE) != 0))
             newOps |= SelectionKey.OP_WRITE;
 
@@ -986,6 +1161,28 @@ class DatagramChannelImpl
         return translateReadyOps(ops, 0, sk);
     }
 
+    // package-private
+    int poll(int events, long timeout) throws IOException {
+        assert Thread.holdsLock(blockingLock()) && !isBlocking();
+
+        synchronized (readLock) {
+            int n = 0;
+            try {
+                begin();
+                synchronized (stateLock) {
+                    if (!isOpen())
+                        return 0;
+                    readerThread = NativeThread.current();
+                }
+                n = Net.poll(fd, events, timeout);
+            } finally {
+                readerThread = 0;
+                end(n > 0);
+            }
+            return n;
+        }
+    }
+
     /**
      * Translates an interest operation set into a native poll event set
      */
@@ -993,11 +1190,11 @@ class DatagramChannelImpl
         int newOps = 0;
 
         if ((ops & SelectionKey.OP_READ) != 0)
-            newOps |= PollArrayWrapper.POLLIN;
+            newOps |= Net.POLLIN;
         if ((ops & SelectionKey.OP_WRITE) != 0)
-            newOps |= PollArrayWrapper.POLLOUT;
+            newOps |= Net.POLLOUT;
         if ((ops & SelectionKey.OP_CONNECT) != 0)
-            newOps |= PollArrayWrapper.POLLIN;
+            newOps |= Net.POLLIN;
         sk.selector.putEventOps(sk, newOps);
     }
 
@@ -1026,6 +1223,8 @@ class DatagramChannelImpl
         throws IOException;
 
     static {
+        // Android removed: Native code initialization not required.
+        // IOUtil.load();
         initIDs();
     }
 

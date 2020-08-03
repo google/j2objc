@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2003, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,22 +23,24 @@
  * questions.
  */
 
-package sun.nio.ch;
+package jdk.net;
 
-import java.io.IOException;
-import java.nio.channels.*;
-import java.nio.channels.spi.*;
+import java.security.BasicPermission;
 
-public class PollSelectorProvider
-    extends SelectorProviderImpl
-{
-    public AbstractSelector openSelector() throws IOException {
-        return new PollSelectorImpl(this);
+// Android-changed: Stubbed the implementation.  Android doesn't support SecurityManager.
+// See comments in java.lang.SecurityManager for details.
+/**
+ * Legacy security code; do not use.
+ */
+// Android-removed: @jdk.Exported, not present on Android.
+// @jdk.Exported
+public final class NetworkPermission extends BasicPermission {
+
+    public NetworkPermission(String name) {
+        super("");
     }
 
-    public Channel inheritedChannel() throws IOException {
-        // Android-changed: Android never has stdin/stdout connected to a socket.
-        // return InheritedChannel.getChannel();
-        return null;
+    public NetworkPermission(String name, String actions) {
+        super("", "");
     }
 }

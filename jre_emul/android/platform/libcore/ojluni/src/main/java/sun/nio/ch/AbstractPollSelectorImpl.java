@@ -28,6 +28,8 @@ package sun.nio.ch;
 import java.io.IOException;
 import java.nio.channels.*;
 import java.nio.channels.spi.*;
+import java.util.*;
+import sun.misc.*;
 
 
 /**

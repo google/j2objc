@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2001, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -35,15 +35,7 @@ import sun.misc.*;
  * @since 1.4
  */
 
-abstract class AbstractPollArrayWrapper {
-
-    // Event masks
-    static final short POLLIN       = 0x0001;
-    static final short POLLOUT      = 0x0004;
-    static final short POLLERR      = 0x0008;
-    static final short POLLHUP      = 0x0010;
-    static final short POLLNVAL     = 0x0020;
-    static final short POLLREMOVE   = 0x0800;
+public abstract class AbstractPollArrayWrapper {
 
     // Miscellaneous constants
     static final short SIZE_POLLFD   = 8;
