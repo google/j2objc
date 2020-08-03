@@ -26,14 +26,11 @@
 
 package sun.nio.ch;
 
-<<<<<<< HEAD
 import com.google.j2objc.LibraryNotLinkedError;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
 import java.io.IOException;
 import java.io.FileDescriptor;
-=======
->>>>>>> c443a0ecd... Updating sun.nio.ch
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
