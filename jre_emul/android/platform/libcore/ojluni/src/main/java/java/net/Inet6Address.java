@@ -38,6 +38,10 @@ import libcore.io.Libcore;
 import libcore.io.NetworkOs;
 import static libcore.io.OsConstants.*;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * This class represents an Internet Protocol version 6 (IPv6) address.
  * Defined by <a href="http://www.ietf.org/rfc/rfc2373.txt">
@@ -198,7 +202,7 @@ class Inet6Address extends InetAddress {
             new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 0);
     // END Android-added: Define special-purpose IPv6 address.
 
-    private class Inet6AddressHolder {
+    /* J2ObjC removed: private */ class Inet6AddressHolder {
 
         private Inet6AddressHolder() {
             ipaddress = new byte[INADDRSZ];
@@ -399,7 +403,7 @@ class Inet6Address extends InetAddress {
         }
     }
 
-    private final transient Inet6AddressHolder holder6;
+    /* J2ObjC removed: private */ final transient Inet6AddressHolder holder6;
 
     private static final long serialVersionUID = 6880410070516793377L;
 
@@ -910,6 +914,9 @@ class Inet6Address extends InetAddress {
     public String getHostAddress() {
         // Android-changed: getnameinfo returns smarter representations than getHostAddress().
         // return holder6.getHostAddress();
+        /* J2ObjC modified.
+        return Libcore.os.getnameinfo(this, NI_NUMERICHOST); // Can't throw.
+         */
         return NetworkOs.getnameinfo(this, NI_NUMERICHOST); // Can't throw.
     }
 

@@ -605,9 +605,9 @@ jobject createNetworkInterface(JNIEnv *env, netif *ifs) {
         scope = ((struct sockaddr_in6*)addrP->addr)->sin6_scope_id;
 
         if (scope != 0) { /* zero is default value, no need to set */
-          ((JavaNetInet6Address *)iaObj)->scope_id_ = scope;
-          ((JavaNetInet6Address *)iaObj)->scope_id_set_ = JNI_TRUE;
-          ((JavaNetInet6Address *)iaObj)->scope_ifname_ = netifObj;
+          ((JavaNetInet6Address *)iaObj)->holder6_->scope_id_ = scope;
+          ((JavaNetInet6Address *)iaObj)->holder6_->scope_id_set_ = JNI_TRUE;
+          ((JavaNetInet6Address *)iaObj)->holder6_->scope_ifname_ = netifObj;
         }
         (*env)->SetObjectField(env, iaObj, ni_ia6ipaddressID, ipaddress);
       }

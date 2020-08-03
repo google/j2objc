@@ -181,14 +181,14 @@ NET_SockaddrToInetAddress(JNIEnv *env, struct sockaddr *him, int *port) {
             (*env)->SetByteArrayRegion(env, ipaddress, 0, 16,
                                        (jbyte *)&(him6->sin6_addr));
 
-            JreStrongAssign(&((JavaNetInet6Address *)iaObj)->ipaddress_,
+            JreStrongAssign(&((JavaNetInet6Address *)iaObj)->holder6_->ipaddress_,
                 ipaddress);
 
             setInetAddress_family(env, iaObj, IPv6);
             scope = getScopeID(him);
-            ((JavaNetInet6Address *)iaObj)->scope_id_ = scope;
+            ((JavaNetInet6Address *)iaObj)->holder6_->scope_id_ = scope;
             if (scope > 0)
-                ((JavaNetInet6Address *)iaObj)->scope_id_set_ = JNI_TRUE;
+                ((JavaNetInet6Address *)iaObj)->holder6_->scope_id_set_ = JNI_TRUE;
         }
         *port = ntohs(him6->sin6_port);
     } else
@@ -248,8 +248,8 @@ NET_SockaddrEqualsInetAddress(JNIEnv *env, struct sockaddr *him, jobject iaObj)
             if (family == AF_INET) {
                 return JNI_FALSE;
             }
-            ipaddress = ((JavaNetInet6Address *)iaObj)->ipaddress_;
-            scope = ((JavaNetInet6Address *)iaObj)->scope_id_;
+            ipaddress = ((JavaNetInet6Address *)iaObj)->holder6_->ipaddress_;
+            scope = ((JavaNetInet6Address *)iaObj)->holder6_->scope_id_;
             (*env)->GetByteArrayRegion(env, ipaddress, 0, 16, caddrCur);
             if (NET_IsEqual(caddrNew, caddrCur) && cmpScopeID(scope, him)) {
                 return JNI_TRUE;

@@ -1838,7 +1838,7 @@ static void mcast_join_leave(JNIEnv *env, jobject this,
             caddr[14] = ((address >> 8) & 0xff);
             caddr[15] = (address & 0xff);
         } else {
-            ipaddress = ((JavaNetInet6Address *)iaObj)->ipaddress_;
+            ipaddress = ((JavaNetInet6Address *)iaObj)->holder6_->ipaddress_;
             (*env)->GetByteArrayRegion(env, ipaddress, 0, 16, caddr);
         }
 

@@ -231,7 +231,7 @@ public final class NetworkOs {
     if (ss->ss_family == AF_INET6) {
       // IPv6 address. Copy the bytes...
       jbyte *dst = (jbyte *)sin6->sin6_addr.s6_addr;
-      [((JavaNetInet6Address *) inetAddress)->ipaddress_ getBytes:dst length:16];
+      [((JavaNetInet6Address *) inetAddress)->holder6_->ipaddress_ getBytes:dst length:16];
       // ...and set the scope id...
       sin6->sin6_scope_id = [(JavaNetInet6Address *) inetAddress getScopeId];
       *sa_len = sizeof(struct sockaddr_in6);
