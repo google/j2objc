@@ -656,6 +656,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/StructStatVfs.java \
   libcore/io/StructTimeval.java \
   libcore/io/StructUtsname.java \
+  libcore/content/type/MimeMap.java \
   libcore/net/MimeUtils.java \
   libcore/net/url/UrlUtils.java \
   libcore/reflect/AnnotatedElements.java \
