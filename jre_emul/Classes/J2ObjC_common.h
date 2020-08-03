@@ -165,7 +165,7 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValu
 void JreReleaseVolatile(volatile_id *pVar);
 
 #define JreRetainedLocalValue(value) AUTORELEASE(RETAIN_((id)(value)))
-id JreVolatileNativeAssign(volatile_id *pIvar, __unsafe_unretained id value);
+id JreVolatileStaticAssign(volatile_id *pIvar, __unsafe_unretained id value);
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);

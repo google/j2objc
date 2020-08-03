@@ -66,7 +66,7 @@ id JreVolatileStrongAssign(volatile_id *pVar, id newValue) {
 }
 
 
-id JreVolatileNativeAssign(volatile_id *pVar, id newValue) {
+id JreVolatileStaticAssign(volatile_id *pVar, id newValue) {
   ARGC_lock_volatile();
   ARGC_assignStrongObject((ARGC_FIELD_REF id*)pVar, newValue);
   ARGC_unlock_volatile();

@@ -230,7 +230,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
             ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (setter == null && !ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
-              ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : (options.useGC() && ElementUtil.isStatic(varElement) ? "JreVolatileNativeAssign" : "JreVolatileStrongAssign"))
+              ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : ElementUtil.isStatic(varElement) ? "JreVolatileStaticAssign" : "JreVolatileStrongAssign"))
               : ((isPrimitive | !options.useReferenceCounting()) ? null : "JreStaticAssign");
           if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
