@@ -41,7 +41,8 @@ import sun.misc.Unsafe;
 import sun.misc.Cleaner;
 import sun.security.action.GetPropertyAction;
 
-class Util {
+
+public class Util {
 
     // -- Caches --
 
@@ -217,7 +218,7 @@ class Util {
     /**
      * Returns a temporary buffer of at least the given size
      */
-   static ByteBuffer getTemporaryDirectBuffer(int size) {
+    public static ByteBuffer getTemporaryDirectBuffer(int size) {
         // If a buffer of this size is too large for the cache, there
         // should not be a buffer in the cache that is at least as
         // large. So we'll just create a new one. Also, we don't have
@@ -246,7 +247,7 @@ class Util {
     /**
      * Releases a temporary buffer by returning to the cache or freeing it.
      */
-    static void releaseTemporaryDirectBuffer(ByteBuffer buf) {
+    public static void releaseTemporaryDirectBuffer(ByteBuffer buf) {
         offerFirstTemporaryDirectBuffer(buf);
     }
 
