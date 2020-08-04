@@ -35,7 +35,6 @@ import java.nio.channels.*;
 import java.util.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
 import sun.net.ExtendedOptionsImpl;
 
 
