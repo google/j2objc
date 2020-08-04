@@ -269,7 +269,7 @@ private FunctionDeclaration argc_currentMethod;
       // We can't use the "AndConsume" optimization for volatile objects because that might leave
       // the newly created object vulnerable to being deallocated by another thread assigning to the
       // same field.
-      return isStrong ? (options.useGC() && ElementUtil.isStatic(var) ? "JreVolatileNativeAssign" :  "JreVolatileStrongAssign") : "JreAssignVolatile"
+      return isStrong ? (ElementUtil.isStatic(var) ? "JreVolatileStaticAssign" :  "JreVolatileStrongAssign") : "JreAssignVolatile"
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
     }
     

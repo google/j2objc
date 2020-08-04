@@ -56,7 +56,7 @@
 #include "NSObject+ARGC.h"
 
 #if !GC_DEBUG
-//#pragma GCC optimize ("O2")
+//#pragma clang optimize ("O2")
 #pragma clang optimize on
 #else
 #pragma clang optimize off
@@ -243,7 +243,12 @@ public:
   
   static void increaseReferenceCount(id oid, NSString* tag) {
     NSIncrementExtraRefCount(oid);
-    //checkRefCount(jobj, tag);
+    if (GC_DEBUG) {
+      JObj_p jobj = toARGCObject(oid);
+      if (jobj != NULL) {
+        checkRefCount(jobj, tag);
+      }
+    }
   }
   
   static void increaseReferenceCount(JObj_p jobj, NSString* tag) {
@@ -681,6 +686,10 @@ ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
     objc_setAssociatedObject(clazz, &_instance, _scanOffsetCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   }
   
+  if (clazz == GC_TRACE_CLASS) {
+    NSLog(@"clazz = OrgJunitRunnerResult.class");
+  }
+  
   int cntARGC = 0;
   id clone = NSAllocateObject(clazz, 0, NULL);
   int cntObjField = 0;
@@ -714,25 +723,26 @@ ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
   }
   
   NSDeallocateObject(clone);
+  int memsize = (cntObjField + 2) * sizeof(scan_offset_t);
+  ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
+
   int cntNative = 0;
   for (int i = 0; i < cntObjField; i ++) {
     scan_offset_t offset = _offset_buf[i];
     id field = _test_obj_buf[i];
     NSUInteger cntRef = NSExtraRefCount(field);
     if (cntRef > 1) {
-      _offset_buf[cntARGC++] = offset;
+      offsetArray->offsets[cntARGC++] = offset;
     }
     else {
-      _offset_buf[cntObjField - cntNative] = offset;
+      offsetArray->offsets[cntObjField - cntNative] = offset;
       cntNative++;
     }
   }
   
-  _offset_buf[cntARGC] = 0;
-  _offset_buf[cntObjField+1] = 0;
-  int memsize = (cntObjField + 2) * sizeof(scan_offset_t);
-  ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
-  memcpy(offsetArray->offsets, _offset_buf, memsize);
+  //_offset_buf[cntARGC] = 0;
+  //_offset_buf[cntObjField+1] = 0;
+  //memcpy(offsetArray->offsets, _offset_buf, memsize);
   @synchronized (_scanOffsetCache) {
     objc_setAssociatedObject(clazz, &_instance, offsetArray, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   }
