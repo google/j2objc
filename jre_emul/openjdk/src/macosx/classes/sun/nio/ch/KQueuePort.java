@@ -25,8 +25,6 @@
 
 package sun.nio.ch;
 
-import com.google.j2objc.annotations.WeakOuter;
-
 import java.nio.channels.spi.AsynchronousChannelProvider;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
@@ -192,7 +190,6 @@ final class KQueuePort
      * event is used to signal one consumer to re-poll when all events have
      * been consumed.
      */
-    @WeakOuter
     private class EventHandlerTask implements Runnable {
         private Event poll() throws IOException {
             try {
