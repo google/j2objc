@@ -307,7 +307,12 @@ private FunctionDeclaration argc_currentMethod;
       return funcName;
     }
 
-    return null;
+    if (!isPrimitive) {
+      return "JreUnsafeFieldAssignUnretained";
+    }
+    else {
+      return null;
+    }
   }
 
   private boolean isStaticVar(VariableElement var) {

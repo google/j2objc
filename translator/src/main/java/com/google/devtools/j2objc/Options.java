@@ -598,9 +598,6 @@ public class Options {
       ErrorUtil.error("entry class names can only be specified with --build-closure flag");
     }
 
-    if (memoryManagementOption != MemoryManagementOption.GC) {
-      throw new RuntimeException("no GC");
-    }
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
     }

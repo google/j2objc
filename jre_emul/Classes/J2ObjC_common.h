@@ -24,7 +24,7 @@
 #import "J2ObjC_types.h"
 #import "pthread.h"
 
-#define J2OBJC_USE_GC 1
+#define J2OBJC_USE_GC 0
 
 #define ARGC_WEAK_REF __unsafe_unretained
 
@@ -111,6 +111,7 @@ __attribute__((always_inline)) inline id JreGenericFieldAssign(__unsafe_unretain
 #define JreStrongAssignAndConsume       JreStrongAssign
 #define JreStaticAssign                 JreStrongAssign
 #define JreStaticAssignAndConsume       JreStrongAssign
+#define JreUnsafeFieldAssignUnretained  JreUnsafeFieldAssign
 
 #define JreObjectFieldAssignAndConsume  JreObjectFieldAssign
 #define JreNativeFieldAssignAndConsume  JreNativeFieldAssign
@@ -145,6 +146,7 @@ __attribute__((always_inline)) inline id JreUnsafeFieldAssignAndConsume(__unsafe
   return value;
 }
 
+#define JreUnsafeFieldAssignUnretained(pIvar, value)  (*(id*)pIvar = value)
 
 #define JreStaticAssign                  JreStrongAssign
 #define JreStaticAssignAndConsume        JreStrongAssignAndConsume
@@ -156,6 +158,13 @@ __attribute__((always_inline)) inline id JreUnsafeFieldAssignAndConsume(__unsafe
 #define JreGenericFieldAssignAndConsume  JreStrongAssignAndConsume
 
 #endif
+
+#if J2OBJC_USE_GC
+#define J2OBJC_REFERENT_TYPE void*
+#else
+#define J2OBJC_REFERENT_TYPE volatile_id
+#endif
+
 
 id JreLoadVolatileId(volatile_id *pVar);
 id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);

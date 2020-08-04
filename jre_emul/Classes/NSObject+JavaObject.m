@@ -35,6 +35,7 @@
 
 #if J2OBJC_USE_GC
 id ARGC_cloneObject(id obj) NS_RETURNS_RETAINED;
+void ARGC_genericRetain(id obj);
 #elif __has_feature(objc_arc)
 #error "NSObject+JavaObject.m must not be compiled with ARC (-fobjc-arc)"
 #endif
