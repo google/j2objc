@@ -119,6 +119,10 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   return value;
 }
 
+id JreVolatileStaticAssign(volatile_id *pVar, id newValue) {
+  return JreVolatileStrongAssign(pVar, newValue);
+}
+
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pVar);
   VOLATILE_LOCK(lock);

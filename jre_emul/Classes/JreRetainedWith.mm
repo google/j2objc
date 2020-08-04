@@ -17,12 +17,12 @@
 //  Created by Keith Stanger on Mar. 18, 2016.
 //
 
-extern "C" {
-#include "FastPointerLookup.h"
-}
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"
+extern "C" {
+#include "FastPointerLookup.h"
 #include "JreRetainedWith.h"
+}
 
 #if !J2OBJC_USE_GC
 // Associate the return reference so that it can be artificially weakened when
