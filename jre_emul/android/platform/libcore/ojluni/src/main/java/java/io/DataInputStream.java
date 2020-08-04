@@ -1,209 +1,660 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (c) 1994, 2006, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
 
 import java.nio.ByteOrder;
-import java.nio.charset.ModifiedUtf8;
 import libcore.io.Memory;
-import libcore.io.Streams;
-import libcore.io.SizeOf;
 
 /**
- * Wraps an existing {@link InputStream} and reads big-endian typed data from it.
- * Typically, this stream has been written by a DataOutputStream. Types that can
- * be read include byte, 16-bit short, 32-bit int, 32-bit float, 64-bit long,
- * 64-bit double, byte strings, and strings encoded in
- * {@link DataInput modified UTF-8}.
+ * A data input stream lets an application read primitive Java data
+ * types from an underlying input stream in a machine-independent
+ * way. An application uses a data output stream to write data that
+ * can later be read by a data input stream.
+ * <p>
+ * DataInputStream is not necessarily safe for multithreaded access.
+ * Thread safety is optional and is the responsibility of users of
+ * methods in this class.
  *
- * @see DataOutputStream
+ * @author  Arthur van Hoff
+ * @see     java.io.DataOutputStream
+ * @since   JDK1.0
  */
-public class DataInputStream extends FilterInputStream implements DataInput {
-
-    private final byte[] scratch = new byte[8];
+public
+class DataInputStream extends FilterInputStream implements DataInput {
 
     /**
-     * Constructs a new DataInputStream on the InputStream {@code in}. All
-     * reads are then filtered through this stream. Note that data read by this
-     * stream is not in a human readable format and was most likely created by a
-     * DataOutputStream.
+     * Creates a DataInputStream that uses the specified
+     * underlying InputStream.
      *
-     * <p><strong>Warning:</strong> passing a null source creates an invalid
-     * {@code DataInputStream}. All operations on such a stream will fail.
-     *
-     * @param in
-     *            the source InputStream the filter reads from.
-     * @see DataOutputStream
-     * @see RandomAccessFile
+     * @param  in   the specified input stream
      */
     public DataInputStream(InputStream in) {
         super(in);
     }
 
-    // overridden to add 'final'
-    @Override public final int read(byte[] buffer) throws IOException {
-        return super.read(buffer);
+    /**
+     * working arrays initialized on demand by readUTF
+     */
+    private byte bytearr[] = new byte[80];
+    private char chararr[] = new char[80];
+
+    /**
+     * Reads some number of bytes from the contained input stream and
+     * stores them into the buffer array <code>b</code>. The number of
+     * bytes actually read is returned as an integer. This method blocks
+     * until input data is available, end of file is detected, or an
+     * exception is thrown.
+     *
+     * <p>If <code>b</code> is null, a <code>NullPointerException</code> is
+     * thrown. If the length of <code>b</code> is zero, then no bytes are
+     * read and <code>0</code> is returned; otherwise, there is an attempt
+     * to read at least one byte. If no byte is available because the
+     * stream is at end of file, the value <code>-1</code> is returned;
+     * otherwise, at least one byte is read and stored into <code>b</code>.
+     *
+     * <p>The first byte read is stored into element <code>b[0]</code>, the
+     * next one into <code>b[1]</code>, and so on. The number of bytes read
+     * is, at most, equal to the length of <code>b</code>. Let <code>k</code>
+     * be the number of bytes actually read; these bytes will be stored in
+     * elements <code>b[0]</code> through <code>b[k-1]</code>, leaving
+     * elements <code>b[k]</code> through <code>b[b.length-1]</code>
+     * unaffected.
+     *
+     * <p>The <code>read(b)</code> method has the same effect as:
+     * <blockquote><pre>
+     * read(b, 0, b.length)
+     * </pre></blockquote>
+     *
+     * @param      b   the buffer into which the data is read.
+     * @return     the total number of bytes read into the buffer, or
+     *             <code>-1</code> if there is no more data because the end
+     *             of the stream has been reached.
+     * @exception  IOException if the first byte cannot be read for any reason
+     * other than end of file, the stream has been closed and the underlying
+     * input stream does not support reading after close, or another I/O
+     * error occurs.
+     * @see        java.io.FilterInputStream#in
+     * @see        java.io.InputStream#read(byte[], int, int)
+     */
+    public final int read(byte b[]) throws IOException {
+        return in.read(b, 0, b.length);
     }
 
-    @Override public final int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-        return in.read(buffer, byteOffset, byteCount);
+    /**
+     * Reads up to <code>len</code> bytes of data from the contained
+     * input stream into an array of bytes.  An attempt is made to read
+     * as many as <code>len</code> bytes, but a smaller number may be read,
+     * possibly zero. The number of bytes actually read is returned as an
+     * integer.
+     *
+     * <p> This method blocks until input data is available, end of file is
+     * detected, or an exception is thrown.
+     *
+     * <p> If <code>len</code> is zero, then no bytes are read and
+     * <code>0</code> is returned; otherwise, there is an attempt to read at
+     * least one byte. If no byte is available because the stream is at end of
+     * file, the value <code>-1</code> is returned; otherwise, at least one
+     * byte is read and stored into <code>b</code>.
+     *
+     * <p> The first byte read is stored into element <code>b[off]</code>, the
+     * next one into <code>b[off+1]</code>, and so on. The number of bytes read
+     * is, at most, equal to <code>len</code>. Let <i>k</i> be the number of
+     * bytes actually read; these bytes will be stored in elements
+     * <code>b[off]</code> through <code>b[off+</code><i>k</i><code>-1]</code>,
+     * leaving elements <code>b[off+</code><i>k</i><code>]</code> through
+     * <code>b[off+len-1]</code> unaffected.
+     *
+     * <p> In every case, elements <code>b[0]</code> through
+     * <code>b[off]</code> and elements <code>b[off+len]</code> through
+     * <code>b[b.length-1]</code> are unaffected.
+     *
+     * @param      b     the buffer into which the data is read.
+     * @param off the start offset in the destination array <code>b</code>
+     * @param      len   the maximum number of bytes read.
+     * @return     the total number of bytes read into the buffer, or
+     *             <code>-1</code> if there is no more data because the end
+     *             of the stream has been reached.
+     * @exception  NullPointerException If <code>b</code> is <code>null</code>.
+     * @exception  IndexOutOfBoundsException If <code>off</code> is negative,
+     * <code>len</code> is negative, or <code>len</code> is greater than
+     * <code>b.length - off</code>
+     * @exception  IOException if the first byte cannot be read for any reason
+     * other than end of file, the stream has been closed and the underlying
+     * input stream does not support reading after close, or another I/O
+     * error occurs.
+     * @see        java.io.FilterInputStream#in
+     * @see        java.io.InputStream#read(byte[], int, int)
+     */
+    public final int read(byte b[], int off, int len) throws IOException {
+        return in.read(b, off, len);
     }
 
+    /**
+     * See the general contract of the <code>readFully</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @param      b   the buffer into which the data is read.
+     * @exception  EOFException  if this input stream reaches the end before
+     *             reading all the bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    public final void readFully(byte b[]) throws IOException {
+        readFully(b, 0, b.length);
+    }
+
+    /**
+     * See the general contract of the <code>readFully</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @param      b     the buffer into which the data is read.
+     * @param      off   the start offset of the data.
+     * @param      len   the number of bytes to read.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading all the bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    public final void readFully(byte b[], int off, int len) throws IOException {
+        if (len < 0)
+            throw new IndexOutOfBoundsException();
+        int n = 0;
+        while (n < len) {
+            int count = in.read(b, off + n, len - n);
+            if (count < 0)
+                throw new EOFException();
+            n += count;
+        }
+    }
+
+    /**
+     * See the general contract of the <code>skipBytes</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes for this operation are read from the contained
+     * input stream.
+     *
+     * @param      n   the number of bytes to be skipped.
+     * @return     the actual number of bytes skipped.
+     * @exception  IOException  if the contained input stream does not support
+     *             seek, or the stream has been closed and
+     *             the contained input stream does not support
+     *             reading after close, or another I/O error occurs.
+     */
+    public final int skipBytes(int n) throws IOException {
+        int total = 0;
+        int cur = 0;
+
+        while ((total<n) && ((cur = (int) in.skip(n-total)) > 0)) {
+            total += cur;
+        }
+
+        return total;
+    }
+
+    /**
+     * See the general contract of the <code>readBoolean</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the <code>boolean</code> value read.
+     * @exception  EOFException  if this input stream has reached the end.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
     public final boolean readBoolean() throws IOException {
-        int temp = in.read();
-        if (temp < 0) {
+        int ch = in.read();
+        if (ch < 0)
             throw new EOFException();
-        }
-        return temp != 0;
+        return (ch != 0);
     }
 
+    /**
+     * See the general contract of the <code>readByte</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next byte of this input stream as a signed 8-bit
+     *             <code>byte</code>.
+     * @exception  EOFException  if this input stream has reached the end.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
     public final byte readByte() throws IOException {
-        int temp = in.read();
-        if (temp < 0) {
+        int ch = in.read();
+        if (ch < 0)
             throw new EOFException();
-        }
-        return (byte) temp;
+        return (byte)(ch);
     }
 
+    /**
+     * See the general contract of the <code>readUnsignedByte</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next byte of this input stream, interpreted as an
+     *             unsigned 8-bit number.
+     * @exception  EOFException  if this input stream has reached the end.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see         java.io.FilterInputStream#in
+     */
+    public final int readUnsignedByte() throws IOException {
+        int ch = in.read();
+        if (ch < 0)
+            throw new EOFException();
+        return ch;
+    }
+
+    /**
+     * See the general contract of the <code>readShort</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next two bytes of this input stream, interpreted as a
+     *             signed 16-bit number.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading two bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    public final short readShort() throws IOException {
+        // b/30268192
+        // Android-changed: Use read(byte[], int, int) instead of read().
+        readFully(readBuffer, 0, 2);
+        return Memory.peekShort(readBuffer, 0, ByteOrder.BIG_ENDIAN);
+    }
+
+    /**
+     * See the general contract of the <code>readUnsignedShort</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next two bytes of this input stream, interpreted as an
+     *             unsigned 16-bit integer.
+     * @exception  EOFException  if this input stream reaches the end before
+     *             reading two bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    public final int readUnsignedShort() throws IOException {
+        // b/30268192
+        // Android-changed: Use read(byte[], int, int) instead of read().
+        readFully(readBuffer, 0, 2);
+        return Memory.peekShort(readBuffer, 0, ByteOrder.BIG_ENDIAN) & 0xffff;
+    }
+
+    /**
+     * See the general contract of the <code>readChar</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next two bytes of this input stream, interpreted as a
+     *             <code>char</code>.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading two bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
     public final char readChar() throws IOException {
-        return (char) readShort();
+        // b/30268192
+        // Android-changed: Use read(byte[], int, int) instead of read().
+        readFully(readBuffer, 0, 2);
+        return (char)Memory.peekShort(readBuffer, 0, ByteOrder.BIG_ENDIAN);
     }
 
-    public final double readDouble() throws IOException {
-        return Double.longBitsToDouble(readLong());
+    /**
+     * See the general contract of the <code>readInt</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next four bytes of this input stream, interpreted as an
+     *             <code>int</code>.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading four bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    public final int readInt() throws IOException {
+        // b/30268192
+        // Android-changed: Use read(byte[], int, int) instead of read().
+        readFully(readBuffer, 0, 4);
+        return Memory.peekInt(readBuffer, 0, ByteOrder.BIG_ENDIAN);
     }
 
+    private byte readBuffer[] = new byte[8];
+
+    /**
+     * See the general contract of the <code>readLong</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next eight bytes of this input stream, interpreted as a
+     *             <code>long</code>.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading eight bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.FilterInputStream#in
+     */
+    public final long readLong() throws IOException {
+        readFully(readBuffer, 0, 8);
+        return (((long)readBuffer[0] << 56) +
+                ((long)(readBuffer[1] & 255) << 48) +
+                ((long)(readBuffer[2] & 255) << 40) +
+                ((long)(readBuffer[3] & 255) << 32) +
+                ((long)(readBuffer[4] & 255) << 24) +
+                ((readBuffer[5] & 255) << 16) +
+                ((readBuffer[6] & 255) <<  8) +
+                ((readBuffer[7] & 255) <<  0));
+    }
+
+    /**
+     * See the general contract of the <code>readFloat</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next four bytes of this input stream, interpreted as a
+     *             <code>float</code>.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading four bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.DataInputStream#readInt()
+     * @see        java.lang.Float#intBitsToFloat(int)
+     */
     public final float readFloat() throws IOException {
         return Float.intBitsToFloat(readInt());
     }
 
-    public final void readFully(byte[] dst) throws IOException {
-        readFully(dst, 0, dst.length);
+    /**
+     * See the general contract of the <code>readDouble</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @return     the next eight bytes of this input stream, interpreted as a
+     *             <code>double</code>.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading eight bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @see        java.io.DataInputStream#readLong()
+     * @see        java.lang.Double#longBitsToDouble(long)
+     */
+    public final double readDouble() throws IOException {
+        return Double.longBitsToDouble(readLong());
     }
 
-    public final void readFully(byte[] dst, int offset, int byteCount) throws IOException {
-        Streams.readFully(in, dst, offset, byteCount);
-    }
-
-    public final int readInt() throws IOException {
-        Streams.readFully(in, scratch, 0, SizeOf.INT);
-        return Memory.peekInt(scratch, 0, ByteOrder.BIG_ENDIAN);
-    }
+    private char lineBuffer[];
 
     /**
-     * @deprecated This method cannot be trusted to convert bytes to characters correctly.
-     * Wrap this stream with a {@link BufferedReader} instead.
+     * See the general contract of the <code>readLine</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
+     *
+     * @deprecated This method does not properly convert bytes to characters.
+     * As of JDK&nbsp;1.1, the preferred way to read lines of text is via the
+     * <code>BufferedReader.readLine()</code> method.  Programs that use the
+     * <code>DataInputStream</code> class to read lines can be converted to use
+     * the <code>BufferedReader</code> class by replacing code of the form:
+     * <blockquote><pre>
+     *     DataInputStream d =&nbsp;new&nbsp;DataInputStream(in);
+     * </pre></blockquote>
+     * with:
+     * <blockquote><pre>
+     *     BufferedReader d
+     *          =&nbsp;new&nbsp;BufferedReader(new&nbsp;InputStreamReader(in));
+     * </pre></blockquote>
+     *
+     * @return     the next line of text from this input stream.
+     * @exception  IOException  if an I/O error occurs.
+     * @see        java.io.BufferedReader#readLine()
+     * @see        java.io.FilterInputStream#in
      */
     @Deprecated
     public final String readLine() throws IOException {
-        StringBuilder line = new StringBuilder(80); // Typical line length
-        boolean foundTerminator = false;
-        while (true) {
-            int nextByte = in.read();
-            switch (nextByte) {
-                case -1:
-                    if (line.length() == 0 && !foundTerminator) {
-                        return null;
+        char buf[] = lineBuffer;
+
+        if (buf == null) {
+            buf = lineBuffer = new char[128];
+        }
+
+        int room = buf.length;
+        int offset = 0;
+        int c;
+
+loop:   while (true) {
+            switch (c = in.read()) {
+              case -1:
+              case '\n':
+                break loop;
+
+              case '\r':
+                int c2 = in.read();
+                if ((c2 != '\n') && (c2 != -1)) {
+                    if (!(in instanceof PushbackInputStream)) {
+                        this.in = new PushbackInputStream(in);
                     }
-                    return line.toString();
-                case (byte) '\r':
-                    if (foundTerminator) {
-                        ((PushbackInputStream) in).unread(nextByte);
-                        return line.toString();
-                    }
-                    foundTerminator = true;
-                    /* Have to be able to peek ahead one byte */
-                    if (!(in.getClass() == PushbackInputStream.class)) {
-                        in = new PushbackInputStream(in);
-                    }
-                    break;
-                case (byte) '\n':
-                    return line.toString();
-                default:
-                    if (foundTerminator) {
-                        ((PushbackInputStream) in).unread(nextByte);
-                        return line.toString();
-                    }
-                    line.append((char) nextByte);
+                    ((PushbackInputStream)in).unread(c2);
+                }
+                break loop;
+
+              default:
+                if (--room < 0) {
+                    buf = new char[offset + 128];
+                    room = buf.length - offset - 1;
+                    System.arraycopy(lineBuffer, 0, buf, 0, offset);
+                    lineBuffer = buf;
+                }
+                buf[offset++] = (char) c;
+                break;
             }
         }
-    }
-
-    public final long readLong() throws IOException {
-        Streams.readFully(in, scratch, 0, SizeOf.LONG);
-        return Memory.peekLong(scratch, 0, ByteOrder.BIG_ENDIAN);
-    }
-
-    public final short readShort() throws IOException {
-        Streams.readFully(in, scratch, 0, SizeOf.SHORT);
-        return Memory.peekShort(scratch, 0, ByteOrder.BIG_ENDIAN);
-    }
-
-    public final int readUnsignedByte() throws IOException {
-        int temp = in.read();
-        if (temp < 0) {
-            throw new EOFException();
+        if ((c == -1) && (offset == 0)) {
+            return null;
         }
-        return temp;
-    }
-
-    public final int readUnsignedShort() throws IOException {
-        return ((int) readShort()) & 0xffff;
-    }
-
-    public final String readUTF() throws IOException {
-        return decodeUTF(readUnsignedShort());
-    }
-
-    String decodeUTF(int utfSize) throws IOException {
-        return decodeUTF(utfSize, this);
-    }
-
-    private static String decodeUTF(int utfSize, DataInput in) throws IOException {
-        byte[] buf = new byte[utfSize];
-        in.readFully(buf, 0, utfSize);
-        return ModifiedUtf8.decode(buf, new char[utfSize], 0, utfSize);
-    }
-
-    public static final String readUTF(DataInput in) throws IOException {
-        return decodeUTF(in.readUnsignedShort(), in);
+        return String.copyValueOf(buf, 0, offset);
     }
 
     /**
-     * Skips {@code count} number of bytes in this stream. Subsequent {@code
-     * read()}s will not return these bytes unless {@code reset()} is used.
+     * See the general contract of the <code>readUTF</code>
+     * method of <code>DataInput</code>.
+     * <p>
+     * Bytes
+     * for this operation are read from the contained
+     * input stream.
      *
-     * This method will not throw an {@link EOFException} if the end of the
-     * input is reached before {@code count} bytes where skipped.
-     *
-     * @param count
-     *            the number of bytes to skip.
-     * @return the number of bytes actually skipped.
-     * @throws IOException
-     *             if a problem occurs during skipping.
-     * @see #mark(int)
-     * @see #reset()
+     * @return     a Unicode string.
+     * @exception  EOFException  if this input stream reaches the end before
+     *               reading all the bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @exception  UTFDataFormatException if the bytes do not represent a valid
+     *             modified UTF-8 encoding of a string.
+     * @see        java.io.DataInputStream#readUTF(java.io.DataInput)
      */
-    public final int skipBytes(int count) throws IOException {
-        int skipped = 0;
-        long skip;
-        while (skipped < count && (skip = in.skip(count - skipped)) != 0) {
-            skipped += skip;
+    public final String readUTF() throws IOException {
+        return readUTF(this);
+    }
+
+    /**
+     * Reads from the
+     * stream <code>in</code> a representation
+     * of a Unicode  character string encoded in
+     * <a href="DataInput.html#modified-utf-8">modified UTF-8</a> format;
+     * this string of characters is then returned as a <code>String</code>.
+     * The details of the modified UTF-8 representation
+     * are  exactly the same as for the <code>readUTF</code>
+     * method of <code>DataInput</code>.
+     *
+     * @param      in   a data input stream.
+     * @return     a Unicode string.
+     * @exception  EOFException            if the input stream reaches the end
+     *               before all the bytes.
+     * @exception  IOException   the stream has been closed and the contained
+     *             input stream does not support reading after close, or
+     *             another I/O error occurs.
+     * @exception  UTFDataFormatException  if the bytes do not represent a
+     *               valid modified UTF-8 encoding of a Unicode string.
+     * @see        java.io.DataInputStream#readUnsignedShort()
+     */
+    public final static String readUTF(DataInput in) throws IOException {
+        int utflen = in.readUnsignedShort();
+        byte[] bytearr = null;
+        char[] chararr = null;
+        if (in instanceof DataInputStream) {
+            DataInputStream dis = (DataInputStream)in;
+            if (dis.bytearr.length < utflen){
+                dis.bytearr = new byte[utflen*2];
+                dis.chararr = new char[utflen*2];
+            }
+            chararr = dis.chararr;
+            bytearr = dis.bytearr;
+        } else {
+            bytearr = new byte[utflen];
+            chararr = new char[utflen];
         }
-        return skipped;
+
+        int c, char2, char3;
+        int count = 0;
+        int chararr_count=0;
+
+        in.readFully(bytearr, 0, utflen);
+
+        while (count < utflen) {
+            c = (int) bytearr[count] & 0xff;
+            if (c > 127) break;
+            count++;
+            chararr[chararr_count++]=(char)c;
+        }
+
+        while (count < utflen) {
+            c = (int) bytearr[count] & 0xff;
+            switch (c >> 4) {
+                case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+                    /* 0xxxxxxx*/
+                    count++;
+                    chararr[chararr_count++]=(char)c;
+                    break;
+                case 12: case 13:
+                    /* 110x xxxx   10xx xxxx*/
+                    count += 2;
+                    if (count > utflen)
+                        throw new UTFDataFormatException(
+                            "malformed input: partial character at end");
+                    char2 = (int) bytearr[count-1];
+                    if ((char2 & 0xC0) != 0x80)
+                        throw new UTFDataFormatException(
+                            "malformed input around byte " + count);
+                    chararr[chararr_count++]=(char)(((c & 0x1F) << 6) |
+                                                    (char2 & 0x3F));
+                    break;
+                case 14:
+                    /* 1110 xxxx  10xx xxxx  10xx xxxx */
+                    count += 3;
+                    if (count > utflen)
+                        throw new UTFDataFormatException(
+                            "malformed input: partial character at end");
+                    char2 = (int) bytearr[count-2];
+                    char3 = (int) bytearr[count-1];
+                    if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
+                        throw new UTFDataFormatException(
+                            "malformed input around byte " + (count-1));
+                    chararr[chararr_count++]=(char)(((c     & 0x0F) << 12) |
+                                                    ((char2 & 0x3F) << 6)  |
+                                                    ((char3 & 0x3F) << 0));
+                    break;
+                default:
+                    /* 10xx xxxx,  1111 xxxx */
+                    throw new UTFDataFormatException(
+                        "malformed input around byte " + count);
+            }
+        }
+        // The number of chars produced may be less than utflen
+        return new String(chararr, 0, chararr_count);
     }
 }
