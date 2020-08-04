@@ -59,7 +59,7 @@ import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
 import sun.net.ExtendedOptionsImpl;
 import sun.net.NetHooks;
-import sun.misc.IoTrace;
+
 
 /**
  * An implementation of SocketChannels
@@ -344,10 +344,6 @@ class SocketChannelImpl
         synchronized (readLock) {
             if (!ensureReadOpen())
                 return -1;
-            Object traceContext = null;
-            if (isBlocking()) {
-                traceContext = IoTrace.socketReadBegin();
-            }
             int n = 0;
             try {
 
@@ -437,12 +433,6 @@ class SocketChannelImpl
 
             } finally {
                 readerCleanup();        // Clear reader thread
-
-                if (isBlocking()) {
-                    IoTrace.socketReadEnd(traceContext, remoteAddress.getAddress(),
-                                          remoteAddress.getPort(), 0, n > 0 ? n : 0);
-                }
-
                 // The end method, which is defined in our superclass
                 // AbstractInterruptibleChannel, resets the interruption
                 // machinery.  If its argument is true then it returns
@@ -483,10 +473,6 @@ class SocketChannelImpl
             if (!ensureReadOpen())
                 return -1;
             long n = 0;
-            Object traceContext = null;
-            if (isBlocking()) {
-                traceContext = IoTrace.socketReadBegin();
-            }
             try {
                 begin();
                 synchronized (stateLock) {
@@ -503,10 +489,6 @@ class SocketChannelImpl
                 }
             } finally {
                 readerCleanup();
-                if (isBlocking()) {
-                    IoTrace.socketReadEnd(traceContext, remoteAddress.getAddress(),
-                                          remoteAddress.getPort(), 0, n > 0 ? n : 0);
-                }
                 end(n > 0 || (n == IOStatus.UNAVAILABLE));
                 synchronized (stateLock) {
                     if ((n <= 0) && (!isInputOpen))
@@ -523,9 +505,6 @@ class SocketChannelImpl
         synchronized (writeLock) {
             ensureWriteOpen();
             int n = 0;
-            Object traceContext =
-                IoTrace.socketWriteBegin();
-
             try {
                 begin();
                 synchronized (stateLock) {
@@ -541,8 +520,6 @@ class SocketChannelImpl
                 }
             } finally {
                 writerCleanup();
-                IoTrace.socketWriteEnd(traceContext, remoteAddress.getAddress(),
-                                       remoteAddress.getPort(), n > 0 ? n : 0);
                 end(n > 0 || (n == IOStatus.UNAVAILABLE));
                 synchronized (stateLock) {
                     if ((n <= 0) && (!isOutputOpen))
@@ -561,8 +538,6 @@ class SocketChannelImpl
         synchronized (writeLock) {
             ensureWriteOpen();
             long n = 0;
-            Object traceContext =
-                IoTrace.socketWriteBegin();
             try {
                 begin();
                 synchronized (stateLock) {
@@ -578,8 +553,6 @@ class SocketChannelImpl
                 }
             } finally {
                 writerCleanup();
-                IoTrace.socketWriteEnd(traceContext, remoteAddress.getAddress(),
-                                       remoteAddress.getPort(), n > 0 ? n : 0);
                 end((n > 0) || (n == IOStatus.UNAVAILABLE));
                 synchronized (stateLock) {
                     if ((n <= 0) && (!isOutputOpen))
@@ -649,6 +622,10 @@ class SocketChannelImpl
                         throw new AlreadyBoundException();
                     InetSocketAddress isa = (local == null) ?
                         new InetSocketAddress(0) : Net.checkAddress(local);
+                    SecurityManager sm = System.getSecurityManager();
+                    if (sm != null) {
+                        sm.checkListen(isa.getPort());
+                    }
                     NetHooks.beforeTcpBind(fd, isa.getAddress(), isa.getPort());
                     Net.bind(fd, isa.getAddress(), isa.getPort());
                     localAddress = Net.localAddress(fd);
@@ -989,8 +966,7 @@ class SocketChannelImpl
             return false;
         }
 
-        if ((ops & (Net.POLLERR
-                    | Net.POLLHUP)) != 0) {
+        if ((ops & (Net.POLLERR | Net.POLLHUP)) != 0) {
             newOps = intOps;
             sk.nioReadyOps(newOps);
             // No need to poll again in checkConnect,

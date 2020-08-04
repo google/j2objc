@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -103,37 +103,26 @@ public class ServerSocketAdaptor                        // package-private
                     return sc.socket();
                 }
 
-                // Implement timeout with a selector
-                SelectionKey sk = null;
-                Selector sel = null;
                 ssc.configureBlocking(false);
                 try {
                     SocketChannel sc;
                     if ((sc = ssc.accept()) != null)
                         return sc.socket();
-                    sel = Util.getTemporarySelector(ssc);
-                    sk = ssc.register(sel, SelectionKey.OP_ACCEPT);
                     long to = timeout;
                     for (;;) {
                         if (!ssc.isOpen())
                             throw new ClosedChannelException();
                         long st = System.currentTimeMillis();
-                        int ns = sel.select(to);
-                        if (ns > 0 &&
-                            sk.isAcceptable() && ((sc = ssc.accept()) != null))
+                        int result = ssc.poll(Net.POLLIN, to);
+                        if (result > 0 && ((sc = ssc.accept()) != null))
                             return sc.socket();
-                        sel.selectedKeys().remove(sk);
                         to -= System.currentTimeMillis() - st;
                         if (to <= 0)
                             throw new SocketTimeoutException();
                     }
                 } finally {
-                    if (sk != null)
-                        sk.cancel();
                     if (ssc.isOpen())
                         ssc.configureBlocking(true);
-                    if (sel != null)
-                        Util.releaseTemporarySelector(sel);
                 }
 
             } catch (Exception x) {

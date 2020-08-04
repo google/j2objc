@@ -55,7 +55,6 @@ import dalvik.annotation.optimization.ReachabilitySensitive;
 import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
 import sun.misc.Cleaner;
-import sun.misc.IoTrace;
 import sun.security.action.GetPropertyAction;
 
 public class FileChannelImpl
@@ -195,7 +194,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             int n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileReadBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -207,7 +205,6 @@ public class FileChannelImpl
                 return IOStatus.normalize(n);
             } finally {
                 threads.remove(ti);
-                IoTrace.fileReadEnd(traceContext, n > 0 ? n : 0);
                 end(n > 0);
                 assert IOStatus.check(n);
             }
@@ -225,7 +222,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             long n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileReadBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -237,7 +233,6 @@ public class FileChannelImpl
                 return IOStatus.normalize(n);
             } finally {
                 threads.remove(ti);
-                IoTrace.fileReadEnd(traceContext, n > 0 ? n : 0);
                 end(n > 0);
                 assert IOStatus.check(n);
             }
@@ -251,7 +246,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             int n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileWriteBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -264,7 +258,6 @@ public class FileChannelImpl
             } finally {
                 threads.remove(ti);
                 end(n > 0);
-                IoTrace.fileWriteEnd(traceContext, n > 0 ? n : 0);
                 assert IOStatus.check(n);
             }
         }
@@ -281,7 +274,6 @@ public class FileChannelImpl
         synchronized (positionLock) {
             long n = 0;
             int ti = -1;
-            Object traceContext = IoTrace.fileWriteBegin(path);
             try {
                 begin();
                 ti = threads.add();
@@ -293,7 +285,6 @@ public class FileChannelImpl
                 return IOStatus.normalize(n);
             } finally {
                 threads.remove(ti);
-                IoTrace.fileWriteEnd(traceContext, n > 0 ? n : 0);
                 end(n > 0);
                 assert IOStatus.check(n);
             }
@@ -382,24 +373,28 @@ public class FileChannelImpl
         }
     }
 
-    public FileChannel truncate(long size) throws IOException {
+    public FileChannel truncate(long newSize) throws IOException {
         ensureOpen();
-        if (size < 0)
-            throw new IllegalArgumentException();
-        // ----- BEGIN android -----
-        // This code may forget to update position.
-        //if (size > size())
-        //    return this;
-        // ----- END android -----
+        if (newSize < 0)
+            throw new IllegalArgumentException("Negative size");
         if (!writable)
             throw new NonWritableChannelException();
         synchronized (positionLock) {
             int rv = -1;
             long p = -1;
             int ti = -1;
+            long rp = -1;
             try {
                 begin();
                 ti = threads.add();
+                if (!isOpen())
+                    return null;
+
+                // get current size
+                long size;
+                do {
+                    size = nd.size(fd);
+                } while ((size == IOStatus.INTERRUPTED) && isOpen());
                 if (!isOpen())
                     return null;
 
@@ -411,23 +406,21 @@ public class FileChannelImpl
                     return null;
                 assert p >= 0;
 
-                // truncate file
-                // ----- BEGIN android -----
-                if (size < size()) {
-                // ----- END android -----
+                // truncate file if given size is less than the current size
+                if (newSize < size) {
                     do {
-                        rv = nd.truncate(fd, size);
+                        rv = nd.truncate(fd, newSize);
                     } while ((rv == IOStatus.INTERRUPTED) && isOpen());
                     if (!isOpen())
                         return null;
                 }
-                // ----- END android -----
-                // set position to size if greater than size
-                if (p > size)
-                    p = size;
+
+                // if position is beyond new size then adjust it
+                if (p > newSize)
+                    p = newSize;
                 do {
-                    rv = (int)position0(fd, p);
-                } while ((rv == IOStatus.INTERRUPTED) && isOpen());
+                    rp = position0(fd, p);
+                } while ((rp == IOStatus.INTERRUPTED) && isOpen());
                 return this;
             } finally {
                 threads.remove(ti);
@@ -489,7 +482,7 @@ public class FileChannelImpl
             // Android-added: BlockGuard support.
             BlockGuard.getThreadPolicy().onWriteToDisk();
             do {
-//                n = transferTo0(fd, position, icount, targetFD);
+                n = transferTo0(fd, position, icount, targetFD);
             } while ((n == IOStatus.INTERRUPTED) && isOpen());
             if (n == IOStatus.UNSUPPORTED_CASE) {
                 if (target instanceof SinkChannelImpl)
@@ -526,6 +519,13 @@ public class FileChannelImpl
             // Direct transfer to pipe causes EINVAL on some configurations
             if ((target instanceof SinkChannelImpl) && !pipeSupported)
                 return IOStatus.UNSUPPORTED_CASE;
+
+            // Platform-specific restrictions. Now there is only one:
+            // Direct transfer to non-blocking channel could be forbidden
+            SelectableChannel sc = (SelectableChannel)target;
+            if (!nd.canTransferToDirectly(sc))
+                return IOStatus.UNSUPPORTED_CASE;
+
             targetFD = ((SelChImpl)target).getFD();
         }
 
@@ -536,33 +536,18 @@ public class FileChannelImpl
         if (thisFDVal == targetFDVal) // Not supported on some configurations
             return IOStatus.UNSUPPORTED;
 
-        long n = -1;
-        int ti = -1;
-        try {
-            begin();
-            ti = threads.add();
-            if (!isOpen())
-                return -1;
-            BlockGuard.getThreadPolicy().onWriteToDisk();
-            do {
-                n = transferTo0(thisFDVal, position, icount, targetFDVal);
-            } while ((n == IOStatus.INTERRUPTED) && isOpen());
-            if (n == IOStatus.UNSUPPORTED_CASE) {
-                if (target instanceof SinkChannelImpl)
-                    pipeSupported = false;
-                if (target instanceof FileChannelImpl)
-                    fileSupported = false;
-                return IOStatus.UNSUPPORTED_CASE;
+        if (nd.transferToDirectlyNeedsPositionLock()) {
+            synchronized (positionLock) {
+                long pos = position();
+                try {
+                    return transferToDirectlyInternal(position, icount,
+                                                      target, targetFD);
+                } finally {
+                    position(pos);
+                }
             }
-            if (n == IOStatus.UNSUPPORTED) {
-                // Don't bother trying again
-                transferSupported = false;
-                return IOStatus.UNSUPPORTED;
-            }
-            return IOStatus.normalize(n);
-        } finally {
-            threads.remove(ti);
-            end (n > -1);
+        } else {
+            return transferToDirectlyInternal(position, icount, target, targetFD);
         }
     }
 
@@ -804,7 +789,6 @@ public class FileChannelImpl
         assert !nd.needsPositionLock() || Thread.holdsLock(positionLock);
         int n = 0;
         int ti = -1;
-        Object traceContext = IoTrace.fileReadBegin(path);
         try {
             begin();
             ti = threads.add();
@@ -816,7 +800,6 @@ public class FileChannelImpl
             return IOStatus.normalize(n);
         } finally {
             threads.remove(ti);
-            IoTrace.fileReadEnd(traceContext, n > 0 ? n : 0);
             end(n > 0);
             assert IOStatus.check(n);
         }
@@ -843,7 +826,6 @@ public class FileChannelImpl
         assert !nd.needsPositionLock() || Thread.holdsLock(positionLock);
         int n = 0;
         int ti = -1;
-        Object traceContext = IoTrace.fileWriteBegin(path);
         try {
             begin();
             ti = threads.add();
@@ -856,7 +838,6 @@ public class FileChannelImpl
         } finally {
             threads.remove(ti);
             end(n > 0);
-            IoTrace.fileWriteEnd(traceContext, n > 0 ? n : 0);
             assert IOStatus.check(n);
         }
     }
@@ -964,35 +945,25 @@ public class FileChannelImpl
             ti = threads.add();
             if (!isOpen())
                 return null;
-            if (size() < position + size) { // Extend file size
-                /* ----- BEGIN android -----
+
+            long filesize;
+            do {
+                filesize = nd.size(fd);
+            } while ((filesize == IOStatus.INTERRUPTED) && isOpen());
+            if (!isOpen())
+                return null;
+
+            if (filesize < position + size) { // Extend file size
                 if (!writable) {
                     throw new IOException("Channel not open for writing " +
                         "- cannot extend file to required size");
                 }
-                ----- END android ----- */
-                int rv = 0;
+                int rv;
                 do {
-                    // ----- BEGIN android -----
-                    //int rv = nd.truncate(fd, position + size);
-                    try {
-                        rv = nd.truncate(fd, position + size);
-                    } catch (IOException r) {
-                        try {
-                            // If we're dealing with non-regular files, for example,
-                            // character devices such as /dev/zero. In those
-                            // cases, we ignore the failed truncation and continue
-                            // on.
-                            if (libcore.io.OsConstants.S_ISREG(Libcore.os.fstat(fd).st_mode)) {
-                                throw r;
-                            }
-                        } catch (ErrnoException e) {
-                            e.rethrowAsIOException();
-                        }
-                        break;
-                    }
-                    // ----- END android -----
+                    rv = nd.truncate(fd, position + size);
                 } while ((rv == IOStatus.INTERRUPTED) && isOpen());
+                if (!isOpen())
+                    return null;
             }
             if (size == 0) {
                 addr = 0;
@@ -1310,7 +1281,8 @@ public class FileChannelImpl
     private static native int unmap0(long address, long length);
 
     // Transfers from src to dst, or returns -2 if kernel can't do that
-    private native long transferTo0(int src, long position, long count, int dst);
+    private native long transferTo0(FileDescriptor src, long position,
+                                    long count, FileDescriptor dst);
 
     // Sets or reports this file's position
     // If offset is -1, the current position is returned

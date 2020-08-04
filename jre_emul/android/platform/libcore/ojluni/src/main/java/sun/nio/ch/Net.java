@@ -35,7 +35,6 @@ import java.nio.channels.*;
 import java.util.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
 import sun.net.ExtendedOptionsImpl;
 
 
@@ -49,12 +48,6 @@ public class Net {
             return "UNSPEC";
         }
     };
-
-    // Value of jdk.net.revealLocalAddress
-    private static boolean revealLocalAddress;
-
-    // True if jdk.net.revealLocalAddress had been read
-    private static volatile boolean propRevealLocalAddress;
 
     // set to true if exclusive binding is on for Windows
     private static final boolean exclusiveBind;
@@ -198,29 +191,8 @@ public class Net {
     }
 
     static String getRevealedLocalAddressAsString(InetSocketAddress addr) {
-        if (!getRevealLocalAddress() && System.getSecurityManager() != null)
-            addr = getLoopbackAddress(addr.getPort());
-        return addr.toString();
-    }
-
-    private static boolean getRevealLocalAddress() {
-        if (!propRevealLocalAddress) {
-            try {
-                revealLocalAddress = Boolean.parseBoolean(
-                      AccessController.doPrivileged(
-                          new PrivilegedExceptionAction<String>() {
-                              public String run() {
-                                  return System.getProperty(
-                                      "jdk.net.revealLocalAddress");
-                              }
-                          }));
-
-            } catch (Exception e) {
-                // revealLocalAddress is false
-            }
-            propRevealLocalAddress = true;
-        }
-        return revealLocalAddress;
+        return System.getSecurityManager() == null ? addr.toString() :
+                getLoopbackAddress(addr.getPort()).toString();
     }
 
     private static InetSocketAddress getLoopbackAddress(int port) {

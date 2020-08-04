@@ -26,12 +26,19 @@
 package sun.nio.ch;
 
 import dalvik.system.BlockGuard;
-import dalvik.system.SocketTagger;
 
-import java.io.*;
-import java.net.SocketException;
+import java.io.FileDescriptor;
+import java.io.IOException;
 
 class FileDispatcherImpl extends FileDispatcher {
+
+    // Android-removed: Code to load native libraries, doesn't make sense on Android.
+    /*
+    static {
+        IOUtil.load();
+        init();
+    }
+    */
 
     FileDispatcherImpl(boolean append) {
         /* append is ignored */
@@ -119,19 +126,6 @@ class FileDispatcherImpl extends FileDispatcher {
     }
 
     void preClose(FileDescriptor fd) throws IOException {
-        preCloseImpl(fd);
-    }
-
-    static void preCloseImpl(FileDescriptor fd) throws IOException {
-        if (fd.isSocket$()) {
-            // Always untag sockets before the preClose. The file descriptor will describe
-            // a different file (/dev/null) after preClose0.
-            try {
-                SocketTagger.get().untag(fd);
-            } catch (SocketException ignored) {
-            }
-        }
-
         preClose0(fd);
     }
 

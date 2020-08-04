@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2004, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -93,15 +93,15 @@ class SelectionKeyImpl
     // The nio versions of these operations do not care if a key
     // has been invalidated. They are for internal use by nio code.
 
-    void nioReadyOps(int ops) {                 // package-private
+    public void nioReadyOps(int ops) {
         readyOps = ops;
     }
 
-    int nioReadyOps() {                         // package-private
+    public int nioReadyOps() {
         return readyOps;
     }
 
-    SelectionKey nioInterestOps(int ops) {      // package-private
+    public SelectionKey nioInterestOps(int ops) {
         if ((ops & ~channel().validOps()) != 0)
             throw new IllegalArgumentException();
         channel.translateAndSetInterestOps(ops, this);
@@ -109,7 +109,7 @@ class SelectionKeyImpl
         return this;
     }
 
-    int nioInterestOps() {                       // package-private
+    public int nioInterestOps() {
         return interestOps;
     }
 
