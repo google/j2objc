@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@ import java.io.FileDescriptor;
 
 import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
+import dalvik.system.SocketTagger;
 import sun.net.ConnectionResetException;
 import sun.net.NetHooks;
 import sun.net.ResourceManager;
@@ -57,8 +58,17 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
 
     @RetainedWith
     private SocketInputStream socketInputStream = null;
+    @RetainedWith
+    private SocketOutputStream socketOutputStream = null;
 
-    /* lock when accessing fd */
+    /* number of threads using the FileDescriptor */
+    protected int fdUseCount = 0;
+
+    /* lock when increment/decrementing fdUseCount */
+    // Android-added: @ReachabilitySensitive.
+    // Marked mostly because it's used where fd is, and fd isn't declared here.
+    // This adds reachabilityFences where we would if fd were annotated.
+    /* J2ObjC removed. @ReachabilitySensitive */
     protected final Object fdLock = new Object();
 
     /* indicates a close is pending on the file descriptor */
@@ -75,6 +85,25 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
     */
     protected boolean stream;
 
+    // BEGIN Android-removed: Android doesn't need to load native net library.
+    /*
+    /**
+     * Load net library into runtime.
+     *
+    static {
+        java.security.AccessController.doPrivileged(
+            new java.security.PrivilegedAction<Void>() {
+                public Void run() {
+                    System.loadLibrary("net");
+                    return null;
+                }
+            });
+    }
+    */
+    // END Android-removed: Android doesn't need to load native net library.
+
+    // Android-added: logs a warning if socket is not closed.
+    /* J2ObjC removed. @ReachabilitySensitive */
     private final CloseGuard guard = CloseGuard.get();
 
     /**
@@ -83,16 +112,21 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      */
     protected synchronized void create(boolean stream) throws IOException {
         this.stream = stream;
-
         if (!stream) {
             ResourceManager.beforeUdpCreate();
+            // Android-removed: socketCreate should set fd if it succeeds.
+            // fd = new FileDescriptor();
             try {
                 socketCreate(false);
             } catch (IOException ioe) {
                 ResourceManager.afterUdpClose();
+                // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
+                // fd = null;
                 throw ioe;
             }
         } else {
+            // Android-removed: socketCreate should set fd if it succeeds.
+            // fd = new FileDescriptor();
             socketCreate(true);
         }
         if (socket != null)
@@ -100,7 +134,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
         if (serverSocket != null)
             serverSocket.setCreated();
 
-        // socketCreate will set |fd| if it succeeds.
+        // Android-added: CloseGuard.
         if (fd != null && fd.valid()) {
             guard.open("close");
         }
@@ -209,63 +243,64 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
              * fail, since only java.Socket* has access to
              * PlainSocketImpl.setOption().
              */
-        case SO_LINGER:
-            if (val == null || (!(val instanceof Integer) && !(val instanceof Boolean)))
-                throw new SocketException("Bad parameter for option");
-            if (val instanceof Boolean) {
-                /* true only if disabling - enabling should be Integer */
-                on = false;
-            }
-            break;
-        case SO_TIMEOUT:
-            if (val == null || (!(val instanceof Integer)))
-                throw new SocketException("Bad parameter for SO_TIMEOUT");
-            int tmp = ((Integer) val).intValue();
-            if (tmp < 0)
-                throw new IllegalArgumentException("timeout < 0");
-            timeout = tmp;
-            break;
-        case IP_TOS:
-             if (val == null || !(val instanceof Integer)) {
-                 throw new SocketException("bad argument for IP_TOS");
-             }
-             trafficClass = ((Integer)val).intValue();
-             break;
-        case SO_BINDADDR:
-            throw new SocketException("Cannot re-bind socket");
-        case TCP_NODELAY:
-            if (val == null || !(val instanceof Boolean))
-                throw new SocketException("bad parameter for TCP_NODELAY");
-            on = ((Boolean)val).booleanValue();
-            break;
-        case SO_SNDBUF:
-        case SO_RCVBUF:
-            if (val == null || !(val instanceof Integer) ||
-                !(((Integer)val).intValue() > 0)) {
-                throw new SocketException("bad parameter for SO_SNDBUF " +
-                                          "or SO_RCVBUF");
-            }
-            break;
-        case SO_KEEPALIVE:
-            if (val == null || !(val instanceof Boolean))
-                throw new SocketException("bad parameter for SO_KEEPALIVE");
-            on = ((Boolean)val).booleanValue();
-            break;
-        case SO_OOBINLINE:
-            if (val == null || !(val instanceof Boolean))
-                throw new SocketException("bad parameter for SO_OOBINLINE");
-            on = ((Boolean)val).booleanValue();
-            break;
-        case SO_REUSEADDR:
-            if (val == null || !(val instanceof Boolean))
-                throw new SocketException("bad parameter for SO_REUSEADDR");
-            on = ((Boolean)val).booleanValue();
-            break;
-        default:
-            throw new SocketException("unrecognized TCP option: " + opt);
+            case SO_LINGER:
+                if (val == null || (!(val instanceof Integer) && !(val instanceof Boolean)))
+                    throw new SocketException("Bad parameter for option");
+                if (val instanceof Boolean) {
+                    /* true only if disabling - enabling should be Integer */
+                    on = false;
+                }
+                break;
+            case SO_TIMEOUT:
+                if (val == null || (!(val instanceof Integer)))
+                    throw new SocketException("Bad parameter for SO_TIMEOUT");
+                int tmp = ((Integer) val).intValue();
+                if (tmp < 0)
+                    throw new IllegalArgumentException("timeout < 0");
+                timeout = tmp;
+                break;
+            case IP_TOS:
+                if (val == null || !(val instanceof Integer)) {
+                    throw new SocketException("bad argument for IP_TOS");
+                }
+                trafficClass = ((Integer)val).intValue();
+                break;
+            case SO_BINDADDR:
+                throw new SocketException("Cannot re-bind socket");
+            case TCP_NODELAY:
+                if (val == null || !(val instanceof Boolean))
+                    throw new SocketException("bad parameter for TCP_NODELAY");
+                on = ((Boolean)val).booleanValue();
+                break;
+            case SO_SNDBUF:
+            case SO_RCVBUF:
+                if (val == null || !(val instanceof Integer) ||
+                        !(((Integer)val).intValue() > 0)) {
+                    throw new SocketException("bad parameter for SO_SNDBUF " +
+                            "or SO_RCVBUF");
+                }
+                break;
+            case SO_KEEPALIVE:
+                if (val == null || !(val instanceof Boolean))
+                    throw new SocketException("bad parameter for SO_KEEPALIVE");
+                on = ((Boolean)val).booleanValue();
+                break;
+            case SO_OOBINLINE:
+                if (val == null || !(val instanceof Boolean))
+                    throw new SocketException("bad parameter for SO_OOBINLINE");
+                on = ((Boolean)val).booleanValue();
+                break;
+            case SO_REUSEADDR:
+                if (val == null || !(val instanceof Boolean))
+                    throw new SocketException("bad parameter for SO_REUSEADDR");
+                on = ((Boolean)val).booleanValue();
+                break;
+            default:
+                throw new SocketException("unrecognized TCP option: " + opt);
         }
         socketSetOption(opt, on, val);
     }
+
     public Object getOption(int opt) throws SocketException {
         if (isClosedOrPending()) {
             throw new SocketException("Socket Closed");
@@ -283,39 +318,39 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
          */
 
         switch (opt) {
-        case TCP_NODELAY:
-            ret = socketGetOption(opt, null);
-            return Boolean.valueOf(ret != -1);
-        case SO_OOBINLINE:
-            ret = socketGetOption(opt, null);
-            return Boolean.valueOf(ret != -1);
-        case SO_LINGER:
-            ret = socketGetOption(opt, null);
-            return (ret == -1) ? Boolean.FALSE: (Object)(new Integer(ret));
-        case SO_REUSEADDR:
-            ret = socketGetOption(opt, null);
-            return Boolean.valueOf(ret != -1);
-        case SO_BINDADDR:
-            InetAddressContainer in = new InetAddressContainer();
-            ret = socketGetOption(opt, in);
-            return in.addr;
-        case SO_SNDBUF:
-        case SO_RCVBUF:
-            ret = socketGetOption(opt, null);
-            return new Integer(ret);
-        case IP_TOS:
-            ret = socketGetOption(opt, null);
-            if (ret == -1) { // ipv6 tos
-                return new Integer(trafficClass);
-            } else {
+            case TCP_NODELAY:
+                ret = socketGetOption(opt, null);
+                return Boolean.valueOf(ret != -1);
+            case SO_OOBINLINE:
+                ret = socketGetOption(opt, null);
+                return Boolean.valueOf(ret != -1);
+            case SO_LINGER:
+                ret = socketGetOption(opt, null);
+                return (ret == -1) ? Boolean.FALSE: (Object)(new Integer(ret));
+            case SO_REUSEADDR:
+                ret = socketGetOption(opt, null);
+                return Boolean.valueOf(ret != -1);
+            case SO_BINDADDR:
+                InetAddressContainer in = new InetAddressContainer();
+                ret = socketGetOption(opt, in);
+                return in.addr;
+            case SO_SNDBUF:
+            case SO_RCVBUF:
+                ret = socketGetOption(opt, null);
                 return new Integer(ret);
-            }
-        case SO_KEEPALIVE:
-            ret = socketGetOption(opt, null);
-            return Boolean.valueOf(ret != -1);
-        // should never get here
-        default:
-            return null;
+            case IP_TOS:
+                ret = socketGetOption(opt, null);
+                if (ret == -1) { // ipv6 tos
+                    return new Integer(trafficClass);
+                } else {
+                    return new Integer(ret);
+                }
+            case SO_KEEPALIVE:
+                ret = socketGetOption(opt, null);
+                return Boolean.valueOf(ret != -1);
+            // should never get here
+            default:
+                return null;
         }
     }
 
@@ -332,21 +367,27 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
             }
         }
         try {
-            BlockGuard.getThreadPolicy().onNetwork();
-            socketConnect(address, port, timeout);
-            /* socket may have been closed during poll/select */
-            synchronized (fdLock) {
-                if (closePending) {
-                    throw new SocketException ("Socket closed");
+            acquireFD();
+            try {
+                // Android-added: BlockGuard.
+                BlockGuard.getThreadPolicy().onNetwork();
+                socketConnect(address, port, timeout);
+                /* socket may have been closed during poll/select */
+                synchronized (fdLock) {
+                    if (closePending) {
+                        throw new SocketException ("Socket closed");
+                    }
                 }
-            }
-            // If we have a ref. to the Socket, then sets the flags
-            // created, bound & connected to true.
-            // This is normally done in Socket.connect() but some
-            // subclasses of Socket may call impl.connect() directly!
-            if (socket != null) {
-                socket.setBound();
-                socket.setConnected();
+                // If we have a ref. to the Socket, then sets the flags
+                // created, bound & connected to true.
+                // This is normally done in Socket.connect() but some
+                // subclasses of Socket may call impl.connect() directly!
+                if (socket != null) {
+                    socket.setBound();
+                    socket.setConnected();
+                }
+            } finally {
+                releaseFD();
             }
         } catch (IOException e) {
             close();
@@ -387,22 +428,27 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      * @param s the connection
      */
     protected void accept(SocketImpl s) throws IOException {
-        BlockGuard.getThreadPolicy().onNetwork();
-        socketAccept(s);
+        acquireFD();
+        try {
+            // Android-added: BlockGuard.
+            BlockGuard.getThreadPolicy().onNetwork();
+            socketAccept(s);
+        } finally {
+            releaseFD();
+        }
     }
 
     /**
      * Gets an InputStream for this socket.
      */
     protected synchronized InputStream getInputStream() throws IOException {
-        if (isClosedOrPending()) {
-            throw new IOException("Socket Closed");
-        }
-        if (shut_rd) {
-            throw new IOException("Socket input is shutdown");
-        }
-        if (socketInputStream == null) {
-            socketInputStream = new SocketInputStream(this);
+        synchronized (fdLock) {
+            if (isClosedOrPending())
+                throw new IOException("Socket Closed");
+            if (shut_rd)
+                throw new IOException("Socket input is shutdown");
+            if (socketInputStream == null)
+                socketInputStream = new SocketInputStream(this);
         }
         return socketInputStream;
     }
@@ -415,18 +461,23 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      * Gets an OutputStream for this socket.
      */
     protected synchronized OutputStream getOutputStream() throws IOException {
-        if (isClosedOrPending()) {
-            throw new IOException("Socket Closed");
+        synchronized (fdLock) {
+            if (isClosedOrPending())
+                throw new IOException("Socket Closed");
+            if (shut_wr)
+                throw new IOException("Socket output is shutdown");
+            if (socketOutputStream == null)
+                socketOutputStream = new SocketOutputStream(this);
         }
-        if (shut_wr) {
-            throw new IOException("Socket output is shutdown");
-        }
-        return new SocketOutputStream(this);
+        return socketOutputStream;
     }
 
+    // Android-removed: this.fd is maintained by the concrete implementation.
+    /*
     void setFileDescriptor(FileDescriptor fd) {
         this.fd = fd;
     }
+    */
 
     void setAddress(InetAddress address) {
         this.address = address;
@@ -449,10 +500,10 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
         }
 
         /*
-         * If connection has been reset then return 0 to indicate
-         * there are no buffered bytes.
+         * If connection has been reset or shut down for input, then return 0
+         * to indicate there are no buffered bytes.
          */
-        if (isConnectionReset()) {
+        if (isConnectionReset() || shut_rd) {
             return 0;
         }
 
@@ -492,7 +543,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
                     ResourceManager.afterUdpClose();
                 }
                 if (closePending) {
-                  return;
+                    return;
                 }
                 closePending = true;
                 socketClose();
@@ -504,7 +555,11 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
     void reset() throws IOException {
         if (fd != null && fd.valid()) {
             socketClose();
+            // Android-changed: Notified the CloseGuard object as the fd has been released.
+            guard.close();
         }
+        // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
+        // fd = null;
         super.reset();
     }
 
@@ -513,6 +568,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      * Shutdown read-half of the socket connection;
      */
     protected void shutdownInput() throws IOException {
+      // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
       if (fd != null && fd.valid()) {
           socketShutdown(SHUT_RD);
           if (socketInputStream != null) {
@@ -526,6 +582,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      * Shutdown write-half of the socket connection;
      */
     protected void shutdownOutput() throws IOException {
+      // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
       if (fd != null && fd.valid()) {
           socketShutdown(SHUT_WR);
           shut_wr = true;
@@ -537,6 +594,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
     }
 
     protected void sendUrgentData (int data) throws IOException {
+        // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
         if (fd == null || !fd.valid()) {
             throw new IOException("Socket Closed");
         }
@@ -547,6 +605,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      * Cleans up if the user forgets to close it.
      */
     protected void finalize() throws IOException {
+        // Android-added: CloseGuard.
         if (guard != null) {
             guard.warnIfOpen();
         }
@@ -562,7 +621,31 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      */
     FileDescriptor acquireFD() {
         synchronized (fdLock) {
+            fdUseCount++;
             return fd;
+        }
+    }
+
+    /*
+     * "Release" the FileDescriptor for this impl.
+     *
+     * If the use count goes to -1 then the socket is closed.
+     */
+    void releaseFD() {
+        synchronized (fdLock) {
+            fdUseCount--;
+            if (fdUseCount == -1) {
+                if (fd != null) {
+                    try {
+                        socketClose();
+                    } catch (IOException e) {
+                        // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
+                        // socketClose invalidates the fd by closing the fd.
+                        // } finally {
+                        //     fd = null;
+                    }
+                }
+            }
         }
     }
 
@@ -590,6 +673,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
                 resetState = CONNECTION_RESET_PENDING;
             }
         }
+
     }
 
     /*
@@ -601,6 +685,7 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
          * close is in progress.
          */
         synchronized (fdLock) {
+            // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
             if (closePending || (fd == null) || !fd.valid()) {
                 return true;
             } else {
@@ -627,24 +712,24 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
 
     abstract void socketCreate(boolean isServer) throws IOException;
     abstract void socketConnect(InetAddress address, int port, int timeout)
-        throws IOException;
+            throws IOException;
     abstract void socketBind(InetAddress address, int port)
-        throws IOException;
+            throws IOException;
     abstract void socketListen(int count)
-        throws IOException;
+            throws IOException;
     abstract void socketAccept(SocketImpl s)
-        throws IOException;
+            throws IOException;
     abstract int socketAvailable()
-        throws IOException;
+            throws IOException;
     abstract void socketClose0()
-        throws IOException;
+            throws IOException;
     abstract void socketShutdown(int howto)
-        throws IOException;
+            throws IOException;
     abstract void socketSetOption(int cmd, boolean on, Object value)
-        throws SocketException;
+            throws SocketException;
     abstract int socketGetOption(int opt, Object iaContainerObj) throws SocketException;
     abstract void socketSendUrgentData(int data)
-        throws IOException;
+            throws IOException;
 
     public final static int SHUT_RD = 0;
     public final static int SHUT_WR = 1;

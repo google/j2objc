@@ -807,7 +807,7 @@ NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj, int port, struct sockaddr 
                 caddr[15] = (address & 0xff);
             }
         } else {
-            ipaddress = ((JavaNetInet6Address *)iaObj)->ipaddress_;
+            ipaddress = ((JavaNetInet6Address *)iaObj)->holder6_->ipaddress_;
             (*env)->GetByteArrayRegion(env, ipaddress, 0, 16, caddr);
         }
         memset((char *)him6, 0, sizeof(struct sockaddr_in6));
@@ -825,7 +825,7 @@ NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj, int port, struct sockaddr 
         // addresses. Use them only if they're set in java (say, if the Inet6Address
         // was constructed with a specific scope_id or NetworkInterface).
         if (family != IPv4) {
-            int scope_id = ((JavaNetInet6Address *)iaObj)->scope_id_;
+            int scope_id = ((JavaNetInet6Address *)iaObj)->holder6_->scope_id_;
             if (scope_id > 0) {
                 him6->sin6_scope_id = scope_id;
             }

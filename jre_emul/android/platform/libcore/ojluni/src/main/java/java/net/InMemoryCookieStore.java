@@ -26,7 +26,9 @@
 
 package java.net;
 
-//import dalvik.system.VMRuntime;
+/* J2ObjC removed.
+import dalvik.system.VMRuntime;
+ */
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 
-// Android-changed: App compat changes and bug fixes
+// Android-changed: App compat changes and bug fixes.
 // b/26456024 Add targetSdkVersion based compatibility for domain matching
 // b/33034917 Support clearing cookies by adding it with "max-age=0"
 // b/25897688 InMemoryCookieStore ignores scheme (http/https) port and path of the cookie
@@ -52,7 +54,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class InMemoryCookieStore implements CookieStore {
     // the in-memory representation of cookies
-    // BEGIN Android-removed: Remove cookieJar and domainIndex
+    // BEGIN Android-removed: Remove cookieJar and domainIndex.
     /*
     private List<HttpCookie> cookieJar = null;
 
@@ -62,29 +64,33 @@ public class InMemoryCookieStore implements CookieStore {
     //          presence of cookie when retrieve one form index store.
     private Map<String, List<HttpCookie>> domainIndex = null;
     */
-    // END Android-removed: Remove cookieJar and domainIndex
+    // END Android-removed: Remove cookieJar and domainIndex.
     private Map<URI, List<HttpCookie>> uriIndex = null;
 
     // use ReentrantLock instead of syncronized for scalability
     private ReentrantLock lock = null;
 
-    // BEGIN Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex
-//    private final boolean applyMCompatibility;
+    // BEGIN Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex.
+    /* J2ObjC removed.
+    private final boolean applyMCompatibility;
+     */
 
     /**
      * The default ctor
      */
     public InMemoryCookieStore() {
-        // j2objc: use hard-coded Android version number for Android 10.
+        /* J2ObjC modified: use hard-coded Android version number for Android 10. */
         this(/*VMRuntime.getRuntime().getTargetSdkVersion()*/ 29);
     }
 
     public InMemoryCookieStore(int targetSdkVersion) {
         uriIndex = new HashMap<>();
         lock = new ReentrantLock(false);
-//        applyMCompatibility = (targetSdkVersion <= 23);
+        /* J2ObjC removed.
+        applyMCompatibility = (targetSdkVersion <= 23);
+         */
     }
-    // END Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex
+    // END Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex.
 
     /**
      * Add one cookie into cookie store.
@@ -97,8 +103,8 @@ public class InMemoryCookieStore implements CookieStore {
 
         lock.lock();
         try {
-            // Android-changed: http://b/33034917, android supports clearing cookies
-            // by adding the cookie with max-age: 0.
+            // Android-changed: Android supports clearing cookies. http://b/33034917
+            // They are cleared by adding the cookie with max-age: 0.
             //if (cookie.getMaxAge() != 0) {
             addIndex(uriIndex, getEffectiveURI(uri), cookie);
             //}
@@ -122,7 +128,7 @@ public class InMemoryCookieStore implements CookieStore {
         }
 
         List<HttpCookie> cookies = new ArrayList<HttpCookie>();
-        // BEGIN Android-changed: b/25897688 InMemoryCookieStore ignores scheme (http/https)
+        // BEGIN Android-changed: InMemoryCookieStore ignores scheme (http/https). b/25897688
         lock.lock();
         try {
             // check domainIndex first
@@ -132,7 +138,7 @@ public class InMemoryCookieStore implements CookieStore {
         } finally {
             lock.unlock();
         }
-        // END Android-changed: b/25897688 InMemoryCookieStore ignores scheme (http/https)
+        // END Android-changed: InMemoryCookieStore ignores scheme (http/https). b/25897688
         return cookies;
     }
 
@@ -140,7 +146,7 @@ public class InMemoryCookieStore implements CookieStore {
      * Get all cookies in cookie store, except those have expired
      */
     public List<HttpCookie> getCookies() {
-        // BEGIN Android-changed: Remove cookieJar and domainIndex
+        // BEGIN Android-changed: Remove cookieJar and domainIndex.
         List<HttpCookie> rt = new ArrayList<HttpCookie>();
 
         lock.lock();
@@ -160,7 +166,7 @@ public class InMemoryCookieStore implements CookieStore {
             rt = Collections.unmodifiableList(rt);
             lock.unlock();
         }
-        // END Android-changed: Remove cookieJar and domainIndex
+        // END Android-changed: Remove cookieJar and domainIndex.
 
         return rt;
     }
@@ -214,7 +220,7 @@ public class InMemoryCookieStore implements CookieStore {
             throw new NullPointerException("cookie is null");
         }
 
-        // BEGIN Android-changed: Fix uri not being removed from uriIndex
+        // BEGIN Android-changed: Fix uri not being removed from uriIndex.
         lock.lock();
         try {
             uri = getEffectiveURI(uri);
@@ -231,7 +237,7 @@ public class InMemoryCookieStore implements CookieStore {
         } finally {
             lock.unlock();
         }
-        // END Android-changed: Fix uri not being removed from uriIndex
+        // END Android-changed: Fix uri not being removed from uriIndex.
     }
 
 
@@ -300,14 +306,15 @@ public class InMemoryCookieStore implements CookieStore {
             // need to check H & D component
             String D = host.substring(lengthDiff);
 
-//            // Android-changed: b/26456024 targetSdkVersion based compatibility for domain matching
-//            // Android M and earlier: Cookies with domain "foo.com" would not match "bar.foo.com".
-//            // The RFC dictates that the user agent must treat those domains as if they had a
-//            // leading period and must therefore match "bar.foo.com".
-//            if (applyMCompatibility && !domain.startsWith(".")) {
-//                return false;
-//            }
-
+            // Android-changed: b/26456024 targetSdkVersion based compatibility for domain matching.
+            // Android M and earlier: Cookies with domain "foo.com" would not match "bar.foo.com".
+            // The RFC dictates that the user agent must treat those domains as if they had a
+            // leading period and must therefore match "bar.foo.com".
+            /* J2ObjC removed.
+            if (applyMCompatibility && !domain.startsWith(".")) {
+                return false;
+            }
+             */
             return (D.equalsIgnoreCase(domain));
         } else if (lengthDiff == -1) {
             // if domain is actually .host
@@ -320,7 +327,7 @@ public class InMemoryCookieStore implements CookieStore {
 
     private void getInternal1(List<HttpCookie> cookies, Map<URI, List<HttpCookie>> cookieIndex,
             String host) {
-        // BEGIN Android-changed: b/25897688 InMemoryCookieStore ignores scheme (http/https)
+        // BEGIN Android-changed: InMemoryCookieStore ignores scheme (http/https). b/25897688
         // Use a separate list to handle cookies that need to be removed so
         // that there is no conflict with iterators.
         ArrayList<HttpCookie> toRemove = new ArrayList<HttpCookie>();
@@ -349,7 +356,7 @@ public class InMemoryCookieStore implements CookieStore {
             }
             toRemove.clear();
         }
-        // END Android-changed: b/25897688 InMemoryCookieStore ignores scheme (http/https)
+        // END Android-changed: InMemoryCookieStore ignores scheme (http/https). b/25897688
     }
 
     // @param cookies           [OUT] contains the found cookies
@@ -360,7 +367,7 @@ public class InMemoryCookieStore implements CookieStore {
         void getInternal2(List<HttpCookie> cookies, Map<T, List<HttpCookie>> cookieIndex,
                           T comparator)
     {
-        // BEGIN Android-changed: b/25897688 InMemoryCookieStore ignores scheme (http/https)
+        // BEGIN Android-changed: InMemoryCookieStore ignores scheme (http/https). b/25897688
         // Removed cookieJar
         for (T index : cookieIndex.keySet()) {
             if ((index == comparator) || (index != null && comparator.compareTo(index) == 0)) {
@@ -382,7 +389,7 @@ public class InMemoryCookieStore implements CookieStore {
                 } // end of indexedCookies != null
             } // end of comparator.compareTo(index) == 0
         } // end of cookieIndex iteration
-        // END Android-changed: b/25897688 InMemoryCookieStore ignores scheme (http/https)
+        // END Android-changed: InMemoryCookieStore ignores scheme (http/https). b/25897688
     }
 
     // add 'cookie' indexed by 'index' into 'indexStore'
@@ -390,9 +397,9 @@ public class InMemoryCookieStore implements CookieStore {
                               T index,
                               HttpCookie cookie)
     {
-        // Android-changed: "index" can be null. We only use the URI based
-        // index on Android and we want to support null URIs. The underlying
-        // store is a HashMap which will support null keys anyway.
+        // Android-changed: "index" can be null.
+        // We only use the URI based index on Android and we want to support null URIs. The
+        // underlying store is a HashMap which will support null keys anyway.
         // if (index != null) {
         List<HttpCookie> cookies = indexStore.get(index);
         if (cookies != null) {
@@ -414,7 +421,7 @@ public class InMemoryCookieStore implements CookieStore {
     //
     private URI getEffectiveURI(URI uri) {
         URI effectiveURI = null;
-        // Android-added: Fix NullPointerException
+        // Android-added: Fix NullPointerException.
         if (uri == null) {
             return null;
         }

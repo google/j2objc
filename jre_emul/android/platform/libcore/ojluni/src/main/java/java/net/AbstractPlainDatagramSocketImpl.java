@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,10 +24,15 @@
  */
 package java.net;
 
+import libcore.io.IoBridge;
+import libcore.io.IoUtils;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.util.Enumeration;
+/* J2ObjC removed.
+import java.security.AccessController;
+ */
 
 import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
@@ -49,22 +54,39 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
     int timeout = 0;
     boolean connected = false;
     private int trafficClass = 0;
-    private InetAddress connectedAddress = null;
+    protected InetAddress connectedAddress = null;
     private int connectedPort = -1;
 
-    /* cached socket options */
-    private int multicastInterface = 0;
-    private boolean loopbackMode = true;
-    private int ttl = -1;
-
+    // Android-added: CloseGuard.
     private final CloseGuard guard = CloseGuard.get();
 
+    /* J2ObjC modified.
+    private static final String os = AccessController.doPrivileged(
+        new sun.security.action.GetPropertyAction("os.name")
+    );
+     */
     private static final String os = System.getProperty("os.name");
 
     /**
      * flag set if the native connect() call not to be used
      */
     private final static boolean connectDisabled = os.contains("OS X");
+
+    // BEGIN Android-removed: Android doesn't need to load native net library.
+    /**
+     * Load net library into runtime.
+     *
+    static {
+        java.security.AccessController.doPrivileged(
+            new java.security.PrivilegedAction<Void>() {
+                public Void run() {
+                    System.loadLibrary("net");
+                    return null;
+                }
+            });
+    }
+    */
+    // END Android-removed: Android doesn't need to load native net library.
 
     /**
      * Creates a datagram socket
@@ -80,8 +102,12 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
             throw ioe;
         }
 
+        // Android-added: CloseGuard/fdsan.
         if (fd != null && fd.valid()) {
             guard.open("close");
+            /* J2ObjC removed.
+            IoUtils.setFdOwner(fd, this);
+             */
         }
     }
 
@@ -99,7 +125,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
     /**
      * Sends a datagram packet. The packet contains the data and the
      * destination address to send the packet to.
-     * @param packet to be sent.
+     * @param p the packet to be sent.
      */
     protected abstract void send(DatagramPacket p) throws IOException;
 
@@ -111,6 +137,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
      * @param port the remote port number
      */
     protected void connect(InetAddress address, int port) throws SocketException {
+        // Android-added: BlockGuard.
         BlockGuard.getThreadPolicy().onNetwork();
         connect0(address, port);
         connectedAddress = address;
@@ -131,13 +158,13 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 
     /**
      * Peek at the packet to see who it is from.
-     * @return the address which the packet came from.
+     * @param i the address to populate with the sender address
      */
     protected abstract int peek(InetAddress i) throws IOException;
     protected abstract int peekData(DatagramPacket p) throws IOException;
     /**
      * Receive the datagram packet.
-     * @param p Packet Received.
+     * @param p the packet to receive into
      */
     protected synchronized void receive(DatagramPacket p)
         throws IOException {
@@ -149,7 +176,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 
     /**
      * Set the TTL (time-to-live) option.
-     * @param ttl the TTL to be set.
+     * @param ttl TTL to be set.
      */
     protected abstract void setTimeToLive(int ttl) throws IOException;
 
@@ -160,13 +187,15 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 
     /**
      * Set the TTL (time-to-live) option.
-     * @param ttl the TTL to be set.
+     * @param ttl TTL to be set.
      */
+    @Deprecated
     protected abstract void setTTL(byte ttl) throws IOException;
 
     /**
      * Get the TTL (time-to-live) option.
      */
+    @Deprecated
     protected abstract byte getTTL() throws IOException;
 
     /**
@@ -206,7 +235,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 
     /**
      * Leave the multicast group.
-     * @param mcastaddr multicast address to leave.
+     * @param mcastaddr  multicast address to leave.
      * @param netIf specified the local interface to leave the group at
      * @throws  IllegalArgumentException if mcastaddr is null or is a
      *          SocketAddress subclass not supported by this socket
@@ -226,6 +255,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
      * Close the socket.
      */
     protected void close() {
+        // Android-added: CloseGuard.
         guard.close();
 
         if (fd != null) {
@@ -240,6 +270,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
     }
 
     protected void finalize() {
+        // Android-added: CloseGuard.
         if (guard != null) {
             guard.warnIfOpen();
         }
@@ -301,6 +332,8 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
                  throw new SocketException("bad argument for IP_MULTICAST_IF");
              break;
          case IP_MULTICAST_IF2:
+             // Android-changed: Support Integer IP_MULTICAST_IF2 values for app compat. b/26790580
+             // if (o == null || !(o instanceof NetworkInterface))
              if (o == null || !(o instanceof Integer || o instanceof NetworkInterface))
                  throw new SocketException("bad argument for IP_MULTICAST_IF2");
              if (o instanceof NetworkInterface) {
@@ -349,7 +382,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
             case SO_REUSEADDR:
             case SO_BROADCAST:
                 result = socketGetOption(optID);
-
+                // Android-added: Added for app compat reason. See methodgetNIFirstAddress.
                 if (optID == IP_MULTICAST_IF) {
                     return getNIFirstAddress((Integer)result);
                 }
@@ -362,6 +395,12 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
         return result;
     }
 
+    // BEGIN Android-added: Support Integer IP_MULTICAST_IF2 values for app compat. b/26790580
+    // Native code is changed to return the index of network interface when calling
+    // getOption(IP_MULTICAST_IF2) due to app compat reason.
+    //
+    // For getOption(IP_MULTICAST_IF), we should keep returning InetAddress instance. This method
+    // convert NetworkInterface index into InetAddress instance.
     /** Return the first address bound to NetworkInterface with given ID.
      * In case of niIndex == 0 or no address return anyLocalAddress
      */
@@ -375,6 +414,7 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
         }
         return InetAddress.anyLocalAddress();
     }
+    // END Android-added: Support Integer IP_MULTICAST_IF2 values for app compat. b/26790580
 
     protected abstract void datagramSocketCreate() throws SocketException;
     protected abstract void datagramSocketClose();
@@ -387,5 +427,14 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 
     protected boolean nativeConnectDisabled() {
         return connectDisabled;
+    }
+
+    // Android-changed: rewritten on the top of IoBridge.
+    int dataAvailable() {
+        try {
+            return IoBridge.available(fd);
+        } catch (IOException e) {
+            return -1;
+        }
     }
 }

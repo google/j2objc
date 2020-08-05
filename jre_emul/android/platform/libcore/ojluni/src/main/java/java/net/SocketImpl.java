@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@ import java.io.OutputStream;
 import java.io.FileDescriptor;
 
 /**
- * The abstract class <code>SocketImpl</code> is a common superclass
+ * The abstract class {@code SocketImpl} is a common superclass
  * of all classes that actually implement sockets. It is used to
  * create both client and server sockets.
  * <p>
@@ -75,7 +75,7 @@ public abstract class SocketImpl implements SocketOptions {
     /**
      * Creates either a stream or a datagram socket.
      *
-     * @param      stream   if <code>true</code>, create a stream socket;
+     * @param      stream   if {@code true}, create a stream socket;
      *                      otherwise, create a datagram socket.
      * @exception  IOException  if an I/O error occurs while creating the
      *               socket.
@@ -126,7 +126,7 @@ public abstract class SocketImpl implements SocketOptions {
 
     /**
      * Sets the maximum queue length for incoming connection indications
-     * (a request to connect) to the <code>count</code> argument. If a
+     * (a request to connect) to the {@code count} argument. If a
      * connection indication arrives when the queue is full, the
      * connection is refused.
      *
@@ -185,8 +185,9 @@ public abstract class SocketImpl implements SocketOptions {
      * Any data sent to this socket is acknowledged and then
      * silently discarded.
      *
-     * If you read from a socket input stream after invoking
-     * shutdownInput() on the socket, the stream will return EOF.
+     * If you read from a socket input stream after invoking this method on the
+     * socket, the stream's {@code available} method will return 0, and its
+     * {@code read} methods will return {@code -1} (end of stream).
      *
      * @exception IOException if an I/O error occurs when shutting down this
      * socket.
@@ -220,15 +221,16 @@ public abstract class SocketImpl implements SocketOptions {
     }
 
     /**
-     * Returns the value of this socket's <code>fd</code> field.
+     * Returns the value of this socket's {@code fd} field.
      *
-     * @return  the value of this socket's <code>fd</code> field.
+     * @return  the value of this socket's {@code fd} field.
      * @see     java.net.SocketImpl#fd
      */
     protected FileDescriptor getFileDescriptor() {
         return fd;
     }
 
+    // Android-added: getFD$() for testing.
     /**
      * @hide used by java.nio tests
      */
@@ -237,9 +239,9 @@ public abstract class SocketImpl implements SocketOptions {
     }
 
     /**
-     * Returns the value of this socket's <code>address</code> field.
+     * Returns the value of this socket's {@code address} field.
      *
-     * @return  the value of this socket's <code>address</code> field.
+     * @return  the value of this socket's {@code address} field.
      * @see     java.net.SocketImpl#address
      */
     protected InetAddress getInetAddress() {
@@ -247,9 +249,9 @@ public abstract class SocketImpl implements SocketOptions {
     }
 
     /**
-     * Returns the value of this socket's <code>port</code> field.
+     * Returns the value of this socket's {@code port} field.
      *
-     * @return  the value of this socket's <code>port</code> field.
+     * @return  the value of this socket's {@code port} field.
      * @see     java.net.SocketImpl#port
      */
     protected int getPort() {
@@ -280,9 +282,9 @@ public abstract class SocketImpl implements SocketOptions {
     protected abstract void sendUrgentData (int data) throws IOException;
 
     /**
-     * Returns the value of this socket's <code>localport</code> field.
+     * Returns the value of this socket's {@code localport} field.
      *
-     * @return  the value of this socket's <code>localport</code> field.
+     * @return  the value of this socket's {@code localport} field.
      * @see     java.net.SocketImpl#localport
      */
     protected int getLocalPort() {
@@ -306,7 +308,7 @@ public abstract class SocketImpl implements SocketOptions {
     }
 
     /**
-     * Returns the address and port of this socket as a <code>String</code>.
+     * Returns the address and port of this socket as a {@code String}.
      *
      * @return  a string representation of this socket.
      */
@@ -338,23 +340,23 @@ public abstract class SocketImpl implements SocketOptions {
      * values represent a lower priority than positive values. If the
      * application prefers short connection time over both low latency and high
      * bandwidth, for example, then it could invoke this method with the values
-     * <tt>(1, 0, 0)</tt>.  If the application prefers high bandwidth above low
+     * {@code (1, 0, 0)}.  If the application prefers high bandwidth above low
      * latency, and low latency above short connection time, then it could
-     * invoke this method with the values <tt>(0, 1, 2)</tt>.
+     * invoke this method with the values {@code (0, 1, 2)}.
      *
      * By default, this method does nothing, unless it is overridden in a
      * a sub-class.
      *
      * @param  connectionTime
-     *         An <tt>int</tt> expressing the relative importance of a short
+     *         An {@code int} expressing the relative importance of a short
      *         connection time
      *
      * @param  latency
-     *         An <tt>int</tt> expressing the relative importance of low
+     *         An {@code int} expressing the relative importance of low
      *         latency
      *
      * @param  bandwidth
-     *         An <tt>int</tt> expressing the relative importance of high
+     *         An {@code int} expressing the relative importance of high
      *         bandwidth
      *
      * @since 1.5
@@ -364,5 +366,45 @@ public abstract class SocketImpl implements SocketOptions {
                                           int bandwidth)
     {
         /* Not implemented yet */
+    }
+
+    <T> void setOption(SocketOption<T> name, T value) throws IOException {
+        if (name == StandardSocketOptions.SO_KEEPALIVE) {
+            setOption(SocketOptions.SO_KEEPALIVE, value);
+        } else if (name == StandardSocketOptions.SO_SNDBUF) {
+            setOption(SocketOptions.SO_SNDBUF, value);
+        } else if (name == StandardSocketOptions.SO_RCVBUF) {
+            setOption(SocketOptions.SO_RCVBUF, value);
+        } else if (name == StandardSocketOptions.SO_REUSEADDR) {
+            setOption(SocketOptions.SO_REUSEADDR, value);
+        } else if (name == StandardSocketOptions.SO_LINGER) {
+            setOption(SocketOptions.SO_LINGER, value);
+        } else if (name == StandardSocketOptions.IP_TOS) {
+            setOption(SocketOptions.IP_TOS, value);
+        } else if (name == StandardSocketOptions.TCP_NODELAY) {
+            setOption(SocketOptions.TCP_NODELAY, value);
+        } else {
+            throw new UnsupportedOperationException("unsupported option");
+        }
+    }
+
+    <T> T getOption(SocketOption<T> name) throws IOException {
+        if (name == StandardSocketOptions.SO_KEEPALIVE) {
+            return (T)getOption(SocketOptions.SO_KEEPALIVE);
+        } else if (name == StandardSocketOptions.SO_SNDBUF) {
+            return (T)getOption(SocketOptions.SO_SNDBUF);
+        } else if (name == StandardSocketOptions.SO_RCVBUF) {
+            return (T)getOption(SocketOptions.SO_RCVBUF);
+        } else if (name == StandardSocketOptions.SO_REUSEADDR) {
+            return (T)getOption(SocketOptions.SO_REUSEADDR);
+        } else if (name == StandardSocketOptions.SO_LINGER) {
+            return (T)getOption(SocketOptions.SO_LINGER);
+        } else if (name == StandardSocketOptions.IP_TOS) {
+            return (T)getOption(SocketOptions.IP_TOS);
+        } else if (name == StandardSocketOptions.TCP_NODELAY) {
+            return (T)getOption(SocketOptions.TCP_NODELAY);
+        } else {
+            throw new UnsupportedOperationException("unsupported option");
+        }
     }
 }

@@ -67,7 +67,7 @@ import java.io.*;
  * <p>
  * There are two possible ways in which this decoder could deal with
  * illegal strings.  It could either leave illegal characters alone or
- * it could throw an {@code {@link java.lang.IllegalArgumentException}}.
+ * it could throw an {@link java.lang.IllegalArgumentException}.
  * Which approach the decoder takes is left to the
  * implementation.
  *
@@ -172,14 +172,15 @@ public class URLDecoder {
 
                     while ( ((i+2) < numChars) &&
                             (c=='%')) {
-                        // BEGIN Android-changed
+                        // BEGIN Android-changed: App compat. Forbid non-hex chars after '%'.
                         if (!isValidHexChar(s.charAt(i+1)) || !isValidHexChar(s.charAt(i+2))) {
                             throw new IllegalArgumentException("URLDecoder: Illegal hex characters in escape (%) pattern : "
                                     + s.substring(i, i + 3));
                         }
-                        // END Android-changed
+                        // END Android-changed: App compat. Forbid non-hex chars after '%'.
                         int v = Integer.parseInt(s.substring(i+1,i+3),16);
                         if (v < 0)
+                            // Android-changed: Improve error message by printing the string value.
                             throw new IllegalArgumentException("URLDecoder: Illegal hex characters in escape (%) pattern - negative value : "
                                     + s.substring(i, i + 3));
                         bytes[pos++] = (byte) v;
@@ -213,9 +214,9 @@ public class URLDecoder {
         return (needToChange? sb.toString() : s);
     }
 
-    // BEGIN Android-changed
+    // BEGIN Android-added: App compat. Forbid non-hex chars after '%'.
     private static boolean isValidHexChar(char c) {
         return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
     }
-    // END Android-changed
+    // END Android-added: App compat. Forbid non-hex chars after '%'.
 }

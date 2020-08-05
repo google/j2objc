@@ -250,7 +250,7 @@ public class CookieManager extends CookieHandler
                 }
             }
         }
-        // Android-added: b/25897688 A fix to return empty map if cookies list is empty
+        // Android-added: A fix to return empty map if cookies list is empty. b/25897688
         if (cookies.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -315,7 +315,7 @@ public class CookieManager extends CookieHandler
                                 }
                             }
                             cookie.setPath(path);
-                        // Android-added: b/25763487 A fix to verify cookie URI before removal
+                        // Android-added: A fix to verify cookie URI before removal. b/25763487
                         } else {
                             // Validate existing path
                             if (!pathMatches(uri, cookie)) {
@@ -408,7 +408,7 @@ public class CookieManager extends CookieHandler
         return false;
     }
 
-    // Android-changed: b/25763487 Cookie path matching logic in OpenJDK was wrong
+    // Android-changed: Cookie path matching logic in OpenJDK was wrong. b/25763487
     /**
      * Return true iff. the path from {@code cookie} matches the path from {@code uri}.
      */
@@ -436,9 +436,9 @@ public class CookieManager extends CookieHandler
     private List<String> sortByPath(List<HttpCookie> cookies) {
         Collections.sort(cookies, new CookiePathComparator());
 
-        // BEGIN Android-changed: Netscape cookie spec and RFC 2965 have different format
-        // of Cookie header; RFC 2965 requires a leading $Version="1" string while Netscape does not
-        // The workaround here is to add a $Version="1" string in advance
+        // BEGIN Android-changed: Cookie header differs in Netscape cookie spec and RFC 2965.
+        // RFC 2965 requires a leading $Version="1" string while Netscape does not.
+        // The workaround here is to add a $Version="1" string in advance.
         final StringBuilder result = new StringBuilder();
         int minVersion = 1;
         for (HttpCookie cookie : cookies) {
@@ -461,7 +461,7 @@ public class CookieManager extends CookieHandler
 
         List<String> cookieHeader = new java.util.ArrayList<String>();
         cookieHeader.add(result.toString());
-        // END Android-changed: Netscape cookie spec and RFC 2965 have different format
+        // END Android-changed: Cookie header differs in Netscape cookie spec and RFC 2965.
         return cookieHeader;
     }
 
@@ -475,7 +475,7 @@ public class CookieManager extends CookieHandler
             // path rule only applies to the cookies with same name
             if (!c1.getName().equals(c2.getName())) return 0;
 
-            // Android-changed: normalize before comparison
+            // Android-changed: normalize before comparison.
             final String c1Path = normalizePath(c1.getPath());
             final String c2Path = normalizePath(c2.getPath());
 

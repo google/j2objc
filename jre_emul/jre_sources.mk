@@ -656,6 +656,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/StructStatVfs.java \
   libcore/io/StructTimeval.java \
   libcore/io/StructUtsname.java \
+  libcore/content/type/MimeMap.java \
   libcore/net/MimeUtils.java \
   libcore/net/url/UrlUtils.java \
   libcore/reflect/AnnotatedElements.java \
@@ -835,6 +836,7 @@ JAVA_PRIVATE_SOURCES_NET = \
   libcore/icu/NativeIDN.java \
   libcore/io/NetworkBridge.java \
   libcore/io/NetworkOs.java \
+  libcore/net/InetAddressUtils.java \
   libcore/net/UriCodec.java \
   libcore/net/http/HttpDate.java \
   sun/misc/IoTrace.java \
