@@ -255,7 +255,6 @@ public class SubjectTest extends TestCase {
         }
     }
 
-    /* TODO(amisail): check once anjulij updates ObjectOutputStream
     public void testSerializationSelf() throws Exception {
         SerializationTest.verifySelf(getSerializationData());
     }
@@ -263,19 +262,16 @@ public class SubjectTest extends TestCase {
     public void testSerializationGolden() throws Exception {
         SerializationTest.verifyGolden(this, getSerializationData());
     }
-     */
 
-    /* TODO(amisail): check once anjulij updates ObjectOutputStream
     public void testSerialization_nullPrincipalsAllowed() throws Exception {
         Set<Principal> principalsSet = new HashSet<>();
         principalsSet.add(new X500Principal("CN=SomePrincipal"));
         principalsSet.add(null);
         principalsSet.add(new X500Principal("CN=SomeOtherPrincipal"));
         Subject subject = new Subject(
-                false /* readOnly * /, principalsSet, new HashSet<Object>(), new HashSet<Object>());
+                false /* readOnly */, principalsSet, new HashSet<Object>(), new HashSet<Object>());
         SerializationTest.verifySelf(subject);
     }
-     */
 
     public void testSecureTest_removeAllNull_throwsException() throws Exception {
         Subject subject = new Subject(
