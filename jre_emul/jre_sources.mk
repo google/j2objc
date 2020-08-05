@@ -569,6 +569,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   dalvik/system/VersionCodes.java \
   dalvik/system/VMStack.java \
   java/io/Bits.java \
+  java/io/DeleteOnExitHook.java \
   java/io/SerialCallbackContext.java \
   java/lang/JavaLangAccess.java \
   java/math/BitSieve.java \
@@ -637,7 +638,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/icu/LocaleData.java \
   libcore/icu/TimeZoneNames.java \
   libcore/io/AsynchronousCloseMonitor.java \
-  libcore/io/DeleteOnExit.java \
   libcore/io/IoBridge.java \
   libcore/io/IoUtils.java \
   libcore/io/Libcore.java \
