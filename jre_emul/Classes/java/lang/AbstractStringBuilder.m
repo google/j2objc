@@ -31,7 +31,6 @@
 #include "sun/misc/FloatingDecimal.h"
 
 
-__weak id hello;
 // AbstractStringBuilder is abstract and doesn't implement all members of Appendable or
 // CharSequence.
 #pragma clang diagnostic ignored "-Wprotocol"

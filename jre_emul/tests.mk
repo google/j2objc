@@ -82,6 +82,10 @@ endif
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TRANSLATE_ARGS += -external-annotation-file lite/ignore_tests.jaif
 endif
+ifdef J2OBJC_USE_GC
+TRANSLATE_ARGS += -Xuse-gc
+endif
+
 TRANSLATE_SOURCES = \
     $(SUPPORT_SOURCES) \
     $(MOCKWEBSERVER_SOURCES) \
@@ -97,14 +101,14 @@ TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   $(TESTS_DIR),\
   $(SUPPORT_SOURCES) $(MOCKWEBSERVER_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
-  $(TRANSLATE_ARGS) -use-gc)
+  $(TRANSLATE_ARGS))
 
 TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   jre_emul_tests_arc,\
   $(TESTS_DIR)/arc,\
   $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES:%=$(GEN_JAVA_DIR)/%),\
   ,\
-  $(TRANSLATE_ARGS) -use-gc)
+  $(TRANSLATE_ARGS))
 
 TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_ARC)
 
@@ -278,8 +282,8 @@ $(TESTS_DIR):
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | $(TRANSLATE_ARTIFACTS)
 	@mkdir -p $(@D)
-	@echo j2objcc -c -use-gc $?
-	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -o $@ $<
+	@echo j2objcc -c $?
+	@$(TEST_JOCC) $(COMPILE_FLAGS) -o $@ $<
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/arc/%.m | $(TRANSLATE_ARTIFACTS)
 	@mkdir -p $(@D)

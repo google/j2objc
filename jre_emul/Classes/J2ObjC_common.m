@@ -119,6 +119,10 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   return value;
 }
 
+id JreVolatileStaticAssign(volatile_id *pVar, id newValue) {
+  return JreVolatileStrongAssign(pVar, newValue);
+}
+
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pVar);
   VOLATILE_LOCK(lock);
@@ -230,8 +234,13 @@ static NSUInteger CountObjectArgs(const char *types) {
   return numObjs;
 }
 
+#if __has_feature(objc_arc)
 void ARGC_strongRetain(id obj);
-void ARGC_release(id obj);
+void ARGC_strongRelease(id obj);
+#else
+#define ARGC_strongRetain(obj)  [obj retain]
+#define ARGC_strongRelease(obj) [obj release]
+#endif
 
 // Computes the capacity for the buffer.
 static jint ComputeCapacity(const char *types, va_list va, __unsafe_unretained NSString **objDescriptions) {
@@ -325,7 +334,7 @@ static void AppendArgs(
         va_arg(va, id);
         NSString* description= *(objDescriptions++);
         JreStringBuilder_appendString(sb, description);
-        ARGC_release(description);
+        ARGC_strongRelease(description);
         break;
     }
     types++;
@@ -450,7 +459,7 @@ NSUInteger JreDefaultFastEnumeration(
     state->extra[2] = (unsigned long) [iter methodForSelector:nextSel];
   }
   else {
-    ARGC_release(*stackbuf);
+    ARGC_strongRelease(*stackbuf);
   }
   jboolean (*hasNextImpl)(id, SEL) = (jboolean (*)(id, SEL)) state->extra[1];
   id (*nextImpl)(id, SEL) = (id (*)(id, SEL)) state->extra[2];
@@ -463,7 +472,7 @@ NSUInteger JreDefaultFastEnumeration(
     objCount++;
   }
   else {
-    ARGC_release(iter);
+    ARGC_strongRelease(iter);
   }
   return objCount;
 }

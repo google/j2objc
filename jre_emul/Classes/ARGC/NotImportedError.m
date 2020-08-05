@@ -1,3 +1,5 @@
+#import "J2ObjC_common.h"
+
 #include "com/google/j2objc/NotImportedError.h"
 
 @implementation ComGoogleJ2objcNotImportedError

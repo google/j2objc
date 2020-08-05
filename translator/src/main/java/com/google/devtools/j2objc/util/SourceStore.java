@@ -40,32 +40,32 @@ import com.strobel.decompiler.PlainTextOutput;
 
 public class SourceStore { 
 
-	private String root;
-	private Options options;
-	private JarTypeLoader currTypeLoader;
-	private HashSet<String> pathSet = new HashSet<>();
-	private File jarFile;
-	private static HashSet<String> rootPaths = new HashSet<>();
+  private String root;
+  private Options options;
+  private JarTypeLoader currTypeLoader;
+  private HashSet<String> pathSet = new HashSet<>();
+  private File jarFile;
+  private static HashSet<String> rootPaths = new HashSet<>();
   private static HashMap<String, InputFile> inputFileMap = new HashMap<>(); 
 
-	public SourceStore(Options options) {
-		this.options = options;
-	}
+  public SourceStore(Options options) {
+    this.options = options;
+  }
 
   private static InputFile registerInputFile(InputFile file) {
     InputFile old = inputFileMap.put(file.getUnitName(), file);
     return old;
   }
-  
+
   public static InputFile getInputFile(String unitPath) {
     return inputFileMap.get(unitPath);
   }
-  
-	public static String addRootPath(File f) {
+
+  public static String addRootPath(File f) {
     String root = getCanonicalPath(f);
-		rootPaths.add(root + '/');
-		return root;
-	}
+    rootPaths.add(root + '/');
+    return root;
+  }
 
   public static String getCanonicalPath(File f) {
     try {
@@ -76,229 +76,229 @@ public class SourceStore {
   }
 
 
-	public boolean addSource(String filename) {
-		this.root = "";
-		File f = new File(filename);
-		if (f.exists()) {
-			filename = getCanonicalPath(f);
-			for (String s : rootPaths) {
-				if (filename.startsWith(s)) {
-					this.root = s;
-					break;
-				}
-			}
-		}
-		else {
-			if (filename.charAt(0) == '!') {
-				File lstf = new File(filename.substring(1));
-				ArrayList<String> files = SourceStore.readPathList(lstf);
-				if (files != null) {
-					if (lstf.getName().charAt(0) == '.') {
-						lstf = new File("j2objc compatible mode - PWD");
-					}
-					String dir = lstf.getAbsolutePath();
-					dir = dir.substring(0, dir.lastIndexOf('/') + 1);
-					for (String s : files) {
-						if (!s.startsWith(dir)) {
-							s = dir + s;
-						}
-						this.addSource(s);
-					}
-					return true;
-				}
-			}
-			
-			try {
-				InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
-				if (inp != null) {
-				  registerInputFile(inp);
-					String absPath = inp.getAbsolutePath();
-					root = absPath.substring(0, absPath.length() - filename.length());
-					addRootPath(new File(root));
-					f = new File(absPath);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (!f.exists()) {
-				ErrorUtil.warning("Invalid source: " + filename);
-				System.exit(-1);
-				return false;
-			}
-		}
-		
-		if (!pathSet.add(getCanonicalPath(f))) {
-			return false;
-		}
-		if (f.isDirectory()) {
-			this.addFolderTree(f);
-		}
-		else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
-			this.pathSet.add(getCanonicalPath(f));
-			File tempDir = extractSources(f, options, true);
-			options.fileUtil().appendSourcePath(getCanonicalPath(tempDir));
-			this.metadataSystem = null;
-			this.jarFile = f; 
-			this.addFolderTree(tempDir);
-		}
-		else {
-			this.registerSource(f);
-		}
-		return true;
-	}
-	
-	public ArrayList<InputFile> getInputFiles() {
+  public boolean addSource(String filename) {
+    this.root = "";
+    File f = new File(filename);
+    if (f.exists()) {
+      filename = getCanonicalPath(f);
+      for (String s : rootPaths) {
+        if (filename.startsWith(s)) {
+          this.root = s;
+          break;
+        }
+      }
+    }
+    else {
+      if (filename.charAt(0) == '!') {
+        File lstf = new File(filename.substring(1));
+        ArrayList<String> files = SourceStore.readPathList(lstf);
+        if (files != null) {
+          if (lstf.getName().charAt(0) == '.') {
+            lstf = new File("j2objc compatible mode - PWD");
+          }
+          String dir = lstf.getAbsolutePath();
+          dir = dir.substring(0, dir.lastIndexOf('/') + 1);
+          for (String s : files) {
+            if (!s.startsWith(dir)) {
+              s = dir + s;
+            }
+            this.addSource(s);
+          }
+          return true;
+        }
+      }
+
+      try {
+        InputFile inp = options.fileUtil().findFileOnSourcePath(filename);
+        if (inp != null) {
+          registerInputFile(inp);
+          String absPath = inp.getAbsolutePath();
+          root = absPath.substring(0, absPath.length() - filename.length());
+          addRootPath(new File(root));
+          f = new File(absPath);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      if (!f.exists()) {
+        ErrorUtil.warning("Invalid source: " + filename);
+        System.exit(-1);
+        return false;
+      }
+    }
+
+    if (!pathSet.add(getCanonicalPath(f))) {
+      return false;
+    }
+    if (f.isDirectory()) {
+      this.addFolderTree(f);
+    }
+    else if (f.getName().endsWith(".jar") || f.getName().endsWith(".zip")) {
+      this.pathSet.add(getCanonicalPath(f));
+      File tempDir = extractSources(f, options, true);
+      options.fileUtil().appendSourcePath(getCanonicalPath(tempDir));
+      this.metadataSystem = null;
+      this.jarFile = f; 
+      this.addFolderTree(tempDir);
+    }
+    else {
+      this.registerSource(f);
+    }
+    return true;
+  }
+
+  public ArrayList<InputFile> getInputFiles() {
     ArrayList<InputFile> inputFiles = new ArrayList<>();
     for (InputFile f : inputFileMap.values()) {
       inputFiles.add(f);
     }
-	  Collections.sort(inputFiles, new Comparator<InputFile>() {
+    Collections.sort(inputFiles, new Comparator<InputFile>() {
 
       @Override
       public int compare(InputFile o1, InputFile o2) {
         // TODO Auto-generated method stub
-        return o1.getUnitName().compareTo(o2.getUnitName());
+        return o1.getAbsolutePath().compareTo(o2.getAbsolutePath());
       }
-	    
-	  });
-		return inputFiles;
-	}
 
-	private boolean registerSource(File src_file) {
-		String filename = getCanonicalPath(src_file);
-		filename = filename.substring(root.length());
-		
-		if (!ImportManager.canImportClass(filename)) {
-			return false;
-		}
-		
+    });
+    return inputFiles;
+  }
+
+  private boolean registerSource(File src_file) {
+    String filename = getCanonicalPath(src_file);
+    filename = filename.substring(root.length());
+
+    if (!ImportManager.canImportClass(filename)) {
+      return false;
+    }
+
     InputFile f = new RegularInputFile(root + filename, filename);
     InputFile old = registerInputFile(f);
-		
+
     if (old != null) {
-			System.out.println("Warning! Source is replaced.");
+      System.out.println("Warning! Source is replaced.");
       System.out.println("  " + old.getAbsolutePath() + " -> " + root + filename);
-		}
-		
-		//inputFiles.add(f);
-		
-		return true;
-	}
-	
-	private void add(File f)  {
-		if (f.isDirectory()) {
-			addFolder(f);
-		}
-		else if (f.getName().endsWith(".java")) {
-			registerSource(f);
-		}
-		else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
-			String filepath = getCanonicalPath(f);
-			String source = doSaveClassDecompiled(f);
-			if (source == null) return;
+    }
 
-			filepath = filepath.substring(0, filepath.length() - 5) + "java";
-			try {
-				PrintStream out = new PrintStream(new FileOutputStream(filepath));
-				out.println(source);
-				out.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-			registerSource(new File(filepath));
-		}
-		else {
-			File dir = options.fileUtil().getResourceDirectory();
-			if (dir != null) {
-		    // copy resource files into the specified resource directory.
-				String filename = getCanonicalPath(f);
-				filename = filename.substring(root.length());
-				File of = new File(dir.getAbsolutePath() + "/" + filename);
-				of.getParentFile().mkdirs();
-				try {
-					BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(of));
-					BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
-					for (int c; (c = in.read()) >= 0; ) {
-						out.write(c);
-					}
-					out.flush();
-					out.close();
-					in.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
+    //inputFiles.add(f);
 
-	}
+    return true;
+  }
 
-	MetadataSystem metadataSystem;
-	private TypeReference lookupType(String path) {
-		/* Hack to get around classes whose descriptors clash with primitive types. */
-		if (metadataSystem == null) {
-			try {
-				this.currTypeLoader = new JarTypeLoader(new JarFile(jarFile));
-				this.metadataSystem = new MetadataSystem(currTypeLoader);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if (path.length() == 1) {
-			MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
-			return metadataSystem.resolve(parser.parseTypeDescriptor(path));
-		}
-		return metadataSystem.lookupType(path);
-	}
+  private void add(File f)  {
+    if (f.isDirectory()) {
+      addFolder(f);
+    }
+    else if (f.getName().endsWith(".java")) {
+      registerSource(f);
+    }
+    else if (options.translateClassfiles() && f.getName().endsWith(".class")) {
+      String filepath = getCanonicalPath(f);
+      String source = doSaveClassDecompiled(f);
+      if (source == null) return;
 
-	private String doSaveClassDecompiled(File inFile) {
-		String filepath = getCanonicalPath(inFile);
-		String classsig = filepath.substring(root.length(), filepath.length() - 6);
+      filepath = filepath.substring(0, filepath.length() - 5) + "java";
+      try {
+        PrintStream out = new PrintStream(new FileOutputStream(filepath));
+        out.println(source);
+        out.close();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      registerSource(new File(filepath));
+    }
+    else {
+      File dir = options.fileUtil().getResourceDirectory();
+      if (dir != null) {
+        // copy resource files into the specified resource directory.
+        String filename = getCanonicalPath(f);
+        filename = filename.substring(root.length());
+        File of = new File(dir.getAbsolutePath() + "/" + filename);
+        of.getParentFile().mkdirs();
+        try {
+          BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(of));
+          BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+          for (int c; (c = in.read()) >= 0; ) {
+            out.write(c);
+          }
+          out.flush();
+          out.close();
+          in.close();
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
 
-		TypeReference typeRef = lookupType(classsig); 
-		if (typeRef.getDeclaringType() != null) {
-			return null;
-		}
-		TypeDefinition resolvedType = null;
-		if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
-			throw new RuntimeException("Unable to resolve type.");
-		}
-		DecompilerSettings settings = DecompilerSettings.javaDefaults();
-		settings.setForceExplicitImports(true);
-		settings.setShowSyntheticMembers(true);
-		StringWriter stringwriter = new StringWriter();
-		DecompilationOptions decompilationOptions;
-		decompilationOptions = new DecompilationOptions();
-		decompilationOptions.setSettings(settings);
-		decompilationOptions.setFullDecompilation(false);
-		PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
-		plainTextOutput.setUnicodeOutputEnabled(
-				decompilationOptions.getSettings().isUnicodeOutputEnabled());
-		settings.getLanguage().decompileType(resolvedType, plainTextOutput,
-				decompilationOptions);
-		String decompiledSource = stringwriter.toString();
-		//System.out.println(decompiledSource);
-		return decompiledSource;
-	}
+  }
 
-	private void addFolder(File f)  {
-		File files[] = f.listFiles();
-		for (File f2 : files) {
-			add(f2);
-		}
-	}
+  MetadataSystem metadataSystem;
+  private TypeReference lookupType(String path) {
+    /* Hack to get around classes whose descriptors clash with primitive types. */
+    if (metadataSystem == null) {
+      try {
+        this.currTypeLoader = new JarTypeLoader(new JarFile(jarFile));
+        this.metadataSystem = new MetadataSystem(currTypeLoader);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
-	private void addFolderTree(File f) {
-		if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
-			options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
-		}
-		root = addRootPath(f) + '/';
-		this.addFolder(f);
-	}
+    if (path.length() == 1) {
+      MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+      return metadataSystem.resolve(parser.parseTypeDescriptor(path));
+    }
+    return metadataSystem.lookupType(path);
+  }
+
+  private String doSaveClassDecompiled(File inFile) {
+    String filepath = getCanonicalPath(inFile);
+    String classsig = filepath.substring(root.length(), filepath.length() - 6);
+
+    TypeReference typeRef = lookupType(classsig); 
+    if (typeRef.getDeclaringType() != null) {
+      return null;
+    }
+    TypeDefinition resolvedType = null;
+    if (typeRef == null || ((resolvedType = typeRef.resolve()) == null)) {
+      throw new RuntimeException("Unable to resolve type.");
+    }
+    DecompilerSettings settings = DecompilerSettings.javaDefaults();
+    settings.setForceExplicitImports(true);
+    settings.setShowSyntheticMembers(true);
+    StringWriter stringwriter = new StringWriter();
+    DecompilationOptions decompilationOptions;
+    decompilationOptions = new DecompilationOptions();
+    decompilationOptions.setSettings(settings);
+    decompilationOptions.setFullDecompilation(false);
+    PlainTextOutput plainTextOutput = new PlainTextOutput(stringwriter);
+    plainTextOutput.setUnicodeOutputEnabled(
+        decompilationOptions.getSettings().isUnicodeOutputEnabled());
+    settings.getLanguage().decompileType(resolvedType, plainTextOutput,
+        decompilationOptions);
+    String decompiledSource = stringwriter.toString();
+    //System.out.println(decompiledSource);
+    return decompiledSource;
+  }
+
+  private void addFolder(File f)  {
+    File files[] = f.listFiles();
+    for (File f2 : files) {
+      add(f2);
+    }
+  }
+
+  private void addFolderTree(File f) {
+    if (options.fileUtil().getSourcePathEntries().indexOf(f.getAbsolutePath()) < 0) {
+      options.fileUtil().getSourcePathEntries().add(f.getAbsolutePath());
+    }
+    root = addRootPath(f) + '/';
+    this.addFolder(f);
+  }
 
   public static ArrayList<String> readPathList(File lstf) {
     if (!lstf.exists()) return null;
-    
+
     ArrayList<String> list = new ArrayList<>();
     try {
       InputStreamReader in = new InputStreamReader(new FileInputStream(lstf));
@@ -323,7 +323,7 @@ public class SourceStore {
     }
     return list;
   }
-  
+
   private static String trimPath(StringBuilder sb) {
     while (sb.charAt(sb.length() - 1) <= ' ') {
       sb.setLength(sb.length() - 1);
@@ -379,6 +379,6 @@ public class SourceStore {
     }
     return null;
   }
-  
-  	
+
+
 }

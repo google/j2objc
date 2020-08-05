@@ -269,7 +269,7 @@ private FunctionDeclaration argc_currentMethod;
       // We can't use the "AndConsume" optimization for volatile objects because that might leave
       // the newly created object vulnerable to being deallocated by another thread assigning to the
       // same field.
-      return isStrong ? (options.useGC() && ElementUtil.isStatic(var) ? "JreVolatileNativeAssign" :  "JreVolatileStrongAssign") : "JreAssignVolatile"
+      return isStrong ? (ElementUtil.isStatic(var) ? "JreVolatileStaticAssign" :  "JreVolatileStrongAssign") : "JreAssignVolatile"
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
     }
     
@@ -283,10 +283,15 @@ private FunctionDeclaration argc_currentMethod;
         }
         else {
           String fType = typeUtil.getArgcFieldTypeEx(enc, type);
+          if (fType == "Object" || fType == "Generic") {
+            if (ElementUtil.isWeakReference(var) && !ElementUtil.isVolatile(var)) {
+              fType = "Unsafe";
+            }
+          }
           funcName = "Jre" + fType + "FieldAssign";
         }
       }
-      else if (options.useReferenceCounting()) {
+      else if (isStrong && options.useReferenceCounting()) {
         funcName = "JreStrongAssign";
       }
     }
@@ -302,7 +307,12 @@ private FunctionDeclaration argc_currentMethod;
       return funcName;
     }
 
-    return null;
+    if (!isPrimitive) {
+      return "JreUnsafeFieldAssignUnretained";
+    }
+    else {
+      return null;
+    }
   }
 
   private boolean isStaticVar(VariableElement var) {
@@ -355,9 +365,7 @@ private FunctionDeclaration argc_currentMethod;
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
     
     // TODO(zeedhoon) check compatibility 
-    FunctionInvocation invocation = new FunctionInvocation(element, 
-    		(!funcName.endsWith("AndConsume") || funcName.startsWith("JreVolatile") || funcName.startsWith("JreAssignVolatile"))
-    				 ? type : this.translationUtil.getVoidType());
+    FunctionInvocation invocation = new FunctionInvocation(element, type); 
     
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {

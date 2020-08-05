@@ -642,12 +642,10 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
 
 NSString *
 NSString_java_formatWithNSString_withNSObjectArray_(NSString *format, IOSObjectArray *args) {
-    @autoreleasepool {
-        JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
-        NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
-        RELEASE_(formatter);
-        return result;
-    }
+  JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
+  NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
+  RELEASE_(formatter);
+  return result;
 }
 
 + (NSString *)java_formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args {
@@ -656,11 +654,9 @@ NSString_java_formatWithNSString_withNSObjectArray_(NSString *format, IOSObjectA
 
 NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
     JavaUtilLocale *locale, NSString *format, IOSObjectArray *args) {
-    @autoreleasepool {
-        JavaUtilFormatter *formatter =
-            AUTORELEASE([[JavaUtilFormatter alloc] initWithJavaUtilLocale:locale]);
-        return [[formatter formatWithNSString:format withNSObjectArray:args] description];
-    }
+  JavaUtilFormatter *formatter =
+  AUTORELEASE([[JavaUtilFormatter alloc] initWithJavaUtilLocale:locale]);
+  return [[formatter formatWithNSString:format withNSObjectArray:args] description];
 }
 
 + (NSString *)java_formatWithJavaUtilLocale:(JavaUtilLocale *)locale

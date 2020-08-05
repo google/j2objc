@@ -42,7 +42,11 @@
 #import "objc/runtime.h"
 
 @interface JavaLangReflectExecutable () {
+#if __has_feature(objc_arc)
   __weak IOSObjectArray * params_;
+#else
+  IOSObjectArray * params_;
+#endif
   IOSObjectArray * paramTypes_;
 }
 @end
@@ -93,7 +97,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
       result = paramTypes_;
       if (!result) {
         result = RETAIN_(JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx)));
-        paramTypes_ = AUTORELEASE(result);
+        paramTypes_ = result;
       }
     }
   }
@@ -282,7 +286,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 #if !__has_feature(objc_arc)
 - (void)dealloc {
   RELEASE_(paramTypes_);
-  RELEASE_(params_);
+  // RELEASE_(params_);
   DEALLOC_(super);
 }
 #endif

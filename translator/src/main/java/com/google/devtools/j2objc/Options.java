@@ -353,7 +353,7 @@ public class Options {
         fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg), true, true));
       } else if (arg.equals("-sourcepath")) {
         fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg), false, true));
-      } else if (arg.equals("--not-import")) {
+      } else if (arg.equals("--exclude")) {
     	hasCustomImportRule = true;
         ImportManager.addNotImportRule(getArgValue(args, arg));
       } else if (arg.equals("-processorpath")) {

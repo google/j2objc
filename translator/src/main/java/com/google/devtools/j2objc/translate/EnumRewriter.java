@@ -119,6 +119,7 @@ public class EnumRewriter extends UnitTreeVisitor {
   private void addSimpleNonArcInitialization(EnumDeclaration node) {
     List<EnumConstantDeclaration> constants = node.getEnumConstants();
     List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
+    stmts.add(new NativeStatement("Class self = " + nameTable.getFullName(node.getTypeElement()) + ".class;"));
     stmts.add(new NativeStatement("size_t objSize = class_getInstanceSize(self);"));
     stmts.add(new NativeStatement(UnicodeUtils.format(
         "size_t allocSize = %s * objSize;", constants.size())));
@@ -190,7 +191,7 @@ public class EnumRewriter extends UnitTreeVisitor {
       ExecutableElement methodElement = constant.getExecutableElement();
       TypeElement valueType = ElementUtil.getDeclaringClass(methodElement);
       boolean isAnonymous = valueType != type;
-      String classExpr = isAnonymous ? "[" + nameTable.getFullName(valueType) + " class]" : "self";
+      String classExpr = isAnonymous ? "[" + nameTable.getFullName(valueType) + " class]" : nameTable.getFullName(node.getTypeElement()) + ".class";
       String sizeName = "objSize" + (isAnonymous ? "_" + varName : "");
 
       if (isAnonymous) {
@@ -226,6 +227,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     if (baseTypeCount == 0) {
       stmts.add(new NativeStatement("size_t allocSize = 0;"));
     } else {
+      stmts.add(new NativeStatement("Class self = " + nameTable.getFullName(node.getTypeElement()) + ".class;"));
       stmts.add(new NativeStatement("size_t objSize = class_getInstanceSize(self);"));
       stmts.add(new NativeStatement(UnicodeUtils.format(
           "size_t allocSize = %s * objSize;", baseTypeCount)));

@@ -28,6 +28,15 @@
 #import "java/lang/NegativeArraySizeException.h"
 #import "java/lang/reflect/Method.h"
 
+#if __has_feature(objc_arc)
+void ARGC_genericRetain(id oid);
+void ARGC_genericRelease(id oid);
+#else
+#define ARGC_allocateArray  NSAllocateObject
+#define ARGC_genericRetain(obj)  [obj retain]
+#define ARGC_genericRelease(obj) [obj release]
+#endif
+
 // Defined in IOSArray.m
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
@@ -50,7 +59,7 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
   IOSObjectArray *array = IOSObjectArray_CreateArray(length, type);
   for (jint i = 0; i < length; i++) {
 #if __has_feature(objc_arc)
-    JreGenericFieldAssign(array->buffer_ + i, objects[i]);
+    JreUnsafeFieldAssign(array->buffer_ + i, objects[i]);
 #else
     array->buffer_[i] = RETAIN_(objects[i]);
 #endif
@@ -88,14 +97,12 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
-  void ARGC_genericRetain(id obj);
-  
   NSUInteger count = [array count];
   IOSObjectArray *result = AUTORELEASE(IOSObjectArray_CreateArray((jint)count, type));
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
-    for (jint i = 0; i < count; i++) {
-        ARGC_genericRetain(result->buffer_[i]);
-    }
+  for (jint i = 0; i < count; i++) {
+    ARGC_genericRetain(result->buffer_[i]);
+  }
     
   return result;
 }
@@ -154,21 +161,21 @@ id IOSObjectArray_Set(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) J2OBJC_METHOD_ATTR {
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
-  return JreGenericFieldAssign(&array->buffer_[index], value);
+  return JreUnsafeFieldAssign(&array->buffer_[index], value);
 }
 
 
 id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value) J2OBJC_METHOD_ATTR {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
-  return JreGenericFieldAssignAndConsume(&array->buffer_[index], value);
+  return JreUnsafeFieldAssignAndConsume(&array->buffer_[index], value);
 }
 
 
 id IOSObjectArray_SetRef(JreArrayRef ref, id value) J2OBJC_METHOD_ATTR {
   // Index is checked when accessing the JreArrayRef.
   IOSObjectArray_checkValue(ref.arr, value);
-  return JreGenericFieldAssign(ref.pValue, value);
+  return JreUnsafeFieldAssign(ref.pValue, value);
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
@@ -179,7 +186,7 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) J2OBJC_METHOD_ATTR {
   IOSArray_checkIndex(size_, (jint)length - 1);
   for (NSUInteger i = 0; i < length; i++) {
     id element = buffer_[i];
-    JreGenericFieldAssign(&buffer[i], element);
+    JreUnsafeFieldAssign(&buffer[i], element);
   }
 }
 
@@ -214,14 +221,18 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
     releaseEnd = tmp;
   }
   for (jint i = releaseStart; i < releaseEnd; i++) {
+#if __has_feature(objc_arc)
     (void)ARGC_genericRelease(buffer[i]);
+#else
+    [buffer[i] autorelease];
+#endif
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
-  #if ! __has_feature(objc_arc)
-    for (jint i = retainStart; i < retainEnd; i++) {
-      (void)ARGC_genericRetain(buffer[i]);
-    }
-  #endif
+#if !__has_feature(objc_arc)
+  for (jint i = retainStart; i < retainEnd; i++) {
+    [buffer[i] retain];
+  }
+#endif
 #endif
 }
 
@@ -241,12 +252,12 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
     // checked.
     if ([dest->elementType_ isAssignableFrom:elementType_]) {
       for (jint i = 0; i < length; i++) {
-        JreGenericFieldAssign(&dest->buffer_[i + dstOffset], buffer_[i + offset]);
+        JreUnsafeFieldAssign(&dest->buffer_[i + dstOffset], buffer_[i + offset]);
       }
     } else {
       for (jint i = 0; i < length; i++) {
         id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-        JreGenericFieldAssign(&dest->buffer_[i + dstOffset], newElement);
+        JreUnsafeFieldAssign(&dest->buffer_[i + dstOffset], newElement);
       }
     }
   }
@@ -256,7 +267,7 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
   IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_);
   for (jint i = 0; i < size_; i++) {
 #if __has_feature(objc_arc)
-    JreGenericFieldAssign(result->buffer_ + i, buffer_[i]);
+    JreUnsafeFieldAssign(result->buffer_ + i, buffer_[i]);
 #else
     result->buffer_[i] = RETAIN_(buffer_[i]);
 #endif

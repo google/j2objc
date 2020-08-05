@@ -24,7 +24,9 @@
  ARGC provides non stop-the-world garbage collection mechanism without stack-scanning.
  */
 
-#import "ARGC.h"
+#import "J2ObjC_common.h"
+
+#if J2OBJC_USE_GC
 #import "objc/runtime.h"
 #include "java/lang/ref/Reference.h"
 #include "java/lang/ref/SoftReference.h"
@@ -54,7 +56,7 @@
 #include "NSObject+ARGC.h"
 
 #if !GC_DEBUG
-//#pragma GCC optimize ("O2")
+//#pragma clang optimize ("O2")
 #pragma clang optimize on
 #else
 #pragma clang optimize off
@@ -241,7 +243,12 @@ public:
   
   static void increaseReferenceCount(id oid, NSString* tag) {
     NSIncrementExtraRefCount(oid);
-    //checkRefCount(jobj, tag);
+    if (GC_DEBUG) {
+      JObj_p jobj = toARGCObject(oid);
+      if (jobj != NULL) {
+        checkRefCount(jobj, tag);
+      }
+    }
   }
   
   static void increaseReferenceCount(JObj_p jobj, NSString* tag) {
@@ -315,7 +322,10 @@ public:
       GC_dumpTraceWithTag(jobj, tag);
     }
   }
+
+  ScanOffsetArray* registerScanOffsets(Class clazz);
   
+
 private:
   static void dealloc_in_collecting(JObj_p jobj);
   
@@ -443,8 +453,6 @@ private:
       row[idxRef] = jobj;
     }
   }
-  
-  void registerScanOffsets(Class clazz);
   
   size_t argcObjectSize;
   std::atomic_int _cntRef;
@@ -662,20 +670,24 @@ void ARGC_setGarbageCollectionInterval(int t) {
 
 
 
-void ARGC::registerScanOffsets(Class clazz) {
+ScanOffsetArray* ARGC::registerScanOffsets(Class clazz) {
   scan_offset_t _offset_buf[4096];
   id _test_obj_buf[4096];
   ScanOffsetArray* res = objc_getAssociatedObject(clazz, &_instance);
   if (res != NULL) {
-    return;
+    return res;
   }
   
   @synchronized (_scanOffsetCache) {
     res = objc_getAssociatedObject(clazz, &_instance);
     if (res != NULL) {
-      return;
+      return res;
     }
     objc_setAssociatedObject(clazz, &_instance, _scanOffsetCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  
+  if (clazz == GC_TRACE_CLASS) {
+    NSLog(@"clazz = OrgJunitRunnerResult.class");
   }
   
   int cntARGC = 0;
@@ -711,22 +723,30 @@ void ARGC::registerScanOffsets(Class clazz) {
   }
   
   NSDeallocateObject(clone);
+  int memsize = (cntObjField + 2) * sizeof(scan_offset_t);
+  ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
+
+  int cntNative = 0;
   for (int i = 0; i < cntObjField; i ++) {
     scan_offset_t offset = _offset_buf[i];
     id field = _test_obj_buf[i];
     NSUInteger cntRef = NSExtraRefCount(field);
     if (cntRef > 1) {
-      _offset_buf[cntARGC++] = offset;
+      offsetArray->offsets[cntARGC++] = offset;
+    }
+    else {
+      offsetArray->offsets[cntObjField - cntNative] = offset;
+      cntNative++;
     }
   }
   
-  _offset_buf[cntARGC++] = 0;
-  int memsize = cntARGC * sizeof(scan_offset_t);
-  ScanOffsetArray* offsetArray = NSAllocateObject([ScanOffsetArray class], memsize, NULL);
-  memcpy(offsetArray->offsets, _offset_buf, memsize);
+  //_offset_buf[cntARGC] = 0;
+  //_offset_buf[cntObjField+1] = 0;
+  //memcpy(offsetArray->offsets, _offset_buf, memsize);
   @synchronized (_scanOffsetCache) {
     objc_setAssociatedObject(clazz, &_instance, offsetArray, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   }
+  return offsetArray;
 }
 
 void ARGC_assignStrongObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) {
@@ -1184,8 +1204,6 @@ id JreAssignVolatileId(volatile_id *pVar, __unsafe_unretained id value);
 id JreVolatileStrongAssign(volatile_id *pIvar, __unsafe_unretained id value);
 bool JreCompareAndSwapVolatileStrongId(volatile_id *pVar, __unsafe_unretained id expected, __unsafe_unretained id newValue);
 id JreExchangeVolatileStrongId(volatile_id *pVar, __unsafe_unretained id newValue);
-void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
-void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, __unsafe_unretained id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, __unsafe_unretained id value);
@@ -1217,7 +1235,7 @@ void ARGC_strongRetain(id oid) {
   [oid retain];
 }
 
-void ARGC_release(id oid) {
+void ARGC_strongRelease(id oid) {
   if (GC_DEBUG && GC_LOG_ALLOC) {
     if (toARGCObject(oid) == NULL) {
       NSLog(@"--nstr %p #%d %@", oid, (int)NSExtraRefCount(oid), [oid class]);
@@ -1290,6 +1308,40 @@ id ARGC_allocateArray(Class cls, NSUInteger extraBytes, NSZone* zone) {
 id ARGC_allocateObject(Class cls) {
   return ARGC::_instance.allocateInstance(cls, 0, NULL);
 }
+
+void ARGC_lock_volatile();
+void ARGC_unlock_volatile();
+id ARGC_cloneObject(id obj) NS_RETURNS_RETAINED;
+
+id ARGC_cloneObject(id self) {
+  Class cls = [self class];
+  const scan_offset_t* scanOffsets = ARGC::_instance.registerScanOffsets(cls)->offsets;
+  NSObject* clone = [cls alloc];
+  ARGC_lock_volatile();
+  size_t instanceSize = class_getInstanceSize(cls);
+  size_t nsObjectSize = class_getInstanceSize([JavaLangObject class]);
+  memcpy((char *)(__bridge void*)clone + nsObjectSize, (char *)(__bridge void*)self + nsObjectSize, instanceSize - nsObjectSize);
+
+  while (true) {
+    scan_offset_t offset = *scanOffsets++;
+    if (offset == 0) {
+      break;
+    }
+    id ref = *((id *)clone + offset);
+    ARGC_genericRetain(ref);
+  }
+  while (true) {
+    scan_offset_t offset = *scanOffsets++;
+    if (offset == 0) {
+      break;
+    }
+    id ref = *((id *)clone + offset);
+    ARGC_genericRetain(ref);
+  }
+  ARGC_unlock_volatile();
+  return clone;
+}
+
 
 void JreFinalize(id self) J2OBJC_METHOD_ATTR {
   @try {
@@ -1416,5 +1468,5 @@ void JreFinalize(id self) J2OBJC_METHOD_ATTR {
 @end
 @implementation ScanOffsetArray
 @end
-
+#endif //J2OBJC_USE_GC
 

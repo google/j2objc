@@ -122,7 +122,13 @@ static const J2ObjcClassInfo *g_javaLangObjectMetadata;
 
 static int iosClassAssocKey;
 
-void ARGC_strongRetain(id oid);
+#if __has_feature(objc_arc)
+void ARGC_strongRetain(id obj);
+void ARGC_strongRelease(id obj);
+#else
+#define ARGC_strongRetain(obj)  [obj retain]
+#define ARGC_strongRelease(obj) [obj release]
+#endif
 
 IOSClass* ARGC_getIOSClass(id key) NS_RETURNS_RETAINED J2OBJC_METHOD_ATTR {
   IOSClass* jcls = objc_getAssociatedObject(key, &iosClassAssocKey);
@@ -289,12 +295,12 @@ void empty_static_initialize() {}
                            name:(NSString *)clsName
                   simpleNamePos:(int)simpleNamePos {
   if ((self = [super init])) {
-    assert (simpleNamePos_ <= 0 || [name_ charAtWithInt:simpleNamePos_ - 1] == '$'
-            || [name_ charAtWithInt:simpleNamePos_ - 1] == '.'
-            ||  [name_ charAtWithInt:simpleNamePos_ - 1] == '[');
+    assert (simpleNamePos_ <= 0 || [clsName charAtWithInt:simpleNamePos_ - 1] == '$'
+            || [clsName charAtWithInt:simpleNamePos_ - 1] == '.'
+            ||  [clsName charAtWithInt:simpleNamePos_ - 1] == '[');
 
     self->metadata_ = metadata;
-    *((NSString**)&self->name_) = clsName;
+    *((NSString**)&self->name_) = RETAIN_(clsName);
     self->simpleNamePos_ = simpleNamePos;
   }
   return self;
@@ -1293,8 +1299,6 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return IOSClass_class_();
 }
 
-void ARGC_strongRetain(id obj);
-
 void IOSClass_init_class_(pthread_t* initToken, Class cls, void(*clinit)()) {
   pthread_t th = pthread_self();
   @synchronized (cls) {
@@ -1355,8 +1359,6 @@ IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
   assert (ios_cls != NULL);
   return ios_cls;
 }
-
-void ARGC_strongRetain(id oid);
 
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
   IOSArrayClass* array = componentType->arrayType_;
@@ -1592,8 +1594,8 @@ void NSCopying__init_class__(void);
   g_javaStringClass = NSString_class_();
   g_stringClass = NSString.class;
 
-  ARGC_bindJavaClass(ARGCObject.class, ARGC_getIOSClass(NSObject.class));
-
+  ARGC_bindJavaClass(JavaLangObject.class, ARGC_getIOSClass(NSObject.class));
+  
   // Verify that these categories successfully loaded.
   if ([NSObject.class instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
       [NSString.class instanceMethodSignatureForSelector:@selector(java_trim)] == NULL ||

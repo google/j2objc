@@ -41,9 +41,6 @@ CF_EXTERN_C_BEGIN
 
 @end
     
-#define ARGC_FIELD_REF __unsafe_unretained
-#define ARGC_WEAK_REF __unsafe_unretained
-
 /* replace field with newValue that extends ARGCObject. */
 void ARGC_assignARGCObject(ARGC_FIELD_REF id* pField, __unsafe_unretained id newValue) J2OBJC_METHOD_ATTR;
 

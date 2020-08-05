@@ -4600,11 +4600,11 @@ class Character implements java.io.Serializable, Comparable<Character> {
           Class self = [JavaLangCharacter class];
           //size_t objSize = class_getInstanceSize(self);
           //uintptr_t ptr = (uintptr_t)calloc(objSize, 128);
-          ARGC_FIELD_REF id *buf = values->buffer_;
+          __unsafe_unretained id *buf = values->buffer_;
           for (jint i = 0; i < 128; i++) {
             id obj = [[self alloc] init];//  objc_constructInstance(self, (void *)ptr);
             JavaLangCharacter_initWithChar_(obj, (jchar)i);
-            JreGenericFieldAssign(buf++, obj);
+            JreUnsafeFieldAssign(buf++, obj);
             //ptr += objSize;
           }
         ]-*/;

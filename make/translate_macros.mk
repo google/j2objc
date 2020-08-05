@@ -25,9 +25,17 @@
 #
 # Author: Keith Stanger
 
+ifdef J2OBJC_USE_GC
+TRANSLATE_MEM_MODEL = "-Xuse-gc"
+endif
+ifndef J2OBJC_USE_GC
+TRANSLATE_MEM_MODEL = "-use-reference-counting"
+endif
+
 TRANSLATE_EXE = $(DIST_DIR)/j2objc
-TRANSLATE_CMD = $(TRANSLATE_EXE) $(subst ;, ,$(TRANSLATE_GLOBAL_FLAGS))
+TRANSLATE_CMD = $(TRANSLATE_EXE) $(subst ;, ,$(TRANSLATE_GLOBAL_FLAGS)) $(TRANSLATE_MEM_MODEL)
 TRANSLATE_EXE_DEP = translator_dist
+
 
 $(TRANSLATE_EXE): $(TRANSLATE_EXE_DEP)
 	@:

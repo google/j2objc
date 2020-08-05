@@ -42,3 +42,7 @@ ifdef CLANG_ENABLE_OBJC_ARC
 J2OBJC := $(J2OBJC) -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions
 endif
+ifdef J2OBJC_USE_GC
+J2OBJC := $(J2OBJC) -Xuse-gc
+OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions
+endif
