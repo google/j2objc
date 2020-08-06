@@ -59,9 +59,9 @@
  */
 package tck.java.time.zone;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -74,13 +74,13 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.testng.annotations.Test;
+import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Test ZoneRulesProvider.
  */
-@Test
-public class TCKZoneRulesProvider {
+public class TCKZoneRulesProvider extends TestCase {
 
     private static String TZDB_VERSION = "2012i";
 
@@ -108,12 +108,12 @@ public class TCKZoneRulesProvider {
         assertEquals(rules2, rules);
     }
 
-    @Test(expectedExceptions=ZoneRulesException.class)
+    @Test(expected=ZoneRulesException.class)
     public void test_getRules_StringBoolean_unknownId() {
         ZoneRulesProvider.getRules("Europe/Lon", false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_getRules_StringBoolean_null() {
         ZoneRulesProvider.getRules(null, false);
     }
@@ -149,12 +149,12 @@ public class TCKZoneRulesProvider {
         assertEquals(versions2, copy);
     }
 
-    @Test(expectedExceptions=ZoneRulesException.class)
+    @Test(expected=ZoneRulesException.class)
     public void test_getVersions_String_unknownId() {
         ZoneRulesProvider.getVersions("Europe/Lon");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_getVersions_String_null() {
         ZoneRulesProvider.getVersions(null);
     }

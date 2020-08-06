@@ -59,7 +59,7 @@
  */
 package tck.java.time.zone;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -70,14 +70,14 @@ import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
 import java.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
-import org.testng.annotations.Test;
+import junit.framework.TestCase;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test ZoneOffsetTransitionRule.
  */
-@Test
-public class TCKZoneOffsetTransitionRule extends AbstractTCKTest {
+public class TCKZoneOffsetTransitionRule extends TestCase {
 
     private static final LocalTime TIME_0100 = LocalTime.of(1, 0);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
@@ -86,70 +86,70 @@ public class TCKZoneOffsetTransitionRule extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // factory
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullMonth() {
         ZoneOffsetTransitionRule.of(
                 null, 20, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullTime() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 20, DayOfWeek.SUNDAY, null, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullTimeDefinition() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, false, null,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullStandardOffset() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 null, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullOffsetBefore() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, null, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullOffsetAfter() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_factory_invalidDayOfMonthIndicator_tooSmall() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, -29, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_factory_invalidDayOfMonthIndicator_zero() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 0, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_factory_invalidDayOfMonthIndicator_tooLarge() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 32, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_factory_invalidMidnightFlag() {
         ZoneOffsetTransitionRule.of(
                 Month.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, true, TimeDefinition.WALL,

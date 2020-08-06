@@ -59,10 +59,10 @@
  */
 package tck.java.time.zone;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -88,13 +88,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Test ZoneRules.
  */
-@Test
-public class TCKZoneRules {
+public class TCKZoneRules extends TestCase {
 
     private static final ZoneOffset OFFSET_ZERO = ZoneOffset.ofHours(0);
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
@@ -963,13 +963,13 @@ public class TCKZoneRules {
     }
 
     //-------------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expected=UnsupportedOperationException.class)
     public void test_getTransitions_immutable() {
         ZoneRules test = europeParis();
         test.getTransitions().clear();
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expected=UnsupportedOperationException.class)
     public void test_getTransitionRules_immutable() {
         ZoneRules test = europeParis();
         test.getTransitionRules().clear();

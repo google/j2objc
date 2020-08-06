@@ -1273,6 +1273,11 @@ TEST_SOURCES := \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
+    tck/java/time/zone/TCKFixedZoneRules.java \
+    tck/java/time/zone/TCKZoneOffsetTransition.java \
+    tck/java/time/zone/TCKZoneOffsetTransitionRule.java \
+    tck/java/time/zone/TCKZoneRules.java \
+    tck/java/time/zone/TCKZoneRulesProvider.java \
     test/java/time/TestClock_Fixed.java \
     test/java/time/TestClock_Offset.java \
     test/java/time/TestClock_System.java \
