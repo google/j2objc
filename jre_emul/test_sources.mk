@@ -1473,6 +1473,7 @@ TESTS_USE_REFLECTION = \
     com/google/j2objc/reflect/ProxyTest.java \
     libcore/java/io/OldObjectOutputStreamTest.java \
     libcore/java/lang/CharacterTest.java \
+    libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
     libcore/java/nio/channels/SocketChannelTest.java \
     libcore/java/nio/charset/StandardCharsetsEncoderTest.java \
