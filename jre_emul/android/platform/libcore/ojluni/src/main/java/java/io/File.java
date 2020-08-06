@@ -43,12 +43,14 @@ import android.system.ErrnoException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import libcore.io.DeleteOnExit;
+//import libcore.io.DeleteOnExitHook;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.StructStat;
@@ -364,7 +366,7 @@ public class File implements Serializable, Comparable<File> {
      * </ul>
      */
     public void deleteOnExit() {
-        DeleteOnExit.getInstance().addFile(getAbsolutePath());
+        DeleteOnExitHook.add(getAbsolutePath());
     }
 
     /**
