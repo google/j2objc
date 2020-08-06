@@ -598,6 +598,10 @@ TEST_SOURCES := \
     libcore/java/time/format/DateTimeFormatterTest.java \
     libcore/java/time/format/DateTimeParseExceptionTest.java \
     libcore/java/time/temporal/UnsupportedTemporalTypeExceptionTest.java \
+    libcore/java/time/zone/IcuZoneRulesProviderTest.java \
+    libcore/java/time/zone/ZoneOffsetTransitionTest.java \
+    libcore/java/time/zone/ZoneRulesExceptionTest.java \
+    libcore/java/time/zone/ZoneRulesTest.java \
     libcore/java/util/AbstractCollectionTest.java \
     libcore/java/util/ArrayListTest.java \
     libcore/java/util/ArraysTest.java \

@@ -15,6 +15,7 @@
  */
 package libcore.java.time.zone;
 
+import junit.framework.TestCase;
 import org.junit.Test;
 import java.time.Duration;
 import java.time.Instant;
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertNull;
  *
  * @see tck.java.time.zone.TCKZoneRules
  */
-public class ZoneRulesTest {
+public class ZoneRulesTest extends TestCase {
 
     @Test
     public void test_of_ZoneOffset() {

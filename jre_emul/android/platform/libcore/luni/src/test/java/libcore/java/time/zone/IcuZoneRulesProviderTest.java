@@ -15,6 +15,7 @@
  */
 package libcore.java.time.zone;
 
+import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -44,7 +45,7 @@ import static org.junit.Assert.assertNull;
  * equivalently to the ICU rules from which they are created.
  */
 @RunWith(Parameterized.class)
-public class IcuZoneRulesProviderTest {
+public class IcuZoneRulesProviderTest extends TestCase {
 
     @Parameterized.Parameters(name = "{0}")
     public static Iterable<String> getZoneIds() {

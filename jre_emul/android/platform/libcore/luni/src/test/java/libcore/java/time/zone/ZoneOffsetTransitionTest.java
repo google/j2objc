@@ -15,6 +15,7 @@
  */
 package libcore.java.time.zone;
 
+import junit.framework.TestCase;
 import org.junit.Test;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -29,7 +30,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @see tck.java.time.zone.TCKZoneOffsetTransition
  */
-public class ZoneOffsetTransitionTest {
+public class ZoneOffsetTransitionTest extends TestCase {
 
     @Test
     public void test_toEpochSeconds() {
