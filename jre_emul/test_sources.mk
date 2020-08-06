@@ -1278,6 +1278,10 @@ TEST_SOURCES := \
     tck/java/time/zone/TCKZoneOffsetTransitionRule.java \
     tck/java/time/zone/TCKZoneRules.java \
     tck/java/time/zone/TCKZoneRulesProvider.java \
+    tck/java/time/zone/serial/TCKFixedZoneRulesSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
+    tck/java/time/zone/serial/TCKZoneRulesSerialization.java \
     test/java/time/TestClock_Fixed.java \
     test/java/time/TestClock_Offset.java \
     test/java/time/TestClock_System.java \
@@ -1492,6 +1496,10 @@ TESTS_USE_SERIALIZATION = \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
+    tck/java/time/zone/serial/TCKFixedZoneRulesSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
+    tck/java/time/zone/serial/TCKZoneRulesSerialization.java \
     tests/security/cert/CertificateRevocationExceptionTest.java \
 
 TESTS_USE_REFLECTION = \

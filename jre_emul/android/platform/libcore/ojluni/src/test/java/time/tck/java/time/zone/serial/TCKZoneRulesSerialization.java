@@ -59,7 +59,7 @@
  */
 package tck.java.time.zone.serial;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,14 +68,13 @@ import java.io.ObjectOutputStream;
 import java.time.ZoneId;
 import java.time.zone.ZoneRules;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test serialization of ZoneRules.
  */
-@Test
 public class TCKZoneRulesSerialization extends AbstractTCKTest{
 
     public void test_serialization_loaded() throws Exception {
