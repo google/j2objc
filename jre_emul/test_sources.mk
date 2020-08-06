@@ -539,11 +539,20 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_MultiByte_UTF_8.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/nio/file/AccessDeniedExceptionTest.java \
+    libcore/java/nio/file/AtomicMoveNotSupportedExceptionTest.java \
     libcore/java/nio/file/DirectoryIteratorExceptionTest.java \
+    libcore/java/nio/file/DirectoryNotEmptyExceptionTest.java \
+    libcore/java/nio/file/FileAlreadyExistsExceptionTest.java \
     libcore/java/nio/file/FileSystemAlreadyExistsExceptionTest.java \
+    libcore/java/nio/file/FileSystemExceptionTest.java \
+    libcore/java/nio/file/FileSystemLoopExceptionTest.java \
     libcore/java/nio/file/FileSystemNotFoundExceptionTest.java \
     libcore/java/nio/file/InvalidPathExceptionTest.java \
     libcore/java/nio/file/LinkPermissionTest.java \
+    libcore/java/nio/file/NoSuchFileExceptionTest.java \
+    libcore/java/nio/file/NotDirectoryExceptionTest.java \
+    libcore/java/nio/file/NotLinkExceptionTest.java \
     libcore/java/nio/file/ProviderMismatchExceptionTest.java \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/nio/file/attribute/UserPrincipalNotFoundExceptionTest.java \
