@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-//import libcore.io.DeleteOnExitHook;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.StructStat;
