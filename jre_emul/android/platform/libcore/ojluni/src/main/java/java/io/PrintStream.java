@@ -26,6 +26,7 @@
 
 package java.io;
 
+import com.google.j2objc.WeakProxy;
 import java.util.Formatter;
 import java.util.Locale;
 import java.nio.charset.Charset;
@@ -355,8 +356,9 @@ public class PrintStream extends FilterOutputStream
     // BEGIN Android-added: Lazy initialization of charOut and textOut.
     private BufferedWriter getTextOut() {
         if (textOut == null) {
-            charOut = charset != null ? new OutputStreamWriter(this, charset) :
-                    new OutputStreamWriter(this);
+            PrintStream proxy = WeakProxy.forObject(this);
+            charOut = charset != null ? new OutputStreamWriter(proxy, charset) :
+                    new OutputStreamWriter(proxy);
             textOut = new BufferedWriter(charOut);
         }
         return textOut;
@@ -995,7 +997,7 @@ public class PrintStream extends FilterOutputStream
                 ensureOpen();
                 if ((formatter == null)
                     || (formatter.locale() != Locale.getDefault()))
-                    formatter = new Formatter((Appendable) this);
+                    formatter = new Formatter((Appendable) WeakProxy.forObject(this));
                 formatter.format(Locale.getDefault(), format, args);
             }
         } catch (InterruptedIOException x) {
@@ -1052,7 +1054,7 @@ public class PrintStream extends FilterOutputStream
                 ensureOpen();
                 if ((formatter == null)
                     || (formatter.locale() != l))
-                    formatter = new Formatter(this, l);
+                    formatter = new Formatter(WeakProxy.forObject(this), l);
                 formatter.format(l, format, args);
             }
         } catch (InterruptedIOException x) {
