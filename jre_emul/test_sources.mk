@@ -543,6 +543,7 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
     libcore/java/nio/file/AccessDeniedExceptionTest.java \
     libcore/java/nio/file/AtomicMoveNotSupportedExceptionTest.java \
+    libcore/java/nio/file/DefaultFileSystemProviderTest.java \
     libcore/java/nio/file/DirectoryIteratorExceptionTest.java \
     libcore/java/nio/file/DirectoryNotEmptyExceptionTest.java \
     libcore/java/nio/file/FileAlreadyExistsExceptionTest.java \
