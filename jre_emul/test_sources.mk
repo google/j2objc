@@ -63,6 +63,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/nio/charset/OldCharset_SingleByteAbstractTest.java \
     libcore/java/nio/charset/SettableCharsetProvider.java \
+    libcore/java/nio/file/LinuxFileSystemTestData.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
     libcore/java/security/cert/FakeOidProvider.java \
@@ -553,6 +554,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/NoSuchFileExceptionTest.java \
     libcore/java/nio/file/NotDirectoryExceptionTest.java \
     libcore/java/nio/file/NotLinkExceptionTest.java \
+    libcore/java/nio/file/PathsTest.java \
     libcore/java/nio/file/ProviderMismatchExceptionTest.java \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/nio/file/attribute/AclEntryTest.java \
