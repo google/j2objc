@@ -40,6 +40,8 @@ import static libcore.io.OsConstants.W_OK;
 import static libcore.io.OsConstants.X_OK;
 
 import android.system.ErrnoException;
+
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -50,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import com.google.j2objc.LibraryNotLinkedError;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.StructStat;
@@ -1281,4 +1284,73 @@ public class File implements Serializable, Comparable<File> {
       }
       return true;
     ]-*/;
+
+    // -- Integration with java.nio.file --
+
+    private volatile transient Path filePath;
+
+    /**
+     * Returns a {@link Path java.nio.file.Path} object constructed from the
+     * this abstract path. The resulting {@code Path} is associated with the
+     * {@link java.nio.file.FileSystems#getDefault default-filesystem}.
+     *
+     * <p> The first invocation of this method works as if invoking it were
+     * equivalent to evaluating the expression:
+     * <blockquote><pre>
+     * {@link java.nio.file.FileSystems#getDefault FileSystems.getDefault}().{@link
+     * java.nio.file.FileSystem#getPath getPath}(this.{@link #getPath getPath}());
+     * </pre></blockquote>
+     * Subsequent invocations of this method return the same {@code Path}.
+     *
+     * <p> If this abstract pathname is the empty abstract pathname then this
+     * method returns a {@code Path} that may be used to access the current
+     * user directory.
+     *
+     * @return  a {@code Path} constructed from this abstract path
+     *
+     * @throws  java.nio.file.InvalidPathException
+     *          if a {@code Path} object cannot be constructed from the abstract
+     *          path (see {@link java.nio.file.FileSystem#getPath FileSystem.getPath})
+     *
+     * @since   1.7
+     * @see Path#toFile
+     */
+    public Path toPath() {
+        Path result = filePath;
+        if (result == null) {
+            synchronized (this) {
+                result = filePath;
+                if (result == null) {
+                    try {
+                        Method getDefaultMethod;
+                        try {
+                            getDefaultMethod = Class.forName("java.nio.file.FileSystems")
+                                    .getDeclaredMethod("getDefault");  // no parameters
+                        } catch (ClassNotFoundException e) {
+                            throw new LibraryNotLinkedError("java.nio.file support",
+                                    "jre_file", "JavaNioFileFileSystems");
+                        }
+
+                        Object fileSystem = getDefaultMethod.invoke(null);    // null, since it's a static method.
+
+                        Method getPathMethod;
+                        try {
+                            getPathMethod = Class.forName("java.nio.file.FileSystem")
+                                    .getDeclaredMethod("getPath", String.class);
+                        } catch (ClassNotFoundException e) {
+                            throw new LibraryNotLinkedError("java.nio.file support",
+                                    "jre_file", "JavaNioFileFileSystem");
+                        }
+
+                        result = (Path) getPathMethod.invoke(fileSystem, path);
+                        filePath = result;
+                    } catch (Exception e) {
+                        throw new AssertionError(e); // should only happen if the API
+                                                    // of the classes being reflected on change
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }
