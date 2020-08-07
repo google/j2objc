@@ -16,12 +16,14 @@
 
 package libcore.java.net;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.BindException;
 import java.net.ConnectException;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -35,6 +37,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -42,10 +45,27 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.io.FileDescriptor;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+ */
+import junit.framework.TestCase;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
 
-public class SocketTest extends junit.framework.TestCase {
+public class SocketTest extends TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule resourceLeakageDetectorRule = ResourceLeakageDetector.getRule();
+     */
+
+    // This hostname is required to resolve to 127.0.0.1 and ::1 for all tests to pass.
+    private static final String ALL_LOOPBACK_HOSTNAME = "loopback46.unittest.grpc.io";
+
+    // From net/inet_ecn.h
+    private static final int INET_ECN_MASK = 0x3;
+
     // See http://b/2980559.
     public void test_close() throws Exception {
         Socket s = new Socket();
@@ -101,10 +121,10 @@ public class SocketTest extends junit.framework.TestCase {
         ServerSocketChannel ssc = ServerSocketChannel.open();
         InetSocketAddress listenAddr = new InetSocketAddress(host, 0);
         try {
-          ssc.socket().bind(listenAddr, 0);
+            ssc.socket().bind(listenAddr, 0);
         } catch (BindException e) {
-          // Continuous build environment doesn't support localhost sockets.
-          return;
+            // Continuous build environment doesn't support localhost sockets.
+            return;
         }
         ServerSocket ss = ssc.socket();
 
@@ -130,11 +150,13 @@ public class SocketTest extends junit.framework.TestCase {
         InetSocketAddress outLocalAddress = (InetSocketAddress) out.socket().getLocalSocketAddress();
         InetSocketAddress inLocalAddress = (InetSocketAddress) in.socket().getLocalSocketAddress();
         InetSocketAddress inRemoteAddress = (InetSocketAddress) in.socket().getRemoteSocketAddress();
-        //System.err.println("listenAddress: " + listenAddr);
-        //System.err.println("inLocalAddress: " + inLocalAddress);
-        //System.err.println("inRemoteAddress: " + inRemoteAddress);
-        //System.err.println("outLocalAddress: " + outLocalAddress);
-        //System.err.println("outRemoteAddress: " + outRemoteAddress);
+        /* J2ObjC removed.
+        System.err.println("listenAddress: " + listenAddr);
+        System.err.println("inLocalAddress: " + inLocalAddress);
+        System.err.println("inRemoteAddress: " + inRemoteAddress);
+        System.err.println("outLocalAddress: " + outLocalAddress);
+        System.err.println("outRemoteAddress: " + outRemoteAddress);
+         */
 
         assertEquals(outRemoteAddress.getPort(), ss.getLocalPort());
         assertEquals(inLocalAddress.getPort(), ss.getLocalPort());
@@ -248,9 +270,18 @@ public class SocketTest extends junit.framework.TestCase {
     }
 
     public void test_setTrafficClass() throws Exception {
-        Socket s = new Socket();
-        s.setTrafficClass(123);
-        assertEquals(123, s.getTrafficClass());
+        try (Socket s = new Socket()) {
+            for (int i = 0; i <= 255; ++i) {
+                s.setTrafficClass(i);
+
+                // b/30909505
+                // Linux does not set ECN bits for IP_TOS, but sets for IPV6_TCLASS. We should
+                // accept either output.
+                int actual = s.getTrafficClass();
+                assertTrue(i == actual || // IPV6_TCLASS
+                        (actual == (i & ~INET_ECN_MASK))); // IP_TOS: ECN bits should be 0
+            }
+        }
     }
 
     public void testReadAfterClose() throws Exception {
@@ -298,7 +329,9 @@ public class SocketTest extends junit.framework.TestCase {
     public void testAvailable() throws Exception {
         for (int i = 0; i < 100; i++) {
             assertAvailableReturnsZeroAfterSocketReadsAllData();
-            // System.out.println("Success on rep " + i);
+            /* J2ObjC removed.
+            System.out.println("Success on rep " + i);
+             */
         }
     }
 
@@ -354,10 +387,10 @@ public class SocketTest extends junit.framework.TestCase {
     public void testStateAfterClose() throws Exception {
         Socket s = new Socket();
         try {
-          s.bind(new InetSocketAddress(Inet4Address.getLocalHost(), 0));
+            s.bind(new InetSocketAddress(Inet4Address.getLocalHost(), 0));
         } catch (BindException e) {
-          // Continuous build environment doesn't support localhost sockets.
-          return;
+            // Continuous build environment doesn't support localhost sockets.
+            return;
         }
         InetSocketAddress boundAddress = (InetSocketAddress) s.getLocalSocketAddress();
         s.close();
@@ -425,11 +458,9 @@ public class SocketTest extends junit.framework.TestCase {
             });
 
             ServerSocket server = new ServerSocket(0);
-
-            // We shouldn't ask the proxy selector to select() a proxy for us during
-            // connect().
             Socket client = new Socket(InetAddress.getLocalHost(), server.getLocalPort());
             client.close();
+            server.close();
         } finally {
             ProxySelector.setDefault(ps);
         }
@@ -539,21 +570,76 @@ public class SocketTest extends junit.framework.TestCase {
         // Test all Socket ctors
         try {
             new SocketThatFailOnClose("localhost", 1);
+            fail();
         } catch(IOException expected) {}
         try {
             new SocketThatFailOnClose(InetAddress.getLocalHost(), 1);
+            fail();
         } catch(IOException expected) {}
         try {
             new SocketThatFailOnClose("localhost", 1, null, 0);
+            fail();
         } catch(IOException expected) {}
         try {
             new SocketThatFailOnClose(InetAddress.getLocalHost(), 1, null, 0);
+            fail();
         } catch(IOException expected) {}
         try {
             new SocketThatFailOnClose("localhost", 1, true);
+            fail();
         } catch(IOException expected) {}
         try {
             new SocketThatFailOnClose(InetAddress.getLocalHost(), 1, true);
+            fail();
         } catch(IOException expected) {}
+    }
+
+    // b/30007735
+    /* J2ObjC removed.
+    public void testSocketTestAllAddresses() throws Exception {
+        // Socket Ctor should try all sockets.
+        //
+        // This test creates a server socket bound to 127.0.0.1 or ::1 only, and connects using a
+        // hostname that resolves to both addresses. We should be able to connect to the server
+        // socket in either setup.
+        final String loopbackHost = ALL_LOOPBACK_HOSTNAME;
+
+        assertTrue("Loopback DNS record is unreachable or is invalid.", checkLoopbackHost(
+                loopbackHost));
+
+        final int port = 9999;
+        for (InetAddress addr : new InetAddress[]{ Inet4Address.LOOPBACK, Inet6Address.LOOPBACK }) {
+            try (ServerSocket ss = new ServerSocket(port, 0, addr)) {
+                new Thread(() -> {
+                    try {
+                        ss.accept();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+                assertTrue(canConnect(loopbackHost, port));
+            }
+        }
+    }
+     */
+
+    /** Confirm the supplied hostname maps to only loopback addresses. */
+    private static boolean checkLoopbackHost(String host) {
+        try {
+            List<InetAddress> addrs = Arrays.asList(InetAddress.getAllByName(host));
+            return addrs.stream().allMatch(InetAddress::isLoopbackAddress) &&
+                    addrs.contains(Inet4Address.LOOPBACK) && addrs.contains(Inet6Address.LOOPBACK);
+        } catch (UnknownHostException e) {
+            return false;
+        }
+    }
+
+    private static boolean canConnect(String host, int port) {
+        try(Socket sock = new Socket(host, port)) {
+            return sock.isConnected();
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

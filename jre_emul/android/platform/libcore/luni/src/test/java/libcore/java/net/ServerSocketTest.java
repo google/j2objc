@@ -22,29 +22,42 @@ import java.net.Inet4Address;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+/* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+import libcore.junit.junit3.TestCaseWithRules;
+import libcore.junit.util.ResourceLeakageDetector;
+ */
+import junit.framework.TestCase;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
-public class ServerSocketTest extends junit.framework.TestCase {
+public class ServerSocketTest extends TestCase /* J2ObjC removed: TestCaseWithRules */ {
+    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
+    @Rule
+    public TestRule guardRule = ResourceLeakageDetector.getRule();
+     */
+
     public void testTimeoutAfterAccept() throws Exception {
-        final ServerSocket ss = new ServerSocket(0);
-        ss.setReuseAddress(true);
-        // On Unix, the receive timeout is inherited by the result of accept(2).
-        // Java specifies that it should always be 0 instead.
-        ss.setSoTimeout(1234);
-        final Socket[] result = new Socket[1];
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    result[0] = ss.accept();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    fail();
+        try (ServerSocket ss = new ServerSocket(0)) {
+            ss.setReuseAddress(true);
+            // On Unix, the receive timeout is inherited by the result of accept(2).
+            // Java specifies that it should always be 0 instead.
+            ss.setSoTimeout(1234);
+            final Socket[] result = new Socket[1];
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        result[0] = ss.accept();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        fail();
+                    }
                 }
-            }
-        });
-        t.start();
-        new Socket(ss.getInetAddress(), ss.getLocalPort());
-        t.join();
-        assertEquals(0, result[0].getSoTimeout());
+            });
+            t.start();
+            new Socket(ss.getInetAddress(), ss.getLocalPort()).close();
+            t.join();
+            assertEquals(0, result[0].getSoTimeout());
+        }
     }
 
     public void testInitialState() throws Exception {
@@ -65,10 +78,10 @@ public class ServerSocketTest extends junit.framework.TestCase {
     public void testStateAfterClose() throws Exception {
         ServerSocket ss = new ServerSocket();
         try {
-          ss.bind(new InetSocketAddress(Inet4Address.getLocalHost(), 0));
+            ss.bind(new InetSocketAddress(Inet4Address.getLocalHost(), 0));
         } catch (BindException e) {
-          // Continuous build environment doesn't support localhost sockets.
-          return;
+            // Continuous build environment doesn't support localhost sockets.
+            return;
         }
         InetSocketAddress boundAddress = (InetSocketAddress) ss.getLocalSocketAddress();
         ss.close();
