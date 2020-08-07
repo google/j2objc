@@ -308,6 +308,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
+  java/nio/file/Path.java \
   java/nio/file/attribute/FileTime.java \
   java/security/AccessControlContext.java \
   java/security/AccessController.java \
@@ -1120,7 +1121,6 @@ JAVA_PUBLIC_SOURCES_FILE = \
   java/nio/file/NotDirectoryException.java \
   java/nio/file/NotLinkException.java \
   java/nio/file/OpenOption.java \
-  java/nio/file/Path.java \
   java/nio/file/PathMatcher.java \
   java/nio/file/Paths.java \
   java/nio/file/ProviderMismatchException.java \
