@@ -63,6 +63,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/nio/charset/OldCharset_SingleByteAbstractTest.java \
     libcore/java/nio/charset/SettableCharsetProvider.java \
+    libcore/java/nio/file/FilesSetup.java \
     libcore/java/nio/file/LinuxFileSystemTestData.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
@@ -552,6 +553,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/InvalidPathExceptionTest.java \
     libcore/java/nio/file/LinkPermissionTest.java \
     libcore/java/nio/file/MacOSXFileSystemTest.java \
+    libcore/java/nio/file/MacOSXPathTest.java \
     libcore/java/nio/file/NoSuchFileExceptionTest.java \
     libcore/java/nio/file/NotDirectoryExceptionTest.java \
     libcore/java/nio/file/NotLinkExceptionTest.java \
