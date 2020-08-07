@@ -27,8 +27,9 @@ package java.io;
 
 import java.security.*;
 
+// Android-changed: Replaced with empty implementation and documented as legacy security code.
 /**
- * Legacy security code; do not use.
+ * This legacy security is not supported on Android. Do not use.
  */
 public final class SerializablePermission extends BasicPermission {
 
