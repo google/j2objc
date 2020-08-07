@@ -118,11 +118,12 @@ class StringBufferInputStream extends InputStream {
         if (pos >= count) {
             return -1;
         }
-
+        // BEGIN Android-changed: Backport of OpenJDK 9b132 fix to avoid integer overflow.
         int avail = count - pos;
         if (len > avail) {
             len = avail;
         }
+        // END Android-changed: Backport of OpenJDK 9b132 fix to avoid integer overflow.
         if (len <= 0) {
             return 0;
         }
