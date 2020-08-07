@@ -94,4 +94,18 @@ public class AnnotationRewriterTest extends GenerationTest {
         "- (NSUInteger)hash {",
         "return JreAnnotationHashCode(self);");
   }
+
+  public void testAnnotationElementReservedName() throws IOException {
+    String translation = translateSourceFile(
+            "import java.lang.annotation.*;\n"
+                    + "@Retention(RetentionPolicy.RUNTIME) @interface Test { String namespace(); }"
+                    + "interface Test2 { String namespace(); }",
+            "Test", "Test.m");
+
+    // Verify namespace was recognized as reserved with two trailing underscores.
+    assertTranslation(translation, "@synthesize namespace__ = namespace___;");
+
+    // Verify metadata for namespace() method is also marked as reserved.
+    assertTranslation(translation, "methods[0].selector = @selector(namespace__);");
+  }
 }
