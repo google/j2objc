@@ -26,7 +26,6 @@
 
 package java.io;
 
-import com.google.j2objc.WeakProxy;
 import java.util.Formatter;
 import java.util.Locale;
 import java.nio.charset.Charset;
@@ -71,6 +70,7 @@ public class PrintStream extends FilterOutputStream
     private BufferedWriter textOut;
     private OutputStreamWriter charOut;
 
+    // Android-added: Lazy initialization of charOut and textOut.
     private Charset charset;
 
     /**
@@ -105,11 +105,18 @@ public class PrintStream extends FilterOutputStream
     private PrintStream(boolean autoFlush, OutputStream out) {
         super(out);
         this.autoFlush = autoFlush;
+        // Android-changed: Lazy initialization of charOut and textOut.
+        // this.charOut = new OutputStreamWriter(this);
+        // this.textOut = new BufferedWriter(charOut);
     }
 
     private PrintStream(boolean autoFlush, OutputStream out, Charset charset) {
         super(out);
         this.autoFlush = autoFlush;
+        // Android-changed: Lazy initialization of charOut and textOut.
+        // this.charOut = new OutputStreamWriter(this, charset);
+        // this.textOut = new BufferedWriter(charOut);
+        this.charset = charset;
     }
 
     /* Variant of the private constructor so that the given charset name
@@ -345,16 +352,16 @@ public class PrintStream extends FilterOutputStream
 
     private boolean closing = false; /* To avoid recursive closing */
 
-    // Android-changed: Lazily initialize textOut.
+    // BEGIN Android-added: Lazy initialization of charOut and textOut.
     private BufferedWriter getTextOut() {
         if (textOut == null) {
-            PrintStream proxy = WeakProxy.forObject(this);
-            charOut = charset != null ? new OutputStreamWriter(proxy, charset) :
-                    new OutputStreamWriter(proxy);
+            charOut = charset != null ? new OutputStreamWriter(this, charset) :
+                    new OutputStreamWriter(this);
             textOut = new BufferedWriter(charOut);
         }
         return textOut;
     }
+    // END Android-added: Lazy initialization of charOut and textOut.
 
     /**
      * Closes the stream.  This is done by flushing the stream and then closing
@@ -367,10 +374,12 @@ public class PrintStream extends FilterOutputStream
             if (! closing) {
                 closing = true;
                 try {
-                    // Android-changed: Lazily initialized.
+                    // BEGIN Android-changed: Lazy initialization of charOut and textOut.
+                    // textOut.close();
                     if (textOut != null) {
                         textOut.close();
                     }
+                    // END Android-changed: Lazy initialization of charOut and textOut.
                     out.close();
                 }
                 catch (IOException x) {
@@ -514,7 +523,7 @@ public class PrintStream extends FilterOutputStream
         try {
             synchronized (this) {
                 ensureOpen();
-                // Android-changed: Lazily initialized.
+                // Android-added: Lazy initialization of charOut and textOut.
                 BufferedWriter textOut = getTextOut();
                 textOut.write(buf);
                 textOut.flushBuffer();
@@ -538,7 +547,7 @@ public class PrintStream extends FilterOutputStream
         try {
             synchronized (this) {
                 ensureOpen();
-                // Android-changed: Lazily initialized.
+                // Android-added: Lazy initialization of charOut and textOut.
                 BufferedWriter textOut = getTextOut();
                 textOut.write(s);
                 textOut.flushBuffer();
@@ -559,7 +568,7 @@ public class PrintStream extends FilterOutputStream
         try {
             synchronized (this) {
                 ensureOpen();
-                // Android-changed: Lazily initialized.
+                // Android-added: Lazy initialization of charOut and textOut.
                 BufferedWriter textOut = getTextOut();
                 textOut.newLine();
                 textOut.flushBuffer();
@@ -986,7 +995,7 @@ public class PrintStream extends FilterOutputStream
                 ensureOpen();
                 if ((formatter == null)
                     || (formatter.locale() != Locale.getDefault()))
-                    formatter = new Formatter((Appendable) WeakProxy.forObject(this));
+                    formatter = new Formatter((Appendable) this);
                 formatter.format(Locale.getDefault(), format, args);
             }
         } catch (InterruptedIOException x) {
@@ -1043,7 +1052,7 @@ public class PrintStream extends FilterOutputStream
                 ensureOpen();
                 if ((formatter == null)
                     || (formatter.locale() != l))
-                    formatter = new Formatter(WeakProxy.forObject(this), l);
+                    formatter = new Formatter(this, l);
                 formatter.format(l, format, args);
             }
         } catch (InterruptedIOException x) {

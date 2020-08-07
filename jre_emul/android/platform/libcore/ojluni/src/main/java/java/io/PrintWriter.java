@@ -25,7 +25,6 @@
 
 package java.io;
 
-import com.google.j2objc.WeakProxy;
 import java.util.Objects;
 import java.util.Formatter;
 import java.util.Locale;
@@ -114,7 +113,8 @@ public class PrintWriter extends Writer {
         super(out);
         this.out = out;
         this.autoFlush = autoFlush;
-        lineSeparator = System.getProperty("line.separator");
+        lineSeparator = java.security.AccessController.doPrivileged(
+            new sun.security.action.GetPropertyAction("line.separator"));
     }
 
     /**
@@ -901,7 +901,7 @@ public class PrintWriter extends Writer {
                 ensureOpen();
                 if ((formatter == null)
                     || (formatter.locale() != Locale.getDefault()))
-                    formatter = new Formatter(WeakProxy.forObject(this));
+                    formatter = new Formatter(this);
                 formatter.format(Locale.getDefault(), format, args);
                 if (autoFlush)
                     out.flush();
@@ -960,7 +960,7 @@ public class PrintWriter extends Writer {
             synchronized (lock) {
                 ensureOpen();
                 if ((formatter == null) || (formatter.locale() != l))
-                    formatter = new Formatter(WeakProxy.forObject(this), l);
+                    formatter = new Formatter(this, l);
                 formatter.format(l, format, args);
                 if (autoFlush)
                     out.flush();
