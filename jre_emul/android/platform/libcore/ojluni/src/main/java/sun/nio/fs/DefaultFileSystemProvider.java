@@ -63,7 +63,7 @@ public class DefaultFileSystemProvider {
         // if (osname.equals("Linux"))
         if (osname.equals("Linux") || osname.equals("Fuchsia"))
             return createProvider("sun.nio.fs.LinuxFileSystemProvider");
-        if (osname.contains("OS X"))
+        if (osname.contains("OS X") || osname.contains("iPhone"))
             return createProvider("sun.nio.fs.MacOSXFileSystemProvider");
         if (osname.equals("AIX"))
             return createProvider("sun.nio.fs.AixFileSystemProvider");
