@@ -46,7 +46,8 @@ class MacOSXFileSystem extends BsdFileSystem {
 
     // match in unicode canon_eq
     Pattern compilePathMatchPattern(String expr) {
-        return Pattern.compile(expr, Pattern.CANON_EQ) ;
+        // icu4c doesn't support CANON_EQ.
+        return Pattern.compile(expr /*, Pattern.CANON_EQ */) ;
     }
 
     char[] normalizeNativePath(char[] path) {

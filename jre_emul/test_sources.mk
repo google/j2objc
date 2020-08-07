@@ -551,6 +551,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/FileSystemNotFoundExceptionTest.java \
     libcore/java/nio/file/InvalidPathExceptionTest.java \
     libcore/java/nio/file/LinkPermissionTest.java \
+    libcore/java/nio/file/MacOSXFileSystemTest.java \
     libcore/java/nio/file/NoSuchFileExceptionTest.java \
     libcore/java/nio/file/NotDirectoryExceptionTest.java \
     libcore/java/nio/file/NotLinkExceptionTest.java \
