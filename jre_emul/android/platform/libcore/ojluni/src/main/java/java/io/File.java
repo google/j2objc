@@ -1327,8 +1327,8 @@ public class File implements Serializable, Comparable<File> {
                             getDefaultMethod = Class.forName("java.nio.file.FileSystems")
                                     .getDeclaredMethod("getDefault");  // no parameters
                         } catch (ClassNotFoundException e) {
-                            throw new LibraryNotLinkedError("Get default FileSystem",
-                                    "jre_file", "java.nio.file.FileSystems");
+                            throw new LibraryNotLinkedError("java.nio.file support",
+                                    "jre_file", "JavaNioFileFileSystems");
                         }
 
                         Object fileSystem = getDefaultMethod.invoke(null);    // null, since it's a static method.
@@ -1338,8 +1338,8 @@ public class File implements Serializable, Comparable<File> {
                             getPathMethod = Class.forName("java.nio.file.FileSystem")
                                     .getDeclaredMethod("getPath", String.class);
                         } catch (ClassNotFoundException e) {
-                            throw new LibraryNotLinkedError("Get path of FileSystem",
-                                    "jre_file", "java.nio.file.FileSystem");
+                            throw new LibraryNotLinkedError("java.nio.file support",
+                                    "jre_file", "JavaNioFileFileSystem");
                         }
 
                         result = (Path) getPathMethod.invoke(fileSystem, path);
