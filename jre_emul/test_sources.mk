@@ -564,6 +564,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/nio/file/attribute/AclEntryTest.java \
     libcore/java/nio/file/attribute/UserPrincipalNotFoundExceptionTest.java \
+    libcore/java/nio/file/spi/FileTypeDetectorTest.java \
     libcore/java/security/AccessControllerTest.java \
     libcore/java/security/PrincipalTest.java \
     libcore/java/security/PrivilegedActionExceptionTest.java \
