@@ -48,6 +48,12 @@ class FilterOutputStream extends OutputStream {
      */
     protected OutputStream out;
 
+    //Android-added: Integrate OpenJDK 9 fix for double-close. http://b/122733269.
+    /**
+     * Whether the stream is closed; implicitly initialized to false.
+    */
+    private boolean closed;
+
     /**
      * Creates an output stream filter built on top of the specified
      * underlying output stream.
@@ -152,10 +158,50 @@ class FilterOutputStream extends OutputStream {
      * @see        java.io.FilterOutputStream#flush()
      * @see        java.io.FilterOutputStream#out
      */
+    // BEGIN Android-changed: Integrate OpenJDK 9 fix for double-close. http://b/122733269.
+    /*
     @SuppressWarnings("try")
     public void close() throws IOException {
         try (OutputStream ostream = out) {
             flush();
         }
     }
+     */
+    @Override
+    public void close() throws IOException {
+        if (closed) {
+            return;
+        }
+        closed = true;
+
+        Throwable flushException = null;
+        try {
+            flush();
+        } catch (Throwable e) {
+            flushException = e;
+            throw e;
+        } finally {
+            if (flushException == null) {
+                out.close();
+            } else {
+                try {
+                    out.close();
+                } catch (Throwable closeException) {
+                    // evaluate possible precedence of flushException over closeException
+                    if ((flushException instanceof ThreadDeath) &&
+                            !(closeException instanceof ThreadDeath)) {
+                        flushException.addSuppressed(closeException);
+                        throw (ThreadDeath) flushException;
+                    }
+
+                    if (flushException != closeException) {
+                        closeException.addSuppressed(flushException);
+                    }
+
+                    throw closeException;
+                }
+            }
+        }
+    }
 }
+// END Android-changed: Integrate OpenJDK 9 fix for double-close. http://b/122733269.

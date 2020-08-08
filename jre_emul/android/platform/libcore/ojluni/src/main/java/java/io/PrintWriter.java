@@ -114,7 +114,8 @@ public class PrintWriter extends Writer {
         super(out);
         this.out = out;
         this.autoFlush = autoFlush;
-        lineSeparator = System.getProperty("line.separator");
+        lineSeparator = java.security.AccessController.doPrivileged(
+            new sun.security.action.GetPropertyAction("line.separator"));
     }
 
     /**
