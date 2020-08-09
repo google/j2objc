@@ -25,6 +25,7 @@
 
 package sun.nio.fs;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.nio.file.*;
 import java.io.IOException;
 
@@ -32,6 +33,7 @@ import java.io.IOException;
  * Internal exception thrown by native methods when error detected.
  */
 
+@ReflectionSupport(ReflectionSupport.Level.FULL)
 class UnixException extends Exception {
     static final long serialVersionUID = 7227016794320723218L;
 

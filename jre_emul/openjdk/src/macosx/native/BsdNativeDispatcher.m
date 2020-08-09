@@ -74,9 +74,13 @@ Java_sun_nio_fs_BsdNativeDispatcher_initIDs(JNIEnv* env, jclass this)
         return;
     }
     entry_name = (*env)->GetFieldID(env, clazz, "name", "[B");
+    [(id) entry_name retain];
     entry_dir = (*env)->GetFieldID(env, clazz, "dir", "[B");
+    [(id) entry_dir retain];
     entry_fstype = (*env)->GetFieldID(env, clazz, "fstype", "[B");
+    [(id) entry_fstype retain];
     entry_options = (*env)->GetFieldID(env, clazz, "opts", "[B");
+    [(id) entry_options retain];
 }
 
 JNIEXPORT jlong JNICALL

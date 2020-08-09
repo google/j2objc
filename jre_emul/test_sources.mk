@@ -63,6 +63,8 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/nio/charset/OldCharset_SingleByteAbstractTest.java \
     libcore/java/nio/charset/SettableCharsetProvider.java \
+    libcore/java/nio/file/FilesSetup.java \
+    libcore/java/nio/file/LinuxFileSystemTestData.java \
     libcore/java/security/CpuFeatures.java \
     libcore/java/security/StandardNames.java \
     libcore/java/security/cert/FakeOidProvider.java \
@@ -541,6 +543,8 @@ TEST_SOURCES := \
     libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
     libcore/java/nio/file/AccessDeniedExceptionTest.java \
     libcore/java/nio/file/AtomicMoveNotSupportedExceptionTest.java \
+    libcore/java/nio/file/DefaultFileSystemProvider2Test.java \
+    libcore/java/nio/file/DefaultFileSystemProviderTest.java \
     libcore/java/nio/file/DirectoryIteratorExceptionTest.java \
     libcore/java/nio/file/DirectoryNotEmptyExceptionTest.java \
     libcore/java/nio/file/FileAlreadyExistsExceptionTest.java \
@@ -550,9 +554,12 @@ TEST_SOURCES := \
     libcore/java/nio/file/FileSystemNotFoundExceptionTest.java \
     libcore/java/nio/file/InvalidPathExceptionTest.java \
     libcore/java/nio/file/LinkPermissionTest.java \
+    libcore/java/nio/file/MacOSXFileSystemTest.java \
+    libcore/java/nio/file/MacOSXPathTest.java \
     libcore/java/nio/file/NoSuchFileExceptionTest.java \
     libcore/java/nio/file/NotDirectoryExceptionTest.java \
     libcore/java/nio/file/NotLinkExceptionTest.java \
+    libcore/java/nio/file/PathsTest.java \
     libcore/java/nio/file/ProviderMismatchExceptionTest.java \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/nio/file/attribute/AclEntryTest.java \

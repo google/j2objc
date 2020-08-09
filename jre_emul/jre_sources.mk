@@ -1162,6 +1162,7 @@ JAVA_PUBLIC_SOURCES_FILE = \
 
 JAVA_PRIVATE_SOURCES_FILE = \
   com/sun/nio/file/ExtendedCopyOption.java \
+  com/sun/nio/file/ExtendedWatchEventModifier.java \
   com/sun/nio/file/SensitivityWatchEventModifier.java \
   java/nio/file/CopyMoveHelper.java \
   java/nio/file/TempFileHelper.java \
