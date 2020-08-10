@@ -120,7 +120,7 @@ public class FileSystemsTest {
         } catch (FileSystemAlreadyExistsException expected) {}
     }
 
-    /* TODO(amisail): try to port PathClassLoader
+    /* J2ObjC removed: PathClassLoader unsupported
     @Test
     public void test_newFileSystem$URI$Map$ClassLoader_customClassLoader() throws Exception {
         Map<String, String> stubEnv = new HashMap<>();
@@ -160,7 +160,7 @@ public class FileSystemsTest {
         } catch (ProviderNotFoundException expected) {}
     }
 
-    /* TODO(amisail): try to port PathClassLoader
+    /* J2ObjC removed: PathClassLoader unsupported
     @Test
     public void test_newFileSystem$Path$ClassLoader_customClassLoader() throws Exception  {
         // Verify that the Thread's classloader cannot load mypackage.MockFileSystem.
@@ -187,7 +187,7 @@ public class FileSystemsTest {
      * MockFileSystemProvider and MockFileSystem classes.
      * @throws Exception
      */
-    /* TODO(amisail): try to port PathClassLoader
+    /* J2ObjC removed: PathClassLoader unsupported
     ClassLoader createClassLoaderForTestFileSystems() throws IOException {
         File jarFile = new File(filesSetup.getTestDir(), "filesystemstest.jar");
         try (InputStream in = getClass().getResource("/filesystemstest.jar").openStream();
