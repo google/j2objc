@@ -87,16 +87,13 @@ public class DefaultFileSystemProviderTest {
         provider = filesSetup.getDataFilePath().getFileSystem().provider();
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newInputStream() throws IOException {
         try (InputStream is = provider.newInputStream(filesSetup.getDataFilePath(), READ)) {
             assertEquals(TEST_FILE_DATA, readFromInputStream(is));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newInputStream_openOption() throws IOException {
         // Write and Append are not supported.
@@ -122,9 +119,7 @@ public class DefaultFileSystemProviderTest {
             assertEquals(TEST_FILE_DATA, readFromInputStream(is));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newInputStream_twice() throws IOException {
         try (InputStream is = provider.newInputStream(filesSetup.getDataFilePath(), READ);
@@ -135,7 +130,6 @@ public class DefaultFileSystemProviderTest {
             assertEquals(TEST_FILE_DATA, readFromInputStream(is2));
         }
     }
-     */
 
     @Test
     public void test_newInputStream_NPE() throws IOException {
@@ -149,7 +143,6 @@ public class DefaultFileSystemProviderTest {
         } catch (NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream() throws IOException {
         try (OutputStream os = provider.newOutputStream(filesSetup.getTestPath())) {
@@ -160,7 +153,6 @@ public class DefaultFileSystemProviderTest {
             assertEquals(TEST_FILE_DATA, readFromInputStream(is));
         }
     }
-     */
 
     @Test
     public void test_newOutputStream_openOption_READ() throws IOException {
@@ -170,7 +162,6 @@ public class DefaultFileSystemProviderTest {
         }
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream_openOption_APPEND() throws IOException {
         // When file exists and it contains data.
@@ -189,9 +180,7 @@ public class DefaultFileSystemProviderTest {
             assertTrue(expected.getMessage().contains(filesSetup.getTestPath().toString()));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream_openOption_TRUNCATE() throws IOException {
         // When file exists.
@@ -212,9 +201,7 @@ public class DefaultFileSystemProviderTest {
             assertTrue(expected.getMessage().contains(filesSetup.getTestPath().toString()));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream_openOption_WRITE() throws IOException {
         // When file exists.
@@ -235,9 +222,7 @@ public class DefaultFileSystemProviderTest {
             assertTrue(expected.getMessage().contains(filesSetup.getTestPath().toString()));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream_openOption_CREATE() throws IOException {
         // When file exists.
@@ -260,9 +245,7 @@ public class DefaultFileSystemProviderTest {
             assertEquals(TEST_FILE_DATA, readFromInputStream(is));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream_openOption_CREATE_NEW() throws IOException {
         // When file exists.
@@ -280,9 +263,7 @@ public class DefaultFileSystemProviderTest {
             assertEquals(TEST_FILE_DATA, readFromInputStream(is));
         }
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newOutputStream_openOption_SYNC() throws IOException {
         // The data should be written to the file
@@ -292,7 +273,6 @@ public class DefaultFileSystemProviderTest {
                 assertEquals(TEST_FILE_DATA, readFromInputStream(is));
         }
     }
-     */
 
     @Test
     public void test_newOutputStream_NPE() throws IOException {
@@ -306,7 +286,6 @@ public class DefaultFileSystemProviderTest {
         } catch (NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newByteChannel() throws IOException {
         Set<OpenOption> set = new HashSet<OpenOption>();
@@ -337,13 +316,11 @@ public class DefaultFileSystemProviderTest {
             assertEquals(TEST_FILE_DATA, readData);
         }
     }
-     */
 
     /**
      * Behaviour of newByteChannel when called with OpenOption#WRITE.
      * @throws IOException
      */
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newByteChannel_openOption_WRITE() throws IOException {
         Set<OpenOption> set = new HashSet<OpenOption>();
@@ -375,13 +352,11 @@ public class DefaultFileSystemProviderTest {
             assertEquals(expectedFileData, readFromInputStream(is));
         }
     }
-     */
 
     /**
      * Check behaviour when newByteChannel is called with WRITE, READ and SYNC.
      * @throws IOException
      */
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newByteChannel_openOption_WRITE_READ() throws IOException {
         Set<OpenOption> set = new HashSet<OpenOption>();
@@ -407,7 +382,6 @@ public class DefaultFileSystemProviderTest {
             assertEquals(expectedFileData, readFromInputStream(is));
         }
     }
-     */
 
     @Test
     public void test_newByteChannel_NPE() throws IOException {
@@ -559,7 +533,6 @@ public class DefaultFileSystemProviderTest {
         } catch (NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_delete() throws IOException {
         // Delete existing file.
@@ -589,7 +562,6 @@ public class DefaultFileSystemProviderTest {
             fail();
         } catch (DirectoryNotEmptyException expected) {}
     }
-     */
 
     @Test
     public void test_delete_NPE() throws IOException {
@@ -599,7 +571,6 @@ public class DefaultFileSystemProviderTest {
         } catch(NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_deleteIfExist() throws IOException {
         // Delete existing file.
@@ -623,7 +594,6 @@ public class DefaultFileSystemProviderTest {
             fail();
         } catch (DirectoryNotEmptyException expected) {}
     }
-     */
 
     @Test
     public void test_deleteIfExist_NPE() throws IOException {
@@ -633,7 +603,6 @@ public class DefaultFileSystemProviderTest {
         } catch(NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_copy() throws IOException {
         provider.copy(filesSetup.getDataFilePath(), filesSetup.getTestPath());
@@ -678,7 +647,6 @@ public class DefaultFileSystemProviderTest {
             assertTrue(expected.getMessage().contains(filesSetup.getTestPath().toString()));
         }
     }
-     */
 
     @Test
     public void test_copy_NPE() throws IOException {
@@ -699,7 +667,6 @@ public class DefaultFileSystemProviderTest {
         } catch(NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_copy_CopyOption() throws IOException {
         // COPY_ATTRIBUTES
@@ -725,9 +692,7 @@ public class DefaultFileSystemProviderTest {
             fail();
         } catch (UnsupportedOperationException expected) {}
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_copy_directory() throws IOException {
         final Path dirPath = filesSetup.getPathInTestDir("dir1");
@@ -765,9 +730,7 @@ public class DefaultFileSystemProviderTest {
             fail();
         } catch (DirectoryNotEmptyException expected) {}
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newDirectoryStream$Path$Filter() throws IOException {
 
@@ -805,14 +768,12 @@ public class DefaultFileSystemProviderTest {
             assertEquals(expectedPathsSet, pathsSet);
         }
     }
-     */
 
     /**
      * Tests exceptions for the newDirectoryStream(Path, DirectoryStream.Filter) method
      * - NoSuchFileException & NoDirectoryException.
      * @throws IOException
      */
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newDirectoryStream$Filter_Exception() throws IOException {
         // Non existent directory.
@@ -840,7 +801,6 @@ public class DefaultFileSystemProviderTest {
         } catch (NotDirectoryException expected) {
         }
     }
-     */
 
     @Test
     public void test_newDirectoryStream$Filter_NPE() throws IOException {

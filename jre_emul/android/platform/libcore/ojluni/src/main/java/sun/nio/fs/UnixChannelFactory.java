@@ -44,8 +44,10 @@ import static sun.nio.fs.UnixConstants.*;
  */
 
 class UnixChannelFactory {
+    /* J2ObjC removed: is always null and was throwing NPE
     private static final JavaIOFileDescriptorAccess fdAccess =
         SharedSecrets.getJavaIOFileDescriptorAccess();
+     */
 
     protected UnixChannelFactory() {
     }
@@ -102,7 +104,10 @@ class UnixChannelFactory {
      */
     static FileChannel newFileChannel(int fd, String path, boolean reading, boolean writing) {
         FileDescriptor fdObj = new FileDescriptor();
+        /* J2ObjC changed: fdAccess is always null causing NPE
         fdAccess.set(fdObj, fd);
+         */
+        fdObj.setInt$(fd);
         return FileChannelImpl.open(fdObj, path, reading, writing, null);
     }
 
@@ -287,7 +292,10 @@ class UnixChannelFactory {
 
         // create java.io.FileDescriptor
         FileDescriptor fdObj = new FileDescriptor();
+        /* J2ObjC changed: fdAccess is always null causing NPE
         fdAccess.set(fdObj, fd);
+         */
+        fdObj.setInt$(fd);
         return fdObj;
     }
 }

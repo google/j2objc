@@ -91,7 +91,6 @@ public class DefaultFileSystemProvider2Test {
         provider = filesSetup.getDataFilePath().getFileSystem().provider();
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_move() throws IOException {
         provider.move(filesSetup.getDataFilePath(), filesSetup.getTestPath());
@@ -120,9 +119,7 @@ public class DefaultFileSystemProvider2Test {
             fail();
         } catch (NoSuchFileException expected) {}
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_move_CopyOption() throws IOException {
         FileTime fileTime = FileTime.fromMillis(System.currentTimeMillis() - 10000);
@@ -145,7 +142,6 @@ public class DefaultFileSystemProvider2Test {
             fail();
         } catch (UnsupportedOperationException expected) {}
     }
-     */
 
     @Test
     public void test_move_NPE() throws IOException {
@@ -166,7 +162,6 @@ public class DefaultFileSystemProvider2Test {
         } catch(NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_move_directory() throws IOException {
         Path dirPath = filesSetup.getPathInTestDir("dir1");
@@ -192,9 +187,7 @@ public class DefaultFileSystemProvider2Test {
 
         filesSetup.reset();
     }
-     */
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_move_directory_DirectoryNotEmptyException() throws IOException {
         Path dirPath = filesSetup.getPathInTestDir("dir1");
@@ -208,7 +201,6 @@ public class DefaultFileSystemProvider2Test {
             fail();
         } catch (DirectoryNotEmptyException expected) {}
     }
-     */
 
     @Test
     public void test_readSymbolicLink() throws IOException {
@@ -408,7 +400,6 @@ public class DefaultFileSystemProvider2Test {
         } catch (NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newFileChannel() throws IOException {
         Set<OpenOption> openOptions = new HashSet<>();
@@ -509,9 +500,8 @@ public class DefaultFileSystemProvider2Test {
             openOptions.clear();
         }
     }
-     */
 
-    /*TODO(amisail): uncomment if junitparams are supported
+    /* TODO(amisail): uncomment if junitparams are supported
     @Test
     @Parameters(method = "parameters_test_newFileChannel_NoSuchFileException")
     public void test_newFileChannel_NoSuchFileException(Set<? extends OpenOption> openOptions)
@@ -537,7 +527,6 @@ public class DefaultFileSystemProvider2Test {
         };
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_newFileChannel_withFileAttributes() throws IOException {
         Set<OpenOption> openOptions = new HashSet<>();
@@ -600,7 +589,6 @@ public class DefaultFileSystemProvider2Test {
             openOptions.clear();
         }
     }
-     */
 
 
     @Test
