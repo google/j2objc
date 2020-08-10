@@ -318,7 +318,6 @@ public class MacOSXPathTest {
         assertTrue(dummyPath.toAbsolutePath().isAbsolute());
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_toRealPath() throws IOException {
         // When file doesn't exist.
@@ -354,7 +353,6 @@ public class MacOSXPathTest {
         assertTrue(realPath.isAbsolute());
         assertTrue(Files.isSymbolicLink(realPath));
     }
-     */
 
     /* TODO(amisail): fails when running test make but not when t1
     @Test
@@ -419,7 +417,6 @@ public class MacOSXPathTest {
         } catch (NullPointerException expected) {}
     }
 
-    /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
     public void test_register$WatchService$WatchEvent_Kind_Exception() throws IOException {
         WatchService watchService = FileSystems.getDefault().newWatchService();
@@ -448,7 +445,6 @@ public class MacOSXPathTest {
             fail();
         } catch (ClosedWatchServiceException expected) {}
     }
-     */
 
     @Test
     public void test_register$WatchService$WatchEvent_Kind_Exception_NPE() throws IOException {

@@ -552,6 +552,9 @@ TEST_SOURCES := \
     libcore/java/nio/file/FileSystemExceptionTest.java \
     libcore/java/nio/file/FileSystemLoopExceptionTest.java \
     libcore/java/nio/file/FileSystemNotFoundExceptionTest.java \
+    libcore/java/nio/file/FileSystemsTest.java \
+    libcore/java/nio/file/Files2Test.java \
+    libcore/java/nio/file/FilesTest.java \
     libcore/java/nio/file/InvalidPathExceptionTest.java \
     libcore/java/nio/file/LinkPermissionTest.java \
     libcore/java/nio/file/MacOSXFileSystemTest.java \
@@ -564,6 +567,7 @@ TEST_SOURCES := \
     libcore/java/nio/file/ProviderNotFoundExceptionTest.java \
     libcore/java/nio/file/attribute/AclEntryTest.java \
     libcore/java/nio/file/attribute/UserPrincipalNotFoundExceptionTest.java \
+    libcore/java/nio/file/spi/FileTypeDetectorTest.java \
     libcore/java/security/AccessControllerTest.java \
     libcore/java/security/PrincipalTest.java \
     libcore/java/security/PrivilegedActionExceptionTest.java \
