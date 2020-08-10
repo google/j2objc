@@ -16,6 +16,7 @@ package com.google.j2objc;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite;
 import org.junit.runners.Suite;
 
@@ -47,7 +48,7 @@ public class TestUtil {
     for (Class<?> jreTest : allJreTests) {
       Package testPackage = jreTest.getPackage();
       if (testPackage != null && testPackage.getName().equals(pkgName) && !isSuiteClass(jreTest)) {
-        packageTests.addTest(new TestSuite(jreTest));
+        packageTests.addTest(new JUnit4TestAdapter(jreTest));
       }
     }
     return packageTests;

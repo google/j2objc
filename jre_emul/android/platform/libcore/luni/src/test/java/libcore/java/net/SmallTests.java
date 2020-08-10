@@ -16,6 +16,7 @@
 
 package libcore.java.net;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -39,6 +40,10 @@ public class SmallTests extends TestSuite {
   };
 
   public static Test suite() {
-    return new TestSuite(smallTestClasses);
+    TestSuite suite = new TestSuite();
+    for (Class<?> cls : smallTestClasses) {
+      suite.addTest(new JUnit4TestAdapter(cls));
+    }
+    return suite;
   }
 }
