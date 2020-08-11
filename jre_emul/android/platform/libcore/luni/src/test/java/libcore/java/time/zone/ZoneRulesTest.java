@@ -63,10 +63,8 @@ public class ZoneRulesTest {
         }
     }
 
-    /* https://github.com/google/j2objc/issues/1436
     @Test(expected = NullPointerException.class)
     public void test_of_ZoneOffset_null() {
         ZoneRules.of(null);
     }
-     */
 }
