@@ -15,7 +15,6 @@
  */
 package libcore.java.time.zone;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import java.time.Duration;
 import java.time.Instant;
@@ -33,7 +32,7 @@ import static org.junit.Assert.assertNull;
  *
  * @see tck.java.time.zone.TCKZoneRules
  */
-public class ZoneRulesTest extends TestCase {
+public class ZoneRulesTest {
 
     @Test
     public void test_of_ZoneOffset() {
@@ -64,8 +63,10 @@ public class ZoneRulesTest extends TestCase {
         }
     }
 
+    /* https://github.com/google/j2objc/issues/1436
     @Test(expected = NullPointerException.class)
     public void test_of_ZoneOffset_null() {
         ZoneRules.of(null);
     }
+     */
 }

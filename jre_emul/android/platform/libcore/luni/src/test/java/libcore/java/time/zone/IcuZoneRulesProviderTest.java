@@ -15,7 +15,6 @@
  */
 package libcore.java.time.zone;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,6 +30,9 @@ import java.time.ZoneOffset;
 import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneRules;
 import java.time.zone.ZoneRulesProvider;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -45,13 +47,17 @@ import static org.junit.Assert.assertNull;
  * equivalently to the ICU rules from which they are created.
  */
 @RunWith(Parameterized.class)
-public class IcuZoneRulesProviderTest extends TestCase {
+public class IcuZoneRulesProviderTest {
 
     @Parameterized.Parameters(name = "{0}")
-    public static Iterable<String> getZoneIds() {
+    public static Collection getZoneIds() {
         Set<String> availableZoneIds = ZoneRulesProvider.getAvailableZoneIds();
         assertFalse("no zones returned", availableZoneIds.isEmpty());
-        return availableZoneIds;
+        List<Object[]> availableZoneIdsAsArrays = new ArrayList<>();
+        for (String zoneId : availableZoneIds){
+            availableZoneIdsAsArrays.add(new Object[] {zoneId});
+        }
+        return availableZoneIdsAsArrays;
     }
 
     private final String zoneId;

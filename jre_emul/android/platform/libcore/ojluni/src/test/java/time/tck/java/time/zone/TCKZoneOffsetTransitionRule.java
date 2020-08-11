@@ -70,14 +70,13 @@ import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
 import java.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test ZoneOffsetTransitionRule.
  */
-public class TCKZoneOffsetTransitionRule extends TestCase {
+public class TCKZoneOffsetTransitionRule extends AbstractTCKTest {
 
     private static final LocalTime TIME_0100 = LocalTime.of(1, 0);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);

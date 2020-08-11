@@ -74,13 +74,12 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 /**
  * Test ZoneRulesProvider.
  */
-public class TCKZoneRulesProvider extends TestCase {
+public class TCKZoneRulesProvider {
 
     private static String TZDB_VERSION = "2012i";
 

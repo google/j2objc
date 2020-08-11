@@ -79,7 +79,6 @@ import java.time.zone.ZoneRules;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import junit.framework.TestCase;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 
@@ -87,7 +86,7 @@ import org.junit.Test;
  * Test ZoneRules for fixed offset time-zones.
  */
 @RunWith(DataProviderRunner.class)
-public class TCKFixedZoneRules extends TestCase {
+public class TCKFixedZoneRules {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);

@@ -88,13 +88,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 /**
  * Test ZoneRules.
  */
-public class TCKZoneRules extends TestCase {
+public class TCKZoneRules {
 
     private static final ZoneOffset OFFSET_ZERO = ZoneOffset.ofHours(0);
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);

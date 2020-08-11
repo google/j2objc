@@ -68,14 +68,13 @@ import java.time.Year;
 import java.time.ZoneOffset;
 import java.time.zone.ZoneOffsetTransition;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test ZoneOffsetTransition.
  */
-public class TCKZoneOffsetTransition extends TestCase {
+public class TCKZoneOffsetTransition extends AbstractTCKTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);

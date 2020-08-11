@@ -15,7 +15,6 @@
  */
 package libcore.java.time.zone;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import java.time.zone.ZoneRulesException;
 
@@ -26,7 +25,7 @@ import static org.junit.Assert.assertSame;
 /**
  * Tests for {@link ZoneRulesException}.
  */
-public class ZoneRulesExceptionTest extends TestCase {
+public class ZoneRulesExceptionTest {
 
     @Test
     public void test_constructor_message() {
