@@ -21,6 +21,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -53,7 +56,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/* TODO(amisail): uncomment if junitparams are supported
+/* J2ObjC removed: junitparams not supported
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
  */
@@ -78,7 +81,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
-//@RunWith(JUnitParamsRunner.class)
+/* J2ObjC changed: junitparams not supported
+@RunWith(JUnitParamsRunner.class)
+ */
+@RunWith(DataProviderRunner.class)
 public class DefaultFileSystemProvider2Test {
 
     @Rule
@@ -501,9 +507,11 @@ public class DefaultFileSystemProvider2Test {
         }
     }
 
-    /* TODO(amisail): uncomment if junitparams are supported
     @Test
+    /* J2ObjC changed: junitparams not supported
     @Parameters(method = "parameters_test_newFileChannel_NoSuchFileException")
+     */
+    @UseDataProvider("parameters_test_newFileChannel_NoSuchFileException")
     public void test_newFileChannel_NoSuchFileException(Set<? extends OpenOption> openOptions)
             throws IOException {
         try {
@@ -511,8 +519,22 @@ public class DefaultFileSystemProvider2Test {
             fail();
         } catch (NoSuchFileException expected) {}
     }
-     */
 
+    @DataProvider
+    public static Object[][] parameters_test_newFileChannel_NoSuchFileException() {
+        return new Object[][] {
+                { EnumSet.noneOf(StandardOpenOption.class) },
+                { EnumSet.of(READ) },
+                { EnumSet.of(WRITE) },
+                { EnumSet.of(TRUNCATE_EXISTING) },
+                { EnumSet.of(APPEND) },
+                { EnumSet.of(CREATE, READ) },
+                { EnumSet.of(CREATE, TRUNCATE_EXISTING) },
+                { EnumSet.of(CREATE, READ) },
+        };
+    }
+
+    /* J2ObjC changed: junitparams not supported
     @SuppressWarnings("unused")
     private Object[] parameters_test_newFileChannel_NoSuchFileException() {
         return new Object[] {
@@ -526,6 +548,7 @@ public class DefaultFileSystemProvider2Test {
                 new Object[] { EnumSet.of(CREATE, READ) },
         };
     }
+     */
 
     @Test
     public void test_newFileChannel_withFileAttributes() throws IOException {
