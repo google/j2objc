@@ -354,10 +354,12 @@ public class MacOSXPathTest {
         assertTrue(Files.isSymbolicLink(realPath));
     }
 
-    /* TODO(amisail): fails when running test make but not when t1
+    /* J2ObjC removed: https://github.com/google/j2objc/issues/1439
     @Test
     public void test_toFile() {
         File file = dummyPath.toFile();
+        System.out.println(dummyPath.toAbsolutePath().toString());
+        System.out.println(file.getAbsolutePath());
         assertEquals(dummyPath.toAbsolutePath().toString(), file.getAbsolutePath());
     }
      */
