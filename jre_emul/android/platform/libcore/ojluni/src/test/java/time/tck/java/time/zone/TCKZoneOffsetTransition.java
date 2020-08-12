@@ -60,7 +60,7 @@
 package tck.java.time.zone;
 
 import static java.time.temporal.ChronoUnit.HOURS;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -68,13 +68,12 @@ import java.time.Year;
 import java.time.ZoneOffset;
 import java.time.zone.ZoneOffsetTransition;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import tck.java.time.AbstractTCKTest;
 
 /**
  * Test ZoneOffsetTransition.
  */
-@Test
 public class TCKZoneOffsetTransition extends AbstractTCKTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
@@ -86,27 +85,27 @@ public class TCKZoneOffsetTransition extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     // factory
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullTransition() {
         ZoneOffsetTransition.of(null, OFFSET_0100, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullOffsetBefore() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30), null, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expected=NullPointerException.class)
     public void test_factory_nullOffsetAfter() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30), OFFSET_0200, null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_factory_sameOffset() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30), OFFSET_0200, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test_factory_noNanos() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30, 0, 500), OFFSET_0200, OFFSET_0300);
     }

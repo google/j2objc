@@ -59,8 +59,13 @@
  */
 package tck.java.time.zone.serial;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import junit.framework.TestCase;
+import org.junit.runner.RunWith;
+import org.junit.Test;
+import tck.java.time.AbstractTCKTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,24 +74,24 @@ import java.io.ObjectOutputStream;
 import java.time.ZoneOffset;
 import java.time.zone.ZoneRules;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test serialization of ZoneRules for fixed offset time-zones.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TCKFixedZoneRulesSerialization {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneOffset OFFSET_M18 = ZoneOffset.ofHours(-18);
 
-    private ZoneRules make(ZoneOffset offset) {
+    private static ZoneRules make(ZoneOffset offset) {
         return offset.getRules();
     }
 
-    @DataProvider(name="rules")
-    Object[][] data_rules() {
+    @DataProvider
+    public static Object[][] data_rules() {
         return new Object[][] {
             {make(OFFSET_PONE), OFFSET_PONE},
             {make(OFFSET_PTWO), OFFSET_PTWO},
@@ -97,7 +102,8 @@ public class TCKFixedZoneRulesSerialization {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    @Test(dataProvider="rules")
+    @Test()
+    @UseDataProvider("data_rules")
     public void test_serialization(ZoneRules test, ZoneOffset expectedOffset) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);

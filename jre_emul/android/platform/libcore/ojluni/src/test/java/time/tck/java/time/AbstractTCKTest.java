@@ -56,6 +56,8 @@
  */
 package tck.java.time;
 
+import junit.framework.TestCase;
+
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;

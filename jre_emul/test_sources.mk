@@ -598,6 +598,10 @@ TEST_SOURCES := \
     libcore/java/time/format/DateTimeFormatterTest.java \
     libcore/java/time/format/DateTimeParseExceptionTest.java \
     libcore/java/time/temporal/UnsupportedTemporalTypeExceptionTest.java \
+    libcore/java/time/zone/IcuZoneRulesProviderTest.java \
+    libcore/java/time/zone/ZoneOffsetTransitionTest.java \
+    libcore/java/time/zone/ZoneRulesExceptionTest.java \
+    libcore/java/time/zone/ZoneRulesTest.java \
     libcore/java/util/AbstractCollectionTest.java \
     libcore/java/util/ArrayListTest.java \
     libcore/java/util/ArraysTest.java \
@@ -1273,6 +1277,15 @@ TEST_SOURCES := \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
+    tck/java/time/zone/TCKFixedZoneRules.java \
+    tck/java/time/zone/TCKZoneOffsetTransition.java \
+    tck/java/time/zone/TCKZoneOffsetTransitionRule.java \
+    tck/java/time/zone/TCKZoneRules.java \
+    tck/java/time/zone/TCKZoneRulesProvider.java \
+    tck/java/time/zone/serial/TCKFixedZoneRulesSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
+    tck/java/time/zone/serial/TCKZoneRulesSerialization.java \
     test/java/time/TestClock_Fixed.java \
     test/java/time/TestClock_Offset.java \
     test/java/time/TestClock_System.java \
@@ -1487,6 +1500,10 @@ TESTS_USE_SERIALIZATION = \
     tck/java/time/temporal/serial/TCKJulianFieldsSerialization.java \
     tck/java/time/temporal/serial/TCKValueRangeSerialization.java \
     tck/java/time/temporal/serial/TCKWeekFieldsSerialization.java \
+    tck/java/time/zone/serial/TCKFixedZoneRulesSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
+    tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
+    tck/java/time/zone/serial/TCKZoneRulesSerialization.java \
     tests/security/cert/CertificateRevocationExceptionTest.java \
 
 TESTS_USE_REFLECTION = \
