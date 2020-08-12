@@ -731,7 +731,6 @@ public class DefaultFileSystemProviderTest {
         } catch (DirectoryNotEmptyException expected) {}
     }
 
-    /* TODO(amisail): check why this is failing
     @Test
     public void test_newDirectoryStream$Path$Filter() throws IOException {
 
@@ -763,13 +762,15 @@ public class DefaultFileSystemProviderTest {
         // Filter all the directories.
         try (DirectoryStream<Path> directoryStream = provider.newDirectoryStream(path_root,
                 file -> Files.isDirectory(file))) {
+            /* J2ObjC changed: SecureDirectoryStream not supported
             assertTrue(directoryStream instanceof SecureDirectoryStream);
+             */
+            assertTrue(directoryStream instanceof DirectoryStream);
             directoryStream.forEach(path -> pathsSet.add(path));
 
             assertEquals(expectedPathsSet, pathsSet);
         }
     }
-     */
 
     /**
      * Tests exceptions for the newDirectoryStream(Path, DirectoryStream.Filter) method
