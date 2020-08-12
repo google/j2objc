@@ -2063,28 +2063,27 @@ public class ByteBufferTest extends AbstractBufferTest {
         }
     }
 
-//    TODO(amisail): uncomment when UnixFileSystemProvider.newByteChannel is implemented
-//    // http://b/34045479
-//    public void testMappedByteBuffer_Put_ReadOnlyHeapByteBuffer() throws Exception {
-//        // Create a temp file
-//        byte[] data = new byte[] {1, 2, 3, 4};
-//        Path tempFile = Files.createTempFile("mmap", "test");
-//        Files.write(tempFile, data);
-//
-//        // Create a read-only heap buffer
-//        ByteBuffer readOnlySource = ByteBuffer.allocate(4).asReadOnlyBuffer();
-//        try (RandomAccessFile tempRAF = new RandomAccessFile(tempFile.toFile(), "rw")) {
-//            FileChannel tempFileChannel = tempRAF.getChannel();
-//            ByteBuffer mappedByteBuffer =
-//                tempFileChannel.map(FileChannel.MapMode.READ_WRITE, 0, tempFileChannel.size());
-//
-//            // Try to put a non-empty, read-only heap byte buffer into a mapped byte buffer.
-//            mappedByteBuffer.put(readOnlySource);
-//            tempFileChannel.close();
-//        } finally {
-//            Files.delete(tempFile);
-//        }
-//    }
+    // http://b/34045479
+    public void testMappedByteBuffer_Put_ReadOnlyHeapByteBuffer() throws Exception {
+        // Create a temp file
+        byte[] data = new byte[] {1, 2, 3, 4};
+        Path tempFile = Files.createTempFile("mmap", "test");
+        Files.write(tempFile, data);
+
+        // Create a read-only heap buffer
+        ByteBuffer readOnlySource = ByteBuffer.allocate(4).asReadOnlyBuffer();
+        try (RandomAccessFile tempRAF = new RandomAccessFile(tempFile.toFile(), "rw")) {
+            FileChannel tempFileChannel = tempRAF.getChannel();
+            ByteBuffer mappedByteBuffer =
+                tempFileChannel.map(FileChannel.MapMode.READ_WRITE, 0, tempFileChannel.size());
+
+            // Try to put a non-empty, read-only heap byte buffer into a mapped byte buffer.
+            mappedByteBuffer.put(readOnlySource);
+            tempFileChannel.close();
+        } finally {
+            Files.delete(tempFile);
+        }
+    }
 
     private void loadTestData1(byte array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
