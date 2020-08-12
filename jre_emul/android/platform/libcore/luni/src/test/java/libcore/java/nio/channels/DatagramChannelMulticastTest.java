@@ -38,6 +38,7 @@ import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 import libcore.io.IoBridge;
+import sun.nio.ch.Net;
 
 import static libcore.io.OsConstants.POLLIN;
 
@@ -713,66 +714,57 @@ public class DatagramChannelMulticastTest extends TestCase {
     }
 
     /** Checks that block() works when the receiver is bound to the multicast group address */
-    /* TODO(amisail): uncomment when IoBridge is updated
     public void test_block_filtersAsExpected_groupBind_ipv4() throws Exception {
         if (!supportsMulticast) {
             return;
         }
         InetAddress ipv4LocalAddress = getLocalIpv4Address(ipv4NetworkInterface);
         check_block_filtersAsExpected(
-                ipv4LocalAddress /* senderBindAddress * /,
-                GOOD_MULTICAST_IPv4 /* receiverBindAddress * /,
-                GOOD_MULTICAST_IPv4 /* groupAddress * /,
+                ipv4LocalAddress /* senderBindAddress */,
+                GOOD_MULTICAST_IPv4 /* receiverBindAddress */,
+                GOOD_MULTICAST_IPv4 /* groupAddress */,
                 ipv4NetworkInterface);
     }
-     */
 
     /** Checks that block() works when the receiver is bound to the multicast group address */
-    /* TODO(amisail): uncomment when IoBridge is updated
     public void test_block_filtersAsExpected_groupBind_ipv6() throws Exception {
         if (!supportsMulticast) {
             return;
         }
         InetAddress ipv6LocalAddress = getLocalIpv6Address(ipv6NetworkInterface);
         check_block_filtersAsExpected(
-                ipv6LocalAddress /* senderBindAddress * /,
-                GOOD_MULTICAST_IPv6 /* receiverBindAddress * /,
-                GOOD_MULTICAST_IPv6 /* groupAddress * /,
+                ipv6LocalAddress /* senderBindAddress */,
+                GOOD_MULTICAST_IPv6 /* receiverBindAddress */,
+                GOOD_MULTICAST_IPv6 /* groupAddress */,
                 ipv6NetworkInterface);
     }
-     */
 
     /** Checks that block() works when the receiver is bound to the "any" address */
-    /* TODO(amisail): uncomment when IoBridge is updated
     public void test_block_filtersAsExpected_anyBind_ipv4() throws Exception {
         if (!supportsMulticast) {
             return;
         }
         InetAddress ipv4LocalAddress = getLocalIpv4Address(ipv4NetworkInterface);
         check_block_filtersAsExpected(
-                ipv4LocalAddress /* senderBindAddress * /,
-                WILDCARD_IPv4 /* receiverBindAddress * /,
-                GOOD_MULTICAST_IPv4 /* groupAddress * /,
+                ipv4LocalAddress /* senderBindAddress */,
+                WILDCARD_IPv4 /* receiverBindAddress */,
+                GOOD_MULTICAST_IPv4 /* groupAddress */,
                 ipv4NetworkInterface);
     }
-     */
 
     /** Checks that block() works when the receiver is bound to the "any" address */
-    /* TODO(amisail): uncomment when IoBridge is updated
     public void test_block_filtersAsExpected_anyBind_ipv6() throws Exception {
         if (!supportsMulticast) {
             return;
         }
         InetAddress ipv6LocalAddress = getLocalIpv6Address(ipv6NetworkInterface);
         check_block_filtersAsExpected(
-                ipv6LocalAddress /* senderBindAddress * /,
-                WILDCARD_IPv6 /* receiverBindAddress * /,
-                GOOD_MULTICAST_IPv6 /* groupAddress * /,
+                ipv6LocalAddress /* senderBindAddress */,
+                WILDCARD_IPv6 /* receiverBindAddress */,
+                GOOD_MULTICAST_IPv6 /* groupAddress */,
                 ipv6NetworkInterface);
     }
-     */
 
-    /* TODO(amisail): uncomment when IoBridge is updated
     private void check_block_filtersAsExpected(
             InetAddress senderBindAddress, InetAddress receiverBindAddress,
             InetAddress groupAddress, NetworkInterface networkInterface)
@@ -786,7 +778,7 @@ public class DatagramChannelMulticastTest extends TestCase {
         DatagramChannel receivingChannel = DatagramChannel.open();
         configureChannelForReceiving(receivingChannel);
         receivingChannel.bind(
-                new InetSocketAddress(receiverBindAddress, 0) /* local port left to the OS to determine * /);
+                new InetSocketAddress(receiverBindAddress, 0) /* local port left to the OS to determine */);
         InetSocketAddress localReceivingAddress =
                 (InetSocketAddress) receivingChannel.getLocalAddress();
         InetSocketAddress groupSocketAddress =
@@ -801,7 +793,7 @@ public class DatagramChannelMulticastTest extends TestCase {
         // Send a message. It should be received.
         String msg1 = "Hello1";
         channel.sendMulticastMessage(msg1, groupSocketAddress);
-        IoBridge.poll(receivingChannel.socket().getFileDescriptor$(), POLLIN, 1000);
+        Net.poll(receivingChannel.socket().getFileDescriptor$(), POLLIN, 1000);
         InetSocketAddress sourceAddress1 = (InetSocketAddress) receiveExpectedDatagram(receivingChannel, receiveBuffer);
         assertEquals(sourceAddress1, sendingAddress);
         assertEquals(msg1, new String(receiveBuffer.array(), 0, receiveBuffer.position()));
@@ -813,7 +805,7 @@ public class DatagramChannelMulticastTest extends TestCase {
         String msg2 = "Hello2";
         channel.sendMulticastMessage(msg2, groupSocketAddress);
         try {
-            IoBridge.poll(receivingChannel.socket().getFileDescriptor$(), POLLIN, 1000);
+            Net.poll(receivingChannel.socket().getFileDescriptor$(), POLLIN, 1000);
             fail();
         } catch (SocketTimeoutException expected) { }
         receiveBuffer.position(0);
@@ -825,7 +817,7 @@ public class DatagramChannelMulticastTest extends TestCase {
         // Send a message. It should be received.
         String msg3 = "Hello3";
         channel.sendMulticastMessage(msg3, groupSocketAddress);
-        IoBridge.poll(receivingChannel.socket().getFileDescriptor$(), POLLIN, 1000);
+        Net.poll(receivingChannel.socket().getFileDescriptor$(), POLLIN, 1000);
         receiveBuffer.position(0);
         InetSocketAddress sourceAddress3 =
                 (InetSocketAddress) receiveExpectedDatagram(receivingChannel, receiveBuffer);
@@ -835,7 +827,6 @@ public class DatagramChannelMulticastTest extends TestCase {
         sendingChannel.close();
         receivingChannel.close();
     }
-     */
 
     public void test_joinSourceSpecific_nullGroupAddress() throws Exception {
         if (!supportsMulticast) {
