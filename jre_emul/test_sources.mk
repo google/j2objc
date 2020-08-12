@@ -194,6 +194,7 @@ SUPPORT_SOURCES = \
     tck/java/time/AbstractTCKTest.java \
     tck/java/time/AbstractDateTimeTest.java \
     tck/java/time/MockSimplePeriod.java \
+    test/java/nio/file/TestUtil.java \
     test/java/time/AbstractTest.java \
     test/java/time/MockSimplePeriod.java \
     test/java/time/format/AbstractTestPrinterParser.java \
@@ -1286,6 +1287,9 @@ TEST_SOURCES := \
     tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
     tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
     tck/java/time/zone/serial/TCKZoneRulesSerialization.java \
+    test/java/nio/file/attribute/AclEntryEmptySetTest.java \
+    test/java/nio/file/attribute/BasicFileAttributeViewTest.java \
+    test/java/nio/file/attribute/PosixFileAttributeViewTest.java \
     test/java/time/TestClock_Fixed.java \
     test/java/time/TestClock_Offset.java \
     test/java/time/TestClock_System.java \
