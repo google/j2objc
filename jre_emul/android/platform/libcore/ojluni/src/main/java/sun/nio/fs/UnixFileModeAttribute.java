@@ -47,7 +47,11 @@ class UnixFileModeAttribute {
 
     static int toUnixMode(Set<PosixFilePermission> perms) {
         int mode = 0;
-        for (PosixFilePermission perm: perms) {
+        /* J2ObjC changed: explicitly cast as if an element of perms is not
+        of type PosixFilePermission an ClassCastException is not thrown
+         */
+        for (Object o: perms) {
+            PosixFilePermission perm = (PosixFilePermission) o;
             if (perm == null)
                 throw new NullPointerException();
             switch (perm) {

@@ -64,6 +64,7 @@ ANDROID_XML_ROOT = $(LIBCORE_BASE)/xml/src/main/java
 OKIO_ROOT = $(ANDROID_PLATFORM)/external/okhttp/okio/okio/src/main/java
 OKIO_TEST_ROOT = $(ANDROID_PLATFORM)/external/okhttp/okio/okio/src/test/java
 OJLUNI_TEST_BASE = $(LIBCORE_BASE)/ojluni/src/test
+OJLUNI_NIO_TEST_ROOT = $(LIBCORE_BASE)/ojluni/src
 JAVA_TIME_TEST_ROOT = $(OJLUNI_TEST_BASE)/java/time
 ICU_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/java
 ICU_TEST_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/src/main/tests
@@ -130,7 +131,8 @@ TEST_SRC_ROOTS = \
     $(ANDROID_JSON_TEST_ROOT) $(BEANS_TEST_ROOT) $(BEANS_TEST_SUPPORT_ROOT) \
     $(ANDROID_JSR166_TEST_ROOT) $(MOCKWEBSERVER_ROOT) \
     $(OKIO_TEST_ROOT) $(ANDROID_DALVIK_TEST_ROOT) \
-    $(APACHE_COMMONS_LANG_TEST_ROOT) $(JAVA_TIME_TEST_ROOT) $(ICU_TEST_ROOT)
+    $(APACHE_COMMONS_LANG_TEST_ROOT) $(JAVA_TIME_TEST_ROOT) \
+    $(OJLUNI_NIO_TEST_ROOT) $(ICU_TEST_ROOT)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC)
 
