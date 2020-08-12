@@ -513,7 +513,7 @@ public class Net {
                                              int level, int opt, int arg, boolean isIPv6)
         throws IOException;
 
-    static native int poll(FileDescriptor fd, int events, long timeout)
+    public static native int poll(FileDescriptor fd, int events, long timeout)
         throws IOException;
 
     // -- Multicast support --
