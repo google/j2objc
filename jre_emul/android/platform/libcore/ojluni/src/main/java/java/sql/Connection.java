@@ -1303,4 +1303,5 @@ SQLException;
  Struct createStruct(String typeName, Object[] attributes)
 throws SQLException;
 
+    // Android-removed: JDBC 4.1 methods were removed immediately after the initial import.
 }

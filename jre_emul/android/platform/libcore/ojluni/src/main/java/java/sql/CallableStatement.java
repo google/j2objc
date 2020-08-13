@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -296,6 +296,7 @@ public interface CallableStatement extends PreparedStatement {
      *             or <code>getBigDecimal(String parameterName)</code>
      * @see #setBigDecimal
      */
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
     @Deprecated
     BigDecimal getBigDecimal(int parameterIndex, int scale)
         throws SQLException;
@@ -2438,4 +2439,6 @@ public interface CallableStatement extends PreparedStatement {
      */
      void setNClob(String parameterName, Reader reader)
        throws SQLException;
+
+    // Android-removed: JDBC 4.1 methods were removed immediately after the initial import.
 }
