@@ -33,6 +33,8 @@ import java.io.Writer;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
+// Android-changed: Removed @see tag (target does not exist on Android):
+// @see javax.xml.stream
 /**
  * The mapping in the JavaTM programming language for the SQL XML type.
  * XML is a built-in type that stores an XML value
@@ -183,7 +185,6 @@ import javax.xml.transform.Source;
  * JDBC driver supports the data type.
  *
  * @see javax.xml.parsers
- * @see javax.xml.stream
  * @see javax.xml.transform
  * @see javax.xml.xpath
  * @since 1.6

@@ -52,7 +52,8 @@ public class Date extends java.util.Date {
      * @param day 1 to 31
      * @deprecated instead use the constructor <code>Date(long date)</code>
      */
-    @Deprecated // Android added
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public Date(int year, int month, int day) {
         super(year, month, day);
     }
@@ -172,6 +173,7 @@ public class Date extends java.util.Date {
 
     // Override all the time operations inherited from java.util.Date;
 
+   // Android-changed: Moved @deprecated to include a deprecation reason in the documentation.
    /**
     * @deprecated This method is deprecated and should not be used because SQL Date
     * values do not have a time component.
@@ -179,11 +181,13 @@ public class Date extends java.util.Date {
     * @exception java.lang.IllegalArgumentException if this method is invoked
     * @see #setHours
     */
-    @Deprecated // Android added - changed javadoc to include deprecation note.
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public int getHours() {
         throw new java.lang.IllegalArgumentException();
     }
 
+   // Android-changed: Moved @deprecated to include a deprecation reason in the documentation.
    /**
     * @deprecated This method is deprecated and should not be used because SQL Date
     * values do not have a time component.
@@ -191,11 +195,13 @@ public class Date extends java.util.Date {
     * @exception java.lang.IllegalArgumentException if this method is invoked
     * @see #setMinutes
     */
-    @Deprecated // Android added - changed javadoc to include deprecation note.
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public int getMinutes() {
         throw new java.lang.IllegalArgumentException();
     }
 
+   // Android-changed: Moved @deprecated to include a deprecation reason in the documentation.
    /**
     * @deprecated This method is deprecated and should not be used because SQL Date
     * values do not have a time component.
@@ -203,11 +209,13 @@ public class Date extends java.util.Date {
     * @exception java.lang.IllegalArgumentException if this method is invoked
     * @see #setSeconds
     */
-    @Deprecated // Android added - changed javadoc to include deprecation note.
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public int getSeconds() {
         throw new java.lang.IllegalArgumentException();
     }
 
+   // Android-changed: Moved @deprecated to include a deprecation reason in the documentation.
    /**
     * @deprecated This method is deprecated and should not be used because SQL Date
     * values do not have a time component.
@@ -215,11 +223,13 @@ public class Date extends java.util.Date {
     * @exception java.lang.IllegalArgumentException if this method is invoked
     * @see #getHours
     */
-    @Deprecated // Android added - changed javadoc to include deprecation note.
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public void setHours(int i) {
         throw new java.lang.IllegalArgumentException();
     }
 
+   // Android-changed: Moved @deprecated to include a deprecation reason in the documentation.
    /**
     * @deprecated This method is deprecated and should not be used because SQL Date
     * values do not have a time component.
@@ -227,11 +237,13 @@ public class Date extends java.util.Date {
     * @exception java.lang.IllegalArgumentException if this method is invoked
     * @see #getMinutes
     */
-    @Deprecated // Android added - changed javadoc to include deprecation note.
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public void setMinutes(int i) {
         throw new java.lang.IllegalArgumentException();
     }
 
+   // Android-changed: Moved @deprecated to include a deprecation reason in the documentation.
    /**
     * @deprecated This method is deprecated and should not be used because SQL Date
     * values do not have a time component.
@@ -239,7 +251,8 @@ public class Date extends java.util.Date {
     * @exception java.lang.IllegalArgumentException if this method is invoked
     * @see #getSeconds
     */
-    @Deprecated // Android added - changed javadoc to include deprecation note.
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
+    @Deprecated
     public void setSeconds(int i) {
         throw new java.lang.IllegalArgumentException();
     }

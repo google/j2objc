@@ -317,6 +317,7 @@ public interface PreparedStatement extends Statement {
     void setAsciiStream(int parameterIndex, java.io.InputStream x, int length)
             throws SQLException;
 
+    // Android-changed: Added reason to @deprecated to improve the documentation.
     /**
      * Sets the designated parameter to the given input stream, which
      * will have the specified number of bytes.
@@ -343,8 +344,9 @@ public interface PreparedStatement extends Statement {
      * this method is called on a closed <code>PreparedStatement</code>
      * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
      * this method
-     * @deprecated Deprecated.
+     * @deprecated Use setCharacterStream
      */
+    // Android-added: @Deprecated annotation from OpenJDK8u121-b13 to fix build warnings.
     @Deprecated
     void setUnicodeStream(int parameterIndex, java.io.InputStream x,
                           int length) throws SQLException;

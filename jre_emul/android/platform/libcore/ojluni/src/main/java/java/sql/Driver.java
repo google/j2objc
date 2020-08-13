@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2014 The Android Open Source Project
  * Copyright (c) 1996, 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -153,4 +154,5 @@ public interface Driver {
      */
     boolean jdbcCompliant();
 
+    // Android-removed: JDBC 4.1 methods were removed immediately after the initial import.
 }

@@ -3574,4 +3574,5 @@ public interface DatabaseMetaData extends Wrapper {
      */
     int functionReturnsTable    = 2;
 
+    // Android-removed: JDBC 4.1 methods were removed immediately after the initial import.
 }
