@@ -354,13 +354,11 @@ public class MacOSXPathTest {
         assertTrue(Files.isSymbolicLink(realPath));
     }
 
-    /* TODO(amisail): fails when running test make but not when t1
     @Test
     public void test_toFile() {
         File file = dummyPath.toFile();
         assertEquals(dummyPath.toAbsolutePath().toString(), file.getAbsolutePath());
     }
-     */
 
     /* TODO(amisail): uncomment when UnixChannelFactory.open() is fixed
     @Test
