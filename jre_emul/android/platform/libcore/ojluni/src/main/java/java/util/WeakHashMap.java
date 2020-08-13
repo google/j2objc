@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
  * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -30,6 +29,7 @@ import com.google.j2objc.annotations.WeakOuter;
 
 import java.lang.ref.WeakReference;
 import java.lang.ref.ReferenceQueue;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -197,7 +197,7 @@ public class WeakHashMap<K,V>
 
     @SuppressWarnings("unchecked")
     private Entry<K,V>[] newTable(int n) {
-        return (Entry<K,V>[]) new Entry[n];
+        return (Entry<K,V>[]) new Entry<?,?>[n];
     }
 
     /**
@@ -293,6 +293,23 @@ public class WeakHashMap<K,V>
     }
 
     /**
+     * Retrieve object hash code and applies a supplemental hash function to the
+     * result hash, which defends against poor quality hash functions.  This is
+     * critical because HashMap uses power-of-two length hash tables, that
+     * otherwise encounter collisions for hashCodes that do not differ
+     * in lower bits.
+     */
+    final int hash(Object k) {
+        int h = k.hashCode();
+
+        // This function ensures that hashCodes that differ only by
+        // constant multiples at each bit position have a bounded
+        // number of collisions (approximately 8 at default load factor).
+        h ^= (h >>> 20) ^ (h >>> 12);
+        return h ^ (h >>> 7) ^ (h >>> 4);
+    }
+
+    /**
      * Returns index for hash code h.
      */
     private static int indexFor(int h, int length) {
@@ -381,7 +398,7 @@ public class WeakHashMap<K,V>
      */
     public V get(Object key) {
         Object k = maskNull(key);
-        int h = sun.misc.Hashing.singleWordWangJenkinsHash(k);
+        int h = hash(k);
         Entry<K,V>[] tab = getTable();
         int index = indexFor(h, tab.length);
         Entry<K,V> e = tab[index];
@@ -411,7 +428,7 @@ public class WeakHashMap<K,V>
      */
     Entry<K,V> getEntry(Object key) {
         Object k = maskNull(key);
-        int h = sun.misc.Hashing.singleWordWangJenkinsHash(k);
+        int h = hash(k);
         Entry<K,V>[] tab = getTable();
         int index = indexFor(h, tab.length);
         Entry<K,V> e = tab[index];
@@ -434,7 +451,7 @@ public class WeakHashMap<K,V>
      */
     public V put(K key, V value) {
         Object k = maskNull(key);
-        int h = sun.misc.Hashing.singleWordWangJenkinsHash(k);
+        int h = hash(k);
         Entry<K,V>[] tab = getTable();
         int i = indexFor(h, tab.length);
 
@@ -576,7 +593,7 @@ public class WeakHashMap<K,V>
      */
     public V remove(Object key) {
         Object k = maskNull(key);
-        int h = sun.misc.Hashing.singleWordWangJenkinsHash(k);
+        int h = hash(k);
         Entry<K,V>[] tab = getTable();
         int i = indexFor(h, tab.length);
         Entry<K,V> prev = tab[i];
@@ -607,7 +624,7 @@ public class WeakHashMap<K,V>
         Entry<K,V>[] tab = getTable();
         Map.Entry<?,?> entry = (Map.Entry<?,?>)o;
         Object k = maskNull(entry.getKey());
-        int h = sun.misc.Hashing.singleWordWangJenkinsHash(k);
+        int h = hash(k);
         int i = indexFor(h, tab.length);
         Entry<K,V> prev = tab[i];
         Entry<K,V> e = prev;
@@ -689,7 +706,7 @@ public class WeakHashMap<K,V>
      */
     private static class Entry<K,V> extends WeakReference<Object> implements Map.Entry<K,V> {
         V value;
-        int hash;
+        final int hash;
         Entry<K,V> next;
 
         /**
@@ -737,8 +754,7 @@ public class WeakHashMap<K,V>
         public int hashCode() {
             K k = getKey();
             V v = getValue();
-            return ((k==null ? 0 : k.hashCode()) ^
-                    (v==null ? 0 : v.hashCode()));
+            return Objects.hashCode(k) ^ Objects.hashCode(v);
         }
 
         public String toString() {
@@ -748,21 +764,21 @@ public class WeakHashMap<K,V>
 
     private abstract class HashIterator<T> implements Iterator<T> {
         private int index;
-        private Entry<K,V> entry = null;
-        private Entry<K,V> lastReturned = null;
+        private Entry<K,V> entry;
+        private Entry<K,V> lastReturned;
         private int expectedModCount = modCount;
 
         /**
          * Strong reference needed to avoid disappearance of key
          * between hasNext and next
          */
-        private Object nextKey = null;
+        private Object nextKey;
 
         /**
          * Strong reference needed to avoid disappearance of key
          * between nextEntry() and any use of the entry
          */
-        private Object currentKey = null;
+        private Object currentKey;
 
         HashIterator() {
             index = isEmpty() ? 0 : table.length;
@@ -837,7 +853,7 @@ public class WeakHashMap<K,V>
 
     // Views
 
-    private transient Set<Map.Entry<K,V>> entrySet = null;
+    private transient Set<Map.Entry<K,V>> entrySet;
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -854,7 +870,11 @@ public class WeakHashMap<K,V>
      */
     public Set<K> keySet() {
         Set<K> ks = keySet;
-        return (ks != null ? ks : (keySet = new KeySet()));
+        if (ks == null) {
+            ks = new KeySet();
+            keySet = ks;
+        }
+        return ks;
     }
 
     @WeakOuter
@@ -906,7 +926,11 @@ public class WeakHashMap<K,V>
      */
     public Collection<V> values() {
         Collection<V> vs = values;
-        return (vs != null) ? vs : (values = new Values());
+        if (vs == null) {
+            vs = new Values();
+            values = vs;
+        }
+        return vs;
     }
 
     @WeakOuter
@@ -1029,7 +1053,7 @@ public class WeakHashMap<K,V>
         Objects.requireNonNull(function);
         int expectedModCount = modCount;
 
-        Entry<K, V>[] tab = getTable();
+        Entry<K, V>[] tab = getTable();;
         for (Entry<K, V> entry : tab) {
             while (entry != null) {
                 Object key = entry.get();
@@ -1044,7 +1068,6 @@ public class WeakHashMap<K,V>
             }
         }
     }
-
 
     /**
      * Similar form as other hash Spliterators, but skips dead

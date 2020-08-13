@@ -187,9 +187,10 @@ package java.util;
  * @since  1.6
  * @param <E> the type of elements held in this deque
  */
-// Android-changed: fix framework docs link to "Collection#optional-restrictions"
-// Several occurrences of the link have been fixed throughout.
 public interface Deque<E> extends Queue<E> {
+    // Android-changed: fix framework docs link to "Collection#optional-restrictions"
+    // Several occurrences of the link have been fixed throughout.
+
     /**
      * Inserts the specified element at the front of this deque if it is
      * possible to do so immediately without violating capacity restrictions,

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -128,7 +128,7 @@ public class TreeMap<K,V>
      */
     private final Comparator<? super K> comparator;
 
-    private transient TreeMapEntry<K,V> root = null;
+    private transient TreeMapEntry<K,V> root;
 
     /**
      * The number of entries in the tree
@@ -543,31 +543,7 @@ public class TreeMap<K,V>
     public V put(K key, V value) {
         TreeMapEntry<K,V> t = root;
         if (t == null) {
-            // We could just call compare(key, key) for its side effect of checking the type and
-            // nullness of the input key. However, several applications seem to have written comparators
-            // that only expect to be called on elements that aren't equal to each other (after
-            // making assumptions about the domain of the map). Clearly, such comparators are bogus
-            // because get() would never work, but TreeSets are frequently used for sorting a set
-            // of distinct elements.
-            //
-            // As a temporary work around, we perform the null & instanceof checks by hand so that
-            // we can guarantee that elements are never compared against themselves.
-            //
-            // compare(key, key);
-            //
-            // **** THIS CHANGE WILL BE REVERTED IN A FUTURE ANDROID RELEASE ****
-            if (comparator != null) {
-                if (key == null) {
-                    comparator.compare(key, key);
-                }
-            } else {
-                if (key == null) {
-                    throw new NullPointerException("key == null");
-                } else if (!(key instanceof Comparable)) {
-                    throw new ClassCastException(
-                            "Cannot cast" + key.getClass().getName() + " to Comparable.");
-                }
-            }
+            compare(key, key); // type (and possibly null) check
 
             root = new TreeMapEntry<>(key, value, null);
             size = 1;
@@ -816,9 +792,9 @@ public class TreeMap<K,V>
      * the first time this view is requested.  Views are stateless, so
      * there's no reason to create more than one.
      */
-    private transient EntrySet entrySet = null;
-    private transient KeySet<K> navigableKeySet = null;
-    private transient NavigableMap<K,V> descendingMap = null;
+    private transient EntrySet entrySet;
+    private transient KeySet<K> navigableKeySet;
+    private transient NavigableMap<K,V> descendingMap;
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -887,7 +863,11 @@ public class TreeMap<K,V>
      */
     public Collection<V> values() {
         Collection<V> vs = values;
-        return (vs != null) ? vs : (values = new Values());
+        if (vs == null) {
+            vs = new Values();
+            values = vs;
+        }
+        return vs;
     }
 
     /**
@@ -1021,6 +1001,7 @@ public class TreeMap<K,V>
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
         Objects.requireNonNull(function);
         int expectedModCount = modCount;
+
         for (TreeMapEntry<K, V> e = getFirstEntry(); e != null; e = successor(e)) {
             e.value = function.apply(e.key, e.value);
 
@@ -1031,7 +1012,6 @@ public class TreeMap<K,V>
     }
 
     // View class support
-
     @WeakOuter
     class Values extends AbstractCollection<V> {
         public Iterator<V> iterator() {
@@ -1085,8 +1065,8 @@ public class TreeMap<K,V>
         public boolean contains(Object o) {
             if (!(o instanceof Map.Entry))
                 return false;
-            Map.Entry<K,V> entry = (Map.Entry<K,V>) o;
-            V value = entry.getValue();
+            Map.Entry<?,?> entry = (Map.Entry<?,?>) o;
+            Object value = entry.getValue();
             TreeMapEntry<K,V> p = getEntry(entry.getKey());
             return p != null && valEquals(p.getValue(), value);
         }
@@ -1094,8 +1074,8 @@ public class TreeMap<K,V>
         public boolean remove(Object o) {
             if (!(o instanceof Map.Entry))
                 return false;
-            Map.Entry<K,V> entry = (Map.Entry<K,V>) o;
-            V value = entry.getValue();
+            Map.Entry<?,?> entry = (Map.Entry<?,?>) o;
+            Object value = entry.getValue();
             TreeMapEntry<K,V> p = getEntry(entry.getKey());
             if (p != null && valEquals(p.getValue(), value)) {
                 deleteEntry(p);
@@ -1395,7 +1375,7 @@ public class TreeMap<K,V>
      */
     abstract static class NavigableSubMap<K,V> extends AbstractMap<K,V>
         implements NavigableMap<K,V>, java.io.Serializable {
-        // Android-changed: Explicitly add a serialVersionUID so that we're serialization
+        // Android-changed: Explicitly add a serialVersionUID so that we're serialization.
         // compatible with the Java-7 version of this class. Several new methods were added
         // in Java-8 but none of them have any bearing on the serialized format of the class
         // or require any additional state to be preserved.
@@ -1648,9 +1628,9 @@ public class TreeMap<K,V>
         }
 
         // Views
-        transient NavigableMap<K,V> descendingMapView = null;
-        transient EntrySetView entrySetView = null;
-        transient KeySet<K> navigableKeySetView = null;
+        transient NavigableMap<K,V> descendingMapView;
+        transient EntrySetView entrySetView;
+        transient KeySet<K> navigableKeySetView;
 
         public final NavigableSet<K> navigableKeySet() {
             KeySet<K> nksv = navigableKeySetView;
@@ -1932,12 +1912,11 @@ public class TreeMap<K,V>
         }
 
         public NavigableMap<K,V> headMap(K toKey, boolean inclusive) {
-            /* ----- BEGIN android -----
-               Fix for edge cases
-               if (!inRange(toKey, inclusive)) */
+            // BEGIN Android-changed: Fix for edge cases.
+            // if (!inRange(toKey, inclusive))
             if (!inRange(toKey) && !(!toEnd && m.compare(toKey, hi) == 0 &&
                 !hiInclusive && !inclusive))
-            // ----- END android -----
+            // END Android-changed: Fix for edge cases.
                 throw new IllegalArgumentException("toKey out of range");
             return new AscendingSubMap<>(m,
                                          fromStart, lo,    loInclusive,
@@ -1945,12 +1924,11 @@ public class TreeMap<K,V>
         }
 
         public NavigableMap<K,V> tailMap(K fromKey, boolean inclusive) {
-            /* ----- BEGIN android -----
-               Fix for edge cases
-               if (!inRange(fromKey, inclusive)) */
+            // BEGIN Android-changed: Fix for edge cases.
+            // if (!inRange(fromKey, inclusive))
             if (!inRange(fromKey) && !(!fromStart && m.compare(fromKey, lo) == 0 &&
                 !loInclusive && !inclusive))
-            // ----- END android -----
+            // END Android-changed: Fix for edge cases.
                 throw new IllegalArgumentException("fromKey out of range");
             return new AscendingSubMap<>(m,
                                          false, fromKey, inclusive,
@@ -1987,7 +1965,7 @@ public class TreeMap<K,V>
 
         public Set<Map.Entry<K,V>> entrySet() {
             EntrySetView es = entrySetView;
-            return (es != null) ? es : new AscendingEntrySetView();
+            return (es != null) ? es : (entrySetView = new AscendingEntrySetView());
         }
 
         TreeMapEntry<K,V> subLowest()       { return absLowest(); }
@@ -2028,12 +2006,11 @@ public class TreeMap<K,V>
         }
 
         public NavigableMap<K,V> headMap(K toKey, boolean inclusive) {
-            /* ----- BEGIN android -----
-               Fix for edge cases
-               if (!inRange(toKey, inclusive)) */
+            // BEGIN Android-changed: Fix for edge cases.
+            // if (!inRange(toKey, inclusive))
             if (!inRange(toKey) && !(!fromStart && m.compare(toKey, lo) == 0 &&
                 !loInclusive && !inclusive))
-            // ----- END android -----
+            // END Android-changed: Fix for edge cases.
                 throw new IllegalArgumentException("toKey out of range");
             return new DescendingSubMap<>(m,
                                           false, toKey, inclusive,
@@ -2041,12 +2018,11 @@ public class TreeMap<K,V>
         }
 
         public NavigableMap<K,V> tailMap(K fromKey, boolean inclusive) {
-            /* ----- BEGIN android -----
-               Fix for edge cases
-               if (!inRange(fromKey, inclusive)) */
+            // BEGIN Android-changed: Fix for edge cases.
+            // if (!inRange(fromKey, inclusive))
             if (!inRange(fromKey) && !(!toEnd && m.compare(fromKey, hi) == 0 &&
                 !hiInclusive && !inclusive))
-            // ----- END android -----
+            // END Android-changed: Fix for edge cases.
                 throw new IllegalArgumentException("fromKey out of range");
             return new DescendingSubMap<>(m,
                                           fromStart, lo, loInclusive,
@@ -2132,12 +2108,20 @@ public class TreeMap<K,V>
      * Node in the Tree.  Doubles as a means to pass key-value pairs back to
      * user (see Map.Entry).
      */
-
+    // BEGIN Android-changed: Renamed Entry -> TreeMapEntry.
+    // Code references to "TreeMap.Entry" must mean Map.Entry
+    //
+    // This mirrors the corresponding rename of LinkedHashMap's
+    // Entry->LinkedHashMapEntry.
+    //
+    // This is for source compatibility with earlier versions of Android.
+    // Otherwise, it would hide Map.Entry.
+    // END Android-changed: Renamed Entry -> TreeMapEntry.
     static final class TreeMapEntry<K,V> implements Map.Entry<K,V> {
         K key;
         V value;
-        TreeMapEntry<K,V> left = null;
-        TreeMapEntry<K,V> right = null;
+        TreeMapEntry<K,V> left;
+        TreeMapEntry<K,V> right;
         @Weak TreeMapEntry<K,V> parent;
         boolean color = BLACK;
 
@@ -2639,9 +2623,9 @@ public class TreeMap<K,V>
         V value;
         if (it != null) {
             if (defaultVal==null) {
-                Map.Entry<K,V> entry = (Map.Entry<K,V>)it.next();
-                key = entry.getKey();
-                value = entry.getValue();
+                Map.Entry<?,?> entry = (Map.Entry<?,?>)it.next();
+                key = (K)entry.getKey();
+                value = (V)entry.getValue();
             } else {
                 key = (K)it.next();
                 value = defaultVal;

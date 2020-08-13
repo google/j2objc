@@ -87,7 +87,6 @@ public final class OptionalInt {
      */
     private OptionalInt(int value) {
         this.isPresent = true;
-
         this.value = value;
     }
 
