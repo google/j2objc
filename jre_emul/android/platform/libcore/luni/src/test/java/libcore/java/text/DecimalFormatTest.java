@@ -331,6 +331,16 @@ public class DecimalFormatTest extends junit.framework.TestCase {
         assertEquals("¥", decimalFormat.getDecimalFormatSymbols().getCurrencySymbol());
     }
 
+    // http://b/141668297
+    public void testAcceptStandardNegativeSymbol() {
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(new Locale("nb"));
+        DecimalFormat decimalFormat = new DecimalFormat("#.##", decimalFormatSymbols);
+
+        Number result = decimalFormat.parse("-100", new ParsePosition(0));
+
+        assertEquals(-100, result.intValue());
+    }
+
     private String formatArbitraryCurrencyAmountInLocale(Currency currency, Locale locale) {
         NumberFormat localeCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         localeCurrencyFormat.setCurrency(currency);

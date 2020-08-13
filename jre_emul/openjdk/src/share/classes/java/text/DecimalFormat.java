@@ -2129,6 +2129,32 @@ public class DecimalFormat extends NumberFormat {
     private static final int STATUS_POSITIVE = 1;
     private static final int STATUS_LENGTH   = 2;
 
+    // j2objc: plus and minus Unicode characters.
+    // Source: android.icu.text.DecimalFormat's plusSigns and minusSigns tables.
+    private static final char[] PLUS_SIGNS = new char[] {
+        '\u002B', '\u207A', '\u208A', '\u2795', '\uFB29', '\uFE62', '\uFF08'
+    };
+    private static final char[] MINUS_SIGNS = new char[] {
+        '\u002D', '\u207B', '\u208B', '\u2212', '\u2796', '\uFE63', '\uFF0D'
+    };
+
+    /**
+     * Returns true if specified string position char matches one of an array
+     * of Unicode characters.
+     */
+    private boolean signMatches(String text, int position, char[] signs) {
+        if (position < 0 || position >= text.length()) {
+            return false;
+        }
+        char ch = text.charAt(position);
+        for (char signCh : signs) {
+            if (signCh == ch) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Parse the given text into a number.  The text is parsed beginning at
      * parsePosition, until an unparseable character is seen.
@@ -2152,9 +2178,11 @@ public class DecimalFormat extends NumberFormat {
 
         // check for positivePrefix; take longest
         gotPositive = text.regionMatches(position, positivePrefix, 0,
-                                         positivePrefix.length());
+                                         positivePrefix.length())
+                || signMatches(text, position, PLUS_SIGNS);
         gotNegative = text.regionMatches(position, negativePrefix, 0,
-                                         negativePrefix.length());
+                                         negativePrefix.length())
+                || signMatches(text, position, MINUS_SIGNS);
 
         if (gotPositive && gotNegative) {
             if (positivePrefix.length() > negativePrefix.length()) {
