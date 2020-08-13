@@ -362,7 +362,7 @@ public class MacOSXPathTest {
         assertEquals(dummyPath.toAbsolutePath().toString(), file.getAbsolutePath());
     }
 
-    /* J2ObC removed: https://github.com/google/j2objc/issues/1440
+    /* j2objc: polling key events fails on MacOS, causing this test to hang.
     @Test
     public void test_register$WatchService$WatchEvent_Kind() throws IOException,
             InterruptedException {

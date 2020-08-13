@@ -583,6 +583,10 @@
 		0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */; };
 		0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
+		0661FA0924E5E253003AD88E /* PosixFileAttributeViewTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661FA0524E5E252003AD88E /* PosixFileAttributeViewTest.m */; };
+		0661FA0A24E5E253003AD88E /* AclEntryEmptySetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661FA0624E5E252003AD88E /* AclEntryEmptySetTest.m */; };
+		0661FA0B24E5E253003AD88E /* BasicFileAttributeViewTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661FA0724E5E252003AD88E /* BasicFileAttributeViewTest.m */; };
+		0661FA0C24E5E253003AD88E /* TestUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661FA0824E5E253003AD88E /* TestUtil.m */; };
 		0671E51421BDD08A002E0681 /* dalvik_system_JniTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0671E51321BDD05F002E0681 /* dalvik_system_JniTest.cpp */; };
 		0671E51621BDE22D002E0681 /* ModifierTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E51521BDE22D002E0681 /* ModifierTest.m */; };
 		067B132B1EEDCE720013CBAF /* Atomic8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13071EEDC3DC0013CBAF /* Atomic8Test.m */; };
@@ -2683,6 +2687,10 @@
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
 		0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractStringBuilder.m; path = java/lang/AbstractStringBuilder.m; sourceTree = "<group>"; };
+		0661FA0524E5E252003AD88E /* PosixFileAttributeViewTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PosixFileAttributeViewTest.m; path = test/java/nio/file/attribute/PosixFileAttributeViewTest.m; sourceTree = "<group>"; };
+		0661FA0624E5E252003AD88E /* AclEntryEmptySetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AclEntryEmptySetTest.m; path = test/java/nio/file/attribute/AclEntryEmptySetTest.m; sourceTree = "<group>"; };
+		0661FA0724E5E252003AD88E /* BasicFileAttributeViewTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicFileAttributeViewTest.m; path = test/java/nio/file/attribute/BasicFileAttributeViewTest.m; sourceTree = "<group>"; };
+		0661FA0824E5E253003AD88E /* TestUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUtil.m; path = test/java/nio/file/TestUtil.m; sourceTree = "<group>"; };
 		0666CCC41978457C00A22C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_types.h; sourceTree = "<group>"; };
 		066899671E9EE12000DDD10B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -7572,6 +7580,10 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0661FA0624E5E252003AD88E /* AclEntryEmptySetTest.m */,
+				0661FA0724E5E252003AD88E /* BasicFileAttributeViewTest.m */,
+				0661FA0524E5E252003AD88E /* PosixFileAttributeViewTest.m */,
+				0661FA0824E5E253003AD88E /* TestUtil.m */,
 				7A98C05F24D907E000774306 /* AbstractBufferTest.m */,
 				0600EB0922F4B6D30065498B /* AbstractCharsetTestCase.m */,
 				FA61CF9A22F35D89006F903E /* AbstractCollectionTest.m */,
@@ -9269,6 +9281,7 @@
 				06C1439A1F46138600CABE9A /* ClosedByInterruptExceptionTest.m in Sources */,
 				06C1439B1F46138600CABE9A /* ClosedChannelExceptionTest.m in Sources */,
 				FA24DEB322EA4822000DEC19 /* DoubleAccumulatorTest.m in Sources */,
+				0661FA0C24E5E253003AD88E /* TestUtil.m in Sources */,
 				06C03DE0249D783C00C0CAD1 /* PBEParameterSpecTest.m in Sources */,
 				FAF104FE22F8828300ED7FF6 /* CharsetDecoderTest.m in Sources */,
 				06C1439C1F46138600CABE9A /* ClosedSelectorExceptionTest.m in Sources */,
@@ -9371,6 +9384,7 @@
 				7A021F782486E1BB00956E1A /* TCKWeekFields.m in Sources */,
 				062026A11D512D08001EE455 /* DatagramSocketTest.m in Sources */,
 				062026F51D512D17001EE455 /* ZipEntryTest.m in Sources */,
+				0661FA0924E5E253003AD88E /* PosixFileAttributeViewTest.m in Sources */,
 				FA6C09CA2187C5AC006C646A /* TestMonthDay.m in Sources */,
 				062029771D512F41001EE455 /* Support_GetPutFields.m in Sources */,
 				062026221D512CA1001EE455 /* OldAndroidSerializationTest.m in Sources */,
@@ -10017,6 +10031,7 @@
 				7A98C09424D907E400774306 /* DuplicateWrappedByteBufferTest.m in Sources */,
 				FAF1050622F8828300ED7FF6 /* ISOCharsetTest.m in Sources */,
 				062026C01D512D08001EE455 /* LargeTests.m in Sources */,
+				0661FA0B24E5E253003AD88E /* BasicFileAttributeViewTest.m in Sources */,
 				0612B93D1F4374C60069EF58 /* SSLKeyExceptionTest.m in Sources */,
 				0612B8FD1F4373740069EF58 /* CyclicBarrierTest.m in Sources */,
 				062025521D512B37001EE455 /* PackageTest.m in Sources */,
@@ -10529,6 +10544,7 @@
 				06C03DF1249D783C00C0CAD1 /* BadPaddingExceptionTest.m in Sources */,
 				FA24DEA422EA1335000DEC19 /* Arrays2Test.m in Sources */,
 				062026C11D512D08001EE455 /* NormalizerTest.m in Sources */,
+				0661FA0A24E5E253003AD88E /* AclEntryEmptySetTest.m in Sources */,
 				062026B21D512D08001EE455 /* OldAndroidNIOTest.m in Sources */,
 				062028D01D512E89001EE455 /* BigIntegerNotTest.m in Sources */,
 				062027591D512D82001EE455 /* FakeFox0411.m in Sources */,
