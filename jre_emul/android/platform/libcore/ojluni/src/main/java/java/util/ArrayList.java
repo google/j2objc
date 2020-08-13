@@ -1473,4 +1473,19 @@ public class ArrayList<E> extends AbstractList<E>
         }
         modCount++;
     }
+
+    /*-[
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                      objects:(__unsafe_unretained id *)stackbuf
+                                        count:(NSUInteger)len {
+      if (state->state == 0) {
+        state->mutationsPtr = (unsigned long *) &modCount_;
+        state->itemsPtr = (__unsafe_unretained id *) (void *) elementData_->buffer_;
+        state->state = 1;
+        return size_;
+      } else {
+        return 0;
+      }
+    }
+    ]-*/
 }
