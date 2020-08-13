@@ -40,7 +40,9 @@ import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
+/* J2ObjC removed.
+import dalvik.system.VMRuntime;
+ */
 
 /**
  * This class consists exclusively of static methods that operate on or return
@@ -69,7 +71,7 @@ import java.util.stream.StreamSupport;
  * already sorted may or may not throw <tt>UnsupportedOperationException</tt>.
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author  Josh Bloch
@@ -111,8 +113,10 @@ public class Collections {
     private static final int REPLACEALL_THRESHOLD     =   11;
     private static final int INDEXOFSUBLIST_THRESHOLD =   35;
 
-    // Android-changed: Warn about Collections.sort() being built on top
-    // of List.sort() when it used to be the other way round in Nougat.
+    // Android-added: List.sort() vs. Collections.sort() app compat.
+    // Added a warning in the documentation.
+    // Collections.sort() calls List.sort() for apps targeting API version >= 26
+    // (Android Oreo) but the other way around for app targeting <= 25 (Nougat).
     /**
      * Sorts the specified list into ascending order, according to the
      * {@linkplain Comparable natural ordering} of its elements.
@@ -149,14 +153,17 @@ public class Collections {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> void sort(List<T> list) {
-        // Android-changed: Call sort(list, null) here to be consistent
-        // with that method's (Android-changed) behavior.
+        // Android-changed: List.sort() vs. Collections.sort() app compat.
+        // Call sort(list, null) here to be consistent with that method's
+        // (changed on Android) behavior.
         // list.sort(null);
         sort(list, null);
     }
 
-    // Android-changed: Warn about Collections.sort() being built on top
-    // of List.sort() when it used to be the other way round in Nougat.
+    // Android-added: List.sort() vs. Collections.sort() app compat.
+    // Added a warning in the documentation.
+    // Collections.sort() calls List.sort() for apps targeting API version >= 26
+    // (Android Oreo) but the other way around for app targeting <= 25 (Nougat).
     /**
      * Sorts the specified list according to the order induced by the
      * specified comparator.  All elements in the list must be <i>mutually
@@ -193,18 +200,29 @@ public class Collections {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> void sort(List<T> list, Comparator<? super T> c) {
-        if (list.getClass() == ArrayList.class) {
-            Arrays.sort(((ArrayList) list).elementData, 0, list.size(), (Comparator) c);
-            return;
-        }
+        // BEGIN Android-changed: List.sort() vs. Collections.sort() app compat.
+        // list.sort(c);
+        /* J2ObjC removed.
+        int targetSdkVersion = VMRuntime.getRuntime().getTargetSdkVersion();
+        if (targetSdkVersion > 25) {
+            list.sort(c);
+        } else {
+            // Compatibility behavior for API <= 25. http://b/33482884
+         */
+            if (list.getClass() == ArrayList.class) {
+                Arrays.sort((T[]) ((ArrayList) list).elementData, 0, list.size(), c);
+                return;
+            }
 
-        Object[] a = list.toArray();
-        Arrays.sort(a, (Comparator)c);
-        ListIterator<T> i = list.listIterator();
-        for (int j=0; j<a.length; j++) {
-            i.next();
-            i.set((T)a[j]);
-        }
+            Object[] a = list.toArray();
+            Arrays.sort(a, (Comparator) c);
+            ListIterator<T> i = list.listIterator();
+            for (int j = 0; j < a.length; j++) {
+                i.next();
+                i.set((T) a[j]);
+            }
+        //}
+        // END Android-changed: List.sort() vs. Collections.sort() app compat.
     }
 
 
@@ -1498,9 +1516,9 @@ public class Collections {
             throw new UnsupportedOperationException();
         }
 
-        private transient Set<K> keySet = null;
-        private transient Set<Map.Entry<K,V>> entrySet = null;
-        private transient Collection<V> values = null;
+        private transient Set<K> keySet;
+        private transient Set<Map.Entry<K,V>> entrySet;
+        private transient Collection<V> values;
 
         public Set<K> keySet() {
             if (keySet==null)
@@ -1695,8 +1713,10 @@ public class Collections {
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
-                    // Android-note: This seems pretty inconsistent. Unlike other subclasses, we aren't
-                    // delegating to the subclass iterator here. Seems like an oversight.
+                    // Android-note: Oversight of Iterator.forEachRemaining().
+                    // This seems pretty inconsistent. Unlike other subclasses,
+                    // we aren't delegating to the subclass iterator here.
+                    // Seems like an oversight. http://b/110351017
                 };
             }
 
@@ -2037,6 +2057,9 @@ public class Collections {
 
         SynchronizedCollection(Collection<E> c) {
             this.c = Objects.requireNonNull(c);
+            /* J2ObjC modified.
+            mutex = this;
+             */
             mutex = new Object();
         }
 
@@ -2594,6 +2617,9 @@ public class Collections {
 
         SynchronizedMap(Map<K,V> m) {
             this.m = Objects.requireNonNull(m);
+            /* J2ObjC modified
+            mutex = this;
+             */
             mutex = new Object();
         }
 
@@ -2631,9 +2657,9 @@ public class Collections {
             synchronized (mutex) {m.clear();}
         }
 
-        private transient Set<K> keySet = null;
-        private transient Set<Map.Entry<K,V>> entrySet = null;
-        private transient Collection<V> values = null;
+        private transient Set<K> keySet;
+        private transient Set<Map.Entry<K,V>> entrySet;
+        private transient Collection<V> values;
 
         public Set<K> keySet() {
             synchronized (mutex) {
@@ -3109,12 +3135,13 @@ public class Collections {
                 public boolean hasNext() { return it.hasNext(); }
                 public E next()          { return it.next(); }
                 public void remove()     {        it.remove(); }};
-            // Android-note: Should we delegate to it for forEachRemaining ?
+            // Android-note: Oversight of Iterator.forEachRemaining().
+            // http://b/110351017
         }
 
         public boolean add(E e)          { return c.add(typeCheck(e)); }
 
-        private E[] zeroLengthElementArray = null; // Lazily initialized
+        private E[] zeroLengthElementArray; // Lazily initialized
 
         private E[] zeroLengthElementArray() {
             return zeroLengthElementArray != null ? zeroLengthElementArray :
@@ -3123,7 +3150,7 @@ public class Collections {
 
         @SuppressWarnings("unchecked")
         Collection<E> checkedCopyOf(Collection<? extends E> coll) {
-            Object[] a = null;
+            Object[] a;
             try {
                 E[] z = zeroLengthElementArray();
                 a = coll.toArray(z);
@@ -3677,7 +3704,7 @@ public class Collections {
                 m.put(e.getKey(), e.getValue());
         }
 
-        private transient Set<Map.Entry<K,V>> entrySet = null;
+        private transient Set<Map.Entry<K,V>> entrySet;
 
         public Set<Map.Entry<K,V>> entrySet() {
             if (entrySet==null)
@@ -3794,11 +3821,14 @@ public class Collections {
                     public Map.Entry<K,V> next() {
                         return checkedEntry(i.next(), valueType);
                     }
-                    // Android-note: forEachRemaining is missing checks.
+                    // Android-note: Oversight of Iterator.forEachRemaining().
+                    // http://b/110351017
                 };
             }
 
-            @SuppressWarnings("unchecked")
+            // Android-changed: Ignore IsInstanceOfClass warning. b/73288967, b/73344263.
+            // @SuppressWarnings("unchecked")
+            @SuppressWarnings({ "unchecked", "IsInstanceOfClass" })
             public Object[] toArray() {
                 Object[] source = s.toArray();
 
@@ -3806,9 +3836,9 @@ public class Collections {
                  * Ensure that we don't get an ArrayStoreException even if
                  * s.toArray returns an array of something other than Object
                  */
-                Object[] dest = (source.getClass() == Object[].class)
-                    ? source
-                    : new Object[source.length];
+                Object[] dest = (CheckedEntry.class.isInstance(
+                    source.getClass().getComponentType()) ? source :
+                                 new Object[source.length]);
 
                 for (int i = 0; i < source.length; i++)
                     dest[i] = checkedEntry((Map.Entry<K,V>)source[i],
@@ -4906,19 +4936,15 @@ public class Collections {
             v = value;
         }
 
-        public int size()                          {return 1;}
+        public int size()                                           {return 1;}
+        public boolean isEmpty()                                {return false;}
+        public boolean containsKey(Object key)             {return eq(key, k);}
+        public boolean containsValue(Object value)       {return eq(value, v);}
+        public V get(Object key)              {return (eq(key, k) ? v : null);}
 
-        public boolean isEmpty()                   {return false;}
-
-        public boolean containsKey(Object key)     {return eq(key, k);}
-
-        public boolean containsValue(Object value) {return eq(value, v);}
-
-        public V get(Object key)                   {return (eq(key, k) ? v : null);}
-
-        private transient Set<K> keySet = null;
-        private transient Set<Map.Entry<K,V>> entrySet = null;
-        private transient Collection<V> values = null;
+        private transient Set<K> keySet;
+        private transient Set<Map.Entry<K,V>> entrySet;
+        private transient Collection<V> values;
 
         public Set<K> keySet() {
             if (keySet==null)

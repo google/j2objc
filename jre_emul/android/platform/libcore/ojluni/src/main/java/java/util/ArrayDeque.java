@@ -159,6 +159,12 @@ public class ArrayDeque<E> extends AbstractCollection<E>
         Object[] a = new Object[newCapacity];
         System.arraycopy(elements, p, a, 0, r);
         System.arraycopy(elements, 0, a, r, p);
+        // Android-added: Clear old array instance that's about to become eligible for GC.
+        // This ensures that array elements can be eligible for garbage collection even
+        // before the array itself is recognized as being eligible; the latter might
+        // take a while in some GC implementations, if the array instance is longer lived
+        // (its liveness rarely checked) than some of its contents.
+        Arrays.fill(elements, null);
         elements = a;
         head = 0;
         tail = n;

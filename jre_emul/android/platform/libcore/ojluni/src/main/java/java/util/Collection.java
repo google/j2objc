@@ -112,7 +112,7 @@ import java.util.stream.StreamSupport;
  * however most current implementations do not do so.
  *
  * <p>This interface is a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @implSpec

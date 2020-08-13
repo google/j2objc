@@ -788,6 +788,9 @@ public class Base64 {
         public void write(byte[] b, int off, int len) throws IOException {
             if (closed)
                 throw new IOException("Stream is closed");
+            // Android-changed: Upstream fix to avoid overflow.
+            // This upstream fix is from beyond OpenJDK8u121-b13. http://b/62368386
+            // if (off < 0 || len < 0 || off + len > b.length)
             if (off < 0 || len < 0 || len > b.length - off)
                 throw new ArrayIndexOutOfBoundsException();
             if (len == 0)

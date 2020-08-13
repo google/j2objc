@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  * </ul>
  *
  * <p>This interface is a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @param <E> the type of elements returned by this iterator

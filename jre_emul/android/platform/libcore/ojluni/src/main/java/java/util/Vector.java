@@ -68,7 +68,7 @@ import java.util.function.UnaryOperator;
  *
  * <p>As of the Java 2 platform v1.2, this class was retrofitted to
  * implement the {@link List} interface, making it a member of the
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.  Unlike the new collection
  * implementations, {@code Vector} is synchronized.  If a thread-safe
  * implementation is not needed, it is recommended to use {@link
@@ -1122,8 +1122,8 @@ public class Vector<E>
      * An optimized version of AbstractList.Itr
      */
     private class Itr implements Iterator<E> {
-        // Android-changed: changes around elementCount, introduced limit.
-        // b/27430229 AOSP commit 6e5b758a4438d2c154dd11a5c04d14a5d2fc907c
+        // Android-added: Change CME behavior: Use added limit field, not elementCount.
+        // http://b/27430229 AOSP commit 6e5b758a4438d2c154dd11a5c04d14a5d2fc907c
         //
         // The "limit" of this iterator. This is the size of the list at the time the
         // iterator was created. Adding & removing elements will invalidate the iteration
@@ -1137,6 +1137,8 @@ public class Vector<E>
         int expectedModCount = modCount;
 
         public boolean hasNext() {
+            // Android-changed: Change CME behavior: Use added limit field, not elementCount.
+            // return cursor != elementCount;
             return cursor < limit;
         }
 
@@ -1144,6 +1146,8 @@ public class Vector<E>
             synchronized (Vector.this) {
                 checkForComodification();
                 int i = cursor;
+                // Android-changed: Change CME behavior: Use added limit field, not elementCount.
+                // if (i >= elementCount)
                 if (i >= limit)
                     throw new NoSuchElementException();
                 cursor = i + 1;
@@ -1158,6 +1162,7 @@ public class Vector<E>
                 checkForComodification();
                 Vector.this.remove(lastRet);
                 expectedModCount = modCount;
+                // Android-added: Change CME behavior: Use added limit field, not elementCount.
                 limit--;
             }
             cursor = lastRet;
@@ -1168,12 +1173,14 @@ public class Vector<E>
         public void forEachRemaining(Consumer<? super E> action) {
             Objects.requireNonNull(action);
             synchronized (Vector.this) {
+                // Android-changed: Change CME behavior: Use added limit field, not elementCount.
+                // final int size = elementCount;
                 final int size = limit;
                 int i = cursor;
                 if (i >= size) {
                     return;
                 }
-                @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
                 final E[] elementData = (E[]) Vector.this.elementData;
                 if (i >= elementData.length) {
                     throw new ConcurrentModificationException();
@@ -1241,6 +1248,7 @@ public class Vector<E>
                 checkForComodification();
                 Vector.this.add(i, e);
                 expectedModCount = modCount;
+                // Android-added: Change CME behavior: Use added limit field, not elementCount.
                 limit++;
             }
             cursor = i + 1;

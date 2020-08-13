@@ -61,7 +61,7 @@ import java.util.stream.StreamSupport;
  * a MergeSort, but it does have to be <i>stable</i>.)
  *
  * <p>This class is a member of the
- * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
  * @author Josh Bloch
@@ -78,7 +78,7 @@ public class Arrays {
      * tasks that makes parallel speedups unlikely.
      * @hide
      */
-    // Android-changed: Make MIN_ARRAY_SORT_GRAN public and @hide (used by harmony ArraysTest)
+    // Android-changed: Make MIN_ARRAY_SORT_GRAN public and @hide (used by harmony ArraysTest).
     public static final int MIN_ARRAY_SORT_GRAN = 1 << 13;
 
     // Suppresses default constructor, ensuring non-instantiability.
@@ -1232,14 +1232,14 @@ public class Arrays {
      *         {@link Comparable} contract
      */
     public static void sort(Object[] a) {
-        // Android-removed: LegacyMergeSort support
+        // Android-removed: LegacyMergeSort support.
         // if (LegacyMergeSort.userRequested)
         //     legacyMergeSort(a);
         // else
             ComparableTimSort.sort(a, 0, a.length, null, 0, 0);
     }
 
-    // Android-removed: legacyMergeSort() (unused on Android)
+    // Android-removed: legacyMergeSort() (unused on Android).
 
     /**
      * Sorts the specified range of the specified array of objects into
@@ -1295,14 +1295,14 @@ public class Arrays {
      */
     public static void sort(Object[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
-        // Android-removed: LegacyMergeSort support
+        // Android-removed: LegacyMergeSort support.
         // if (LegacyMergeSort.userRequested)
         //     legacyMergeSort(a, fromIndex, toIndex);
         // else
             ComparableTimSort.sort(a, fromIndex, toIndex, null, 0, 0);
     }
 
-    // Android-removed: legacyMergeSort() (unused on Android)
+    // Android-removed: legacyMergeSort() (unused on Android).
 
     /**
      * Tuning parameter: list size at or below which insertion sort will be
@@ -1417,7 +1417,7 @@ public class Arrays {
         if (c == null) {
             sort(a);
         } else {
-        // Android-removed: LegacyMergeSort support
+        // Android-removed: LegacyMergeSort support.
             // if (LegacyMergeSort.userRequested)
             //     legacyMergeSort(a, c);
             // else
@@ -1425,7 +1425,7 @@ public class Arrays {
         }
     }
 
-    // Android-removed: legacyMergeSort() (unused on Android)
+    // Android-removed: legacyMergeSort() (unused on Android).
 
     /**
      * Sorts the specified range of the specified array of objects according
@@ -1485,7 +1485,7 @@ public class Arrays {
             sort(a, fromIndex, toIndex);
         } else {
             rangeCheck(a.length, fromIndex, toIndex);
-            // Android-removed: LegacyMergeSort support
+            // Android-removed: LegacyMergeSort support.
             // if (LegacyMergeSort.userRequested)
             //     legacyMergeSort(a, fromIndex, toIndex, c);
             // else
@@ -1493,8 +1493,8 @@ public class Arrays {
         }
     }
 
-    // Android-removed: legacyMergeSort() (unused on Android)
-    // Android-removed: mergeSort() (unused on Android)
+    // Android-removed: legacyMergeSort() (unused on Android).
+    // Android-removed: mergeSort() (unused on Android).
 
     // Parallel prefix
 
@@ -4110,7 +4110,7 @@ public class Arrays {
 
         for (Object element : a) {
             int elementHash = 0;
-            // BEGIN Android-changed: getComponentType() is faster than instanceof()
+            // BEGIN Android-changed: getComponentType() is faster than instanceof().
             if (element != null) {
                 Class<?> cl = element.getClass().getComponentType();
                 if (cl == null)
@@ -4136,7 +4136,7 @@ public class Arrays {
                 else
                     elementHash = element.hashCode();
             }
-            // END Android-changed: getComponentType() is faster than instanceof()
+            // END Android-changed: getComponentType() is faster than instanceof().
             result = 31 * result + elementHash;
         }
 

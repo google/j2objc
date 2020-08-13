@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -67,12 +67,13 @@ import java.util.NoSuchElementException;
  *
  * <p><a name="format"> A service provider is identified by placing a
  * <i>provider-configuration file</i> in the resource directory
- * <tt>META-INF/services</tt>.  The file's name is the fully-qualified <a
+ * <tt>META-INF/services</tt>.</a>  The file's name is the fully-qualified <a
  * href="../lang/ClassLoader.html#name">binary name</a> of the service's type.
  * The file contains a list of fully-qualified binary names of concrete
  * provider classes, one per line.  Space and tab characters surrounding each
  * name, as well as blank lines, are ignored.  The comment character is
- * <tt>'#'</tt> (<tt>'&#92;u0023'</tt>, <font size="-1">NUMBER SIGN</font>); on
+ * <tt>'#'</tt> (<tt>'&#92;u0023'</tt>,
+ * <font style="font-size:smaller;">NUMBER SIGN</font>); on
  * each line all characters following the first comment character are ignored.
  * The file must be encoded in UTF-8.
  *
@@ -187,15 +188,22 @@ public final class ServiceLoader<S>
     private static final String PREFIX = "META-INF/services/";
 
     // The class or interface representing the service being loaded
-    private Class<S> service;
+    private final Class<S> service;
 
     // The class loader used to locate, load, and instantiate providers
-    private ClassLoader loader;
+    private final ClassLoader loader;
+
+    // The access control context taken when the ServiceLoader is created
+    // Android-changed: do not use legacy security code.
+    // private final AccessControlContext acc;
 
     // Cached providers, in instantiation order
     private LinkedHashMap<String,S> providers = new LinkedHashMap<>();
 
     // The current lazy-lookup iterator
+    /* J2ObjC modified.
+    private LazyIterator lookupIterator;
+     */
     private Iterator<S> lookupIterator;
 
     /**
@@ -211,31 +219,37 @@ public final class ServiceLoader<S>
      */
     public void reload() {
         providers.clear();
+        /* J2ObjC modified.
+        lookupIterator = new LazyIterator(service, loader);
+         */
         lookupIterator = hasServicesDirectory()
-            ? new LazyIterator(service, loader)
-            : Collections.emptyIterator();
+                ? new LazyIterator(service, loader)
+                : Collections.emptyIterator();
     }
 
     private ServiceLoader(Class<S> svc, ClassLoader cl) {
-        service = svc;
-        loader = cl;
+        service = Objects.requireNonNull(svc, "Service interface cannot be null");
+        loader = (cl == null) ? ClassLoader.getSystemClassLoader() : cl;
+        // Android-changed: Do not use legacy security code.
+        // On Android, System.getSecurityManager() is always null.
+        // acc = (System.getSecurityManager() != null) ? AccessController.getContext() : null;
         reload();
     }
 
-    private static void fail(Class service, String msg, Throwable cause)
+    private static void fail(Class<?> service, String msg, Throwable cause)
         throws ServiceConfigurationError
     {
         throw new ServiceConfigurationError(service.getName() + ": " + msg,
                                             cause);
     }
 
-    private static void fail(Class service, String msg)
+    private static void fail(Class<?> service, String msg)
         throws ServiceConfigurationError
     {
         throw new ServiceConfigurationError(service.getName() + ": " + msg);
     }
 
-    private static void fail(Class service, URL u, int line, String msg)
+    private static void fail(Class<?> service, URL u, int line, String msg)
         throws ServiceConfigurationError
     {
         fail(service, u + ":" + line + ": " + msg);
@@ -244,7 +258,7 @@ public final class ServiceLoader<S>
     // Parse a single line from the given configuration file, adding the name
     // on the line to the names list.
     //
-    private int parseLine(Class service, URL u, BufferedReader r, int lc,
+    private int parseLine(Class<?> service, URL u, BufferedReader r, int lc,
                           List<String> names)
         throws IOException, ServiceConfigurationError
     {
@@ -290,7 +304,7 @@ public final class ServiceLoader<S>
     //         If an I/O error occurs while reading from the given URL, or
     //         if a configuration-file format error is detected
     //
-    private Iterator<String> parse(Class service, URL u)
+    private Iterator<String> parse(Class<?> service, URL u)
         throws ServiceConfigurationError
     {
         InputStream in = null;
@@ -332,7 +346,7 @@ public final class ServiceLoader<S>
             this.loader = loader;
         }
 
-        public boolean hasNext() {
+        private boolean hasNextService() {
             if (nextName != null) {
                 return true;
             }
@@ -357,10 +371,9 @@ public final class ServiceLoader<S>
             return true;
         }
 
-        public S next() {
-            if (!hasNext()) {
+        private S nextService() {
+            if (!hasNextService())
                 throw new NoSuchElementException();
-            }
             String cn = nextName;
             nextName = null;
             Class<?> c = null;
@@ -368,13 +381,18 @@ public final class ServiceLoader<S>
                 c = Class.forName(cn, false, loader);
             } catch (ClassNotFoundException x) {
                 fail(service,
+                     // Android-changed: Let the ServiceConfigurationError have a cause.
                      "Provider " + cn + " not found", x);
+                     // "Provider " + cn + " not found");
             }
             if (!service.isAssignableFrom(c)) {
+                // Android-changed: Let the ServiceConfigurationError have a cause.
                 ClassCastException cce = new ClassCastException(
                         service.getCanonicalName() + " is not assignable from " + c.getCanonicalName());
                 fail(service,
                      "Provider " + cn  + " not a subtype", cce);
+                // fail(service,
+                //        "Provider " + cn  + " not a subtype");
             }
             try {
                 S p = service.cast(c.newInstance());
@@ -382,10 +400,38 @@ public final class ServiceLoader<S>
                 return p;
             } catch (Throwable x) {
                 fail(service,
-                     "Provider " + cn + " could not be instantiated: " + x,
+                     "Provider " + cn + " could not be instantiated",
                      x);
             }
             throw new Error();          // This cannot happen
+        }
+
+        public boolean hasNext() {
+            // Android-changed: do not use legacy security code
+            /* if (acc == null) { */
+                return hasNextService();
+            /*
+            } else {
+                PrivilegedAction<Boolean> action = new PrivilegedAction<Boolean>() {
+                    public Boolean run() { return hasNextService(); }
+                };
+                return AccessController.doPrivileged(action, acc);
+            }
+            */
+        }
+
+        public S next() {
+            // Android-changed: do not use legacy security code
+            /* if (acc == null) { */
+                return nextService();
+            /*
+            } else {
+                PrivilegedAction<S> action = new PrivilegedAction<S>() {
+                    public S run() { return nextService(); }
+                };
+                return AccessController.doPrivileged(action, acc);
+            }
+            */
         }
 
         public void remove() {
@@ -431,10 +477,19 @@ public final class ServiceLoader<S>
      * Invoking its {@link java.util.Iterator#remove() remove} method will
      * cause an {@link UnsupportedOperationException} to be thrown.
      *
+     * @implNote When adding providers to the cache, the {@link #iterator
+     * Iterator} processes resources in the order that the {@link
+     * java.lang.ClassLoader#getResources(java.lang.String)
+     * ClassLoader.getResources(String)} method finds the service configuration
+     * files.
+     *
      * @return  An iterator that lazily loads providers for this loader's
      *          service
      */
     public Iterator<S> iterator() {
+        /* J2ObjC modified.
+        return new Iterator<S>() {
+         */
         @WeakOuter
         class ProviderIterator implements Iterator<S> {
 
@@ -464,6 +519,8 @@ public final class ServiceLoader<S>
     /**
      * Creates a new service loader for the given service type and class
      * loader.
+     *
+     * @param  <S> the class of the service type
      *
      * @param  service
      *         The interface or abstract class representing the service
@@ -498,13 +555,16 @@ public final class ServiceLoader<S>
      * ServiceLoader.load(<i>service</i>,
      *                    Thread.currentThread().getContextClassLoader())</pre></blockquote>
      *
+     * @param  <S> the class of the service type
+     *
      * @param  service
      *         The interface or abstract class representing the service
      *
      * @return A new service loader
      */
     public static <S> ServiceLoader<S> load(Class<S> service) {
-        return ServiceLoader.load(service, ClassLoader.getSystemClassLoader());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return ServiceLoader.load(service, cl);
     }
 
     /**
@@ -526,6 +586,8 @@ public final class ServiceLoader<S>
      * have been installed into the current Java virtual machine; providers on
      * the application's class path will be ignored.
      *
+     * @param  <S> the class of the service type
+     *
      * @param  service
      *         The interface or abstract class representing the service
      *
@@ -541,6 +603,8 @@ public final class ServiceLoader<S>
         return ServiceLoader.load(service, prev);
     }
 
+    // BEGIN Android-added: loadFromSystemProperty(), for internal use.
+    // Instantiates a class from a system property (used elsewhere in libcore).
     /**
      * Internal API to support built-in SPIs that check a system property first.
      * Returns an instance specified by a property with the class' binary name, or null if
@@ -559,6 +623,7 @@ public final class ServiceLoader<S>
             throw new Error(e);
         }
     }
+    // END Android-added: loadFromSystemProperty(), for internal use.
 
     /**
      * Returns a string describing this service.
@@ -569,6 +634,7 @@ public final class ServiceLoader<S>
         return "java.util.ServiceLoader[" + service.getName() + "]";
     }
 
+    /* J2ObjC added. */
     private native boolean hasServicesDirectory() /*-[
       for (NSBundle *bundle in NSBundle.allBundles) {
         if ([bundle URLForResource:@"services" withExtension:nil subdirectory:@"META-INF"]) {
