@@ -468,6 +468,7 @@ TEST_SOURCES := \
     libcore/java/io/OutputStreamWriterTest.java \
     libcore/java/io/SerializationTest.java \
     libcore/java/io/StreamTokenizerTest.java \
+    libcore/java/io/UncheckedIOExceptionTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/lang/ClassTest.java \
     libcore/java/lang/DoubleTest.java \
@@ -1468,6 +1469,7 @@ TESTS_USE_SERIALIZATION = \
     libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/io/OldAndroidSerializationTest.java \
     libcore/java/io/OldObjectInputOutputStreamTest.java \
+    libcore/java/io/UncheckedIOExceptionTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/util/TreeSetTest.java \
     org/apache/harmony/tests/java/nio/BufferOverflowExceptionTest.java \
