@@ -126,7 +126,10 @@ $(DIST_JUNIT_LIB): junit_dist
 	@:
 
 ifdef GENERATE_TEST_COVERAGE
-TEST_JOCC += -ftest-coverage -fprofile-arcs
+COVERAGE_FLAGS = -ftest-coverage -fprofile-arcs
+TEST_JOCC += $(COVERAGE_FLAGS)
+LINK_FLAGS += $(COVERAGE_FLAGS)
+RUN_FLAGS := ASAN_OPTIONS=coverage=1
 endif
 
 all-tests: test run-xctests
@@ -165,7 +168,7 @@ $(foreach root,$(TEST_RESOURCE_ROOTS),$(eval $(call resource_copy_rule,$(root)))
 # See http://stackoverflow.com/questions/16279867/gmake-change-the-stack-size-limit
 # and https://savannah.gnu.org/bugs/?22010
 run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
-	@ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
+	@ulimit -s 8192 && $(RUN_FLAGS) $(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
 # Useful when investigating flaky tests. Example:
 # make -f tests.mk run-single-test NUM_TEST_RUNS=50 TEST_TO_RUN=jsr166.CompletableFutureTest
@@ -301,7 +304,7 @@ $(ALL_TESTS_SOURCE): tests.mk test_sources.mk
 
 $(TESTS_DIR)/jreinitialization: $(MISC_TEST_ROOT)/JreInitialization.m $(DIST_JRE_EMUL_LIB)
 	@echo Verifying JRE initialization
-	@$(J2OBJCC) -o $@ -ljre_emul -ObjC -Os $(MISC_TEST_ROOT)/JreInitialization.m
+	@$(J2OBJCC) -o $@ -ljre_emul -ObjC $(COVERAGE_FLAGS) -Os $(MISC_TEST_ROOT)/JreInitialization.m
 
 $(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2objc/%.java
 	@mkdir -p $(@D)
@@ -310,71 +313,72 @@ $(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2obj
 
 $(TESTS_DIR)/core_size:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -o $@ -ObjC
+	$(J2OBJCC) -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/full_jre_size:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_emul -o $@ -ObjC
+	$(J2OBJCC) -ljre_emul -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_io:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_io -o $@ -ObjC
+	$(J2OBJCC) -ljre_io -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_icu:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_icu -ljre_channels -ljre_net -ljre_util -ljre_security \
-	    -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC
+	    -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_net:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_net -o $@ -ObjC
+	$(J2OBJCC) -ljre_net -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_util:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_concurrent:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_concurrent -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_concurrent -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_file:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_file -ljre_channels -ljre_concurrent -ljre_net \
-	    -ljre_security -ljre_util -o $@ -ObjC
+	    -ljre_security -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_channels -ljre_net -ljre_security -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_channels -ljre_net -ljre_security -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_security:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_security -ljre_net -o $@ -ObjC
+	$(J2OBJCC) -ljre_security -ljre_net -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_ssl:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_ssl -ljre_security -ljre_net -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_ssl -ljre_security -ljre_net -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_time:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_time -ljre_icu -ljre_channels -ljre_net -ljre_util \
-	    -ljre_security -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC
+	    -ljre_security -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_xml -ljre_net -ljre_security -o $@ -ObjC
+	$(J2OBJCC) -ljre_xml -ljre_net -ljre_security -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_zip:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_zip -ljre_security -ljre_net -ljre_io -o $@ -ObjC
+	$(J2OBJCC) -ljre_zip -ljre_security -ljre_net -ljre_io -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_sql:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_sql -o $@ -ObjC
+	$(J2OBJCC) -ljre_sql -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_beans:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_beans -ljre_util -o $@ -ObjC
+	$(J2OBJCC) -ljre_beans -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_android_util:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -landroid_util -ljre_net -ljre_util -ljre_concurrent -ljre_security -o $@ -ObjC
+	$(J2OBJCC) -landroid_util -ljre_net -ljre_util -ljre_concurrent -ljre_security \
+	    -o $@ -ObjC $(COVERAGE_FLAGS)
