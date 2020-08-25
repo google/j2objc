@@ -715,12 +715,6 @@ TEST_SOURCES := \
     libcore/libcore/util/BasicLruCacheTest.java \
     libcore/libcore/util/HexEncodingTest.java \
     libcore/libcore/util/SneakyThrowTest.java \
-    libcore/org/json/JSONArrayTest.java \
-    libcore/org/json/JSONObjectTest.java \
-    libcore/org/json/JSONStringerTest.java \
-    libcore/org/json/JSONTokenerTest.java \
-    libcore/org/json/ParsingTest.java \
-    libcore/org/json/SelfUseTest.java \
     libcore/sun/util/logging/PlatformLoggerTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
@@ -1434,6 +1428,14 @@ ARC_TEST_SOURCES = \
 # translated and compiled with ARC.
 COPIED_ARC_TEST_SOURCES = \
     com/google/j2objc/arc/MemoryTest.java
+
+JSON_TEST_SOURCES = \
+    libcore/org/json/JSONArrayTest.java \
+    libcore/org/json/JSONObjectTest.java \
+    libcore/org/json/JSONStringerTest.java \
+    libcore/org/json/JSONTokenerTest.java \
+    libcore/org/json/ParsingTest.java \
+    libcore/org/json/SelfUseTest.java
 
 TESTS_TO_SKIP = \
     jsr166/ExchangerTest.java \

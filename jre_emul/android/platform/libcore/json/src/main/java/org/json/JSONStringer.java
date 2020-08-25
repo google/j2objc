@@ -16,7 +16,7 @@
 
 package org.json;
 
-import dalvik.annotation.compat.UnsupportedAppUsage;
+// import dalvik.annotation.compat.UnsupportedAppUsage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

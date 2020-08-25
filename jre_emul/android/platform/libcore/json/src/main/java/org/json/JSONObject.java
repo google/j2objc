@@ -16,7 +16,7 @@
 
 package org.json;
 
-import dalvik.annotation.compat.UnsupportedAppUsage;
+// import dalvik.annotation.compat.UnsupportedAppUsage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,8 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import libcore.util.NonNull;
-import libcore.util.Nullable;
+// import libcore.util.NonNull;
+// import libcore.util.Nullable;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
@@ -676,7 +676,7 @@ public class JSONObject {
      * @hide.
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi
+//    @libcore.api.CorePlatformApi
     public Set<String> keySet() {
         return nameValuePairs.keySet();
     }

@@ -16,7 +16,7 @@
 
 package org.json;
 
-import dalvik.annotation.compat.UnsupportedAppUsage;
+// import dalvik.annotation.compat.UnsupportedAppUsage;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 

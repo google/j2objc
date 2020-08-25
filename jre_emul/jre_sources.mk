@@ -2300,13 +2300,7 @@ ANDROID_PUBLIC_SOURCES = \
   android/util/SparseArray.java \
   android/util/SparseBooleanArray.java \
   android/util/SparseIntArray.java \
-  android/util/SparseLongArray.java \
-  org/json/JSON.java \
-  org/json/JSONArray.java \
-  org/json/JSONException.java \
-  org/json/JSONObject.java \
-  org/json/JSONStringer.java \
-  org/json/JSONTokener.java
+  android/util/SparseLongArray.java
 
 ANDROID_PRIVATE_SOURCES = \
   android/util/ContainerHelpers.java \
@@ -2314,6 +2308,16 @@ ANDROID_PRIVATE_SOURCES = \
   com/google/android/collect/Lists.java \
   com/google/android/collect/Maps.java \
   com/google/android/collect/Sets.java
+
+JSON_PUBLIC_SOURCES = \
+  org/json/JSONArray.java \
+  org/json/JSONException.java \
+  org/json/JSONObject.java \
+  org/json/JSONStringer.java \
+  org/json/JSONTokener.java
+
+JSON_PRIVATE_SOURCES = \
+  org/json/JSON.java
 
 ANDROID_ANNOTATIONS = android/platform/libcore/annotations/ojluni.jaif
 J2OBJC_ANNOTATIONS = j2objc.jaif
@@ -2343,7 +2347,12 @@ SOURCE_RETENTION_ANNOTATIONS = \
   java/lang/Override.java \
   java/lang/SuppressWarnings.java \
   java/lang/annotation/Native.java \
-  javax/annotation/processing/Generated.java \
+  javax/annotation/processing/Generated.java
+
+JSON_SOURCE_RETENTION_ANNOTATIONS = \
+  org/json/NonNull.java \
+  org/json/Nullable.java \
+  org/json/UnsupportedAppUsage.java
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
 # but need to include the .java file in jre_emul.jar.
