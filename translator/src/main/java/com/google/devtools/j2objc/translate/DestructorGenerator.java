@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -25,6 +27,7 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -40,8 +43,10 @@ import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.j2objc.annotations.Dealloc;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -84,7 +89,8 @@ public class DestructorGenerator extends UnitTreeVisitor {
     TypeElement type = node.getTypeElement();
     boolean hasFinalize = hasFinalizeMethod(type);
     List<Statement> releaseStatements = createReleaseStatements(node);
-    if (releaseStatements.isEmpty() && !hasFinalize) {
+    List<MethodDeclaration> deallocMethodDeclarations = getDeallocMethodDeclarations(node);
+    if (releaseStatements.isEmpty() && !hasFinalize && deallocMethodDeclarations.isEmpty()) {
       return;
     }
 
@@ -96,6 +102,12 @@ public class DestructorGenerator extends UnitTreeVisitor {
     Block block = new Block();
     deallocDecl.setBody(block);
     List<Statement> stmts = block.getStatements();
+    for (MethodDeclaration deallocMethodDeclaration : deallocMethodDeclarations) {
+      stmts.add(
+          new ExpressionStatement(
+              new MethodInvocation(
+                  new ExecutablePair(deallocMethodDeclaration.getExecutableElement()), null)));
+    }
     if (hasFinalize) {
       String clsName = nameTable.getFullName(type);
       stmts.add(new NativeStatement("JreCheckFinalize(self, [" + clsName + " class]);"));
@@ -120,6 +132,48 @@ public class DestructorGenerator extends UnitTreeVisitor {
       }
     }
     return hasFinalizeMethod(ElementUtil.getSuperclass(type));
+  }
+
+  private static ImmutableList<MethodDeclaration> getDeallocMethodDeclarations(
+      AbstractTypeDeclaration typeDeclaration) {
+    return ImmutableList.copyOf(
+        Iterables.filter(
+            Iterables.transform(
+                typeDeclaration.getBodyDeclarations(),
+                bodyDeclaration -> {
+                  if (!(bodyDeclaration instanceof MethodDeclaration)) {
+                    return null;
+                  }
+
+                  MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
+                  ExecutableElement executableElement = methodDeclaration.getExecutableElement();
+                  if (!ElementUtil.hasAnnotation(executableElement, Dealloc.class)) {
+                    return null;
+                  }
+
+                  if (!executableElement.getModifiers().contains(Modifier.PRIVATE)) {
+                    ErrorUtil.error(methodDeclaration, "@Dealloc method must be private.");
+                    return null;
+                  }
+
+                  if (executableElement.getModifiers().contains(Modifier.STATIC)) {
+                    ErrorUtil.error(methodDeclaration, "@Dealloc method must not be static.");
+                    return null;
+                  }
+
+                  if (!TypeUtil.isVoid(executableElement.getReturnType())) {
+                    ErrorUtil.error(methodDeclaration, "@Dealloc method must be void.");
+                    return null;
+                  }
+
+                  if (!executableElement.getParameters().isEmpty()) {
+                    ErrorUtil.error(methodDeclaration, "@Dealloc method must have no parameters.");
+                    return null;
+                  }
+
+                  return methodDeclaration;
+                }),
+            methodDeclaration -> methodDeclaration != null));
   }
 
   private List<Statement> createReleaseStatements(AbstractTypeDeclaration node) {
