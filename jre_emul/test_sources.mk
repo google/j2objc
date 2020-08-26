@@ -1418,7 +1418,6 @@ SUITE_SOURCES = \
     libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
-    libcore/org/json/SmallTests.java \
     test/java/time/Tests.java
 
 ARC_TEST_SOURCES = \
@@ -1436,6 +1435,8 @@ JSON_TEST_SOURCES = \
     libcore/org/json/JSONTokenerTest.java \
     libcore/org/json/ParsingTest.java \
     libcore/org/json/SelfUseTest.java
+
+JSON_SUITE_SOURCES = libcore/org/json/SmallTests.java
 
 TESTS_TO_SKIP = \
     jsr166/ExchangerTest.java \

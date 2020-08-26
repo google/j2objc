@@ -30,9 +30,9 @@ ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
 MKTEMP_DIR = j2objc-jre_emul
 
 clean:
-	@rm -f $(EMULATION_JAR_DIST) $(EMULATION_SRC_JAR_DIST)
+	@rm -f $(EMULATION_JAR_DIST) $(EMULATION_SRC_JAR_DIST) $(JSON_JAR_DIST)
 
-jars_dist: emul_jar_dist emul_src_jar_dist
+jars_dist: emul_jar_dist emul_src_jar_dist json_jar_dist
 ifndef JAVA_8
 jars_dist: emul_module_dist
 endif
@@ -102,6 +102,22 @@ $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES)
 
 java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
 	@:
+
+json_jar_dist: $(JSON_JAR_DIST)
+	@:
+
+$(JSON_JAR_DIST): $(JSON_JAR)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
+$(JSON_JAR): $(JSON_PUBLIC_SOURCES) $(JSON_PRIVATE_SOURCES) $(JSON_SOURCE_RETENTION_ANNOTATIONS)
+	@mkdir -p $(@D)
+	@echo "building json.jar"
+	@set -e; stage_dir=`${MKTEMP_CMD}`; \
+	  ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
+	  -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
+	jar cf $(JSON_JAR) -C $$stage_dir .; \
+	rm -rf $$stage_dir
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder --patch-module java.base=$(JRE_SRC) \

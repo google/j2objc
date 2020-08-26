@@ -104,6 +104,8 @@ STUBS_DIR = stub_classes
 ANDROID_NATIVE_DIR = $(LIBCORE_BASE)/luni/src/main/native
 ANDROID_NATIVE_TEST_DIR = $(LIBCORE_BASE)/luni/src/test/native
 LAMBDA_DIR = $(LIBCORE_BASE)/ojluni/src/lambda/java
+JSON_JAR = $(BUILD_DIR)/json.jar
+JSON_JAR_DIST = $(DIST_JAR_DIR)/json.jar
 
 ifndef TRANSLATED_SOURCE_DIR
 TRANSLATED_SOURCE_DIR = $(CLASS_DIR)

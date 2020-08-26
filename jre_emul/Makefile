@@ -24,7 +24,7 @@ include icu_data.mk
 
 MAIN_OBJ = J2ObjCMain.o
 
-JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
+JAVA_TO_TRANSLATE = $(JAVA_SOURCES) $(JAVA_SOURCES_JSON)
 
 MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 
@@ -77,6 +77,7 @@ TIME_OBJS_RELATIVE = $(JAVA_SOURCES_TIME:.java=.o)
 ICU_OBJS_RELATIVE = $(JAVA_SOURCES_ICU:.java=.o) $(NATIVE_JRE_ICU_EMBEDDED_DATA:.m=.o)
 JRE_OBJS_RELATIVE = $(JAVA_SOURCES:.java=.o) $(NATIVE_JRE_SOURCES:.m=.o)
 ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
+JSON_OBJS_RELATIVE = $(JAVA_SOURCES_JSON:.java=.o)
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
@@ -97,6 +98,7 @@ LIBS += $(call emit_library_rules,jre_beans,$(BEANS_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_time,$(TIME_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_icu,$(ICU_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,json,$(JSON_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
 # This list overlaps with EMULATION_HEADERS, but only includes those headers

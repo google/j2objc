@@ -22,8 +22,9 @@ include environment.mk
 include test_sources.mk
 include $(J2OBJC_ROOT)/make/translate_macros.mk
 
-ALL_TEST_SOURCES = $(TEST_SOURCES) $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
-ALL_SUITE_SOURCES = $(SUITE_SOURCES)
+ALL_TEST_SOURCES = $(TEST_SOURCES) $(JSON_TEST_SOURCES) $(ARC_TEST_SOURCES) \
+    $(COPIED_ARC_TEST_SOURCES)
+ALL_SUITE_SOURCES = $(SUITE_SOURCES) $(JSON_SUITE_SOURCES)
 
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TESTS_TO_SKIP += $(TESTS_USE_SERIALIZATION)
@@ -60,7 +61,7 @@ endif
 
 SDK_PATH = $(shell xcrun --show-sdk-path)
 TEST_JOCC := $(J2OBJCC) -g $(WARNINGS) -isysroot $(SDK_PATH)
-LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support -fsanitize=address
+LINK_FLAGS := -ljre_emul -ljson -ljunit -L$(TESTS_DIR) -l test-support -fsanitize=address
 COMPILE_FLAGS := $(INCLUDE_ARGS) -c -Wno-objc-redundant-literal-use -Wno-format -Werror \
   -Wno-parentheses
 
@@ -73,7 +74,7 @@ endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR) \
+TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR):$(JSON_JAR) \
     -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
     -encoding UTF-8 --prefixes $(MISC_TEST_ROOT)/resources/prefixes.properties
 ifndef JAVA_8
@@ -86,6 +87,7 @@ TRANSLATE_SOURCES = \
     $(SUPPORT_SOURCES) \
     $(MOCKWEBSERVER_SOURCES) \
     $(TEST_SOURCES) \
+    $(JSON_TEST_SOURCES) \
     $(SUITE_SOURCES) \
     $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
@@ -95,7 +97,8 @@ TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
 TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   jre_emul_tests,\
   $(TESTS_DIR),\
-  $(SUPPORT_SOURCES) $(MOCKWEBSERVER_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
+  $(SUPPORT_SOURCES) $(MOCKWEBSERVER_SOURCES) $(TEST_SOURCES) $(JSON_TEST_SOURCES) \
+  $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
   $(TRANSLATE_ARGS))
 
@@ -119,6 +122,10 @@ $(TRANSLATED_OBJC_ARC): $(TRANSLATE_ARTIFACT_ARC)
 
 DIST_JRE_EMUL_LIB = $(DIST_LIB_MACOSX_DIR)/libjre_emul.a
 $(DIST_JRE_EMUL_LIB): jre_emul_dist
+	@:
+
+DIST_JSON_LIB = $(DIST_LIB_MACOSX_DIR)/libjson.a
+$(DIST_JSON_LIB): jre_emul_dist
 	@:
 
 DIST_JUNIT_LIB = $(DIST_LIB_MACOSX_DIR)/libjunit.a
@@ -191,6 +198,7 @@ run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/core_plus_concurrent \
   $(TESTS_DIR)/core_plus_io \
   $(TESTS_DIR)/core_plus_icu \
+  $(TESTS_DIR)/core_plus_json \
   $(TESTS_DIR)/core_plus_net \
   $(TESTS_DIR)/core_plus_security \
   $(TESTS_DIR)/core_plus_sql \
@@ -224,7 +232,7 @@ run-ios-security-provider-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.security.IosSecurityProviderTests
 
 run-json-tests: link resources $(TEST_BIN)
-	@$(TEST_BIN) org.junit.runner.JUnitCore org.json.SmallTests
+	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.org.json.SmallTests
 
 run-java8-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.java8.SmallTests
@@ -293,7 +301,7 @@ $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	xcrun cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
-$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(DIST_JRE_EMUL_LIB) $(DIST_JUNIT_LIB)
+$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(DIST_JRE_EMUL_LIB) $(DIST_JUNIT_LIB) $(DIST_JUNIT_LIB)
 	@echo Building test executable...
 	@echo "  " $(TEST_JOCC) $(LINK_FLAGS) ...
 	@$(TEST_JOCC) $(LINK_FLAGS) -o $@ $(TEST_OBJS)
@@ -327,6 +335,10 @@ $(TESTS_DIR)/core_plus_icu:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_icu -ljre_channels -ljre_net -ljre_util -ljre_security \
 	    -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC $(COVERAGE_FLAGS)
+
+$(TESTS_DIR)/core_plus_json:
+	@mkdir -p $(@D)
+	$(J2OBJCC) -ljson -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_net:
 	@mkdir -p $(@D)
