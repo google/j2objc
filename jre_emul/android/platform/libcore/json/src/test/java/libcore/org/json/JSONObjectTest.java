@@ -418,15 +418,18 @@ public class JSONObjectTest extends TestCase {
         assertTrue(object.toString().contains("\"bar\":\"5.5\""));
         assertTrue(object.toString().contains("\"baz\":\"9223372036854775806\""));
         assertTrue(object.toString().contains("\"quux\":\"null\""));
-        assertTrue(object.toString().contains("\"height\":\"5\\\"8' tall\""));
+        // j2objc: fixed encoded string.
+        assertTrue(object.toString().contains("\"height\":\"5\\\"8\\u0027 tall\""));
 
         assertEquals("true", object.get("foo"));
         assertEquals("null", object.getString("quux"));
-        assertEquals("5\"8' tall", object.getString("height"));
+        // j2objc: fixed encoded string.
+        assertEquals("5\"8\u0027 tall", object.getString("height"));
         assertEquals("true", object.opt("foo"));
         assertEquals("5.5", object.optString("bar"));
         assertEquals("true", object.optString("foo", "x"));
         assertFalse(object.isNull("foo"));
+      System.out.println("test 3");
 
         assertEquals(true, object.getBoolean("foo"));
         assertEquals(true, object.optBoolean("foo"));

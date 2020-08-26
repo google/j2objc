@@ -348,7 +348,15 @@ public class JSONStringer {
                     break;
 
                 default:
-                    if (c <= 0x1F) {
+                    // J2ObjC: escape unsafe HTML characters.
+                    if (c < ' '
+                        || (c >= '\u0080' && c < '\u00a0')
+                        || (c >= '\u2000' && c < '\u2100')
+                        || c == '<'
+                        || c == '>'
+                        || c == '='
+                        || c == '\''
+                        || c == '&') {
                         out.append(String.format("\\u%04x", (int) c));
                     } else {
                         out.append(c);

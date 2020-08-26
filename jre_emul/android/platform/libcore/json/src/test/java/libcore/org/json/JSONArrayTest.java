@@ -258,12 +258,12 @@ public class JSONArrayTest extends TestCase {
         array.put("null");
         array.put("5\"8' tall");
         assertEquals(5, array.length());
-        assertEquals("[\"true\",\"5.5\",\"9223372036854775806\",\"null\",\"5\\\"8' tall\"]",
+        assertEquals("[\"true\",\"5.5\",\"9223372036854775806\",\"null\",\"5\\\"8\\u0027 tall\"]",
                 array.toString());
 
         // although the documentation doesn't mention it, join() escapes text and wraps
         // strings in quotes
-        assertEquals("\"true\" \"5.5\" \"9223372036854775806\" \"null\" \"5\\\"8' tall\"",
+        assertEquals("\"true\" \"5.5\" \"9223372036854775806\" \"null\" \"5\\\"8\\u0027 tall\"",
                 array.join(" "));
 
         assertEquals("true", array.get(0));
