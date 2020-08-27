@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-
 import java.io.IOException;
 
 /**
@@ -132,6 +131,36 @@ public class DestructorGeneratorTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
+        "  JreCheckFinalize(self, [Test class]);",
+        "}");
+  }
+
+  static final String ON_DEALLOC_SOURCE =
+      "import com.google.j2objc.annotations.OnDealloc;"
+          + "class Test {"
+          + "  @OnDealloc private void close() {}"
+          + "  protected void finalize() {}"
+          + "}";
+
+  public void testOnDeallocReferenceCounting() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    String translation = translateSourceFile(ON_DEALLOC_SOURCE, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (void)dealloc {",
+        "  Test_close(self);",
+        "  JreCheckFinalize(self, [Test class]);",
+        "  [super dealloc];",
+        "}");
+  }
+
+  public void testOnDeallocARC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String translation = translateSourceFile(ON_DEALLOC_SOURCE, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (void)dealloc {",
+        "  Test_close(self);",
         "  JreCheckFinalize(self, [Test class]);",
         "}");
   }
