@@ -77,6 +77,7 @@ import com.google.devtools.j2objc.translate.TypeUseAnnotationTest;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
 import com.google.devtools.j2objc.translate.VarargsRewriterTest;
 import com.google.devtools.j2objc.translate.VariableRenamerTest;
+import com.google.devtools.j2objc.translate.ZeroingWeakTest;
 import com.google.devtools.j2objc.types.CompoundTypeTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
@@ -177,7 +178,8 @@ public class SmallTests {
         UnicodeUtilsTest.class,
         UnsequencedExpressionRewriterTest.class,
         VarargsRewriterTest.class,
-        VariableRenamerTest.class
+        VariableRenamerTest.class,
+        ZeroingWeakTest.class
       };
 
   public static Test suite() {

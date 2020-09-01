@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Supplier;
+
 /**
  * Base class for nodes in the J2ObjC AST.
  */
@@ -50,9 +52,20 @@ public abstract class TreeNode {
     }
   }
 
+  public boolean canReplaceWith(Class<? extends TreeNode> type) {
+    return owner != null && owner.getChildType().isAssignableFrom(type);
+  }
+
   public void replaceWith(TreeNode other) {
     assert owner != null : "Can't replace a parentless node.";
     owner.setDynamic(other);
+  }
+
+  public void replaceWith(Supplier<? extends TreeNode> supplier) {
+    ChildLink<? extends TreeNode> owner = this.owner;
+    assert owner != null : "Can't replace a parentless node.";
+    owner.set(null);
+    owner.setDynamic(supplier.get());
   }
 
   public final int getStartPosition() {

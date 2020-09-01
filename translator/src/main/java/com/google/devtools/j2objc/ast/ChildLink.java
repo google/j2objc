@@ -33,6 +33,10 @@ class ChildLink<T extends TreeNode> {
     return new ChildLink<T>(childType, parent);
   }
 
+  public Class<T> getChildType() {
+    return childType;
+  }
+
   public TreeNode getParent() {
     return parent;
   }

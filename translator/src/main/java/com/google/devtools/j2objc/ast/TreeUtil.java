@@ -406,4 +406,9 @@ public class TreeUtil {
     return Lists.newArrayList(
         Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
   }
+
+  public static boolean isAssignmentLeftHandSide(Expression expression) {
+    TreeNode parent = expression.getParent();
+    return parent instanceof Assignment && ((Assignment) parent).getLeftHandSide() == expression;
+  }
 }

@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.RetainedWith;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
+import com.google.j2objc.annotations.ZeroingWeak;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -277,7 +278,7 @@ public class GraphBuilder {
             && !ElementUtil.isStatic(field)
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !typeUtil.isAssignable(type, fieldType)
-            && !isWeakReference(field)
+            && !isUnretainedReference(field)
             && !isRetainedWithField(field)) {
           addEdge(Edge.newFieldEdge(node, target, fieldName));
         }
@@ -306,8 +307,9 @@ public class GraphBuilder {
       assert ElementUtil.isAnonymous(type);
       for (VariableElement capturedVarElement : captureInfo.getLocalCaptureFields(type)) {
         TypeNode targetNode = getOrCreateNode(capturedVarElement.asType());
-        if (targetNode != null && !whitelist.containsType(targetNode)
-            && !ElementUtil.isWeakReference(capturedVarElement)) {
+        if (targetNode != null
+            && !whitelist.containsType(targetNode)
+            && !ElementUtil.isUnretainedReference(capturedVarElement)) {
           addEdge(Edge.newCaptureEdge(
               typeNode, targetNode, ElementUtil.getName(capturedVarElement)));
         }
@@ -316,6 +318,15 @@ public class GraphBuilder {
 
     private boolean isWeakReference(VariableElement field) {
       return ElementUtil.isWeakReference(field) || hasExternalAnnotation(field, Weak.class);
+    }
+
+    private boolean isZeroingWeakReference(VariableElement field) {
+      return ElementUtil.isZeroingWeakReference(field)
+          || hasExternalAnnotation(field, ZeroingWeak.class);
+    }
+
+    private boolean isUnretainedReference(VariableElement field) {
+      return isWeakReference(field) || isZeroingWeakReference(field);
     }
 
     private boolean isRetainedWithField(VariableElement field) {

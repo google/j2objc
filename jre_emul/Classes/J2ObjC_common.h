@@ -23,6 +23,7 @@
 #import "J2ObjC_types.h"
 
 @class IOSClass;
+@class JavaLangRefWeakReference;
 @protocol JavaLangIterable;
 
 #ifndef __has_feature
@@ -74,6 +75,9 @@ void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
 id JreRetainedLocalValue(id value);
+
+id JreZeroingWeakGet(id zeroingWeak);
+id JreMakeZeroingWeak(id object);
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);

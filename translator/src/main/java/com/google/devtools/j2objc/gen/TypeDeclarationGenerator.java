@@ -298,12 +298,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
-          // We must add this even without -use-arc because the header may be
-          // included by a file compiled with ARC.
-          print("__unsafe_unretained ");
+        if (!ElementUtil.isVolatile(varElement)) {
+          if (ElementUtil.isWeakReference(varElement)) {
+            // We must add this even without -use-arc because the header may be
+            // included by a file compiled with ARC.
+            print("__unsafe_unretained ");
+          }
+          if (ElementUtil.isZeroingWeakReference(varElement) && options.useARC()) {
+            print("weak ");
+          }
         }
         String objcType = getDeclarationType(varElement);
+        if (ElementUtil.isZeroingWeakReference(varElement) && !options.useARC()) {
+          objcType = "JavaLangRefWeakReference *";
+        }
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.
