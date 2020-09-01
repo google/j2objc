@@ -15,9 +15,11 @@ ANNOTATION_SOURCE_JAVA = \
     com/google/j2objc/annotations/J2ObjCIncompatible.java \
     com/google/j2objc/annotations/LoopTranslation.java \
     com/google/j2objc/annotations/ObjectiveCName.java \
+    com/google/j2objc/annotations/OnDealloc.java \
     com/google/j2objc/annotations/Property.java \
     com/google/j2objc/annotations/ReflectionSupport.java \
     com/google/j2objc/annotations/RetainedLocalRef.java \
     com/google/j2objc/annotations/RetainedWith.java \
     com/google/j2objc/annotations/Weak.java \
-    com/google/j2objc/annotations/WeakOuter.java
+    com/google/j2objc/annotations/WeakOuter.java \
+    com/google/j2objc/annotations/ZeroingWeak.java
