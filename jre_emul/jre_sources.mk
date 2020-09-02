@@ -46,6 +46,9 @@ NATIVE_JRE_SOURCES_CORE = \
   NSString+JavaString.m \
   ObjectInputStream.m \
   ObjectOutputStream.m \
+  UnixFileSystem_md.m \
+  canonicalize_md.m \
+  io_util.m \
   java/lang/AbstractStringBuilder.m \
   java/lang/reflect/AccessibleObject.m \
   java/lang/reflect/Constructor.m \
@@ -571,8 +574,12 @@ JAVA_PRIVATE_SOURCES_CORE = \
   dalvik/system/VersionCodes.java \
   dalvik/system/VMStack.java \
   java/io/Bits.java \
+  java/io/DefaultFileSystem.java \
   java/io/DeleteOnExitHook.java \
+  java/io/ExpiringCache.java \
+  java/io/FileSystem.java \
   java/io/SerialCallbackContext.java \
+  java/io/UnixFileSystem.java \
   java/lang/JavaLangAccess.java \
   java/math/BitSieve.java \
   java/math/MutableBigInteger.java \
@@ -1815,7 +1822,6 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/kxml2/io/KXmlSerializer.java
 
 NATIVE_JRE_SOURCES_ZIP = \
-  io_util.m \
   java_util_zip_Deflater.m \
   java_util_zip_Inflater.m \
   java_util_zip_ZipFile.m \

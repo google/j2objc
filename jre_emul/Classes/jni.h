@@ -27,6 +27,15 @@
 #include <stdarg.h>
 #include "J2ObjC_types.h"
 
+// OpenJDK conditionals for MacOS-specific code. However, we define for
+// iOS as well, since OpenJDK was never built for iOS and MacOSX and iOS
+// have very similar APIs.
+#ifdef __APPLE__
+#ifndef _ALLBSD_SOURCE
+#define _ALLBSD_SOURCE 1
+#endif
+#endif
+
 /* "cardinal indices and sizes" */
 typedef jint            jsize;
 

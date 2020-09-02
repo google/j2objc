@@ -143,7 +143,8 @@ NATIVE_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR) 
   $(ICU_EMBEDDED_RES_DIR) $(OPENJDK_MACOSX_NATIVE)
 
 # Clang warnings
-WARNINGS := $(CC_WARNINGS) $(WARNINGS) -Wno-unused-label -Wno-dangling-else
+WARNINGS := $(CC_WARNINGS) $(WARNINGS) -Wno-unused-label -Wno-dangling-else \
+  -Wimplicit-function-declaration -Wint-conversion -Wshorten-64-to-32
 
 ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
 OBJCFLAGS += -DSET_MIN_IOS_VERSION

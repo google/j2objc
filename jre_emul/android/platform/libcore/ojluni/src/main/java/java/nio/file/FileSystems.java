@@ -25,6 +25,7 @@
 
 package java.nio.file;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.nio.file.spi.FileSystemProvider;
 import java.net.URI;
 import java.io.IOException;
@@ -80,7 +81,7 @@ import java.lang.reflect.Constructor;
  *
  * @since 1.7
  */
-
+@ReflectionSupport(ReflectionSupport.Level.FULL)
 public final class FileSystems {
     private FileSystems() {
     }
