@@ -16,13 +16,21 @@
 
 package java.nio;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.FileDescriptor;
 import java.nio.channels.FileChannel;
 import sun.nio.ch.FileChannelImpl;
 
+import static com.google.j2objc.annotations.ReflectionSupport.Level.FULL;
 import static libcore.io.OsConstants.*;
 
-public class ChannelFactoryImpl implements NioUtils.ChannelFactory {
+/**
+ * J2ObjC split of NioUtils to move method to jre_channels subset library.
+ * This class is only referenced by reflection.
+ */
+@SuppressWarnings("unused")
+@ReflectionSupport(FULL)
+class ChannelFactoryImpl implements NioUtils.ChannelFactory {
 
   public FileChannel newFileChannel(Object ioObject, FileDescriptor fd, int mode) {
     boolean readable = (mode & O_ACCMODE) != O_WRONLY;

@@ -837,7 +837,6 @@ JAVA_PRIVATE_SOURCES_NET = \
   java/net/ProxySelectorImpl.java \
   java/net/SocketInputStream.java \
   java/net/SocketOutputStream.java \
-  java/net/Socks4Message.java \
   java/net/SocksConsts.java \
   java/net/SocksSocketImpl.java \
   java/net/StandardSocketOptions.java \

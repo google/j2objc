@@ -1,66 +1,84 @@
-/* Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+/*
+ * Copyright (c) 2001, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.nio.charset;
 
+
 /**
- * Used to indicate what kind of actions to take in case of encoding/decoding
- * errors. Currently three actions are defined: {@code IGNORE}, {@code REPLACE}
- * and {@code REPORT}.
+ * A typesafe enumeration for coding-error actions.
+ *
+ * <p> Instances of this class are used to specify how malformed-input and
+ * unmappable-character errors are to be handled by charset <a
+ * href="CharsetDecoder.html#cae">decoders</a> and <a
+ * href="CharsetEncoder.html#cae">encoders</a>.  </p>
+ *
+ *
+ * @author Mark Reinhold
+ * @author JSR-51 Expert Group
+ * @since 1.4
  */
+
 public class CodingErrorAction {
 
-    /**
-     * Denotes the action to ignore any errors.
-     */
-    public static final CodingErrorAction IGNORE = new CodingErrorAction(
-            "IGNORE");
+    private String name;
 
-    /**
-     * Denotes the action to fill in the output with a replacement character
-     * when malformed input or an unmappable character is encountered.
-     */
-    public static final CodingErrorAction REPLACE = new CodingErrorAction(
-            "REPLACE");
-
-    /**
-     * Denotes the action to report the encountered error in an appropriate
-     * manner, for example to throw an exception or return an informative
-     * result.
-     */
-    public static final CodingErrorAction REPORT = new CodingErrorAction(
-            "REPORT");
-
-    // The name of this action
-    private String action;
-
-    /*
-     * Can't instantiate outside.
-     */
-    private CodingErrorAction(String action) {
-        this.action = action;
+    private CodingErrorAction(String name) {
+        this.name = name;
     }
 
     /**
-     * Returns a text description of this action indication.
+     * Action indicating that a coding error is to be handled by dropping the
+     * erroneous input and resuming the coding operation.
+     */
+    public static final CodingErrorAction IGNORE
+        = new CodingErrorAction("IGNORE");
+
+    /**
+     * Action indicating that a coding error is to be handled by dropping the
+     * erroneous input, appending the coder's replacement value to the output
+     * buffer, and resuming the coding operation.
+     */
+    public static final CodingErrorAction REPLACE
+        = new CodingErrorAction("REPLACE");
+
+    /**
+     * Action indicating that a coding error is to be reported, either by
+     * returning a {@link CoderResult} object or by throwing a {@link
+     * CharacterCodingException}, whichever is appropriate for the method
+     * implementing the coding process.
+     */
+    public static final CodingErrorAction REPORT
+        = new CodingErrorAction("REPORT");
+
+    /**
+     * Returns a string describing this action.
      *
-     * @return a text description of this action indication.
+     * @return  A descriptive string
      */
-    @Override
     public String toString() {
-        return "Action: " + this.action;
+        return name;
     }
+
 }
