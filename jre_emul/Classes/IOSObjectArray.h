@@ -116,7 +116,7 @@
 __attribute__((always_inline)) inline id IOSObjectArray_Get(
     __unsafe_unretained IOSObjectArray *array, jint index) {
   IOSArray_checkIndex(array->size_, index);
-  return array->buffer_[index];
+  return RETAIN_AND_AUTORELEASE(array->buffer_[index]);
 }
 
 /**
