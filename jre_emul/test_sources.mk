@@ -262,7 +262,6 @@ TEST_SOURCES := \
     NoPackageTest.java \
     NSDictionaryMapTest.java \
     PackagePrefixesTest.java \
-    RetentionTest.java \
     SerializationTest.java \
     UTF16EncodingTest.java \
     android/icu/dev/test/timezone/TimeZoneAliasTest.java \

@@ -111,7 +111,8 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 - (id)objectAtIndex:(NSUInteger)index {
-  return IOSObjectArray_Get(self, index);
+  IOSArray_checkIndex(size_, (jint)index);
+  return buffer_[index];
 }
 
 static void ThrowArrayStoreException(IOSObjectArray *array, id value) {
