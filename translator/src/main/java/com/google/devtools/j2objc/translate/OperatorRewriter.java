@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionElement;
@@ -134,9 +135,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
   public boolean visit(MethodDeclaration node) {
     isSynchronizedMethod = Modifier.isSynchronized(node.getModifiers());
     retainedLocalCandidates.addAll(
-        node.getParameters()
-            .stream()
-            .map(v -> v.getVariableElement())
+        node.getParameters().stream()
+            .map(VariableDeclaration::getVariableElement)
             .filter(v -> !v.asType().getKind().isPrimitive())
             .collect(Collectors.toList()));
     return true;
@@ -173,6 +173,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   @Override
   public boolean visit(FieldAccess node) {
     rewriteVolatileLoad(node);
+    rewriteFieldAccess(node);
     node.getExpression().accept(this);
     return false;
   }
@@ -180,18 +181,21 @@ public class OperatorRewriter extends UnitTreeVisitor {
   @Override
   public boolean visit(SuperFieldAccess node) {
     rewriteVolatileLoad(node);
+    rewriteFieldAccess(node);
     return false;
   }
 
   @Override
   public boolean visit(QualifiedName node) {
     rewriteVolatileLoad(node);
+    rewriteFieldAccess(node);
     return false;
   }
 
   @Override
   public boolean visit(SimpleName node) {
     rewriteVolatileLoad(node);
+    rewriteFieldAccess(node);
     return false;
   }
 
@@ -252,6 +256,29 @@ public class OperatorRewriter extends UnitTreeVisitor {
       node.replaceWith(invocation);
       invocation.addArgument(new PrefixExpression(
           new PointerType(type), PrefixExpression.Operator.ADDRESS_OF, node));
+    }
+  }
+
+  private void rewriteFieldAccess(Expression node) {
+    if (options.useReferenceCounting()) {
+      VariableElement var = TreeUtil.getVariableElement(node);
+      if (var != null
+          && ElementUtil.isField(var)
+          && !ElementUtil.isVolatile(var)
+          && !ElementUtil.isFinal(var)
+          && !TranslationUtil.isAssigned(node)
+          && !var.asType().getKind().isPrimitive()
+          && !isRetainedLocal(var)
+          && !(var.asType() instanceof PointerType)) {
+        // Avoid retaining in finalizer or dealloc methods.
+        MethodDeclaration md = TreeUtil.getEnclosingMethod(node);
+        if (md != null) {
+          String methodName = md.getName().toString();
+          if (!methodName.equals("java_finalize") && !methodName.equals("dealloc")) {
+            rewriteRetainedLocal(node);
+          }
+        }
+      }
     }
   }
 

@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
-
 import java.io.IOException;
 
 /**
@@ -34,9 +33,12 @@ public class JavaCloneWriterTest extends GenerationTest {
   }
 
   public void testJavaCloneMethodAddedForWeakField() throws IOException {
-    String translation = translateSourceFile(
-        "import com.google.j2objc.annotations.Weak;"
-        + " class Test { @Weak Object foo; }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.Weak;"
+                + " class Test { @Weak final Object foo = null; }",
+            "Test",
+            "Test.m");
     assertTranslatedLines(translation,
         "- (void)__javaClone:(Test *)original {",
         "  [super __javaClone:original];",

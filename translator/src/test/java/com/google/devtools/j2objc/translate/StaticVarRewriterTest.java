@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -26,13 +25,17 @@ import java.io.IOException;
 public class StaticVarRewriterTest extends GenerationTest {
 
   public void testRewriteChildOfQualifiedName() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { static Test test = new Test(); Object obj = new Object();"
-        + "static class Other { void test() { test.obj.toString(); test.obj.toString(); } } }",
-        "Test", "Test.m");
-    assertTranslatedLines(translation,
+    String translation =
+        translateSourceFile(
+            "class Test { static final Test test = new Test(); final Object obj = new"
+                + " Object();static class Other { void test() { test.obj.toString();"
+                + " test.obj.toString(); } } }",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
         "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];",
-        "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];");
+        "[JreLoadStatic(Test, test)->obj_ description];");
   }
 
   public void testAssinmentToNewObject() throws IOException {
@@ -69,10 +72,12 @@ public class StaticVarRewriterTest extends GenerationTest {
   }
 
   public void testStaticLoadWithArrayAccess() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { static class Inner { static int[] ints; } "
-        + " int test() { Inner.ints[0] = 1; Inner.ints[0] += 2; return Inner.ints[0]; } }",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test { static class Inner { static final int[] ints = new int[10]; } "
+                + " int test() { Inner.ints[0] = 1; Inner.ints[0] += 2; return Inner.ints[0]; } }",
+            "Test",
+            "Test.m");
     assertTranslatedLines(translation,
         "*IOSIntArray_GetRef(nil_chk(JreLoadStatic(Test_Inner, ints)), 0) = 1;",
         "*IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints), 0) += 2;",

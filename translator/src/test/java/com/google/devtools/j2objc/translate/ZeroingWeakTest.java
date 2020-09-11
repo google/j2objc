@@ -75,7 +75,7 @@ public class ZeroingWeakTest extends GenerationTest {
       "import com.google.j2objc.annotations.ZeroingWeak;"
           + "import javax.annotation.Nullable;"
           + "class WeakTest {"
-          + "  @ZeroingWeak @Nullable String string;"
+          + "  @ZeroingWeak @Nullable final String string = null;"
           + "  public String run() {"
           + "    return string;"
           + "  }"
@@ -99,7 +99,7 @@ public class ZeroingWeakTest extends GenerationTest {
       "import com.google.j2objc.annotations.ZeroingWeak;"
           + "import javax.annotation.Nullable;"
           + "class WeakTest {"
-          + "  @ZeroingWeak @Nullable String string;"
+          + "  @ZeroingWeak @Nullable final String string = null;"
           + "  public String run() {"
           + "    return this.string;"
           + "  }"
@@ -179,7 +179,7 @@ public class ZeroingWeakTest extends GenerationTest {
       "import com.google.j2objc.annotations.ZeroingWeak;"
           + "import javax.annotation.Nullable;"
           + "class WeakTest {"
-          + "  @ZeroingWeak @Nullable String string;"
+          + "  @ZeroingWeak @Nullable final String string = null;"
           + "  public void join(String s1, String s2) { join(string, string); }"
           + "}";
 
@@ -206,7 +206,7 @@ public class ZeroingWeakTest extends GenerationTest {
       "import com.google.j2objc.annotations.ZeroingWeak;"
           + "import javax.annotation.Nullable;"
           + "class WeakTest {"
-          + "  @ZeroingWeak @Nullable String string;"
+          + "  @ZeroingWeak @Nullable final String string = \"foo\";"
           + "  public String get() { return string + string; }"
           + "}";
 

@@ -20,7 +20,6 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -45,7 +44,8 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testSimpleInnerClass() throws IOException {
-    String source = "public class A { class B { int test() { return o.hashCode(); }} Object o; }";
+    String source =
+        "public class A { class B { int test() { return o.hashCode(); }} final Object o = this; }";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
@@ -75,8 +75,9 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerInnerClass() throws IOException {
-    String source = "public class A { class B { "
-        + "class C {int test() { return o.hashCode(); }}} Object o; }";
+    String source =
+        "public class A { class B { "
+            + "class C {int test() { return o.hashCode(); }}} final Object o = this; }";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
     assertTranslation(translation, "- (instancetype)initWithA_B:(A_B *)outer$;");
@@ -87,9 +88,10 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testWeakInnerInnerClass() throws IOException {
-    String source = "public class A { class B { "
-        + "@com.google.j2objc.annotations.WeakOuter class C {"
-        + "  int test() { return o.hashCode(); }}} Object o; }";
+    String source =
+        "public class A { class B { "
+            + "@com.google.j2objc.annotations.WeakOuter class C {"
+            + "  int test() { return o.hashCode(); }}} final Object o = this; }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "__unsafe_unretained A_B *this$0_;");
@@ -97,17 +99,18 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerMethodAnonymousClass() throws IOException {
-    String source = "public class A {"
-        + "  abstract class C { public abstract void foo(); }"
-        + "  class B { "
-        + "    public void foo(final int j) {"
-        + "      C r = new C() {"
-        + "        public void foo() { int hash = j + o.hashCode(); }"
-        + "      };"
-        + "    }"
-        + "  }"
-        + "  Object o;"
-        + "}";
+    String source =
+        "public class A {"
+            + "  abstract class C { public abstract void foo(); }"
+            + "  class B { "
+            + "    public void foo(final int j) {"
+            + "      C r = new C() {"
+            + "        public void foo() { int hash = j + o.hashCode(); }"
+            + "      };"
+            + "    }"
+            + "  }"
+            + "  final Object o = this;"
+            + "}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
@@ -357,14 +360,16 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerClassExtendsAnotherInner() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  Integer i = 1; "
-        + "  class Inner1 { } "
-        + "  class Inner2 extends Inner1 { "
-        + "    int j = 1; "
-        + "    public int foo() { return i + j; } } }",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "  final Integer i = 1; "
+                + "  class Inner1 { } "
+                + "  class Inner2 extends Inner1 { "
+                + "    int j = 1; "
+                + "    public int foo() { return i + j; } } }",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "Test *this$1");  // Inner2's outer reference.
     assertTranslation(translation, "[((JavaLangInteger *) nil_chk(this$1_->i_)) intValue] + j_");
   }
@@ -607,11 +612,12 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerAccessingOuterArrayLength() throws IOException {
-    String source = "public class A<E> { transient E[] elements; "
-        + "private class B implements java.util.Iterator<E> { "
-        + "public boolean hasNext() { return elements.length > 0; } "
-        + "public E next() { return null; }"
-        + "public void remove() {} }}";
+    String source =
+        "public class A<E> { final transient E[] elements = null; "
+            + "private class B implements java.util.Iterator<E> { "
+            + "public boolean hasNext() { return elements.length > 0; } "
+            + "public E next() { return null; }"
+            + "public void remove() {} }}";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
     assertTranslation(translation, "A *this$0_;");

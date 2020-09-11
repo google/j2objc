@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -80,36 +79,39 @@ public class CastResolverTest extends GenerationTest {
   }
 
   public void testDerivedTypeVariableInvocation() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test {"
-        + "  static class Base <T extends BaseFoo> {"
-        + "    protected T foo;"
-        + "    public Base(T foo) {"
-        + "      this.foo = foo;"
-        + "    }"
-        + "  }"
-        + "  static class BaseFoo {"
-        + "    void baseMethod() {}"
-        + "  }"
-        + "  static class Derived extends Base<DerivedFoo> {"
-        + "    public Derived(DerivedFoo foo) {"
-        + "      super(foo);"
-        + "    }"
-        + "    int test() {"
-        + "      foo.baseMethod();"
-        + "      foo.derivedMethod();"
-        + "      return foo.myInt;"
-        + "    }"
-        + "  }"
-        + "  static class DerivedFoo extends BaseFoo {"
-        + "    int myInt;"
-        + "    void derivedMethod() {}"
-        + "  }"
-        + "}", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "public class Test {"
+                + "  static class Base <T extends BaseFoo> {"
+                + "    protected final T foo;"
+                + "    public Base(T foo) {"
+                + "      this.foo = foo;"
+                + "    }"
+                + "  }"
+                + "  static class BaseFoo {"
+                + "    void baseMethod() {}"
+                + "  }"
+                + "  static class Derived extends Base<DerivedFoo> {"
+                + "    public Derived(DerivedFoo foo) {"
+                + "      super(foo);"
+                + "    }"
+                + "    int test() {"
+                + "      foo.baseMethod();"
+                + "      foo.derivedMethod();"
+                + "      return foo.myInt;"
+                + "    }"
+                + "  }"
+                + "  static class DerivedFoo extends BaseFoo {"
+                + "    int myInt;"
+                + "    void derivedMethod() {}"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
     // Verify foo.derivedMethod() has cast of appropriate type variable.
-    assertTranslation(translation, "[((Test_DerivedFoo *) nil_chk(foo_)) derivedMethod];");
+    assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
     // Verify that a cast can be added to a QualifiedName node.
-    assertTranslation(translation, "return ((Test_DerivedFoo *) nil_chk(foo_))->myInt_;");
+    assertTranslation(translation, "return ((Test_DerivedFoo *) foo_)->myInt_;");
   }
 
   public void testCapturedType() throws IOException {
@@ -123,17 +125,20 @@ public class CastResolverTest extends GenerationTest {
   }
 
   public void testChainedFieldLookup() throws IOException {
-    String translation = translateSourceFile(
-        "class Test {"
-        + " static class Foo { Bar bar; }"
-        + " static class Bar { int baz; }"
-        + " static class GenericImpl<T> { T foo; }"
-        + " static class Impl extends GenericImpl<Foo> {"
-        + " int test() {"
-        // Need to call "foo.bar.baz" twice so that the second expression is
-        // free of nil_chk's.
-        + " int i = foo.bar.baz;"
-        + " return foo.bar.baz; } } }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + " static class Foo { final Bar bar = null; }"
+                + " static class Bar { int baz; }"
+                + " static class GenericImpl<T> { final T foo = null; }"
+                + " static class Impl extends GenericImpl<Foo> {"
+                + " int test() {"
+                // Need to call "foo.bar.baz" twice so that the second expression is
+                // free of nil_chk's.
+                + " int i = foo.bar.baz;"
+                + " return foo.bar.baz; } } }",
+            "Test",
+            "Test.m");
     // This is actually a regression for a NPE in the translator, but we may as
     // well check the output.
     assertTranslation(translation, "return ((Test_Foo *) foo_)->bar_->baz_;");
@@ -167,17 +172,20 @@ public class CastResolverTest extends GenerationTest {
   }
 
   public void testAccessOfFieldFromSubclassWithMoreSpecificTypeVariable() throws IOException {
-    String translation = translateSourceFile(
-        "class Test<T extends I2> {"
-        // This method won't be functionized.
-        + "void test1(T i) {}"
-        // The private method will be functionized.
-        + "private void test2(T i) {}"
-        + "void test3(B<T> b) { test1(b.foo); test2(b.foo); } }"
-        + "interface I1 {}"
-        + "interface I2 extends I1 {}"
-        + "class A<T extends I1> { T foo; }"
-        + "class B<T extends I2> extends A<T> {}", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test<T extends I2> {"
+                // This method won't be functionized.
+                + "void test1(T i) {}"
+                // The private method will be functionized.
+                + "private void test2(T i) {}"
+                + "void test3(B<T> b) { test1(b.foo); test2(b.foo); } }"
+                + "interface I1 {}"
+                + "interface I2 extends I1 {}"
+                + "class A<T extends I1> { final T foo = null; }"
+                + "class B<T extends I2> extends A<T> {}",
+            "Test",
+            "Test.m");
     // Test that access of "foo" from subclass B is cast to id<I2>.
     assertTranslation(translation, "[self test1WithI2:((id<I2>) ((B *) nil_chk(b))->foo_)];");
     assertTranslation(translation, "Test_test2WithI2_(self, ((id<I2>) b->foo_));");
@@ -235,20 +243,25 @@ public class CastResolverTest extends GenerationTest {
   }
 
   public void testAssignmentCast() throws IOException {
-    String translation = translateSourceFile(
-        "class Test implements java.io.Serializable {"
-        + " static class A<T extends java.io.Serializable> { T foo; }"
-        + " void test (A<Test> a, Test t) { if (a != null) { t = a.foo; } } }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test implements java.io.Serializable {"
+                + " static class A<T extends java.io.Serializable> { final T foo = null; }"
+                + " void test (A<Test> a, Test t) { if (a != null) { t = a.foo; } } }",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "t = ((Test *) a->foo_);");
   }
 
   public void testCastInConditionalExpression() throws IOException {
-    String translation = translateSourceFile(
-        "class Test implements java.io.Serializable {"
-        + " static class A<T extends java.io.Serializable> { T foo; }"
-        + " Test test (A<Test> a1, A<Test> a2, boolean b) {"
-        + " if (a1 == null || a2 == null) return null; return b ? a1.foo : a2.foo; } }",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test implements java.io.Serializable {"
+                + " static class A<T extends java.io.Serializable> { final T foo = null; }"
+                + " Test test (A<Test> a1, A<Test> a2, boolean b) {"
+                + " if (a1 == null || a2 == null) return null; return b ? a1.foo : a2.foo; } }",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "return b ? ((Test *) a1->foo_) : ((Test *) a2->foo_);");
   }
 
@@ -262,7 +275,7 @@ public class CastResolverTest extends GenerationTest {
   }
 
   public void testCastInSuperFieldAccess() throws IOException {
-    addSourceFile("class A <T> { T foo; }", "A.java");
+    addSourceFile("class A <T> { final T foo = null; }", "A.java");
     String translation = translateSourceFile("class Test extends A<String> {"
         + " int fooLength() { return super.foo.length(); } }", "Test", "Test.m");
     assertTranslation(translation, "(NSString *) nil_chk(foo_)");

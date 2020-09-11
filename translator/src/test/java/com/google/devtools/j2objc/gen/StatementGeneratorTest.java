@@ -237,12 +237,14 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testStringConcatenationTypes() throws IOException {
-    String translation = translateSourceFile(
-        "public class Example<K,V> { Object obj; boolean b; char c; double d; float f; int i; "
-        + "long l; short s; String str; public String toString() { "
-        + "return \"obj=\" + obj + \" b=\" + b + \" c=\" + c + \" d=\" + d + \" f=\" + f"
-        + " + \" i=\" + i + \" l=\" + l + \" s=\" + s; }}",
-        "Example", "Example.m");
+    String translation =
+        translateSourceFile(
+            "public class Example<K,V> { final Object obj = null; boolean b; char c; double d;"
+                + " float f; int i; long l; short s; final String str = null; public String"
+                + " toString() { return \"obj=\" + obj + \" b=\" + b + \" c=\" + c + \" d=\" + d +"
+                + " \" f=\" + f + \" i=\" + i + \" l=\" + l + \" s=\" + s; }}",
+            "Example",
+            "Example.m");
     assertTranslation(translation,
         "return JreStrcat(\"$@$Z$C$D$F$I$J$S\", @\"obj=\", obj_, @\" b=\", b_, @\" c=\", c_,"
           + " @\" d=\", d_, @\" f=\", f_, @\" i=\", i_, @\" l=\", l_, @\" s=\", s_);");
@@ -363,10 +365,12 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testInnerInnerClassFieldAccess() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { static class One {} static class Two extends Test { "
-        + "Integer i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "public class Test { static class One {} static class Two extends Test { final Integer"
+                + " i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
+            "Test",
+            "Test.m");
     assertTranslation(translation,
         "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
     assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
@@ -395,25 +399,29 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testMethodInvocationOfReturnedInterface() throws IOException {
-    String translation = translateSourceFile(
-        "import java.util.*; public class Test <K,V> { "
-        + "Iterator<Map.Entry<K,V>> iterator; "
-        + "K test() { return iterator.next().getKey(); }}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "import java.util.*; public class Test <K,V> { "
+                + "final Iterator<Map.Entry<K,V>> iterator = null; "
+                + "K test() { return iterator.next().getKey(); }}",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "return [((id<JavaUtilMap_Entry>) "
         + "nil_chk([((id<JavaUtilIterator>) nil_chk(iterator_)) next])) getKey];");
   }
 
   public void testAnonymousClassInInnerStatic() throws IOException {
-    String translation = translateSourceFile(
-        "import java.util.*; public class Test { "
-        + "static <T> Enumeration<T> enumeration(Collection<T> collection) {"
-        + "final Collection<T> c = collection; "
-        + "return new Enumeration<T>() { "
-        + "Iterator<T> it = c.iterator(); "
-        + "public boolean hasMoreElements() { return it.hasNext(); } "
-        + "public T nextElement() { return it.next(); } }; }}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "import java.util.*; public class Test { "
+                + "static <T> Enumeration<T> enumeration(Collection<T> collection) {"
+                + "final Collection<T> c = collection; "
+                + "return new Enumeration<T>() { "
+                + "final Iterator<T> it = c.iterator(); "
+                + "public boolean hasMoreElements() { return it.hasNext(); } "
+                + "public T nextElement() { return it.next(); } }; }}",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) hasNext];");
     assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) next];");
     assertFalse(translation.contains("Test *this$0;"));
@@ -748,10 +756,13 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testInstanceStaticConstants() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { Foo f; void test() { int i = f.DEFAULT; Object lock = f.LOCK; }} "
-        + "class Foo { public static final int DEFAULT = 1; "
-        + "public static final Object LOCK = null; }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "public class Test { final Foo f = null; void test() { int i = f.DEFAULT; Object lock"
+                + " = f.LOCK; }} class Foo { public static final int DEFAULT = 1; public static"
+                + " final Object LOCK = null; }",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "int i = Foo_DEFAULT;");
     assertTranslation(translation, "id lock = JreLoadStatic(Foo, LOCK);");
   }
@@ -879,8 +890,9 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testObjectMultiDimArray() throws IOException {
-    String source = "class Test { Integer i = new Integer(1); Integer j = new Integer(2);"
-        + "void test() { Integer[][] a = new Integer[][] { null, { i, j }, { j, i }}; }}";
+    String source =
+        "class Test { final Integer i = new Integer(1); final Integer j = new Integer(2);"
+            + "void test() { Integer[][] a = new Integer[][] { null, { i, j }, { j, i }}; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, "

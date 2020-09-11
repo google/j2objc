@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -101,11 +100,13 @@ public class OperatorRewriterTest extends GenerationTest {
   }
 
   public void testStringAppendOperator() throws IOException {
-    String translation = translateSourceFile(
-        "import com.google.j2objc.annotations.Weak;"
-        + " class Test { String ss; @Weak String ws; String[] as;"
-        + " void test() { ss += \"foo\"; ws += \"bar\"; as[0] += \"baz\"; } }",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.Weak;"
+                + " class Test { String ss; @Weak String ws; final String[] as = null;"
+                + " void test() { ss += \"foo\"; ws += \"bar\"; as[0] += \"baz\"; } }",
+            "Test",
+            "Test.m");
     assertTranslatedLines(translation,
         "JreStrAppendStrong(&ss_, \"$\", @\"foo\");",
         "JreStrAppend(&ws_, \"$\", @\"bar\");",
@@ -192,21 +193,18 @@ public class OperatorRewriterTest extends GenerationTest {
   }
 
   public void testRetainedLocalRef() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  boolean test1(String s1, String s2) {"
-        + "    @com.google.j2objc.annotations.RetainedLocalRef"
-        + "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;"
-        + "    return c.compare(s1, s2) == 0;"
-        + "    }   "
-        + "  boolean test2(Thing t, Thing t2, String s1, String s2) {"
-        + "    @com.google.j2objc.annotations.RetainedLocalRef"
-        + "    Thing thing = t;"
-        + "    thing = t2;"
-        + "    return thing.comp.compare(s1, s2) == 0;"
-        + "  }"
-        + "  private static class Thing { public java.util.Comparator<String> comp; }}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test {   boolean test1(String s1, String s2) {   "
+                + " @com.google.j2objc.annotations.RetainedLocalRef   "
+                + " java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;    return"
+                + " c.compare(s1, s2) == 0;    }     boolean test2(Thing t, Thing t2, String s1,"
+                + " String s2) {    @com.google.j2objc.annotations.RetainedLocalRef    Thing thing"
+                + " = t;    thing = t2;    return thing.comp.compare(s1, s2) == 0;  }  private"
+                + " static class Thing { public final java.util.Comparator<String> comp = null;"
+                + " }}",
+            "Test",
+            "Test.m");
     assertNotInTranslation(translation, "RetainedLocalRef");
     assertTranslatedLines(translation,
         "id<JavaUtilComparator> c = JreRetainedLocalValue(JreLoadStatic("
@@ -235,27 +233,30 @@ public class OperatorRewriterTest extends GenerationTest {
   }
 
   public void testRetaineLocal_synchronizedBlock() throws IOException {
-    String translation = translateSourceFile(
-        "class Test {"
-        + "  class Foo {}"
-        + "  Foo f = new Foo();"
-        + "  void test(String s1, char c1) {"
-        + "    Foo f1 = new Foo(), f2 = f;"
-        + "    synchronized(f1) {"
-        + "      f1 = f2;"
-        + "      Foo f3 = f2;"
-        + "      s1 = \"foo\";"
-        + "      c1 = 'a';"
-        + "      synchronized(f3) {"
-        + "        f3 = f1;"
-        + "      }"
-        + "      synchronized(f3) {"
-        + "        f3 = f2;"
-        + "      }"
-        + "    }"
-        + "    f2 = f1;"
-        + "  }"
-        + "}", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + "  class Foo {}"
+                + "  final Foo f = new Foo();"
+                + "  void test(String s1, char c1) {"
+                + "    Foo f1 = new Foo(), f2 = f;"
+                + "    synchronized(f1) {"
+                + "      f1 = f2;"
+                + "      Foo f3 = f2;"
+                + "      s1 = \"foo\";"
+                + "      c1 = 'a';"
+                + "      synchronized(f3) {"
+                + "        f3 = f1;"
+                + "      }"
+                + "      synchronized(f3) {"
+                + "        f3 = f2;"
+                + "      }"
+                + "    }"
+                + "    f2 = f1;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "Test_Foo *f2 = f_;");
     assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
     assertTranslation(translation, "Test_Foo *f3 = f2;");

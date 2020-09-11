@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -147,15 +146,16 @@ public class NilCheckResolverTest extends GenerationTest {
         + " void test() { int i; i = foo.i; i = foo.i; System.gc(); i = foo.i; super.toString();"
         + " i = foo.i; new Test(); i = foo.i; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "i = ((Test_Foo *) nil_chk(foo_))->i_;",
-        "i = foo_->i_;",
+    assertTranslatedLines(
+        translation,
+        "i = ((Test_Foo *) nil_chk(JreRetainedLocalValue(foo_)))->i_;",
+        "i = ((Test_Foo *) JreRetainedLocalValue(foo_))->i_;",
         "JavaLangSystem_gc();",
-        "i = ((Test_Foo *) nil_chk(foo_))->i_;",
+        "i = ((Test_Foo *) nil_chk(JreRetainedLocalValue(foo_)))->i_;",
         "[super description];",
-        "i = ((Test_Foo *) nil_chk(foo_))->i_;",
+        "i = ((Test_Foo *) nil_chk(JreRetainedLocalValue(foo_)))->i_;",
         "create_Test_init();",
-        "i = ((Test_Foo *) nil_chk(foo_))->i_;");
+        "i = ((Test_Foo *) nil_chk(JreRetainedLocalValue(foo_)))->i_;");
   }
 
   public void testReassignedVariableInLoop() throws IOException {

@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -44,7 +43,8 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testUnboxReturn() throws IOException {
-    String source = "public class Test { Integer value; int intValue() { return value; }}";
+    String source =
+        "public class Test { final Integer value = 1; int intValue() { return value; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(value_)) intValue];");
   }
@@ -232,10 +232,12 @@ public class AutoboxerTest extends GenerationTest {
   public void testArrayInitializerBoxed() throws IOException {
     // Verify that an Integer array with an initializer that has int elements
     // is boxed.
-    String translation = translateSourceFile(
-        "public class Test { private Integer i = 1; "
-        + "  public void test() { Integer values[] = new Integer[] { 1, 2, i }; }}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "public class Test { private final Integer i = 1; "
+                + "  public void test() { Integer values[] = new Integer[] { 1, 2, i }; }}",
+            "Test",
+            "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1), "
         + "JavaLangInteger_valueOfWithInt_(2), i_ } count:3 type:JavaLangInteger_class_()]");
@@ -244,10 +246,12 @@ public class AutoboxerTest extends GenerationTest {
   public void testArrayInitializerUnboxed() throws IOException {
     // Verify that an int array with an initializer that has Integer elements
     // is unboxed.
-    String translation = translateSourceFile(
-        "public class Test { private Integer i = 1; private Integer j = 2;"
-        + "  public void test() { int values[] = new int[] { i, j, 3 }; }}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "public class Test { private final Integer i = 1; private final Integer j = 2;"
+                + "  public void test() { int values[] = new int[] { i, j, 3 }; }}",
+            "Test",
+            "Test.m");
     assertTranslation(translation,
         "[IOSIntArray arrayWithInts:(jint[]){ [((JavaLangInteger *) nil_chk(i_)) intValue], "
         + "[((JavaLangInteger *) nil_chk(j_)) intValue], 3 } count:3]");
@@ -302,29 +306,32 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testBoxedBoolInIf() throws IOException {
-    String source = "public class Test { Boolean b = false; void foo() { if (b) foo(); } }";
+    String source = "public class Test { final Boolean b = false; void foo() { if (b) foo(); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "if ([((JavaLangBoolean *) nil_chk(b_)) booleanValue])");
   }
 
   public void testBoxedBoolInWhile() throws IOException {
-    String source = "public class Test { Boolean b = false; void foo() { while (b) foo(); } }";
+    String source =
+        "public class Test { final Boolean b = false; void foo() { while (b) foo(); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "while ([((JavaLangBoolean *) nil_chk(b_)) booleanValue])");
   }
 
   public void testBoxedBoolInDoWhile() throws IOException {
-    String source = "public class Test { "
-        + "  Boolean b = false; void foo() { do { foo(); } while (b); } }";
+    String source =
+        "public class Test { "
+            + "  final Boolean b = false; void foo() { do { foo(); } while (b); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "while ([((JavaLangBoolean *) nil_chk(b_)) booleanValue])");
   }
 
   public void testBoxedBoolNegatedInWhile() throws IOException {
-    String source = "public class Test { Boolean b = false; void foo() { while (!b) foo(); } }";
+    String source =
+        "public class Test { final Boolean b = false; void foo() { while (!b) foo(); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "while (![((JavaLangBoolean *) nil_chk(b_)) booleanValue])");
@@ -534,14 +541,15 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testBoxedOperators() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { Integer si; Long sl; Float sf; Double sd;"
-        + " Integer[] ai; Long[] al; Float[] af; Double[] ad;"
-        + " void test(Integer wi, Long wl, Float wf, Double wd) {"
-        + " si++; wi++; ++sl; ++wl; sf--; wf--; --sd; --wd;"
-        + " si += 5; wi += 5; sl &= 6l; wl &= 6l;"
-        + " si <<= 2; wi <<= 2; sl >>>= 3; wl >>>= 3;"
-        + " ai[0]++; --al[1]; af[2] += 9; ad[3] -= 8; } }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test { Integer si; Long sl; Float sf; Double sd; final Integer[] ai = null;"
+                + " final Long[] al = null; final Float[] af = null; final Double[] ad = null;"
+                + " void test(Integer wi, Long wl, Float wf, Double wd) { si++; wi++; ++sl; ++wl;"
+                + " sf--; wf--; --sd; --wd; si += 5; wi += 5; sl &= 6l; wl &= 6l; si <<= 2; wi <<="
+                + " 2; sl >>>= 3; wl >>>= 3; ai[0]++; --al[1]; af[2] += 9; ad[3] -= 8; } }",
+            "Test",
+            "Test.m");
     assertTranslatedLines(translation,
         "JreBoxedPostIncrStrongInt(&si_);",
         "JreBoxedPostIncrInt(&wi);",
@@ -577,11 +585,14 @@ public class AutoboxerTest extends GenerationTest {
 
   // https://github.com/google/j2objc/issues/1031
   public void testWrapperClassArrayInitializer() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "private static Integer SIZE = 32; "
-        + "public byte[] test() { "
-        + "  return new byte[SIZE]; }}", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "private static final Integer SIZE = 32; "
+                + "public byte[] test() { "
+                + "  return new byte[SIZE]; }}",
+            "Test",
+            "Test.m");
     assertTranslation(translation,
         "return [IOSByteArray arrayWithLength:"
         + "[((JavaLangInteger *) nil_chk(Test_SIZE)) intValue]];");

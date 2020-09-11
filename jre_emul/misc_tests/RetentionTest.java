@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+import java.lang.reflect.Method;
+import java.util.function.Consumer;
 import junit.framework.TestCase;
 
 /** @author Michał Pociecha-Łoś */
@@ -30,35 +32,33 @@ public class RetentionTest extends TestCase {
         });
   }
 
-  // TODO(micapolos): Uncomment once fixed.
-  // public void testFieldAccess() {
-  //   Ref ref = new Ref();
-  //   ref.object = new Object();
-  //   runInNewThread(
-  //       () -> {
-  //         Object object = ref.object;
-  //         runInNewThread(
-  //             () -> {
-  //               ref.object = null;
-  //             });
-  //         object.hashCode(); // should not crash
-  //       });
-  // }
+  public void testFieldAccess() {
+    Ref ref = new Ref();
+    ref.object = new Object();
+    runInNewThread(
+        () -> {
+          Object object = ref.object;
+          runInNewThread(
+              () -> {
+                ref.object = null;
+              });
+          object.hashCode(); // should not crash
+        });
+  }
 
-  // TODO(micapolos): Uncomment once fixed.
-  // public void testFieldGetter() {
-  //   Ref ref = new Ref();
-  //   ref.object = new Object();
-  //   runInNewThread(
-  //       () -> {
-  //         Object object = ref.get();
-  //         runInNewThread(
-  //             () -> {
-  //               ref.object = null;
-  //             });
-  //         object.hashCode(); // should not crash
-  //       });
-  // }
+  public void testFieldGetter() {
+    Ref ref = new Ref();
+    ref.object = new Object();
+    runInNewThread(
+        () -> {
+          Object object = ref.get();
+          runInNewThread(
+              () -> {
+                ref.object = null;
+              });
+          object.hashCode(); // should not crash
+        });
+  }
 
   // TODO(micapolos): Uncomment once fixed.
   // public void testAutoreleasePoolInForLoop() {
@@ -68,6 +68,38 @@ public class RetentionTest extends TestCase {
   //   }
   //   object.hashCode(); // should not crash
   // }
+
+  public void testFieldAccessAndMethodInvocation() {
+    Ref ref = new Ref();
+    ref.object = new Object();
+    Consumer<Object> consumer =
+        object -> {
+          runInNewThread(
+              () -> {
+                ref.object = null;
+              });
+          object.hashCode(); // CRASH!!!
+        };
+    runInNewThread(
+        () -> {
+          consumer.accept(ref.object);
+        });
+  }
+
+  public void testFieldAccess_variableMutation() {
+    Ref ref = new Ref();
+    ref.object = new Object();
+    runInNewThread(
+        () -> {
+          Object object = new Object();
+          object = ref.object;
+          runInNewThread(
+              () -> {
+                ref.object = null;
+              });
+          object.hashCode(); // should not crash
+        });
+  }
 
   static void runInNewThread(Runnable runnable) {
     Thread thread = new Thread(runnable);
@@ -85,6 +117,20 @@ public class RetentionTest extends TestCase {
 
     Object get() {
       return object;
+    }
+  }
+
+  public static void main(String... args) throws Exception {
+    if (args.length == 0) {
+      org.junit.runner.JUnitCore.main("RetentionTest");
+    } else {
+      RetentionTest testInstance = new RetentionTest();
+      for (int i = 0; i < args.length; i++) {
+        Method test = RetentionTest.class.getDeclaredMethod(args[i]);
+        System.out.println(args[i] + " start");
+        test.invoke(testInstance);
+        System.out.println(args[i] + " end");
+      }
     }
   }
 }
