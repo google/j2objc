@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
@@ -50,7 +51,9 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.RetainedLocalRef;
 import java.lang.reflect.Modifier;
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -73,8 +76,25 @@ public class OperatorRewriter extends UnitTreeVisitor {
   private Set<VariableElement> retainedLocalCandidates = new HashSet<>();
   private boolean isSynchronizedMethod = false;
 
+  private final AutoreleaseScopes autoreleaseScopes = new AutoreleaseScopes();
+
   public OperatorRewriter(CompilationUnit unit) {
     super(unit);
+  }
+
+  @Override
+  public boolean visit(Block block) {
+    if (block.hasAutoreleasePool()) {
+      autoreleaseScopes.begin();
+    }
+    return true;
+  }
+
+  @Override
+  public void endVisit(Block block) {
+    if (block.hasAutoreleasePool()) {
+      autoreleaseScopes.end();
+    }
   }
 
   @Override
@@ -200,6 +220,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
     // Skip name so that it doesn't get mistaken for a variable load.
     Expression initializer = node.getInitializer();
     VariableElement var = node.getVariableElement();
+    if (ElementUtil.isLocalVariable(var)) {
+      autoreleaseScopes.addDeclared(var);
+    }
     if (initializer != null) {
       initializer.accept(this);
       handleRetainedLocal(var, node.getInitializer());
@@ -235,7 +258,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void handleRetainedLocal(VariableElement var, Expression rhs) {
-    if (isRetainedLocal(var)) {
+    if (isRetainedLocal(var) || autoreleaseScopes.assignmentNeedsRetainedLocal(var)) {
       rewriteRetainedLocal(rhs);
     }
   }
@@ -587,6 +610,47 @@ public class OperatorRewriter extends UnitTreeVisitor {
       return '$';
     } else {
       return '@';
+    }
+  }
+
+  static final class AutoreleaseScope {
+    private final Set<VariableElement> declaredVariableElements = new HashSet<>();
+
+    void addDeclared(VariableElement variableElement) {
+      declaredVariableElements.add(variableElement);
+    }
+
+    boolean containsDeclared(VariableElement variableElement) {
+      return declaredVariableElements.contains(variableElement);
+    }
+  }
+
+  static final class AutoreleaseScopes {
+    private final Deque<AutoreleaseScope> autoreleaseScopeStack = new ArrayDeque<>();
+
+    void begin() {
+      autoreleaseScopeStack.push(new AutoreleaseScope());
+    }
+
+    void end() {
+      autoreleaseScopeStack.pop();
+    }
+
+    void addDeclared(VariableElement variableElement) {
+      AutoreleaseScope scope = autoreleaseScopeStack.peek();
+      if (scope != null) {
+        scope.addDeclared(variableElement);
+      }
+    }
+
+    boolean assignmentNeedsRetainedLocal(VariableElement variableElement) {
+      if (!ElementUtil.isLocalVariable(variableElement)
+          || variableElement.asType().getKind().isPrimitive()) {
+        return false;
+      }
+
+      AutoreleaseScope scope = autoreleaseScopeStack.peek();
+      return scope != null && !scope.containsDeclared(variableElement);
     }
   }
 }

@@ -60,14 +60,13 @@ public class RetentionTest extends TestCase {
   //       });
   // }
 
-  // TODO(micapolos): Uncomment once fixed.
-  // public void testAutoreleasePoolInForLoop() {
-  //   Object object = null;
-  //   for (@AutoreleasePool int i = 0; i < 1; i++) {
-  //     object = new Object();
-  //   }
-  //   object.hashCode(); // should not crash
-  // }
+  public void testAutoreleasePoolInForLoop() {
+    Object object = null;
+    for (@AutoreleasePool int i = 0; i < 1; i++) {
+      object = new Object();
+    }
+    object.hashCode(); // should not crash
+  }
 
   static void runInNewThread(Runnable runnable) {
     Thread thread = new Thread(runnable);

@@ -804,6 +804,10 @@ public class GenerationTest extends TestCase {
     return new String(Base64.getDecoder().decode(encodedMetadata), UTF_8);
   }
 
+  protected String linesString(String... strings) {
+    return Joiner.on("\n").join(strings);
+  }
+
   // Empty test so Bazel won't report a "no tests" error.
   public void testNothing() {}
 }

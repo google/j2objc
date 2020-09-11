@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -288,5 +287,33 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return JreRetainedLocalValue(s1);");
     assertTranslation(translation, "return JreRetainedLocalValue(f1)");
     assertTranslation(translation, "return val;");
+  }
+
+  public void testRetainedLocal_autoreleasePool() throws IOException {
+    String translation =
+        translateSourceFile(
+            linesString(
+                "import com.google.j2objc.annotations.AutoreleasePool;",
+                "class Test {",
+                "  Object objectField;",
+                "  void run() {",
+                "    int outerInt = 0;",
+                "    Object outerObject = null;",
+                "    for (@AutoreleasePool int i = 0; i < 1; i++) {",
+                "      Object localObject = new Object();",
+                "      Object innerObject = null;",
+                "      outerInt = 1;",
+                "      outerObject = localObject;",
+                "      innerObject = localObject;",
+                "      objectField = localObject;",
+                "    }",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "outerInt = 1;");
+    assertTranslation(translation, "outerObject = JreRetainedLocalValue(localObject);");
+    assertTranslation(translation, "innerObject = localObject;");
+    assertTranslation(translation, "JreStrongAssign(&objectField_, localObject);");
   }
 }
