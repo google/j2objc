@@ -170,6 +170,9 @@ $(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m | translate
 	@echo clang -c $<
 	@$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) $(SDK_FLAGS) -c $< -o $@
 
+icu_data: $(ICU_EMBEDDED_RES_DIR)/$(NATIVE_JRE_ICU_EMBEDDED_DATA)
+	@:
+
 test: libs_dist $(DIST_DIR)/j2objcc
 	$(MAKE) -f tests.mk all-tests
 

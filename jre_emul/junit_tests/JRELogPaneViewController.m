@@ -75,6 +75,8 @@
       [[JavaIoPrintStream alloc] initWithJavaIoOutputStream:logStream withBoolean:YES];
   [JavaLangSystem setOutWithJavaIoPrintStream:printStream];
   [JavaLangSystem setErrWithJavaIoPrintStream:printStream];
+  RELEASE_(printStream);
+  RELEASE_(logStream);
 
   // Execute test runner on new dispatch queue.
   dispatch_queue_t backgroundQueue =
@@ -85,14 +87,15 @@
         [IOSObjectArray arrayWithObjects:(id[]) { self.className }
                                    count:1
                                     type:NSString_class_()];
-    OrgJunitRunnerJUnitCore *testRunner = [[OrgJunitRunnerJUnitCore alloc] init];
-    [testRunner
-         addListenerWithOrgJunitRunnerNotificationRunListener:[[JRETestRunListener alloc] init]];
+    JRETestRunListener *testListener = AUTORELEASE([[JRETestRunListener alloc] init]);
+    OrgJunitRunnerJUnitCore *testRunner = AUTORELEASE([[OrgJunitRunnerJUnitCore alloc] init]);
+    [testRunner addListenerWithOrgJunitRunnerNotificationRunListener:testListener];
     id<OrgJunitInternalJUnitSystem> junitSystem =
         AUTORELEASE([[OrgJunitInternalRealSystem alloc] init]);
     [testRunner runMainWithOrgJunitInternalJUnitSystem:junitSystem withNSStringArray:testClasses];
     self.testThread = nil;
   });
+  [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -100,6 +103,7 @@
     [self.testThread interrupt];
     self.testThread = nil;
   }
+  [super viewWillDisappear:animated];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {

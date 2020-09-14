@@ -80,8 +80,8 @@
     NSLog(@"No test class name specified for %@", testName);
     return;
   }
-  JRELogPaneViewController *logPane = [[JRELogPaneViewController alloc]
-                                       initWithTest:testName className:className];
+  JRELogPaneViewController *logPane = AUTORELEASE(
+      [[JRELogPaneViewController alloc] initWithTest:testName className:className]);
   [[self navigationController] pushViewController:logPane animated:YES];
 }
 
@@ -101,5 +101,12 @@
   [super viewDidLoad];
   [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"TestCell"];
 }
+
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [_testNames release];
+  [super dealloc];
+}
+#endif
 
 @end

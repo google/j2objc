@@ -33,4 +33,11 @@
   return YES;
 }
 
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [_window release];
+  [super dealloc];
+}
+#endif
+
 @end
