@@ -33,7 +33,7 @@
 #include "jni_util.h"
 #include "net_util.h"
 
-int IPv6_supported();
+int IPv6_supported(void);
 
 static int IPv6_available;
 static bool initializedIPv6_available = false;

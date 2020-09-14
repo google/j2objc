@@ -361,9 +361,9 @@ const char* nativeGetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *is
 // representation.
 void nativeReleaseStringPlatformChars(JNIEnv *env, jstring jstr, const char *chars);
 
-int getFastEncoding();
+int getFastEncoding(void);
 
-void initializeEncoding();
+void initializeEncoding(void);
 
 
 #ifdef __cplusplus

@@ -106,13 +106,13 @@ extern jmethodID ia6_ctrID;
  */
 
 JNIEXPORT void JNICALL NET_ThrowNew(JNIEnv *env, int errorNum, char *msg);
-int NET_GetError();
+int NET_GetError(void);
 
 void NET_ThrowCurrent(JNIEnv *env, char *msg);
 
 jfieldID NET_GetFileDescriptorID(JNIEnv *env);
 
-JNIEXPORT jint JNICALL ipv6_available();
+JNIEXPORT jint JNICALL ipv6_available(void);
 
 void
 NET_AllocSockaddr(struct sockaddr **him, int *len);
@@ -123,7 +123,7 @@ NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj, int port, struct sockaddr 
 JNIEXPORT jobject JNICALL
 NET_SockaddrToInetAddress(JNIEnv *env, struct sockaddr *him, int *port);
 
-void initLocalAddrTable ();
+void initLocalAddrTable(void);
 void parseExclusiveBindProperty(JNIEnv *env);
 
 void

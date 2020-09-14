@@ -33,6 +33,6 @@
 #include "unicode/uregex.h"
 
 // JRE classes referencing ICU need to call this function during initialization.
-U_STABLE void J2ObjC_icu_init();
+U_STABLE void J2ObjC_icu_init(void);
 
 #endif /* _J2ObjC_ICU_H_ */

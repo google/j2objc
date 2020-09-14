@@ -166,7 +166,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  id (*annotations)() = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
+  id (*annotations)(void) = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
   if (annotations) {
     return annotations();
   }
@@ -174,7 +174,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
-  id (*paramAnnotations)() = JrePtrAtIndex(ptrTable_, metadata_->paramAnnotationsIdx);
+  id (*paramAnnotations)(void) = JrePtrAtIndex(ptrTable_, metadata_->paramAnnotationsIdx);
   if (paramAnnotations) {
     return paramAnnotations();
   }

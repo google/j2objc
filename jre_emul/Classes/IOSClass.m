@@ -865,7 +865,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 
 - (IOSObjectArray *)getDeclaredAnnotations {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(self);
-  id (*annotations)() = JrePtrAtIndex(metadata->ptrTable, metadata->annotationsIdx);
+  id (*annotations)(void) = JrePtrAtIndex(metadata->ptrTable, metadata->annotationsIdx);
   if (annotations) {
     return annotations();
   }

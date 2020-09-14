@@ -336,7 +336,7 @@ static void SetWithRawValue(
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  id (*annotations)() = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
+  id (*annotations)(void) = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
   if (annotations) {
     return annotations();
   }
