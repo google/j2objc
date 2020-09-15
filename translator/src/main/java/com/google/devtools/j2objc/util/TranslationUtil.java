@@ -226,7 +226,8 @@ public final class TranslationUtil {
     TreeNode parent = node.getParent();
 
     while (parent instanceof ParenthesizedExpression) {
-        parent = parent.getParent();
+      node = (Expression) parent;
+      parent = node.getParent();
     }
 
     if (parent instanceof PostfixExpression) {
