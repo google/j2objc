@@ -28,6 +28,7 @@ package sun.nio.ch;
 
 import android.system.ErrnoException;
 
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -47,7 +48,6 @@ import java.nio.channels.WritableByteChannel;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
-import libcore.io.Libcore;
 
 /* J2ObjC removed: ReachabilitySensitive unsupported
 import dalvik.annotation.optimization.ReachabilitySensitive;
@@ -57,6 +57,7 @@ import dalvik.system.CloseGuard;
 import sun.misc.Cleaner;
 import sun.security.action.GetPropertyAction;
 
+@ReflectionSupport(ReflectionSupport.Level.FULL)
 public class FileChannelImpl
     extends FileChannel
 {

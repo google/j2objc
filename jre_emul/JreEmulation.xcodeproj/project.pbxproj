@@ -177,7 +177,6 @@
 		0620262E1D512CA1001EE455 /* OldDataInputOutputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025E51D512CA1001EE455 /* OldDataInputOutputStreamTest.m */; };
 		0620262F1D512CA1001EE455 /* OldDataInputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025E61D512CA1001EE455 /* OldDataInputStreamTest.m */; };
 		062026301D512CA1001EE455 /* OldDataOutputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025E71D512CA1001EE455 /* OldDataOutputStreamTest.m */; };
-		062026311D512CA1001EE455 /* OldFileInputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025E81D512CA1001EE455 /* OldFileInputStreamTest.m */; };
 		062026321D512CA1001EE455 /* OldFileReaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025E91D512CA1001EE455 /* OldFileReaderTest.m */; };
 		062026331D512CA1001EE455 /* OldFileTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025EA1D512CA1001EE455 /* OldFileTest.m */; };
 		062026341D512CA1001EE455 /* OldFileWriterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025EB1D512CA1001EE455 /* OldFileWriterTest.m */; };
@@ -2794,11 +2793,17 @@
 		063BE7AC2505F0B2000819BB /* ICUData.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BE7AB2505F0B2000819BB /* ICUData.m */; };
 		063BE7AD2506B6CB000819BB /* MyAlgorithmParameterGeneratorSpi.m in Sources */ = {isa = PBXBuildFile; fileRef = 062028681D512E3E001EE455 /* MyAlgorithmParameterGeneratorSpi.m */; };
 		064F58F8250A8226002CED52 /* RetentionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 064F58F6250A8225002CED52 /* RetentionTest.m */; };
+		064F58FB25114288002CED52 /* FileChannelOpener.m in Sources */ = {isa = PBXBuildFile; fileRef = 064F58FA25114288002CED52 /* FileChannelOpener.m */; };
+		064F5901251142E8002CED52 /* OldOutputStreamWriterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 064F58FD251142E7002CED52 /* OldOutputStreamWriterTest.m */; };
+		064F5902251142E8002CED52 /* OldAndroidPrintWriterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 064F58FE251142E7002CED52 /* OldAndroidPrintWriterTest.m */; };
+		064F5903251142E8002CED52 /* FilterInputStreamNullSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 064F58FF251142E7002CED52 /* FilterInputStreamNullSourceTest.m */; };
 		0656AEED1E9EF66900DB98B4 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066899691E9EE12900DDD10B /* libiconv.tbd */; };
 		06574A1A1A8EAF0B000A3616 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06574A1C1A8EAF84000A3616 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06574A1B1A8EAF84000A3616 /* QuartzCore.framework */; };
 		065F96361DAC05A300807A81 /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 065F96341DAC03F900807A81 /* Base64Test.m */; };
 		065F96381DAC05A300807A81 /* UnsafeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 065F96351DAC03F900807A81 /* UnsafeTest.m */; };
+		066046DE25114BDA0083DD00 /* Support_ASimpleWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 062029521D512F41001EE455 /* Support_ASimpleWriter.m */; };
+		066046DF25114BDA0083DD00 /* Support_Locale.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620295A1D512F41001EE455 /* Support_Locale.m */; };
 		0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */; };
 		0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */; };
 		0660F6D42502DA69002CC8F8 /* UncheckedIOExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660F6D32502DA69002CC8F8 /* UncheckedIOExceptionTest.m */; };
@@ -3032,12 +3037,10 @@
 		06C03E88249D7A9500C0CAD1 /* MyCertPathBuilderSpi.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03E5E249D7A9500C0CAD1 /* MyCertPathBuilderSpi.m */; };
 		06C03EFE249D7B2E00C0CAD1 /* Support_TestProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03E96249D7B2D00C0CAD1 /* Support_TestProvider.m */; };
 		06C03F02249D7B2E00C0CAD1 /* Support_ProviderTrust.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03E9B249D7B2D00C0CAD1 /* Support_ProviderTrust.m */; };
-		06C03F0F249D7B2E00C0CAD1 /* Support_ASimpleWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03EB1249D7B2D00C0CAD1 /* Support_ASimpleWriter.m */; };
 		06C03F21249D7B2E00C0CAD1 /* Support_UnmodifiableMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03ECA249D7B2D00C0CAD1 /* Support_UnmodifiableMapTest.m */; };
 		06C03F2F249D7B2E00C0CAD1 /* Support_Proxy_I1.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03EE0249D7B2E00C0CAD1 /* Support_Proxy_I1.m */; };
 		06C03F34249D7B2E00C0CAD1 /* Support_Resources.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03EE8249D7B2E00C0CAD1 /* Support_Resources.m */; };
 		06C03F37249D7B2E00C0CAD1 /* Support_ASimpleInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03EEB249D7B2E00C0CAD1 /* Support_ASimpleInputStream.m */; };
-		06C03F39249D7B2E00C0CAD1 /* Support_Locale.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03EEE249D7B2E00C0CAD1 /* Support_Locale.m */; };
 		06C03F40249D7D2800C0CAD1 /* ArrayUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03F3F249D7D2800C0CAD1 /* ArrayUtilsTest.m */; };
 		06C03F44249D7D6B00C0CAD1 /* SubjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03F41249D7D6B00C0CAD1 /* SubjectTest.m */; };
 		06C03F45249D7D6B00C0CAD1 /* DestroyableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C03F42249D7D6B00C0CAD1 /* DestroyableTest.m */; };
@@ -3909,7 +3912,6 @@
 		062025E51D512CA1001EE455 /* OldDataInputOutputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldDataInputOutputStreamTest.m; path = libcore/java/io/OldDataInputOutputStreamTest.m; sourceTree = "<group>"; };
 		062025E61D512CA1001EE455 /* OldDataInputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldDataInputStreamTest.m; path = libcore/java/io/OldDataInputStreamTest.m; sourceTree = "<group>"; };
 		062025E71D512CA1001EE455 /* OldDataOutputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldDataOutputStreamTest.m; path = libcore/java/io/OldDataOutputStreamTest.m; sourceTree = "<group>"; };
-		062025E81D512CA1001EE455 /* OldFileInputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldFileInputStreamTest.m; path = libcore/java/io/OldFileInputStreamTest.m; sourceTree = "<group>"; };
 		062025E91D512CA1001EE455 /* OldFileReaderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldFileReaderTest.m; path = libcore/java/io/OldFileReaderTest.m; sourceTree = "<group>"; };
 		062025EA1D512CA1001EE455 /* OldFileTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldFileTest.m; path = libcore/java/io/OldFileTest.m; sourceTree = "<group>"; };
 		062025EB1D512CA1001EE455 /* OldFileWriterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldFileWriterTest.m; path = libcore/java/io/OldFileWriterTest.m; sourceTree = "<group>"; };
@@ -6990,6 +6992,11 @@
 		064F58F5250A8225002CED52 /* NoPackageTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoPackageTest.h; sourceTree = "<group>"; };
 		064F58F6250A8225002CED52 /* RetentionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RetentionTest.m; sourceTree = "<group>"; };
 		064F58F7250A8225002CED52 /* UTF16EncodingTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UTF16EncodingTest.h; sourceTree = "<group>"; };
+		064F58F925114287002CED52 /* FileChannelOpener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileChannelOpener.h; path = build_result/Classes/java/io/FileChannelOpener.h; sourceTree = "<group>"; };
+		064F58FA25114288002CED52 /* FileChannelOpener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileChannelOpener.m; path = build_result/Classes/java/io/FileChannelOpener.m; sourceTree = "<group>"; };
+		064F58FD251142E7002CED52 /* OldOutputStreamWriterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldOutputStreamWriterTest.m; path = libcore/java/io/OldOutputStreamWriterTest.m; sourceTree = "<group>"; };
+		064F58FE251142E7002CED52 /* OldAndroidPrintWriterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldAndroidPrintWriterTest.m; path = libcore/java/io/OldAndroidPrintWriterTest.m; sourceTree = "<group>"; };
+		064F58FF251142E7002CED52 /* FilterInputStreamNullSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterInputStreamNullSourceTest.m; path = libcore/java/io/FilterInputStreamNullSourceTest.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
 		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
 		064FB74A172705F400DC0D51 /* URISyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URISyntaxException.h; path = build_result/Classes/java/net/URISyntaxException.h; sourceTree = "<group>"; };
@@ -7840,14 +7847,12 @@
 		06C03E96249D7B2D00C0CAD1 /* Support_TestProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_TestProvider.m; path = tests/support/Support_TestProvider.m; sourceTree = "<group>"; };
 		06C03E98249D7B2D00C0CAD1 /* Support_GetPutFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_GetPutFields.m; path = tests/support/Support_GetPutFields.m; sourceTree = "<group>"; };
 		06C03E9B249D7B2D00C0CAD1 /* Support_ProviderTrust.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_ProviderTrust.m; path = tests/support/Support_ProviderTrust.m; sourceTree = "<group>"; };
-		06C03EB1249D7B2D00C0CAD1 /* Support_ASimpleWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_ASimpleWriter.m; path = tests/support/Support_ASimpleWriter.m; sourceTree = "<group>"; };
 		06C03EC7249D7B2D00C0CAD1 /* Support_TestResource_en_US.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_TestResource_en_US.m; path = tests/support/Support_TestResource_en_US.m; sourceTree = "<group>"; };
 		06C03ECA249D7B2D00C0CAD1 /* Support_UnmodifiableMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_UnmodifiableMapTest.m; path = tests/support/Support_UnmodifiableMapTest.m; sourceTree = "<group>"; };
 		06C03ED2249D7B2E00C0CAD1 /* Support_TestResource_fr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_TestResource_fr.m; path = tests/support/Support_TestResource_fr.m; sourceTree = "<group>"; };
 		06C03EE0249D7B2E00C0CAD1 /* Support_Proxy_I1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Proxy_I1.m; path = tests/support/Support_Proxy_I1.m; sourceTree = "<group>"; };
 		06C03EE8249D7B2E00C0CAD1 /* Support_Resources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Resources.m; path = tests/support/resource/Support_Resources.m; sourceTree = "<group>"; };
 		06C03EEB249D7B2E00C0CAD1 /* Support_ASimpleInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_ASimpleInputStream.m; path = tests/support/Support_ASimpleInputStream.m; sourceTree = "<group>"; };
-		06C03EEE249D7B2E00C0CAD1 /* Support_Locale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Locale.m; path = tests/support/Support_Locale.m; sourceTree = "<group>"; };
 		06C03F3F249D7D2800C0CAD1 /* ArrayUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayUtilsTest.m; path = libcore/libcore/util/ArrayUtilsTest.m; sourceTree = "<group>"; };
 		06C03F41249D7D6B00C0CAD1 /* SubjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SubjectTest.m; path = org/apache/harmony/tests/javax/security/auth/SubjectTest.m; sourceTree = "<group>"; };
 		06C03F42249D7D6B00C0CAD1 /* DestroyableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DestroyableTest.m; path = org/apache/harmony/tests/javax/security/auth/DestroyableTest.m; sourceTree = "<group>"; };
@@ -9676,6 +9681,13 @@
 			path = jre_emul;
 			sourceTree = "<group>";
 		};
+		066046DD251144090083DD00 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		0661937A155848D70004DAFE = {
 			isa = PBXGroup;
 			children = (
@@ -9686,6 +9698,7 @@
 				06619387155848D70004DAFE /* Frameworks */,
 				06ED87BC19759EFF00633227 /* junit_tests */,
 				06619386155848D70004DAFE /* Products */,
+				066046DD251144090083DD00 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -9903,7 +9916,6 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
-				063BE7AB2505F0B2000819BB /* ICUData.m */,
 				063BE4072505C1BD000819BB /* AbstractBasicFileAttributeView.h */,
 				063BE34B2505C187000819BB /* AbstractBasicFileAttributeView.m */,
 				063BE4AE2505C239000819BB /* AbstractCalendar.h */,
@@ -11290,6 +11302,8 @@
 				06C73E6619180CC8001D3CC8 /* FileChannel.m */,
 				063BE3A92505C19F000819BB /* FileChannelImpl.h */,
 				063BE40D2505C1BE000819BB /* FileChannelImpl.m */,
+				064F58F925114287002CED52 /* FileChannelOpener.h */,
+				064F58FA25114288002CED52 /* FileChannelOpener.m */,
 				06721A851559CB2500645E1B /* FileDescriptor.h */,
 				067219961559C7FC00645E1B /* FileDescriptor.m */,
 				063BE3792505C193000819BB /* FileDescriptorHolderSocketImpl.h */,
@@ -11578,6 +11592,7 @@
 				063BE5222505D6DE000819BB /* ICUConfig.h */,
 				063BE52A2505D6E0000819BB /* ICUConfig.m */,
 				063BE5B52505D709000819BB /* ICUData.h */,
+				063BE7AB2505F0B2000819BB /* ICUData.m */,
 				063BE5742505D6F8000819BB /* ICUData.m */,
 				063BE58C2505D6FE000819BB /* ICUDebug.h */,
 				063BE5B42505D709000819BB /* ICUDebug.m */,
@@ -14549,6 +14564,7 @@
 				062025C61D512CA1001EE455 /* FileTest.m */,
 				7A4DE49324C616D3003F4F75 /* FileTimeTest.m */,
 				7A98C18B24E20CAF00774306 /* FileTypeDetectorTest.m */,
+				064F58FF251142E7002CED52 /* FilterInputStreamNullSourceTest.m */,
 				062025411D512B37001EE455 /* First.m */,
 				7A98C04D24D907DD00774306 /* FloatBufferTest.m */,
 				0620288E1D512E78001EE455 /* FloatTest.m */,
@@ -14930,6 +14946,7 @@
 				062026811D512D08001EE455 /* OldAndroidNIOTest.m */,
 				062025D51D512CA1001EE455 /* OldAndroidOutputStreamWriterTest.m */,
 				062025D61D512CA1001EE455 /* OldAndroidPipedStreamTest.m */,
+				064F58FE251142E7002CED52 /* OldAndroidPrintWriterTest.m */,
 				062025D71D512CA1001EE455 /* OldAndroidPushbackInputStreamTest.m */,
 				062025D81D512CA1001EE455 /* OldAndroidPushbackReaderTest.m */,
 				062025D91D512CA1001EE455 /* OldAndroidSerializationTest.m */,
@@ -14973,7 +14990,6 @@
 				062026831D512D08001EE455 /* OldDirectShortBufferTest.m */,
 				062B4F091ED76B8D00D4E7D8 /* OldErrorManagerTest.m */,
 				062B4F0A1ED76B8D00D4E7D8 /* OldFileHandlerTest.m */,
-				062025E81D512CA1001EE455 /* OldFileInputStreamTest.m */,
 				062025E91D512CA1001EE455 /* OldFileReaderTest.m */,
 				062025EA1D512CA1001EE455 /* OldFileTest.m */,
 				062025EB1D512CA1001EE455 /* OldFileWriterTest.m */,
@@ -15003,6 +15019,7 @@
 				062025F61D512CA1001EE455 /* OldObjectOutputStreamTest.m */,
 				062025F71D512CA1001EE455 /* OldObjectStreamFieldTest.m */,
 				062025F81D512CA1001EE455 /* OldOutputStreamTest.m */,
+				064F58FD251142E7002CED52 /* OldOutputStreamWriterTest.m */,
 				062026751D512D08001EE455 /* OldPasswordAuthenticationTest.m */,
 				062025F91D512CA1001EE455 /* OldPipedOutputStreamTest.m */,
 				062025FA1D512CA1001EE455 /* OldPipedWriterTest.m */,
@@ -15258,7 +15275,6 @@
 				06C03EEB249D7B2E00C0CAD1 /* Support_ASimpleInputStream.m */,
 				062029501D512F41001EE455 /* Support_ASimpleOutputStream.m */,
 				062029511D512F41001EE455 /* Support_ASimpleReader.m */,
-				06C03EB1249D7B2D00C0CAD1 /* Support_ASimpleWriter.m */,
 				062029531D512F41001EE455 /* Support_CollectionTest.m */,
 				062029541D512F41001EE455 /* Support_Configuration.m */,
 				069C23E81E9EEECA00CE6BAF /* Support_DecimalFormat.m */,
@@ -15268,7 +15284,6 @@
 				062029571D512F41001EE455 /* Support_GetPutFieldsDefaulted.m */,
 				062029581D512F41001EE455 /* Support_GetPutFieldsDeprecated.m */,
 				062029591D512F41001EE455 /* Support_ListTest.m */,
-				06C03EEE249D7B2E00C0CAD1 /* Support_Locale.m */,
 				0620294F1D512F41001EE455 /* Support_ASimpleInputStream.m */,
 				0620295B1D512F41001EE455 /* Support_MapTest2.m */,
 				069C23EA1E9EEECA00CE6BAF /* Support_MessageFormat.m */,
@@ -17586,6 +17601,7 @@
 				063BE60C2505D717000819BB /* ReplaceableUCharacterIterator.m in Sources */,
 				063BD9C3250597C1000819BB /* SecurityManager.m in Sources */,
 				063BE6202505D718000819BB /* CharacterIteration.m in Sources */,
+				064F58FB25114288002CED52 /* FileChannelOpener.m in Sources */,
 				063BD9C4250597C1000819BB /* SecurityPermission.m in Sources */,
 				063BE0432505BE0B000819BB /* DateTimeException.m in Sources */,
 				063BD9C5250597C1000819BB /* SeekableByteChannel.m in Sources */,
@@ -18051,6 +18067,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				062029771D512F41001EE455 /* Support_GetPutFields.m in Sources */,
+				06C03F37249D7B2E00C0CAD1 /* Support_ASimpleInputStream.m in Sources */,
+				066046DE25114BDA0083DD00 /* Support_ASimpleWriter.m in Sources */,
+				062029861D512F41001EE455 /* Support_TestResource_en_US.m in Sources */,
+				066046DF25114BDA0083DD00 /* Support_Locale.m in Sources */,
+				0620298A1D512F41001EE455 /* Support_TestResource_fr.m in Sources */,
+				06C03F2F249D7B2E00C0CAD1 /* Support_Proxy_I1.m in Sources */,
+				06C03F34249D7B2E00C0CAD1 /* Support_Resources.m in Sources */,
+				06C03F21249D7B2E00C0CAD1 /* Support_UnmodifiableMapTest.m in Sources */,
 				0636BB16249D9AC9004CCA8C /* AlgorithmParameterGeneratorSpiTest.m in Sources */,
 				0636BB17249D9AC9004CCA8C /* MessageDigestTestMD2.m in Sources */,
 				0636BB18249D9AC9004CCA8C /* SecureClassLoaderTest.m in Sources */,
@@ -18110,7 +18135,6 @@
 				FA5C0CBE21BFFE6B000B6275 /* CloneNotSupportedExceptionTest.m in Sources */,
 				06C1439E1F46138600CABE9A /* DatagramChannelTest.m in Sources */,
 				06C1439F1F46138600CABE9A /* FileChannelLockingTest.m in Sources */,
-				06C03F39249D7B2E00C0CAD1 /* Support_Locale.m in Sources */,
 				06C03FC1249D7F6100C0CAD1 /* CertificateException2Test.m in Sources */,
 				06C143A01F46138600CABE9A /* FileChannelTest.m in Sources */,
 				06C143A11F46138600CABE9A /* FileLockInterruptionExceptionTest.m in Sources */,
@@ -18207,7 +18231,6 @@
 				062026F51D512D17001EE455 /* ZipEntryTest.m in Sources */,
 				0661FA0924E5E253003AD88E /* PosixFileAttributeViewTest.m in Sources */,
 				FA6C09CA2187C5AC006C646A /* TestMonthDay.m in Sources */,
-				062029771D512F41001EE455 /* Support_GetPutFields.m in Sources */,
 				062026221D512CA1001EE455 /* OldAndroidSerializationTest.m in Sources */,
 				06C03FB7249D7F6100C0CAD1 /* CertificateFactory1Test.m in Sources */,
 				7A98C09924D907E400774306 /* AbstractBufferTest.m in Sources */,
@@ -18253,7 +18276,6 @@
 				FA24DEB022EA4822000DEC19 /* ConcurrentHashMap8Test.m in Sources */,
 				063A62D81F67267C001DC971 /* BrokenInputStream.m in Sources */,
 				067FC8211EFAE75E001D0627 /* LockSupportTest.m in Sources */,
-				062029861D512F41001EE455 /* Support_TestResource_en_US.m in Sources */,
 				06C03FB1249D7F6100C0CAD1 /* EncodedKeySpecTest.m in Sources */,
 				FA6C09B42187C5AB006C646A /* TestOffsetTime.m in Sources */,
 				6A5D0D61219CCBB200709765 /* TestDateTimeFormatter.m in Sources */,
@@ -18418,7 +18440,6 @@
 				069C24211E9EEF7B00CE6BAF /* DateTest.m in Sources */,
 				062027781D512D9D001EE455 /* MockFooStop.m in Sources */,
 				FA5C0CC121BFFE6B000B6275 /* RuntimeExceptionTest.m in Sources */,
-				06C03F37249D7B2E00C0CAD1 /* Support_ASimpleInputStream.m in Sources */,
 				FA24DE5822E761AB000DEC19 /* IncompleteAnnotationExceptionTest.m in Sources */,
 				FA5C0C6321BFFBA5000B6275 /* AbstractListTest.m in Sources */,
 				FA5C0C9A21BFFE6B000B6275 /* VirtualMachineErrorTest.m in Sources */,
@@ -18440,7 +18461,6 @@
 				0612B9521F438ECB0069EF58 /* ObservableTest.m in Sources */,
 				FA5C0CA921BFFE6B000B6275 /* AssertionErrorTest.m in Sources */,
 				06F093B72304A53300BF7E3D /* ISOCharsetDecoderTest.m in Sources */,
-				0620298A1D512F41001EE455 /* Support_TestResource_fr.m in Sources */,
 				06C03FBC249D7F6100C0CAD1 /* CertificateNotYetValidExceptionTest.m in Sources */,
 				FA5C0C5D21BFFBA5000B6275 /* EmptyStackExceptionTest.m in Sources */,
 				062025671D512B37001EE455 /* JniTest.m in Sources */,
@@ -18567,6 +18587,7 @@
 				062025AE1D512C8E001EE455 /* NoPackageTest.m in Sources */,
 				FA5C0C6421BFFBA5000B6275 /* AbstractCollectionTest.m in Sources */,
 				062026A91D512D08001EE455 /* SocketTest.m in Sources */,
+				064F5903251142E8002CED52 /* FilterInputStreamNullSourceTest.m in Sources */,
 				7A0F1492248D998000AFE2BC /* ServerSocketFactoryTest.m in Sources */,
 				06C03DBB249D77D900C0CAD1 /* PrivilegedActionExceptionTest.m in Sources */,
 				0620264A1D512CA1001EE455 /* OldStringBufferInputStreamTest.m in Sources */,
@@ -18690,6 +18711,7 @@
 				FA24DE9B22EA1335000DEC19 /* MissingFormatArgumentExceptionTest.m in Sources */,
 				067FC8271EFAE8F2001D0627 /* EnvironmentUtil.m in Sources */,
 				0620260D1D512CA1001EE455 /* FileInputStreamTest.m in Sources */,
+				064F5901251142E8002CED52 /* OldOutputStreamWriterTest.m in Sources */,
 				06F093B82304A53300BF7E3D /* ASCCharsetDecoderTest.m in Sources */,
 				062029741D512F41001EE455 /* Support_CollectionTest.m in Sources */,
 				0620254F1D512B37001EE455 /* NativeUtil.m in Sources */,
@@ -18715,7 +18737,6 @@
 				06C03E6C249D7A9500C0CAD1 /* MyCertificateFactorySpi.m in Sources */,
 				7A98C08224D907E400774306 /* WrappedShortBufferTest.m in Sources */,
 				FAF1050122F8828300ED7FF6 /* CoderResultTest.m in Sources */,
-				06C03F2F249D7B2E00C0CAD1 /* Support_Proxy_I1.m in Sources */,
 				7A0F148F248D995100AFE2BC /* ServerSocketFactoryTest.m in Sources */,
 				FA5C0C5321BFFBA5000B6275 /* UUIDTest.m in Sources */,
 				062026ED1D512D17001EE455 /* OldAndroidChecksumTest.m in Sources */,
@@ -18786,7 +18807,6 @@
 				062028EC1D512EBD001EE455 /* SAXParserTestSupport.m in Sources */,
 				7A0F1475248D982C00AFE2BC /* DurationTest.m in Sources */,
 				063A62DA1F67267C001DC971 /* DoNothingXMLReader.m in Sources */,
-				06C03F34249D7B2E00C0CAD1 /* Support_Resources.m in Sources */,
 				0620260A1D512CA1001EE455 /* CharArrayWriterTest.m in Sources */,
 				062028771D512E3E001EE455 /* MessageDigest2Test.m in Sources */,
 				06F093B62304A53300BF7E3D /* CharsetEncoder2Test.m in Sources */,
@@ -18795,7 +18815,6 @@
 				063A62F81F6726C1001DC971 /* NamespaceSupportTest.m in Sources */,
 				062025531D512B37001EE455 /* ReflectionTest.m in Sources */,
 				062026C81D512D08001EE455 /* EventObjectTest.m in Sources */,
-				06C03F21249D7B2E00C0CAD1 /* Support_UnmodifiableMapTest.m in Sources */,
 				062025601D512B37001EE455 /* SocketPolicy.m in Sources */,
 				7A98C09324D907E400774306 /* WrappedDoubleBufferTest.m in Sources */,
 				062024FA1D512AA2001EE455 /* Base64Test.m in Sources */,
@@ -18885,7 +18904,6 @@
 				062027551D512D82001EE455 /* FakeFox04.m in Sources */,
 				7A4DE4A224C61842003F4F75 /* ManifestTest.m in Sources */,
 				06C03E31249D78E900C0CAD1 /* TCKDayOfWeek.m in Sources */,
-				06C03F0F249D7B2E00C0CAD1 /* Support_ASimpleWriter.m in Sources */,
 				063A62FC1F6726C1001DC971 /* XMLReaderAdapterTest.m in Sources */,
 				0620277F1D512D9D001EE455 /* MockPropertyChangeEvent.m in Sources */,
 				062027801D512D9D001EE455 /* MockPropertyChangeListener.m in Sources */,
@@ -19017,7 +19035,6 @@
 				FA5C0CC021BFFE6B000B6275 /* NoSuchMethodExceptionTest.m in Sources */,
 				7A4DE49F24C61842003F4F75 /* JarExceptionTest.m in Sources */,
 				060483372460F68400EAA86E /* NSDictionaryMapTest.m in Sources */,
-				062026311D512CA1001EE455 /* OldFileInputStreamTest.m in Sources */,
 				7A4DE4AD24C6188D003F4F75 /* AnnotationTest.m in Sources */,
 				06C03F77249D7DCF00C0CAD1 /* TCKChronoZonedDateTime.m in Sources */,
 				FA5C0C9821BFFE6B000B6275 /* ObjectTest.m in Sources */,
@@ -19220,6 +19237,7 @@
 				0612B8EF1F4373740069EF58 /* AbstractQueueTest.m in Sources */,
 				063A62E31F67267C001DC971 /* NoSubclassXMLReader.m in Sources */,
 				0620293C1D512F25001EE455 /* ECFieldFpTest.m in Sources */,
+				064F5902251142E8002CED52 /* OldAndroidPrintWriterTest.m in Sources */,
 				FA6C09B92187C5AB006C646A /* TestChronoUnit.m in Sources */,
 				FA1DD7B12154182E00D0B800 /* NullPrintStream.m in Sources */,
 				062028D21D512E89001EE455 /* BigIntegerSubtractTest.m in Sources */,

@@ -17,6 +17,7 @@
 
 package libcore.java.io;
 
+import java.io.Writer;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import tests.support.Support_ASimpleWriter;
@@ -297,6 +298,43 @@ public class OldBufferedWriterTest extends junit.framework.TestCase {
             fail("Test 5: IOException expected.");
         } catch (IOException e) {
             // Expected.
+        }
+    }
+
+    public void test_closeException() throws Exception {
+        final IOException testException = new IOException("kaboom!");
+        Writer thrower = new Writer() {
+            @Override
+            public void write(char cbuf[], int off, int len) throws IOException {
+                // Not used
+            }
+
+            @Override
+            public void flush() throws IOException {
+                // Not used
+            }
+
+            @Override
+            public void close() throws IOException {
+                throw testException;
+            }
+        };
+        BufferedWriter bw = new BufferedWriter(thrower);
+
+        try {
+            bw.close();
+            fail();
+        } catch(IOException expected) {
+            assertSame(testException, expected);
+        }
+
+        try {
+            // Pre-openJdk8 BufferedWriter#close() with exception wouldn't
+            // reset the output writer to null. This would still allow write()
+            // to succeed.
+            bw.write(1);
+            fail();
+        } catch(IOException expected) {
         }
     }
 

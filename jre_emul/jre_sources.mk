@@ -298,7 +298,17 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/NioUtils.java \
   java/nio/ReadOnlyBufferException.java \
   java/nio/ShortBuffer.java \
+  java/nio/channels/AsynchronousCloseException.java \
+  java/nio/channels/ByteChannel.java \
   java/nio/channels/Channel.java \
+  java/nio/channels/ClosedByInterruptException.java \
+  java/nio/channels/ClosedChannelException.java \
+  java/nio/channels/FileChannel.java \
+  java/nio/channels/GatheringByteChannel.java \
+  java/nio/channels/ReadableByteChannel.java \
+  java/nio/channels/ScatteringByteChannel.java \
+  java/nio/channels/SeekableByteChannel.java \
+  java/nio/channels/WritableByteChannel.java \
   java/nio/charset/CharacterCodingException.java \
   java/nio/charset/Charset.java \
   java/nio/charset/CharsetDecoder.java \
@@ -313,6 +323,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
   java/nio/file/Path.java \
+  java/nio/file/attribute/FileAttribute.java \
   java/nio/file/attribute/FileTime.java \
   java/security/AccessControlContext.java \
   java/security/AccessController.java \
@@ -577,6 +588,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/DefaultFileSystem.java \
   java/io/DeleteOnExitHook.java \
   java/io/ExpiringCache.java \
+  java/io/FileChannelOpener.java \
   java/io/FileSystem.java \
   java/io/SerialCallbackContext.java \
   java/io/UnixFileSystem.java \
@@ -601,6 +613,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/HeapLongBuffer.java \
   java/nio/HeapShortBuffer.java \
   java/nio/StringCharBuffer.java \
+  java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/charset/ModifiedUtf8.java \
   java/text/CalendarBuilder.java \
   java/text/CharacterIteratorFieldDelegate.java \
@@ -946,23 +959,17 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AsynchronousByteChannel.java \
   java/nio/channels/AsynchronousChannel.java \
   java/nio/channels/AsynchronousChannelGroup.java \
-  java/nio/channels/AsynchronousCloseException.java \
   java/nio/channels/AsynchronousFileChannel.java \
   java/nio/channels/AsynchronousServerSocketChannel.java \
   java/nio/channels/AsynchronousSocketChannel.java \
-  java/nio/channels/ByteChannel.java \
   java/nio/channels/CancelledKeyException.java \
   java/nio/channels/Channels.java \
-  java/nio/channels/ClosedByInterruptException.java \
-  java/nio/channels/ClosedChannelException.java \
   java/nio/channels/ClosedSelectorException.java \
   java/nio/channels/CompletionHandler.java \
   java/nio/channels/ConnectionPendingException.java \
   java/nio/channels/DatagramChannel.java \
-  java/nio/channels/FileChannel.java \
   java/nio/channels/FileLock.java \
   java/nio/channels/FileLockInterruptionException.java \
-  java/nio/channels/GatheringByteChannel.java \
   java/nio/channels/IllegalBlockingModeException.java \
   java/nio/channels/IllegalChannelGroupException.java \
   java/nio/channels/IllegalSelectorException.java \
@@ -979,9 +986,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/OverlappingFileLockException.java \
   java/nio/channels/Pipe.java \
   java/nio/channels/ReadPendingException.java \
-  java/nio/channels/ReadableByteChannel.java \
-  java/nio/channels/ScatteringByteChannel.java \
-  java/nio/channels/SeekableByteChannel.java \
   java/nio/channels/SelectableChannel.java \
   java/nio/channels/SelectionKey.java \
   java/nio/channels/Selector.java \
@@ -990,15 +994,12 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/SocketChannel.java \
   java/nio/channels/UnresolvedAddressException.java \
   java/nio/channels/UnsupportedAddressTypeException.java \
-  java/nio/channels/WritableByteChannel.java \
   java/nio/channels/WritePendingException.java \
-  java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/channels/spi/AbstractSelectableChannel.java \
   java/nio/channels/spi/AbstractSelectionKey.java \
   java/nio/channels/spi/AbstractSelector.java \
   java/nio/channels/spi/AsynchronousChannelProvider.java \
   java/nio/channels/spi/SelectorProvider.java \
-  java/nio/file/attribute/FileAttribute.java \
   java/util/InputMismatchException.java \
   java/util/Scanner.java
 

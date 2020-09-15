@@ -17,6 +17,8 @@
 
 package libcore.java.io;
 
+import java.io.InputStream;
+import java.util.Vector;
 import java.io.IOException;
 import java.io.SequenceInputStream;
 import tests.support.Support_ASimpleInputStream;
@@ -25,8 +27,8 @@ public class OldSequenceInputStreamTest extends junit.framework.TestCase {
 
     Support_ASimpleInputStream simple1, simple2;
     SequenceInputStream si;
-    String s1 = "Hello";
-    String s2 = "World";
+    final String s1 = "Hello";
+    final String s2 = "World";
 
     public void test_available() throws IOException {
         assertEquals("Returned incorrect number of bytes!", s1.length(), si.available());
@@ -150,6 +152,54 @@ public class OldSequenceInputStreamTest extends junit.framework.TestCase {
         } catch (IndexOutOfBoundsException e) {
             // Expected
         }
+    }
+
+    public void test_readStackOVerflow() throws Exception {
+        // 2^16 should be enough to overflow
+        Vector<InputStream> inputs = new Vector<>();
+        InputStream emptyInputStream = new Support_ASimpleInputStream(new byte[0]);
+        for (int i=0;i < 32768; i++) {
+            inputs.add(emptyInputStream);
+        }
+
+        SequenceInputStream sequenceInputStream = new SequenceInputStream(inputs.elements());
+        assertEquals(-1, sequenceInputStream.read());
+
+        byte[] buf = new byte[10];
+        sequenceInputStream = new SequenceInputStream(inputs.elements());
+        assertEquals(-1, sequenceInputStream.read(buf, 0, 10));
+    }
+
+    private SequenceInputStream createSequenceInputStreamWithGaps() {
+        Vector<InputStream> inputs = new Vector<>();
+        InputStream emptyInputStream = new Support_ASimpleInputStream(new byte[0]);
+        inputs.add(emptyInputStream);
+        inputs.add(simple1);
+        inputs.add(emptyInputStream);
+        inputs.add(simple2);
+        inputs.add(emptyInputStream);
+        return new SequenceInputStream(inputs.elements());
+    }
+
+    public void test_readArraySkipsEmpty() throws Exception {
+        SequenceInputStream sequenceInputStream1 = createSequenceInputStreamWithGaps();
+        byte[] buf = new byte[10];
+        assertEquals(s1.length(), sequenceInputStream1.read(buf, 0, s1.length()));
+        assertEquals(s1, new String(buf, 0, s1.length()));
+        assertEquals(s2.length(), sequenceInputStream1.read(buf, 0, s2.length()));
+        assertEquals(s2, new String(buf, 0, s2.length()));
+        assertEquals(-1, sequenceInputStream1.read(buf, 0, s1.length()));
+    }
+
+    public void test_readSkipsEmpty() throws Exception {
+        SequenceInputStream sequenceInputStream1 = createSequenceInputStreamWithGaps();
+        for (int i=0;i < s1.length(); i++) {
+            assertEquals(s1.charAt(i), sequenceInputStream1.read());
+        }
+        for (int i=0;i < s2.length(); i++) {
+            assertEquals(s2.charAt(i), sequenceInputStream1.read());
+        }
+        assertEquals(-1, sequenceInputStream1.read());
     }
 
     protected void setUp() {

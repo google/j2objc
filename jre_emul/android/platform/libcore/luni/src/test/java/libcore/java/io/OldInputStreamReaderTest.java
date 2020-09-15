@@ -228,6 +228,17 @@ public class OldInputStreamReaderTest extends TestCase {
         }
     }
 
+    public void test_ready() {
+        // Test for method boolean java.io.InputStreamReader.ready()
+        try {
+            assertTrue("Ready test failed", is.ready());
+            is.read();
+            assertTrue("More chars, but not ready", is.ready());
+        } catch (IOException e) {
+            fail("Exception during ready test : " + e.getMessage());
+        }
+    }
+
     /**
      * Test for regression of a bug that dropped characters when
      * multibyte encodings spanned buffer boundaries.

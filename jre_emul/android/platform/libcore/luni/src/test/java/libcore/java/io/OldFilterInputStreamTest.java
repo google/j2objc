@@ -18,11 +18,11 @@
 package libcore.java.io;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import tests.support.Support_ASimpleInputStream;
-import tests.support.Support_PlatformFile;
 
 public class OldFilterInputStreamTest extends junit.framework.TestCase {
 
@@ -36,13 +36,11 @@ public class OldFilterInputStreamTest extends junit.framework.TestCase {
 
     private FilterInputStream is;
 
-    byte[] ibuf = new byte[4096];
-
-    private static final String testString = "Lorem ipsum dolor sit amet,\n" +
+    private static final String INPUT = "Lorem ipsum dolor sit amet,\n" +
     "consectetur adipisicing elit,\nsed do eiusmod tempor incididunt ut" +
     "labore et dolore magna aliqua.\n";
 
-    private static final int testLength = testString.length();
+    private static final int INPUT_LENGTH = INPUT.length();
 
     public void test_Constructor() {
         // The FilterInputStream object has already been created in setUp().
@@ -59,7 +57,7 @@ public class OldFilterInputStreamTest extends junit.framework.TestCase {
 
     public void test_available() throws IOException {
         assertEquals("Test 1: Returned incorrect number of available bytes;",
-                testLength, is.available());
+                INPUT_LENGTH, is.available());
 
         is.close();
         try {
@@ -144,7 +142,7 @@ public class OldFilterInputStreamTest extends junit.framework.TestCase {
     public void test_read() throws IOException {
         int c = is.read();
         assertEquals("Test 1: Read returned incorrect char;",
-                testString.charAt(0), c);
+                INPUT.charAt(0), c);
 
         is.close();
         try {
@@ -161,7 +159,7 @@ public class OldFilterInputStreamTest extends junit.framework.TestCase {
         is.read(buf1);
         assertTrue("Test 1: Failed to read correct data.",
                 new String(buf1, 0, buf1.length).equals(
-                        testString.substring(0, 100)));
+                        INPUT.substring(0, 100)));
 
         is.close();
         try {
@@ -281,7 +279,7 @@ public class OldFilterInputStreamTest extends junit.framework.TestCase {
         is.read(buf1, 0, buf1.length);
         assertTrue("Test 1: Failed to skip to the correct position.",
                 new String(buf1, 0, buf1.length).equals(
-                        testString.substring(10, 20)));
+                        INPUT.substring(10, 20)));
 
         is.close();
         try {
@@ -292,32 +290,19 @@ public class OldFilterInputStreamTest extends junit.framework.TestCase {
         }
     }
 
-    protected void setUp() {
-        try {
-            fileName = System.getProperty("java.io.tmpdir");
-            String separator = System.getProperty("file.separator");
-            if (fileName.charAt(fileName.length() - 1) == separator.charAt(0))
-                fileName = Support_PlatformFile.getNewPlatformFile(fileName,
-                        "input.tst");
-            else
-                fileName = Support_PlatformFile.getNewPlatformFile(fileName
-                        + separator, "input.tst");
-            java.io.OutputStream fos = new java.io.FileOutputStream(fileName);
-            fos.write(testString.getBytes());
-            fos.close();
-            is = new MyFilterInputStream(new java.io.FileInputStream(fileName));
-        } catch (java.io.IOException e) {
-            System.out.println("Exception during setup");
-            e.printStackTrace();
-        }
+    protected void setUp() throws Exception {
+        File f = File.createTempFile("OldFilterInputStreamTest", "tst");
+        fileName = f.getAbsolutePath();
+        java.io.OutputStream fos = new java.io.FileOutputStream(fileName);
+        fos.write(INPUT.getBytes());
+        fos.close();
+        is = new MyFilterInputStream(new java.io.FileInputStream(fileName));
     }
 
     protected void tearDown() {
         try {
             is.close();
-        } catch (Exception e) {
-            System.out.println("Unexpected exception in tearDown().");
+        } catch (Exception ignored) {
         }
-        new java.io.File(fileName).delete();
     }
 }

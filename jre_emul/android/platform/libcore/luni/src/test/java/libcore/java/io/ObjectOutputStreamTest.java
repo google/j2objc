@@ -16,8 +16,14 @@
 
 package libcore.java.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import junit.framework.TestCase;
 
 public final class ObjectOutputStreamTest extends TestCase {
@@ -31,5 +37,75 @@ public final class ObjectOutputStreamTest extends TestCase {
         String s = sb.toString();
         ObjectOutputStream os = new ObjectOutputStream(new ByteArrayOutputStream());
         os.writeObject(s);
+    }
+
+    public static class CallsCloseInWriteObjectMethod implements Serializable {
+        private String message;
+
+        public CallsCloseInWriteObjectMethod(String message) {
+            this.message = message;
+        }
+
+        private void writeObject(ObjectOutputStream oos) throws IOException {
+            oos.writeObject(message);
+            oos.close();
+        }
+
+        private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+            message = (String) ois.readObject();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            CallsCloseInWriteObjectMethod that = (CallsCloseInWriteObjectMethod) o;
+
+            return message.equals(that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return message.hashCode();
+        }
+    }
+
+    // http://b/28159133
+    public void testCloseInWriteObject() throws Exception {
+        String hello = "Hello";
+        CallsCloseInWriteObjectMethod object = new CallsCloseInWriteObjectMethod(hello);
+        // This reproduces the problem in http://b/28159133 as follows:
+        //   the list class gets handle N
+        //   the object closes the ObjectOutputStream and clears the handle table
+        //   the hello gets handle N
+        //   the reuse of hello has a reference to handle N
+        // When it is deserialized the list contains object, hello, Arrays.asList().getClass()
+        // instead of object, hello, hello.
+        List<Serializable> input = Arrays.asList(object, hello, hello);
+        @SuppressWarnings("unchecked")
+        List<CallsCloseInWriteObjectMethod> output = (List<CallsCloseInWriteObjectMethod>)
+                roundTrip(input);
+
+        assertEquals(input, output);
+    }
+
+    private Serializable roundTrip(Object object)
+            throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(object);
+        }
+
+        Serializable read;
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+            read = (Serializable) ois.readObject();
+        }
+        return read;
     }
 }

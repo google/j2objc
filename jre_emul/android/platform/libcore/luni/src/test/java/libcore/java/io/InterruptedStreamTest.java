@@ -207,7 +207,10 @@ public final class InterruptedStreamTest extends TestCase {
 
     private static void confirmInterrupted(Thread thread) throws InterruptedException {
         // validate and clear interrupted bit before join
-        assertTrue(Thread.interrupted());
-        thread.join();
+        try {
+            assertTrue(Thread.interrupted());
+        } finally {
+            thread.join();
+        }
     }
 }
