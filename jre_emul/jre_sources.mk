@@ -309,6 +309,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/channels/ScatteringByteChannel.java \
   java/nio/channels/SeekableByteChannel.java \
   java/nio/channels/WritableByteChannel.java \
+  java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/charset/CharacterCodingException.java \
   java/nio/charset/Charset.java \
   java/nio/charset/CharsetDecoder.java \
@@ -613,7 +614,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/HeapLongBuffer.java \
   java/nio/HeapShortBuffer.java \
   java/nio/StringCharBuffer.java \
-  java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/charset/ModifiedUtf8.java \
   java/text/CalendarBuilder.java \
   java/text/CharacterIteratorFieldDelegate.java \
