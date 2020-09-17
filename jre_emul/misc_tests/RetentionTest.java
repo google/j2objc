@@ -31,31 +31,29 @@ public class RetentionTest extends TestCase {
     object.hashCode(); // should not crash
   }
 
-  // TODO(micapolos): Uncomment once fixed.
-  // public void testFieldAccess() {
-  //   Ref ref = new Ref();
-  //   AutoreleasePool.run(() -> {
-  //     ref.object = new Object();
-  //   });
-  //   Object object = ref.object;
-  //   AutoreleasePool.run(() -> {
-  //     ref.object = null;
-  //   });
-  //   object.hashCode(); // should not crash
-  // }
+  public void testFieldAccess() {
+    Ref ref = new Ref();
+    AutoreleasePool.run(() -> {
+      ref.object = new Object();
+    });
+    Object object = ref.object;
+    AutoreleasePool.run(() -> {
+      ref.object = null;
+    });
+    object.hashCode(); // should not crash
+  }
 
-  // TODO(micapolos): Uncomment once fixed.
-  // public void testFieldGetter() {
-  //   Ref ref = new Ref();
-  //   AutoreleasePool.run(() -> {
-  //     ref.object = new Object();
-  //   });
-  //   Object object = ref.get();
-  //   AutoreleasePool.run(() -> {
-  //     ref.object = null;
-  //   });
-  //   object.hashCode(); // should not crash
-  // }
+  public void testFieldGetter() {
+    Ref ref = new Ref();
+    AutoreleasePool.run(() -> {
+      ref.object = new Object();
+    });
+    Object object = ref.get();
+    AutoreleasePool.run(() -> {
+      ref.object = null;
+    });
+    object.hashCode(); // should not crash
+  }
 
   // TODO(micapolos): Uncomment once fixed.
   // public void testAutoreleasePoolInForLoop() {

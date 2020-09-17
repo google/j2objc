@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -50,9 +49,10 @@ public class EnhancedForRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (void)testWithJavaLangIterable:(id<JavaLangIterable>)strings {",
           "{",
-            "id<JavaUtilIterator> iter__ = [((id<JavaLangIterable>) nil_chk(strings)) iterator];",
+            "id<JavaUtilIterator> iter__ = "
+                + "JreRetainedLocalValue([((id<JavaLangIterable>) nil_chk(strings)) iterator]);",
             "while ([((id<JavaUtilIterator>) nil_chk(iter__)) hasNext]) {",
-              "NSString *s = [iter__ next];",
+              "NSString *s = JreRetainedLocalValue([iter__ next]);",
             "}",
           "}",
           "for (NSString * __strong s in strings) {",
@@ -88,10 +88,11 @@ public class EnhancedForRewriterTest extends GenerationTest {
         "  break_testLabel1: ;",
         "}",
         "{",
-        "  id<JavaUtilIterator> iter__ = [((id<JavaUtilList>) nil_chk(list)) iterator];",
+        "  id<JavaUtilIterator> iter__ = "
+            + "JreRetainedLocalValue([((id<JavaUtilList>) nil_chk(list)) iterator]);",
         "  while ([((id<JavaUtilIterator>) nil_chk(iter__)) hasNext]) {",
         "    {",
-        "      id o = [iter__ next];",
+        "      id o = JreRetainedLocalValue([iter__ next]);",
         "      if (b) {",
         "        goto break_testLabel2;",
         "      }",

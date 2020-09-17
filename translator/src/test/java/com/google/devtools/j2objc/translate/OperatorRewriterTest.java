@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -256,9 +255,9 @@ public class OperatorRewriterTest extends GenerationTest {
         + "    f2 = f1;"
         + "  }"
         + "}", "Test", "Test.m");
-    assertTranslation(translation, "Test_Foo *f2 = f_;");
+    assertTranslation(translation, "Test_Foo *f2 = JreRetainedLocalValue(f_);");
     assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "Test_Foo *f3 = f2;");
+    assertTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
     assertTranslation(translation, "s1 = @\"foo\";");
     assertTranslation(translation, "c1 = 'a';");
     assertTranslation(translation, "f3 = JreRetainedLocalValue(f1);");

@@ -471,6 +471,10 @@ public final class TypeUtil {
     return mapped != null ? mapped : element;
   }
 
+  public boolean isMappedClass(TypeElement element) {
+    return javaToObjcTypeMap.containsKey(element);
+  }
+
   /**
    * Find a supertype matching the given qualified name.
    */

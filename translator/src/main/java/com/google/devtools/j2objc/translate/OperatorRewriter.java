@@ -26,6 +26,8 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -38,6 +40,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionElement;
@@ -57,6 +60,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -134,9 +139,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
   public boolean visit(MethodDeclaration node) {
     isSynchronizedMethod = Modifier.isSynchronized(node.getModifiers());
     retainedLocalCandidates.addAll(
-        node.getParameters()
-            .stream()
-            .map(v -> v.getVariableElement())
+        node.getParameters().stream()
+            .map(VariableDeclaration::getVariableElement)
             .filter(v -> !v.asType().getKind().isPrimitive())
             .collect(Collectors.toList()));
     return true;
@@ -208,6 +212,37 @@ public class OperatorRewriter extends UnitTreeVisitor {
       retainedLocalCandidates.add(var);
     }
     return false;
+  }
+
+  @Override
+  public void endVisit(VariableDeclarationFragment node) {
+    if (options.useReferenceCounting()) {
+      Expression initializer = node.getInitializer();
+      if (initializer != null) {
+        VariableElement var = node.getVariableElement();
+        if (!var.asType().getKind().isPrimitive()
+            && !ElementUtil.isFinal(var)
+            && !ElementUtil.isVolatile(var)
+            && !isRetainedLocal(var)
+            && !TypeUtil.isArray(var.asType())
+            && !(var.asType() instanceof PointerType)) {
+          if (initializer instanceof FieldAccess || initializer instanceof Name) {
+            VariableElement initializerVar = TreeUtil.getVariableElement(initializer);
+            if (!ElementUtil.isVolatile(initializerVar)
+                && !(ElementUtil.isStatic(initializerVar) && ElementUtil.isFinal(initializerVar))) {
+              rewriteRetainedLocal(initializer);
+            }
+          } else if (initializer instanceof MethodInvocation) {
+            ExecutableElement method = ((MethodInvocation) initializer).getExecutableElement();
+            if (!typeUtil.isMappedClass((TypeElement) method.getEnclosingElement())
+                && !ElementUtil.isStatic(method)
+                && !ElementUtil.isDefault(method)) {
+              rewriteRetainedLocal(initializer);
+            }
+          }
+        }
+      }
+    }
   }
 
   private boolean isRetainedLocal(VariableElement var) {
