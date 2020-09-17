@@ -12,52 +12,49 @@
  * limitations under the License.
  */
 
+import com.google.j2objc.util.AutoreleasePool;
 import junit.framework.TestCase;
 
 /** @author Michał Pociecha-Łoś */
 public class RetentionTest extends TestCase {
   public void testArrayAccess() {
     Object[] array = new Object[1];
-    array[0] = new Object();
-    runInNewThread(
+    AutoreleasePool.run(
         () -> {
-          Object object = array[0];
-          runInNewThread(
-              () -> {
-                array[0] = null;
-              });
-          object.hashCode(); // should not crash
+          array[0] = new Object();
         });
+    Object object = array[0];
+    AutoreleasePool.run(
+        () -> {
+          array[0] = null;
+        });
+    object.hashCode(); // should not crash
   }
 
   // TODO(micapolos): Uncomment once fixed.
   // public void testFieldAccess() {
   //   Ref ref = new Ref();
-  //   ref.object = new Object();
-  //   runInNewThread(
-  //       () -> {
-  //         Object object = ref.object;
-  //         runInNewThread(
-  //             () -> {
-  //               ref.object = null;
-  //             });
-  //         object.hashCode(); // should not crash
-  //       });
+  //   AutoreleasePool.run(() -> {
+  //     ref.object = new Object();
+  //   });
+  //   Object object = ref.object;
+  //   AutoreleasePool.run(() -> {
+  //     ref.object = null;
+  //   });
+  //   object.hashCode(); // should not crash
   // }
 
   // TODO(micapolos): Uncomment once fixed.
   // public void testFieldGetter() {
   //   Ref ref = new Ref();
-  //   ref.object = new Object();
-  //   runInNewThread(
-  //       () -> {
-  //         Object object = ref.get();
-  //         runInNewThread(
-  //             () -> {
-  //               ref.object = null;
-  //             });
-  //         object.hashCode(); // should not crash
-  //       });
+  //   AutoreleasePool.run(() -> {
+  //     ref.object = new Object();
+  //   });
+  //   Object object = ref.get();
+  //   AutoreleasePool.run(() -> {
+  //     ref.object = null;
+  //   });
+  //   object.hashCode(); // should not crash
   // }
 
   // TODO(micapolos): Uncomment once fixed.
@@ -68,17 +65,6 @@ public class RetentionTest extends TestCase {
   //   }
   //   object.hashCode(); // should not crash
   // }
-
-  static void runInNewThread(Runnable runnable) {
-    Thread thread = new Thread(runnable);
-    thread.start();
-    try {
-      thread.join();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new RuntimeException(e);
-    }
-  }
 
   static class Ref {
     Object object;
