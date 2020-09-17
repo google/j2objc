@@ -2424,6 +2424,9 @@ JRE_PUBLIC_PACKAGES = \
   java.nio.channels.spi \
   java.nio.charset \
   java.nio.charset.spi \
+  java.nio.file \
+  java.nio.file.attribute \
+  java.nio.file.spi \
   java.security \
   java.security.cert \
   java.security.interfaces \
@@ -2444,7 +2447,6 @@ JRE_PUBLIC_PACKAGES = \
   java.util.logging \
   java.util.regex \
   java.util.zip \
-  javax.annotation \
   javax.crypto \
   javax.crypto.interfaces \
   javax.crypto.spec \
@@ -2456,6 +2458,7 @@ JRE_PUBLIC_PACKAGES = \
   javax.security.auth.callback \
   javax.security.auth.x500 \
   javax.security.cert \
+  javax.sql \
   javax.xml \
   javax.xml.datatype \
   javax.xml.namespace \
