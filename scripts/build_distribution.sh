@@ -57,7 +57,13 @@ echo "make test_all"
 $ENV_CMD make -j8 test_all
 ERR=$?
 if [ ${ERR} -ne 0 ]; then
-  exit ${ERR}
+  read -p "make test_all failed, continue? " -n 1 -r
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+      echo "\nquitting..."
+      exit 1
+  fi
+  echo "\ncontinuing..."
 fi
 
 echo "make emul_module_dist"
@@ -72,8 +78,18 @@ fi
 $ENV_CMD make test_translator
 ERR=$?
 if [ ${ERR} -ne 0 ]; then
-  exit ${ERR}
+  read -p "make test_translator failed, continue? " -n 1 -r
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+      echo "\nquitting..."
+      exit 1
+  fi
+  echo "\ncontinuing..."
 fi
 
 mv dist ${DISTRIBUTION_NAME}
-zip -qry ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME}
+zip -qry ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME} \
+    --exclude "${DISTRIBUTION_NAME}/frameworks"
+zip -qry ${DISTRIBUTION_NAME}-frameworks.zip ${DISTRIBUTION_NAME} \
+    --include "${DISTRIBUTION_NAME}/frameworks"
+echo ${DISTRIBUTION_NAME} created.
