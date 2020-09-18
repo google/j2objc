@@ -89,7 +89,6 @@ fi
 
 mv dist ${DISTRIBUTION_NAME}
 zip -qry ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME} \
-    --exclude "${DISTRIBUTION_NAME}/frameworks"
-zip -qry ${DISTRIBUTION_NAME}-frameworks.zip ${DISTRIBUTION_NAME} \
-    --include "${DISTRIBUTION_NAME}/frameworks"
+    --exclude "${DISTRIBUTION_NAME}/frameworks/*"
+zip -qry ${DISTRIBUTION_NAME}-frameworks.zip ${DISTRIBUTION_NAME}/frameworks
 echo ${DISTRIBUTION_NAME} created.
