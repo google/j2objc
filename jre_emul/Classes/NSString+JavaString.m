@@ -479,7 +479,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
         NULL, (const UInt8 *)value->buffer_ + offset, count, encoding, true);
     // CFString can return nil if there are invalid bytes in the input.
     if (result) {
-      return [result autorelease];
+      return AUTORELEASE(result);
     }
   }
   JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:

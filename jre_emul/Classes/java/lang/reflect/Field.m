@@ -54,9 +54,9 @@
 + (instancetype)fieldWithIvar:(Ivar)ivar
                     withClass:(IOSClass *)aClass
                  withMetadata:(const J2ObjcFieldInfo *)metadata {
-  return [[[JavaLangReflectField alloc] initWithIvar:ivar
-                                           withClass:aClass
-                                        withMetadata:metadata] autorelease];
+  return AUTORELEASE([[JavaLangReflectField alloc] initWithIvar:ivar
+                                                      withClass:aClass
+                                                   withMetadata:metadata]);
 }
 
 - (NSString *)getName {
@@ -67,9 +67,9 @@
     return [NSString stringWithUTF8String:metadata_->name];
   } else {
     // Remove the trailing "_" from instance fields.
-    return [[[NSString alloc] initWithBytes:metadata_->name
-                                     length:strlen(metadata_->name) - 1
-                                   encoding:NSUTF8StringEncoding] autorelease];
+    return AUTORELEASE([[NSString alloc] initWithBytes:metadata_->name
+                                                length:strlen(metadata_->name) - 1
+                                              encoding:NSUTF8StringEncoding]);
   }
 }
 
@@ -299,7 +299,7 @@ static void SetWithRawValue(
                                                 withNSString:genericSignature];
   id<JavaLangReflectType> result = parser->fieldType_;
   if (result) {
-    [[result retain] autorelease];
+    RETAIN_AND_AUTORELEASE(result);
   } else {
     result = [self getType];
   }

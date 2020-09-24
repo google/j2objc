@@ -33,10 +33,12 @@
   return AUTORELEASE([[NSDataInputStream alloc] initWithData:data]);
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
   [data_ release];
   [super dealloc];
 }
+#endif
 
 - (jint)read {
   if (position_ == data_.length) {

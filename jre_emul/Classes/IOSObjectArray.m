@@ -100,8 +100,8 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
                             lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type {
-  return [IOSArray_NewArrayWithDimensions(
-      self, dimensionCount, dimensionLengths, type) autorelease];
+  return AUTORELEASE(IOSArray_NewArrayWithDimensions(
+      self, dimensionCount, dimensionLengths, type));
 }
 
 + (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
@@ -132,7 +132,7 @@ static inline id IOSObjectArray_checkValue(
 // Same as above, but releases the value before throwing an exception.
 static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id value) {
   if (value && ![array->elementType_ isInstance:value]) {
-    [value autorelease];
+    AUTORELEASE(value);
     ThrowArrayStoreException(array, value);
   }
 }
@@ -141,7 +141,7 @@ static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id v
 // exception.
 static inline void IOSObjectArray_checkIndexRetainedValue(jint size, jint index, id value) {
   if (index < 0 || index >= size) {
-    [value autorelease];
+    AUTORELEASE(value);
     IOSArray_throwOutOfBoundsWithMsg(size, index);
   }
 }
@@ -192,7 +192,7 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
     releaseEnd = tmp;
   }
   for (jint i = releaseStart; i < releaseEnd; i++) {
-    [buffer[i] autorelease];
+    AUTORELEASE(buffer[i]);
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
 #if ! __has_feature(objc_arc)

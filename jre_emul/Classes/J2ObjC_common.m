@@ -100,7 +100,7 @@ id JreLoadVolatileId(volatile_id *pVar) {
   VOLATILE_LOCK(lock);
   id value = [*(id *)pVar retain];
   VOLATILE_UNLOCK(lock);
-  return [value autorelease];
+  return AUTORELEASE(value);
 }
 
 id JreAssignVolatileId(volatile_id *pVar, id value) {
@@ -118,7 +118,7 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
-  [oldValue autorelease];
+  AUTORELEASE(oldValue);
   return value;
 }
 
@@ -131,7 +131,7 @@ jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id ne
   }
   VOLATILE_UNLOCK(lock);
   if (result) {
-    [expected autorelease];
+    AUTORELEASE(expected);
   }
   return result;
 }
@@ -143,7 +143,7 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
   id oldValue = *(id *)pVar;
   *(id *)pVar = newValue;
   VOLATILE_UNLOCK(lock);
-  return [oldValue autorelease];
+  return AUTORELEASE(oldValue);
 }
 
 void JreReleaseVolatile(volatile_id *pVar) {
@@ -174,7 +174,7 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
   if (*pIvar) {
     JreRetainedWithHandlePreviousValue(parent, *pIvar);
-    [*pIvar autorelease];
+    AUTORELEASE(*pIvar);
   }
   // This retain makes sure that the child object has a retain count of at
   // least 2 which is required by JreRetainedWithInitialize.

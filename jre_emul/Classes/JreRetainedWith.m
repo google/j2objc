@@ -17,6 +17,10 @@
 //  Created by Keith Stanger on Mar. 18, 2016.
 //
 
+#if __has_feature(objc_arc)
+#error "JreRetainedWith cannot be built with ARC"
+#endif
+
 #include "FastPointerLookup.h"
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"

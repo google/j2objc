@@ -298,10 +298,11 @@ public class StackTraceElement implements Serializable {
         if (idx == start) {
           break;
         }
-        NSString *className = [[[NSString alloc] initWithBytesNoCopy:start
-                                                              length:idx - start
-                                                            encoding:encoding
-                                                        freeWhenDone:false] autorelease];
+        NSString *className =
+            AUTORELEASE([[NSString alloc] initWithBytesNoCopy:start
+                                                       length:idx - start
+                                                     encoding:encoding
+                                                 freeWhenDone:false]);
         cls = [IOSClass classForIosName:className];
       }
       if (cls) {

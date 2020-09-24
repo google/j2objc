@@ -51,8 +51,8 @@ static id NewArrayWithDimensionsAndComponentTypes(
   // dimensions.
   __unsafe_unretained id subarrays[size];
   for (jint i = 0; i < size; i++) {
-    subarrays[i] = [NewArrayWithDimensionsAndComponentTypes(
-        self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1) autorelease];
+    subarrays[i] = AUTORELEASE(NewArrayWithDimensionsAndComponentTypes(
+        self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1));
   }
   return [IOSObjectArray newArrayWithObjects:subarrays count:size type:componentType];
 }
@@ -81,7 +81,7 @@ id IOSArray_NewArrayWithDimensions(
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const jint *)dimensionLengths {
-  return [IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil) autorelease];
+  return AUTORELEASE(IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil));
 }
 
 + (id)newArrayWithDimensions:(NSUInteger)dimensionCount
@@ -140,8 +140,8 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
 #if __has_feature(objc_arc)
   @throw [[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"];
 #else
-  @throw [[[JavaLangAssertionError alloc]
-           initWithId:@"abstract method not overridden"] autorelease];
+  @throw AUTORELEASE([[JavaLangAssertionError alloc]
+           initWithId:@"abstract method not overridden"]);
 #endif
   return nil;
 }
@@ -164,8 +164,8 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
       destination:(IOSArray *)destination
         dstOffset:(jint)dstOffset
            length:(jint)length {
-  @throw [[[JavaLangAssertionError alloc]
-      initWithId:@"abstract method not overridden"] autorelease];
+  @throw AUTORELEASE([[JavaLangAssertionError alloc]
+      initWithId:@"abstract method not overridden"]);
 }
 
 - (void *)buffer {

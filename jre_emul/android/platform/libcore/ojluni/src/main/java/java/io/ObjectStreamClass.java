@@ -1024,7 +1024,7 @@ public class ObjectStreamClass implements Serializable {
         IOSClass *instantiationClass = [cons_ getDeclaringClass];
         id (*imp)(id, SEL) = (id (*)(id, SEL)) class_getMethodImplementation(
             instantiationClass.objcClass, sel);
-        id newInstance = [[cl_.objcClass alloc] autorelease];
+        id newInstance = AUTORELEASE([cl_.objcClass alloc]);
         if (newInstance == nil) {
             @throw create_JavaLangInstantiationException_init();
         }

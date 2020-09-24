@@ -69,9 +69,9 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     SecKeyRef publicKeyRef = NULL;
     SecKeyRef privateKeyRef = NULL;
     SecKeyGeneratePair((CFDictionaryRef)keyPairAttr, &publicKeyRef, &privateKeyRef);
-    [privateKeyAttr release];
-    [publicKeyAttr release];
-    [keyPairAttr release];
+    RELEASE_(privateKeyAttr);
+    RELEASE_(publicKeyAttr);
+    RELEASE_(keyPairAttr);
 
     ComGoogleJ2objcSecurityIosRSAKey_IosRSAPublicKey *publicKey =
         [[ComGoogleJ2objcSecurityIosRSAKey_IosRSAPublicKey alloc]
@@ -83,8 +83,8 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
         AUTORELEASE([[JavaSecurityKeyPair alloc] initWithJavaSecurityPublicKey:publicKey
                                                     withJavaSecurityPrivateKey:privateKey]);
 
-    [publicKey release];
-    [privateKey release];
+    RELEASE_(publicKey);
+    RELEASE_(privateKey);
     return keyPair;
   ]-*/;
 

@@ -181,6 +181,6 @@ public final class TimeZoneNames {
           [tz localizedName:NSTimeZoneNameStyleDaylightSaving locale:locale]);
       IOSObjectArray_Set(result, 4,
           [tz localizedName:NSTimeZoneNameStyleShortDaylightSaving locale:locale]);
-      [locale release];
+      RELEASE_(locale);
     ]-*/;
 }

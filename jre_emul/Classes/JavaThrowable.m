@@ -54,13 +54,15 @@
 
 - (void)dealloc {
   free(frames_);
+#if !__has_feature(objc_arc)
   [super dealloc];
+#endif
 }
 
 @end
 
 jobject Java_java_lang_Throwable_nativeFillInStackTrace(JNIEnv *_env_, jclass _cls_) {
-  return [[[RawStack alloc] init] autorelease];
+  return AUTORELEASE([[RawStack alloc] init]);
 }
 
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.

@@ -38,8 +38,8 @@
 
 + (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
                                 metadata:(const J2ObjcMethodInfo *)metadata {
-  return [[[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
-                                                       metadata:metadata] autorelease];
+  return AUTORELEASE([[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
+                                                       metadata:metadata]);
 }
 
 static bool IsStatic(const J2ObjcMethodInfo *metadata) {

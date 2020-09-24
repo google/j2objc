@@ -158,6 +158,15 @@ else
 $(error JDK not supported. Please set JAVA_HOME to JDK 1.8 or 11.)
 endif
 
+ifndef MEMORY_MODEL_FLAG
+  # Default memory model.
+  MEMORY_MODEL_FLAG = -use-reference-counting
+endif
+
+ifeq ("$(strip $(MEMORY_MODEL_FLAG))", "-use-arc")
+  CLANG_ENABLE_OBJC_ARC=YES
+endif
+
 TRANSLATOR_BUILD_FLAGS = \
   -Xlint:unchecked -encoding UTF-8 -nowarn
 ifndef JAVA_8
