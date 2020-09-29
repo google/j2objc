@@ -1271,25 +1271,6 @@ public class StatementGeneratorTest extends GenerationTest {
         + "type:NSObject_class_()]];");
   }
 
-  // Verify that a string == comparison is converted to compare invocation.
-  public void testStringComparison() throws IOException {
-    String translation = translateSourceFile(
-      "public class Test { void check(String s, Object o) { "
-      + "boolean b1 = s == null; boolean b2 = \"foo\" == s; boolean b3 = o == \"bar\"; "
-      + "boolean b4 = \"baz\" != s; boolean b5 = null != \"abc\"; }}",
-      "Test", "Test.m");
-    // Assert that non-string compare isn't converted.
-    assertTranslation(translation, "jboolean b1 = s == nil;");
-    // Assert string equate is converted,
-    assertTranslation(translation, "jboolean b2 = [@\"foo\" isEqual:s];");
-    // Order is reversed when literal is on the right.
-    assertTranslation(translation, "jboolean b3 = [@\"bar\" isEqual:o];");
-    // Not equals is converted.
-    assertTranslation(translation, "jboolean b4 = ![@\"baz\" isEqual:s];");
-    // Comparing null with string literal.
-    assertTranslation(translation, "jboolean b5 = ![@\"abc\" isEqual:nil];");
-  }
-
   public void testBinaryLiterals() throws IOException {
     String translation = translateSourceFile(
         "public class A { "

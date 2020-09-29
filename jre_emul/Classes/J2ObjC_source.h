@@ -367,6 +367,22 @@ JRE_HANDLE_DIV_BY_ZERO(LongDiv, jlong, /);
 JRE_HANDLE_DIV_BY_ZERO(IntMod, jint, %);
 JRE_HANDLE_DIV_BY_ZERO(LongMod, jlong, %);
 
+// Support for the "==" and "!=" operators. Objective C coalescing of
+// string literals only happens with linked bundles, so the same literal string in
+// an app and an app extention or dynamic library will have different addresses.
+// Support for the "==" and "!=" operators. Objective C coalescing of
+// string literals only happens with linked bundles, so the same literal string in
+// an app and an app extention or dynamic library will have different addresses.
+__attribute__((always_inline)) inline jboolean JreObjectEqualsEquals(id objA, id objB) {
+  return objA == objB ||
+         ([objA isKindOfClass:[NSString class]] ? [(NSString *)objA isEqual:objB] : false);
+}
+
+__attribute__((always_inline)) inline jboolean JreStringEqualsEquals(NSString *strA,
+                                                                     NSString *strB) {
+  return strA == strB || [strA isEqualToString:strB];
+}
+
 #pragma pop_macro("I")
 
 #endif  // _J2OBJC_SOURCE_H_

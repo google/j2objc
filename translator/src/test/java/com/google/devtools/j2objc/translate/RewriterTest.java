@@ -284,7 +284,7 @@ public class RewriterTest extends GenerationTest {
         "class Test { int i; @Override public boolean equals(Object object) { "
         + "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "(object == self) || "
+    assertTranslatedLines(translation, "(JreObjectEqualsEquals(object, self)) || "
         + "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(((Test *) "
         + "cast_chk(object, [Test class]))))->i_));");
   }

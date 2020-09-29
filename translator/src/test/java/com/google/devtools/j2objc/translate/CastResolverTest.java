@@ -212,9 +212,8 @@ public class CastResolverTest extends GenerationTest {
     // Wrong: clang will report a compare-distinct-pointer-types warning.
     assertNotInTranslation(translation, "return f == b;");
     assertNotInTranslation(translation, "return b != f;");
-    // Right: weaker right-hand type, since Java compiler already type-checked.
-    assertTranslation(translation, "return f == (id) b;");
-    assertTranslation(translation, "return b != (id) f;");
+    assertTranslation(translation, "return JreObjectEqualsEquals(f, b);");
+    assertTranslation(translation, "return !JreObjectEqualsEquals(b, f);");
     assertTranslation(translation, "IOSByteArray_Get(nil_chk(buffer), offset) != 'Z';");
   }
 

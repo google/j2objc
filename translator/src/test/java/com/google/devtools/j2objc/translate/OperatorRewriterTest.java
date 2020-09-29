@@ -288,4 +288,50 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return JreRetainedLocalValue(f1)");
     assertTranslation(translation, "return val;");
   }
+
+  public void testObjectEquality() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+            + "  boolean testStringEquals(String s1, String s2) {"
+            + "    return s1 == s2;"
+            + "  }"
+            + "  boolean testObjectEquals(Object o1, Object o2) {"
+            + "    return o1 == o2;"
+            + "  }"
+            + "  boolean testObjectEqualsString(String s3, Object o3) {"
+            + "    return s3 == o3;"
+            + "  }"
+            + "  boolean testObjectEqualsNull(Object o4) {"
+            + "    return o4 == null;"
+            + "  }"
+            + "  boolean testPrimitiveEquals(int i1, int i2) {"
+            + "    return i1 == i2;"
+            + "  }"
+            + "  boolean testStringNotEquals(String s5, String s6) {"
+            + "    return s5 != s6;"
+            + "  }"
+            + "  boolean testObjectNotEquals(Object o5, Object o6) {"
+            + "    return o5 != o6;"
+            + "  }"
+            + "  boolean testObjectNotEqualsString(String s7, Object o7) {"
+            + "    return s7 != o7;"
+            + "  }"
+            + "  boolean testObjectNotEqualsNull(Object o8) {"
+            + "    return o8 != null;"
+            + "  }"
+            + "  boolean testPrimitiveNotEquals(int i3, int i4) {"
+            + "    return i3 != i4;"
+            + "  }"
+            + "}", "Test", "Test.m");
+    assertTranslation(translation, "return JreStringEqualsEquals(s1, s2);");
+    assertTranslation(translation, "return JreObjectEqualsEquals(o1, o2);");
+    assertTranslation(translation, "return JreObjectEqualsEquals(s3, o3);");
+    assertTranslation(translation, "return o4 == nil;");
+    assertTranslation(translation, "return i1 == i2;");
+    assertTranslation(translation, "return !JreStringEqualsEquals(s5, s6);");
+    assertTranslation(translation, "return !JreObjectEqualsEquals(o5, o6);");
+    assertTranslation(translation, "return !JreObjectEqualsEquals(s7, o7);");
+    assertTranslation(translation, "return o8 != nil;");
+    assertTranslation(translation, "return i3 != i4;");
+  }
 }

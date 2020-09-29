@@ -472,24 +472,6 @@ public class StatementGenerator extends UnitTreeVisitor {
     InfixExpression.Operator op = node.getOperator();
     List<Expression> operands = node.getOperands();
     assert operands.size() >= 2;
-    if ((op.equals(InfixExpression.Operator.EQUALS)
-        || op.equals(InfixExpression.Operator.NOT_EQUALS))) {
-      Expression lhs = operands.get(0);
-      Expression rhs = operands.get(1);
-      if (lhs instanceof StringLiteral || rhs instanceof StringLiteral) {
-        if (!(lhs instanceof StringLiteral)) {
-          // In case the lhs can't call isEqual.
-          lhs = operands.get(1);
-          rhs = operands.get(0);
-        }
-        buffer.append(op.equals(InfixExpression.Operator.NOT_EQUALS) ? "![" : "[");
-        lhs.accept(this);
-        buffer.append(" isEqual:");
-        rhs.accept(this);
-        buffer.append("]");
-        return false;
-      }
-    }
     String opStr = ' ' + op.toString() + ' ';
     boolean isFirst = true;
     for (Expression operand : operands) {

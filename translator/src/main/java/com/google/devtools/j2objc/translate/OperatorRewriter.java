@@ -107,7 +107,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     TypeMirror nodeType = node.getTypeMirror();
-    String funcName = getInfixFunction(op, nodeType);
+    String funcName = getInfixFunction(node);
     if (funcName != null) {
       Iterator<Expression> operandIter = node.getOperands().iterator();
       Expression leftOperand = operandIter.next();
@@ -128,6 +128,12 @@ public class OperatorRewriter extends UnitTreeVisitor {
         leftOperand = invocation;
       }
 
+      // Both EQUALS and NOT_EQUALS return the same Jre*EqualsEqual function,
+      // so NOT_EQUALS operators are negated here.
+      if (op == InfixExpression.Operator.NOT_EQUALS) {
+        leftOperand = new PrefixExpression(
+            leftOperand.getTypeMirror(), PrefixExpression.Operator.NOT, leftOperand);
+      }
       node.replaceWith(leftOperand);
     } else if (op == InfixExpression.Operator.PLUS && typeUtil.isString(nodeType)
                && !isStringAppend(node.getParent())) {
@@ -388,7 +394,25 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private static String getInfixFunction(InfixExpression.Operator op, TypeMirror nodeType) {
+  private String getInfixFunction(InfixExpression node) {
+    InfixExpression.Operator op = node.getOperator();
+    TypeMirror nodeType = node.getTypeMirror();
+    if (op == InfixExpression.Operator.EQUALS || op == InfixExpression.Operator.NOT_EQUALS) {
+      List<Expression> operands = node.getOperands();
+      assert operands.size() == 2;
+      TypeMirror lhs = operands.get(0).getTypeMirror();
+      TypeMirror rhs = operands.get(1).getTypeMirror();
+      if (TypeUtil.isEnum(lhs) || TypeUtil.isEnum(rhs)) {
+        // Enums can be directly compared.
+        return null;
+      }
+      if (typeUtil.isString(lhs) && typeUtil.isString(rhs)) {
+        return "JreStringEqualsEquals";
+      }
+      if (isNonNullObjectType(lhs) && isNonNullObjectType(rhs)) {
+        return "JreObjectEqualsEquals";
+      }
+     }
     switch (op) {
       case DIVIDE:
         switch (nodeType.getKind()) {
@@ -414,6 +438,10 @@ public class OperatorRewriter extends UnitTreeVisitor {
       default:
         return null;
     }
+  }
+
+  private boolean isNonNullObjectType(TypeMirror type) {
+    return !typeUtil.isSameType(type, typeUtil.getNull()) && !type.getKind().isPrimitive();
   }
 
   private static boolean isVolatile(Expression varNode) {
