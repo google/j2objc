@@ -20,8 +20,8 @@ JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
 
 JUNIT_JAR = j2objc_junit.jar
 
-JUNIT_ROOT_JAR = junit-4.11.jar
-JUNIT_SOURCE_JAR = junit-4.11-sources.jar
+JUNIT_ROOT_JAR = junit-4.12.jar
+JUNIT_SOURCE_JAR = junit-4.12-sources.jar
 
 JUNIT_DATAPROVIDER_JAR = junit-dataprovider-1.10.4.jar
 JUNIT_DATAPROVIDER_SOURCE_JAR = junit-dataprovider-1.10.4-sources.jar
