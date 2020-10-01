@@ -409,12 +409,23 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
         IdentityHashMap mapThree = new IdentityHashMap();
         IdentityHashMap mapFour = new IdentityHashMap();
 
+        /*
         String one = "one";
         // J2ObjC: use toLowerCase to ensure a new reference is constructed.
         String alsoOne = one.toLowerCase(java.util.Locale.ENGLISH);
         String two = "two";
         // J2ObjC: use toLowerCase to ensure a new reference is constructed.
         String alsoTwo = two.toLowerCase(java.util.Locale.ENGLISH);
+         */
+
+        // J2ObjC: use Integer instead of String. Numbers above 128 are used to
+        // avoid Integer's cache.
+        Integer one = 1001;
+        Integer alsoOne = new Integer(one); // use the new operator to ensure a
+        // new reference is constructed
+        Integer two = 1002;
+        Integer alsoTwo = new Integer(two); // use the new operator to ensure a
+        // new reference is constructed
 
         mapOne.put(one, two);
         mapFour.put(one, two);
