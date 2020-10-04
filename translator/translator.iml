@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
-    <libelement url="jar://$MODULE_DIR$/../java_deps/build_result/junit-4.11.jar!/" />
-    <libelement url="jar://$MODULE_DIR$/../java_deps/build_result/jsr305-3.0.0.jar!/" />
-    <libelement url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
-    <libelement url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-compilertools-0.5.32.jar!/" />
-    <libelement url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-core-0.5.32.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/j2objc_junit.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/jsr305.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/javac.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/procyon-decompiler.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-25.1-jre.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/plume-util-1.0.5.jar!/" />
@@ -33,16 +32,7 @@
     <orderEntry type="module-library">
       <library name="j2objc_junit.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/junit-4.11.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="jsr305.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jsr305-3.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/j2objc_junit.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -62,34 +52,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-compilertools-0.5.32.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-core-0.5.32.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="javac.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -123,6 +86,46 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/../jre_emul/build_result/jre_emul-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-compilertools-0.5.32.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-core-0.5.32.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jsr305-3.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jsr305-3.0.0.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
