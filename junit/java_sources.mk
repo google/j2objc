@@ -47,6 +47,7 @@ JUNIT_SOURCES = \
     org/junit/Ignore.java \
     org/junit/Rule.java \
     org/junit/Test.java \
+    org/junit/TestCouldNotBeSkippedException.java \
     org/junit/experimental/ParallelComputer.java \
     org/junit/experimental/categories/Categories.java \
     org/junit/experimental/categories/Category.java \
@@ -78,8 +79,10 @@ JUNIT_SOURCES = \
     org/junit/experimental/theories/internal/SpecificDataPointsSupplier.java \
     org/junit/experimental/theories/suppliers/TestedOn.java \
     org/junit/experimental/theories/suppliers/TestedOnSupplier.java \
+    org/junit/function/ThrowingRunnable.java \
     org/junit/internal/ArrayComparisonFailure.java \
     org/junit/internal/AssumptionViolatedException.java \
+    org/junit/internal/Checks.java \
     org/junit/internal/Classes.java \
     org/junit/internal/ComparisonCriteria.java \
     org/junit/internal/ExactComparisonCriteria.java \
@@ -97,12 +100,21 @@ JUNIT_SOURCES = \
     org/junit/internal/builders/JUnit4Builder.java \
     org/junit/internal/builders/NullBuilder.java \
     org/junit/internal/builders/SuiteMethodBuilder.java \
+    org/junit/internal/management/FakeRuntimeMXBean.java \
+    org/junit/internal/management/FakeThreadMXBean.java \
+    org/junit/internal/management/ManagementFactory.java \
+    org/junit/internal/management/ReflectiveRuntimeMXBean.java \
+    org/junit/internal/management/ReflectiveThreadMXBean.java \
+    org/junit/internal/management/RuntimeMXBean.java \
+    org/junit/internal/management/ThreadMXBean.java \
     org/junit/internal/matchers/StacktracePrintingMatcher.java \
     org/junit/internal/matchers/ThrowableCauseMatcher.java \
     org/junit/internal/matchers/ThrowableMessageMatcher.java \
     org/junit/internal/matchers/TypeSafeMatcher.java \
     org/junit/internal/requests/ClassRequest.java \
     org/junit/internal/requests/FilterRequest.java \
+    org/junit/internal/requests/MemoizingRequest.java \
+    org/junit/internal/requests/OrderingRequest.java \
     org/junit/internal/requests/SortingRequest.java \
     org/junit/internal/runners/ClassRoadie.java \
     org/junit/internal/runners/ErrorReportingRunner.java \
@@ -151,13 +163,19 @@ JUNIT_SOURCES = \
     org/junit/runner/FilterFactoryParams.java \
     org/junit/runner/JUnitCommandLineParseResult.java \
     org/junit/runner/JUnitCore.java \
+    org/junit/runner/OrderWith.java \
+    org/junit/runner/OrderWithValidator.java \
     org/junit/runner/Request.java \
     org/junit/runner/Result.java \
     org/junit/runner/RunWith.java \
     org/junit/runner/Runner.java \
     org/junit/runner/manipulation/Filter.java \
     org/junit/runner/manipulation/Filterable.java \
+    org/junit/runner/manipulation/InvalidOrderingException.java \
     org/junit/runner/manipulation/NoTestsRemainException.java \
+    org/junit/runner/manipulation/Orderable.java \
+    org/junit/runner/manipulation/Orderer.java \
+    org/junit/runner/manipulation/Ordering.java \
     org/junit/runner/manipulation/Sortable.java \
     org/junit/runner/manipulation/Sorter.java \
     org/junit/runner/notification/Failure.java \
@@ -171,12 +189,15 @@ JUNIT_SOURCES = \
     org/junit/runners/MethodSorters.java \
     org/junit/runners/Parameterized.java \
     org/junit/runners/ParentRunner.java \
+    org/junit/runners/RuleContainer.java \
     org/junit/runners/Suite.java \
     org/junit/runners/model/Annotatable.java \
     org/junit/runners/model/FrameworkField.java \
     org/junit/runners/model/FrameworkMember.java \
     org/junit/runners/model/FrameworkMethod.java \
     org/junit/runners/model/InitializationError.java \
+    org/junit/runners/model/InvalidTestClassError.java \
+    org/junit/runners/model/MemberValueConsumer.java \
     org/junit/runners/model/MultipleFailureException.java \
     org/junit/runners/model/NoGenericTypeParametersValidator.java \
     org/junit/runners/model/RunnerBuilder.java \
