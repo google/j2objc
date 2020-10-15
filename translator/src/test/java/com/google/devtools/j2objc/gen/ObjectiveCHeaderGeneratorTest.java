@@ -689,7 +689,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslatedLines(translation,
-        "__unsafe_unretained FooBar_Internal *fieldBar_;",
+        "WEAK_ FooBar_Internal *fieldBar_;",
         "FooBar_Internal *fieldFoo_;");
   }
 
@@ -769,9 +769,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + " void foo() {}"
         + " @WeakOuter public class Inner { void bar() { foo(); } }"
         + " @Weak public Object obj; }", "Test", "Test.h");
-    assertTranslation(translation, "__unsafe_unretained id obj_;");
+    assertTranslation(translation, "WEAK_ id obj_;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "__unsafe_unretained Test *this$0_;");
+    assertTranslation(translation, "WEAK_ Test *this$0_;");
   }
 
   public void testReservedWordAsAnnotationPropertyName() throws IOException {

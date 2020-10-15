@@ -44,8 +44,14 @@ if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
   FRAMEWORKS="${FRAMEWORKS} -framework ExceptionHandling"
 fi
 
-declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow -Wno-compare-distinct-pointer-types"
-CC_FLAGS="${CC_FLAGS} -Wno-nullability-completeness"
+# Default set of warnings to suppress. To enable any of these, specify
+# the flag without "no-" after all the other command-line arguments.
+declare NO_WARNINGS="-Wno-parentheses"
+NO_WARNINGS="${NO_WARNINGS} -fno-strict-overflow"
+NO_WARNINGS="${NO_WARNINGS} -Wno-compare-distinct-pointer-types"
+NO_WARNINGS="${NO_WARNINGS} -Wno-nullability-completeness"
+
+declare CC_FLAGS="-fobjc-weak -Werror ${NO_WARNINGS}"
 declare STD_FLAG="c11"
 declare OTHER_LIBS="-l iconv -l z -l j2objc_main -l c++"
 declare SYSROOT_PATH="none"

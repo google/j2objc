@@ -263,7 +263,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
     assertTranslation(translation, "id fieldFoo_;");
-    assertTranslation(translation, "__unsafe_unretained id fieldJar_;");
+    assertTranslation(translation, "WEAK_ id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, jint)");
   }

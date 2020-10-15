@@ -299,13 +299,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
         if (!ElementUtil.isVolatile(varElement)) {
-          if (ElementUtil.isWeakReference(varElement)) {
-            // We must add this even without -use-arc because the header may be
-            // included by a file compiled with ARC.
-            print("__unsafe_unretained ");
-          }
-          if (ElementUtil.isZeroingWeakReference(varElement) && options.useARC()) {
-            print("weak ");
+          if (ElementUtil.isWeakReference(varElement)
+              || (ElementUtil.isZeroingWeakReference(varElement) && options.useARC())) {
+            print("WEAK_ ");
           }
         }
         String objcType = getDeclarationType(varElement);

@@ -33,6 +33,6 @@ public class LambdaTypeElementAdderTest extends GenerationTest {
         + "f = () -> i + 1; } }", "Test", "Test.m");
     // Verify that both lambdas have weak outers. This tests both VariableDeclaration and Assignment
     // as parent nodes of the lambda.
-    assertOccurrences(translation, "__unsafe_unretained Test *this$0_;", 2);
+    assertOccurrences(translation, "WEAK_ Test *this$0_;", 2);
   }
 }

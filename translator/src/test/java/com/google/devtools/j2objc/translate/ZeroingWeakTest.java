@@ -43,7 +43,7 @@ public class ZeroingWeakTest extends GenerationTest {
         FIELD_DECLARATION_SOURCE,
         "Test",
         "Test.h",
-        "weak NSString *string_;");
+        "WEAK_ NSString *string_;");
   }
 
   static final String FIELD_DECLARATION_WITH_INITIALIZER_SOURCE =

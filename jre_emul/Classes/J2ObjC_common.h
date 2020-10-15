@@ -56,6 +56,12 @@
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
 # endif
 
+#if __has_feature(objc_arc_weak)
+# define WEAK_ __weak
+#else
+# define WEAK_ __unsafe_unretained
+#endif
+
 CF_EXTERN_C_BEGIN
 
 id JreThrowNullPointerException() __attribute__((noreturn));

@@ -341,7 +341,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "package p: "
             + "class A$B: @WeakOuter");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
-    assertTranslation(translation, "__unsafe_unretained PA *this$0_;");
+    assertTranslation(translation, "WEAK_ PA *this$0_;");
     assertTranslation(translation, "this$0_ = outer$;");
   }
 
@@ -361,7 +361,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "class A:"
             + "  field t: @Weak ");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
-    assertTranslation(translation, "__unsafe_unretained JavaLangThread *t_;");
+    assertTranslation(translation, "WEAK_ JavaLangThread *t_;");
     assertTranslation(translation, "t_ = otherT;");
   }
 
