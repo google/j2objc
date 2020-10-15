@@ -66,17 +66,17 @@
 /** Create an autoreleased empty array with a type and length. */
 + (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type;
 
-/** Create an empty multidimensional array. */
+/** Create an autoreleased empty multidimensional array. */
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
                             lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type;
 
-/** Create an autoreleased empty multidimensional array. */
+/** Create an empty multidimensional array. */
 + (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
                                lengths:(const jint *)dimensionLengths
                                   type:(IOSClass *)type;
 
-/** Create an array with the elements from an NSArray. */
+/** Create an autoreleased array with the elements from an NSArray. */
 + (instancetype)arrayWithArray:(IOSObjectArray *)array;
 
 /** Create an autoreleased array with the elements from an NSArray. */
