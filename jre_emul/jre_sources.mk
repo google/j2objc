@@ -35,7 +35,6 @@ NATIVE_JRE_SOURCES_CORE = \
   JavaThrowable.m \
   JreRetainedLocalValue.m \
   JreRetainedWith.m \
-  JreZeroingWeak.m \
   MappedByteBuffer.m \
   NSCopying+JavaCloneable.m \
   NSDataInputStream.m \

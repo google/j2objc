@@ -299,15 +299,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
         if (!ElementUtil.isVolatile(varElement)) {
-          if (ElementUtil.isWeakReference(varElement)
-              || (ElementUtil.isZeroingWeakReference(varElement) && options.useARC())) {
+          if (ElementUtil.isWeakReference(varElement)) {
             print("WEAK_ ");
           }
         }
         String objcType = getDeclarationType(varElement);
-        if (ElementUtil.isZeroingWeakReference(varElement) && !options.useARC()) {
-          objcType = "JavaLangRefWeakReference *";
-        }
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.

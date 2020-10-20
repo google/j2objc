@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.RetainedWith;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
-import com.google.j2objc.annotations.ZeroingWeak;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -320,13 +319,8 @@ public class GraphBuilder {
       return ElementUtil.isWeakReference(field) || hasExternalAnnotation(field, Weak.class);
     }
 
-    private boolean isZeroingWeakReference(VariableElement field) {
-      return ElementUtil.isZeroingWeakReference(field)
-          || hasExternalAnnotation(field, ZeroingWeak.class);
-    }
-
     private boolean isUnretainedReference(VariableElement field) {
-      return isWeakReference(field) || isZeroingWeakReference(field);
+      return isWeakReference(field);
     }
 
     private boolean isRetainedWithField(VariableElement field) {

@@ -82,9 +82,6 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
 id JreRetainedLocalValue(id value);
 
-id JreZeroingWeakGet(id zeroingWeak);
-id JreMakeZeroingWeak(id object);
-
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
 void JreRetainedWithRelease(id parent, id child);
