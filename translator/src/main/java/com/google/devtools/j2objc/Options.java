@@ -241,6 +241,9 @@ public class Options {
       ImmutableSet.of("--patch-module", "--system", "--add-reads");
   private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
+  private static final Logger logger = Logger.getLogger("com.google.devtools.j2objc");
+  private boolean logLevelSet = false;
+
   static {
     // Load string resources.
     URL propertiesUrl = Resources.getResource(J2ObjC.class, "J2ObjC.properties");
@@ -278,11 +281,12 @@ public class Options {
    * Set all log handlers in this package with a common level.
    */
   private void setLogLevel(Level level) {
-    Logger.getLogger("com.google.devtools.j2objc").setLevel(level);
+    logger.setLevel(level);
+    logLevelSet = true;
   }
 
   public boolean isVerbose() {
-    return Logger.getLogger("com.google.devtools.j2objc").getLevel().equals(Level.FINEST);
+    return logger.getLevel().equals(Level.FINEST);
   }
 
   /**
@@ -292,8 +296,6 @@ public class Options {
    * @throws IOException
    */
   public List<String> load(String[] args) throws IOException {
-    setLogLevel(Level.WARNING);
-
     mappings.addJreMappings();
 
     // Create a temporary directory as the sourcepath's first entry, so that
@@ -302,6 +304,10 @@ public class Options {
 
     ArgProcessor processor = new ArgProcessor();
     processor.processArgs(args);
+    processor.logExpandedArgs(args);
+    if (!logLevelSet) {
+      setLogLevel(Level.WARNING);
+    }
     postProcessArgs();
 
     return processor.sourceFiles;
@@ -309,7 +315,7 @@ public class Options {
 
   private class ArgProcessor {
 
-    private List<String> sourceFiles = new ArrayList<>();
+    private final List<String> sourceFiles = new ArrayList<>();
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
@@ -545,6 +551,22 @@ public class Options {
       } else {
         sourceFiles.add(arg);
       }
+    }
+
+    private void logExpandedArgs(String[] args) throws IOException {
+      StringBuilder sb = new StringBuilder();
+      for (String arg : args) {
+        if (sb.length() > 0) {
+          sb.append(' ');
+        }
+        if (arg.startsWith("@")) {
+          File f = new File(arg.substring(1));
+          sb.append(Files.asCharSource(f, fileUtil.getCharset()).read());
+        } else {
+          sb.append(arg);
+        }
+      }
+      logger.fine(sb.toString());
     }
   }
 
