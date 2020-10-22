@@ -96,4 +96,30 @@ NSString *memUsage() {
   }
 }
 
++ (const J2ObjcClassInfo *)__metadata {
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 0, 1, 2, -1, -1, -1 },
+    { NULL, "V", 0x1, 3, 4, 2, -1, -1, -1 },
+    { NULL, "V", 0x1, 5, 1, 2, -1, -1, -1 },
+    { NULL, "V", 0x1, 6, 1, 2, -1, -1, -1 },
+  };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
+  methods[0].selector = @selector(init);
+  methods[1].selector = @selector(testRunStartedWithOrgJunitRunnerDescription:);
+  methods[2].selector = @selector(testRunFinishedWithOrgJunitRunnerResult:);
+  methods[3].selector = @selector(testStartedWithOrgJunitRunnerDescription:);
+  methods[4].selector = @selector(testFinishedWithOrgJunitRunnerDescription:);
+  #pragma clang diagnostic pop
+  static const void *ptrTable[] = {
+    "testRunStarted", "LOrgJunitRunnerDescription;", "LJavaLangException;", "testRunFinished",
+    "LOrgJunitRunnerResult;", "testStarted", "testFinished" };
+  static const J2ObjcClassInfo _JRETestRunListener = {
+    "JRETestRunListener", NULL, ptrTable, methods, NULL, 7, 0x1, 5, 0, -1, -1, -1, -1, -1
+  };
+  return &_JRETestRunListener;
+}
+
 @end
