@@ -16,20 +16,59 @@
 
 package libcore.java.util;
 
+import static java.util.Locale.FilteringMode.AUTOSELECT_FILTERING;
+import static java.util.Locale.FilteringMode.EXTENDED_FILTERING;
+import static java.util.Locale.FilteringMode.IGNORE_EXTENDED_RANGES;
+import static java.util.Locale.FilteringMode.MAP_EXTENDED_RANGES;
+import static java.util.Locale.FilteringMode.REJECT_EXTENDED_RANGES;
+
 import com.google.j2objc.EnvironmentUtil;
 import java.io.ObjectInputStream;
-//import java.text.BreakIterator;
+import java.text.BreakIterator;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.IllformedLocaleException;
+import java.util.List;
 import java.util.Locale;
+import java.util.Locale.LanguageRange;
 import java.util.MissingResourceException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LocaleTest extends junit.framework.TestCase {
+
+    public void test_extension_absent() throws Exception {
+        Locale locale = Locale.forLanguageTag("en-US");
+        assertFalse(locale.hasExtensions());
+        assertEquals(locale, locale.stripExtensions());
+    }
+
+    public void test_extension_builder() throws Exception {
+        Locale.Builder b = new Locale.Builder();
+        Locale localeWithoutExtension = b.build();
+        b.setExtension('g', "FO_ba-BR_bg");
+        Locale locale = b.build();
+        assertTrue(locale.hasExtensions());
+        assertFalse(locale.stripExtensions().hasExtensions());
+        assertEquals(localeWithoutExtension, locale.stripExtensions());
+    }
+
+    public void test_extension_languageTag() throws Exception {
+        Locale lA = Locale.forLanguageTag("en-Latn-US-x-foo");
+        Locale lB = Locale.forLanguageTag("en-Latn-US");
+        assertTrue(lA.hasExtensions());
+        assertFalse(lB.hasExtensions());
+        assertEquals(lB, lA.stripExtensions());
+    }
+
     // http://b/2611311; if there's no display language/country/variant, use the raw codes.
     /* TODO(kstanger): enable when display names are supported.
     public void test_getDisplayName_invalid() throws Exception {
@@ -99,22 +138,41 @@ public class LocaleTest extends junit.framework.TestCase {
                 Locale.forLanguageTag("zh-Hant-CN-VARIANT").getDisplayName(Locale.US));
     }*/
 
+    public void testGetDisplayCountry_locale_null() {
+        assertThrowsNpe(() -> {
+            Locale.forLanguageTag("en-US").getDisplayCountry(null);
+        });
+    }
+
+    public void testGetDisplayLanguage_locale_null() {
+        assertThrowsNpe(() -> {
+            Locale.forLanguageTag("en-US").getDisplayLanguage(null);
+        });
+    }
+
+    public void testGetDisplayScript_locale_null() {
+        assertThrowsNpe(() -> {
+            Locale.forLanguageTag("sr-Cyrl-BA").getDisplayScript(null);
+        });
+    }
+
+    public void testGetDisplayVariant_locale_null() {
+        assertThrowsNpe(() -> {
+            Locale.forLanguageTag("en-US-POSIX").getDisplayVariant(null);
+        });
+    }
+
     /* TODO(kstanger): enable when display names are supported.
     public void test_getDisplayCountry_8870289() throws Exception {
         assertEquals("Hong Kong", new Locale("", "HK").getDisplayCountry(Locale.US));
-        assertEquals("Macau", new Locale("", "MO").getDisplayCountry(Locale.US));
         assertEquals("Palestine", new Locale("", "PS").getDisplayCountry(Locale.US));
 
         assertEquals("Cocos (Keeling) Islands", new Locale("", "CC").getDisplayCountry(Locale.US));
-        assertEquals("Congo (DRC)", new Locale("", "CD").getDisplayCountry(Locale.US));
-        assertEquals("Congo (Republic)", new Locale("", "CG").getDisplayCountry(Locale.US));
         assertEquals("Falkland Islands (Islas Malvinas)", new Locale("", "FK").getDisplayCountry(Locale.US));
-        assertEquals("Macedonia (FYROM)", new Locale("", "MK").getDisplayCountry(Locale.US));
         assertEquals("Myanmar (Burma)", new Locale("", "MM").getDisplayCountry(Locale.US));
         assertEquals("Taiwan", new Locale("", "TW").getDisplayCountry(Locale.US));
     }*/
 
-    /* TODO(kstanger): enable when display names are supported.
     public void test_tl_and_fil() throws Exception {
         // In jb-mr1, we had a last-minute hack to always return "Filipino" because
         // icu4c 4.8 didn't have any localizations for fil. (http://b/7291355).
@@ -128,8 +186,8 @@ public class LocaleTest extends junit.framework.TestCase {
         Locale tl_PH = new Locale("tl", "PH");
         assertEquals("Tagalog", tl.getDisplayLanguage(Locale.ENGLISH));
         assertEquals("Tagalog", tl_PH.getDisplayLanguage(Locale.ENGLISH));
-        assertEquals("tl", tl.getDisplayLanguage(tl));
-        assertEquals("tl", tl_PH.getDisplayLanguage(tl_PH));
+        assertEquals("Tagalog", tl.getDisplayLanguage(tl));
+        assertEquals("Tagalog", tl_PH.getDisplayLanguage(tl_PH));
 
         Locale es_MX = new Locale("es", "MX");
         assertEquals("tagalo", tl.getDisplayLanguage(es_MX));
@@ -146,13 +204,13 @@ public class LocaleTest extends junit.framework.TestCase {
 
         assertEquals("filipino", fil.getDisplayLanguage(es_MX));
         assertEquals("filipino", fil_PH.getDisplayLanguage(es_MX));
-    }*/
+    }
 
     // http://b/3452611; Locale.getDisplayLanguage fails for the obsolete language codes.
     public void test_getDisplayName_obsolete() throws Exception {
       // Locale strings updated in macOS 10.12 to match iOS.
       if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
-         // he (new) -> iw (obsolete)
+        // he (new) -> iw (obsolete)
         assertObsolete("he", "iw", "עברית");
         // id (new) -> in (obsolete)
         assertObsolete("id", "in", "Indonesia");
@@ -177,8 +235,7 @@ public class LocaleTest extends junit.framework.TestCase {
 
         // Check that none of the 'getAvailableLocales' methods are accidentally returning two
         // equal locales (because to ICU they're different, but we mangle one into the other).
-        // TODO(kstanger): enable when BreakIterator is added.
-        //assertOnce(newLocale, BreakIterator.getAvailableLocales());
+        assertOnce(newLocale, BreakIterator.getAvailableLocales());
         assertOnce(newLocale, Calendar.getAvailableLocales());
         assertOnce(newLocale, Collator.getAvailableLocales());
         assertOnce(newLocale, DateFormat.getAvailableLocales());
@@ -186,6 +243,21 @@ public class LocaleTest extends junit.framework.TestCase {
         assertOnce(newLocale, NumberFormat.getAvailableLocales());
         assertOnce(newLocale, Locale.getAvailableLocales());
     }
+
+    /* J2ObjC: ICU defines locales not supported on iOS.
+    public void testGetAvailableLocales_icuConsistency() {
+        Locale[] javaLocales = Locale.getAvailableLocales();
+        ULocale[] icuLocales = ULocale.getAvailableLocales();
+        Set<Locale> javaSet = new HashSet<>(Arrays.asList(javaLocales));
+        Set<Locale> icuSet = Arrays.stream(icuLocales)
+            .map(uLocale -> uLocale.toLocale())
+            .collect(Collectors.toSet());
+        assertEquals(javaSet, icuSet);
+        // Assert no duplicated entries
+        assertEquals(javaLocales.length, javaSet.size());
+        assertEquals(icuLocales.length, icuSet.size());
+    }
+    */
 
     private static void assertOnce(Locale element, Locale[] array) {
         int count = 0;
@@ -195,6 +267,25 @@ public class LocaleTest extends junit.framework.TestCase {
             }
         }
         assertEquals(1, count);
+    }
+
+    /**
+     * Check that the straightforward ways to try to construct/obtain a Locale
+     * with null country don't work.
+     */
+    public void test_nullCountry_fails() {
+        try {
+            new Locale(/* language */ "en", /* country */ null);
+        } catch (NullPointerException expected) {
+        }
+        try {
+            new Locale(/* language */ "en", /* country */ null, /* variant */ "EN");
+        } catch (NullPointerException expected) {
+        }
+        assertNotNull(Locale.getDefault().getCountry());
+        for (Locale locale : Locale.getAvailableLocales()) {
+            assertNotNull(locale.getCountry());
+        }
     }
 
     /* No iOS support for ISO 639-2 three-character country codes.
@@ -764,6 +855,223 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("a-b-c-d-e-fo", l.getExtension('x'));
     }
 
+    /**
+     * Tests filtering locales using basic language ranges (without "*").
+     */
+    public void test_filter_basic() {
+        List<String> tags = tagsOf(
+            "en-US",
+            "en-Latn-US",
+            "zh-Hant-TW",
+            "es-419",
+            "fr-FR",
+            "ja-JP"
+        );
+        List<LanguageRange> ranges = new ArrayList<>();
+        ranges.add(new LanguageRange("en-US"));
+
+        // By default, basic filtering is used for basic language ranges
+        assertFilter(tagsOf("en-US"), ranges, tags);
+
+        // Since no extended ranges are given, these should produce the same result
+        assertFilter(tagsOf("en-US"), ranges, tags, AUTOSELECT_FILTERING);
+        assertFilter(tagsOf("en-US"), ranges, tags, REJECT_EXTENDED_RANGES);
+        assertFilter(tagsOf("en-US"), ranges, tags, IGNORE_EXTENDED_RANGES);
+
+        // EXTENDED_FILTERING can be enabled explicitly even when the priority
+        // list only contains basic; then, en-US also matches en-Latn-US.
+        assertFilter(tagsOf("en-US", "en-Latn-US"), ranges, tags, EXTENDED_FILTERING);
+
+        ranges.add(new LanguageRange("zh-Hant-TW"));
+        assertFilter(tagsOf("en-US", "zh-Hant-TW"), ranges, tags);
+    }
+
+    /**
+     * Tests that filtering is case insensitive.
+     */
+    public void test_filter_caseInsensitive() {
+        List<String> tags = tagsOf("de-DE", "de-Latn-DE", "ja-jp");
+
+        assertFilter(tagsOf("de-DE"), languageRangesOf("dE-De"), tags);
+        assertFilter(tagsOf("ja-jp"), languageRangesOf("ja-JP"), tags);
+        assertFilter(tagsOf("ja-jp"), languageRangesOf("JA-jp"), tags);
+    }
+
+    /**
+     * Tests filtering locales using extended language ranges (with "*"), per
+     * the example from RFC 4647 section 3.3.2
+     */
+    public void test_filter_extended() {
+        List<LanguageRange> priorityList = languageRangesOf("de-DE", "de-*-DE");
+        List<String> tags = tagsOf(
+            "de", // not matched: missing 'DE'
+            "de-DE", // German, as used in Germany
+            "de-de", // German, as used in Germany
+            "de-Latn-DE", // Latin script
+            "de-Latf-DE", // Fraktur variant of Latin script
+            "de-DE-x-goethe", // private-use subtag
+            "de-Latn-DE-1996",
+            "de-Deva", // not matched: 'Deva' not equal to 'DE'
+            "de-Deva-DE", // Devanagari script
+            "de-x-DE" // not matched: singleton 'x' occurs before 'DE'
+        );
+
+        List<String> filteredTags = tagsOf(
+            "de-DE", // German, as used in Germany
+            "de-Latn-DE", // Latin script
+            "de-Latf-DE", // Fraktur variant of Latin script
+            "de-DE-x-goethe", // private-use subtag
+            "de-Latn-DE-1996",
+            "de-Deva-DE" // Devanagari script
+        );
+
+        assertFilter(filteredTags, priorityList, tags, EXTENDED_FILTERING);
+
+        // Because the priority list contains an extended language range, filtering
+        // should default to extended, so default filtering should yield the same results:
+        assertFilter(filteredTags, priorityList, tags);
+        assertFilter(filteredTags, priorityList, tags, AUTOSELECT_FILTERING);
+
+        // Ignoring the extended range (de-*-DE) matches only a single language tag, "de-DE"
+        assertFilter(tagsOf("de-DE", "de-DE-x-goethe"), priorityList, tags, IGNORE_EXTENDED_RANGES);
+    }
+
+    /**
+     * Tests that filtering with {@link Locale.FilteringMode#REJECT_EXTENDED_RANGES}
+     * throws IllegalArgumentException if passed an extended tag / language range.
+     */
+    public void test_filter_extended_reject() {
+        try {
+            Locale.filter(
+                languageRangesOf("de-DE", "de-*-DE"),
+                localesOf("de-DE", "fr-FR"),
+                REJECT_EXTENDED_RANGES);
+            fail();
+        } catch (IllegalArgumentException expected) {
+        }
+
+        try {
+            Locale.filterTags(
+                languageRangesOf("de-DE", "de-*-DE"),
+                tagsOf("de-DE", "fr-FR"),
+                REJECT_EXTENDED_RANGES);
+            fail();
+        } catch (IllegalArgumentException expected) {
+        }
+    }
+
+    /**
+     * Checks that a '*' occurring in a LanguageRange is interpreted in compliance
+     * with RFC 4647 section 3.2: if the first subtag is a '*' then the entire range
+     * is treated as "*", otherwise each wildcard subtag is removed.
+     */
+    public void test_filter_extended_wildcardInLanguageRange() {
+        List<String> tags = tagsOf("en-US", "de-DE", "en-AU", "en-Latn-US");
+        // en-*-US is treated as "en-US", so only en-US matches
+        assertFilter(tagsOf("en-US"), languageRangesOf("en-*-US"), tags, MAP_EXTENDED_RANGES);
+
+        // *-US is treated as "*", so all locales match
+        assertFilter(tags, languageRangesOf("*-US"), tags, MAP_EXTENDED_RANGES);
+
+        // Same behavior with just "*"
+        assertFilter(tags, languageRangesOf("*"), tags, MAP_EXTENDED_RANGES);
+    }
+
+    /**
+     * Tests that a '*' in a Locale in the priority list matches a subtag only
+     * when extended filtering is used; note that this is different from a
+     * '*' occuring in a LanguageRange, where it is ignored.
+     */
+    public void test_filter_extended_wildcardInPriorityList() {
+        List<String> tags = tagsOf("de-DE", "de-Latn-DE", "ja-JP");
+        assertFilter(tagsOf("de-DE", "de-Latn-DE"),
+            languageRangesOf("dE-*-De"), tags);
+        assertFilter(tagsOf("de-DE", "de-Latn-DE"),
+            languageRangesOf("dE-De"), tags, EXTENDED_FILTERING);
+    }
+
+    public void test_filter_noMatch() {
+        List<String> noTag = Collections.emptyList();
+
+        List<String> tags = tagsOf("en-US", "fr-Fr", "de-DE");
+
+        assertFilter(noTag, languageRangesOf("en-AU"), tags);
+        assertFilter(noTag, languageRangesOf("es-419"), tags);
+        assertFilter(noTag, languageRangesOf("zh-*-TW"), tags);
+    }
+
+    /**
+     * Tests that various methods throw NullPointerException when given {@code null}
+     * as an argument.
+     */
+    public void test_filter_nullArguments() {
+        List<String> tags = tagsOf("de-DE", "de-Latn-DE");
+        List<Locale> locales = localesOf(tags);
+        List<LanguageRange> languageRanges = languageRangesOf("en-*-US", "de-DE");
+
+        assertThrowsNpe(() -> { Locale.filter(null, locales); });
+        assertThrowsNpe(() -> { Locale.filter(languageRanges, null); });
+
+        assertThrowsNpe(() -> { Locale.filterTags(null, tags); });
+        assertThrowsNpe(() -> { Locale.filterTags(languageRanges, null); });
+
+        // The documentation doesn't say whether FilteringMode is allowed to be
+        // null or what the sematnics of that null are; currently it is allowed.
+        // This test ensures that we are aware if we change this behavior in future.
+        List<Locale> filteredLocales = Locale.filter(languageRanges, locales, null);
+        List<String> filteredTags = Locale.filterTags(languageRanges, tags, null);
+        assertEquals(localesOf("de-DE"), filteredLocales);
+        assertEquals(tagsOf("de-DE"), filteredTags);
+    }
+
+    /**
+     * Tests that filtered locales are returned in priority order.
+     */
+    public void test_filter_priorityOrder() {
+        List<LanguageRange> priorityList = languageRangesOf("zh-Hant-TW", "en-US");
+
+        List<String> tags = tagsOf(
+            "en-US",
+            "zh-Hant-TW",
+            "es-419",
+            "fr-FR"
+        );
+        assertFilter(tagsOf("zh-Hant-TW", "en-US"), languageRangesOf("zh-Hant-TW", "en-US"), tags);
+        assertFilter(tagsOf("en-US", "zh-Hant-TW"), languageRangesOf("en-US", "zh-Hant-TW"), tags);
+    }
+
+    /**
+     * Tests that the List returned by the various {@code filter} methods is modifiable,
+     * as specified by the documentation.
+     */
+    public void test_filter_resultIsModifiable_locales() {
+        List<LanguageRange> priorityList = languageRangesOf("de-DE", "de-*-DE");
+        List<Locale> locales = localesOf("de-DE", "de-Latn-DE", "ja-JP");
+
+        Locale fake = Locale.FRANCE;
+        // should not throw
+        Locale.filter(priorityList, locales).add(fake);
+        Locale.filter(priorityList, locales, AUTOSELECT_FILTERING).add(fake);
+        Locale.filter(priorityList, locales, EXTENDED_FILTERING).add(fake);
+        Locale.filter(priorityList, locales, IGNORE_EXTENDED_RANGES).add(fake);
+        Locale.filter(priorityList, locales, MAP_EXTENDED_RANGES).add(fake);
+        Locale.filter(languageRangesOf("de-DE"), locales, REJECT_EXTENDED_RANGES).add(fake);
+    }
+
+    public void test_filter_resultIsModifiable_tags() {
+        List<LanguageRange> priorityList = languageRangesOf("de-DE", "de-*-DE");
+        List<String> tags = tagsOf("de-DE", "de-Latn-DE", "ja-JP");
+
+        String fake = "fr-FR";
+        // should not throw
+        Locale.filterTags(priorityList, tags).add(fake);
+        Locale.filterTags(priorityList, tags, AUTOSELECT_FILTERING).add(fake);
+        Locale.filterTags(priorityList, tags, EXTENDED_FILTERING).add(fake);
+        Locale.filterTags(priorityList, tags, IGNORE_EXTENDED_RANGES).add(fake);
+        Locale.filterTags(priorityList, tags, MAP_EXTENDED_RANGES).add(fake);
+        Locale.filterTags(languageRangesOf("de-DE"), tags, REJECT_EXTENDED_RANGES).add(fake);
+    }
+
     public void test_forLanguageTag() {
         test_setLanguageTag_wellFormedsingleSubtag(false);
         test_setLanguageTag_twoWellFormedSubtags(false);
@@ -787,22 +1095,27 @@ public class LocaleTest extends junit.framework.TestCase {
 
         Locale l = b.build();
 
-        // getDisplayScript() test relies on the default locale. We set it here to avoid test
-        // failures if the test device is set to a non-English locale.
-        Locale.setDefault(Locale.US);
-        assertEquals("Latin", l.getDisplayScript());
+        // getAndSetDefaultForTest(uncategorizedLocale, displayLocale, formatLocale)
+        Locales locales = Locales.getAndSetDefaultForTest(Locale.US, Locale.GERMANY, Locale.FRANCE);
+        try {
+            // Check that getDisplayScript() uses the default DISPLAY Locale.
+            assertEquals("Lateinisch", l.getDisplayScript()); // the German word for "Latin"
 
-        assertEquals("Lateinisch", l.getDisplayScript(Locale.GERMAN));
-        // Fallback for navajo, a language for which we don't have data.
-        assertEquals("Latin", l.getDisplayScript(new Locale("nv", "US")));
+            assertEquals("latino", l.getDisplayScript(Locale.ITALY));
 
-        b= new Locale.Builder();
-        b.setLanguage("en").setRegion("US").setScript("Fooo");
+            // Fallback for navajo, a language for which we don't have data.
+            assertEquals("Latin", l.getDisplayScript(new Locale("nv", "US")));
 
-        // Will be equivalent to getScriptCode for scripts that aren't
-        // registered with ISO-15429 (but are otherwise well formed).
-        l = b.build();
-        assertEquals("Fooo", l.getDisplayScript());
+            b = new Locale.Builder();
+            b.setLanguage("en").setRegion("US").setScript("Fooo");
+
+            // Will be equivalent to getScriptCode for scripts that aren't
+            // registered with ISO-15429 (but are otherwise well formed).
+            l = b.build();
+            assertEquals("Fooo", l.getDisplayScript());
+        } finally {
+            locales.setAsDefault();
+        }
     }*/
 
     public void test_setLanguageTag_malformedTags() {
@@ -1005,6 +1318,74 @@ public class LocaleTest extends junit.framework.TestCase {
         }
     }
 
+    public void test_lookup_noMatch() {
+        // RFC 4647 section 3.4.
+        List<LanguageRange> languageRanges = languageRangesOf(
+            "zh-Hant-CN-x-private1-private2",
+            "zh-Hant-CN-x-private1",
+            "zh-Hant-CN",
+            "zh-Hant",
+            "zh"
+        );
+        assertNull(Locale.lookup(languageRanges, localesOf("de-DE", "fr-FR", "ja-JP")));
+        assertNull(Locale.lookupTag(languageRanges, tagsOf("de-DE", "fr-FR", "ja-JP")));
+    }
+
+    /**
+     * Tests that lookup returns the tag/locale that matches the highest priority
+     * LanguageRange.
+     */
+    public void test_lookup_order() {
+        // RFC 4647 section 3.4.
+        List<LanguageRange> languageRanges = languageRangesOf(
+            "de-Latn-DE-1996",
+            "zh-Hant-CN",
+            "de"
+        );
+
+        // de would also match, but de-Latn-DE-1997 occurs earlier in the
+        // (sorted by descending priority) languageRanges
+        assertLookup("de-Latn-DE-1996",
+            languageRanges,
+            tagsOf("de", "de-Latn-DE-1996"));
+
+        // de-Latn-DE-1996 also includes de-Latn-DE, de-Latn, de; therefore
+        // de-Latn-DE is preferred over zh-Hant-CN
+        assertLookup("de-Latn-DE",
+            languageRanges,
+            tagsOf("de", "de-Latn-DE", "de-DE-1996", "zh-Hant-CN"));
+
+        // After reversing the priority list of the LanguageRanges, "de" now has the
+        // highest priority.
+        assertLookup("de",
+            languageRangesOf(
+                "de",
+                "zh-Hant-CN",
+                "de-Latn-DE-1996"
+            ),
+            tagsOf("de", "de-Latn-DE", "de-DE-1996"));
+
+        // Dropping "de" from the priority list of LanguageRanges false back to de-Latn-DE
+        assertLookup("de-Latn-DE",
+            languageRangesOf(
+                "zh-Hant-CN",
+                "de-Latn-DE-1996"
+            ),
+            tagsOf("de", "de-Latn-DE", "de-DE-1996"));
+    }
+
+    public void test_lookup_nullArguments() {
+        List<String> tags = tagsOf("de-DE", "de-Latn-DE");
+        List<Locale> locales = localesOf(tags);
+        List<LanguageRange> languageRanges = languageRangesOf("en-*-US", "de-DE");
+
+        assertThrowsNpe(() -> { Locale.lookup(null, locales); });
+        assertThrowsNpe(() -> { Locale.lookup(languageRanges, null); });
+
+        assertThrowsNpe(() -> { Locale.lookupTag(null, tags); });
+        assertThrowsNpe(() -> { Locale.lookupTag(languageRanges, null); });
+    }
+
     public void test_toLanguageTag() {
         Locale.Builder b = new Locale.Builder();
 
@@ -1138,8 +1519,10 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("en-US-POSIX", posix.toLanguageTag());
     }
 
-    public void test_forLanguageTag_grandFatheredLocale() {
-        // Regular grandfathered locale.
+    // Legacy locales in this test refer to "grandfathered" locales as defined in
+    // https://tools.ietf.org/html/bcp47#section-2.2.8
+    public void test_forLanguageTag_legacyLocale() {
+        // Regular legacy locale.
         Locale gaulish = Locale.forLanguageTag("cel-gaulish");
         assertEquals("xtg", gaulish.getLanguage());
         assertEquals("cel-gaulish", gaulish.getExtension(Locale.PRIVATE_USE_EXTENSION));
@@ -1147,7 +1530,7 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("", gaulish.getScript());
         assertEquals("", gaulish.getVariant());
 
-        // Irregular grandfathered locale.
+        // Irregular legacy locale.
         Locale enochian = Locale.forLanguageTag("i-enochian");
         assertEquals("", enochian.getLanguage());
         assertEquals("i-enochian", enochian.getExtension(Locale.PRIVATE_USE_EXTENSION));
@@ -1268,6 +1651,7 @@ public class LocaleTest extends junit.framework.TestCase {
     public void test_setDefault_withCategory() {
         final Locale defaultLocale = Locale.getDefault();
         try {
+            // Establish a baseline for the checks further down
             Locale.setDefault(Locale.US);
             assertEquals(Locale.US, Locale.getDefault(Locale.Category.FORMAT));
             assertEquals(Locale.US, Locale.getDefault(Locale.Category.DISPLAY));
@@ -1287,8 +1671,78 @@ public class LocaleTest extends junit.framework.TestCase {
             assertEquals(Locale.FRANCE, Locale.getDefault(Locale.Category.FORMAT));
             assertEquals(Locale.FRANCE, Locale.getDefault(Locale.Category.DISPLAY));
             assertEquals(Locale.FRANCE, Locale.getDefault());
+
+            // Check that setDefault(Locale) sets all three defaults
+            Locale.setDefault(Locale.US);
+            assertEquals(Locale.US, Locale.getDefault(Locale.Category.FORMAT));
+            assertEquals(Locale.US, Locale.getDefault(Locale.Category.DISPLAY));
+            assertEquals(Locale.US, Locale.getDefault());
         } finally {
             Locale.setDefault(defaultLocale);
         }
     }
+
+    private static List<Locale> localesOf(String... languageTags) {
+        return localesOf(tagsOf(languageTags));
+    }
+
+    private static List<Locale> localesOf(List<String> languageTags) {
+        List<Locale> result = new ArrayList<>();
+        for (String languageTag : languageTags) {
+            result.add(Locale.forLanguageTag(languageTag));
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    private static List<String> tagsOf(String... tags) {
+        List<String> result = new ArrayList<>();
+        for (String tag : tags) {
+            result.add(tag.toLowerCase());
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    private static List<LanguageRange> languageRangesOf(String... languageRanges) {
+        List<LanguageRange> result = new ArrayList<>();
+        for (String languageRange : languageRanges) {
+            result.add(new LanguageRange(languageRange));
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    private static void assertFilter(List<String> filteredTags, List<LanguageRange> languageRanges,
+        List<String> tags) {
+        assertEquals(filteredTags, Locale.filterTags(languageRanges, tags));
+
+        List<Locale> locales = localesOf(tags);
+        List<Locale> filteredLocales = localesOf(filteredTags);
+        assertEquals(filteredLocales, Locale.filter(languageRanges, locales));
+    }
+
+    private static void assertFilter(List<String> filteredTags, List<LanguageRange> languageRanges,
+        List<String> tags, Locale.FilteringMode filteringMode) {
+        assertEquals(filteredTags,
+            Locale.filterTags(languageRanges, tags, filteringMode));
+
+        List<Locale> locales = localesOf(tags);
+        List<Locale> filteredLocales = localesOf(filteredTags);
+        assertEquals(filteredLocales, Locale.filter(languageRanges, locales, filteringMode));
+    }
+
+    private static void assertThrowsNpe(Runnable runnable) {
+        try {
+            runnable.run();
+            fail("Should have thrown NullPointerException");
+        } catch (NullPointerException expected) {
+        }
+    }
+
+    private static void assertLookup(String expectedTag, List<LanguageRange> languageRanges,
+        List<String> tags) {
+        assertEquals(expectedTag.toLowerCase(), Locale.lookupTag(languageRanges, tags));
+
+        assertEquals(Locale.forLanguageTag(expectedTag),
+            Locale.lookup(languageRanges, localesOf(tags)));
+    }
+
 }

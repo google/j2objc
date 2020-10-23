@@ -56,6 +56,7 @@ import sun.util.locale.BaseLocale;
 import sun.util.locale.InternalLocaleBuilder;
 import sun.util.locale.LanguageTag;
 import sun.util.locale.LocaleExtensions;
+import sun.util.locale.LocaleMatcher;
 import sun.util.locale.LocaleObjectCache;
 import sun.util.locale.LocaleSyntaxException;
 import sun.util.locale.LocaleUtils;
@@ -3163,6 +3164,613 @@ public final class Locale implements Cloneable, Serializable {
             }
             return Locale.getInstance(baseloc, extensions);
         }
+    }
+
+    /**
+     * This enum provides constants to select a filtering mode for locale
+     * matching. Refer to <a href="http://tools.ietf.org/html/rfc4647">RFC 4647
+     * Matching of Language Tags</a> for details.
+     *
+     * <p>As an example, think of two Language Priority Lists each of which
+     * includes only one language range and a set of following language tags:
+     *
+     * <pre>
+     *    de (German)
+     *    de-DE (German, Germany)
+     *    de-Deva (German, in Devanagari script)
+     *    de-Deva-DE (German, in Devanagari script, Germany)
+     *    de-DE-1996 (German, Germany, orthography of 1996)
+     *    de-Latn-DE (German, in Latin script, Germany)
+     *    de-Latn-DE-1996 (German, in Latin script, Germany, orthography of 1996)
+     * </pre>
+     *
+     * The filtering method will behave as follows:
+     *
+     * <table cellpadding=2 summary="Filtering method behavior">
+     * <tr>
+     * <th>Filtering Mode</th>
+     * <th>Language Priority List: {@code "de-DE"}</th>
+     * <th>Language Priority List: {@code "de-*-DE"}</th>
+     * </tr>
+     * <tr>
+     * <td valign=top>
+     * {@link FilteringMode#AUTOSELECT_FILTERING AUTOSELECT_FILTERING}
+     * </td>
+     * <td valign=top>
+     * Performs <em>basic</em> filtering and returns {@code "de-DE"} and
+     * {@code "de-DE-1996"}.
+     * </td>
+     * <td valign=top>
+     * Performs <em>extended</em> filtering and returns {@code "de-DE"},
+     * {@code "de-Deva-DE"}, {@code "de-DE-1996"}, {@code "de-Latn-DE"}, and
+     * {@code "de-Latn-DE-1996"}.
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign=top>
+     * {@link FilteringMode#EXTENDED_FILTERING EXTENDED_FILTERING}
+     * </td>
+     * <td valign=top>
+     * Performs <em>extended</em> filtering and returns {@code "de-DE"},
+     * {@code "de-Deva-DE"}, {@code "de-DE-1996"}, {@code "de-Latn-DE"}, and
+     * {@code "de-Latn-DE-1996"}.
+     * </td>
+     * <td valign=top>Same as above.</td>
+     * </tr>
+     * <tr>
+     * <td valign=top>
+     * {@link FilteringMode#IGNORE_EXTENDED_RANGES IGNORE_EXTENDED_RANGES}
+     * </td>
+     * <td valign=top>
+     * Performs <em>basic</em> filtering and returns {@code "de-DE"} and
+     * {@code "de-DE-1996"}.
+     * </td>
+     * <td valign=top>
+     * Performs <em>basic</em> filtering and returns {@code null} because
+     * nothing matches.
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign=top>
+     * {@link FilteringMode#MAP_EXTENDED_RANGES MAP_EXTENDED_RANGES}
+     * </td>
+     * <td valign=top>Same as above.</td>
+     * <td valign=top>
+     * Performs <em>basic</em> filtering and returns {@code "de-DE"} and
+     * {@code "de-DE-1996"} because {@code "de-*-DE"} is mapped to
+     * {@code "de-DE"}.
+     * </td>
+     * </tr>
+     * <tr>
+     * <td valign=top>
+     * {@link FilteringMode#REJECT_EXTENDED_RANGES REJECT_EXTENDED_RANGES}
+     * </td>
+     * <td valign=top>Same as above.</td>
+     * <td valign=top>
+     * Throws {@link IllegalArgumentException} because {@code "de-*-DE"} is
+     * not a valid basic language range.
+     * </td>
+     * </tr>
+     * </table>
+     *
+     * @see #filter(List, Collection, FilteringMode)
+     * @see #filterTags(List, Collection, FilteringMode)
+     *
+     * @since 1.8
+     */
+    public static enum FilteringMode {
+        /**
+         * Specifies automatic filtering mode based on the given Language
+         * Priority List consisting of language ranges. If all of the ranges
+         * are basic, basic filtering is selected. Otherwise, extended
+         * filtering is selected.
+         */
+        AUTOSELECT_FILTERING,
+
+        /**
+         * Specifies extended filtering.
+         */
+        EXTENDED_FILTERING,
+
+        /**
+         * Specifies basic filtering: Note that any extended language ranges
+         * included in the given Language Priority List are ignored.
+         */
+        IGNORE_EXTENDED_RANGES,
+
+        /**
+         * Specifies basic filtering: If any extended language ranges are
+         * included in the given Language Priority List, they are mapped to the
+         * basic language range. Specifically, a language range starting with a
+         * subtag {@code "*"} is treated as a language range {@code "*"}. For
+         * example, {@code "*-US"} is treated as {@code "*"}. If {@code "*"} is
+         * not the first subtag, {@code "*"} and extra {@code "-"} are removed.
+         * For example, {@code "ja-*-JP"} is mapped to {@code "ja-JP"}.
+         */
+        MAP_EXTENDED_RANGES,
+
+        /**
+         * Specifies basic filtering: If any extended language ranges are
+         * included in the given Language Priority List, the list is rejected
+         * and the filtering method throws {@link IllegalArgumentException}.
+         */
+        REJECT_EXTENDED_RANGES
+    };
+
+    /**
+     * This class expresses a <em>Language Range</em> defined in
+     * <a href="http://tools.ietf.org/html/rfc4647">RFC 4647 Matching of
+     * Language Tags</a>. A language range is an identifier which is used to
+     * select language tag(s) meeting specific requirements by using the
+     * mechanisms described in <a href="Locale.html#LocaleMatching">Locale
+     * Matching</a>. A list which represents a user's preferences and consists
+     * of language ranges is called a <em>Language Priority List</em>.
+     *
+     * <p>There are two types of language ranges: basic and extended. In RFC
+     * 4647, the syntax of language ranges is expressed in
+     * <a href="http://tools.ietf.org/html/rfc4234">ABNF</a> as follows:
+     * <blockquote>
+     * <pre>
+     *     basic-language-range    = (1*8ALPHA *("-" 1*8alphanum)) / "*"
+     *     extended-language-range = (1*8ALPHA / "*")
+     *                               *("-" (1*8alphanum / "*"))
+     *     alphanum                = ALPHA / DIGIT
+     * </pre>
+     * </blockquote>
+     * For example, {@code "en"} (English), {@code "ja-JP"} (Japanese, Japan),
+     * {@code "*"} (special language range which matches any language tag) are
+     * basic language ranges, whereas {@code "*-CH"} (any languages,
+     * Switzerland), {@code "es-*"} (Spanish, any regions), and
+     * {@code "zh-Hant-*"} (Traditional Chinese, any regions) are extended
+     * language ranges.
+     *
+     * @see #filter
+     * @see #filterTags
+     * @see #lookup
+     * @see #lookupTag
+     *
+     * @since 1.8
+     */
+    public static final class LanguageRange {
+
+       /**
+        * A constant holding the maximum value of weight, 1.0, which indicates
+        * that the language range is a good fit for the user.
+        */
+        public static final double MAX_WEIGHT = 1.0;
+
+       /**
+        * A constant holding the minimum value of weight, 0.0, which indicates
+        * that the language range is not a good fit for the user.
+        */
+        public static final double MIN_WEIGHT = 0.0;
+
+        private final String range;
+        private final double weight;
+
+        private volatile int hash = 0;
+
+        /**
+         * Constructs a {@code LanguageRange} using the given {@code range}.
+         * Note that no validation is done against the IANA Language Subtag
+         * Registry at time of construction.
+         *
+         * <p>This is equivalent to {@code LanguageRange(range, MAX_WEIGHT)}.
+         *
+         * @param range a language range
+         * @throws NullPointerException if the given {@code range} is
+         *     {@code null}
+         */
+        public LanguageRange(String range) {
+            this(range, MAX_WEIGHT);
+        }
+
+        /**
+         * Constructs a {@code LanguageRange} using the given {@code range} and
+         * {@code weight}. Note that no validation is done against the IANA
+         * Language Subtag Registry at time of construction.
+         *
+         * @param range  a language range
+         * @param weight a weight value between {@code MIN_WEIGHT} and
+         *     {@code MAX_WEIGHT}
+         * @throws NullPointerException if the given {@code range} is
+         *     {@code null}
+         * @throws IllegalArgumentException if the given {@code weight} is less
+         *     than {@code MIN_WEIGHT} or greater than {@code MAX_WEIGHT}
+         */
+        public LanguageRange(String range, double weight) {
+            if (range == null) {
+                throw new NullPointerException();
+            }
+            if (weight < MIN_WEIGHT || weight > MAX_WEIGHT) {
+                throw new IllegalArgumentException("weight=" + weight);
+            }
+
+            range = range.toLowerCase();
+
+            // Do syntax check.
+            boolean isIllFormed = false;
+            String[] subtags = range.split("-");
+            if (isSubtagIllFormed(subtags[0], true)
+                || range.endsWith("-")) {
+                isIllFormed = true;
+            } else {
+                for (int i = 1; i < subtags.length; i++) {
+                    if (isSubtagIllFormed(subtags[i], false)) {
+                        isIllFormed = true;
+                        break;
+                    }
+                }
+            }
+            if (isIllFormed) {
+                throw new IllegalArgumentException("range=" + range);
+            }
+
+            this.range = range;
+            this.weight = weight;
+        }
+
+        private static boolean isSubtagIllFormed(String subtag,
+                                                 boolean isFirstSubtag) {
+            if (subtag.equals("") || subtag.length() > 8) {
+                return true;
+            } else if (subtag.equals("*")) {
+                return false;
+            }
+            char[] charArray = subtag.toCharArray();
+            if (isFirstSubtag) { // ALPHA
+                for (char c : charArray) {
+                    if (c < 'a' || c > 'z') {
+                        return true;
+                    }
+                }
+            } else { // ALPHA / DIGIT
+                for (char c : charArray) {
+                    if (c < '0' || (c > '9' && c < 'a') || c > 'z') {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Returns the language range of this {@code LanguageRange}.
+         *
+         * @return the language range.
+         */
+        public String getRange() {
+            return range;
+        }
+
+        /**
+         * Returns the weight of this {@code LanguageRange}.
+         *
+         * @return the weight value.
+         */
+        public double getWeight() {
+            return weight;
+        }
+
+        /**
+         * Parses the given {@code ranges} to generate a Language Priority List.
+         *
+         * <p>This method performs a syntactic check for each language range in
+         * the given {@code ranges} but doesn't do validation using the IANA
+         * Language Subtag Registry.
+         *
+         * <p>The {@code ranges} to be given can take one of the following
+         * forms:
+         *
+         * <pre>
+         *   "Accept-Language: ja,en;q=0.4"  (weighted list with Accept-Language prefix)
+         *   "ja,en;q=0.4"                   (weighted list)
+         *   "ja,en"                         (prioritized list)
+         * </pre>
+         *
+         * In a weighted list, each language range is given a weight value.
+         * The weight value is identical to the "quality value" in
+         * <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, and it
+         * expresses how much the user prefers  the language. A weight value is
+         * specified after a corresponding language range followed by
+         * {@code ";q="}, and the default weight value is {@code MAX_WEIGHT}
+         * when it is omitted.
+         *
+         * <p>Unlike a weighted list, language ranges in a prioritized list
+         * are sorted in the descending order based on its priority. The first
+         * language range has the highest priority and meets the user's
+         * preference most.
+         *
+         * <p>In either case, language ranges are sorted in descending order in
+         * the Language Priority List based on priority or weight. If a
+         * language range appears in the given {@code ranges} more than once,
+         * only the first one is included on the Language Priority List.
+         *
+         * <p>The returned list consists of language ranges from the given
+         * {@code ranges} and their equivalents found in the IANA Language
+         * Subtag Registry. For example, if the given {@code ranges} is
+         * {@code "Accept-Language: iw,en-us;q=0.7,en;q=0.3"}, the elements in
+         * the list to be returned are:
+         *
+         * <pre>
+         *  <b>Range</b>                                   <b>Weight</b>
+         *    "iw" (older tag for Hebrew)             1.0
+         *    "he" (new preferred code for Hebrew)    1.0
+         *    "en-us" (English, United States)        0.7
+         *    "en" (English)                          0.3
+         * </pre>
+         *
+         * Two language ranges, {@code "iw"} and {@code "he"}, have the same
+         * highest priority in the list. By adding {@code "he"} to the user's
+         * Language Priority List, locale-matching method can find Hebrew as a
+         * matching locale (or language tag) even if the application or system
+         * offers only {@code "he"} as a supported locale (or language tag).
+         *
+         * @param ranges a list of comma-separated language ranges or a list of
+         *     language ranges in the form of the "Accept-Language" header
+         *     defined in <a href="http://tools.ietf.org/html/rfc2616">RFC
+         *     2616</a>
+         * @return a Language Priority List consisting of language ranges
+         *     included in the given {@code ranges} and their equivalent
+         *     language ranges if available. The list is modifiable.
+         * @throws NullPointerException if {@code ranges} is null
+         * @throws IllegalArgumentException if a language range or a weight
+         *     found in the given {@code ranges} is ill-formed
+         */
+        public static List<LanguageRange> parse(String ranges) {
+            return LocaleMatcher.parse(ranges);
+        }
+
+        /**
+         * Parses the given {@code ranges} to generate a Language Priority
+         * List, and then customizes the list using the given {@code map}.
+         * This method is equivalent to
+         * {@code mapEquivalents(parse(ranges), map)}.
+         *
+         * @param ranges a list of comma-separated language ranges or a list
+         *     of language ranges in the form of the "Accept-Language" header
+         *     defined in <a href="http://tools.ietf.org/html/rfc2616">RFC
+         *     2616</a>
+         * @param map a map containing information to customize language ranges
+         * @return a Language Priority List with customization. The list is
+         *     modifiable.
+         * @throws NullPointerException if {@code ranges} is null
+         * @throws IllegalArgumentException if a language range or a weight
+         *     found in the given {@code ranges} is ill-formed
+         * @see #parse(String)
+         * @see #mapEquivalents
+         */
+        public static List<LanguageRange> parse(String ranges,
+                                                Map<String, List<String>> map) {
+            return mapEquivalents(parse(ranges), map);
+        }
+
+        /**
+         * Generates a new customized Language Priority List using the given
+         * {@code priorityList} and {@code map}. If the given {@code map} is
+         * empty, this method returns a copy of the given {@code priorityList}.
+         *
+         * <p>In the map, a key represents a language range whereas a value is
+         * a list of equivalents of it. {@code '*'} cannot be used in the map.
+         * Each equivalent language range has the same weight value as its
+         * original language range.
+         *
+         * <pre>
+         *  An example of map:
+         *    <b>Key</b>                            <b>Value</b>
+         *      "zh" (Chinese)                 "zh",
+         *                                     "zh-Hans"(Simplified Chinese)
+         *      "zh-HK" (Chinese, Hong Kong)   "zh-HK"
+         *      "zh-TW" (Chinese, Taiwan)      "zh-TW"
+         * </pre>
+         *
+         * The customization is performed after modification using the IANA
+         * Language Subtag Registry.
+         *
+         * <p>For example, if a user's Language Priority List consists of five
+         * language ranges ({@code "zh"}, {@code "zh-CN"}, {@code "en"},
+         * {@code "zh-TW"}, and {@code "zh-HK"}), the newly generated Language
+         * Priority List which is customized using the above map example will
+         * consists of {@code "zh"}, {@code "zh-Hans"}, {@code "zh-CN"},
+         * {@code "zh-Hans-CN"}, {@code "en"}, {@code "zh-TW"}, and
+         * {@code "zh-HK"}.
+         *
+         * <p>{@code "zh-HK"} and {@code "zh-TW"} aren't converted to
+         * {@code "zh-Hans-HK"} nor {@code "zh-Hans-TW"} even if they are
+         * included in the Language Priority List. In this example, mapping
+         * is used to clearly distinguish Simplified Chinese and Traditional
+         * Chinese.
+         *
+         * <p>If the {@code "zh"}-to-{@code "zh"} mapping isn't included in the
+         * map, a simple replacement will be performed and the customized list
+         * won't include {@code "zh"} and {@code "zh-CN"}.
+         *
+         * @param priorityList user's Language Priority List
+         * @param map a map containing information to customize language ranges
+         * @return a new Language Priority List with customization. The list is
+         *     modifiable.
+         * @throws NullPointerException if {@code priorityList} is {@code null}
+         * @see #parse(String, Map)
+         */
+        public static List<LanguageRange> mapEquivalents(
+                                              List<LanguageRange>priorityList,
+                                              Map<String, List<String>> map) {
+            return LocaleMatcher.mapEquivalents(priorityList, map);
+        }
+
+        /**
+         * Returns a hash code value for the object.
+         *
+         * @return  a hash code value for this object.
+         */
+        @Override
+        public int hashCode() {
+            if (hash == 0) {
+                int result = 17;
+                result = 37*result + range.hashCode();
+                long bitsWeight = Double.doubleToLongBits(weight);
+                result = 37*result + (int)(bitsWeight ^ (bitsWeight >>> 32));
+                hash = result;
+            }
+            return hash;
+        }
+
+        /**
+         * Compares this object to the specified object. The result is true if
+         * and only if the argument is not {@code null} and is a
+         * {@code LanguageRange} object that contains the same {@code range}
+         * and {@code weight} values as this object.
+         *
+         * @param obj the object to compare with
+         * @return  {@code true} if this object's {@code range} and
+         *     {@code weight} are the same as the {@code obj}'s; {@code false}
+         *     otherwise.
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof LanguageRange)) {
+                return false;
+            }
+            LanguageRange other = (LanguageRange)obj;
+            return hash == other.hash
+                   && range.equals(other.range)
+                   && weight == other.weight;
+        }
+    }
+
+    /**
+     * Returns a list of matching {@code Locale} instances using the filtering
+     * mechanism defined in RFC 4647.
+     *
+     * @param priorityList user's Language Priority List in which each language
+     *     tag is sorted in descending order based on priority or weight
+     * @param locales {@code Locale} instances used for matching
+     * @param mode filtering mode
+     * @return a list of {@code Locale} instances for matching language tags
+     *     sorted in descending order based on priority or weight, or an empty
+     *     list if nothing matches. The list is modifiable.
+     * @throws NullPointerException if {@code priorityList} or {@code locales}
+     *     is {@code null}
+     * @throws IllegalArgumentException if one or more extended language ranges
+     *     are included in the given list when
+     *     {@link FilteringMode#REJECT_EXTENDED_RANGES} is specified
+     *
+     * @since 1.8
+     */
+    public static List<Locale> filter(List<LanguageRange> priorityList,
+                                      Collection<Locale> locales,
+                                      FilteringMode mode) {
+        return LocaleMatcher.filter(priorityList, locales, mode);
+    }
+
+    /**
+     * Returns a list of matching {@code Locale} instances using the filtering
+     * mechanism defined in RFC 4647. This is equivalent to
+     * {@link #filter(List, Collection, FilteringMode)} when {@code mode} is
+     * {@link FilteringMode#AUTOSELECT_FILTERING}.
+     *
+     * @param priorityList user's Language Priority List in which each language
+     *     tag is sorted in descending order based on priority or weight
+     * @param locales {@code Locale} instances used for matching
+     * @return a list of {@code Locale} instances for matching language tags
+     *     sorted in descending order based on priority or weight, or an empty
+     *     list if nothing matches. The list is modifiable.
+     * @throws NullPointerException if {@code priorityList} or {@code locales}
+     *     is {@code null}
+     *
+     * @since 1.8
+     */
+    public static List<Locale> filter(List<LanguageRange> priorityList,
+                                      Collection<Locale> locales) {
+        return filter(priorityList, locales, FilteringMode.AUTOSELECT_FILTERING);
+    }
+
+    /**
+     * Returns a list of matching languages tags using the basic filtering
+     * mechanism defined in RFC 4647.
+     *
+     * @param priorityList user's Language Priority List in which each language
+     *     tag is sorted in descending order based on priority or weight
+     * @param tags language tags
+     * @param mode filtering mode
+     * @return a list of matching language tags sorted in descending order
+     *     based on priority or weight, or an empty list if nothing matches.
+     *     The list is modifiable.
+     * @throws NullPointerException if {@code priorityList} or {@code tags} is
+     *     {@code null}
+     * @throws IllegalArgumentException if one or more extended language ranges
+     *     are included in the given list when
+     *     {@link FilteringMode#REJECT_EXTENDED_RANGES} is specified
+     *
+     * @since 1.8
+     */
+    public static List<String> filterTags(List<LanguageRange> priorityList,
+                                          Collection<String> tags,
+                                          FilteringMode mode) {
+        return LocaleMatcher.filterTags(priorityList, tags, mode);
+    }
+
+    /**
+     * Returns a list of matching languages tags using the basic filtering
+     * mechanism defined in RFC 4647. This is equivalent to
+     * {@link #filterTags(List, Collection, FilteringMode)} when {@code mode}
+     * is {@link FilteringMode#AUTOSELECT_FILTERING}.
+     *
+     * @param priorityList user's Language Priority List in which each language
+     *     tag is sorted in descending order based on priority or weight
+     * @param tags language tags
+     * @return a list of matching language tags sorted in descending order
+     *     based on priority or weight, or an empty list if nothing matches.
+     *     The list is modifiable.
+     * @throws NullPointerException if {@code priorityList} or {@code tags} is
+     *     {@code null}
+     *
+     * @since 1.8
+     */
+    public static List<String> filterTags(List<LanguageRange> priorityList,
+                                          Collection<String> tags) {
+        return filterTags(priorityList, tags, FilteringMode.AUTOSELECT_FILTERING);
+    }
+
+    /**
+     * Returns a {@code Locale} instance for the best-matching language
+     * tag using the lookup mechanism defined in RFC 4647.
+     *
+     * @param priorityList user's Language Priority List in which each language
+     *     tag is sorted in descending order based on priority or weight
+     * @param locales {@code Locale} instances used for matching
+     * @return the best matching <code>Locale</code> instance chosen based on
+     *     priority or weight, or {@code null} if nothing matches.
+     * @throws NullPointerException if {@code priorityList} or {@code tags} is
+     *     {@code null}
+     *
+     * @since 1.8
+     */
+    public static Locale lookup(List<LanguageRange> priorityList,
+                                Collection<Locale> locales) {
+        return LocaleMatcher.lookup(priorityList, locales);
+    }
+
+    /**
+     * Returns the best-matching language tag using the lookup mechanism
+     * defined in RFC 4647.
+     *
+     * @param priorityList user's Language Priority List in which each language
+     *     tag is sorted in descending order based on priority or weight
+     * @param tags language tangs used for matching
+     * @return the best matching language tag chosen based on priority or
+     *     weight, or {@code null} if nothing matches.
+     * @throws NullPointerException if {@code priorityList} or {@code tags} is
+     *     {@code null}
+     *
+     * @since 1.8
+     */
+    public static String lookupTag(List<LanguageRange> priorityList,
+                                   Collection<String> tags) {
+        return LocaleMatcher.lookupTag(priorityList, tags);
     }
 
 }

@@ -734,7 +734,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/util/locale/Extension.java \
   sun/util/locale/InternalLocaleBuilder.java \
   sun/util/locale/LanguageTag.java \
+  sun/util/locale/LocaleEquivalentMaps.java \
   sun/util/locale/LocaleExtensions.java \
+  sun/util/locale/LocaleMatcher.java \
   sun/util/locale/LocaleObjectCache.java \
   sun/util/locale/LocaleSyntaxException.java \
   sun/util/locale/LocaleUtils.java \

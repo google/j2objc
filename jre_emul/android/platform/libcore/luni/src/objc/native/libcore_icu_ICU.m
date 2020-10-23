@@ -332,42 +332,52 @@ jboolean Java_libcore_icu_ICU_initLocaleDataNative(
   // Decimal format symbols.
   CFNumberFormatterRef nf =
       CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterNoStyle);
-  result->zeroDigit_ = GetNumberPropChar(nf, kCFNumberFormatterZeroSymbol, '0');
-  result->decimalSeparator_ = GetNumberPropChar(nf, kCFNumberFormatterDecimalSeparator, '.');
-  result->groupingSeparator_ = GetNumberPropChar(nf, kCFNumberFormatterGroupingSeparator, ',');
-  result->patternSeparator_ = ';';  // There is no iOS API to fetch a locale-specific version.
-  LibcoreIcuLocaleData_setAndConsume_percent_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterPercentSymbol));
-  result->perMill_ = GetNumberPropChar(nf, kCFNumberFormatterPerMillSymbol, '0');
-  result->monetarySeparator_ = GetNumberPropChar(nf, kCFNumberFormatterCurrencyGroupingSeparator, ',');
-  LibcoreIcuLocaleData_setAndConsume_minusSign_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterMinusSign));
-  LibcoreIcuLocaleData_setAndConsume_exponentSeparator_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterExponentSymbol));
-  LibcoreIcuLocaleData_setAndConsume_infinity_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInfinitySymbol));
-  LibcoreIcuLocaleData_setAndConsume_NaN_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterNaNSymbol));
-  LibcoreIcuLocaleData_setAndConsume_currencySymbol_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterCurrencySymbol));
-  LibcoreIcuLocaleData_setAndConsume_internationalCurrencySymbol_(
-      result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInternationalCurrencySymbol));
-  CFRelease(nf);
+  if (!nf) {
+    // Full locale description isn't recognized, try one with just language and country codes.
+    languageTag = [NSString stringWithFormat:@"%@-%@", [locale languageCode], [locale countryCode]];
+    locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
+    cfLocale = (CFLocaleRef)locale;
+    nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterNoStyle);
+  }
+  if (nf) {
+    result->zeroDigit_ = GetNumberPropChar(nf, kCFNumberFormatterZeroSymbol, '0');
+    result->decimalSeparator_ = GetNumberPropChar(nf, kCFNumberFormatterDecimalSeparator, '.');
+    result->groupingSeparator_ = GetNumberPropChar(nf, kCFNumberFormatterGroupingSeparator, ',');
+    result->patternSeparator_ = ';';  // There is no iOS API to fetch a locale-specific version.
+    LibcoreIcuLocaleData_setAndConsume_percent_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterPercentSymbol));
+    result->perMill_ = GetNumberPropChar(nf, kCFNumberFormatterPerMillSymbol, '0');
+    result->monetarySeparator_ =
+        GetNumberPropChar(nf, kCFNumberFormatterCurrencyGroupingSeparator, ',');
+    LibcoreIcuLocaleData_setAndConsume_minusSign_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterMinusSign));
+    LibcoreIcuLocaleData_setAndConsume_exponentSeparator_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterExponentSymbol));
+    LibcoreIcuLocaleData_setAndConsume_infinity_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInfinitySymbol));
+    LibcoreIcuLocaleData_setAndConsume_NaN_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterNaNSymbol));
+    LibcoreIcuLocaleData_setAndConsume_currencySymbol_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterCurrencySymbol));
+    LibcoreIcuLocaleData_setAndConsume_internationalCurrencySymbol_(
+        result, CFNumberFormatterCopyProperty(nf, kCFNumberFormatterInternationalCurrencySymbol));
+    CFRelease(nf);
 
-  // Number formats.
-  nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterDecimalStyle);
-  CFStringRef formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
-  LibcoreIcuLocaleData_setAndConsume_integerPattern_(result, (NSString *)formatStr);
-  LibcoreIcuLocaleData_set_numberPattern_(result, (NSString *)formatStr);
-  CFRelease(nf);
-  nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterCurrencyStyle);
-  formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
-  LibcoreIcuLocaleData_setAndConsume_currencyPattern_(result, (NSString *)formatStr);
-  CFRelease(nf);
-  nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterPercentStyle);
-  formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
-  LibcoreIcuLocaleData_setAndConsume_percentPattern_(result, (NSString *)formatStr);
-  CFRelease(nf);
+    // Number formats.
+    nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterDecimalStyle);
+    CFStringRef formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
+    LibcoreIcuLocaleData_setAndConsume_integerPattern_(result, (NSString *)formatStr);
+    LibcoreIcuLocaleData_set_numberPattern_(result, (NSString *)formatStr);
+    CFRelease(nf);
+    nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterCurrencyStyle);
+    formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
+    LibcoreIcuLocaleData_setAndConsume_currencyPattern_(result, (NSString *)formatStr);
+    CFRelease(nf);
+    nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterPercentStyle);
+    formatStr = CFStringCreateCopy(kCFAllocatorDefault, CFNumberFormatterGetFormat(nf));
+    LibcoreIcuLocaleData_setAndConsume_percentPattern_(result, (NSString *)formatStr);
+    CFRelease(nf);
+  }
 
   // Calendar data.
   NSCalendar *calendar = [NSCalendar currentCalendar];

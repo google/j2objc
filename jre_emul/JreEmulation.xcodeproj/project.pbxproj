@@ -1940,7 +1940,6 @@
 		063BDD682505BB03000819BB /* DistributionPointFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD1A2505BAFE000819BB /* DistributionPointFetcher.m */; };
 		063BDD692505BB03000819BB /* ReverseState.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD1C2505BAFE000819BB /* ReverseState.m */; };
 		063BDD6C2505BB33000819BB /* JreRetainedLocalValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD6A2505BB32000819BB /* JreRetainedLocalValue.m */; };
-		063BDD6D2505BB33000819BB /* JreZeroingWeak.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD6B2505BB32000819BB /* JreZeroingWeak.m */; };
 		063BDD922505BBA6000819BB /* AnnotatedParameterizedType.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD6E2505BB9F000819BB /* AnnotatedParameterizedType.m */; };
 		063BDD932505BBA6000819BB /* AnnotatedWildcardType.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD702505BB9F000819BB /* AnnotatedWildcardType.m */; };
 		063BDD942505BBA6000819BB /* ClassCircularityError.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BDD712505BBA0000819BB /* ClassCircularityError.m */; };
@@ -3149,6 +3148,12 @@
 		06C143BB1F46149300CABE9A /* CharBufferTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C143BA1F46142600CABE9A /* CharBufferTest.m */; };
 		06C143BD1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C143BC1F462A2600CABE9A /* IosRSAKeyPairGeneratorTest.m */; };
 		06C143BF1F46406900CABE9A /* IosSecurityProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C143BE1F46406900CABE9A /* IosSecurityProviderTests.m */; };
+		06C9D0FA2541FE1000EEA36A /* LocaleMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C9D0F72541FE0F00EEA36A /* LocaleMatcher.m */; };
+		06C9D0FB2541FE1000EEA36A /* LocaleEquivalentMaps.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C9D0F82541FE0F00EEA36A /* LocaleEquivalentMaps.m */; };
+		06C9D10A2541FE5900EEA36A /* ThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C9D1032541FE5700EEA36A /* ThreadInfo.m */; };
+		06C9D10B2541FE5900EEA36A /* ManagementFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C9D1042541FE5800EEA36A /* ManagementFactory.m */; };
+		06C9D10C2541FE5900EEA36A /* RuntimeMXBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C9D1082541FE5900EEA36A /* RuntimeMXBean.m */; };
+		06C9D10D2541FE5900EEA36A /* ThreadMXBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C9D1092541FE5900EEA36A /* ThreadMXBean.m */; };
 		06D61043247DD7F3007376E1 /* AnnotationTypeMismatchExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D61042247DD7F3007376E1 /* AnnotationTypeMismatchExceptionTest.m */; };
 		06D61045247DD80F007376E1 /* DSAParamsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D61044247DD80F007376E1 /* DSAParamsTest.m */; };
 		06DE64D11E3AC09F00DACBF7 /* TimeZoneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DE64D01E3AC09F00DACBF7 /* TimeZoneTest.m */; };
@@ -4815,7 +4820,6 @@
 		063BDD1C2505BAFE000819BB /* ReverseState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReverseState.m; path = build_result/Classes/sun/security/provider/certpath/ReverseState.m; sourceTree = "<group>"; };
 		063BDD1D2505BAFF000819BB /* UntrustedCertificates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UntrustedCertificates.h; path = build_result/Classes/sun/security/util/UntrustedCertificates.h; sourceTree = "<group>"; };
 		063BDD6A2505BB32000819BB /* JreRetainedLocalValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreRetainedLocalValue.m; sourceTree = "<group>"; };
-		063BDD6B2505BB32000819BB /* JreZeroingWeak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreZeroingWeak.m; sourceTree = "<group>"; };
 		063BDD6E2505BB9F000819BB /* AnnotatedParameterizedType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotatedParameterizedType.m; path = build_result/Classes/java/lang/reflect/AnnotatedParameterizedType.m; sourceTree = "<group>"; };
 		063BDD6F2505BB9F000819BB /* InstantiationError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstantiationError.h; path = build_result/Classes/java/lang/InstantiationError.h; sourceTree = "<group>"; };
 		063BDD702505BB9F000819BB /* AnnotatedWildcardType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotatedWildcardType.m; path = build_result/Classes/java/lang/reflect/AnnotatedWildcardType.m; sourceTree = "<group>"; };
@@ -8352,6 +8356,18 @@
 		06C73F0F19180D90001D3CC8 /* SneakyThrow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SneakyThrow.m; path = build_result/Classes/libcore/util/SneakyThrow.m; sourceTree = "<group>"; };
 		06C73F5719180E64001D3CC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		06C73F5919180E6D001D3CC8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		06C9D0F62541FE0F00EEA36A /* LocaleEquivalentMaps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleEquivalentMaps.h; path = build_result/Classes/sun/util/locale/LocaleEquivalentMaps.h; sourceTree = "<group>"; };
+		06C9D0F72541FE0F00EEA36A /* LocaleMatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleMatcher.m; path = build_result/Classes/sun/util/locale/LocaleMatcher.m; sourceTree = "<group>"; };
+		06C9D0F82541FE0F00EEA36A /* LocaleEquivalentMaps.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleEquivalentMaps.m; path = build_result/Classes/sun/util/locale/LocaleEquivalentMaps.m; sourceTree = "<group>"; };
+		06C9D0F92541FE0F00EEA36A /* LocaleMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleMatcher.h; path = build_result/Classes/sun/util/locale/LocaleMatcher.h; sourceTree = "<group>"; };
+		06C9D1022541FE5700EEA36A /* ThreadMXBean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadMXBean.h; path = build_result/Classes/java/lang/management/ThreadMXBean.h; sourceTree = "<group>"; };
+		06C9D1032541FE5700EEA36A /* ThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadInfo.m; path = build_result/Classes/java/lang/management/ThreadInfo.m; sourceTree = "<group>"; };
+		06C9D1042541FE5800EEA36A /* ManagementFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ManagementFactory.m; path = build_result/Classes/java/lang/management/ManagementFactory.m; sourceTree = "<group>"; };
+		06C9D1052541FE5800EEA36A /* RuntimeMXBean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RuntimeMXBean.h; path = build_result/Classes/java/lang/management/RuntimeMXBean.h; sourceTree = "<group>"; };
+		06C9D1062541FE5800EEA36A /* ManagementFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ManagementFactory.h; path = build_result/Classes/java/lang/management/ManagementFactory.h; sourceTree = "<group>"; };
+		06C9D1072541FE5800EEA36A /* ThreadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadInfo.h; path = build_result/Classes/java/lang/management/ThreadInfo.h; sourceTree = "<group>"; };
+		06C9D1082541FE5900EEA36A /* RuntimeMXBean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RuntimeMXBean.m; path = build_result/Classes/java/lang/management/RuntimeMXBean.m; sourceTree = "<group>"; };
+		06C9D1092541FE5900EEA36A /* ThreadMXBean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadMXBean.m; path = build_result/Classes/java/lang/management/ThreadMXBean.m; sourceTree = "<group>"; };
 		06CB552421EFCFD000116799 /* CurrencyNumericCodesImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CurrencyNumericCodesImpl.h; path = build_result/Classes/com/google/j2objc/util/CurrencyNumericCodesImpl.h; sourceTree = "<group>"; };
 		06CB552521EFCFD000116799 /* CurrencyNumericCodes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CurrencyNumericCodes.m; path = build_result/Classes/com/google/j2objc/util/CurrencyNumericCodes.m; sourceTree = "<group>"; };
 		06CB552621EFCFD000116799 /* ResourceDataStreamHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceDataStreamHandler.h; path = build_result/Classes/com/google/j2objc/net/ResourceDataStreamHandler.h; sourceTree = "<group>"; };
@@ -9837,7 +9853,6 @@
 				063BDD6A2505BB32000819BB /* JreRetainedLocalValue.m */,
 				062C39541FD612AC009B232F /* JreRetainedWith.h */,
 				062C39521FD612AB009B232F /* JreRetainedWith.m */,
-				063BDD6B2505BB32000819BB /* JreZeroingWeak.m */,
 				063BDAE62505A184000819BB /* jvm_md.h */,
 				063BDAD72505A182000819BB /* jvm.h */,
 				062C39501FD612AB009B232F /* jvm.m */,
@@ -9916,6 +9931,18 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
+				06C9D1062541FE5800EEA36A /* ManagementFactory.h */,
+				06C9D1042541FE5800EEA36A /* ManagementFactory.m */,
+				06C9D1052541FE5800EEA36A /* RuntimeMXBean.h */,
+				06C9D1082541FE5900EEA36A /* RuntimeMXBean.m */,
+				06C9D1072541FE5800EEA36A /* ThreadInfo.h */,
+				06C9D1032541FE5700EEA36A /* ThreadInfo.m */,
+				06C9D1022541FE5700EEA36A /* ThreadMXBean.h */,
+				06C9D1092541FE5900EEA36A /* ThreadMXBean.m */,
+				06C9D0F62541FE0F00EEA36A /* LocaleEquivalentMaps.h */,
+				06C9D0F82541FE0F00EEA36A /* LocaleEquivalentMaps.m */,
+				06C9D0F92541FE0F00EEA36A /* LocaleMatcher.h */,
+				06C9D0F72541FE0F00EEA36A /* LocaleMatcher.m */,
 				063BE4072505C1BD000819BB /* AbstractBasicFileAttributeView.h */,
 				063BE34B2505C187000819BB /* AbstractBasicFileAttributeView.m */,
 				063BE4AE2505C239000819BB /* AbstractCalendar.h */,
@@ -15889,6 +15916,7 @@
 				063BD651250597BA000819BB /* IOSReflection.m in Sources */,
 				063BD652250597BA000819BB /* IosSslSocket.m in Sources */,
 				063BD653250597BA000819BB /* J2ObjC_common.m in Sources */,
+				06C9D0FA2541FE1000EEA36A /* LocaleMatcher.m in Sources */,
 				063BE2552505BFD5000819BB /* Duration.m in Sources */,
 				063BD654250597BA000819BB /* J2ObjC_icu.m in Sources */,
 				063BD655250597BA000819BB /* J2ObjCMain.m in Sources */,
@@ -16072,6 +16100,7 @@
 				063BD6AE250597BB000819BB /* ArrayList.m in Sources */,
 				063BDD312505BB00000819BB /* IndexedCollectionCertStore.m in Sources */,
 				063BD6AF250597BB000819BB /* ArrayMap.m in Sources */,
+				06C9D0FB2541FE1000EEA36A /* LocaleEquivalentMaps.m in Sources */,
 				063BD6B0250597BB000819BB /* ArrayPrefixHelpers.m in Sources */,
 				063BD6B1250597BB000819BB /* Arrays.m in Sources */,
 				063BDBE12505BA17000819BB /* GeneralName.m in Sources */,
@@ -16472,7 +16501,6 @@
 				063BD77F250597BC000819BB /* DefaultHandler.m in Sources */,
 				063BD780250597BC000819BB /* DefaultHandler2.m in Sources */,
 				063BD781250597BC000819BB /* DefaultInterface.m in Sources */,
-				063BDD6D2505BB33000819BB /* JreZeroingWeak.m in Sources */,
 				063BE0452505BE0B000819BB /* Era.m in Sources */,
 				063BE5072505C247000819BB /* Gregorian.m in Sources */,
 				063BDDE22505BC77000819BB /* MethodType.m in Sources */,
@@ -16914,6 +16942,7 @@
 				063BDD462505BB01000819BB /* ForwardState.m in Sources */,
 				063BD86A250597BE000819BB /* IosHttpURLConnection.m in Sources */,
 				063BE3362505C134000819BB /* IOUtils.m in Sources */,
+				06C9D10D2541FE5900EEA36A /* ThreadMXBean.m in Sources */,
 				063BE77B2505E93F000819BB /* RBBINode.m in Sources */,
 				063BDBB22505BA15000819BB /* PolicyConstraintsExtension.m in Sources */,
 				063BD86B250597BE000819BB /* IOSLogHandler.m in Sources */,
@@ -17089,6 +17118,7 @@
 				063BD8C4250597BE000819BB /* LSSerializer.m in Sources */,
 				063BD8C5250597BE000819BB /* LSSerializerFilter.m in Sources */,
 				063BD8C6250597BE000819BB /* Mac.m in Sources */,
+				06C9D10B2541FE5900EEA36A /* ManagementFactory.m in Sources */,
 				063BD8C7250597BE000819BB /* MacSpi.m in Sources */,
 				063BE21B2505BFAE000819BB /* SAXTransformerFactory.m in Sources */,
 				063BDF7D2505BD95000819BB /* CRLSelector.m in Sources */,
@@ -17803,6 +17833,7 @@
 				063BDA2C250597C2000819BB /* StackOverflowError.m in Sources */,
 				063BDA2D250597C2000819BB /* StackTraceElement.m in Sources */,
 				063BE1AC2505BF18000819BB /* SNIServerName.m in Sources */,
+				06C9D10A2541FE5900EEA36A /* ThreadInfo.m in Sources */,
 				063BDA2E250597C2000819BB /* StandardCharsets.m in Sources */,
 				063BE1E52505BF69000819BB /* RowSetEvent.m in Sources */,
 				063BDBD12505BA17000819BB /* X509AttributeName.m in Sources */,
@@ -17832,6 +17863,7 @@
 				063BDA3C250597C2000819BB /* StringPool.m in Sources */,
 				063BDA3D250597C2000819BB /* StringReader.m in Sources */,
 				063BDBED2505BA18000819BB /* OCSPNoCheckExtension.m in Sources */,
+				06C9D10C2541FE5900EEA36A /* RuntimeMXBean.m in Sources */,
 				063BDA3E250597C2000819BB /* StringTokenizer.m in Sources */,
 				063BDA3F250597C2000819BB /* StringWriter.m in Sources */,
 				063BDBD22505BA17000819BB /* BasicConstraintsExtension.m in Sources */,
