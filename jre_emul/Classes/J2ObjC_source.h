@@ -30,6 +30,30 @@
 
 #pragma clang system_header
 
+/*!
+ * Defines the initialize function and initialized flag for a class.
+ *
+ * @define J2OBJC_INITIALIZED_DEFN
+ * @param CLASS The class for which the initialized flag is defined.
+ */
+#define J2OBJC_INITIALIZED_DEFN(CLASS) \
+  _Atomic(jboolean) CLASS##__initialized = false; \
+  void CLASS##_initialize() { \
+    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
+      [CLASS class]; \
+    } \
+  }
+
+/*!
+ * Defines the code to set a class's initialized flag. This should be used at
+ * the end of each class's initialize class method.
+ *
+ * @define J2OBJC_SET_INITIALIZED
+ * @param CLASS The class who's flag is to be set.
+ */
+#define J2OBJC_SET_INITIALIZED(CLASS) \
+  __c11_atomic_store(&CLASS##__initialized, true, __ATOMIC_RELEASE);
+
 // "I" is defined in complex.h, which results in errors if that file is also
 // included.
 #pragma push_macro("I")

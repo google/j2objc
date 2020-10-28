@@ -140,26 +140,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #undef J2OBJC_VOLATILE_ACCESS_DEFN
 
 /*!
- * Defines the initialized flag for a class.
- *
- * @define J2OBJC_INITIALIZED_DEFN
- * @param CLASS The class for which the initialized flag is defined.
- */
-#define J2OBJC_INITIALIZED_DEFN(CLASS) \
-  _Atomic(jboolean) CLASS##__initialized = false;
-
-/*!
- * Defines the code to set a class's initialized flag. This should be used at
- * the end of each class's initialize class method.
- *
- * @define J2OBJC_SET_INITIALIZED
- * @param CLASS The class who's flag is to be set.
- */
-#define J2OBJC_SET_INITIALIZED(CLASS) \
-  __c11_atomic_store(&CLASS##__initialized, true, __ATOMIC_RELEASE);
-
-/*!
- * Defines an init function for a class that will ensure that the class is
+ * Declaration of an init function for a class that will ensure that the class is
  * initialized. For class "Foo" the function will have the following signature:
  *   inline void Foo_initialize();
  *
@@ -167,12 +148,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized; \
-  __attribute__((always_inline)) inline void CLASS##_initialize() { \
-    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
-      [CLASS class]; \
-    } \
-  }
+  FOUNDATION_EXPORT void CLASS##_initialize();
 
 /*!
  * Defines an empty init function for a class that has no initialization code.
@@ -223,6 +199,21 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     TYPE##_initialize(); \
     dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
     return cls; \
+  }
+
+/*!
+ * Defines the getter for an enum constant. For enum class "FooEnum" and constant "BAR"
+ * the getter will have the following signature:
+ *   inline Foo *Color_get_BLUE();
+ *
+ * @define J2OBJC_ENUM_CONSTANT_IMPL
+ * @param CLASS The enum class.
+ * @param CONSTANT The name of the enum constant.
+ */
+#define J2OBJC_ENUM_CONSTANT_IMPL(CLASS, CONSTANT) \
+  CLASS *CLASS##_get_##CONSTANT() { \
+    CLASS##_initialize(); \
+    return CLASS##_values_[CLASS##_Enum_##CONSTANT]; \
   }
 
 #if __has_feature(objc_arc)

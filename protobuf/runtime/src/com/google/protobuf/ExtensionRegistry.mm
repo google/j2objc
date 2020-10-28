@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "com/google/protobuf/ExtensionRegistry.h"
-
+#include "J2ObjC_source.h"
 #include "com/google/protobuf/Descriptors_PackagePrivate.h"
 #include "com/google/protobuf/Extension.h"
 #include "com/google/protobuf/GeneratedMessage.h"

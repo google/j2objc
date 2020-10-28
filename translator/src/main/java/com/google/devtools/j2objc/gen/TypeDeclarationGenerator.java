@@ -372,16 +372,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private void printEnumConstants() {
     if (typeNode instanceof EnumDeclaration) {
-      newline();
-      println("/*! INTERNAL ONLY - Use enum accessors declared below. */");
-      printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
+      println("\n/* Enum constant accessor functions. */");
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableElement());
-        newline();
-        JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
-        printf("inline %s *%s_get_%s(void);\n", typeName, typeName, varName);
-        printf("J2OBJC_ENUM_CONSTANT(%s, %s)\n", typeName, varName);
+        if (constant.getJavadoc() != null) {
+          newline();
+          JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
+        }
+        printf("FOUNDATION_EXPORT %s *%s_get_%s(void);\n", typeName, typeName, varName);
       }
+      println("\n/*! INTERNAL ONLY - Use enum accessors declared above. */");
+      printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
     }
   }
 

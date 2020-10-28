@@ -107,6 +107,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     printInitFlagDefinition();
     printStaticVars();
     printEnumValuesArray();
+    printEnumConstantAccessorFunctions();
 
     if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
       newline();
@@ -240,6 +241,20 @@ public class TypeImplementationGenerator extends TypeGenerator {
         printf("\n+ (%s *)%s {\n  return %s;\n}\n",
             typeName, nameTable.getStaticAccessorName(varElement),
             nameTable.getVariableQualifiedName(varElement));
+      }
+    }
+  }
+
+  private void printEnumConstantAccessorFunctions() {
+    if (typeNode instanceof EnumDeclaration) {
+      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+        // Keep in sync with J2OBJC_INITIALIZED_DEFN macro definition, which cannot be
+        // used by generated headers which are imported into Swift.
+        String varName = nameTable.getVariableBaseName(constant.getVariableElement());
+        printf("\n%s *%s_get_%s() {\n", typeName, typeName, varName);
+        printf("  %s_initialize();\n", typeName);
+        printf("  return %s_values_[%s_Enum_%s];\n", typeName, typeName, varName);
+        printf("}\n");
       }
     }
   }

@@ -1166,7 +1166,13 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 
 @end
 
-J2OBJC_INITIALIZED_DEFN(NSString)
+// Use the category dummy to initialize static variables for the String class.
+_Atomic(jboolean) NSString__initialized;
+void NSString_initialize() {
+  if (__builtin_expect(!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE), 0)) {
+    [JreStringCategoryDummy class];
+  }
+}
 
 id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
 IOSObjectArray *NSString_serialPersistentFields;

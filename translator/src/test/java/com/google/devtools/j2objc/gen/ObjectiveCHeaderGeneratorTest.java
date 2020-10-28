@@ -494,16 +494,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface Color : JavaLangEnum");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (Color *)valueOfWithNSString:(NSString *)name;");
-    assertTranslation(translation, "FOUNDATION_EXPORT Color *Color_values_[];");
-    assertTranslatedLines(translation,
-        "inline Color *Color_get_RED(void);",
-        "J2OBJC_ENUM_CONSTANT(Color, RED)");
-    assertTranslatedLines(translation,
-        "inline Color *Color_get_WHITE(void);",
-        "J2OBJC_ENUM_CONSTANT(Color, WHITE)");
-    assertTranslatedLines(translation,
-        "inline Color *Color_get_BLUE(void);",
-        "J2OBJC_ENUM_CONSTANT(Color, BLUE)");
+    assertTranslation(translation, "Color *Color_get_RED(void);");
+    assertTranslation(translation, "Color *Color_get_WHITE(void);");
+    assertTranslation(translation, "Color *Color_get_BLUE(void);");
   }
 
   public void testEnumWithParameters() throws IOException {
@@ -610,8 +603,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "MyEnum", "MyEnum.h");
     assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum_Enum) {");
     assertTranslation(translation, "@interface MyEnum : JavaLangEnum");
-    assertTranslation(translation, "FOUNDATION_EXPORT MyEnum *MyEnum_values_[];");
-    assertTranslation(translation, "inline MyEnum *MyEnum_get_ONE(void);");
+    assertTranslation(translation, "MyEnum *MyEnum_get_ONE(void);");
   }
 
   public void testNoImportForMappedTypes() throws IOException {
