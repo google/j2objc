@@ -533,7 +533,7 @@ import sun.util.locale.ParseStatus;
  *     <td><a href="http://www.unicode.org/versions/Unicode11.0.0/">Unicode 11.0</a></td></tr>
  * </table>
  *
- * <a name="default_locale"></a><h4>Be wary of the default locale</h3>
+ * <a name="default_locale"></a><h4>Be wary of the default locale</h4>
  * <p>Note that there are many convenience methods that automatically use the default locale, but
  * using them may lead to subtle bugs.
  *
