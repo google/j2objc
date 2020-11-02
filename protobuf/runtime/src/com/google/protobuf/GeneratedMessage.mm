@@ -103,23 +103,23 @@ class CGPExtensionValue {
       value_ = [[JavaUtilArrayList alloc] initWithInt:[otherList size]];
       [value_ addAllWithJavaUtilCollection:otherList];
     } else {
-      value_ = [other.value_ retain];
+      value_ = RETAIN_(other.value_);
     }
   }
 
   ~CGPExtensionValue() {
-    [value_ autorelease];
+    AUTORELEASE(value_);
   }
 
   id get() { return value_; }
 
   void set(id value) {
-    [value_ autorelease];
-    value_ = [value retain];
+    AUTORELEASE(value_);
+    value_ = RETAIN_(value);
   }
 
   void set_retained(id __attribute__((ns_consumed)) retainedValue) {
-    [value_ autorelease];
+    AUTORELEASE(value_);
     value_ = retainedValue;
   }
 
@@ -253,7 +253,7 @@ static inline void ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
     if (*oneofCase != loc.fieldNum) {
       if (*oneofCase & ONEOF_RETAINABLE_MASK) {
         id *objPtr = (id *)ptr;
-        [*objPtr autorelease];
+        AUTORELEASE(*objPtr);
         *objPtr = nil;
       }
       *oneofCase = 0;
@@ -367,7 +367,7 @@ static BOOL AddListGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   size_t offset = CGPFieldGetOffset(field, cls);
   CGPFieldJavaType type = CGPFieldGetJavaType(field);
   IMP imp = imp_implementationWithBlock(^id(id msg) {
-    return [CGPNewRepeatedFieldList(REPEATED_FIELD_PTR(msg, offset), type) autorelease];
+    return AUTORELEASE(CGPNewRepeatedFieldList(REPEATED_FIELD_PTR(msg, offset), type));
   });
   return class_addMethod(cls, sel, imp, "@@:");
 }
@@ -404,7 +404,7 @@ static BOOL AddClearMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
       imp = imp_implementationWithBlock(^id(id msg) {
         if (UnsetHas(msg, hasLoc)) {
           id *ptr = FIELD_PTR(id, msg, offset);
-          [*ptr autorelease];
+          AUTORELEASE(*ptr);
           *ptr = nil;
         }
         return msg;
@@ -476,8 +476,8 @@ static BOOL AddBuilderSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field
     id *ptr = FIELD_PTR(id, msg, offset);
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr);
     id builtValue = [(ComGoogleProtobufGeneratedMessage_Builder *)value build];
-    [*ptr autorelease];
-    *ptr = [builtValue retain];
+    AUTORELEASE(*ptr);
+    *ptr = RETAIN_(builtValue);
     SetHas(msg, hasLoc);
     return msg;
   });
@@ -1174,13 +1174,13 @@ static id<JavaUtilMap> GetAllFields(id msg) {
       }
     }
   }
-  return [result autorelease];
+  return AUTORELEASE(result);
 }
 
 static void CheckIsRepeated(CGPFieldDescriptor *descriptor) {
   if (!CGPFieldIsRepeated(descriptor)) {
-    @throw [[[JavaLangUnsupportedOperationException alloc] initWithNSString:
-        @"Expected a repeated field."] autorelease];
+    @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] initWithNSString:
+        @"Expected a repeated field."]);
   }
 }
 
@@ -1218,7 +1218,7 @@ static void ReleaseAllFields(id self, Class cls, CGPDescriptor *descriptor) {
     } else if (CGPFieldIsRepeated(field)) {
       CGPRepeatedFieldClear((CGPRepeatedField *)ptr, javaType);
     } else if (CGPIsRetainedType(javaType) && GetHas(self, GetHasLocator(cls, field))) {
-      [*(id *)ptr autorelease];
+      AUTORELEASE(*(id *)ptr);
     }
   }
 }
@@ -1241,7 +1241,7 @@ static void CopyAllFields(
     } else if (CGPFieldIsRepeated(field)) {
       CGPRepeatedFieldCopyData((CGPRepeatedField *)ptr, javaType);
     } else if (CGPIsRetainedType(javaType) && GetHas(copy, GetHasLocator(copyCls, field))) {
-      [*(id *)ptr retain];
+      RETAIN_(*(id *)ptr);
     }
   }
 }
@@ -1300,7 +1300,7 @@ static void MergeFieldsFromMessage(id msg, id other, CGPDescriptor *descriptor) 
       uintptr_t otherFieldPtr = (uintptr_t)other + otherOffset;
       if (CGPJavaTypeIsMessage(type) && GetHas(msg, hasLoc)) {
         id *msgPtr = (id *)fieldPtr;
-        [*msgPtr autorelease];
+        AUTORELEASE(*msgPtr);
         *msgPtr = NewMergedMessageField(*msgPtr, *(id *)otherFieldPtr, field->valueType_);
         continue;
       }
@@ -1371,7 +1371,7 @@ ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
   ComGoogleProtobufGeneratedMessage_Builder *builder = CGPNewBuilder(descriptor);
   CopyMessage(builder, BuilderExtensionMap(builder, descriptor),
               prototype, MessageExtensionMap(prototype, descriptor), descriptor);
-  return [builder autorelease];
+  return AUTORELEASE(builder);
 }
 
 
@@ -1466,7 +1466,7 @@ static BOOL ReadMapEntryField(
       if (!(isGroup ?
           MergeGroupFieldFromStream(newMsg, field, stream, registry) :
           MergeMessageFieldFromStream(newMsg, field, stream, registry))) {
-        [newMsg release];
+        RELEASE_(newMsg);
         return NO;
       }
       value->valueId = newMsg;
@@ -1494,14 +1494,14 @@ static BOOL MergeMapEntryFromStream(
     switch (CGPWireFormatGetTagFieldNumber(tag)) {
       case 1:
         if (hasKey && CGPIsRetainedType(CGPFieldGetJavaType(keyField))) {
-          [key.valueId release];
+          RELEASE_(key.valueId);
         }
         ReadMapEntryField(stream, keyField, tag, registry, &key);
         hasKey = YES;
         break;
       case 2:
         if (hasValue && CGPIsRetainedType(CGPFieldGetJavaType(valueField))) {
-          [value.valueId release];
+          RELEASE_(value.valueId);
         }
         ReadMapEntryField(stream, valueField, tag, registry, &value);
         hasValue = YES;
@@ -1583,7 +1583,7 @@ static BOOL MergeExtensionValueFromStream(
         if (!(isGroup ?
               MergeGroupFieldFromStream(msgField, field, stream, registry) :
               MergeMessageFieldFromStream(msgField, field, stream, registry))) {
-          [msgField release];
+          AUTORELEASE(msgField);
           return NO;
         }
         *result = msgField;
@@ -1610,7 +1610,7 @@ static BOOL MergeExtensionFromStream(
           return NO;
         if (value != nil) {
           AddExtensionWithReflectionType(extensionMap, field, value);
-          if (isRetained) [value release];
+          if (isRetained) RELEASE_(value);
         }
       }
       stream->PopLimit(limit);
@@ -1619,7 +1619,7 @@ static BOOL MergeExtensionFromStream(
         return NO;
       if (value != nil) {
         AddExtensionWithReflectionType(extensionMap, field, value);
-        if (isRetained) [value release];
+        if (isRetained) RELEASE_(value);
       }
     }
   } else {
@@ -1634,7 +1634,7 @@ static BOOL MergeExtensionFromStream(
     if (!MergeExtensionValueFromStream(stream, field, existingValue, registry, &value, &isRetained))
       return NO;
     if (value != nil) {
-      (*extensionMap)[field].set_retained(isRetained ? value : [value retain]);
+      (*extensionMap)[field].set_retained(isRetained ? value : RETAIN_(value));
     }
   }
   return YES;
@@ -1669,10 +1669,10 @@ static BOOL MergeMessageSetExtensionFromStream(
           // We haven't seen a type id yet. Read the data into rawBytes.
           CGPByteString *tempBytes;
           if (!stream->ReadRetainedByteString(&tempBytes)) return NO;
-          rawBytes = [CGPNewByteString(CGPGetBytesSize(tempBytes)) autorelease];
+          rawBytes = AUTORELEASE(CGPNewByteString(CGPGetBytesSize(tempBytes)));
           CGPCodedOutputStream tempOutput(rawBytes->buffer_, rawBytes->size_);
           CGPWriteBytes(tempBytes, &tempOutput);
-          [tempBytes release];
+          RELEASE_(tempBytes);
         } else {
           // We already saw the type id so we can parse directly.
           if (extension != nil) {
@@ -1810,7 +1810,7 @@ static BOOL MergeFieldFromStream(
           CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
         } else {
           id *ptr = (id *)fieldPtr;
-          [*ptr autorelease];
+          AUTORELEASE(*ptr);
           *ptr = value;
           SetHas(msg, hasLoc);
         }
@@ -1824,7 +1824,7 @@ static BOOL MergeFieldFromStream(
           CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
         } else {
           id *ptr = (id *)fieldPtr;
-          [*ptr autorelease];
+          AUTORELEASE(*ptr);
           *ptr = value;
           SetHas(msg, hasLoc);
         }
@@ -1848,7 +1848,7 @@ static BOOL MergeFieldFromStream(
             CopyMessage(msgField, MessageExtensionMap(msgField, fieldType),
                         *ptr, MessageExtensionMap(*ptr, fieldType), fieldType);
           }
-          [*ptr autorelease];
+          AUTORELEASE(*ptr);
           *ptr = msgField;
           SetHas(msg, hasLoc);
         }
@@ -1899,7 +1899,7 @@ static BOOL MergeFromStream(
 }
 
 static void InvalidPB() {
-  @throw [[[ComGoogleProtobufInvalidProtocolBufferException alloc] init] autorelease];
+  @throw AUTORELEASE([[ComGoogleProtobufInvalidProtocolBufferException alloc] init]);
 }
 
 void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length) {
@@ -1913,7 +1913,7 @@ void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, ui
 
 ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
     CGPDescriptor *descriptor, IOSByteArray *bytes, CGPExtensionRegistryLite *registry) {
-  ComGoogleProtobufGeneratedMessage *msg = [CGPNewMessage(descriptor) autorelease];
+  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
   CGPCodedInputStream codedStream(bytes->buffer_, (int)bytes->size_);
   BOOL success =
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
@@ -1926,7 +1926,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
 
 ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry) {
-  ComGoogleProtobufGeneratedMessage *msg = [CGPNewMessage(descriptor) autorelease];
+  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
   CGPCodedInputStream codedStream(input, INT_MAX);
   BOOL success =
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
@@ -1945,7 +1945,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
   }
   uint32_t length;
   if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length)) InvalidPB();
-  ComGoogleProtobufGeneratedMessage *msg = [CGPNewMessage(descriptor) autorelease];
+  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
   CGPCodedInputStream codedStream(input, length);
   BOOL success =
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
@@ -2754,7 +2754,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
 static NSString *BytesToString(CGPByteString *byteString) {
   int length = byteString->size_;
   int8_t *buffer = byteString->buffer_;
-  JavaLangStringBuilder *builder = [[[JavaLangStringBuilder alloc] initWithInt:length] autorelease];
+  JavaLangStringBuilder *builder = AUTORELEASE([[JavaLangStringBuilder alloc] initWithInt:length]);
   for (int i = 0; i < length; i++) {
     int8_t b = buffer[i];
     switch (b) {
@@ -3190,12 +3190,12 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 + (ComGoogleProtobufGeneratedMessage_Builder *)newBuilder {
   CGPDescriptor *descriptor = [self getDescriptor];
-  return [CGPNewBuilder(descriptor) autorelease];
+  return AUTORELEASE(CGPNewBuilder(descriptor));
 }
 
 - (ComGoogleProtobufGeneratedMessage_Builder *)newBuilderForType {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  return [CGPNewBuilder(descriptor) autorelease];
+  return AUTORELEASE(CGPNewBuilder(descriptor));
 }
 
 - (ComGoogleProtobufGeneratedMessage_Builder *)toBuilder {
@@ -3203,12 +3203,12 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage_Builder *newBuilder = CGPNewBuilder(descriptor);
   CopyAllFields(self, selfCls, newBuilder, descriptor->builderClass_, descriptor);
-  return [newBuilder autorelease];
+  return AUTORELEASE(newBuilder);
 }
 
 + (ComGoogleProtobufGeneratedMessage *)getDefaultInstance {
   CGPDescriptor *descriptor = [self getDescriptor];
-  return [CGPNewMessage(descriptor) autorelease];
+  return AUTORELEASE(CGPNewMessage(descriptor));
 }
 
 - (ComGoogleProtobufGeneratedMessage *)getDefaultInstanceForType {
@@ -3231,7 +3231,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 + (id)parseFromNSData:(NSData *)data registry:(CGPExtensionRegistryLite *)registry {
   CGPDescriptor *descriptor = [self getDescriptor];
-  ComGoogleProtobufGeneratedMessage *msg = [CGPNewMessage(descriptor) autorelease];
+  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
   CGPCodedInputStream codedStream([data bytes], (int)[data length]);
   BOOL success =
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
@@ -3282,7 +3282,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPCodedOutputStream codedStream(byteString->buffer_, byteString->size_);
   WriteMessage(self, descriptor, &codedStream);
   NSAssert(!codedStream.HadError(), @"Serialization error");
-  return [byteString autorelease];
+  return AUTORELEASE(byteString);
 }
 
 - (NSData *)toNSData {
@@ -3376,7 +3376,7 @@ static id DynamicNewBuilder(Class self, SEL _cmd, ComGoogleProtobufGeneratedMess
   ComGoogleProtobufGeneratedMessage_Builder *builder = CGPNewBuilder(descriptor);
   CopyMessage(builder, BuilderExtensionMap(builder, descriptor),
               prototype, MessageExtensionMap(prototype, descriptor), descriptor);
-  return [builder autorelease];
+  return AUTORELEASE(builder);
 }
 
 + (BOOL)resolveClassMethod:(SEL)sel {
@@ -3418,7 +3418,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage *newMsg = CGPNewMessage(descriptor);
   CopyAllFields(self, selfCls, newMsg, descriptor->messageClass_, descriptor);
-  return [newMsg autorelease];
+  return AUTORELEASE(newMsg);
 }
 
 - (ComGoogleProtobufGeneratedMessage_Builder *)clear {
@@ -3443,7 +3443,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
       newBuilderForFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
           (CGPFieldDescriptor *)fieldDescriptor {
   CGPDescriptor *descriptor = [fieldDescriptor getMessageType];
-  return [CGPNewBuilder(descriptor) autorelease];
+  return AUTORELEASE(CGPNewBuilder(descriptor));
 }
 
 - (id)getFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(CGPFieldDescriptor *)descriptor {
@@ -3533,7 +3533,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
     CGPHasLocator hasLoc = GetHasLocator(cls, descriptor);
     if (UnsetHas(self, hasLoc) && CGPIsRetainedType(CGPFieldGetJavaType(descriptor))) {
       id *ptr = FIELD_PTR(id, self, offset);
-      [*ptr autorelease];
+      AUTORELEASE(*ptr);
       *ptr = nil;
     }
   }
@@ -3684,7 +3684,7 @@ static id FromReflectionType(CGPFieldDescriptor *field, id value) {
     if (CGPJavaTypeIsEnum(type)) {
       id<JavaUtilList> valueList = (id<JavaUtilList>)value;
       id<JavaUtilList> result =
-          [[[JavaUtilArrayList alloc] initWithInt:[valueList size]] autorelease];
+          AUTORELEASE([[JavaUtilArrayList alloc] initWithInt:[valueList size]]);
       for (id element in valueList) {
         [result addWithId:FromReflectionTypeSingular(type, element)];
       }
@@ -3709,7 +3709,7 @@ static id ToReflectionType(CGPFieldDescriptor *field, id value) {
   if (CGPFieldIsRepeated(field)) {
     id<JavaUtilList> valueList = (id<JavaUtilList>)value;
     id<JavaUtilList> result =
-        [[[JavaUtilArrayList alloc] initWithInt:[valueList size]] autorelease];
+        AUTORELEASE([[JavaUtilArrayList alloc] initWithInt:[valueList size]]);
     for (id element in valueList) {
       [result addWithId:ToReflectionTypeSingular(type, element)];
     }
@@ -3748,7 +3748,7 @@ static id GetRepeatedExtension(
   if (it != extensionMap->end()) {
     value = [((id<JavaUtilList>)it->second.get()) getWithInt:index];
   } else {
-    @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaLangIndexOutOfBoundsException alloc] init]);
   }
   return FromReflectionTypeSingular(type, value);
 }

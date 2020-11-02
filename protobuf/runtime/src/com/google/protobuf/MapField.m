@@ -112,10 +112,10 @@ static CGPMapFieldEntry *NewEntry(
     CGPValue key, CGPFieldJavaType keyType, CGPValue value, CGPFieldJavaType valueType,
     uint32_t hash) {
   if (CGPIsRetainedType(keyType)) {
-    [key.valueId retain];
+    RETAIN_(key.valueId);
   }
   if (CGPIsRetainedType(valueType)) {
-    [value.valueId retain];
+    RETAIN_(value.valueId);
   }
   return NewEntryConsuming(key, value, hash);
 }
@@ -123,10 +123,10 @@ static CGPMapFieldEntry *NewEntry(
 static void ReleaseEntry(
     CGPMapFieldEntry *entry, CGPFieldJavaType keyType, CGPFieldJavaType valueType) {
   if (CGPIsRetainedType(keyType)) {
-    [entry->key.valueId release];
+    RELEASE_(entry->key.valueId);
   }
   if (CGPIsRetainedType(valueType)) {
-    [entry->value.valueId release];
+    RELEASE_(entry->value.valueId);
   }
   free(entry);
 }
@@ -327,7 +327,7 @@ void CGPMapFieldPut(
   BOOL valueTypeIsRetainable = CGPIsRetainedType(valueType);
   // The value is always added to the map so make sure it's retained.
   if (valueTypeIsRetainable && !retainedKeyAndValue) {
-    [value.valueId retain];
+    RETAIN_(value.valueId);
   }
   uint32_t hash = Hash(key, keyType);
   CGPMapFieldEntry *entry = NULL;
@@ -349,7 +349,7 @@ void CGPMapFieldPut(
   } else {
     // Creating a new entry using the passed in key which must be retained.
     if (keyTypeIsRetainable && !retainedKeyAndValue) {
-      [key.valueId retain];
+      RETAIN_(key.valueId);
     }
     EnsureAdditionalHashMapCapacity(field, 1, keyType, valueType);
     data = field->data;
@@ -690,7 +690,7 @@ id<JavaUtilMap> CGPMapFieldAsJavaMap(
 
 - (id<JavaUtilSet>)entrySet {
   CGPMapFieldEntrySet *entrySet = [[[CGPMapFieldEntrySet alloc] init] autorelease];
-  entrySet->map_ = [self retain];
+  entrySet->map_ = RETAIN_(self);
   return entrySet;
 }
 
@@ -730,7 +730,7 @@ id<JavaUtilMap> CGPMapFieldAsJavaMap(
   // becomes invalid.
   CGPMapFieldData *data = map_->field_.data;
   CGPMapFieldEntrySetIterator *iterator = [[[CGPMapFieldEntrySetIterator alloc] init] autorelease];
-  iterator->map_ = [map_ retain];
+  iterator->map_ = RETAIN_(map_);
   if (data != NULL) {
     EnsureValidMap(data, map_->keyType_, map_->valueType_);
     iterator->nextEntry_ = data->header.next;
@@ -740,7 +740,7 @@ id<JavaUtilMap> CGPMapFieldAsJavaMap(
 }
 
 - (void)dealloc {
-  [map_ release];
+  RELEASE_(map_);
   [super dealloc];
 }
 
@@ -779,7 +779,7 @@ id<JavaUtilMap> CGPMapFieldAsJavaMap(
 }
 
 - (void)dealloc {
-  [map_ release];
+  RELEASE_(map_);
   [super dealloc];
 }
 

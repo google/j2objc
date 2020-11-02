@@ -61,7 +61,11 @@
 #define TYPE_RETAIN_Double(value) value
 #define TYPE_RETAIN_Bool(value) value
 #define TYPE_RETAIN_Enum(value) value
+#if __has_feature(objc_arc)
+#define TYPE_RETAIN_Retainable(value) value
+#else
 #define TYPE_RETAIN_Retainable(value) [value retain]
+#endif
 
 #define TYPE_ASSIGN_Int(assignee, value) assignee = value
 #define TYPE_ASSIGN_Long(assignee, value) assignee = value
@@ -69,8 +73,12 @@
 #define TYPE_ASSIGN_Double(assignee, value) assignee = value
 #define TYPE_ASSIGN_Bool(assignee, value) assignee = value
 #define TYPE_ASSIGN_Enum(assignee, value) assignee = value
+#if __has_feature(objc_arc)
+#define TYPE_ASSIGN_Retainable(assignee, value) assignee = value
+#else
 #define TYPE_ASSIGN_Retainable(assignee, value) \
   ([assignee autorelease], assignee = [value retain])
+#endif
 
 #define HASH_Int(value) value
 #define HASH_Long(value) (int)((uint64_t)value ^ ((uint64_t)value >> 32))

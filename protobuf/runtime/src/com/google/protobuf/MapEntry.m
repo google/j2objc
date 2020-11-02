@@ -52,8 +52,8 @@
 
 - (instancetype)initWithKey:(id)key value:(id)value {
   if (self == [self init]) {
-    key_ = [key retain];
-    value_ = [value retain];
+    key_ = RETAIN_(key);
+    value_ = RETAIN_(value);
   }
   return self;
 }
@@ -68,15 +68,15 @@
 
 - (ComGoogleProtobufMapEntry_Builder *)toBuilder {
   ComGoogleProtobufMapEntry_Builder *builder =
-      [[[ComGoogleProtobufMapEntry_Builder alloc] init] autorelease];
-  builder->key_ = [key_ retain];
-  builder->value_ = [value_ retain];
+      AUTORELEASE([[ComGoogleProtobufMapEntry_Builder alloc] init]);
+  builder->key_ = RETAIN_(key_);
+  builder->value_ = RETAIN_(value_);
   return builder;
 }
 
 - (void)dealloc {
-  [key_ release];
-  [value_ release];
+  RELEASE_(key_);
+  RELEASE_(value_);
   [super dealloc];
 }
 
@@ -97,12 +97,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufMapEntry)
 }
 
 - (ComGoogleProtobufMapEntry *)build {
-  return [[[ComGoogleProtobufMapEntry alloc] initWithKey:key_ value:value_] autorelease];
+  return AUTORELEASE([[ComGoogleProtobufMapEntry alloc] initWithKey:key_ value:value_]);
 }
 
 - (void)dealloc {
-  [key_ release];
-  [value_ release];
+  RELEASE_(key_);
+  RELEASE_(value_);
   [super dealloc];
 }
 

@@ -30,6 +30,7 @@
 
 #import "com/google/protobuf/RepeatedField.h"
 
+#import "J2ObjC_source.h"
 #import "com/google/protobuf/ByteString.h"
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/ProtocolStringList.h"
@@ -75,7 +76,7 @@ void CGPRepeatedFieldCopyData(CGPRepeatedField *field, CGPFieldJavaType type) {
 
   if (CGPIsRetainedType(type)) {
     for (uint32_t i = 0; i < newData->size; i++) {
-      [((id *)newData->buffer)[i] retain];
+      RETAIN_(((id *)newData->buffer)[i]);
     }
   }
 }
@@ -95,7 +96,7 @@ void CGPRepeatedFieldAppendOther(
   data->size += otherSize;
   if (CGPIsRetainedType(type)) {
     for (uint32_t i = 0; i < otherSize; i++) {
-      [((id *)newBuffer)[i] retain];
+      RETAIN_(((id *)newBuffer)[i]);
     }
   }
 }
@@ -110,7 +111,7 @@ static void ReleaseData(CGPRepeatedFieldData *data, CGPFieldJavaType type) {
 
     if (CGPIsRetainedType(type)) {
       for (uint32_t i = 0; i < data->size; i++) {
-        [((id *)data->buffer)[i] release];
+        RELEASE_(((id *)data->buffer)[i]);
       }
     }
 
@@ -139,7 +140,7 @@ void CGPRepeatedMessageFieldRemove(CGPRepeatedField *field, jint index) {
   CGPRepeatedFieldCheckBounds(field, index);
   uint32_t count = CGPRepeatedFieldSize(field);
   id *msgBuffer = (id *)field->data->buffer;
-  [msgBuffer[index] autorelease];
+  AUTORELEASE(msgBuffer[index]);
   if (count > (uint32_t)index + 1) {
     memmove(&(msgBuffer[index]),
             &(msgBuffer[index + 1]),
@@ -195,7 +196,7 @@ void CGPRepeatedFieldAssignFromList(
 
 id<JavaUtilList> CGPRepeatedFieldCopyList(CGPRepeatedField *field, CGPFieldDescriptor *descriptor) {
   id<JavaUtilList> newList =
-      [[[JavaUtilArrayList alloc] initWithInt:CGPRepeatedFieldSize(field)] autorelease];
+      AUTORELEASE([[JavaUtilArrayList alloc] initWithInt:CGPRepeatedFieldSize(field)]);
   CGPRepeatedFieldData *data = field->data;
   if (data == NULL) {
     return newList;
@@ -238,9 +239,10 @@ BOOL CGPRepeatedFieldIsEqual(CGPRepeatedField *a, CGPRepeatedField *b, CGPFieldJ
 }
 
 void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size) {
-  @throw [[[JavaLangIndexOutOfBoundsException alloc] initWithNSString:
+  NSString *msg =
       [NSString stringWithFormat:@"Repeated field index out-of-bounds. (index = %d, size = %d)",
-          idx, (int)size]] autorelease];
+                                 idx, (int)size];
+  @throw AUTORELEASE([[JavaLangIndexOutOfBoundsException alloc] initWithNSString:msg]);
 }
 
 @interface CGPRepeatedFieldList : JavaUtilAbstractList {
@@ -300,7 +302,7 @@ id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaTy
 @implementation CGPRepeatedStringFieldList
 
 - (id<JavaUtilList>)asByteStringList {
-  CGPStringAsByteStringList *list = [[[CGPStringAsByteStringList alloc] init] autorelease];
+  CGPStringAsByteStringList *list = AUTORELEASE([[CGPStringAsByteStringList alloc] init]);
   if (field_.data != NULL) {
     list->field_.data = field_.data;
     __c11_atomic_fetch_add(&field_.data->ref_count, 1, __ATOMIC_RELAXED);
