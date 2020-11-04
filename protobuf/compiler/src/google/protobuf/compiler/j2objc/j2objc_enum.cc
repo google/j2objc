@@ -131,8 +131,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
 
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
-        "inline $classname$ *$classname$_get_$name$(void);\n"
-        "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
+        "FOUNDATION_EXPORT $classname$ *$classname$_get_$name$(void);\n",
         "classname", ClassName(descriptor_), "name",
         canonical_values_[i]->name());
   }
@@ -269,6 +268,16 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "}\n",
       "classname", ClassName(descriptor_), "count",
       SimpleItoa(canonical_values_.size()));
+
+  for (int i = 0; i < canonical_values_.size(); i++) {
+    printer->Print(
+        "\n$classname$ *$classname$_get_$name$(void) {\n"
+        "  $classname$_initialize();\n"
+        "  return $classname$_values_[$classname$_Enum_$name$];\n"
+        "}\n",
+        "classname", ClassName(descriptor_),
+        "name", canonical_values_[i]->name());
+  }
 }
 
 }  // namespace j2objc

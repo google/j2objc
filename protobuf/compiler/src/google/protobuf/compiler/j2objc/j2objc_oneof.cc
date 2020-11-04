@@ -183,10 +183,9 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     printer->Print(
-        "inline $classname$ *$classname$_get_$name$(void);\n"
-        "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
-        "classname", CaseClassName(descriptor_), "name",
-        CaseValueName(descriptor_->field(i)));
+        "FOUNDATION_EXPORT $classname$ *$classname$_get_$name$(void);\n",
+        "classname", CaseClassName(descriptor_),
+        "name", CaseValueName(descriptor_->field(i)));
   }
   printer->Print(
       "inline $classname$ *$classname$_get_$name$(void);\n"
@@ -317,6 +316,15 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "}\n",
       "classname", CaseClassName(descriptor_), "count",
       SimpleItoa(descriptor_->field_count() + 1));
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    printer->Print(
+        "\n$classname$ *$classname$_get_$name$(void) {\n"
+        "  $classname$_initialize();\n"
+        "  return $classname$_values_[$classname$_Enum_$name$];\n"
+        "}\n",
+        "classname", CaseClassName(descriptor_),
+        "name", CaseValueName(descriptor_->field(i)));
+  }
 }
 
 void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
