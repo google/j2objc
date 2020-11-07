@@ -46,20 +46,13 @@
 }
 @end
 
-CGP_ALWAYS_INLINE inline ComGoogleProtobufGeneratedMessage *CGPNewMessage(
-    ComGoogleProtobufDescriptors_Descriptor *descriptor) {
-  ComGoogleProtobufGeneratedMessage *msg =
-      NSAllocateObject(descriptor->messageClass_, descriptor->storageSize_, nil);
-  msg->memoizedSize_ = -1;
-  return msg;
-}
-
-CGP_ALWAYS_INLINE inline ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
-    ComGoogleProtobufDescriptors_Descriptor *descriptor) {
-  return NSAllocateObject(descriptor->builderClass_, descriptor->storageSize_, nil);
-}
-
 CF_EXTERN_C_BEGIN
+
+ComGoogleProtobufGeneratedMessage *CGPNewMessage(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor);
+
+ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor);
 
 ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
     CGPDescriptor *descriptor, ComGoogleProtobufGeneratedMessage *prototype);

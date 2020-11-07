@@ -91,6 +91,43 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
 static void MessageToString(
     id msg, CGPDescriptor *descriptor, NSMutableString *builder, int indent);
 
+#define REPEATED_FIELD_GETTER_IMP(NAME) \
+  CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME( \
+      CGPRepeatedField *field, jint idx) { \
+    CGPRepeatedFieldCheckBounds(field, idx); \
+    return ((TYPE_##NAME *)field->data->buffer)[idx]; \
+  }
+
+FOR_EACH_TYPE_NO_ENUM(REPEATED_FIELD_GETTER_IMP)
+
+#undef REPEATED_FIELD_GETTER_IMP
+
+#define REPEATED_FIELD_ADDER_IMP(NAME) \
+  CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAdd##NAME( \
+      CGPRepeatedField *field, TYPE_##NAME value) { \
+    uint32_t total_size = CGPRepeatedFieldTotalSize(field); \
+    if (CGPRepeatedFieldSize(field) == total_size) { \
+      CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME)); \
+    } \
+    ((TYPE_##NAME *)field->data->buffer)[field->data->size++] = TYPE_RETAIN_##NAME(value); \
+  }
+
+FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
+
+#undef REPEATED_FIELD_ADDER_IMP
+
+#define REPEATED_FIELD_SETTER_IMP(NAME) \
+  CGP_ALWAYS_INLINE inline void CGPRepeatedFieldSet##NAME( \
+      CGPRepeatedField *field, jint idx, TYPE_##NAME value) { \
+    CGPRepeatedFieldCheckBounds(field, idx); \
+    TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx]; \
+    TYPE_ASSIGN_##NAME(*ptr, value); \
+  } \
+
+FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
+
+#undef REPEATED_FIELD_SETTER_IMP
+
 // Declares a value type for the C++ extensions map to implement correct
 // equality and handle memory management
 class CGPExtensionValue {
@@ -1253,6 +1290,19 @@ static void CopyMessage(
   if (copyExtensionMap != NULL) {
     *copyExtensionMap = *origExtensionMap;
   }
+}
+
+ComGoogleProtobufGeneratedMessage *CGPNewMessage(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor) {
+  ComGoogleProtobufGeneratedMessage *msg =
+      NSAllocateObject(descriptor->messageClass_, descriptor->storageSize_, nil);
+  msg->memoizedSize_ = -1;
+  return msg;
+}
+
+ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor) {
+  return NSAllocateObject(descriptor->builderClass_, descriptor->storageSize_, nil);
 }
 
 

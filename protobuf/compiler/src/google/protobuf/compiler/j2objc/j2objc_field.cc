@@ -268,10 +268,10 @@ void FieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
   JavaType type = GetJavaType(descriptor_);
   std::string staticref;
   if (type == JAVATYPE_MESSAGE) {
-    staticref = "(const void **)&" +
+    staticref = "&" +
         GetParameterType(descriptor_) + "_descriptor_";
   } else if (type == JAVATYPE_ENUM) {
-    staticref = "(const void **)&" +
+    staticref = "&" +
         GetParameterType(descriptor_) + "_descriptor_";
   } else {
     staticref = "NULL";

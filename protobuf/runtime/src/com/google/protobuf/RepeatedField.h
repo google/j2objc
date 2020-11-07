@@ -90,50 +90,13 @@ CGP_ALWAYS_INLINE inline void CGPRepeatedFieldCheckBounds(CGPRepeatedField *fiel
   }
 }
 
-#define REPEATED_FIELD_GETTER_IMP(NAME) \
-  CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME( \
-      CGPRepeatedField *field, jint idx) { \
-    CGPRepeatedFieldCheckBounds(field, idx); \
-    return ((TYPE_##NAME *)field->data->buffer)[idx]; \
-  }
-
-FOR_EACH_TYPE_NO_ENUM(REPEATED_FIELD_GETTER_IMP)
-
-#undef REPEATED_FIELD_GETTER_IMP
-
-#define REPEATED_FIELD_ADDER_IMP(NAME) \
-  CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAdd##NAME( \
-      CGPRepeatedField *field, TYPE_##NAME value) { \
-    uint32_t total_size = CGPRepeatedFieldTotalSize(field); \
-    if (CGPRepeatedFieldSize(field) == total_size) { \
-      CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME)); \
-    } \
-    ((TYPE_##NAME *)field->data->buffer)[field->data->size++] = TYPE_RETAIN_##NAME(value); \
-  }
-
-FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
-
-#undef REPEATED_FIELD_ADDER_IMP
-
 CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAddRetainedId(CGPRepeatedField *field, id value) {
   uint32_t total_size = CGPRepeatedFieldTotalSize(field);
   if (CGPRepeatedFieldSize(field) == total_size) {
     CGPRepeatedFieldReserve(field, total_size + 1, sizeof(id));
   }
-  ((id *)field->data->buffer)[field->data->size++] = value;
+  ((void **)field->data->buffer)[field->data->size++] =  (ARCBRIDGE void *)(value);
 }
-
-#define REPEATED_FIELD_SETTER_IMP(NAME) \
-  CGP_ALWAYS_INLINE inline void CGPRepeatedFieldSet##NAME( \
-      CGPRepeatedField *field, jint idx, TYPE_##NAME value) { \
-    CGPRepeatedFieldCheckBounds(field, idx); \
-    TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx]; \
-    TYPE_ASSIGN_##NAME(*ptr, value); \
-  } \
-
-FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
-
-#undef REPEATED_FIELD_SETTER_IMP
 
 id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
 

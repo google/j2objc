@@ -44,7 +44,7 @@ typedef union {
   jfloat valueFloat;
   jdouble valueDouble;
   jboolean valueBool;
-  id valueId;
+  __unsafe_unretained id valueId;
   const void *valuePtr;
 } CGPValue;
 
@@ -83,7 +83,7 @@ typedef struct CGPFieldData {
     Class objcType;
     struct CGPFieldData *mapEntryFields;
   };
-  const void **descriptorRef;
+  const __unsafe_unretained id *descriptorRef;
   const char *containingType;
   const char *optionsData;
 } CGPFieldData;
@@ -193,12 +193,14 @@ CGP_ALWAYS_INLINE inline BOOL CGPIsMessageSetWireFormat(const CGPDescriptor *des
 IOSObjectArray *CGPGetSerializationOrderFields(CGPDescriptor *descriptor);
 
 CGPEnumDescriptor *CGPInitializeEnumType(
-    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values,
-    NSString **names, jint *intValues);
+    Class enumClass, jint valuesCount,
+    __strong JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *values[],
+    __strong NSString **names, jint *intValues);
 
 void CGPInitializeOneofCaseEnum(
-    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufInternal_EnumLite> **values,
-    NSString **names, jint *intValues);
+    Class enumClass, jint valuesCount,
+    __strong JavaLangEnum<ComGoogleProtobufInternal_EnumLite> *values[],
+    __strong NSString **names, jint *intValues);
 
 CGP_ALWAYS_INLINE inline jint CGPFieldGetNumber(const CGPFieldDescriptor *field) {
   return field->data_->number;
@@ -261,7 +263,7 @@ CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
 }
 
 CGP_ALWAYS_INLINE inline jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
-  return *(jint *)((char *)enumObj + descriptor->valueOffset_);
+  return *(jint *)((char *)(ARCBRIDGE void *)enumObj + descriptor->valueOffset_);
 }
 
 id CGPFieldGetDefaultValue(CGPFieldDescriptor *field);

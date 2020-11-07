@@ -136,7 +136,7 @@ CGPDescriptor *NewMapEntryDescriptor(CGPFieldData *fieldData) {
 }
 
 CGPEnumDescriptor *CGPInitializeEnumType(
-    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values,
+    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *values[],
     NSString **names, jint *intValues) {
   Ivar valueIvar = class_getInstanceVariable(enumClass, "value_");
   ptrdiff_t valueOffset = ivar_getOffset(valueIvar);
@@ -179,7 +179,7 @@ CGPEnumDescriptor *CGPInitializeEnumType(
 }
 
 void CGPInitializeOneofCaseEnum(
-    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufInternal_EnumLite> **values,
+    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufInternal_EnumLite> *values[],
     NSString **names, jint *intValues) {
   Ivar valueIvar = class_getInstanceVariable(enumClass, "value_");
   ptrdiff_t valueOffset = ivar_getOffset(valueIvar);

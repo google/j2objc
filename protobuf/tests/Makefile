@@ -23,8 +23,17 @@ OTHER_JAVA_SOURCES = \
   ProtobufTest.java
 
 JAVA_TESTS_ARC = \
-  CompatibilityTest.java
+  ByteStringTest.java \
+  CompatibilityTest.java \
+  EnumsTest.java \
+  MapsTest.java \
+  MessagesTest.java \
+  OneofTest.java \
+  PrimitivesTest.java \
+  StringsTest.java
 OTHER_JAVA_SOURCES_ARC = \
+  MemoryBenchmarks.java \
+  PerformanceBenchmarks.java \
   ProtobufTest.java
 
 PROTOS = \
@@ -120,7 +129,7 @@ translate_dependencies: $(CREATE_JAR_RESULT)
 
 OBJS = $(JAVA_SOURCES:%.java=$(OBJS_DIR)/%.o) $(OBJS_DIR)/my_malloc.o \
   $(J2OBJC_PROTOS_SOURCES:$(GEN_OBJC_DIR)/%.m=$(OBJS_DIR)/%.o)
-OBJS_ARC = $(JAVA_SOURCES_ARC:%.java=$(OBJS_DIR)/arc/%.o) \
+OBJS_ARC = $(JAVA_SOURCES_ARC:%.java=$(OBJS_DIR)/arc/%.o) $(OBJS_DIR)/my_malloc.o \
   $(J2OBJC_PROTOS_SOURCES:$(GEN_OBJC_DIR)/%.m=$(OBJS_DIR)/%.o)
 BIN = $(BUILD_DIR)/protobuf_tests
 BIN_ARC = $(BUILD_DIR)/protobuf_tests_arc
@@ -138,8 +147,14 @@ test_objc_arc: $(BIN_ARC)
 memory_benchmarks: $(BIN)
 	@$(BIN) MemoryBenchmarks
 
+memory_benchmarks_arc: $(BIN)
+	@$(BIN_ARC) MemoryBenchmarks
+
 performance_benchmarks: $(BIN)
 	@$(BIN) PerformanceBenchmarks
+
+performance_benchmarks_arc: $(BIN)
+	@$(BIN_ARC) PerformanceBenchmarks
 
 test: test_java test_objc test_objc_arc
 
