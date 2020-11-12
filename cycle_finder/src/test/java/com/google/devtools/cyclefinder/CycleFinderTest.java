@@ -36,8 +36,8 @@ public class CycleFinderTest extends TestCase {
   File tempDir;
   List<String> inputFiles;
   List<List<Edge>> cycles;
-  List<String> whitelistEntries;
-  List<String> blacklistEntries;
+  List<String> suppressListEntries;
+  List<String> restrictToListEntries;
   boolean printReferenceGraph;
   ReferenceGraph referenceGraph;
 
@@ -50,8 +50,8 @@ public class CycleFinderTest extends TestCase {
   protected void setUp() throws IOException {
     tempDir = createTempDir();
     inputFiles = new ArrayList<>();
-    whitelistEntries = new ArrayList<>();
-    blacklistEntries = new ArrayList<>();
+    suppressListEntries = new ArrayList<>();
+    restrictToListEntries = new ArrayList<>();
     printReferenceGraph = false;
     referenceGraph = null;
   }
@@ -140,89 +140,89 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA;", "LB<+LC;>;", "+LC;");
   }
 
-  public void testWhitelistedField() throws Exception {
+  public void testSuppressListedField() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B { A a; }");
-    whitelistEntries.add("FIELD A.b");
+    suppressListEntries.add("FIELD A.b");
     findCycles();
     assertNoCycles();
   }
 
-  public void testWhitelistedType() throws Exception {
+  public void testSuppressListedType() throws Exception {
     addSourceFile("test/foo/A.java", "package test.foo; class A { C c; }");
     addSourceFile("test/foo/B.java", "package test.foo; class B { A a; }");
     addSourceFile("test/foo/C.java", "package test.foo; class C extends B { }");
-    whitelistEntries.add("TYPE test.foo.C");
+    suppressListEntries.add("TYPE test.foo.C");
     findCycles();
     assertNoCycles();
-    whitelistEntries.set(0, "TYPE test.foo.A");
+    suppressListEntries.set(0, "TYPE test.foo.A");
     findCycles();
     assertNoCycles();
-    whitelistEntries.set(0, "TYPE test.foo.B");
+    suppressListEntries.set(0, "TYPE test.foo.B");
     findCycles();
     assertCycle("Ltest/foo/C;", "Ltest/foo/A;");
   }
 
-  public void testWhitelistedLocalType() throws Exception {
+  public void testSuppressListedLocalType() throws Exception {
     addSourceFile("test/foo/A.java",
       "package test.foo; class A { B b; void test() { "
       + "class Inner extends B { void foo() { A a = A.this; } } } }");
     addSourceFile("test/foo/B.java", "package test.foo; class B {}");
-    whitelistEntries.add("TYPE test.foo.A.test.Inner");
+    suppressListEntries.add("TYPE test.foo.A.test.Inner");
     findCycles();
     assertNoCycles();
   }
 
-  public void testWhitelistedAnonymousType() throws Exception {
+  public void testSuppressListedAnonymousType() throws Exception {
     addSourceFile("test/foo/A.java",
       "package test.foo; class A { B b; B test() { "
       + "return new B() { void foo() { A a = A.this; } }; } }");
     addSourceFile("test/foo/B.java", "package test.foo; class B {}");
-    whitelistEntries.add("TYPE test.foo.A.test.$");
+    suppressListEntries.add("TYPE test.foo.A.test.$");
     findCycles();
     assertNoCycles();
   }
 
-  public void testSubtypeOfWhitelistedType() throws Exception {
+  public void testSubtypeOfSuppressListedType() throws Exception {
     addSourceFile("test/foo/A.java", "package test.foo; class A { B b; }");
     addSourceFile("test/foo/B.java", "package test.foo; class B { A a; }");
     addSourceFile("test/foo/C.java", "package test.foo; class C extends B { }");
-    whitelistEntries.add("TYPE test.foo.B");
+    suppressListEntries.add("TYPE test.foo.B");
     findCycles();
     assertNoCycles();
   }
 
-  public void testWhitelistedPackage() throws Exception {
+  public void testSuppressListedPackage() throws Exception {
     addSourceFile("test/foo/A.java",
                   "package test.foo; import test.bar.B; public class A { B b; }");
     addSourceFile("test/bar/B.java",
                   "package test.bar; import test.foo.A; public class B { A a; }");
-    whitelistEntries.add("NAMESPACE test.bar");
+    suppressListEntries.add("NAMESPACE test.bar");
     findCycles();
     assertNoCycles();
   }
 
-  public void testWhitelistedSubtype() throws Exception {
+  public void testSuppressListedSubtype() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B {}");
     addSourceFile("C.java", "class C extends B {}");
     addSourceFile("D.java", "class D extends C { A a; }");
-    whitelistEntries.add("FIELD A.b C");
+    suppressListEntries.add("FIELD A.b C");
     findCycles();
     assertNoCycles();
   }
 
-  public void testWhitelistedOuterReference() throws Exception {
+  public void testSuppressListedOuterReference() throws Exception {
     addSourceFile("A.java", "class A { Inner i; class Inner { void test() { A a = A.this; } } }");
-    whitelistEntries.add("OUTER A.Inner");
+    suppressListEntries.add("OUTER A.Inner");
     findCycles();
     assertNoCycles();
   }
 
-  public void testWhitelistComment() throws Exception {
+  public void testSuppressListComment() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B { A a; }");
-    whitelistEntries.add("# FIELD A.b");
+    suppressListEntries.add("# FIELD A.b");
     findCycles();
     assertCycle("LA;", "LB;");
   }
@@ -324,11 +324,11 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA<LB;>;", "LB;", "LA<LB;>.C;");
   }
 
-  public void testBlacklist() throws Exception {
+  public void testrestrictToList() throws Exception {
     addSourceFile("A.java", "class A { B b; C c; }");
     addSourceFile("B.java", "class B { A a; }");
     addSourceFile("C.java", "class C { A a; }");
-    blacklistEntries.add("TYPE C");
+    restrictToListEntries.add("TYPE C");
     findCycles();
     assertEquals(1, cycles.size());
     assertCycle("LA;", "LC;");
@@ -347,14 +347,14 @@ public class CycleFinderTest extends TestCase {
     }
   }
 
-  public void testWhitelistedAnonymousTypesInClassScope() throws Exception {
+  public void testSuppressListedAnonymousTypesInClassScope() throws Exception {
     addSourceFile("bar/AbstractA.java", "package bar; public class AbstractA {}");
     addSourceFile("bar/AbstractB.java", "package bar; public class AbstractB {}");
     addSourceFile("foo/Test.java",
         "package foo; import bar.AbstractA; import bar.AbstractB;"
         + " class Test { AbstractA a = new AbstractA() { void dummyA() {}"
         + " AbstractB b = new AbstractB() { void dummyB() { dummyA(); } }; }; }");
-    whitelistEntries.add("NAMESPACE foo");
+    suppressListEntries.add("NAMESPACE foo");
     findCycles();
     assertNoCycles();
   }
@@ -496,17 +496,17 @@ public class CycleFinderTest extends TestCase {
   }
 
   private void findCycles(Options options) throws IOException {
-    if (!whitelistEntries.isEmpty()) {
-      File whitelistFile = new File(tempDir, "whitelist");
-      Files.asCharSink(whitelistFile, Charset.defaultCharset())
-          .write(Joiner.on("\n").join(whitelistEntries));
-      options.addWhitelistFile(whitelistFile.getAbsolutePath());
+    if (!suppressListEntries.isEmpty()) {
+      File suppressListFile = new File(tempDir, "suppress_list");
+      Files.asCharSink(suppressListFile, Charset.defaultCharset())
+          .write(Joiner.on("\n").join(suppressListEntries));
+      options.addSuppressListFile(suppressListFile.getAbsolutePath());
     }
-    if (!blacklistEntries.isEmpty()) {
-      File blacklistFile = new File(tempDir, "type_filter");
-      Files.asCharSink(blacklistFile, Charset.defaultCharset())
-          .write(Joiner.on("\n").join(blacklistEntries));
-      options.addBlacklistFile(blacklistFile.getAbsolutePath());
+    if (!restrictToListEntries.isEmpty()) {
+      File restrictToListFile = new File(tempDir, "type_filter");
+      Files.asCharSink(restrictToListFile, Charset.defaultCharset())
+          .write(Joiner.on("\n").join(restrictToListEntries));
+      options.addRestrictToFile(restrictToListFile.getAbsolutePath());
     }
     options.setSourceFiles(inputFiles);
     options.setClasspath(System.getProperty("java.class.path"));

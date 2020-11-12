@@ -60,8 +60,8 @@ class Options {
   private String sourcepath;
   private String classpath;
   private String bootclasspath;
-  private List<String> whitelistFiles = Lists.newArrayList();
-  private List<String> blacklistFiles = Lists.newArrayList();
+  private final List<String> suppressListFiles = Lists.newArrayList();
+  private final List<String> restrictToListFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean printReferenceGraph = false;
@@ -97,32 +97,30 @@ class Options {
     return bootclasspath != null ? bootclasspath : System.getProperty("sun.boot.class.path");
   }
 
-  public List<String> getWhitelistFiles() {
-    return whitelistFiles;
+  public List<String> getSuppressListFiles() {
+    return suppressListFiles;
   }
 
-  public void addWhitelistFile(String fileName) {
-    whitelistFiles.add(fileName);
+  public void addSuppressListFile(String fileName) {
+    suppressListFiles.add(fileName);
   }
 
-  public List<String> getBlacklistFiles() {
-    return blacklistFiles;
+  public List<String> getRestrictToFiles() {
+    return restrictToListFiles;
   }
 
-  public void addBlacklistFile(String fileName) {
-    blacklistFiles.add(fileName);
+  public void addRestrictToFile(String fileName) {
+    restrictToListFiles.add(fileName);
   }
 
   private void addManifest(String manifestFile) throws IOException {
-    BufferedReader in = Files.newReader(new File(manifestFile), Charset.forName(fileEncoding));
-    try {
+    try (BufferedReader in =
+        Files.newReader(new File(manifestFile), Charset.forName(fileEncoding))) {
       for (String line = in.readLine(); line != null; line = in.readLine()) {
         if (!Strings.isNullOrEmpty(line)) {
           sourceFiles.add(line.trim());
         }
       }
-    } finally {
-      in.close();
     }
   }
 
@@ -201,16 +199,21 @@ class Options {
           usage("-classpath requires an argument");
         }
         options.classpath = args[nArg];
-      } else if (arg.equals("--whitelist") || arg.equals("-w")) {
+      } else if (arg.equals("--suppress-list")
+          // Deprecated flag names.
+          || arg.equals("--whitelist")
+          || arg.equals("-w")) {
         if (++nArg == args.length) {
-          usage("--whitelist requires an argument");
+          usage("--suppress-list requires an argument");
         }
-        options.whitelistFiles.add(args[nArg]);
-      } else if (arg.equals("--blacklist")) {
+        options.suppressListFiles.add(args[nArg]);
+      } else if (arg.equals("--restrict-to")
+          // Deprecated flag name.
+          || arg.equals("--blacklist")) {
         if (++nArg == args.length) {
-          usage("--blacklist requires an argument");
+          usage("--restrict-to requires an argument");
         }
-        options.blacklistFiles.add(args[nArg]);
+        options.restrictToListFiles.add(args[nArg]);
       } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
         if (++nArg == args.length) {
           usage("--sourcefilelist requires an argument");

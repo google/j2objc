@@ -35,7 +35,7 @@ import javax.lang.model.type.WildcardType;
 /**
  * Generates various kinds of names for types:
  * - Unique type signature for identifying nodes.
- * - Qualified names used by whitelists.
+ * - Qualified names used by suppress lists.
  * - Readable names for printing edges.
  *
  * @author Keith Stanger

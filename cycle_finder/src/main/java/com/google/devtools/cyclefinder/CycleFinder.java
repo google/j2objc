@@ -45,7 +45,7 @@ public class CycleFinder {
 
   private final Options options;
   private final com.google.devtools.j2objc.Options j2objcOptions;
-  private final NameList blacklist;
+  private final NameList restrictToList;
   private final List<List<Edge>> cycles = new ArrayList<>();
 
   private ReferenceGraph referenceGraph = null;
@@ -69,7 +69,7 @@ public class CycleFinder {
     ));
     list.addAll(options.getPlatformModuleSystemOptions());
     j2objcOptions.load(list.toArray(new String[0]));
-    blacklist = getBlacklist();
+    restrictToList = getRestrictToFiles();
   }
 
   private Parser createParser() {
@@ -100,12 +100,12 @@ public class CycleFinder {
     }
   }
 
-  private NameList getBlacklist() throws IOException {
-    List<String> blackListFiles = options.getBlacklistFiles();
-    if (blackListFiles.isEmpty()) {
+  private NameList getRestrictToFiles() throws IOException {
+    List<String> restrictToFiles = options.getRestrictToFiles();
+    if (restrictToFiles.isEmpty()) {
       return null;
     }
-    return NameList.createFromFiles(blackListFiles, options.fileEncoding());
+    return NameList.createFromFiles(restrictToFiles, options.fileEncoding());
   }
 
   private File stripIncompatible(
@@ -137,10 +137,10 @@ public class CycleFinder {
 
   public void constructGraph() throws IOException {
     Parser parser = createParser();
-    NameList whitelist =
-        NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
+    NameList suppressList =
+        NameList.createFromFiles(options.getSuppressListFiles(), options.fileEncoding());
     final GraphBuilder graphBuilder =
-        new GraphBuilder(whitelist, options.externalAnnotations());
+        new GraphBuilder(suppressList, options.externalAnnotations());
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
@@ -174,12 +174,12 @@ public class CycleFinder {
   }
 
   private Set<TypeNode> getSeedNodes(ReferenceGraph graph) {
-    if (blacklist == null) {
+    if (restrictToList == null) {
       return graph.getNodes();
     }
     Set<TypeNode> seedNodes = new HashSet<>();
     for (TypeNode node : graph.getNodes()) {
-      if (blacklist.containsType(node)) {
+      if (restrictToList.containsType(node)) {
         seedNodes.add(node);
       }
     }
@@ -207,11 +207,11 @@ public class CycleFinder {
   }
 
   private boolean shouldAddCycle(List<Edge> cycle) {
-    if (blacklist == null) {
+    if (restrictToList == null) {
       return true;
     }
     for (Edge e : cycle) {
-      if (blacklist.containsType(e.getOrigin())) {
+      if (restrictToList.containsType(e.getOrigin())) {
         return true;
       }
     }

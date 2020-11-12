@@ -117,5 +117,5 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(SOURCEPATH) \
-	  -w ../jre_emul/cycle_whitelist.txt -w cycle_whitelist \
+	  --suppress-list ../jre_emul/cycle_suppress_list.txt \
 	  -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)

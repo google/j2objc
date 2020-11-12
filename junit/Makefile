@@ -116,5 +116,6 @@ dist: lib $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
 # can't compile with < 1.8.
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) -source 1.7 \
-      -cp $(CLASSPATH) -w cycle_whitelist.txt -w ../jre_emul/cycle_whitelist.txt \
+      -cp $(CLASSPATH) --suppress-list cycle_suppress_list.txt \
+			--suppress-list ../jre_emul/cycle_suppress_list.txt \
       -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)

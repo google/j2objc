@@ -29,7 +29,7 @@ import java.io.InputStreamReader;
 import java.util.Set;
 
 /**
- * Manages a set of whitelist or blacklist entries.
+ * Manages a set of suppress list or restrict-to list entries.
  *
  * @author Keith Stanger
  */
@@ -45,7 +45,7 @@ public class NameList {
     return fields.contains(origin.getQualifiedName() + '.' + fieldName);
   }
 
-  public boolean isWhitelistedTypeForField(String fieldName, TypeNode type) {
+  public boolean isSuppressListedTypeForField(String fieldName, TypeNode type) {
     return fieldsWithTypes.containsEntry(fieldName, type.getQualifiedName());
   }
 
@@ -101,7 +101,7 @@ public class NameList {
   }
 
   private void badEntry(String entry) {
-    throw new IllegalArgumentException("Invalid whitelist entry: " + entry);
+    throw new IllegalArgumentException("Invalid suppress-list entry: " + entry);
   }
 
   public void addFile(String file, String encoding) throws IOException {

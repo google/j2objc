@@ -121,5 +121,5 @@ $(JSON_JAR): $(JSON_PUBLIC_SOURCES) $(JSON_PRIVATE_SOURCES) $(JSON_SOURCE_RETENT
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder --patch-module java.base=$(JRE_SRC) \
-	  -w cycle_whitelist.txt -s $(JAVA_SOURCES_MANIFEST) \
+	  --suppress-list cycle_suppress_list.txt -s $(JAVA_SOURCES_MANIFEST) \
 	  -external-annotation-file $(J2OBJC_ANNOTATIONS)
