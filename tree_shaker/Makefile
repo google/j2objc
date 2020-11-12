@@ -43,7 +43,7 @@ RESOURCES = \
     com/google/devtools/j2objc/JRE.mappings
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS)
+INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR)
 ifdef JAVA_8
 INTERNAL_DEPS += $(JAVAC_JAR)
 endif
