@@ -41,9 +41,12 @@ endif
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
+FLOGGER_JARS = \
+  $(JAVA_DEPS_JAR_DIR)/$(FLOGGER_JAR):$(JAVA_DEPS_JAR_DIR)/$(GOOGLE_EXTENSIONS_JAR)
 
 CLASSPATH = $(CLASS_DIR):$(JAR_DEPS_PATH)
-TEST_CLASSPATH = $(TEST_DIR):$(CLASS_DIR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST)
+TEST_CLASSPATH = \
+  $(TEST_DIR):$(CLASS_DIR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST):$(FLOGGER_JARS)
 TEST_BOOT_CLASSPATH = $(DIST_JAR_DIR)/jre_emul.jar
 
 MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
@@ -204,6 +207,7 @@ JAVA_SOURCES = \
 	translate/AnnotationRewriter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
+	translate/LogSiteInjector.java \
 	translate/CastResolver.java \
 	translate/ComplexExpressionExtractor.java \
 	translate/ConstantBranchPruner.java \
@@ -220,6 +224,7 @@ JAVA_SOURCES = \
 	translate/JavaCloneWriter.java \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/LabelRewriter.java \
+	translate/LogSiteInjector.java \
 	translate/MetadataWriter.java \
 	translate/LambdaTypeElementAdder.java \
 	translate/LambdaRewriter.java \

@@ -231,5 +231,15 @@
       <artifactId>plume-util</artifactId>
       <version>1.0.6</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.flogger</groupId>
+      <artifactId>flogger</artifactId>
+      <version>0.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.flogger</groupId>
+      <artifactId>google-extensions</artifactId>
+      <version>0.5.1</version>
+    </dependency>
   </dependencies>
 </project>
