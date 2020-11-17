@@ -61,6 +61,7 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 
     // Regression test for http://b/1897917: BigDecimal does not take into account multiplier.
     public void testBigDecimalBug1897917() {
+      if (onCatalinaOrAbove()) {  // j2objc: i18n bug fixed in MacOS Catalina.
         // For example. the BigDecimal 0.17 formatted in PercentInstance is 0% instead of 17%:
         NumberFormat pf = NumberFormat.getPercentInstance();
         assertEquals("17%", pf.format(BigDecimal.valueOf(0.17)));
@@ -85,6 +86,7 @@ public class DecimalFormatTest extends junit.framework.TestCase {
         Locale en_IN = new Locale("en", "IN");
         assertDecFmtWithMultiplierAndFractionByLocale("3330000000000000000000000000000000", 3, 4,
                 en_IN, "9,99,00,00,00,00,00,00,00,00,00,00,00,00,00,00,000");
+      }
     }
 
     public void testBigDecimalTestBigIntWithMultiplier() {
@@ -176,12 +178,14 @@ public class DecimalFormatTest extends junit.framework.TestCase {
     }
 
     public void testSetZeroDigitForPattern() {
+      if (onCatalinaOrAbove()) {  // j2objc: i18n bug fixed in MacOS Catalina.
         DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
         decimalFormatSymbols.setZeroDigit('a');
         DecimalFormat formatter = new DecimalFormat();
         formatter.setDecimalFormatSymbols(decimalFormatSymbols);
         formatter.applyLocalizedPattern("#.aa");
         assertEquals("e.fa", formatter.format(4.50));
+      }
     }
 
     public void testSetZeroDigitForFormatting() {
@@ -345,5 +349,14 @@ public class DecimalFormatTest extends junit.framework.TestCase {
         NumberFormat localeCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         localeCurrencyFormat.setCurrency(currency);
         return localeCurrencyFormat.format(1000);
+    }
+
+    // j2objc: returns true if test is running on a MacOS Catalina or later operating system.
+    protected boolean onCatalinaOrAbove() {
+        String[] versionFields = System.getProperty("os.version").split("\\.", -1);
+        // MacOS Catalina is version 10.15.*.
+        return
+            (Integer.parseInt(versionFields[0]) == 10 && Integer.parseInt(versionFields[1]) >= 15)
+            || Integer.parseInt(versionFields[0]) >= 11;
     }
 }
