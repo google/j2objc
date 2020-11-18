@@ -207,7 +207,6 @@ JAVA_SOURCES = \
 	translate/AnnotationRewriter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
-	translate/LogSiteInjector.java \
 	translate/CastResolver.java \
 	translate/ComplexExpressionExtractor.java \
 	translate/ConstantBranchPruner.java \

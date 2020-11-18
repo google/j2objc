@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.LabelRewriter;
 import com.google.devtools.j2objc.translate.LambdaRewriter;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
+import com.google.devtools.j2objc.translate.LogSiteInjector;
 import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.NumberMethodRewriter;
@@ -146,6 +147,12 @@ public class TranslationProcessor extends FileProcessor {
     if (deadCodeMap != null) {
       new DeadCodeEliminator(unit, deadCodeMap).run();
       ticker.tick("DeadCodeEliminator");
+    }
+
+    LogSiteInjector logSiteInjector = new LogSiteInjector(unit);
+    if (logSiteInjector.isEnabled()) {
+      logSiteInjector.run();
+      ticker.tick("CallSiteInjector");
     }
 
     new ExternalAnnotationInjector(unit, externalAnnotations).run();

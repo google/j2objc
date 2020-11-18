@@ -93,6 +93,7 @@ public class Options {
   private String bootclasspath = null;
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
+  private boolean injectLogSites = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -526,6 +527,8 @@ public class Options {
         help(false);
       } else if (arg.equals("-X")) {
         xhelp();
+      } else if (arg.equals("-XDinjectLogSites=true")) {
+        injectLogSites = true;
       }  else if (arg.equals("-source")) {
         String s = getArgValue(args, arg);
         // Handle aliasing of version numbers as supported by javac.
@@ -1069,5 +1072,14 @@ public class Options {
 
   public List<String> getPlatformModuleSystemOptions() {
     return platformModuleSystemOptions;
+  }
+
+  public boolean injectLogSites() {
+    return injectLogSites;
+  }
+
+  @VisibleForTesting
+  public void setInjectLogSites(boolean b) {
+    injectLogSites = b;
   }
 }
