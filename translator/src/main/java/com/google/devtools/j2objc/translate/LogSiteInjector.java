@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.base.Ascii;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
@@ -28,6 +29,7 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -93,20 +95,18 @@ public final class LogSiteInjector extends UnitTreeVisitor {
     String methodName = ElementUtil.getName(method);
     TypeElement cls = ElementUtil.getDeclaringClass(method);
 
-    if (methodName.equals("forEnclosingClass")
-        && typeUtil.isSubtype(cls.asType(), googleLoggerClass.asType())) {
+    if (methodName.equals("forEnclosingClass") && isLoggingSubtype(cls, googleLoggerClass)) {
       node.replaceWith(injectEnclosingClass(node, cls));
       return;
     }
 
-    if (methodName.equals(LOG_METHOD)
-        && typeUtil.isSubtype(cls.asType(), javaUtilLoggingLoggerClass.asType())) {
+    if (methodName.equals(LOG_METHOD) && isLoggingSubtype(cls, javaUtilLoggingLoggerClass)) {
       node.replaceWith(injectLogMethod(node));
       return;
     }
 
     if ((methodName.equals(LOG_METHOD) || methodName.equals(LOG_VARARGS_METHOD))
-        && typeUtil.isSubtype(cls.asType(), loggingApiClass.asType())) {
+        && isLoggingSubtype(cls, loggingApiClass)) {
       Expression methodExpr = node.getExpression();
       // Check that injectedLogSite() wasn't already injected or in original source.
       if (methodExpr.getKind() == TreeNode.Kind.METHOD_INVOCATION
@@ -118,7 +118,7 @@ public final class LogSiteInjector extends UnitTreeVisitor {
     }
 
     if (CONVENIENCE_METHODS.contains(methodName)
-        && typeUtil.isSubtype(cls.asType(), javaUtilLoggingLoggerClass.asType())) {
+        && isLoggingSubtype(cls, javaUtilLoggingLoggerClass)) {
       node.replaceWith(injectConvenienceMethod(methodName, node));
       return;
     }
@@ -129,7 +129,7 @@ public final class LogSiteInjector extends UnitTreeVisitor {
     TypeElement cls = ElementUtil.getDeclaringClass(method);
     List<Expression> args = node.getArguments();
     if (!args.isEmpty()
-        && typeUtil.isSubtype(args.get(0).getTypeMirror(), javaUtilLoggingLevelClass.asType())) {
+        && typeUtil.isSameType(args.get(0).getTypeMirror(), javaUtilLoggingLevelClass.asType())) {
       // Change log to logp, insert class and method name args.
       List<Expression> logpArgs = new ArrayList<>();
       List<String> argTypes = new ArrayList<>();
@@ -247,7 +247,17 @@ public final class LogSiteInjector extends UnitTreeVisitor {
   // Returns a Name node for a specified java.util.logging.Level level field.
   private Expression convenienceLevelName(String name) {
     assert (CONVENIENCE_METHODS.contains(name));
-    VariableElement field = ElementUtil.findField(javaUtilLoggingLevelClass, name.toUpperCase());
+    VariableElement field =
+        ElementUtil.findField(javaUtilLoggingLevelClass, Ascii.toUpperCase(name));
     return new SimpleName(field);
+  }
+
+  // Returns true if cls is a subtype of the specified logging type element.
+  // The logging type element may be null if its Flogger library is not on the classpath.
+  private boolean isLoggingSubtype(TypeElement cls, @Nullable TypeElement loggingCls) {
+    if (loggingCls == null) {
+      return false;
+    }
+    return typeUtil.isSubtype(cls.asType(), loggingCls.asType());
   }
 }
