@@ -111,8 +111,7 @@ class Options {
 
   public SourceVersion sourceVersion() {
     if (sourceVersion == null) {
-      // Pull source version from system properties if it is not passed with -source flag.
-      sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
+      sourceVersion = SourceVersion.defaultVersion();
     }
     return sourceVersion;
   }
