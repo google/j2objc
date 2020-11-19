@@ -169,8 +169,11 @@ public final class LogSiteInjector extends UnitTreeVisitor {
             "java.lang.String",
             "int",
             "java.lang.String");
-    ExecutableType injectedType =
-        typeUtil.asMemberOf((DeclaredType) googleLoggerApiClass.asType(), injectedMethod);
+    DeclaredType loggingApiClassType =
+        googleLoggerApiClass != null
+            ? (DeclaredType) googleLoggerApiClass.asType()
+            : (DeclaredType) loggingApiClass.asType();
+    ExecutableType injectedType = typeUtil.asMemberOf(loggingApiClassType, injectedMethod);
     MethodInvocation injectedInvocation =
         new MethodInvocation(
             new ExecutablePair(injectedMethod, injectedType), node.getExpression().copy());
