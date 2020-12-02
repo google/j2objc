@@ -86,7 +86,8 @@ public final class LogSiteInjector extends UnitTreeVisitor {
   }
 
   public boolean isEnabled() {
-    return loggingApiClass != null || googleLoggerClass != null;
+    return unit.getEnv().options().injectLogSites()
+        && (loggingApiClass != null || googleLoggerClass != null);
   }
 
   @Override
