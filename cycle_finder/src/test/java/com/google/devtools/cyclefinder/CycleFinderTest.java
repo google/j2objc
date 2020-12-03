@@ -452,6 +452,20 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
+  public void testWeakOuterAnonymousTypeInArrayField() throws Exception {
+    // Test adapted from cycle in UCharacterProperty.java.
+    addSourceFile("Test.java", String.join("\n",
+        "import com.google.j2objc.annotations.WeakOuter;",
+        "class Test {",
+        "  @WeakOuter private class IntProperty {}",
+        "  IntProperty intProps[]={",
+        "    new @WeakOuter IntProperty() {},",
+        "  };",
+        "}"));
+    findCycles();
+    assertNoCycles();
+  }
+
   private void assertContains(String substr, String str) {
     assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
   }

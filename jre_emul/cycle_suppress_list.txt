@@ -96,6 +96,7 @@ FIELD android.icu.impl.JavaTimeZone.javatz android.icu.impl.TimeZoneAdapter
 FIELD android.icu.text.MessageFormat.stockDateFormatter
 FIELD android.icu.text.NFRule.rulePatternFormat
 FIELD android.icu.text.UnicodeSet.stringSpan
+TYPE android.icu.impl.UCharacterProperty.$
 
 # False positives in java.time.
 FIELD java.time.zone.IcuZoneRulesProvider.cache
