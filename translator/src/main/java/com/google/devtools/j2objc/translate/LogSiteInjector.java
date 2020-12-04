@@ -92,6 +92,11 @@ public final class LogSiteInjector extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
+    if (node.getExpression() == null) {
+      // Local and statically imported methods are never injected.
+      return;
+    }
+
     ExecutableElement method = node.getExecutableElement();
     String methodName = ElementUtil.getName(method);
     TypeElement cls = ElementUtil.getDeclaringClass(method);
