@@ -682,17 +682,11 @@ public class TreeConverter {
       } else {
         // With javac 12 and above, annotations are no longer part of the supertype,
         // so check to see if a mutated type that has them is necessary.
-        boolean annotationFound = false;
         GeneratedTypeElement newElement = GeneratedTypeElement.mutableCopy(element);
+        boolean annotationFound =
+            copyAnnotations(node.getExtendsClause(), path, newNode, newElement);
         for (Tree clause : node.getImplementsClause()) {
-          if (clause.getKind() == Kind.ANNOTATED_TYPE) {
-            for (AnnotationTree annTree : ((AnnotatedTypeTree) clause).getAnnotations()) {
-              Annotation ann = (Annotation) convert(annTree, getTreePath(path, annTree));
-              newNode.addAnnotation(ann);
-              newElement.addAnnotationMirror(ann.getAnnotationMirror());
-              annotationFound = true;
-            }
-          }
+          annotationFound |= copyAnnotations(clause, path, newNode, newElement);
         }
         if (annotationFound) {
           newUnit.getEnv().elementUtil().mapElementType(element, newElement.asType());
@@ -700,6 +694,24 @@ public class TreeConverter {
       }
     }
     return newNode;
+  }
+
+  // Copies annotations from tree to new node, returns true if any annotations were copied.
+  private boolean copyAnnotations(
+      Tree clause, TreePath path, TypeDeclaration newNode, GeneratedTypeElement newElement) {
+    if (clause == null) {
+      return false;
+    }
+    boolean annotationFound = false;
+    if (clause.getKind() == Kind.ANNOTATED_TYPE) {
+      for (AnnotationTree annTree : ((AnnotatedTypeTree) clause).getAnnotations()) {
+        Annotation ann = (Annotation) convert(annTree, getTreePath(path, annTree));
+        newNode.addAnnotation(ann);
+        newElement.addAnnotationMirror(ann.getAnnotationMirror());
+        annotationFound = true;
+      }
+    }
+    return annotationFound;
   }
 
   private TypeDeclaration convertClassDeclarationHelper(ClassTree node, TreePath parent) {
