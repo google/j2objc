@@ -26,6 +26,9 @@ FAT_LIB_TVSIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.
 
 FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 -mmacosx-version-min=10.7 \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
+FAT_LIB_MACOSX64_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 \
+  --target=arm64-apple-macos11 \
+  -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
 
 FAT_LIB_IPHONE_FLAGS = -arch armv7 -DJ2OBJC_BUILD_ARCH=armv7 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
@@ -76,6 +79,7 @@ fat_lib_filtered_libtool = set -o pipefail \
 
 arch_flags = $(strip \
   $(patsubst macosx,$(FAT_LIB_MACOSX_FLAGS),\
+  $(patsubst macosx64,$(FAT_LIB_MACOSX64_FLAGS),\
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
   $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
   $(patsubst iphone64e,$(FAT_LIB_IPHONE64E_FLAGS),\
@@ -86,7 +90,7 @@ arch_flags = $(strip \
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),\
   $(patsubst appletvos,$(FAT_LIB_TV_FLAGS),\
   $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),\
-  $(patsubst maccatalyst,$(FAT_LIB_MAC_CATALYST_FLAGS),$(1))))))))))))))
+  $(patsubst maccatalyst,$(FAT_LIB_MAC_CATALYST_FLAGS),$(1)))))))))))))))
 
 fat_lib_dependencies:
 	@:
@@ -181,9 +185,9 @@ endef
 # Args:
 #   1. Library name.
 define mac_lib_rule
-$(ARCH_BUILD_MACOSX_DIR)/lib$(1).a: $(BUILD_DIR)/objs-macosx/lib$(1).a
+$(ARCH_BUILD_MACOSX_DIR)/lib$(1).a: $(2)
 	@mkdir -p $$(@D)
-	install -m 0644 $$< $$@
+	$$(LIPO) -create $$^ -output $$@
 endef
 
 # Generate the rule for the maccatalyst library
@@ -239,8 +243,8 @@ emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
 else
 # Targets specific to a command-line build
 
-FAT_LIB_IOS_ARCHS = $(filter-out macosx maccatalyst appletv% watch%,$(J2OBJC_ARCHS))
-FAT_LIB_MAC_ARCH = $(filter macosx,$(J2OBJC_ARCHS))
+FAT_LIB_IOS_ARCHS = $(filter-out macos% maccatalyst appletv% watch%,$(J2OBJC_ARCHS))
+FAT_LIB_MAC_ARCHS = $(filter macos%,$(J2OBJC_ARCHS))
 FAT_LIB_WATCH_ARCHS = $(filter watch%,$(J2OBJC_ARCHS))
 FAT_LIB_TV_ARCHS = $(filter appletv%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_CATALYST_ARCH = $(filter maccatalyst,$(J2OBJC_ARCHS))
@@ -253,7 +257,9 @@ emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(if $(FAT_LIB_WATCH_ARCHS),\
     $(eval $(call watch_lib_rule,$(1),$(FAT_LIB_WATCH_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_WATCH_DIR)/lib$(1).a,) \
-  $(if $(FAT_LIB_MAC_ARCH),$(eval $(call mac_lib_rule,$(1))) $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_MAC_ARCHS),\
+    $(eval $(call mac_lib_rule,$(1),$(FAT_LIB_MAC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_MAC_CATALYST_ARCH),\
     $(eval $(call mac_catalyst_lib_rule,$(1))) $(ARCH_BUILD_MAC_CATALYST_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_TV_ARCHS),\
