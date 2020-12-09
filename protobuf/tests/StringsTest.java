@@ -14,14 +14,12 @@
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
-
-import protos.StringMsg;
-import protos.StringMsgOrBuilder;
-import protos.StringFields;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import protos.StringFields;
+import protos.StringMsg;
+import protos.StringMsgOrBuilder;
 
 /**
  * Tests for correct serialization and deserialization of string fields.
@@ -155,27 +153,27 @@ public class StringsTest extends ProtobufTest {
         .setEmptyF("")
         .setAsciiF("foo")
         .setNonAsciiF("你好")
-        .setBytesF(ByteString.copyFrom("dog".getBytes()))
+        .setBytesF(ByteString.copyFromUtf8("dog"))
         .addEmptyR("")
         .addEmptyR("")
         .addAsciiR("bar")
         .addAsciiR("baz")
         .addNonAsciiR("مرحبا")
         .addNonAsciiR("привет")
-        .addBytesR(ByteString.copyFrom("cat".getBytes()))
-        .addBytesR(ByteString.copyFrom("rat".getBytes()))
+        .addBytesR(ByteString.copyFromUtf8("cat"))
+        .addBytesR(ByteString.copyFromUtf8("rat"))
         .setExtension(StringFields.emptyFe, "")
         .setExtension(StringFields.asciiFe, "abc")
         .setExtension(StringFields.nonAsciiFe, "γειά σου")
-        .setExtension(StringFields.bytesFe, ByteString.copyFrom("pig".getBytes()))
+        .setExtension(StringFields.bytesFe, ByteString.copyFromUtf8("pig"))
         .addExtension(StringFields.emptyRe, "")
         .addExtension(StringFields.emptyRe, "")
         .addExtension(StringFields.asciiRe, "def")
         .addExtension(StringFields.asciiRe, "ghi")
         .addExtension(StringFields.nonAsciiRe, "नमस्ते")
         .addExtension(StringFields.nonAsciiRe, "halló")
-        .addExtension(StringFields.bytesRe, ByteString.copyFrom("cow".getBytes()))
-        .addExtension(StringFields.bytesRe, ByteString.copyFrom("moo".getBytes()))
+        .addExtension(StringFields.bytesRe, ByteString.copyFromUtf8("cow"))
+        .addExtension(StringFields.bytesRe, ByteString.copyFromUtf8("moo"))
         .build();
   }
 
