@@ -69,6 +69,10 @@ TVOS_AVAILABLE = \
   $(shell if xcodebuild -version -sdk appletvos >/dev/null 2>&1; \
   then echo "YES"; else echo "NO"; fi)
 
+MACOSX64_AVAILABLE = \
+  $(shell if xcodebuild -version -sdk macosx11.0 >/dev/null 2>&1; \
+  then echo "YES"; else echo "NO"; fi)
+
 ifndef J2OBJC_ARCHS
 ifdef ENV_J2OBJC_ARCHS
 # The env command cannot forward variables with spaces in them.
@@ -76,10 +80,13 @@ J2OBJC_ARCHS = $(subst _, ,$(ENV_J2OBJC_ARCHS))
 else
 # 32bit iPhone archs are no longer built by default. To build a release
 # with them, define J2OBJC_ARCHS with "iphone" and "simulator" included.
-J2OBJC_ARCHS = macosx macosx64 iphone64 iphone64e watchv7k watch64 watchsimulator \
+J2OBJC_ARCHS = macosx iphone64 iphone64e watchv7k watch64 watchsimulator \
     simulator64 maccatalyst
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
+endif
+ifeq ($(MACOSX64_AVAILABLE), YES)
+J2OBJC_ARCHS += macosx64
 endif
 endif
 endif
