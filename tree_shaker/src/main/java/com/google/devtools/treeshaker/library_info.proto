@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package j2objc;
+
+option java_multiple_files = true;
+option java_package = "com.google.devtools.treeshaker";
+
+message LibraryInfo {
+  repeated string type_map = 1;
+  repeated TypeInfo type = 2;
+}
+
+message TypeInfo {
+  int32 type_id = 1;
+  int32 extends_type = 2;
+  repeated int32 implements_type = 3;
+  repeated MemberInfo member = 4;
+  string header_source_file_path = 5;
+  string impl_source_file_path = 6;
+  bool jstype_interface = 7;
+}
+
+message MemberInfo {
+  string name = 1;
+  bool static = 3;
+  bool js_accessible = 4;
+  repeated MethodInvocation invoked_methods = 5;
+  repeated int32 referenced_types = 6;
+  SourcePosition position = 7;
+}
+
+message MethodInvocation {
+  string method = 1;
+  int32 enclosing_type = 2;
+}
+
+message SourcePosition {
+  int32 start = 1;
+  int32 end = 2;
+}
