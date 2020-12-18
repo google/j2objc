@@ -35,6 +35,8 @@
 
 #define CGP_CODED_STREAM_BUFFER_SIZE (jint)NSPageSize()
 
+#include <stdint.h>
+
 // For ported c++ code.
 typedef int8_t  int8;
 typedef int16_t int16;
