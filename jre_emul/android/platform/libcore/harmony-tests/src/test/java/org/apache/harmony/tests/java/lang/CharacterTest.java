@@ -756,7 +756,10 @@ public class CharacterTest extends TestCase {
         assertTrue(Character.getType((int) '\u2029') == Character.PARAGRAPH_SEPARATOR);
 
         assertTrue(Character.getType(0x9FFF) == Character.UNASSIGNED);
-        assertTrue(Character.getType(0x30000) == Character.UNASSIGNED);
+        // j2objc: u+30000 is defined in Unicode 13, supported in iOS 12.2.
+        int charType = Character.getType(0x30000);
+        assertTrue(charType == Character.OTHER_LETTER
+            || charType == Character.UNASSIGNED);
         assertTrue(Character.getType(0x110000) == Character.UNASSIGNED);
 
         assertTrue(Character.getType(0x0041) == Character.UPPERCASE_LETTER);
@@ -868,7 +871,8 @@ public class CharacterTest extends TestCase {
         assertTrue(Character.isDefined((int) '\u6039'));
         assertTrue(Character.isDefined(0x10300));
 
-        assertFalse(Character.isDefined(0x30000));
+        // j2objc: u+30000 is defined in Unicode 13, supported in iOS 12.2.
+        // assertFalse(Character.isDefined(0x30000));
         assertFalse(Character.isDefined(0x3FFFF));
         assertFalse(Character.isDefined(0x110000));
     }
@@ -1566,7 +1570,10 @@ public class CharacterTest extends TestCase {
      */
     public void test_isDirectionaliy_I() {
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0xFFFE));
-        assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x30000));
+        // j2objc: u+30000 is defined in Unicode 13, supported in iOS 12.2.
+        byte directionality = Character.getDirectionality(0x30000);
+        assertTrue(directionality == Character.DIRECTIONALITY_LEFT_TO_RIGHT
+            || directionality == Character.DIRECTIONALITY_UNDEFINED);
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x110000));
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(-1));
 
