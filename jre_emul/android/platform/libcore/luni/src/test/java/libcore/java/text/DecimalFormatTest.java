@@ -353,6 +353,9 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 
     // j2objc: returns true if test is running on a MacOS Catalina or later operating system.
     protected boolean onCatalinaOrAbove() {
+        if (!"Mac OS X".equals(System.getProperty("os.name"))) {
+            return false;
+        }
         String[] versionFields = System.getProperty("os.version").split("\\.", -1);
         // MacOS Catalina is version 10.15.*.
         return
