@@ -370,7 +370,7 @@ import static java.text.DateFormatSymbols.*;
  *         <td><code>"K:mm a, z"</code>
  *         <td><code>0:08 PM, PDT</code>
  *     <tr bgcolor="#eeeeff">
- *         <td><code>"yyyyy.MMMMM.dd GGG hh:mm aaa"</code>
+ *         <td><code>"yyyyy.MMMM.dd GGG hh:mm aaa"</code>
  *         <td><code>02001.July.04 AD 12:08 PM</code>
  *     <tr>
  *         <td><code>"EEE, d MMM yyyy HH:mm:ss Z"</code>
