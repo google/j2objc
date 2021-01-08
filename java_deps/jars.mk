@@ -44,11 +44,14 @@ CHECKER_COMPAT_QUAL_SOURCE_JAR = checker-compat-qual-2.0.0-sources.jar
 ANIMAL_SNIFFER_ANNOTATIONS_JAR = animal-sniffer-annotations-1.14.jar
 ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR = animal-sniffer-annotations-1.14-sources.jar
 
-GUAVA_JAR = guava-25.1-jre.jar
-GUAVA_SOURCE_JAR = guava-25.1-jre-sources.jar
+FAILUREACCESS_JAR = failureaccess-1.0.1.jar
+FAILUREACCESS_SOURCE_JAR = failureaccess-1.0.1-sources.jar
 
-GUAVA_ANDROID_JAR = guava-25.1-android.jar
-GUAVA_ANDROID_SOURCE_JAR = guava-25.1-android-sources.jar
+GUAVA_JAR = guava-30.0-jre.jar
+GUAVA_SOURCE_JAR = guava-30.0-jre-sources.jar
+
+GUAVA_ANDROID_JAR = guava-30.0-android.jar
+GUAVA_ANDROID_SOURCE_JAR = guava-30.0-android-sources.jar
 
 SCENELIB_JAR = scenelib.jar
 PLUME_UTIL_JAR = plume-util-1.0.6.jar

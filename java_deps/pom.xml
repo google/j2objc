@@ -75,22 +75,28 @@
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>25.1-jre</version>
+                  <version>30.0-jre</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
+                  <artifactId>failureaccess</artifactId>
+                  <version>1.0.1</version>
+                  <classifier>sources</classifier>
+               </artifactItem>
+                <artifactItem>
+                  <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>25.1-android</version>
+                  <version>30.0-android</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
                   <!-- Putting this here instead of in the dependencies section
                        because Maven only downloads one version of a dependency
-                       and this one conflicts with 25.1-jre. -->
+                       and this one conflicts with 30.0-jre. -->
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>25.1-android</version>
+                  <version>30.0-android</version>
                 </artifactItem>
                 <artifactItem>
                   <!-- Same as above, this one conflicts with
@@ -162,10 +168,15 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>25.1-jre</version>
+      <version>30.0-jre</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+      <version>1.0.1</version>
+      <scope>compile</scope>
+    </dependency>    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>3.0.0</version>

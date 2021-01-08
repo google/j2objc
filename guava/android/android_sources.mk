@@ -106,6 +106,7 @@ GUAVA_SOURCES = \
     com/google/common/collect/ArrayListMultimap.java \
     com/google/common/collect/ArrayListMultimapGwtSerializationDependencies.java \
     com/google/common/collect/ArrayTable.java \
+    com/google/common/collect/BaseImmutableMultimap.java \
     com/google/common/collect/BiMap.java \
     com/google/common/collect/BoundType.java \
     com/google/common/collect/ByFunctionOrdering.java \
@@ -115,6 +116,7 @@ GUAVA_SOURCES = \
     com/google/common/collect/Collections2.java \
     com/google/common/collect/CompactHashMap.java \
     com/google/common/collect/CompactHashSet.java \
+    com/google/common/collect/CompactHashing.java \
     com/google/common/collect/CompactLinkedHashMap.java \
     com/google/common/collect/CompactLinkedHashSet.java \
     com/google/common/collect/ComparatorOrdering.java \
@@ -293,7 +295,6 @@ GUAVA_SOURCES = \
     com/google/common/collect/UnmodifiableListIterator.java \
     com/google/common/collect/UnmodifiableSortedMultiset.java \
     com/google/common/collect/UsingToStringOrdering.java \
-    com/google/common/collect/WellBehavedMap.java \
     com/google/common/collect/package-info.java \
     com/google/common/escape/ArrayBasedCharEscaper.java \
     com/google/common/escape/ArrayBasedEscaperMap.java \
@@ -324,11 +325,6 @@ GUAVA_SOURCES = \
     com/google/common/graph/AbstractUndirectedNetworkConnections.java \
     com/google/common/graph/AbstractValueGraph.java \
     com/google/common/graph/BaseGraph.java \
-    com/google/common/graph/ConfigurableMutableGraph.java \
-    com/google/common/graph/ConfigurableMutableNetwork.java \
-    com/google/common/graph/ConfigurableMutableValueGraph.java \
-    com/google/common/graph/ConfigurableNetwork.java \
-    com/google/common/graph/ConfigurableValueGraph.java \
     com/google/common/graph/DirectedGraphConnections.java \
     com/google/common/graph/DirectedMultiNetworkConnections.java \
     com/google/common/graph/DirectedNetworkConnections.java \
@@ -347,6 +343,7 @@ GUAVA_SOURCES = \
     com/google/common/graph/ImmutableGraph.java \
     com/google/common/graph/ImmutableNetwork.java \
     com/google/common/graph/ImmutableValueGraph.java \
+    com/google/common/graph/IncidentEdgeSet.java \
     com/google/common/graph/MapIteratorCache.java \
     com/google/common/graph/MapRetrievalCache.java \
     com/google/common/graph/MultiEdgesConnecting.java \
@@ -357,6 +354,11 @@ GUAVA_SOURCES = \
     com/google/common/graph/NetworkBuilder.java \
     com/google/common/graph/NetworkConnections.java \
     com/google/common/graph/PredecessorsFunction.java \
+    com/google/common/graph/StandardMutableGraph.java \
+    com/google/common/graph/StandardMutableNetwork.java \
+    com/google/common/graph/StandardMutableValueGraph.java \
+    com/google/common/graph/StandardNetwork.java \
+    com/google/common/graph/StandardValueGraph.java \
     com/google/common/graph/SuccessorsFunction.java \
     com/google/common/graph/Traverser.java \
     com/google/common/graph/UndirectedGraphConnections.java \
@@ -385,6 +387,7 @@ GUAVA_SOURCES = \
     com/google/common/hash/HashingInputStream.java \
     com/google/common/hash/HashingOutputStream.java \
     com/google/common/hash/ImmutableSupplier.java \
+    com/google/common/hash/Java8Compatibility.java \
     com/google/common/hash/LittleEndianByteArray.java \
     com/google/common/hash/LongAddable.java \
     com/google/common/hash/LongAddables.java \
@@ -419,6 +422,7 @@ GUAVA_SOURCES = \
     com/google/common/io/FileWriteMode.java \
     com/google/common/io/Files.java \
     com/google/common/io/Flushables.java \
+    com/google/common/io/Java8Compatibility.java \
     com/google/common/io/LineBuffer.java \
     com/google/common/io/LineProcessor.java \
     com/google/common/io/LineReader.java \
@@ -430,6 +434,7 @@ GUAVA_SOURCES = \
     com/google/common/io/ReaderInputStream.java \
     com/google/common/io/Resources.java \
     com/google/common/io/package-info.java \
+    com/google/common/math/BigDecimalMath.java \
     com/google/common/math/BigIntegerMath.java \
     com/google/common/math/DoubleMath.java \
     com/google/common/math/DoubleUtils.java \
@@ -442,6 +447,7 @@ GUAVA_SOURCES = \
     com/google/common/math/Quantiles.java \
     com/google/common/math/Stats.java \
     com/google/common/math/StatsAccumulator.java \
+    com/google/common/math/ToDoubleRounder.java \
     com/google/common/math/package-info.java \
     com/google/common/net/HostAndPort.java \
     com/google/common/net/HostSpecifier.java \
@@ -456,15 +462,20 @@ GUAVA_SOURCES = \
     com/google/common/primitives/Bytes.java \
     com/google/common/primitives/Chars.java \
     com/google/common/primitives/Doubles.java \
+    com/google/common/primitives/DoublesMethodsForWeb.java \
     com/google/common/primitives/Floats.java \
+    com/google/common/primitives/FloatsMethodsForWeb.java \
     com/google/common/primitives/ImmutableDoubleArray.java \
     com/google/common/primitives/ImmutableIntArray.java \
     com/google/common/primitives/ImmutableLongArray.java \
     com/google/common/primitives/Ints.java \
+    com/google/common/primitives/IntsMethodsForWeb.java \
     com/google/common/primitives/Longs.java \
     com/google/common/primitives/ParseRequest.java \
+    com/google/common/primitives/Platform.java \
     com/google/common/primitives/Primitives.java \
     com/google/common/primitives/Shorts.java \
+    com/google/common/primitives/ShortsMethodsForWeb.java \
     com/google/common/primitives/SignedBytes.java \
     com/google/common/primitives/UnsignedBytes.java \
     com/google/common/primitives/UnsignedInteger.java \
@@ -489,7 +500,6 @@ GUAVA_SOURCES = \
     com/google/common/reflect/Types.java \
     com/google/common/reflect/package-info.java \
     com/google/common/util/concurrent/AbstractCatchingFuture.java \
-    com/google/common/util/concurrent/AbstractCheckedFuture.java \
     com/google/common/util/concurrent/AbstractExecutionThreadService.java \
     com/google/common/util/concurrent/AbstractFuture.java \
     com/google/common/util/concurrent/AbstractIdleService.java \
@@ -506,17 +516,18 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/AtomicLongMap.java \
     com/google/common/util/concurrent/Atomics.java \
     com/google/common/util/concurrent/Callables.java \
-    com/google/common/util/concurrent/CheckedFuture.java \
+    com/google/common/util/concurrent/ClosingFuture.java \
     com/google/common/util/concurrent/CollectionFuture.java \
     com/google/common/util/concurrent/CombinedFuture.java \
     com/google/common/util/concurrent/CycleDetectingLockFactory.java \
+    com/google/common/util/concurrent/DirectExecutor.java \
     com/google/common/util/concurrent/ExecutionError.java \
     com/google/common/util/concurrent/ExecutionList.java \
+    com/google/common/util/concurrent/ExecutionSequencer.java \
     com/google/common/util/concurrent/FakeTimeLimiter.java \
     com/google/common/util/concurrent/FluentFuture.java \
     com/google/common/util/concurrent/ForwardingBlockingDeque.java \
     com/google/common/util/concurrent/ForwardingBlockingQueue.java \
-    com/google/common/util/concurrent/ForwardingCheckedFuture.java \
     com/google/common/util/concurrent/ForwardingCondition.java \
     com/google/common/util/concurrent/ForwardingExecutorService.java \
     com/google/common/util/concurrent/ForwardingFluentFuture.java \
@@ -529,6 +540,7 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/FuturesGetChecked.java \
     com/google/common/util/concurrent/GwtFluentFutureCatchingSpecialization.java \
     com/google/common/util/concurrent/GwtFuturesCatchingSpecialization.java \
+    com/google/common/util/concurrent/IgnoreJRERequirement.java \
     com/google/common/util/concurrent/ImmediateFuture.java \
     com/google/common/util/concurrent/InterruptibleTask.java \
     com/google/common/util/concurrent/JdkFutureAdapters.java \
@@ -540,6 +552,7 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/ListeningScheduledExecutorService.java \
     com/google/common/util/concurrent/Monitor.java \
     com/google/common/util/concurrent/MoreExecutors.java \
+    com/google/common/util/concurrent/OverflowAvoidingLockSupport.java \
     com/google/common/util/concurrent/Partially.java \
     com/google/common/util/concurrent/Platform.java \
     com/google/common/util/concurrent/RateLimiter.java \
@@ -547,6 +560,7 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/SequentialExecutor.java \
     com/google/common/util/concurrent/Service.java \
     com/google/common/util/concurrent/ServiceManager.java \
+    com/google/common/util/concurrent/ServiceManagerBridge.java \
     com/google/common/util/concurrent/SettableFuture.java \
     com/google/common/util/concurrent/SimpleTimeLimiter.java \
     com/google/common/util/concurrent/SmoothRateLimiter.java \
@@ -636,3 +650,7 @@ CHECKER_QUAL_SOURCES_ORIGINAL_PATH = \
 
 ANIMAL_SNIFFER_ANNOTATIONS_SOURCES = \
     org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement.java \
+
+FAILUREACCESS_SOURCES = \
+    com/google/common/util/concurrent/internal/InternalFutureFailureAccess.java \
+    com/google/common/util/concurrent/internal/InternalFutures.java \
