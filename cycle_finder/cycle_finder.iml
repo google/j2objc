@@ -24,9 +24,9 @@
     <orderEntry type="module" module-name="translator" />
     <orderEntry type="module" module-name="annotations" />
     <orderEntry type="module-library">
-      <library name="guava-25.1-jre.jar">
+      <library name="guava-30.1-jre.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-25.1-jre.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-30.0-jre.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -42,12 +42,14 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="javac.jar">
+      <library name="tools.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/javac.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
