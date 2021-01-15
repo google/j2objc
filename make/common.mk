@@ -164,8 +164,10 @@ ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
 JAVA_8 = 1
 else ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 11
+else ifneq (,$(findstring build 15, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 15
 else
-$(error JDK not supported. Please set JAVA_HOME to JDK 1.8 or 11.)
+$(error JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or 15.)
 endif
 
 ifndef MEMORY_MODEL_FLAG

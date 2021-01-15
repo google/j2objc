@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.util;
 
+import static com.google.common.base.StandardSystemProperty.JAVA_SPECIFICATION_VERSION;
+
 import java.lang.reflect.Method;
 
 /**
@@ -21,6 +23,10 @@ import java.lang.reflect.Method;
  */
 public enum SourceVersion {
 
+  JAVA_15(15, "15"),
+  JAVA_14(14, "14"),
+  JAVA_13(13, "13"),
+  JAVA_12(12, "12"),
   JAVA_11(11, "11"),
   JAVA_10(10, "10"),
   JAVA_9(9, "9"),
@@ -29,7 +35,7 @@ public enum SourceVersion {
   JAVA_6(6, "1.6"),
   JAVA_5(5, "1.5");
 
-  private static SourceVersion maxSupportedVersion = JAVA_11;
+  private static SourceVersion maxSupportedVersion = JAVA_15;
 
   private final int version;
   private final String flag;
@@ -85,9 +91,10 @@ public enum SourceVersion {
       int majorVersion = (int) version.getClass().getMethod("major").invoke(version);
       sourceVersion = SourceVersion.valueOf(majorVersion);
     } catch (Exception e) {
-      sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
+      sourceVersion = SourceVersion.parse(JAVA_SPECIFICATION_VERSION.value());
     }
-    return sourceVersion.version > maxSupportedVersion.version ? maxSupportedVersion
+    return sourceVersion.version > maxSupportedVersion.version
+        ? maxSupportedVersion
         : sourceVersion;
   }
 
