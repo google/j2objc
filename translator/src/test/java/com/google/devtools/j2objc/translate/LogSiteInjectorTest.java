@@ -10,10 +10,15 @@ import java.io.IOException;
  */
 public class LogSiteInjectorTest extends GenerationTest {
 
+  @Override
+  public void setUp() throws IOException {
+    super.setUp();
+    options.setInjectLogSites(true);
+  }
+
   // Verify Logger.log(level, ...) statements are translated to
   // logp(level, sourceClass, sourceMethod, ...) methods.
   public void testLog() throws IOException {
-    options.setInjectLogSites(true);
     String source =
         String.join(
             "\n",
@@ -70,7 +75,6 @@ public class LogSiteInjectorTest extends GenerationTest {
 
   // Verify log.logRecord() isn't modified.
   public void testLogRecord() throws IOException {
-    options.setInjectLogSites(true);
     String source =
         String.join(
             "\n",
@@ -93,7 +97,6 @@ public class LogSiteInjectorTest extends GenerationTest {
 
   // Verify call site injection into Logger convenience methods, like log.info().
   public void testConvenienceMethods() throws IOException {
-    options.setInjectLogSites(true);
     String source =
         String.join(
             "\n",
@@ -138,7 +141,6 @@ public class LogSiteInjectorTest extends GenerationTest {
   }
 
   public void testGoogleLogger() throws IOException {
-    options.setInjectLogSites(true);
     String source = String.join("\n",
         "package test;",
         "import com.google.common.flogger.GoogleLogger;",
@@ -176,7 +178,6 @@ public class LogSiteInjectorTest extends GenerationTest {
 
   // Verify custom log method isn't modified.
   public void testCustomLogger() throws IOException {
-    options.setInjectLogSites(true);
     String source =
         String.join(
             "\n",
@@ -198,7 +199,6 @@ public class LogSiteInjectorTest extends GenerationTest {
   }
 
   public void testInnerClass() throws IOException {
-    options.setInjectLogSites(true);
     String source =
         String.join(
             "\n",
@@ -219,5 +219,38 @@ public class LogSiteInjectorTest extends GenerationTest {
         "[((JavaUtilLoggingLogger *) nil_chk(JreLoadStatic(TestHello5, logger))) "
             + "logpWithJavaUtilLoggingLevel:JreLoadStatic(JavaUtilLoggingLevel, INFO) "
             + "withNSString:@\"test.Hello5.Inner\" withNSString:@\"f\" withNSString:msg];");
+  }
+
+  public void testUnionType() throws IOException {
+    String source =
+        String.join(
+            "\n",
+            "package test;",
+            "import java.util.logging.Logger;",
+            "import java.util.logging.Level;",
+            "public class Hello6 {",
+            "  private static final Logger logger = Logger.getLogger(Hello6.class.getName());",
+            "  public static void f(String msg) {",
+            "    try {",
+            "      g();",
+            "    } catch (ArithmeticException | NumberFormatException e) {",
+            "      logger.log(Level.WARNING, \"exception thrown\", e);",
+            "    }",
+            "  }",
+            "  private static native void g() throws ArithmeticException, NumberFormatException;",
+            "}");
+    String translation = translateSourceFile(source, "test.Hello6", "test/Hello6.m");
+    assertTranslatedLines(
+        translation,
+        "@catch (JavaLangArithmeticException *e) {",
+        "[((JavaUtilLoggingLogger *) nil_chk(TestHello6_logger))"
+            + " logWithJavaUtilLoggingLevel:JreLoadStatic(JavaUtilLoggingLevel, WARNING)"
+            + " withNSString:@\"exception thrown\" withJavaLangThrowable:e];",
+        "}",
+        "@catch (JavaLangNumberFormatException *e) {",
+        "[((JavaUtilLoggingLogger *) nil_chk(TestHello6_logger))"
+            + " logWithJavaUtilLoggingLevel:JreLoadStatic(JavaUtilLoggingLevel, WARNING)"
+            + " withNSString:@\"exception thrown\" withJavaLangThrowable:e];",
+        "}");
   }
 }

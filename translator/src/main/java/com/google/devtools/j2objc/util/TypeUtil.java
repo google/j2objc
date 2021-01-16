@@ -752,6 +752,8 @@ public final class TypeUtil {
         return ElementUtil.getName(asTypeElement(t));
       case TYPEVAR:
         return ElementUtil.getName(((TypeVariable) t).asElement());
+      case UNION:
+        return t.toString();
       case BOOLEAN:
         return "boolean";
       case BYTE:
@@ -790,6 +792,7 @@ public final class TypeUtil {
       case LONG:
       case SHORT:
       case TYPEVAR:
+      case UNION:
       case VOID:
         return getName(t);
       default:
@@ -804,6 +807,8 @@ public final class TypeUtil {
         return "[" + getSignatureName(((ArrayType) t).getComponentType());
       case DECLARED:
         return "L" + elementUtil.getBinaryName(asTypeElement(t)).replace('.', '/') + ";";
+      case UNION:
+        return "L" + t.toString().replace('.', '/') + ";";
       case BOOLEAN:
       case BYTE:
       case CHAR:

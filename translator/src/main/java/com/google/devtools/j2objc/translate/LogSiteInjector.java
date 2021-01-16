@@ -155,12 +155,14 @@ public final class LogSiteInjector extends UnitTreeVisitor {
 
       ExecutableElement injectedMethod =
           ElementUtil.findMethod(cls, LOGP_METHOD, argTypes.toArray(new String[0]));
-      MethodInvocation injectedInvocation =
-          new MethodInvocation(new ExecutablePair(injectedMethod), node.getExpression().copy());
-      for (int i = 0; i < logpArgs.size(); i++) {
-        injectedInvocation.addArgument(logpArgs.get(i));
+      if (injectedMethod != null) {
+        MethodInvocation injectedInvocation =
+            new MethodInvocation(new ExecutablePair(injectedMethod), node.getExpression().copy());
+        for (int i = 0; i < logpArgs.size(); i++) {
+          injectedInvocation.addArgument(logpArgs.get(i));
+        }
+        return injectedInvocation;
       }
-      return injectedInvocation;
     }
     return node.copy();
   }
