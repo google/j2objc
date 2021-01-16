@@ -606,7 +606,10 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
             + "@java.lang.annotation.Target(value={java.lang.annotation.ElementType.TYPE_USE})"
             + "@interface Nullable {}"
             + "public class Test {"
-            + "  @Nullable String test(@NonNull String msg) { return null; } "
+            + "  @Nullable String test(@NonNull String msg) { return null; }"
+            + "  interface Test2<V> {"
+            + "    void test(@Nullable V newValue);"
+            + "  }"
             + "}";
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");

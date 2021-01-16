@@ -27,9 +27,12 @@ import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
+import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import com.sun.tools.javac.code.Symbol.VarSymbol;
+import com.sun.tools.javac.code.SymbolMetadata;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -745,8 +748,22 @@ public final class ElementUtil {
         && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {
       return true;
     }
-    if (isVariable(element) && hasNamedAnnotation(element.asType(), pattern)) {
-      return true;
+    if (isVariable(element)) {
+      if (hasNamedAnnotation(element.asType(), pattern)) {
+        return true;
+      }
+      // Annotation may be saved as a type attribute in the javac symbol.
+      if (element instanceof VarSymbol) {
+        SymbolMetadata metadata = ((VarSymbol) element).getMetadata();
+        if (metadata != null) {
+          List<Attribute.TypeCompound> attrs = metadata.getTypeAttributes();
+          for (Attribute.TypeCompound attr : attrs) {
+            if (pattern.matcher(getName(attr.type.asElement())).matches()) {
+              return true;
+            }
+          }
+        }
+      }
     }
     // This covers declaration annotations.
     return hasNamedAnnotation(element, pattern);
