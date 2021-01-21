@@ -91,15 +91,20 @@ public class LocaleDataTest extends junit.framework.TestCase {
   public void test_ru_RU() throws Exception {
     // Russian locale strings updated in macOS 10.12 to match iOS.
     if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
-      LocaleData l = LocaleData.get(new Locale("ru", "RU"));
+      final Locale locale = new Locale("ru", "RU");
+      LocaleData l = LocaleData.get(locale);
 
       assertEquals("воскресенье", l.longWeekdayNames[1]);
-      assertEquals("вс", l.shortWeekdayNames[1]);
-      assertEquals("вс", l.tinyWeekdayNames[1]);
+
+      // j2objc: iOS 12.2's CLDR returns initially capitalized names.
+      assertEquals("вс", l.shortWeekdayNames[1].toLowerCase(locale));
+      assertEquals("вс", l.tinyWeekdayNames[1].toLowerCase(locale));
 
       // Russian stand-alone weekday names have no initial capital since CLDR 28/ICU 56.
       assertEquals("воскресенье", l.longStandAloneWeekdayNames[1]);
-      assertEquals("вс", l.shortStandAloneWeekdayNames[1]);
+      // ... but as of iOS 12.2, short standalone names have an initial capital again.
+      assertEquals("вс", l.shortStandAloneWeekdayNames[1].toLowerCase(locale));
+
       assertEquals("В", l.tinyStandAloneWeekdayNames[1]);
     }
   }

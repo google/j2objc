@@ -232,15 +232,21 @@ public class NativeTimeZoneTest extends TestCase {
     assertEquals(39600000, sydney.getOffset(89136000000L)); // 1972-10-29T03:00:00.000+11:00
     assertEquals(36000000, sydney.getOffset(67968000000L)); // 1972-02-27T02:00:00.000+10:00
     assertEquals(39600000, sydney.getOffset(57686400000L)); // 1971-10-31T03:00:00.000+11:00
-    assertEquals(36000000, sydney.getOffset(-813229200000L)); // 1944-03-26T01:00:00.000+10:00
-    assertEquals(39600000, sydney.getOffset(-828345600000L)); // 1943-10-03T03:00:00.000+11:00
-    assertEquals(36000000, sydney.getOffset(-844678800000L)); // 1943-03-28T01:00:00.000+10:00
-    assertEquals(39600000, sydney.getOffset(-860400000000L)); // 1942-09-27T03:00:00.000+11:00
-    assertEquals(36000000, sydney.getOffset(-876128400000L)); // 1942-03-29T01:00:00.000+10:00
-    assertEquals(39600000, sydney.getOffset(-883641600000L)); // 1942-01-01T03:00:00.000+11:00
-    assertEquals(36000000, sydney.getOffset(-1665392400000L)); // 1917-03-25T01:00:00.000+10:00
-    assertEquals(39600000, sydney.getOffset(-1672567140000L)); // 1917-01-01T01:01:00.000+11:00
-    assertEquals(36000000, sydney.getOffset(-1672567140001L)); // 1917-01-01T01:00:59.999+10:00
+    // The IANA timezone database, release 2020e (12/22/2020) fixed: "Australia: several 1917 through 1971
+    // transitions". Since this test may still be run on older OS releases, we need to test for both.
+    assertEitherSidneyOffset(sydney.getOffset(-813229200000L)); // 1944-03-26T01:00:00.000+10:00
+    assertEitherSidneyOffset(sydney.getOffset(-828345600000L)); // 1943-10-03T03:00:00.000+11:00
+    assertEitherSidneyOffset(sydney.getOffset(-844678800000L)); // 1943-03-28T01:00:00.000+10:00
+    assertEitherSidneyOffset(sydney.getOffset(-860400000000L)); // 1942-09-27T03:00:00.000+11:00
+    assertEitherSidneyOffset(sydney.getOffset(-876128400000L)); // 1942-03-29T01:00:00.000+10:00
+    assertEitherSidneyOffset(sydney.getOffset(-883641600000L)); // 1942-01-01T03:00:00.000+11:00
+    assertEitherSidneyOffset(sydney.getOffset(-1665392400000L)); // 1917-03-25T01:00:00.000+10:00
+    assertEitherSidneyOffset(sydney.getOffset(-1672567140000L)); // 1917-01-01T01:01:00.000+11:00
+    assertEitherSidneyOffset(sydney.getOffset(-1672567140001L)); // 1917-01-01T01:00:59.999+10:00
+  }
+
+  private void assertEitherSidneyOffset(int offset) {
+    assertTrue(offset == 36000000 || offset == 39600000);
   }
 
   /**
