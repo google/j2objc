@@ -183,7 +183,7 @@ public class OperatorRewriterTest extends GenerationTest {
         // The getTest() call must be extracted so that it can be passed as the parent ref without
         // duplicating the expression.
         "t *__rw$0;",
-        "(__rw$0 = nil_chk([self getTest]), "
+        "((void) (__rw$0 = nil_chk([self getTest])), "
           + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
     assertTranslation(translation, "JreRetainedWithRelease(self, rwo_);");

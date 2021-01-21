@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -29,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -348,8 +350,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TreeUtil.asStatementList(TreeUtil.getOwningStatement(lhs))
         .add(0, new VariableDeclarationStatement(targetVar, null));
     fieldAccess.setExpression(new SimpleName(targetVar));
-    CommaExpression commaExpr = new CommaExpression(
-        new Assignment(new SimpleName(targetVar), target));
+    CommaExpression commaExpr =
+        new CommaExpression(
+            new CastExpression(
+                typeUtil.getVoid(),
+                new ParenthesizedExpression(new Assignment(new SimpleName(targetVar), target))));
     node.replaceWith(commaExpr);
     commaExpr.addExpression(node);
     return new SimpleName(targetVar);
