@@ -42,6 +42,13 @@ import org.json.JSONTokener;
  */
 public class JSONObjectTest extends TestCase {
 
+/*-[
+// Ignore non-null warnings, since they are in tests that verify null parameters
+// are caught and thrown.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+]-*/
+
     public void testEmptyObject() throws JSONException {
         JSONObject object = new JSONObject();
         assertEquals(0, object.length());
@@ -1057,4 +1064,8 @@ public class JSONObjectTest extends TestCase {
         } catch (JSONException expected) {
         }
     }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
 }
