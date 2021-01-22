@@ -29,6 +29,9 @@ volatile_jdouble volatile_jboolean volatile_id
 auto const entry extern goto inline register restrict signed
 sizeof struct typedef union unsigned volatile
 
+# GNU C keyword
+typeof
+
 # C++ keywords
 and and_eq asm bitand bitor compl const_cast delete dynamic_cast
 explicit export friend mutable namespace not not_eq operator or
