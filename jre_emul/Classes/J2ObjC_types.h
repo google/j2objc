@@ -21,6 +21,10 @@
 #include <stdint.h>
 #endif
 
+#if ! __has_extension(c_atomic)
+#error C11 or higher language standard must be used for Java volatile support.
+#endif
+
 // Typedefs for each of Java's primitive types. (as originally defined in jni.h)
 // jboolean and jbyte are modified from the original jni.h to integrate better
 // with Objective-C code.

@@ -108,10 +108,10 @@ $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@echo compiling '$$<'
 	@$(3) $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
 
-$(1)/%.o: $(2)/%.mm $(4:%=%.pch) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.mm $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(3) -x objective-c++ $(4:%=-include %) $(5) -MD -c '$$<' -o '$$@'
+	@$(3) -x objective-c++ -stdlib=libc++ $(5) -MD -c '$$<' -o '$$@'
 endef
 
 # Generates rule to build precompiled headers file.

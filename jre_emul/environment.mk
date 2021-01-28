@@ -179,9 +179,6 @@ OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 
 OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0
 
-# Require C11 compilation to support Java volatile translation.
-OBJCFLAGS += -std=c11
-
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 TRANSLATE_ARGS += -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions\
