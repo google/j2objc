@@ -16,7 +16,6 @@ package com.google.devtools.treeshaker;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -25,65 +24,31 @@ import java.util.Collection;
 @AutoValue
 abstract class RtaResult {
   abstract ImmutableList<String> getUnusedTypes();
-
-  abstract CodeRemovalInfo getCodeRemovalInfo();
+  abstract ImmutableList<String> getUnusedMethods();
 
   @AutoValue.Builder
   abstract static class Builder {
     abstract ImmutableList.Builder<String> unusedTypesBuilder();
-
-    abstract Builder setCodeRemovalInfo(CodeRemovalInfo info);
-
+    abstract ImmutableList.Builder<String> unusedMethodsBuilder();
     abstract RtaResult build();
   }
 
   static RtaResult build(Collection<Type> types) {
     Builder builder = new AutoValue_RtaResult.Builder();
-    CodeRemovalInfo.Builder codeRemovalInfoBuilder = CodeRemovalInfo.newBuilder();
 
     for (Type type : types) {
       if (type.isLive()) {
-        ArrayList<LineRange> unusedLines = new ArrayList<>();
         for (Member member : type.getMembers()) {
-          if (member.isLive() || !member.hasPosition()) {
-            continue;
+          if (!member.isLive()) {
+            builder.unusedMethodsBuilder().add(
+                member.getDeclaringType().getName() + "." + member.getName());
           }
-
-          unusedLines.add(convertToLineRange(member.getPosition()));
         }
-
-        if (!unusedLines.isEmpty()) {
-          unusedLines.sort((m1, m2) -> m1.getLineStart() - m2.getLineStart());
-          codeRemovalInfoBuilder.addUnusedLines(
-              UnusedLines.newBuilder()
-                  .setFileKey(type.getImplSourceFile())
-                  .addAllUnusedRanges(unusedLines)
-                  .build());
-        }
-
       } else {
         builder.unusedTypesBuilder().add(type.getName());
-        codeRemovalInfoBuilder.addUnusedFiles(type.getHeaderSourceFile());
-        codeRemovalInfoBuilder.addUnusedFiles(type.getImplSourceFile());
       }
     }
 
-    if (Boolean.getBoolean("j2clrta.generate_unused_methods_for_testing")) {
-      types.stream()
-          .filter(Type::isLive)
-          .flatMap(t -> t.getMembers().stream())
-          .filter(m -> !m.isLive())
-          .map(m -> m.getDeclaringType().getName() + "#" + m.getName())
-          .forEach(builder.unusedTypesBuilder()::add);
-    }
-
-    return builder.setCodeRemovalInfo(codeRemovalInfoBuilder.build()).build();
-  }
-
-  private static LineRange convertToLineRange(SourcePosition position) {
-    return LineRange.newBuilder()
-        .setLineStart(position.getStart())
-        .setLineEnd(position.getEnd())
-        .build();
+    return builder.build();
   }
 }

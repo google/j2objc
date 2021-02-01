@@ -15,16 +15,23 @@ package com.google.devtools.treeshaker;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.flogger.GoogleLogger;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Give information about inheritance relationships between types. */
 class TypeGraphBuilder {
+  private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
+  private static final int OBJECT_TYPE = 0;
+
 
   static Collection<Type> build(List<LibraryInfo> libraryInfos) {
     Map<String, Type> typesByName = new LinkedHashMap<>();
+    Set<String> externalTypeReferences = new HashSet<>();
 
     // Create all types and members.
     for (LibraryInfo libraryInfo : libraryInfos) {
@@ -36,20 +43,23 @@ class TypeGraphBuilder {
 
     // Build cross-references between types and members
     for (LibraryInfo libraryInfo : libraryInfos) {
-      buildCrossReferences(typesByName, libraryInfo);
+      buildCrossReferences(typesByName, externalTypeReferences, libraryInfo);
+    }
+
+    for (String typeName : externalTypeReferences) {
+      logger.atInfo().log("External Type: %s", typeName);
     }
 
     return typesByName.values();
   }
 
-  private static void buildCrossReferences(Map<String, Type> typesByName, LibraryInfo libraryInfo) {
+  private static void buildCrossReferences(
+      Map<String, Type> typesByName, Set<String> externalTypeReferences, LibraryInfo libraryInfo) {
     for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
       Type type = typesByName.get(libraryInfo.getTypeMap(typeInfo.getTypeId()));
 
       int extendsId = typeInfo.getExtendsType();
-      // TODO(dpo): re-abstract
-      //if (extendsId != LibraryInfoBuilder.NULL_TYPE) {
-      if (extendsId != 0) {
+      if (extendsId != OBJECT_TYPE) {
         Type superClass = typesByName.get(libraryInfo.getTypeMap(extendsId));
         superClass.addImmediateSubtype(type);
         type.setSuperClass(superClass);
@@ -66,14 +76,22 @@ class TypeGraphBuilder {
 
         for (int referencedId : memberInfo.getReferencedTypesList()) {
           Type referencedType = typesByName.get(libraryInfo.getTypeMap(referencedId));
+          if (referencedType == null) {
+            externalTypeReferences.add(libraryInfo.getTypeMap(referencedId));
+            continue;
+          }
           member.addReferencedType(checkNotNull(referencedType));
         }
 
         for (MethodInvocation methodInvocation : memberInfo.getInvokedMethodsList()) {
           Type enclosingType =
               typesByName.get(libraryInfo.getTypeMap(methodInvocation.getEnclosingType()));
-          Member referencedMember = enclosingType.getMemberByName(methodInvocation.getMethod());
-          member.addReferencedMember(checkNotNull(referencedMember));
+          if (enclosingType != null) {
+            Member referencedMember = enclosingType.getMemberByName(methodInvocation.getMethod());
+            member.addReferencedMember(checkNotNull(referencedMember));
+          } else {
+            externalTypeReferences.add(libraryInfo.getTypeMap(methodInvocation.getEnclosingType()));
+          }
         }
       }
     }

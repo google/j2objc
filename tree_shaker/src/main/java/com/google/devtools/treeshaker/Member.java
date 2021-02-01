@@ -22,7 +22,7 @@ final class Member {
     member.memberInfo = memberInfo;
     member.declaringType = declaringType;
     member.isStatic = memberInfo.getStatic();
-    member.isConstructor = memberInfo.getName().equals("constructor");
+    member.isConstructor = memberInfo.getConstructor();
     return member;
   }
 
