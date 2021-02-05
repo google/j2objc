@@ -14,12 +14,14 @@
 
 package com.google.devtools.treeshaker;
 
+import com.google.common.base.Splitter;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import java.util.Collection;
 import java.util.List;
 
 final class RapidTypeAnalyser {
 
-  static RtaResult analyse(List<LibraryInfo> libraryInfos, boolean keepJsTypeInterfaces) {
+  static CodeReferenceMap analyse(List<LibraryInfo> libraryInfos, boolean keepJsTypeInterfaces) {
     Collection<Type> types = TypeGraphBuilder.build(libraryInfos);
 
     if (keepJsTypeInterfaces) {
@@ -32,7 +34,27 @@ final class RapidTypeAnalyser {
         .filter(Member::isJsAccessible)
         .forEach(m -> onMemberReference(m));
 
-    return RtaResult.build(types);
+    CodeReferenceMap.Builder crmBuilder = CodeReferenceMap.builder();
+    for (Type type : types) {
+      if (type.isLive()) {
+        for (Member member : type.getMembers()) {
+          if (!member.isLive()) {
+            List<String> components =
+                Splitter.onPattern(UsedCodeMarker.SIGNATURE_PREFIX).splitToList(member.getName());
+            // TODO(dpo): add better checking for name & signature components.
+            if (components.isEmpty()) {
+              continue;
+            }
+            String name = components.get(0);
+            String sig = components.size() == 2 ? components.get(1) : "";
+            crmBuilder.addMethod(member.getDeclaringType().getName(), name, sig);
+          }
+        }
+      } else {
+        crmBuilder.addClass(type.getName());
+      }
+    }
+    return crmBuilder.build();
   }
 
   private static void onMemberReference(Member member) {

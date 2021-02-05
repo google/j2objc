@@ -25,16 +25,12 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
-import com.google.devtools.j2objc.util.TranslationEnvironment;
-import com.google.devtools.treeshaker.ElementReferenceMapper.ReferenceNode;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A tool for finding unused code in a Java program.
@@ -45,7 +41,6 @@ public class TreeShaker {
 
   private final Options options;
   private final com.google.devtools.j2objc.Options j2objcOptions;
-  private TranslationEnvironment env = null;
 
   static {
     // Enable assertions in the tree shaker.
@@ -139,24 +134,14 @@ public class TreeShaker {
 
   public CodeReferenceMap getUnusedCode(CodeReferenceMap inputRootSet) throws IOException {
     Parser parser = createParser(options);
-
-    final HashMap<String, ReferenceNode> elementReferenceMap = new HashMap<>();
-    final Set<String> staticSet = new HashSet<>();
-    final HashMap<String, Set<String>> overrideMap = new HashMap<>();
-
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
+    UsedCodeMarker.Context context = new UsedCodeMarker.Context(inputRootSet);
 
     Parser.Handler handler = new Parser.Handler() {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
-        if (env == null) {
-          env = unit.getEnv();
-        } else {
-          //TODO(malvania): Assertion fails! Remove this once we're sure all env utils are the same.
-          //assert(unit.getEnv() == env);
-        }
-        new ElementReferenceMapper(unit, elementReferenceMap, staticSet, overrideMap).run();
+        new UsedCodeMarker(unit, context).run();
       }
     };
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
@@ -166,12 +151,7 @@ public class TreeShaker {
       return null;
     }
 
-    UnusedCodeTracker tracker = new UnusedCodeTracker(env, elementReferenceMap, staticSet,
-        overrideMap);
-    tracker.mapOverridingMethods();
-    tracker.markUsedElements(inputRootSet);
-    CodeReferenceMap codeMap = tracker.buildTreeShakerMap();
-    return codeMap;
+    return RapidTypeAnalyser.analyse(Arrays.asList(context.getLibraryInfo()), false);
   }
 
   private static CodeReferenceMap loadRootSetMap(Options options) {
