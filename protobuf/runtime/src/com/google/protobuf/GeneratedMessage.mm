@@ -53,6 +53,8 @@
 #include "java/io/InputStream.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/IndexOutOfBoundsException.h"
+#include "java/lang/Integer.h"
+#include "java/lang/Long.h"
 #include "java/lang/StringBuilder.h"
 #include "java/lang/UnsupportedOperationException.h"
 #include "java/util/ArrayList.h"
@@ -178,6 +180,12 @@ class CGPExtensionMapComparator {
     return CGPFieldGetNumber(left) < CGPFieldGetNumber(right);
   }
 };
+
+@interface ComGoogleProtobufGeneratedMessage_Builder () {
+ @package
+  JavaUtilHashMap *unknownFields_;
+}
+@end
 
 @interface ComGoogleProtobufGeneratedMessage_ExtendableMessage () {
  @package
@@ -1744,10 +1752,10 @@ static BOOL MergeMessageSetExtensionFromStream(
 }
 
 static BOOL ParseUnknownField(
-    CGPCodedInputStream *stream, CGPDescriptor *descriptor, CGPExtensionRegistryLite *registry,
-    CGPExtensionMap *extensionMap, uint32_t tag) {
+    id msg, CGPCodedInputStream *stream, CGPDescriptor *descriptor,
+    CGPExtensionRegistryLite *registry, CGPExtensionMap *extensionMap, uint32_t tag) {
+  uint32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
   if (registry != nil && extensionMap != NULL) {
-    uint32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
     CGPFieldDescriptor *field = CGPExtensionRegistryFind(registry, descriptor, fieldNumber);
     if (!field && [registry isKindOfClass:[ComGoogleProtobufExtensionRegistry class]]) {
       ComGoogleProtobufExtensionRegistry_ExtensionInfo *extension =
@@ -1766,6 +1774,51 @@ static BOOL ParseUnknownField(
     }
   }
 
+  if ([msg isKindOfClass:[ComGoogleProtobufGeneratedMessage class]]) {
+    id unknownFieldValue = nil;
+    switch (CGPWireFormatGetTagWireType(tag)) {
+      case CGPWireFormatVarint: {
+        jlong value;
+        if (!CGPReadInt64(stream, &value)) {
+          return false;
+        }
+        unknownFieldValue = JavaLangLong_valueOfWithLong_(value);
+        break;
+      }
+      case CGPWireFormatFixed32: {
+        jint value;
+        if (!CGPReadFixed32(stream, &value)) {
+          return false;
+        }
+        unknownFieldValue = JavaLangInteger_valueOfWithInt_(value);
+        break;
+      }
+      case CGPWireFormatFixed64: {
+        jlong value;
+        if (!CGPReadFixed64(stream, &value)) {
+          return false;
+        }
+        unknownFieldValue = JavaLangLong_valueOfWithLong_(value);
+        break;
+      }
+      case CGPWireFormatLengthDelimited: {
+        CGPByteString *value;
+        if (!stream->ReadRetainedByteString(&value)) {
+          return false;
+        }
+        unknownFieldValue = value;
+        break;
+      }
+      default:
+        return false;
+    }
+    if (unknownFieldValue) {
+      JavaUtilHashMap *unknownFields = [(ComGoogleProtobufGeneratedMessage *)msg unknownFields];
+      [unknownFields putWithId:JavaLangInteger_valueOfWithInt_(fieldNumber)
+                        withId:unknownFieldValue];
+      return true;
+    }
+  }
   return CGPWireFormatSkipField(stream, tag);
 }
 
@@ -1942,7 +1995,9 @@ static BOOL MergeFromStream(
       if (wireType == CGPWireFormatEndGroup) {
         return YES;
       }
-      if (!ParseUnknownField(stream, descriptor, registry, extensionMap, tag)) return NO;
+      if (!ParseUnknownField(msg, stream, descriptor, registry, extensionMap, tag)) {
+        return NO;
+      }
     }
   }
   return YES;
@@ -3231,7 +3286,10 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 // ********** Objective C type implementations *********************************
 // *****************************************************************************
 
-@implementation ComGoogleProtobufGeneratedMessage
+@implementation ComGoogleProtobufGeneratedMessage {
+ @package
+  JavaUtilHashMap *unknownFields_;
+}
 
 + (id)allocWithZone:(NSZone *)zone {
   NSAssert(NO, @"Direct allocation of protocol buffer messages is forbidden.");
@@ -3253,6 +3311,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage_Builder *newBuilder = CGPNewBuilder(descriptor);
   CopyAllFields(self, selfCls, newBuilder, descriptor->builderClass_, descriptor);
+  newBuilder->unknownFields_ = unknownFields_;
   return AUTORELEASE(newBuilder);
 }
 
@@ -3391,12 +3450,20 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 - (BOOL)isEqual:(id)other {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  return MessageIsEqual(self, other, descriptor);
+  if (!MessageIsEqual(self, other, descriptor)) {
+    return false;
+  }
+  if (![other isKindOfClass:[ComGoogleProtobufGeneratedMessage class]]) {
+    return false;
+  }
+  JavaUtilHashMap *otherUnknownFields =
+      ((ComGoogleProtobufGeneratedMessage *)other)->unknownFields_;
+  return unknownFields_ == otherUnknownFields || [unknownFields_ isEqual:otherUnknownFields];
 }
 
 - (NSUInteger)hash {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  return MessageHash(self, descriptor);
+  return MessageHash(self, descriptor) + [unknownFields_ hash];
 }
 
 - (NSString *)description {
@@ -3410,6 +3477,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
+  [unknownFields_ release];
   [super dealloc];
 }
 
@@ -3443,6 +3511,12 @@ static id DynamicNewBuilder(Class self, SEL _cmd, ComGoogleProtobufGeneratedMess
   return NO;
 }
 
+- (JavaUtilHashMap *)unknownFields {
+  if (!unknownFields_) {
+    JreStrongAssignAndConsume(&self->unknownFields_, new_JavaUtilHashMap_init());
+  }
+  return unknownFields_;
+}
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
@@ -3468,6 +3542,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage *newMsg = CGPNewMessage(descriptor);
   CopyAllFields(self, selfCls, newMsg, descriptor->messageClass_, descriptor);
+  newMsg->unknownFields_ = (JavaUtilHashMap *)[unknownFields_ java_clone];
   return AUTORELEASE(newMsg);
 }
 
@@ -3475,6 +3550,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
+  JreStrongAssign(&unknownFields_, nil);
   uint8_t *fieldStorage = (uint8_t *)self + class_getInstanceSize(selfCls);
   memset(fieldStorage, 0, descriptor->storageSize_);
   return self;
@@ -3693,6 +3769,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
+  JreStrongAssign(&unknownFields_, nil);
   [super dealloc];
 }
 
