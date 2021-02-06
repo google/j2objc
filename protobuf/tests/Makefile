@@ -16,7 +16,8 @@ JAVA_TESTS = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
-  StringsTest.java
+  StringsTest.java \
+  UnknownFieldsTest.java
 OTHER_JAVA_SOURCES = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
@@ -30,7 +31,8 @@ JAVA_TESTS_ARC = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
-  StringsTest.java
+  StringsTest.java \
+  UnknownFieldsTest.java
 OTHER_JAVA_SOURCES_ARC = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
@@ -50,7 +52,8 @@ PROTOS = \
   single_file.proto \
   size_test.proto \
   string_fields.proto \
-  typical.proto
+  typical.proto \
+  unknown_fields.proto
 
 TESTDATA = \
   testdata/largeproto \
