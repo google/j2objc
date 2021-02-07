@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/annotations/annotations.iml" filepath="$PROJECT_DIR$/annotations/annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/cycle_finder/cycle_finder.iml" filepath="$PROJECT_DIR$/cycle_finder/cycle_finder.iml" />
       <module fileurl="file://$PROJECT_DIR$/jre_emul/jre_emul.iml" filepath="$PROJECT_DIR$/jre_emul/jre_emul.iml" />
+      <module fileurl="file://$PROJECT_DIR$/protobuf/tests/protobuf_tests.iml" filepath="$PROJECT_DIR$/protobuf/tests/protobuf_tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/translator/translator.iml" filepath="$PROJECT_DIR$/translator/translator.iml" />
       <module fileurl="file://$PROJECT_DIR$/tree_shaker/tree_shaker.iml" filepath="$PROJECT_DIR$/tree_shaker/tree_shaker.iml" />
     </modules>
