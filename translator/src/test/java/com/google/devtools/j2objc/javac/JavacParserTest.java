@@ -30,4 +30,9 @@ public class JavacParserTest extends GenerationTest {
             "class Test {}");
     assertEquals("foo.bar", JavacParser.packageName(source));
   }
+
+  public void testPackageNameWithUnusualCharacters() {
+    String source = "package foo$bar.all_mumbles;";
+    assertEquals("foo$bar.all_mumbles", JavacParser.packageName(source));
+  }
 }
