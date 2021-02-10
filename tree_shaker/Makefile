@@ -61,6 +61,7 @@ endif
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
+INTERNAL_DEPS += $(FLOGGER_JAR) $(GOOGLE_EXTENSIONS_JAR)
 
 MAIN_CLASS = com.google.devtools.treeshaker.TreeShaker
 MANIFEST = $(BUILD_DIR)/manifest.mf
