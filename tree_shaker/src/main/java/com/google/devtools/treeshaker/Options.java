@@ -35,7 +35,6 @@ class Options {
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String usageMessage;
   private static String helpMessage;
-  private static File publicRootSetFile = null;
 
   static {
     // Load string resources.
@@ -59,6 +58,8 @@ class Options {
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean treatWarningsAsErrors = false;
+  private File treeShakerRoots;
+  private File outputFile = new File("tree-shaker-report.txt");
 
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
@@ -90,6 +91,18 @@ class Options {
 
   public boolean treatWarningsAsErrors() {
     return treatWarningsAsErrors;
+  }
+
+  public File getTreeShakerRoots() {
+    return treeShakerRoots;
+  }
+
+  public void setTreeShakerRoots(File treeShakerRoots) {
+    this.treeShakerRoots = treeShakerRoots;
+  }
+
+  public File getOutputFile() {
+    return outputFile;
   }
 
   private void addManifest(String manifestFile) throws IOException {
@@ -163,10 +176,15 @@ class Options {
         if (++nArg == args.length) {
           usage("--tree-shaker-roots");
         }
-        publicRootSetFile = new File(args[nArg]);
-      //TODO(malvania): Enable the bootclasspath option when we have a class file AST
-      //                parser that can use class jars.
+        options.treeShakerRoots = new File(args[nArg]);
+      } else if (arg.equals("--output-file")) {
+        if (++nArg == args.length) {
+          usage("--output-file");
+        }
+        options.outputFile = new File(args[nArg]);
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
+        // TODO(malvania): Enable the bootclasspath option when we have a class file AST
+        //                 parser that can use class jars.
         options.bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.equals("-encoding")) {
         if (++nArg == args.length) {
@@ -204,9 +222,5 @@ class Options {
     }
 
     return options;
-  }
-
-  public File getPublicRootSetFile() {
-    return publicRootSetFile;
   }
 }

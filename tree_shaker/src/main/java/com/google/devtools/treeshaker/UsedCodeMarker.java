@@ -180,7 +180,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     Context(CodeReferenceMap rootSet) {
       getTypeId(OBJECT_TYPE_NAME);
-
       exportedMethods = new HashSet<>();
       for (Cell<String, String, ImmutableSet<String>> cell :
                rootSet.getReferencedMethods().cellSet()) {
@@ -227,17 +226,18 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     private void startMethodDeclaration(
         String methodName, boolean isConstructor, boolean isStatic) {
-      logger.atFine().log("Start Method: %s.%s : isConstructor: %s : isStatic: %s",
-          currentTypeNameScope.peek(), methodName, isConstructor, isStatic);
       currentMethodName = methodName;
       currentReferencedTypes = new HashSet<>();
       String qualifiedMethodName =
           getQualifiedMethodName(currentTypeNameScope.peek(), currentMethodName);
+      boolean isExported = exportedMethods.contains(qualifiedMethodName);
+      logger.atFine().log("Start Method: %s.%s : isConstructor: %s : isStatic: %s, exported: %b",
+          currentTypeNameScope.peek(), methodName, isConstructor, isStatic, isExported);
       mib = MemberInfo.newBuilder()
             .setName(currentMethodName)
             .setStatic(isStatic)
             .setConstructor(isConstructor)
-            .setJsAccessible(exportedMethods.contains(qualifiedMethodName));
+            .setJsAccessible(isExported);
     }
 
     private void addMethodInvocation(String methodName, String declTypeName) {

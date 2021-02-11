@@ -14,6 +14,7 @@
 
 package com.google.devtools.treeshaker;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table.Cell;
@@ -34,11 +35,8 @@ import java.util.List;
 
 /**
  * A tool for finding unused code in a Java program.
- *
- * @author Priyank Malvania
  */
 public class TreeShaker {
-
   private final Options options;
   private final com.google.devtools.j2objc.Options j2objcOptions;
 
@@ -50,7 +48,8 @@ public class TreeShaker {
     }
   }
 
-  public TreeShaker(Options options) throws IOException {
+  @VisibleForTesting
+  TreeShaker(Options options) throws IOException {
     this.options = options;
     j2objcOptions = new com.google.devtools.j2objc.Options();
     j2objcOptions.load(new String[] {
@@ -132,12 +131,13 @@ public class TreeShaker {
     return strippedDir;
   }
 
-  public CodeReferenceMap getUnusedCode(CodeReferenceMap inputRootSet) throws IOException {
+  @VisibleForTesting
+  CodeReferenceMap findUnusedCode() throws IOException {
+    UsedCodeMarker.Context context = new UsedCodeMarker.Context(
+        ProGuardUsageParser.parseDeadCodeFile(options.getTreeShakerRoots()));
     Parser parser = createParser(options);
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
-    UsedCodeMarker.Context context = new UsedCodeMarker.Context(inputRootSet);
-
     Parser.Handler handler = new Parser.Handler() {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
@@ -145,38 +145,25 @@ public class TreeShaker {
       }
     };
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
-
     FileUtil.deleteTempDir(strippedDir);
     if (ErrorUtil.errorCount() > 0) {
       return null;
     }
-
     return RapidTypeAnalyser.analyse(Arrays.asList(context.getLibraryInfo()), false);
   }
 
-  private static CodeReferenceMap loadRootSetMap(Options options) {
-    return ProGuardUsageParser.parseDeadCodeFile(options.getPublicRootSetFile());
-  }
-
-  public static void writeCodeReferenceMapInfo(BufferedWriter writer, CodeReferenceMap map)
-      throws IOException {
-    writer.write("Dead Classes:\n");
-    for (String clazz : map.getReferencedClasses()) {
-      writer.write(clazz + "\n");
-    }
-    //TODO(malvania): Add output formatting that can be easily read by the parser in translator.
-    writer.write("Dead Methods:\n");
-    for (Cell<String, String, ImmutableSet<String>> cell : map.getReferencedMethods().cellSet()) {
-      writer.write(cell.toString() + "\n");
-    }
-  }
-
-  public static void writeToFile(String fileName, CodeReferenceMap map) throws IOException {
-    File file = new File(fileName);
-    try {
-      BufferedWriter writer = Files.newWriter(file, Charset.defaultCharset());
-      writeCodeReferenceMapInfo(writer, map);
-      writer.close();
+  private void writeToFile(CodeReferenceMap unused) {
+    try (BufferedWriter writer
+             = Files.newWriter(options.getOutputFile(), Charset.defaultCharset())) {
+      writer.write("Dead Classes:\n");
+      for (String clazz : unused.getReferencedClasses()) {
+        writer.write(clazz + "\n");
+      }
+      writer.write("Dead Methods:\n");
+      for (Cell<String, String, ImmutableSet<String>> cell :
+               unused.getReferencedMethods().cellSet()) {
+        writer.write(cell + "\n");
+      }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
@@ -193,12 +180,10 @@ public class TreeShaker {
       TreeShaker finder = new TreeShaker(options);
       finder.testFileExistence();
       exitOnErrorsOrWarnings(treatWarningsAsErrors);
-      CodeReferenceMap unusedCodeMap = finder.getUnusedCode(loadRootSetMap(options));
-      writeToFile("tree-shaker-report.txt", unusedCodeMap);
+      finder.writeToFile(finder.findUnusedCode());
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
-
     exitOnErrorsOrWarnings(treatWarningsAsErrors);
   }
 }
