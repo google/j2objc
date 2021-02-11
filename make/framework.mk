@@ -98,9 +98,7 @@ $(FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@echo building $(FRAMEWORK_NAME) framework
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
 			$(BUILD_DIR)/mac*/lib$(STATIC_LIBRARY_NAME).a \
-			$(BUILD_DIR)/objs-apple*/lib$(STATIC_LIBRARY_NAME).a \
-			$(BUILD_DIR)/objs-iphone*/lib$(STATIC_LIBRARY_NAME).a \
-			$(BUILD_DIR)/objs-watch*/lib$(STATIC_LIBRARY_NAME).a;
+			$(BUILD_DIR)/objs-[aisw]*/lib$(STATIC_LIBRARY_NAME).a;
 	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
 	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
