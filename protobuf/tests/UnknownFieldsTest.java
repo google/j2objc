@@ -13,6 +13,7 @@
  */
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import protos.AppleProto;
 import protos.PearProto;
 
@@ -43,5 +44,13 @@ public class UnknownFieldsTest extends ProtobufTest {
     AppleProto anotherFakeApple =
         AppleProto.parseFrom(serializedPear.toByteArray()).toBuilder().build();
     assertTrue(fakeApple.equals(anotherFakeApple));
+
+    // Verify that serialized size is preserved, indicating the unknown field is.
+    assertEquals(pear.getSerializedSize(), fakeApple.getSerializedSize());
+
+    // Verify that the two byte arrays are identical.
+    ByteArrayOutputStream serializedFakeApple = new ByteArrayOutputStream();
+    fakeApple.writeTo(serializedFakeApple);
+    assertTrue(Arrays.equals(serializedPear.toByteArray(), serializedFakeApple.toByteArray()));
   }
 }

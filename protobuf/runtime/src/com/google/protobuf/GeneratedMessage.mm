@@ -181,6 +181,12 @@ class CGPExtensionMapComparator {
   }
 };
 
+@interface ComGoogleProtobufGeneratedMessage () {
+ @package
+  JavaUtilHashMap *unknownFields_;
+}
+@end
+
 @interface ComGoogleProtobufGeneratedMessage_Builder () {
  @package
   JavaUtilHashMap *unknownFields_;
@@ -1814,7 +1820,7 @@ static BOOL ParseUnknownField(
     }
     if (unknownFieldValue) {
       JavaUtilHashMap *unknownFields = [(ComGoogleProtobufGeneratedMessage *)msg unknownFields];
-      [unknownFields putWithId:JavaLangInteger_valueOfWithInt_(fieldNumber)
+      [unknownFields putWithId:JavaLangInteger_valueOfWithInt_(tag)
                         withId:unknownFieldValue];
       return true;
     }
@@ -2365,6 +2371,35 @@ static int SerializedSizeForSingularField(id msg, CGPFieldDescriptor *field) {
   __builtin_unreachable();
 }
 
+static int SerializedSizeForUnknownFields(JavaUtilHashMap *fields) {
+  int size = 0;
+  for (id<JavaUtilMap_Entry> __strong field in [fields entrySet]) {
+    jint tag = [((JavaLangInteger *)[field getKey]) intValue];
+    id value = JreRetainedLocalValue([field getValue]);
+    jint fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
+    switch (CGPWireFormatGetTagWireType(tag)) {
+      case CGPWireFormatVarint:
+        size += sizeof(uint64_t);
+        break;
+      case CGPWireFormatFixed32:
+        size += sizeof(uint32_t);
+        break;
+      case CGPWireFormatFixed64:
+        size += sizeof(uint64_t);
+        break;
+      case CGPWireFormatLengthDelimited:
+        size += CGPGetTagSize(tag) + CGPGetBytesSize((CGPByteString *)value);
+        break;
+      case CGPWireFormatStartGroup:
+        size += SerializedSizeForUnknownFields((JavaUtilHashMap *)value);
+        break;
+      default:
+        break;
+    }
+  }
+  return size;
+}
+
 static int ComputeSerializedSizeForMessage(
     ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *descriptor) {
   int size = 0;
@@ -2383,6 +2418,9 @@ static int ComputeSerializedSizeForMessage(
   CGPExtensionMap *extensionMap = MessageExtensionMap(msg, descriptor);
   if (extensionMap != NULL) {
     size += SerializedSizeForExtensions(descriptor, extensionMap);
+  }
+  if (msg->unknownFields_) {
+    size += SerializedSizeForUnknownFields(msg->unknownFields_);
   }
   msg->memoizedSize_ = size;
   return size;
@@ -2753,6 +2791,38 @@ static void WriteField(id msg, CGPFieldDescriptor *field, CGPCodedOutputStream *
   }
 }
 
+static void WriteUnknownFields(JavaUtilHashMap *unknownFields, CGPCodedOutputStream *output) {
+  if (unknownFields) {
+    for (id<JavaUtilMap_Entry> __strong field in [unknownFields entrySet]) {
+      jint tag = [((JavaLangInteger *)[field getKey]) intValue];
+      id value = JreRetainedLocalValue([field getValue]);
+      jint fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
+
+      output->WriteTag(tag);
+      switch (CGPWireFormatGetTagWireType(tag)) {
+        case CGPWireFormatVarint:
+          output->WriteVarint64([(JavaLangLong *)value longLongValue]);
+          break;
+        case CGPWireFormatFixed32:
+          CGPWriteInt32([(JavaLangInteger *)value intValue], output);
+          break;
+        case CGPWireFormatFixed64:
+          CGPWriteInt64([(JavaLangLong *)value longLongValue], output);
+          break;
+        case CGPWireFormatLengthDelimited:
+          CGPWriteBytes((CGPByteString *)value, output);
+          break;
+        case CGPWireFormatStartGroup:
+          WriteUnknownFields((JavaUtilHashMap *)value, output);
+          output->WriteTag(CGPWireFormatMakeTag(fieldNumber, CGPWireFormatEndGroup));
+          break;
+        default:
+          break;
+      }
+    }
+  }
+}
+
 static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream *output) {
   IOSObjectArray *orderedFields = CGPGetSerializationOrderFields(descriptor);
   NSUInteger fieldsCount = orderedFields->size_;
@@ -2788,6 +2858,9 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
         nextExtension++;
       }
     }
+  }
+  if ([msg isKindOfClass:[ComGoogleProtobufGeneratedMessage class]]) {
+    WriteUnknownFields(((ComGoogleProtobufGeneratedMessage *)msg)->unknownFields_, output);
   }
 }
 
@@ -3286,10 +3359,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 // ********** Objective C type implementations *********************************
 // *****************************************************************************
 
-@implementation ComGoogleProtobufGeneratedMessage {
- @package
-  JavaUtilHashMap *unknownFields_;
-}
+@implementation ComGoogleProtobufGeneratedMessage
 
 + (id)allocWithZone:(NSZone *)zone {
   NSAssert(NO, @"Direct allocation of protocol buffer messages is forbidden.");
