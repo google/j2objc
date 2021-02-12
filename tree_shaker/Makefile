@@ -33,19 +33,16 @@ TRANSLATOR_CLASS_DIR = $(J2OBJC_ROOT)/translator/$(CLASS_DIR)
 TRANSLATOR_TEST_DIR = $(J2OBJC_ROOT)/translator/$(TEST_CLASS_DIR)
 
 JAVA_SOURCES = \
-    com/google/devtools/treeshaker/ElementReferenceMapper.java \
     com/google/devtools/treeshaker/Member.java \
     com/google/devtools/treeshaker/Options.java \
     com/google/devtools/treeshaker/RapidTypeAnalyser.java \
-    com/google/devtools/treeshaker/RtaResult.java \
     com/google/devtools/treeshaker/TreeShaker.java \
     com/google/devtools/treeshaker/Type.java \
     com/google/devtools/treeshaker/TypeGraphBuilder.java \
-    com/google/devtools/treeshaker/UnusedCodeTracker.java \
+    com/google/devtools/treeshaker/UsedCodeMarker.java
 
 PROTO_SOURCES = \
-    $(JAVA_SOURCE_DIR)/com/google/devtools/treeshaker/library_info.proto \
-    $(JAVA_SOURCE_DIR)/com/google/devtools/treeshaker/code_removal_info.proto
+    $(JAVA_SOURCE_DIR)/com/google/devtools/treeshaker/library_info.proto
 
 RESOURCES = \
     com/google/devtools/treeshaker/TreeShaker.properties \
