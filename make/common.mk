@@ -38,6 +38,10 @@ ARCH_LIB_MAC_CATALYST_DIR = $(DIST_LIB_MAC_CATALYST_DIR)
 ARCH_INCLUDE_DIR = $(DIST_INCLUDE_DIR)
 endif
 
+# iPhone-specific library dirs, used for xcframework.
+ARCH_BUILD_IPHONE_DIR = $(ARCH_BUILD_DIR)/iphone
+ARCH_BUILD_SIMULATOR_DIR = $(ARCH_BUILD_DIR)/simulator
+
 # Macosx library dirs.
 ARCH_BUILD_MACOSX_DIR = $(ARCH_BUILD_DIR)/macosx
 ARCH_LIB_MACOSX_DIR = $(ARCH_LIB_DIR)/macosx

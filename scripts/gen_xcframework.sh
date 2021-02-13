@@ -19,7 +19,7 @@
 # Usage:
 #   gen_xcframework.sh <output-directory> library [library ...]
 
-if [ $# -lt 3 ]; then
+if [ $# -lt 2 ]; then
   echo "usage: gen_xcframework.sh <output-directory> library [library ...]"
   exit 1
 fi

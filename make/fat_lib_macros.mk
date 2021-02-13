@@ -181,6 +181,15 @@ $(ARCH_BUILD_DIR)/lib$(1).a: $(2)
 	$$(LIPO) -create $$^ -output $$@
 endef
 
+# Generate the rule for the iphone library
+# Args:
+#   1. Library name.
+define iphone_lib_rule
+$(ARCH_BUILD_IPHONE_DIR)/lib$(1).a: $(2)
+	@mkdir -p $$(@D)
+	$$(LIPO) -create $$^ -output $$@
+endef
+
 # Generate the rule for the macosx library
 # Args:
 #   1. Library name.
@@ -219,6 +228,15 @@ $(ARCH_BUILD_TV_DIR)/lib$(1).a: $(2)
 	$$(LIPO) -create $$^ -output $$@
 endef
 
+# Generate the rule for the simulator library
+# Args:
+#   1. Library name.
+define simulator_lib_rule
+$(ARCH_BUILD_SIMULATOR_DIR)/lib$(1).a: $(2)
+	@mkdir -p $$(@D)
+	$$(LIPO) -create $$^ -output $$@
+endef
+
 ifdef TARGET_TEMP_DIR
 # Targets specific to an xcode build
 
@@ -244,10 +262,12 @@ else
 # Targets specific to a command-line build
 
 FAT_LIB_IOS_ARCHS = $(filter-out macos% maccatalyst appletv% watch%,$(J2OBJC_ARCHS))
+FAT_LIB_IPHONE_ARCHS = $(filter-out macos% maccatalyst appletv% watch% simulator%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_ARCHS = $(filter macos%,$(J2OBJC_ARCHS))
 FAT_LIB_WATCH_ARCHS = $(filter watch%,$(J2OBJC_ARCHS))
 FAT_LIB_TV_ARCHS = $(filter appletv%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_CATALYST_ARCH = $(filter maccatalyst,$(J2OBJC_ARCHS))
+FAT_LIB_SIMULATOR_ARCHS = $(filter simulator%,$(J2OBJC_ARCHS))
 
 emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch),$(1),$(2)))) \
@@ -257,6 +277,9 @@ emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(if $(FAT_LIB_WATCH_ARCHS),\
     $(eval $(call watch_lib_rule,$(1),$(FAT_LIB_WATCH_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_WATCH_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_IPHONE_ARCHS),\
+    $(eval $(call iphone_lib_rule,$(1),$(FAT_LIB_IPHONE_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_IPHONE_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_MAC_ARCHS),\
     $(eval $(call mac_lib_rule,$(1),$(FAT_LIB_MAC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a,) \
@@ -265,6 +288,9 @@ emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(if $(FAT_LIB_TV_ARCHS),\
     $(eval $(call tv_lib_rule,$(1),$(FAT_LIB_TV_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_TV_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_SIMULATOR_ARCHS),\
+    $(eval $(call simulator_lib_rule,$(1),$(FAT_LIB_SIMULATOR_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_SIMULATOR_DIR)/lib$(1).a,) \
 
 emit_arch_specific_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(call emit_compile_rules_for_arch,$(1),$(BUILD_DIR)/objs-$(arch),$(2),$(3),\

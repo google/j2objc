@@ -94,11 +94,11 @@ VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
 framework: dist $(FRAMEWORK_DIR) resources
 	@:
 
+# Create an xcframework from all appletv, iphone, maccatalyst, macosx, simulator and watchos libs.
 $(FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@echo building $(FRAMEWORK_NAME) framework
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
-			$(BUILD_DIR)/mac*/lib$(STATIC_LIBRARY_NAME).a \
-			$(BUILD_DIR)/objs-[aisw]*/lib$(STATIC_LIBRARY_NAME).a;
+			$(BUILD_DIR)/[aimsw]*/lib$(STATIC_LIBRARY_NAME).a;
 	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
 	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
