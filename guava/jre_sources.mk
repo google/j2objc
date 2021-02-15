@@ -384,9 +384,6 @@ GUAVA_SOURCES = \
     com/google/common/hash/AbstractHasher.java \
     com/google/common/hash/AbstractNonStreamingHashFunction.java \
     com/google/common/hash/AbstractStreamingHasher.java \
-    com/google/common/hash/BloomFilter.java \
-    com/google/common/hash/BloomFilterStrategies.java \
-    com/google/common/hash/ChecksumHashFunction.java \
     com/google/common/hash/Crc32cHashFunction.java \
     com/google/common/hash/FarmHashFingerprint64.java \
     com/google/common/hash/Funnel.java \
@@ -394,7 +391,6 @@ GUAVA_SOURCES = \
     com/google/common/hash/HashCode.java \
     com/google/common/hash/HashFunction.java \
     com/google/common/hash/Hasher.java \
-    com/google/common/hash/Hashing.java \
     com/google/common/hash/HashingInputStream.java \
     com/google/common/hash/HashingOutputStream.java \
     com/google/common/hash/ImmutableSupplier.java \
@@ -405,8 +401,6 @@ GUAVA_SOURCES = \
     com/google/common/hash/LongAdder.java \
     com/google/common/hash/MacHashFunction.java \
     com/google/common/hash/MessageDigestHashFunction.java \
-    com/google/common/hash/Murmur3_128HashFunction.java \
-    com/google/common/hash/Murmur3_32HashFunction.java \
     com/google/common/hash/PrimitiveSink.java \
     com/google/common/hash/SipHashFunction.java \
     com/google/common/hash/Striped64.java \
@@ -464,9 +458,7 @@ GUAVA_SOURCES = \
     com/google/common/math/ToDoubleRounder.java \
     com/google/common/math/package-info.java \
     com/google/common/net/HostAndPort.java \
-    com/google/common/net/HostSpecifier.java \
     com/google/common/net/HttpHeaders.java \
-    com/google/common/net/InetAddresses.java \
     com/google/common/net/InternetDomainName.java \
     com/google/common/net/MediaType.java \
     com/google/common/net/PercentEscaper.java \
@@ -498,7 +490,6 @@ GUAVA_SOURCES = \
     com/google/common/primitives/UnsignedLongs.java \
     com/google/common/primitives/package-info.java \
     com/google/common/reflect/AbstractInvocationHandler.java \
-    com/google/common/reflect/ClassPath.java \
     com/google/common/reflect/Element.java \
     com/google/common/reflect/ImmutableTypeToInstanceMap.java \
     com/google/common/reflect/Invokable.java \

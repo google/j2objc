@@ -53,12 +53,9 @@ install-extras: $(EXTRA_DIST_FILES:%=$(DIST_DIR)/%)
 
 frameworks: dist
 	@cd jre_emul && $(MAKE) framework
-	@cd junit && $(MAKE) framework
 	@cd jsr305 && $(MAKE) framework
 	@cd inject/javax_inject && $(MAKE) framework
 	@cd guava && $(MAKE) framework
-	@cd testing/mockito && $(MAKE) framework
-	@cd xalan && $(MAKE) framework
 
 all_frameworks: frameworks protobuf_dist
 	@cd protobuf/runtime && $(MAKE) framework

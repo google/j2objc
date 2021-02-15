@@ -375,7 +375,6 @@ GUAVA_SOURCES = \
     com/google/common/hash/AbstractStreamingHasher.java \
     com/google/common/hash/BloomFilter.java \
     com/google/common/hash/BloomFilterStrategies.java \
-    com/google/common/hash/ChecksumHashFunction.java \
     com/google/common/hash/Crc32cHashFunction.java \
     com/google/common/hash/FarmHashFingerprint64.java \
     com/google/common/hash/Funnel.java \
@@ -383,7 +382,6 @@ GUAVA_SOURCES = \
     com/google/common/hash/HashCode.java \
     com/google/common/hash/HashFunction.java \
     com/google/common/hash/Hasher.java \
-    com/google/common/hash/Hashing.java \
     com/google/common/hash/HashingInputStream.java \
     com/google/common/hash/HashingOutputStream.java \
     com/google/common/hash/ImmutableSupplier.java \
@@ -484,7 +482,6 @@ GUAVA_SOURCES = \
     com/google/common/primitives/UnsignedLongs.java \
     com/google/common/primitives/package-info.java \
     com/google/common/reflect/AbstractInvocationHandler.java \
-    com/google/common/reflect/ClassPath.java \
     com/google/common/reflect/Element.java \
     com/google/common/reflect/ImmutableTypeToInstanceMap.java \
     com/google/common/reflect/Invokable.java \

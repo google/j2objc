@@ -24,7 +24,7 @@ include icu_data.mk
 
 MAIN_OBJ = J2ObjCMain.o
 
-JAVA_TO_TRANSLATE = $(JAVA_SOURCES) $(JAVA_SOURCES_JSON)
+JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
 
 MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 
@@ -98,13 +98,13 @@ LIBS += $(call emit_library_rules,jre_channels,$(CHANNELS_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_file,$(FILE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_security,$(SECURITY_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_ssl,$(SSL_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_xml,$(XML_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_zip,$(ZIP_OBJS_RELATIVE))
+#LIBS += $(call emit_library_rules,jre_xml,$(XML_OBJS_RELATIVE))
+#LIBS += $(call emit_library_rules,jre_zip,$(ZIP_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_sql,$(SQL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_beans,$(BEANS_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_time,$(TIME_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_icu,$(ICU_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
+#LIBS += $(call emit_library_rules,jre_time,$(TIME_OBJS_RELATIVE))
+#LIBS += $(call emit_library_rules,jre_icu,$(ICU_OBJS_RELATIVE))
+#LIBS += $(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,json,$(JSON_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
@@ -226,6 +226,7 @@ OBJC_SOURCES_MANIFEST := $(call objc_manifest,objc_sources,$(JAVA_SOURCES))
 
 OBJC_SOURCES_MANIFESTS := \
   $(OBJC_SOURCES_MANIFEST) \
+  $(call objc_manifest,objc_sources_json,$(JAVA_SOURCES_JSON)) \
   $(call objc_manifest,objc_sources_core,$(JAVA_SOURCES_CORE)) \
   $(call objc_manifest,objc_sources_io,$(JAVA_SOURCES_IO)) \
   $(call objc_manifest,objc_sources_net,$(JAVA_SOURCES_NET)) \
@@ -235,14 +236,10 @@ OBJC_SOURCES_MANIFESTS := \
   $(call objc_manifest,objc_sources_file,$(JAVA_SOURCES_FILE)) \
   $(call objc_manifest,objc_sources_security,$(JAVA_SOURCES_SECURITY)) \
   $(call objc_manifest,objc_sources_ssl,$(JAVA_SOURCES_SSL)) \
-  $(call objc_manifest,objc_sources_xml,$(JAVA_SOURCES_XML)) \
-  $(call objc_manifest,objc_sources_zip,$(JAVA_SOURCES_ZIP)) \
   $(call objc_manifest,objc_sources_sql,$(JAVA_SOURCES_SQL)) \
   $(call objc_manifest,objc_sources_beans,$(JAVA_SOURCES_BEANS)) \
-  $(call objc_manifest,objc_sources_time,$(JAVA_SOURCES_TIME)) \
-  $(call objc_manifest,objc_sources_icu,$(JAVA_SOURCES_ICU)) \
-  $(call objc_manifest,objc_sources_other,$(JAVA_SOURCES_OTHER)) \
-  $(call objc_manifest,objc_sources_android,$(JAVA_SOURCES_ANDROID))
+  $(call objc_manifest,objc_sources_other,$(JAVA_SOURCES_OTHER)) 
+  
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
