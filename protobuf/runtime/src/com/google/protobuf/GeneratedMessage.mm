@@ -3381,7 +3381,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage_Builder *newBuilder = CGPNewBuilder(descriptor);
   CopyAllFields(self, selfCls, newBuilder, descriptor->builderClass_, descriptor);
-  newBuilder->unknownFields_ = unknownFields_;
+  JreStrongAssign(&newBuilder->unknownFields_, unknownFields_);
   return AUTORELEASE(newBuilder);
 }
 
@@ -3547,7 +3547,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
-  [unknownFields_ release];
+  RELEASE_(unknownFields_);
   [super dealloc];
 }
 
@@ -3583,7 +3583,7 @@ static id DynamicNewBuilder(Class self, SEL _cmd, ComGoogleProtobufGeneratedMess
 
 - (JavaUtilHashMap *)unknownFields {
   if (!unknownFields_) {
-    JreStrongAssignAndConsume(&self->unknownFields_, new_JavaUtilHashMap_init());
+    JreStrongAssignAndConsume(&unknownFields_, new_JavaUtilHashMap_init());
   }
   return unknownFields_;
 }
@@ -3612,7 +3612,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage *newMsg = CGPNewMessage(descriptor);
   CopyAllFields(self, selfCls, newMsg, descriptor->messageClass_, descriptor);
-  newMsg->unknownFields_ = (JavaUtilHashMap *)[unknownFields_ java_clone];
+  JreStrongAssign(&newMsg->unknownFields_, (JavaUtilHashMap *)[unknownFields_ java_clone]);
   return AUTORELEASE(newMsg);
 }
 
@@ -3839,7 +3839,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
-  JreStrongAssign(&unknownFields_, nil);
+  RELEASE_(unknownFields_);
   [super dealloc];
 }
 
