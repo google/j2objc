@@ -96,6 +96,16 @@ public class TreeShakerTest extends TestCase {
     assertTrue(unused.containsMethod("C", "c", "(Ljava/lang/String;)V"));
   }
 
+  public void testExportedMethod() throws IOException {
+    addTreeShakerRootsFile("ProGuard, version 4.0\nA:\n    A()\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { void main(String[] args) {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsMethod("A", "A", "()V"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+  }
+
   public void testExportedClass() throws IOException {
     addTreeShakerRootsFile("ProGuard, version 4.0\nA\nb.c.C");
     addSourceFile("A.java", "class A { static void main(String[] args) { } }");
@@ -109,6 +119,33 @@ public class TreeShakerTest extends TestCase {
     assertTrue(unused.containsClass("b.B"));
   }
 
+  public void testConstructorOverloads() throws IOException {
+    addTreeShakerRootsFile("ProGuard, version 4.0\nA:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B(args[0]).b(); }}");
+    addSourceFile("B.java", "class B { B() {} B(String s) {} void b() {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("B", "b", "(Ljava/lang/String;)V"));
+
+    assertTrue(unused.containsMethod("B", "B", "()V"));
+  }
+
+  public void testMethodOverloads() throws IOException {
+    addTreeShakerRootsFile("ProGuard, version 4.0\nA:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().b(args[1]); }}");
+    addSourceFile("B.java", "class B { B() {} void b() {} void b(String s) {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("B", "b", "(Ljava/lang/String;)V"));
+
+    assertTrue(unused.containsMethod("B", "b", "()V"));
+  }
 
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");

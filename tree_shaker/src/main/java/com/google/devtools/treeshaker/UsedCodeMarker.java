@@ -146,12 +146,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private String getMethodName(ExecutableElement method) {
-    // TODO(dpo): resolve how j2cl represents class and static initializers.
+    // TODO(dpo): resolve static initializers.
     if (method.getSimpleName().contentEquals("<clinit>")) {
       return "<clinit>";
-    }
-    if (method.getSimpleName().contentEquals("<init>")) {
-      return "<init>";
     }
     return getMethodName(typeUtil.getReferenceName(method), typeUtil.getReferenceSignature(method));
   }
