@@ -65,36 +65,50 @@ public class TreeShakerTest extends TestCase {
     return unused;
   }
 
-  public void testNoPublicRootSet() throws IOException {
+  public void testNoExportedRoots() throws IOException {
     addTreeShakerRootsFile("ProGuard, version 4.0\n");
-    addSourceFile("A.java", "class A { public static void launch() { new B().b(\"zoo\"); } }");
-    addSourceFile("B.java", "class B { public void b(String s) { new C().c(s); } }");
-    addSourceFile("C.java", "class C { public void c(String s) {} }");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().b(args[0]); } }");
+    addSourceFile("B.java", "class B { void b(String s) { new C().c(s); } }");
+    addSourceFile("C.java", "class C { void c(String s) {} }");
     CodeReferenceMap unused = findUnusedCode();
 
     assertTrue(unused.containsClass("A"));
-    assertTrue(unused.containsMethod("A", "launch", "()V"));
+    assertTrue(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
     assertTrue(unused.containsClass("B"));
     assertTrue(unused.containsMethod("B", "abc", "(Ljava/lang/String;)V"));
     assertTrue(unused.containsClass("C"));
     assertTrue(unused.containsMethod("C", "xyz", "(Ljava/lang/String;)V"));
   }
 
-  public void testWithPublicRootSet() throws IOException {
-    addTreeShakerRootsFile("ProGuard, version 4.0\nA:\n    launch()");
-    addSourceFile("A.java", "class A { public static void launch() { new B().b(\"zoo\"); } }");
-    addSourceFile("B.java", "class B { public void b(String s) {} }");
-    addSourceFile("C.java", "class C { public void c(String s) {} }");
+  public void testExportedStaticMethod() throws IOException {
+    addTreeShakerRootsFile("ProGuard, version 4.0\nA:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().b(args[0]); } }");
+    addSourceFile("B.java", "class B { void b(String s) {} }");
+    addSourceFile("C.java", "class C { void c(String s) {} }");
     CodeReferenceMap unused = findUnusedCode();
 
     assertFalse(unused.containsClass("A"));
     assertFalse(unused.containsClass("B"));
-    assertFalse(unused.containsMethod("A", "launch", "()V"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
     assertFalse(unused.containsMethod("B", "b", "(Ljava/lang/String;)V"));
 
     assertTrue(unused.containsClass("C"));
     assertTrue(unused.containsMethod("C", "c", "(Ljava/lang/String;)V"));
   }
+
+  public void testExportedClass() throws IOException {
+    addTreeShakerRootsFile("ProGuard, version 4.0\nA\nb.c.C");
+    addSourceFile("A.java", "class A { static void main(String[] args) { } }");
+    addSourceFile("B.java", "package b; class B { void b(String s) {} }");
+    addSourceFile("C.java", "package b.c; class C { void c(String s) {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("b.c.C"));
+
+    assertTrue(unused.containsClass("b.B"));
+  }
+
 
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");

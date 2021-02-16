@@ -163,10 +163,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     private int typeCount;
     private final Map<String, Integer> typeMap = new HashMap<>();
 
-    // Fully qualified method names that are exported (live).
+    // Qualified method names that are exported (live).
     private final Set<String> exportedMethods;
 
-    // library info builder, which contains all of the types processed.
+    // Qualified class names that are exported (live).
+    private final ImmutableSet<String> exportedClasses;
+
+    // Library info builder, which contains all of the types processed.
     private final LibraryInfo.Builder lib = LibraryInfo.newBuilder();
 
     // Scope containing data for the current types being processed.
@@ -189,7 +192,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
           exportedMethods.add(getQualifiedMethodName(type, name, signature));
         }
       }
-      // TODO(dpo): add support for exported classes.
+
+      exportedClasses = rootSet.getReferencedClasses();
     }
 
     LibraryInfo getLibraryInfo() {
@@ -209,12 +213,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       logger.atFine().log("Start Type: %s extends %s", typeName, extendsTypeName);
       Integer id = getTypeId(typeName);
       Integer eid = getTypeId(extendsTypeName);
-      MemberInfo mib = MemberInfo.newBuilder().setName("$clinit").setStatic(true).build();
+      boolean isExported = exportedClasses.contains(typeName);
+      MemberInfo mib = MemberInfo.newBuilder()
+                       .setName("$clinit").setStatic(true).setJsAccessible(isExported).build();
       // Push the new type name on top of the stack.
       currentTypeNameScope.push(typeName);
       // Push the new type infor builder on top of the stack.
-      currentTypeInfoScope.push(
-          TypeInfo.newBuilder().setTypeId(id).setExtendsType(eid).addMember(mib));
+      currentTypeInfoScope.push(TypeInfo.newBuilder()
+          .setTypeId(id).setExtendsType(eid).setJstypeInterface(isExported).addMember(mib));
     }
 
     private void endType() {

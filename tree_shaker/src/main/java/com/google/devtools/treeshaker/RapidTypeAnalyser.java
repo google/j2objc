@@ -21,12 +21,10 @@ import java.util.List;
 
 final class RapidTypeAnalyser {
 
-  static CodeReferenceMap analyse(List<LibraryInfo> libraryInfos, boolean keepJsTypeInterfaces) {
+  static CodeReferenceMap analyse(List<LibraryInfo> libraryInfos) {
     Collection<Type> types = TypeGraphBuilder.build(libraryInfos);
 
-    if (keepJsTypeInterfaces) {
-      types.stream().filter(Type::isJsTypeInterface).forEach(RapidTypeAnalyser::markTypeLive);
-    }
+    types.stream().filter(Type::isJsTypeInterface).forEach(RapidTypeAnalyser::markTypeLive);
 
     // Go over the entry points to start the traversal.
     types.stream()

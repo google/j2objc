@@ -149,7 +149,7 @@ public class TreeShaker {
     if (ErrorUtil.errorCount() > 0) {
       return null;
     }
-    return RapidTypeAnalyser.analyse(Arrays.asList(context.getLibraryInfo()), false);
+    return RapidTypeAnalyser.analyse(Arrays.asList(context.getLibraryInfo()));
   }
 
   private void writeToFile(CodeReferenceMap unused) {
