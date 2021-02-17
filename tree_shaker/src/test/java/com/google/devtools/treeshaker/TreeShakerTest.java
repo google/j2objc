@@ -147,6 +147,26 @@ public class TreeShakerTest extends TestCase {
     assertTrue(unused.containsMethod("B", "b", "()V"));
   }
 
+  public void testStaticInitializers() throws IOException {
+    addTreeShakerRootsFile("ProGuard, version 4.0\nA:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().b(); }}");
+    addSourceFile("B.java",
+        "class B { static int i; static { i = 24; } void b() {} static { i = new C().c(); }}");
+    addSourceFile("C.java", "class C { static int i; static { i = 42; } int c() { return i; }}");
+    addSourceFile("D.java", "class D { static int i; static { i = 42; } int d() { return i; }}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("B", "b", "(Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("C", "c", "(Ljava/lang/String;)I"));
+
+    assertTrue(unused.containsClass("D"));
+    assertTrue(unused.containsMethod("D", "d", "(Ljava/lang/String;)I"));
+  }
+
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");
     treeShakerRoots.getParentFile().mkdirs();

@@ -60,7 +60,8 @@ final class RapidTypeAnalyser {
       traversePolymorphicReference(member.getDeclaringType(), member.getName());
     } else {
       markTypeLive(member.getDeclaringType());
-      markMemberLive(member.getDeclaringType().getMemberByName("$clinit"));
+      markMemberLive(
+          member.getDeclaringType().getMemberByName(UsedCodeMarker.CLASS_INITIALIZER_NAME));
       markMemberLive(member);
     }
   }

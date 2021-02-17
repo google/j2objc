@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -41,6 +42,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 final class UsedCodeMarker extends UnitTreeVisitor {
+  static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
   static final String OBJECT_TYPE_NAME = "java.lang.Object";
   static final String SIGNATURE_PREFIX = "##";
 
@@ -86,6 +88,21 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     context.addMethodInvocation(
         getMethodName(invocation.getExecutableElement()),
         getDeclaringClassName(invocation.getExecutableElement()));
+  }
+
+  @Override
+  public boolean visit(Initializer node) {
+    if (Modifier.isStatic(node.getModifiers())) {
+      context.startClassInitializer();
+    }
+    return true;
+  }
+
+  @Override
+  public void endVisit(Initializer node) {
+    if (Modifier.isStatic(node.getModifiers())) {
+      context.endClassInitializer();
+    }
   }
 
   @Override
@@ -172,6 +189,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // Scope containing data for the current types being processed.
     private final Deque<String> currentTypeNameScope = new ArrayDeque<>();
     private final Deque<TypeInfo.Builder> currentTypeInfoScope = new ArrayDeque<>();
+    private final Deque<MemberInfo.Builder> currentTypeInitializerScope = new ArrayDeque<>();
 
     // Data for the current method being processed (null if not processing a method).
     private MemberInfo.Builder mib;
@@ -211,36 +229,61 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       Integer id = getTypeId(typeName);
       Integer eid = getTypeId(extendsTypeName);
       boolean isExported = exportedClasses.contains(typeName);
-      MemberInfo mib = MemberInfo.newBuilder()
-                       .setName("$clinit").setStatic(true).setJsAccessible(isExported).build();
       // Push the new type name on top of the stack.
       currentTypeNameScope.push(typeName);
-      // Push the new type infor builder on top of the stack.
+      // Push the new type info builder on top of the stack.
       currentTypeInfoScope.push(TypeInfo.newBuilder()
-          .setTypeId(id).setExtendsType(eid).setJstypeInterface(isExported).addMember(mib));
+          .setTypeId(id).setExtendsType(eid).setJstypeInterface(isExported));
+      // Push new static initializer builder on top of the stack.
+      currentTypeInitializerScope.push(MemberInfo.newBuilder()
+          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setJsAccessible(isExported));
     }
 
     private void endType() {
       logger.atFine().log("End Type: %s", currentTypeNameScope.peek());
       // Add the type to the library info builder and remove from the stack.
-      lib.addType(currentTypeInfoScope.pop().build());
+      lib.addType(
+          currentTypeInfoScope.pop().addMember(currentTypeInitializerScope.pop().build()).build());
       currentTypeNameScope.pop();
+    }
+
+    private void startMethodScope(String methodName, MemberInfo.Builder mib) {
+      currentMethodName = methodName;
+      currentReferencedTypes = new HashSet<>();
+      this.mib = mib;
+    }
+
+    private MemberInfo endMethodScope() {
+      for (Integer typeId : currentReferencedTypes) {
+        mib.addReferencedTypes(typeId);
+      }
+      MemberInfo result = mib.build();
+      currentMethodName = null;
+      currentReferencedTypes = null;
+      mib = null;
+      return result;
+    }
+
+    private void startClassInitializer() {
+      startMethodScope(CLASS_INITIALIZER_NAME, currentTypeInitializerScope.peek());
+    }
+
+    private void endClassInitializer() {
+      endMethodScope();
     }
 
     private void startMethodDeclaration(
         String methodName, boolean isConstructor, boolean isStatic) {
-      currentMethodName = methodName;
-      currentReferencedTypes = new HashSet<>();
-      String qualifiedMethodName =
-          getQualifiedMethodName(currentTypeNameScope.peek(), currentMethodName);
-      boolean isExported = exportedMethods.contains(qualifiedMethodName);
+      boolean isExported = exportedMethods.contains(
+          getQualifiedMethodName(currentTypeNameScope.peek(), methodName));
       logger.atFine().log("Start Method: %s.%s : isConstructor: %s : isStatic: %s, exported: %b",
           currentTypeNameScope.peek(), methodName, isConstructor, isStatic, isExported);
-      mib = MemberInfo.newBuilder()
-            .setName(currentMethodName)
-            .setStatic(isStatic)
-            .setConstructor(isConstructor)
-            .setJsAccessible(isExported);
+      startMethodScope(methodName,
+          MemberInfo.newBuilder()
+          .setName(methodName)
+          .setStatic(isStatic)
+          .setConstructor(isConstructor)
+          .setJsAccessible(isExported));
     }
 
     private void addMethodInvocation(String methodName, String declTypeName) {
@@ -270,13 +313,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     private void endMethodDeclaration() {
       logger.atFine().log("End Method: %s", currentMethodName);
-      for (Integer typeId : currentReferencedTypes) {
-        mib.addReferencedTypes(typeId);
-      }
-      currentTypeInfoScope.peek().addMember(mib.build());
-      currentMethodName = null;
-      currentReferencedTypes = null;
-      mib = null;
+      currentTypeInfoScope.peek().addMember(endMethodScope());
     }
   }
 }
