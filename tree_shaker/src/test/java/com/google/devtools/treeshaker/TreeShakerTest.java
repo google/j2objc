@@ -212,6 +212,40 @@ public class TreeShakerTest extends TestCase {
     assertFalse(unused.containsMethod("C", "C", "()V"));
   }
 
+  public void testNestedClasses() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().new C(); }}");
+    addSourceFile("B.java", "class B { class C { class D { }}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("B.C"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("B", "B", "()V"));
+    assertFalse(unused.containsMethod("B.C", "B$C", "(LB;)V"));
+
+    assertTrue(unused.containsClass("B.C.D"));
+    assertTrue(unused.containsMethod("B.C.D", "B$C$D", "(LB$C;)V"));
+  }
+
+  public void testStaticNestedClasses() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B.C(); }}");
+    addSourceFile("B.java", "class B { static class C { static class D { }}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B.C"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("B.C", "B$C", "()V"));
+
+    assertTrue(unused.containsClass("B")); // TODO(dpo): verify that this should be true
+    assertTrue(unused.containsClass("B.C.D"));
+    assertTrue(unused.containsMethod("B", "B", "()V"));
+    assertTrue(unused.containsMethod("B.C.D", "B$C$D", "()V"));
+  }
+
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");
     treeShakerRoots.getParentFile().mkdirs();
