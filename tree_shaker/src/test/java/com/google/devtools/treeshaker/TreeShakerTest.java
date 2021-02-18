@@ -133,7 +133,7 @@ public class TreeShakerTest extends TestCase {
     assertTrue(unused.containsMethod("B", "B", "()V"));
   }
 
-  public void testConstructorChaining() throws IOException {
+  public void testExplicitConstructorInvocation() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java", "class A { static void main(String[] args) { new B(); }}");
     addSourceFile("B.java", "class B { B() { this(\"foo\"); } B(String s) {} B(Integer i) {} }");
@@ -240,10 +240,30 @@ public class TreeShakerTest extends TestCase {
     assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
     assertFalse(unused.containsMethod("B.C", "B$C", "()V"));
 
-    assertTrue(unused.containsClass("B")); // TODO(dpo): verify that this should be true
+    assertTrue(unused.containsClass("B"));
     assertTrue(unused.containsClass("B.C.D"));
     assertTrue(unused.containsMethod("B", "B", "()V"));
     assertTrue(unused.containsMethod("B.C.D", "B$C$D", "()V"));
+  }
+
+  public void testConstructorChaining() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new D(); }}");
+    addSourceFile("B.java", "class B { B(String s) {} }");
+    // Test explicit constructor chaining.
+    addSourceFile("C.java", "class C extends B { C() { super(\"foo\"); } }");
+    // Test implicit constructor chaining.
+    addSourceFile("D.java", "class D extends C { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsClass("D"));
+    assertFalse(unused.containsMethod("A", "main", "([Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("B", "B", "(Ljava/lang/String;)V"));
+    assertFalse(unused.containsMethod("C", "C", "()V"));
+    assertFalse(unused.containsMethod("D", "D", "()V"));
   }
 
   private void addTreeShakerRootsFile(String source) throws IOException {

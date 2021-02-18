@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -42,6 +43,7 @@ import javax.lang.model.type.TypeMirror;
 
 final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
+  static final String ENUM_TYPE_NAME = "java.lang.Enum";
   static final String OBJECT_TYPE_NAME = "java.lang.Object";
   static final String SIGNATURE_PREFIX = "##";
 
@@ -54,7 +56,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    context.startType(getClassName(node.getTypeElement()), OBJECT_TYPE_NAME);
+    context.startType(
+        getClassName(node.getTypeElement()), ENUM_TYPE_NAME);
     return true;
   }
 
@@ -76,30 +79,30 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(ClassInstanceCreation instance) {
+  public void endVisit(ClassInstanceCreation node) {
     context.addMethodInvocation(
-        getMethodName(instance.getExecutableElement()),
-        getDeclaringClassName(instance.getExecutableElement()));
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
   }
 
   @Override
-  public void endVisit(ConstructorInvocation invocation) {
+  public void endVisit(ConstructorInvocation node) {
     context.addMethodInvocation(
-        getMethodName(invocation.getExecutableElement()),
-        getDeclaringClassName(invocation.getExecutableElement()));
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
   }
 
   @Override
-  public boolean visit(MethodDeclaration method) {
+  public boolean visit(MethodDeclaration node) {
     context.startMethodDeclaration(
-        getMethodName(method.getExecutableElement()),
-        method.isConstructor(),
-        Modifier.isStatic(method.getModifiers()));
+        getMethodName(node.getExecutableElement()),
+        node.isConstructor(),
+        Modifier.isStatic(node.getModifiers()));
     return true;
   }
 
   @Override
-  public void endVisit(MethodDeclaration method) {
+  public void endVisit(MethodDeclaration node) {
     context.endMethodDeclaration();
   }
 
@@ -111,19 +114,26 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(MethodInvocation method) {
+  public void endVisit(MethodInvocation node) {
     context.addMethodInvocation(
-        getMethodName(method.getExecutableElement()),
-        getDeclaringClassName(method.getExecutableElement()));
-    context.addReferencedType(method.getExecutableType().getReturnType());
-    for (TypeMirror type : method.getExecutableType().getParameterTypes()) {
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
+    context.addReferencedType(node.getExecutableType().getReturnType());
+    for (TypeMirror type : node.getExecutableType().getParameterTypes()) {
       context.addReferencedType(type);
     }
   }
 
   @Override
-  public void endVisit(VariableDeclarationFragment decl) {
-    context.addReferencedType(decl.getVariableElement().asType());
+  public void endVisit(SuperConstructorInvocation node) {
+    context.addMethodInvocation(
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
+  }
+
+  @Override
+  public void endVisit(VariableDeclarationFragment node) {
+    context.addReferencedType(node.getVariableElement().asType());
   }
 
   private static String getDeclaringClassName(ExecutableElement method) {
