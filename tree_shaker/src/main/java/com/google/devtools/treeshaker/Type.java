@@ -26,19 +26,15 @@ final class Type {
   private final List<Type> superInterfaces = new ArrayList<>();
   private final List<Type> immediateSubtypes = new ArrayList<>();
   private final LinkedHashMap<String, Member> membersByName = new LinkedHashMap<>();
-  private String implSourceFile;
-  private String headerSourceFile;
   private boolean live;
   private boolean instantiated;
-  private boolean isJsTypeInterface;
+  private boolean isExported;
   private final List<Member> potentiallyLiveMembers = new ArrayList<>();
 
   static Type buildFrom(TypeInfo typeInfo, String name) {
     Type type = new Type();
     type.name = name;
-    type.headerSourceFile = typeInfo.getHeaderSourceFilePath();
-    type.implSourceFile = typeInfo.getImplSourceFilePath();
-    type.isJsTypeInterface = typeInfo.getJstypeInterface();
+    type.isExported = typeInfo.getExported();
     typeInfo
         .getMemberList()
         .forEach(memberInfo -> type.addMember(Member.buildFrom(memberInfo, type)));
@@ -47,14 +43,6 @@ final class Type {
   }
 
   private Type() {}
-
-  String getHeaderSourceFile() {
-    return headerSourceFile;
-  }
-
-  String getImplSourceFile() {
-    return implSourceFile;
-  }
 
   Collection<Member> getMembers() {
     return membersByName.values();
@@ -123,7 +111,7 @@ final class Type {
     return immediateSubtypes;
   }
 
-  boolean isJsTypeInterface() {
-    return isJsTypeInterface;
+  boolean isExported() {
+    return isExported;
   }
 }

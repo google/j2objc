@@ -42,20 +42,12 @@ final class Member {
     return declaringType;
   }
 
-  boolean isJsAccessible() {
-    return memberInfo.getJsAccessible();
+  boolean isExported() {
+    return memberInfo.getExported();
   }
 
   String getName() {
     return memberInfo.getName();
-  }
-
-  boolean hasPosition() {
-    return memberInfo.hasPosition();
-  }
-
-  SourcePosition getPosition() {
-    return memberInfo.getPosition();
   }
 
   public boolean isConstructor() {

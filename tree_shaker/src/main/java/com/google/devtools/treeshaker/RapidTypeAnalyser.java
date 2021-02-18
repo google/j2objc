@@ -24,12 +24,12 @@ final class RapidTypeAnalyser {
   static CodeReferenceMap analyse(List<LibraryInfo> libraryInfos) {
     Collection<Type> types = TypeGraphBuilder.build(libraryInfos);
 
-    types.stream().filter(Type::isJsTypeInterface).forEach(RapidTypeAnalyser::markTypeLive);
+    types.stream().filter(Type::isExported).forEach(RapidTypeAnalyser::markTypeLive);
 
     // Go over the entry points to start the traversal.
     types.stream()
         .flatMap(t -> t.getMembers().stream())
-        .filter(Member::isJsAccessible)
+        .filter(Member::isExported)
         .forEach(m -> onMemberReference(m));
 
     CodeReferenceMap.Builder crmBuilder = CodeReferenceMap.builder();

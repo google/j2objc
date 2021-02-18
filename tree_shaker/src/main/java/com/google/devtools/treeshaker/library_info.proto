@@ -15,27 +15,19 @@ message TypeInfo {
   int32 extends_type = 2;
   repeated int32 implements_type = 3;
   repeated MemberInfo member = 4;
-  string header_source_file_path = 5;
-  string impl_source_file_path = 6;
-  bool jstype_interface = 7;
+  bool exported = 5;
 }
 
 message MemberInfo {
   string name = 1;
   bool static = 2;
   bool constructor = 3;
-  bool js_accessible = 4;
+  bool exported = 4;
   repeated MethodInvocation invoked_methods = 5;
   repeated int32 referenced_types = 6;
-  SourcePosition position = 7;
 }
 
 message MethodInvocation {
   string method = 1;
   int32 enclosing_type = 2;
-}
-
-message SourcePosition {
-  int32 start = 1;
-  int32 end = 2;
 }

@@ -211,10 +211,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       currentTypeNameScope.push(typeName);
       // Push the new type info builder on top of the stack.
       currentTypeInfoScope.push(TypeInfo.newBuilder()
-          .setTypeId(id).setExtendsType(eid).setJstypeInterface(isExported));
+          .setTypeId(id).setExtendsType(eid).setExported(isExported));
       // Push the static initializer as the current method in scope.
       pushMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
-          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setJsAccessible(isExported));
+          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
     }
 
     private void endType() {
@@ -254,7 +254,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
           .setName(methodName)
           .setStatic(isStatic)
           .setConstructor(isConstructor)
-          .setJsAccessible(isExported));
+          .setExported(isExported));
     }
 
     private void addMethodInvocation(String methodName, String declTypeName) {
