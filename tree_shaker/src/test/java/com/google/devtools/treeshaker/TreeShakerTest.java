@@ -248,7 +248,7 @@ public class TreeShakerTest extends TestCase {
 
   public void testConstructorChaining() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
-    addSourceFile("A.java", "class A { static void main(String[] args) { new D(); }}");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new D(); } }");
     addSourceFile("B.java", "class B { B(String s) {} }");
     // Test explicit constructor chaining.
     addSourceFile("C.java", "class C extends B { C() { super(\"foo\"); } }");
@@ -264,6 +264,37 @@ public class TreeShakerTest extends TestCase {
     assertFalse(unused.containsMethod("B", "B", "(Ljava/lang/String;)V"));
     assertFalse(unused.containsMethod("C", "C", "()V"));
     assertFalse(unused.containsMethod("D", "D", "()V"));
+  }
+
+  public void testMethodOverrides() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A { static void main(String[] args) { new C().b(); new C().c(); }}");
+    addSourceFile("B.java", "class B { void b() {} void c() {} }");
+    addSourceFile("C.java", "class C extends B { void c() {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("B", "b", "()V"));
+    assertFalse(unused.containsMethod("C", "c", "()V"));
+
+    assertTrue(unused.containsMethod("B", "c", "()V"));
+  }
+
+  public void testSuperMethodInvocation() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new C().b(); } }");
+    addSourceFile("B.java", "class B { void b() {} }");
+    addSourceFile("C.java", "class C extends B { void b() { super.b(); } }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("B", "b", "()V"));
+    assertFalse(unused.containsMethod("C", "b", "()V"));
   }
 
   private void addTreeShakerRootsFile(String source) throws IOException {

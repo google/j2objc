@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -129,6 +130,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     context.addMethodInvocation(
         getMethodName(node.getExecutableElement()),
         getDeclaringClassName(node.getExecutableElement()));
+  }
+
+  @Override
+  public void endVisit(SuperMethodInvocation node) {
+    context.addMethodInvocation(
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
+    context.addReferencedType(node.getExecutableType().getReturnType());
+    for (TypeMirror type : node.getExecutableType().getParameterTypes()) {
+      context.addReferencedType(type);
+    }
   }
 
   @Override
