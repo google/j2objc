@@ -52,13 +52,13 @@ NO_WARNINGS="${NO_WARNINGS} -Wno-compare-distinct-pointer-types"
 NO_WARNINGS="${NO_WARNINGS} -Wno-nullability-completeness"
 
 declare CC_FLAGS="-fobjc-weak -Werror ${NO_WARNINGS}"
-declare STD_FLAG="c11"
 declare OTHER_LIBS="-l iconv -l z -l j2objc_main -l c++"
 declare SYSROOT_PATH="none"
 declare EMUL_LIB="-ljre_emul"
 declare LINK_FLAGS=""
 declare DO_LINK="yes"
 declare USE_ARC="no"
+declare OBJC_CPP="no"
 declare CORE_LIB_WARNING="warning: linking the core runtime to reduce binary \
 size. Use -ljre_emul to link the full Java runtime."
 
@@ -68,13 +68,23 @@ while [ $# -gt 0 ]; do
     -[cSE]) DO_LINK="no" ;;
     -fobjc-arc) USE_ARC="yes" ;;
     # Check whether we need to build for C++ instead of C.
-    -x) if [ "$2" == "objective-c++" ]; then STD_FLAG="c++17"; fi; shift ;;
+    -x) if [ "$2" == "objective-c++" ]; then OBJ_CPP="yes"; fi; shift ;;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="$2"; shift ;;
     -ObjC) EMUL_LIB="-ljre_core" ;;
+    --std=*) LANG_STANDARD=${1:6} ;;
   esac
   shift
 done
+
+# If --std= flag isn't specified, use the latest language standard.
+if [[ x"$LANG_STANDARD" == "x" ]]; then
+  if [[ "$OBJC_CPP" == "yes" ]]; then
+    CC_FLAGS="$CC_FLAGS --std=c++17"
+  else
+    CC_FLAGS="$CC_FLAGS --std=c17"
+  fi
+fi
 
 if [[ "$USE_ARC" == "yes" ]]; then
   CC_FLAGS="$CC_FLAGS -fobjc-arc-exceptions"
@@ -96,4 +106,4 @@ if [[ "$DO_LINK" == "yes" ]]; then
   LINK_FLAGS="${EMUL_LIB} ${OTHER_LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
 fi
 
-xcrun clang ${RAW_ARGS} -I ${INCLUDE_PATH} ${CC_FLAGS} -std=${STD_FLAG} ${LINK_FLAGS}
+xcrun clang ${RAW_ARGS} -I ${INCLUDE_PATH} ${CC_FLAGS} ${LINK_FLAGS}
