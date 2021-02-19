@@ -20,7 +20,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
-
 import java.util.Set;
 
 /**
@@ -131,6 +130,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     } else {
       println("#if __has_feature(objc_arc)");
       println(String.format("#error \"%s must not be compiled with ARC (-fobjc-arc)\"", filename));
+      if (getGenerationUnit().hasWeakFields()) {
+        println("#if !__has_feature(objc_arc_weak)");
+        println(
+            String.format(
+                "#error \"%s must be compiled with weak references support (-fobjc-weak)\"",
+                filename));
+        println("#endif");
+      }
     }
 
     println("#endif");

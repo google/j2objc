@@ -966,4 +966,19 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             + "#error \"foo/bar/A must not be compiled with ARC (-fobjc-arc)\"\n"
             + "#endif");
   }
+
+  public void testWeakReferenceCheckIsPrinted() throws IOException {
+    String translation =
+        translateSourceFile(String.join("\n",
+            "package foo.bar;",
+    "import com.google.j2objc.annotations.Weak;",
+    "public class A { @Weak A a; A() {} }"),
+            "foo.bar.A",
+            "foo/bar/A.m");
+    assertTranslation(
+        translation,
+        "#if !__has_feature(objc_arc_weak)\n"
+            + "#error \"foo/bar/A must be compiled with weak references support (-fobjc-weak)\"\n"
+            + "#endif");
+  }
 }
