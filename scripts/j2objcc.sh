@@ -68,7 +68,7 @@ while [ $# -gt 0 ]; do
     -[cSE]) DO_LINK="no" ;;
     -fobjc-arc) USE_ARC="yes" ;;
     # Check whether we need to build for C++ instead of C.
-    -x) if [ "$2" == "objective-c++" ]; then STD_FLAG="c++98"; fi; shift ;;
+    -x) if [ "$2" == "objective-c++" ]; then STD_FLAG="c++17"; fi; shift ;;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="$2"; shift ;;
     -ObjC) EMUL_LIB="-ljre_core" ;;
