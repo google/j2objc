@@ -1,4 +1,4 @@
-#import "Example.h"
+#import "org/j2objc/Example.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Float.h"
 #import "java/lang/Long.h"
