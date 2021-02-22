@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc;
 
+import static com.google.common.io.FileWriteMode.APPEND;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -104,7 +107,7 @@ public class Options {
 
   private SourceVersion sourceVersion = null;
 
-  private static File proGuardUsageFile = null;
+  private File proGuardUsageFile = null;
 
   private static String fileHeader;
   private static final String FILE_HEADER_KEY = "file-header";
@@ -364,7 +367,7 @@ public class Options {
       } else if (arg.equals("--output-header-mapping")) {
         headerMap.setOutputMappingFile(new File(getArgValue(args, arg)));
       } else if (arg.equals("--dead-code-report")) {
-        proGuardUsageFile = new File(getArgValue(args, arg));
+        addDeadCodeReport(getArgValue(args, arg));
       } else if (arg.equals("--prefix")) {
         addPrefixOption(getArgValue(args, arg));
       } else if (arg.equals("--prefixes")) {
@@ -810,12 +813,25 @@ public class Options {
     return fileHeader;
   }
 
-  public static void setProGuardUsageFile(File newProGuardUsageFile) {
+  public void setProGuardUsageFile(File newProGuardUsageFile) {
     proGuardUsageFile = newProGuardUsageFile;
   }
 
-  public static File getProGuardUsageFile() {
+  public File getProGuardUsageFile() {
     return proGuardUsageFile;
+  }
+
+  /**
+   * Appends a dead code report to the proGuardUsageFile. If that file
+   * doesn't exist, it's created first.
+   */
+  public void addDeadCodeReport(String path) throws IOException {
+    if (proGuardUsageFile == null) {
+      proGuardUsageFile = File.createTempFile("dead_code_report", "cfg");
+    }
+    File f = new File(path);
+    String newReport = Files.asCharSource(f, UTF_8).read();
+    Files.asCharSink(proGuardUsageFile, UTF_8, APPEND).write(newReport);
   }
 
   public List<String> getBootClasspath() {

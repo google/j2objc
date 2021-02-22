@@ -78,8 +78,8 @@ public class J2ObjC {
     return parser;
   }
 
-  private static CodeReferenceMap loadDeadCodeMap() {
-    return ProGuardUsageParser.parseDeadCodeFile(Options.getProGuardUsageFile());
+  private static CodeReferenceMap loadDeadCodeMap(Options options) {
+    return ProGuardUsageParser.parseDeadCodeFile(options.getProGuardUsageFile());
   }
 
   /**
@@ -123,7 +123,7 @@ public class J2ObjC {
 
       options.getHeaderMap().loadMappings();
       TranslationProcessor translationProcessor =
-          new TranslationProcessor(parser, loadDeadCodeMap());
+          new TranslationProcessor(parser, loadDeadCodeMap(options));
       translationProcessor.processInputs(inputs);
       if (ErrorUtil.errorCount() > 0) {
         return;

@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.File;
 import java.io.IOException;
@@ -88,5 +91,22 @@ public class OptionsTest extends GenerationTest {
     assertEquals(3, sources.size());
     assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
     assertTrue(options.fileUtil().getClassPathEntries().contains(tmpDir.getPath()));
+  }
+
+  public void testMultipleDeadCodeReports() throws IOException {
+    File first = new File(getTempDir(), "first.cfg");
+    Files.write("first line\n", first, UTF_8);
+    options.addDeadCodeReport(first.getPath());
+
+    File second = new File(getTempDir(), "second.cfg");
+    Files.write("second line\n", second, UTF_8);
+    options.addDeadCodeReport(second.getPath());
+
+    File third = new File(getTempDir(), "third.cfg");
+    Files.write("third line\n", third, UTF_8);
+    options.addDeadCodeReport(third.getPath());
+
+    String result = Files.asCharSource(options.getProGuardUsageFile(), UTF_8).read();
+    assertEquals("first line\nsecond line\nthird line\n", result);
   }
 }
