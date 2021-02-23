@@ -283,6 +283,22 @@ public class TreeShakerTest extends TestCase {
     assertTrue(unused.containsMethod("B", "c", "()V"));
   }
 
+  public void testMethodOverridesIndirect() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A { static void main(String[] args) { B b = new C(); b.b(); b.c(); }}");
+    addSourceFile("B.java", "class B { void b() {} void c() {} }");
+    addSourceFile("C.java", "class C extends B { void c() {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("B", "b", "()V"));
+    assertFalse(unused.containsMethod("B", "c", "()V"));
+    assertFalse(unused.containsMethod("C", "c", "()V"));
+  }
+
   public void testSuperMethodInvocation() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java", "class A { static void main(String[] args) { new C().b(); } }");
@@ -325,6 +341,68 @@ public class TreeShakerTest extends TestCase {
 
     assertTrue(unused.containsClass("C"));
     assertTrue(unused.containsMethod("B", "c", "()V"));
+  }
+
+  public void testAbstractClasses() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new C().c(); }}");
+    addSourceFile("B.java", "abstract class B { void b() {}; abstract void c(); }");
+    addSourceFile("C.java", "class C extends B { void c() {}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("C", "c", "()V"));
+
+    assertTrue(unused.containsMethod("B", "b", "()V"));
+    assertTrue(unused.containsMethod("B", "c", "()V"));
+  }
+
+  public void testAbstractClassesIndirect() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A { static void main(String[] args) { B b = new C(); b.c(); }}");
+    addSourceFile("B.java", "abstract class B { void b() {} abstract void c(); }");
+    addSourceFile("C.java", "class C extends B { void c() {} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("B", "c", "()V"));
+    assertFalse(unused.containsMethod("C", "c", "()V"));
+
+    assertTrue(unused.containsMethod("B", "b", "()V"));
+  }
+
+  public void testInterfaces() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new C().b(); }}");
+    addSourceFile("B.java", "interface B { void b(); }");
+    addSourceFile("C.java", "class C implements B { public void b() {}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("C", "b", "()V"));
+
+    assertTrue(unused.containsMethod("B", "b", "()V"));
+  }
+
+  public void testInterfacesIndirect() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { B b = new C(); b.c(); }}");
+    addSourceFile("B.java", "interface B { void c(); }");
+    addSourceFile("C.java", "class C implements B { public void c() {}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("B", "c", "()V"));
+    assertFalse(unused.containsMethod("C", "c", "()V"));
   }
 
   private void addTreeShakerRootsFile(String source) throws IOException {

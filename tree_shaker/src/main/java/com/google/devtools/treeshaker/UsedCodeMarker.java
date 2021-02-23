@@ -40,8 +40,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -69,7 +71,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public boolean visit(EnumDeclaration node) {
     context.startType(
-        getClassName(node.getTypeElement()), ENUM_TYPE_NAME);
+        getClassName(node.getTypeElement()),
+        ENUM_TYPE_NAME,
+        node.getSuperInterfaceTypeMirrors().stream()
+          .map(TypeMirror::toString).collect(Collectors.toList()));
     return true;
   }
 
@@ -91,7 +96,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public boolean visit(TypeDeclaration node) {
     context.startType(
-        getClassName(node.getTypeElement()), node.getTypeElement().getSuperclass().toString());
+        getClassName(node.getTypeElement()),
+        node.getSuperclassTypeMirror().toString(),
+        node.getSuperInterfaceTypeMirrors().stream()
+          .map(TypeMirror::toString).collect(Collectors.toList()));
     return true;
   }
 
@@ -245,16 +253,19 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       return index;
     }
 
-    private void startType(String typeName, String extendsTypeName) {
+    private void startType(
+        String typeName, String extendsTypeName, List<String> implementsTypeNames) {
       logger.atFine().log("Start Type: %s extends %s", typeName, extendsTypeName);
       Integer id = getTypeId(typeName);
       Integer eid = getTypeId(extendsTypeName);
+      List<Integer> iids =
+          implementsTypeNames.stream().map(this::getTypeId).collect(Collectors.toList());
       boolean isExported = exportedClasses.contains(typeName);
       // Push the new type name on top of the stack.
       currentTypeNameScope.push(typeName);
       // Push the new type info builder on top of the stack.
       currentTypeInfoScope.push(TypeInfo.newBuilder()
-          .setTypeId(id).setExtendsType(eid).setExported(isExported));
+          .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
       // Push the static initializer as the current method in scope.
       pushMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
           .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));

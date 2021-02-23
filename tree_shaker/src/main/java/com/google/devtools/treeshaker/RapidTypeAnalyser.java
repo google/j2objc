@@ -32,7 +32,7 @@ final class RapidTypeAnalyser {
         .filter(Member::isExported)
         .forEach(m -> onMemberReference(m));
 
-    CodeReferenceMap.Builder crmBuilder = CodeReferenceMap.builder();
+    CodeReferenceMap.Builder unusedBuilder = CodeReferenceMap.builder();
     for (Type type : types) {
       if (type.isLive()) {
         for (Member member : type.getMembers()) {
@@ -45,14 +45,14 @@ final class RapidTypeAnalyser {
             }
             String name = components.get(0);
             String sig = components.size() == 2 ? components.get(1) : "";
-            crmBuilder.addMethod(member.getDeclaringType().getName(), name, sig);
+            unusedBuilder.addMethod(member.getDeclaringType().getName(), name, sig);
           }
         }
       } else {
-        crmBuilder.addClass(type.getName());
+        unusedBuilder.addClass(type.getName());
       }
     }
-    return crmBuilder.build();
+    return unusedBuilder.build();
   }
 
   private static void onMemberReference(Member member) {
@@ -74,13 +74,24 @@ final class RapidTypeAnalyser {
     member.markLive();
 
     Type declaringType = member.getDeclaringType();
-    if (!declaringType.isInstantiated() && member.isConstructor()) {
-      declaringType.instantiate();
-      declaringType.getPotentiallyLiveMembers().forEach(RapidTypeAnalyser::markMemberLive);
+    if (member.isConstructor()) {
+      markInstantiated(declaringType);
     }
 
     member.getReferencedMembers().forEach(RapidTypeAnalyser::onMemberReference);
     member.getReferencedTypes().forEach(RapidTypeAnalyser::markTypeLive);
+  }
+
+  private static void markInstantiated(Type type) {
+    if (type.isInstantiated()) {
+      return;
+    }
+    type.instantiate();
+    type.getPotentiallyLiveMembers().forEach(RapidTypeAnalyser::markMemberLive);
+    for (Type iface : type.getSuperInterfaces()) {
+      iface.getMemberByName(UsedCodeMarker.CLASS_INITIALIZER_NAME).markLive();
+      markInstantiated(iface);
+    }
   }
 
   private static void traversePolymorphicReference(Type type, String memberName) {
