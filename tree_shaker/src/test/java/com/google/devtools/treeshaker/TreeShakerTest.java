@@ -405,6 +405,45 @@ public class TreeShakerTest extends TestCase {
     assertFalse(unused.containsMethod("C", "c", "()V"));
   }
 
+  public void testInterfaceInheritance() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A { static void main(String[] args) { D d = new D(); d.b(); d.c(); }}");
+    addSourceFile("B.java", "interface B { void b(); }");
+    addSourceFile("C.java", "interface C extends B { void c(); }");
+    addSourceFile("D.java", "class D implements C { public void b() {} public void c() {}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsClass("D"));
+    assertFalse(unused.containsMethod("D", "b", "()V"));
+    assertFalse(unused.containsMethod("D", "c", "()V"));
+
+    assertTrue(unused.containsMethod("B", "b", "()V"));
+    assertTrue(unused.containsMethod("C", "c", "()V"));
+  }
+
+  public void testInterfaceInheritanceIndirect() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { C c = new D(); c.b(); }}");
+    addSourceFile("B.java", "interface B { void b(); }");
+    addSourceFile("C.java", "interface C extends B { void c(); }");
+    addSourceFile("D.java", "class D implements C { public void b() {} public void c() {}}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsClass("D"));
+    assertFalse(unused.containsMethod("B", "b", "()V"));
+    assertFalse(unused.containsMethod("D", "b", "()V"));
+
+    assertTrue(unused.containsMethod("C", "c", "()V"));
+    assertTrue(unused.containsMethod("D", "c", "()V"));
+  }
+
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");
     treeShakerRoots.getParentFile().mkdirs();
