@@ -14,14 +14,18 @@
 
 package com.google.devtools.treeshaker;
 
+import static javax.lang.model.element.Modifier.STATIC;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table.Cell;
 import com.google.common.flogger.GoogleLogger;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -56,6 +60,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public void endVisit(EnumConstantDeclaration node) {
+    context.addMethodInvocation(
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
+  }
+
+  @Override
   public boolean visit(EnumDeclaration node) {
     context.startType(
         getClassName(node.getTypeElement()), ENUM_TYPE_NAME);
@@ -65,6 +76,16 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(EnumDeclaration node) {
     context.endType();
+  }
+
+  @Override
+  public void endVisit(FieldAccess node) {
+    // Note: accessing a static field of a class implicitly runs the class' static initializer.
+    if (node.getVariableElement().getModifiers().contains(STATIC)) {
+      context.addMethodInvocation(
+          CLASS_INITIALIZER_NAME,
+          node.getTypeMirror().toString());
+    }
   }
 
   @Override

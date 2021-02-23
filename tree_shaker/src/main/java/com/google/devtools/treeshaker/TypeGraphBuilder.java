@@ -26,8 +26,6 @@ import java.util.Set;
 /** Give information about inheritance relationships between types. */
 class TypeGraphBuilder {
   private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
-  private static final int OBJECT_TYPE = 0;
-
 
   static Collection<Type> build(List<LibraryInfo> libraryInfos) {
     Map<String, Type> typesByName = new LinkedHashMap<>();
@@ -40,16 +38,11 @@ class TypeGraphBuilder {
         typesByName.put(type.getName(), type);
       }
     }
-
     // Build cross-references between types and members
     for (LibraryInfo libraryInfo : libraryInfos) {
       buildCrossReferences(typesByName, externalTypeReferences, libraryInfo);
     }
-
-    for (String typeName : externalTypeReferences) {
-      logger.atInfo().log("External Type: %s", typeName);
-    }
-
+    logger.atInfo().log("External Types: %s", String.join(", ", externalTypeReferences));
     return typesByName.values();
   }
 
@@ -59,10 +52,13 @@ class TypeGraphBuilder {
       Type type = typesByName.get(libraryInfo.getTypeMap(typeInfo.getTypeId()));
 
       int extendsId = typeInfo.getExtendsType();
-      if (extendsId != OBJECT_TYPE) {
-        Type superClass = typesByName.get(libraryInfo.getTypeMap(extendsId));
+      String superClassName = libraryInfo.getTypeMap(extendsId);
+      Type superClass = typesByName.get(superClassName);
+      if (superClass != null) {
         superClass.addImmediateSubtype(type);
         type.setSuperClass(superClass);
+      } else {
+        externalTypeReferences.add(superClassName);
       }
 
       for (int implementsId : typeInfo.getImplementsTypeList()) {

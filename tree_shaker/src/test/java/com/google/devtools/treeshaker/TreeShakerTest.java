@@ -297,6 +297,36 @@ public class TreeShakerTest extends TestCase {
     assertFalse(unused.containsMethod("C", "b", "()V"));
   }
 
+  public void testStaticFieldAccess() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { B.TWO.b(); } }");
+    addSourceFile("B.java", "class B { static B TWO = new B(); void b() {} void c() {} }");
+    addSourceFile("C.java", "class C { static C TWO = new C(); }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsMethod("B", "b", "()V"));
+
+    assertTrue(unused.containsClass("C"));
+    assertTrue(unused.containsMethod("B", "c", "()V"));
+  }
+
+  public void testEnums() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { B.TWO.b(); } }");
+    addSourceFile("B.java", "enum B { ONE, TWO, THREE; void b() {} void c() {} }");
+    addSourceFile("C.java", "enum C { ONE, TWO, THREE; }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsMethod("B", "b", "()V"));
+
+    assertTrue(unused.containsClass("C"));
+    assertTrue(unused.containsMethod("B", "c", "()V"));
+  }
+
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");
     treeShakerRoots.getParentFile().mkdirs();
