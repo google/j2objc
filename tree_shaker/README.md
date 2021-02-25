@@ -19,24 +19,46 @@ final translated source code.
 
 Running Tree Shaker:
 The tree shaker command takes in a few flags, as seen in the help message:
-help-message = Usage: tree_shaker <options> <source files>
+
+```
+Usage: tree_shaker <options> <source files>
 where possible options include:
   -sourcepath <path>           Specify where to find input source files.
   -classpath <path>            Specify where to find user class files.
-  --tree-shaker-roots          Specify a file that lists the public root 
-                               classes and methods.
-  -s, --sourcefilelist <file>  Specify a file that lists the source files to 
-                               be analyzed.
+  --tree-shaker-roots          Specify a file that lists the public root classes and methods.
+  -s, --sourcefilelist <file>  Specify a file that lists the source files to be analyzed.
+  -encoding <encoding>         Specify character encoding used by source files
+  -Xbootclasspath:<path>       Boot path used to compile the input sources. (not the tool itself)
+  -version                     Version information
+  -Werror                      Treats all warning as errors.
+  -h, --help                   Print this message.
+```
 
 All elements in the input source files that can be reached from the public 
 roots will be kept, and the others marked as unused. The input file formatting 
-for classes is the full packageName.className for the class (eg. com.google.devtools.treeshaker.TreeShaker), and accepts one class per line. 
+for classes is the full packageName.className for the class, one class per line:
+
+```
+# These are the root classes for this library:
+foo.bar.Mumble
+itsy.bitsy.Spider
+
+# Inner-classes work, too:
+twisty.little.Passage.Direction
+```
+
 When indicating a class as a public root, the tree shaker will take all public 
 methods inside that class and add them to the public root set, for convenience.
 To add specific methods to the public root set, add their enclosing class's 
 packageName.className, followed by a colon, and all of the root set methods 
 inside that class on the following lines, one on each line, preceded by 4 
-spaces (eg: simple.B:    void test2())
+spaces. For example, this tells `tree_shaker` to only mark the `main` method as
+used, which allows other methods to potentially be reported as dead:
+
+```
+my.little.Pony:
+    main(java.lang.String[])
+```
 
 Ending Note:
 The tree shaker tool is an experimental project, used at the user's own risk. 
