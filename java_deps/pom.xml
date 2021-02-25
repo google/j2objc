@@ -253,6 +253,11 @@
       <version>0.5.1</version>
     </dependency>
     <dependency>
+      <groupId>com.google.flogger</groupId>
+      <artifactId>flogger-system-backend</artifactId>
+      <version>0.5.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value</artifactId>
       <version>1.7.4</version>

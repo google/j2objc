@@ -77,8 +77,10 @@ PROCYON_JARS = \
     $(PROCYON_COMPILERTOOLS_JAR)
 
 # Flogger support
-FLOGGER_JAR = flogger-0.5.1.jar
-GOOGLE_EXTENSIONS_JAR = google-extensions-0.5.1.jar
+FLOGGER_JARS = \
+    flogger-0.5.1.jar \
+    flogger-system-backend-0.5.1.jar \
+    google-extensions-0.5.1.jar
 
 AUTOVALUE_JAR = auto-value-1.7.4.jar
 AUTOVALUE_ANNOTATIONS_JAR = auto-value-annotations-1.7.4.jar
