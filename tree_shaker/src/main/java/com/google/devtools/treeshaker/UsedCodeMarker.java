@@ -50,7 +50,6 @@ import javax.lang.model.type.TypeMirror;
 
 final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
-  static final String ENUM_TYPE_NAME = "java.lang.Enum";
   static final String OBJECT_TYPE_NAME = "java.lang.Object";
   static final String SIGNATURE_PREFIX = "##";
 
@@ -59,53 +58,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   UsedCodeMarker(CompilationUnit unit, Context context) {
     super(unit);
     this.context = context;
-  }
-
-  @Override
-  public void endVisit(EnumConstantDeclaration node) {
-    context.addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
-  }
-
-  @Override
-  public boolean visit(EnumDeclaration node) {
-    context.startType(
-        getClassName(node.getTypeElement()),
-        ENUM_TYPE_NAME,
-        node.getSuperInterfaceTypeMirrors().stream()
-          .map(TypeMirror::toString).collect(Collectors.toList()));
-    return true;
-  }
-
-  @Override
-  public void endVisit(EnumDeclaration node) {
-    context.endType();
-  }
-
-  @Override
-  public void endVisit(FieldAccess node) {
-    // Note: accessing a static field of a class implicitly runs the class' static initializer.
-    if (node.getVariableElement().getModifiers().contains(STATIC)) {
-      context.addMethodInvocation(
-          CLASS_INITIALIZER_NAME,
-          node.getTypeMirror().toString());
-    }
-  }
-
-  @Override
-  public boolean visit(TypeDeclaration node) {
-    context.startType(
-        getClassName(node.getTypeElement()),
-        node.getSuperclassTypeMirror().toString(),
-        node.getSuperInterfaceTypeMirrors().stream()
-          .map(TypeMirror::toString).collect(Collectors.toList()));
-    return true;
-  }
-
-  @Override
-  public void endVisit(TypeDeclaration node) {
-    context.endType();
   }
 
   @Override
@@ -123,6 +75,44 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public void endVisit(EnumConstantDeclaration node) {
+    context.addMethodInvocation(
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
+  }
+
+  @Override
+  public boolean visit(EnumDeclaration node) {
+    context.startType(
+        node.getTypeElement(),
+        node.getTypeElement().getSuperclass(),
+        node.getSuperInterfaceTypeMirrors());
+    return true;
+  }
+
+  @Override
+  public void endVisit(EnumDeclaration node) {
+    context.endType();
+  }
+
+  @Override
+  public void endVisit(ExpressionMethodReference node) {
+    context.addMethodInvocation(
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()));
+  }
+
+  @Override
+  public void endVisit(FieldAccess node) {
+    // Note: accessing a static field of a class implicitly runs the class' static initializer.
+    if (node.getVariableElement().getModifiers().contains(STATIC)) {
+      context.addMethodInvocation(
+          CLASS_INITIALIZER_NAME,
+          node.getTypeMirror().toString());
+    }
+  }
+
+  @Override
   public boolean visit(MethodDeclaration node) {
     context.startMethodDeclaration(
         getMethodName(node.getExecutableElement()),
@@ -134,13 +124,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     context.endMethodDeclaration();
-  }
-
-  @Override
-  public void endVisit(ExpressionMethodReference node) {
-    context.addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
   }
 
   @Override
@@ -173,16 +156,26 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public boolean visit(TypeDeclaration node) {
+    context.startType(
+        node.getTypeElement(),
+        node.getSuperclassTypeMirror(),
+        node.getSuperInterfaceTypeMirrors());
+    return true;
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    context.endType();
+  }
+
+  @Override
   public void endVisit(VariableDeclarationFragment node) {
     context.addReferencedType(node.getVariableElement().asType());
   }
 
   private static String getDeclaringClassName(ExecutableElement method) {
     return ElementUtil.getDeclaringClass(method).getQualifiedName().toString();
-  }
-
-  private String getClassName(TypeElement elem) {
-    return elementUtil.getBinaryName(elem).replace('$', '.');
   }
 
   private static String getQualifiedMethodName(String type, String name, String signature) {
@@ -254,12 +247,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     }
 
     private void startType(
-        String typeName, String extendsTypeName, List<String> implementsTypeNames) {
-      logger.atFine().log("Start Type: %s extends %s", typeName, extendsTypeName);
+        TypeElement type, TypeMirror superType, List<? extends TypeMirror> interfaceTypes) {
+      String typeName = type.getQualifiedName().toString();
+      logger.atFine().log("Start Type: %s extends %s", typeName, superType);
       Integer id = getTypeId(typeName);
-      Integer eid = getTypeId(extendsTypeName);
+      Integer eid = getTypeId(superType.toString());
       List<Integer> iids =
-          implementsTypeNames.stream().map(this::getTypeId).collect(Collectors.toList());
+          interfaceTypes.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
       boolean isExported = exportedClasses.contains(typeName);
       // Push the new type name on top of the stack.
       currentTypeNameScope.push(typeName);

@@ -27,10 +27,15 @@ import java.util.Set;
 class TypeGraphBuilder {
   private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
 
-  static Collection<Type> build(List<LibraryInfo> libraryInfos) {
-    Map<String, Type> typesByName = new LinkedHashMap<>();
-    Set<String> externalTypeReferences = new HashSet<>();
+  private final List<LibraryInfo> libraryInfos;
+  private final Map<String, Type> typesByName = new LinkedHashMap<>();
+  private final Set<String> externalTypeReferences = new HashSet<>();
 
+  TypeGraphBuilder(List<LibraryInfo> libraryInfos) {
+    this.libraryInfos = libraryInfos;
+  }
+
+  Collection<Type> getTypes() {
     // Create all types and members.
     for (LibraryInfo libraryInfo : libraryInfos) {
       for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
@@ -40,14 +45,13 @@ class TypeGraphBuilder {
     }
     // Build cross-references between types and members
     for (LibraryInfo libraryInfo : libraryInfos) {
-      buildCrossReferences(typesByName, externalTypeReferences, libraryInfo);
+      buildCrossReferences(libraryInfo);
     }
     logger.atInfo().log("External Types: %s", String.join(", ", externalTypeReferences));
     return typesByName.values();
   }
 
-  private static void buildCrossReferences(
-      Map<String, Type> typesByName, Set<String> externalTypeReferences, LibraryInfo libraryInfo) {
+  private void buildCrossReferences(LibraryInfo libraryInfo) {
     for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
       Type type = typesByName.get(libraryInfo.getTypeMap(typeInfo.getTypeId()));
 
@@ -92,6 +96,4 @@ class TypeGraphBuilder {
       }
     }
   }
-
-  private TypeGraphBuilder() {}
 }

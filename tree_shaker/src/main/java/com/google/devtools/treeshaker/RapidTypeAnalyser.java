@@ -22,7 +22,7 @@ import java.util.List;
 final class RapidTypeAnalyser {
 
   static CodeReferenceMap analyse(List<LibraryInfo> libraryInfos) {
-    Collection<Type> types = TypeGraphBuilder.build(libraryInfos);
+    Collection<Type> types = new TypeGraphBuilder(libraryInfos).getTypes();
 
     types.stream().filter(Type::isExported).forEach(RapidTypeAnalyser::markTypeLive);
 
