@@ -145,9 +145,9 @@ dist: $(JAR_DIST) $(DIST_DIR)/tree_shaker
 
 test: compile-tests
 	$(JAVA) -classpath $(TEST_CLASSPATH) junit.textui.TestRunner \
-	    com.google.devtools.treeshaker.ElementReferenceMapperTest
+	    com.google.devtools.treeshaker.TreeShakerTest
 
 compile-tests: $(JAR) | $(TEST_CLASS_DIR)
 	$(JAVAC) -encoding UTF-8 -sourcepath src/test/java \
 	    -classpath $(TEST_CLASSPATH) -d $(TEST_CLASS_DIR) \
-	    src/test/java/com/google/devtools/treeshaker/ElementReferenceMapperTest.java
+	    src/test/java/com/google/devtools/treeshaker/TreeShakerTest.java
