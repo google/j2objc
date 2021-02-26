@@ -69,6 +69,7 @@ while [ $# -gt 0 ]; do
     -fobjc-arc) USE_ARC="yes" ;;
     # Check whether we need to build for C++ instead of C.
     -x) if [ "$2" == "objective-c++" ]; then OBJ_CPP="yes"; fi; shift ;;
+    *.mm) OBJC_CPP="yes";;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="$2"; shift ;;
     -ObjC) EMUL_LIB="-ljre_core" ;;
