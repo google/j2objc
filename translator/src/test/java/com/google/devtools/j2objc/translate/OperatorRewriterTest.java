@@ -334,4 +334,17 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return o8 != nil;");
     assertTranslation(translation, "return i3 != i4;");
   }
+
+  public void testAssignConstructorInvocationToWeakField() throws IOException {
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+        String.join("\n",
+            "class Test {",
+            "  @com.google.j2objc.annotations.Weak private final Object obj;",
+            "  Test() { this.obj = new Object(); }",
+            "}"),
+        "Test",
+        "Test.m");
+    assertTranslation(translation, "JreRetainedLocalValue(&self->obj_, new_NSObject_init());");
+  }
 }

@@ -330,6 +330,18 @@ public class OperatorRewriter extends UnitTreeVisitor {
       return funcName;
     }
 
+    // With ARC, functions with retained local value (such as new constructor functions)
+    // must have extra retention when assigned to weak fields, since they are automatically
+    // released so the field is otherwise set to nil.
+    if (!isStrong && options.useARC()) {
+      Expression rhs = node.getRightHandSide();
+      if (rhs.getKind() == TreeNode.Kind.FUNCTION_INVOCATION) {
+        if (((FunctionInvocation) rhs).hasRetainedResult()) {
+          return "JreRetainedLocalValue";
+        }
+      }
+    }
+
     return null;
   }
 
