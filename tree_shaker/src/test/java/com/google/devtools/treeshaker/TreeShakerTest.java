@@ -456,6 +456,60 @@ public class TreeShakerTest extends TestCase {
     assertFalse(unused.containsMethod("B", "op", "(I)I"));
   }
 
+  public void testParametricTypes() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { B<C> b = new B<C>(); }}");
+    addSourceFile("B.java", "class B<X> { }");
+    addSourceFile("C.java", "class C { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+
+    assertTrue(unused.containsClass("C"));
+  }
+
+  public void testParametricTypesIndirect() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { C.c(new B<D>()); }}");
+    addSourceFile("B.java", "class B<X> { }");
+    addSourceFile("C.java", "class C { static void c(B<D> b) {} }");
+    addSourceFile("D.java", "class D { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("C"));
+    assertFalse(unused.containsMethod("C", "c", "(LB;)V"));
+
+    assertTrue(unused.containsClass("D"));
+  }
+
+  public void testChainedParametricTypes() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A { static void main(String[] args) { B<D>.C<D> c = new B<D>().new C<D>(); } }");
+    addSourceFile("B.java", "class B<X> { class C<Y> { }}");
+    addSourceFile("D.java", "class D { }");
+    CodeReferenceMap unused = findUnusedCode();
+    System.err.println("*** unused:\n" + unused);
+
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsClass("B.C"));
+
+    assertTrue(unused.containsClass("D"));
+  }
+
+  public void testEraseParametricTypes() throws IOException {
+    assertTrue(UsedCodeMarker.eraseParametricTypes("").isEmpty());
+    assertEquals("C", UsedCodeMarker.eraseParametricTypes("C"));
+    assertEquals("C", UsedCodeMarker.eraseParametricTypes("C<D>"));
+    assertEquals("C", UsedCodeMarker.eraseParametricTypes("C<D<A>>"));
+    assertEquals("C.D", UsedCodeMarker.eraseParametricTypes("C<A>.D<A>"));
+  }
+
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");
     treeShakerRoots.getParentFile().mkdirs();

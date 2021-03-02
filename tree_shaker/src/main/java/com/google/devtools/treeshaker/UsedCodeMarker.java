@@ -16,6 +16,7 @@ package com.google.devtools.treeshaker;
 
 import static javax.lang.model.element.Modifier.STATIC;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table.Cell;
 import com.google.common.flogger.GoogleLogger;
@@ -201,6 +202,35 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         EMPTY_METHOD_SIGNATURE);
   }
 
+  @VisibleForTesting
+  static String eraseParametricTypes(String typeName) {
+    // cases:
+    // - no paramatric types: C -> C
+    // - simple parametric type: C<A> -> C
+    // - nested parametric type: C<D<A>> -> C
+    // - chained parametric type: C<A>.D<A> -> C.D
+    int begin = typeName.indexOf('<');
+    if (begin == -1) {
+      return typeName;
+    }
+    int end = typeName.indexOf('>', begin + 1); // should not be -1
+    int next = begin;
+    int nesting = -1;
+    while (next > -1 && next < end) {
+      nesting++;
+      next = typeName.indexOf('<', next + 1);
+    }
+    while (nesting > 0) {
+      end = typeName.indexOf('>', end + 1);
+      nesting--;
+    }
+    String first = typeName.substring(0, begin);
+    if (end == typeName.length() - 1) {
+      return first;
+    }
+    return first + eraseParametricTypes(typeName.substring(end + 1));
+  }
+
   static final class Context {
     private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
 
@@ -332,7 +362,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       if (isPrimitive)  {
         return;
       }
-      addReferencedTypeName(type.toString());
+      addReferencedTypeName(eraseParametricTypes(type.toString()));
     }
 
     private void addReferencedTypeName(String typeName) {
