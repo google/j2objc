@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -50,7 +51,9 @@ import javax.lang.model.type.TypeMirror;
 
 final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
+  static final String EMPTY_METHOD_SIGNATURE = "()V";
   static final String OBJECT_TYPE_NAME = "java.lang.Object";
+  static final String PSEUDO_CONSTRUCTOR_PREFIX = "##";
   static final String SIGNATURE_PREFIX = "##";
 
   private final Context context;
@@ -83,10 +86,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    context.startType(
-        node.getTypeElement(),
-        node.getTypeElement().getSuperclass(),
-        node.getSuperInterfaceTypeMirrors());
+    context.startType(node.getTypeElement(), false);
     return true;
   }
 
@@ -113,6 +113,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public void endVisit(LambdaExpression node) {
+    // A lambda expression implicitly constructs an instance of the interface that it implements.
+    context.addMethodInvocation(
+        getPseudoConstructorName(node.getTypeMirror().toString()),
+        node.getTypeMirror().toString());
+  }
+
+  @Override
   public boolean visit(MethodDeclaration node) {
     context.startMethodDeclaration(
         getMethodName(node.getExecutableElement()),
@@ -132,9 +140,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getMethodName(node.getExecutableElement()),
         getDeclaringClassName(node.getExecutableElement()));
     context.addReferencedType(node.getExecutableType().getReturnType());
-    for (TypeMirror type : node.getExecutableType().getParameterTypes()) {
-      context.addReferencedType(type);
-    }
+    node.getExecutableType().getParameterTypes().forEach(context::addReferencedType);
   }
 
   @Override
@@ -150,17 +156,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getMethodName(node.getExecutableElement()),
         getDeclaringClassName(node.getExecutableElement()));
     context.addReferencedType(node.getExecutableType().getReturnType());
-    for (TypeMirror type : node.getExecutableType().getParameterTypes()) {
-      context.addReferencedType(type);
-    }
+    node.getExecutableType().getParameterTypes().forEach(context::addReferencedType);
   }
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    context.startType(
-        node.getTypeElement(),
-        node.getSuperclassTypeMirror(),
-        node.getSuperInterfaceTypeMirrors());
+    context.startType(node.getTypeElement(), node.isInterface());
     return true;
   }
 
@@ -192,6 +193,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private String getMethodName(ExecutableElement method) {
     return getMethodName(typeUtil.getReferenceName(method), typeUtil.getReferenceSignature(method));
+  }
+
+  private static String getPseudoConstructorName(String typeName) {
+    return getMethodName(
+        PSEUDO_CONSTRUCTOR_PREFIX + typeName.substring(typeName.lastIndexOf('.') + 1),
+        EMPTY_METHOD_SIGNATURE);
   }
 
   static final class Context {
@@ -226,9 +233,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
                rootSet.getReferencedMethods().cellSet()) {
         String type  = cell.getRowKey();
         String name = cell.getColumnKey();
-        for (String signature : cell.getValue()) {
-          exportedMethods.add(getQualifiedMethodName(type, name, signature));
-        }
+        cell.getValue().forEach(
+            signature -> exportedMethods.add(getQualifiedMethodName(type, name, signature)));
       }
       exportedClasses = rootSet.getReferencedClasses();
     }
@@ -246,14 +252,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       return index;
     }
 
-    private void startType(
-        TypeElement type, TypeMirror superType, List<? extends TypeMirror> interfaceTypes) {
+    private void startType(TypeElement type, boolean isInterface) {
       String typeName = type.getQualifiedName().toString();
-      logger.atFine().log("Start Type: %s extends %s", typeName, superType);
+      logger.atFine().log("Start Type: %s extends %s", typeName, type.getSuperclass());
+
       Integer id = getTypeId(typeName);
-      Integer eid = getTypeId(superType.toString());
-      List<Integer> iids =
-          interfaceTypes.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
+      Integer eid = getTypeId(type.getSuperclass().toString());
+      List<Integer> iids = type.getInterfaces().stream()
+                             .map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
       boolean isExported = exportedClasses.contains(typeName);
       // Push the new type name on top of the stack.
       currentTypeNameScope.push(typeName);
@@ -263,6 +269,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       // Push the static initializer as the current method in scope.
       pushMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
           .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
+      // For interfaces, add a pseudo-constructor for use with lambdas.
+      if (isInterface) {
+        startMethodDeclaration(getPseudoConstructorName(typeName), true, false);
+        endMethodDeclaration();
+      }
     }
 
     private void endType() {
@@ -306,7 +317,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     }
 
     private void addMethodInvocation(String methodName, String declTypeName) {
-      logger.atFine().log("Add Method Inv: %s.%s", declTypeName, methodName);
+      logger.atFine().log("Add Method Inv: type: %s method: %s", declTypeName, methodName);
       int declTypeId = getTypeId(declTypeName);
       mibScope.peek().addInvokedMethods(com.google.devtools.treeshaker.MethodInvocation.newBuilder()
           .setMethod(methodName)

@@ -444,6 +444,18 @@ public class TreeShakerTest extends TestCase {
     assertTrue(unused.containsMethod("D", "c", "()V"));
   }
 
+  public void testLambdas() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A { static void main(String[] args) { B b = (x) -> x; b.op(5); } }");
+    addSourceFile("B.java", "interface B { int op(int x);  }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertFalse(unused.containsClass("A"));
+    assertFalse(unused.containsClass("B"));
+    assertFalse(unused.containsMethod("B", "op", "(I)I"));
+  }
+
   private void addTreeShakerRootsFile(String source) throws IOException {
     treeShakerRoots = new File(tempDir, "roots.cfg");
     treeShakerRoots.getParentFile().mkdirs();
