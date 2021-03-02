@@ -24,6 +24,8 @@
 #include "java/lang/ClassNotFoundException.h"
 #include "java/lang/Thread.h"
 #include "java/lang/Throwable.h"
+#include "java/util/logging/ConsoleHandler.h"
+#include "java/util/logging/Logger.h"
 
 #include <execinfo.h>
 #include <objc/runtime.h>
@@ -54,6 +56,12 @@ void handleUncaughtException(JavaLangThrowable *e) {
   [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withJavaLangThrowable:e];
 }
 
+// Adds log handler that writes to stderr.
+void addConsoleLogHandler() {
+  [JavaUtilLoggingLogger_getLoggerWithNSString_(@"")
+      addHandlerWithJavaUtilLoggingHandler:create_JavaUtilLoggingConsoleHandler_init()];
+}
+
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
 // argument, the program name, is skipped so the returned array matches what
 // is passed to a Java main method.
@@ -78,6 +86,7 @@ int main( int argc, const char *argv[] ) {
     return 1;
   }
   installSignalHandler();
+  addConsoleLogHandler();
 
   @autoreleasepool {
     // Find the main class.
