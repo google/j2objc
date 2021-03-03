@@ -109,7 +109,7 @@ public class LambdaExpressionTest extends GenerationTest {
         "}");
     assertTranslatedLines(outerCapture,
         "- (id)applyWithId:(NSString *)y {",
-        "  return val$x_;",
+        "  return JreRetainedLocalValue(val$x_);",
         "}");
     String noCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> y;}", "Test",
@@ -118,11 +118,11 @@ public class LambdaExpressionTest extends GenerationTest {
     assertTranslation(noCapture, "Test_$Lambda$2_get_instance(void);");
     assertTranslatedLines(noCapture,
         "- (id)applyWithId:(NSString *)x {",
-        "  return JreLoadStatic(Test_$Lambda$2, instance);",
+        "  return JreRetainedLocalValue(JreLoadStatic(Test_$Lambda$2, instance));",
         "}");
     assertTranslatedLines(noCapture,
         "- (id)applyWithId:(NSString *)y {",
-        "  return y;",
+        "  return JreRetainedLocalValue(y);",
         "}");
   }
 
@@ -184,7 +184,7 @@ public class LambdaExpressionTest extends GenerationTest {
         "       withId:(id)by",
         "       withId:(id)bz",
         "       withId:(id)bar {",
-        "  return val$foo_;",
+        "  return JreRetainedLocalValue(val$foo_);",
         "}");
   }
 

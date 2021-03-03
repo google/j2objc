@@ -78,7 +78,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   private final LinkedList<Set<VariableElement>> retainedLocalCandidateStack = new LinkedList<>();
   private Set<VariableElement> retainedLocalCandidates = new HashSet<>();
-  private boolean isSynchronizedMethod = false;
+  private boolean maybeRetainMethodReturn = false;
 
   public OperatorRewriter(CompilationUnit unit) {
     super(unit);
@@ -145,7 +145,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    isSynchronizedMethod = Modifier.isSynchronized(node.getModifiers());
+    ExecutableElement method = node.getExecutableElement();
+    maybeRetainMethodReturn = Modifier.isSynchronized(node.getModifiers())
+        || maybeRetainLambdaOrAnonymousClassMethod(method);
     retainedLocalCandidates.addAll(
         node.getParameters().stream()
             .map(VariableDeclaration::getVariableElement)
@@ -154,11 +156,27 @@ public class OperatorRewriter extends UnitTreeVisitor {
     return true;
   }
 
+  // Returns true if the method is part of a lambda or anonymous class, isn't a constructor
+  // or destructor, and returns a retainable type.
+  private boolean maybeRetainLambdaOrAnonymousClassMethod(ExecutableElement method) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
+    if (!ElementUtil.isAnonymous(declaringClass) && !ElementUtil.isLambda(declaringClass)) {
+      return false;
+    }
+    String methodName = ElementUtil.getName(method);
+    if (ElementUtil.isConstructor(method)
+        || methodName.equals("dealloc")
+        || methodName.startsWith("__")) { // True for translator-generated internal methods.
+      return false;
+    }
+    return !TypeUtil.isPrimitiveOrVoid(method.getReturnType());
+  }
+
   @Override
   public void endVisit(MethodDeclaration node) {
     retainedLocalCandidateStack.clear();
     retainedLocalCandidates.clear();
-    isSynchronizedMethod = false;
+    maybeRetainMethodReturn = false;
   }
 
   @Override
@@ -176,7 +194,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
-    if ((isSynchronizedMethod || !retainedLocalCandidateStack.isEmpty()) && expr != null
+    if ((maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
+        && expr != null
         && !expr.getTypeMirror().getKind().isPrimitive()) {
       rewriteRetainedLocal(expr);
     }
@@ -267,14 +286,13 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL) {
-      return;
+    if (TreeUtil.getVariableElement(expr) != null) {
+      FunctionElement element =
+          new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
+      FunctionInvocation invocation = new FunctionInvocation(element, expr.getTypeMirror());
+      expr.replaceWith(invocation);
+      invocation.addArgument(expr);
     }
-    FunctionElement element =
-        new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
-    FunctionInvocation invocation = new FunctionInvocation(element, expr.getTypeMirror());
-    expr.replaceWith(invocation);
-    invocation.addArgument(expr);
   }
 
   private void handleRetainedLocal(VariableElement var, Expression rhs) {
