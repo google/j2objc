@@ -131,15 +131,16 @@ jlong Java_java_util_regex_Matcher_openImpl(JNIEnv *env, jclass cls, jlong patte
 jint Java_java_util_regex_Matcher_getMatchedGroupIndexImpl(
     JNIEnv *env, jclass cls, jlong addr, jstring name) {
   UErrorCode status = U_ZERO_ERROR;
-  jint nameLength = (jint)[name length];
-  jint result = uregex_groupNumberFromName((URegularExpression *)addr, (UChar *)name, nameLength, &status);
+  const char *utf8Name = name.UTF8String;
+  jint nameLength = (jint)strlen(utf8Name);
+  jint result = uregex_groupNumberFromCName((URegularExpression *)addr, utf8Name, nameLength, &status);
   if (U_SUCCESS(status)) {
     return result;
   }
   if (status == U_REGEX_INVALID_CAPTURE_GROUP_NAME) {
     return -1;
   }
-  maybeThrowIcuException("uregex_groupNumberFromName", status);
+  maybeThrowIcuException("uregex_groupNumberFromCName", status);
   return -1;
 }
 

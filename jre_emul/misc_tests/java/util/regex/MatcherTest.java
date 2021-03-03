@@ -18,11 +18,8 @@ import junit.framework.TestCase;
 
 /**
  * Supplemental tests for java.util.regex.Matcher support.
- *
- * @author Keith Stanger
  */
 public class MatcherTest extends TestCase {
-
   public void testFindWithStart() {
     Pattern p = Pattern.compile("foo");
     Matcher m = p.matcher("a foo bar");
@@ -98,5 +95,14 @@ public class MatcherTest extends TestCase {
     Matcher matcher = pattern.matcher(text);
     assertTrue(matcher.lookingAt());
     assertFalse(matcher.matches());
+  }
+
+  // Issue #1603 (https://github.com/google/j2objc/issues/1603)
+  public void testGroupMatch() {
+    final Pattern demoPattern = Pattern.compile("^(\\?foo=(?<foo>.+))?$");
+    final String demoText = "?foo=bar";
+    final Matcher m = demoPattern.matcher(demoText);
+    assertTrue("matcher failed", m.matches());
+    assertEquals("bar", m.group("foo"));
   }
 }

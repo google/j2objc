@@ -72,8 +72,8 @@ static void (*j2_uregex_useAnchoringBounds)(
     URegularExpression* regexp, UBool b, UErrorCode* status);
 static void (*j2_uregex_useTransparentBounds)(
     URegularExpression* regexp, UBool b, UErrorCode* status);
-static int32_t (*j2_uregex_groupNumberFromName)(URegularExpression* regexp,
-    const UChar* groupName, int32_t nameLength, UErrorCode* status);
+static int32_t (*j2_uregex_groupNumberFromCName)(URegularExpression* regexp,
+    const char* groupName, int32_t nameLength, UErrorCode* status);
 
 
 static void ThrowLinkError() {
@@ -143,7 +143,7 @@ U_STABLE void J2ObjC_icu_init() {
     j2_uregex_start = GetFunction(handle, "uregex_start");
     j2_uregex_useAnchoringBounds = GetFunction(handle, "uregex_useAnchoringBounds");
     j2_uregex_useTransparentBounds = GetFunction(handle, "uregex_useTransparentBounds");
-    j2_uregex_groupNumberFromName = GetFunction(handle, "uregex_groupNumberFromName");
+    j2_uregex_groupNumberFromCName = GetFunction(handle, "uregex_groupNumberFromCName");
 
     // Don't close library handle, or these function pointers will be invalidated.
   });
@@ -290,7 +290,7 @@ U_STABLE void uregex_useTransparentBounds_j2objc(
   (*j2_uregex_useTransparentBounds)(regexp, b, status);
 }
 
-U_STABLE int32_t uregex_groupNumberFromName_j2objc(URegularExpression* regexp,
-    const UChar* groupName, int32_t nameLength, UErrorCode* status) {
-  return (*j2_uregex_groupNumberFromName)(regexp, groupName, nameLength, status);
+U_STABLE int32_t uregex_groupNumberFromCName_j2objc(URegularExpression* regexp,
+    const char* groupName, int32_t nameLength, UErrorCode* status) {
+  return (*j2_uregex_groupNumberFromCName)(regexp, groupName, nameLength, status);
 }
