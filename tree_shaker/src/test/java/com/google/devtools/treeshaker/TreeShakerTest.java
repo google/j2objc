@@ -15,6 +15,7 @@
 package com.google.devtools.treeshaker;
 
 import static com.google.common.base.StandardSystemProperty.JAVA_CLASS_PATH;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
@@ -492,8 +493,6 @@ public class TreeShakerTest extends TestCase {
     addSourceFile("B.java", "class B<X> { class C<Y> { }}");
     addSourceFile("D.java", "class D { }");
     CodeReferenceMap unused = findUnusedCode();
-    System.err.println("*** unused:\n" + unused);
-
 
     assertFalse(unused.containsClass("A"));
     assertFalse(unused.containsClass("B"));
@@ -503,11 +502,11 @@ public class TreeShakerTest extends TestCase {
   }
 
   public void testEraseParametricTypes() throws IOException {
-    assertTrue(UsedCodeMarker.eraseParametricTypes("").isEmpty());
-    assertEquals("C", UsedCodeMarker.eraseParametricTypes("C"));
-    assertEquals("C", UsedCodeMarker.eraseParametricTypes("C<D>"));
-    assertEquals("C", UsedCodeMarker.eraseParametricTypes("C<D<A>>"));
-    assertEquals("C.D", UsedCodeMarker.eraseParametricTypes("C<A>.D<A>"));
+    assertThat(UsedCodeMarker.eraseParametricTypes("")).isEmpty();
+    assertThat(UsedCodeMarker.eraseParametricTypes("C")).isEqualTo("C");
+    assertThat(UsedCodeMarker.eraseParametricTypes("C<D>")).isEqualTo("C");
+    assertThat(UsedCodeMarker.eraseParametricTypes("C<D<A>>")).isEqualTo("C");
+    assertThat(UsedCodeMarker.eraseParametricTypes("C<A>.D<A>")).isEqualTo("C.D");
   }
 
   private void addTreeShakerRootsFile(String source) throws IOException {

@@ -84,3 +84,6 @@ FLOGGER_JARS = \
 
 AUTOVALUE_JAR = auto-value-1.7.4.jar
 AUTOVALUE_ANNOTATIONS_JAR = auto-value-annotations-1.7.4.jar
+
+# Truth support
+TRUTH_JAR = truth-1.1.2.jar
