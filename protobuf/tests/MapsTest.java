@@ -281,7 +281,7 @@ public class MapsTest extends ProtobufTest {
 
   public void testIsInitialized() throws Exception {
     MapMsg.Builder builder = MapMsg.newBuilder();
-    builder.build();  // Check no exception.
+    MapMsg unused = builder.build();  // Check no exception.
     builder.putStringMessage("foo", MapValue.newBuilder().buildPartial());
     try {
       builder.build();
