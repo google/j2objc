@@ -74,12 +74,18 @@ public class DestructorGeneratorTest extends GenerationTest {
    */
   public void testFieldReleaseReferenceCounting() throws IOException {
     options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
-    String translation = translateSourceFile("class Test { Object o; Runnable r; }",
-        "Test", "Test.m");
-    assertTranslatedLines(translation,
+    String source =
+        "import com.google.j2objc.annotations.RetainedWith; "
+            + "class Test { "
+            + "  Object o; "
+            + "  @RetainedWith Runnable r; "
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
         "- (void)dealloc {",
         "RELEASE_(o_);",
-        "RELEASE_(r_);",
+        "JreRetainedWithRelease(self, r_);",
         "[super dealloc];",
         "}");
   }
@@ -89,8 +95,13 @@ public class DestructorGeneratorTest extends GenerationTest {
    */
   public void testFieldReleaseARC() throws IOException {
     options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
-    String translation = translateSourceFile("class Test { Object o; Runnable r; }",
-        "Test", "Test.m");
+    String source =
+        "import com.google.j2objc.annotations.RetainedWith; "
+            + "class Test { "
+            + "  Object o; "
+            + "  @RetainedWith Runnable r; "
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
     assertNotInTranslation(translation, "dealloc");
   }
 

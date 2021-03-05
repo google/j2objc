@@ -89,7 +89,8 @@ public class DestructorGenerator extends UnitTreeVisitor {
   private void addDeallocMethod(AbstractTypeDeclaration node) {
     TypeElement type = node.getTypeElement();
     boolean hasFinalize = hasFinalizeMethod(type);
-    List<Statement> releaseStatements = createReleaseStatements(node);
+    List<Statement> releaseStatements =
+        options.useARC() ? ImmutableList.of() : createReleaseStatements(node);
     MethodDeclaration onDeallocMethodDeclaration = getOnDeallocMethodDeclaration(node);
     if (releaseStatements.isEmpty() && !hasFinalize && onDeallocMethodDeclaration == null) {
       return;
