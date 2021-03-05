@@ -260,8 +260,10 @@ public class TranslationProcessor extends FileProcessor {
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases
     // only its own instance variables.
-    new DestructorGenerator(unit).run();
-    ticker.tick("DestructorGenerator");
+    if (!unit.getEnv().options().useARC()) {
+      new DestructorGenerator(unit).run();
+      ticker.tick("DestructorGenerator");
+    }
 
     // Before: StaticVarRewriter - Generates static variable access expressions.
     new MetadataWriter(unit, deadCodeMap).run();
