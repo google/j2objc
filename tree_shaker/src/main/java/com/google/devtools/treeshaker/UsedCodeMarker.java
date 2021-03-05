@@ -54,7 +54,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
   static final String EMPTY_METHOD_SIGNATURE = "()V";
   static final String OBJECT_TYPE_NAME = "java.lang.Object";
-  static final String PSEUDO_CONSTRUCTOR_PREFIX = "##";
+  static final String PSEUDO_CONSTRUCTOR_PREFIX = "%%";
   static final String SIGNATURE_PREFIX = "##";
 
   private final Context context;
@@ -180,7 +180,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return ElementUtil.getDeclaringClass(method).getQualifiedName().toString();
   }
 
-  private static String getQualifiedMethodName(String type, String name, String signature) {
+  @VisibleForTesting
+  static String getQualifiedMethodName(String type, String name, String signature) {
     return getQualifiedMethodName(type, getMethodName(name, signature));
   }
 
