@@ -542,6 +542,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/function/ToLongBiFunction.java \
   java/util/function/ToLongFunction.java \
   java/util/function/UnaryOperator.java \
+  java/util/logging/ConsoleHandler.java \
   java/util/logging/ErrorManager.java \
   java/util/logging/Filter.java \
   java/util/logging/Formatter.java \
@@ -552,6 +553,8 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/logging/Logger.java \
   java/util/logging/LoggingMXBean.java \
   java/util/logging/LoggingPermission.java \
+  java/util/logging/SimpleFormatter.java \
+  java/util/logging/StreamHandler.java \
   java/util/regex/MatchResult.java \
   java/util/regex/Matcher.java \
   java/util/regex/Pattern.java \
@@ -904,11 +907,8 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/Stack.java \
   java/util/Timer.java \
   java/util/TimerTask.java \
-  java/util/logging/ConsoleHandler.java \
   java/util/logging/FileHandler.java \
   java/util/logging/MemoryHandler.java \
-  java/util/logging/SimpleFormatter.java \
-  java/util/logging/StreamHandler.java \
   java/util/logging/XMLFormatter.java
 
 JAVA_PRIVATE_SOURCES_UTIL = \
