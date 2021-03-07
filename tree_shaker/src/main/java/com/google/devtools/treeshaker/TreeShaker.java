@@ -16,8 +16,6 @@ package com.google.devtools.treeshaker;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Table.Cell;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -32,6 +30,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A tool for finding unused code in a Java program.
@@ -152,20 +151,112 @@ public class TreeShaker {
     return RapidTypeAnalyser.analyse(Arrays.asList(context.getLibraryInfo()));
   }
 
-  private void writeToFile(CodeReferenceMap unused) {
+  private static void writeToFile(Options options, CodeReferenceMap unused) {
     try (BufferedWriter writer
-             = Files.newWriter(options.getOutputFile(), Charset.defaultCharset())) {
-      writer.write("Dead Classes:\n");
-      for (String clazz : unused.getReferencedClasses()) {
-        writer.write(clazz + "\n");
-      }
-      writer.write("Dead Methods:\n");
-      for (Cell<String, String, ImmutableSet<String>> cell :
-               unused.getReferencedMethods().cellSet()) {
-        writer.write(cell + "\n");
-      }
+        = Files.newWriter(options.getOutputFile(), Charset.defaultCharset())) {
+      writeUnused(unused, s -> {
+        try {
+          writer.write(s);
+        } catch (IOException e) {
+          ErrorUtil.error(e.getMessage());
+        }
+      });
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
+    }
+  }
+
+  @VisibleForTesting
+  static void writeUnused(CodeReferenceMap unused, Consumer<String> writer) {
+    for (String clazz : unused.getReferencedClasses()) {
+      writer.accept(clazz + "\n");
+    }
+    unused.getReferencedMethods().cellSet().forEach(cell -> {
+      String type = cell.getRowKey();
+      String name = cell.getColumnKey();
+      writer.accept(type + ":\n");
+      cell.getValue().forEach (signature -> {
+        StringBuilder argTypes = new StringBuilder();
+        StringBuilder returnTypeBuilder = new StringBuilder();
+        int offset = getArgTypes(signature, 0, argTypes);
+        getType(signature, offset, returnTypeBuilder);
+        String returnType = returnTypeBuilder.toString();
+        writer.accept("    ");
+        if (!returnType.equals("void")) {
+          writer.accept(returnType);
+          writer.accept(" ");
+        }
+        writer.accept(name);
+        writer.accept(argTypes.toString());
+        writer.accept("\n");
+      });
+    });
+  }
+
+  private static int getArgTypes(String type, int offset, StringBuilder result) {
+    result.append('(');
+    // consume '('
+    offset++;
+    boolean first = true;
+    while (type.charAt(offset) != ')') {
+      if (first) {
+        first = false;
+      } else {
+        result.append(',');
+      }
+      offset = getType(type, offset, result);
+    }
+    // consume ')'
+    offset++;
+    result.append(')');
+    return offset;
+  }
+
+  @VisibleForTesting
+  static int getType(String type, int offset, StringBuilder result) {
+    switch (type.charAt(offset)) {
+      case 'V':
+        result.append("void");
+        return offset + 1;
+      case 'Z':
+        result.append("boolean");
+        return offset + 1;
+      case 'C':
+        result.append("char");
+        return offset + 1;
+      case 'B':
+        result.append("byte");
+        return offset + 1;
+      case 'S':
+        result.append("short");
+        return offset + 1;
+      case 'I':
+        result.append("int");
+        return offset + 1;
+      case 'F':
+        result.append("float");
+        return offset + 1;
+      case 'J':
+        result.append("long");
+        return offset + 1;
+      case 'D':
+        result.append("double");
+        return offset + 1;
+      case '[':
+        offset = getType(type, offset + 1, result);
+        result.append("[]");
+        return offset;
+      case 'L':
+        int end = type.indexOf(';', offset + 1);
+        result.append(type.substring(offset + 1, end).replace('/', '.'));
+        return end + 1;
+        // case '(':
+      default:
+        StringBuilder argTypes = new StringBuilder();
+        offset = getArgTypes(type, offset, argTypes);
+        offset = getType(type, offset, result);
+        result.append(argTypes);
+        return offset;
     }
   }
 
@@ -177,10 +268,10 @@ public class TreeShaker {
     try {
       Options options = Options.parse(args);
       treatWarningsAsErrors = options.treatWarningsAsErrors();
-      TreeShaker finder = new TreeShaker(options);
-      finder.testFileExistence();
+      TreeShaker shaker = new TreeShaker(options);
+      shaker.testFileExistence();
       exitOnErrorsOrWarnings(treatWarningsAsErrors);
-      finder.writeToFile(finder.findUnusedCode());
+      writeToFile(options, shaker.findUnusedCode());
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }

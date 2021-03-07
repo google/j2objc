@@ -17,7 +17,9 @@ package com.google.devtools.treeshaker;
 import static com.google.common.base.StandardSystemProperty.JAVA_CLASS_PATH;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
@@ -33,6 +35,10 @@ import junit.framework.TestCase;
  * System tests for the TreeShaker.
  */
 public class TreeShakerTest extends TestCase {
+  static Splitter classSplitter = Splitter.on('\n').omitEmptyStrings();
+  static Splitter methodSplitter =
+      Splitter.on("\n    ").omitEmptyStrings().trimResults(CharMatcher.is('\n'));
+
   File tempDir;
   File treeShakerRoots;
   List<String> inputFiles;
@@ -370,7 +376,7 @@ public class TreeShakerTest extends TestCase {
   public void testAbstractClasses() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java", "class A { static void main(String[] args) { new C().c(); }}");
-    addSourceFile("B.java", "abstract class B { void b() {}; abstract void c(); }");
+    addSourceFile("B.java", "abstract class B { void b() {} abstract void c(); }");
     addSourceFile("C.java", "class C extends B { void c() {}}");
     CodeReferenceMap unused = findUnusedCode();
 
@@ -535,6 +541,52 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
+  public void testWriteUnusedClasses() throws IOException {
+    addTreeShakerRootsFile("");
+    addSourceFile("A.java", "class A { }");
+    addSourceFile("B.java", "class B { }");
+    addSourceFile("C.java", "class C { }");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(classSplitter.split(output)).containsExactly("A", "B", "C");
+  }
+
+  public void testWriteUnusedConstructor() throws IOException {
+    addTreeShakerRootsFile("A");
+    addSourceFile("A.java", "class A { }");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(output).startsWith("A:\n");
+    assertThat(methodSplitter.split(output)).containsExactly("A:", "A()");
+  }
+
+  public void testWriteUnusedMethod() throws IOException {
+    addTreeShakerRootsFile("A:\n    A()");
+    addSourceFile("A.java", "class A { int a(boolean b) { return 0; } }");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(output).startsWith("A:\n");
+    assertThat(methodSplitter.split(output)).containsExactly("A:", "int a(boolean)");
+  }
+
+  public void testWriteUnusedOverloadedMethods() throws IOException {
+    addTreeShakerRootsFile("A:\n    A()");
+    addSourceFile("A.java", "class A { void a() {} void a(int i) {} }");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(output).startsWith("A:\n");
+    assertThat(methodSplitter.split(output)).containsExactly("A:", "a(int)",  "a()");
+  }
+
+  public void testWriteUnused() throws IOException {
+    addTreeShakerRootsFile("A:\n    A()");
+    addSourceFile("A.java", "class A { boolean a(int i) { return true; } }");
+    addSourceFile("B.java", "class B { boolean b(int i) { return true; } }");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(output).isEqualTo("B\nA:\n    boolean a(int)\n");
+  }
+
   public void testEraseParametricTypes() throws IOException {
     assertThat(UsedCodeMarker.eraseParametricTypes("")).isEmpty();
     assertThat(UsedCodeMarker.eraseParametricTypes("C")).isEqualTo("C");
@@ -543,15 +595,52 @@ public class TreeShakerTest extends TestCase {
     assertThat(UsedCodeMarker.eraseParametricTypes("C<A>.D<A>")).isEqualTo("C.D");
   }
 
-  private String getMethodName(String type, String name, String signature) {
+  public void testGetType() throws IOException {
+    assertThat(getType("V")).isEqualTo("void");
+    assertThat(getType("Z")).isEqualTo("boolean");
+    assertThat(getType("C")).isEqualTo("char");
+    assertThat(getType("B")).isEqualTo("byte");
+    assertThat(getType("S")).isEqualTo("short");
+    assertThat(getType("I")).isEqualTo("int");
+    assertThat(getType("F")).isEqualTo("float");
+    assertThat(getType("J")).isEqualTo("long");
+    assertThat(getType("D")).isEqualTo("double");
+    assertThat(getType("[I")).isEqualTo("int[]");
+    assertThat(getType("Ljava/lang/String;")).isEqualTo("java.lang.String");
+    assertThat(getType("[I")).isEqualTo("int[]");
+    assertThat(getType("[[I")).isEqualTo("int[][]");
+    assertThat(getType("[Ljava/lang/String;")).isEqualTo("java.lang.String[]");
+    assertThat(getType("[[Ljava/lang/String;")).isEqualTo("java.lang.String[][]");
+    assertThat(getType("()V")).isEqualTo("void()");
+    assertThat(getType("(I)V")).isEqualTo("void(int)");
+    assertThat(getType("(II)V")).isEqualTo("void(int,int)");
+    assertThat(getType("(III)V")).isEqualTo("void(int,int,int)");
+    assertThat(getType("(Ljava/lang/String;II)V")).isEqualTo("void(java.lang.String,int,int)");
+    assertThat(getType("(ILjava/lang/String;I)V")).isEqualTo("void(int,java.lang.String,int)");
+    assertThat(getType("(IILjava/lang/String;)V")).isEqualTo("void(int,int,java.lang.String)");
+  }
+
+  private static String writeUnused(CodeReferenceMap unused) {
+    StringBuilder result = new StringBuilder();
+    TreeShaker.writeUnused(unused, result::append);
+    return result.toString();
+  }
+
+  private static String getType(String descriptor) {
+    StringBuilder result = new StringBuilder();
+    int offset = TreeShaker.getType(descriptor, 0, result);
+    return (offset == descriptor.length()) ? result.toString() : null;
+  }
+
+  private static String getMethodName(String type, String name, String signature) {
     return UsedCodeMarker.getQualifiedMethodName(type, name, signature);
   }
 
-  private ImmutableSet<String> getUnusedClasses(CodeReferenceMap unused) {
+  private static ImmutableSet<String> getUnusedClasses(CodeReferenceMap unused) {
     return unused.getReferencedClasses();
   }
 
-  private ImmutableSet<String> getUnusedMethods(CodeReferenceMap unused) {
+  private static ImmutableSet<String> getUnusedMethods(CodeReferenceMap unused) {
     ImmutableSet.Builder<String> methods = new ImmutableSet.Builder<>();
     unused.getReferencedMethods().cellSet().forEach(cell ->
         cell.getValue().forEach(signature ->
