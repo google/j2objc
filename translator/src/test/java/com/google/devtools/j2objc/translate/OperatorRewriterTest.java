@@ -218,6 +218,34 @@ public class OperatorRewriterTest extends GenerationTest {
           + "compareWithId:s1 withId:s2] == 0;");
   }
 
+  public void testRetainedLocalRefFieldGetter() throws IOException {
+    String translation =
+        translateSourceFile(
+            // From jre_emul/misc_tests/RetentionTest.java.
+            "class Test {"
+                + "  static class Ref {"
+                + "    Object object;"
+                + "    Object get() {"
+                + "      return object;"
+                + "    }"
+                + "  }"
+                + "  public void testFieldGetter() {"
+                + "    Ref ref = new Ref();"
+                + "    com.google.j2objc.util.AutoreleasePool.run(() -> {"
+                + "      ref.object = new Object();"
+                + "    });"
+                + "    Object object = ref.get();"
+                + "    com.google.j2objc.util.AutoreleasePool.run(() -> {"
+                + "      ref.object = null;"
+                + "    });"
+                + "    object.hashCode();"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "id object = JreRetainedLocalValue([ref get]);");
+  }
+
   public void testLazyInitFields() throws IOException {
     addSourcesToSourcepaths();
     addSourceFile("package com.google.errorprone.annotations.concurrent;"

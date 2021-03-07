@@ -415,7 +415,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "public T nextElement() { return it.next(); } }; }}",
         "Test", "Test.m");
     assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) hasNext];");
-    assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) next];");
+    assertTranslation(translation,
+        "return JreRetainedLocalValue([((id<JavaUtilIterator>) nil_chk(it_)) next]);");
     assertFalse(translation.contains("Test *this$0;"));
   }
 

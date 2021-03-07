@@ -250,6 +250,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
         if (!var.asType().getKind().isPrimitive()
             && !ElementUtil.isFinal(var)
             && !ElementUtil.isVolatile(var)
+            && !ElementUtil.isSynthetic(var)
             && !isRetainedLocal(var)
             && !TypeUtil.isArray(var.asType())
             && !(var.asType() instanceof PointerType)) {
@@ -286,13 +287,15 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (TreeUtil.getVariableElement(expr) != null) {
-      FunctionElement element =
-          new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
-      FunctionInvocation invocation = new FunctionInvocation(element, expr.getTypeMirror());
-      expr.replaceWith(invocation);
-      invocation.addArgument(expr);
+    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL
+        || expr.getKind() == TreeNode.Kind.FUNCTION_INVOCATION) {
+      return;
     }
+    FunctionElement element =
+        new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
+    FunctionInvocation invocation = new FunctionInvocation(element, expr.getTypeMirror());
+    expr.replaceWith(invocation);
+    invocation.addArgument(expr);
   }
 
   private void handleRetainedLocal(VariableElement var, Expression rhs) {

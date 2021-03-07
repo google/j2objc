@@ -77,7 +77,7 @@ public class MethodReferenceTest extends GenerationTest {
         "JreStrongAssignAndConsume(&self->fun_, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(instanceTranslation,
         "- (id)fWithId:(id)a {",
-        "  return [target$_ o2WithId:a];",
+        "  return JreRetainedLocalValue([target$_ o2WithId:a]);",
         "}");
     String staticInstanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { static F fun = new Q()::o2; }",
@@ -86,7 +86,7 @@ public class MethodReferenceTest extends GenerationTest {
         "JreStrongAssignAndConsume(&Test_fun, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(staticInstanceTranslation,
         "- (id)fWithId:(id)a {",
-        "  return [target$_ o2WithId:a];",
+        "  return JreRetainedLocalValue([target$_ o2WithId:a]);",
         "}");
   }
 
@@ -96,7 +96,7 @@ public class MethodReferenceTest extends GenerationTest {
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (id)copy__WithIntArray:(IOSIntArray *)a {",
-        "  return [((IOSIntArray *) nil_chk(a)) java_clone];",
+        "  return JreRetainedLocalValue([((IOSIntArray *) nil_chk(a)) java_clone]);",
         "}");
   }
 
@@ -255,7 +255,7 @@ public class MethodReferenceTest extends GenerationTest {
     assertNotInTranslation(translation, "return create_IntFunction_initWithIntArray_");
     assertTranslatedLines(translation,
         "- (id)applyWithInt:(jint)a {",
-        "  return [IOSIntArray arrayWithLength:a];",
+        "  return JreRetainedLocalValue([IOSIntArray arrayWithLength:a]);",
         "}");
   }
 
