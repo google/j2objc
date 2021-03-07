@@ -416,7 +416,6 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).doesNotContain(getMethodName("C", "b", "()V"));
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("A", "A", "()V"),
-        getMethodName("B", "%%B", "()V"),
         getMethodName("B", "b", "()V"));
   }
 
@@ -434,8 +433,7 @@ public class TreeShakerTest extends TestCase {
         getMethodName("B", "c", "()V"),
         getMethodName("C", "c", "()V"));
     assertThat(getUnusedMethods(unused)).containsExactly(
-        getMethodName("A", "A", "()V"),
-        getMethodName("B", "%%B", "()V"));
+        getMethodName("A", "A", "()V"));
   }
 
   public void testInterfaceInheritance() throws IOException {
@@ -455,8 +453,6 @@ public class TreeShakerTest extends TestCase {
         getMethodName("D", "c", "()V"));
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("A", "A", "()V"),
-        getMethodName("B", "%%B", "()V"),
-        getMethodName("C", "%%C", "()V"),
         getMethodName("B", "b", "()V"),
         getMethodName("C", "c", "()V"));
   }
@@ -477,8 +473,6 @@ public class TreeShakerTest extends TestCase {
         getMethodName("D", "b", "()V"));
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("A", "A", "()V"),
-        getMethodName("B", "%%B", "()V"),
-        getMethodName("C", "%%C", "()V"),
         getMethodName("C", "c", "()V"),
         getMethodName("D", "c", "()V"));
   }

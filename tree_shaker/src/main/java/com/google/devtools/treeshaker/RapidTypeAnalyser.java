@@ -37,8 +37,13 @@ final class RapidTypeAnalyser {
       if (type.isLive()) {
         for (Member member : type.getMembers()) {
           if (!member.isLive()) {
+            String method = member.getName();
+            if (method.startsWith(UsedCodeMarker.PSEUDO_CONSTRUCTOR_PREFIX)) {
+              // skip interface pseudo-constructors
+              continue;
+            }
             List<String> components =
-                Splitter.onPattern(UsedCodeMarker.SIGNATURE_PREFIX).splitToList(member.getName());
+                Splitter.onPattern(UsedCodeMarker.SIGNATURE_PREFIX).splitToList(method);
             // TODO(dpo): add better checking for name & signature components.
             if (components.isEmpty()) {
               continue;
