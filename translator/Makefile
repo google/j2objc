@@ -45,7 +45,7 @@ TRUTH_JAR_PATH = $(DIST_JAR_DIR)/$(TRUTH_JAR)
 
 CLASSPATH = $(CLASS_DIR):$(JAR_DEPS_PATH)
 TEST_CLASSPATH = \
-  $(TEST_DIR):$(CLASS_DIR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST):$(TRUTH_JAR_PATH)
+  $(TEST_DIR):$(CLASS_DIR):$(JUNIT_JAR_DIST):$(TRUTH_JAR_PATH)
 TEST_BOOT_CLASSPATH = $(DIST_JAR_DIR)/jre_emul.jar
 
 MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
@@ -303,11 +303,45 @@ UNUSED_JAR_CONTENTS = \
   $(CLASS_DIR)/ant_tasks \
   $(CLASS_DIR)/compiler* \
   $(CLASS_DIR)/hook* \
-  $(CLASS_DIR)/jdt*
+  $(CLASS_DIR)/jdt* \
+  $(CLASS_DIR)/com/google/common/cache \
+  $(CLASS_DIR)/com/google/common/eventbus \
+  $(CLASS_DIR)/com/google/common/[nrx]* \
+  $(CLASS_DIR)/com/google/common/util \
+  $(CLASS_DIR)/com/google/third_party \
+  $(CLASS_DIR)/com/sun/[cij]* \
+  $(CLASS_DIR)/com/sun/jvmstat \
+  $(CLASS_DIR)/com/sun/rmi \
+  $(CLASS_DIR)/com/sun/tools/attach \
+  $(CLASS_DIR)/com/sun/tools/classfile \
+  $(CLASS_DIR)/com/sun/tools/corba \
+  $(CLASS_DIR)/com/sun/tools/doclets \
+  $(CLASS_DIR)/com/sun/tools/ex* \
+  $(CLASS_DIR)/com/sun/tools/hat \
+  $(CLASS_DIR)/com/sun/tools/internal \
+  $(CLASS_DIR)/com/sun/tools/javadoc \
+  $(CLASS_DIR)/com/sun/tools/javah \
+  $(CLASS_DIR)/com/sun/tools/javap \
+  $(CLASS_DIR)/com/sun/tools/jdeps \
+  $(CLASS_DIR)/com/sun/tools/jdi \
+  $(CLASS_DIR)/com/sun/tools/jstat \
+  $(CLASS_DIR)/com/sun/tools/script \
+  $(CLASS_DIR)/com/sun/tools/serialver \
+  $(CLASS_DIR)/com/sun/xml \
+  $(CLASS_DIR)/org/relaxng \
+  $(CLASS_DIR)/scenelib/annotations/io/classfile \
+  $(CLASS_DIR)/scenelib/annotations/t* \
+  $(CLASS_DIR)/sun/[ajrs]* \
+  $(CLASS_DIR)/sun/tools/[ans]* \
+  $(CLASS_DIR)/sun/tools/jar \
+  $(CLASS_DIR)/sun/tools/j[cimps]* \
+  $(CLASS_DIR)/sun/tools/tree \
+
 ifeq ($(shell uname), Linux)
-PRUNE_CMD = bash -O globasciiranges -c "rm -rf $(UNUSED_JAR_CONTENTS)"
+PRUNE_CMD = bash -O globasciiranges -c "rm -rf $(UNUSED_JAR_CONTENTS)" \
+   && find $(CLASS_DIR) -name '*.java' -delete
 else
-PRUNE_CMD = rm -rf $(UNUSED_JAR_CONTENTS)
+PRUNE_CMD = rm -rf $(UNUSED_JAR_CONTENTS) && find $(CLASS_DIR) -name '*.java' -delete
 endif
 
 default: $(J2OBJC_JAR)
