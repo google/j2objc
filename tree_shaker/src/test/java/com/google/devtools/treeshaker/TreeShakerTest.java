@@ -486,7 +486,7 @@ public class TreeShakerTest extends TestCase {
   public void testLambdas() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java",
-        "class A { static void main(String[] args) { B b = (x) -> x; b.op(5); } }");
+        "class A { static void main(String[] args) { B b = x -> x; b.op(5); } }");
     addSourceFile("B.java", "interface B { int op(int x);  }");
     CodeReferenceMap unused = findUnusedCode();
 
@@ -494,6 +494,45 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedClasses(unused)).isEmpty();
 
     assertThat(getUnusedMethods(unused)).doesNotContain(getMethodName("B", "op", "(I)I"));
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
+  }
+
+  public void testLambdasUnused() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { B b = i -> i; } }");
+    addSourceFile("B.java", "interface B { int op(int x);  }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    // Note: B.op is marked unused, which is a non-issue since the generated iOS protocols
+    // don't contain any code.
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("A", "A", "()V"),
+        getMethodName("B", "op", "(I)I"));
+  }
+
+  public void testMethodValues() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java",
+        "class A {",
+        "  static void main(String[] args) {",
+        "    execute(A::log);",
+        "  }",
+        " static void execute (B b) { b.op(\"a\"); }",
+        " static void log (Object s) { }",
+        "}");
+    addSourceFile("B.java", "interface B { void op(String s);  }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    assertThat(getUnusedMethods(unused)).containsNoneOf(
+        getMethodName("A", "execute", "(B)V"),
+        getMethodName("A", "log", "(Ljava/lang/Object;)V"),
+        getMethodName("B", "op", "(Ljava/lang/String;)V"));
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
@@ -654,10 +693,14 @@ public class TreeShakerTest extends TestCase {
     Files.asCharSink(treeShakerRoots, Charset.defaultCharset()).write(source);
   }
 
-  private void addSourceFile(String fileName, String source) throws IOException {
+  private void addSourceFile(String fileName, String... sources) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
-    Files.write(source, file, Charset.defaultCharset());
+    StringBuilder source = new StringBuilder();
+    for (String s : sources) {
+      source.append(s);
+    }
+    Files.asCharSink(file, Charset.defaultCharset()).write(source);
     inputFiles.add(file.getAbsolutePath());
   }
 
