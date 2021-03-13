@@ -483,6 +483,31 @@ public class TreeShakerTest extends TestCase {
         getMethodName("D", "c", "()V"));
   }
 
+  public void testUninstantiatedTypes() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(B,C,D)");
+    addSourceFile("A.java", "class A {  static void main(B b, C c, D d) { b.b(); c.c(); d.d(); }}");
+    addSourceFile("B.java", "interface B { void b(); }");
+    addSourceFile("C.java", "abstract class C { abstract void c(); }");
+    addSourceFile("D.java", "class D { void d(){} }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B", "C", "D");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    // Note: While the types are live becaused they are referenced, all of the members are marked
+    // unused because the types are never instantiated.
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("A", "A", "()V"),
+        getMethodName("B", "b", "()V"),
+        getMethodName("B", "<clinit>", "()V"),
+        getMethodName("C", "C", "()V"),
+        getMethodName("C", "c", "()V"),
+        getMethodName("C", "<clinit>", "()V"),
+        getMethodName("D", "D", "()V"),
+        getMethodName("D", "d", "()V"),
+        getMethodName("D", "<clinit>", "()V"));
+  }
+
   public void testLambdas() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java",
