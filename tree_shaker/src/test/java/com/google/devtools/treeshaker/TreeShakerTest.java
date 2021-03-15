@@ -633,6 +633,20 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
+  public void testNativeMethods() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().b(); }}");
+    addSourceFile("B.java", "class B { native void b(); native void c(); }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("A", "A", "()V"),
+        getMethodName("B", "c", "()V"));
+  }
+
   public void testWriteUnusedClasses() throws IOException {
     addTreeShakerRootsFile("");
     addSourceFile("A.java", "class A { }");
