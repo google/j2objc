@@ -341,7 +341,35 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
+  public void testStaticFieldWrite() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { B.b = 1; } }");
+    addSourceFile("B.java", "class B { static int b; }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("A", "A", "()V"),
+        getMethodName("B", "B", "()V"));
+  }
+
   public void testStaticFieldAccess() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { int i = B.b; } }");
+    addSourceFile("B.java", "class B { static int b; }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("A", "A", "()V"),
+        getMethodName("B", "B", "()V"));
+  }
+
+  public void testStaticFieldMethodAccess() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java", "class A { static void main(String[] args) { B.TWO.b(); } }");
     addSourceFile("B.java", "class B { static B TWO = new B(); void b() {} void c() {} }");

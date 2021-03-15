@@ -110,7 +110,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     if (node.getVariableElement().getModifiers().contains(STATIC)) {
       context.addMethodInvocation(
           CLASS_INITIALIZER_NAME,
-          node.getTypeMirror().toString());
+          node.getExpression().getTypeMirror().toString());
     }
   }
 
