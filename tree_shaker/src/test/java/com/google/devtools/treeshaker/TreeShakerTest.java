@@ -511,6 +511,25 @@ public class TreeShakerTest extends TestCase {
         getMethodName("D", "c", "()V"));
   }
 
+  public void testAccidentalOverride() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { C c = new D(); c.b(); }}");
+    addSourceFile("B.java", "class B { public void b() {} }");
+    addSourceFile("C.java", "interface C { void b(); }");
+    addSourceFile("D.java", "class D extends B implements C {}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsNoneOf("A", "B", "C", "D");
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    assertThat(getUnusedMethods(unused)).containsNoneOf(
+        getMethodName("B", "B", "()V"),
+        getMethodName("C", "b", "()V"),
+        getMethodName("D", "D", "()V"),
+        getMethodName("D", "b", "()V"));
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
+  }
+
   public void testUninstantiatedTypes() throws IOException {
     addTreeShakerRootsFile("A:\n    main(B,C,D)");
     addSourceFile("A.java", "class A {  static void main(B b, C c, D d) { b.b(); c.c(); d.d(); }}");
