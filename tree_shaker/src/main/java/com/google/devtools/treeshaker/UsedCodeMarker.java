@@ -288,9 +288,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     }
 
     private Integer getTypeId(String typeName) {
-      Integer index = typeMap.putIfAbsent(typeName, typeCount);
+      String rawTypeName = eraseParametricTypes(typeName);
+      Integer index = typeMap.putIfAbsent(rawTypeName, typeCount);
       if (index == null) {
-        lib.addTypeMap(typeName);
+        lib.addTypeMap(rawTypeName);
         return typeCount++;
       }
       return index;
@@ -376,7 +377,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       if (isPrimitive)  {
         return;
       }
-      addReferencedTypeName(eraseParametricTypes(type.toString()));
+      addReferencedTypeName(type.toString());
     }
 
     private void addReferencedTypeName(String typeName) {
