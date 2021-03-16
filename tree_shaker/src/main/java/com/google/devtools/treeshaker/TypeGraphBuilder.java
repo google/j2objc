@@ -47,7 +47,7 @@ class TypeGraphBuilder {
     for (LibraryInfo libraryInfo : libraryInfos) {
       buildCrossReferences(libraryInfo);
     }
-    logger.atInfo().log("External Types: %s", String.join(", ", externalTypeReferences));
+    logger.atFine().log("External Types: %s", String.join(", ", externalTypeReferences));
     return typesByName.values();
   }
 
