@@ -16,6 +16,7 @@ package com.google.devtools.treeshaker;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
+import com.google.common.flogger.GoogleLogger;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -28,7 +29,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -36,6 +36,7 @@ import java.util.function.Consumer;
  * A tool for finding unused code in a Java program.
  */
 public class TreeShaker {
+  private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
   private final Options options;
   private final com.google.devtools.j2objc.Options j2objcOptions;
 
@@ -73,19 +74,19 @@ public class TreeShaker {
     if (nWarnings > 0 || nErrors > 0) {
       if (nWarnings > 0) {
         if (treatWarningsAsErrors) {
-          System.err.println("Treating warnings as errors.");
-          System.err.println("Failed with " + nWarnings + " warnings:");
+          logger.atSevere().log("Treating warnings as errors.");
+          logger.atSevere().log("Failed with %d warnings:", nWarnings);
         } else {
-          System.err.println("TreeShaker ran with " + nWarnings + " warnings:");
+          logger.atWarning().log("TreeShaker ran with %d warnings:", nWarnings);
         }
         for (String warning : ErrorUtil.getWarningMessages()) {
-          System.err.println("  warning: " + warning);
+          logger.atWarning().log("  warning: %s", warning);
         }
       }
       if (nErrors > 0) {
-        System.err.println("Failed with " + nErrors + " errors:");
+        logger.atSevere().log("Failed with %d errors:", nErrors);
         for (String error : ErrorUtil.getErrorMessages()) {
-          System.err.println("  error: " + error);
+          logger.atSevere().log("  error: %s", error);
         }
       }
       if (treatWarningsAsErrors) {
@@ -148,7 +149,9 @@ public class TreeShaker {
     if (ErrorUtil.errorCount() > 0) {
       return null;
     }
-    return RapidTypeAnalyser.analyse(Arrays.asList(context.getLibraryInfo()));
+    TypeGraphBuilder tgb = new TypeGraphBuilder(context.getLibraryInfo());
+    logger.atFine().log("External Types: %s", String.join(", ", tgb.getExternalTypeReferences()));
+    return RapidTypeAnalyser.analyse(tgb.getTypes());
   }
 
   private static void writeToFile(Options options, CodeReferenceMap unused) {

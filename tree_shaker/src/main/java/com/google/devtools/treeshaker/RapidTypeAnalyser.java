@@ -21,9 +21,7 @@ import java.util.List;
 
 final class RapidTypeAnalyser {
 
-  static CodeReferenceMap analyse(List<LibraryInfo> libraryInfos) {
-    Collection<Type> types = new TypeGraphBuilder(libraryInfos).getTypes();
-
+  static CodeReferenceMap analyse(Collection<Type> types) {
     types.stream().filter(Type::isExported).forEach(RapidTypeAnalyser::markTypeLive);
 
     // Go over the entry points to start the traversal.
@@ -45,11 +43,11 @@ final class RapidTypeAnalyser {
             List<String> components =
                 Splitter.onPattern(UsedCodeMarker.SIGNATURE_PREFIX).splitToList(method);
             // TODO(dpo): add better checking for name & signature components.
-            if (components.isEmpty()) {
+            if (components.isEmpty() || components.size() != 2) {
               continue;
             }
             String name = components.get(0);
-            String sig = components.size() == 2 ? components.get(1) : "";
+            String sig = components.get(1);
             unusedBuilder.addMethod(member.getDeclaringType().getName(), name, sig);
           }
         }
