@@ -18,36 +18,44 @@ import java.util.List;
 
 final class Member {
   static Member buildFrom(MemberInfo memberInfo, Type declaringType) {
-    Member member = new Member();
-    member.memberInfo = memberInfo;
-    member.declaringType = declaringType;
-    member.isStatic = memberInfo.getStatic();
-    member.isConstructor = memberInfo.getConstructor();
-    return member;
+    return new Member(
+        memberInfo.getName(),
+        declaringType,
+        memberInfo.getStatic(),
+        memberInfo.getConstructor(),
+        memberInfo.getExported());
   }
 
-  private MemberInfo memberInfo;
-  private Type declaringType;
-  private boolean isStatic;
-  private boolean isConstructor;
+  private final String name;
+  private final Type declaringType;
+  private final boolean isStatic;
+  private final boolean isConstructor;
+  private final boolean isExported;
 
   private boolean fullyTraversed;
   private boolean live;
   private final List<Type> referencedTypes = new ArrayList<>();
   private final List<Member> referencedMembers = new ArrayList<>();
 
-  private Member() {}
+  private Member(String name, Type declaringType, boolean isStatic, boolean isConstructor,
+      boolean isExported) {
+    this.name = name;
+    this.declaringType = declaringType;
+    this.isStatic = isStatic;
+    this.isConstructor = isConstructor;
+    this.isExported = isExported;
+  }
 
   Type getDeclaringType() {
     return declaringType;
   }
 
   boolean isExported() {
-    return memberInfo.getExported();
+    return isExported;
   }
 
   String getName() {
-    return memberInfo.getName();
+    return name;
   }
 
   public boolean isConstructor() {

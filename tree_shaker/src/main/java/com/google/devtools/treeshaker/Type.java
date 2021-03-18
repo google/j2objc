@@ -19,46 +19,48 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 final class Type {
-  private String name;
+  static Type buildFrom(TypeInfo typeInfo, String name) {
+    return new Type(name, typeInfo.getExported(), typeInfo.getMemberList());
+  }
+
+  private final String name;
+  private final boolean isExported;
+  private final Map<String, Member> membersByName = new LinkedHashMap<>();
+
   private Type superClass;
   private final List<Type> superInterfaces = new ArrayList<>();
   private final List<Type> immediateSubtypes = new ArrayList<>();
-  private final LinkedHashMap<String, Member> membersByName = new LinkedHashMap<>();
   private boolean live;
   private boolean instantiated;
-  private boolean isExported;
   private final List<Member> potentiallyLiveMembers = new ArrayList<>();
 
-  static Type buildFrom(TypeInfo typeInfo, String name) {
-    Type type = new Type();
-    type.name = name;
-    type.isExported = typeInfo.getExported();
-    typeInfo
-        .getMemberList()
-        .forEach(memberInfo -> type.addMember(Member.buildFrom(memberInfo, type)));
-
-    return type;
+  private Type(String name, boolean isExported, Collection<MemberInfo> members) {
+    this.name = name;
+    this.isExported = isExported;
+    members.forEach(memberInfo -> {
+      Member member = Member.buildFrom(memberInfo, this);
+      Member previous = membersByName.put(member.getName(), member);
+      checkState(previous == null);
+    });
   }
 
-  private Type() {}
+  String getName() {
+    return name;
+  }
 
-  Collection<Member> getMembers() {
-    return membersByName.values();
+  boolean isExported() {
+    return isExported;
   }
 
   Member getMemberByName(String name) {
     return membersByName.get(name);
   }
 
-  void addMember(Member member) {
-    Member previous = membersByName.put(member.getName(), member);
-    checkState(previous == null);
-  }
-
-  String getName() {
-    return name;
+  Collection<Member> getMembers() {
+    return membersByName.values();
   }
 
   Type getSuperClass() {
@@ -69,12 +71,20 @@ final class Type {
     this.superClass = superClass;
   }
 
-  List<Type> getSuperInterfaces() {
+  Collection<Type> getSuperInterfaces() {
     return superInterfaces;
   }
 
   void addSuperInterface(Type superInterface) {
     this.superInterfaces.add(superInterface);
+  }
+
+  Collection<Type> getImmediateSubtypes() {
+    return immediateSubtypes;
+  }
+
+  void addImmediateSubtype(Type type) {
+    immediateSubtypes.add(type);
   }
 
   void markLive() {
@@ -93,25 +103,13 @@ final class Type {
     this.instantiated = true;
   }
 
-  /** Returns the list of members that need to mark as live when the type becomes live. */
-  List<Member> getPotentiallyLiveMembers() {
+  // Returns the list of members that need to mark as live when the type becomes live.
+  Collection<Member> getPotentiallyLiveMembers() {
     return potentiallyLiveMembers;
   }
 
   void addPotentiallyLiveMember(Member member) {
     checkState(!isInstantiated());
     potentiallyLiveMembers.add(member);
-  }
-
-  public void addImmediateSubtype(Type type) {
-    immediateSubtypes.add(type);
-  }
-
-  public List<Type> getImmediateSubtypes() {
-    return immediateSubtypes;
-  }
-
-  boolean isExported() {
-    return isExported;
   }
 }
