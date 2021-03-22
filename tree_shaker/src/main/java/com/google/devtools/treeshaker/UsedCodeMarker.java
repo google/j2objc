@@ -54,7 +54,6 @@ import javax.lang.model.type.TypeMirror;
 final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
   static final String EMPTY_METHOD_SIGNATURE = "()V";
-  static final String OBJECT_TYPE_NAME = "java.lang.Object";
   static final String PSEUDO_CONSTRUCTOR_PREFIX = "%%";
   static final String SIGNATURE_PREFIX = "##";
 
@@ -271,7 +270,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     private final Deque<Set<Integer>> referencedTypesScope = new ArrayDeque<>();
 
     Context(CodeReferenceMap rootSet) {
-      getTypeId(OBJECT_TYPE_NAME);
       exportedMethods = new HashSet<>();
       for (Cell<String, String, ImmutableSet<String>> cell :
                rootSet.getReferencedMethods().cellSet()) {
