@@ -153,6 +153,7 @@ class Options {
 
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
+    boolean printArgs = false;
 
     int nArg = 0;
     while (nArg < args.length) {
@@ -204,6 +205,8 @@ class Options {
         version();
       } else if (arg.equals("-Werror")) {
         options.treatWarningsAsErrors = true;
+      } else if (arg.equals("-Xprint-args")) {
+        printArgs = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -219,6 +222,10 @@ class Options {
     }
     if (options.sourceFiles.isEmpty()) {
       usage("no source files");
+    }
+    if (printArgs) {
+      System.err.print("tree_shaker ");
+      System.err.println(String.join(" ", args));
     }
 
     return options;
