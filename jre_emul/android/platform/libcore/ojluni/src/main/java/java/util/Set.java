@@ -437,4 +437,293 @@ public interface Set<E> extends Collection<E> {
     default Spliterator<E> spliterator() {
         return Spliterators.spliterator(this, Spliterator.DISTINCT);
     }
+
+    /**
+     * Returns an immutable set containing zero elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @return an empty {@code Set}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of() {
+        return ImmutableCollections.Set0.instance();
+    }
+
+    /**
+     * Returns an immutable set containing one element.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the single element
+     * @return a {@code Set} containing the specified element
+     * @throws NullPointerException if the element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1) {
+        return new ImmutableCollections.Set1<>(e1);
+    }
+
+    /**
+     * Returns an immutable set containing two elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if the elements are duplicates
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2) {
+        return new ImmutableCollections.Set2<>(e1, e2);
+    }
+
+    /**
+     * Returns an immutable set containing three elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3);
+    }
+
+    /**
+     * Returns an immutable set containing four elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4);
+    }
+
+    /**
+     * Returns an immutable set containing five elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @param e5 the fifth element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4, E e5) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4, e5);
+    }
+
+    /**
+     * Returns an immutable set containing six elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @param e5 the fifth element
+     * @param e6 the sixth element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4, E e5, E e6) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4, e5,
+                                               e6);
+    }
+
+    /**
+     * Returns an immutable set containing seven elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @param e5 the fifth element
+     * @param e6 the sixth element
+     * @param e7 the seventh element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4, e5,
+                                               e6, e7);
+    }
+
+    /**
+     * Returns an immutable set containing eight elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @param e5 the fifth element
+     * @param e6 the sixth element
+     * @param e7 the seventh element
+     * @param e8 the eighth element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4, e5,
+                                               e6, e7, e8);
+    }
+
+    /**
+     * Returns an immutable set containing nine elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @param e5 the fifth element
+     * @param e6 the sixth element
+     * @param e7 the seventh element
+     * @param e8 the eighth element
+     * @param e9 the ninth element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8, E e9) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4, e5,
+                                               e6, e7, e8, e9);
+    }
+
+    /**
+     * Returns an immutable set containing ten elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param e1 the first element
+     * @param e2 the second element
+     * @param e3 the third element
+     * @param e4 the fourth element
+     * @param e5 the fifth element
+     * @param e6 the sixth element
+     * @param e7 the seventh element
+     * @param e8 the eighth element
+     * @param e9 the ninth element
+     * @param e10 the tenth element
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null}
+     *
+     * @since 9
+     */
+    static <E> Set<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8, E e9, E e10) {
+        return new ImmutableCollections.SetN<>(e1, e2, e3, e4, e5,
+                                               e6, e7, e8, e9, e10);
+    }
+
+    /**
+     * Returns an immutable set containing an arbitrary number of elements.
+     * See <a href="#immutable">Immutable Set Static Factory Methods</a> for details.
+     *
+     * @apiNote
+     * This method also accepts a single array as an argument. The element type of
+     * the resulting set will be the component type of the array, and the size of
+     * the set will be equal to the length of the array. To create a set with
+     * a single element that is an array, do the following:
+     *
+     * <pre>{@code
+     *     String[] array = ... ;
+     *     Set<String[]> list = Set.<String[]>of(array);
+     * }</pre>
+     *
+     * This will cause the {@link Set#of(Object) Set.of(E)} method
+     * to be invoked instead.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param elements the elements to be contained in the set
+     * @return a {@code Set} containing the specified elements
+     * @throws IllegalArgumentException if there are any duplicate elements
+     * @throws NullPointerException if an element is {@code null} or if the array is {@code null}
+     *
+     * @since 9
+     */
+    @SafeVarargs
+    @SuppressWarnings("varargs")
+    static <E> Set<E> of(E... elements) {
+        switch (elements.length) { // implicit null check of elements
+            case 0:
+                return ImmutableCollections.Set0.instance();
+            case 1:
+                return new ImmutableCollections.Set1<>(elements[0]);
+            case 2:
+                return new ImmutableCollections.Set2<>(elements[0], elements[1]);
+            default:
+                return new ImmutableCollections.SetN<>(elements);
+        }
+    }
+
+    /**
+     * Returns an <a href="#unmodifiable">unmodifiable Set</a> containing the elements
+     * of the given Collection. The given Collection must not be null, and it must not
+     * contain any null elements. If the given Collection contains duplicate elements,
+     * an arbitrary element of the duplicates is preserved. If the given Collection is
+     * subsequently modified, the returned Set will not reflect such modifications.
+     *
+     * @implNote
+     * If the given Collection is an <a href="#unmodifiable">unmodifiable Set</a>,
+     * calling copyOf will generally not create a copy.
+     *
+     * @param <E> the {@code Set}'s element type
+     * @param coll a {@code Collection} from which elements are drawn, must be non-null
+     * @return a {@code Set} containing the elements of the given {@code Collection}
+     * @throws NullPointerException if coll is null, or if it contains any nulls
+     * @since 10
+     */
+    @SuppressWarnings("unchecked")
+    static <E> Set<E> copyOf(Collection<? extends E> coll) {
+        if (coll instanceof ImmutableCollections.AbstractImmutableSet) {
+            return (Set<E>)coll;
+        } else {
+            return (Set<E>)Set.of(new HashSet<>(coll).toArray());
+        }
+    }
 }

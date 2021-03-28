@@ -626,7 +626,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/Comparators.java \
   java/util/DualPivotQuicksort.java \
   java/util/Grego.java \
+  java/util/ImmutableCollections.java \
   java/util/JumboEnumSet.java \
+  java/util/KeyValueHolder.java \
   java/util/RegularEnumSet.java \
   java/util/logging/Logging.java \
   java/util/logging/LoggingProxyImpl.java \
@@ -655,6 +657,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/StreamSpliterators.java \
   java/util/stream/TerminalOp.java \
   jdk/internal/module/SystemModulesMap.java \
+  jdk/internal/util/Preconditions.java \
+  jdk/internal/vm/annotation/Stable.java \
   libcore/api/CorePlatformApi.java \
   libcore/api/Hide.java \
   libcore/api/IntraCoreApi.java \

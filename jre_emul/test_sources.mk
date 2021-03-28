@@ -628,9 +628,11 @@ TEST_SOURCES := \
     libcore/java/util/HashtableTest.java \
     libcore/java/util/IntSummaryStatisticsTest.java \
     libcore/java/util/LinkedHashMapTest.java \
+    libcore/java/util/ListOfTest.java \
     libcore/java/util/ListTest.java \
     libcore/java/util/LocaleTest.java \
     libcore/java/util/LongSummaryStatisticsTest.java \
+    libcore/java/util/MapOfTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldAndroidHashMapTest.java \
@@ -644,6 +646,7 @@ TEST_SOURCES := \
     libcore/java/util/PrimitiveIteratorTest.java \
     libcore/java/util/RandomTest.java \
     libcore/java/util/ServiceLoaderTest.java \
+    libcore/java/util/SetOfTest.java \
     libcore/java/util/SimpleTimeZoneTest.java \
     libcore/java/util/SpliteratorsTest.java \
     libcore/java/util/StringJoinerTest.java \
