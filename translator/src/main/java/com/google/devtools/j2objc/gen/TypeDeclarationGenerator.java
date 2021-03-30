@@ -37,13 +37,11 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-import com.google.j2objc.annotations.SwiftUnavailable;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -612,12 +610,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (m.isUnavailable()) {
       print(" NS_UNAVAILABLE");
     }
-    AnnotationMirror annotation =
-        ElementUtil.getAnnotation(m.getExecutableElement(), SwiftUnavailable.class);
-    if (annotation != null) {
-      String message = (String) ElementUtil.getAnnotationValue(annotation, "value");
-      print(" NS_SWIFT_UNAVAILABLE(\"" + message + "\")");
-    }
     println(";");
   }
 
@@ -642,7 +634,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     return false;
   }
-
 
   @Override
   protected void printNativeDeclaration(NativeDeclaration declaration) {
