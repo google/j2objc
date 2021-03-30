@@ -782,4 +782,15 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
       fail("No mapping found for MyClass() constructor");
     }
   }
+
+  public void testSwiftUnavailableAnnotation() throws IOException {
+    String source = String.join("\n",
+        "import com.google.j2objc.annotations.SwiftUnavailable;",
+        "class Test {",
+        "  @SwiftUnavailable(\"test message\")",
+        "  public void test() {}",
+        "}");
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslation(translation, "- (void)test NS_SWIFT_UNAVAILABLE(\"test message\");");
+  }
 }
