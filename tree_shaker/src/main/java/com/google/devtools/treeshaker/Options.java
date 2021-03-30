@@ -18,15 +18,16 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -153,12 +154,29 @@ class Options {
 
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
+    processArgs(args, options);
+    return options;
+  }
+
+  private static void processArgsFile(String filename, Options options) throws IOException {
+    if (filename.isEmpty()) {
+      usage("no @ file specified");
+    }
+    File f = new File(filename);
+    String fileArgs = Files.asCharSource(f, Charset.forName(options.fileEncoding())).read();
+    // Simple split on any whitespace, quoted values aren't supported.
+    processArgs(fileArgs.split("\\s+"), options);
+  }
+
+  private static void processArgs(String[] args, Options options) throws IOException {
     boolean printArgs = false;
 
     int nArg = 0;
     while (nArg < args.length) {
       String arg = args[nArg];
-      if (arg.equals("-sourcepath")) {
+      if (arg.startsWith("@")) {
+        processArgsFile(arg.substring(1), options);
+      } else if (arg.equals("-sourcepath")) {
         if (++nArg == args.length) {
           usage("-sourcepath requires an argument");
         }
@@ -227,7 +245,5 @@ class Options {
       System.err.print("tree_shaker ");
       System.err.println(String.join(" ", args));
     }
-
-    return options;
   }
 }
