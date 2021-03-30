@@ -927,6 +927,7 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/CyclicBarrier.java \
   java/util/concurrent/DelayQueue.java \
   java/util/concurrent/Exchanger.java \
+  java/util/concurrent/Flow.java \
   java/util/concurrent/LinkedBlockingDeque.java \
   java/util/concurrent/LinkedTransferQueue.java \
   java/util/concurrent/Phaser.java \
