@@ -2812,6 +2812,7 @@
 		0661FA0C24E5E253003AD88E /* TestUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661FA0824E5E253003AD88E /* TestUtil.m */; };
 		0671E51421BDD08A002E0681 /* dalvik_system_JniTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0671E51321BDD05F002E0681 /* dalvik_system_JniTest.cpp */; };
 		0671E51621BDE22D002E0681 /* ModifierTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E51521BDE22D002E0681 /* ModifierTest.m */; };
+		067A7F22261150BB00FC2DF7 /* Flow.m in Sources */ = {isa = PBXBuildFile; fileRef = 067A7F1D261150B900FC2DF7 /* Flow.m */; };
 		067B132B1EEDCE720013CBAF /* Atomic8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13071EEDC3DC0013CBAF /* Atomic8Test.m */; };
 		067B132C1EEDCE720013CBAF /* AtomicBooleanTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13081EEDC3DC0013CBAF /* AtomicBooleanTest.m */; };
 		067B132D1EEDCE720013CBAF /* AtomicIntegerArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067B13091EEDC3DC0013CBAF /* AtomicIntegerArrayTest.m */; };
@@ -7532,6 +7533,8 @@
 		067855D2169F37710042431C /* MathContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MathContext.m; path = build_result/Classes/java/math/MathContext.m; sourceTree = "<group>"; };
 		067855D7169F37710042431C /* RoundingMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoundingMode.h; path = build_result/Classes/java/math/RoundingMode.h; sourceTree = "<group>"; };
 		067855D8169F37710042431C /* RoundingMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoundingMode.m; path = build_result/Classes/java/math/RoundingMode.m; sourceTree = "<group>"; };
+		067A7F1C261150B900FC2DF7 /* Flow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flow.h; path = build_result/Classes/java/util/concurrent/Flow.h; sourceTree = "<group>"; };
+		067A7F1D261150B900FC2DF7 /* Flow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Flow.m; path = build_result/Classes/java/util/concurrent/Flow.m; sourceTree = "<group>"; };
 		067A99561954DF06009171DD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		067A99581954DF06009171DD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		067B13071EEDC3DC0013CBAF /* Atomic8Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Atomic8Test.m; path = jsr166/Atomic8Test.m; sourceTree = "<group>"; };
@@ -9931,18 +9934,6 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
-				06C9D1062541FE5800EEA36A /* ManagementFactory.h */,
-				06C9D1042541FE5800EEA36A /* ManagementFactory.m */,
-				06C9D1052541FE5800EEA36A /* RuntimeMXBean.h */,
-				06C9D1082541FE5900EEA36A /* RuntimeMXBean.m */,
-				06C9D1072541FE5800EEA36A /* ThreadInfo.h */,
-				06C9D1032541FE5700EEA36A /* ThreadInfo.m */,
-				06C9D1022541FE5700EEA36A /* ThreadMXBean.h */,
-				06C9D1092541FE5900EEA36A /* ThreadMXBean.m */,
-				06C9D0F62541FE0F00EEA36A /* LocaleEquivalentMaps.h */,
-				06C9D0F82541FE0F00EEA36A /* LocaleEquivalentMaps.m */,
-				06C9D0F92541FE0F00EEA36A /* LocaleMatcher.h */,
-				06C9D0F72541FE0F00EEA36A /* LocaleMatcher.m */,
 				063BE4072505C1BD000819BB /* AbstractBasicFileAttributeView.h */,
 				063BE34B2505C187000819BB /* AbstractBasicFileAttributeView.m */,
 				063BE4AE2505C239000819BB /* AbstractCalendar.h */,
@@ -11439,6 +11430,8 @@
 				063BE2F72505C128000819BB /* FloatConsts.m */,
 				063BE2F32505C127000819BB /* FloatingDecimal.h */,
 				063BE3182505C130000819BB /* FloatingDecimal.m */,
+				067A7F1C261150B900FC2DF7 /* Flow.h */,
+				067A7F1D261150B900FC2DF7 /* Flow.m */,
 				06721A8F1559CB2500645E1B /* Flushable.h */,
 				06F2900118972C9300676F1D /* Flushable.m */,
 				063BDC192505BA3E000819BB /* ForEachOps.h */,
@@ -12101,6 +12094,8 @@
 				06B6D20617C7D67400624B3C /* LocaleData.m */,
 				063BE7092505E930000819BB /* LocaleDisplayNames.h */,
 				063BE65C2505E8FC000819BB /* LocaleDisplayNames.m */,
+				06C9D0F62541FE0F00EEA36A /* LocaleEquivalentMaps.h */,
+				06C9D0F82541FE0F00EEA36A /* LocaleEquivalentMaps.m */,
 				063BE5772505D6F9000819BB /* LocaleExtensions.h */,
 				063BE4F12505C244000819BB /* LocaleExtensions.h */,
 				063BE5542505D6F0000819BB /* LocaleExtensions.m */,
@@ -12109,6 +12104,8 @@
 				063BE5AC2505D706000819BB /* LocaleIDParser.m */,
 				063BE56D2505D6F6000819BB /* LocaleIDs.h */,
 				063BE5782505D6F9000819BB /* LocaleIDs.m */,
+				06C9D0F92541FE0F00EEA36A /* LocaleMatcher.h */,
+				06C9D0F72541FE0F00EEA36A /* LocaleMatcher.m */,
 				063BE5C22505D70C000819BB /* LocaleObjectCache.h */,
 				063BE4AF2505C239000819BB /* LocaleObjectCache.h */,
 				063BE53D2505D6E5000819BB /* LocaleObjectCache.m */,
@@ -12221,6 +12218,8 @@
 				06ED3D7917D164DC0014750E /* MalformedParameterizedTypeException.m */,
 				06ED3D8217D164FE0014750E /* MalformedURLException.h */,
 				06ED3D8317D164FE0014750E /* MalformedURLException.m */,
+				06C9D1062541FE5800EEA36A /* ManagementFactory.h */,
+				06C9D1042541FE5800EEA36A /* ManagementFactory.m */,
 				0649A70D1AE0796500DE2494 /* ManagerFactoryParameters.h */,
 				0649A70E1AE0796500DE2494 /* ManagerFactoryParameters.m */,
 				063BE0722505BE4A000819BB /* Manifest.h */,
@@ -13065,6 +13064,8 @@
 				06F2904318972CD000676F1D /* Runtime.m */,
 				06721B571559CC0300645E1B /* RuntimeException.h */,
 				067219ED1559C87100645E1B /* RuntimeException.m */,
+				06C9D1052541FE5800EEA36A /* RuntimeMXBean.h */,
+				06C9D1082541FE5900EEA36A /* RuntimeMXBean.m */,
 				06F2904418972CD000676F1D /* RuntimePermission.h */,
 				06F2904518972CD000676F1D /* RuntimePermission.m */,
 				06ED3D6C17D164AF0014750E /* SafeVarargs.h */,
@@ -13653,12 +13654,16 @@
 				06F2911718972DFA00676F1D /* ThreadFactory.m */,
 				06721B611559CC0300645E1B /* ThreadGroup.h */,
 				067219F71559C87100645E1B /* ThreadGroup.m */,
+				06C9D1072541FE5800EEA36A /* ThreadInfo.h */,
+				06C9D1032541FE5700EEA36A /* ThreadInfo.m */,
 				06721B621559CC0300645E1B /* ThreadLocal.h */,
 				067219F81559C87100645E1B /* ThreadLocal.m */,
 				063BE4012505C1BB000819BB /* ThreadLocalCoders.h */,
 				063BE3782505C193000819BB /* ThreadLocalCoders.m */,
 				06F2911818972DFA00676F1D /* ThreadLocalRandom.h */,
 				06F2911918972DFA00676F1D /* ThreadLocalRandom.m */,
+				06C9D1022541FE5700EEA36A /* ThreadMXBean.h */,
+				06C9D1092541FE5900EEA36A /* ThreadMXBean.m */,
 				063BE3AA2505C1A0000819BB /* ThreadPool.h */,
 				063BE3852505C196000819BB /* ThreadPool.m */,
 				06F2911A18972DFA00676F1D /* ThreadPoolExecutor.h */,
@@ -18002,6 +18007,7 @@
 				063BDD362505BB00000819BB /* CollectionCertStore.m in Sources */,
 				063BDBB82505BA15000819BB /* PrivateKeyUsageExtension.m in Sources */,
 				063BE1AF2505BF18000819BB /* X509KeyManager.m in Sources */,
+				067A7F22261150BB00FC2DF7 /* Flow.m in Sources */,
 				063BDA86250597C2000819BB /* UriCodec.m in Sources */,
 				063BDA87250597C2000819BB /* URISyntaxException.m in Sources */,
 				063BE1DE2505BF69000819BB /* RowSetListener.m in Sources */,
@@ -19911,6 +19917,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				EXCLUDED_ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "junit_tests/junit_tests-Prefix.pch";
@@ -19976,6 +19983,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
+				EXCLUDED_ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "junit_tests/junit_tests-Prefix.pch";
@@ -20020,7 +20028,7 @@
 				0620F4F01BB60A6100626242 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		063BD62F250594A9000819BB /* Build configuration list for PBXNativeTarget "jre_emul" */ = {
 			isa = XCConfigurationList;
@@ -20029,7 +20037,7 @@
 				063BD631250594A9000819BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		0661937F155848D70004DAFE /* Build configuration list for PBXProject "JreEmulation" */ = {
 			isa = XCConfigurationList;
@@ -20038,7 +20046,7 @@
 				06619391155848D70004DAFE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		067219241559BF3600645E1B /* Build configuration list for PBXLegacyTarget "j2objc translate" */ = {
 			isa = XCConfigurationList;
@@ -20047,7 +20055,7 @@
 				067219261559BF3600645E1B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		06E4E35B197F1172005DDE69 /* Build configuration list for PBXLegacyTarget "jre_emul translate tests" */ = {
 			isa = XCConfigurationList;
@@ -20056,7 +20064,7 @@
 				06E4E35D197F1172005DDE69 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JREJUnitTests" */ = {
 			isa = XCConfigurationList;
@@ -20065,7 +20073,7 @@
 				06ED87DE19759F0000633227 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

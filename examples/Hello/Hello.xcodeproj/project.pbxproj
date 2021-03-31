@@ -384,6 +384,7 @@
 				CODE_SIGN_ENTITLEMENTS = HelloJ2ObjC.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = Hello/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -403,6 +404,7 @@
 				CODE_SIGN_ENTITLEMENTS = HelloJ2ObjC.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = Hello/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
