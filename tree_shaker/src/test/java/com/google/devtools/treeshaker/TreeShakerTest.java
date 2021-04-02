@@ -124,11 +124,13 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedClasses(unused)).containsNoneOf("A", "b.c.C");
     assertThat(getUnusedClasses(unused)).containsExactly("b.B");
 
-    assertThat(getUnusedMethods(unused)).containsExactly(
+    assertThat(getUnusedMethods(unused)).containsNoneOf(
         getMethodName("A", "A", "()V"),
         getMethodName("A", "main", "([Ljava/lang/String;)V"),
         getMethodName("b.c.C", "C", "()V"),
         getMethodName("b.c.C", "c", "(Ljava/lang/String;)V"));
+
+    assertThat(getUnusedMethods(unused)).isEmpty();
   }
 
   public void testConstructorOverloads() throws IOException {
@@ -677,8 +679,8 @@ public class TreeShakerTest extends TestCase {
   }
 
   public void testWriteUnusedConstructor() throws IOException {
-    addTreeShakerRootsFile("A");
-    addSourceFile("A.java", "class A { }");
+    addTreeShakerRootsFile("A:\n    a()");
+    addSourceFile("A.java", "class A { static void a() {}}");
     String output = writeUnused(findUnusedCode());
 
     assertThat(output).startsWith("A:\n");

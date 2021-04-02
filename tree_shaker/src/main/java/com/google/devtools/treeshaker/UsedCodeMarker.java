@@ -347,8 +347,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     private void startMethodDeclaration(
         String methodName, boolean isConstructor, boolean isStatic) {
-      boolean isExported = exportedMethods.contains(
-          getQualifiedMethodName(currentTypeNameScope.peek(), methodName));
+      boolean isExported =
+          exportedMethods.contains(getQualifiedMethodName(currentTypeNameScope.peek(), methodName))
+          || currentTypeInfoScope.peek().getExported();
       logger.atFine().log("Start Method: %s.%s : isConstructor: %s : isStatic: %s, exported: %b",
           currentTypeNameScope.peek(), methodName, isConstructor, isStatic, isExported);
       pushMethodScope(methodName,
