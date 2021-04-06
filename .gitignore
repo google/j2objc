@@ -13,6 +13,9 @@ dist/
 **/xcuserdata/
 **/Translated/
 
+# Python Generated Files
+*.pyc
+
 # Mac System Files
 .DS_Store
 

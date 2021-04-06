@@ -78,7 +78,7 @@ fi
 $ENV_CMD make test_translator
 ERR=$?
 if [ ${ERR} -ne 0 ]; then
-  read -p "make test_translator failed, continue? " -n 1 -r
+  read -p "make test_translator failed, continue (y/n)?" -n 1 -r
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
       echo "\nquitting..."
