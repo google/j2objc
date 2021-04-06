@@ -16,12 +16,17 @@
 
 package libcore.reflect;
 
-import java.lang.reflect.AccessibleObject;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.AnnotationFormatError;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 public final class TypeVariableImpl<D extends GenericDeclaration> implements TypeVariable<D> {
@@ -136,5 +141,23 @@ public final class TypeVariableImpl<D extends GenericDeclaration> implements Typ
     @Override
     public String toString() {
         return name;
+    }
+
+    // j2objc: b/184648272
+    @Override
+    public AnnotatedType[] getAnnotatedBounds() {
+        return new AnnotatedType[0];
+    }
+
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return null;
+    }
+
+    public Annotation[] getAnnotations() {
+        return new Annotation[0];
+    }
+
+    public Annotation[] getDeclaredAnnotations() {
+        return getAnnotations();
     }
 }
