@@ -923,6 +923,10 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
   return nil;
 }
 
+- (NSString *)getPackageName {
+  return JreClassPackageName(metadata_);
+}
+
 - (id)getClassLoader {
   return JavaLangClassLoader_getSystemClassLoader();
 }

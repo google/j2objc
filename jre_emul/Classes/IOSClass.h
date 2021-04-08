@@ -161,6 +161,7 @@
 - (id<JavaLangAnnotationAnnotation>)
       getDeclaredAnnotationWithIOSClass:(IOSClass *)annotationClass;
 - (id)getPackage;
+- (NSString *)getPackageName;
 - (id)getClassLoader;
 
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name;

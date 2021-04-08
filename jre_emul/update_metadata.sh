@@ -19,7 +19,7 @@ TRANSLATION_DIR=translation_temp
 TEMP_DIR=metadata_temp
 REPLACE_SCRIPT=../scripts/replace_metadata.py
 J2OBJC=../dist/j2objc
-STUBS_DIR=stub_classes
+STUBS_DIR=stub_classes/java
 TRANSLATION_FLAGS="-Xtranslate-bootclasspath"
 
 function update_file {
