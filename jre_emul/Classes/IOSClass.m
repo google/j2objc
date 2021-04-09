@@ -834,7 +834,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 - (IOSObjectArray *)getAnnotations {
-  NSMutableArray *array = [[NSMutableArray alloc] init];
+  NSMutableArray *array = AUTORELEASE([[NSMutableArray alloc] init]);
   IOSObjectArray *declared = [self getDeclaredAnnotations];
   for (jint i = 0; i < declared->size_; i++) {
     [array addObject:declared->buffer_[i]];
@@ -859,7 +859,6 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
   }
   IOSObjectArray *result =
       [IOSObjectArray arrayWithNSArray:array type:JavaLangAnnotationAnnotation_class_()];
-  [array release];
   return result;
 }
 
