@@ -320,11 +320,16 @@ public class Options {
   private class ArgProcessor {
 
     private final List<String> sourceFiles = new ArrayList<>();
+    private boolean printArgs = false;
 
     private void processArgs(String[] args) throws IOException {
       Iterator<String> iter = Arrays.asList(args).iterator();
       while (iter.hasNext()) {
         processArg(iter);
+      }
+      if (printArgs) {
+        System.err.print("j2objc ");
+        System.err.println(String.join(" ", args));
       }
     }
 
@@ -520,6 +525,8 @@ public class Options {
         emitKytheMappings = true;
       } else if (arg.equals("-Xno-source-headers")) {
         emitSourceHeaders = false;
+      } else if (arg.equals("-Xprint-args")) {
+        printArgs = true;
       } else if (arg.equals("-external-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
