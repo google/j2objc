@@ -77,6 +77,10 @@ MACOSX64_AVAILABLE = \
   $(shell if xcodebuild -version -sdk macosx11.0 >/dev/null 2>&1; \
   then echo "YES"; else echo "NO"; fi)
 
+MACCATALYST64_AVAILABLE = \
+  $(shell if [ ${$(xcodebuild -version | grep 'Xcode ' | grep -Eo '[0-9]+\.?[0-9]*')%.*} -ge 12 ]; \
+  then echo "YES"; else echo "NO"; fi)
+
 ifndef J2OBJC_ARCHS
 ifdef ENV_J2OBJC_ARCHS
 # The env command cannot forward variables with spaces in them.
@@ -91,6 +95,9 @@ J2OBJC_ARCHS += appletvos appletvsimulator
 endif
 ifeq ($(MACOSX64_AVAILABLE), YES)
 J2OBJC_ARCHS += macosx64
+endif
+ifeq ($(MACCATALYST64_AVAILABLE), YES)
+J2OBJC_ARCHS += maccatalyst64
 endif
 endif
 endif
