@@ -2453,6 +2453,7 @@ JRE_PUBLIC_PACKAGES = \
   java.util.jar \
   java.util.logging \
   java.util.regex \
+  java.util.stream \
   java.util.zip \
   javax.crypto \
   javax.crypto.interfaces \
@@ -2492,15 +2493,45 @@ ANDROID_PUBLIC_PACKAGES = \
   org.xmlpull.v1 \
   org.xmlpull.v1.sax2
 
-# They are only needed while translating files in the corresponding packages,
-# but they do not need to be translated.
-ANNOTATED_PACKAGE_INFO = \
+# Doc-only package-info.java sources.
+PACKAGE_INFO = \
+  java/lang/annotation/package-info.java \
+  java/lang/package-info.java \
+  java/lang/ref/package-info.java \
+  java/lang/reflect/package-info.java \
+  java/math/package-info.java \
+  java/net/package-info.java \
+  java/nio/channels/package-info.java \
+  java/nio/charset/package-info.java \
+  java/nio/package-info.java \
+  java/security/cert/package-info.java \
+  java/security/interfaces/package-info.java \
+  java/security/package-info.java \
+  java/security/spec/package-info.java \
+  java/time/chrono/package-info.java \
+  java/time/format/package-info.java \
+  java/time/package-info.java \
+  java/time/temporal/package-info.java \
+  java/time/zone/package-info.java \
+  java/util/concurrent/atomic/package-info.java \
+  java/util/concurrent/locks/package-info.java \
   java/util/concurrent/package-info.java \
+  java/util/function/package-info.java \
+  java/util/stream/package-info.java \
+  javax/security/auth/callback/package-info.java \
+  javax/security/auth/package-info.java \
+  javax/security/auth/x500/package-info.java \
+  javax/security/cert/package-info.java
+
+# This is only needed while translating files in the corresponding packages,
+# but does not need to be translated.
+ANNOTATED_PACKAGE_INFO = \
   sun/security/x509/package-info.java
 
 NO_TRANSLATE_JAVA_SOURCES = \
   $(SOURCE_RETENTION_ANNOTATIONS) \
   $(EMULATED_JAVA_SOURCES) \
+  $(PACKAGE_INFO) \
   $(ANNOTATED_PACKAGE_INFO)
 
 JAVA_PUBLIC_SOURCES_JRE = \
