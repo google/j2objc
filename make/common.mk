@@ -75,7 +75,7 @@ TVOS_AVAILABLE = \
 
 MACOSX64_AVAILABLE = \
   $(shell xcodebuild -version | grep '^Xcode ' | grep -Eo '[0-9\.]+' | \
-  awk '{split($0,v,"."); print ((v[1] == 12 && v[2] >= 2) || v[1] > 12) ? "YES" : "NO";}')
+  awk '{ split($0, v, "."); print ((v[1] == 12 && v[2] >= 2) || v[1] > 12) ? "YES" : "NO"; }')
 
 ifndef J2OBJC_ARCHS
 ifdef ENV_J2OBJC_ARCHS
