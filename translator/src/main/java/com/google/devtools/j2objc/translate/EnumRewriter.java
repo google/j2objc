@@ -67,6 +67,9 @@ import javax.lang.model.type.TypeMirror;
  */
 public class EnumRewriter extends UnitTreeVisitor {
 
+  /** Tag used to indicate that the enum name is stripped. */
+  private static final String ENUM_NAME_STRIPPED = "JAVA_LANG_ENUM_NAME_STRIPPED";
+
   public EnumRewriter(CompilationUnit unit) {
     super(unit);
   }
@@ -165,9 +168,10 @@ public class EnumRewriter extends UnitTreeVisitor {
     if (useNamesArray) {
       loopBody.addStatement(new NativeStatement(enumClassName
           + "_initWithNSString_withInt_(e, names[i], i);"));
-    } else if (options.stripEnumConstants()){
-      loopBody.addStatement(new NativeStatement(enumClassName
-          + "_initWithNSString_withInt_(e, JAVA_LANG_ENUM_NAME_STRIPPED, i);"));
+    } else if (options.stripEnumConstants()) {
+      String statementText =
+          enumClassName + "_initWithNSString_withInt_(e, " + ENUM_NAME_STRIPPED + ", i);";
+      loopBody.addStatement(new NativeStatement(statementText));
     } else {
       loopBody.addStatement(new NativeStatement(enumClassName
           + "_initWithNSString_withInt_(e, JreEnumConstantName(" + enumClassName
@@ -239,19 +243,15 @@ public class EnumRewriter extends UnitTreeVisitor {
   // ARC does not allow using "objc_constructInstance" so ARC code doesn't get
   // the shared allocation optimization.
   private void addArcInitialization(EnumDeclaration node) {
-    String enumClassName = nameTable.getFullName(node.getTypeElement());
     List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       VariableElement varElement = constant.getVariableElement();
       ClassInstanceCreation creation = new ClassInstanceCreation(constant.getExecutablePair());
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      Expression constName = options.stripEnumConstants()
-          ? new StringLiteral("JAVA_LANG_ENUM_NAME_STRIPPED", typeUtil)
-          : new NativeExpression(
-            UnicodeUtils.format("JreEnumConstantName(%s_class_(), %d)", enumClassName, i),
-            typeUtil.getJavaString().asType());
-      creation.addArgument(constName);
+      String stringLiteralName =
+          options.stripEnumConstants() ? ENUM_NAME_STRIPPED : ElementUtil.getName(varElement);
+      creation.addArgument(new StringLiteral(stringLiteralName, typeUtil));
       creation.addArgument(new NumberLiteral(i++, typeUtil));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varElement), creation)));
