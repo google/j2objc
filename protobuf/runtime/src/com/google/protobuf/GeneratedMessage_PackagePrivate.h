@@ -39,15 +39,11 @@
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/ExtensionRegistryLite.h"
 
-@class JavaUtilHashMap;
-
 @interface ComGoogleProtobufGeneratedMessage () {
  @package
   int memoizedSize_;
   int memoizedHash_;
 }
-
-- (JavaUtilHashMap *)unknownFields;
 @end
 
 CF_EXTERN_C_BEGIN

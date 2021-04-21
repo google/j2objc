@@ -53,8 +53,6 @@
 #include "java/io/InputStream.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/IndexOutOfBoundsException.h"
-#include "java/lang/Integer.h"
-#include "java/lang/Long.h"
 #include "java/lang/StringBuilder.h"
 #include "java/lang/UnsupportedOperationException.h"
 #include "java/util/ArrayList.h"
@@ -180,18 +178,6 @@ class CGPExtensionMapComparator {
     return CGPFieldGetNumber(left) < CGPFieldGetNumber(right);
   }
 };
-
-@interface ComGoogleProtobufGeneratedMessage () {
- @package
-  JavaUtilHashMap *unknownFields_;
-}
-@end
-
-@interface ComGoogleProtobufGeneratedMessage_Builder () {
- @package
-  JavaUtilHashMap *unknownFields_;
-}
-@end
 
 @interface ComGoogleProtobufGeneratedMessage_ExtendableMessage () {
  @package
@@ -1758,10 +1744,10 @@ static BOOL MergeMessageSetExtensionFromStream(
 }
 
 static BOOL ParseUnknownField(
-    id msg, CGPCodedInputStream *stream, CGPDescriptor *descriptor,
-    CGPExtensionRegistryLite *registry, CGPExtensionMap *extensionMap, uint32_t tag) {
-  uint32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
+    CGPCodedInputStream *stream, CGPDescriptor *descriptor, CGPExtensionRegistryLite *registry,
+    CGPExtensionMap *extensionMap, uint32_t tag) {
   if (registry != nil && extensionMap != NULL) {
+    uint32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
     CGPFieldDescriptor *field = CGPExtensionRegistryFind(registry, descriptor, fieldNumber);
     if (!field && [registry isKindOfClass:[ComGoogleProtobufExtensionRegistry class]]) {
       ComGoogleProtobufExtensionRegistry_ExtensionInfo *extension =
@@ -1780,51 +1766,6 @@ static BOOL ParseUnknownField(
     }
   }
 
-  if ([msg isKindOfClass:[ComGoogleProtobufGeneratedMessage class]]) {
-    id unknownFieldValue = nil;
-    switch (CGPWireFormatGetTagWireType(tag)) {
-      case CGPWireFormatVarint: {
-        jlong value;
-        if (!CGPReadInt64(stream, &value)) {
-          return false;
-        }
-        unknownFieldValue = JavaLangLong_valueOfWithLong_(value);
-        break;
-      }
-      case CGPWireFormatFixed32: {
-        jint value;
-        if (!CGPReadFixed32(stream, &value)) {
-          return false;
-        }
-        unknownFieldValue = JavaLangInteger_valueOfWithInt_(value);
-        break;
-      }
-      case CGPWireFormatFixed64: {
-        jlong value;
-        if (!CGPReadFixed64(stream, &value)) {
-          return false;
-        }
-        unknownFieldValue = JavaLangLong_valueOfWithLong_(value);
-        break;
-      }
-      case CGPWireFormatLengthDelimited: {
-        CGPByteString *value;
-        if (!stream->ReadRetainedByteString(&value)) {
-          return false;
-        }
-        unknownFieldValue = value;
-        break;
-      }
-      default:
-        return false;
-    }
-    if (unknownFieldValue) {
-      JavaUtilHashMap *unknownFields = [(ComGoogleProtobufGeneratedMessage *)msg unknownFields];
-      [unknownFields putWithId:JavaLangInteger_valueOfWithInt_(tag)
-                        withId:unknownFieldValue];
-      return true;
-    }
-  }
   return CGPWireFormatSkipField(stream, tag);
 }
 
@@ -2001,9 +1942,7 @@ static BOOL MergeFromStream(
       if (wireType == CGPWireFormatEndGroup) {
         return YES;
       }
-      if (!ParseUnknownField(msg, stream, descriptor, registry, extensionMap, tag)) {
-        return NO;
-      }
+      if (!ParseUnknownField(stream, descriptor, registry, extensionMap, tag)) return NO;
     }
   }
   return YES;
@@ -2371,35 +2310,6 @@ static int SerializedSizeForSingularField(id msg, CGPFieldDescriptor *field) {
   __builtin_unreachable();
 }
 
-static int SerializedSizeForUnknownFields(JavaUtilHashMap *fields) {
-  int size = 0;
-  for (id<JavaUtilMap_Entry> __strong field in [fields entrySet]) {
-    jint tag = [((JavaLangInteger *)[field getKey]) intValue];
-    id value = JreRetainedLocalValue([field getValue]);
-    jint fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
-    switch (CGPWireFormatGetTagWireType(tag)) {
-      case CGPWireFormatVarint:
-        size += sizeof(uint64_t);
-        break;
-      case CGPWireFormatFixed32:
-        size += sizeof(uint32_t);
-        break;
-      case CGPWireFormatFixed64:
-        size += sizeof(uint64_t);
-        break;
-      case CGPWireFormatLengthDelimited:
-        size += CGPGetTagSize(tag) + CGPGetBytesSize((CGPByteString *)value);
-        break;
-      case CGPWireFormatStartGroup:
-        size += SerializedSizeForUnknownFields((JavaUtilHashMap *)value);
-        break;
-      default:
-        break;
-    }
-  }
-  return size;
-}
-
 static int ComputeSerializedSizeForMessage(
     ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *descriptor) {
   int size = 0;
@@ -2418,9 +2328,6 @@ static int ComputeSerializedSizeForMessage(
   CGPExtensionMap *extensionMap = MessageExtensionMap(msg, descriptor);
   if (extensionMap != NULL) {
     size += SerializedSizeForExtensions(descriptor, extensionMap);
-  }
-  if (msg->unknownFields_) {
-    size += SerializedSizeForUnknownFields(msg->unknownFields_);
   }
   msg->memoizedSize_ = size;
   return size;
@@ -2791,38 +2698,6 @@ static void WriteField(id msg, CGPFieldDescriptor *field, CGPCodedOutputStream *
   }
 }
 
-static void WriteUnknownFields(JavaUtilHashMap *unknownFields, CGPCodedOutputStream *output) {
-  if (unknownFields) {
-    for (id<JavaUtilMap_Entry> __strong field in [unknownFields entrySet]) {
-      jint tag = [((JavaLangInteger *)[field getKey]) intValue];
-      id value = JreRetainedLocalValue([field getValue]);
-      jint fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
-
-      output->WriteTag(tag);
-      switch (CGPWireFormatGetTagWireType(tag)) {
-        case CGPWireFormatVarint:
-          output->WriteVarint64([(JavaLangLong *)value longLongValue]);
-          break;
-        case CGPWireFormatFixed32:
-          CGPWriteInt32([(JavaLangInteger *)value intValue], output);
-          break;
-        case CGPWireFormatFixed64:
-          CGPWriteInt64([(JavaLangLong *)value longLongValue], output);
-          break;
-        case CGPWireFormatLengthDelimited:
-          CGPWriteBytes((CGPByteString *)value, output);
-          break;
-        case CGPWireFormatStartGroup:
-          WriteUnknownFields((JavaUtilHashMap *)value, output);
-          output->WriteTag(CGPWireFormatMakeTag(fieldNumber, CGPWireFormatEndGroup));
-          break;
-        default:
-          break;
-      }
-    }
-  }
-}
-
 static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream *output) {
   IOSObjectArray *orderedFields = CGPGetSerializationOrderFields(descriptor);
   NSUInteger fieldsCount = orderedFields->size_;
@@ -2858,9 +2733,6 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
         nextExtension++;
       }
     }
-  }
-  if ([msg isKindOfClass:[ComGoogleProtobufGeneratedMessage class]]) {
-    WriteUnknownFields(((ComGoogleProtobufGeneratedMessage *)msg)->unknownFields_, output);
   }
 }
 
@@ -3381,7 +3253,6 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage_Builder *newBuilder = CGPNewBuilder(descriptor);
   CopyAllFields(self, selfCls, newBuilder, descriptor->builderClass_, descriptor);
-  JreStrongAssign(&newBuilder->unknownFields_, unknownFields_);
   return AUTORELEASE(newBuilder);
 }
 
@@ -3520,20 +3391,12 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 - (BOOL)isEqual:(id)other {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  if (!MessageIsEqual(self, other, descriptor)) {
-    return false;
-  }
-  if (![other isKindOfClass:[ComGoogleProtobufGeneratedMessage class]]) {
-    return false;
-  }
-  JavaUtilHashMap *otherUnknownFields =
-      ((ComGoogleProtobufGeneratedMessage *)other)->unknownFields_;
-  return unknownFields_ == otherUnknownFields || [unknownFields_ isEqual:otherUnknownFields];
+  return MessageIsEqual(self, other, descriptor);
 }
 
 - (NSUInteger)hash {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  return MessageHash(self, descriptor) + [unknownFields_ hash];
+  return MessageHash(self, descriptor);
 }
 
 - (NSString *)description {
@@ -3547,7 +3410,6 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
-  RELEASE_(unknownFields_);
   [super dealloc];
 }
 
@@ -3581,12 +3443,6 @@ static id DynamicNewBuilder(Class self, SEL _cmd, ComGoogleProtobufGeneratedMess
   return NO;
 }
 
-- (JavaUtilHashMap *)unknownFields {
-  if (!unknownFields_) {
-    JreStrongAssignAndConsume(&unknownFields_, new_JavaUtilHashMap_init());
-  }
-  return unknownFields_;
-}
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
@@ -3612,7 +3468,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ComGoogleProtobufGeneratedMessage *newMsg = CGPNewMessage(descriptor);
   CopyAllFields(self, selfCls, newMsg, descriptor->messageClass_, descriptor);
-  JreStrongAssign(&newMsg->unknownFields_, (JavaUtilHashMap *)[unknownFields_ java_clone]);
   return AUTORELEASE(newMsg);
 }
 
@@ -3620,7 +3475,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
-  JreStrongAssign(&unknownFields_, nil);
   uint8_t *fieldStorage = (uint8_t *)self + class_getInstanceSize(selfCls);
   memset(fieldStorage, 0, descriptor->storageSize_);
   return self;
@@ -3839,7 +3693,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
   ReleaseAllFields(self, selfCls, descriptor);
-  RELEASE_(unknownFields_);
   [super dealloc];
 }
 
