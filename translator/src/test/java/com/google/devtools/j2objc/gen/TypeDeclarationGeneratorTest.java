@@ -552,23 +552,27 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   }
 
   public void testPropertyNullability() throws IOException {
-    String source = "import javax.annotation.*;"
-        + "import com.google.j2objc.annotations.Property;"
-        + "@ParametersAreNonnullByDefault public class Test {"
-        + "  @Nullable @Property String test;"
-        + "  @Property String test2;"
-        + "  @Property @Nonnull String test3;"
-        + "  @Property(\"nonatomic\") String test4;"
-        + "  @Property(\"null_resettable\") String test5;"
-        + "  @Property(\"null_unspecified\") String test6;"
-        + "  @Property int test7;"
-        + "  @Property (\"readonly, nonatomic\") double test8;"
-        + "}";
+    String source =
+        "import javax.annotation.*;"
+            + "import com.google.j2objc.annotations.Property;"
+            + "@ParametersAreNonnullByDefault public class Test {"
+            + "  @Nullable @Property String test;"
+            + "  @CheckForNull @Property String test1;"
+            + "  @Property String test2;"
+            + "  @Property @Nonnull String test3;"
+            + "  @Property(\"nonatomic\") String test4;"
+            + "  @Property(\"null_resettable\") String test5;"
+            + "  @Property(\"null_unspecified\") String test6;"
+            + "  @Property int test7;"
+            + "  @Property (\"readonly, nonatomic\") double test8;"
+            + "}";
     options.setNullability(true);
     String translation = translateSourceFile(source, "Test", "Test.h");
 
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "@property (copy, nullable) NSString *test;",
+        "@property (copy, nullable) NSString *test1;",
         "@property (copy) NSString *test2;",
         "@property (copy, nonnull) NSString *test3;",
         "@property (copy, nonatomic) NSString *test4;");
