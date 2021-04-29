@@ -347,8 +347,7 @@ inline bool CGPCodedInputStream::LastTagWas(uint32 expected) {
 }
 
 inline bool CGPCodedInputStream::ConsumedEntireMessage() {
-  // TODO(b/186736574): The extra bits are a temporary hack for the bug.
-  return legitimate_message_end_ || (BufferSize() <= 6 && BufferSize() > 0 && buffer_[0] == 0x00);
+return legitimate_message_end_;
 }
 
 inline int CGPCodedInputStream::CurrentPosition() const {
