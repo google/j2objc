@@ -357,7 +357,7 @@ public class JSONStringer {
                         || c == '='
                         || c == '\''
                         || c == '&') {
-                        out.append(String.format("\\u%04x", (int) c));
+                        out.append(createUnicodeEscape((int) c));
                     } else {
                         out.append(c);
                     }
@@ -378,6 +378,31 @@ public class JSONStringer {
         for (int i = 0; i < stack.size(); i++) {
             out.append(indent);
         }
+    }
+
+    /**
+     * Creates a Unicode escape string for a code point.
+     *
+     * <p>This is a J2ObjC additional method. {@code String.format()} should be avoided because some
+     * of the toolchains do not implement it.
+     */
+    private String createUnicodeEscape(int character) {
+      StringBuilder stringBuilder = new StringBuilder("\\u");
+      // The int value should be formatted equivalently to the specifier "%04x". It should be padded
+      // with zeros so that it is at least 4 digits.
+      if (character > 0xFFFF) {
+        // Add any leading digits from the most significant 2 bytes.
+        stringBuilder.append(Integer.toHexString(character / 0x10000));
+      }
+      // Next, write the least significant 2 bytes using padding.
+      stringBuilder.append("0000");
+      int pos = stringBuilder.length();
+      character = character & 0xFFFF;
+      while (character > 0) {
+        stringBuilder.setCharAt(--pos, Character.forDigit(character % 16, 16));
+        character /= 16;
+      }
+      return stringBuilder.toString();
     }
 
     /**
