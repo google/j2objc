@@ -35,6 +35,7 @@
 
 #include "com/google/protobuf/GeneratedMessage_PackagePrivate.h"
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -1952,12 +1953,23 @@ static void InvalidPB() {
   @throw AUTORELEASE([[ComGoogleProtobufInvalidProtocolBufferException alloc] init]);
 }
 
+static void InvalidPB(CGPCodedInputStream *stream) {
+  // If the parsing failed, the input stream should contain the remaining corrupted data.
+  std::cout << "Trailing: ";
+  char* buffer = new char[1];
+  while (stream->ReadRaw(buffer, 1)) {
+    std::cout << std::hex << buffer[0];
+  }
+  std::cout << std::endl;
+  @throw AUTORELEASE([[ComGoogleProtobufInvalidProtocolBufferException alloc] init]);
+}
+
 void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length) {
   CGPCodedInputStream codedStream(data, length);
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, nil, nil)
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
 }
 
@@ -1969,7 +1981,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return msg;
 }
@@ -1982,7 +1994,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return msg;
 }
@@ -2001,7 +2013,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return msg;
 }
@@ -3287,7 +3299,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
       MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return msg;
 }
@@ -3623,7 +3635,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
       self, descriptor, &codedStream, extensionRegistry, BuilderExtensionMap(self, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return self;
 }
@@ -3646,7 +3658,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   if (!MergeFromStream(
       self, descriptor, &codedStream, extensionRegistry, BuilderExtensionMap(self, descriptor))
       || !codedStream.ConsumedEntireMessage()) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return true;
 }
@@ -3666,7 +3678,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
       self, descriptor, &codedStream, extensionRegistry, BuilderExtensionMap(self, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return self;
 }
@@ -3684,7 +3696,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
       self, descriptor, &codedStream, extensionRegistry, BuilderExtensionMap(self, descriptor))
       && codedStream.ConsumedEntireMessage();
   if (!success) {
-    InvalidPB();
+    InvalidPB(&codedStream);
   }
   return self;
 }
