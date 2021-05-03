@@ -786,4 +786,18 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
       fail("No mapping found for MyClass() constructor");
     }
   }
+
+  // https://github.com/google/j2objc/issues/1664
+  public void testStaticInitializeField() throws IOException {
+    String translation = translateSourceFile("final class State\n"
+        + "{\n"
+        + "    public static final int initialize=0;\n"
+        + "    public static final int ready=1;\n"
+        + "    public static final int anotherState=2;\n"
+        + "}\n", "State", "State.h");
+    // Should have trailing underscore, to avoid class with class initialize function name.
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(State, initialize_, jint)");
+    assertTranslation(translation, "inline jint State_get_initialize_(void);");
+    assertTranslation(translation, "State_initialize_");
+  }
 }

@@ -202,6 +202,10 @@ public class NameTable {
       return name;
     }
     name = ElementUtil.getName(var);
+    if (name.equals("initialize")) {
+      // Avoid conflict with class initialize function name.
+      return "initialize_";
+    }
     if (allowReservedName) {
       return name;
     }
