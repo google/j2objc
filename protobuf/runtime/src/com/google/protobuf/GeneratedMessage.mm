@@ -3321,7 +3321,13 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   IOSByteArray *array = [IOSByteArray arrayWithLength:size];
   CGPCodedOutputStream codedStream(array->buffer_, (int)array->size_);
   WriteMessage(self, descriptor, &codedStream);
-  NSAssert(!codedStream.HadError(), @"Serialization error");
+  if (codedStream.HadError()) {
+    NSAssert(NO, @"Serialization error");
+    // This mirrors the behavior of
+    // https://github.com/protocolbuffers/protobuf/blob/master/java/core/src/main/java/com/google/protobuf/AbstractMessageLite.java#L75
+    @throw AUTORELEASE([[JavaLangRuntimeException alloc]
+        initWithNSString:@"Message serialization failute: toByteArray."]);
+  }
   return array;
 }
 
@@ -3331,17 +3337,29 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPByteString *byteString = CGPNewByteString(size);
   CGPCodedOutputStream codedStream(byteString->buffer_, byteString->size_);
   WriteMessage(self, descriptor, &codedStream);
-  NSAssert(!codedStream.HadError(), @"Serialization error");
+  if (codedStream.HadError()) {
+    NSAssert(NO, @"Serialization error");
+    // This mirrors the behavior of
+    // https://github.com/protocolbuffers/protobuf/blob/master/java/core/src/main/java/com/google/protobuf/AbstractMessageLite.java#L62
+    @throw AUTORELEASE([[JavaLangRuntimeException alloc]
+        initWithNSString:@"Message serialization failute: toByteArray."]);
+  }
   return AUTORELEASE(byteString);
 }
 
 - (NSData *)toNSData {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   jint size = [self getSerializedSize];
-  void *buffer = malloc(size);
+  void *buffer = calloc(size, 1);
   CGPCodedOutputStream codedStream(buffer, size);
   WriteMessage(self, descriptor, &codedStream);
-  NSAssert(!codedStream.HadError(), @"Serialization error");
+  if (codedStream.HadError()) {
+    NSAssert(NO, @"Serialization error");
+    // This mirrors the behavior of
+    // https://github.com/protocolbuffers/protobuf/blob/master/java/core/src/main/java/com/google/protobuf/AbstractMessageLite.java#L75
+    @throw AUTORELEASE([[JavaLangRuntimeException alloc]
+        initWithNSString:@"Message serialization failute: toByteArray."]);
+  }
   return [NSData dataWithBytesNoCopy:buffer length:size freeWhenDone:YES];
 }
 
@@ -3350,6 +3368,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPCodedOutputStream codedStream(output);
   WriteMessage(self, descriptor, &codedStream);
   codedStream.FlushBuffer();
+  // The WriteMessage function will throw a runtime exception if there is an error.
   NSAssert(!codedStream.HadError(), @"Serialization error");
 }
 
@@ -3359,6 +3378,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPWriteInt32(SerializedSizeForMessage(self, descriptor), &codedStream);
   WriteMessage(self, descriptor, &codedStream);
   codedStream.FlushBuffer();
+  // The WriteMessage function will throw a runtime exception if there is an error.
   NSAssert(!codedStream.HadError(), @"Serialization error");
 }
 
