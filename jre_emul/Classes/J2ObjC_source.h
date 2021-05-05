@@ -334,7 +334,7 @@ SHIFT_ASSIGN_OPERATORS_DEFN(Long, jlong, uint64_t, 0x3f)
 #undef SHIFT_ASSIGN_OPERATORS_DEFN
 
 #define BIT_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP) \
-  __attribute__((always_inline)) inline TYPE Bit##OPNAME##AssignVolatile##NAME( \
+  __attribute__((always_inline)) inline TYPE JreBit##OPNAME##AssignVolatile##NAME( \
       volatile_##TYPE *pLhs, TYPE rhs) { \
     TYPE result = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) OP rhs; \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
