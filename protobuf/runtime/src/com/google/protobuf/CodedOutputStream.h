@@ -89,6 +89,8 @@
 
 #import "com/google/protobuf/common.h"
 
+#ifdef __cplusplus
+
 @class JavaIoOutputStream;
 
 // Class which encodes and writes binary data which is composed of varint-
@@ -298,5 +300,7 @@ inline bool CGPCodedOutputStream::Refresh() {
   buffer_size_ = 0; // Make sure that the entire buffer is flushed.
   return FlushBuffer();
 }
+
+#endif // __cplusplus
 
 #endif // __ComGoogleProtobufCodedOutputStream_H__

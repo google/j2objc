@@ -100,8 +100,6 @@
 
 using std::string;
 
-#endif
-
 @class ComGoogleProtobufByteString;
 @class JavaIoInputStream;
 
@@ -390,5 +388,7 @@ inline CGPCodedInputStream::CGPCodedInputStream(const void *buffer, int size)
     current_limit_(size),
     buffer_size_after_limit_(0) {
 }
+
+#endif // __cplusplus
 
 #endif // __ComGoogleProtobufCodedInputStream_H__
