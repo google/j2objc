@@ -30,8 +30,7 @@ JAVA_TESTS_ARC = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
-  StringsTest.java \
-  UnknownFieldsTest.java
+  StringsTest.java
 OTHER_JAVA_SOURCES_ARC = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
