@@ -221,27 +221,28 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // - no paramatric types: C -> C
     // - simple parametric type: C<A> -> C
     // - nested parametric type: C<D<A>> -> C
+    // - nested multi-parametric type: C<D<A>,D<B>> -> C
     // - chained parametric type: C<A>.D<A> -> C.D
     int begin = typeName.indexOf('<');
     if (begin == -1) {
       return typeName;
     }
-    int end = typeName.indexOf('>', begin + 1); // should not be -1
-    int next = begin;
-    int nesting = -1;
-    while (next > -1 && next < end) {
-      nesting++;
-      next = typeName.indexOf('<', next + 1);
-    }
-    while (nesting > 0) {
-      end = typeName.indexOf('>', end + 1);
-      nesting--;
+    int unmatched = 1;
+    int index = begin + 1;
+    while (unmatched > 0 && index < typeName.length()) {
+      char current = typeName.charAt(index);
+      if (current == '<') {
+        unmatched++;
+      } else if (current == '>') {
+        unmatched--;
+      }
+      index++;
     }
     String first = typeName.substring(0, begin);
-    if (end == typeName.length() - 1) {
+    if (index == typeName.length()) {
       return first;
     }
-    return first + eraseParametricTypes(typeName.substring(end + 1));
+    return first + eraseParametricTypes(typeName.substring(index));
   }
 
   static final class Context {

@@ -719,6 +719,7 @@ public class TreeShakerTest extends TestCase {
     assertThat(UsedCodeMarker.eraseParametricTypes("C")).isEqualTo("C");
     assertThat(UsedCodeMarker.eraseParametricTypes("C<D>")).isEqualTo("C");
     assertThat(UsedCodeMarker.eraseParametricTypes("C<D<A>>")).isEqualTo("C");
+    assertThat(UsedCodeMarker.eraseParametricTypes("C<D<A>,D<B>>")).isEqualTo("C");
     assertThat(UsedCodeMarker.eraseParametricTypes("C<A>.D<A>")).isEqualTo("C.D");
   }
 
