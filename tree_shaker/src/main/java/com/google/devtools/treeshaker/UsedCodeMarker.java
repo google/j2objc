@@ -20,6 +20,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table.Cell;
 import com.google.common.flogger.GoogleLogger;
+import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
@@ -28,8 +30,12 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.LambdaExpression;
+import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -62,6 +68,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   UsedCodeMarker(CompilationUnit unit, Context context) {
     super(unit);
     this.context = context;
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    context.startType(node.getTypeElement(), true);
+    return true;
+  }
+
+  @Override
+  public void endVisit(AnnotationTypeDeclaration node) {
+    context.endType();
   }
 
   @Override
@@ -122,6 +139,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public void endVisit(MarkerAnnotation node) {
+    visitAnnotation(node);
+  }
+
+  @Override
   public boolean visit(MethodDeclaration node) {
     context.startMethodDeclaration(
         getMethodName(node.getExecutableElement()),
@@ -142,6 +164,21 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getDeclaringClassName(node.getExecutableElement()));
     context.addReferencedType(node.getExecutableType().getReturnType());
     node.getExecutableType().getParameterTypes().forEach(context::addReferencedType);
+  }
+
+  @Override
+  public void endVisit(NormalAnnotation node) {
+    visitAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(PropertyAnnotation node) {
+    visitAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(SingleMemberAnnotation node) {
+    visitAnnotation(node);
   }
 
   @Override
@@ -213,6 +250,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName(
         PSEUDO_CONSTRUCTOR_PREFIX + typeName.substring(typeName.lastIndexOf('.') + 1),
         EMPTY_METHOD_SIGNATURE);
+  }
+
+  private void visitAnnotation(Annotation node) {
+    // A reference to an annotation implicitly constructs an instance of that annotation.
+    context.addMethodInvocation(
+        getPseudoConstructorName(node.getTypeMirror().toString()),
+        node.getTypeMirror().toString());
   }
 
   @VisibleForTesting

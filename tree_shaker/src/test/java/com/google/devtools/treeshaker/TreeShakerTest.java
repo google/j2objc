@@ -526,7 +526,6 @@ public class TreeShakerTest extends TestCase {
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
-
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
@@ -683,6 +682,57 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("A", "A", "()V"),
         getMethodName("B", "c", "()V"));
+  }
+
+  public void testSimpleAnnotations() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new D().d(); }}");
+    addSourceFile("B.java", "@interface B { int b(); int c() default 3; }");
+    addSourceFile("C.java", "@interface C { }");
+    addSourceFile("D.java", "@B(b=4) class D { @B(b=4,c=2) void d() { }}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsExactly("C");
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
+  }
+
+  public void testAnnotationAnnotations() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new D(); }}");
+    addSourceFile("B.java", "@interface B { }");
+    addSourceFile("C.java", "@B @interface C { }");
+    addSourceFile("D.java", "@C class D { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
+  }
+
+  public void testExternalAnnotationAnnotations() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new C(); }}");
+    addSourceFile("B.java",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.CLASS)",
+        "@interface B { }");
+    addSourceFile("C.java", "@B class C { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
+  }
+
+  public void testAnnotationsWithClassReferences() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new D(); }}");
+    addSourceFile("B.java", "enum B { X, Y; }");
+    addSourceFile("C.java", "@interface C { B b() default B.X; }");
+    addSourceFile("D.java", "@C class D { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
   public void testWriteUnusedClasses() throws IOException {
