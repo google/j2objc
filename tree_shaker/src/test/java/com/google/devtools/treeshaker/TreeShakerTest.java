@@ -513,6 +513,23 @@ public class TreeShakerTest extends TestCase {
         getMethodName("D", "c", "()V"));
   }
 
+  public void testExternalInterfaces() throws IOException {
+    addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
+    addSourceFile("A.java", "class A { static void main(String[] args) { new B().apply(1); }}");
+    addSourceFile("B.java",
+        "import java.util.function.Function;",
+        "class B implements Function<Integer,Integer> {",
+        "  @Override ",
+        "  public Integer apply(Integer i) { return i; }",
+        "}");
+
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
+  }
+
   public void testAccidentalOverride() throws IOException {
     addTreeShakerRootsFile("A:\n    main(java.lang.String[])");
     addSourceFile("A.java", "class A { static void main(String[] args) { C c = new D(); c.b(); }}");

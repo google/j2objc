@@ -62,8 +62,12 @@ class TypeGraphBuilder {
 
       for (int implementsId : typeInfo.getImplementsTypeList()) {
         Type superInterface = typesByName.get(libraryInfo.getTypeMap(implementsId));
-        superInterface.addImmediateSubtype(type);
-        type.addSuperInterface(superInterface);
+        if (superInterface == null) {
+          externalTypeReferences.add(libraryInfo.getTypeMap(implementsId));
+        } else {
+          superInterface.addImmediateSubtype(type);
+          type.addSuperInterface(superInterface);
+        }
       }
 
       for (MemberInfo memberInfo : typeInfo.getMemberList()) {
