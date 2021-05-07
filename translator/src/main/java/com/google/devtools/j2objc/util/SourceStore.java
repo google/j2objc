@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -20,9 +22,6 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-
-import org.omg.CORBA.portable.InputStream;
-import org.omg.CORBA_2_3.portable.OutputStream;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;

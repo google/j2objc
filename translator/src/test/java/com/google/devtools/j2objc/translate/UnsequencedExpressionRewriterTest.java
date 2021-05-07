@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -114,6 +113,52 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "while (true) {",
         "  jint unseq$1 = i;",
         "  if (!(unseq$1 + i++ < 10)) break;");
+  }
+
+  // https://github.com/google/j2objc/issues/1487
+  public void testMethodConditionalParameter() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test { \n"
+                + "int test(Object o) { \n"
+                + "int i = 42; \n"
+                + "int j = -1; \n"
+                // Depending on parameter expr execution order, either cmp(42, 84),
+                // cmp(42, -2) or cmp(42, fn.applyAsInt(j, 2)) is executed.
+                + "return cmp(j = i, (o == null) ? j : j * 2); }\n"
+                + "int cmp(int a, int b) { return 0; }\n}",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "jint unseq$1 = j = i;",
+        "return [self cmpWithInt:unseq$1 withInt:(o == nil) ? j : j * 2];");
+  }
+
+  // https://github.com/google/j2objc/issues/1487
+  public void testConditionalsInsideNonConditionalInfixExpression() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test { \n"
+                + "int test(byte[] input, byte[] tail, int tailLen, int p, int t) { \n"
+                + "return (((tailLen > 1 ? tail[t++] : input[p++]) & 0xff) << 10) |\n"
+                + "     (((tailLen > 0 ? tail[t++] : input[p++]) & 0xff) << 2);\n}\n}",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "  jbyte unseq$1;",
+        "if (tailLen > 1) {",
+        "jint unseq$2 = t++;",
+        "unseq$1 = IOSByteArray_Get(nil_chk(tail), unseq$2);",
+        "}",
+        "else {",
+        "jint unseq$3 = p++;",
+        "unseq$1 = IOSByteArray_Get(nil_chk(input), unseq$3);",
+        "}",
+        "return (JreLShift32(((unseq$1) & (jint) 0xff), 10)) "
+            + "| (JreLShift32(((tailLen > 0 ? IOSByteArray_Get(nil_chk(tail), t++) "
+            + ": IOSByteArray_Get(nil_chk(input), p++)) & (jint) 0xff), 2));");
   }
 
   public void testVariableDeclarationStatementIsSplit() throws IOException {
