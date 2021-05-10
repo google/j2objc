@@ -17,6 +17,7 @@ package com.google.devtools.treeshaker;
 import static javax.lang.model.element.Modifier.STATIC;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table.Cell;
 import com.google.common.flogger.GoogleLogger;
@@ -34,6 +35,7 @@ import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -172,6 +174,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public boolean visit(PackageDeclaration node) {
+    if (!node.getAnnotations().isEmpty()) {
+      // Package annotations are only allowed in package-info.java files.
+      context.startPackageInfo(node.getPackageElement().getQualifiedName().toString());
+      node.getAnnotations().forEach(this::visitAnnotation);
+      context.endPackageInfo();
+    }
+    return false;
+  }
+
+  @Override
   public void endVisit(PropertyAnnotation node) {
     visitAnnotation(node);
   }
@@ -218,7 +231,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getPseudoConstructorName(node.getTypeMirror().toString()),
         node.getTypeMirror().toString());
   }
-
 
   @Override
   public void endVisit(VariableDeclarationFragment node) {
@@ -340,23 +352,19 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       return index;
     }
 
+    private void startPackageInfo(String packageName) {
+      String typeName =  packageName + ".package-info";
+      startTypeScope(typeName, "java.lang.Object", ImmutableList.of(), true);
+    }
+
+    private void endPackageInfo() {
+      endTypeScope();
+    }
+
     private void startType(TypeElement type, boolean isInterface) {
       String typeName = type.getQualifiedName().toString();
-      logger.atFine().log("Start Type: %s extends %s", typeName, type.getSuperclass());
-
-      Integer id = getTypeId(typeName);
-      Integer eid = getTypeId(type.getSuperclass().toString());
-      List<Integer> iids = type.getInterfaces().stream()
-                             .map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
-      boolean isExported = exportedClasses.contains(typeName);
-      // Push the new type name on top of the stack.
-      currentTypeNameScope.push(typeName);
-      // Push the new type info builder on top of the stack.
-      currentTypeInfoScope.push(TypeInfo.newBuilder()
-          .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
-      // Push the static initializer as the current method in scope.
-      pushMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
-          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
+      String superName = type.getSuperclass().toString();
+      startTypeScope(typeName, superName, type.getInterfaces(), exportedClasses.contains(typeName));
       // For interfaces, add a pseudo-constructor for use with lambdas.
       if (isInterface) {
         startMethodDeclaration(getPseudoConstructorName(typeName), true, false);
@@ -365,7 +373,29 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     }
 
     private void endType() {
-      logger.atFine().log("End Type: %s", currentTypeNameScope.peek());
+      endTypeScope();
+    }
+
+    private void startTypeScope(String typeName, String superName,
+        List<? extends TypeMirror> interfaces, boolean isExported) {
+      logger.atFine().log("Start Type Scope: %s extends %s", typeName, superName);
+
+      Integer id = getTypeId(typeName);
+      Integer eid = getTypeId(superName);
+      List<Integer> iids =
+          interfaces.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
+      // Push the new type name on top of the stack.
+      currentTypeNameScope.push(typeName);
+      // Push the new type info builder on top of the stack.
+      currentTypeInfoScope.push(TypeInfo.newBuilder()
+          .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
+      // Push the static initializer as the current method in scope.
+      pushMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
+          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
+    }
+
+    private void endTypeScope() {
+      logger.atFine().log("End Type Scope: %s", currentTypeNameScope.peek());
       // Pop the current method (i.e. the static initializer).
       MemberInfo mi = popMethodScope();
       // Pop the current type info, adding the static initializer.
