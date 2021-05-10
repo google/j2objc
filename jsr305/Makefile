@@ -135,6 +135,6 @@ $(BUILD_DIR):
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST)
 	@rm -rf $(JSR305_LICENSE_DIST) $(ARCH_INCLUDE_DIR)/javax/annotation
-	@rm -rf $(XCFRAMEWORK_DIR)
+	@rm -rf $(FRAMEWORK_DIR)
 
 dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)

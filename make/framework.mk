@@ -91,6 +91,14 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
   -Werror -Weverything $(DISALLOWED_WARNINGS)
 
+# As of Xcode 12, xcframeworks need single slice libraries, except for Mac platforms
+# which require fat libraries.
+FMWK_ARCH_LIBS = $(filter-out macos% maccatalyst%,$(J2OBJC_ARCHS))
+FMWK_FAT_LIBS = $(filter macos% maccatalyst%,$(J2OBJC_ARCHS))
+framework_libraries = \
+  $(foreach arch,$(FMWK_ARCH_LIBS),$(wildcard $(BUILD_DIR)/objs-$(arch)*/lib$(1).a)) \
+  $(foreach arch,$(FMWK_FAT_LIBS),$(wildcard $(BUILD_DIR)/$(arch)/lib$(1).a))
+
 framework: dist $(FRAMEWORK_DIR) resources
 	@:
 
@@ -98,7 +106,7 @@ framework: dist $(FRAMEWORK_DIR) resources
 $(FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@echo building $(FRAMEWORK_NAME) framework
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
-			$(BUILD_DIR)/objs-*/lib$(STATIC_LIBRARY_NAME).a;
+			$(call framework_libraries,$(STATIC_LIBRARY_NAME))
 	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
 	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
