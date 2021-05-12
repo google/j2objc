@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.IOException;
 
 /**
@@ -326,7 +327,6 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
 
   public void testWeakOuter() throws IOException {
     String source = "package p; "
-        + "import com.google.j2objc.annotations.WeakOuter; "
         + "public class A { "
         + "  Object o; "
         + "  class B { "
@@ -347,7 +347,6 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
 
   public void testWeak() throws IOException {
     String source = "package p; "
-        + "import com.google.j2objc.annotations.Weak;"
         + "public class A { "
         + "  private Thread t;"
         + "  public A(Thread otherT) {"
@@ -367,7 +366,6 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
 
   public void testRetainedWith() throws IOException {
     String source = "package p; "
-        + "import com.google.j2objc.annotations.RetainedWith; "
         + "public class A { "
         + "  private Object o; "
         + "  public void setO(Object o) { this.o = o; } "
@@ -385,7 +383,6 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
 
   public void testAutoreleasePool() throws IOException {
     String source = "package p; "
-        + "import com.google.j2objc.annotations.AutoreleasePool; "
         + "public class A { "
         + "  public void test() {} "
         + "}";
@@ -397,5 +394,22 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  method test()V: @AutoreleasePool ");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
     assertTranslation(translation, "@autoreleasepool");
+  }
+
+  public void testAnnotationClassNotFound() throws IOException {
+    String source = "package p; "
+        + "public class A { "
+        + "  public void test() {} "
+        + "}";
+    addExternalAnnotationFileContents(
+        "package com.google.j2objc.annotations: "
+            + "annotation @NoSuchAnnotation: "
+            + "package p: "
+            + "class A: "
+            + "  method test()V: @NoSuchAnnotation ");
+    translateSourceFile(source, "p.A", "p/A.m");
+    assertEquals(1, ErrorUtil.errorCount());
+    String errorMsg = ErrorUtil.getErrorMessages().get(0);
+    assertTrue(errorMsg.contains("com.google.j2objc.annotations.NoSuchAnnotation"));
   }
 }

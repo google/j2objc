@@ -35,8 +35,10 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Mappings;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -45,6 +47,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -67,6 +70,9 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   // While visiting the J2ObjC AST, the position in the annotated AST is maintained using this
   // stack.
   private final Deque<Optional<AElement>> annotatedElementStack = new ArrayDeque<>();
+
+  // Contains any annotation types that cannot be resolved.
+  private final List<String> missingAnnotationTypes = new ArrayList<>();
 
   public ExternalAnnotationInjector(CompilationUnit unit, ExternalAnnotations externalAnnotations) {
     super(unit);
@@ -165,7 +171,10 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
 
   private void recordAnnotations(AnnotatedConstruct construct, Set<Annotation> annotations) {
     for (Annotation annotation : annotations) {
-      ExternalAnnotations.add(construct, generateAnnotationMirror(annotation));
+      GeneratedAnnotationMirror annotationMirror = generateAnnotationMirror(annotation);
+      if (annotationMirror != null) {
+        ExternalAnnotations.add(construct, annotationMirror);
+      }
     }
   }
 
@@ -173,14 +182,30 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
     for (Annotation annotation : annotations) {
       NormalAnnotation newAnnotation = new NormalAnnotation();
       AnnotationMirror annotationMirror = generateAnnotationMirror(annotation);
-      newAnnotation.setAnnotationMirror(annotationMirror);
-      newAnnotation.setTypeName(new SimpleName(annotationMirror.getAnnotationType().asElement()));
-      declaration.addAnnotation(newAnnotation);
+      if (annotationMirror != null) {
+        newAnnotation.setAnnotationMirror(annotationMirror);
+        newAnnotation.setTypeName(new SimpleName(annotationMirror.getAnnotationType().asElement()));
+        declaration.addAnnotation(newAnnotation);
+      }
+    }
+  }
+
+  private void reportNoSuchClass(Annotation annotation) {
+    String className = annotation.def.name;
+    if (!missingAnnotationTypes.contains(className)) {
+      missingAnnotationTypes.add(className);
+      ErrorUtil.error(
+          "cannot find symbol: " + className + "referenced in " + annotation.def.source);
     }
   }
 
   private GeneratedAnnotationMirror generateAnnotationMirror(Annotation annotation) {
-    DeclaredType type = (DeclaredType) typeUtil.resolveJavaType(annotation.def.name).asType();
+    TypeElement element = typeUtil.resolveJavaType(annotation.def.name);
+    if (element == null) {
+      reportNoSuchClass(annotation);
+      return null;
+    }
+    DeclaredType type = (DeclaredType) element.asType();
     GeneratedAnnotationMirror annotationMirror = new GeneratedAnnotationMirror(type);
     for (Map.Entry<String, Object> entry : annotation.fieldValues.entrySet()) {
       String fieldName = entry.getKey();
