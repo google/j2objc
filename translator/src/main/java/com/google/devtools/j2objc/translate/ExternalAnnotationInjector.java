@@ -195,7 +195,7 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
     if (!missingAnnotationTypes.contains(className)) {
       missingAnnotationTypes.add(className);
       ErrorUtil.error(
-          "cannot find symbol: " + className + "referenced in " + annotation.def.source);
+          "cannot find symbol: " + className + ", referenced in " + annotation.def.source);
     }
   }
 

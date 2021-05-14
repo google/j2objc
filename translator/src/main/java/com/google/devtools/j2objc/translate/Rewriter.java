@@ -20,16 +20,20 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
@@ -37,6 +41,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -44,6 +49,7 @@ import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -52,6 +58,8 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -61,6 +69,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -86,14 +95,8 @@ public class Rewriter extends UnitTreeVisitor {
   public boolean visit(MethodDeclaration node) {
     ExecutableElement element = node.getExecutableElement();
     if (ElementUtil.hasAnnotation(element, AutoreleasePool.class)) {
-      if (TypeUtil.isReferenceType(element.getReturnType())) {
-        ErrorUtil.warning(
-            "Ignoring AutoreleasePool annotation on method with retainable return type");
-      } else if (node.getBody() != null) {
-        node.getBody().setHasAutoreleasePool(true);
-      }
+      rewriteAutoreleasePoolMethod(node, element);
     }
-
     if (ElementUtil.hasNullableAnnotation(element) || ElementUtil.hasNonnullAnnotation(element)) {
       unit.setHasNullabilityAnnotations();
     }
@@ -386,5 +389,73 @@ public class Rewriter extends UnitTreeVisitor {
     // resource initializer) has been moved outside of the try node.
     block.accept(this);
     return false;
+  }
+
+  private void rewriteAutoreleasePoolMethod(MethodDeclaration node, ExecutableElement element) {
+    if (node.getBody() == null) {
+      ErrorUtil.warning("Ignoring AutoreleasePool annotation on abstract or native method");
+      return;
+    }
+    if (TypeUtil.isReferenceType(element.getReturnType())) {
+      // Reference types need to be saved outside of the autoreleasepool block.
+      Block methodBody = new Block();
+      final VariableElement resultVar =
+          GeneratedVariableElement.newLocalVar("$result$", element.getReturnType(), element);
+
+      methodBody.addStatement(
+          new VariableDeclarationStatement(resultVar, new NullLiteral(typeUtil.getNull())));
+
+      Block innerBody = node.getBody();
+      innerBody.setHasAutoreleasePool(true);
+      innerBody.accept(
+          new TreeVisitor() {
+            @Override
+            public boolean preVisit(TreeNode node) {
+              if (node.getKind() == Kind.RETURN_STATEMENT) {
+                // Convert return statement into assignment to result variable.
+                FunctionInvocation retainCall =
+                    createMemoryMacro("RETAIN_", ((ReturnStatement) node).getExpression().copy());
+                Block replacement = new Block();
+                replacement.addStatement(
+                    new ExpressionStatement(new Assignment(new SimpleName(resultVar), retainCall)));
+                replacement.addStatement(new BreakStatement().setLabel(new SimpleName("$outer$")));
+                node.replaceWith(replacement);
+                return false;
+              }
+              if (node.getKind() == Kind.TYPE_DECLARATION
+                  || node.getKind() == Kind.TYPE_DECLARATION_STATEMENT) {
+                // Don't traverse into other classes.
+                return false;
+              }
+              return super.preVisit(node);
+            }
+          });
+
+      methodBody.addStatement(
+          new LabeledStatement("$outer$")
+              .setBody(
+                  new DoStatement()
+                      .setExpression(TreeUtil.newLiteral(Boolean.FALSE, typeUtil))
+                      .setBody(innerBody.copy())));
+
+      ExecutableElement autoreleaseMethod =
+          GeneratedExecutableElement.newMethodWithSelector(
+                  "AUTORELEASE", TypeUtil.ID_TYPE, TypeUtil.NS_OBJECT)
+              .addModifiers(Modifier.PUBLIC);
+      FunctionInvocation autoreleaseCall =
+          createMemoryMacro("AUTORELEASE", new SimpleName(resultVar));
+      methodBody.addStatement(new ReturnStatement(autoreleaseCall));
+      node.getBody().replaceWith(methodBody);
+    } else {
+      // Primitive types just need to set the hasAutoreleasePool boolean.
+      node.getBody().setHasAutoreleasePool(true);
+    }
+  }
+
+  private FunctionInvocation createMemoryMacro(String name, Expression argument) {
+    FunctionElement element =
+        new FunctionElement(name, TypeUtil.ID_TYPE, TypeUtil.NS_OBJECT)
+            .addParameters(TypeUtil.ID_TYPE);
+    return new FunctionInvocation(element, TypeUtil.ID_TYPE).addArgument(argument);
   }
 }
