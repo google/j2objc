@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.LambdaExpression;
@@ -40,6 +41,7 @@ import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -55,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -85,23 +88,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    context.addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    visitConstructorInvocation(node.getExecutableElement());
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    context.addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    visitConstructorInvocation(node.getExecutableElement());
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    context.addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    visitConstructorInvocation(node.getExecutableElement());
   }
 
   @Override
@@ -147,8 +144,18 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
+    String methodName = getMethodName(node.getExecutableElement());
+    if (node.isConstructor() && getDeclaringClassName(node.getExecutableElement()).isEmpty()) {
+      // A constructor with an empty class name is a constructor for an anonymous class. To get the
+      // constructor name, we use the unqualified type name of the current lexical type and append
+      // the type signature, which has already been calculated for the original method name.
+      String declTypeName = context.currentTypeNameScope.peek();
+      methodName = getMethodName(
+          declTypeName.substring(declTypeName.lastIndexOf('.') + 1),
+          methodName.substring(methodName.lastIndexOf('#') + 1));
+    }
     context.startMethodDeclaration(
-        getMethodName(node.getExecutableElement()),
+        methodName,
         node.isConstructor(),
         Modifier.isStatic(node.getModifiers()));
     return true;
@@ -161,9 +168,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    context.addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    visitMethodInvocation(node.getExecutableElement(), node.getExpression());
     context.addReferencedType(node.getExecutableType().getReturnType());
     node.getExecutableType().getParameterTypes().forEach(context::addReferencedType);
   }
@@ -264,6 +269,47 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         EMPTY_METHOD_SIGNATURE);
   }
 
+  private void visitMethodInvocation(ExecutableElement call, @Nullable Expression expression) {
+    String methodName = getMethodName(call);
+    String declTypeName = getDeclaringClassName(call);
+    if (declTypeName.isEmpty()) {
+      // If the decl type of the method is empty, we are invoking a method on an anonymous class.
+      // For the most part, the type of the anonymous class is the current lexical type.
+      // TODO(dpo): add support for nested anonymous classes calling methods of previous level
+      // anonymous classes.
+      declTypeName = context.currentTypeNameScope.peek();
+      // If the method we are calling is being called inline on an anonymous type e.g.
+      // 'new Runnable() { ...}.run();' then the type of the anonymous class is the current
+      // lexical type along with its current anonymous class count.
+      boolean isClassInstanceCreation =
+          expression != null
+          && expression.getKind() != null
+          && expression.getKind().equals(Kind.CLASS_INSTANCE_CREATION);
+      if (isClassInstanceCreation) {
+        declTypeName += "$" + context.anonymousTypeCountScope.peek();
+      }
+    }
+    context.addMethodInvocation(methodName, declTypeName);
+  }
+
+  private void visitConstructorInvocation(ExecutableElement call) {
+    String methodName = getMethodName(call);
+    String declTypeName = getDeclaringClassName(call);
+    if (declTypeName.isEmpty()) {
+      // An empty decl type name indicates an anonymous class. The type name for the anonymous class
+      // is the current lexical type along with its current anonymous class count.
+      declTypeName =
+          context.currentTypeNameScope.peek() + "$" + context.anonymousTypeCountScope.peek();
+      // The method name for the constructor is the unqualfied name of the type name for the
+      // anonymous class. We also need to append the type signature, which has already been
+      // calculated for the original method name.
+      methodName = getMethodName(
+          declTypeName.substring(declTypeName.lastIndexOf('.') + 1),
+          methodName.substring(methodName.lastIndexOf('#') + 1));
+    }
+    context.addMethodInvocation(methodName, declTypeName);
+  }
+
   private void visitAnnotation(Annotation node) {
     // A reference to an annotation implicitly constructs an instance of that annotation.
     context.addMethodInvocation(
@@ -326,6 +372,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     private final Deque<String> methodNameScope = new ArrayDeque<>();
     private final Deque<Set<Integer>> referencedTypesScope = new ArrayDeque<>();
 
+    // Scope containing count of anonymous classes within the current type.
+    private final Deque<Integer> anonymousTypeCountScope = new ArrayDeque<>();
+
     Context(CodeReferenceMap rootSet) {
       exportedMethods = new HashSet<>();
       for (Cell<String, String, ImmutableSet<String>> cell :
@@ -380,13 +429,19 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         List<? extends TypeMirror> interfaces, boolean isExported) {
       logger.atFine().log("Start Type Scope: %s extends %s", typeName, superName);
 
+      if (typeName.isEmpty()) {
+        // An empty typename means this is an anonymous type. We derive the type name based on the
+        // name of the current lexical class and it's anonymous type count and increment the count.
+        int tc = anonymousTypeCountScope.pop() + 1;
+        anonymousTypeCountScope.push(tc);
+        typeName = currentTypeNameScope.peek() + "$" + tc;
+      }
       Integer id = getTypeId(typeName);
       Integer eid = getTypeId(superName);
       List<Integer> iids =
           interfaces.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
-      // Push the new type name on top of the stack.
+      anonymousTypeCountScope.push(0);
       currentTypeNameScope.push(typeName);
-      // Push the new type info builder on top of the stack.
       currentTypeInfoScope.push(TypeInfo.newBuilder()
           .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
       // Push the static initializer as the current method in scope.
@@ -398,10 +453,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       logger.atFine().log("End Type Scope: %s", currentTypeNameScope.peek());
       // Pop the current method (i.e. the static initializer).
       MemberInfo mi = popMethodScope();
-      // Pop the current type info, adding the static initializer.
       TypeInfo ti =  currentTypeInfoScope.pop().addMember(mi).build();
-      // Pop the current type name.
       currentTypeNameScope.pop();
+      anonymousTypeCountScope.pop();
       // Add the type info to the library info.
       lib.addType(ti);
     }
