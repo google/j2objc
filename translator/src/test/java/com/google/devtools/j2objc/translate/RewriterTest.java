@@ -521,4 +521,58 @@ public class RewriterTest extends GenerationTest {
         "  }",
         "}");
   }
+
+  // Verify that a local variable for the return value is declared, all return
+  // statements are converted to retained assignments, and that outside the
+  // autoreleasepool the result is autoreleased before being returned.
+  // One exception: methods in an inner class aren't converted.
+  public void testAutoreleasePoolWithRetainedReturnType() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.AutoreleasePool;"
+            + "class Test {"
+            + "  private int state = 42;"
+            + "  @AutoreleasePool"
+            + "  Object test() {"
+            + "    if (state == -1) {"
+            + "      return new Integer(666);"
+            + "    }"
+            + "    outer: for (int i = 0; i < 1; i++) {"
+            + "if (state == 31) break outer;"
+            + "      return new Float(0.1);"
+            + "    }"
+            + "    return Test.class;"
+            + "  }"
+            + "}", "Test", "Test.m");
+
+    assertTranslatedLines(
+        translation,
+        "- (id)test {",
+            "  id $result$ = nil;",
+            "  do {",
+            "    @autoreleasepool {",
+            "      if (state_ == -1) {",
+            "        {",
+            "          $result$ = RETAIN_(create_JavaLangInteger_initWithInt_(666));",
+            "          goto break_$outer$;",
+            "        }",
+            "      }",
+            "      for (jint i = 0; i < 1; i++) {",
+            "        if (state_ == 31) goto break_outer;",
+            "        {",
+            "          $result$ = RETAIN_(create_JavaLangFloat_initWithDouble_(0.1));",
+            "          goto break_$outer$;",
+            "        }",
+            "      }",
+            "      break_outer: ;",
+            "      {",
+            "        $result$ = RETAIN_(Test_class_());",
+            "        goto break_$outer$;",
+            "      }",
+            "    }",
+            "  }",
+            "  while (false);",
+            "  break_$outer$: ;",
+            "  return AUTORELEASE($result$);",
+            "}");
+  }
 }
