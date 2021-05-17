@@ -403,15 +403,25 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 
 - (NSString *)java_replaceAll:(NSString *)regex
               withReplacement:(NSString *)replacement {
-  return [[JavaUtilRegexPattern_compileWithNSString_(regex) matcherWithJavaLangCharSequence:self]
-      replaceAllWithNSString:replacement];
+  NSString *result;
+  @autoreleasepool {
+    JavaUtilRegexMatcher *matcher =
+        [JavaUtilRegexPattern_compileWithNSString_(regex) matcherWithJavaLangCharSequence:self];
+    result = RETAIN_([matcher replaceAllWithNSString:replacement]);
+  }
+  return AUTORELEASE(result);
 }
 
 
 - (NSString *)java_replaceFirst:(NSString *)regex
                 withReplacement:(NSString *)replacement {
-  return [[JavaUtilRegexPattern_compileWithNSString_(regex) matcherWithJavaLangCharSequence:self]
-      replaceFirstWithNSString:replacement];
+  NSString *result;
+  @autoreleasepool {
+    JavaUtilRegexMatcher *matcher =
+        [JavaUtilRegexPattern_compileWithNSString_(regex) matcherWithJavaLangCharSequence:self];
+    result = RETAIN_([matcher replaceFirstWithNSString:replacement]);
+  }
+  return AUTORELEASE(result);
 }
 
 
@@ -696,8 +706,12 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   if (!str) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  JavaUtilRegexPattern *p = JavaUtilRegexPattern_compileWithNSString_(str);
-  return [p splitWithJavaLangCharSequence:self withInt:n];
+  IOSObjectArray *result;
+  @autoreleasepool {
+    JavaUtilRegexPattern *p = JavaUtilRegexPattern_compileWithNSString_(str);
+    result = RETAIN_([p splitWithJavaLangCharSequence:self withInt:n]);
+  }
+  return AUTORELEASE(result);
 }
 
 - (jboolean)java_equalsIgnoreCase:(NSString *)aString {
