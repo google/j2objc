@@ -24,7 +24,7 @@ FAT_LIB_WATCHSIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_pa
 FAT_LIB_TV_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --appletvos)
 FAT_LIB_TVSIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --appletvsimulator)
 
-FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 -mmacosx-version-min=10.7 \
+FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -mmacosx-version-min=10.7 \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
 FAT_LIB_MACOSX64_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 \
   --target=arm64-apple-macos11 \
