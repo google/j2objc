@@ -91,10 +91,10 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
   -Werror -Weverything $(DISALLOWED_WARNINGS)
 
-# As of Xcode 12, xcframeworks need single slice libraries, except for Mac platforms
+# As of Xcode 12, xcframeworks need single slice libraries, except for iOS and Mac platforms
 # which require fat libraries.
-FMWK_ARCH_LIBS = $(filter-out macos% maccatalyst%,$(J2OBJC_ARCHS))
-FMWK_FAT_LIBS = $(filter macos% maccatalyst%,$(J2OBJC_ARCHS))
+FMWK_ARCH_LIBS = $(filter-out simulator% macos% maccatalyst%,$(J2OBJC_ARCHS))
+FMWK_FAT_LIBS = $(filter simulator% macos% maccatalyst%,$(J2OBJC_ARCHS))
 framework_libraries = \
   $(foreach arch,$(FMWK_ARCH_LIBS),$(wildcard $(BUILD_DIR)/objs-$(arch)*/lib$(1).a)) \
   $(foreach arch,$(FMWK_FAT_LIBS),$(wildcard $(BUILD_DIR)/$(arch)/lib$(1).a))

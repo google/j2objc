@@ -46,6 +46,8 @@ FAT_LIB_SIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -miphoneos-version
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_SIMULATOR64_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
+FAT_LIB_SIMULATORA64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-version-min=12.0 \
+  -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 
 FAT_LIB_TV_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -mappletvos-version-min=9.0 \
   -isysroot $(FAT_LIB_TV_SDK_DIR)
@@ -93,10 +95,11 @@ arch_flags = $(strip \
   $(patsubst watchsimulator,$(FAT_LIB_WATCHSIMULATOR_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),\
+  $(patsubst simulatora64,$(FAT_LIB_SIMULATORA64_FLAGS),\
   $(patsubst appletvos,$(FAT_LIB_TV_FLAGS),\
   $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),\
   $(patsubst maccatalyst,$(FAT_LIB_MAC_CATALYST_FLAGS),\
-  $(patsubst maccatalyst64,$(FAT_LIB_MAC_CATALYST64_FLAGS),$(1))))))))))))))))
+  $(patsubst maccatalyst64,$(FAT_LIB_MAC_CATALYST64_FLAGS),$(1)))))))))))))))))
 
 fat_lib_dependencies:
 	@:
@@ -267,7 +270,8 @@ emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
 else
 # Targets specific to a command-line build
 
-FAT_LIB_IOS_ARCHS = $(filter-out macos% maccatalyst% appletv% watch%,$(J2OBJC_ARCHS))
+FAT_LIB_IOS_ARCHS = $(filter-out simulatora64 macos% maccatalyst% appletv% watch%,$(J2OBJC_ARCHS))
+FAT_LIB_SIMULATOR_ARCHS = $(filter simulator%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_ARCHS = $(filter macos%,$(J2OBJC_ARCHS))
 FAT_LIB_WATCH_ARCHS = $(filter watch%,$(J2OBJC_ARCHS))
 FAT_LIB_TV_ARCHS = $(filter appletv%,$(J2OBJC_ARCHS))
@@ -278,6 +282,9 @@ emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(if $(FAT_LIB_IOS_ARCHS),\
     $(eval $(call fat_lib_rule,$(1),$(FAT_LIB_IOS_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_SIMULATOR_ARCHS),\
+    $(eval $(call simulator_lib_rule,$(1),$(FAT_LIB_SIMULATOR_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_SIMULATOR_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_WATCH_ARCHS),\
     $(eval $(call watch_lib_rule,$(1),$(FAT_LIB_WATCH_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_WATCH_DIR)/lib$(1).a,) \
