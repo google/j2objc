@@ -35,12 +35,17 @@ ARCH_BIN_DIR = $(DIST_DIR)
 ARCH_LIB_DIR = $(DIST_LIB_DIR)
 ARCH_LIB_MACOSX_DIR = $(DIST_LIB_MACOSX_DIR)
 ARCH_LIB_MAC_CATALYST_DIR = $(DIST_LIB_MAC_CATALYST_DIR)
+ARCH_LIB_SIMULATOR_DIR = $(ARCH_LIB_SIMULATOR_DIR)
 ARCH_INCLUDE_DIR = $(DIST_INCLUDE_DIR)
 endif
 
 # iPhone-specific library dirs, used for xcframework.
 ARCH_BUILD_IPHONE_DIR = $(ARCH_BUILD_DIR)/iphone
+
+# iPhone simulator library dirs.
 ARCH_BUILD_SIMULATOR_DIR = $(ARCH_BUILD_DIR)/simulator
+ARCH_LIB_SIMULATOR_DIR = $(ARCH_LIB_DIR)/simulator
+DIST_LIB_SIMULATOR_DIR = $(DIST_LIB_DIR)/simulator
 
 # Macosx library dirs.
 ARCH_BUILD_MACOSX_DIR = $(ARCH_BUILD_DIR)/macosx
@@ -85,7 +90,7 @@ else
 # 32bit iPhone archs are no longer built by default. To build a release
 # with them, define J2OBJC_ARCHS with "iphone" and "simulator" included.
 J2OBJC_ARCHS = macosx iphone64 iphone64e watchv7k watch64 watchsimulator \
-    simulator64 simulatora64 maccatalyst
+    simulator simulator64 maccatalyst
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
 endif
