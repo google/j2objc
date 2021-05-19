@@ -550,7 +550,7 @@ public class TreeShakerTest extends TestCase {
 
   public void testUninstantiatedTypes() throws IOException {
     addTreeShakerRootsFile("A:\n    main(B,C,D)");
-    addSourceFile("A.java", "class A { static void main(B b, C c, D d) { b.b(); c.c(); d.d(); }}");
+    addSourceFile("A.java", "class A {  static void main(B b, C c, D d) { b.b(); c.c(); d.d(); }}");
     addSourceFile("B.java", "interface B { void b(); }");
     addSourceFile("C.java", "abstract class C { abstract void c(); }");
     addSourceFile("D.java", "class D { void d(){} }");
@@ -571,102 +571,6 @@ public class TreeShakerTest extends TestCase {
         getMethodName("D", "D", "()V"),
         getMethodName("D", "d", "()V"),
         getMethodName("D", "<clinit>", "()V"));
-  }
-
-  public void testAnonymousAbstractTypesBasic() throws IOException {
-    addTreeShakerRootsFile("A:\n    main()");
-    addSourceFile("A.java", "class A { static void main() { new C().c().b(); }}");
-    addSourceFile("B.java", "abstract class B { abstract B b(); }");
-    addSourceFile("C.java", "class C { B c() { return new B() { B b() { return this; }}; }}");
-    CodeReferenceMap unused = findUnusedCode();
-
-    assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
-  }
-
-  public void testAnonymousAbstractTypesWithParam() throws IOException {
-    addTreeShakerRootsFile("A:\n    main()");
-    addSourceFile("A.java", "class A { static void main() { new D().d().b(); }}");
-    addSourceFile("B.java", "abstract class B { B(C c) {} abstract B b(); }");
-    addSourceFile("C.java", "class C { }");
-    addSourceFile("D.java",
-        "class D { B d() { return new B(new C()) { B b() { return this; }}; }}");
-    CodeReferenceMap unused = findUnusedCode();
-
-    assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
-  }
-
-  public void testAnonymousAbstractTypesNested() throws IOException {
-    addTreeShakerRootsFile("A:\n    main()");
-    addSourceFile("A.java", "class A { static void main() { new C().c().b(); }}");
-    addSourceFile("B.java", "abstract class B { abstract B b(); }");
-    addSourceFile("C.java",
-        "class C {",
-        "  B c() { return new B() { B b() { return new B() { B b() { return this; }}; }}; }",
-        "}");
-    CodeReferenceMap unused = findUnusedCode();
-
-    assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
-  }
-
-  public void testAnonymousAbstractTypesWithInternalCall() throws IOException {
-    addTreeShakerRootsFile("A:\n    main()");
-    addSourceFile("A.java", "class A { static void main() { new C().c().b(); }}");
-    addSourceFile("B.java", "abstract class B { abstract B b(); }");
-    addSourceFile("C.java",
-        "class C {",
-        "  B c() {",
-        "    return new B() {",
-        "      B b() { return d(); } ",
-        "      B d() { return this; } ",
-        "    };",
-        "  }",
-        "}");
-    CodeReferenceMap unused = findUnusedCode();
-
-    assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
-  }
-
-  public void testAnonymousAbstractTypesWithExternalCall() throws IOException {
-    addTreeShakerRootsFile("A:\n    main()");
-    addSourceFile("A.java", "class A { static void main() { new a.C().c().b(); }}");
-    addSourceFile("B.java", "package a; public abstract class B { public abstract B b(); }");
-    addSourceFile("C.java",
-        "package a;",
-        "public class C {",
-        "  public B c() {",
-        "    return new B() {",
-        "      public B b() { return d(); } ",
-        "      public B c() { return d(); } ",
-        "      public B d() { return this; } ",
-        "    }.d();",
-        "  }",
-        "}");
-    CodeReferenceMap unused = findUnusedCode();
-
-    assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(
-        getMethodName("A", "A", "()V"),
-        getMethodName("a.C$1", "c", "()La/B;"));
-  }
-
-  public void testAnonymousInterfaceTypes() throws IOException {
-    addTreeShakerRootsFile("A:\n    main()");
-    addSourceFile("A.java", "class A { static void main() { new C().c().b(); }}");
-    addSourceFile("B.java", "interface B { B b(); }");
-    addSourceFile("C.java",
-        "class C {",
-        "  B c() {",
-        "    return new B() { public B b() { return this; } };",
-        "  }",
-        "}");
-    CodeReferenceMap unused = findUnusedCode();
-
-    assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("A", "A", "()V"));
   }
 
   public void testLambdas() throws IOException {
