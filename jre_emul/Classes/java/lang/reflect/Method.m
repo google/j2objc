@@ -78,57 +78,63 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
 
 - (id)invokeWithId:(id)object
     withNSObjectArray:(IOSObjectArray *)arguments {
-  if (!IsStatic(metadata_)) {
-    if (object == nil) {
-      @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
-                          @"null object specified for non-final method"]);
+  id result = nil;
+  @autoreleasepool {
+    if (!IsStatic(metadata_)) {
+      if (object == nil) {
+        @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
+                            @"null object specified for non-final method"]);
+      }
+      if (![[self getDeclaringClass] isAssignableFrom:[object java_getClass]]) {
+        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+                            @"wrong receiver"]);
+      }
     }
-    if (![[self getDeclaringClass] isAssignableFrom:[object java_getClass]]) {
+
+    IOSObjectArray *paramTypes = [self getParameterTypesInternal];
+    jint nArgs = arguments ? arguments->size_ : 0;
+    if (nArgs != paramTypes->size_) {
       @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-                          @"wrong receiver"]);
+          @"wrong number of arguments"]);
     }
-  }
 
-  IOSObjectArray *paramTypes = [self getParameterTypesInternal];
-  jint nArgs = arguments ? arguments->size_ : 0;
-  if (nArgs != paramTypes->size_) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-        @"wrong number of arguments"]);
-  }
-
-  NSInvocation *invocation = [self invocationForTarget:object];
-  for (jint i = 0; i < nArgs; i++) {
-    J2ObjcRawValue arg;
-    if (![paramTypes->buffer_[i] __unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
-      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-          @"argument type mismatch"]);
+    NSInvocation *invocation = [self invocationForTarget:object];
+    for (jint i = 0; i < nArgs; i++) {
+      J2ObjcRawValue arg;
+      if (![paramTypes->buffer_[i] __unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
+        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+            @"argument type mismatch"]);
+      }
+      [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
     }
-    [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
-  }
 
-  [self invoke:invocation object:object];
+    [self invoke:invocation object:object];
 
-  IOSClass *returnType = [self getReturnType];
-  if (returnType == [IOSClass voidClass]) {
-    return nil;
+    IOSClass *returnType = [self getReturnType];
+    if (returnType == [IOSClass voidClass]) {
+      return nil;
+    }
+    J2ObjcRawValue returnValue;
+    [invocation getReturnValue:&returnValue];
+    result = RETAIN_([returnType __boxValue:&returnValue]);
   }
-  J2ObjcRawValue returnValue;
-  [invocation getReturnValue:&returnValue];
-  return [returnType __boxValue:&returnValue];
+  return AUTORELEASE(result);
 }
 
 - (void)jniInvokeWithId:(id)object
                    args:(const J2ObjcRawValue *)args
                  result:(J2ObjcRawValue *)result {
-  NSInvocation *invocation = [self invocationForTarget:object];
-  for (int i = 0; i < [self getParameterTypesInternal]->size_; i++) {
-    [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
-  }
+  @autoreleasepool {
+    NSInvocation *invocation = [self invocationForTarget:object];
+    for (int i = 0; i < [self getParameterTypesInternal]->size_; i++) {
+      [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
+    }
 
-  [self invoke:invocation object:object];
+    [self invoke:invocation object:object];
 
-  if (result) {
-    [invocation getReturnValue:result];
+    if (result) {
+      [invocation getReturnValue:result];
+    }
   }
 }
 
