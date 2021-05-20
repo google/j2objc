@@ -152,14 +152,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (getDeclaringClassName(node.getExecutableElement()).isEmpty()) {
-      context.startAnonymousMethodDeclaration();
-    } else {
-      context.startMethodDeclaration(
-          getMethodName(node.getExecutableElement()),
-          node.isConstructor(),
-          Modifier.isStatic(node.getModifiers()));
-    }
+    context.startMethodDeclaration(
+        getMethodName(node.getExecutableElement()),
+        getDeclaringClassName(node.getExecutableElement()),
+        node.isConstructor(),
+        Modifier.isStatic(node.getModifiers()));
     return true;
   }
 
@@ -271,6 +268,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName(
         PSEUDO_CONSTRUCTOR_PREFIX + typeName.substring(typeName.lastIndexOf('.') + 1),
         EMPTY_METHOD_SIGNATURE);
+  }
+
+  private static boolean isUntrackedClass(String typeName) {
+    return typeName.indexOf('.') == -1;
   }
 
   private void visitAnnotation(Annotation node) {
@@ -392,11 +393,18 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         List<? extends TypeMirror> interfaces, boolean isExported) {
       logger.atFine().log("Start Type Scope: %s extends %s", typeName, superName);
 
-      if (typeName.isEmpty()) {
-        // Anonymous types are not currently tracked.
-        currentTypeCloserScope.push(nopCloser);
-        return;
+      if (isUntrackedClass(typeName)) {
+        // Methods of anonymous and local classes are not tracked.
+        if (currentTypeNameScope.isEmpty()) {
+          // Treat top-level classes w/o a package name as an exported class (i.e. don't remove
+          // the class).
+          isExported = true;
+        } else {
+          currentTypeCloserScope.push(nopCloser);
+          return;
+        }
       }
+
       Integer id = getTypeId(typeName);
       Integer eid = getTypeId(superName);
       List<Integer> iids =
@@ -410,7 +418,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
           .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
       // For interfaces, add a pseudo-constructor for use with lambdas.
       if (isInterface) {
-        startMethodDeclaration(getPseudoConstructorName(typeName), true, false);
+        startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false);
         endMethodDeclaration();
       }
     }
@@ -445,13 +453,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       currentTypeInfoScope.peek().addMember(mi);
     }
 
-    private void startAnonymousMethodDeclaration() {
-      // Methods of anonymous clases are not currently tracked.
-      currentMethodCloserScope.push(nopCloser);
-    }
-
     private void startMethodDeclaration(
-        String methodName, boolean isConstructor, boolean isStatic) {
+        String methodName, String declTypeName, boolean isConstructor, boolean isStatic) {
+      if (isUntrackedClass(declTypeName)) {
+        // Methods of anonymous and local classes are not tracked.
+        currentMethodCloserScope.push(nopCloser);
+        return;
+      }
       boolean isExported =
           exportedMethods.contains(getQualifiedMethodName(currentTypeNameScope.peek(), methodName))
           || currentTypeInfoScope.peek().getExported();
@@ -468,8 +476,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     private void addMethodInvocation(String methodName, String declTypeName) {
       logger.atFine().log("Add Method Inv: type: %s method: %s", declTypeName, methodName);
-      if (declTypeName.isEmpty()) {
-        // Methods of anonymous classes are not currently tracked.
+
+      if (isUntrackedClass(declTypeName)) {
+        // Methods of anonymous and local classes are not tracked.
         return;
       }
       int declTypeId = getTypeId(declTypeName);

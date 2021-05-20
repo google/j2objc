@@ -713,6 +713,54 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
+  public void testLocalTypesBasic() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { new B(); }}");
+    addSourceFile("B.java",
+        "package p;",
+        "class B {",
+        "  void b() {",
+        "    class C { int c() { return 1; } }",
+        "  }",
+        "}");
+    addSourceFile("C.java", "class C {}");
+    addSourceFile("D.java", "package p; class D {}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsExactly("p.D");
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("p.A", "A", "()V"),
+        getMethodName("p.B", "b", "()V"));
+  }
+
+  public void testLocalTypesWithExternalTypes() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { new B().b(); }}");
+    addSourceFile("B.java",
+        "package p;",
+        "class B {",
+        "  int b() {",
+        "    class C { int c() { return new D().d(); } }",
+        "    return new C().c();",
+        "  }",
+        "}");
+    addSourceFile("C.java",
+        "package p;",
+        "class C {",
+        "  int c() {",
+        "    class B { int b() { return new E().e(); } }",
+        "    return new B().b();",
+        "  }",
+        "}");
+    addSourceFile("D.java", "package p; class D { int d() { return 1; }}");
+    addSourceFile("E.java", "package p; class E { int e() { return 1; }}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsExactly("p.C", "p.E");
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+  }
+
+
   public void testLambdas() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java",
