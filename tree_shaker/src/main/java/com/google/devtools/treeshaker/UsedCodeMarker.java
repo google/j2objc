@@ -19,7 +19,6 @@ import static javax.lang.model.element.Modifier.STATIC;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Table.Cell;
 import com.google.common.flogger.GoogleLogger;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -88,6 +87,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     context.addMethodInvocation(
         getMethodName(node.getExecutableElement()),
         getDeclaringClassName(node.getExecutableElement()));
+    // Creating an instance of an anonymous class also creates instances of the interfaces.
+    if (node.getAnonymousClassDeclaration() != null) {
+      for (TypeMirror type : node.getAnonymousClassDeclaration().getSuperInterfaceTypeMirrors()) {
+        context.addMethodInvocation(getPseudoConstructorName(type.toString()), type.toString());
+      }
+    }
   }
 
   @Override
@@ -147,10 +152,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    context.startMethodDeclaration(
-        getMethodName(node.getExecutableElement()),
-        node.isConstructor(),
-        Modifier.isStatic(node.getModifiers()));
+    if (getDeclaringClassName(node.getExecutableElement()).isEmpty()) {
+      context.startAnonymousMethodDeclaration();
+    } else {
+      context.startMethodDeclaration(
+          getMethodName(node.getExecutableElement()),
+          node.isConstructor(),
+          Modifier.isStatic(node.getModifiers()));
+    }
     return true;
   }
 
@@ -304,6 +313,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   static final class Context {
     private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
 
+    private interface Closer { void close(); }
+
     // Map of type names to unique integer.
     private int typeCount;
     private final Map<String, Integer> typeMap = new HashMap<>();
@@ -320,21 +331,26 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // Scope containing data for the current type being processed.
     private final Deque<String> currentTypeNameScope = new ArrayDeque<>();
     private final Deque<TypeInfo.Builder> currentTypeInfoScope = new ArrayDeque<>();
+    private final Deque<Closer> currentTypeCloserScope = new ArrayDeque<>();
 
     // Scope containing data for the current method being processed.
     private final Deque<MemberInfo.Builder> mibScope = new ArrayDeque<>();
     private final Deque<String> methodNameScope = new ArrayDeque<>();
     private final Deque<Set<Integer>> referencedTypesScope = new ArrayDeque<>();
+    private final Deque<Closer> currentMethodCloserScope = new ArrayDeque<>();
+
+    private final Closer nopCloser = () -> {};
+    private final Closer closeTypeScopeCloser = this::closeTypeScope;
+    private final Closer closeMethodScopeCloser = this::closeMethodScope;
 
     Context(CodeReferenceMap rootSet) {
       exportedMethods = new HashSet<>();
-      for (Cell<String, String, ImmutableSet<String>> cell :
-               rootSet.getReferencedMethods().cellSet()) {
+      rootSet.getReferencedMethods().cellSet().forEach(cell -> {
         String type  = cell.getRowKey();
         String name = cell.getColumnKey();
-        cell.getValue().forEach(
-            signature -> exportedMethods.add(getQualifiedMethodName(type, name, signature)));
-      }
+        cell.getValue().forEach(signature ->
+            exportedMethods.add(getQualifiedMethodName(type, name, signature)));
+      });
       exportedClasses = rootSet.getReferencedClasses();
     }
 
@@ -354,7 +370,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     private void startPackageInfo(String packageName) {
       String typeName =  packageName + ".package-info";
-      startTypeScope(typeName, "java.lang.Object", ImmutableList.of(), true);
+      startTypeScope(typeName, "java.lang.Object", false, ImmutableList.of(), true);
     }
 
     private void endPackageInfo() {
@@ -364,7 +380,34 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     private void startType(TypeElement type, boolean isInterface) {
       String typeName = type.getQualifiedName().toString();
       String superName = type.getSuperclass().toString();
-      startTypeScope(typeName, superName, type.getInterfaces(), exportedClasses.contains(typeName));
+      boolean isExported = exportedClasses.contains(typeName);
+      startTypeScope(typeName, superName, isInterface, type.getInterfaces(), isExported);
+    }
+
+    private void endType() {
+      endTypeScope();
+    }
+
+    private void startTypeScope(String typeName, String superName, boolean isInterface,
+        List<? extends TypeMirror> interfaces, boolean isExported) {
+      logger.atFine().log("Start Type Scope: %s extends %s", typeName, superName);
+
+      if (typeName.isEmpty()) {
+        // Anonymous types are not currently tracked.
+        currentTypeCloserScope.push(nopCloser);
+        return;
+      }
+      Integer id = getTypeId(typeName);
+      Integer eid = getTypeId(superName);
+      List<Integer> iids =
+          interfaces.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
+      currentTypeNameScope.push(typeName);
+      currentTypeInfoScope.push(TypeInfo.newBuilder()
+          .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
+      currentTypeCloserScope.push(closeTypeScopeCloser);
+      // Push the static initializer as the current method in scope.
+      startMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
+          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
       // For interfaces, add a pseudo-constructor for use with lambdas.
       if (isInterface) {
         startMethodDeclaration(getPseudoConstructorName(typeName), true, false);
@@ -372,52 +415,39 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       }
     }
 
-    private void endType() {
-      endTypeScope();
-    }
-
-    private void startTypeScope(String typeName, String superName,
-        List<? extends TypeMirror> interfaces, boolean isExported) {
-      logger.atFine().log("Start Type Scope: %s extends %s", typeName, superName);
-
-      Integer id = getTypeId(typeName);
-      Integer eid = getTypeId(superName);
-      List<Integer> iids =
-          interfaces.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
-      // Push the new type name on top of the stack.
-      currentTypeNameScope.push(typeName);
-      // Push the new type info builder on top of the stack.
-      currentTypeInfoScope.push(TypeInfo.newBuilder()
-          .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
-      // Push the static initializer as the current method in scope.
-      pushMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
-          .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
-    }
-
     private void endTypeScope() {
-      logger.atFine().log("End Type Scope: %s", currentTypeNameScope.peek());
-      // Pop the current method (i.e. the static initializer).
-      MemberInfo mi = popMethodScope();
-      // Pop the current type info, adding the static initializer.
-      TypeInfo ti =  currentTypeInfoScope.pop().addMember(mi).build();
-      // Pop the current type name.
+      currentTypeCloserScope.pop().close();
+    }
+
+    private void closeTypeScope() {
+      logger.atFine().log("Close Type Scope: %s", currentTypeNameScope.peek());
+      // Close the current method (i.e. the static initializer).
+      closeMethodScope();
+      TypeInfo ti = currentTypeInfoScope.pop().build();
       currentTypeNameScope.pop();
       // Add the type info to the library info.
       lib.addType(ti);
     }
 
-    private void pushMethodScope(String methodName, MemberInfo.Builder mib) {
+    private void startMethodScope(String methodName, MemberInfo.Builder mib) {
       mibScope.push(mib);
       methodNameScope.push(methodName);
       referencedTypesScope.push(new HashSet<>());
     }
 
-    private MemberInfo popMethodScope() {
+    private void closeMethodScope() {
+      logger.atFine().log("Close Method: %s", methodNameScope.peek());
       for (Integer typeId : referencedTypesScope.pop()) {
         mibScope.peek().addReferencedTypes(typeId);
       }
       methodNameScope.pop();
-      return mibScope.pop().build();
+      MemberInfo mi = mibScope.pop().build();
+      currentTypeInfoScope.peek().addMember(mi);
+    }
+
+    private void startAnonymousMethodDeclaration() {
+      // Methods of anonymous clases are not currently tracked.
+      currentMethodCloserScope.push(nopCloser);
     }
 
     private void startMethodDeclaration(
@@ -427,7 +457,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
           || currentTypeInfoScope.peek().getExported();
       logger.atFine().log("Start Method: %s.%s : isConstructor: %s : isStatic: %s, exported: %b",
           currentTypeNameScope.peek(), methodName, isConstructor, isStatic, isExported);
-      pushMethodScope(methodName,
+      currentMethodCloserScope.push(closeMethodScopeCloser);
+      startMethodScope(methodName,
           MemberInfo.newBuilder()
           .setName(methodName)
           .setStatic(isStatic)
@@ -437,6 +468,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     private void addMethodInvocation(String methodName, String declTypeName) {
       logger.atFine().log("Add Method Inv: type: %s method: %s", declTypeName, methodName);
+      if (declTypeName.isEmpty()) {
+        // Methods of anonymous classes are not currently tracked.
+        return;
+      }
       int declTypeId = getTypeId(declTypeName);
       mibScope.peek().addInvokedMethods(com.google.devtools.treeshaker.MethodInvocation.newBuilder()
           .setMethod(methodName)
@@ -461,8 +496,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     }
 
     private void endMethodDeclaration() {
-      logger.atFine().log("End Method: %s", methodNameScope.peek());
-      currentTypeInfoScope.peek().addMember(popMethodScope());
+      currentMethodCloserScope.pop().close();
     }
   }
 }
