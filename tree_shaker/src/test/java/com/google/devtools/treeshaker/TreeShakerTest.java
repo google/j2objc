@@ -681,6 +681,23 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
+  public void testAnonymousParametricAbstractTypes() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { new C().c(); }}");
+    addSourceFile("B.java", "package p; abstract class B<V> { abstract void b(V v); }");
+    addSourceFile("C.java",
+        "package p;",
+        "class C {",
+        "  <V> B<V> c() { return new B<V>() { void b(V v) { }}; }",
+        "}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("p.A", "A", "()V"),
+        getMethodName("p.B", "b", "(Ljava/lang/Object;)V"));
+  }
+
   public void testAnonymousInterfaceTypes() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { new C().c().b(); }}");
@@ -711,6 +728,23 @@ public class TreeShakerTest extends TestCase {
 
     assertThat(getUnusedClasses(unused)).isEmpty();
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+  }
+
+  public void testAnonymousParametricInterfaceTypes() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { new C().c(); }}");
+    addSourceFile("B.java", "package p; interface B<V> { void b(V v); }");
+    addSourceFile("C.java",
+        "package p;",
+        "class C {",
+        "  <V> B<V> c() { return new B<V>() { public void b(V v) { }}; }",
+        "}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("p.A", "A", "()V"),
+        getMethodName("p.B", "b", "(Ljava/lang/Object;)V"));
   }
 
   public void testLocalTypesBasic() throws IOException {

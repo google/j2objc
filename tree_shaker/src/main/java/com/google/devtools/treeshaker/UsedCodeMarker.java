@@ -253,7 +253,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private static String getQualifiedMethodName(String type, String nameAndSignature) {
-    return type + "." + nameAndSignature;
+    return eraseParametricTypes(type) + "." + nameAndSignature;
   }
 
   private static String getMethodName(String name, String signature) {
@@ -264,9 +264,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName(typeUtil.getReferenceName(method), typeUtil.getReferenceSignature(method));
   }
 
-  private static String getPseudoConstructorName(String typeName) {
+  private static String getPseudoConstructorName(String type) {
+    type = eraseParametricTypes(type);
     return getMethodName(
-        PSEUDO_CONSTRUCTOR_PREFIX + typeName.substring(typeName.lastIndexOf('.') + 1),
+        PSEUDO_CONSTRUCTOR_PREFIX + type.substring(type.lastIndexOf('.') + 1),
         EMPTY_METHOD_SIGNATURE);
   }
 
