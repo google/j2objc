@@ -120,6 +120,9 @@ public class Autoboxer extends UnitTreeVisitor {
    */
   private void unbox(Expression expr, PrimitiveType primitiveType) {
     TypeElement boxedClass = findBoxedSuperclass(expr.getTypeMirror());
+    if (boxedClass == null && primitiveType != null) {
+      boxedClass = typeUtil.boxedClass(primitiveType);
+    }
     if (primitiveType == null && boxedClass != null) {
       primitiveType = typeUtil.unboxedType(boxedClass.asType());
     }
@@ -415,10 +418,11 @@ public class Autoboxer extends UnitTreeVisitor {
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
     if (expr != null) {
-      boolean returnsPrimitive = TreeUtil.getOwningReturnType(node).getKind().isPrimitive();
+      TypeMirror returnType = TreeUtil.getOwningReturnType(node);
+      boolean returnsPrimitive = returnType.getKind().isPrimitive();
       boolean exprIsPrimitive = expr.getTypeMirror().getKind().isPrimitive();
       if (returnsPrimitive && !exprIsPrimitive) {
-        unbox(expr);
+        unbox(expr, (PrimitiveType) returnType);
       }
       if (!returnsPrimitive && exprIsPrimitive) {
         box(expr);
