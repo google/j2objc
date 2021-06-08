@@ -54,12 +54,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
   static final String EMPTY_METHOD_SIGNATURE = "()V";
+  static final String INTERFACE_SUPERTYPE = "none";
   static final String PSEUDO_CONSTRUCTOR_PREFIX = "%%";
   static final String SIGNATURE_PREFIX = "##";
 
@@ -182,9 +184,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   public boolean visit(PackageDeclaration node) {
     if (!node.getAnnotations().isEmpty()) {
       // Package annotations are only allowed in package-info.java files.
-      startPackageInfo(node.getPackageElement().getQualifiedName().toString());
+      startPackage(node.getPackageElement());
       node.getAnnotations().forEach(this::visitAnnotation);
-      endPackageInfo();
+      endPackage();
     }
     return false;
   }
@@ -242,8 +244,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     addReferencedType(node.getVariableElement().asType());
   }
 
-  private static String getDeclaringClassName(ExecutableElement method) {
-    return ElementUtil.getDeclaringClass(method).getQualifiedName().toString();
+  private String getDeclaringClassName(ExecutableElement method) {
+    return elementUtil.getBinaryName(ElementUtil.getDeclaringClass(method));
   }
 
   @VisibleForTesting
@@ -321,20 +323,24 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return index;
   }
 
-  private void startPackageInfo(String packageName) {
-    String typeName =  packageName + ".package-info";
-    startTypeScope(typeName, "java.lang.Object", false, ImmutableList.of(), true);
+  private void startPackage(PackageElement pkg) {
+    String pkgName =  pkg.getQualifiedName() + ".package-info";
+    startTypeScope(pkgName, INTERFACE_SUPERTYPE, false, ImmutableList.of(), true);
   }
 
-  private void endPackageInfo() {
+  private void endPackage() {
     endTypeScope();
   }
 
   private void startType(TypeElement type, boolean isInterface) {
-    String typeName = type.getQualifiedName().toString();
-    String superName = type.getSuperclass().toString();
+    String typeName = elementUtil.getBinaryName(type);
+    TypeElement superType = ElementUtil.getSuperclass(type);
+    String superName =
+        superType == null ? INTERFACE_SUPERTYPE : elementUtil.getBinaryName(superType);
+    List<String> interfaces = ElementUtil.getInterfaces(type).stream()
+                                .map(elementUtil::getBinaryName).collect(Collectors.toList());
     boolean isExported = context.exportedClasses.contains(typeName);
-    startTypeScope(typeName, superName, isInterface, type.getInterfaces(), isExported);
+    startTypeScope(typeName, superName, isInterface, interfaces, isExported);
   }
 
   private void endType() {
@@ -342,7 +348,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void startTypeScope(String typeName, String superName, boolean isInterface,
-      List<? extends TypeMirror> interfaces, boolean isExported) {
+      List<String> interfaces, boolean isExported) {
     if (isUntrackedClass(typeName)) {
       // Methods of anonymous and local classes are not tracked.
       if (context.currentTypeNameScope.isEmpty()) {
@@ -357,8 +363,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     Integer id = getTypeId(typeName);
     Integer eid = getTypeId(superName);
-    List<Integer> iids =
-        interfaces.stream().map(tm -> getTypeId(tm.toString())).collect(Collectors.toList());
+    List<Integer> iids = interfaces.stream().map(this::getTypeId).collect(Collectors.toList());
     context.currentTypeNameScope.push(typeName);
     context.currentTypeInfoScope.push(TypeInfo.newBuilder()
         .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
