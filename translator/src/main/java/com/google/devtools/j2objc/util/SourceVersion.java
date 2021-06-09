@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
  */
 public enum SourceVersion {
 
+  JAVA_17(17, "17"),
+  JAVA_16(16, "16"),
   JAVA_15(15, "15"),
   JAVA_14(14, "14"),
   JAVA_13(13, "13"),
@@ -35,7 +37,13 @@ public enum SourceVersion {
   JAVA_6(6, "1.6"),
   JAVA_5(5, "1.5");
 
+  // Max version supported by translator and runtime.
   private static SourceVersion maxSupportedVersion = JAVA_15;
+
+  // Max version supported by this class. This allows work on
+  // future versions to be done without exposing customers to
+  // a partial implementation.
+  private static final SourceVersion maxVersion = JAVA_17;
 
   private final int version;
   private final String flag;
@@ -78,6 +86,10 @@ public enum SourceVersion {
 
   public static void setMaxSupportedVersion(SourceVersion sourceVersion) {
     maxSupportedVersion = sourceVersion;
+  }
+
+  public static SourceVersion getMaxVersion() {
+    return maxVersion;
   }
 
   /**
