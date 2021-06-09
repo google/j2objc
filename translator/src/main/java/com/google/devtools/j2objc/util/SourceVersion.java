@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
  */
 public enum SourceVersion {
 
+  JAVA_17(17, "17"),
+  JAVA_16(16, "16"),
   JAVA_15(15, "15"),
   JAVA_14(14, "14"),
   JAVA_13(13, "13"),
