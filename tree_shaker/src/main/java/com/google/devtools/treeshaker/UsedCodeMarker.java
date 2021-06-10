@@ -14,6 +14,7 @@
 
 package com.google.devtools.treeshaker;
 
+import static java.lang.Math.max;
 import static javax.lang.model.element.Modifier.STATIC;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -44,6 +45,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -85,29 +87,23 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
     // Creating an instance of an anonymous class also creates instances of the interfaces.
     if (node.getAnonymousClassDeclaration() != null) {
       for (TypeMirror type : node.getAnonymousClassDeclaration().getSuperInterfaceTypeMirrors()) {
-        addMethodInvocation(getPseudoConstructorName(type.toString()), type.toString());
+        addPseudoConstructorInvocation(type);
       }
     }
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
   }
 
   @Override
@@ -123,9 +119,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(ExpressionMethodReference node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
   }
 
   @Override
@@ -134,16 +128,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     if (node.getVariableElement().getModifiers().contains(STATIC)) {
       addMethodInvocation(
           CLASS_INITIALIZER_NAME,
-          node.getExpression().getTypeMirror().toString());
+          getTypeMirrorName(node.getExpression().getTypeMirror()));
     }
   }
 
   @Override
   public void endVisit(LambdaExpression node) {
     // A lambda expression implicitly constructs an instance of the interface that it implements.
-    addMethodInvocation(
-        getPseudoConstructorName(node.getTypeMirror().toString()),
-        node.getTypeMirror().toString());
+    addPseudoConstructorInvocation(node.getTypeMirror());
   }
 
   @Override
@@ -168,9 +160,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
     addReferencedType(node.getExecutableType().getReturnType());
     node.getExecutableType().getParameterTypes().forEach(this::addReferencedType);
   }
@@ -203,16 +193,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
     addReferencedType(node.getExecutableType().getReturnType());
     node.getExecutableType().getParameterTypes().forEach(this::addReferencedType);
   }
@@ -234,9 +220,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getMethodName(node.getExecutableElement()),
         getDeclaringClassName(node.getExecutableElement()));
     // A method expression implicitly constructs an instance of the interface that it implements.
-    addMethodInvocation(
-        getPseudoConstructorName(node.getTypeMirror().toString()),
-        node.getTypeMirror().toString());
+    addPseudoConstructorInvocation(node.getTypeMirror());
   }
 
   @Override
@@ -265,11 +249,15 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName(typeUtil.getReferenceName(method), typeUtil.getReferenceSignature(method));
   }
 
+  private String getTypeMirrorName(TypeMirror type) {
+    TypeElement typeElement = TypeUtil.asTypeElement(type);
+    return typeElement == null ? type.toString() : elementUtil.getBinaryName(typeElement);
+  }
+
   private static String getPseudoConstructorName(String type) {
     type = eraseParametricTypes(type);
-    return getMethodName(
-        PSEUDO_CONSTRUCTOR_PREFIX + type.substring(type.lastIndexOf('.') + 1),
-        EMPTY_METHOD_SIGNATURE);
+    int index = max(type.lastIndexOf('.'), type.lastIndexOf('$')) + 1;
+    return getMethodName(PSEUDO_CONSTRUCTOR_PREFIX + type.substring(index), EMPTY_METHOD_SIGNATURE);
   }
 
   private static boolean isUntrackedClass(String typeName) {
@@ -278,9 +266,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void visitAnnotation(Annotation node) {
     // A reference to an annotation implicitly constructs an instance of that annotation.
-    addMethodInvocation(
-        getPseudoConstructorName(node.getTypeMirror().toString()),
-        node.getTypeMirror().toString());
+    addPseudoConstructorInvocation(node.getTypeMirror());
   }
 
   @VisibleForTesting
@@ -339,7 +325,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         superType == null ? INTERFACE_SUPERTYPE : elementUtil.getBinaryName(superType);
     List<String> interfaces = ElementUtil.getInterfaces(type).stream()
                                 .map(elementUtil::getBinaryName).collect(Collectors.toList());
-    boolean isExported = context.exportedClasses.contains(typeName);
+    boolean isExported = context.exportedClasses.contains(typeName)
+                         || ElementUtil.isGeneratedAnnotation(type);
     startTypeScope(typeName, superName, isInterface, interfaces, isExported);
   }
 
@@ -426,6 +413,15 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         .setExported(isExported));
   }
 
+  private void addPseudoConstructorInvocation(TypeMirror type) {
+    String typeName = getTypeMirrorName(type);
+    addMethodInvocation(getPseudoConstructorName(typeName), typeName);
+  }
+
+  private void addMethodInvocation(ExecutableElement element) {
+    addMethodInvocation(getMethodName(element), getDeclaringClassName(element));
+  }
+
   private void addMethodInvocation(String methodName, String declTypeName) {
     if (isUntrackedClass(declTypeName)) {
       // Methods of anonymous and local classes are not tracked.
@@ -441,11 +437,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void addReferencedType(TypeMirror type) {
-    boolean isPrimitive = type.getKind().isPrimitive();
-    if (isPrimitive)  {
+    if (type.getKind().isPrimitive())  {
       return;
     }
-    addReferencedTypeName(type.toString());
+    addReferencedTypeName(getTypeMirrorName(type));
   }
 
   private void addReferencedTypeName(String typeName) {

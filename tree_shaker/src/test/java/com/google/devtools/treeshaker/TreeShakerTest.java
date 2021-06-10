@@ -764,13 +764,19 @@ public class TreeShakerTest extends TestCase {
 
   public void testSimpleAnnotations() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
-    addSourceFile("A.java", "package p; class A { static void main() { new D().d(); }}");
+    addSourceFile("A.java", "package p; class A { static void main() { new C().c(); }}");
     addSourceFile("B.java", "package p; @interface B { int b(); int c() default 3; }");
-    addSourceFile("C.java", "package p; @interface C { }");
-    addSourceFile("D.java", "package p; @B(b=4) class D { @B(b=4,c=2) void d() { }}");
+    addSourceFile("C.java", "package p; @B(b=4) class C { @B(b=4,c=2) void c() { }}");
+    addSourceFile("D.java", "package p; @interface D { }");
+    addSourceFile("E.java",
+        "package p;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.SOURCE)",
+        "@interface E { }");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).containsExactly("p.C");
+    assertThat(getUnusedClasses(unused)).containsExactly("p.E");
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
@@ -808,6 +814,16 @@ public class TreeShakerTest extends TestCase {
     addSourceFile("B.java", "package p; enum B { X, Y; }");
     addSourceFile("C.java", "package p; @interface C { B b() default B.X; }");
     addSourceFile("D.java", "package p; @C class D { }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+  }
+
+  public void testAnnotationsWithInnerClasses() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { }}");
+    addSourceFile("B.java", "package p; @interface B { enum D { E; } D b() default D.E; }");
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
