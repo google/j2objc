@@ -115,6 +115,51 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).isEmpty();
   }
 
+  public void testImportStaticField() throws IOException {
+    addTreeShakerRootsFile("a.A:\n    main()");
+    addSourceFile("A.java", "package a; class A { static void main() { C.of(); }}");
+    addSourceFile("B.java",
+        "package a;",
+        "class B {",
+        "  static final B X = new B();",
+        "}");
+    addSourceFile("C.java",
+        "package a;",
+        "import static a.B.X;",
+        "class C {",
+        "  static B of() { return X; }",
+        "}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("a.A", "A", "()V"),
+        getMethodName("a.C", "C", "()V"));
+  }
+
+  public void testImportStaticMethod() throws IOException {
+    addTreeShakerRootsFile("a.A:\n    main()");
+    addSourceFile("A.java", "package a; class A { static void main() { C.of(); }}");
+    addSourceFile("B.java",
+        "package a;",
+        "class B {",
+        "  static final B X = new B();",
+        "  static B getX() { return X ; }",
+        "}");
+    addSourceFile("C.java",
+        "package a;",
+        "import static a.B.getX;",
+        "class C {",
+        "  static B of() { return getX(); }",
+        "}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("a.A", "A", "()V"),
+        getMethodName("a.C", "C", "()V"));
+  }
+
   public void testConstructorOverloads() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { new B(\"\").b(); }}");

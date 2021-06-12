@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
-import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -36,9 +35,11 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -58,6 +59,7 @@ import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 final class UsedCodeMarker extends UnitTreeVisitor {
@@ -123,16 +125,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(FieldAccess node) {
-    // Note: accessing a static field of a class implicitly runs the class' static initializer.
-    if (node.getVariableElement().getModifiers().contains(STATIC)) {
-      addMethodInvocation(
-          CLASS_INITIALIZER_NAME,
-          getTypeMirrorName(node.getExpression().getTypeMirror()));
-    }
-  }
-
-  @Override
   public void endVisit(LambdaExpression node) {
     // A lambda expression implicitly constructs an instance of the interface that it implements.
     addPseudoConstructorInvocation(node.getTypeMirror());
@@ -184,6 +176,19 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(PropertyAnnotation node) {
     visitAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(SimpleName node) {
+    // For variable references to static fields in a different class, add a reference to
+    // that class.
+    VariableElement var = TreeUtil.getVariableElement(node);
+    if (var != null && var.getKind().isField() && var.getModifiers().contains(STATIC)) {
+      String declTypeName = elementUtil.getBinaryName(ElementUtil.getDeclaringClass(var));
+      if (!declTypeName.equals(context.currentTypeNameScope.peek())) {
+        addMethodInvocation(CLASS_INITIALIZER_NAME, declTypeName);
+      }
+    }
   }
 
   @Override
