@@ -221,9 +221,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeMethodReference node) {
-    addMethodInvocation(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()));
+    addMethodInvocation(node.getExecutableElement());
     // A method expression implicitly constructs an instance of the interface that it implements.
     addPseudoConstructorInvocation(node.getTypeMirror());
   }
@@ -309,25 +307,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void startTypeScope(String typeName, String superName, boolean isInterface,
       List<String> interfaces, boolean isExported) {
-    if (isUntrackedClass(typeName)) {
-      // Methods of anonymous and local classes are not tracked.
-      if (context.currentTypeNameScope.isEmpty()) {
-        // Treat top-level classes w/o a package name as an exported class (i.e. don't remove
-        // the class).
-        isExported = true;
-      } else {
-        context.currentTypeCloserScope.push(Context.nopCloser);
-        return;
-      }
-    }
-
     Integer id = getTypeId(typeName);
     Integer eid = getTypeId(superName);
     List<Integer> iids = interfaces.stream().map(this::getTypeId).collect(Collectors.toList());
     context.currentTypeNameScope.push(typeName);
     context.currentTypeInfoScope.push(TypeInfo.newBuilder()
         .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
-    context.currentTypeCloserScope.push(this::closeTypeScope);
     // Push the static initializer as the current method in scope.
     startMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
         .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
@@ -339,12 +324,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void endTypeScope() {
-    context.currentTypeCloserScope.pop().close();
-  }
-
-  private void closeTypeScope() {
     // Close the current method (i.e. the static initializer).
-    closeMethodScope();
+    endMethodDeclaration();
     TypeInfo ti = context.currentTypeInfoScope.pop().build();
     context.currentTypeNameScope.pop();
     // Add the type info to the library info.
@@ -357,27 +338,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     context.referencedTypesScope.push(new HashSet<>());
   }
 
-  private void closeMethodScope() {
-    for (Integer typeId : context.referencedTypesScope.pop()) {
-      context.mibScope.peek().addReferencedTypes(typeId);
-    }
-    context.methodNameScope.pop();
-    MemberInfo mi = context.mibScope.pop().build();
-    context.currentTypeInfoScope.peek().addMember(mi);
-  }
-
   private void startMethodDeclaration(
       String methodName, String declTypeName, boolean isConstructor, boolean isStatic) {
-    if (isUntrackedClass(declTypeName)) {
-      // Methods of anonymous and local classes are not tracked.
-      context.currentMethodCloserScope.push(Context.nopCloser);
-      return;
-    }
     boolean isExported =
-        context.exportedMethods.contains(
-            getQualifiedMethodName(context.currentTypeNameScope.peek(), methodName))
+        context.exportedMethods.contains(getQualifiedMethodName(declTypeName, methodName))
         || context.currentTypeInfoScope.peek().getExported();
-    context.currentMethodCloserScope.push(this::closeMethodScope);
     startMethodScope(methodName,
         MemberInfo.newBuilder()
         .setName(methodName)
@@ -422,14 +387,15 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void endMethodDeclaration() {
-    context.currentMethodCloserScope.pop().close();
+    for (Integer typeId : context.referencedTypesScope.pop()) {
+      context.mibScope.peek().addReferencedTypes(typeId);
+    }
+    context.methodNameScope.pop();
+    MemberInfo mi = context.mibScope.pop().build();
+    context.currentTypeInfoScope.peek().addMember(mi);
   }
 
   static final class Context {
-    private interface Closer { void close(); }
-
-    private static final Closer nopCloser = () -> {};
-
     // Map of type names to unique integer.
     private int typeCount;
     private final Map<String, Integer> typeMap = new HashMap<>();
@@ -446,13 +412,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // Scope containing data for the current type being processed.
     private final Deque<String> currentTypeNameScope = new ArrayDeque<>();
     private final Deque<TypeInfo.Builder> currentTypeInfoScope = new ArrayDeque<>();
-    private final Deque<Closer> currentTypeCloserScope = new ArrayDeque<>();
 
     // Scope containing data for the current method being processed.
     private final Deque<MemberInfo.Builder> mibScope = new ArrayDeque<>();
     private final Deque<String> methodNameScope = new ArrayDeque<>();
     private final Deque<Set<Integer>> referencedTypesScope = new ArrayDeque<>();
-    private final Deque<Closer> currentMethodCloserScope = new ArrayDeque<>();
 
     Context(CodeReferenceMap rootSet) {
       exportedMethods = new HashSet<>();

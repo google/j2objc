@@ -681,7 +681,7 @@ public class TreeShakerTest extends TestCase {
     addSourceFile("D.java", "package p; class D {}");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).containsExactly("p.D", "p.B$1C");
+    assertThat(getUnusedClasses(unused)).containsExactly("C", "p.D", "p.B$1C");
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("p.A", "A", "()V"),
         getMethodName("p.B", "b", "()V"));
