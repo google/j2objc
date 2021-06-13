@@ -933,15 +933,6 @@ public class TreeShakerTest extends TestCase {
     assertThat(output).isEqualTo("p.B\np.A:\n    boolean a(int)\n");
   }
 
-  public void testEraseParametricTypes() throws IOException {
-    assertThat(UsedCodeMarker.eraseParametricTypes("")).isEmpty();
-    assertThat(UsedCodeMarker.eraseParametricTypes("C")).isEqualTo("C");
-    assertThat(UsedCodeMarker.eraseParametricTypes("C<D>")).isEqualTo("C");
-    assertThat(UsedCodeMarker.eraseParametricTypes("C<D<A>>")).isEqualTo("C");
-    assertThat(UsedCodeMarker.eraseParametricTypes("C<D<A>,D<B>>")).isEqualTo("C");
-    assertThat(UsedCodeMarker.eraseParametricTypes("C<A>.D<A>")).isEqualTo("C.D");
-  }
-
   public void testGetType() throws IOException {
     assertThat(getType("V")).isEqualTo("void");
     assertThat(getType("Z")).isEqualTo("boolean");

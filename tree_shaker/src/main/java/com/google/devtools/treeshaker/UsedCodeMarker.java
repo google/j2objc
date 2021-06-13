@@ -243,7 +243,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private static String getQualifiedMethodName(String type, String nameAndSignature) {
-    return eraseParametricTypes(type) + "." + nameAndSignature;
+    return type + "." + nameAndSignature;
   }
 
   private static String getMethodName(String name, String signature) {
@@ -260,7 +260,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private static String getPseudoConstructorName(String type) {
-    type = eraseParametricTypes(type);
     int index = max(type.lastIndexOf('.'), type.lastIndexOf('$')) + 1;
     return getMethodName(PSEUDO_CONSTRUCTOR_PREFIX + type.substring(index), EMPTY_METHOD_SIGNATURE);
   }
@@ -274,41 +273,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     addPseudoConstructorInvocation(node.getTypeMirror());
   }
 
-  @VisibleForTesting
-  static String eraseParametricTypes(String typeName) {
-    // cases:
-    // - no paramatric types: C -> C
-    // - simple parametric type: C<A> -> C
-    // - nested parametric type: C<D<A>> -> C
-    // - nested multi-parametric type: C<D<A>,D<B>> -> C
-    // - chained parametric type: C<A>.D<A> -> C.D
-    int begin = typeName.indexOf('<');
-    if (begin == -1) {
-      return typeName;
-    }
-    int unmatched = 1;
-    int index = begin + 1;
-    while (unmatched > 0 && index < typeName.length()) {
-      char current = typeName.charAt(index);
-      if (current == '<') {
-        unmatched++;
-      } else if (current == '>') {
-        unmatched--;
-      }
-      index++;
-    }
-    String first = typeName.substring(0, begin);
-    if (index == typeName.length()) {
-      return first;
-    }
-    return first + eraseParametricTypes(typeName.substring(index));
-  }
-
   private Integer getTypeId(String typeName) {
-    String rawTypeName = eraseParametricTypes(typeName);
-    Integer index = context.typeMap.putIfAbsent(rawTypeName, context.typeCount);
+    Integer index = context.typeMap.putIfAbsent(typeName, context.typeCount);
     if (index == null) {
-      context.libraryInfoBuilder.addTypeMap(rawTypeName);
+      context.libraryInfoBuilder.addTypeMap(typeName);
       return context.typeCount++;
     }
     return index;
