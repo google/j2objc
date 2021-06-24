@@ -556,6 +556,8 @@ public class Options {
         getArgValue(args, arg);  // ignore
       } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
         addPlatformModuleSystemOptions(arg, getArgValue(args, arg));
+      } else if (arg.equals("--enable-preview")) {
+        addPlatformModuleSystemOptions(arg);
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
