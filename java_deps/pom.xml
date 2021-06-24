@@ -130,6 +130,11 @@
                   <artifactId>mockito-core</artifactId>
                   <classifier>sources</classifier>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>com.google.truth</groupId>
+                  <artifactId>truth</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>

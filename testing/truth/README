@@ -1,0 +1,11 @@
+This package creates an Objective-C library of the Truth fluent assertions
+library (https://github.com/google/truth). This project's Java files are
+extracted from the ../../java_deps/build_result/truth-<version>-sources.jar
+jar when building.
+
+Modifications:
+  . No modified source files.
+  . Classes that work with JVM bytecode are not included:
+      com/google/common/truth/ActualValueInference.java
+      com/google/common/truth/AutoValue_ActualValueInference_*.java
+  . Classes translated with --strip-gwt-incompatible flag.
