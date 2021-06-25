@@ -96,6 +96,10 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
   return true;
 }
 
+uint64_t J2ObjCGenerator::GetSupportedFeatures() const {
+  return FEATURE_PROTO3_OPTIONAL;
+}
+
 }  // namespace j2objc
 }  // namespace compiler
 }  // namespace protobuf
