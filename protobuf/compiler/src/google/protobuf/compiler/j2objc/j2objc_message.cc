@@ -113,7 +113,7 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
         .CollectMessageOrBuilderForwardDeclarations(declarations);
   }
 
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i))
         .CollectMessageOrBuilderForwardDeclarations(declarations);
   }
@@ -121,7 +121,7 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
 
 void MessageGenerator::CollectHeaderImports(
     std::set<std::string>* imports) const {
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).CollectHeaderImports(imports);
   }
 
@@ -141,7 +141,7 @@ void MessageGenerator::CollectSourceImports(
     field_generators_.get(descriptor_->field(i)).CollectSourceImports(imports);
   }
 
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).CollectSourceImports(imports);
   }
 
@@ -249,7 +249,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "*$classname$_descriptor_;\n",
       "classname", ClassName(descriptor_));
 
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).GenerateHeader(printer);
   }
 
@@ -295,23 +295,19 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "num_has_bytes", SimpleItoa((field_generators_.numHasBits() + 31) / 32));
 
   printer->Indent();
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i))
         .GenerateStorageDeclaration(printer);
   }
   for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     const OneofDescriptor* oneof = descriptor_->oneof_decl(i);
-    if (oneof->is_synthetic()) {
-      field_generators_.get(oneof->field(0)).GenerateDeclaration(printer);
-    } else {
-      printer->Print("union {\n");
-      printer->Indent();
-      for (int j = 0; j < oneof->field_count(); j++) {
-        field_generators_.get(oneof->field(j)).GenerateDeclaration(printer);
-      }
-      printer->Outdent();
-      printer->Print("};\n");
+    printer->Print("union {\n");
+    printer->Indent();
+    for (int j = 0; j < oneof->field_count(); j++) {
+      field_generators_.get(oneof->field(j)).GenerateDeclaration(printer);
     }
+    printer->Outdent();
+    printer->Print("};\n");
   }
   for (int i = 0; i < descriptor_->field_count(); i++) {
     const FieldDescriptor* field = descriptor_->field(i);
@@ -373,10 +369,10 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Outdent();
   printer->Print("};\n");
-  if (descriptor_->real_oneof_decl_count() > 0) {
+  if (descriptor_->oneof_decl_count() > 0) {
     printer->Print("static CGPOneofData oneofs[] = {\n");
     printer->Indent();
-    for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+    for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
       OneofGenerator(descriptor_->oneof_decl(i)).GenerateOneofData(printer);
     }
     printer->Outdent();
@@ -384,11 +380,11 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Print(
       "CGPInitFields($classname$_descriptor_, $fieldcount$, fields, "
-      "$oneofcount$, $oneofdata$);\n",
-      "classname", ClassName(descriptor_), "fieldcount",
-      SimpleItoa(descriptor_->field_count()), "oneofcount",
-      SimpleItoa(descriptor_->real_oneof_decl_count()), "oneofdata",
-      descriptor_->real_oneof_decl_count() > 0 ? "oneofs" : "NULL");
+          "$oneofcount$, $oneofdata$);\n",
+      "classname", ClassName(descriptor_),
+      "fieldcount", SimpleItoa(descriptor_->field_count()),
+      "oneofcount", SimpleItoa(descriptor_->oneof_decl_count()),
+      "oneofdata", descriptor_->oneof_decl_count() > 0 ? "oneofs" : "NULL");
 
   if (descriptor_->extension_count() > 0) {
     printer->Print("static CGPFieldData extensionFields[] = {\n");
@@ -465,7 +461,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "}\n",
       "classname", ClassName(descriptor_));
 
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).GenerateSource(printer);
   }
 
@@ -558,7 +554,7 @@ void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
         .GenerateMessageOrBuilderProtocol(printer);
   }
 
-  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i))
         .GenerateMessageOrBuilder(printer);
   }
