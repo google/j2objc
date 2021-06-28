@@ -74,8 +74,9 @@ EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
-CREATE_JAR_NAME = truth
+CREATE_JAR_NAME = j2objc_truth
 CREATE_JAR_SOURCES = $(EXTRACTED_JAVA)
+CREATE_JAR_JAVAC_ARGS = -sourcepath $(JAVA_SRC_DIR) -classpath $(CLASSPATH)
 include ../../make/create_jar.mk
 
 CLASSPATH_LIST = \
@@ -90,7 +91,7 @@ CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES)
-TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR) -classpath $(CLASSPATH) --strip-gwt-incompatible
+TRANSLATE_ARGS = $(CREATE_JAR_JAVAC_ARGS) --strip-gwt-incompatible
 include ../../make/translate.mk
 
 ARCH_HEADERS = $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=$(ARCH_INCLUDE_DIR)/%)
@@ -101,16 +102,16 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../../make/fat_lib.mk
 
+JAR = $(BUILD_DIR)/j2objc_truth.jar
+DIST_JAR = $(DIST_JAR_DIR)/j2objc_truth.jar
+
 default: lib
 
-java: classes jar
+java: $(DIST_JAR)
+	@:
 
-classes: $(JAVA_SOURCES_MANIFEST)
-	@echo Building class files
-	@mkdir -p $(CLASSES_DIR)
-	$(JAVAC) -d $(CLASSES_DIR) \
-	    -sourcepath $(SOURCE_PATH) -classpath $(CLASS_PATH) \
-	    $$(cat $(JAVA_SOURCES_MANIFEST))
+$(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
+	@install -m 0644 $< $@
 
 lib: $(FAT_LIBS)
 	@:
