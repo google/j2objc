@@ -50,7 +50,10 @@ PROTOS = \
   single_file.proto \
   size_test.proto \
   string_fields.proto \
-  typical.proto
+  typical.proto \
+  unittest.proto \
+  unittest_import.proto \
+  unittest_import_public.proto
 
 TESTDATA = \
   testdata/largeproto \
