@@ -35,6 +35,8 @@ void ExtensionLiteGenerator::CollectSourceImports(
 void ExtensionLiteGenerator::GenerateMembersHeader(io::Printer* printer) const {
   printer->Print(
       "\n"
+      // TODO(anjulij): remove when lite is supported
+      "// in j2objc_extension_lite.cc \n"
       "inline ComGoogleProtobufGeneratedMessage_GeneratedExtension"
       " *$classname$_get_$name$(void);\n"
       "/*! INTERNAL ONLY - Use accessor function from above. */\n"

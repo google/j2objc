@@ -164,9 +164,11 @@ void MessageLiteGenerator::GenerateHeader(io::Printer* printer) {
   if (descriptor_->extension_range_count() > 0) {
     superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableMessage";
   }
-  // TODO: comment indicating which generator we're located in
+
   printer->Print(
       "\n"
+      // TODO(anjulij): remove when lite is supported
+      "// in j2objc_message_lite.cc \n"
       "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
       "+ ($classname$ *)getDefaultInstance;\n"
       "- ($classname$ *)getDefaultInstanceForType;\n"
