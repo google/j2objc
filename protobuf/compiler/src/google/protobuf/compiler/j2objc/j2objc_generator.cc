@@ -32,9 +32,8 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#include <google/protobuf/compiler/j2objc/j2objc_generator.h>
-
 #include <google/protobuf/compiler/j2objc/j2objc_file.h>
+#include <google/protobuf/compiler/j2objc/j2objc_generator.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
 namespace google {
@@ -56,6 +55,7 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
   ParseGeneratorParameter(parameter, &options);
 
   bool generate_class_mappings = false;
+  bool enforce_lite;
 
   for (int i = 0; i < options.size(); i++) {
     if (options[i].first == "prefixes") {
@@ -64,6 +64,10 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
       GenerateFileDirMapping();
     } else if (options[i].first == "generate_class_mappings") {
       generate_class_mappings = true;
+    } else if (options[i].first == "lite") {
+      // Note: Java Lite does not guarantee API/ABI stability. We may choose to
+      // break existing API in order to boost performance / reduce code size.
+      enforce_lite = true;
     } else {
       *error = "Unknown generator option: " + options[i].first;
       return false;
@@ -72,7 +76,7 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
 
   // -----------------------------------------------------------------
 
-  FileGenerator file_generator(file);
+  FileGenerator file_generator(file, enforce_lite);
   if (!file_generator.Validate(error)) {
     return false;
   }
@@ -91,6 +95,11 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
 
   if (generate_class_mappings) {
     file_generator.GenerateClassMappings(context);
+  }
+
+  if (enforce_lite) {
+    // If true, we should build .meta files and emit @Generated annotations into
+    // generated code.
   }
 
   return true;

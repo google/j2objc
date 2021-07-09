@@ -61,8 +61,9 @@ void AddSourceImports(std::set<std::string>& imports) {
   imports.insert("com/google/protobuf/Descriptors_PackagePrivate.h");
 }
 
-void PrintSourcePreamble(io::Printer *printer) {
-  printer->Print("\n"
+void PrintSourcePreamble(io::Printer* printer) {
+  printer->Print(
+      "\n"
       "#pragma GCC diagnostic ignored \"-Wprotocol\"\n"
       "#pragma clang diagnostic ignored \"-Wprotocol\"\n"
       "#pragma GCC diagnostic ignored \"-Wincomplete-implementation\"\n"
@@ -94,9 +95,10 @@ void PrintForwardDeclarations(const std::set<std::string>* declarations,
 
 }  // namespace
 
-FileGenerator::FileGenerator(const FileDescriptor *file)
-  : file_(file),
-    classname_(FileClassName(file)) {
+FileGenerator::FileGenerator(const FileDescriptor* file, bool enforce_lite)
+    : file_(file),
+      classname_(FileClassName(file)),
+      enforce_lite_(enforce_lite) {
   if (IsGenerateFileDirMapping()) {
     output_dir_ = FileParentDir(file);
   } else {
@@ -114,12 +116,13 @@ bool FileGenerator::Validate(std::string* error) {
   if (HasConflictingClassName(file_, classname_)) {
     error->assign(file_->name());
     error->append(
-      ": Cannot generate Java output because the file's outer class name, \"");
+        ": Cannot generate Java output because the file's outer class name, "
+        "\"");
     error->append(classname_);
     error->append(
-      "\", matches the name of one of the types declared inside it.  "
-      "Please either rename the type or use the java_outer_classname "
-      "option to specify a different outer class name for the .proto file.");
+        "\", matches the name of one of the types declared inside it.  "
+        "Please either rename the type or use the java_outer_classname "
+        "option to specify a different outer class name for the .proto file.");
     return false;
   }
 
@@ -170,36 +173,40 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
   PrintImports(&headers, &printer);
   PrintForwardDeclarations(&declarations, &printer);
 
-  printer.Print("\n"
+  printer.Print(
+      "\n"
       "@interface $classname$ : NSObject\n"
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
-          "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
+      "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
-          "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;\n"
+      "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;\n"
       "\n"
       "@end\n\n"
       "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
-          "ComGoogleProtobufExtensionRegistry_("
-          "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n"
+      "ComGoogleProtobufExtensionRegistry_("
+      "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n"
       "\n"
       "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
-          "ComGoogleProtobufExtensionRegistryLite_("
-          "ComGoogleProtobufExtensionRegistryLite *extensionRegistry);\n",
+      "ComGoogleProtobufExtensionRegistryLite_("
+      "ComGoogleProtobufExtensionRegistryLite *extensionRegistry);\n",
       "classname", ClassName(file_));
 
   if (file_->extension_count() > 0) {
-    printer.Print("\n"
+    printer.Print(
+        "\n"
         "J2OBJC_STATIC_INIT($classname$)\n",
         "classname", ClassName(file_));
   } else {
-    printer.Print("\n"
+    printer.Print(
+        "\n"
         "J2OBJC_EMPTY_STATIC_INIT($classname$)\n",
         "classname", ClassName(file_));
   }
 
-  printer.Print("\n"
+  printer.Print(
+      "\n"
       "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n",
       "classname", ClassName(file_));
 
@@ -254,32 +261,33 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
   PrintSourcePreamble(&printer);
 
   if (file_->extension_count() > 0) {
-    printer.Print(
-        "\nJ2OBJC_INITIALIZED_DEFN($classname$)\n",
-        "classname", ClassName(file_));
+    printer.Print("\nJ2OBJC_INITIALIZED_DEFN($classname$)\n", "classname",
+                  ClassName(file_));
   }
   for (int i = 0; i < file_->extension_count(); i++) {
     ExtensionGenerator(file_->extension(i)).GenerateSourceDefinition(&printer);
   }
 
-  printer.Print("\n"
+  printer.Print(
+      "\n"
       "@implementation $classname$\n"
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
       "(ComGoogleProtobufExtensionRegistry *)extensionRegistry {\n"
       "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
-          "ExtensionRegistry_(extensionRegistry);\n"
+      "ExtensionRegistry_(extensionRegistry);\n"
       "}\n"
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
       "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry {\n"
       "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
-          "ExtensionRegistryLite_(extensionRegistry);\n"
+      "ExtensionRegistryLite_(extensionRegistry);\n"
       "}\n",
       "classname", ClassName(file_));
 
   if (file_->extension_count() > 0) {
-    printer.Print("\n"
+    printer.Print(
+        "\n"
         "+ (void)initialize {\n"
         "  if (self == [$classname$ class]) {\n"
         "    static CGPFieldData extensionFields[] = {\n",
@@ -296,28 +304,29 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
       ExtensionGenerator(file_->extension(i))
           .GenerateSourceInitializer(&printer);
     }
-    printer.Print(
-        "J2OBJC_SET_INITIALIZED($classname$)\n", "classname", ClassName(file_));
+    printer.Print("J2OBJC_SET_INITIALIZED($classname$)\n", "classname",
+                  ClassName(file_));
     printer.Outdent();
     printer.Outdent();
     printer.Print("  }\n}\n");
   }
 
-  printer.Print("\n"
+  printer.Print(
+      "\n"
       "@end\n"
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
       "void $classname$_registerAllExtensionsWith"
-          "ComGoogleProtobufExtensionRegistry_("
-          "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n"
+      "ComGoogleProtobufExtensionRegistry_("
+      "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n"
       "  $classname$_registerAllExtensionsWith"
-          "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n"
+      "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n"
       "}\n"
       "\n"
       "void $classname$_registerAllExtensionsWith"
-          "ComGoogleProtobufExtensionRegistryLite_("
-          "ComGoogleProtobufExtensionRegistryLite *extensionRegistry) {\n",
+      "ComGoogleProtobufExtensionRegistryLite_("
+      "ComGoogleProtobufExtensionRegistryLite *extensionRegistry) {\n",
       "classname", ClassName(file_));
   printer.Indent();
   for (int i = 0; i < file_->extension_count(); i++) {

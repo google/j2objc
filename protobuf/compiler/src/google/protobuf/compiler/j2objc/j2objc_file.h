@@ -47,7 +47,7 @@ namespace j2objc {
 
 class FileGenerator {
  public:
-  explicit FileGenerator(const FileDescriptor* file);
+  explicit FileGenerator(const FileDescriptor* file, bool enforce_lite);
   ~FileGenerator();
 
   // Checks for problems that would otherwise lead to cryptic compile errors.
@@ -96,6 +96,7 @@ class FileGenerator {
   const FileDescriptor* file_;
   std::string output_dir_;
   std::string classname_;
+  bool enforce_lite_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(FileGenerator);
 };
