@@ -49,4 +49,26 @@ public class NumberMethodRewriterTest extends GenerationTest {
     assertOccurrences(translation, "- (jboolean)isEqual:(id)obj", 1);
     assertOccurrences(translation, "- (NSUInteger)hash", 1);
   }
+
+  // Verify methods are not added if defined in a superclass that is a Number subclass.
+  // https://github.com/google/j2objc/issues/1645
+  public void testNumberMethodsAlreadyAdded() throws IOException {
+    String testNumberTypeSource = addSourceFile(
+      "public abstract class TestNumberType extends Number {"
+      + "  public boolean equals(Object obj) { return this == obj; }"
+      + "  public int hashCode() { return 0; }}", "TestNumberType.java");
+    String aSource = addSourceFile(
+      "public class A extends TestNumberType {"
+      + "  public double doubleValue() { return 0.0; }"
+      + "  public float floatValue() { return 0.0f; }"
+      + "  public int intValue() { return 0; }"
+      + "  public long longValue() { return 0L; }}", "A.java");
+    runPipeline(testNumberTypeSource, aSource);
+    String testNumberGen = getTranslatedFile("TestNumberType.m");
+    assertOccurrences(testNumberGen, "- (jboolean)isEqual:(id)obj", 1);
+    assertOccurrences(testNumberGen, "- (NSUInteger)hash", 1);
+    String subClassGen = getTranslatedFile("A.m");
+    assertNotInTranslation(subClassGen, "- (jboolean)isEqual:(id)obj");
+    assertNotInTranslation(subClassGen, "- (NSUInteger)hash");
+  }
 }
