@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
  * Supported Java versions, used by the -source and -target flags.
  */
 public enum SourceVersion {
-
+  JAVA_18(18, "18"),
   JAVA_17(17, "17"),
   JAVA_16(16, "16"),
   JAVA_15(15, "15"),
