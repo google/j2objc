@@ -17,7 +17,7 @@ syntax = "proto2";
 
 package protobuf_unittest_import;
 
-option java_package = "proto2";
+option java_package = "com.google.protobuf.test";
 
 message PublicImportMessage {
   optional int32 e = 1;

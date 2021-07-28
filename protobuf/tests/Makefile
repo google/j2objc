@@ -20,7 +20,9 @@ JAVA_TESTS = \
 OTHER_JAVA_SOURCES = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
-  ProtobufTest.java
+  ProtobufTest.java \
+	TestUtil.java \
+	TestUtilLite.java
 
 JAVA_TESTS_ARC = \
   ByteStringTest.java \
@@ -34,7 +36,9 @@ JAVA_TESTS_ARC = \
 OTHER_JAVA_SOURCES_ARC = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
-  ProtobufTest.java
+  ProtobufTest.java \
+	TestUtil.java \
+	TestUtilLite.java
 
 PROTOS = \
   conflicting_class_name.proto \
@@ -53,7 +57,12 @@ PROTOS = \
   typical.proto \
   unittest.proto \
   unittest_import.proto \
-  unittest_import_public.proto
+  unittest_import_lite.proto \
+  unittest_import_public.proto \
+  unittest_import_public_lite.proto \
+  unittest_lite.proto \
+  unittest_mset.proto \
+  unittest_mset_wire_format.proto
 
 TESTDATA = \
   testdata/largeproto \
