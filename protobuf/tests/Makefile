@@ -21,8 +21,8 @@ OTHER_JAVA_SOURCES = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
   ProtobufTest.java \
-	TestUtil.java \
-	TestUtilLite.java
+	com/google/protobuf/TestUtil.java \
+	com/google/protobuf/TestUtilLite.java
 
 JAVA_TESTS_ARC = \
   ByteStringTest.java \
@@ -37,8 +37,8 @@ OTHER_JAVA_SOURCES_ARC = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
   ProtobufTest.java \
-	TestUtil.java \
-	TestUtilLite.java
+	com/google/protobuf/TestUtil.java \
+	com/google/protobuf/TestUtilLite.java
 
 PROTOS = \
   conflicting_class_name.proto \
@@ -82,6 +82,7 @@ JAVA_SOURCES_ARC = $(JAVA_TESTS_ARC) $(OTHER_JAVA_SOURCES_ARC)
 OBJS_DIR = $(BUILD_DIR)/objs
 
 CLASSPATH_LIST = \
+  $(DIST_JAR_DIR)/$(GUAVA_JAR) \
   $(DIST_JAR_DIR)/$(JUNIT_JAR) \
   $(DIST_JAR_DIR)/$(HAMCREST_JAR) \
   $(DIST_JAR_DIR)/j2objc_annotations.jar \
@@ -92,7 +93,7 @@ TEST_J2OBJCC = $(DIST_DIR)/j2objcc -g
 C_FLAGS = -Werror -Wno-objc-redundant-literal-use -Wno-format -Wno-parentheses \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch -stdlib=libc++
 
-INCLUDE_DIRS = . $(GEN_OBJC_DIR)
+INCLUDE_DIRS = . $(GEN_OBJC_DIR) $(DIST_INCLUDE_DIR)/guava
 
 LIB_DEPS = $(DIST_LIB_MACOSX_DIR)/libjunit.a $(DIST_LIB_MACOSX_DIR)/libprotobuf_runtime.a
 
@@ -107,7 +108,7 @@ CREATE_JAR_NAME = protobuf_tests
 CREATE_JAR_SOURCES = $(JAVA_SOURCES) $(J2OBJC_PROTOS_JAVA)
 CREATE_JAR_RESOURCES = $(TESTDATA)
 CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -encoding UTF-8
-CREATE_JAR_DEPENDENCIES = annotations_dist junit_java protobuf_runtime_java
+CREATE_JAR_DEPENDENCIES = annotations_dist guava_java junit_java protobuf_runtime_java
 include $(J2OBJC_ROOT)/make/create_jar.mk
 
 TRANSLATE_ARGS = -cp $(CLASSPATH):$(CREATE_JAR_RESULT) \
@@ -179,7 +180,7 @@ $(BUILD_DIR):
 # This ARC rule needs to be declared first, since it uses a more specific
 # pattern than the following rule.
 $(OBJS_DIR)/arc/%.o: $(GEN_OBJC_DIR)/arc/%.m \
-  | jre_emul_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
+  | jre_emul_dist guava_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
 	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) \
       -fobjc-arc -fobjc-arc-exceptions -o $@ $<
@@ -194,8 +195,9 @@ $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	$(TEST_J2OBJCC) -c -o $@ $<
 
 $(BIN): $(OBJS) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -ljunit -lprotobuf_runtime -o $@ $(OBJS)
+	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljunit \
+      -lprotobuf_runtime -o $@ $(OBJS)
 
 $(BIN_ARC): $(OBJS_ARC) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -ljunit -lprotobuf_runtime \
-       -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
+	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljunit \
+      -lprotobuf_runtime -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
