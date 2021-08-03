@@ -44,6 +44,7 @@
 #include "com/google/protobuf/MessageOrBuilder.h"
 #include "com/google/protobuf/common.h"
 
+@class ComGoogleProtobufByteString;
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
 @class ComGoogleProtobufGeneratedMessage_GeneratedExtension;
@@ -54,6 +55,9 @@ typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtensi
 @interface ComGoogleProtobufGeneratedMessage : ComGoogleProtobufAbstractMessage
 
 + (id)getDescriptor;
++ (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString;
++ (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString
+    withComGoogleProtobufExtensionRegistryLite:(ComGoogleProtobufExtensionRegistryLite *)registry;
 
 @end
 

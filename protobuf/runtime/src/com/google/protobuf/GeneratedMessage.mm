@@ -1987,6 +1987,11 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
   return msg;
 }
 
+ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(
+    CGPDescriptor *descriptor, CGPByteString *byteString, CGPExtensionRegistryLite *registry) {
+  return CGPParseFromByteArray(descriptor, [byteString toByteArray], registry);
+}
+
 ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry) {
   int firstByte = [input read];
@@ -3273,6 +3278,15 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 + (id)parseFromWithByteArray:(IOSByteArray *)bytes
     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseFromByteArray([self getDescriptor], bytes, registry);
+}
+
++ (id)parseFromWithByteString:(CGPByteString *)byteString {
+  return CGPParseFromByteString([self getDescriptor], byteString, nil);
+}
+
++ (id)parseFromWithByteString:(CGPByteString *)byteString
+    withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
+  return CGPParseFromByteString([self getDescriptor], byteString, registry);
 }
 
 + (id)parseFromNSData:(NSData *)data {
