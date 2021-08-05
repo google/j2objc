@@ -30,8 +30,9 @@ import sun.nio.ch.Interruptible;
 /*-[
 #import "java/lang/AssertionError.h"
 #import "java_lang_Thread.h"
-#import "objc-sync.h"
 #import <pthread.h>
+
+BOOL j2objc_sync_holds_lock(id obj);
 ]-*/
 
 /*-[
