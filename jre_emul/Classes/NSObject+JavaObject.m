@@ -31,7 +31,14 @@
 #import "java/lang/InterruptedException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Thread.h"
-#import "objc-sync.h"
+
+int objc_sync_notify(id obj);
+int objc_sync_notifyAll(id obj);
+int objc_sync_wait(id obj, long long milliSecondsMaxWait);
+
+#define OBJC_SYNC_SUCCESS 0
+#define OBJC_SYNC_NOT_OWNING_THREAD_ERROR -1
+#define OBJC_SYNC_TIMED_OUT -2
 
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
