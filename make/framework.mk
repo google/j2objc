@@ -57,7 +57,6 @@ FRAMEWORK_PUBLIC_HEADERS = $(FRAMEWORK_HEADERS)
 endif
 
 FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(FRAMEWORK_NAME).xcframework
-STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(FRAMEWORK_NAME).h
 MODULE_MAP = $(BUILD_DIR)/module.modulemap
 
@@ -103,7 +102,7 @@ framework: dist $(FRAMEWORK_DIR) resources
 	@:
 
 # Create an xcframework from all appletv, iphone, maccatalyst, macosx, simulator and watchos libs.
-$(FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
+$(FRAMEWORK_DIR): $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@echo building $(FRAMEWORK_NAME) framework
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
 			$(call framework_libraries,$(STATIC_LIBRARY_NAME))
