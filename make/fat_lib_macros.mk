@@ -88,8 +88,8 @@ arch_flags = $(strip \
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
   $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
   $(patsubst iphone64e,$(FAT_LIB_IPHONE64E_FLAGS),\
-  $(patsubst watchv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
-  $(patsubst watch64,$(FAT_LIB_WATCH64_FLAGS),\
+  $(patsubst watchosv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
+  $(patsubst watchos64,$(FAT_LIB_WATCH64_FLAGS),\
   $(patsubst watchsimulator,$(FAT_LIB_WATCHSIMULATOR_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),\
