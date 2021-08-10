@@ -57,6 +57,11 @@ ARCH_BUILD_WATCH_DIR = $(ARCH_BUILD_DIR)/watchos
 ARCH_LIB_WATCH_DIR = $(ARCH_LIB_DIR)/watchos
 DIST_LIB_WATCH_DIR = $(DIST_LIB_DIR)/watchos
 
+# AppleWatch simulator library dirs.
+ARCH_BUILD_WATCHSIMULATOR_DIR = $(ARCH_BUILD_DIR)/watchsimulator
+ARCH_LIB_WATCHSIMULATOR_DIR = $(ARCH_LIB_DIR)/watchsimulator
+DIST_LIB_WATCHSIMULATOR_DIR = $(DIST_LIB_DIR)/watchsimulator
+
 # Appletv library dirs.
 ARCH_BUILD_TV_DIR = $(ARCH_BUILD_DIR)/appletvos
 ARCH_LIB_TV_DIR = $(ARCH_LIB_DIR)/appletvos
