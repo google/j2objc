@@ -195,9 +195,9 @@ $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	$(TEST_J2OBJCC) -c -o $@ $<
 
 $(BIN): $(OBJS) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljunit \
+	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljsr305 -ljunit \
       -lprotobuf_runtime -o $@ $(OBJS)
 
 $(BIN_ARC): $(OBJS_ARC) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljunit \
+	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljsr305 -ljunit \
       -lprotobuf_runtime -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
