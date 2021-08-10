@@ -40,8 +40,12 @@ FAT_LIB_WATCHV7K_FLAGS = -arch armv7k -DJ2OBJC_BUILD_ARCH=armv7k -mwatchos-versi
   -isysroot $(FAT_LIB_WATCH_SDK_DIR)
 FAT_LIB_WATCH64_FLAGS = -arch arm64_32 -DJ2OBJC_BUILD_ARCH=arm64_32 -mwatchos-version-min=2.0 \
   -isysroot $(FAT_LIB_WATCH_SDK_DIR)
-FAT_LIB_WATCHSIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -mwatchos-version-min=2.0 \
+FAT_LIB_WATCHSIMULATORI386_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -mwatchos-version-min=2.0 \
   -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)
+FAT_LIB_WATCHSIMULATOR_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -mwatchos-version-min=6.1 \
+  -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)
+FAT_LIB_WATCHSIMULATOR64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -mwatchos-version-min=6.1 \
+  -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)  --target=arm64-apple-watchos-simulator
 FAT_LIB_SIMULATOR_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_SIMULATOR64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-version-min=12.0 \
@@ -90,13 +94,15 @@ arch_flags = $(strip \
   $(patsubst iphone64e,$(FAT_LIB_IPHONE64E_FLAGS),\
   $(patsubst watchosv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
   $(patsubst watchos64,$(FAT_LIB_WATCH64_FLAGS),\
+  $(patsubst watchsimulatori386,$(FAT_LIB_WATCHSIMULATORI386_FLAGS),\
   $(patsubst watchsimulator,$(FAT_LIB_WATCHSIMULATOR_FLAGS),\
+  $(patsubst watchsimulator64,$(FAT_LIB_WATCHSIMULATOR64_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),\
   $(patsubst appletvos,$(FAT_LIB_TV_FLAGS),\
   $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),\
   $(patsubst maccatalyst,$(FAT_LIB_MAC_CATALYST_FLAGS),\
-  $(patsubst maccatalyst64,$(FAT_LIB_MAC_CATALYST64_FLAGS),$(1))))))))))))))))
+  $(patsubst maccatalyst64,$(FAT_LIB_MAC_CATALYST64_FLAGS),$(1))))))))))))))))))
 
 fat_lib_dependencies:
 	@:
