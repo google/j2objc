@@ -138,6 +138,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 - (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
 - (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension withId:(id)value;
+- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+     (CGPGeneratedExtension *)extension withInt:(jint)index withId:(id)value;
 
 - (id)addExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value;
