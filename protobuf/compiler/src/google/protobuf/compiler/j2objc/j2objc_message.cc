@@ -49,6 +49,12 @@ namespace j2objc {
 
 namespace {
 
+// Adds the number of extension ranges in this message type to a flag vector.
+// Extensions let you declare that a range of field numbers in a message are
+// available for third-party extensions and this range is defined by the user.
+/// <param name="descriptor">describes a type of protocol message, or a
+/// particular group within a message.</param>
+/// < see cref= "protobuf/src/google/protobuf/descriptor.h" />
 std::string GetMessageFlags(const Descriptor* descriptor) {
   std::vector<std::string> flags;
   if (descriptor->extension_range_count() > 0) {
@@ -62,11 +68,21 @@ std::string GetMessageFlags(const Descriptor* descriptor) {
 
 }  // namespace
 
+// Constructs a new message generator based on descriptor information such as
+// the extension range, type, etc.
+/// <param name="descriptor">describes a type of protocol message, or a
+/// particular group within a message.</param>
+/// < see cref="protobuf/src/google/protobuf/descriptor.h" />
 MessageGenerator::MessageGenerator(const Descriptor* descriptor)
     : descriptor_(descriptor), field_generators_(descriptor) {}
 
 MessageGenerator::~MessageGenerator() = default;
 
+// Collects the forward declarations of every identifier, variable, function,
+// class, etc. contained within the descriptor. For each nested type within the
+// descriptor, this method is called again.
+/// <param name="declarations"> a set of strings to contain all of the
+/// beforehand declaration of the syntax or signature </param>
 void MessageGenerator::CollectForwardDeclarations(
     std::set<std::string>* declarations) const {
   declarations->insert("J2OBJC_CLASS_DECLARATION(" + ClassName(descriptor_) +
@@ -89,6 +105,12 @@ void MessageGenerator::CollectForwardDeclarations(
   }
 }
 
+// Collects the import statements of the fields contained within the descripor.
+// If the descriptor contains space of third-party extensions, then
+// GeneratedMessage.h is added to the to the imports, otherwise
+// MessageOrBuilder.h is added.
+/// <param name="imports"> a set of strings to contain all of the import
+/// statements </param>
 void MessageGenerator::CollectMessageOrBuilderImports(
     std::set<std::string>* imports) const {
   if (descriptor_->extension_range_count() > 0) {
@@ -103,6 +125,11 @@ void MessageGenerator::CollectMessageOrBuilderImports(
   }
 }
 
+// Collects the message or builder forward declarations of all fields and oneof
+// fields within a descriptor. A "oneof" is the only one of a range of fields
+// can be set with a value in any message.
+/// <param name="declarations"> a set of strings to contain all of the
+/// beforehand declaration of the syntax or signature </param>
 void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
     std::set<std::string>* declarations) const {
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -116,6 +143,12 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
   }
 }
 
+// This specifically collects the header import statements of the fields
+// contained within the descripor checking both the oneof fields and nested
+// types.A "oneof" is the only one of a range of fields can be set with a value
+// in any message.
+/// <param name="imports"> a set of strings to contain all of the import
+/// statements </param>
 void MessageGenerator::CollectHeaderImports(
     std::set<std::string>* imports) const {
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
@@ -130,6 +163,10 @@ void MessageGenerator::CollectHeaderImports(
   }
 }
 
+// Collects the source imports associated with the general fields, oneofs,
+// extensions, enums, and nested typed contained in the descriptor.
+/// <param name="imports"> a set of strings to contain all of the import
+/// statements </param>
 void MessageGenerator::CollectSourceImports(
     std::set<std::string>* imports) const {
   imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
@@ -156,6 +193,14 @@ void MessageGenerator::CollectSourceImports(
   }
 }
 
+// Calls GenerateFieldHeader to print variables (classname, field type, flags,
+// parameter type, etc) associated with the field.
+// Prints the headers of th general fields, oneofs, extensions, enums, and
+// nested types contained in the descriptor by calling their respective
+// GenerateHeader.
+/// <param name="printer"> Writes text to the given output stream. It allows
+/// the caller to define a set of variables and then output some text with
+/// variable substitutions.</param>
 void MessageGenerator::GenerateHeader(io::Printer* printer) {
   std::string superclassName = "ComGoogleProtobufGeneratedMessage";
   if (descriptor_->extension_range_count() > 0) {
@@ -164,7 +209,6 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
 
   printer->Print(
       "\n"
-      // TODO(anjulij): remove when lite is supported
       "// in j2objc_message.cc \n"
       "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
       "+ ($classname$ *)getDefaultInstance;\n"
@@ -286,6 +330,16 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
   GenerateBuilderHeader(printer);
 }
 
+// Prints the source definition of each extension within the descriptor. Prints
+// the storage declarations of each real oneof. Prints the declation of each
+// oneof both real and synthetic. For each field not containing a oneof, it also
+// prints those declarations. Prints each map entry, the number of fields, and
+// the number of oneofs. Prints out the field data associated with each
+// extension. In addition, it prints out the source associated with each oneof,
+// enum, and nested type.
+/// <param name="printer"> Writes text to the given output stream. It allows
+/// the caller to define a set of variables and then output some text with
+/// variable substitutions.</param>
 void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Print(
       "\n"
@@ -498,6 +552,12 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   GenerateBuilderSource(printer);
 }
 
+// Prints the builder associated with the descriptor as a whole.
+// Prints the builder header associated with each field contained within the
+// descriptor in addition it will specify if the message is a java type message.
+/// <param name="printer"> Writes text to the given output stream. It allows
+/// the caller to define a set of variables and then output some text with
+/// variable substitutions.</param>
 void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
   std::string superclassName = "ComGoogleProtobufGeneratedMessage_Builder";
   if (descriptor_->extension_range_count() > 0) {
@@ -536,6 +596,10 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
       "classname", ClassName(descriptor_));
 }
 
+// Prints the builder source associated with the descriptor.
+/// <param name="printer"> Writes text to the given output stream. It allows
+/// the caller to define a set of variables and then output some text with
+/// variable substitutions.</param>
 void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
   printer->Print(
       "\n"
@@ -558,6 +622,11 @@ void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
       "classname", ClassName(descriptor_));
 }
 
+// Prints the name of the protocol directory along with name/class name
+// associated with each field and oneof
+/// <param name="printer"> Writes text to the given output stream. It allows
+/// the caller to define a set of variables and then output some text with
+/// variable substitutions.</param>
 void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
   std::string protocolName = "ComGoogleProtobufMessageOrBuilder";
   if (descriptor_->extension_range_count() > 0) {
@@ -590,6 +659,11 @@ void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
       "classname", ClassName(descriptor_));
 }
 
+// Prints the registration codes associated with each extension and nested
+// type's  extension in the descriptor
+/// <param name="printer"> Writes text to the given output stream. It allows
+/// the caller to define a set of variables and then output some text with
+/// variable substitutions.</param>
 void MessageGenerator::GenerateExtensionRegistrationCode(io::Printer* printer) {
   for (int i = 0; i < descriptor_->extension_count(); i++) {
     ExtensionGenerator(descriptor_->extension(i))
