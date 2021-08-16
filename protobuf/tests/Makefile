@@ -16,6 +16,7 @@ JAVA_TESTS = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
+  com/google/protobuf/WireFormatTest.java \
   StringsTest.java
 OTHER_JAVA_SOURCES = \
   MemoryBenchmarks.java \
@@ -73,8 +74,8 @@ $(call check_protobuf_dir)
 DESCRIPTOR_INCLUDE_DIR = ../compiler/src
 DESCRIPTOR_PROTO = $(DESCRIPTOR_INCLUDE_DIR)/google/protobuf/j2objc-descriptor.proto
 
-TESTS_TO_RUN = $(JAVA_TESTS:%.java=%)
-TESTS_TO_RUN_ARC = $(JAVA_TESTS_ARC:%.java=%)
+TESTS_TO_RUN = $(subst /,.,$(JAVA_TESTS:%.java=%))
+TESTS_TO_RUN_ARC = $(subst /,.,$(JAVA_TESTS_ARC:%.java=%))
 
 JAVA_SOURCES = $(JAVA_TESTS) $(OTHER_JAVA_SOURCES)
 JAVA_SOURCES_ARC = $(JAVA_TESTS_ARC) $(OTHER_JAVA_SOURCES_ARC)
