@@ -30,8 +30,12 @@
 
 package com.google.protobuf;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import junit.framework.TestCase;
 import protobuf_unittest.UnittestProto;
+import protobuf_unittest.UnittestProto.TestAllExtensions;
+import protobuf_unittest.UnittestProto.TestAllTypes;
 import protobuf_unittest.UnittestProto.TestExtensionInsideTable;
 import protobuf_unittest.UnittestProto.TestFieldOrderings;
 import protobuf_unittest.UnittestProto.TestOneof2;
@@ -45,20 +49,19 @@ import protobuf_unittest.UnittestProto.TestPackedTypes;
  */
 public class WireFormatTest extends TestCase {
 
-  // TODO(tball): b/196461091 test crashes during TestUtil.getAllSet() call.
-//   public void testSerialization() throws Exception {
-//     TestAllTypes message = TestUtil.getAllSet();
+  public void testSerialization() throws Exception {
+    TestAllTypes message = TestUtil.getAllSet();
 
-//     // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-//     // ByteString rawBytes = message.toByteString();
-//     // assertEquals(rawBytes.size(), message.getSerializedSize());
-//     byte[] rawBytes = message.toByteArray();
-//     assertEquals(rawBytes.length, message.getSerializedSize());
+    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
+    // ByteString rawBytes = message.toByteString();
+    // assertEquals(rawBytes.size(), message.getSerializedSize());
+    byte[] rawBytes = message.toByteArray();
+    assertEquals(rawBytes.length, message.getSerializedSize());
 
-//     TestAllTypes message2 = TestAllTypes.parseFrom(rawBytes);
+    TestAllTypes message2 = TestAllTypes.parseFrom(rawBytes);
 
-//     TestUtil.assertAllFieldsSet(message2);
-//   }
+    TestUtil.assertAllFieldsSet(message2);
+  }
 
   public void testSerializationPacked() throws Exception {
     TestPackedTypes message = TestUtil.getPackedSet();
@@ -127,23 +130,22 @@ public class WireFormatTest extends TestCase {
 //     TestUtil.assertPackedFieldsSet(message2);
 //   }
 
-  // TODO(tball): b/196461091 test crashes during TestUtil.getAllSet() call.
-//   public void testParseExtensions() throws Exception {
-//     // TestAllTypes and TestAllExtensions should have compatible wire formats,
-//     // so if we serialize a TestAllTypes then parse it as TestAllExtensions
-//     // it should work.
+  public void testParseExtensions() throws Exception {
+    // TestAllTypes and TestAllExtensions should have compatible wire formats,
+    // so if we serialize a TestAllTypes then parse it as TestAllExtensions
+    // it should work.
 
-//     TestAllTypes message = TestUtil.getAllSet();
-//     // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-//     // ByteString rawBytes = message.toByteString();
-//     byte[] rawBytes = message.toByteArray();
+    TestAllTypes message = TestUtil.getAllSet();
+    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
+    // ByteString rawBytes = message.toByteString();
+    byte[] rawBytes = message.toByteArray();
 
-//     ExtensionRegistryLite registry = TestUtil.getExtensionRegistry();
+    ExtensionRegistryLite registry = TestUtil.getExtensionRegistry();
 
-//     TestAllExtensions message2 = TestAllExtensions.parseFrom(rawBytes, registry);
+    TestAllExtensions message2 = TestAllExtensions.parseFrom(rawBytes, registry);
 
-//     TestUtil.assertAllExtensionsSet(message2);
-//   }
+    TestUtil.assertAllExtensionsSet(message2);
+  }
 
   public void testParsePackedExtensions() throws Exception {
     // Ensure that packed extensions can be properly parsed.
@@ -160,25 +162,24 @@ public class WireFormatTest extends TestCase {
     TestUtil.assertPackedExtensionsSet(message2);
   }
 
-  // TODO(tball): b/196461091 test crashes during TestUtil.getAllSet() call.
-//   public void testSerializeDelimited() throws Exception {
-//     ByteArrayOutputStream output = new ByteArrayOutputStream();
-//     TestUtil.getAllSet().writeDelimitedTo(output);
-//     output.write(12);
-//     TestUtil.getPackedSet().writeDelimitedTo(output);
-//     output.write(34);
+  public void testSerializeDelimited() throws Exception {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    TestUtil.getAllSet().writeDelimitedTo(output);
+    output.write(12);
+    TestUtil.getPackedSet().writeDelimitedTo(output);
+    output.write(34);
 
-//     ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+    ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
 
-//     TestUtil.assertAllFieldsSet(TestAllTypes.parseDelimitedFrom(input));
-//     assertEquals(12, input.read());
-//     TestUtil.assertPackedFieldsSet(TestPackedTypes.parseDelimitedFrom(input));
-//     assertEquals(34, input.read());
-//     assertEquals(-1, input.read());
+    TestUtil.assertAllFieldsSet(TestAllTypes.parseDelimitedFrom(input));
+    assertEquals(12, input.read());
+    TestUtil.assertPackedFieldsSet(TestPackedTypes.parseDelimitedFrom(input));
+    assertEquals(34, input.read());
+    assertEquals(-1, input.read());
 
-//     // We're at EOF, so parsing again should return null.
-//     assertTrue(TestAllTypes.parseDelimitedFrom(input) == null);
-//   }
+    // We're at EOF, so parsing again should return null.
+    assertTrue(TestAllTypes.parseDelimitedFrom(input) == null);
+  }
 
   // TODO(tball): b/195480804 implement Objective-C version of CodedInputStream.
 //   private void assertFieldsInOrder(ByteString data) throws Exception {

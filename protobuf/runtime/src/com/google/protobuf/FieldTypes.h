@@ -80,6 +80,14 @@
   ([assignee autorelease], assignee = [value retain])
 #endif
 
+#define TYPE_RETAINED_ASSIGN_Int(assignee, value) assignee = value
+#define TYPE_RETAINED_ASSIGN_Long(assignee, value) assignee = value
+#define TYPE_RETAINED_ASSIGN_Float(assignee, value) assignee = value
+#define TYPE_RETAINED_ASSIGN_Double(assignee, value) assignee = value
+#define TYPE_RETAINED_ASSIGN_Bool(assignee, value) assignee = value
+#define TYPE_RETAINED_ASSIGN_Enum(assignee, value) assignee = value
+#define TYPE_RETAINED_ASSIGN_Retainable(assignee, value) assignee = RETAIN_(value)
+
 #define HASH_Int(value) value
 #define HASH_Long(value) (int)((uint64_t)value ^ ((uint64_t)value >> 32))
 #define HASH_Float(value) *(int *)&value
