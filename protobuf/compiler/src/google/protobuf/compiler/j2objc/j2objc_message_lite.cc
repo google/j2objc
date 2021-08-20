@@ -309,10 +309,13 @@ void MessageLiteGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "// Minimal metadata for runtime access to Java class name.\n"
       "+ (const J2ObjcClassInfo *)__metadata {\n"
-      "  static const J2ObjcClassInfo _$classname$ = { \"$simplename$\", "
-      "\"$packagename$\", NULL, NULL, NULL, 7, 0x1, 0, 0, -1, -1, -1, "
-      "-1, -1 };\n"
-      "  return &_$classname$;\n"
+      "  static const J2ObjcClassInfo *_$classname$;\n"
+      "  static dispatch_once_t once;\n"
+      "  dispatch_once(&once, ^{\n"
+      "    _$classname$ = JreCreateClassInfo(\"$simplename$\", "
+      "\"$packagename$\");\n"
+      "  });\n"
+      "  return _$classname$;\n"
       "}\n",
       "classname", ClassName(descriptor_), "simplename", descriptor_->name(),
       "packagename", FileJavaPackage(descriptor_->file()));

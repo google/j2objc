@@ -350,4 +350,23 @@ NSString *JreMetadataToString(const J2ObjcClassInfo *metadata) {
   return str;
 }
 
+const J2ObjcClassInfo *JreCreateClassInfo(const char *typeName, const char *packageName) {
+  J2ObjcClassInfo *result = calloc(sizeof(J2ObjcClassInfo), 1);
+  result->typeName = typeName;
+  result->packageName = packageName;
+  result->version = J2OBJC_METADATA_VERSION;
+  result->modifiers = 0x1;  // java.lang.reflect.Modifier.PUBLIC
+
+  // -1 means "no data defined" for that field.
+  // For example, an enclosingClassIdx of -1 means this class doesn't have an enclosing class,
+  // an annotationsIdx of -1 means it doesn't have any type annotations, etc.
+  result->enclosingClassIdx = -1;
+  result->innerClassesIdx = -1;
+  result->enclosingClassIdx = -1;
+  result->genericSignatureIdx = -1;
+  result->annotationsIdx = -1;
+
+  return (const J2ObjcClassInfo *)result;
+}
+
 #pragma clang diagnostic pop

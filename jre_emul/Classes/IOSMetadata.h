@@ -77,7 +77,7 @@ typedef struct J2ObjcClassInfo {
   const J2ObjcMethodInfo *methods;
   const J2ObjcFieldInfo *fields;
   // Pointer types are above version for better packing.
-  const uint16_t version;
+  uint16_t version;
   uint16_t modifiers;
   uint16_t methodCount;
   uint16_t fieldCount;
@@ -87,5 +87,8 @@ typedef struct J2ObjcClassInfo {
   ptr_idx genericSignatureIdx;
   ptr_idx annotationsIdx;
 } J2ObjcClassInfo;
+
+// Returns minimal class info struct, used by j2objc's protoc plugin.
+const J2ObjcClassInfo *JreCreateClassInfo(const char *typeName, const char *packageName);
 
 #endif  // JreEmulation_IOSMetadata_h
