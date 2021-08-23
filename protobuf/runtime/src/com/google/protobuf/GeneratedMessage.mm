@@ -40,7 +40,7 @@
 #include <vector>
 
 #include "com/google/protobuf/ByteString.h"
-#include "com/google/protobuf/CodedInputStream.h"
+#include "com/google/protobuf/CodedInputStream_PackagePrivate.h"
 #include "com/google/protobuf/Descriptors_PackagePrivate.h"
 #include "com/google/protobuf/ExtensionRegistry.h"
 #include "com/google/protobuf/ExtensionRegistryLite.h"
@@ -49,7 +49,7 @@
 #include "com/google/protobuf/MapField.h"
 #include "com/google/protobuf/ProtocolMessageEnum.h"
 #include "com/google/protobuf/RepeatedField.h"
-#include "com/google/protobuf/WireFormat.h"
+#include "com/google/protobuf/WireFormat_PackagePrivate.h"
 #include "java/io/InputStream.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/IndexOutOfBoundsException.h"

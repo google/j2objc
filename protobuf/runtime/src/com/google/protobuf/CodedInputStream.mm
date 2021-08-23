@@ -28,7 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "com/google/protobuf/CodedInputStream.h"
+#import "com/google/protobuf/CodedInputStream_PackagePrivate.h"
 
 #import "com/google/protobuf/ByteString.h"
 #import "java/io/InputStream.h"
