@@ -41,6 +41,7 @@
 
 #include "com/google/protobuf/ByteString.h"
 #include "com/google/protobuf/CodedInputStream_PackagePrivate.h"
+#include "com/google/protobuf/CodedOutputStream.h"
 #include "com/google/protobuf/Descriptors_PackagePrivate.h"
 #include "com/google/protobuf/ExtensionRegistry.h"
 #include "com/google/protobuf/ExtensionRegistryLite.h"
@@ -3394,6 +3395,15 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   codedStream.FlushBuffer();
   // The WriteMessage function will throw a runtime exception if there is an error.
   NSAssert(!codedStream.HadError(), @"Serialization error");
+}
+
+- (void)writeToWithComGoogleProtobufCodedOutputStream:(ComGoogleProtobufCodedOutputStream *)output {
+  CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
+  CGPCodedOutputStream *codedStream = output->codedStream_;
+  WriteMessage(self, descriptor, codedStream);
+  codedStream->FlushBuffer();
+  // The WriteMessage function will throw a runtime exception if there is an error.
+  NSAssert(!codedStream->HadError(), @"Serialization error");
 }
 
 - (CGPDescriptor *)getDescriptorForType {

@@ -30,6 +30,7 @@
 
 #import "com/google/protobuf/CodedOutputStream_PackagePrivate.h"
 
+#import "J2ObjC_source.h"
 #import "java/io/OutputStream.h"
 
 namespace {
@@ -328,3 +329,62 @@ int CGPCodedOutputStream::VarintSize64(uint64 value) {
     }
   }
 }
+
+// ============================
+
+@interface ComGoogleProtobufCodedOutputStream ()
+
+- (instancetype)initWithJavaIoOutputStream:(JavaIoOutputStream *)output;
+
+@end
+
+static void ComGoogleProtobufCodedOutputStream_initWithJavaIoOutputStream_(
+    ComGoogleProtobufCodedOutputStream *self, JavaIoOutputStream *output);
+static ComGoogleProtobufCodedOutputStream *new_ComGoogleProtobufCodedOutputStream_init(void)
+    NS_RETURNS_RETAINED;
+static ComGoogleProtobufCodedOutputStream *create_ComGoogleProtobufCodedOutputStream_init(void);
+
+@implementation ComGoogleProtobufCodedOutputStream
+
+- (instancetype)initWithJavaIoOutputStream:(JavaIoOutputStream *)output {
+  ComGoogleProtobufCodedOutputStream_initWithJavaIoOutputStream_(self, output);
+  return self;
+}
+
++ (ComGoogleProtobufCodedOutputStream *)newInstanceWithJavaIoOutputStream:
+    (JavaIoOutputStream *)output {
+  return ComGoogleProtobufCodedOutputStream_newInstanceWithJavaIoOutputStream_(output);
+}
+
+- (void)flush {
+  self->codedStream_->FlushBuffer();
+}
+
+- (void)dealloc {
+  if (codedStream_) {
+    delete codedStream_;
+    codedStream_ = NULL;
+  }
+  [super dealloc];
+}
+
+@end
+
+void ComGoogleProtobufCodedOutputStream_initWithJavaIoOutputStream_(
+    ComGoogleProtobufCodedOutputStream *self, JavaIoOutputStream *output) {
+  NSObject_init(self);
+  self->codedStream_ = new CGPCodedOutputStream(((JavaIoOutputStream *)nil_chk(output)));
+}
+
+ComGoogleProtobufCodedOutputStream *
+create_ComGoogleProtobufCodedOutputStream_initWithJavaIoOutputStream_(JavaIoOutputStream *output){
+    J2OBJC_CREATE_IMPL(ComGoogleProtobufCodedOutputStream, initWithJavaIoOutputStream_, output)}
+
+ComGoogleProtobufCodedOutputStream
+    *ComGoogleProtobufCodedOutputStream_newInstanceWithJavaIoOutputStream_(
+        JavaIoOutputStream *output) {
+  ComGoogleProtobufCodedOutputStream_initialize();
+  return create_ComGoogleProtobufCodedOutputStream_initWithJavaIoOutputStream_(output);
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufCodedOutputStream)

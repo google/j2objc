@@ -109,26 +109,26 @@ public class WireFormatTest extends TestCase {
     assertEquals(rawBytes, rawBytes2);
   }
 
-  // TODO(tball): b/195480804 implement Objective-C version of CodedOutputStream.
-//   public void testSerializationPackedWithoutGetSerializedSize() throws Exception {
-//     // Write directly to an OutputStream, without invoking getSerializedSize()
-//     // This used to be a bug where the size of a packed field was incorrect,
-//     // since getSerializedSize() was never invoked.
-//     TestPackedTypes message = TestUtil.getPackedSet();
+  public void testSerializationPackedWithoutGetSerializedSize() throws Exception {
+    // Write directly to an OutputStream, without invoking getSerializedSize()
+    // This used to be a bug where the size of a packed field was incorrect,
+    // since getSerializedSize() was never invoked.
+    TestPackedTypes message = TestUtil.getPackedSet();
 
-//     // Directly construct a CodedOutputStream around the actual OutputStream,
-//     // in case writeTo(OutputStream output) invokes getSerializedSize();
-//     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//     CodedOutputStream codedOutput = CodedOutputStream.newInstance(outputStream);
+    // Directly construct a CodedOutputStream around the actual OutputStream,
+    // in case writeTo(OutputStream output) invokes getSerializedSize();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    CodedOutputStream codedOutput = CodedOutputStream.newInstance(outputStream);
 
-//     message.writeTo(codedOutput);
+    message.writeTo(codedOutput);
 
-//     codedOutput.flush();
+    codedOutput.flush();
 
-//     TestPackedTypes message2 = TestPackedTypes.parseFrom(outputStream.toByteArray());
+    @SuppressWarnings("ProtoParseWithRegistry")
+    TestPackedTypes message2 = TestPackedTypes.parseFrom(outputStream.toByteArray());
 
-//     TestUtil.assertPackedFieldsSet(message2);
-//   }
+    TestUtil.assertPackedFieldsSet(message2);
+  }
 
   public void testParseExtensions() throws Exception {
     // TestAllTypes and TestAllExtensions should have compatible wire formats,
@@ -180,23 +180,6 @@ public class WireFormatTest extends TestCase {
     // We're at EOF, so parsing again should return null.
     assertTrue(TestAllTypes.parseDelimitedFrom(input) == null);
   }
-
-  // TODO(tball): b/195480804 implement Objective-C version of CodedInputStream.
-//   private void assertFieldsInOrder(ByteString data) throws Exception {
-//     CodedInputStream input = data.newCodedInput();
-//     int previousTag = 0;
-
-//     while (true) {
-//       int tag = input.readTag();
-//       if (tag == 0) {
-//         break;
-//       }
-
-//       assertTrue(tag > previousTag);
-//       previousTag = tag;
-//       input.skipField(tag);
-//     }
-//   }
 
   private ExtensionRegistry getTestFieldOrderingsRegistry() {
     ExtensionRegistry result = ExtensionRegistry.newInstance();

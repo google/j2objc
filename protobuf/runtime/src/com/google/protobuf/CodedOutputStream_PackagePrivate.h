@@ -82,11 +82,12 @@
 // However, for practicality we set a limit at 64 bits.  The maximum encoded
 // length of a number is thus 10 bytes.
 
-#ifndef __ComGoogleProtobufCodedOutputStream_H__
-#define __ComGoogleProtobufCodedOutputStream_H__
+#ifndef __ComGoogleProtobufCodedOutputStream_PackagePrivate_H__
+#define __ComGoogleProtobufCodedOutputStream_PackagePrivate_H__
 
 #import "JreEmulation.h"
 
+#import "com/google/protobuf/CodedOutputStream.h"
 #import "com/google/protobuf/common.h"
 
 #ifdef __cplusplus
@@ -303,4 +304,10 @@ inline bool CGPCodedOutputStream::Refresh() {
 
 #endif // __cplusplus
 
-#endif // __ComGoogleProtobufCodedOutputStream_H__
+@interface ComGoogleProtobufCodedOutputStream () {
+  @public
+    CGPCodedOutputStream *codedStream_;
+}
+@end
+
+#endif // __ComGoogleProtobufCodedOutputStream_PackagePrivate_H__
