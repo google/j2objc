@@ -16,6 +16,8 @@ JAVA_TESTS = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
+	Proto3OptionalTest.java \
+	com/google/protobuf/FieldPresenceTest.java \
   com/google/protobuf/WireFormatTest.java \
   StringsTest.java
 OTHER_JAVA_SOURCES = \
@@ -33,18 +35,22 @@ JAVA_TESTS_ARC = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
+  Proto3OptionalTest.java \
+  com/google/protobuf/FieldPresenceTest.java \
+  com/google/protobuf/WireFormatTest.java \
   StringsTest.java
 OTHER_JAVA_SOURCES_ARC = \
   MemoryBenchmarks.java \
   PerformanceBenchmarks.java \
   ProtobufTest.java \
-	com/google/protobuf/TestUtil.java \
-	com/google/protobuf/TestUtilLite.java
+  com/google/protobuf/TestUtil.java \
+  com/google/protobuf/TestUtilLite.java
 
 PROTOS = \
   conflicting_class_name.proto \
   empty_file.proto \
   enum_fields.proto \
+  field_presence_test.proto \
   funny_names.proto \
   map_fields.proto \
   message_fields.proto \
@@ -63,7 +69,8 @@ PROTOS = \
   unittest_import_public_lite.proto \
   unittest_lite.proto \
   unittest_mset.proto \
-  unittest_mset_wire_format.proto
+  unittest_mset_wire_format.proto \
+  unittest_proto3_optional.proto
 
 TESTDATA = \
   testdata/largeproto \
