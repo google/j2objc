@@ -24,6 +24,7 @@ for mk in \
   jre_beans_framework.mk \
   jre_channels_framework.mk \
   jre_concurrent_framework.mk \
+  jre_core_framework.mk \
   jre_file_framework.mk \
   jre_icu_framework.mk \
   jre_io_framework.mk \
