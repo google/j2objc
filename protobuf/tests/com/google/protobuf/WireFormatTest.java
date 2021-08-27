@@ -52,11 +52,8 @@ public class WireFormatTest extends TestCase {
   public void testSerialization() throws Exception {
     TestAllTypes message = TestUtil.getAllSet();
 
-    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-    // ByteString rawBytes = message.toByteString();
-    // assertEquals(rawBytes.size(), message.getSerializedSize());
-    byte[] rawBytes = message.toByteArray();
-    assertEquals(rawBytes.length, message.getSerializedSize());
+    ByteString rawBytes = message.toByteString();
+    assertEquals(rawBytes.size(), message.getSerializedSize());
 
     TestAllTypes message2 = TestAllTypes.parseFrom(rawBytes);
 
@@ -66,11 +63,8 @@ public class WireFormatTest extends TestCase {
   public void testSerializationPacked() throws Exception {
     TestPackedTypes message = TestUtil.getPackedSet();
 
-    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-    // ByteString rawBytes = message.toByteString();
-    // assertEquals(rawBytes.size(), message.getSerializedSize());
-    byte[] rawBytes = message.toByteArray();
-    assertEquals(rawBytes.length, message.getSerializedSize());
+    ByteString rawBytes = message.toByteString();
+    assertEquals(rawBytes.size(), message.getSerializedSize());
 
     @SuppressWarnings("ProtoParseWithRegistry")
     TestPackedTypes message2 = TestPackedTypes.parseFrom(rawBytes);
@@ -85,12 +79,8 @@ public class WireFormatTest extends TestCase {
 //     // it should work.
 
 //     TestAllExtensions message = TestUtil.getAllExtensionsSet();
-
-     // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-//     // ByteString rawBytes = message.toByteString();
-//     // assertEquals(rawBytes.size(), message.getSerializedSize());
-//     byte[] rawBytes = message.toByteArray();
-//     assertEquals(rawBytes.length, message.getSerializedSize());
+//     ByteString rawBytes = message.toByteString();
+//     assertEquals(rawBytes.size(), message.getSerializedSize());
 
 //     TestAllTypes message2 = TestAllTypes.parseFrom(rawBytes);
 
@@ -136,9 +126,7 @@ public class WireFormatTest extends TestCase {
     // it should work.
 
     TestAllTypes message = TestUtil.getAllSet();
-    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-    // ByteString rawBytes = message.toByteString();
-    byte[] rawBytes = message.toByteArray();
+    ByteString rawBytes = message.toByteString();
 
     ExtensionRegistryLite registry = TestUtil.getExtensionRegistry();
 
@@ -150,10 +138,7 @@ public class WireFormatTest extends TestCase {
   public void testParsePackedExtensions() throws Exception {
     // Ensure that packed extensions can be properly parsed.
     TestPackedExtensions message = TestUtil.getPackedExtensionsSet();
-
-    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-    // ByteString rawBytes = message.toByteString();
-    byte[] rawBytes = message.toByteArray();
+    ByteString rawBytes = message.toByteString();
 
     ExtensionRegistryLite registry = TestUtil.getExtensionRegistry();
 
@@ -199,11 +184,8 @@ public class WireFormatTest extends TestCase {
             .setExtension(UnittestProto.myExtensionInt, 23)
             .setExtension(UnittestProto.myExtensionString, "bar")
             .build();
-    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-    // TestFieldOrderings dest =
-    //     TestFieldOrderings.parseFrom(source.toByteString(), getTestFieldOrderingsRegistry());
     TestFieldOrderings dest =
-        TestFieldOrderings.parseFrom(source.toByteArray(), getTestFieldOrderingsRegistry());
+        TestFieldOrderings.parseFrom(source.toByteString(), getTestFieldOrderingsRegistry());
     assertEquals(source, dest);
   }
 
@@ -223,9 +205,7 @@ public class WireFormatTest extends TestCase {
             .build();
     TestExtensionInsideTable dest =
         TestExtensionInsideTable.parseFrom(
-            // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-            // source.toByteString(), getTestExtensionInsideTableRegistry());
-            source.toByteArray(), getTestExtensionInsideTableRegistry());
+            source.toByteString(), getTestExtensionInsideTableRegistry());
     assertEquals(source, dest);
   }
 
@@ -237,24 +217,20 @@ public class WireFormatTest extends TestCase {
     TestUtil.setOneof(builder);
     TestOneof2 message = builder.build();
 
-    // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-    // ByteString rawBytes = message.toByteString();
-    // assertEquals(rawBytes.size(), message.getSerializedSize());
-    byte[] rawBytes = message.toByteArray();
-    assertEquals(rawBytes.length, message.getSerializedSize());
+    ByteString rawBytes = message.toByteString();
+    assertEquals(rawBytes.size(), message.getSerializedSize());
 
     @SuppressWarnings("ProtoParseWithRegistry")
     TestOneof2 message2 = TestOneof2.parseFrom(rawBytes);
     TestUtil.assertOneofSet(message2);
   }
 
+  // TODO(tball): b/195606642 parseFrom(byte[]) crashes
 //   public void testOneofOnlyLastSet() throws Exception {
 //     TestOneofBackwardsCompatible source =
 //         TestOneofBackwardsCompatible.newBuilder().setFooInt(100).setFooString("101").build();
 
-//     // TODO(tball): b/195482347 generate parseFrom(ByteString) methods.
-//     // ByteString rawBytes = source.toByteString();
-//     byte[] rawBytes = source.toByteArray();
+//     ByteString rawBytes = source.toByteString();
 //     TestOneof2 message = TestOneof2.parseFrom(rawBytes);
 //     assertFalse(message.hasFooInt());
 //     assertTrue(message.hasFooString());
