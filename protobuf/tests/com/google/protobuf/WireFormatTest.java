@@ -39,6 +39,7 @@ import protobuf_unittest.UnittestProto.TestAllTypes;
 import protobuf_unittest.UnittestProto.TestExtensionInsideTable;
 import protobuf_unittest.UnittestProto.TestFieldOrderings;
 import protobuf_unittest.UnittestProto.TestOneof2;
+import protobuf_unittest.UnittestProto.TestOneofBackwardsCompatible;
 import protobuf_unittest.UnittestProto.TestPackedExtensions;
 import protobuf_unittest.UnittestProto.TestPackedTypes;
 
@@ -47,6 +48,7 @@ import protobuf_unittest.UnittestProto.TestPackedTypes;
  *
  * @author kenton@google.com (Kenton Varda)
  */
+@SuppressWarnings("ProtoParseWithRegistry")
 public class WireFormatTest extends TestCase {
 
   public void testSerialization() throws Exception {
@@ -72,20 +74,19 @@ public class WireFormatTest extends TestCase {
     TestUtil.assertPackedFieldsSet(message2);
   }
 
-  // TODO(tball): b/195606642 parseFrom(byte[]) crashes
-//   public void testSerializeExtensions() throws Exception {
-//     // TestAllTypes and TestAllExtensions should have compatible wire formats,
-//     // so if we serialize a TestAllExtensions then parse it as TestAllTypes
-//     // it should work.
+  public void testSerializeExtensions() throws Exception {
+    // TestAllTypes and TestAllExtensions should have compatible wire formats,
+    // so if we serialize a TestAllExtensions then parse it as TestAllTypes
+    // it should work.
 
-//     TestAllExtensions message = TestUtil.getAllExtensionsSet();
-//     ByteString rawBytes = message.toByteString();
-//     assertEquals(rawBytes.size(), message.getSerializedSize());
+    TestAllExtensions message = TestUtil.getAllExtensionsSet();
+    ByteString rawBytes = message.toByteString();
+    assertEquals(rawBytes.size(), message.getSerializedSize());
 
-//     TestAllTypes message2 = TestAllTypes.parseFrom(rawBytes);
+    TestAllTypes message2 = TestAllTypes.parseFrom(rawBytes);
 
-//     TestUtil.assertAllFieldsSet(message2);
-//   }
+    TestUtil.assertAllFieldsSet(message2);
+  }
 
   public void testSerializePackedExtensions() throws Exception {
     // TestPackedTypes and TestPackedExtensions should have compatible wire
@@ -225,14 +226,13 @@ public class WireFormatTest extends TestCase {
     TestUtil.assertOneofSet(message2);
   }
 
-  // TODO(tball): b/195606642 parseFrom(byte[]) crashes
-//   public void testOneofOnlyLastSet() throws Exception {
-//     TestOneofBackwardsCompatible source =
-//         TestOneofBackwardsCompatible.newBuilder().setFooInt(100).setFooString("101").build();
+  public void testOneofOnlyLastSet() throws Exception {
+    TestOneofBackwardsCompatible source =
+        TestOneofBackwardsCompatible.newBuilder().setFooInt(100).setFooString("101").build();
 
-//     ByteString rawBytes = source.toByteString();
-//     TestOneof2 message = TestOneof2.parseFrom(rawBytes);
-//     assertFalse(message.hasFooInt());
-//     assertTrue(message.hasFooString());
-//   }
+    ByteString rawBytes = source.toByteString();
+    TestOneof2 message = TestOneof2.parseFrom(rawBytes);
+    assertFalse(message.hasFooInt());
+    assertTrue(message.hasFooString());
+  }
 }

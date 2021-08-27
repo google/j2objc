@@ -1778,9 +1778,11 @@ static BOOL MergeFieldFromStream(
   BOOL repeated = CGPFieldIsRepeated(field);
   BOOL isGroup = NO;
   CGPHasLocator hasLoc;
+  BOOL alreadyCleared = NO;
   if (!repeated) {
     hasLoc = GetHasLocator(msgCls, field);
     ClearPreviousOneof(msg, hasLoc, fieldPtr);
+    alreadyCleared = YES;
   }
   switch (CGPFieldGetType(field)) {
 #define MERGE_FIELD_CASE(NAME, ENUM_NAME, JAVA_NAME) \
@@ -1861,7 +1863,9 @@ static BOOL MergeFieldFromStream(
           CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
         } else {
           id *ptr = (id *)fieldPtr;
-          AUTORELEASE(*ptr);
+          if (!alreadyCleared) {
+            AUTORELEASE(*ptr);
+          }
           *ptr = value;
           SetHas(msg, hasLoc);
         }
@@ -1875,7 +1879,9 @@ static BOOL MergeFieldFromStream(
           CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
         } else {
           id *ptr = (id *)fieldPtr;
-          AUTORELEASE(*ptr);
+          if (!alreadyCleared) {
+            AUTORELEASE(*ptr);
+          }
           *ptr = value;
           SetHas(msg, hasLoc);
         }
@@ -1899,7 +1905,9 @@ static BOOL MergeFieldFromStream(
             CopyMessage(msgField, MessageExtensionMap(msgField, fieldType),
                         *ptr, MessageExtensionMap(*ptr, fieldType), fieldType);
           }
-          AUTORELEASE(*ptr);
+          if (!alreadyCleared) {
+            AUTORELEASE(*ptr);
+          }
           *ptr = msgField;
           SetHas(msg, hasLoc);
         }
