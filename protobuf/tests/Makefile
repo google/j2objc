@@ -94,7 +94,8 @@ CLASSPATH_LIST = \
   $(DIST_JAR_DIR)/$(JUNIT_JAR) \
   $(DIST_JAR_DIR)/$(HAMCREST_JAR) \
   $(DIST_JAR_DIR)/j2objc_annotations.jar \
-  $(DIST_JAR_DIR)/protobuf_runtime.jar
+  $(DIST_JAR_DIR)/protobuf_runtime.jar \
+  $(JAVA_DEPS_JAR_DIR)/$(TRUTH_JAR)
 CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 
 TEST_J2OBJCC = $(DIST_DIR)/j2objcc -g
@@ -116,7 +117,8 @@ CREATE_JAR_NAME = protobuf_tests
 CREATE_JAR_SOURCES = $(JAVA_SOURCES) $(J2OBJC_PROTOS_JAVA)
 CREATE_JAR_RESOURCES = $(TESTDATA)
 CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -encoding UTF-8
-CREATE_JAR_DEPENDENCIES = annotations_dist guava_java junit_java protobuf_runtime_java
+CREATE_JAR_DEPENDENCIES = annotations_dist guava_java junit_java \
+  protobuf_runtime_java truth_java
 include $(J2OBJC_ROOT)/make/create_jar.mk
 
 TRANSLATE_ARGS = -cp $(CLASSPATH):$(CREATE_JAR_RESULT) \
@@ -204,8 +206,8 @@ $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 
 $(BIN): $(OBJS) $(LIB_DEPS)
 	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljsr305 -ljunit \
-      -lprotobuf_runtime -o $@ $(OBJS)
+      -ltruth -lprotobuf_runtime -o $@ $(OBJS)
 
 $(BIN_ARC): $(OBJS_ARC) $(LIB_DEPS)
 	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljsr305 -ljunit \
-      -lprotobuf_runtime -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
+      -ltruth -lprotobuf_runtime -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
