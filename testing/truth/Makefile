@@ -77,6 +77,7 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 CREATE_JAR_NAME = j2objc_truth
 CREATE_JAR_SOURCES = $(EXTRACTED_JAVA)
 CREATE_JAR_JAVAC_ARGS = -sourcepath $(JAVA_SRC_DIR) -classpath $(CLASSPATH)
+CREATE_JAR_DEPENDENCIES = guava_java
 include ../../make/create_jar.mk
 
 CLASSPATH_LIST = \
