@@ -102,6 +102,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../../make/fat_lib.mk
 
+FRAMEWORK_NAME = Truth
+include $(J2OBJC_ROOT)/make/framework.mk
+
 JAR = $(BUILD_DIR)/j2objc_truth.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_truth.jar
 
