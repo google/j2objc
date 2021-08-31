@@ -90,7 +90,7 @@ protobuf_runtime_java: java_deps_dist
 protobuf_runtime_dist: jre_emul_dist protobuf_compiler_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime dist
 
-truth_dist: translator_dist jre_emul_dist junit_dist
+truth_dist: translator_dist jre_emul_dist junit_dist guava_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/testing/truth dist
 
 truth_java: java_deps_dist junit_java
