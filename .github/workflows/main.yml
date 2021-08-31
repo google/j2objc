@@ -14,9 +14,7 @@ jobs:
     runs-on: macos-latest
 
     env:
-      TRANSLATE_GLOBAL_FLAGS: --swift-friendly
-      ENV_J2OBJC_ARCHS: macosx_iphone64
-      MAKE_CMD: env $TRANSLATE_GLOBAL_FLAGS $ENV_J2OBJC_ARCHS make -j32
+      MAKE_CMD: "env TRANSLATE_GLOBAL_FLAGS=--swift-friendly ENV_J2OBJC_ARCHS=macosx_iphone64 make -j32"
 
     steps:
       - name: java_8_env
