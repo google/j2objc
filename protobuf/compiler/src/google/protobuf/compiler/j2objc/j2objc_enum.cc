@@ -152,7 +152,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "+ (void)initialize {\n"
       "  if (self == [$classname$ class]) {\n"
-      "    static NSString *names[] = {",
+      "    NSString *names[] = {",
       "classname", ClassName(descriptor_),
       "count", SimpleItoa(canonical_values_.size()));
 
@@ -170,7 +170,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Print("\n"
       "    };\n"
-      "    static jint int_values[] = {");
+      "    jint int_values[] = {");
   row_chars = kMaxRowChars + 1;
   for (int i = 0; i < canonical_values_.size(); i++) {
     std::string value = SimpleItoa(canonical_values_[i]->number());
