@@ -149,6 +149,7 @@ void CollectForwardDeclarationsForFieldType(std::set<std::string>* declarations,
     declarations->insert("@class ComGoogleProtobufByteString");
   } else if (type == JAVATYPE_ENUM) {
     declarations->insert("@class " + ClassName(descriptor->enum_type()));
+    declarations->insert("@class ComGoogleProtobufDescriptors_EnumDescriptor");
     declarations->insert("J2OBJC_CLASS_DECLARATION(" +
                          ClassName(descriptor->enum_type()) + ")");
     declarations->insert(
