@@ -40,10 +40,12 @@ FAT_LIB_WATCHV7K_FLAGS = -arch armv7k -DJ2OBJC_BUILD_ARCH=armv7k -mwatchos-versi
   -isysroot $(FAT_LIB_WATCH_SDK_DIR)
 FAT_LIB_WATCH64_FLAGS = -arch arm64_32 -DJ2OBJC_BUILD_ARCH=arm64_32 -mwatchos-version-min=2.0 \
   -isysroot $(FAT_LIB_WATCH_SDK_DIR)
-FAT_LIB_WATCHSIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -mwatchos-version-min=2.0 \
+FAT_LIB_WATCHSIMULATORI386_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -mwatchos-version-min=2.0 \
   -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)
-FAT_LIB_WATCHSIMULATOR64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -mwatchos-version-min=2.0 \
-  -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR) --target=arm64-apple-watchos-simulator
+FAT_LIB_WATCHSIMULATOR_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -mwatchos-version-min=6.1 \
+  -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)
+FAT_LIB_WATCHSIMULATOR64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -mwatchos-version-min=6.1 \
+  -isysroot $(FAT_LIB_WATCHSIMULATOR_SDK_DIR)  --target=arm64-apple-watchos-simulator
 FAT_LIB_SIMULATOR_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_SIMULATOR64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-version-min=12.0 \
@@ -90,8 +92,9 @@ arch_flags = $(strip \
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
   $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
   $(patsubst iphone64e,$(FAT_LIB_IPHONE64E_FLAGS),\
-  $(patsubst watchv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
-  $(patsubst watch64,$(FAT_LIB_WATCH64_FLAGS),\
+  $(patsubst watchosv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
+  $(patsubst watchos64,$(FAT_LIB_WATCH64_FLAGS),\
+  $(patsubst watchsimulatori386,$(FAT_LIB_WATCHSIMULATORI386_FLAGS),\
   $(patsubst watchsimulator,$(FAT_LIB_WATCHSIMULATOR_FLAGS),\
   $(patsubst watchsimulator64,$(FAT_LIB_WATCHSIMULATOR64_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
@@ -99,7 +102,7 @@ arch_flags = $(strip \
   $(patsubst appletvos,$(FAT_LIB_TV_FLAGS),\
   $(patsubst appletvsimulator,$(FAT_LIB_TVSIMULATOR_FLAGS),\
   $(patsubst maccatalyst,$(FAT_LIB_MAC_CATALYST_FLAGS),\
-  $(patsubst maccatalyst64,$(FAT_LIB_MAC_CATALYST64_FLAGS),$(1)))))))))))))))))
+  $(patsubst maccatalyst64,$(FAT_LIB_MAC_CATALYST64_FLAGS),$(1))))))))))))))))))
 
 fat_lib_dependencies:
 	@:
@@ -227,6 +230,17 @@ $(ARCH_BUILD_WATCH_DIR)/lib$(1).a: $(2)
 	$$(LIPO) -create $$^ -output $$@
 endef
 
+# Generate the rule for the watchsimulator library
+# Args:
+#   1. Library name.
+#   2. List of architecture specific libraries.
+define watchsimulator_lib_rule
+$(ARCH_BUILD_WATCHSIMULATOR_DIR)/lib$(1).a: $(2)
+	@mkdir -p $$(@D)
+	$$(LIPO) -create $$^ -output $$@
+endef
+
+
 # Generate the rule for the appletv library
 # Args:
 #   1. Library name.
@@ -270,24 +284,28 @@ emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
 else
 # Targets specific to a command-line build
 
-FAT_LIB_IOS_ARCHS = $(filter-out simulator64 macos% maccatalyst% appletv% watch%,$(J2OBJC_ARCHS))
+FAT_LIB_IOS_ARCHS = $(filter iphone%,$(J2OBJC_ARCHS))
 FAT_LIB_SIMULATOR_ARCHS = $(filter simulator%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_ARCHS = $(filter macos%,$(J2OBJC_ARCHS))
-FAT_LIB_WATCH_ARCHS = $(filter watch%,$(J2OBJC_ARCHS))
+FAT_LIB_WATCH_ARCHS = $(filter watchos%,$(J2OBJC_ARCHS))
+FAT_LIB_WATCHSIMLATOR_ARCHS = $(filter watchsimulator%,$(J2OBJC_ARCHS))
 FAT_LIB_TV_ARCHS = $(filter appletv%,$(J2OBJC_ARCHS))
 FAT_LIB_MAC_CATALYST_ARCHS = $(filter maccatalyst%,$(J2OBJC_ARCHS))
 
 emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch),$(1),$(2)))) \
   $(if $(FAT_LIB_IOS_ARCHS),\
-    $(eval $(call fat_lib_rule,$(1),$(FAT_LIB_IOS_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
-    $(ARCH_BUILD_DIR)/lib$(1).a,) \
+    $(eval $(call iphone_lib_rule,$(1),$(FAT_LIB_IOS_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_IPHONE_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_SIMULATOR_ARCHS),\
     $(eval $(call simulator_lib_rule,$(1),$(FAT_LIB_SIMULATOR_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_SIMULATOR_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_WATCH_ARCHS),\
     $(eval $(call watch_lib_rule,$(1),$(FAT_LIB_WATCH_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_WATCH_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_WATCHSIMLATOR_ARCHS),\
+    $(eval $(call watchsimulator_lib_rule,$(1),$(FAT_LIB_WATCHSIMLATOR_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_WATCHSIMULATOR_DIR)/lib$(1).a,) \
   $(if $(FAT_LIB_MAC_ARCHS),\
     $(eval $(call mac_lib_rule,$(1),$(FAT_LIB_MAC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
     $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a,) \

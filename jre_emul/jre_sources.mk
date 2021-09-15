@@ -568,6 +568,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/stream/Stream.java \
   java/util/stream/Streams.java \
   java/util/stream/StreamSupport.java \
+  javax/lang/model/element/Modifier.java \
   javax/lang/model/type/TypeKind.java \
   sun/misc/Unsafe.java
 
@@ -2260,16 +2261,14 @@ JAVA_PRIVATE_SOURCES_ICU = \
 NATIVE_JRE_ICU_EMBEDDED_DATA = ICUData.m
 
 # These sources are not included in any sub-library, only the full jre_emul.
-# javax.lang.model.element.Modifier is required by mockito, and the
-# java.lang.management classes by JUnit 4.13, so they are only needed
+# The java.lang.management classes are used by JUnit 4.13, so they are only needed
 # in a testing environment. The other classes are errors only thrown by a JVM.
 JAVA_PUBLIC_SOURCES_OTHER = \
   java/lang/ClassCircularityError.java \
   java/lang/UnsupportedClassVersionError.java \
   java/lang/management/ManagementFactory.java \
   java/lang/management/RuntimeMXBean.java \
-  java/lang/management/ThreadMXBean.java \
-  javax/lang/model/element/Modifier.java
+  java/lang/management/ThreadMXBean.java
 
 JAVA_PRIVATE_SOURCES_OTHER = \
   java/lang/management/ThreadInfo.java

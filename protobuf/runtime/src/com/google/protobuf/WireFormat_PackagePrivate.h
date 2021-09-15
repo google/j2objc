@@ -35,8 +35,8 @@
 
 #import "com/google/protobuf/ByteString.h"
 #ifdef __cplusplus
-#import "com/google/protobuf/CodedInputStream.h"
-#import "com/google/protobuf/CodedOutputStream.h"
+#import "com/google/protobuf/CodedInputStream_PackagePrivate.h"
+#import "com/google/protobuf/CodedOutputStream_PackagePrivate.h"
 #endif
 #import "com/google/protobuf/FieldTypes.h"
 

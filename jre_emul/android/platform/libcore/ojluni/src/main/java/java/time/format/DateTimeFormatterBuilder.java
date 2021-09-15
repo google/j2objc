@@ -1986,9 +1986,11 @@ public final class DateTimeFormatterBuilder {
         }
         if (active.printerParsers.size() > 0) {
             CompositePrinterParser cpp = new CompositePrinterParser(active.printerParsers, active.optional);
+            active.active = null; // j2objc: avoid retention cycle
             active = active.parent;
             appendInternal(cpp);
         } else {
+            active.active = null; // j2objc: avoid retention cycle
             active = active.parent;
         }
         return this;
@@ -2078,6 +2080,7 @@ public final class DateTimeFormatterBuilder {
     private DateTimeFormatter toFormatter(Locale locale, ResolverStyle resolverStyle, Chronology chrono) {
         Objects.requireNonNull(locale, "locale");
         while (active.parent != null) {
+            active.active = null; // j2objc: avoid retention cycle
             optionalEnd();
         }
         CompositePrinterParser pp = new CompositePrinterParser(printerParsers, false);

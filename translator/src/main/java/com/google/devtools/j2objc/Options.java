@@ -97,6 +97,7 @@ public class Options {
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
   private boolean injectLogSites = false;
+  private boolean allVersions = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -539,7 +540,10 @@ public class Options {
         xhelp();
       } else if (arg.equals("-XDinjectLogSites=true")) {
         injectLogSites = true;
-      }  else if (arg.equals("-source")) {
+      } else if (arg.equals("-XDallVersions")) {
+        // For internal use only when adding new version support.
+        allVersions = true;
+      } else if (arg.equals("-source")) {
         String s = getArgValue(args, arg);
         // Handle aliasing of version numbers as supported by javac.
         try {
@@ -552,6 +556,8 @@ public class Options {
         getArgValue(args, arg);  // ignore
       } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
         addPlatformModuleSystemOptions(arg, getArgValue(args, arg));
+      } else if (arg.equals("--enable-preview")) {
+        addPlatformModuleSystemOptions(arg);
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         // Ignore, batch processing isn't used with javac front-end.
       } else if (obsoleteFlags.contains(arg)) {
@@ -636,11 +642,23 @@ public class Options {
     if (sourceVersion == null) {
       sourceVersion = SourceVersion.defaultVersion();
     }
-    SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
-    if (sourceVersion.version() > maxVersion.version()) {
-      ErrorUtil.warning("Java " + sourceVersion.version() + " source version is not "
-          + "supported, using Java " + maxVersion.version() + ".");
-      sourceVersion = maxVersion;
+
+    if (allVersions) {
+      // Warn if using known but unsupported version.
+      if (sourceVersion.version() > SourceVersion.getMaxSupportedVersion().version()) {
+        ErrorUtil.warning("Using unsupported version: " + sourceVersion.version());
+      }
+    } else {
+      SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
+      if (sourceVersion.version() > maxVersion.version()) {
+        ErrorUtil.warning(
+            "Java "
+                + sourceVersion.version()
+                + " is not installed, using Java "
+                + maxVersion.version()
+                + " as source version.");
+        sourceVersion = maxVersion;
+      }
     }
     if (sourceVersion.version() > 8) {
       // Allow the modularized JRE to read the J2ObjC annotations (they are in the unnamed module).

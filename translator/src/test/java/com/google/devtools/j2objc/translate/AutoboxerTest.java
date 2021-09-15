@@ -586,4 +586,23 @@ public class AutoboxerTest extends GenerationTest {
         "return [IOSByteArray arrayWithLength:"
         + "[((JavaLangInteger *) nil_chk(Test_SIZE)) intValue]];");
   }
+
+  // Verify that return from method reference is unboxed, like lambdas are.
+  public void testUnboxedMethodReferenceReturn() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.function.Supplier;\n"
+            + "class Test {\n"
+            + "  interface XClock {\n"
+            + "    long nowMillis();\n"
+            + "  }\n"
+            + "  public static XClock createWithLongSupplier(Supplier<Long> timeSupplier) {\n"
+            + "    return timeSupplier::get;\n"
+            + "  }\n"
+            + "}", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "@implementation Test_$Lambda$1",
+        "",
+        "- (jlong)nowMillis {",
+        "return [nil_chk([target$_ get]) longLongValue];");
+  }
 }

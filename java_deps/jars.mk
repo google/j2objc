@@ -30,7 +30,7 @@ JUNIT_DATAPROVIDER_SOURCE_JAR = junit-dataprovider-1.10.4-sources.jar
 HAMCREST_JAR = hamcrest-core-1.3.jar
 HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar
 
-PROTOBUF_JAR = protobuf-java-3.11.1.jar
+PROTOBUF_JAR = protobuf-java-3.17.0.jar
 
 ERROR_PRONE_ANNOTATIONS_JAR = error_prone_annotations-2.1.3.jar
 ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.1.3-sources.jar
@@ -85,5 +85,5 @@ FLOGGER_JARS = \
 AUTOVALUE_JAR = auto-value-1.7.4.jar
 AUTOVALUE_ANNOTATIONS_JAR = auto-value-annotations-1.7.4.jar
 
-# Truth support
 TRUTH_JAR = truth-1.1.2.jar
+TRUTH_SOURCE_JAR = truth-1.1.2-sources.jar

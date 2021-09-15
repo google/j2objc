@@ -149,6 +149,7 @@ void CollectForwardDeclarationsForFieldType(std::set<std::string>* declarations,
     declarations->insert("@class ComGoogleProtobufByteString");
   } else if (type == JAVATYPE_ENUM) {
     declarations->insert("@class " + ClassName(descriptor->enum_type()));
+    declarations->insert("@class ComGoogleProtobufDescriptors_EnumDescriptor");
     declarations->insert("J2OBJC_CLASS_DECLARATION(" +
                          ClassName(descriptor->enum_type()) + ")");
     declarations->insert(
@@ -282,7 +283,8 @@ void FieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
 SingleFieldGenerator::SingleFieldGenerator(
     const FieldDescriptor *descriptor, uint32_t *numHasBits)
   : FieldGenerator(descriptor) {
-  if (descriptor->containing_oneof() == NULL) {
+  if (descriptor->containing_oneof() == NULL ||
+      descriptor->containing_oneof()->is_synthetic()) {
     variables_["has_bit_index"] = SimpleItoa((*numHasBits)++);
   }
 }

@@ -33,6 +33,7 @@
 #ifndef __ComGoogleProtobufMessageLite_H__
 #define __ComGoogleProtobufMessageLite_H__
 
+#import "com/google/protobuf/CodedOutputStream.h"
 #import "com/google/protobuf/MessageLiteOrBuilder.h"
 
 @class ComGoogleProtobufByteString;
@@ -52,6 +53,7 @@
 
 - (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output;
 - (void)writeDelimitedToWithJavaIoOutputStream:(JavaIoOutputStream *)output;
+- (void)writeToWithComGoogleProtobufCodedOutputStream:(ComGoogleProtobufCodedOutputStream *)output;
 
 @end
 
