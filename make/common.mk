@@ -94,7 +94,7 @@ J2OBJC_ARCHS = $(subst _, ,$(ENV_J2OBJC_ARCHS))
 else
 # 32bit iPhone archs are no longer built by default. To build a release
 # with them, define J2OBJC_ARCHS with "iphone" and "simulator" included.
-J2OBJC_ARCHS = macosx iphone64 iphone64e watchosv7k watchos64 watchsimulator \
+J2OBJC_ARCHS = macosx iphone64 iphone64e watchosv7k watchos64 watchsimulator watchsimulator64 \
     simulator simulator64 maccatalyst
 ifeq ($(TVOS_AVAILABLE), YES)
 J2OBJC_ARCHS += appletvos appletvsimulator
