@@ -130,6 +130,11 @@
                   <artifactId>mockito-core</artifactId>
                   <classifier>sources</classifier>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>com.google.truth</groupId>
+                  <artifactId>truth</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
@@ -225,7 +230,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.11.1</version>
+      <version>3.17.0</version>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>

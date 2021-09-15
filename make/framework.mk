@@ -57,7 +57,6 @@ FRAMEWORK_PUBLIC_HEADERS = $(FRAMEWORK_HEADERS)
 endif
 
 FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(FRAMEWORK_NAME).xcframework
-STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(FRAMEWORK_NAME).h
 MODULE_MAP = $(BUILD_DIR)/module.modulemap
 
@@ -91,19 +90,16 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
   -Werror -Weverything $(DISALLOWED_WARNINGS)
 
-# As of Xcode 12, xcframeworks need single slice libraries, except for iOS, simulator and Mac platforms
-# which require fat libraries.
-FMWK_ARCH_LIBS = $(filter-out simulator% macos% maccatalyst% watchsimulator%,$(J2OBJC_ARCHS))
-FMWK_FAT_LIBS = $(filter simulator% macos% maccatalyst% watchsimulator%,$(J2OBJC_ARCHS))
+# As of Xcode 12, xcframeworks need a fat libraries for earch platform
+PLATFORMS = iphone simulator macos maccatalyst watchos watchsimulator appletvos appletvsimulator
 framework_libraries = \
-  $(foreach arch,$(FMWK_ARCH_LIBS),$(wildcard $(BUILD_DIR)/objs-$(arch)*/lib$(1).a)) \
-  $(foreach arch,$(FMWK_FAT_LIBS),$(wildcard $(BUILD_DIR)/$(arch)/lib$(1).a))
+  $(foreach platform,$(PLATFORMS),$(if $(findstring $(platform), $(J2OBJC_ARCHS)),$(wildcard $(BUILD_DIR)/$(platform)/lib$(1).a))) 
 
 framework: dist $(FRAMEWORK_DIR) resources
 	@:
 
 # Create an xcframework from all appletv, iphone, maccatalyst, macosx, simulator and watchos libs.
-$(FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
+$(FRAMEWORK_DIR): $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@echo building $(FRAMEWORK_NAME) framework
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
 			$(call framework_libraries,$(STATIC_LIBRARY_NAME))

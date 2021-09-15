@@ -31,13 +31,16 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -282,6 +285,22 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
     String returnType = nameTable.getObjCType(element.getReturnType());
     String selector = nameTable.getMethodSelector(element);
+
+    // Verify the same number of parameters are defined by the method and the annotation.
+    long colonCount = selector.chars().filter(ch -> ch == ':').count();
+    if (element.getParameters().size() != colonCount) {
+      AnnotationMirror annotation = ElementUtil.getAnnotation(element, ObjectiveCName.class);
+      if (annotation != null) {
+        String declaredSelector = (String) ElementUtil.getAnnotationValue(annotation, "value");
+        String methodName = ElementUtil.getName(element);
+        ErrorUtil.error(m,
+            "Invalid selector: @ObjectiveCName(\""
+                + declaredSelector
+                + ")\" has a different number of parameters than method declaration.");
+        return methodName;
+      }
+    }
+
     if (m.isConstructor()) {
       returnType = "instancetype";
     } else if (selector.equals("hash")) {

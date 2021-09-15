@@ -621,6 +621,33 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         translation, "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg");
   }
 
+  /*
+   * Temporarily, Guava is annoting usages of type variable's like `E next()` with a
+   * `@ParametricNullness` annotation. This annotation means "the value may be null for an
+   * `Iterator<@Nullable Foo>` but not for an `Iterator<@Nonnull Foo>`." For our purposes, that
+   * means "It might be null."
+   *
+   * TODO(b/188212777): Understand Guava's new nullness annotations on a deeper level so that we can
+   * determine whether a usage of a type variable might or might not be null based on whether it is
+   * declared as `class Iterator<E extends @Nullable Object> { ... }` or `class Iterator<E> { ...
+   * }`. Then, Guava can remove @ParametricNullness (and also replace its usages of
+   * @ParametersAreNonnullByDefault with usages of a new annotation).
+   */
+  public void testGuavaTransitionalParametricNullnessAnnotation() throws IOException {
+    String source =
+        "package foo.bar; import javax.annotation.*; "
+            + "@java.lang.annotation.Target(value={java.lang.annotation.ElementType.TYPE_USE})"
+            + "@interface Nullable {}"
+            + "@interface ParametricNullness {}"
+            + "@ParametersAreNonnullByDefault public class Test<T extends @Nullable Object> {"
+            + "  @ParametricNullness T passthrough(@ParametricNullness T t) { "
+            + "    return t; }"
+            + "}";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(translation, "- (id __nullable)passthroughWithId:(id __nullable)t;");
+  }
+
   public void testDefaultNonnull() throws IOException {
     String source = "package foo.bar; import javax.annotation.*; "
         + "public class Test {"

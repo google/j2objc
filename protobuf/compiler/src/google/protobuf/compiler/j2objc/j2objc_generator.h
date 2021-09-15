@@ -56,6 +56,8 @@ class J2ObjCGenerator : public CodeGenerator {
   bool Generate(const FileDescriptor* file, const std::string& parameter,
                 GeneratorContext* context, std::string* error) const;
 
+  uint64_t GetSupportedFeatures() const;
+
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(J2ObjCGenerator);
 };

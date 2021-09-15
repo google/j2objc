@@ -44,6 +44,7 @@
 #include "com/google/protobuf/MessageOrBuilder.h"
 #include "com/google/protobuf/common.h"
 
+@class ComGoogleProtobufByteString;
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
 @class ComGoogleProtobufGeneratedMessage_GeneratedExtension;
@@ -54,6 +55,9 @@ typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtensi
 @interface ComGoogleProtobufGeneratedMessage : ComGoogleProtobufAbstractMessage
 
 + (id)getDescriptor;
++ (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString;
++ (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString
+    withComGoogleProtobufExtensionRegistryLite:(ComGoogleProtobufExtensionRegistryLite *)registry;
 
 @end
 
@@ -129,9 +133,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
 - (id)setExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value;
+- (id)setExtensionWithComGoogleProtobufExtensionLite:
+    (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index withId:(id)value;
 - (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
 - (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension withId:(id)value;
+- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+     (CGPGeneratedExtension *)extension withInt:(jint)index withId:(id)value;
 
 - (id)addExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value;

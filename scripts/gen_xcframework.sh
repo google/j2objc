@@ -34,10 +34,7 @@ CMD="xcodebuild -create-xcframework -output "${FRAMEWORK_DIR}
 
 while test ${#} -gt 0
 do
-  # Skip libraries that have equivalent library definitions.
-  if [[ $1 != *"iphone64e"* ]] && [[ $1 != *"watchv7k"* ]]; then
-    CMD=${CMD}" -library "$1
-  fi
+  CMD=${CMD}" -library "$1
   shift
 done
 echo $CMD

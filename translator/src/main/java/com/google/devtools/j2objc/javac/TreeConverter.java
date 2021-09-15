@@ -111,6 +111,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -1096,10 +1097,10 @@ public class TreeConverter {
   private TreeNode convertMethodInvocation(MethodInvocationTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     ExpressionTree method = node.getMethodSelect();
-    TreePath methodPath = getTreePath(path, method);
+    TreePath methodInvocationPath = getTreePath(path, method);
     String methodName = getMemberName(method);
-    ExecutableType type = (ExecutableType) getTypeMirror(methodPath);
-    ExecutableElement element = (ExecutableElement) getElement(methodPath);
+    ExecutableType type = (ExecutableType) getTypeMirror(methodInvocationPath);
+    ExecutableElement element = (ExecutableElement) getElement(methodInvocationPath);
     ExpressionTree target =
         method.getKind() == Kind.MEMBER_SELECT ? ((MemberSelectTree) method).getExpression() : null;
 
@@ -1115,12 +1116,25 @@ public class TreeConverter {
     }
 
     if ("super".equals(methodName)) {
+      if (element == null && node.getArguments().isEmpty()) {
+        // If multiple classes have default constructors added, javac may not have an element
+        // defined for the super() invocation, so create an equivalent here.
+        TreePath methodPath = parent;
+        while (methodPath.getLeaf().getKind() != Kind.METHOD) {
+          methodPath = methodPath.getParentPath();
+        }
+        ExecutableElement enclosingMethod = (ExecutableElement) getElement(methodPath);
+        TypeMirror superclassType = ElementUtil.getDeclaringClass(enclosingMethod).getSuperclass();
+        TypeElement superclass = (TypeElement) ((DeclaredType) superclassType).asElement();
+        element =
+            GeneratedExecutableElement.newConstructor(superclass, newUnit.getEnv().typeUtil());
+      }
       SuperConstructorInvocation newNode =
           new SuperConstructorInvocation()
               .setExecutablePair(new ExecutablePair(element))
               .setVarargsType(((JCMethodInvocation) node).varargsElement);
       if (target != null) {
-        newNode.setExpression((Expression) convert(target, methodPath));
+        newNode.setExpression((Expression) convert(target, methodInvocationPath));
       }
       for (ExpressionTree arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg, path));
@@ -1149,7 +1163,7 @@ public class TreeConverter {
 
     MethodInvocation newNode = new MethodInvocation();
     if (target != null) {
-      newNode.setExpression((Expression) convert(target, methodPath));
+      newNode.setExpression((Expression) convert(target, methodInvocationPath));
     }
     for (ExpressionTree arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg, path));

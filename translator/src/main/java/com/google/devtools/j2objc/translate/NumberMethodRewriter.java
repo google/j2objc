@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.lang.reflect.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds hash and isEqual: methods to java.lang.Number subclasses that
@@ -47,15 +48,28 @@ public class NumberMethodRewriter extends UnitTreeVisitor {
   public void endVisit(TypeDeclaration node) {
     DeclaredType type = (DeclaredType) node.getTypeElement().asType();
     if (typeUtil.isSubtype(type, typeUtil.getJavaNumber().asType())) {
-      ExecutablePair equalsMethod = typeUtil.findMethod(type, "equals", "java.lang.Object");
+      ExecutablePair equalsMethod = findNumberMethod(type, "equals", "java.lang.Object");
       if (equalsMethod == null) {
         addEqualsMethod(node);
       }
-      ExecutablePair hashCodeMethod = typeUtil.findMethod(type, "hashCode");
+      ExecutablePair hashCodeMethod = findNumberMethod(type, "hashCode");
       if (hashCodeMethod == null) {
         addHashCodeMethod(node);
       }
     }
+  }
+
+  @SuppressWarnings("TypeEquals")
+  private ExecutablePair findNumberMethod(DeclaredType type, String name, String... paramTypes) {
+    ExecutablePair method = typeUtil.findMethod(type, name, paramTypes);
+    if (method != null) {
+      return method;
+    }
+    TypeMirror supertype = ((TypeElement) type.asElement()).getSuperclass();
+    if (typeUtil.isSameType(supertype, typeUtil.getJavaObject().asType())) {
+      return null;
+    }
+    return findNumberMethod((DeclaredType) supertype, name, paramTypes);
   }
 
   private void addEqualsMethod(TypeDeclaration node) {

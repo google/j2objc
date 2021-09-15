@@ -38,7 +38,7 @@
 #import "com/google/protobuf/DescriptorProtos.h"
 #import "com/google/protobuf/GeneratedMessage_PackagePrivate.h"
 #import "com/google/protobuf/ProtocolMessageEnum.h"
-#import "com/google/protobuf/WireFormat.h"
+#import "com/google/protobuf/WireFormat_PackagePrivate.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Double.h"
 #import "java/lang/Enum.h"

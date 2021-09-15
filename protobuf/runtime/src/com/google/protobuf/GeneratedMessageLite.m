@@ -10,7 +10,7 @@
 #include "com/google/protobuf/ExtensionLite.h"
 #include "com/google/protobuf/Internal.h"
 #include "com/google/protobuf/MessageLite.h"
-#include "com/google/protobuf/WireFormat.h"
+#include "com/google/protobuf/WireFormat_PackagePrivate.h"
 #include "java/lang/IllegalArgumentException.h"
 
 @implementation ComGoogleProtobufGeneratedMessageLite

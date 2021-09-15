@@ -210,7 +210,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "+ (void)initialize {\n"
       "  if (self == [$classname$ class]) {\n"
-      "    static NSString *names[] = {",
+      "    NSString *names[] = {",
       "classname", CaseClassName(descriptor_),
       "count", SimpleItoa(descriptor_->field_count() + 1));
 
@@ -228,7 +228,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
   }
   printer->Print("\n"
       "    };\n"
-      "    static jint int_values[] = {");
+      "    jint int_values[] = {");
   row_chars = kMaxRowChars + 1;
   for (int i = 0; i < numbers.size(); i++) {
     std::string value = SimpleItoa(numbers[i]);

@@ -932,7 +932,7 @@ public class Proxy implements java.io.Serializable {
         if (method) {
           NSString *originalName = strcmp(selName, "proxy_equalsWithId:") == 0
               ? @"equals" : [NSString stringWithUTF8String:(selName + 6)];
-          return [[ProxyMethod alloc] initWithMethod:method originalName:originalName];
+          return AUTORELEASE([[ProxyMethod alloc] initWithMethod:method originalName:originalName]);
         }
       }
       return nil;

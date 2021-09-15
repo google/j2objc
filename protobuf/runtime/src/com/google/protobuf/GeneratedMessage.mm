@@ -40,7 +40,8 @@
 #include <vector>
 
 #include "com/google/protobuf/ByteString.h"
-#include "com/google/protobuf/CodedInputStream.h"
+#include "com/google/protobuf/CodedInputStream_PackagePrivate.h"
+#include "com/google/protobuf/CodedOutputStream.h"
 #include "com/google/protobuf/Descriptors_PackagePrivate.h"
 #include "com/google/protobuf/ExtensionRegistry.h"
 #include "com/google/protobuf/ExtensionRegistryLite.h"
@@ -49,7 +50,7 @@
 #include "com/google/protobuf/MapField.h"
 #include "com/google/protobuf/ProtocolMessageEnum.h"
 #include "com/google/protobuf/RepeatedField.h"
-#include "com/google/protobuf/WireFormat.h"
+#include "com/google/protobuf/WireFormat_PackagePrivate.h"
 #include "java/io/InputStream.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/IndexOutOfBoundsException.h"
@@ -306,7 +307,7 @@ static inline void ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
   static void SingularSet##NAME(id msg, TYPE_##NAME value, size_t offset, CGPHasLocator hasLoc) { \
     TYPE_##NAME *ptr = FIELD_PTR(TYPE_##NAME, msg, offset); \
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr); \
-    TYPE_ASSIGN_##NAME(*ptr, value); \
+    TYPE_RETAINED_ASSIGN_##NAME(*ptr, value); \
     SetHas(msg, hasLoc); \
   }
 
@@ -1777,9 +1778,11 @@ static BOOL MergeFieldFromStream(
   BOOL repeated = CGPFieldIsRepeated(field);
   BOOL isGroup = NO;
   CGPHasLocator hasLoc;
+  BOOL alreadyCleared = NO;
   if (!repeated) {
     hasLoc = GetHasLocator(msgCls, field);
     ClearPreviousOneof(msg, hasLoc, fieldPtr);
+    alreadyCleared = YES;
   }
   switch (CGPFieldGetType(field)) {
 #define MERGE_FIELD_CASE(NAME, ENUM_NAME, JAVA_NAME) \
@@ -1860,7 +1863,9 @@ static BOOL MergeFieldFromStream(
           CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
         } else {
           id *ptr = (id *)fieldPtr;
-          AUTORELEASE(*ptr);
+          if (!alreadyCleared) {
+            AUTORELEASE(*ptr);
+          }
           *ptr = value;
           SetHas(msg, hasLoc);
         }
@@ -1874,7 +1879,9 @@ static BOOL MergeFieldFromStream(
           CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
         } else {
           id *ptr = (id *)fieldPtr;
-          AUTORELEASE(*ptr);
+          if (!alreadyCleared) {
+            AUTORELEASE(*ptr);
+          }
           *ptr = value;
           SetHas(msg, hasLoc);
         }
@@ -1898,7 +1905,9 @@ static BOOL MergeFieldFromStream(
             CopyMessage(msgField, MessageExtensionMap(msgField, fieldType),
                         *ptr, MessageExtensionMap(*ptr, fieldType), fieldType);
           }
-          AUTORELEASE(*ptr);
+          if (!alreadyCleared) {
+            AUTORELEASE(*ptr);
+          }
           *ptr = msgField;
           SetHas(msg, hasLoc);
         }
@@ -1985,6 +1994,11 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
     InvalidPB();
   }
   return msg;
+}
+
+ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(
+    CGPDescriptor *descriptor, CGPByteString *byteString, CGPExtensionRegistryLite *registry) {
+  return CGPParseFromByteArray(descriptor, [byteString toByteArray], registry);
 }
 
 ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
@@ -3275,6 +3289,15 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return CGPParseFromByteArray([self getDescriptor], bytes, registry);
 }
 
++ (id)parseFromWithByteString:(CGPByteString *)byteString {
+  return CGPParseFromByteString([self getDescriptor], byteString, nil);
+}
+
++ (id)parseFromWithByteString:(CGPByteString *)byteString
+    withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
+  return CGPParseFromByteString([self getDescriptor], byteString, registry);
+}
+
 + (id)parseFromNSData:(NSData *)data {
   return [self parseFromNSData:data registry:nil];
 }
@@ -3380,6 +3403,15 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   codedStream.FlushBuffer();
   // The WriteMessage function will throw a runtime exception if there is an error.
   NSAssert(!codedStream.HadError(), @"Serialization error");
+}
+
+- (void)writeToWithComGoogleProtobufCodedOutputStream:(ComGoogleProtobufCodedOutputStream *)output {
+  CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
+  CGPCodedOutputStream *codedStream = output->codedStream_;
+  WriteMessage(self, descriptor, codedStream);
+  codedStream->FlushBuffer();
+  // The WriteMessage function will throw a runtime exception if there is an error.
+  NSAssert(!codedStream->HadError(), @"Serialization error");
 }
 
 - (CGPDescriptor *)getDescriptorForType {
@@ -3833,6 +3865,20 @@ static int GetExtensionCount(ComGoogleProtobufExtensionLite *extension, CGPExten
   return 0;
 }
 
+static id SetRepeatedExtension(
+    CGPExtensionMap *extensionMap, ComGoogleProtobufExtensionLite *extension, int index) {
+  CGPFieldDescriptor *field = extension->fieldDescriptor_;
+  CGPFieldJavaType type = CGPFieldGetJavaType(field);
+  CGPExtensionMap::iterator it = extensionMap->find(field);
+  id value;
+  if (it != extensionMap->end()) {
+    value = [((id<JavaUtilList>)it->second.get()) getWithInt:index];
+  } else {
+    @throw AUTORELEASE([[JavaLangIndexOutOfBoundsException alloc] init]);
+  }
+  return FromReflectionTypeSingular(type, value);
+}
+
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
 
 @implementation ComGoogleProtobufGeneratedMessage_ExtendableMessage
@@ -3970,6 +4016,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 - (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
+- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withInt:(jint)index withId:(id)value {
+  return [self setExtensionWithComGoogleProtobufExtensionLite:extension withInt:index withId:value];
+}
+
+- (id)setExtensionWithComGoogleProtobufExtensionLite:
+    (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index withId:(id)value {
+  (void)nil_chk(value);
+  CGPFieldDescriptor *field = extension->fieldDescriptor_;
+  [self setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:field
+                                                                 withInt:index
+                                                                  withId:value];
+  return self;
 }
 
 - (id)addExtensionWithComGoogleProtobufExtensionLite:

@@ -65,6 +65,9 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
 ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
 
+ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(CGPDescriptor *descriptor,
+    ComGoogleProtobufByteString *byteString, CGPExtensionRegistryLite *registry);
+
 ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
 
