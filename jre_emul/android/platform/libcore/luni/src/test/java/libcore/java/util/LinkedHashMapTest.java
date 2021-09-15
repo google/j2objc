@@ -490,8 +490,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     private static Map.Entry<?, ?> eldest(LinkedHashMap<?,?> map) {
-        // Should be the same as: return (map.isEmpty()) ? null : map.entrySet().iterator().next();
-        return map.eldest();
+        return (map.isEmpty()) ? null : map.entrySet().iterator().next();
     }
 
     private static void assertEntry(Object key, Object value, Map.Entry<?, ?> entry) {

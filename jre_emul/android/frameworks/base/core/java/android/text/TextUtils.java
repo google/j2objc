@@ -16,15 +16,10 @@
 
 package android.text;
 
-import android.util.Log;
 import android.util.Printer;
-
 import com.android.internal.util.ArrayUtils;
-import libcore.icu.ICU;
-
 import java.lang.reflect.Array;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class TextUtils {
