@@ -78,7 +78,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    startType(node.getTypeElement(), true);
+    startInterfaceType(node.getTypeElement());
     return true;
   }
 
@@ -110,7 +110,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    startType(node.getTypeElement(), false);
+    startEnumType(node.getTypeElement());
     return true;
   }
 
@@ -210,7 +210,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    startType(node.getTypeElement(), node.isInterface());
+    if (node.isInterface()) {
+      startInterfaceType(node.getTypeElement());
+    } else {
+      startType(node.getTypeElement());
+    }
     return true;
   }
 
@@ -262,6 +266,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName(PSEUDO_CONSTRUCTOR_PREFIX + type.substring(index), EMPTY_METHOD_SIGNATURE);
   }
 
+  private static String getImplicitValuesName(String type) {
+    return getMethodName("values",  "()[" + type);
+  }
+
+  private static String getImplicitValueOfName(String type) {
+    return getMethodName("valueOf",  "(Ljava/lang/String;)" + type);
+  }
+
   private static boolean isUntrackedClass(String typeName) {
     return typeName.indexOf('.') == -1;
   }
@@ -282,14 +294,33 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void startPackage(PackageElement pkg) {
     String pkgName =  pkg.getQualifiedName() + ".package-info";
-    startTypeScope(pkgName, INTERFACE_SUPERTYPE, false, ImmutableList.of(), true);
+    startTypeScope(pkgName, INTERFACE_SUPERTYPE, ImmutableList.of(), true);
   }
 
   private void endPackage() {
     endTypeScope();
   }
 
-  private void startType(TypeElement type, boolean isInterface) {
+  private void startEnumType(TypeElement type) {
+    startType(type);
+    // For enums, add implict static methods.
+    String typeName = elementUtil.getBinaryName(type);
+    String sigName = typeUtil.getSignatureName(type.asType());
+    startMethodDeclaration(getImplicitValuesName(sigName), typeName, false, true);
+    endMethodDeclaration();
+    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, false, true);
+    endMethodDeclaration();
+  }
+
+  private void startInterfaceType(TypeElement type) {
+    startType(type);
+    // For interfaces, add a pseudo-constructor for use with lambdas.
+    String typeName = elementUtil.getBinaryName(type);
+    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false);
+    endMethodDeclaration();
+  }
+
+  private void startType(TypeElement type) {
     String typeName = elementUtil.getBinaryName(type);
     TypeElement superType = ElementUtil.getSuperclass(type);
     String superName =
@@ -298,14 +329,14 @@ final class UsedCodeMarker extends UnitTreeVisitor {
                                 .map(elementUtil::getBinaryName).collect(Collectors.toList());
     boolean isExported = context.exportedClasses.contains(typeName)
                          || ElementUtil.isGeneratedAnnotation(type);
-    startTypeScope(typeName, superName, isInterface, interfaces, isExported);
+    startTypeScope(typeName, superName, interfaces, isExported);
   }
 
   private void endType() {
     endTypeScope();
   }
 
-  private void startTypeScope(String typeName, String superName, boolean isInterface,
+  private void startTypeScope(String typeName, String superName,
       List<String> interfaces, boolean isExported) {
     Integer id = getTypeId(typeName);
     Integer eid = getTypeId(superName);
@@ -316,11 +347,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // Push the static initializer as the current method in scope.
     startMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
         .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
-    // For interfaces, add a pseudo-constructor for use with lambdas.
-    if (isInterface) {
-      startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false);
-      endMethodDeclaration();
-    }
   }
 
   private void endTypeScope() {

@@ -356,7 +356,20 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedClasses(unused)).containsExactly("p.C");
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("p.A", "A", "()V"),
-        getMethodName("p.B", "c", "()V"));
+        getMethodName("p.B", "c", "()V"),
+        getMethodName("p.B", "values", "()[Lp/B;"),
+        getMethodName("p.B", "valueOf", "(Ljava/lang/String;)Lp/B;"));
+  }
+
+  public void testEnumImplicitMethods() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java",
+        "package p; class A { static void main() { B.valueOf(\"TWO\"); B.values(); }}");
+    addSourceFile("B.java", "package p; enum B { ONE, TWO; }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
   public void testAbstractClasses() throws IOException {
@@ -862,7 +875,10 @@ public class TreeShakerTest extends TestCase {
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("p.A", "A", "()V"),
+        getMethodName("p.B", "values", "()[Lp/B;"),
+        getMethodName("p.B", "valueOf", "(Ljava/lang/String;)Lp/B;"));
   }
 
   public void testAnnotationsWithInnerClasses() throws IOException {
@@ -872,7 +888,10 @@ public class TreeShakerTest extends TestCase {
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("p.A", "A", "()V"),
+        getMethodName("p.B$D", "values", "()[Lp/B$D;"),
+        getMethodName("p.B$D", "valueOf", "(Ljava/lang/String;)Lp/B$D;"));
   }
 
   public void testPackageAnnotations() throws IOException {
