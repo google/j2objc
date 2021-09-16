@@ -99,7 +99,7 @@ public class BasicLruCache<K, V> {
 
     private void trimToSize(int maxSize) {
         while (map.size() > maxSize) {
-            Map.Entry<K, V> toEvict = map.eldest();
+            Map.Entry<K, V> toEvict = (map.isEmpty()) ? null : map.entrySet().iterator().next();
 
             K key = toEvict.getKey();
             V value = toEvict.getValue();

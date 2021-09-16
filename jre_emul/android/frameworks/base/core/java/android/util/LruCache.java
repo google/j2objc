@@ -16,6 +16,7 @@
 
 package android.util;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -206,7 +207,7 @@ public class LruCache<K, V> {
                     break;
                 }
 
-                Map.Entry<K, V> toEvict = map.eldest();
+                Map.Entry<K, V> toEvict = (map.isEmpty()) ? null : map.entrySet().iterator().next();
                 if (toEvict == null) {
                     break;
                 }
