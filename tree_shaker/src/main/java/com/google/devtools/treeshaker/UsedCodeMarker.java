@@ -267,11 +267,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private static String getImplicitValuesName(String type) {
-    return getMethodName("values",  "()[" + type);
+    return getMethodName("values", "()[" + type);
   }
 
   private static String getImplicitValueOfName(String type) {
-    return getMethodName("valueOf",  "(Ljava/lang/String;)" + type);
+    return getMethodName("valueOf", "(Ljava/lang/String;)" + type);
   }
 
   private static boolean isUntrackedClass(String typeName) {

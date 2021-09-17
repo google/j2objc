@@ -13,8 +13,6 @@
  */
 package com.google.devtools.treeshaker;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -25,10 +23,12 @@ import java.util.Set;
 class TypeGraphBuilder {
   private final Collection<Type> types;
   private final Set<String> externalTypeReferences;
+  private final Set<String> unknownMethodReferences;
 
   TypeGraphBuilder(LibraryInfo libraryInfo) {
     Map<String, Type> typesByName = new LinkedHashMap<>();
     externalTypeReferences = new HashSet<>();
+    unknownMethodReferences = new HashSet<>();
     for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
       Type type = Type.buildFrom(typeInfo, libraryInfo.getTypeMap(typeInfo.getTypeId()));
       typesByName.put(type.getName(), type);
@@ -44,6 +44,10 @@ class TypeGraphBuilder {
 
   Collection<String> getExternalTypeReferences() {
     return externalTypeReferences;
+  }
+
+  Collection<String> getUnknownMethodReferences() {
+    return unknownMethodReferences;
   }
 
   private void buildCrossReferences(LibraryInfo libraryInfo, Map<String, Type> typesByName) {
@@ -79,7 +83,7 @@ class TypeGraphBuilder {
             externalTypeReferences.add(libraryInfo.getTypeMap(referencedId));
             continue;
           }
-          member.addReferencedType(checkNotNull(referencedType));
+          member.addReferencedType(referencedType);
         }
 
         for (MethodInvocation methodInvocation : memberInfo.getInvokedMethodsList()) {
@@ -87,7 +91,12 @@ class TypeGraphBuilder {
               typesByName.get(libraryInfo.getTypeMap(methodInvocation.getEnclosingType()));
           if (enclosingType != null) {
             Member referencedMember = enclosingType.getMemberByName(methodInvocation.getMethod());
-            member.addReferencedMember(checkNotNull(referencedMember));
+            if (referencedMember != null) {
+              member.addReferencedMember(referencedMember);
+            } else {
+              unknownMethodReferences.add(
+                  enclosingType.getName() + "." + methodInvocation.getMethod());
+            }
           } else {
             externalTypeReferences.add(libraryInfo.getTypeMap(methodInvocation.getEnclosingType()));
           }

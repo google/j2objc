@@ -29,6 +29,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -151,6 +152,10 @@ public class TreeShaker {
     }
     TypeGraphBuilder tgb = new TypeGraphBuilder(context.getLibraryInfo());
     logger.atFine().log("External Types: %s", String.join(", ", tgb.getExternalTypeReferences()));
+    Collection<String> unknownMethodReferences = tgb.getUnknownMethodReferences();
+    if (!unknownMethodReferences.isEmpty()) {
+      logger.atWarning().log("Unknown Methods: %s", String.join(", ", unknownMethodReferences));
+    }
     return RapidTypeAnalyser.analyse(tgb.getTypes());
   }
 
