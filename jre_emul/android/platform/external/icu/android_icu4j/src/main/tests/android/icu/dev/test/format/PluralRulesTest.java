@@ -1108,7 +1108,7 @@ public class PluralRulesTest extends TestFmwk {
      * @return
      */
     private String showBytes(byte[] contents) {
-        StringBuilder b = new StringBuilder('[');
+        StringBuilder b = new StringBuilder("[");
         for (int i = 0; i < contents.length; ++i) {
             int item = contents[i] & 0xFF;
             if (item >= 0x20 && item <= 0x7F) {
