@@ -57,21 +57,21 @@ class TypeGraphBuilder {
       String superClassName = libraryInfo.getTypeMap(extendsId);
       Type superClass = typesByName.get(superClassName);
 
-      if (superClass != null) {
+      if (superClass == null) {
+        externalTypeReferences.add(superClassName);
+      } else {
         superClass.addImmediateSubtype(type);
         type.setSuperClass(superClass);
-      } else {
-        externalTypeReferences.add(superClassName);
       }
 
       for (int implementsId : typeInfo.getImplementsTypeList()) {
         Type superInterface = typesByName.get(libraryInfo.getTypeMap(implementsId));
         if (superInterface == null) {
           externalTypeReferences.add(libraryInfo.getTypeMap(implementsId));
-        } else {
-          superInterface.addImmediateSubtype(type);
-          type.addSuperInterface(superInterface);
+          continue;
         }
+        superInterface.addImmediateSubtype(type);
+        type.addSuperInterface(superInterface);
       }
 
       for (MemberInfo memberInfo : typeInfo.getMemberList()) {
@@ -89,17 +89,17 @@ class TypeGraphBuilder {
         for (MethodInvocation methodInvocation : memberInfo.getInvokedMethodsList()) {
           Type enclosingType =
               typesByName.get(libraryInfo.getTypeMap(methodInvocation.getEnclosingType()));
-          if (enclosingType != null) {
-            Member referencedMember = enclosingType.getMemberByName(methodInvocation.getMethod());
-            if (referencedMember != null) {
-              member.addReferencedMember(referencedMember);
-            } else {
-              unknownMethodReferences.add(
-                  enclosingType.getName() + "." + methodInvocation.getMethod());
-            }
-          } else {
+          if (enclosingType == null) {
             externalTypeReferences.add(libraryInfo.getTypeMap(methodInvocation.getEnclosingType()));
+            continue;
           }
+          Member referencedMember = enclosingType.getMemberByName(methodInvocation.getMethod());
+          if (referencedMember == null) {
+            unknownMethodReferences.add(
+                enclosingType.getName() + "." + methodInvocation.getMethod());
+            continue;
+          }
+          member.addReferencedMember(referencedMember);
         }
       }
     }
