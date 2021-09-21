@@ -347,6 +347,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // Push the static initializer as the current method in scope.
     startMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
         .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
+    addMethodInvocation(CLASS_INITIALIZER_NAME, superName);
   }
 
   private void endTypeScope() {

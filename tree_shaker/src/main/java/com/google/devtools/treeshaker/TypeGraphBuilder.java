@@ -53,8 +53,7 @@ class TypeGraphBuilder {
   private void buildCrossReferences(LibraryInfo libraryInfo, Map<String, Type> typesByName) {
     for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
       Type type = typesByName.get(libraryInfo.getTypeMap(typeInfo.getTypeId()));
-      int extendsId = typeInfo.getExtendsType();
-      String superClassName = libraryInfo.getTypeMap(extendsId);
+      String superClassName = libraryInfo.getTypeMap(typeInfo.getExtendsType());
       Type superClass = typesByName.get(superClassName);
 
       if (superClass == null) {
