@@ -363,7 +363,7 @@ public class TreeShakerTest extends TestCase {
   public void testStaticInitializationChainingForMethods() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { C.c(); }}");
-    addSourceFile("B.java", "package p; class B { static void b() { }}");
+    addSourceFile("B.java", "package p; abstract class B { }");
     addSourceFile("C.java", "package p; class C extends B { static void c() { }}");
     CodeReferenceMap unused = findUnusedCode();
 
@@ -371,10 +371,25 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("p.A", "A", "()V"),
         getMethodName("p.B", "B", "()V"),
-        getMethodName("p.B", "b", "()V"),
         getMethodName("p.C", "C", "()V"));
   }
 
+  public void testInstanceof() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java",
+        "package p; class A {",
+        "  static void main() { B b = new B(); int i = (b instanceof C) ? 0 : b.f(); }",
+        "}");
+    addSourceFile("B.java", "package p; class B { int f() { return 2; }}");
+    addSourceFile("C.java", "package p; class C extends B { int f() { return 3; }}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("p.A", "A", "()V"),
+        getMethodName("p.C", "C", "()V"),
+        getMethodName("p.C", "f", "()I"));
+  }
 
   public void testEnums() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");

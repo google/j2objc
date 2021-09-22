@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -122,6 +123,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(ExpressionMethodReference node) {
     addMethodInvocation(node.getExecutableElement());
+  }
+
+  @Override
+  public void endVisit(InstanceofExpression node) {
+    // For 'instanceof' a type, mark that type live.
+    addMethodInvocation(
+        CLASS_INITIALIZER_NAME, getTypeMirrorName(node.getRightOperand().getTypeMirror()));
   }
 
   @Override
