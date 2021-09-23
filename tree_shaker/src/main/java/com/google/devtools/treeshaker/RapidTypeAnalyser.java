@@ -48,7 +48,7 @@ final class RapidTypeAnalyser {
             }
             String name = components.get(0);
             String sig = components.get(1);
-            unusedBuilder.addMethod(member.getDeclaringType().getName(), name, sig);
+            unusedBuilder.addMethod(type.getName(), name, sig);
           }
         }
       } else {
@@ -63,8 +63,6 @@ final class RapidTypeAnalyser {
       traversePolymorphicReference(member.getDeclaringType(), member.getName());
     } else {
       markTypeLive(member.getDeclaringType());
-      markMemberLive(
-          member.getDeclaringType().getMemberByName(UsedCodeMarker.CLASS_INITIALIZER_NAME));
       markMemberLive(member);
     }
   }
@@ -75,12 +73,9 @@ final class RapidTypeAnalyser {
     }
 
     member.markLive();
-
-    Type declaringType = member.getDeclaringType();
     if (member.isConstructor()) {
-      markInstantiated(declaringType);
+      markInstantiated(member.getDeclaringType());
     }
-
     member.getReferencedMembers().forEach(RapidTypeAnalyser::onMemberReference);
     member.getReferencedTypes().forEach(RapidTypeAnalyser::markTypeLive);
   }
@@ -89,10 +84,10 @@ final class RapidTypeAnalyser {
     if (type.isInstantiated()) {
       return;
     }
+
     type.instantiate();
     type.getPotentiallyLiveMembers().forEach(RapidTypeAnalyser::markMemberLive);
     for (Type iface : type.getSuperInterfaces()) {
-      iface.getMemberByName(UsedCodeMarker.CLASS_INITIALIZER_NAME).markLive();
       markInstantiated(iface);
     }
   }
@@ -108,10 +103,8 @@ final class RapidTypeAnalyser {
         return;
       }
       member.markFullyTraversed();
-
       markMemberPotentiallyLive(member);
     }
-
     // Recursively unfold the overriding chain.
     type.getImmediateSubtypes()
         .forEach(subtype -> traversePolymorphicReference(subtype, memberName));
@@ -143,7 +136,7 @@ final class RapidTypeAnalyser {
     }
 
     type.markLive();
-
+    markMemberLive(type.getMemberByName(UsedCodeMarker.CLASS_INITIALIZER_NAME));
     // When a type is marked as live, we need to explicitly mark the super interfaces as live since
     // we need markImplementor call (which are not tracked in AST).
     type.getSuperInterfaces().forEach(RapidTypeAnalyser::markTypeLive);

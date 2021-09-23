@@ -128,8 +128,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(InstanceofExpression node) {
     // For 'instanceof' a type, mark that type live.
-    addMethodInvocation(
-        CLASS_INITIALIZER_NAME, getTypeMirrorName(node.getRightOperand().getTypeMirror()));
+    addReferencedType(node.getRightOperand().getTypeMirror());
   }
 
   @Override
@@ -150,6 +149,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getDeclaringClassName(node.getExecutableElement()),
         node.isConstructor(),
         Modifier.isStatic(node.getModifiers()));
+    addReferencedType(node.getReturnTypeMirror());
+    node.getParameters().forEach(svd -> addReferencedType(svd.getType().getTypeMirror()));
     return true;
   }
 
@@ -194,7 +195,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     if (var != null && var.getKind().isField() && var.getModifiers().contains(STATIC)) {
       String declTypeName = elementUtil.getBinaryName(ElementUtil.getDeclaringClass(var));
       if (!declTypeName.equals(context.currentTypeNameScope.peek())) {
-        addMethodInvocation(CLASS_INITIALIZER_NAME, declTypeName);
+        addReferencedTypeName(declTypeName);
       }
     }
   }
@@ -207,6 +208,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(SuperConstructorInvocation node) {
     addMethodInvocation(node.getExecutableElement());
+    addReferencedType(node.getExecutableType().getReturnType());
+    node.getExecutableType().getParameterTypes().forEach(this::addReferencedType);
   }
 
   @Override
@@ -406,7 +409,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
                 .setMethod(methodName)
                 .setEnclosingType(declTypeId)
                 .build());
-    addReferencedTypeName(declTypeName);
   }
 
   private void addReferencedType(TypeMirror type) {

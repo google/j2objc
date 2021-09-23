@@ -535,7 +535,7 @@ public class TreeShakerTest extends TestCase {
   public void testUninstantiatedTypes() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main(p.B,p.C,p.D)");
     addSourceFile("A.java",
-        "package p; class A {  static void main(B b, C c, D d) { b.b(); c.c(); d.d(); }}");
+        "package p; class A { static void main(B b, C c, D d) { b.b(); c.c(); d.d(); }}");
     addSourceFile("B.java", "package p; interface B { void b(); }");
     addSourceFile("C.java", "package p; abstract class C { abstract void c(); }");
     addSourceFile("D.java", "package p; class D { void d(){} }");
@@ -548,13 +548,10 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("p.A", "A", "()V"),
         getMethodName("p.B", "b", "()V"),
-        getMethodName("p.B", "<clinit>", "()V"),
         getMethodName("p.C", "C", "()V"),
         getMethodName("p.C", "c", "()V"),
-        getMethodName("p.C", "<clinit>", "()V"),
         getMethodName("p.D", "D", "()V"),
-        getMethodName("p.D", "d", "()V"),
-        getMethodName("p.D", "<clinit>", "()V"));
+        getMethodName("p.D", "d", "()V"));
   }
 
   public void testAnonymousAbstractTypesBasic() throws IOException {
