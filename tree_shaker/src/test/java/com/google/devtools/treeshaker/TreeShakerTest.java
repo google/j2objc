@@ -346,6 +346,27 @@ public class TreeShakerTest extends TestCase {
         getMethodName("p.B", "c", "()V"));
   }
 
+  public void testInitializationBlocks() throws IOException {
+    addTreeShakerRootsFile("A");
+    addSourceFile("A.java", "class A { static void main() { C c; }}");
+    addSourceFile("B.java", "class B { int i; { i = f(); } int f() { return 2; }}");
+    addSourceFile("C.java",
+        "class C {",
+        "  static int i;",
+        "  static { i = f(); }",
+        "  static int f() { return new B().i; }",
+        "  static void g() {}",
+        "  void h() {}",
+        "}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("C", "C", "()V"),
+        getMethodName("C", "g", "()V"),
+        getMethodName("C", "h", "()V"));
+  }
+
   public void testStaticInitializationChainingForFields() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { int x = C.c; }}");
@@ -456,6 +477,19 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(
         getMethodName("p.A", "A", "()V"),
         getMethodName("p.B", "b", "()V"));
+  }
+
+  public void testEntrySpec() throws IOException {
+    addTreeShakerRootsFile("A\nB");
+    addSourceFile("A.java", "class A { static void main() { int i = new B().f(); }}");
+    addSourceFile("B.java", "class B { int f() { return 2; } int g(C c) { return c.h(); }}");
+    addSourceFile("C.java", "class C { int h() { return 3; }}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+        getMethodName("C", "C", "()V"),
+        getMethodName("C", "h", "()I"));
   }
 
   public void testInterfacesIndirect() throws IOException {

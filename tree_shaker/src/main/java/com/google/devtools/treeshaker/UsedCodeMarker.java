@@ -28,6 +28,8 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
@@ -63,8 +65,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+@SuppressWarnings("UngroupedOverloads")
 final class UsedCodeMarker extends UnitTreeVisitor {
   static final String CLASS_INITIALIZER_NAME = "<clinit>##()V";
+  static final String INITIALIZER_NAME = "<init>##()V";
   static final String EMPTY_METHOD_SIGNATURE = "()V";
   static final String INTERFACE_SUPERTYPE = "none";
   static final String PSEUDO_CONSTRUCTOR_PREFIX = "%%";
@@ -106,7 +110,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
+    pushClinit();
     addMethodInvocation(node.getExecutableElement());
+    popClinit();
   }
 
   @Override
@@ -123,6 +129,36 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(ExpressionMethodReference node) {
     addMethodInvocation(node.getExecutableElement());
+  }
+
+  @Override
+  public boolean visit(FieldDeclaration node) {
+    if (Modifier.isStatic(node.getModifiers())) {
+      pushClinit();
+    }
+    return true;
+  }
+
+  @Override
+  public void endVisit(FieldDeclaration node) {
+    if (Modifier.isStatic(node.getModifiers())) {
+      popClinit();
+    }
+  }
+
+  @Override
+  public boolean visit(Initializer node) {
+    if (Modifier.isStatic(node.getModifiers())) {
+      pushClinit();
+    }
+    return true;
+  }
+
+  @Override
+  public void endVisit(Initializer node) {
+    if (Modifier.isStatic(node.getModifiers())) {
+      popClinit();
+    }
   }
 
   @Override
@@ -285,10 +321,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName("valueOf", "(Ljava/lang/String;)" + type);
   }
 
-  private static boolean isUntrackedClass(String typeName) {
-    return typeName.indexOf('.') == -1;
-  }
-
   private void visitAnnotation(Annotation node) {
     // A reference to an annotation implicitly constructs an instance of that annotation.
     addPseudoConstructorInvocation(node.getTypeMirror());
@@ -355,24 +387,32 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     context.currentTypeNameScope.push(typeName);
     context.currentTypeInfoScope.push(TypeInfo.newBuilder()
         .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
-    // Push the static initializer as the current method in scope.
-    startMethodScope(CLASS_INITIALIZER_NAME, MemberInfo.newBuilder()
+    // Push the initializer as the current method in scope.
+    startMethodScope(MemberInfo.newBuilder()
+        .setName(INITIALIZER_NAME).setStatic(false).setExported(isExported));
+    // Push the new static initializer in scope.
+    context.clinitMemberScope.push(MemberInfo.newBuilder()
         .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
-    addMethodInvocation(CLASS_INITIALIZER_NAME, superName);
+    context.clinitReferencedTypesScope.push(new HashSet<>());
   }
 
   private void endTypeScope() {
-    // Close the current method (i.e. the static initializer).
+    // Close the current initializer method.
     endMethodDeclaration();
+    // Close the current class initializer method.
+    MemberInfo.Builder clinit = context.clinitMemberScope.pop();
+    for (Integer typeId : context.clinitReferencedTypesScope.pop()) {
+      clinit.addReferencedTypes(typeId);
+    }
+    context.currentTypeInfoScope.peek().addMember(clinit.build());
     TypeInfo ti = context.currentTypeInfoScope.pop().build();
     context.currentTypeNameScope.pop();
     // Add the type info to the library info.
     context.libraryInfoBuilder.addType(ti);
   }
 
-  private void startMethodScope(String methodName, MemberInfo.Builder mib) {
-    context.mibScope.push(mib);
-    context.methodNameScope.push(methodName);
+  private void startMethodScope(MemberInfo.Builder member) {
+    context.memberScope.push(member);
     context.referencedTypesScope.push(new HashSet<>());
   }
 
@@ -381,8 +421,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     boolean isExported =
         context.exportedMethods.contains(getQualifiedMethodName(declTypeName, methodName))
         || context.currentTypeInfoScope.peek().getExported();
-    startMethodScope(methodName,
-        MemberInfo.newBuilder()
+    startMethodScope(MemberInfo.newBuilder()
         .setName(methodName)
         .setStatic(isStatic)
         .setConstructor(isConstructor)
@@ -399,12 +438,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void addMethodInvocation(String methodName, String declTypeName) {
-    if (isUntrackedClass(declTypeName)) {
-      // Methods of anonymous and local classes are not tracked.
-      return;
-    }
     int declTypeId = getTypeId(declTypeName);
-    context.mibScope.peek()
+    context.memberScope.peek()
             .addInvokedMethods(com.google.devtools.treeshaker.MethodInvocation.newBuilder()
                 .setMethod(methodName)
                 .setEnclosingType(declTypeId)
@@ -424,12 +459,20 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void endMethodDeclaration() {
+    MemberInfo.Builder member = context.memberScope.pop();
     for (Integer typeId : context.referencedTypesScope.pop()) {
-      context.mibScope.peek().addReferencedTypes(typeId);
+      member.addReferencedTypes(typeId);
     }
-    context.methodNameScope.pop();
-    MemberInfo mi = context.mibScope.pop().build();
-    context.currentTypeInfoScope.peek().addMember(mi);
+    context.currentTypeInfoScope.peek().addMember(member.build());
+  }
+
+  private void pushClinit() {
+    context.memberScope.push(context.clinitMemberScope.peek());
+    context.referencedTypesScope.push(context.clinitReferencedTypesScope.peek());
+  }
+
+  private void popClinit() {
+    context.memberScope.pop();
   }
 
   static final class Context {
@@ -451,9 +494,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     private final Deque<TypeInfo.Builder> currentTypeInfoScope = new ArrayDeque<>();
 
     // Scope containing data for the current method being processed.
-    private final Deque<MemberInfo.Builder> mibScope = new ArrayDeque<>();
-    private final Deque<String> methodNameScope = new ArrayDeque<>();
+    private final Deque<MemberInfo.Builder> memberScope = new ArrayDeque<>();
     private final Deque<Set<Integer>> referencedTypesScope = new ArrayDeque<>();
+
+    // Scope containing data for the current class initializer.
+    private final Deque<MemberInfo.Builder> clinitMemberScope = new ArrayDeque<>();
+    private final Deque<Set<Integer>> clinitReferencedTypesScope = new ArrayDeque<>();
 
     Context(CodeReferenceMap rootSet) {
       exportedMethods = new HashSet<>();

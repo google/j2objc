@@ -14,6 +14,11 @@
 
 package com.google.devtools.treeshaker;
 
+import static com.google.devtools.treeshaker.UsedCodeMarker.CLASS_INITIALIZER_NAME;
+import static com.google.devtools.treeshaker.UsedCodeMarker.INITIALIZER_NAME;
+import static com.google.devtools.treeshaker.UsedCodeMarker.PSEUDO_CONSTRUCTOR_PREFIX;
+import static com.google.devtools.treeshaker.UsedCodeMarker.SIGNATURE_PREFIX;
+
 import com.google.common.base.Splitter;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import java.util.Collection;
@@ -36,12 +41,17 @@ final class RapidTypeAnalyser {
         for (Member member : type.getMembers()) {
           if (!member.isLive()) {
             String method = member.getName();
-            if (method.startsWith(UsedCodeMarker.PSEUDO_CONSTRUCTOR_PREFIX)) {
+            if (method.startsWith(PSEUDO_CONSTRUCTOR_PREFIX)) {
               // skip interface pseudo-constructors
               continue;
             }
+            if (!type.isInstantiated() && method.equals(INITIALIZER_NAME)) {
+              // skip unused initializers for uninstantiated types
+              // TODO(dpo): investigate how best to remove initializers for uninstantiated classes.
+              continue;
+            }
             List<String> components =
-                Splitter.onPattern(UsedCodeMarker.SIGNATURE_PREFIX).splitToList(method);
+                Splitter.onPattern(SIGNATURE_PREFIX).splitToList(method);
             // TODO(dpo): add better checking for name & signature components.
             if (components.isEmpty() || components.size() != 2) {
               continue;
@@ -86,6 +96,7 @@ final class RapidTypeAnalyser {
     }
 
     type.instantiate();
+    markMemberLive(type.getMemberByName(INITIALIZER_NAME));
     type.getPotentiallyLiveMembers().forEach(RapidTypeAnalyser::markMemberLive);
     for (Type iface : type.getSuperInterfaces()) {
       markInstantiated(iface);
@@ -136,7 +147,10 @@ final class RapidTypeAnalyser {
     }
 
     type.markLive();
-    markMemberLive(type.getMemberByName(UsedCodeMarker.CLASS_INITIALIZER_NAME));
+    markMemberLive(type.getMemberByName(CLASS_INITIALIZER_NAME));
+    if (type.getSuperClass() != null) {
+      markTypeLive(type.getSuperClass());
+    }
     // When a type is marked as live, we need to explicitly mark the super interfaces as live since
     // we need markImplementor call (which are not tracked in AST).
     type.getSuperInterfaces().forEach(RapidTypeAnalyser::markTypeLive);
