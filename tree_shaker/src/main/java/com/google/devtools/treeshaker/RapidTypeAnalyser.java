@@ -20,11 +20,14 @@ import static com.google.devtools.treeshaker.UsedCodeMarker.PSEUDO_CONSTRUCTOR_P
 import static com.google.devtools.treeshaker.UsedCodeMarker.SIGNATURE_PREFIX;
 
 import com.google.common.base.Splitter;
+import com.google.common.flogger.GoogleLogger;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 final class RapidTypeAnalyser {
+  private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
 
   static CodeReferenceMap analyse(Collection<Type> types) {
     types.stream().filter(Type::isExported).forEach(RapidTypeAnalyser::markTypeLive);
@@ -36,6 +39,7 @@ final class RapidTypeAnalyser {
         .forEach(m -> onMemberReference(m));
 
     CodeReferenceMap.Builder unusedBuilder = CodeReferenceMap.builder();
+    List<String> uninstantiated = new ArrayList<>();
     for (Type type : types) {
       if (type.isLive()) {
         for (Member member : type.getMembers()) {
@@ -61,9 +65,20 @@ final class RapidTypeAnalyser {
             unusedBuilder.addMethod(type.getName(), name, sig);
           }
         }
+        if (!type.isInstantiated()) {
+          for (Member member : type.getPotentiallyLiveMembers()) {
+            if (member.getName().equals(INITIALIZER_NAME)) {
+              continue;
+            }
+            uninstantiated.add(type.getName() + "::" + member.getName());
+          }
+        }
       } else {
         unusedBuilder.addClass(type.getName());
       }
+    }
+    if (!uninstantiated.isEmpty()) {
+      logger.atFine().log("Uninstantiated Members: %s", String.join(", ", uninstantiated));
     }
     return unusedBuilder.build();
   }

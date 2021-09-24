@@ -15,7 +15,6 @@
 package com.google.devtools.treeshaker;
 
 import static java.lang.Math.max;
-import static javax.lang.model.element.Modifier.STATIC;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -28,6 +27,7 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
@@ -38,11 +38,9 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
-import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -129,6 +127,15 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(ExpressionMethodReference node) {
     addMethodInvocation(node.getExecutableElement());
+  }
+
+  @Override
+  public void endVisit(FieldAccess node) {
+    // For fields, add a reference to the declaring class.
+    VariableElement var = node.getVariableElement();
+    if (var != null) {
+      addReferencedTypeName(elementUtil.getBinaryName(ElementUtil.getDeclaringClass(var)));
+    }
   }
 
   @Override
@@ -221,19 +228,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(PropertyAnnotation node) {
     visitAnnotation(node);
-  }
-
-  @Override
-  public void endVisit(SimpleName node) {
-    // For variable references to static fields in a different class, add a reference to
-    // that class.
-    VariableElement var = TreeUtil.getVariableElement(node);
-    if (var != null && var.getKind().isField() && var.getModifiers().contains(STATIC)) {
-      String declTypeName = elementUtil.getBinaryName(ElementUtil.getDeclaringClass(var));
-      if (!declTypeName.equals(context.currentTypeNameScope.peek())) {
-        addReferencedTypeName(declTypeName);
-      }
-    }
   }
 
   @Override
