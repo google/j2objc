@@ -17,9 +17,11 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 final class Type {
   static Type buildFrom(TypeInfo typeInfo, String name) {
@@ -35,7 +37,7 @@ final class Type {
   private final List<Type> immediateSubtypes = new ArrayList<>();
   private boolean live;
   private boolean instantiated;
-  private final List<Member> potentiallyLiveMembers = new ArrayList<>();
+  private final Set<Member> potentiallyLiveMembers = new HashSet<>();
 
   private Type(String name, boolean isExported, Collection<MemberInfo> members) {
     this.name = name;
