@@ -145,6 +145,11 @@ public class TreeShaker {
         new UsedCodeMarker(unit, context).run();
       }
     };
+
+    // TODO(dpo): remove this statement when source jars are supported (b/201118950).
+    // For now, just skip them from dead-code analysis.
+    sourceFiles.removeIf((String src) -> !src.endsWith(".java"));
+
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
     FileUtil.deleteTempDir(strippedDir);
     if (ErrorUtil.errorCount() > 0) {
