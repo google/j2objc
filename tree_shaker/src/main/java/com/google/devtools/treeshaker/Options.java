@@ -59,6 +59,7 @@ class Options {
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean treatWarningsAsErrors = false;
+  private boolean useClassHierarchyAnalyzer = false;
   private File treeShakerRoots;
   private File outputFile = new File("tree-shaker-report.txt");
 
@@ -92,6 +93,14 @@ class Options {
 
   public boolean treatWarningsAsErrors() {
     return treatWarningsAsErrors;
+  }
+
+  public boolean useClassHierarchyAnalyzer() {
+    return useClassHierarchyAnalyzer;
+  }
+
+  public void setUseClassHierarchyAnalyzer(boolean useClassHierarchyAnalyzer) {
+    this.useClassHierarchyAnalyzer = useClassHierarchyAnalyzer;
   }
 
   public File getTreeShakerRoots() {
@@ -223,6 +232,10 @@ class Options {
         version();
       } else if (arg.equals("-Werror")) {
         options.treatWarningsAsErrors = true;
+      } else if (arg.equals("--use-class-hierarchy-analyzer")) {
+        options.useClassHierarchyAnalyzer = true;
+      } else if (arg.equals("--use-rapid-type-analyser")) {
+        options.useClassHierarchyAnalyzer = false;
       } else if (arg.equals("-Xprint-args")) {
         printArgs = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {

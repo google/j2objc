@@ -161,7 +161,11 @@ public class TreeShaker {
     if (!unknownMethodReferences.isEmpty()) {
       logger.atWarning().log("Unknown Methods: %s", String.join(", ", unknownMethodReferences));
     }
-    return RapidTypeAnalyser.analyse(tgb.getTypes());
+    if (options.useClassHierarchyAnalyzer()) {
+      return ClassHierarchyAnalyzer.analyze(tgb.getTypes());
+    } else {
+      return RapidTypeAnalyser.analyse(tgb.getTypes());
+    }
   }
 
   private static void writeToFile(Options options, CodeReferenceMap unused) {
