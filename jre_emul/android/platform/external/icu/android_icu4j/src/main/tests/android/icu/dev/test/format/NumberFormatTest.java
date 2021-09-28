@@ -2663,7 +2663,7 @@ public class NumberFormatTest extends TestFmwk {
             BigDecimal iValue = base.add(increment.multiply(new BigDecimal(i)).movePointLeft(1));
             BigDecimal smallIncrement = new BigDecimal("0.00000001");
             if (iValue.signum() != 0) {
-                smallIncrement.multiply(iValue); // scale unless zero
+                smallIncrement = smallIncrement.multiply(iValue); // scale unless zero
             }
             // we not only test the value, but some values in a small range around it.
             lastParsed = checkRound(nf, iValue.subtract(smallIncrement), lastParsed);
