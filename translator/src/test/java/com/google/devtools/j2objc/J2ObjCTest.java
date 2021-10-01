@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Tests for {@link com.google.devtools.j2objc.J2ObjC}.
@@ -294,6 +295,7 @@ public class J2ObjCTest extends GenerationTest {
   // Test for warning if compiling jar with -g.
   public void testJarSourceDebug() throws Exception {
     options.setEmitLineDirectives(true);
+    options.setLogLevel(Level.FINEST);
     J2ObjC.run(Collections.singletonList(jarPath), options);
     assertWarningCount(1);
   }

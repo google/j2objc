@@ -285,7 +285,8 @@ public class Options {
   /**
    * Set all log handlers in this package with a common level.
    */
-  private void setLogLevel(Level level) {
+  @VisibleForTesting
+  void setLogLevel(Level level) {
     logger.setLevel(level);
     logLevelSet = true;
   }

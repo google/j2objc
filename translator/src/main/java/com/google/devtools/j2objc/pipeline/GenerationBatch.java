@@ -126,7 +126,7 @@ public class GenerationBatch {
 
     // Warn if source debugging is specified for a jar file, since native debuggers
     // don't support Java-like source paths.
-    if (options.emitLineDirectives()) {
+    if (options.emitLineDirectives() && options.isVerbose()) {
       ErrorUtil.warning("source debugging of jar files is not supported: " + filename);
     }
 
