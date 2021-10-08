@@ -20,6 +20,7 @@ import com.google.common.flogger.GoogleLogger;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -32,6 +33,7 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A tool for finding unused code in a Java program.
@@ -125,8 +127,8 @@ public class TreeShaker {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(
-          parseResult.getSource(), strippedFile, j2objcOptions.fileUtil().getCharset());
+      Files.asCharSink(strippedFile, j2objcOptions.fileUtil().getCharset())
+          .write(parseResult.getSource());
       sourceFileNames.set(i, strippedFile.getPath());
     }
     return strippedDir;
@@ -137,7 +139,10 @@ public class TreeShaker {
     UsedCodeMarker.Context context = new UsedCodeMarker.Context(
         ProGuardUsageParser.parseDeadCodeFile(options.getTreeShakerRoots()));
     Parser parser = createParser(options);
-    List<String> sourceFiles = options.getSourceFiles();
+    List<String> sourceFiles = getSourceFiles();
+    if (ErrorUtil.errorCount() > 0) {
+      return null;
+    }
     File strippedDir = stripIncompatible(sourceFiles, parser);
     Parser.Handler handler = new Parser.Handler() {
       @Override
@@ -145,10 +150,6 @@ public class TreeShaker {
         new UsedCodeMarker(unit, context).run();
       }
     };
-
-    // TODO(dpo): remove this statement when source jars are supported (b/201118950).
-    // For now, just skip them from dead-code analysis.
-    sourceFiles.removeIf((String src) -> !src.endsWith(".java"));
 
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
     FileUtil.deleteTempDir(strippedDir);
@@ -166,6 +167,14 @@ public class TreeShaker {
     } else {
       return RapidTypeAnalyser.analyse(tgb.getTypes());
     }
+  }
+
+  private List<String> getSourceFiles() {
+    GenerationBatch batch = new GenerationBatch(j2objcOptions);
+    batch.processFileArgs(options.getSourceFiles());
+    return batch.getInputs().stream()
+        .map(input -> input.getFile().getAbsolutePath())
+        .collect(Collectors.toList());
   }
 
   private static void writeToFile(Options options, CodeReferenceMap unused) {
