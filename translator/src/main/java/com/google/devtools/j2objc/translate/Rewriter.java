@@ -139,9 +139,11 @@ public class Rewriter extends UnitTreeVisitor {
       }
     } else if (op == InfixExpression.Operator.AND) {
       // Avoid bitwise-op-parentheses compiler warnings.
-      if (node.getParent() instanceof InfixExpression
-          && ((InfixExpression) node.getParent()).getOperator() == InfixExpression.Operator.OR) {
-        ParenthesizedExpression.parenthesizeAndReplace(node);
+      if (node.getParent() instanceof InfixExpression) {
+        InfixExpression.Operator otherOp = ((InfixExpression) node.getParent()).getOperator();
+        if (otherOp == InfixExpression.Operator.OR || otherOp == InfixExpression.Operator.XOR) {
+          ParenthesizedExpression.parenthesizeAndReplace(node);
+        }
       }
     }
 
