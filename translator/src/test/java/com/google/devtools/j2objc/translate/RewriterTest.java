@@ -299,13 +299,19 @@ public class RewriterTest extends GenerationTest {
         + "  return c | d; }"
         + "int test3(int e, int f, int g, int h, int i) { "
         + "  return e & f | g & h | i; }"
-        + "int test4(int j, int k, int l, int m, int n) {"
-        + "  return j | k | l & m & n; }}",
+        + "int test4(int e, int f, int g, int h, int i) { "
+        + "  return e & f ^ g & h ^ i; }"
+        + "int test5(int j, int k, int l, int m, int n) {"
+        + "  return j | k | l & m & n; }"
+        + "int test6(int j, int k, int l, int m, int n) {"
+            + "  return j ^ k ^ l & m & n; }}",
         "Test", "Test.m");
     assertTranslation(translation, "return a & b;");
     assertTranslation(translation, "return c | d;");
     assertTranslatedLines(translation, "return (e & f) | (g & h) | i;");
+    assertTranslatedLines(translation, "return (e & f) ^ (g & h) ^ i;");
     assertTranslatedLines(translation, "return j | k | (l & m & n);");
+    assertTranslatedLines(translation, "return j ^ k ^ (l & m & n);");
   }
 
   // C compiler requires that tests using & or | as boolean test have parentheses around
