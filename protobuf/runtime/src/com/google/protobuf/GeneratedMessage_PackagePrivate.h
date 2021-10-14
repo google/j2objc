@@ -48,10 +48,10 @@
 
 CF_EXTERN_C_BEGIN
 
-ComGoogleProtobufGeneratedMessage *CGPNewMessage(
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPNewMessage(
     ComGoogleProtobufDescriptors_Descriptor *descriptor);
 
-ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
     ComGoogleProtobufDescriptors_Descriptor *descriptor);
 
 ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
