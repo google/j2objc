@@ -16,6 +16,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build_result/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/build_result" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
@@ -44,6 +45,24 @@
       <library name="javac.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/flogger-0.5.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/google-extensions-0.5.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
