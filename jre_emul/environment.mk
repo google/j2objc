@@ -106,6 +106,8 @@ ANDROID_NATIVE_TEST_DIR = $(LIBCORE_BASE)/luni/src/test/native
 LAMBDA_DIR = $(LIBCORE_BASE)/ojluni/src/lambda/java
 JSON_JAR = $(BUILD_DIR)/json.jar
 JSON_JAR_DIST = $(DIST_JAR_DIR)/json.jar
+ANDROID_UTIL_JAR = $(BUILD_DIR)/android_util.jar
+ANDROID_UTIL_JAR_DIST = $(DIST_JAR_DIR)/android_util.jar
 
 ifndef TRANSLATED_SOURCE_DIR
 TRANSLATED_SOURCE_DIR = $(CLASS_DIR)
