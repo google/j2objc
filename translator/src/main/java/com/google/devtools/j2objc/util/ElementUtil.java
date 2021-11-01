@@ -63,6 +63,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
+import org.jspecify.nullness.NullMarked;
 
 /**
  * Utility methods for working with elements.
@@ -135,6 +136,10 @@ public final class ElementUtil {
 
   public static boolean isPublic(Element element) {
     return hasModifier(element, Modifier.PUBLIC);
+  }
+
+  public static boolean isProtected(Element element) {
+    return hasModifier(element, Modifier.PROTECTED);
   }
 
   public static boolean isPrivate(Element element) {
@@ -826,6 +831,24 @@ public final class ElementUtil {
     return suppressesWarning(warning, element.getEnclosingElement());
   }
 
+  public static boolean inNullMarkedScope(Element element, Options options) {
+    Element scopedElement = element;
+    while (scopedElement != null) {
+      if (ElementUtil.hasAnnotation(scopedElement, NullMarked.class)) {
+        return true;
+      }
+      if (scopedElement instanceof LambdaTypeElement) {
+        return false;
+      }
+      if (!ElementUtil.isPublic(scopedElement) && !ElementUtil.isProtected(scopedElement)) {
+        return false;
+      }
+      scopedElement = scopedElement.getEnclosingElement();
+    }
+    String pkgName = getPackage(element).getQualifiedName().toString();
+    return options.getPackageInfoLookup().hasNullMarked(pkgName);
+  }
+
   /**
    * Maps an Element to a TypeMirror. element.asType() is the preferred mapping,
    * but sometimes type information is lost. For example, an anonymous class with
@@ -844,17 +867,26 @@ public final class ElementUtil {
   }
 
   /**
-   * Returns whether an element is marked as always being non-null. Field, method,
-   * and parameter elements can be defined as non-null with a Nonnull annotation.
-   * Method parameters can also be defined as non-null by annotating the owning
-   * package or type element with the ParametersNonnullByDefault annotation.
+   * Returns whether an element is marked as always being non-null. Field, method, and parameter
+   * elements can be defined as non-null with a Nonnull annotation. Method parameters can also be
+   * defined as non-null by annotating the owning package or type element with the
+   * ParametersNonnullByDefault annotation.
    */
-  public static boolean isNonnull(Element element, boolean parametersNonnullByDefault) {
+  public static boolean isNonnull(
+      Element element, boolean parametersNonnullByDefault, Options options) {
+    if (isMethod(element)) {
+      TypeKind kind = ((ExecutableElement) element).getReturnType().getKind();
+      if (kind.isPrimitive() || kind == TypeKind.VOID) {
+        return false;
+      }
+    }
+    if (isVariable(element) && element.asType().getKind().isPrimitive()) {
+      return false;
+    }
     return hasNonnullAnnotation(element)
-        || isConstructor(element)  // Java constructors are always non-null.
-        || (isParameter(element)
-            && parametersNonnullByDefault
-            && !((VariableElement) element).asType().getKind().isPrimitive());
+        || isConstructor(element) // Java constructors are always non-null.
+        || inNullMarkedScope(element, options)
+        || (isParameter(element) && parametersNonnullByDefault);
   }
 
   /**

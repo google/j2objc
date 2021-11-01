@@ -119,4 +119,23 @@ public class PackageInfoLookupTest extends GenerationTest {
     PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
     assertTrue(packageInfoLookup.hasParametersAreNonnullByDefault("bar"));
   }
+
+  // Verify that NullMarked is not set on types or packages by default.
+  public void testNullMarkedNotSet() throws IOException {
+    CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertFalse(packageInfoLookup.hasNullMarked("foo"));
+    assertFalse(packageInfoLookup.hasNullMarked("A"));
+  }
+
+  // Verify NullMarked annotation accessible without package-info source.
+  public void testNullMarkedOnPackage() throws IOException {
+    createClassFile("bar.package-info",
+        "@NullMarked package bar;"
+            + "import org.jspecify.nullness.NullMarked;");
+    removeFile("bar/package-info.java");
+    CompilationUnit unit = translateType("bar.A", "package bar; public class A {}");
+    PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assertTrue(packageInfoLookup.hasNullMarked("bar"));
+  }
 }

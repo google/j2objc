@@ -827,4 +827,58 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "inline jint State_get_initialize_(void);");
     assertTranslation(translation, "State_initialize_");
   }
+
+  // Verify NullMarked type is generated within auditable regions.
+  public void testNullMarkedType() throws IOException {
+    String source = "package foo.bar;"
+        + "import org.jspecify.nullness.NullMarked; "
+        + "@NullMarked public class Test {}";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject\n");
+    assertTranslatedLines(translation, "@end", "NS_ASSUME_NONNULL_END");
+  }
+
+  // Verify NullMarked inner type is generated as auditable regions, without affecting other types.
+  public void testNullMarkedInnerType() throws IOException {
+    String source = "package foo.bar;"
+        + "import org.jspecify.nullness.NullMarked; "
+        + "public class Test { "
+        + "@NullMarked class One {} "
+        + "class Two {} }";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest_One : NSObject\n");
+    assertOccurrences(translation, "NS_ASSUME_NONNULL_BEGIN", 1);
+    assertOccurrences(translation, "@end\nNS_ASSUME_NONNULL_END\n", 1);
+  }
+
+  // Verify NullMarked outer type generates itself and enclosed types as auditable regions.
+  public void testNullMarkedOuterAndInnerTypes() throws IOException {
+    String source = "package foo.bar;"
+        + "import org.jspecify.nullness.NullMarked; "
+        + "@NullMarked public class Test { class Inner {} }";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject\n");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject\n");
+    assertOccurrences(translation, "@end\nNS_ASSUME_NONNULL_END\n", 2);
+  }
+
+  // Verify a NullMarked package annotation generates types within auditable regions.
+  public void testNullMarkedPackage() throws IOException {
+    addSourceFile("@NullMarked package foo.bar; "
+        + "import org.jspecify.nullness.NullMarked;", "foo/bar/package-info.java");
+    String source = "package foo.bar; "
+        + "public class Test {}";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject\n");
+    assertTranslatedLines(translation, "@end", "NS_ASSUME_NONNULL_END");
+  }
 }

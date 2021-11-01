@@ -135,6 +135,11 @@
                   <artifactId>truth</artifactId>
                   <classifier>sources</classifier>
                 </artifactItem>
+                <dependency>
+                  <groupId>org.jspecify</groupId>
+                  <artifactId>jspecify</artifactId>
+                  <classifier>sources</classifier>
+                </dependency>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
@@ -276,6 +281,11 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>0.2.0</version>
     </dependency>
   </dependencies>
 </project>

@@ -50,11 +50,13 @@ public class PackageInfoLookup {
     private final String objectiveCName;
     private final boolean parametersAreNonnullByDefault;
     private final ReflectionSupport.Level reflectionSupportLevel;
+    private final boolean nullMarked;
 
     private PackageData(PackageDataBuilder builder) {
       this.objectiveCName = builder.objectiveCName;
       this.parametersAreNonnullByDefault = builder.parametersAreNonnullByDefault;
       this.reflectionSupportLevel = builder.reflectionSupportLevel;
+      this.nullMarked = builder.nullMarked;
     }
   }
 
@@ -64,6 +66,7 @@ public class PackageInfoLookup {
     private String objectiveCName = null;
     private boolean parametersAreNonnullByDefault = false;
     private ReflectionSupport.Level reflectionSupportLevel;
+    private boolean nullMarked = false;
 
     private void setObjectiveCName(String objectiveCName) {
       this.objectiveCName = objectiveCName;
@@ -78,6 +81,11 @@ public class PackageInfoLookup {
     private void setReflectionSupportLevel(ReflectionSupport.Level level) {
        this.reflectionSupportLevel = level;
        isEmpty = false;
+    }
+
+    private void setNullMarked() {
+      nullMarked = true;
+      isEmpty = false;
     }
 
     private PackageData build() {
@@ -95,6 +103,10 @@ public class PackageInfoLookup {
 
   public ReflectionSupport.Level getReflectionSupportLevel(String packageName) {
     return getPackageData(packageName).reflectionSupportLevel;
+  }
+
+  public boolean hasNullMarked(String packageName) {
+    return getPackageData(packageName).nullMarked;
   }
 
   private PackageData getPackageData(String packageName) {
@@ -190,6 +202,12 @@ public class PackageInfoLookup {
         ErrorUtil.warning("Invalid ReflectionSupport Level in " + file.getUnitName());
       }
     }
+
+    // @NullMarked
+    if (pkgInfo.contains("@NullMarked") || pkgInfo.contains("@org.jspecify.nullness.NullMarked")) {
+      builder.setNullMarked();
+    }
+
     return builder.build();
   }
 
@@ -218,6 +236,8 @@ public class PackageInfoLookup {
             builder.setReflectionSupportLevel(ReflectionSupport.Level.valueOf(value));
           }
         }
+      } else if (signature.equals("Lorg/jspecify/nullness/NullMarked;")) {
+        builder.setNullMarked();
       }
     }
     return builder.build();

@@ -112,7 +112,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printNativeEnum();
 
     printTypeDocumentation();
-    if (options.defaultNonnull()) {
+    if (options.defaultNonnull()
+        || (options.nullability() && ElementUtil.inNullMarkedScope(typeElement, options))) {
       println("NS_ASSUME_NONNULL_BEGIN");
     }
     if (typeElement.getKind().isInterface()) {
@@ -132,7 +133,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     printInnerDeclarations();
     println("\n@end");
-    if (options.defaultNonnull()) {
+    if (options.defaultNonnull()
+        || (options.nullability() && ElementUtil.inNullMarkedScope(typeElement, options))) {
       println("NS_ASSUME_NONNULL_END");
     }
 
@@ -735,7 +737,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (ElementUtil.hasNullableAnnotation(element)) {
         return " __nullable";
       }
-      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
+      if (ElementUtil.isNonnull(element, parametersNonnullByDefault, options)) {
         return " __nonnull";
       }
     }
