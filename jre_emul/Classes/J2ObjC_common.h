@@ -15,8 +15,6 @@
 #ifndef _J2OBJC_COMMON_H_
 #define _J2OBJC_COMMON_H_
 
-#pragma clang system_header
-
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 
@@ -64,7 +62,7 @@
 
 CF_EXTERN_C_BEGIN
 
-id JreThrowNullPointerException() __attribute__((noreturn));
+id JreThrowNullPointerException(void) __attribute__((noreturn));
 void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
 void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
 void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noreturn));

@@ -86,7 +86,7 @@ FD handleOpen(const char *path, int oflag, int mode);
 /*
  * IO helper function(s)
  */
-void fileClose(JNIEnv *env, jobject this, jfieldID fid);
+void fileClose(JNIEnv *env, jobject this_, jfieldID fid);
 
 #ifdef MACOSX
 jstring newStringPlatform(JNIEnv *env, const char* str);
