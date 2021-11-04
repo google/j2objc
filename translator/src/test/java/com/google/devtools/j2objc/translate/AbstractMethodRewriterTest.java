@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -103,5 +102,21 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     assertTranslation(superTranslation, "- (id)returnT;");
     // But Sub translation should not even though the return type is now resolved.
     assertNotInTranslation(subTranslation, "returnT");
+  }
+
+  public void testAddedMethodPreservesRuntimeAnnotations() throws IOException {
+    options.setNullability(true);
+    addSourceFile("import javax.annotation.Nullable; "
+        + "abstract class A<T,P> { "
+        + "  @Nullable abstract T foo(@Nullable P arg); "
+        + "  @Nullable T bar(@Nullable P arg) { "
+        + "    return null; } }", "A.java");
+    addSourceFile("class B extends A<String,Number> {"
+        + "String foo(Number arg) { return arg.toString(); } }", "B.java");
+    String header = translateSourceFile("B", "B.h");
+    // Inherited declaration, copied from superclass because of return type narrowing.
+    assertTranslation(header, "- (NSString * __nullable)barWithId:(id __nullable)arg0;");
+    // Overwritten method, without annotations (annotations aren't inherited).
+    assertTranslation(header, "- (NSString *)fooWithId:(NSNumber *)arg;");
   }
 }

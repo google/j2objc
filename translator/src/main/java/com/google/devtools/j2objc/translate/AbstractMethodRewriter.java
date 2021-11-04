@@ -171,16 +171,18 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
         // Preserve visibility of the original method.
         .addModifiers(ElementUtil.getVisibilityModifiers(method.element()))
         .addModifiers(Modifier.ABSTRACT);
+    element.addAnnotationMirrors(method.element().getAnnotationMirrors());
     MethodDeclaration decl = new MethodDeclaration(element);
     if (!declaringClass.getKind().isInterface()) {
       unit.setHasIncompleteImplementation();
     }
     int argCount = 0;
-    for (TypeMirror paramType : method.type().getParameterTypes()) {
-      VariableElement param = GeneratedVariableElement.newParameter(
-          "arg" + argCount++, paramType, element);
-      element.addParameter(param);
-      decl.addParameter(new SingleVariableDeclaration(param));
+    for (VariableElement param : method.element().getParameters()) {
+      GeneratedVariableElement newParam = GeneratedVariableElement.newParameter(
+          "arg" + argCount++, param.asType(), element);
+      newParam.addAnnotationMirrors(param.getAnnotationMirrors());
+      element.addParameter(newParam);
+      decl.addParameter(new SingleVariableDeclaration(newParam));
     }
     return decl;
   }
