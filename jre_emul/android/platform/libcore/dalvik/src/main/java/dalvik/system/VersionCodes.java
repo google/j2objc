@@ -23,7 +23,7 @@ import libcore.api.IntraCoreApi;
  *
  * <p>Note: The constants are "public static final int" and are intended for use with annotations
  * so must stay compile-time resolvable and inline-able. They must match the values from
- * framework's android.os.Build.VERSION_CODES class.
+ * framework's android.internal.Build.VERSION_CODES class.
  *
  * <p>Only historically fixed API levels should be included or abstract concepts like "CURRENT"
  * should be added. Do not predict API levels.

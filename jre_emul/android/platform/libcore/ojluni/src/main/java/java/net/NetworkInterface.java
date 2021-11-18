@@ -60,7 +60,7 @@ import static libcore.io.OsConstants.*;
  * <p>
  * <a name="access-restrictions"></a>Note that information about
  * {@link NetworkInterface}s may be restricted. For example, non-system apps
- * with {@code targetSdkVersion >= android.os.Build.VERSION_CODES.R} will only
+ * with {@code targetSdkVersion >= android.internal.Build.VERSION_CODES.R} will only
  * have access to information about {@link NetworkInterface}s that are
  * associated with an {@link InetAddress}.
  *
@@ -396,7 +396,7 @@ public final class NetworkInterface {
      *       to obtain all IP addresses for this node
      * <p>
      * For non-system apps with
-     * {@code targetSdkVersion >= android.os.Build.VERSION_CODES.R}, this
+     * {@code targetSdkVersion >= android.internal.Build.VERSION_CODES.R}, this
      * method will only return information for {@link NetworkInterface}s that
      * are associated with an {@link InetAddress}.
      *
@@ -612,7 +612,7 @@ public final class NetworkInterface {
      *          NetPermission("getNetworkInformation"). For example, this
      *          method will generally return {@code null} when called by
      *          non-system apps having
-     *          {@code targetSdkVersion >= android.os.Build.VERSION_CODES.R}.
+     *          {@code targetSdkVersion >= android.internal.Build.VERSION_CODES.R}.
      *
      * @exception       SocketException if an I/O error occurs.
      * @since 1.6

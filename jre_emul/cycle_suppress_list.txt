@@ -53,7 +53,7 @@ FIELD java.util.stream.Streams.ConcatSpliterator.bSpliterator
 FIELD java.util.zip.ZipFile.streams
 
 # mActive always refers to the active task and is cleared/reassigned upon completion.
-FIELD android.os.AsyncTask.SerialExecutor.mActive
+FIELD android.internal.AsyncTask.SerialExecutor.mActive
 
 # These thread fields are cleared when the thread finishes, regardless of any exceptions.
 FIELD java.lang.Thread.interruptActions

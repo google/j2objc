@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.os;
+package android.internal;
 
 /*-[
 #include "android/system/ErrnoException.h"

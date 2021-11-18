@@ -18,7 +18,7 @@
 #include <dispatch/dispatch.h>
 ]-*/
 
-package android.os;
+package android.internal;
 
 import com.google.j2objc.annotations.RetainedWith;
 import com.google.j2objc.annotations.WeakOuter;
@@ -310,7 +310,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
 
     private native Result postResult(Result result) /*-[
         dispatch_async(dispatch_get_main_queue(), ^{
-            AndroidOsAsyncTask_finishWithId_(self, result);
+            AndroidInternalAsyncTask_finishWithId_(self, result);
         });
         return result;
     ]-*/;
@@ -613,7 +613,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #doInBackground
      */
     protected native final void publishProgress(Progress... values) /*-[
-        if (!AndroidOsAsyncTask_isCancelled(self)) {
+        if (!AndroidInternalAsyncTask_isCancelled(self)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self onProgressUpdateWithNSObjectArray:values];
             });

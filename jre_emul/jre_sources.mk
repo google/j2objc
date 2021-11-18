@@ -2274,8 +2274,8 @@ JAVA_PRIVATE_SOURCES_OTHER = \
   java/lang/management/ThreadInfo.java
 
 ANDROID_PUBLIC_SOURCES = \
-  android/os/AsyncTask.java \
-  android/os/SystemClock.java \
+  android/internal/AsyncTask.java \
+  android/internal/SystemClock.java \
   android/test/suitebuilder/annotation/LargeTest.java \
   android/test/suitebuilder/annotation/MediumTest.java \
   android/test/suitebuilder/annotation/SmallTest.java \
@@ -2484,7 +2484,7 @@ JRE_PUBLIC_PACKAGES = \
   org.xml.sax.helpers
 
 ANDROID_PUBLIC_PACKAGES = \
-  android.os \
+  android.internal \
   android.text \
   android.text.util \
   android.util \
