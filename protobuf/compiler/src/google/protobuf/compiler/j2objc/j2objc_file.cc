@@ -175,6 +175,9 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
 
   printer.Print(
       "\n"
+      "#pragma clang diagnostic push\n"
+      "#pragma clang diagnostic ignored \"-Wnullability-completeness\""
+      "\n"
       "@interface $classname$ : NSObject\n"
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
@@ -225,6 +228,9 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
       generator.GenerateHeader(&printer);
     }
   }
+  printer.Print(
+      "\n"
+      "#pragma clang diagnostic pop\n");
 }
 
 void FileGenerator::GenerateSource(GeneratorContext* context,

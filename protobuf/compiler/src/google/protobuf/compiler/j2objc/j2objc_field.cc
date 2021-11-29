@@ -153,7 +153,8 @@ void CollectForwardDeclarationsForFieldType(std::set<std::string>* declarations,
     declarations->insert("J2OBJC_CLASS_DECLARATION(" +
                          ClassName(descriptor->enum_type()) + ")");
     declarations->insert(
-        "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_EnumDescriptor *" +
+        "FOUNDATION_EXPORT "
+        "ComGoogleProtobufDescriptors_EnumDescriptor * _Nonnull " +
         ClassName(descriptor->enum_type()) + "_descriptor_");
   } else if (type == JAVATYPE_MESSAGE) {
     std::string classname = ClassName(descriptor->message_type());

@@ -213,7 +213,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
       "+ ($classname$ *)getDefaultInstance;\n"
       "- ($classname$ *)getDefaultInstanceForType;\n"
-      "+ ($classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
+      "+ (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
       "- ($classname$_Builder *)newBuilderForType OBJC_METHOD_FAMILY_NONE;\n"
       "- ($classname$_Builder *)toBuilder;\n"
       "+ ($classname$_Builder *)newBuilderWith$classname$:"
@@ -257,7 +257,8 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "@end\n"
       "\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_getDefaultInstance(void);\n"
-      "FOUNDATION_EXPORT $classname$_Builder *$classname$_newBuilder(void);\n"
+      "FOUNDATION_EXPORT $classname$_Builder * _Nonnull "
+      "$classname$_newBuilder(void);\n"
       "FOUNDATION_EXPORT $classname$_Builder *$classname$_newBuilderWith"
       "$classname$_($classname$ *message);\n"
       "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
@@ -304,7 +305,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n"
       "\n"
       "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-      "*$classname$_descriptor_;\n",
+      "* _Nonnull $classname$_descriptor_;\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
@@ -493,7 +494,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "($classname$ *)CGPNewMessage($classname$_descriptor_));\n"
       "}\n"
       "\n"
-      "$classname$_Builder *$classname$_newBuilder(void) {\n"
+      "$classname$_Builder * _Nonnull $classname$_newBuilder(void) {\n"
       "  $classname$_initialize();\n"
       "  return AUTORELEASE("
       "($classname$_Builder *)CGPNewBuilder($classname$_descriptor_));\n"
