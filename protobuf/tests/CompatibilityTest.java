@@ -510,7 +510,7 @@ public class CompatibilityTest extends ProtobufTest {
     assertFalse(fieldDescriptor.isExtension());
 
     ExtensionRegistry.ExtensionInfo extensionInfo =
-        registry.findExtensionByNumber(descriptor, 1000);
+        registry.findImmutableExtensionByNumber(descriptor, 1000);
     assertNotNull(extensionInfo);
 
     FieldDescriptor extensionFieldDescriptor = extensionInfo.descriptor;
@@ -527,7 +527,7 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals(100, data.getMyMessageInt());
 
     // Primitive extension
-    extensionInfo = registry.findExtensionByNumber(descriptor, 1001);
+    extensionInfo = registry.findImmutableExtensionByNumber(descriptor, 1001);
     assertNotNull(extensionInfo);
 
     extensionFieldDescriptor = extensionInfo.descriptor;
@@ -1237,7 +1237,7 @@ public class CompatibilityTest extends ProtobufTest {
     // Extension added to registry should be visible in registry2.
     Descriptor descriptor = TypicalData.getDescriptor();
     ExtensionRegistry.ExtensionInfo extensionInfo =
-        registry2.findExtensionByNumber(descriptor, 1001);
+        registry2.findImmutableExtensionByNumber(descriptor, 1001);
     assertNotNull(extensionInfo);
 
     ExtensionRegistryLite registryLite = ExtensionRegistryLite.newInstance();
