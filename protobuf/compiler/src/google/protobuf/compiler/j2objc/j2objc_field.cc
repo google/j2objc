@@ -293,12 +293,12 @@ SingleFieldGenerator::SingleFieldGenerator(
 void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     const {
   printer->Print(variables_, "\n"
-      "- ($classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
+      "- (nonnull $classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
       "    ($storage_type$)value;\n"
-      "- ($classname$_Builder *)clear$capitalized_name$;\n");
+      "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
-        "- ($classname$_Builder*)\n"
+        "- (nonnull $classname$_Builder*)\n"
         "    set$capitalized_name$With$parameter_type$_Builder:\n"
         "    ($parameter_type$_Builder *)value;\n");
   }
@@ -340,20 +340,20 @@ void RepeatedFieldGenerator::CollectMessageOrBuilderImports(
 void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     const {
   printer->Print(variables_, "\n"
-      "- ($classname$_Builder *)set$capitalized_name$WithInt:(int)index\n"
+      "- (nonnull $classname$_Builder *)set$capitalized_name$WithInt:(int)index\n"
       "    with$parameter_type$:($storage_type$)value;\n"
-      "- ($classname$_Builder *)add$capitalized_name$With$parameter_type$:\n"
+      "- (nonnull $classname$_Builder *)add$capitalized_name$With$parameter_type$:\n"
       "    ($storage_type$)value;\n"
-      "- ($classname$_Builder *)addAll$capitalized_name$WithJavaLangIterable:\n"
+      "- (nonnull $classname$_Builder *)addAll$capitalized_name$WithJavaLangIterable:\n"
       "    (id<JavaLangIterable>)values;\n"
-      "- ($classname$_Builder *)clear$capitalized_name$;\n"
+      "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n"
   );
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
-        "- ($classname$_Builder*)\n"
+        "- (nonnull $classname$_Builder*)\n"
         "    add$capitalized_name$With$parameter_type$_Builder:\n"
         "    ($parameter_type$_Builder *)value;\n"
-        "- ($classname$_Builder *)remove$capitalized_name$WithInt:(int)index;\n"
+        "- (nonnull $classname$_Builder *)remove$capitalized_name$WithInt:(int)index;\n"
     );
   }
 }
