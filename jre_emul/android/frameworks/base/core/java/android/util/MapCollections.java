@@ -17,13 +17,11 @@
 package android.util;
 
 import com.google.j2objc.annotations.WeakOuter;
-
-import libcore.util.Objects;
-
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -142,8 +140,8 @@ abstract class MapCollections<K, V> {
                 return false;
             }
             Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
-            return Objects.equal(e.getKey(), colGetEntry(mIndex, 0))
-                    && Objects.equal(e.getValue(), colGetEntry(mIndex, 1));
+            return Objects.equals(e.getKey(), colGetEntry(mIndex, 0))
+                && Objects.equals(e.getValue(), colGetEntry(mIndex, 1));
         }
 
         @Override
@@ -195,7 +193,7 @@ abstract class MapCollections<K, V> {
                 return false;
             }
             Object foundVal = colGetEntry(index, 1);
-            return Objects.equal(foundVal, e.getValue());
+      return Objects.equals(foundVal, e.getValue());
         }
 
         @Override

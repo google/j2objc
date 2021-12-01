@@ -21,8 +21,6 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestFmwk.java \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
-    android/test/MoreAsserts.java \
-    android/text/SpannableTest.java \
     bar/Third.java \
     com/google/j2objc/NativeUtil.java \
     com/google/j2objc/ObjectTest.java \
@@ -271,10 +269,6 @@ TEST_SOURCES := \
     android/icu/dev/test/timezone/TimeZoneRegressionTest.java \
     android/icu/dev/test/timezone/TimeZoneRuleTest.java \
     android/icu/dev/test/timezone/TimeZoneTest.java \
-    android/text/SpannableStringBuilderTest.java \
-    android/text/SpannableStringTest.java \
-    android/text/TextUtilsTest.java \
-    android/util/Base64Test.java \
     com/google/j2objc/ArrayTest.java \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
