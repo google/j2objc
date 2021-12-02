@@ -1072,7 +1072,7 @@ public final class OffsetTime
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
             return (R) offset;
-        } else if (query == TemporalQueries.zoneId() | query == TemporalQueries.chronology() || query == TemporalQueries.localDate()) {
+        } else if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology() || query == TemporalQueries.localDate()) {
             return null;
         } else if (query == TemporalQueries.localTime()) {
             return (R) time;
