@@ -62,6 +62,11 @@ typedef ComGoogleProtobufExtensionRegistry_ExtensionInfo CGPExtensionInfo;
         (ComGoogleProtobufDescriptors_Descriptor *)descriptor
     withInt:(jint)fieldId;
 
+- (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
+    findImmutableExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:
+        (ComGoogleProtobufDescriptors_Descriptor *)descriptor
+    withInt:(jint)fieldId;
+
 - (ComGoogleProtobufExtensionRegistry *)getUnmodifiable;
 
 @end

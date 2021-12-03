@@ -60,6 +60,14 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
 - (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
     findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:(CGPDescriptor *)descriptor
     withInt:(jint)fieldId {
+  return [self findImmutableExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:descriptor
+                                                                                 withInt:fieldId];
+}
+
+- (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
+    findImmutableExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:
+        (CGPDescriptor *)descriptor
+    withInt:(jint)fieldId {
   CGPFieldDescriptor *field = CGPExtensionRegistryFind(self, descriptor, fieldId);
   if (field != nil) {
     return [[[CGPExtensionInfo alloc] initWithField:field] autorelease];
