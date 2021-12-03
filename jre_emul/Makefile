@@ -82,7 +82,6 @@ BEANS_OBJS_RELATIVE = $(call srcs_to_objs,$(JAVA_SOURCES_BEANS))
 TIME_OBJS_RELATIVE = $(call srcs_to_objs,$(JAVA_SOURCES_TIME))
 ICU_OBJS_RELATIVE = \
     $(call srcs_to_objs,$(JAVA_SOURCES_ICU) $(NATIVE_JRE_ICU_EMBEDDED_DATA))
-ANDROID_OBJS_RELATIVE = $(call srcs_to_objs,$(JAVA_SOURCES_ANDROID))
 JSON_OBJS_RELATIVE = $(call srcs_to_objs,$(JAVA_SOURCES_JSON))
 JRE_OBJS_RELATIVE = $(call srcs_to_objs,$(JAVA_SOURCES) $(NATIVE_JRE_SOURCES))
 
@@ -104,7 +103,6 @@ LIBS += $(call emit_library_rules,jre_sql,$(SQL_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_beans,$(BEANS_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_time,$(TIME_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_icu,$(ICU_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,json,$(JSON_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
