@@ -36,6 +36,7 @@
 #include <sys/poll.h>
 #endif
 
+#include "jni.h"
 
 #if defined(__linux__) || defined(MACOSX)
 extern int NET_Timeout(int s, long timeout);

@@ -30,6 +30,8 @@
 #ifndef _ZIP_H_
 #define _ZIP_H_
 
+#include "jni.h"
+
 // J2ObjC: use ZIP_ prefix to avoid conflict with ZipConstants accessor
 // method names.
 
