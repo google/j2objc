@@ -302,6 +302,10 @@ inline bool CGPCodedOutputStream::Refresh() {
   return FlushBuffer();
 }
 
+#else
+
+typedef struct CGPCodedOutputStream CGPCodedOutputStream;
+
 #endif // __cplusplus
 
 @interface ComGoogleProtobufCodedOutputStream () {

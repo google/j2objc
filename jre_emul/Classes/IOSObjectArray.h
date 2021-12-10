@@ -24,8 +24,6 @@
 
 #import "IOSArray.h"
 
-#pragma clang system_header
-
 @class IOSClass;
 @class IOSObjectArray;
 
