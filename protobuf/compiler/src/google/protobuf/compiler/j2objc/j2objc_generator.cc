@@ -81,13 +81,11 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
     return false;
   }
 
-  std::vector<std::string> all_files;
-
   // Generate main source and header files.
-  file_generator.Generate(context, &all_files);
+  file_generator.Generate(context);
 
   // Generate sibling files.
-  file_generator.GenerateSiblings(context, &all_files);
+  file_generator.GenerateSiblings(context);
 
   if (IsGenerateFileDirMapping()) {
     file_generator.GenerateHeaderMappings(context);

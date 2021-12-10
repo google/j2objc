@@ -144,10 +144,8 @@ void FileGenerator::GenerateSourceBoilerplate(io::Printer* printer) {
   GenerateBoilerplate(printer);
 }
 
-void FileGenerator::GenerateHeader(GeneratorContext* context,
-                                   std::vector<std::string>* file_list) {
+void FileGenerator::GenerateHeader(GeneratorContext* context) {
   std::string filename = GetFileName(".h");
-  file_list->push_back(filename);
 
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
@@ -233,10 +231,8 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
       "#pragma clang diagnostic pop\n");
 }
 
-void FileGenerator::GenerateSource(GeneratorContext* context,
-                                   std::vector<std::string>* file_list) {
+void FileGenerator::GenerateSource(GeneratorContext* context) {
   std::string filename = GetFileName(".m");
-  file_list->push_back(filename);
 
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
@@ -363,17 +359,14 @@ std::string FileGenerator::GetFileName(std::string suffix) {
   }
 }
 
-void FileGenerator::Generate(GeneratorContext* context,
-                             std::vector<std::string>* file_list) {
-  GenerateHeader(context, file_list);
-  GenerateSource(context, file_list);
+void FileGenerator::Generate(GeneratorContext* context) {
+  GenerateHeader(context);
+  GenerateSource(context);
 }
 
 void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
-                                       std::vector<std::string>* file_list,
                                        const EnumDescriptor* descriptor) {
   std::string filename = output_dir_ + descriptor->name() + ".h";
-  file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -387,10 +380,8 @@ void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateEnumSource(GeneratorContext* context,
-                                       std::vector<std::string>* file_list,
                                        const EnumDescriptor* descriptor) {
   std::string filename = output_dir_ + descriptor->name() + ".m";
-  file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -407,10 +398,8 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
-                                          std::vector<std::string>* file_list,
                                           const Descriptor* descriptor) {
   std::string filename = output_dir_ + descriptor->name() + ".h";
-  file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -430,10 +419,8 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateMessageSource(GeneratorContext* context,
-                                          std::vector<std::string>* file_list,
                                           const Descriptor* descriptor) {
   std::string filename = output_dir_ + descriptor->name() + ".m";
-  file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -450,10 +437,9 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
 }
 
 void FileGenerator::GenerateMessageOrBuilder(
-    GeneratorContext* context, std::vector<std::string>* file_list,
+    GeneratorContext* context,
     const Descriptor* descriptor) {
   std::string filename = output_dir_ + descriptor->name() + "OrBuilder.h";
-  file_list->push_back(filename);
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -470,17 +456,16 @@ void FileGenerator::GenerateMessageOrBuilder(
   generator.GenerateMessageOrBuilder(&printer);
 }
 
-void FileGenerator::GenerateSiblings(GeneratorContext* context,
-                                     std::vector<std::string>* file_list) {
+void FileGenerator::GenerateSiblings(GeneratorContext* context) {
   if (GenerateMultipleFiles()) {
     for (int i = 0; i < file_->enum_type_count(); i++) {
-      GenerateEnumHeader(context, file_list, file_->enum_type(i));
-      GenerateEnumSource(context, file_list, file_->enum_type(i));
+      GenerateEnumHeader(context, file_->enum_type(i));
+      GenerateEnumSource(context, file_->enum_type(i));
     }
     for (int i = 0; i < file_->message_type_count(); i++) {
-      GenerateMessageHeader(context, file_list, file_->message_type(i));
-      GenerateMessageSource(context, file_list, file_->message_type(i));
-      GenerateMessageOrBuilder(context, file_list, file_->message_type(i));
+      GenerateMessageHeader(context, file_->message_type(i));
+      GenerateMessageSource(context, file_->message_type(i));
+      GenerateMessageOrBuilder(context, file_->message_type(i));
     }
   }
 }
