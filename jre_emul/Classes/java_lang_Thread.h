@@ -15,6 +15,7 @@
 #ifndef java_lang_Thread_H
 #define java_lang_Thread_H
 
+#import <CoreFoundation/CoreFoundation.h>
 #import <pthread.h>
 
 @class JavaLangThread;
