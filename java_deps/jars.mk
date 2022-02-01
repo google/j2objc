@@ -32,8 +32,8 @@ HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar
 
 PROTOBUF_JAR = protobuf-java-3.17.0.jar
 
-ERROR_PRONE_ANNOTATIONS_JAR = error_prone_annotations-2.1.3.jar
-ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.1.3-sources.jar
+ERROR_PRONE_ANNOTATIONS_JAR = error_prone_annotations-2.11.0.jar
+ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.11.0-sources.jar
 
 CHECKER_QUAL_JAR = checker-qual-2.0.0.jar
 CHECKER_QUAL_SOURCE_JAR = checker-qual-2.0.0-sources.jar
@@ -47,11 +47,11 @@ ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR = animal-sniffer-annotations-1.14-sources.
 FAILUREACCESS_JAR = failureaccess-1.0.1.jar
 FAILUREACCESS_SOURCE_JAR = failureaccess-1.0.1-sources.jar
 
-GUAVA_JAR = guava-30.0-jre.jar
-GUAVA_SOURCE_JAR = guava-30.0-jre-sources.jar
+GUAVA_JAR = guava-31.0.1-jre.jar
+GUAVA_SOURCE_JAR = guava-31.0.1-jre-sources.jar
 
-GUAVA_ANDROID_JAR = guava-30.0-android.jar
-GUAVA_ANDROID_SOURCE_JAR = guava-30.0-android-sources.jar
+GUAVA_ANDROID_JAR = guava-31.0.1-android.jar
+GUAVA_ANDROID_SOURCE_JAR = guava-31.0.1-android-sources.jar
 
 SCENELIB_JAR = scenelib.jar
 PLUME_UTIL_JAR = plume-util-1.0.6.jar

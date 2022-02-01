@@ -10,6 +10,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ERROR_PRONE_ANNOTATIONS_SOURCES = \
+    com/google/errorprone/annotations/CanIgnoreReturnValue.java \
+    com/google/errorprone/annotations/CheckReturnValue.java \
+    com/google/errorprone/annotations/CompatibleWith.java \
+    com/google/errorprone/annotations/CompileTimeConstant.java \
+    com/google/errorprone/annotations/DoNotCall.java \
+    com/google/errorprone/annotations/DoNotMock.java \
+    com/google/errorprone/annotations/ForOverride.java \
+    com/google/errorprone/annotations/FormatMethod.java \
+    com/google/errorprone/annotations/FormatString.java \
+    com/google/errorprone/annotations/Immutable.java \
+    com/google/errorprone/annotations/IncompatibleModifiers.java \
+    com/google/errorprone/annotations/InlineMe.java \
+    com/google/errorprone/annotations/InlineMeValidationDisabled.java \
+    com/google/errorprone/annotations/Modifier.java \
+    com/google/errorprone/annotations/MustBeClosed.java \
+    com/google/errorprone/annotations/NoAllocation.java \
+    com/google/errorprone/annotations/OverridingMethodsMustInvokeSuper.java \
+    com/google/errorprone/annotations/RequiredModifiers.java \
+    com/google/errorprone/annotations/RestrictedApi.java \
+    com/google/errorprone/annotations/SuppressPackageLocation.java \
+    com/google/errorprone/annotations/Var.java \
+    com/google/errorprone/annotations/concurrent/GuardedBy.java \
+    com/google/errorprone/annotations/concurrent/LazyInit.java \
+    com/google/errorprone/annotations/concurrent/LockMethod.java \
+    com/google/errorprone/annotations/concurrent/UnlockMethod.java \
+
+ANIMAL_SNIFFER_ANNOTATIONS_SOURCES = \
+    org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement.java \
+
+FAILUREACCESS_SOURCES = \
+    com/google/common/util/concurrent/internal/InternalFutureFailureAccess.java \
+    com/google/common/util/concurrent/internal/InternalFutures.java \
+
 JAVA_SRC_DIR = $(BUILD_DIR)/java
 JAVA_SOURCES = $(GUAVA_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(ERROR_PRONE_ANNOTATIONS_SOURCES:%=$(JAVA_SRC_DIR)/%) \
