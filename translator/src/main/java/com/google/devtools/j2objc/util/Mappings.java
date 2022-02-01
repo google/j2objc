@@ -63,7 +63,7 @@ public class Mappings {
           .put(
               "java.lang.String.<init>(Ljava/lang/StringBuilder;)V",
               "java_stringWithJavaLangStringBuilder:")
-          .build();
+          .buildOrThrow();
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
 

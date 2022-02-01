@@ -137,7 +137,7 @@ public final class TypeUtil {
       typeMapBuilder.put(typeNSFastEnumeration, NS_FASTENUMERATION);
     }
 
-    javaToObjcTypeMap = typeMapBuilder.build();
+    javaToObjcTypeMap = typeMapBuilder.buildOrThrow();
   }
 
   public ElementUtil elementUtil() {
