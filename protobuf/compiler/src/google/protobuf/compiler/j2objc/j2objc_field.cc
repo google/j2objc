@@ -89,19 +89,19 @@ std::string GetStorageType(const FieldDescriptor* descriptor) {
   }
 }
 
-std::string GetDeclarationSpace(const FieldDescriptor* descriptor) {
+std::string GetNonNullType(const FieldDescriptor* descriptor) {
   switch (GetJavaType(descriptor)) {
     case JAVATYPE_INT:
     case JAVATYPE_LONG:
     case JAVATYPE_FLOAT:
     case JAVATYPE_DOUBLE:
     case JAVATYPE_BOOLEAN:
-      return " ";
+      return GetStorageType(descriptor);
     case JAVATYPE_STRING:
     case JAVATYPE_BYTES:
     case JAVATYPE_ENUM:
     case JAVATYPE_MESSAGE:
-      return "";
+      return GetStorageType(descriptor) + " _Nonnull";
   }
 }
 
@@ -130,7 +130,7 @@ void SetCommonFieldVariables(const FieldDescriptor* descriptor,
   (*variables)["constant_name"] = FieldConstantName(descriptor);
   (*variables)["parameter_type"] = GetParameterType(descriptor);
   (*variables)["storage_type"] = GetStorageType(descriptor);
-  (*variables)["decl_space"] = GetDeclarationSpace(descriptor);
+  (*variables)["nonnull_type"] = GetNonNullType(descriptor);
   (*variables)["field_name"] = GetFieldName(descriptor);
   (*variables)["flags"] = GetFieldFlags(descriptor);
   (*variables)["field_type"] = GetFieldTypeEnumValue(descriptor);
@@ -306,14 +306,14 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
 
 void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer)
     const {
-  printer->Print(variables_, "\n"
-      "- (BOOL)has$capitalized_name$;\n"
-      "- ($storage_type$)get$capitalized_name$;\n"
-  );
+  printer->Print(variables_,
+                 "\n"
+                 "- (BOOL)has$capitalized_name$;\n"
+                 "- ($nonnull_type$)get$capitalized_name$;\n");
 }
 
 void SingleFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
-  printer->Print(variables_, "$storage_type$$decl_space$$camelcase_name$_;\n");
+  printer->Print(variables_, "$nonnull_type$ $camelcase_name$_;\n");
 }
 
 void RepeatedFieldGenerator::CollectForwardDeclarations(
@@ -360,11 +360,12 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
 
 void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
     io::Printer* printer) const {
-  printer->Print(variables_, "\n"
+  printer->Print(
+      variables_,
+      "\n"
       "- (jint)get$capitalized_name$Count;\n"
       "- (id<$list_type$>)get$capitalized_name$List;\n"
-      "- ($storage_type$)get$capitalized_name$WithInt:(int)index;\n"
-  );
+      "- ($nonnull_type$)get$capitalized_name$WithInt:(int)index;\n");
 }
 
 void RepeatedFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
@@ -385,6 +386,7 @@ MapFieldGenerator::MapFieldGenerator(
   variables_["key_parameter_type"] = GetParameterType(key_field_);
   variables_["key_descriptor_type"] = GetFieldTypeEnumValue(key_field_);
   variables_["value_storage_type"] = GetStorageType(value_field_);
+  variables_["value_nonnull_type"] = GetNonNullType(value_field_);
   variables_["value_parameter_type"] = GetParameterType(value_field_);
   variables_["value_descriptor_type"] = GetFieldTypeEnumValue(value_field_);
   variables_["map_entry_fields_idx"] = SimpleItoa(entry_fields_idx_);
@@ -408,29 +410,31 @@ void MapFieldGenerator::CollectSourceImports(
 }
 
 void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
-  printer->Print(variables_, "\n"
-      "- ($classname$_Builder *)clear$capitalized_name$;\n"
-      "- ($classname$_Builder *)remove$capitalized_name$With"
-          "$key_parameter_type$:($key_storage_type$)key;\n"
-      "- ($classname$_Builder *)put$capitalized_name$With$key_parameter_type$:"
-          "($key_storage_type$)key with$value_parameter_type$:"
-          "($value_storage_type$)value;\n"
-  );
+  printer->Print(variables_,
+                 "\n"
+                 "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n"
+                 "- (nonnull $classname$_Builder *)remove$capitalized_name$With"
+                 "$key_parameter_type$:($key_storage_type$)key;\n"
+                 "- (nonnull $classname$_Builder "
+                 "*)put$capitalized_name$With$key_parameter_type$:"
+                 "($key_storage_type$)key with$value_parameter_type$:"
+                 "($value_storage_type$)value;\n");
 }
 
 void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
     io::Printer* printer) const {
-  printer->Print(variables_, "\n"
+  printer->Print(
+      variables_,
+      "\n"
       "- (jint)get$capitalized_name$Count;\n"
       "- (jboolean)contains$capitalized_name$With$key_parameter_type$:"
-          "($key_storage_type$)key;\n"
-      "- (id<JavaUtilMap>)get$capitalized_name$Map;\n"
-      "- ($value_storage_type$)get$capitalized_name$OrDefaultWith"
-          "$key_parameter_type$:($key_storage_type$)key "
-          "with$value_parameter_type$:($value_storage_type$)defaultValue;\n"
-      "- ($value_storage_type$)get$capitalized_name$OrThrowWith"
-          "$key_parameter_type$:($key_storage_type$)key;\n"
-  );
+      "($key_storage_type$)key;\n"
+      "- (nonnull id<JavaUtilMap>)get$capitalized_name$Map;\n"
+      "- ($value_nonnull_type$)get$capitalized_name$OrDefaultWith"
+      "$key_parameter_type$:($key_storage_type$)key "
+      "with$value_parameter_type$:($value_storage_type$)defaultValue;\n"
+      "- ($value_nonnull_type$)get$capitalized_name$OrThrowWith"
+      "$key_parameter_type$:($key_storage_type$)key;\n");
 }
 
 void MapFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
