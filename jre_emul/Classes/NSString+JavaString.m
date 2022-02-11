@@ -362,17 +362,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 
 - (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
                                          to:(jint)end {
-  NSUInteger maxLength = [self length];
-  if (start < 0 || start > end || (NSUInteger) end > maxLength) {
-    @throw create_JavaLangStringIndexOutOfBoundsException_init();
-  }
-  int length = end - start;
-  NSRange range = NSMakeRange((NSUInteger) start, (NSUInteger) length);
-  unichar *buffer = malloc(length * sizeof(unichar));
-  [self getCharacters:buffer range:range];
-  NSString *subString = [NSString stringWithCharacters:buffer length:length];
-  free(buffer);
-  return (id<JavaLangCharSequence>) subString;
+  return [self java_substring:start endIndex:end];
 }
 
 - (NSString *)java_replace:(jchar)oldchar withChar:(jchar)newchar {
