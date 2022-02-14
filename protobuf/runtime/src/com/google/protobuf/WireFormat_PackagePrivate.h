@@ -195,10 +195,7 @@ CGP_ALWAYS_INLINE inline int CGPGetBytesSize(CGPByteString *value) {
   return CGPGetInt32Size(bytesLength) + bytesLength;
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetStringSize(NSString *value) {
-  int length = (int)[value lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-  return CGPGetInt32Size(length) + length;
-}
+int CGPGetStringSize(NSString *value);
 
 CGP_ALWAYS_INLINE inline void CGPWriteInt32(jint value, CGPCodedOutputStream *output) {
   output->WriteVarint32SignExtended(value);

@@ -29,8 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "com/google/protobuf/WireFormat_PackagePrivate.h"
-
-#import "com/google/protobuf/CodedInputStream_PackagePrivate.h"
+#import "J2ObjC_source.h"
 
 CGPWireFormat CGPWireFormatForType(CGPFieldType type, BOOL isPacked) {
   if (isPacked) {
@@ -139,8 +138,35 @@ BOOL CGPWireFormatSkipMessage(CGPCodedInputStream *stream) {
   }
 }
 
+int CGPGetStringSize(NSString * value) {
+  int length = (int)[value lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  // See CGPWriteString for why this check is necessary.
+  if (length == 0 && [value length] != 0) {
+    IOSByteArray *valueBytes = [value java_getBytesWithCharsetName:@"UTF-8"];
+    // Theoretically, it should be sufficient to just return [valueBytes length] here.
+    // However, to be on the safe side wrt. potential differences in normalization in this
+    // uncommon case, we perform exactly the same steps here as in CGPWriteString.
+    NSString *valueWithErrorChars = [NSString java_stringWithBytes:valueBytes charsetName:@"UTF-8"];
+    return CGPGetStringSize(valueWithErrorChars);
+  }
+  return CGPGetInt32Size(length) + length;
+}
+
 void CGPWriteString(NSString *value, CGPCodedOutputStream *output) {
   NSUInteger length = [value lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  if (length == 0) {
+    if ([value length] == 0) {
+      output->WriteVarint32(0);
+      return;
+    }
+    // If the encoded length is 0 but the string contains character, this means that the string
+    // can't be encoded to UTF-8. In this case, we do a Java encoding/decoding round trip, which
+    // replaces characters that can't be encoded with '?', like the Java proto runtime does.
+    IOSByteArray *valueBytes = [value java_getBytesWithCharsetName:@"UTF-8"];
+    NSString *valueWithErrorChars = [NSString java_stringWithBytes:valueBytes charsetName:@"UTF-8"];
+    CGPWriteString(valueWithErrorChars, output);
+    return;
+  }
   output->WriteVarint32((int)length);
   void *buffer;
   int bufferSize;

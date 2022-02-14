@@ -86,6 +86,21 @@ public class StringsTest extends ProtobufTest {
     assertEquals(str, msg2.getAsciiF());
   }
 
+  public void testIncompleteSurrogatePairs() throws Exception {
+    StringMsg msg = StringMsg.newBuilder()
+        .setNonAsciiF("Hello\uDFFFWorld\uD800")
+        .build();
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    msg.writeTo(out);
+    byte[] bytes = out.toByteArray();
+
+    ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+    StringMsg msg2 = StringMsg.parseFrom(in);
+    assertEquals("Hello?World?", msg2.getNonAsciiF());
+  }
+
+
   public void testReallyLongNonAsciiString() throws Exception {
     char[] chars = new char[10000];
     Arrays.fill(chars, '\ufdfd');
