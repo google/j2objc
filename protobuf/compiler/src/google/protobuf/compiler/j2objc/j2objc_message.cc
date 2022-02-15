@@ -66,6 +66,12 @@ std::string GetMessageFlags(const Descriptor* descriptor) {
   return JoinFlags(flags);
 }
 
+bool IsUnsuitablePropertyName(const std::string& name) {
+  return name == "auto" || name == "break" || name == "char" ||
+         name == "continue" || name == "for" || name == "if" ||
+         name == "inline" || name == "int" || name == "long" || name == "void";
+}
+
 }  // namespace
 
 // Constructs a new message generator based on descriptor information such as
@@ -251,6 +257,18 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
   }
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i)).GenerateFieldHeader(printer);
+  }
+
+  printer->Print(
+      "\n"
+      "@end\n"
+      "\n"
+      "@interface $classname$ (SynthesizedProperties)\n",
+      "classname", ClassName(descriptor_));
+
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    if (IsUnsuitablePropertyName(descriptor_->field(i)->name())) continue;
+    field_generators_.get(descriptor_->field(i)).GenerateFieldProperty(printer);
   }
 
   printer->Print(
@@ -594,6 +612,19 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
         .GenerateFieldBuilderHeader(printer);
+  }
+
+  printer->Print(
+      "\n"
+      "@end\n"
+      "\n"
+      "@interface $classname$_Builder (SynthesizedProperties)\n",
+      "classname", ClassName(descriptor_));
+
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    if (IsUnsuitablePropertyName(descriptor_->field(i)->name())) continue;
+    field_generators_.get(descriptor_->field(i))
+        .GenerateFieldBuilderProperty(printer);
   }
 
   printer->Print(

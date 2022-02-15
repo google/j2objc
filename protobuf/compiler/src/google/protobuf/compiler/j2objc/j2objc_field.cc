@@ -266,6 +266,10 @@ void FieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
   GenerateObjcClassRef(printer, descriptor_);
 }
 
+void FieldGenerator::GenerateFieldProperty(io::Printer* printer) const {}
+
+void FieldGenerator::GenerateFieldBuilderProperty(io::Printer* printer) const {}
+
 void FieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
   JavaType type = GetJavaType(descriptor_);
   std::string staticref;
@@ -314,6 +318,28 @@ void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer
 
 void SingleFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
   printer->Print(variables_, "$nonnull_type$ $camelcase_name$_;\n");
+}
+
+void SingleFieldGenerator::GenerateFieldProperty(io::Printer* printer) const {
+  if (GetJavaType(descriptor_) != JAVATYPE_BYTES
+      && GetJavaType(descriptor_) != JAVATYPE_ENUM) {
+    printer->Print(variables_,
+                   "\n"
+                   "@property (readonly, getter=get$capitalized_name$)"
+                   " $nonnull_type$ $camelcase_name$;\n");
+  }
+}
+
+void SingleFieldGenerator::GenerateFieldBuilderProperty(
+    io::Printer* printer) const {
+  if (GetJavaType(descriptor_) != JAVATYPE_BYTES
+      && GetJavaType(descriptor_) != JAVATYPE_ENUM) {
+    printer->Print(variables_,
+                   "\n"
+                   "@property (getter=get$capitalized_name$,"
+                   " setter=set$capitalized_name$With$parameter_type$:)"
+                   " $nonnull_type$ $camelcase_name$;\n");
+  }
 }
 
 void RepeatedFieldGenerator::CollectForwardDeclarations(

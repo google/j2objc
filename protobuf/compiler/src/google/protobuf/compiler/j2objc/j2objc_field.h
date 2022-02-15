@@ -67,6 +67,9 @@ class FieldGenerator {
   virtual void GenerateMapEntryFieldData(io::Printer *printer) const;
   virtual void GenerateFieldData(io::Printer *printer) const;
 
+  virtual void GenerateFieldProperty(io::Printer* printer) const;
+  virtual void GenerateFieldBuilderProperty(io::Printer* printer) const;
+
   virtual void CollectForwardDeclarations(
       std::set<std::string>* declarations) const;
   virtual void CollectMessageOrBuilderForwardDeclarations(
@@ -98,6 +101,10 @@ class SingleFieldGenerator : public FieldGenerator {
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
 
   virtual void GenerateDeclaration(io::Printer* printer) const;
+
+  virtual void GenerateFieldProperty(io::Printer* printer) const;
+
+  virtual void GenerateFieldBuilderProperty(io::Printer* printer) const;
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(SingleFieldGenerator);
