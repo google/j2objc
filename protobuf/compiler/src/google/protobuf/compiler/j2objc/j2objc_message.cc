@@ -391,7 +391,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   for (int i = 0; i < descriptor_->field_count(); i++) {
     const FieldDescriptor* field = descriptor_->field(i);
-    if (field->containing_oneof() == NULL) {
+    if (field->containing_oneof() == nullptr) {
       field_generators_.get(field).GenerateDeclaration(printer);
     }
   }

@@ -130,7 +130,7 @@ const UnknownField *FindUnknownField(const FileDescriptor *file, int field_num) 
       }
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 std::string GetPackagePrefix(const FileDescriptor *file) {
@@ -170,7 +170,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
 
 std::string GetJavaClassPrefix(const FileDescriptor *file,
                                const Descriptor *containing_type) {
-  if (containing_type != NULL) {
+  if (containing_type != nullptr) {
     return JavaClassName(containing_type);
   } else {
     if (file->options().java_multiple_files()) {
@@ -183,7 +183,7 @@ std::string GetJavaClassPrefix(const FileDescriptor *file,
 
 std::string GetClassPrefix(const FileDescriptor *file,
                            const Descriptor *containing_type) {
-  if (containing_type != NULL) {
+  if (containing_type != nullptr) {
     return ClassName(containing_type) + "_";
   } else {
     if (file->options().java_multiple_files()) {
@@ -365,7 +365,7 @@ std::string GetHeader(const Descriptor *descriptor) {
   const FileDescriptor *file = descriptor->file();
   if (file->options().java_multiple_files()) {
     const Descriptor *containing_type = descriptor->containing_type();
-    if (containing_type != NULL) {
+    if (containing_type != nullptr) {
       return GetHeader(containing_type);
     } else {
       if (IsGenerateFileDirMapping()) {
@@ -384,7 +384,7 @@ std::string GetHeader(const EnumDescriptor *descriptor) {
   const FileDescriptor *file = descriptor->file();
   if (file->options().java_multiple_files()) {
     const Descriptor *containing_type = descriptor->containing_type();
-    if (containing_type != NULL) {
+    if (containing_type != nullptr) {
       return GetHeader(containing_type);
     } else {
       if (IsGenerateFileDirMapping()) {
