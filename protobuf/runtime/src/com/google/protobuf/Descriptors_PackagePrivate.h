@@ -72,7 +72,6 @@ typedef NS_OPTIONS(uint32_t, CGPFieldFlags) {
 
 typedef struct CGPFieldData {
   const char *name;
-  const char *javaName;
   jint number;
   CGPFieldFlags flags;
   CGPFieldType type;

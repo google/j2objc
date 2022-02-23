@@ -905,12 +905,57 @@ static bool MatchesStr(const char **strPtr, const char *match) {
   return Matches(strPtr, match, strlen(match));
 }
 
+// Matches a camel-cased occurrence of match at the beginning of *strPtr
+// If cap_next_letter is true, the first character is expected to be uppercase.
+// If end is true, both strings are expected to match to the end and strPtr
+// will not be changed in the case of a match.
+// Otherwise, if the match is found at strPtr, strPtr is advanced accordingly.
+// This code needs to match the logic in UnderscoresToCamelCase in j2objc_helpers.cc
+static bool CamelCaseMatchesUndescored(
+    const char **strPtr, const char *match, bool cap_next_letter, bool end) {
+  size_t sPos = 0;
+  size_t mPos = 0;
+  while (match[mPos] != 0 && (*strPtr)[sPos] != 0) {
+    char expected = match[mPos++];
+    if ('a' <= expected && expected <= 'z') {
+      if (cap_next_letter) {
+        expected = expected + ('A' - 'a');
+      }
+      cap_next_letter = false;
+    } else if ('A' <= expected && expected <= 'Z') {
+      if (mPos == 0 && !cap_next_letter) {
+        // Force first letter to lower-case unless explicitly told to
+        // capitalize it.
+        expected = expected + ('a' - 'A');
+      }
+      cap_next_letter = false;
+    } else if ('0' <= expected && expected <= '9') {
+      cap_next_letter = true;
+    } else {
+      cap_next_letter = true;
+      continue;
+    }
+    if ((*strPtr)[sPos++] != expected) {
+      return false;
+    }
+  }
+
+  if (match[mPos] == 0) {
+    if (end) {
+      return (*strPtr)[sPos] == 0;
+    }
+    *strPtr += sPos;
+    return true;
+  }
+  return false;
+}
+
 static bool MatchesKeyword(const char **strPtr, CGPFieldDescriptor *field) {
   return MatchesStr(strPtr, GetParamKeyword(field));
 }
 
 static bool MatchesName(const char **strPtr, CGPFieldDescriptor *field) {
-  return MatchesStr(strPtr, field->data_->javaName);
+  return CamelCaseMatchesUndescored(strPtr, field->data_->name, true, false);
 }
 
 static bool MatchesEnd(const char *str, const char *match) {
@@ -977,7 +1022,8 @@ static BOOL ResolveHasAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
   NSUInteger count = fields->size_;
   for (NSUInteger i = 0; i < count; ++i) {
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
-    if (!CGPFieldIsRepeated(field) && MatchesEnd(selName, field->data_->javaName)) {
+    if (!CGPFieldIsRepeated(field)
+        && CamelCaseMatchesUndescored(&selName, field->data_->name, true, true)) {
       return AddHasMethod(cls, sel, field);
     }
   }
@@ -1015,7 +1061,7 @@ static BOOL ResolveClearAccessor(
   NSUInteger count = fields->size_;
   for (NSUInteger i = 0; i < count; ++i) {
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
-    if (MatchesEnd(selName, field->data_->javaName)) {
+    if (CamelCaseMatchesUndescored(&selName, field->data_->name, true, true)) {
       return AddClearMethod(cls, sel, field);
     }
   }

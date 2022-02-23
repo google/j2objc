@@ -72,7 +72,6 @@ void ExtensionLiteGenerator::GenerateFieldData(io::Printer* printer) const {
       vars,
       "{\n"
       "  .name = \"$field_name$\",\n"
-      "  .javaName = \"$capitalized_name$\",\n"
       "  .number = $field_number$,\n"
       "  .flags = $flags$,\n"
       "  .type = ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_"

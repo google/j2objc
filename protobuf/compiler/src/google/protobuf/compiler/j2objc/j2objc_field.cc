@@ -240,7 +240,6 @@ void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
   printer->Print(variables_,
       "{\n"
       "  .name = \"$field_name$\",\n"
-      "  .javaName = \"$capitalized_name$\",\n"
       "  .number = $field_number$,\n"
       "  .flags = $flags$,\n"
       "  .type = ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_"
