@@ -16,6 +16,7 @@
 
 package libcore.java.util;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -78,5 +79,34 @@ public class DateTest extends TestCase {
                 Date.parse("Wed, 06 Jan 2016 11:55:59 GMT+05:00"),
                 Date.parse("Wed, 06 Jan 2016 11:55:59 GMT+05"));
 
+    }
+
+    /**
+     * Checks conversion between long, Date and Instant.
+     */
+    public void test_convertToInstantAndBack() {
+        check_convertToInstantAndBack(0);
+        check_convertToInstantAndBack(-1);
+        check_convertToInstantAndBack( 999999999);
+        check_convertToInstantAndBack(1000000000);
+        check_convertToInstantAndBack(1000000001);
+        check_convertToInstantAndBack(1000000002);
+        check_convertToInstantAndBack(1000000499);
+        check_convertToInstantAndBack(1000000500);
+        check_convertToInstantAndBack(1000000999);
+        check_convertToInstantAndBack(1000001000);
+        check_convertToInstantAndBack(Long.MIN_VALUE + 808); // minimum ofEpochMilli argument
+        check_convertToInstantAndBack(Long.MAX_VALUE);
+        check_convertToInstantAndBack(System.currentTimeMillis());
+        check_convertToInstantAndBack(Date.parse("Wed, 06 Jan 2016 11:55:59 GMT+0500"));
+    }
+    private static void check_convertToInstantAndBack(long millis) {
+        Date date = new Date(millis);
+        Instant instant = date.toInstant();
+        assertEquals(date, Date.from(instant));
+        assertEquals(instant, Instant.ofEpochMilli(millis));
+        assertEquals("Millis should be a millions of nanos", 0, instant.getNano() % 1000000);
+        assertEquals(millis, date.getTime());
+        assertEquals(millis, instant.toEpochMilli());
     }
 }

@@ -1363,3 +1363,47 @@ public final class Instant
     }
 
 }
+
+/*-HEADER[
+#include "java/util/Date.h"
+
+@class JavaTimeInstant;  // Needed because HEADER comments are grouped with #includes.
+
+@interface JavaUtilDate (JavaUtilTime)
+
+- (JavaTimeInstant *)toInstant;
++ (JavaUtilDate *)fromWithJavaTimeInstant:(JavaTimeInstant *)instant;
+
+@end
+
+FOUNDATION_EXPORT JavaUtilDate *JavaUtilDate_fromWithJavaTimeInstant_(id instant);
+]-*/
+
+/*-[
+
+#include "java/lang/ArithmeticException.h"
+#include "java/lang/IllegalArgumentException.h"
+
+@implementation JavaUtilDate (JavaUtilTime)
+
+- (JavaTimeInstant *)toInstant {
+  return JavaTimeInstant_ofEpochMilliWithLong_([self getTime]);
+}
+
++ (JavaUtilDate *)fromWithJavaTimeInstant:(JavaTimeInstant *)instant {
+  return JavaUtilDate_fromWithJavaTimeInstant_(instant);
+}
+
+@end
+
+JavaUtilDate *JavaUtilDate_fromWithJavaTimeInstant_(JavaTimeInstant *instant) {
+  JavaUtilDate_initialize();
+  @try {
+    return create_JavaUtilDate_initWithLong_([((JavaTimeInstant *) nil_chk(instant)) toEpochMilli]);
+  }
+  @catch (JavaLangArithmeticException *ex) {
+    @throw create_JavaLangIllegalArgumentException_initWithJavaLangThrowable_(ex);
+  }
+}
+
+]-*/
