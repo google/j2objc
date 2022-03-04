@@ -3385,6 +3385,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 - (IOSByteArray *)toByteArray {
+  RETAIN_AND_AUTORELEASE(self);
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   jint size = [self getSerializedSize];
   IOSByteArray *array = [IOSByteArray arrayWithLength:size];
@@ -3401,6 +3402,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 - (CGPByteString *)toByteString {
+  RETAIN_AND_AUTORELEASE(self);
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   jint size = [self getSerializedSize];
   CGPByteString *byteString = CGPNewByteString(size);
@@ -3417,6 +3419,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 - (NSData *)toNSData {
+  RETAIN_AND_AUTORELEASE(self);
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   jint size = [self getSerializedSize];
   void *buffer = calloc(size, 1);
@@ -3433,6 +3436,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 - (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output {
+  RETAIN_AND_AUTORELEASE(self);
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   CGPCodedOutputStream codedStream(output);
   WriteMessage(self, descriptor, &codedStream);
@@ -3442,6 +3446,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 - (void)writeDelimitedToWithJavaIoOutputStream:(JavaIoOutputStream *)output {
+  RETAIN_AND_AUTORELEASE(self);
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   CGPCodedOutputStream codedStream(output);
   CGPWriteInt32(SerializedSizeForMessage(self, descriptor), &codedStream);
@@ -3452,6 +3457,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 - (void)writeToWithComGoogleProtobufCodedOutputStream:(ComGoogleProtobufCodedOutputStream *)output {
+  RETAIN_AND_AUTORELEASE(self);
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   CGPCodedOutputStream *codedStream = output->codedStream_;
   WriteMessage(self, descriptor, codedStream);
