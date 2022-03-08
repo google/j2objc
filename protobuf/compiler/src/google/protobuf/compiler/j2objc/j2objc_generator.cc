@@ -55,7 +55,7 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
   ParseGeneratorParameter(parameter, &options);
 
   bool generate_class_mappings = false;
-  bool enforce_lite;
+  bool enforce_lite = false;
 
   for (int i = 0; i < options.size(); i++) {
     if (options[i].first == "prefixes") {
