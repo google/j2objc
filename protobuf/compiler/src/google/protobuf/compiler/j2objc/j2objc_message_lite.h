@@ -52,18 +52,20 @@ class MessageLiteGenerator : public MessageGenerator {
   explicit MessageLiteGenerator(const Descriptor* descriptor);
   virtual ~MessageLiteGenerator();
 
-  virtual void GenerateHeader(io::Printer* printer);
-  virtual void GenerateSource(io::Printer* printer);
-  virtual void GenerateMessageOrBuilder(io::Printer* printer);
-  virtual void GenerateExtensionRegistrationCode(io::Printer* printer);
+  virtual void GenerateHeader(io::Printer* printer) override;
+  virtual void GenerateSource(io::Printer* printer) override;
+  virtual void GenerateMessageOrBuilder(io::Printer* printer) override;
+  virtual void GenerateExtensionRegistrationCode(io::Printer* printer) override;
   virtual void CollectForwardDeclarations(
-      std::set<std::string>* declarations) const;
+      std::set<std::string>* declarations) const override;
   virtual void CollectMessageOrBuilderForwardDeclarations(
-      std::set<std::string>* declarations) const;
+      std::set<std::string>* declarations) const override;
   virtual void CollectMessageOrBuilderImports(
-      std::set<std::string>* imports) const;
-  virtual void CollectHeaderImports(std::set<std::string>* imports) const;
-  virtual void CollectSourceImports(std::set<std::string>* imports) const;
+      std::set<std::string>* imports) const override;
+  virtual void CollectHeaderImports(
+      std::set<std::string>* imports) const override;
+  virtual void CollectSourceImports(
+      std::set<std::string>* imports) const override;
 
  private:
   void GenerateBuilderHeader(io::Printer* printer);

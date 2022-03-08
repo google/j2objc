@@ -49,18 +49,20 @@ namespace j2objc {
 class MessageGenerator {
  public:
   explicit MessageGenerator(const Descriptor* descriptor);
-  ~MessageGenerator();
+  virtual ~MessageGenerator();
 
-  void GenerateHeader(io::Printer* printer);
-  void GenerateSource(io::Printer* printer);
-  void GenerateMessageOrBuilder(io::Printer* printer);
-  void GenerateExtensionRegistrationCode(io::Printer* printer);
-  void CollectForwardDeclarations(std::set<std::string>* declarations) const;
-  void CollectMessageOrBuilderForwardDeclarations(
+  virtual void GenerateHeader(io::Printer* printer);
+  virtual void GenerateSource(io::Printer* printer);
+  virtual void GenerateMessageOrBuilder(io::Printer* printer);
+  virtual void GenerateExtensionRegistrationCode(io::Printer* printer);
+  virtual void CollectForwardDeclarations(
       std::set<std::string>* declarations) const;
-  void CollectMessageOrBuilderImports(std::set<std::string>* imports) const;
-  void CollectHeaderImports(std::set<std::string>* imports) const;
-  void CollectSourceImports(std::set<std::string>* imports) const;
+  virtual void CollectMessageOrBuilderForwardDeclarations(
+      std::set<std::string>* declarations) const;
+  virtual void CollectMessageOrBuilderImports(
+      std::set<std::string>* imports) const;
+  virtual void CollectHeaderImports(std::set<std::string>* imports) const;
+  virtual void CollectSourceImports(std::set<std::string>* imports) const;
 
  private:
   void GenerateBuilderHeader(io::Printer* printer);

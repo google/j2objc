@@ -40,6 +40,7 @@
 #include "google/protobuf/compiler/j2objc/j2objc_extension.h"
 #include "google/protobuf/compiler/j2objc/j2objc_helpers.h"
 #include "google/protobuf/compiler/j2objc/j2objc_message.h"
+#include "google/protobuf/compiler/j2objc/j2objc_message_lite.h"
 
 namespace google {
 namespace protobuf {
@@ -155,16 +156,23 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
   std::set<std::string> headers;
   AddHeaderImports(headers);
   std::set<std::string> declarations;
-  declarations.insert("@class ComGoogleProtobufExtensionRegistry");
+  if (!enforce_lite_) {
+    declarations.insert("@class ComGoogleProtobufExtensionRegistry");
+  }
   declarations.insert("@class ComGoogleProtobufExtensionRegistryLite");
 
   if (!GenerateMultipleFiles()) {
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator generator(file_->message_type(i));
-      generator.CollectMessageOrBuilderImports(&headers);
-      generator.CollectHeaderImports(&headers);
-      generator.CollectForwardDeclarations(&declarations);
-      generator.CollectMessageOrBuilderForwardDeclarations(&declarations);
+      MessageGenerator* generator;
+      if (enforce_lite_) {
+        generator = new MessageLiteGenerator(file_->message_type(i));
+      } else {
+        generator = new MessageGenerator(file_->message_type(i));
+      }
+      generator->CollectMessageOrBuilderImports(&headers);
+      generator->CollectHeaderImports(&headers);
+      generator->CollectForwardDeclarations(&declarations);
+      generator->CollectMessageOrBuilderForwardDeclarations(&declarations);
     }
   }
 
@@ -177,18 +185,34 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
       "#pragma clang diagnostic ignored \"-Wnullability-completeness\""
       "\n"
       "@interface $classname$ : NSObject\n"
-      "\n"
-      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
-      "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
-      "\n"
+      "\n",
+      "classname", ClassName(file_));
+
+  if (!enforce_lite_) {
+    printer.Print(
+        "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
+        "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
+        "\n",
+        "classname", ClassName(file_));
+  }
+
+  printer.Print(
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
       "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;\n"
       "\n"
-      "@end\n\n"
-      "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
-      "ComGoogleProtobufExtensionRegistry_("
-      "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n"
-      "\n"
+      "@end\n\n",
+      "classname", ClassName(file_));
+
+  if (!enforce_lite_) {
+    printer.Print(
+        "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
+        "ComGoogleProtobufExtensionRegistry_("
+        "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n"
+        "\n",
+        "classname", ClassName(file_));
+  }
+
+  printer.Print(
       "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
       "ComGoogleProtobufExtensionRegistryLite_("
       "ComGoogleProtobufExtensionRegistryLite *extensionRegistry);\n",
@@ -221,9 +245,14 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
     }
 
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator generator(file_->message_type(i));
-      generator.GenerateMessageOrBuilder(&printer);
-      generator.GenerateHeader(&printer);
+      MessageGenerator* generator;
+      if (enforce_lite_) {
+        generator = new MessageLiteGenerator(file_->message_type(i));
+      } else {
+        generator = new MessageGenerator(file_->message_type(i));
+      }
+      generator->GenerateMessageOrBuilder(&printer);
+      generator->GenerateHeader(&printer);
     }
   }
   printer.Print(
@@ -242,7 +271,9 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
   std::set<std::string> headers;
   AddSourceImports(headers);
   headers.insert(GetFileName(".h"));
-  headers.insert("com/google/protobuf/ExtensionRegistry.h");
+  if (!enforce_lite_) {
+    headers.insert("com/google/protobuf/ExtensionRegistry.h");
+  }
   headers.insert("com/google/protobuf/ExtensionRegistryLite.h");
   if (GenerateMultipleFiles()) {
     for (int i = 0; i < file_->message_type_count(); i++) {
@@ -250,7 +281,12 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
     }
   } else {
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator(file_->message_type(i)).CollectSourceImports(&headers);
+      if (enforce_lite_) {
+        MessageLiteGenerator(file_->message_type(i))
+            .CollectSourceImports(&headers);
+      } else {
+        MessageGenerator(file_->message_type(i)).CollectSourceImports(&headers);
+      }
     }
     for (int i = 0; i < file_->enum_type_count(); i++) {
       EnumGenerator(file_->enum_type(i)).CollectSourceImports(&headers);
@@ -273,13 +309,21 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
   printer.Print(
       "\n"
       "@implementation $classname$\n"
-      "\n"
-      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
-      "(ComGoogleProtobufExtensionRegistry *)extensionRegistry {\n"
-      "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
-      "ExtensionRegistry_(extensionRegistry);\n"
-      "}\n"
-      "\n"
+      "\n",
+      "classname", ClassName(file_));
+
+  if (!enforce_lite_) {
+    printer.Print(
+        "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
+        "(ComGoogleProtobufExtensionRegistry *)extensionRegistry {\n"
+        "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
+        "ExtensionRegistry_(extensionRegistry);\n"
+        "}\n"
+        "\n",
+        "classname", ClassName(file_));
+  }
+
+  printer.Print(
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
       "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry {\n"
       "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
@@ -318,14 +362,22 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
       "@end\n"
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
-      "\n"
-      "void $classname$_registerAllExtensionsWith"
-      "ComGoogleProtobufExtensionRegistry_("
-      "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n"
-      "  $classname$_registerAllExtensionsWith"
-      "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n"
-      "}\n"
-      "\n"
+      "\n",
+      "classname", ClassName(file_));
+
+  if (!enforce_lite_) {
+    printer.Print(
+        "void $classname$_registerAllExtensionsWith"
+        "ComGoogleProtobufExtensionRegistry_("
+        "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n"
+        "  $classname$_registerAllExtensionsWith"
+        "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n"
+        "}\n"
+        "\n",
+        "classname", ClassName(file_));
+  }
+
+  printer.Print(
       "void $classname$_registerAllExtensionsWith"
       "ComGoogleProtobufExtensionRegistryLite_("
       "ComGoogleProtobufExtensionRegistryLite *extensionRegistry) {\n",
@@ -335,8 +387,13 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
     ExtensionGenerator(file_->extension(i)).GenerateRegistrationCode(&printer);
   }
   for (int i = 0; i < file_->message_type_count(); i++) {
-    MessageGenerator(file_->message_type(i))
-        .GenerateExtensionRegistrationCode(&printer);
+    if (enforce_lite_) {
+      MessageLiteGenerator(file_->message_type(i))
+          .GenerateExtensionRegistrationCode(&printer);
+    } else {
+      MessageGenerator(file_->message_type(i))
+          .GenerateExtensionRegistrationCode(&printer);
+    }
   }
   printer.Outdent();
   printer.Print("}\n");
@@ -346,7 +403,11 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
       EnumGenerator(file_->enum_type(i)).GenerateSource(&printer);
     }
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator(file_->message_type(i)).GenerateSource(&printer);
+      if (enforce_lite_) {
+        MessageLiteGenerator(file_->message_type(i)).GenerateSource(&printer);
+      } else {
+        MessageGenerator(file_->message_type(i)).GenerateSource(&printer);
+      }
     }
   }
 }
@@ -444,16 +505,21 @@ void FileGenerator::GenerateMessageOrBuilder(
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
-  MessageGenerator generator(descriptor);
+  MessageGenerator* generator;
+  if (enforce_lite_) {
+    generator = new MessageLiteGenerator(descriptor);
+  } else {
+    generator = new MessageGenerator(descriptor);
+  }
 
   std::set<std::string> headers;
-  generator.CollectMessageOrBuilderImports(&headers);
+  generator->CollectMessageOrBuilderImports(&headers);
   PrintImports(&headers, &printer);
 
   std::set<std::string> declarations;
-  generator.CollectMessageOrBuilderForwardDeclarations(&declarations);
+  generator->CollectMessageOrBuilderForwardDeclarations(&declarations);
   PrintForwardDeclarations(&declarations, &printer);
-  generator.GenerateMessageOrBuilder(&printer);
+  generator->GenerateMessageOrBuilder(&printer);
 }
 
 void FileGenerator::GenerateSiblings(GeneratorContext* context) {
