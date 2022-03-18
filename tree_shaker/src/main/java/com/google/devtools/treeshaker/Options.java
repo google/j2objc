@@ -205,7 +205,7 @@ class Options {
           usage("--tree-shaker-roots");
         }
         options.treeShakerRoots = new File(args[nArg]);
-      } else if (arg.equals("--output-file")) {
+      } else if (arg.equals("--output-file") || arg.equals("-o")) {
         if (++nArg == args.length) {
           usage("--output-file");
         }
@@ -246,6 +246,10 @@ class Options {
         break;
       }
       ++nArg;
+    }
+
+    if (options.treeShakerRoots == null) {
+      usage("--tree_shaker_roots not set");
     }
 
     while (nArg < args.length) {

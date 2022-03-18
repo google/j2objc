@@ -23,10 +23,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="translator" />
     <orderEntry type="module" module-name="annotations" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="TEST">
       <library name="junit4">
         <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/junit-4.13.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -63,6 +63,33 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/google-extensions-0.5.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/truth-1.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/protobuf-java-3.17.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/flogger-system-backend-0.5.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
