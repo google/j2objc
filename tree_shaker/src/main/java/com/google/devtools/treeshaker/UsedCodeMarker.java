@@ -21,9 +21,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
@@ -91,6 +93,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
+  public void endVisit(CastExpression node) {
+    addReferencedType(node.getTypeMirror());
+  }
+
+  @Override
   public void endVisit(ClassInstanceCreation node) {
     addMethodInvocation(node.getExecutableElement());
     // Creating an instance of an anonymous class also creates instances of the interfaces.
@@ -104,6 +111,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(ConstructorInvocation node) {
     addMethodInvocation(node.getExecutableElement());
+  }
+
+  @Override
+  public boolean visit(CreationReference node) {
+    addMethodInvocation(node.getExecutableElement());
+    return true;
   }
 
   @Override

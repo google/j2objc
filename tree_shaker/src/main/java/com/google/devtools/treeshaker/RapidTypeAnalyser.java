@@ -163,6 +163,10 @@ final class RapidTypeAnalyser {
 
     type.markLive();
     markMemberLive(type.getMemberByName(CLASS_INITIALIZER_NAME));
+
+    // TODO(tball): remove when dead fields are reported (b/225384453).
+    markMemberLive(type.getMemberByName(INITIALIZER_NAME));
+
     if (type.getSuperClass() != null) {
       markTypeLive(type.getSuperClass());
     }

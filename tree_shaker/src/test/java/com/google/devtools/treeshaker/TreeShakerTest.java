@@ -1052,6 +1052,130 @@ public class TreeShakerTest extends TestCase {
     assertThat(getType("(IILjava/lang/String;)V")).isEqualTo("void(int,int,java.lang.String)");
   }
 
+  // Regression test for b/224997546
+  public void testCreationReference() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public static void exportedMethod() {\n"
+            + "    Grinder grinder = new CoffeeMaker().getGrinderFactory().apply(20);\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import java.util.function.IntFunction;\n"
+            + "\n"
+            + "public class CoffeeMaker {\n"
+            + "  public IntFunction<Grinder> getGrinderFactory() {\n"
+            + "    return Grinder::new;\n"
+            + "  }\n"
+            + "void unused() {}\n"
+            + "}");
+    addSourceFile(
+        "Grinder.java", "public class Grinder {\n  public Grinder(int gridSize) {}\n}");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(output).isEqualTo("CoffeeMaker:\n    unused()\n");
+  }
+
+  // Regression test for b/224994241
+  // Note: this verifies that dead field types can be compiled. Once dead fields
+  // are removed (b/225384453), though, this test should be changed to reflect
+  // that the Boiler type is removed and not just its constructor.
+  public void testFieldReference() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    CoffeeMaker.staticMethod();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {\n"
+            + "  private Boiler boiler;\n"
+            + "  public void instanceMethod() {}\n"
+            + "  public static void staticMethod() {}\n"
+            + "}");
+    addSourceFile(
+        "Boiler.java", "public class Boiler {}");
+    String output = writeUnused(findUnusedCode());
+
+    assertThat(output)
+        .isEqualTo(
+            "CoffeeMaker:\n"
+                + "    CoffeeMaker()\n"
+                + "CoffeeMaker:\n"
+                + "    instanceMethod()\n"
+                + "Boiler:\n"
+                + "    Boiler()\n");
+  }
+
+  // Regression test for b/225022901
+  public void testCastExpression() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker(new CoilHeater()).start();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "Heater.java",
+        "interface Heater {\n"
+        + "  String getKind();\n"
+        + "}");
+    addSourceFile(
+        "CoilHeater.java",
+        "class CoilHeater implements Heater {\n"
+            + "  @Override\n"
+            + "  public String getKind() {\n"
+            + "    return \"Coil\";\n"
+            + "  }\n"
+            + "  public void startCoil() {}\n"
+            + "}");
+    addSourceFile(
+        "InductionHeader.java",
+        "class InductionHeater implements Heater {\n"
+            + "  @Override\n"
+            + "  public String getKind() {\n"
+            + "    return \"Induction\";\n"
+            + "  }\n"
+            + "  public void startInduction() {}\n"
+            + "}"
+    );
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {\n"
+            + "  Heater heater;\n"
+            + "  public CoffeeMaker(Heater heater) {\n"
+            + "    this.heater = heater;\n"
+            + "  }\n"
+            + "  public void start() {\n"
+            + "    if (heater.getKind().equals(\"Coil\")) {\n"
+            + "      ((CoilHeater) heater).startCoil();\n"
+            + "    } else {\n"
+            + "      ((InductionHeater) heater).startInduction();\n"
+            + "    }\n"
+            + "  }\n"
+            + "}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify InductionHeader type isn't dead, but its unused methods are.
+    assertThat(output)
+        .isEqualTo(
+            "InductionHeater:\n"
+                + "    InductionHeater()\n"
+                + "InductionHeater:\n"
+                + "    java.lang.String getKind()\n"
+                // TODO(tball): startInduction should be live, remove when b/224867452 is fixed.
+                + "InductionHeater:\n"
+                + "    startInduction()\n");
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);
