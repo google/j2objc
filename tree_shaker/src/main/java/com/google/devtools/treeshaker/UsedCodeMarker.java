@@ -191,6 +191,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   public void endVisit(LambdaExpression node) {
     // A lambda expression implicitly constructs an instance of the interface that it implements.
     addPseudoConstructorInvocation(node.getTypeMirror());
+    // A lambda expression implicitly implements the functional interface method, add references to
+    // parameters and return type.
+    node.getParameters().forEach(vd -> addReferencedType(vd.getVariableElement().asType()));
+    addReferencedType(node.getDescriptor().type().getReturnType());
   }
 
   @Override

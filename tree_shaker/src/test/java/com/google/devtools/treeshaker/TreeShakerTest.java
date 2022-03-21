@@ -1176,6 +1176,55 @@ public class TreeShakerTest extends TestCase {
                 + "    startInduction()\n");
   }
 
+  // Regression test for b/225047947
+  public void testLambdaExpressionWithParameters() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker((bean) -> true);\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import java.util.function.Function;\n"
+            + "public class CoffeeMaker {\n"
+            + "  CoffeeMaker(Function<Bean, Boolean> beanChecker) {}\n"
+            + "}");
+    addSourceFile(
+        "Bean.java",
+        "interface Bean {}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify Bean type isn't dead.
+    assertThat(output).isEmpty();
+  }
+
+  public void testLambdaExpressionWithReturn() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker((b) -> null);\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import java.util.function.Function;\n"
+            + "public class CoffeeMaker {\n"
+            + "  CoffeeMaker(Function<Boolean, Bean> beanProvider) {}\n"
+            + "}");
+    addSourceFile(
+        "Bean.java",
+        "interface Bean {}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify Bean type isn't dead.
+    assertThat(output).isEmpty();
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);
