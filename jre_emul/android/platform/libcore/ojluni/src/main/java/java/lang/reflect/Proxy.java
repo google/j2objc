@@ -872,10 +872,7 @@ public class Proxy implements java.io.Serializable {
     ]-*/;
 
     native int proxy_hashCode() /*-[
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpointer-to-int-cast"
-      return (jint)self;
-#pragma clang diagnostic pop
+      return (jint)(intptr_t)self;
     ]-*/;
 
     @Override
