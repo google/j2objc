@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.CreationReference;
+import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
@@ -117,6 +118,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   public boolean visit(CreationReference node) {
     addMethodInvocation(node.getExecutableElement());
     return true;
+  }
+
+  @Override
+  public void endVisit(EnhancedForStatement node) {
+    // Add a reference to the enhanced for statement's parameter type.
+    addReferencedType(node.getParameter().getType().getTypeMirror());
   }
 
   @Override

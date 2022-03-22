@@ -1225,6 +1225,52 @@ public class TreeShakerTest extends TestCase {
     assertThat(output).isEmpty();
   }
 
+  // Regression test for b/224984057
+  public void testEnhancedForStatement() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker().getGrinderSettings(new Grinder());\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import java.util.ArrayList;"
+            + "import java.util.List;"
+            + "public class CoffeeMaker {"
+            + "  public List<String> getGrinderSettings(Grinder grinder) {"
+            + "    List<String> result = new ArrayList<>();"
+            + "    for (Grinder.Setting test : grinder.getSettings()) {"
+            + "      result.add(test.toString());"
+            + "    }"
+            + "    return result;"
+            + "  }"
+            + "}");
+    addSourceFile(
+        "Grinder.java",
+        "import java.util.ArrayList;"
+            + "import java.util.List;"
+            + "public class Grinder {"
+            + "  public enum Setting {"
+            + "    ESPRESSO, FILTER;"
+            + "  }"
+            + "  public List<Setting> getSettings() {"
+            + "    return new ArrayList<>();"
+            + "  }"
+            + "}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify Grinder$Setting type isn't dead, but its unused methods are.
+    assertThat(output)
+        .isEqualTo(
+            "Grinder$Setting:\n"
+                + "    Grinder$Setting[] values()\n"
+                + "Grinder$Setting:\n"
+                + "    Grinder$Setting valueOf(java.lang.String)\n");
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);
