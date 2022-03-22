@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ if __name__ == "__main__":
   checksums = subprocess.check_output(["openssl", "sha256"] +
                                       args.files).splitlines()
   for checksum in checksums:
-    parts = checksum.split("=")
+    parts = checksum.split(b'=')
     out.write("// {}\n".format(parts[0]))
     out.write("//  {}\n".format(parts[1]))
   out.close()

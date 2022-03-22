@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ Usage:
 """
 
 
-import parse_proto
-
 import re
 import sys
+
+import parse_proto
 
 
 def GetPackage(data):
@@ -69,20 +69,20 @@ def main():
   for filename in sys.argv[1:]:
     GetGeneratedFilesForProto(filename, java_files, objc_files, header_files)
 
-  print 'GENERATED_JAVA = \\'
+  print('GENERATED_JAVA = \\')
   for f in java_files:
-    print '    ' + f + ' \\'
-  print ''
+    print('    ' + f + ' \\')
+  print('')
 
-  print 'GENERATED_SOURCES = \\'
+  print('GENERATED_SOURCES = \\')
   for f in objc_files:
-    print '    ' + f + ' \\'
-  print ''
+    print('    ' + f + ' \\')
+  print('')
 
-  print 'GENERATED_HEADERS = \\'
+  print('GENERATED_HEADERS = \\')
   for f in header_files:
-    print '    ' + f + ' \\'
-  print ''
+    print('    ' + f + ' \\')
+  print('')
 
 if __name__ == '__main__':
   sys.exit(main())
