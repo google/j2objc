@@ -1271,6 +1271,33 @@ public class TreeShakerTest extends TestCase {
                 + "    Grinder$Setting valueOf(java.lang.String)\n");
   }
 
+  // Regression test for b/224970952
+  public void testQualifiedName() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker().getType();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {"
+            + "  public String getType() {"
+            + "    return CoffeeMaker.Constants.NAME.toString();"
+            + "  }"
+            + "  public static class Constants {"
+            + "    static final StringBuffer NAME = new StringBuffer(\"Mr. Coffee\");"
+            + "  }"
+            + "}");
+
+    String output = writeUnused(findUnusedCode());
+
+    // Verify CoffeeMaker$Constants type isn't dead, but its unused methods are.
+    assertThat(output).isEqualTo("CoffeeMaker$Constants:\n    CoffeeMaker$Constants()\n");
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

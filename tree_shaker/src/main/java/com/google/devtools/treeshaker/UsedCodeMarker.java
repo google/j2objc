@@ -41,6 +41,7 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
@@ -252,6 +253,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   @Override
   public void endVisit(PropertyAnnotation node) {
     visitAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(QualifiedName node) {
+    // Add the constant's containing type as a referenced type.
+    addReferencedType(node.getQualifier().getTypeMirror());
   }
 
   @Override
