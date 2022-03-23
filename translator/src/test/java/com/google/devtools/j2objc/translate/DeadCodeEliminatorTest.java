@@ -202,6 +202,20 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertTranslation(translation, "Foo_Bar_init");
   }
 
+ public void testDeadClass_NestedEnum() throws IOException {
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addClass("Foo")
+        .build();
+    setDeadCodeMap(map);
+    String source = "class Foo {\n"
+        + "  enum Bar {BAZ}\n"
+        + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertTranslation(translation, "@interface Foo_Bar : JavaLangEnum");
+    translation = getTranslatedFile("Foo.m");
+    assertTranslation(translation, "Foo_Bar *Foo_Bar_values_[1]");
+  }
+
   public void testDeadClass_DeadStaticNestedClass() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
         .addClass("Foo")

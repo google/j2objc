@@ -109,6 +109,15 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         }
       }
 
+      // Do not strip live enum declarations.
+      if (decl instanceof EnumDeclaration) {
+        EnumDeclaration enumDeclaration = (EnumDeclaration) decl;
+        if (!deadCodeMap.containsClass(
+            elementUtil.getBinaryName(enumDeclaration.getTypeElement()))) {
+          continue;
+        }
+      }
+
       if (decl.getKind() == Kind.FIELD_DECLARATION) {
         FieldDeclaration field = (FieldDeclaration) decl;
         VariableDeclarationFragment fragment = field.getFragment();
