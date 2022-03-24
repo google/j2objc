@@ -21,6 +21,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -71,6 +72,25 @@ public class TreeShakerTest extends TestCase {
       fail("TreeShaker failed with errors:\n" + Joiner.on("\n").join(ErrorUtil.getErrorMessages()));
     }
     return unused;
+  }
+
+  // Verify that an @file can be used without failing due to missing arguments later declared.
+  // b/226587676
+  public void testIncompleteAtFile() throws IOException {
+    File atFile = new File(tempDir, "args");
+    atFile.getParentFile().mkdirs();
+    Files.asCharSink(atFile, Charset.defaultCharset()).write(
+        "-classpath foo/bar:foo/bar/mumble -encoding utf-8");
+    addTreeShakerRootsFile("");
+    addSourceFile("A.java", "package p; class A { void main() {} }");
+
+    List<String> args = Lists.newArrayList();
+    args.add("@" + atFile.getPath());
+    args.add("--tree-shaker-roots");
+    args.add(treeShakerRoots.getPath());
+    args.addAll(inputFiles);
+    Options.parse(args.toArray(String[]::new));
+    assertEquals(0, ErrorUtil.errorCount());
   }
 
   public void testNoExportedRoots() throws IOException {

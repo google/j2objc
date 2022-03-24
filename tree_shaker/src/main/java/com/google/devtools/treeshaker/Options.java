@@ -164,6 +164,14 @@ class Options {
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
     processArgs(args, options);
+
+    if (options.treeShakerRoots == null) {
+      usage("--tree_shaker_roots not set");
+    }
+    if (options.sourceFiles.isEmpty()) {
+      usage("no source files");
+    }
+
     return options;
   }
 
@@ -248,16 +256,10 @@ class Options {
       ++nArg;
     }
 
-    if (options.treeShakerRoots == null) {
-      usage("--tree_shaker_roots not set");
-    }
-
     while (nArg < args.length) {
       options.sourceFiles.add(args[nArg++]);
     }
-    if (options.sourceFiles.isEmpty()) {
-      usage("no source files");
-    }
+
     if (printArgs) {
       System.err.print("tree_shaker ");
       System.err.println(String.join(" ", args));
