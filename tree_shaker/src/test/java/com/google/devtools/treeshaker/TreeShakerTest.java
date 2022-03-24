@@ -1133,6 +1133,38 @@ public class TreeShakerTest extends TestCase {
                 + "    Boiler()\n");
   }
 
+  // Regression test for b/224994241
+  // Note: this verifies that dead field types can be compiled. Once dead fields
+  // are removed (b/225384453), though, this test should be changed to reflect
+  // that the Boiler type is removed and not just its constructor.
+  public void testFieldReferencesWithStaticFieldInbetween() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    CoffeeMaker.start();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {\n"
+            + "  private Boiler boiler;\n"
+            + "  private static final String name = \"Mr. Coffee\";\n"
+            + "  private Grinder grinder;\n"
+            + "  static void start() {}\n"
+            + "}");
+    addSourceFile("Boiler.java", "public class Boiler {}");
+    addSourceFile("Grinder.java", "public class Grinder {}");
+
+    // String output = writeUnused();
+    assertThat(getUnusedClasses(findUnusedCode())).isEmpty();
+    assertThat(getUnusedMethods(findUnusedCode())).containsExactly(
+        getMethodName("Boiler", "Boiler", "()V"),
+        getMethodName("CoffeeMaker", "CoffeeMaker", "()V"),
+        getMethodName("Grinder", "Grinder", "()V"));
+  }
+
   // Regression test for b/225022901
   public void testCastExpression() throws IOException {
     addTreeShakerRootsFile("EntryClass\n");

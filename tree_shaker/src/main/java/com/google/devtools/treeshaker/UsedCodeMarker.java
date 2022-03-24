@@ -498,6 +498,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void popClinit() {
     context.memberScope.pop();
+    context.referencedTypesScope.pop();
   }
 
   static final class Context {
