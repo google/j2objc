@@ -983,10 +983,22 @@ public class TreeShakerTest extends TestCase {
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(
-        getMethodName("p.A", "A", "()V"),
-        getMethodName("p.B$D", "values", "()[Lp/B$D;"),
-        getMethodName("p.B$D", "valueOf", "(Ljava/lang/String;)Lp/B$D;"));
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+  }
+
+  public void testAnnotationsWithEnums() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { }}");
+    addSourceFile("B.java", "package p; @interface B { D b() default D.E; }");
+    addSourceFile("D.java", "package p; enum D { E; }");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused))
+        .containsExactly(
+            getMethodName("p.A", "A", "()V"),
+            getMethodName("p.D", "values", "()[Lp/D;"),
+            getMethodName("p.D", "valueOf", "(Ljava/lang/String;)Lp/D;"));
   }
 
   public void testPackageAnnotations() throws IOException {
@@ -1348,6 +1360,24 @@ public class TreeShakerTest extends TestCase {
 
     // Verify CoffeeMaker$Constants type isn't dead, but its unused methods are.
     assertThat(output).isEqualTo("CoffeeMaker$Constants:\n    CoffeeMaker$Constants()\n");
+  }
+
+  // Regression test for b/226673087
+  public void testImplicitInnerClassExport() throws IOException {
+    addTreeShakerRootsFile("A\n");
+    addSourceFile(
+        "A.java",
+        "public class A {\n"
+            + "  public static class B {}\n"
+            + "  public class C {}\n"
+            + "  public interface D {}\n"
+            + "  public enum E {}\n"
+            + "}");
+
+    String output = writeUnused(findUnusedCode());
+
+    // Verify that A and its inner classes are exported.
+    assertThat(output).isEmpty();
   }
 
   private static String writeUnused(CodeReferenceMap unused) {

@@ -395,8 +395,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         superType == null ? INTERFACE_SUPERTYPE : elementUtil.getBinaryName(superType);
     List<String> interfaces = ElementUtil.getInterfaces(type).stream()
                                 .map(elementUtil::getBinaryName).collect(Collectors.toList());
-    boolean isExported = context.exportedClasses.contains(typeName)
-                         || ElementUtil.isGeneratedAnnotation(type);
+
+    boolean exportedClassInnerType =
+        ElementUtil.isPublic(type)
+            && !context.currentTypeInfoScope.isEmpty()
+            && context.currentTypeInfoScope.peek().getExported();
+
+    boolean isExported =
+        context.exportedClasses.contains(typeName)
+            || ElementUtil.isGeneratedAnnotation(type)
+            || exportedClassInnerType;
+
     startTypeScope(typeName, superName, interfaces, isExported);
   }
 
