@@ -163,7 +163,7 @@ public class GenerationBatch {
           }
         }
         if (!options.translateClassfiles() && !containsJavaFile) {
-          ErrorUtil.error(filename + " does not contain any Java source files.");
+          ErrorUtil.warning(filename + " does not contain any Java source files.");
         }
       } finally {
         zfile.close();  // Also closes input stream.

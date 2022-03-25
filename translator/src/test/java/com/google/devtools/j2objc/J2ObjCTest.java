@@ -304,7 +304,7 @@ public class J2ObjCTest extends GenerationTest {
   public void testJarNoJava() throws Exception {
     String processorJarPath = getResourceAsFile("annotations/Processor.jar");
     J2ObjC.run(Collections.singletonList(processorJarPath), options);
-    assertErrorCount(1);
+    assertWarningCount(1);
   }
 
   public void testSourcePathTypesIncludedInGlobalCombinedOutput() throws Exception {
