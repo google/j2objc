@@ -180,6 +180,12 @@ else ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 11
 else ifneq (,$(findstring build 15, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 15
+else ifneq (,$(findstring build 16, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 16
+else ifneq (,$(findstring build 17, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 17
+else ifneq (,$(findstring build 18, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 18
 else
 $(error JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or 15.)
 endif
