@@ -22,6 +22,7 @@ import com.strobel.decompiler.languages.java.ast.MemberReferenceExpression;
 import com.strobel.decompiler.languages.java.ast.PrimitiveExpression;
 import com.strobel.decompiler.languages.java.ast.TypeDeclaration;
 import java.io.IOException;
+import java.lang.reflect.GenericSignatureFormatError;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -119,7 +120,7 @@ public class PackageInfoLookup {
       if (classFile != null) {
         return parseDataFromClassFile(classFile);
       }
-    } catch (IOException e) {
+    } catch (IOException | NoClassDefFoundError | GenericSignatureFormatError e) {
       // Continue with no package-info data.
     }
     return EMPTY_DATA;
