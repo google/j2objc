@@ -1405,6 +1405,75 @@ public class TreeShakerTest extends TestCase {
         );
   }
 
+  // Regression test for b/228617391
+  public void testTryStatement() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker().start();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {\n"
+            + "  public void start() {\n"
+            + "    try {\n"
+            + "      run();\n"
+            + "    } catch (OverheatException e) {\n"
+            + "      // do nothing.\n"
+            + "    }\n"
+            + "  }\n"
+            + "  public void run() throws OverheatException {}\n"
+            + "}");
+    addSourceFile("OverheatException.java", "public class OverheatException extends Exception {}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify that OverheatException's type is live.
+    assertThat(output).isEqualTo("OverheatException:\n" + "    OverheatException()\n");
+  }
+
+  public void testMultiCatchClass() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker().start();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {\n"
+            + "  public void start() {\n"
+            + "    try {\n"
+            + "      run();\n"
+            + "    } catch (OverheatException | OutOfCoffeeException e) {\n"
+            + "      // do nothing.\n"
+            + "    }\n"
+            + "  }\n"
+            + "  public void run() throws OverheatException, OutOfCoffeeException {}\n"
+            + "}");
+    addSourceFile(
+        "OverheatException.java",
+        "public class OverheatException extends Exception {}");
+    addSourceFile(
+        "OutOfCoffeeException.java",
+        "public class OutOfCoffeeException extends Exception {}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify that both exception types are live.
+    assertThat(output)
+        .isEqualTo(
+            String.join(
+                "\n",
+                "OverheatException:",
+                "    OverheatException()",
+                "OutOfCoffeeException:",
+                "    OutOfCoffeeException()\n"));
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

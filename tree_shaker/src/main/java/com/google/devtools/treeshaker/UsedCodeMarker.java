@@ -45,8 +45,11 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TryStatement;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
+import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
@@ -61,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -278,6 +282,20 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     addMethodInvocation(node.getExecutableElement());
     addReferencedType(node.getExecutableType().getReturnType());
     node.getExecutableType().getParameterTypes().forEach(this::addReferencedType);
+  }
+
+  @Override
+  public boolean visit(TryStatement node) {
+    node.getCatchClauses().stream()
+        .map(catchClause -> catchClause.getException().getType())
+        .flatMap(
+            type ->
+                type instanceof UnionType
+                    ? ((UnionType) type).getTypes().stream()
+                    : Stream.of(type))
+        .map(Type::getTypeMirror)
+        .forEach(this::addReferencedType);
+    return true;
   }
 
   @Override
