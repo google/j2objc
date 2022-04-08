@@ -507,9 +507,7 @@ public class TreeShakerTest extends TestCase {
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
-    assertThat(getUnusedMethods(unused)).containsExactly(
-        getMethodName("C", "C", "()V"),
-        getMethodName("C", "h", "()I"));
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("C", "C", "()V"));
   }
 
   public void testInterfacesIndirect() throws IOException {
@@ -598,14 +596,12 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedClasses(unused)).containsNoneOf("p.A", "p.B", "p.C", "p.D");
 
     // Note: While the types are live becaused they are referenced, all of the members are marked
-    // unused because the types are never instantiated.
-    assertThat(getUnusedMethods(unused)).containsExactly(
-        getMethodName("p.A", "A", "()V"),
-        getMethodName("p.B", "b", "()V"),
-        getMethodName("p.C", "C", "()V"),
-        getMethodName("p.C", "c", "()V"),
-        getMethodName("p.D", "D", "()V"),
-        getMethodName("p.D", "d", "()V"));
+    // used because main(...) referenced the methods and requires them to compile.
+    assertThat(getUnusedMethods(unused))
+        .containsExactly(
+            getMethodName("p.A", "A", "()V"),
+            getMethodName("p.C", "C", "()V"),
+            getMethodName("p.D", "D", "()V"));
   }
 
   public void testAnonymousAbstractTypesBasic() throws IOException {
@@ -1234,10 +1230,7 @@ public class TreeShakerTest extends TestCase {
             "InductionHeater:\n"
                 + "    InductionHeater()\n"
                 + "InductionHeater:\n"
-                + "    java.lang.String getKind()\n"
-                // TODO(tball): startInduction should be live, remove when b/224867452 is fixed.
-                + "InductionHeater:\n"
-                + "    startInduction()\n");
+                + "    java.lang.String getKind()\n");
   }
 
   // Regression test for b/225047947
@@ -1378,6 +1371,38 @@ public class TreeShakerTest extends TestCase {
 
     // Verify that A and its inner classes are exported.
     assertThat(output).isEmpty();
+  }
+
+  // Regression test for b/224867452
+  public void testUninstantiatedMethodCall() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    CoffeeMaker.start(null);\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "public class CoffeeMaker {\n"
+            + "  public static void start(Grinder grinder) {\n"
+            + "    if (grinder != null) {\n"
+            + "      grinder.start();\n"
+            + "    }\n"
+            + "  }\n"
+            + "}");
+    addSourceFile("Grinder.java", "class Grinder {\n  public void start() {}\n}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify that while Grinder is not instantiated, start() method is live, because
+    // start(Grinder) is live.
+    assertThat(output).isEqualTo(
+        "CoffeeMaker:\n"
+        + "    CoffeeMaker()\n"
+        + "Grinder:\n"
+        + "    Grinder()\n"
+        );
   }
 
   private static String writeUnused(CodeReferenceMap unused) {

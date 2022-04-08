@@ -88,8 +88,8 @@ final class RapidTypeAnalyser {
       traversePolymorphicReference(member.getDeclaringType(), member.getName());
     } else {
       markTypeLive(member.getDeclaringType());
-      markMemberLive(member);
     }
+    markMemberLive(member);
   }
 
   private static void markMemberLive(Member member) {
