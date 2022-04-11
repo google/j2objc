@@ -53,14 +53,8 @@ BUILD_DIR_DOCLET_JARS = $(DOCLET_JARS:%=$(BUILD_DIR)/%)
 
 $(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 
-# Postprocessing: update procyon to not depend on URLClassPath.
 $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	mvn -q generate-resources dependency:sources
-	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR) \
-	  com/strobel/assembler/metadata/ClasspathTypeLoader.class
-	@cd $(BUILD_DIR) && jar uf $(PROCYON_COMPILERTOOLS_JAR) com/strobel/assembler/metadata/ClasspathTypeLoader.class
-	@rm -rf $(BUILD_DIR)/com
-	@rm $(BUILD_DIR)/$(NEW_PROCYON_COMPILERTOOLS_JAR)
 	@touch $@
 
 $(BUILD_DIR)/$(JUNIT_JAR): $(BUILD_DIR)/$(JUNIT_ROOT_JAR)

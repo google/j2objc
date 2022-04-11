@@ -61,6 +61,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.strobel.assembler.metadata.Flags;
 import com.strobel.assembler.metadata.MethodReference;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.core.StringUtilities;
@@ -99,6 +100,7 @@ import com.strobel.decompiler.languages.java.ast.ObjectCreationExpression;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.strobel.decompiler.languages.java.ast.PrimitiveExpression;
 import com.strobel.decompiler.languages.java.ast.SuperReferenceExpression;
+import com.strobel.decompiler.languages.java.ast.SwitchExpression;
 import com.strobel.decompiler.languages.java.ast.SwitchSection;
 import com.strobel.decompiler.languages.java.ast.TextNode;
 import com.strobel.decompiler.languages.java.ast.ThisReferenceExpression;
@@ -110,7 +112,6 @@ import com.strobel.decompiler.languages.java.ast.VariableInitializer;
 import com.strobel.decompiler.languages.java.ast.WildcardType;
 import com.strobel.decompiler.patterns.Pattern;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -130,6 +131,7 @@ import javax.lang.model.type.TypeMirror;
  * @author Manvith Narahari
  * @author Tom Ball
  */
+@SuppressWarnings("UnnecessarilyFullyQualified")
 class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   private final JavacEnvironment parserEnv;
   private final TypeUtil typeUtil;
@@ -428,6 +430,11 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   }
 
   @Override
+  public TreeNode visitSwitchExpression(SwitchExpression node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
   public TreeNode visitCaseLabel(CaseLabel node, Void data) {
     throw new AssertionError("Method not yet implemented");
   }
@@ -458,8 +465,11 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitVariableDeclaration(
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
-    VariableDeclarationStatement varDecl =  new VariableDeclarationStatement()
-        .setModifiers(ElementUtil.fromModifierSet(new HashSet<>(node.getModifiers())));
+    VariableDeclarationStatement varDecl =  new VariableDeclarationStatement();
+    boolean isFinal = node.getModifiers().contains(Flags.Flag.FINAL);
+    if (isFinal) {
+      varDecl.setModifiers(java.lang.reflect.Modifier.FINAL);
+    }
     AstType astType = node.getType();
     Type type = (Type) astType.acceptVisitor(this, null);
     for (VariableInitializer init : node.getVariables()) {
@@ -467,7 +477,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       String varName = init.getName();
       GeneratedVariableElement elem
           = GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
-      elem.addModifiers(node.getModifiers());
+      if (isFinal) {
+        elem.addModifiers(javax.lang.model.element.Modifier.FINAL);
+      }
       localVariableTable.put(varName, elem);
       varDecl.addFragment(new VariableDeclarationFragment(elem, expr));
     }
@@ -571,7 +583,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitCastExpression(
       com.strobel.decompiler.languages.java.ast.CastExpression node, Void data) {
-    throw new AssertionError("Method not yet implemented");
+    // Procyon 0.6+ adds (unnecessary) cast expressions to its decompilation.
+    // This skips the cast and just returns its expression.
+    return node.getExpression().acceptVisitor(this, null);
   }
 
   @Override
@@ -876,7 +890,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
     String varName = node.getVariableName();
     GeneratedVariableElement elem
         = GeneratedVariableElement.newLocalVar(varName, type.getTypeMirror(), executableElement);
-    elem.addModifiers(node.getVariableModifiers());
+    if (node.getVariableModifiers().contains(Flags.Flag.FINAL)) {
+      elem.addModifiers(javax.lang.model.element.Modifier.FINAL);
+    }
     localVariableTable.put(varName, elem);
     return forStatement.setParameter(new SingleVariableDeclaration(elem))
         .setExpression((Expression) node.getInExpression().acceptVisitor(this, null))
@@ -897,6 +913,10 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitParenthesizedExpression(
       com.strobel.decompiler.languages.java.ast.ParenthesizedExpression node, Void data) {
     Expression innerExpr = (Expression) node.getExpression().acceptVisitor(this, null);
+    // Remove unnecessary parentheses, added by Procyon 0.6+ decompiler.
+    if (innerExpr.getKind() == TreeNode.Kind.SIMPLE_NAME) {
+      return innerExpr;
+    }
     return ParenthesizedExpression.parenthesize(innerExpr);
   }
 
@@ -942,6 +962,42 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitLocalTypeDeclarationStatement(
       com.strobel.decompiler.languages.java.ast.LocalTypeDeclarationStatement node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
+  public TreeNode visitBytecodeConstant(
+      com.strobel.decompiler.languages.java.ast.BytecodeConstant node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
+  public TreeNode visitInlinedBytecode(
+      com.strobel.decompiler.languages.java.ast.InlinedBytecodeExpression node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
+  public TreeNode visitUnionType(
+      com.strobel.decompiler.languages.java.ast.UnionType node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
+  public TreeNode visitIntersectionType(
+      com.strobel.decompiler.languages.java.ast.IntersectionType node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
+  public TreeNode visitModuleDeclaration(
+      com.strobel.decompiler.languages.java.ast.ModuleDeclaration node, Void data) {
+    throw new AssertionError("Method not yet implemented");
+  }
+
+  @Override
+  public TreeNode visitSwitchExpressionArm(
+      com.strobel.decompiler.languages.java.ast.SwitchExpressionArm node, Void data) {
     throw new AssertionError("Method not yet implemented");
   }
 }

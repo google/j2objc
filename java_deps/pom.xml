@@ -99,13 +99,6 @@
                   <version>31.0.1-android</version>
                 </artifactItem>
                 <artifactItem>
-                  <!-- Same as above, this one conflicts with
-                       procyon-compilertools 0.5.32. -->
-                  <groupId>org.bitbucket.mstrobel</groupId>
-                  <artifactId>procyon-compilertools</artifactId>
-                  <version>0.5.33</version>
-                </artifactItem>
-                <artifactItem>
                   <groupId>javax.inject</groupId>
                   <artifactId>javax.inject</artifactId>
                   <classifier>sources</classifier>
@@ -240,12 +233,12 @@
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-core</artifactId>
-      <version>0.5.32</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.32</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.plumelib</groupId>
