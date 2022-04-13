@@ -74,42 +74,36 @@ RESOURCE_FILES = $(FRAMEWORK_RESOURCE_FILES:%=$(FRAMEWORK_RESOURCES_DIR)/%)
 # reserved-id-macro: external headers (Apple, ICU) have header guards with leading underscores.
 # super-class-method-mismatch: overridden methods with parameters with type variables are valid.
 DISALLOWED_WARNINGS = \
-  -Wno-c++98-compat \
-  -Wno-c++98-compat-pedantic \
-  -Wno-direct-ivar-access \
-  -Wno-documentation \
-  -Wno-documentation-unknown-command \
-  -Wno-dollar-in-identifier-extension \
-  -Wno-objc-interface-ivars \
-  -Wno-old-style-cast \
-  -Wno-overriding-method-mismatch \
-  -Wno-reserved-id-macro \
-  -Wno-super-class-method-mismatch
+	-Wno-c++98-compat \
+	-Wno-c++98-compat-pedantic \
+	-Wno-direct-ivar-access \
+	-Wno-documentation \
+	-Wno-documentation-unknown-command \
+	-Wno-dollar-in-identifier-extension \
+	-Wno-objc-interface-ivars \
+	-Wno-old-style-cast \
+	-Wno-overriding-method-mismatch \
+	-Wno-reserved-id-macro \
+	-Wno-super-class-method-mismatch
 
 # Check that headers compile with most compiler flags.
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
-  -Werror -Weverything $(DISALLOWED_WARNINGS)
+	-Werror -Weverything $(DISALLOWED_WARNINGS)
 
-# As of Xcode 12, xcframeworks need a fat libraries for most platforms
-FAT_PLATFORMS = iphone simulator macosx maccatalyst watchos watchsimulator
-SINGLE_PLATFORMS = appletvos appletvsimulator
-framework_libraries = \
-  $(foreach platform,$(FAT_PLATFORMS),$(wildcard $(BUILD_DIR)/$(platform)/lib$(1).a)) \
-  $(foreach platform,$(SINGLE_PLATFORMS),$(wildcard $(BUILD_DIR)/objs-$(platform)/lib$(1).a)) \
-
-framework: dist $(FRAMEWORK_DIR) resources
+framework: lib $(FRAMEWORK_DIR) resources
 	@:
 
 # Create an xcframework from all appletv, iphone, maccatalyst, macosx, simulator and watchos libs.
-$(FRAMEWORK_DIR): $(FRAMEWORK_HEADER) $(MODULE_MAP)
+$(FRAMEWORK_DIR): lib $(FRAMEWORK_HEADER) $(MODULE_MAP) | $(DIST_FRAMEWORK_DIR)
 	@echo building $(FRAMEWORK_NAME) framework
+	@mkdir -p $(FRAMEWORK_DIR)
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
-			$(call framework_libraries,$(STATIC_LIBRARY_NAME))
+			$(BUILD_DIR)/objs-*/lib$(STATIC_LIBRARY_NAME).a
 	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
 	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
 	@tar cf - -C $(STATIC_HEADERS_DIR) $(FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
-	    | tar xfp - -C $(FRAMEWORK_DIR)/Versions/A/Headers
+			| tar xfp - -C $(FRAMEWORK_DIR)/Versions/A/Headers
 	@install -m 0644 $(FRAMEWORK_HEADER) $(FRAMEWORK_DIR)/Versions/A/Headers
 	@install -m 0644 $(MODULE_MAP) $(FRAMEWORK_DIR)/Versions/A/Headers/
 	@touch $@
@@ -120,18 +114,18 @@ $(FRAMEWORK_DIR): $(FRAMEWORK_HEADER) $(MODULE_MAP)
 $(FRAMEWORK_HEADER):
 	@echo "//\n// $(FRAMEWORK_NAME).h\n//\n" > $@
 	@for f in $(FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
-	    echo '#include <'$${f}'>'; done >> $@
+			echo '#include <'$${f}'>'; done >> $@
 
 test_warnings: $(FRAMEWORK_HEADER)
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c \
-	    -fobjc-arc -fobjc-arc-exceptions $@
+			-fobjc-arc -fobjc-arc-exceptions $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -fno-objc-arc $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ \
-	    -fobjc-arc -fobjc-arc-exceptions $@
+			-fobjc-arc -fobjc-arc-exceptions $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ \
-	    -fno-objc-arc $@
+			-fno-objc-arc $@
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
 
 $(MODULE_MAP):
@@ -152,3 +146,6 @@ $(FRAMEWORK_RESOURCES_DIR):
 $(FRAMEWORK_RESOURCES_DIR)/%: % | $(FRAMEWORK_RESOURCES_DIR)
 	@mkdir -p $$(dirname $@)
 	@install -m 0644 $< $@
+
+$(DIST_FRAMEWORK_DIR):
+	@mkdir -p $@

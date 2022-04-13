@@ -133,5 +133,5 @@ print_environment:
 	@echo `xcodebuild -version`
 	@echo `xcrun cc -v`
 	@echo Environment:
-	@env | grep -v '^_' | sort
+	@env | grep -v '^_' | grep -v '^[ }]' | grep -v '^rvm_' | sort
 	@echo

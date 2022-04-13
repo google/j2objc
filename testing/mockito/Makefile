@@ -493,4 +493,6 @@ clean:
 	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito
 	@rm -rf $(FRAMEWORK_DIR)
 
-dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)
+dist: framework
+
+lib: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)

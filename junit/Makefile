@@ -58,9 +58,6 @@ fat_lib_dependencies: jre_emul_dist
 java: $(JUNIT_DIST_JAR)
 	@:
 
-lib: $(FAT_LIBS)
-	@:
-
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(JUNIT_DATAPROVIDER_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@echo extracting sources
 	@mkdir -p $(JAVA_SRC_DIR)
@@ -110,7 +107,9 @@ clean:
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 	@rm -rf $(FRAMEWORK_DIR)
 
-dist: lib $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
+dist: framework
+
+lib: $(FAT_LIBS) $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
 
 # This is currently broken. The hamcrest source can't compile with 1.8 and the included JRE sources
 # can't compile with < 1.8.

@@ -67,7 +67,9 @@ MKTEMP_DIR = j2objc-xalan
 XALAN_LICENSE = NOTICE
 XALAN_LICENSE_DIST = $(DIST_LICENSE_DIR)/apache_xalan_license.txt
 
-dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(XALAN_LICENSE_DIST)
+dist: framework
+
+lib: $(FAT_LIBS_DIST) $(DIST_JAR) $(XALAN_LICENSE_DIST)
 	@tar cf - -C $(GEN_OBJC_DIR) $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%) \
 	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
 
