@@ -3917,18 +3917,16 @@ static int GetExtensionCount(ComGoogleProtobufExtensionLite *extension, CGPExten
   return 0;
 }
 
-static id SetRepeatedExtension(
-    CGPExtensionMap *extensionMap, ComGoogleProtobufExtensionLite *extension, int index) {
+static void SetRepeatedExtension(CGPExtensionMap *extensionMap,
+                                 ComGoogleProtobufExtensionLite *extension, int index, id value) {
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   CGPFieldJavaType type = CGPFieldGetJavaType(field);
   CGPExtensionMap::iterator it = extensionMap->find(field);
-  id value;
   if (it != extensionMap->end()) {
-    value = [((id<JavaUtilList>)it->second.get()) getWithInt:index];
+    [((id<JavaUtilList>)it->second.get()) setWithInt:(index) withId:value];
   } else {
     @throw AUTORELEASE([[JavaLangIndexOutOfBoundsException alloc] init]);
   }
-  return FromReflectionTypeSingular(type, value);
 }
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
@@ -4077,10 +4075,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 - (id)setExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index withId:(id)value {
   (void)nil_chk(value);
-  CGPFieldDescriptor *field = extension->fieldDescriptor_;
-  [self setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:field
-                                                                 withInt:index
-                                                                  withId:value];
+  SetRepeatedExtension(&extensionMap_, extension, index, value);
   return self;
 }
 

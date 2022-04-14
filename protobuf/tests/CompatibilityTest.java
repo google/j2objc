@@ -232,6 +232,24 @@ public class CompatibilityTest extends ProtobufTest {
     assertFalse(builder.hasExtension(Typical.myPrimitiveExtension));
   }
 
+  public void testSetRepeatedExtension() throws Exception {
+    TypicalData.Builder builder = TypicalData.newBuilder();
+    builder.addExtension(Typical.myRepeatedPrimitiveExtension, 111);
+    builder.addExtension(Typical.myRepeatedPrimitiveExtension, 222);
+    assertEquals(2, builder.getExtensionCount(Typical.myRepeatedPrimitiveExtension));
+    assertEquals(
+        111, ((Integer) builder.getExtension(Typical.myRepeatedPrimitiveExtension, 0)).intValue());
+    assertEquals(
+        222, ((Integer) builder.getExtension(Typical.myRepeatedPrimitiveExtension, 1)).intValue());
+
+    builder.setExtension(Typical.myRepeatedPrimitiveExtension, 0, 333);
+    assertEquals(2, builder.getExtensionCount(Typical.myRepeatedPrimitiveExtension));
+    assertEquals(
+        333, ((Integer) builder.getExtension(Typical.myRepeatedPrimitiveExtension, 0)).intValue());
+    assertEquals(
+        222, ((Integer) builder.getExtension(Typical.myRepeatedPrimitiveExtension, 1)).intValue());
+  }
+
   public void testClearRepeatedField() throws Exception {
     TypicalData.Builder builder = TypicalData.newBuilder()
         .addRepeatedInt32(1)
