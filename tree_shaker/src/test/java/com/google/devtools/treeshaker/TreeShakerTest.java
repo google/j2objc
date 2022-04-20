@@ -1474,6 +1474,45 @@ public class TreeShakerTest extends TestCase {
                 "    OutOfCoffeeException()\n"));
   }
 
+  // Regression test for b/229773937
+  public void testJreMethodOverride() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker().start();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import java.util.Comparator;\n"
+            + "import java.util.TreeSet;\n"
+            + "class CoffeeMaker {\n"
+            + "  void start() {\n"
+            + "    TreeSet<Bean> set = new TreeSet<>(new BeanComparator());\n"
+            + "    set.add(new Bean(1));\n"
+            + "    set.add(new Bean(1));\n"
+            + "  }\n"
+            + "  public static class BeanComparator implements Comparator<Bean> {\n"
+            + "    @Override\n"
+            + "    public int compare(Bean a, Bean b) {\n"
+            + "      return a.roastLevel - b.roastLevel;\n"
+            + "    }\n"
+            + "  }\n"
+            + "  public static class Bean {\n"
+            + "    private final int roastLevel;\n"
+            + "    public Bean(int roastLevel) {\n"
+            + "      this.roastLevel = roastLevel;\n"
+            + "    }\n"
+            + "  }\n"
+            + "}");
+    String output = writeUnused(findUnusedCode());
+
+    // Verify that BeanComparator and its methods are live
+    assertThat(output).isEmpty();
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

@@ -76,6 +76,9 @@ class TypeGraphBuilder {
       for (MemberInfo memberInfo : typeInfo.getMemberList()) {
         Member member = type.getMemberByName(memberInfo.getName());
 
+        Type originalType = typesByName.get(libraryInfo.getTypeMap(memberInfo.getOriginalType()));
+        member.setOriginalType(originalType);
+
         for (int referencedId : memberInfo.getReferencedTypesList()) {
           Type referencedType = typesByName.get(libraryInfo.getTypeMap(referencedId));
           if (referencedType == null) {

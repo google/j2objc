@@ -167,6 +167,15 @@ final class RapidTypeAnalyser {
     // TODO(tball): remove when dead fields are reported (b/225384453).
     markMemberLive(type.getMemberByName(INITIALIZER_NAME));
 
+    // Mark members where the original method is from an external type.
+    type.getMembers()
+        .forEach(
+            member -> {
+              if (member.getOriginalType() == null) {
+                markMemberLive(member);
+              }
+            });
+
     if (type.getSuperClass() != null) {
       markTypeLive(type.getSuperClass());
     }

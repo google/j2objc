@@ -219,11 +219,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     startMethodDeclaration(
         getMethodName(node.getExecutableElement()),
         getDeclaringClassName(node.getExecutableElement()),
+        getOriginalClassName(node.getExecutableElement()),
         node.isConstructor(),
         Modifier.isStatic(node.getModifiers()));
     addReferencedType(node.getReturnTypeMirror());
     node.getParameters().forEach(svd -> addReferencedType(svd.getType().getTypeMirror()));
     return true;
+  }
+
+  private String getOriginalClassName(ExecutableElement executableElement) {
+    ExecutableElement originalMethod = elementUtil.getOriginalMethod(executableElement);
+    return getDeclaringClassName(originalMethod);
   }
 
   @Override
@@ -392,9 +398,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // For enums, add implict static methods.
     String typeName = elementUtil.getBinaryName(type);
     String sigName = typeUtil.getSignatureName(type.asType());
-    startMethodDeclaration(getImplicitValuesName(sigName), typeName, false, true);
+    startMethodDeclaration(getImplicitValuesName(sigName), typeName, typeName, false, true);
     endMethodDeclaration();
-    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, false, true);
+    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, typeName, false, true);
     endMethodDeclaration();
   }
 
@@ -402,7 +408,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     startType(type);
     // For interfaces, add a pseudo-constructor for use with lambdas.
     String typeName = elementUtil.getBinaryName(type);
-    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false);
+    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, typeName, true, false);
     endMethodDeclaration();
   }
 
@@ -469,15 +475,22 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void startMethodDeclaration(
-      String methodName, String declTypeName, boolean isConstructor, boolean isStatic) {
+      String methodName,
+      String declTypeName,
+      String originalClassName,
+      boolean isConstructor,
+      boolean isStatic) {
     boolean isExported =
         context.exportedMethods.contains(getQualifiedMethodName(declTypeName, methodName))
         || context.currentTypeInfoScope.peek().getExported();
-    startMethodScope(MemberInfo.newBuilder()
-        .setName(methodName)
-        .setStatic(isStatic)
-        .setConstructor(isConstructor)
-        .setExported(isExported));
+    Integer originalTypeId = getTypeId(originalClassName);
+    startMethodScope(
+        MemberInfo.newBuilder()
+            .setName(methodName)
+            .setStatic(isStatic)
+            .setOriginalType(originalTypeId)
+            .setConstructor(isConstructor)
+            .setExported(isExported));
   }
 
   private void addPseudoConstructorInvocation(TypeMirror type) {

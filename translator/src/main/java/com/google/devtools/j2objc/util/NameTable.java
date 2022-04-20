@@ -409,7 +409,7 @@ public class NameTable {
       return selector;
     }
     if (ElementUtil.isInstanceMethod(method)) {
-      method = getOriginalMethod(method);
+      method = elementUtil.getOriginalMethod(method);
     }
     selector = getRenamedMethodName(method);
     return selectorForMethodName(method, selector != null ? selector : getMethodName(method));
@@ -484,46 +484,6 @@ public class NameTable {
       String value = (String) ElementUtil.getAnnotationValue(annotation, "value");
       validateMethodSelector(value);
       return value;
-    }
-    return null;
-  }
-
-  private ExecutableElement getOriginalMethod(ExecutableElement method) {
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
-    return getOriginalMethod(method, declaringClass, declaringClass);
-  }
-
-  /**
-   * Finds the original method element to use for generating a selector. The method returned is the
-   * first method found in the hierarchy while traversing in order of declared inheritance that
-   * doesn't override a method from a supertype. (ie. it is the first leaf node found in the tree of
-   * overriding methods)
-   */
-  private ExecutableElement getOriginalMethod(
-      ExecutableElement topMethod, TypeElement declaringClass, TypeElement currentType) {
-    if (currentType == null) {
-      return null;
-    }
-    TypeElement superclass = currentType.getKind().isInterface()
-        ? typeUtil.getJavaObject() : ElementUtil.getSuperclass(currentType);
-    ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
-    if (original != null) {
-      return original;
-    }
-    for (TypeMirror supertype : currentType.getInterfaces()) {
-      original = getOriginalMethod(topMethod, declaringClass, TypeUtil.asTypeElement(supertype));
-      if (original != null) {
-        return original;
-      }
-    }
-    if (declaringClass == currentType) {
-      return topMethod;
-    }
-    for (ExecutableElement candidate : ElementUtil.getMethods(currentType)) {
-      if (ElementUtil.isInstanceMethod(candidate)
-          && elementUtil.overrides(topMethod, candidate, declaringClass)) {
-        return candidate;
-      }
     }
     return null;
   }

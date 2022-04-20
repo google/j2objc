@@ -25,6 +25,7 @@ message MemberInfo {
   bool exported = 4;
   repeated MethodInvocation invoked_methods = 5;
   repeated int32 referenced_types = 6;
+  int32 original_type = 7;
 }
 
 message MethodInvocation {

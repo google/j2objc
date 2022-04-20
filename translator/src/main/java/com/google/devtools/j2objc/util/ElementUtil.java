@@ -95,8 +95,11 @@ public final class ElementUtil {
   private final Elements javacElements;
   private final Map<Element, TypeMirror> elementTypeMap = new HashMap<>();
 
+  private final TypeElement javaObject;
+
   public ElementUtil(Elements javacElements) {
     this.javacElements = javacElements;
+    javaObject = javacElements.getTypeElement("java.lang.Object");
   }
 
   public static String getName(Element element) {
@@ -577,6 +580,45 @@ public final class ElementUtil {
       }
     }
     return javacElements.getBinaryName(e).toString();
+  }
+
+  public ExecutableElement getOriginalMethod(ExecutableElement method) {
+    TypeElement declaringClass = getDeclaringClass(method);
+    return getOriginalMethod(method, declaringClass, declaringClass);
+  }
+
+  /**
+   * Finds the original method element to use for generating a selector. The method returned is the
+   * first method found in the hierarchy while traversing in order of declared inheritance that
+   * doesn't override a method from a supertype. (ie. it is the first leaf node found in the tree of
+   * overriding methods)
+   */
+  public ExecutableElement getOriginalMethod(
+      ExecutableElement topMethod, TypeElement declaringClass, TypeElement currentType) {
+    if (currentType == null) {
+      return null;
+    }
+    TypeElement superclass =
+        currentType.getKind().isInterface() ? javaObject : getSuperclass(currentType);
+    ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
+    if (original != null) {
+      return original;
+    }
+    for (TypeMirror supertype : currentType.getInterfaces()) {
+      original = getOriginalMethod(topMethod, declaringClass, TypeUtil.asTypeElement(supertype));
+      if (original != null) {
+        return original;
+      }
+    }
+    if (declaringClass == currentType) {
+      return topMethod;
+    }
+    for (ExecutableElement candidate : getMethods(currentType)) {
+      if (isInstanceMethod(candidate) && overrides(topMethod, candidate, declaringClass)) {
+        return candidate;
+      }
+    }
+    return null;
   }
 
   Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
