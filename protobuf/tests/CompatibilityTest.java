@@ -1110,7 +1110,7 @@ public class CompatibilityTest extends ProtobufTest {
     MessageLite.Builder builder = TypicalData.newBuilder();
     MessageLite message = builder.build();
     assertTrue(message instanceof MessageLite);
-    message.toByteString();
+    ByteString unused = message.toByteString();
   }
 
   public void testMutatingBuilderDoesntMutateMessage() throws Exception {
