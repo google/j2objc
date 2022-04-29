@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -285,6 +286,11 @@ public class RetainedWithTest extends TestCase {
     new MapTest<>().run(new MapFactory<Object>(new Object()) {
       public Map<Object, ValueType> newMap() {
         return new ConcurrentHashMap<>();
+      }
+    });
+    new MapTest<>().run(new MapFactory<Object>(new Object()) {
+      public Map<Object, ValueType> newMap() {
+        return new LinkedHashMap<>();
       }
     });
   }

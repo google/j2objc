@@ -33,6 +33,10 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.io.IOException;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 // Android-added: Note about spliterator order b/33945212 in Android N
 /**
  * <p>Hash table and linked list implementation of the <tt>Map</tt> interface,
@@ -589,6 +593,9 @@ public class LinkedHashMap<K,V>
             if (modCount != mc)
                 throw new ConcurrentModificationException();
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
+
     }
 
     /**
@@ -640,6 +647,8 @@ public class LinkedHashMap<K,V>
             if (modCount != mc)
                 throw new ConcurrentModificationException();
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     /**
@@ -705,6 +714,8 @@ public class LinkedHashMap<K,V>
             if (modCount != mc)
                 throw new ConcurrentModificationException();
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     // Map overrides
