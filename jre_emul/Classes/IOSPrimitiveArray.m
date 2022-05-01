@@ -19,15 +19,7 @@
 
 #import "IOSArray_PackagePrivate.h"
 #import "IOSClass.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Byte.h"
-#import "java/lang/Character.h"
-#import "java/lang/Double.h"
-#import "java/lang/Float.h"
-#import "java/lang/Integer.h"
-#import "java/lang/Long.h"
 #import "java/lang/NegativeArraySizeException.h"
-#import "java/lang/Short.h"
 
 /*!
  * Implements the common constructors for the primitive array types.
@@ -161,10 +153,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, jboolean)
   return [NSString stringWithFormat:@"%@", (buffer_[index] ? @"true" : @"false")];
 }
 
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangBoolean_valueOfWithBoolean_(IOSBooleanArray_Get(self, (jint)index));
-}
-
 @end
 
 
@@ -185,10 +173,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, jchar)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%C", buffer_[index]];
-}
-
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangCharacter_valueOfWithChar_(IOSCharArray_Get(self, (jint)index));
 }
 
 @end
@@ -231,10 +215,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, jbyte)
   return [NSData dataWithBytes:buffer_ length:size_];
 }
 
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangByte_valueOfWithByte_(IOSByteArray_Get(self, (jint)index));
-}
-
 @end
 
 
@@ -246,10 +226,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(short, Short, jshort)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%hi", buffer_[index]];
-}
-
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangShort_valueOfWithShort_(IOSShortArray_Get(self, (jint)index));
 }
 
 @end
@@ -265,10 +241,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(int, Int, jint)
   return [NSString stringWithFormat:@"%d", buffer_[index]];
 }
 
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangInteger_valueOfWithInt_(IOSIntArray_Get(self, (jint)index));
-}
-
 @end
 
 
@@ -280,10 +252,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(long, Long, jlong)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%lld", buffer_[index]];
-}
-
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangLong_valueOfWithLong_(IOSLongArray_Get(self, (jint)index));
 }
 
 @end
@@ -299,10 +267,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(float, Float, jfloat)
   return [NSString stringWithFormat:@"%g", buffer_[index]];
 }
 
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangFloat_valueOfWithFloat_(IOSFloatArray_Get(self, (jint)index));
-}
-
 @end
 
 
@@ -314,10 +278,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(double, Double, jdouble)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%g", buffer_[index]];
-}
-
-- (id)objectAtIndex:(NSUInteger)index {
-  return JavaLangDouble_valueOfWithDouble_(IOSDoubleArray_Get(self, (jint)index));
 }
 
 @end

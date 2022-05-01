@@ -21,15 +21,13 @@
 #import "J2ObjC_common.h"
 #import "NSObject+JavaObject.h"
 
-#import <Foundation/NSArray.h>
-
 @class IOSClass;
 
 /**
  * An abstract class that represents a Java array.  Like a Java array,
  * an IOSArray is fixed-size but its elements are mutable.
  */
-@interface IOSArray<__covariant ObjectType> : NSArray<ObjectType> {
+@interface IOSArray : NSObject < NSCopying > {
  @public
   /**
    * Size of the array. This field is read-only, visible only for
