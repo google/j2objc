@@ -38,7 +38,8 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA:$(JAVA_SRC_DIR)/%=%)
-TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR) -source 1.7
+TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR) -source 1.7 \
+  -external-annotation-file junit.jaif
 include ../make/translate.mk
 
 FAT_LIB_NAME = junit
