@@ -85,7 +85,7 @@ final class RapidTypeAnalyser {
 
   private static void onMemberReference(Member member) {
     if (member.isPolymorphic()) {
-      traversePolymorphicReference(member.getDeclaringType(), member.getName());
+      traversePolymorphicReference(member.getDeclaringType(), member.getSignature());
     } else {
       markTypeLive(member.getDeclaringType());
     }
@@ -118,12 +118,12 @@ final class RapidTypeAnalyser {
     }
   }
 
-  private static void traversePolymorphicReference(Type type, String memberName) {
-    Member member = type.getMemberByName(memberName);
+  private static void traversePolymorphicReference(Type type, String memberSignature) {
+    Member member = type.getMemberBySignature(memberSignature);
     if (member == null) {
       // No member found in this class. In this case we need to mark the supertype method as
       // potentially live since it might be an accidental override.
-      markOverriddenMembersPotentiallyLive(type, memberName);
+      markOverriddenMembersPotentiallyLive(type, memberSignature);
     } else if (member.isPolymorphic()) {
       if (member.isFullyTraversed()) {
         return;
@@ -133,12 +133,12 @@ final class RapidTypeAnalyser {
     }
     // Recursively unfold the overriding chain.
     type.getImmediateSubtypes()
-        .forEach(subtype -> traversePolymorphicReference(subtype, memberName));
+        .forEach(subtype -> traversePolymorphicReference(subtype, memberSignature));
   }
 
-  private static void markOverriddenMembersPotentiallyLive(Type type, String memberName) {
+  private static void markOverriddenMembersPotentiallyLive(Type type, String memberSignature) {
     while ((type = type.getSuperClass()) != null) {
-      Member member = type.getMemberByName(memberName);
+      Member member = type.getMemberBySignature(memberSignature);
       if (member != null && member.isPolymorphic()) {
         markMemberPotentiallyLive(member);
         return;

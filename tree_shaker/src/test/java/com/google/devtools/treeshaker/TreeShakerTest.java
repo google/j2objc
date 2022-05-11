@@ -1513,6 +1513,57 @@ public class TreeShakerTest extends TestCase {
     assertThat(output).isEmpty();
   }
 
+  // Regression test for b/232218541
+  public void testPolymorphicCallsWithDifferentReturnTypes() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    new CoffeeMaker().start();\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "class CoffeeMaker {\n"
+            + "  void start() {\n"
+            + "    ElectricHeater heater = new InductionHeater();\n"
+            + "    heater.copy();\n"
+            + "  }\n"
+            + "}");
+
+    addSourceFile(
+        "Heater.java",
+        "class Heater {\n"
+            + "  Heater copy() {\n"
+            + "    return new Heater();\n"
+            + "  };\n"
+            + "}");
+
+    addSourceFile(
+        "ElectricHeater.java",
+        "class ElectricHeater extends Heater {\n"
+            + "  @Override\n"
+            + "  ElectricHeater copy() {\n"
+            + "    return new ElectricHeater();\n"
+            + "  }\n"
+            + "}");
+
+    addSourceFile(
+        "InductionHeater.java",
+        "class InductionHeater extends ElectricHeater {\n"
+            + "  @Override\n"
+            + "  InductionHeater copy() { \n"
+            + "    return new InductionHeater();\n"
+            + "  }\n"
+            + "}");
+
+    // Verify that ElectricHeater#copy() and its override in InductionHeater are live.
+    assertThat(getUnusedClasses(findUnusedCode())).isEmpty();
+    assertThat(getUnusedMethods(findUnusedCode())).containsExactly(
+        getMethodName("Heater", "copy", "()LHeater;"));
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

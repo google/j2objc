@@ -31,6 +31,7 @@ final class Member {
   private final boolean isStatic;
   private final boolean isConstructor;
   private final boolean isExported;
+  private final String signature;
 
   private boolean fullyTraversed;
   private boolean live;
@@ -45,6 +46,7 @@ final class Member {
     this.isStatic = isStatic;
     this.isConstructor = isConstructor;
     this.isExported = isExported;
+    this.signature = name.substring(0, name.lastIndexOf(')') + 1);
   }
 
   Type getDeclaringType() {
@@ -57,6 +59,10 @@ final class Member {
 
   String getName() {
     return name;
+  }
+
+  String getSignature() {
+    return signature;
   }
 
   public boolean isConstructor() {

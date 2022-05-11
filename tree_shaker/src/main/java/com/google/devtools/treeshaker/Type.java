@@ -31,6 +31,7 @@ final class Type {
   private final String name;
   private final boolean isExported;
   private final Map<String, Member> membersByName = new LinkedHashMap<>();
+  private final Map<String, Member> membersBySignature = new LinkedHashMap<>();
 
   private Type superClass;
   private final List<Type> superInterfaces = new ArrayList<>();
@@ -45,7 +46,9 @@ final class Type {
     members.forEach(memberInfo -> {
       Member member = Member.buildFrom(memberInfo, this);
       Member previous = membersByName.put(member.getName(), member);
+      Member previousBySignature = membersBySignature.put(member.getSignature(), member);
       checkState(previous == null);
+      checkState(previousBySignature == null);
     });
   }
 
@@ -59,6 +62,10 @@ final class Type {
 
   Member getMemberByName(String name) {
     return membersByName.get(name);
+  }
+
+  Member getMemberBySignature(String signature) {
+    return membersBySignature.get(signature);
   }
 
   Collection<Member> getMembers() {
