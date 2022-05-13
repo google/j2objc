@@ -37,7 +37,7 @@ final class Member {
   private boolean live;
   private final List<Type> referencedTypes = new ArrayList<>();
   private final List<Member> referencedMembers = new ArrayList<>();
-  private Type originalType;
+  private Member originalMember;
 
   private Member(String name, Type declaringType, boolean isStatic, boolean isConstructor,
       boolean isExported) {
@@ -105,11 +105,11 @@ final class Member {
     referencedMembers.add(referencedMember);
   }
 
-  Type getOriginalType() {
-    return originalType;
+  Member getOriginalMember() {
+    return originalMember;
   }
 
-  void setOriginalType(Type originalType) {
-    this.originalType = originalType;
+  void setOriginalMember(Member originalMember) {
+    this.originalMember = originalMember;
   }
 }

@@ -216,20 +216,18 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
+    ExecutableElement executableElement = node.getExecutableElement();
+    ExecutableElement originalMethod = elementUtil.getOriginalMethod(executableElement);
     startMethodDeclaration(
-        getMethodName(node.getExecutableElement()),
-        getDeclaringClassName(node.getExecutableElement()),
-        getOriginalClassName(node.getExecutableElement()),
+        getMethodName(executableElement),
+        getDeclaringClassName(executableElement),
+        getMethodName(originalMethod),
+        getDeclaringClassName(originalMethod),
         node.isConstructor(),
         Modifier.isStatic(node.getModifiers()));
     addReferencedType(node.getReturnTypeMirror());
     node.getParameters().forEach(svd -> addReferencedType(svd.getType().getTypeMirror()));
     return true;
-  }
-
-  private String getOriginalClassName(ExecutableElement executableElement) {
-    ExecutableElement originalMethod = elementUtil.getOriginalMethod(executableElement);
-    return getDeclaringClassName(originalMethod);
   }
 
   @Override
@@ -385,7 +383,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void startPackage(PackageElement pkg) {
-    String pkgName =  pkg.getQualifiedName() + ".package-info";
+    String pkgName = pkg.getQualifiedName() + ".package-info";
     startTypeScope(pkgName, INTERFACE_SUPERTYPE, ImmutableList.of(), true);
   }
 
@@ -398,9 +396,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // For enums, add implict static methods.
     String typeName = elementUtil.getBinaryName(type);
     String sigName = typeUtil.getSignatureName(type.asType());
-    startMethodDeclaration(getImplicitValuesName(sigName), typeName, typeName, false, true);
+    startMethodDeclaration(getImplicitValuesName(sigName), typeName, false, true);
     endMethodDeclaration();
-    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, typeName, false, true);
+    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, false, true);
     endMethodDeclaration();
   }
 
@@ -408,7 +406,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     startType(type);
     // For interfaces, add a pseudo-constructor for use with lambdas.
     String typeName = elementUtil.getBinaryName(type);
-    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, typeName, true, false);
+    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false);
     endMethodDeclaration();
   }
 
@@ -475,8 +473,15 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void startMethodDeclaration(
+      String methodName, String declTypeName, boolean isConstructor, boolean isStatic) {
+    startMethodDeclaration(
+        methodName, declTypeName, methodName, declTypeName, isConstructor, isStatic);
+  }
+
+  private void startMethodDeclaration(
       String methodName,
       String declTypeName,
+      String originalMethodName,
       String originalClassName,
       boolean isConstructor,
       boolean isStatic) {
@@ -489,6 +494,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
             .setName(methodName)
             .setStatic(isStatic)
             .setOriginalType(originalTypeId)
+            .setOriginalMethodName(originalMethodName)
             .setConstructor(isConstructor)
             .setExported(isExported));
   }

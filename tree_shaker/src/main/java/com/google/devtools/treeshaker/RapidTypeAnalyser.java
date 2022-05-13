@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.util.CodeReferenceMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 final class RapidTypeAnalyser {
   private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
@@ -121,6 +122,19 @@ final class RapidTypeAnalyser {
   private static void traversePolymorphicReference(Type type, String memberSignature) {
     Member member = type.getMemberBySignature(memberSignature);
     if (member == null) {
+      // If no member found, check for a member which original member matches the signature.
+      Optional<Member> matchingMember =
+          type.getMembers().stream()
+              .filter(
+                  candidate ->
+                      candidate.getOriginalMember() != null
+                          && memberSignature.equals(candidate.getOriginalMember().getSignature()))
+              .findFirst();
+      if (matchingMember.isPresent()) {
+        member = matchingMember.get();
+      }
+    }
+    if (member == null) {
       // No member found in this class. In this case we need to mark the supertype method as
       // potentially live since it might be an accidental override.
       markOverriddenMembersPotentiallyLive(type, memberSignature);
@@ -171,7 +185,7 @@ final class RapidTypeAnalyser {
     type.getMembers()
         .forEach(
             member -> {
-              if (member.getOriginalType() == null) {
+              if (member.getOriginalMember() == null) {
                 markMemberLive(member);
               }
             });

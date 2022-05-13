@@ -1564,6 +1564,28 @@ public class TreeShakerTest extends TestCase {
         getMethodName("Heater", "copy", "()LHeater;"));
   }
 
+  public void testOverridingMethodWithParameterType() throws IOException {
+    addTreeShakerRootsFile("EntryClass\n");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  public void exportedMethod() {\n"
+            + "    Callback<String> callback = new StringCallback();"
+            + "    callback.callback(\"test\");\n"
+            + "  }\n"
+            + "}");
+    addSourceFile(
+        "Callback.java", "interface Callback<T> {\n" + "  void callback(T input);\n" + "}");
+    addSourceFile(
+        "StringCallback.java",
+        "class StringCallback implements Callback<String> {\n"
+            + "  @Override public void callback(String input) {}\n"
+            + "}");
+
+    String output = writeUnused(findUnusedCode());
+    assertThat(output).isEmpty();
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

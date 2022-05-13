@@ -26,6 +26,7 @@ message MemberInfo {
   repeated MethodInvocation invoked_methods = 5;
   repeated int32 referenced_types = 6;
   int32 original_type = 7;
+  string original_method_name = 8;
 }
 
 message MethodInvocation {
