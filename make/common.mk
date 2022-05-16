@@ -160,7 +160,7 @@ DEBUGFLAGS := $(DEBUGFLAGS) -O$(OPTIMIZATION_LEVEL)
 
 CC_WARNINGS = -Wall -Werror -Wshorten-64-to-32 -Wimplicit-function-declaration \
   -Wmissing-field-initializers -Wduplicate-method-match -Wno-unused-variable \
-  -Wno-nullability-completeness
+  -Wno-nullability-completeness -Wno-unused-but-set-variable
 
 ifdef GCC_PREPROCESSOR_DEFINITIONS
 DEBUGFLAGS += $(GCC_PREPROCESSOR_DEFINITIONS:%=-D%)
