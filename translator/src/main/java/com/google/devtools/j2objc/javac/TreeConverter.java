@@ -579,6 +579,8 @@ public class TreeConverter {
     // Flatten this tree to avoid stack overflow with very deep trees. This
     // code traverses the subtree non-recursively and merges all children
     // that have the same operator into this node.
+    //
+    // Note: we will not flatten the tree if the same opeartors are EQUAL_TO or NOT_EQUAL_TO.
     List<StackState> stack = Lists.newArrayList();
     stack.add(new StackState(node));
     while (!stack.isEmpty()) {
@@ -590,7 +592,9 @@ public class TreeConverter {
       }
       if (child instanceof BinaryTree) {
         BinaryTree infixChild = (BinaryTree) child;
-        if (infixChild.getKind() == node.getKind()) {
+        if (infixChild.getKind() == node.getKind()
+            && infixChild.getKind() != Kind.EQUAL_TO
+            && infixChild.getKind() != Kind.NOT_EQUAL_TO) {
           stack.add(new StackState(infixChild));
           continue;
         }

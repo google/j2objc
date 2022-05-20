@@ -362,4 +362,51 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return o8 != nil;");
     assertTranslation(translation, "return i3 != i4;");
   }
+
+  public void testEqualOperator() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + "  Boolean testBooleanEquals(Boolean b1, Boolean b2) {"
+                + "    return b1 == b2;"
+                + "  }"
+                + "  Boolean testNestedBooleanEquals(Boolean b1, Boolean b2, Boolean b3) {"
+                + "    return b1 == b2 == b3;"
+                + "  }"
+                + "  Boolean testNestedBoolean(Boolean b1, Boolean b2, Boolean b3) {"
+                + "    return b1 != b2 == b3;"
+                + "  }"
+                + "  Boolean testStringBooleanEquals(Boolean s1, Boolean s2, Boolean b3) {"
+                + "    return s1 == s2 == b3;"
+                + "  }"
+                + "  Boolean testBooleanNotEquals(Boolean b1, Boolean b2) {"
+                + "    return b1 != b2;"
+                + "  }"
+                + "  Boolean testNestedBooleanNotEquals(Boolean b1, Boolean b2, Boolean b3) {"
+                + "    return b1 != b2 != b3;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(
+        translation, "return JavaLangBoolean_valueOfWithBoolean_(JreObjectEqualsEquals(b1, b2));");
+    assertTranslation(
+        translation,
+        "return JavaLangBoolean_valueOfWithBoolean_(JreObjectEqualsEquals(b1, b2) =="
+            + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
+    assertTranslation(
+        translation,
+        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) =="
+            + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
+    assertTranslation(
+        translation,
+        "return JavaLangBoolean_valueOfWithBoolean_(JreObjectEqualsEquals(s1, s2) =="
+            + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
+    assertTranslation(
+        translation, "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2));");
+    assertTranslation(
+        translation,
+        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) !="
+            + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
+  }
 }
