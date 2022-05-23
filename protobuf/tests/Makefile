@@ -118,7 +118,7 @@ CREATE_JAR_SOURCES = $(JAVA_SOURCES) $(J2OBJC_PROTOS_JAVA)
 CREATE_JAR_RESOURCES = $(TESTDATA)
 CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -encoding UTF-8
 CREATE_JAR_DEPENDENCIES = annotations_dist guava_java junit_java \
-  protobuf_runtime_java truth_java
+  protobuf_runtime_java
 include $(J2OBJC_ROOT)/make/create_jar.mk
 
 TRANSLATE_ARGS = -cp $(CLASSPATH):$(CREATE_JAR_RESULT) \
@@ -190,7 +190,7 @@ $(BUILD_DIR):
 # This ARC rule needs to be declared first, since it uses a more specific
 # pattern than the following rule.
 $(OBJS_DIR)/arc/%.o: $(GEN_OBJC_DIR)/arc/%.m \
-  | jre_emul_dist guava_dist junit_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
+  | jre_emul_dist guava_dist junit_dist truth_dist protobuf_runtime_dist $(J2OBJC_PROTOS_OBJC)
 	@mkdir -p $(@D)
 	$(TEST_J2OBJCC) -Werror -c $(INCLUDE_DIRS:%=-I%) $(C_FLAGS) \
       -fobjc-arc -fobjc-arc-exceptions -o $@ $<

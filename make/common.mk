@@ -160,7 +160,16 @@ DEBUGFLAGS := $(DEBUGFLAGS) -O$(OPTIMIZATION_LEVEL)
 
 CC_WARNINGS = -Wall -Werror -Wshorten-64-to-32 -Wimplicit-function-declaration \
   -Wmissing-field-initializers -Wduplicate-method-match -Wno-unused-variable \
-  -Wno-nullability-completeness -Wno-unused-but-set-variable
+  -Wno-nullability-completeness
+
+# Specify flag if clang version 13.1 or greater. This is necessary because that
+# version added a new warning that needs to be suppressed, and older versions
+# fail because it doesn't recognize the suppression flag.
+CLANG_13_1_MINIMUM = $(shell $(CLANG) --version | \
+    awk '/^Apple/ { split($$4, arr, "."); print ((arr[1] == 13 && arr[2] >= 1) || arr[1] > 13) ? "YES" : "NO"; }')
+ifeq ("$(CLANG_13_1_MINIMUM)", "YES")
+  CC_WARNINGS += -Wno-unused-but-set-variable
+endif
 
 ifdef GCC_PREPROCESSOR_DEFINITIONS
 DEBUGFLAGS += $(GCC_PREPROCESSOR_DEFINITIONS:%=-D%)
@@ -265,9 +274,3 @@ define long_list_to_file
 @files='$(wordlist 9500,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
 @if [ ! -e $(1) ]; then touch $(1); fi
 endef
-
-# Specify flag if clang version 7 or greater. This is necessary to support
-# iOS 9 apps that have the 'Enable bitcode' option set, which is the default for
-# new apps in Xcode 7.
-XCODE_7_MINIMUM := $(shell $(CLANG) --version | \
-    awk '/^Apple/ { split($$4, arr, "."); print (arr[1] >= 7) ? "YES" : "NO"; }')

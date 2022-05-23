@@ -50,7 +50,6 @@ declare NO_WARNINGS="-Wno-parentheses"
 NO_WARNINGS="${NO_WARNINGS} -fno-strict-overflow"
 NO_WARNINGS="${NO_WARNINGS} -Wno-compare-distinct-pointer-types"
 NO_WARNINGS="${NO_WARNINGS} -Wno-nullability-completeness"
-NO_WARNINGS="${NO_WARNINGS} -Wno-unused-but-set-variable"
 
 declare CC_FLAGS="-fobjc-weak -Werror ${NO_WARNINGS}"
 declare OTHER_LIBS="-l iconv -l z -l j2objc_main -l c++"

@@ -158,6 +158,9 @@ OBJCFLAGS += $(WARNINGS) -fno-strict-overflow \
   -I/System/Library/Frameworks/Security.framework/Headers \
   -I$(ANDROID_INCLUDE) $(NATIVE_SOURCE_DIRS:%=-I%)
 
+# Always embed bitcode (since Xcode 7)
+OBJCFLAGS += -fembed-bitcode
+
 # Only use the icu headers when building for OSX. For IOS these headers should
 # be available in the SDK.
 FAT_LIB_OSX_FLAGS = -I$(ICU4C_I18N_ROOT) -I$(ICU4C_COMMON_ROOT)
@@ -184,11 +187,4 @@ TRANSLATE_ARGS += -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions\
  -Wno-arc-bridge-casts-disallowed-in-nonarc \
  -Xclang -fobjc-runtime-has-weak
-endif
-
-# Specify bitcode flag if clang version 7 or greater. This is necessary to support
-# iOS 9 apps that have the 'Enable bitcode' option set, which is the default for
-# new apps in Xcode 7.
-ifeq ("$(XCODE_7_MINIMUM)", "YES")
-OBJCFLAGS += -fembed-bitcode
 endif
