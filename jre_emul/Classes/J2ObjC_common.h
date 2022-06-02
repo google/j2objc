@@ -68,22 +68,22 @@ void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((
 void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noreturn));
 
 id JreStrongAssign(__strong id *pIvar, id value);
-id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
+id JreStrongAssignAndConsume(__strong id *pIvar, ARC_CONSUME_PARAMETER id value);
 
-id JreLoadVolatileId(volatile_id *pVar);
-id JreAssignVolatileId(volatile_id *pVar, id value);
-id JreVolatileStrongAssign(volatile_id *pIvar, id value);
-jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
-id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
-void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
-void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
-void JreReleaseVolatile(volatile_id *pVar);
+id JreLoadVolatileId(__strong volatile_id *pVar);
+id JreAssignVolatileId(__strong volatile_id *pVar, id value);
+id JreVolatileStrongAssign(__strong volatile_id *pIvar, id value);
+jboolean JreCompareAndSwapVolatileStrongId(__strong volatile_id *pVar, id expected, id newValue);
+id JreExchangeVolatileStrongId(__strong volatile_id *pVar, id newValue);
+void JreCloneVolatile(__strong volatile_id *pVar, __strong volatile_id *pOther);
+void JreCloneVolatileStrong(__strong volatile_id *pVar, __strong volatile_id *pOther);
+void JreReleaseVolatile(__strong volatile_id *pVar);
 id JreRetainedLocalValue(id value);
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
-id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
+id JreVolatileRetainedWithAssign(id parent, __strong volatile_id *pIvar, id value);
 void JreRetainedWithRelease(id parent, id child);
-void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
+void JreVolatileRetainedWithRelease(id parent, __strong volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 

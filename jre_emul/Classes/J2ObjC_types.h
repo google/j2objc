@@ -51,9 +51,13 @@ typedef _Atomic(jlong)     volatile_jlong;
 typedef _Atomic(jfloat)    volatile_jfloat;
 typedef _Atomic(jdouble)   volatile_jdouble;
 typedef _Atomic(jboolean)  volatile_jboolean;
-// Volatile object access is guarded by spin locks because of reference counting
-// so we don't use an atomic type. uintptr_t is used for the typedef mainly to
-// prevent accidental usage as a regular id type.
+// Volatile object access is guarded by generated locks because of reference counting
+// so we don't use an atomic type. We must use "id" type when available to support
+// Obj-C ARC.
+#ifdef __OBJC__
+typedef id                 volatile_id;
+#else
 typedef uintptr_t          volatile_id;
+#endif
 
 #endif // _J2OBJC_TYPES_H_
