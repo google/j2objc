@@ -133,6 +133,11 @@
                   <artifactId>jspecify</artifactId>
                   <classifier>sources</classifier>
                 </dependency>
+                <dependency>
+                  <groupId>org.pantsbuild.jarjar</groupId>
+                  <artifactId>jarjar</artifactId>
+                  <version>1.5</version>
+                </dependency>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>

@@ -14,9 +14,9 @@
 #
 # Author: Keith Stanger
 
-JARJAR_HOME = jarjar
-JARJAR_JAR = jarjar-1.4.jar
 JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
+
+JARJAR_JAR = jarjar-1.5.jar
 
 JUNIT_JAR = j2objc_junit.jar
 

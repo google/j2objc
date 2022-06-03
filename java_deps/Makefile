@@ -73,9 +73,6 @@ $(BUILD_DIR)/$(SCENELIB_JAR): | $(BUILD_DIR)
 	@cd $(BUILD_DIR) && zip -q -r $(SCENELIB_JAR) scenelib/
 	@rm -rf $(BUILD_DIR)/annotation-file-utilities/ $(BUILD_DIR)/scenelib/
 
-$(BUILD_DIR)/$(JARJAR_JAR): | $(BUILD_DIR)
-	@cp -f $(JARJAR_HOME)/$(JARJAR_JAR) $@
-
 $(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
 
