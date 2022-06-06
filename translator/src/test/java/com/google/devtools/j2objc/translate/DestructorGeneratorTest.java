@@ -106,6 +106,46 @@ public class DestructorGeneratorTest extends GenerationTest {
   }
 
   /**
+   * Verify volatile fields are released in a dealloc for reference counted code.
+   */
+  public void testVolatileFieldReleaseReferenceCounting() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    String source =
+        "import com.google.j2objc.annotations.RetainedWith; "
+            + "class Test { "
+            + "  Object o; "
+            + "  volatile Object v; "
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (void)dealloc {",
+        "RELEASE_(o_);",
+        "JreReleaseVolatile(&v_);",
+        "[super dealloc];",
+        "}");
+  }
+
+  /**
+   * Verify only volatile fields are released for ARC code, and a dealloc method still created.
+   */
+  public void testVolatileFieldReleaseARC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String source =
+        "import com.google.j2objc.annotations.RetainedWith; "
+            + "class Test { "
+            + "  Object o; "
+            + "  volatile Object v; "
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (void)dealloc {",
+        "JreReleaseVolatile(&v_);",
+        "}");
+  }
+
+  /**
    * Verify fields are released for reference counted code when a finalize() method is defined.
    */
   public void testFieldReleaseFinalizeReferenceCounting() throws IOException {
