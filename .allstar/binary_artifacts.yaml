@@ -1,0 +1,29 @@
+# List of required binary jar files in j2objc repository.
+
+ignorePaths:
+
+# Ignore reason: ICU data-only jar files, from Android's icu4j repository. These jars only
+# contain resource files defining localization tables. They do not contain any JVM class files
+# or executable code.
+# https://android.googlesource.com/platform/external/icu/+/refs/heads/master/icu4j/main/shared/data/
+- jre_emul/android/platform/external/icu/icu4j/main/shared/data/icudata.jar
+- jre_emul/android/platform/external/icu/icu4j/main/shared/data/icutzdata.jar
+
+# Ignore reason: test jars containing resources (no executable code), from Android's libcore
+# repository. Used to test the emulation of java.util.jar classes on iOS.
+# https://android.googlesource.com/platform/libcore/+/refs/heads/master/support/src/test/java/tests/resources/
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/Broken_entry.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/Broken_entry_data.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/Broken_manifest.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/Integrate.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/Modified_SF_EntryAttributes.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/hyts_att.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/hyts_patch.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/morestuff/hyts_patch.jar
+- jre_emul/android/platform/libcore/support/src/test/java/tests/resources/morestuff/hyts_patch2.jar
+
+# Ignore reason: test jars used to validate the j2objc Java compiler.
+- translator/src/test/resources/com/google/devtools/j2objc/annotations/ExplicitProcessor.jar
+- translator/src/test/resources/com/google/devtools/j2objc/annotations/Processor.jar
+- translator/src/test/resources/com/google/devtools/j2objc/util/example.jar
+- translator/src/test/resources/com/google/devtools/j2objc/util/packageInfoLookupTest.jar
