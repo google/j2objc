@@ -89,7 +89,8 @@ public class DestructorGenerator extends UnitTreeVisitor {
   private void addDeallocMethod(AbstractTypeDeclaration node) {
     TypeElement type = node.getTypeElement();
     boolean hasFinalize = hasFinalizeMethod(type);
-    List<Statement> releaseStatements = createReleaseStatements(node);
+    List<Statement> releaseStatements =
+        options.useARC() ? ImmutableList.of() : createReleaseStatements(node);
     MethodDeclaration onDeallocMethodDeclaration = getOnDeallocMethodDeclaration(node);
     if (releaseStatements.isEmpty() && !hasFinalize && onDeallocMethodDeclaration == null) {
       return;
@@ -208,16 +209,12 @@ public class DestructorGenerator extends UnitTreeVisitor {
     boolean isVolatile = ElementUtil.isVolatile(var);
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = null;
-    if (options.useReferenceCounting()) {
-      if (isRetainedWith) {
-        funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
-      } else if (isVolatile) {
-        funcName = "JreReleaseVolatile";
-      } else {
-        funcName = "RELEASE_";
-      }
+    if (isRetainedWith) {
+      funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
     } else if (isVolatile) {
       funcName = "JreReleaseVolatile";
+    } else if (options.useReferenceCounting()) {
+      funcName = "RELEASE_";
     }
     if (funcName == null) {
       return null;
@@ -226,14 +223,12 @@ public class DestructorGenerator extends UnitTreeVisitor {
     TypeMirror idType = TypeUtil.ID_TYPE;
     FunctionElement element = new FunctionElement(funcName, voidType, null);
     FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
-    if (options.useReferenceCounting()) {
-      if (isRetainedWith) {
-        element.addParameters(idType);
-        releaseInvocation.addArgument(
-            new ThisExpression(ElementUtil.getDeclaringClass(var).asType()));
-      }
-      element.addParameters(isVolatile ? TypeUtil.ID_PTR_TYPE : idType);
+    if (isRetainedWith) {
+      element.addParameters(idType);
+      releaseInvocation.addArgument(
+          new ThisExpression(ElementUtil.getDeclaringClass(var).asType()));
     }
+    element.addParameters(isVolatile ? TypeUtil.ID_PTR_TYPE : idType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(
