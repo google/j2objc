@@ -31,7 +31,7 @@
  * An emulation class that represents a Java object array.  Like a Java array,
  * an IOSObjectArray is fixed-size but its elements are mutable.
  */
-@interface IOSObjectArray : IOSArray <NSFastEnumeration> {
+@interface IOSObjectArray<ObjectType> : IOSArray<ObjectType> {
  @public
   /**
    * The type of elements in this array.
@@ -43,18 +43,18 @@
    * The elements of this array.
    */
   // Ensure alignment for java.util.concurrent.atomic.AtomicReferenceArray.
-  id __strong buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
+  ObjectType __strong buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
 }
 
 @property (readonly) IOSClass *elementType;
 
 /** Create an array from a C object array, length, and type. */
-+ (instancetype)newArrayWithObjects:(const id *)objects
++ (instancetype)newArrayWithObjects:(const ObjectType *)objects
                               count:(NSUInteger)count
                                type:(IOSClass *)type;
 
 /** Create an autoreleased array from a C object array, length, and type. */
-+ (instancetype)arrayWithObjects:(const id *)objects
++ (instancetype)arrayWithObjects:(const ObjectType *)objects
                            count:(NSUInteger)count
                             type:(IOSClass *)type;
 
@@ -75,7 +75,7 @@
                                   type:(IOSClass *)type;
 
 /** Create an autoreleased array with the elements from an NSArray. */
-+ (instancetype)arrayWithArray:(IOSObjectArray *)array;
++ (instancetype)arrayWithArray:(IOSObjectArray<ObjectType> *)array;
 
 /** Create an autoreleased array with the elements from an NSArray. */
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type;
@@ -85,7 +85,7 @@
  * @throws IndexOutOfBoundsException
  * if out out range
  */
-- (id)objectAtIndex:(NSUInteger)index;
+- (ObjectType)objectAtIndex:(NSUInteger)index;
 
 /**
  * Sets element at a specified index.
@@ -93,7 +93,7 @@
  * if index is out of range
  * @return the replacement object.
  */
-- (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value;
+- (ObjectType)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value;
 
 /**
  * Copies the array contents into a specified buffer, up to the specified
@@ -132,8 +132,8 @@ FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index,
  * if index is out of range
  * @return the replacement object.
  */
-FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(
-    IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value);
+FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index,
+                                                  id __attribute__((ns_consumed)) value);
 
 // Internal only. Provides a pointer to an element with the array itself.
 // Used for translating certain compound expressions.

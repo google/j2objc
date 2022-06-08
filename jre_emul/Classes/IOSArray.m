@@ -152,6 +152,16 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
   return copy;
 }
 
+// Define isEqual: and hash methods to be the same as NSObject's, which is
+// what they were before IOSArray was changed to subclass NSArray.
+- (BOOL)isEqual:(id)object {
+  return self == object;
+}
+
+- (NSUInteger)hash {
+  return (NSUInteger)self;
+}
+
 - (id)java_clone {
   id result = [self copyWithZone:nil];
 #if ! __has_feature(objc_arc)

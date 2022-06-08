@@ -36,13 +36,22 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wzero-length-array"
 
+@class JavaLangBoolean;
+@class JavaLangByte;
+@class JavaLangCharacter;
+@class JavaLangDouble;
+@class JavaLangFloat;
+@class JavaLangInteger;
+@class JavaLangLong;
+@class JavaLangShort;
+
 // ********** IOSBooleanArray **********
 
 /**
  * An Objective-C representation of a Java boolean array. Like a Java array,
  * an IOSBooleanArray is fixed-size but its elements are mutable.
  */
-@interface IOSBooleanArray : IOSArray {
+@interface IOSBooleanArray : IOSArray<JavaLangBoolean *> {
  @public
   /**
    * The elements of this array.
@@ -130,7 +139,7 @@ __attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
  * An Objective-C representation of a Java char array. Like a Java array,
  * an IOSCharArray is fixed-size but its elements are mutable.
  */
-@interface IOSCharArray : IOSArray {
+@interface IOSCharArray : IOSArray<JavaLangCharacter *> {
  @public
   /**
    * The elements of this array.
@@ -223,7 +232,7 @@ __attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
  * An Objective-C representation of a Java byte array. Like a Java array,
  * an IOSByteArray is fixed-size but its elements are mutable.
  */
-@interface IOSByteArray : IOSArray {
+@interface IOSByteArray : IOSArray<JavaLangByte *> {
  @public
   /**
    * The elements of this array.
@@ -330,7 +339,7 @@ __attribute__((always_inline)) inline jbyte *IOSByteArray_GetRef(
  * An Objective-C representation of a Java array of shorts. Like a Java array,
  * an IOSShortArray is fixed-size but its elements are mutable.
  */
-@interface IOSShortArray : IOSArray {
+@interface IOSShortArray : IOSArray<JavaLangShort *> {
  @public
   /**
    * The elements of this array.
@@ -418,7 +427,7 @@ __attribute__((always_inline)) inline jshort *IOSShortArray_GetRef(
  * An Objective-C representation of a Java int array. Like a Java array,
  * an IOSIntArray is fixed-size but its elements are mutable.
  */
-@interface IOSIntArray : IOSArray {
+@interface IOSIntArray : IOSArray<JavaLangInteger *> {
  @public
   /**
    * The elements of this array.
@@ -507,7 +516,7 @@ __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
  * An Objective-C representation of a Java long array. Like a Java array,
  * an IOSLongArray is fixed-size but its elements are mutable.
  */
-@interface IOSLongArray : IOSArray {
+@interface IOSLongArray : IOSArray<JavaLangLong *> {
  @public
   /**
    * The elements of this array.
@@ -596,7 +605,7 @@ __attribute__((always_inline)) inline jlong *IOSLongArray_GetRef(
  * An Objective-C representation of a Java float array. Like a Java array,
  * an IOSFloatArray is fixed-size but its elements are mutable.
  */
-@interface IOSFloatArray : IOSArray {
+@interface IOSFloatArray : IOSArray<JavaLangFloat *> {
  @public
   /**
    * The elements of this array.
@@ -684,7 +693,7 @@ __attribute__((always_inline)) inline jfloat *IOSFloatArray_GetRef(
  * An Objective-C representation of a Java double array. Like a Java array,
  * an IOSDoubleArray is fixed-size but its elements are mutable.
  */
-@interface IOSDoubleArray : IOSArray {
+@interface IOSDoubleArray : IOSArray<JavaLangDouble *> {
  @public
   /**
    * The elements of this array.
